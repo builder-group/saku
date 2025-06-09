@@ -1,13 +1,15 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
 client_id = "883a8181758bb6c5148e4ebe7752b51e"
+extension_directories = [ ]
 name = "saku-link-in-bio"
 handle = "saku-link-in-bio"
-application_url = "https://male-cancel-pool-interests.trycloudflare.com"
+application_url = "https://mg-functionality-ctrl-governmental.trycloudflare.com"
 embedded = true
 
 [build]
 include_config_on_deploy = true
+automatically_update_urls_on_dev = true
 
 [webhooks]
 api_version = "2025-04"
@@ -18,9 +20,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://male-cancel-pool-interests.trycloudflare.com/auth/callback",
-  "https://male-cancel-pool-interests.trycloudflare.com/auth/shopify/callback",
-  "https://male-cancel-pool-interests.trycloudflare.com/api/auth/callback"
+  "https://mg-functionality-ctrl-governmental.trycloudflare.com/auth/callback",
+  "https://mg-functionality-ctrl-governmental.trycloudflare.com/auth/shopify/callback",
+  "https://mg-functionality-ctrl-governmental.trycloudflare.com/api/auth/callback"
 ]
 
 [pos]

@@ -1,11 +1,18 @@
 {
 	"name": "@repo/sfy-link-in-bio-app",
 	"private": true,
-	"author": "benno",
+	"description": "Saku - Link In Bio Shopify App",
+	"keywords": [],
+	"bugs": {
+		"url": "https://github.com/builder-group/saku/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/builder-group/saku.git"
+	},
+	"license": "AGPL-3.0-or-later",
+	"author": "@bennobuilder",
 	"type": "module",
-	"workspaces": [
-		"extensions/*"
-	],
 	"scripts": {
 		"build": "remix vite:build",
 		"clean": "shx rm -rf dist && shx rm -rf build && shx rm -rf .turbo && shx rm -rf node_modules",
@@ -19,42 +26,28 @@
 		"shopify:env": "shopify app env",
 		"shopify:generate": "shopify app generate",
 		"start": "remix-serve ./build/server/index.js",
-		"start:dev": "shopify app dev"
-	},
-	"resolutions": {
-		"@graphql-codegen/client-preset": "4.7.0",
-		"@graphql-codegen/typescript-operations": "4.5.0",
-		"@graphql-tools/url-loader": "8.0.16",
-		"minimatch": "9.0.5"
-	},
-	"overrides": {
-		"@graphql-codegen/client-preset": "4.7.0",
-		"@graphql-codegen/typescript-operations": "4.5.0",
-		"@graphql-tools/url-loader": "8.0.16",
-		"minimatch": "9.0.5"
+		"start:dev": "shopify app dev",
+		"update:latest": "pnpm update --latest '!react' '!react-dom' '!@types/react' '!@types/react-dom'"
 	},
 	"dependencies": {
-		"@remix-run/dev": "^2.16.1",
-		"@remix-run/fs-routes": "^2.16.1",
-		"@remix-run/node": "^2.16.1",
-		"@remix-run/react": "^2.16.1",
-		"@remix-run/serve": "^2.16.1",
-		"@shopify/app-bridge-react": "^4.1.6",
-		"@shopify/polaris": "^12.0.0",
-		"@shopify/shopify-app-remix": "^3.7.0",
+		"@remix-run/dev": "^2.16.8",
+		"@remix-run/fs-routes": "^2.16.8",
+		"@remix-run/node": "^2.16.8",
+		"@remix-run/react": "^2.16.8",
+		"@remix-run/serve": "^2.16.8",
+		"@shopify/app-bridge-react": "^4.1.10",
+		"@shopify/polaris": "^13.9.5",
+		"@shopify/shopify-app-remix": "^3.8.3",
 		"@shopify/shopify-app-session-storage-memory": "^4.0.18",
-		"isbot": "^5.1.0",
-		"react": "^18.2.0",
-		"react-dom": "^18.2.0",
-		"vite-tsconfig-paths": "^5.0.1"
+		"isbot": "^5.1.28",
+		"react": "^18.3.1",
+		"react-dom": "^18.3.1",
+		"vite-tsconfig-paths": "^5.1.4"
 	},
 	"devDependencies": {
-		"@shopify/api-codegen-preset": "^1.1.1",
-		"@types/node": "^22.2.0",
-		"@types/react": "^18.2.31",
-		"@types/react-dom": "^18.2.14"
-	},
-	"trustedDependencies": [
-		"@shopify/plugin-cloudflare"
-	]
+		"@shopify/api-codegen-preset": "^1.1.8",
+		"@types/node": "^22.15.30",
+		"@types/react": "^18.3.1",
+		"@types/react-dom": "^18.3.1"
+	}
 }
