@@ -2,6 +2,7 @@
 	"extends": "@blgc/config/typescript/react-internal",
 	"compilerOptions": {
 		"baseUrl": ".",
+		"types": ["node"]
 		// "paths": {
 		// 	"@/*": ["./src/*"]
 		// }

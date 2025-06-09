@@ -10,7 +10,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 	if (session != null) {
 		const sessions = await shopifySessionStorage.findSessionsByShop(shop);
 		for (const session of sessions) {
-			session.scope = current.toString();
+			session.scope = current.join(',');
 			await shopifySessionStorage.storeSession(session);
 		}
 	}

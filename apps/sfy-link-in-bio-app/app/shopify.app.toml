@@ -1,7 +1,7 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
 client_id = "883a8181758bb6c5148e4ebe7752b51e"
-extension_directories = [ ]
+extension_directories = []
 name = "saku-link-in-bio"
 handle = "saku-link-in-bio"
 application_url = "https://interactions-presentations-comply-neon.trycloudflare.com"
@@ -14,6 +14,14 @@ automatically_update_urls_on_dev = true
 [webhooks]
 api_version = "2025-04"
 
+[[webhooks.subscriptions]]
+topics = ["app/uninstalled"]
+uri = "/webhooks/app/uninstalled"
+
+[[webhooks.subscriptions]]
+topics = ["app/scopes_update"]
+uri = "/webhooks/app/scopes_update"
+
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
 scopes = "write_products"
@@ -22,7 +30,7 @@ scopes = "write_products"
 redirect_urls = [
   "https://interactions-presentations-comply-neon.trycloudflare.com/auth/callback",
   "https://interactions-presentations-comply-neon.trycloudflare.com/auth/shopify/callback",
-  "https://interactions-presentations-comply-neon.trycloudflare.com/api/auth/callback"
+  "https://interactions-presentations-comply-neon.trycloudflare.com/api/auth/callback",
 ]
 
 [pos]

@@ -55,5 +55,5 @@ export const loader: TLoaderFunction<{ showForm: boolean }> = async ({ request }
 		throw redirect(`/app?${url.searchParams.toString()}`);
 	}
 
-	return { showForm: Boolean(login) };
+	return { showForm: typeof login === 'function' };
 };
