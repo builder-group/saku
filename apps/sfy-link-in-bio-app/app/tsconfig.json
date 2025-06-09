@@ -1,21 +1,11 @@
 {
-	"include": ["env.d.ts", "**/*.ts", "**/*.tsx"],
+	"extends": "@blgc/config/typescript/react-internal",
 	"compilerOptions": {
-		"lib": ["DOM", "DOM.Iterable", "ES2022"],
-		"strict": true,
-		"skipLibCheck": true,
-		"isolatedModules": true,
-		"allowSyntheticDefaultImports": true,
-		"removeComments": false,
-		"forceConsistentCasingInFileNames": true,
-		"noEmit": true,
-		"allowJs": true,
-		"resolveJsonModule": true,
-		"jsx": "react-jsx",
-		"module": "ESNext",
-		"moduleResolution": "Bundler",
-		"target": "ES2022",
 		"baseUrl": ".",
-		"types": ["node"]
-	}
+		// "paths": {
+		// 	"@/*": ["./src/*"]
+		// }
+	},
+	"include": ["env.d.ts", "**/*.ts", "**/*.tsx"],
+	"exclude": ["node_modules"]
 }

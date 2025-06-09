@@ -9,14 +9,14 @@ installGlobals({ nativeFetch: true });
 // Replace the HOST env var with SHOPIFY_APP_URL so that it doesn't break the remix server. The CLI will eventually
 // stop passing in HOST, so we can remove this workaround after the next major release.
 if (
-	process.env.HOST &&
-	(!process.env.SHOPIFY_APP_URL || process.env.SHOPIFY_APP_URL === process.env.HOST)
+	process.env['HOST'] &&
+	(!process.env['SHOPIFY_APP_URL'] || process.env['SHOPIFY_APP_URL'] === process.env['HOST'])
 ) {
-	process.env.SHOPIFY_APP_URL = process.env.HOST;
-	delete process.env.HOST;
+	process.env['SHOPIFY_APP_URL'] = process.env['HOST'];
+	delete process.env['HOST'];
 }
 
-const host = new URL(process.env.SHOPIFY_APP_URL || 'http://localhost').hostname;
+const host = new URL(process.env['SHOPIFY_APP_URL'] ?? 'http://localhost').hostname;
 
 let hmrConfig;
 if (host === 'localhost') {
@@ -30,7 +30,7 @@ if (host === 'localhost') {
 	hmrConfig = {
 		protocol: 'wss',
 		host: host,
-		port: parseInt(process.env.FRONTEND_PORT!) || 8002,
+		port: parseInt(process.env['FRONTEND_PORT'] ?? '8002'),
 		clientPort: 443
 	};
 }
@@ -41,7 +41,7 @@ export default defineConfig({
 		cors: {
 			preflightContinue: true
 		},
-		port: Number(process.env.PORT || 3000),
+		port: parseInt(process.env['PORT'] ?? '3000'),
 		hmr: hmrConfig,
 		fs: {
 			// See https://vitejs.dev/config/server-options.html#server-fs-allow for more information

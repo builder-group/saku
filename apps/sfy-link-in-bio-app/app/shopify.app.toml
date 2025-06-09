@@ -4,7 +4,7 @@ client_id = "883a8181758bb6c5148e4ebe7752b51e"
 extension_directories = [ ]
 name = "saku-link-in-bio"
 handle = "saku-link-in-bio"
-application_url = "https://casino-celebrity-gig-vegetarian.trycloudflare.com"
+application_url = "https://interactions-presentations-comply-neon.trycloudflare.com"
 embedded = true
 
 [build]
@@ -20,9 +20,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://casino-celebrity-gig-vegetarian.trycloudflare.com/auth/callback",
-  "https://casino-celebrity-gig-vegetarian.trycloudflare.com/auth/shopify/callback",
-  "https://casino-celebrity-gig-vegetarian.trycloudflare.com/api/auth/callback"
+  "https://interactions-presentations-comply-neon.trycloudflare.com/auth/callback",
+  "https://interactions-presentations-comply-neon.trycloudflare.com/auth/shopify/callback",
+  "https://interactions-presentations-comply-neon.trycloudflare.com/api/auth/callback"
 ]
 
 [pos]
