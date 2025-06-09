@@ -1,0 +1,21 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Project Rules Index
+
+This document serves as the central index for all active Cursor rules within this repository, organized by category. These rules define processes, structures, and guidelines for development.
+
+## Core Rules
+
+- [style-guide.mdc](mdc:.cursor/rules/style-guide.mdc): Core coding standards and style guidelines
+- [cursor-rules.mdc](mdc:.cursor/rules/cursor-rules.mdc): How to add or edit Cursor rules
+
+## Development Guidelines
+
+- [hono.mdc](mdc:.cursor/rules/hono.mdc): Backend API development with Hono
+- [nextjs.mdc](mdc:.cursor/rules/nextjs.mdc): Frontend development with Next.js
+- [vitest.mdc](mdc:.cursor/rules/vitest.mdc): Testing patterns and best practices with Vitest
+
+Each rule file contains comprehensive guidelines for its domain. We can split these into more specific rules as the project grows and patterns emerge.

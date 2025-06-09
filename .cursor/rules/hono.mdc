@@ -1,0 +1,383 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Hono API Development Guidelines
+
+Core development guidelines for building type-safe, maintainable APIs using the Hono framework. These patterns ensure consistent, secure, and performant backend services while maintaining strict type safety and clean architecture.
+
+## Core Principles
+- **KISS (Keep It Simple, Stupid)** - Always choose the simplest, most maintainable solution
+- **TypeScript First** - Always use TypeScript with strict typing (`strict: true`) everywhere
+- **Less is More** - Always avoid unnecessary complexity, the best code is no code
+- **Functional Programming** - Always use functions over classes, except when classes make clear sense
+- **Error Handling** - Always use consistent, typed error handling with clear messages
+
+## Route Organization
+- Always structure routes by version and resource using dot notation folders
+- Always separate concerns clearly within each route folder
+- Always follow consistent naming patterns
+- Always maintain clear directory structure
+- Always keep route folders flat for better discoverability
+
+✅ Good:
+```typescript
+// Clear separation of concerns with flat route structure
+src/
+  app/
+    routes/
+      v1.users/              # All /v1/users routes
+        index.ts            # Route implementations
+        schema.ts          # Schema definitions
+        lib/               # Business logic
+          operations.ts
+          validation.ts
+          types.ts
+      v1.products/          # All /v1/products routes
+        index.ts
+        schema.ts
+        lib/
+          operations.ts
+          validation.ts
+          types.ts
+```
+
+❌ Bad:
+```typescript
+// Wrong: Nested directory structure makes routes hard to find
+src/
+  routes/              
+    v1/                # Wrong: Nested version directory
+      users/           # Wrong: Nested resource directory
+        index.ts
+        [id]/          # Wrong: Deeply nested dynamic routes
+          index.ts
+          products.ts
+    v2/
+      products/
+        index.ts
+```
+
+## Schema Definition
+- Always use Zod for request/response schemas
+- Always define explicit types for all operations
+- Always document API contracts
+- Always validate all inputs
+
+✅ Good:
+```typescript
+// src/app/routes/v1/users/schema.ts
+import { z } from 'zod';
+import { createRoute } from '@/lib/api';
+import { ErrorResponse, SuccessResponse } from '@/lib/responses';
+
+export const SCreateUser = z.object({
+  email: z.string().email(),
+  name: z.string().min(1)
+});
+
+export const CreateUserRoute = createRoute({
+  method: 'post',
+  path: '/v1/users',
+  tags: ['users'],
+  summary: 'Create new user',
+  request: {
+    body: {
+      content: {
+        'application/json': {
+          schema: SCreateUser
+        }
+      }
+    }
+  },
+  responses: {
+    200: SuccessResponse('User created'),
+    400: ErrorResponse('Invalid input'),
+    401: ErrorResponse('Unauthorized')
+  }
+});
+```
+
+❌ Bad:
+```typescript
+// Wrong: Missing validation and documentation
+router.post('/users', async (c) => {
+  const body = await c.req.json();  // Wrong: No schema validation
+  return c.json(await db.users.create({ data: body }));  // Wrong: Untyped data
+});
+```
+
+## Route Implementation
+- Always keep all resource routes in a single index.ts file
+- Always use descriptive dot notation for route folders
+- Always group related route operations in the same folder
+
+✅ Good:
+```typescript
+// src/app/routes/v1.users/index.ts
+import { router } from '@/lib/router';
+import { 
+  CreateUserRoute, 
+  GetUserRoute,
+  GetUserProductsRoute,
+  CreateUserProductRoute 
+} from './schema';
+import { 
+  createUser, 
+  getUser,
+  getUserProducts,
+  createUserProduct 
+} from './lib/operations';
+
+// Base user routes
+router.openapi(CreateUserRoute, async (c) => {
+  const input = c.req.valid('json');
+  return c.json(await createUser(input));
+});
+
+router.openapi(GetUserRoute, async (c) => {
+  const userId = c.req.param('id');
+  return c.json(await getUser(userId));
+});
+
+// Nested product routes
+router.openapi(GetUserProductsRoute, async (c) => {
+  const userId = c.req.param('id');
+  return c.json(await getUserProducts(userId));
+});
+
+router.openapi(CreateUserProductRoute, async (c) => {
+  const userId = c.req.param('id');
+  const input = c.req.valid('json');
+  return c.json(await createUserProduct(userId, input));
+});
+
+// src/app/routes/v1.users/schema.ts
+import { z } from 'zod';
+import { createRoute } from '@/lib/api';
+
+export const CreateUserRoute = createRoute({
+  method: 'post',
+  path: '/v1/users',
+  // ... schema definition
+});
+
+export const GetUserProductsRoute = createRoute({
+  method: 'get',
+  path: '/v1/users/:id/products',
+  // ... schema definition
+});
+
+// src/app/routes/v1.users/lib/operations.ts
+import { TCreateUserInput, TUser, TProduct } from './types';
+
+export async function createUser(
+  input: TCreateUserInput
+): Promise<TUser> {
+  // Implementation
+}
+
+export async function getUserProducts(
+  userId: string
+): Promise<TProduct[]> {
+  // Implementation
+}
+```
+
+❌ Bad:
+```typescript
+// Wrong: Routes scattered across multiple files and directories
+// src/app/routes/v1/users/index.ts
+router.get('/v1/users', async (c) => {
+  // Wrong: Route handler in nested directory
+});
+
+// Wrong: Schema separated from route
+// src/app/schemas/users.ts
+export const userSchema = z.object({
+  // Wrong: Schema far from usage
+});
+
+// Wrong: Operations mixed with routes
+// src/app/routes/v1/users/products.ts
+export async function getUserProducts() {
+  // Wrong: Business logic mixed with route
+}
+```
+
+## Business Logic
+- Always separate business logic from route handlers
+- Always use proper types for inputs and outputs
+- Always implement proper error handling
+- Always validate business rules
+
+✅ Good:
+```typescript
+// src/app/routes/v1/users/lib/operations.ts
+import { TCreateUserInput, TUser } from './types';
+import { AppError } from '@/lib/errors';
+import { db } from '@/lib/db';
+
+export async function createUser(
+  input: TCreateUserInput
+): Promise<TUser> {
+  // Check for existing user
+  const existing = await findUserByEmail(input.email);
+  if (existing != null) {
+    throw new AppError('#ERR_CONFLICT', 409, {
+      description: 'User already exists'
+    });
+  }
+  
+  // Create user with validated input
+  return db.user.create({
+    data: input
+  });
+}
+```
+
+❌ Bad:
+```typescript
+// Wrong: Missing types and improper error handling
+export async function createUser(input: any) {  // Wrong: Untyped input
+  if (!input.email) {
+    throw new Error('Invalid email');  // Wrong: Generic error
+  }
+  return db.user.create({ data: input });  // Wrong: Unvalidated data
+}
+```
+
+## Error Handling
+- Always use the centralized error handling system
+- Always throw typed errors from the `@repo/hono-utils` module
+- Always include error codes for client-side handling
+- Never expose internal error details to clients
+
+✅ Good:
+```typescript
+// src/app/routes/v1.users/lib/operations.ts
+import { AppError } from '@repo/hono-utils';
+
+export async function createUser(input: TCreateUserInput): Promise<TUser> {
+  const existing = await db.user.findUnique({ 
+    where: { email: input.email } 
+  });
+  
+  if (existing) {
+    throw new AppError('#ERR_USER_EXISTS', 409, {
+      message: 'A user with this email already exists'
+    });
+  }
+  
+  try {
+    return await db.user.create({ data: input });
+  } catch (error) {
+    throw new AppError('#ERR_USER_CREATE_FAILED', 500);
+  }
+}
+
+// src/app/routes/v1.users/index.ts
+router.openapi(CreateUserRoute, async (c) => {
+  try {
+    const input = c.req.valid('json');
+    const user = await createUser(input);
+    return c.json(user);
+  } catch (error) {
+    // Error handler middleware will catch and format the error
+    throw error;
+  }
+});
+```
+
+❌ Bad:
+```typescript
+// Wrong: Inconsistent error handling
+router.post('/users', async (c) => {
+  try {
+    const data = await c.req.json();
+    const user = await db.user.create({ data });
+    return c.json(user);
+  } catch (e) {
+    // Wrong: Exposing internal error details
+    return c.json({ error: e.message }, 500);
+  }
+});
+```
+
+## Input Validation
+- Always define request schemas using Zod
+- Always validate request body, query, and params
+- Always use typed schemas with OpenAPI definitions
+- Never trust client input without validation
+
+✅ Good:
+```typescript
+// src/app/routes/v1.users/schema.ts
+import { z } from 'zod';
+import { createRoute } from '@/lib/api';
+
+export const SCreateUserInput = z.object({
+  email: z.string().email(),
+  name: z.string().min(2),
+  role: z.enum(['USER', 'ADMIN'])
+});
+
+export const CreateUserRoute = createRoute({
+  method: 'post',
+  path: '/v1/users',
+  request: {
+    body: SCreateUserInput
+  },
+  responses: {
+    201: z.object({
+      user: SUser
+    })
+  }
+});
+```
+
+❌ Bad:
+```typescript
+// Wrong: No schema validation
+router.post('/users', async (c) => {
+  const data = await c.req.json();
+  // Wrong: Using unvalidated input directly
+  return await db.user.create({ data });
+});
+```
+
+## Authentication & Authorization
+- Always validate session in middleware
+- Always check permissions before operations
+- Always use role-based access control
+- Never expose sensitive operations without auth
+
+✅ Good:
+```typescript
+// src/app/routes/v1.users/index.ts
+import { getClientSession } from '@/lib';
+
+router.openapi(CreateUserRoute, async (c) => {
+    const session = await getClientSession(c);
+  if (!session.hasSession()) {
+    throw new AppError('#ERR_UNAUTHORIZED', 401);
+  }
+
+  const input = c.req.valid('json');
+  return c.json(await createUser(input));
+});
+```
+
+❌ Bad:
+```typescript
+// Wrong: No authentication or authorization
+router.post('/admin/users', async (c) => {
+  // Wrong: Sensitive operation without auth
+  const users = await db.user.findMany();
+  return c.json(users);
+});
+```
+
+## Related Rules
+- [style-guide.mdc](mdc:.cursor/rules/style-guide.mdc): Core coding standards

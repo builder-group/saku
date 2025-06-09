@@ -1,20 +1,43 @@
 {
-  "name": "saku",
-  "private": true,
-  "scripts": {
-    "build": "turbo run build",
-    "dev": "turbo run dev",
-    "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "check-types": "turbo run check-types"
-  },
-  "devDependencies": {
-    "prettier": "^3.5.3",
-    "turbo": "^2.5.4",
-    "typescript": "5.8.2"
-  },
-  "packageManager": "pnpm@9.0.0",
-  "engines": {
-    "node": ">=18"
-  }
+	"name": "saku",
+	"private": true,
+	"description": "Showcase Everything You Are and Create.",
+	"keywords": [],
+	"homepage": "https://saku.so/?utm_source=github",
+	"bugs": {
+		"url": "https://github.com/builder-group/saku/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/builder-group/saku.git"
+	},
+	"license": "AGPL-3.0-or-later",
+	"author": "@bennobuilder",
+	"scripts": {
+		"build": "turbo run build",
+		"clean": "turbo run clean && shx rm -rf .turbo && shx rm -rf .vercel && shx rm -rf node_modules",
+		"format": "prettier --write \"**/*.{ts,tsx,md,json,js,jsx}\"",
+		"install:clean": "pnpm clean && pnpm install && pnpm build",
+		"lint": "turbo run lint",
+		"start:dev": "turbo run start:dev",
+		"test": "turbo run test",
+		"update:latest": "turbo run update:latest"
+	},
+	"devDependencies": {
+		"@blgc/config": "^0.0.34",
+		"eslint": "^9.28.0",
+		"prettier": "^3.5.3",
+		"rollup": "^4.42.0",
+		"rollup-presets": "^0.0.21",
+		"shx": "^0.4.0",
+		"tsx": "^4.19.4",
+		"turbo": "^2.5.4",
+		"typescript": "^5.8.3",
+		"vite": "^6.3.5",
+		"vitest": "^3.2.2"
+	},
+	"packageManager": "pnpm@10.12.1",
+	"engines": {
+		"node": ">=20"
+	}
 }

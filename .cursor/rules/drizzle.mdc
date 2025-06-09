@@ -1,0 +1,263 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Drizzle ORM Guidelines
+
+Core patterns and best practices for using Drizzle ORM in our PostgreSQL-based applications. These guidelines ensure type-safe, maintainable, and performant database operations.
+
+## Core Principles
+- **Type Safety** - Always leverage TypeScript and Drizzle's type system
+- **SQL First** - Always prefer SQL-like query syntax over ORM abstractions
+- **Performance** - Always optimize queries for PostgreSQL's strengths
+- **Maintainability** - Always keep database logic clear and explicit
+
+## Schema Definition
+
+### Table Creation
+- Always use `pgTable` for PostgreSQL tables
+- Always define explicit column types
+- Always add proper indexes
+- Always use UUID for IDs unless there's a specific reason not to
+
+✅ Good:
+```typescript
+import { pgTable, text, timestamp, uniqueIndex } from 'drizzle-orm/pg-core';
+
+export const userTable = pgTable('user', {
+  id: text('id')
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+    
+  email: text('email').notNull(),
+  name: text('name').notNull(),
+  
+  updatedAt: timestamp('updated_at', { mode: 'date' })
+    .notNull()
+    .$defaultFn(() => new Date()),
+  createdAt: timestamp('created_at', { mode: 'date' })
+    .notNull()
+    .$defaultFn(() => new Date())
+}, (table) => ({
+  emailIdx: uniqueIndex('email_idx').on(table.email)
+}));
+```
+
+❌ Bad:
+```typescript
+// Wrong: Missing types, indexes, and timestamps
+const users = pgTable('users', {
+  id: text('id'),
+  email: text('email'),
+  name: text('name')
+});
+```
+
+## Query Patterns
+
+### Select Queries
+- Always use SQL-like syntax for better readability
+- Always specify exact columns needed
+- Always use proper joins when needed
+- Always handle pagination explicitly
+
+✅ Good:
+```typescript
+// Single table select with conditions
+const user = await db
+  .select({
+    id: userTable.id,
+    email: userTable.email
+  })
+  .from(userTable)
+  .where(eq(userTable.email, email))
+  .limit(1);
+
+// Join with related data
+const posts = await db
+  .select({
+    id: postTable.id,
+    title: postTable.title,
+    author: {
+      id: userTable.id,
+      name: userTable.name
+    }
+  })
+  .from(postTable)
+  .innerJoin(userTable, eq(postTable.authorId, userTable.id))
+  .where(eq(postTable.published, true))
+  .orderBy(desc(postTable.createdAt))
+  .limit(10)
+  .offset(page * 10);
+```
+
+❌ Bad:
+```typescript
+// Wrong: Using query builder abstractions
+const user = await db.query.userTable.findFirst({
+  where: { email }
+});
+
+// Wrong: Selecting all columns
+const posts = await db
+  .select()
+  .from(postTable)
+  .innerJoin(userTable, eq(postTable.authorId, userTable.id));
+```
+
+### Insert Operations
+- Always validate data before insertion
+- Always use batch inserts for multiple rows
+- Always return needed data after insert
+
+✅ Good:
+```typescript
+// Single insert with return value
+const [user] = await db
+  .insert(userTable)
+  .values({
+    email,
+    name,
+    role: 'user' as const
+  })
+  .returning({
+    id: userTable.id,
+    email: userTable.email
+  });
+
+// Batch insert
+const users = await db
+  .insert(userTable)
+  .values(validatedUsers)
+  .returning({
+    id: userTable.id
+  });
+```
+
+❌ Bad:
+```typescript
+// Wrong: Not returning inserted data
+await db.insert(userTable).values(userData);
+
+// Wrong: Multiple single inserts instead of batch
+for (const user of users) {
+  await db.insert(userTable).values(user);
+}
+```
+
+### Update Operations
+- Always use where clauses for updates
+- Always validate update data
+- Always return updated data when needed
+
+✅ Good:
+```typescript
+const [updated] = await db
+  .update(userTable)
+  .set({
+    name: newName,
+    updatedAt: new Date()
+  })
+  .where(eq(userTable.id, userId))
+  .returning({
+    id: userTable.id,
+    name: userTable.name
+  });
+```
+
+❌ Bad:
+```typescript
+// Wrong: Missing where clause
+await db.update(userTable).set(data);
+
+// Wrong: Not returning updated data when needed
+await db
+  .update(userTable)
+  .set(data)
+  .where(eq(userTable.id, id));
+```
+
+### Delete Operations
+- Always use where clauses for deletes
+- Always consider soft deletes for important data
+- Always handle cascading deletes explicitly
+
+✅ Good:
+```typescript
+// Hard delete with where clause
+const [deleted] = await db
+  .delete(userTable)
+  .where(eq(userTable.id, userId))
+  .returning({
+    id: userTable.id
+  });
+
+// Soft delete
+const [deactivated] = await db
+  .update(userTable)
+  .set({
+    deletedAt: new Date(),
+    updatedAt: new Date()
+  })
+  .where(eq(userTable.id, userId))
+  .returning({
+    id: userTable.id
+  });
+```
+
+❌ Bad:
+```typescript
+// Wrong: Delete without where clause
+await db.delete(userTable);
+
+// Wrong: Not handling cascading deletes
+await db
+  .delete(userTable)
+  .where(eq(userTable.id, userId));
+```
+
+### Error Handling
+- Always use transactions for multi-table operations
+- Always handle unique constraint violations
+- Always validate data before database operations
+
+✅ Good:
+```typescript
+try {
+  const [user] = await db.transaction(async (tx) => {
+    const [user] = await tx
+      .insert(userTable)
+      .values(userData)
+      .returning();
+      
+    await tx
+      .insert(profileTable)
+      .values({
+        userId: user.id,
+        ...profileData
+      });
+      
+    return [user];
+  });
+} catch (error) {
+  if (error.code === '23505') { // Unique violation
+    throw new AppError('#ERR_DUPLICATE', 409);
+  }
+  throw error;
+}
+```
+
+❌ Bad:
+```typescript
+// Wrong: No transaction for multi-table operation
+const user = await db.insert(userTable).values(userData);
+await db.insert(profileTable).values({ userId: user.id });
+
+// Wrong: Not handling database errors
+try {
+  await db.insert(userTable).values(userData);
+} catch (e) {
+  throw e;
+}
+```

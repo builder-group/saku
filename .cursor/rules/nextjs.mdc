@@ -1,0 +1,475 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Next.js Development Guidelines
+
+Core development guidelines for Next.js applications, focusing on App Router, Server Components, and type safety. These patterns ensure maintainable, performant applications while maximizing the benefits of React Server Components and TypeScript.
+
+## Core Principles
+- **Server-First** - Always default to Server Components unless client interactivity is required
+- **Type Safety** - Always use TypeScript with strict typing everywhere
+- **Minimal Client JS** - Always keep client-side code focused on necessary interactivity
+- **Clean Architecture** - Always maintain clear separation between server and client concerns
+- **Performance First** - Always leverage React Server Components for optimal loading
+
+## Project Structure
+- Always organize code by feature and responsibility
+- Always separate server and client code clearly
+- Always maintain consistent directory naming
+- Always follow clear import patterns
+
+✅ Good:
+```typescript
+// Clear separation of server and client code
+src/
+  app/                    # Next.js App Router (routes)
+    layout.tsx           # Root layout (server)
+    page.tsx            # Home page (server)
+    error.tsx           # Error boundary (client)
+  features/             # Feature-based organization
+    users/
+      components/       # Feature-specific components
+      lib/             # Feature-specific logic
+  components/           # Shared components
+    ui/                # Pure UI components
+    forms/            # Form components
+  lib/                 # Shared logic
+```
+
+❌ Bad:
+```typescript
+// Wrong: Mixed concerns and unclear boundaries
+src/
+  pages/               # Wrong: Old pages directory mixed with app
+  components/          # Wrong: No separation of client/server components
+  utils/              # Wrong: No clear responsibility separation
+  helpers/            # Wrong: Generic bucket of mixed code
+  api/                # Wrong: API routes mixed with pages
+```
+
+## Server Components
+
+### Component Structure
+- Always use TypeScript `React.FC` types
+- Always handle errors explicitly
+- Always keep data fetching in Server Components
+- Always process data on the server
+
+✅ Good:
+```typescript
+// Clean Server Component with proper data fetching
+import { db } from '@/environment';
+import { processUserData } from '@/lib';
+import { UserList } from '@/components';
+import type { TPageProps } from '@/app/types';
+
+const UsersPage: React.FC<TPageProps> = async ({ searchParams }) => {
+  try {
+    // Server-side data fetching
+    const users = await db.users.findMany({
+      where: { status: 'active' }
+    });
+
+    // Process data on server
+    const processedUsers = users.map(processUserData);
+
+    return (
+      <div className="p-4">
+        <UserList users={processedUsers} />
+      </div>
+    );
+  } catch (error) {
+    throw new Error('Failed to load users');
+  }
+};
+
+export default UsersPage;
+```
+
+❌ Bad:
+```typescript
+// Wrong: Server Component with client-side patterns
+const BadUsersPage = () => {  // Wrong: Missing type definition
+  // Wrong: React.useState in Server Component
+  const [users, setUsers] = React.useState([]);
+  
+  // Wrong: React.useEffect in Server Component
+  React.useEffect(() => {
+    fetch('/api/users').then(res => res.json())
+      .then(setUsers);
+  }, []); 
+  
+  // Wrong: Client-side data fetching
+  return <div>{users.map(user => user.name)}</div>;
+};
+```
+
+## Client Components
+
+### Component Structure
+- Always add 'use client' directive at the top
+- Always implement proper error boundaries
+- Always handle loading states
+- Always type props and state
+- Always use React.* methods (React.useState, React.useCallback, etc.)
+- Always define TProps interface after the component
+
+✅ Good:
+```typescript
+'use client';
+
+import React from 'react';
+import { Button } from '@/components';
+import type { TUser } from './types';
+
+export const UserProfile: React.FC<TProps> = ({ user, onUpdate }) => {
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [error, setError] = React.useState<string>();
+
+  const handleUpdate = React.useCallback(async () => {
+    try {
+      setIsLoading(true);
+      setError(undefined);
+      await onUpdate(user);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [user, onUpdate]);
+
+  return (
+    <div className="p-4">
+      <h1>{user.name}</h1>
+      <Button 
+        onClick={handleUpdate}
+        loading={isLoading}
+      >
+        Update
+      </Button>
+      {error && (
+        <p className="text-red-500">{error}</p>
+      )}
+    </div>
+  );
+};
+
+interface TProps {
+  user: TUser;
+  onUpdate: (user: TUser) => Promise<void>;
+}
+```
+
+❌ Bad:
+```typescript
+// Wrong: Poorly structured Client Component
+'use client';
+
+interface TProps {  // Wrong: TProps defined before component
+  user: TUser;
+}
+
+const BadProfile = (props) => {  // Wrong: Missing type definition
+  // Wrong: Not using React.useState
+  const [loading, setLoading] = useState();
+  
+  // Wrong: Not using React.useCallback
+  const update = () => {
+    fetch('/api/user', { method: 'POST' });  // Wrong: Using fetch instead of feature-fetch
+  };
+  
+  // Wrong: No loading or error states in UI
+  return (
+    <div>
+      <button onClick={update}>Update</button>
+    </div>
+  );
+};
+```
+
+## State Management
+
+### Feature State
+- Always use feature-state for global state management
+- Always use React.useState for local component state
+- Always keep state as close as possible to where it's used
+- Always use proper typing for state
+
+✅ Good:
+```typescript
+// lib/editor.ts
+import { createState } from 'feature-state';
+import type { TEditorState } from './types';
+
+export const $editor = createState<TEditorState>({
+  mode: 'edit',
+  content: ''
+});
+
+// components/Editor.tsx
+'use client';
+
+import React from 'react';
+import { useFeatureState } from 'feature-state-react';
+import { $editor } from '@/store/editor';
+
+export const Editor: React.FC = () => {
+  const editorState = useFeatureState($editor);
+  const [localState, setLocalState] = React.useState('');
+  
+  const handleModeToggle = React.useCallback(() => {
+    $editor.set({
+      ...$editor.get(),
+      mode: editorState.mode === 'edit' ? 'preview' : 'edit'
+    });
+  }, [editorState.mode]);
+
+  return (
+    <div>
+      <button onClick={handleModeToggle}>
+        Mode: {editorState.mode}
+      </button>
+    </div>
+  );
+};
+```
+
+❌ Bad:
+```typescript
+// Wrong: Poor state management
+'use client';
+
+const BadEditor = () => {
+  // Wrong: Using global state for local concerns
+  const [mode, setMode] = useState('edit');
+  
+  // Wrong: Not using React.useCallback
+  const toggleMode = () => {
+    setMode(mode === 'edit' ? 'preview' : 'edit');
+  };
+  
+  return <button onClick={toggleMode}>Toggle</button>;
+};
+```
+
+## Data Fetching
+
+### API Client Setup
+- Always use feature-fetch for API requests
+- Always handle errors explicitly with Result types
+- Always type request and response data
+- Always use proper error handling
+
+✅ Good:
+```typescript
+// lib/api/client.ts
+import { createApiFetchClient, withRetry } from 'feature-fetch';
+import type { paths } from './openapi';
+
+export const apiClient = withRetry(
+  createOpenApiFetchClient<paths>({
+    prefixUrl: process.env.NEXT_PUBLIC_API_URL
+  }),
+  { maxRetries: 3 }
+);
+
+// features/users/lib/api.ts
+import { apiClient } from '@/environment';
+import type { TUser } from './types';
+
+export async function getUser(id: string) {
+  const response = await apiClient.get('/users/{id}', {
+    pathParams: { id }
+  });
+
+  if (response.isErr()) {
+    if (response.error instanceof NetworkError) {
+      throw new Error('Network error occurred');
+    }
+    if (isStatusCode(response.error, 404)) {
+      return null;
+    }
+    throw response.error;
+  }
+
+  return response.value.data;
+}
+
+// components/UserProfile.tsx
+'use client';
+
+import React from 'react';
+import { apiClient } from '@/lib/api/client';
+
+export const UserProfile: React.FC<TProps> = ({ userId }) => {
+  const [user, setUser] = React.useState<TUser>();
+  const [error, setError] = React.useState<string>();
+
+  const fetchUser = React.useCallback(async () => {
+    const response = await apiClient.get('/users/{id}', {
+      pathParams: { id: userId }
+    });
+
+    if (response.isOk()) {
+      setUser(response.value.data);
+    } else {
+      setError(response.error.message);
+    }
+  }, [userId]);
+
+  return (
+    <div>
+      {user && <h1>{user.name}</h1>}
+      {error && <p className="text-red-500">{error}</p>}
+    </div>
+  );
+};
+
+interface TProps {
+  userId: string;
+}
+```
+
+❌ Bad:
+```typescript
+// Wrong: Poor API client implementation
+const badApiClient = {
+  getUser: async (id: string) => {
+    // Wrong: Using fetch instead of feature-fetch
+    const res = await fetch('/api/users/' + id);
+    // Wrong: No proper error handling
+    const data = await res.json();
+    return data;
+  }
+};
+
+// Wrong: Poor data fetching implementation
+const BadComponent = () => {
+  // Wrong: Not using React.useState
+  const [data, setData] = useState();
+  
+  // Wrong: Not using React.useCallback
+  const fetchData = () => {
+    // Wrong: Using fetch directly
+    fetch('/api/data')
+      .then(res => res.json())
+      .then(setData);
+  };
+  
+  // Wrong: No error handling
+  return <div>{data}</div>;
+};
+```
+
+## Form Handling
+
+### Form Implementation
+- Always use feature-form for form management
+- Always handle loading and error states
+- Always validate on the server
+- Always provide user feedback
+
+✅ Good:
+```typescript
+'use client';
+
+import React from 'react';
+import { createForm } from 'feature-form';
+import { useForm } from 'feature-react/form';
+import { Input, Button } from '@/components';
+import { SUserForm } from './schema';
+import type { TUserForm } from './types';
+
+const $userForm = createForm<TUserForm>({
+  fields: {
+    name: {
+      validator: zValidator(z.string().min(2)),
+      defaultValue: ''
+    },
+    email: {
+      validator: zValidator(z.string().email()),
+      defaultValue: ''
+    }
+  },
+  onValidSubmit: async (data) => {
+    await submitUser(data);
+  }
+});
+
+interface TProps {
+  defaultValues?: Partial<TUserForm>;
+}
+
+export const UserForm: React.FC<TProps> = ({ defaultValues }) => {
+  const [error, setError] = React.useState<string>();
+  const { handleSubmit, register, status } = useForm($userForm);
+
+  const onSubmit = React.useCallback(async () => {
+    try {
+      await handleSubmit();
+      setError(undefined);
+    } catch (err) {
+      setError(err.message);
+    }
+  }, [handleSubmit]);
+
+  return (
+    <form onSubmit={onSubmit}>
+      <Input {...register('name')} />
+      {status('name').error && (
+        <p className="text-red-500">{status('name').error}</p>
+      )}
+      <Input {...register('email')} type="email" />
+      {status('email').error && (
+        <p className="text-red-500">{status('email').error}</p>
+      )}
+      <Button loading={status('form').isSubmitting}>
+        Submit
+      </Button>
+      {error && (
+        <p className="text-red-500">{error}</p>
+      )}
+    </form>
+  );
+};
+```
+
+❌ Bad:
+```typescript
+'use client';
+
+// Wrong: Not using feature-form
+const BadForm = () => {
+  // Wrong: Manual form state management
+  const [formData, setFormData] = React.useState({});
+  
+  // Wrong: Untyped event handler
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+  
+  // Wrong: No validation or error handling
+  const onSubmit = (e) => {
+    e.preventDefault();
+    fetch('/api/submit', {
+      method: 'POST',
+      body: JSON.stringify(formData)
+    });
+  };
+  
+  return (
+    <form onSubmit={onSubmit}>
+      <input onChange={handleChange} />
+      <button>Submit</button>
+    </form>
+  );
+};
+```
+
+## Related Rules
+- [style-guide.mdc](mdc:.cursor/rules/style-guide.mdc): Core coding standards
