@@ -1,4 +1,3 @@
-import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
 import { useFetcher } from '@remix-run/react';
 import { TitleBar, useAppBridge } from '@shopify/app-bridge-react';
 import {
@@ -10,101 +9,39 @@ import {
 	Layout,
 	Link,
 	List,
-	Page,
+	Page as PolarisPage,
 	Text
 } from '@shopify/polaris';
-import { useEffect } from 'react';
+import React from 'react';
 import { authenticate } from '../shopify.server';
+import { TActionFunction, TLoaderFunction } from '../types';
 
-export const loader = async ({ request }: LoaderFunctionArgs) => {
-	await authenticate.admin(request);
-
-	return null;
-};
-
-export const action = async ({ request }: ActionFunctionArgs) => {
-	const { admin } = await authenticate.admin(request);
-	const color = ['Red', 'Orange', 'Yellow', 'Green'][Math.floor(Math.random() * 4)];
-	const response = await admin.graphql(
-		`#graphql
-      mutation populateProduct($product: ProductCreateInput!) {
-        productCreate(product: $product) {
-          product {
-            id
-            title
-            handle
-            status
-            variants(first: 10) {
-              edges {
-                node {
-                  id
-                  price
-                  barcode
-                  createdAt
-                }
-              }
-            }
-          }
-        }
-      }`,
-		{
-			variables: {
-				product: {
-					title: `${color} Snowboard`
-				}
-			}
-		}
-	);
-	const responseJson = await response.json();
-
-	const product = responseJson.data!.productCreate!.product!;
-	const variantId = product.variants.edges[0]!.node!.id!;
-
-	const variantResponse = await admin.graphql(
-		`#graphql
-    mutation shopifyRemixTemplateUpdateVariant($productId: ID!, $variants: [ProductVariantsBulkInput!]!) {
-      productVariantsBulkUpdate(productId: $productId, variants: $variants) {
-        productVariants {
-          id
-          price
-          barcode
-          createdAt
-        }
-      }
-    }`,
-		{
-			variables: {
-				productId: product.id,
-				variants: [{ id: variantId, price: '100.00' }]
-			}
-		}
-	);
-
-	const variantResponseJson = await variantResponse.json();
-
-	return {
-		product: responseJson!.data!.productCreate!.product,
-		variant: variantResponseJson!.data!.productVariantsBulkUpdate!.productVariants
-	};
-};
-
-export default function Index() {
+const Page: React.FC = () => {
 	const fetcher = useFetcher<typeof action>();
 
 	const shopify = useAppBridge();
-	const isLoading =
-		['loading', 'submitting'].includes(fetcher.state) && fetcher.formMethod === 'POST';
-	const productId = fetcher.data?.product?.id.replace('gid://shopify/Product/', '');
+	const isLoading = React.useMemo(
+		() => ['loading', 'submitting'].includes(fetcher.state) && fetcher.formMethod === 'POST',
+		[fetcher.state, fetcher.formMethod]
+	);
+	const productId = React.useMemo(
+		() => fetcher.data?.product?.id.replace('gid://shopify/Product/', ''),
+		[fetcher.data?.product?.id]
+	);
 
-	useEffect(() => {
-		if (productId) {
+	const generateProduct = React.useCallback(
+		() => fetcher.submit({}, { method: 'POST' }),
+		[fetcher]
+	);
+
+	React.useEffect(() => {
+		if (productId != null) {
 			shopify.toast.show('Product created');
 		}
 	}, [productId, shopify]);
-	const generateProduct = () => fetcher.submit({}, { method: 'POST' });
 
 	return (
-		<Page>
+		<PolarisPage>
 			<TitleBar title="Remix app template">
 				<button variant="primary" onClick={generateProduct}>
 					Generate a product
@@ -305,6 +242,80 @@ export default function Index() {
 					</Layout.Section>
 				</Layout>
 			</BlockStack>
-		</Page>
+		</PolarisPage>
 	);
-}
+};
+
+export default Page;
+
+export const loader: TLoaderFunction = async ({ request }) => {
+	await authenticate.admin(request);
+
+	return null;
+};
+
+export const action: TActionFunction<{ product: any; variant: any }> = async ({ request }) => {
+	const { admin } = await authenticate.admin(request);
+	const color = ['Red', 'Orange', 'Yellow', 'Green'][Math.floor(Math.random() * 4)];
+	const response = await admin.graphql(
+		`#graphql
+      mutation populateProduct($product: ProductCreateInput!) {
+        productCreate(product: $product) {
+          product {
+            id
+            title
+            handle
+            status
+            variants(first: 10) {
+              edges {
+                node {
+                  id
+                  price
+                  barcode
+                  createdAt
+                }
+              }
+            }
+          }
+        }
+      }`,
+		{
+			variables: {
+				product: {
+					title: `${color} Snowboard`
+				}
+			}
+		}
+	);
+	const responseJson = await response.json();
+
+	const product = responseJson.data!.productCreate!.product!;
+	const variantId = product.variants.edges[0]!.node!.id!;
+
+	const variantResponse = await admin.graphql(
+		`#graphql
+    mutation shopifyRemixTemplateUpdateVariant($productId: ID!, $variants: [ProductVariantsBulkInput!]!) {
+      productVariantsBulkUpdate(productId: $productId, variants: $variants) {
+        productVariants {
+          id
+          price
+          barcode
+          createdAt
+        }
+      }
+    }`,
+		{
+			variables: {
+				productId: product.id,
+				variants: [{ id: variantId, price: '100.00' }]
+			}
+		}
+	);
+
+	const variantResponseJson = await variantResponse.json();
+
+	return {
+		product: responseJson!.data!.productCreate!.product,
+		variant: variantResponseJson!.data!.productVariantsBulkUpdate!.productVariants
+	};
+};

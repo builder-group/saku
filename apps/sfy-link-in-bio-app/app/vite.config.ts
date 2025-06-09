@@ -48,6 +48,11 @@ export default defineConfig({
 			allow: ['src', 'node_modules']
 		}
 	},
+	ssr: {
+		// Fix: validation-adapters sub-exports (/valibot, /zod) cause SSR module resolution issues
+		// Might be not necessary if we update validation-adapters package.json exports to use nested conditional exports correctly?
+		noExternal: ['validation-adapters']
+	},
 	plugins: [
 		remix({
 			ignoredRouteFiles: ['**/.*'],

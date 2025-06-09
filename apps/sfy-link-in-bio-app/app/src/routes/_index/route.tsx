@@ -1,19 +1,11 @@
-import { redirect, type LoaderFunctionArgs } from '@remix-run/node';
+import { redirect } from '@remix-run/node';
 import { Form, useLoaderData } from '@remix-run/react';
+import React from 'react';
 import { login } from '../../shopify.server';
+import { TLoaderFunction } from '../../types';
 import styles from './styles.module.css';
 
-export const loader = async ({ request }: LoaderFunctionArgs) => {
-	const url = new URL(request.url);
-
-	if (url.searchParams.get('shop')) {
-		throw redirect(`/app?${url.searchParams.toString()}`);
-	}
-
-	return { showForm: Boolean(login) };
-};
-
-export default function App() {
+const Page: React.FC = () => {
 	const { showForm } = useLoaderData<typeof loader>();
 
 	return (
@@ -52,4 +44,16 @@ export default function App() {
 			</div>
 		</div>
 	);
-}
+};
+
+export default Page;
+
+export const loader: TLoaderFunction<{ showForm: boolean }> = async ({ request }) => {
+	const url = new URL(request.url);
+
+	if (url.searchParams.get('shop') != null) {
+		throw redirect(`/app?${url.searchParams.toString()}`);
+	}
+
+	return { showForm: Boolean(login) };
+};

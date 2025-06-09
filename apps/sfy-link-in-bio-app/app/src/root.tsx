@@ -1,6 +1,7 @@
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from '@remix-run/react';
+import React from 'react';
 
-export default function App() {
+const Root: React.FC = () => {
 	return (
 		<html>
 			<head>
@@ -18,4 +19,6 @@ export default function App() {
 			</body>
 		</html>
 	);
-}
+};
+
+export default Root;

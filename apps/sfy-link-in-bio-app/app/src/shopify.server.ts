@@ -1,15 +1,16 @@
 import '@shopify/shopify-app-remix/adapters/node';
 import { ApiVersion, AppDistribution, shopifyApp } from '@shopify/shopify-app-remix/server';
 import { MemorySessionStorage } from '@shopify/shopify-app-session-storage-memory';
+import { shopifyConfig } from './environment';
 
 export const shopifySessionStorage = new MemorySessionStorage();
 
 const shopify = shopifyApp({
-	apiKey: process.env.SHOPIFY_API_KEY,
-	apiSecretKey: process.env.SHOPIFY_API_SECRET || '',
+	apiKey: shopifyConfig.apiKey,
+	apiSecretKey: shopifyConfig.apiSecret,
 	apiVersion: ApiVersion.January25,
-	scopes: process.env.SCOPES?.split(','),
-	appUrl: process.env.SHOPIFY_APP_URL || '',
+	scopes: shopifyConfig.scopes,
+	appUrl: shopifyConfig.appUrl,
 	authPathPrefix: '/auth',
 	sessionStorage: shopifySessionStorage,
 	distribution: AppDistribution.AppStore,
@@ -17,7 +18,9 @@ const shopify = shopifyApp({
 		unstable_newEmbeddedAuthStrategy: true,
 		removeRest: true
 	},
-	...(process.env.SHOP_CUSTOM_DOMAIN ? { customShopDomains: [process.env.SHOP_CUSTOM_DOMAIN] } : {})
+	...(shopifyConfig.shopCustomDomain != null
+		? { customShopDomains: [shopifyConfig.shopCustomDomain] }
+		: {})
 });
 
 export default shopify;

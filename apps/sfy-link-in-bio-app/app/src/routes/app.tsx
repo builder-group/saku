@@ -1,20 +1,15 @@
-import type { HeadersFunction, LoaderFunctionArgs } from '@remix-run/node';
+import { type HeadersFunction } from '@remix-run/node';
 import { Link, Outlet, useLoaderData, useRouteError } from '@remix-run/react';
 import { NavMenu } from '@shopify/app-bridge-react';
 import polarisStyles from '@shopify/polaris/build/esm/styles.css?url';
 import { AppProvider } from '@shopify/shopify-app-remix/react';
 import { boundary } from '@shopify/shopify-app-remix/server';
+import React from 'react';
+import { shopifyConfig } from '../environment';
 import { authenticate } from '../shopify.server';
+import { TLoaderFunction } from '../types';
 
-export const links = () => [{ rel: 'stylesheet', href: polarisStyles }];
-
-export const loader = async ({ request }: LoaderFunctionArgs) => {
-	await authenticate.admin(request);
-
-	return { apiKey: process.env.SHOPIFY_API_KEY || '' };
-};
-
-export default function App() {
+const Page: React.FC = () => {
 	const { apiKey } = useLoaderData<typeof loader>();
 
 	return (
@@ -28,13 +23,23 @@ export default function App() {
 			<Outlet />
 		</AppProvider>
 	);
-}
+};
+
+export default Page;
+
+export const links = () => [{ rel: 'stylesheet', href: polarisStyles }];
+
+export const headers: HeadersFunction = (headersArgs) => {
+	return boundary.headers(headersArgs);
+};
+
+export const loader: TLoaderFunction<{ apiKey: string }> = async ({ request }) => {
+	await authenticate.admin(request);
+
+	return { apiKey: shopifyConfig.apiKey };
+};
 
 // Shopify needs Remix to catch some thrown responses, so that their headers are included in the response.
 export function ErrorBoundary() {
 	return boundary.error(useRouteError());
 }
-
-export const headers: HeadersFunction = (headersArgs) => {
-	return boundary.headers(headersArgs);
-};
