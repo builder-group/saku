@@ -1,13 +1,20 @@
 # Shopify `Saku - Link In Bio` App
 
-## Differences to [`shopify-app-template-remix`](https://github.com/Shopify/shopify-app-template-remix) template
+## 📐 Architecture
 
-### Monorepo Structure
+### Differences to [`shopify-app-template-remix`](https://github.com/Shopify/shopify-app-template-remix) template
 
-Due to the limitations of nesting `pnpm` workspaces, we've modified the project structure to work within our monorepo. The Shopify App is now nested under `apps/sfy-link-in-bio-app/app/` and uses the monorepo's `pnpm` workspace configuration.
+#### 1. **Nested App Structure**
 
-#### Current Structure (Monorepo)
+Due to the limitations of nesting `pnpm` workspaces, we've modified the project structure to work within our monorepo. The Shopify App is now nested under `apps/sfy-link-in-bio-app/app/` to fit within the monorepo structure defined in `pnpm-workspace.yaml`:
 
+```yaml
+packages:
+  - 'apps/sfy-*-app/*'
+  # ..
+```
+
+**Monorepo Structure:**
 ```
 apps/sfy-link-in-bio-app/
 ├── app/
@@ -42,8 +49,7 @@ apps/sfy-link-in-bio-app/
 └── README.md
 ```
 
-#### Original Template Structure
-
+**Template Structure:**
 ```
 ├── app/                        # Remix app directory (root level)
 │   ├── db.server.ts
@@ -83,18 +89,6 @@ apps/sfy-link-in-bio-app/
 ├── shopify.web.toml
 ├── tsconfig.json
 └── vite.config.ts
-```
-
-### Key Structural Changes
-
-#### 1. **Nested App Structure**
-
-The entire Shopify app is now nested under `apps/sfy-link-in-bio-app/app/` to fit within the monorepo structure defined in `pnpm-workspace.yaml`:
-
-```yaml
-packages:
-  - 'apps/sfy-*-app/*'
-  # ..
 ```
 
 #### 2. **Remix App Directory Change**
@@ -148,8 +142,24 @@ Shopify Extensions will reside at the monorepo level (alongside the `apps/` dire
 - `package-lock.json` (using `pnpm` instead)
 - `extensions/` directory
 
-### Configuration Adjustments
+#### 6. **Configuration Adjustments**
 
 - **ESLint**: Custom configuration tailored to our project needs and coding standards
 - **TypeScript Config**: Adjusted `tsconfig.json` to meet our project requirements
 - **Package Management**: Modified `package.json` for specific dependencies and scripts, using `pnpm` workspaces
+
+## 📚 Good to Know
+
+### How to Create a Sales Channel App
+
+1. Create the app via CLI: `shopify app dev --reset`
+2. Follow the CLI prompts to generate the preview URL
+3. **Don't click the preview URL yet** - go to Partner Dashboard first
+4. Update app distribution to **Public**
+5. Go to **API Access** (left sidebar) → **Sales channel** section
+6. Click **Turn app into sales channel** and confirm
+
+⚠️ **Notes**: 
+- Creating the app manually first and then connecting it via the CLI might result in 404 errors when trying to install the app - the [Shopify docs](https://shopify.dev/docs/apps/build/sales-channels/start-building) don't explain the missing config
+- The docs incorrectly state sales channel settings are under "Configuration" - they're actually under "API Access"
+- This process cannot be reversed
