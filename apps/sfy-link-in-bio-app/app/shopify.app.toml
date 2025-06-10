@@ -3,7 +3,7 @@
 client_id = "4c9dc129e68b889d9a351e14d8e36a02"
 name = "saku-link-in-bio-dev"
 handle = "saku-link-in-bio-dev"
-application_url = "https://grade-spell-mysql-alerts.trycloudflare.com"
+application_url = "https://sight-chem-balloon-importance.trycloudflare.com"
 embedded = true
 
 [build]
@@ -27,13 +27,13 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://grade-spell-mysql-alerts.trycloudflare.com/auth/callback",
-  "https://grade-spell-mysql-alerts.trycloudflare.com/auth/shopify/callback",
-  "https://grade-spell-mysql-alerts.trycloudflare.com/api/auth/callback"
+  "https://sight-chem-balloon-importance.trycloudflare.com/auth/callback",
+  "https://sight-chem-balloon-importance.trycloudflare.com/auth/shopify/callback",
+  "https://sight-chem-balloon-importance.trycloudflare.com/api/auth/callback"
 ]
 
 [app_proxy]
-url = "https://grade-spell-mysql-alerts.trycloudflare.com/a/bio"
+url = "https://sight-chem-balloon-importance.trycloudflare.com/a/bio"
 subpath = "bio"
 prefix = "a"
 
