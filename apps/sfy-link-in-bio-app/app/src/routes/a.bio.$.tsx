@@ -2,12 +2,13 @@ import { type LoaderFunctionArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import { AppProxyProvider } from '@shopify/shopify-app-remix/react';
 import React from 'react';
+import { shopifyConfig } from '../environment';
 import { authenticate } from '../shopify.server';
 
 export async function loader({ request }: LoaderFunctionArgs) {
 	await authenticate.public.appProxy(request);
 
-	return { appUrl: process.env['SHOPIFY_APP_URL']! };
+	return { appUrl: shopifyConfig.appUrl };
 }
 
 const Page: React.FC = () => {
@@ -25,6 +26,9 @@ const Page: React.FC = () => {
 			 * - Remix's `links` export is processed before AppProxyProvider runs
 			 * - So the `<base href>` set by AppProxyProvider doesn't affect links
 			 * - Result: `links` tries to load CSS from shop.myshopify.com/src/styles.css (404)
+			 *
+			 * TODO: Figure out how to stop loading `styles.css` from `shop.myshopify.com/src/styles.css`.
+			 * TODO: Figure out better solution for this.
 			 */}
 			<link rel="stylesheet" href={`${appUrl}/src/styles.css`} />
 
