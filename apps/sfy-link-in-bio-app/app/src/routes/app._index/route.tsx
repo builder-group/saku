@@ -14,16 +14,16 @@ import {
 } from '@shopify/polaris';
 import { ExternalIcon } from '@shopify/polaris-icons';
 import React from 'react';
-import { FeedbackCard, GetInTouchCard, SitePreview } from '../components';
-import { authenticate } from '../shopify.server';
-import { TLoaderFunction } from '../types';
+import { FeedbackCard, GetInTouchCard, SitePreview } from '../../components';
+import { appConfig, shopify } from '../../environment/.server';
+import { TLoaderFunction } from '../../types';
 
 const Page: React.FC = () => {
-	const { shop } = useLoaderData<typeof loader>();
+	const { shop, appEnv } = useLoaderData<typeof loader>();
 	const shopify = useAppBridge();
 
 	const bioUrl = React.useMemo(
-		() => (shop.domain != null ? `https://${shop.domain}/a/bio` : null),
+		() => (shop.domain != null ? `https://${shop.domain}/a/saku/bio` : null),
 		[shop.domain]
 	);
 
@@ -46,7 +46,7 @@ const Page: React.FC = () => {
 				<button variant="primary" onClick={handleEditBio}>
 					Customize bio
 				</button>
-				{bioUrl != null ? (
+				{bioUrl != null && (
 					<button
 						onClick={() => {
 							// TitleBar buttons in embedded apps can't use <a> tags - browser blocks them
@@ -56,7 +56,7 @@ const Page: React.FC = () => {
 					>
 						View your bio
 					</button>
-				) : null}
+				)}
 			</TitleBar>
 
 			<Layout>
@@ -144,8 +144,12 @@ const Page: React.FC = () => {
 							</BlockStack>
 						</Card>
 
-						<FeedbackCard />
-						<GetInTouchCard />
+						<FeedbackCard email={appEnv.support.email} reviewUrl={appEnv.distribution.shopify} />
+						<GetInTouchCard
+							version={appEnv.version}
+							discordUrl={appEnv.social.discord}
+							email={appEnv.support.email}
+						/>
 					</BlockStack>
 				</Layout.Section>
 			</Layout>
@@ -156,11 +160,23 @@ const Page: React.FC = () => {
 export default Page;
 
 export const loader: TLoaderFunction<TLoaderData> = async ({ request }) => {
-	const { session } = await authenticate.admin(request);
+	const { session } = await shopify.authenticate.admin(request);
 
 	return {
 		shop: {
 			domain: session.shop
+		},
+		appEnv: {
+			version: appConfig.packageVersion,
+			social: {
+				discord: appConfig.social.discord
+			},
+			support: {
+				email: appConfig.support.email
+			},
+			distribution: {
+				shopify: appConfig.distribution.shopify
+			}
 		}
 	};
 };
@@ -168,5 +184,17 @@ export const loader: TLoaderFunction<TLoaderData> = async ({ request }) => {
 interface TLoaderData {
 	shop: {
 		domain: string;
+	};
+	appEnv: {
+		version: string;
+		social: {
+			discord: string;
+		};
+		support: {
+			email: string;
+		};
+		distribution: {
+			shopify: string;
+		};
 	};
 }

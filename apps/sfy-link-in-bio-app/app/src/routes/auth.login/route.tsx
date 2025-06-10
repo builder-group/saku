@@ -11,7 +11,7 @@ import {
 import polarisStyles from '@shopify/polaris/build/esm/styles.css?url';
 import polarisTranslations from '@shopify/polaris/locales/en.json';
 import React from 'react';
-import { login } from '../../shopify.server';
+import { shopify } from '../../environment/.server';
 import { TActionFunction, TLoaderFunction } from '../../types';
 import { loginErrorMessage, TLoginErrorMessage } from './error.server';
 
@@ -57,13 +57,13 @@ export const loader: TLoaderFunction<{
 	errors: TLoginErrorMessage;
 	polarisTranslations: typeof polarisTranslations;
 }> = async ({ request }) => {
-	const loginResult = await login(request);
+	const loginResult = await shopify.login(request);
 
 	return { errors: loginErrorMessage(loginResult), polarisTranslations };
 };
 
 export const action: TActionFunction<{ errors: TLoginErrorMessage }> = async ({ request }) => {
-	const loginResult = await login(request);
+	const loginResult = await shopify.login(request);
 
 	return { errors: loginErrorMessage(loginResult), polarisTranslations };
 };

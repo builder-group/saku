@@ -14,5 +14,18 @@ export const appConfig = {
 		value: process.env['npm_package_version'],
 		validator: vValidator(v.string()),
 		defaultValue: '0.0.0'
-	})
+	}),
+	social: {
+		discord: 'https://discord.com/invite/w4xE3bSjhQ'
+	},
+	distribution: {
+		shopify: 'https://apps.shopify.com/saku-link-in-bio'
+	},
+	support: {
+		email: 'support@saku.so'
+	},
+	legal: {
+		privacy: `https://saku.so/legal/privacy`,
+		terms: `https://saku.so/legal/terms`
+	}
 };

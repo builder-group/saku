@@ -1,12 +1,14 @@
 import { BlockStack, Button, Card, InlineStack, Text } from '@shopify/polaris';
 import React from 'react';
 
-export const FeedbackCard: React.FC = () => {
+export const FeedbackCard: React.FC<TFeedbackCardProps> = (props) => {
+	const { email, reviewUrl } = props;
+
 	const [feedbackState, setFeedbackState] = React.useState<TFeedbackState>('initial');
 	const improveRequestUrl = React.useMemo(() => {
 		const subject = encodeURIComponent('Saku Link In Bio - Feedback for Improvement');
 		const body = encodeURIComponent('Hi,\n\nI have some feedback about Saku Link In Bio:\n\n');
-		return `mailto:support@saku.app?subject=${subject}&body=${body}`;
+		return `mailto:${email}?subject=${subject}&body=${body}`;
 	}, []);
 
 	switch (feedbackState) {
@@ -21,7 +23,7 @@ export const FeedbackCard: React.FC = () => {
 							A quick review would mean the world to us - we really appreciate your support!
 						</Text>
 						<InlineStack gap="200">
-							<Button variant="primary" url="https://apps.shopify.com" external target="_blank">
+							<Button variant="primary" url={reviewUrl} external target="_blank">
 								Leave a review
 							</Button>
 						</InlineStack>
@@ -69,5 +71,10 @@ export const FeedbackCard: React.FC = () => {
 			);
 	}
 };
+
+interface TFeedbackCardProps {
+	email: string;
+	reviewUrl: string;
+}
 
 type TFeedbackState = 'initial' | 'positive' | 'negative';

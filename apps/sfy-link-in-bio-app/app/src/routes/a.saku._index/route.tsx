@@ -2,11 +2,10 @@ import { type LoaderFunctionArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import { AppProxyProvider } from '@shopify/shopify-app-remix/react';
 import React from 'react';
-import { shopifyConfig } from '../environment';
-import { authenticate } from '../shopify.server';
+import { shopify, shopifyConfig } from '../../environment/.server';
 
 export async function loader({ request }: LoaderFunctionArgs) {
-	await authenticate.public.appProxy(request);
+	await shopify.authenticate.public.appProxy(request);
 
 	return { appUrl: shopifyConfig.appUrl };
 }

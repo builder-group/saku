@@ -4,9 +4,8 @@ import polarisStyles from '@shopify/polaris/build/esm/styles.css?url';
 import { AppProvider } from '@shopify/shopify-app-remix/react';
 import { boundary } from '@shopify/shopify-app-remix/server';
 import React from 'react';
-import { shopifyConfig } from '../environment';
-import { authenticate } from '../shopify.server';
-import { THeadersFunction, TLinksFunction, TLoaderFunction } from '../types';
+import { shopify, shopifyConfig } from '../../environment/.server';
+import { THeadersFunction, TLinksFunction, TLoaderFunction } from '../../types';
 
 const Page: React.FC = () => {
 	const { apiKey } = useLoaderData<typeof loader>();
@@ -17,7 +16,6 @@ const Page: React.FC = () => {
 				<Link to="/app" rel="home">
 					Home
 				</Link>
-				<Link to="/app/additional">Additional page</Link>
 			</NavMenu>
 			<Outlet />
 		</AppProvider>
@@ -33,7 +31,7 @@ export const headers: THeadersFunction = (headersArgs) => {
 };
 
 export const loader: TLoaderFunction<{ apiKey: string }> = async ({ request }) => {
-	await authenticate.admin(request);
+	await shopify.authenticate.admin(request);
 
 	return { apiKey: shopifyConfig.apiKey };
 };

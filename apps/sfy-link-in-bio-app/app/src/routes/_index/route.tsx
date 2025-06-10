@@ -1,7 +1,7 @@
 import { redirect } from '@remix-run/node';
 import { Form, useLoaderData } from '@remix-run/react';
 import React from 'react';
-import { login } from '../../shopify.server';
+import { shopify } from '../../environment/.server';
 import { TLoaderFunction } from '../../types';
 import styles from './styles.module.css';
 
@@ -55,5 +55,5 @@ export const loader: TLoaderFunction<{ showForm: boolean }> = async ({ request }
 		throw redirect(`/app?${url.searchParams.toString()}`);
 	}
 
-	return { showForm: typeof login === 'function' };
+	return { showForm: typeof shopify.login === 'function' };
 };
