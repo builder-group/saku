@@ -191,9 +191,8 @@ subpath = "custom"  # your custom path
 prefix = "a"        # or "apps", "tools", "community"
 ```
 
-*Benefits (over admin UI configuration)*: Auto-syncs with latest Cloudflare tunnel URL on every `shopify app dev` restart.
-
-*Find your dev stores app proxy URL*: Admin → Settings → Apps and sales channels → [your app] → App proxy section
+- _Benefits (over admin UI configuration)_: Auto-syncs with latest Cloudflare tunnel URL on every `shopify app dev` restart.
+- _Find your dev stores app proxy URL_: Admin → Settings → Apps and sales channels → [your app] → App proxy section
 
 **3. Create Remix route**:
 
@@ -221,7 +220,8 @@ prefix = "a"
 
 **4. Implementation**:
 
-Handle POST requests (forms, API calls)
+Handle POST requests (forms, API calls):
+
 ```ts
 import { authenticate } from '../shopify.server';
 
@@ -234,7 +234,8 @@ export const action = async ({ request }) => {
 };
 ```
 
-Return HTML/JSON/Liquid content
+Return HTML/JSON/Liquid content:
+
 ```ts
 import { authenticate } from '../shopify.server';
 
@@ -248,7 +249,8 @@ export const loader = async ({ request }) => {
 };
 ```
 
-Return React components
+Return React component/page:
+
 ```ts
 import { json } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
