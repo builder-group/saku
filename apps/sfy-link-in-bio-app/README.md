@@ -191,28 +191,28 @@ subpath = "custom"  # your custom path
 prefix = "a"        # or "apps", "tools", "community"
 ```
 
-**Benefits (over admin UI configuration)**: Auto-syncs with latest Cloudflare tunnel URL on every `shopify app dev` restart.
+*Benefits (over admin UI configuration)*: Auto-syncs with latest Cloudflare tunnel URL on every `shopify app dev` restart.
 
-**Find your dev stores app proxy URL**: Admin → Settings → Apps and sales channels → [your app] → App proxy section
+*Find your dev stores app proxy URL*: Admin → Settings → Apps and sales channels → [your app] → App proxy section
 
 **3. Create Remix route**:
 
-#### For HTML/JSON/Liquid Responses (Flexible)
+For HTML/JSON/Liquid Responses (Flexible)
 
 ```toml
 [app_proxy]
-url = "https://tunnel.com/app/proxy"  # Can be any path
-subpath = "custom"     # Public URL: /a/custom
+url = "https://tunnel.com/app/proxy" # Can be any path
+subpath = "custom"                   # Public URL: /a/custom
 prefix = "a"
 # Route: app.proxy.tsx ✅ (flexible naming)
 ```
 
-#### For React Components (Strict Matching Required)
+For React Components (Strict Matching Required)
 
 ```toml
 [app_proxy]
-url = "https://tunnel.com/a/custom"     # MUST match prefix+subpath
-subpath = "custom"     # Public URL: /a/custom
+url = "https://tunnel.com/a/custom" # MUST match prefix+subpath
+subpath = "custom"                  # Public URL: /a/custom
 prefix = "a"
 # Route: a.custom.tsx ✅ (MUST match /a/custom)
 ```
@@ -221,8 +221,8 @@ prefix = "a"
 
 **4. Implementation**:
 
+Handle POST requests (forms, API calls)
 ```ts
-// Handle POST requests (forms, API calls)
 import { authenticate } from '../shopify.server';
 
 export const action = async ({ request }) => {
@@ -234,8 +234,8 @@ export const action = async ({ request }) => {
 };
 ```
 
+Return HTML/JSON/Liquid content
 ```ts
-// Return HTML/JSON/Liquid content
 import { authenticate } from '../shopify.server';
 
 export const loader = async ({ request }) => {
@@ -248,8 +248,8 @@ export const loader = async ({ request }) => {
 };
 ```
 
+Return React components
 ```ts
-// Return React components
 import { json } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import { AppProxyProvider } from '@shopify/shopify-app-remix/react';
@@ -259,7 +259,7 @@ export async function loader({ request }) {
   return json({ appUrl: process.env.SHOPIFY_APP_URL });
 }
 
-export default function CustomPage() {
+export default function Page() {
   const { appUrl } = useLoaderData();
   return (
     <AppProxyProvider appUrl={appUrl}>
@@ -291,3 +291,5 @@ export default function CustomPage() {
 
 - [Display dynamic store data with app proxies](https://shopify.dev/docs/apps/build/online-store/display-dynamic-data)
 - [Shopify App Proxies Explained](https://www.youtube.com/watch?v=ZiugtHDctFk)
+- [AppProxyProvider](https://shopify.dev/docs/api/shopify-app-remix/v3/entrypoints/appproxyprovider)
+- [Client side JavaScript does not work on app proxy pages](https://github.com/Shopify/shopify-app-template-remix/issues/436)
