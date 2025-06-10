@@ -1,4 +1,3 @@
-import { type HeadersFunction } from '@remix-run/node';
 import { Link, Outlet, useLoaderData, useRouteError } from '@remix-run/react';
 import { NavMenu } from '@shopify/app-bridge-react';
 import polarisStyles from '@shopify/polaris/build/esm/styles.css?url';
@@ -7,7 +6,7 @@ import { boundary } from '@shopify/shopify-app-remix/server';
 import React from 'react';
 import { shopifyConfig } from '../environment';
 import { authenticate } from '../shopify.server';
-import { TLoaderFunction } from '../types';
+import { THeadersFunction, TLinksFunction, TLoaderFunction } from '../types';
 
 const Page: React.FC = () => {
 	const { apiKey } = useLoaderData<typeof loader>();
@@ -27,9 +26,9 @@ const Page: React.FC = () => {
 
 export default Page;
 
-export const links = () => [{ rel: 'stylesheet', href: polarisStyles }];
+export const links: TLinksFunction = () => [{ rel: 'stylesheet', href: polarisStyles }];
 
-export const headers: HeadersFunction = (headersArgs) => {
+export const headers: THeadersFunction = (headersArgs) => {
 	return boundary.headers(headersArgs);
 };
 

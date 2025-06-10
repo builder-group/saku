@@ -255,10 +255,11 @@ Return React component/page:
 import { json } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import { AppProxyProvider } from '@shopify/shopify-app-remix/react';
+import { authenticate } from '../shopify.server';
 
 export async function loader({ request }) {
   await authenticate.public.appProxy(request);
-  return json({ appUrl: process.env.SHOPIFY_APP_URL });
+  return { appUrl: process.env.SHOPIFY_APP_URL };
 }
 
 export default function Page() {

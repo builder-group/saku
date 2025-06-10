@@ -1,5 +1,6 @@
 import { vitePlugin as remix } from '@remix-run/dev';
 import { installGlobals } from '@remix-run/node';
+import tailwindcss from '@tailwindcss/vite';
 import { defineConfig, type UserConfig } from 'vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
@@ -54,6 +55,7 @@ export default defineConfig({
 		noExternal: ['validation-adapters']
 	},
 	plugins: [
+		tailwindcss(),
 		remix({
 			ignoredRouteFiles: ['**/.*'],
 			appDirectory: 'src',
