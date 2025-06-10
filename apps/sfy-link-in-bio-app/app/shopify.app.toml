@@ -3,7 +3,7 @@
 client_id = "4c9dc129e68b889d9a351e14d8e36a02"
 name = "saku-link-in-bio-dev"
 handle = "saku-link-in-bio-dev"
-application_url = "https://turkey-till-polymer-crystal.trycloudflare.com"
+application_url = "https://ide-musician-map-angels.trycloudflare.com"
 embedded = true
 
 [build]
@@ -27,13 +27,13 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://turkey-till-polymer-crystal.trycloudflare.com/auth/callback",
-  "https://turkey-till-polymer-crystal.trycloudflare.com/auth/shopify/callback",
-  "https://turkey-till-polymer-crystal.trycloudflare.com/api/auth/callback"
+  "https://ide-musician-map-angels.trycloudflare.com/auth/callback",
+  "https://ide-musician-map-angels.trycloudflare.com/auth/shopify/callback",
+  "https://ide-musician-map-angels.trycloudflare.com/api/auth/callback"
 ]
 
 [app_proxy]
-url = "https://turkey-till-polymer-crystal.trycloudflare.com/app/proxy"
+url = "https://ide-musician-map-angels.trycloudflare.com/a/bio"
 subpath = "bio"
 prefix = "a"
 

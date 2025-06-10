@@ -15,6 +15,7 @@ packages:
 ```
 
 **Monorepo Structure:**
+
 ```
 apps/sfy-link-in-bio-app/
 ├── app/
@@ -50,6 +51,7 @@ apps/sfy-link-in-bio-app/
 ```
 
 **Template Structure:**
+
 ```
 ├── app/                        # Remix app directory (root level)
 │   ├── db.server.ts
@@ -159,7 +161,8 @@ Shopify Extensions will reside at the monorepo level (alongside the `apps/` dire
 5. Go to **API Access** (left sidebar) → **Sales channel** section
 6. Click **Turn app into sales channel** and confirm
 
-⚠️ **Notes**: 
+⚠️ **Notes**:
+
 - Creating the app manually first and then connecting it via the CLI might result in 404 errors when trying to install the app - the [Shopify docs](https://shopify.dev/docs/apps/build/sales-channels/start-building) don't explain the missing config
 - The docs incorrectly state sales channel settings are under "Configuration" - they're actually under "API Access"
 - This process cannot be reversed
@@ -171,6 +174,7 @@ App proxies allow you to serve custom content directly from the store's domain (
 #### Setup
 
 **1. Add scope** in `shopify.app.toml` (if editing store content):
+
 ```toml
 [access_scopes]
 scopes = "write_app_proxy"  # Required when editing online store content
@@ -179,6 +183,7 @@ scopes = "write_app_proxy"  # Required when editing online store content
 - [Shopify API access scopes](https://shopify.dev/docs/api/usage/access-scopes)
 
 **2. Configure app proxy** in `shopify.app.toml`:
+
 ```toml
 [app_proxy]
 url = "https://your-tunnel.trycloudflare.com/app/proxy"
@@ -190,42 +195,79 @@ prefix = "a"        # or "apps", "tools", "community"
 
 **Find your dev stores app proxy URL**: Admin → Settings → Apps and sales channels → [your app] → App proxy section
 
-**3. Create Remix route**: `/app/proxy` → `app.proxy.tsx`
+**3. Create Remix route**:
 
-**4. Return HTML/Liquid/JSON** (not React components):
-```typescript
-// Handle GET requests
-export const loader = async ({ request }) => {
-  const { session } = await authenticate.public.appProxy(request);
-  
-  const htmlContent = `
-    <form method="post">
-      <input name="productTitle" placeholder="Product name" required />
-      <button type="submit">Create Product</button>
-    </form>
-  `;
-  return new Response(htmlContent, {
-    headers: { 'Content-Type': 'text/html' }
-  });
-};
+#### For HTML/JSON/Liquid Responses (Flexible)
 
-// Handle POST requests (form submissions, API calls)
+```toml
+[app_proxy]
+url = "https://tunnel.com/app/proxy"  # Can be any path
+subpath = "custom"     # Public URL: /a/custom
+prefix = "a"
+# Route: app.proxy.tsx ✅ (flexible naming)
+```
+
+#### For React Components (Strict Matching Required)
+
+```toml
+[app_proxy]
+url = "https://tunnel.com/a/custom"     # MUST match prefix+subpath
+subpath = "custom"     # Public URL: /a/custom
+prefix = "a"
+# Route: a.custom.tsx ✅ (MUST match /a/custom)
+```
+
+> ⚠️ **React requirement**: `url` must end with `/{prefix}/{subpath}` and route file must exactly match that path otherwise it won't work (e.g. Shopify might redirect to `auth/login`).
+
+**4. Implementation**:
+
+```ts
+// Handle POST requests (forms, API calls)
+import { authenticate } from '../shopify.server';
+
 export const action = async ({ request }) => {
-  const { session, admin } = await authenticate.public.appProxy(request);
-  
-  const formData = await request.formData();
-  const productTitle = formData.get('productTitle');
-  
-  // Make Shopify API calls to update store data
-  const product = await admin.rest.resources.Product.save(session, {
-    title: productTitle,
-    // ... other product data
-  });
-  
-  return new Response(`Product created: ${product.title}`, {
-    headers: { 'Content-Type': 'text/html' }
-  });
+	const { session, admin } = await authenticate.public.appProxy(request);
+
+	const formData = await request.formData();
+	// Process form data, make API calls, etc.
+	return new Response('Success', { headers: { 'Content-Type': 'text/html' } });
 };
+```
+
+```ts
+// Return HTML/JSON/Liquid content
+import { authenticate } from '../shopify.server';
+
+export const loader = async ({ request }) => {
+	const { session } = await authenticate.public.appProxy(request);
+
+	const htmlContent = `<h1>Custom Page</h1><p>Hello from app proxy!</p>`;
+	return new Response(htmlContent, {
+		headers: { 'Content-Type': 'text/html' }
+	});
+};
+```
+
+```ts
+// Return React components
+import { json } from '@remix-run/node';
+import { useLoaderData } from '@remix-run/react';
+import { AppProxyProvider } from '@shopify/shopify-app-remix/react';
+
+export async function loader({ request }) {
+  await authenticate.public.appProxy(request);
+  return json({ appUrl: process.env.SHOPIFY_APP_URL });
+}
+
+export default function CustomPage() {
+  const { appUrl } = useLoaderData();
+  return (
+    <AppProxyProvider appUrl={appUrl}>
+      <h1>Custom Page</h1>
+      <p>React component rendered via app proxy!</p>
+    </AppProxyProvider>
+  );
+}
 ```
 
 #### Usage
@@ -242,6 +284,8 @@ export const action = async ({ request }) => {
 - **No cookies**: Shopify strips `Cookie` and `Set-Cookie` headers for security
 - **Headers stripped**: Many headers removed for security ([full list](https://shopify.dev/docs/apps/build/online-store/display-dynamic-data#disallowed-headers))
 - **Signature verification**: Always verify the `signature` parameter to ensure requests come from Shopify
+- **React routing constraints**: When using `AppProxyProvider`, route files must match proxy URL exactly due to Remix URL rewriting limitations
+- **No Polaris in proxies**: Shopify admin components don't work in app proxy context (public storefront vs admin context mismatch)
 
 #### Resources
 
