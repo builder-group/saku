@@ -163,3 +163,87 @@ Shopify Extensions will reside at the monorepo level (alongside the `apps/` dire
 - Creating the app manually first and then connecting it via the CLI might result in 404 errors when trying to install the app - the [Shopify docs](https://shopify.dev/docs/apps/build/sales-channels/start-building) don't explain the missing config
 - The docs incorrectly state sales channel settings are under "Configuration" - they're actually under "API Access"
 - This process cannot be reversed
+
+### App Proxy
+
+App proxies allow you to serve custom content directly from the store's domain (e.g., `shop.com/a/custom`) while keeping your app's logic separate. Perfect for custom pages, forms, APIs, or any storefront-facing functionality that needs Shopify data access.
+
+#### Setup
+
+**1. Add scope** in `shopify.app.toml` (if editing store content):
+```toml
+[access_scopes]
+scopes = "write_app_proxy"  # Required when editing online store content
+```
+
+- [Shopify API access scopes](https://shopify.dev/docs/api/usage/access-scopes)
+
+**2. Configure app proxy** in `shopify.app.toml`:
+```toml
+[app_proxy]
+url = "https://your-tunnel.trycloudflare.com/app/proxy"
+subpath = "custom"  # your custom path
+prefix = "a"        # or "apps", "tools", "community"
+```
+
+**Benefits (over admin UI configuration)**: Auto-syncs with latest Cloudflare tunnel URL on every `shopify app dev` restart.
+
+**Find your dev stores app proxy URL**: Admin → Settings → Apps and sales channels → [your app] → App proxy section
+
+**3. Create Remix route**: `/app/proxy` → `app.proxy.tsx`
+
+**4. Return HTML/Liquid/JSON** (not React components):
+```typescript
+// Handle GET requests
+export const loader = async ({ request }) => {
+  const { session } = await authenticate.public.appProxy(request);
+  
+  const htmlContent = `
+    <form method="post">
+      <input name="productTitle" placeholder="Product name" required />
+      <button type="submit">Create Product</button>
+    </form>
+  `;
+  return new Response(htmlContent, {
+    headers: { 'Content-Type': 'text/html' }
+  });
+};
+
+// Handle POST requests (form submissions, API calls)
+export const action = async ({ request }) => {
+  const { session, admin } = await authenticate.public.appProxy(request);
+  
+  const formData = await request.formData();
+  const productTitle = formData.get('productTitle');
+  
+  // Make Shopify API calls to update store data
+  const product = await admin.rest.resources.Product.save(session, {
+    title: productTitle,
+    // ... other product data
+  });
+  
+  return new Response(`Product created: ${product.title}`, {
+    headers: { 'Content-Type': 'text/html' }
+  });
+};
+```
+
+#### Usage
+
+- **Public URL**: `https://shop-name.myshopify.com/a/custom`
+- **Child routes**: `/a/custom/extra/path` automatically forwards to your app
+- **Handles**: GET/POST requests, form submissions, AJAX calls
+- **Returns**: HTML pages, Liquid templates, JSON APIs, file downloads
+- **Access**: Shop context, customer authentication, Shopify API calls
+- **Use cases**: Custom pages, product configurators, checkout extensions, data collection forms, webhooks
+
+#### Limitations
+
+- **No cookies**: Shopify strips `Cookie` and `Set-Cookie` headers for security
+- **Headers stripped**: Many headers removed for security ([full list](https://shopify.dev/docs/apps/build/online-store/display-dynamic-data#disallowed-headers))
+- **Signature verification**: Always verify the `signature` parameter to ensure requests come from Shopify
+
+#### Resources
+
+- [Display dynamic store data with app proxies](https://shopify.dev/docs/apps/build/online-store/display-dynamic-data)
+- [Shopify App Proxies Explained](https://www.youtube.com/watch?v=ZiugtHDctFk)

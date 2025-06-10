@@ -3,7 +3,7 @@
 client_id = "4c9dc129e68b889d9a351e14d8e36a02"
 name = "saku-link-in-bio-dev"
 handle = "saku-link-in-bio-dev"
-application_url = "https://races-inside-second-toolbar.trycloudflare.com"
+application_url = "https://turkey-till-polymer-crystal.trycloudflare.com"
 embedded = true
 
 [build]
@@ -13,24 +13,29 @@ automatically_update_urls_on_dev = true
 [webhooks]
 api_version = "2025-04"
 
-[[webhooks.subscriptions]]
-topics = ["app/uninstalled"]
-uri = "/webhooks/app/uninstalled"
+  [[webhooks.subscriptions]]
+  topics = [ "app/uninstalled" ]
+  uri = "/webhooks/app/uninstalled"
 
-[[webhooks.subscriptions]]
-topics = ["app/scopes_update"]
-uri = "/webhooks/app/scopes_update"
+  [[webhooks.subscriptions]]
+  topics = [ "app/scopes_update" ]
+  uri = "/webhooks/app/scopes_update"
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = ""
+scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://races-inside-second-toolbar.trycloudflare.com/auth/callback",
-  "https://races-inside-second-toolbar.trycloudflare.com/auth/shopify/callback",
-  "https://races-inside-second-toolbar.trycloudflare.com/api/auth/callback",
+  "https://turkey-till-polymer-crystal.trycloudflare.com/auth/callback",
+  "https://turkey-till-polymer-crystal.trycloudflare.com/auth/shopify/callback",
+  "https://turkey-till-polymer-crystal.trycloudflare.com/api/auth/callback"
 ]
+
+[app_proxy]
+url = "https://turkey-till-polymer-crystal.trycloudflare.com/app/proxy"
+subpath = "bio"
+prefix = "a"
 
 [pos]
 embedded = false
