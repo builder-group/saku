@@ -7,7 +7,13 @@ export function createEditor(): TEditor {
 		id: shortId(),
 		activeView: createState('blocks' as TViewId),
 		blocks: createState([] as TBlockId[]),
-		blockMap: {}
+		blockMap: {},
+		boundingRect: createState({
+			left: 0,
+			top: 0,
+			bottom: 0,
+			right: 0
+		})
 	};
 }
 
@@ -16,6 +22,7 @@ export interface TEditor {
 	activeView: TState<TViewId, []>;
 	blocks: TState<TBlockId[], []>;
 	blockMap: Record<TBlockId, TState<TBlock, []>>;
+	boundingRect: TState<TBoundingRect, []>;
 }
 
 export interface TBlock {
@@ -23,3 +30,10 @@ export interface TBlock {
 }
 
 type TBlockId = string;
+
+export interface TBoundingRect {
+	left: number;
+	top: number;
+	bottom: number;
+	right: number;
+}

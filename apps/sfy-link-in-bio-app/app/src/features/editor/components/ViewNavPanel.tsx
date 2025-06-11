@@ -1,5 +1,5 @@
 import { Icon } from '@shopify/polaris';
-import { useFeatureState } from 'feature-react/state';
+import { useCompute, useFeatureState } from 'feature-react/state';
 import React from 'react';
 import { ResizablePanel } from '@/components';
 import { cn } from '@/lib';
@@ -15,13 +15,42 @@ export const ViewNavPanel: React.FC<TViewNavPanelProps> = (props) => {
 		return [views.blocks, views.settings];
 	}, []);
 
+	// TODO: Figure out better solution
+	// https://github.com/bvaughn/react-resizable-panels/issues/46
+	const { collapsedSize, minSize, defaultSize, maxSize } = useCompute(
+		editor.boundingRect,
+		(rect) => {
+			const width = rect.right - rect.left;
+			const logicalSizeUnits = {
+				collapsedSize: 4,
+				minSize: 8,
+				defaultSize: 4,
+				maxSize: 12
+			};
+
+			if (width <= 0) {
+				return logicalSizeUnits;
+			}
+
+			const unitPixelValue = 15; // 1 unit = 15px
+			const toPercentOfWidth = (unit: number) => ((unit * unitPixelValue) / width) * 100;
+
+			return {
+				collapsedSize: toPercentOfWidth(logicalSizeUnits.collapsedSize),
+				minSize: toPercentOfWidth(logicalSizeUnits.minSize),
+				defaultSize: toPercentOfWidth(logicalSizeUnits.defaultSize),
+				maxSize: toPercentOfWidth(logicalSizeUnits.maxSize)
+			};
+		}
+	);
+
 	return (
 		<ResizablePanel
 			collapsible={true}
-			collapsedSize={4} // When collapsed, shows at 4% width (icons only)
-			minSize={8} // Minimum expanded size is 8% (icons + text)
-			defaultSize={4} // Starts collapsed
-			maxSize={12} // Maximum size is 12%
+			collapsedSize={collapsedSize}
+			minSize={minSize}
+			defaultSize={defaultSize}
+			maxSize={maxSize}
 			onCollapse={() => setSidebarCollapsed(true)}
 			onExpand={() => setSidebarCollapsed(false)}
 		>
