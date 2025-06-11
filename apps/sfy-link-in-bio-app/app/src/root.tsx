@@ -1,7 +1,7 @@
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from '@remix-run/react';
 import React from 'react';
+import { TLinksFunction } from '@/types';
 import styles from './styles.css?url'; // ?url required for Shopify app hot reloading
-import { TLinksFunction } from './types';
 
 const Root: React.FC = () => {
 	return (

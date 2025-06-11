@@ -30,6 +30,7 @@
 		"update:latest": "pnpm update --latest '!react' '!react-dom' '!@types/react' '!@types/react-dom'"
 	},
 	"dependencies": {
+		"@blgc/utils": "^0.0.55",
 		"@remix-run/dev": "^2.16.8",
 		"@remix-run/fs-routes": "^2.16.8",
 		"@remix-run/node": "^2.16.8",
@@ -37,6 +38,7 @@
 		"@remix-run/serve": "^2.16.8",
 		"@shopify/app-bridge-react": "^4.1.10",
 		"@shopify/polaris": "^13.9.5",
+		"@shopify/polaris-icons": "^9.3.1",
 		"@shopify/shopify-app-remix": "^3.8.3",
 		"@shopify/shopify-app-session-storage-memory": "^4.0.18",
 		"clsx": "^2.1.1",
@@ -44,8 +46,10 @@
 		"feature-react": "^0.0.51",
 		"feature-state": "^0.0.51",
 		"isbot": "^5.1.28",
+		"lucide-react": "^0.514.0",
 		"react": "^18.3.1",
 		"react-dom": "^18.3.1",
+		"react-resizable-panels": "^3.0.2",
 		"tailwind-merge": "^3.3.0",
 		"valibot": "^1.1.0",
 		"validatenv": "^0.0.35",

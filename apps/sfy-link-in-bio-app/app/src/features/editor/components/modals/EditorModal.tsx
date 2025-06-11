@@ -36,18 +36,15 @@ interface TEditorModalProps extends TEditorProps {
 	onHide?: () => void;
 }
 
-export function useEditorModal(
-	options: TUseEditorModalOptions = {},
-	deps: React.DependencyList = []
-) {
-	const { onShow, onHide, ...editorProps } = options;
+export function useEditorModal(config: TUseEditorModalConfig) {
+	const { onShow, onHide, editor } = config;
 	const isOpenState = React.useMemo(() => createState(false), []);
 
 	const ModalCallback = React.useCallback(() => {
 		return (
-			<EditorModal isOpenState={isOpenState} onShow={onShow} onHide={onHide} {...editorProps} />
+			<EditorModal isOpenState={isOpenState} onShow={onShow} onHide={onHide} editor={editor} />
 		);
-	}, [isOpenState, onHide, onShow, ...deps]);
+	}, [isOpenState, onHide, onShow, editor]);
 
 	return React.useMemo(
 		() => ({
@@ -58,7 +55,7 @@ export function useEditorModal(
 	);
 }
 
-interface TUseEditorModalOptions extends Partial<TEditorProps> {
+interface TUseEditorModalConfig extends TEditorProps {
 	onShow?: () => void;
 	onHide?: () => void;
 }

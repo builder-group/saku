@@ -2,10 +2,10 @@
 	"extends": "@blgc/config/typescript/react-internal",
 	"compilerOptions": {
 		"baseUrl": ".",
-		"types": ["node"]
-		// "paths": {
-		// 	"@/*": ["./src/*"]
-		// }
+		"types": ["node"],
+		"paths": {
+			"@/*": ["./src/*"]
+		}
 	},
 	"include": ["env.d.ts", "**/*.ts", "**/*.tsx"],
 	"exclude": ["node_modules"]

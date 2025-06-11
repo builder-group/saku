@@ -13,11 +13,12 @@ import {
 	TextField
 } from '@shopify/polaris';
 import { ExternalIcon } from '@shopify/polaris-icons';
+import { withGlobalBind } from 'feature-react/state';
 import React from 'react';
-import { FeedbackCard, GetInTouchCard, SitePreview } from '../../components';
-import { appConfig, shopify } from '../../environment/.server';
-import { useEditorModal } from '../../features/editor';
-import { TLoaderFunction } from '../../types';
+import { FeedbackCard, GetInTouchCard, SitePreview } from '@/components';
+import { appConfig, shopify } from '@/environment/.server';
+import { createEditor, TEditor, useEditorModal } from '@/features/editor';
+import { TLoaderFunction } from '@/types';
 
 const Page: React.FC = () => {
 	const { shop, appEnv } = useLoaderData<typeof loader>();
@@ -26,8 +27,13 @@ const Page: React.FC = () => {
 		() => (shop.domain != null ? `https://${shop.domain}/a/saku/bio` : null),
 		[shop.domain]
 	);
+	const editor = React.useMemo<TEditor>(() => {
+		const editor = createEditor();
+		withGlobalBind(`_editor_${editor.id}`, editor);
+		return editor;
+	}, []);
 
-	const { Modal: EditorModal, isOpenState: isEditorOpenState } = useEditorModal();
+	const { Modal: EditorModal, isOpenState: isEditorOpenState } = useEditorModal({ editor });
 
 	// =========================================================================
 	// Events

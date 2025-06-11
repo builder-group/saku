@@ -3,7 +3,7 @@ import { createReadableStreamFromReadable, type EntryContext } from '@remix-run/
 import { RemixServer } from '@remix-run/react';
 import { isbot } from 'isbot';
 import { renderToPipeableStream } from 'react-dom/server';
-import { shopify } from './environment/.server';
+import { shopify } from '@/environment/.server';
 
 export const streamTimeout = 5000;
 

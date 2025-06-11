@@ -1,11 +1,26 @@
 import React from 'react';
+import { ResizableHandle, ResizablePanelGroup } from '@/components';
+import { TEditor } from '../lib';
+import { CanvasPanel } from './CanvasPanel';
+import { ViewControlPanel } from './ViewControlPanel';
+import { ViewNavPanel } from './ViewNavPanel';
 
-export const Editor: React.FC<TEditorProps> = () => {
+export const Editor: React.FC<TEditorProps> = (props) => {
+	const { editor } = props;
+
 	return (
-		<div>
-			<h1>Editor</h1>
+		<div className="flex min-h-screen flex-col">
+			<ResizablePanelGroup direction="horizontal" className="flex-1">
+				<ViewNavPanel editor={editor} />
+				<ResizableHandle className="w-px bg-neutral-200" />
+				<ViewControlPanel editor={editor} />
+				<ResizableHandle className="w-px bg-neutral-200" />
+				<CanvasPanel />
+			</ResizablePanelGroup>
 		</div>
 	);
 };
 
-export interface TEditorProps {}
+export interface TEditorProps {
+	editor: TEditor;
+}

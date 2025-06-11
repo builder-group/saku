@@ -11,8 +11,8 @@ import {
 import polarisStyles from '@shopify/polaris/build/esm/styles.css?url';
 import polarisTranslations from '@shopify/polaris/locales/en.json';
 import React from 'react';
-import { shopify } from '../../environment/.server';
-import { TActionFunction, TLoaderFunction } from '../../types';
+import { shopify } from '@/environment/.server';
+import { TActionFunction, TLoaderFunction } from '@/types';
 import { loginErrorMessage, TLoginErrorMessage } from './error.server';
 
 const Page: React.FC = () => {

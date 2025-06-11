@@ -4,8 +4,8 @@ import polarisStyles from '@shopify/polaris/build/esm/styles.css?url';
 import { AppProvider } from '@shopify/shopify-app-remix/react';
 import { boundary } from '@shopify/shopify-app-remix/server';
 import React from 'react';
-import { shopify, shopifyConfig } from '../../environment/.server';
-import { THeadersFunction, TLinksFunction, TLoaderFunction } from '../../types';
+import { shopify, shopifyConfig } from '@/environment/.server';
+import { THeadersFunction, TLinksFunction, TLoaderFunction } from '@/types';
 
 const Page: React.FC = () => {
 	const { apiKey } = useLoaderData<typeof loader>();
