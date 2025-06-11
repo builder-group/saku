@@ -33,7 +33,10 @@ const Page: React.FC = () => {
 		return editor;
 	}, []);
 
-	const { Modal: EditorModal, isOpenState: isEditorOpenState } = useEditorModal({ editor });
+	const { Modal: EditorModal, isOpenState: isEditorOpenState } = useEditorModal({
+		editor,
+		src: '/app/modal/editor'
+	});
 
 	// =========================================================================
 	// Events

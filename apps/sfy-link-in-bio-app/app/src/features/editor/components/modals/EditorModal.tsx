@@ -5,7 +5,7 @@ import React from 'react';
 import { Editor, TEditorProps } from '../Editor';
 
 export const EditorModal: React.FC<TEditorModalProps> = (props) => {
-	const { isOpenState, onShow, onHide, ...editorProps } = props;
+	const { src, isOpenState, onShow, onHide, ...editorProps } = props;
 	const isOpen = useFeatureState(isOpenState);
 
 	const handleSave = React.useCallback(() => {
@@ -19,32 +19,46 @@ export const EditorModal: React.FC<TEditorModalProps> = (props) => {
 	}, [isOpenState, onHide]);
 
 	return (
-		<Modal id="editor-modal" open={isOpen} onHide={handleHide} onShow={onShow} variant="max">
+		<Modal
+			id="editor-modal"
+			src={src}
+			open={isOpen}
+			onHide={handleHide}
+			onShow={onShow}
+			variant="max"
+		>
 			<TitleBar title="default-bio">
 				<button variant="primary" onClick={handleSave}>
 					Save
 				</button>
 			</TitleBar>
-			<Editor {...editorProps} />
+			{src == null && <Editor {...editorProps} />}
 		</Modal>
 	);
 };
 
 interface TEditorModalProps extends TEditorProps {
+	src?: string;
 	isOpenState: TState<boolean, []>;
 	onShow?: () => void;
 	onHide?: () => void;
 }
 
 export function useEditorModal(config: TUseEditorModalConfig) {
-	const { onShow, onHide, editor } = config;
+	const { editor, src, onShow, onHide } = config;
 	const isOpenState = React.useMemo(() => createState(false), []);
 
 	const ModalCallback = React.useCallback(() => {
 		return (
-			<EditorModal isOpenState={isOpenState} onShow={onShow} onHide={onHide} editor={editor} />
+			<EditorModal
+				src={src}
+				isOpenState={isOpenState}
+				onShow={onShow}
+				onHide={onHide}
+				editor={editor}
+			/>
 		);
-	}, [isOpenState, onHide, onShow, editor]);
+	}, [isOpenState, onHide, onShow, editor, src]);
 
 	return React.useMemo(
 		() => ({
@@ -56,6 +70,7 @@ export function useEditorModal(config: TUseEditorModalConfig) {
 }
 
 interface TUseEditorModalConfig extends TEditorProps {
-	onShow?: () => void;
-	onHide?: () => void;
+	src?: TEditorModalProps['src']; // https://shopify.dev/docs/api/app-bridge/using-modals-in-your-app#modals-with-a-route
+	onShow?: TEditorModalProps['onShow'];
+	onHide?: TEditorModalProps['onHide'];
 }

@@ -9,7 +9,7 @@ export const Editor: React.FC<TEditorProps> = (props) => {
 	const { editor } = props;
 
 	return (
-		<div className="flex min-h-screen flex-col">
+		<div className="flex min-h-screen w-full flex-col">
 			<ResizablePanelGroup direction="horizontal" className="flex-1">
 				<ViewNavPanel editor={editor} />
 				<ResizableHandle className="w-px bg-neutral-200" />
