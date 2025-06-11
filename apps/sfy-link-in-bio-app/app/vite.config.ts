@@ -52,7 +52,7 @@ export default defineConfig({
 	ssr: {
 		// Fix: validation-adapters sub-exports (/valibot, /zod) cause SSR module resolution issues
 		// Might be not necessary if we update validation-adapters package.json exports to use nested conditional exports correctly?
-		noExternal: ['validation-adapters']
+		noExternal: ['validation-adapters', 'feature-react']
 	},
 	plugins: [
 		tailwindcss(),

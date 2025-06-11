@@ -80,6 +80,12 @@ importers:
       feature-logger:
         specifier: ^0.0.42
         version: 0.0.42
+      feature-react:
+        specifier: ^0.0.51
+        version: 0.0.51(react@18.3.1)
+      feature-state:
+        specifier: ^0.0.51
+        version: 0.0.51
       isbot:
         specifier: ^5.1.28
         version: 5.1.28
@@ -2340,6 +2346,14 @@ packages:
 
   feature-logger@0.0.42:
     resolution: {integrity: sha512-n/78dV5yp1dc/Uotc5pFFgNt0o16cV6CdHh+Stuh/NPBZ+DZ7mxODVzhqsrjX5CCjvMLpf4bjLyWEDiXfhqa7Q==}
+
+  feature-react@0.0.51:
+    resolution: {integrity: sha512-XigDwVKV5PBUWayC1ekupZGpMculgC10pBGHYDxzuNj7LYreLeJdIkI1aJGRl/QgOuFfigUEbY5J6N5UC97SkQ==}
+    peerDependencies:
+      react: ^18.3.1
+
+  feature-state@0.0.51:
+    resolution: {integrity: sha512-aUD9cN4DBuYRTX+KfYS8Scc9P66BHPijmEniNa94iAM50V0ti49ZwamSoWAgwpUFzDcDwcxmfB3nNtEx0UKEDg==}
 
   figures@6.1.0:
     resolution: {integrity: sha512-d+l3qxjSesT4V7v2fh+QnmFnUWv9lSpjarhShNTgBOfA0ttejbQUAlHLitbjkoRiDulW0OPoQPYIGhIC8ohejg==}
@@ -7082,6 +7096,17 @@ snapshots:
       picomatch: 4.0.2
 
   feature-logger@0.0.42:
+    dependencies:
+      '@blgc/types': 0.0.17
+      '@blgc/utils': 0.0.49
+
+  feature-react@0.0.51(react@18.3.1):
+    dependencies:
+      '@blgc/types': 0.0.17
+      '@blgc/utils': 0.0.49
+      react: 18.3.1
+
+  feature-state@0.0.51:
     dependencies:
       '@blgc/types': 0.0.17
       '@blgc/utils': 0.0.49

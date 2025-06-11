@@ -38,7 +38,7 @@ export const GetInTouchCard: React.FC<TGetInTouchCardProps> = (props) => {
 					)}
 					{version != null && (
 						<Text as="p" variant="bodyMd">
-							Version {version}
+							App Version: v{version}
 						</Text>
 					)}
 				</BlockStack>

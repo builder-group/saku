@@ -1,5 +1,5 @@
 import { useLoaderData } from '@remix-run/react';
-import { TitleBar, useAppBridge } from '@shopify/app-bridge-react';
+import { TitleBar } from '@shopify/app-bridge-react';
 import {
 	Badge,
 	BlockStack,
@@ -16,25 +16,26 @@ import { ExternalIcon } from '@shopify/polaris-icons';
 import React from 'react';
 import { FeedbackCard, GetInTouchCard, SitePreview } from '../../components';
 import { appConfig, shopify } from '../../environment/.server';
+import { useEditorModal } from '../../features/editor';
 import { TLoaderFunction } from '../../types';
 
 const Page: React.FC = () => {
 	const { shop, appEnv } = useLoaderData<typeof loader>();
-	const shopify = useAppBridge();
 
 	const bioUrl = React.useMemo(
 		() => (shop.domain != null ? `https://${shop.domain}/a/saku/bio` : null),
 		[shop.domain]
 	);
 
+	const { Modal: EditorModal, isOpenState: isEditorOpenState } = useEditorModal();
+
 	// =========================================================================
 	// Events
 	// =========================================================================
 
-	const handleEditBio = React.useCallback(() => {
-		// TODO:
-		shopify.toast.show('Bio editor coming soon!');
-	}, [shopify]);
+	const handleCustomizeBio = React.useCallback(() => {
+		isEditorOpenState.set(true);
+	}, [isEditorOpenState]);
 
 	// =========================================================================
 	// UI
@@ -43,7 +44,7 @@ const Page: React.FC = () => {
 	return (
 		<PolarisPage>
 			<TitleBar title="Saku Link In Bio">
-				<button variant="primary" onClick={handleEditBio}>
+				<button variant="primary" onClick={handleCustomizeBio}>
 					Customize bio
 				</button>
 				{bioUrl != null && (
@@ -58,6 +59,8 @@ const Page: React.FC = () => {
 					</button>
 				)}
 			</TitleBar>
+
+			<EditorModal />
 
 			<Layout>
 				<Layout.Section>
@@ -90,7 +93,7 @@ const Page: React.FC = () => {
 									</InlineStack>
 
 									{/* Action Buttons */}
-									<Button variant="primary" onClick={handleEditBio}>
+									<Button variant="primary" onClick={handleCustomizeBio}>
 										Customize
 									</Button>
 								</InlineStack>

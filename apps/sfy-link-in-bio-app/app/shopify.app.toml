@@ -3,7 +3,7 @@
 client_id = "4c9dc129e68b889d9a351e14d8e36a02"
 name = "saku-link-in-bio-dev"
 handle = "saku-link-in-bio-dev"
-application_url = "https://tobago-likes-affairs-jay.trycloudflare.com"
+application_url = "https://auburn-mono-televisions-posts.trycloudflare.com"
 embedded = true
 
 [build]
@@ -27,13 +27,13 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://tobago-likes-affairs-jay.trycloudflare.com/auth/callback",
-  "https://tobago-likes-affairs-jay.trycloudflare.com/auth/shopify/callback",
-  "https://tobago-likes-affairs-jay.trycloudflare.com/api/auth/callback"
+  "https://auburn-mono-televisions-posts.trycloudflare.com/auth/callback",
+  "https://auburn-mono-televisions-posts.trycloudflare.com/auth/shopify/callback",
+  "https://auburn-mono-televisions-posts.trycloudflare.com/api/auth/callback"
 ]
 
 [app_proxy]
-url = "https://tobago-likes-affairs-jay.trycloudflare.com/a/saku"
+url = "https://auburn-mono-televisions-posts.trycloudflare.com/a/saku"
 subpath = "saku"
 prefix = "a"
 
