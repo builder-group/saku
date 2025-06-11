@@ -10,7 +10,7 @@ export const ViewControlContent: React.FC<TViewControlContentProps> = (props) =>
 
 	switch (activeView) {
 		case 'blocks':
-			return <BlocksContent />;
+			return <BlocksContent editor={editor} />;
 		case 'settings':
 			return <SettingsContent />;
 	}

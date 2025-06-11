@@ -2,10 +2,9 @@ import { Modal, TitleBar } from '@shopify/app-bridge-react';
 import { useFeatureState } from 'feature-react/state';
 import { createState, TState } from 'feature-state';
 import React from 'react';
-import { Editor, TEditorProps } from '../Editor';
 
 export const EditorModal: React.FC<TEditorModalProps> = (props) => {
-	const { src, isOpenState, onShow, onHide, ...editorProps } = props;
+	const { src, isOpenState, onShow, onHide } = props;
 	const isOpen = useFeatureState(isOpenState);
 
 	const handleSave = React.useCallback(() => {
@@ -32,12 +31,11 @@ export const EditorModal: React.FC<TEditorModalProps> = (props) => {
 					Save
 				</button>
 			</TitleBar>
-			{src == null && <Editor {...editorProps} />}
 		</Modal>
 	);
 };
 
-interface TEditorModalProps extends TEditorProps {
+interface TEditorModalProps {
 	src?: string;
 	isOpenState: TState<boolean, []>;
 	onShow?: () => void;
@@ -45,20 +43,12 @@ interface TEditorModalProps extends TEditorProps {
 }
 
 export function useEditorModal(config: TUseEditorModalConfig) {
-	const { editor, src, onShow, onHide } = config;
+	const { src, onShow, onHide } = config;
 	const isOpenState = React.useMemo(() => createState(false), []);
 
 	const ModalCallback = React.useCallback(() => {
-		return (
-			<EditorModal
-				src={src}
-				isOpenState={isOpenState}
-				onShow={onShow}
-				onHide={onHide}
-				editor={editor}
-			/>
-		);
-	}, [isOpenState, onHide, onShow, editor, src]);
+		return <EditorModal src={src} isOpenState={isOpenState} onShow={onShow} onHide={onHide} />;
+	}, [isOpenState, onHide, onShow, src]);
 
 	return React.useMemo(
 		() => ({
@@ -69,7 +59,7 @@ export function useEditorModal(config: TUseEditorModalConfig) {
 	);
 }
 
-interface TUseEditorModalConfig extends TEditorProps {
+interface TUseEditorModalConfig {
 	src?: TEditorModalProps['src']; // https://shopify.dev/docs/api/app-bridge/using-modals-in-your-app#modals-with-a-route
 	onShow?: TEditorModalProps['onShow'];
 	onHide?: TEditorModalProps['onHide'];

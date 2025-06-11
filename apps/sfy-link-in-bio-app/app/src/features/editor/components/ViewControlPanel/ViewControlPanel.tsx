@@ -1,10 +1,7 @@
-import { Text } from '@shopify/polaris';
 import { useCompute, useFeatureState } from 'feature-react/state';
 import React from 'react';
 import { ResizablePanel } from '@/components';
-import { views } from '../../environment';
 import { TEditor } from '../../lib';
-import { PanelHeader } from '../PanelHeader';
 import { ViewControlContent } from './ViewControlContent';
 
 export const ViewControlPanel: React.FC<TViewControlPanelProps> = (props) => {
@@ -38,12 +35,6 @@ export const ViewControlPanel: React.FC<TViewControlPanelProps> = (props) => {
 	return (
 		<ResizablePanel minSize={minSize} defaultSize={defaultSize} maxSize={maxSize}>
 			<div className="flex h-full flex-col bg-white">
-				<PanelHeader>
-					<Text as="h2" variant="headingMd">
-						{views[activeView].label}
-					</Text>
-				</PanelHeader>
-
 				<ViewControlContent editor={editor} />
 			</div>
 		</ResizablePanel>

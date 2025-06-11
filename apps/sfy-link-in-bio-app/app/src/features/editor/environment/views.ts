@@ -1,23 +1,23 @@
 import { IconSource } from '@shopify/polaris';
 import { LayoutSectionIcon, SettingsIcon } from '@/components';
 
-export const views = {
+export const viewsMetadataMap = {
 	blocks: {
-		id: 'blocks',
+		type: 'blocks',
 		icon: LayoutSectionIcon,
 		label: 'Blocks'
-	} satisfies TView,
+	} satisfies TViewMetadata,
 	settings: {
-		id: 'settings',
+		type: 'settings',
 		icon: SettingsIcon,
 		label: 'Settings'
-	} satisfies TView
+	} satisfies TViewMetadata
 };
 
-export type TViewId = keyof typeof views;
+export type TViewType = keyof typeof viewsMetadataMap;
 
-export interface TView {
-	id: string;
+export interface TViewMetadata {
+	type: string;
 	icon: IconSource;
 	label: string;
 }

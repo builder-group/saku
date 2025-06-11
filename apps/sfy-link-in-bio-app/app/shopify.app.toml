@@ -3,7 +3,7 @@
 client_id = "4c9dc129e68b889d9a351e14d8e36a02"
 name = "saku-link-in-bio-dev"
 handle = "saku-link-in-bio-dev"
-application_url = "https://ministries-theory-suse-tt.trycloudflare.com"
+application_url = "https://rolls-reflections-maternity-polymer.trycloudflare.com"
 embedded = true
 
 [build]
@@ -27,13 +27,13 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://ministries-theory-suse-tt.trycloudflare.com/auth/callback",
-  "https://ministries-theory-suse-tt.trycloudflare.com/auth/shopify/callback",
-  "https://ministries-theory-suse-tt.trycloudflare.com/api/auth/callback"
+  "https://rolls-reflections-maternity-polymer.trycloudflare.com/auth/callback",
+  "https://rolls-reflections-maternity-polymer.trycloudflare.com/auth/shopify/callback",
+  "https://rolls-reflections-maternity-polymer.trycloudflare.com/api/auth/callback"
 ]
 
 [app_proxy]
-url = "https://ministries-theory-suse-tt.trycloudflare.com/a/saku"
+url = "https://rolls-reflections-maternity-polymer.trycloudflare.com/a/saku"
 subpath = "saku"
 prefix = "a"
 
