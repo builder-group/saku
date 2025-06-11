@@ -27,6 +27,16 @@ export function createEditor(blocks: TBlock[] = []): TEditor {
 		removeBlock(blockId) {
 			this.blocks.set(this.blocks._v.filter((id) => id !== blockId));
 			delete this.blockMap[blockId];
+		},
+		swapBlocks(blockId1, blockId2) {
+			const index1 = this.blocks._v.indexOf(blockId1);
+			const index2 = this.blocks._v.indexOf(blockId2);
+
+			const newBlocks = [...this.blocks._v];
+			const [draggedItem] = newBlocks.splice(index1, 1);
+			newBlocks.splice(index2, 0, draggedItem as string);
+
+			this.blocks.set(newBlocks);
 		}
 	};
 }
@@ -39,6 +49,7 @@ export interface TEditor {
 	boundingRect: TState<TBoundingRect, []>;
 	addBlock: (block: TBlock) => void;
 	removeBlock: (blockId: TBlockId) => void;
+	swapBlocks: (blockId1: TBlockId, blockId2: TBlockId) => void;
 }
 
 export interface TBoundingRect {

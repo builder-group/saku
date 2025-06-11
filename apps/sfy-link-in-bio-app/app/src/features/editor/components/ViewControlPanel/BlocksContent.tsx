@@ -1,18 +1,37 @@
 import { notEmpty } from '@blgc/utils';
+import {
+	closestCenter,
+	DndContext,
+	PointerSensor,
+	useSensor,
+	useSensors,
+	type DragEndEvent
+} from '@dnd-kit/core';
+import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { Icon, Text } from '@shopify/polaris';
 import { useCompute } from 'feature-react/state';
 import React from 'react';
-import { DeleteIcon, DragHandleIcon, PlusCircleIcon } from '@/components';
-import { blocksMetadataMap } from '../../environment/';
+import { PlusCircleIcon } from '@/components';
 import { TEditor } from '../../lib';
 import { PanelHeader } from '../PanelHeader';
+import { BlockItem } from './BlockItem';
 
-export const BlocksContent: React.FC<TBlocksContentProps> = (props) => {
-	const { editor } = props;
-
+export const BlocksContent: React.FC<TBlocksContentProps> = ({ editor }) => {
 	const blocks = useCompute(editor.blocks, (blocks) => {
 		return blocks.map((blockId) => editor.blockMap[blockId]).filter(notEmpty);
 	});
+
+	const sensors = useSensors(
+		useSensor(PointerSensor, {
+			activationConstraint: {
+				distance: 8 // Require 8px movement before drag starts
+			}
+		})
+	);
+
+	// =========================================================================
+	// Events
+	// =========================================================================
 
 	const handleDeleteBlock = React.useCallback(
 		(blockId: string) => {
@@ -21,6 +40,21 @@ export const BlocksContent: React.FC<TBlocksContentProps> = (props) => {
 		[editor]
 	);
 
+	const handleDragEnd = React.useCallback(
+		(event: DragEndEvent) => {
+			const { active, over } = event;
+
+			if (over != null && active.id !== over.id) {
+				editor.swapBlocks(active.id as string, over.id as string);
+			}
+		},
+		[editor]
+	);
+
+	// =========================================================================
+	// UI
+	// =========================================================================
+
 	return (
 		<>
 			<PanelHeader>
@@ -28,42 +62,21 @@ export const BlocksContent: React.FC<TBlocksContentProps> = (props) => {
 					Blocks
 				</Text>
 			</PanelHeader>
-			<div className="p-2.5">
-				<div className="flex flex-col gap-2">
-					{blocks.map((block) => {
-						const metadata = blocksMetadataMap[block._v.type];
+			<div className="p-2">
+				<DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+					<SortableContext
+						items={blocks.map((block) => block._v.id) as string[]}
+						strategy={verticalListSortingStrategy}
+					>
+						<div className="flex flex-col gap-2">
+							{blocks.map((block) => (
+								<BlockItem key={block._v.id} block={block} onDelete={handleDeleteBlock} />
+							))}
+						</div>
+					</SortableContext>
+				</DndContext>
 
-						return (
-							<div
-								key={block._v.id}
-								className="group flex h-[30px] w-full cursor-pointer items-center rounded-lg px-2.5 hover:bg-gray-50"
-							>
-								<div className="flex w-full items-center gap-1.5">
-									<div>
-										<div className="group-hover:hidden">
-											{metadata?.icon && <Icon source={metadata.icon} />}
-										</div>
-										<div className="hidden group-hover:block">
-											<Icon source={DragHandleIcon} />
-										</div>
-									</div>
-									<div className="grow">
-										<Text as="p" variant="bodySm">
-											{metadata?.label || block._v.type}
-										</Text>
-									</div>
-									<div
-										className="z-50 hidden cursor-pointer rounded-lg p-1 group-hover:block hover:text-red-500"
-										onClick={() => handleDeleteBlock(block._v.id)}
-									>
-										<Icon source={DeleteIcon} />
-									</div>
-								</div>
-							</div>
-						);
-					})}
-				</div>
-				<div className="mt-1.5 flex h-[34px] cursor-pointer items-center gap-1.5 rounded-lg px-2.5 text-[#005BD3] hover:bg-gray-50">
+				<div className="mt-2 flex h-[34px] cursor-pointer items-center gap-2 rounded-lg px-2 text-[#005BD3] hover:bg-gray-50">
 					<div>
 						<Icon source={PlusCircleIcon} />
 					</div>
