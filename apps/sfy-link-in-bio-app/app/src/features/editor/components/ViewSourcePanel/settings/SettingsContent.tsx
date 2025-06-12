@@ -1,6 +1,6 @@
 import { Text } from '@shopify/polaris';
 import React from 'react';
-import { PanelHeader } from '../PanelHeader';
+import { PanelHeader } from '../../PanelHeader';
 
 export const SettingsContent: React.FC = () => {
 	return (

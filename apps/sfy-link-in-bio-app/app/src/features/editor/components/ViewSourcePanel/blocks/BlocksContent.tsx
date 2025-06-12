@@ -15,8 +15,8 @@ import { useCompute } from 'feature-react/state';
 import React from 'react';
 import { PlusCircleIcon, PlusIcon } from '@/components';
 import { cn } from '@/lib';
-import { TEditor } from '../../lib';
-import { PanelHeader } from '../PanelHeader';
+import { TEditor } from '../../../lib';
+import { PanelHeader } from '../../PanelHeader';
 import { BlockItem } from './BlockItem';
 import { BlockSelectorPopover } from './BlockSelectorPopover';
 

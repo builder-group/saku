@@ -56,6 +56,12 @@ export function createEditor(blocks: TBlock[] = []): TEditor {
 				this.selectedBlockId.set(blockId);
 			}
 		},
+		updateBlock(blockId, updates) {
+			const blockState = this.blockMap[blockId];
+			if (blockState != null) {
+				blockState.set((v) => ({ ...v, ...updates }));
+			}
+		},
 		unselectBlock() {
 			this.selectedBlockId.set(null);
 		}
@@ -77,6 +83,7 @@ export interface TEditor {
 	addBlock: (block: TBlock) => void;
 	removeBlock: (blockId: TBlockId) => void;
 	swapBlocks: (blockId1: TBlockId, blockId2: TBlockId) => void;
+	updateBlock: (blockId: TBlockId, updates: Partial<Omit<TBlock, 'id' | 'type'>>) => void;
 	selectBlock: (blockId: TBlockId) => void;
 	unselectBlock: () => void;
 }

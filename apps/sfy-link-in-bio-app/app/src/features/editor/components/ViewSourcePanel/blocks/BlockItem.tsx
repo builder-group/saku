@@ -7,8 +7,8 @@ import { TState } from 'feature-state';
 import React from 'react';
 import { DeleteIcon, DragHandleIcon } from '@/components';
 import { cn } from '@/lib';
-import { blocksMetadataMap, TBlock } from '../../environment';
-import { TEditor } from '../../lib';
+import { blocksMetadataMap, TBlock } from '../../../environment';
+import { TEditor } from '../../../lib';
 
 export const BlockItem: React.FC<TBlockItemProps> = (props) => {
 	const { blockState, editor } = props;

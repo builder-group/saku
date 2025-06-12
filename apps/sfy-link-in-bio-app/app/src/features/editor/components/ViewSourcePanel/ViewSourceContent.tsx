@@ -1,8 +1,8 @@
 import { useFeatureState } from 'feature-react/state';
 import React from 'react';
 import { TEditor } from '../../lib';
-import { BlocksContent } from './BlocksContent';
-import { SettingsContent } from './SettingsContent';
+import { BlocksContent } from './blocks';
+import { SettingsContent } from './settings';
 
 export const ViewSourceContent: React.FC<TViewSourceContentProps> = (props) => {
 	const { editor } = props;
