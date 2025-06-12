@@ -31,6 +31,7 @@ interface TBlockMetadata {
 }
 
 export type TBlock = THeaderBlock | TLinkBlock | TMediaBlock | TTextBlock;
+export type TBlockType = TBlock['type'];
 
 export interface THeaderBlock {
 	id: TBlockId;

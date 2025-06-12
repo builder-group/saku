@@ -42,41 +42,37 @@ export const BlockItem: React.FC<TBlockItemProps> = (props) => {
 				transition
 			}}
 			className={cn(
-				'group flex h-7 w-full items-center rounded-lg px-2',
+				'group flex h-8 w-full items-center gap-2 rounded-lg px-2',
 				isDragging && 'opacity-50',
-				!isAnyItemDragging && 'cursor-pointer hover:bg-gray-50'
+				!isAnyItemDragging && 'cursor-pointer hover:bg-neutral-50'
 			)}
 		>
-			<div className="flex w-full items-center gap-2">
-				<div>
-					<div className={cn(isAnyItemDragging ? 'block' : 'group-hover:hidden')}>
-						{blockMetadata?.icon && <Icon source={blockMetadata.icon} />}
-					</div>
-					<div
-						{...attributes}
-						{...listeners}
-						className={cn(
-							'hidden cursor-grab active:cursor-grabbing',
-							!isAnyItemDragging && 'group-hover:block'
-						)}
-					>
-						<Icon source={DragHandleIcon} />
-					</div>
-				</div>
-				<div className="grow">
-					<Text as="p" variant="bodySm">
-						{blockMetadata?.label}
-					</Text>
+			<div>
+				<div className={cn('block', !isAnyItemDragging && 'group-hover:hidden')}>
+					{blockMetadata?.icon && <Icon source={blockMetadata.icon} />}
 				</div>
 				<div
+					{...attributes}
+					{...listeners}
 					className={cn(
-						'hidden cursor-pointer rounded-lg p-1 hover:text-red-500',
+						'hidden cursor-grab active:cursor-grabbing',
 						!isAnyItemDragging && 'group-hover:block'
 					)}
-					onClick={handleDeleteBlock}
 				>
-					<Icon source={DeleteIcon} />
+					<Icon source={DragHandleIcon} />
 				</div>
+			</div>
+			<Text as="p" variant="bodyMd">
+				{blockMetadata?.label}
+			</Text>
+			<div
+				className={cn(
+					'ml-auto hidden cursor-pointer rounded-lg p-0.5 hover:bg-neutral-200 hover:text-red-500',
+					!isAnyItemDragging && 'group-hover:block'
+				)}
+				onClick={handleDeleteBlock}
+			>
+				<Icon source={DeleteIcon} />
 			</div>
 		</div>
 	);

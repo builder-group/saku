@@ -18,6 +18,7 @@ import { cn } from '@/lib';
 import { TEditor } from '../../lib';
 import { PanelHeader } from '../PanelHeader';
 import { BlockItem } from './BlockItem';
+import { BlockSelectorPopover } from './BlockSelectorPopover';
 
 export const BlocksContent: React.FC<TBlocksContentProps> = ({ editor }) => {
 	const blocks = useCompute(editor.blocks, (blocks) => {
@@ -64,7 +65,11 @@ export const BlocksContent: React.FC<TBlocksContentProps> = ({ editor }) => {
 				<Text as="h2" variant="headingMd">
 					Blocks
 				</Text>
-				<Button icon={PlusIcon} disabled={isDragging} variant="plain" />
+				<BlockSelectorPopover
+					editor={editor}
+					activator={<Button icon={PlusIcon} disabled={isDragging} variant="plain" />}
+					width="auto"
+				/>
 			</PanelHeader>
 			<div className="p-2">
 				<DndContext
@@ -83,20 +88,26 @@ export const BlocksContent: React.FC<TBlocksContentProps> = ({ editor }) => {
 					</SortableContext>
 				</DndContext>
 
-				<div
-					className={cn(
-						'mt-2 flex h-[34px] items-center gap-2 rounded-lg px-2 text-[#005BD3]',
-						isDragging && 'opacity-50',
-						!isDragging && 'cursor-pointer hover:bg-gray-50'
-					)}
-				>
-					<div>
-						<Icon source={PlusCircleIcon} />
-					</div>
-					<Text as="p" variant="bodyMd">
-						Add block
-					</Text>
-				</div>
+				<BlockSelectorPopover
+					editor={editor}
+					activator={
+						<div
+							className={cn(
+								'mt-2 flex h-[34px] items-center gap-2 rounded-lg px-2 text-[#005BD3]',
+								isDragging && 'opacity-50',
+								!isDragging && 'cursor-pointer hover:bg-gray-50'
+							)}
+						>
+							<div>
+								<Icon source={PlusCircleIcon} />
+							</div>
+							<Text as="p" variant="bodyMd">
+								Add block
+							</Text>
+						</div>
+					}
+					width="activator"
+				/>
 			</div>
 		</>
 	);

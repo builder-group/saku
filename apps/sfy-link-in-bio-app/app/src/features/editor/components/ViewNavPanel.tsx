@@ -55,8 +55,8 @@ export const ViewNavPanel: React.FC<TViewNavPanelProps> = (props) => {
 							<button
 								key={index}
 								className={cn(
-									'group flex w-full cursor-pointer items-center gap-3 rounded-lg p-3 text-left text-gray-700 transition-colors hover:bg-gray-100',
-									activeView === item.type && 'bg-gray-100 text-[#005BD3]'
+									'group flex w-full cursor-pointer items-center gap-3 rounded-lg p-3 text-left text-gray-700 transition-colors hover:bg-neutral-50',
+									activeView === item.type && 'bg-neutral-100 text-[#005BD3]'
 								)}
 								onClick={() => editor.activeView.set(item.type as TViewType)}
 							>

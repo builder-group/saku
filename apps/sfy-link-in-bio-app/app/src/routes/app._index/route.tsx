@@ -46,7 +46,7 @@ const Page: React.FC = () => {
 		<PolarisPage>
 			<TitleBar title="Saku Link In Bio">
 				<button variant="primary" onClick={handleCustomizeBio}>
-					Customize current bio
+					Customize
 				</button>
 				{bioUrl != null && (
 					<button
@@ -56,7 +56,7 @@ const Page: React.FC = () => {
 							window.open(bioUrl, '_blank', 'noopener,noreferrer');
 						}}
 					>
-						View current bio
+						Visit
 					</button>
 				)}
 			</TitleBar>
