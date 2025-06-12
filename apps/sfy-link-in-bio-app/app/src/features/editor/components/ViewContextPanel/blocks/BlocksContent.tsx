@@ -34,7 +34,10 @@ export const BlocksContent: React.FC<TBlocksContentProps> = (props) => {
 	return (
 		<div className="h-full">
 			<PanelHeader>
-				<Tabs tabs={blocksContentTabs} selected={selectedTabIndex} onSelect={handleTabChange} />
+				{/* Offset 8px Tab padding which can't be removed */}
+				<div className="-ml-2">
+					<Tabs tabs={blocksContentTabs} selected={selectedTabIndex} onSelect={handleTabChange} />
+				</div>
 			</PanelHeader>
 			<div className="h-full">
 				{selectedTabIndex === 0 && (

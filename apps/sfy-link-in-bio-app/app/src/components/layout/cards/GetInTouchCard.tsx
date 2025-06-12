@@ -33,7 +33,7 @@ export const GetInTouchCard: React.FC<TGetInTouchCardProps> = (props) => {
 							external
 							target="_blank"
 						>
-							Join Discord
+							Join our Discord Community
 						</Button>
 					)}
 					{version != null && (
