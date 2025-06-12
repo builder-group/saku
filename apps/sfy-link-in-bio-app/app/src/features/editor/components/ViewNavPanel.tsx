@@ -33,6 +33,21 @@ export const ViewNavPanel: React.FC<TViewNavPanelProps> = (props) => {
 		};
 	});
 
+	// =========================================================================
+	// Events
+	// =========================================================================
+
+	const handleSwitchView = React.useCallback(
+		(view: TViewType) => {
+			editor.switchView(view);
+		},
+		[editor]
+	);
+
+	// =========================================================================
+	// UI
+	// =========================================================================
+
 	if (sizes == null) {
 		return null;
 	}
@@ -58,7 +73,7 @@ export const ViewNavPanel: React.FC<TViewNavPanelProps> = (props) => {
 									'group flex w-full cursor-pointer items-center gap-3 rounded-lg p-3 text-left text-gray-700 transition-colors hover:bg-neutral-50',
 									activeView === item.type && 'bg-neutral-100 text-[#005BD3]'
 								)}
-								onClick={() => editor.activeView.set(item.type as TViewType)}
+								onClick={() => handleSwitchView(item.type as TViewType)}
 							>
 								<div className="flex h-5 w-5 flex-shrink-0 items-center justify-center">
 									<Icon source={IconComponent} />

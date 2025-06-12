@@ -21,7 +21,7 @@ import { BlockItem } from './BlockItem';
 import { BlockSelectorPopover } from './BlockSelectorPopover';
 
 export const BlocksContent: React.FC<TBlocksContentProps> = ({ editor }) => {
-	const blocks = useCompute(editor.blocks, (blocks) => {
+	const blocks = useCompute(editor.blockIds, (blocks) => {
 		return blocks.map((blockId) => editor.blockMap[blockId]).filter(notEmpty);
 	});
 
@@ -79,7 +79,7 @@ export const BlocksContent: React.FC<TBlocksContentProps> = ({ editor }) => {
 					onDragStart={handleDragStart}
 					modifiers={[restrictToParentElement]}
 				>
-					<SortableContext items={editor.blocks._v} strategy={verticalListSortingStrategy}>
+					<SortableContext items={editor.blockIds._v} strategy={verticalListSortingStrategy}>
 						<div className="flex flex-col gap-2">
 							{blocks.map((blockState) => (
 								<BlockItem key={blockState._v.id} blockState={blockState} editor={editor} />

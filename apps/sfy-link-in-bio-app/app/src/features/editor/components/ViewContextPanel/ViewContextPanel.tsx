@@ -24,6 +24,10 @@ export const ViewContextPanel: React.FC<TViewContextPanelProps> = (props) => {
 		};
 	});
 
+	// =========================================================================
+	// UI
+	// =========================================================================
+
 	if (sizes == null) {
 		return null;
 	}

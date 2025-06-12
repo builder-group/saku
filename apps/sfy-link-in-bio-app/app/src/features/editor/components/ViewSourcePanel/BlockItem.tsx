@@ -14,6 +14,10 @@ export const BlockItem: React.FC<TBlockItemProps> = (props) => {
 	const { blockState, editor } = props;
 	const blockId = useCompute(blockState, (block) => block.id);
 	const blockMetadata = useCompute(blockState, (block) => blocksMetadataMap[block.type]);
+	const isSelected = useCompute(
+		editor.selectedBlockId,
+		(selectedBlockId) => selectedBlockId === blockId
+	);
 
 	// https://docs.dndkit.com/presets/sortable
 	const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
@@ -26,8 +30,16 @@ export const BlockItem: React.FC<TBlockItemProps> = (props) => {
 	// Events
 	// =========================================================================
 
-	const handleDeleteBlock = React.useCallback(() => {
-		editor.removeBlock(blockId);
+	const handleDeleteBlock = React.useCallback(
+		(e: React.MouseEvent<HTMLDivElement>) => {
+			e.stopPropagation(); // Prevent the event from bubbling up to the parent (select event)
+			editor.removeBlock(blockId);
+		},
+		[editor, blockId]
+	);
+
+	const handleSelectBlock = React.useCallback(() => {
+		editor.selectBlock(blockId);
 	}, [editor, blockId]);
 
 	// =========================================================================
@@ -44,8 +56,10 @@ export const BlockItem: React.FC<TBlockItemProps> = (props) => {
 			className={cn(
 				'group flex h-8 w-full items-center gap-2 rounded-lg px-2',
 				isDragging && 'opacity-50',
-				!isAnyItemDragging && 'cursor-pointer hover:bg-neutral-50'
+				!isAnyItemDragging && 'cursor-pointer hover:bg-neutral-50',
+				isSelected && 'bg-neutral-100'
 			)}
+			onClick={handleSelectBlock}
 		>
 			<div>
 				<div className={cn('block', !isAnyItemDragging && 'group-hover:hidden')}>
