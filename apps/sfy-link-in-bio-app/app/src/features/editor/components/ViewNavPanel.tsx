@@ -17,40 +17,33 @@ export const ViewNavPanel: React.FC<TViewNavPanelProps> = (props) => {
 
 	// TODO: Figure out better solution
 	// https://github.com/bvaughn/react-resizable-panels/issues/46
-	const { collapsedSize, minSize, defaultSize, maxSize } = useCompute(
-		editor.boundingRect,
-		(rect) => {
-			const width = rect.right - rect.left;
-			const logicalSizeUnits = {
-				collapsedSize: 4,
-				minSize: 8,
-				defaultSize: 4,
-				maxSize: 12
-			};
-
-			if (width <= 0) {
-				return logicalSizeUnits;
-			}
-
-			const unitPixelValue = 15; // 1 unit = 15px
-			const toPercentOfWidth = (unit: number) => ((unit * unitPixelValue) / width) * 100;
-
-			return {
-				collapsedSize: toPercentOfWidth(logicalSizeUnits.collapsedSize),
-				minSize: toPercentOfWidth(logicalSizeUnits.minSize),
-				defaultSize: toPercentOfWidth(logicalSizeUnits.defaultSize),
-				maxSize: toPercentOfWidth(logicalSizeUnits.maxSize)
-			};
+	const sizes = useCompute(editor.boundingRect, (rect) => {
+		const width = rect.right - rect.left;
+		if (width <= 0) {
+			return null;
 		}
-	);
+
+		const toPercent = (pixels: number) => (pixels / width) * 100;
+
+		return {
+			collapsedSize: toPercent(60), // ~ 4
+			minSize: toPercent(120), // ~ 8
+			defaultSize: toPercent(60), // ~ 4
+			maxSize: toPercent(180) // ~ 12
+		};
+	});
+
+	if (sizes == null) {
+		return null;
+	}
 
 	return (
 		<ResizablePanel
 			collapsible={true}
-			collapsedSize={collapsedSize}
-			minSize={minSize}
-			defaultSize={defaultSize}
-			maxSize={maxSize}
+			collapsedSize={sizes.collapsedSize}
+			minSize={sizes.minSize}
+			defaultSize={sizes.defaultSize}
+			maxSize={sizes.maxSize}
 			onCollapse={() => setSidebarCollapsed(true)}
 			onExpand={() => setSidebarCollapsed(false)}
 		>

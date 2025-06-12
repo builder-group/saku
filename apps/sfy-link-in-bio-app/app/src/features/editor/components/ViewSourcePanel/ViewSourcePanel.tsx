@@ -9,30 +9,27 @@ export const ViewSourcePanel: React.FC<TViewSourcePanelProps> = (props) => {
 
 	// TODO: Figure out better solution
 	// https://github.com/bvaughn/react-resizable-panels/issues/46
-	const { minSize, defaultSize, maxSize } = useCompute(editor.boundingRect, (rect) => {
+	const sizes = useCompute(editor.boundingRect, (rect) => {
 		const width = rect.right - rect.left;
-		const logicalSizeUnits = {
-			minSize: 10,
-			defaultSize: 15,
-			maxSize: 20
-		};
-
 		if (width <= 0) {
-			return logicalSizeUnits;
+			return null;
 		}
 
-		const unitPixelValue = 15; // 1 unit = 15px
-		const toPercentOfWidth = (unit: number) => ((unit * unitPixelValue) / width) * 100;
+		const toPercent = (pixels: number) => (pixels / width) * 100;
 
 		return {
-			minSize: toPercentOfWidth(logicalSizeUnits.minSize),
-			defaultSize: toPercentOfWidth(logicalSizeUnits.defaultSize),
-			maxSize: toPercentOfWidth(logicalSizeUnits.maxSize)
+			minSize: toPercent(150), // ~ 10
+			defaultSize: toPercent(225), // ~ 15
+			maxSize: toPercent(300) // ~ 20
 		};
 	});
 
+	if (sizes == null) {
+		return null;
+	}
+
 	return (
-		<ResizablePanel minSize={minSize} defaultSize={defaultSize} maxSize={maxSize}>
+		<ResizablePanel minSize={sizes.minSize} defaultSize={sizes.defaultSize} maxSize={sizes.maxSize}>
 			<div className="flex h-full flex-col bg-white">
 				<ViewSourceContent editor={editor} />
 			</div>
