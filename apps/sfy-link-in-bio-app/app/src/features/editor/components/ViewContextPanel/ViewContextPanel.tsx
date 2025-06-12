@@ -13,7 +13,7 @@ export const ViewContextPanel: React.FC<TViewContextPanelProps> = (props) => {
 		const width = rect.right - rect.left;
 		const logicalSizeUnits = {
 			minSize: 15,
-			defaultSize: 15,
+			defaultSize: 20,
 			maxSize: 25
 		};
 

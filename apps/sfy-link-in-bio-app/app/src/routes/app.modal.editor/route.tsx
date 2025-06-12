@@ -16,7 +16,7 @@ const Page: React.FC = () => {
 	}, [blocks]);
 
 	return (
-		<div className="flex min-h-screen w-full bg-red-500">
+		<div className="flex min-h-screen w-full">
 			<Editor editor={editor} />
 		</div>
 	);

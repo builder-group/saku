@@ -12,9 +12,9 @@ export const ViewSourcePanel: React.FC<TViewSourcePanelProps> = (props) => {
 	const { minSize, defaultSize, maxSize } = useCompute(editor.boundingRect, (rect) => {
 		const width = rect.right - rect.left;
 		const logicalSizeUnits = {
-			minSize: 15,
+			minSize: 10,
 			defaultSize: 15,
-			maxSize: 25
+			maxSize: 20
 		};
 
 		if (width <= 0) {
