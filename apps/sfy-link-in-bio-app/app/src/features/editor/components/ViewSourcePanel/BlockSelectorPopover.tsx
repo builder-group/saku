@@ -4,7 +4,7 @@ import { shortId } from '@blgc/utils';
 import { Icon, Popover, Text } from '@shopify/polaris';
 import React from 'react';
 import { useResizeObserver } from '@/hooks';
-import { blocksMetadataMap, TBlockType } from '../../environment';
+import { blocksMetadata, blocksMetadataMap, TBlock, TBlockType } from '../../environment';
 import { TEditor } from '../../lib';
 
 export const BlockSelectorPopover: React.FC<TBlockSelectorPopoverProps> = (props) => {
@@ -12,10 +12,6 @@ export const BlockSelectorPopover: React.FC<TBlockSelectorPopoverProps> = (props
 	const [popoverActive, setPopoverActive] = React.useState(false);
 	const [activatorWidth, setActivatorWidth] = React.useState<number>();
 	const activatorRef = React.useRef<HTMLDivElement>(null);
-
-	const blocksMetadata = React.useMemo(() => {
-		return Object.values(blocksMetadataMap);
-	}, []);
 
 	// =========================================================================
 	// Events
@@ -29,8 +25,10 @@ export const BlockSelectorPopover: React.FC<TBlockSelectorPopoverProps> = (props
 		(blockType: TBlockType) => {
 			editor.addBlock({
 				id: shortId(),
-				type: blockType
-			});
+				type: blockType,
+				styles: {},
+				...blocksMetadataMap[blockType].defaultData
+			} as TBlock);
 
 			setPopoverActive(false);
 		},
@@ -80,7 +78,7 @@ export const BlockSelectorPopover: React.FC<TBlockSelectorPopoverProps> = (props
 						<div
 							key={blockMetadata.type}
 							className="flex h-8 cursor-pointer items-center gap-2 rounded-lg px-2 hover:bg-neutral-50"
-							onClick={() => handleBlockSelect(blockMetadata.type as TBlockType)}
+							onClick={() => handleBlockSelect(blockMetadata.type)}
 						>
 							<div>
 								<Icon source={blockMetadata.icon} />
