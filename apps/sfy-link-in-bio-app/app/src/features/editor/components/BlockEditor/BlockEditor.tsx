@@ -10,11 +10,8 @@ export const BlockEditor: React.FC<TBlockEditorProps> = (props) => {
 
 	const EditorComponent = useCompute(
 		blockState,
-		(block) => {
-			return blockEditorsRegistry[block.type] as React.ComponentType<
-				TBlockEditorComponentProps<any>
-			>;
-		},
+		(block) =>
+			blockEditorsRegistry[block.type] as React.ComponentType<TBlockEditorComponentProps<any>>,
 		[blockState]
 	);
 
