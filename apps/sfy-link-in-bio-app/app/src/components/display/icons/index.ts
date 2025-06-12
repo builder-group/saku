@@ -10,6 +10,7 @@ export {
 	DragHandleIcon,
 	ExternalIcon,
 	LayoutSectionIcon,
+	PaintBrushFlatIcon,
 	PlusCircleIcon,
 	PlusIcon,
 	SettingsIcon,

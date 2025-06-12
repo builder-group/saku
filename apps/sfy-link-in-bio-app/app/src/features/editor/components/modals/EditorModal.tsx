@@ -26,11 +26,7 @@ export const EditorModal: React.FC<TEditorModalProps> = (props) => {
 			onShow={onShow}
 			variant="max"
 		>
-			<TitleBar title="default-bio">
-				<button variant="primary" onClick={handleSave}>
-					Save
-				</button>
-			</TitleBar>
+			<TitleBar title="default-bio" />
 		</Modal>
 	);
 };

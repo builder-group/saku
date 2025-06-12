@@ -102,7 +102,7 @@ const Page: React.FC = () => {
 												url={bioUrl}
 												external
 												target="_blank"
-												accessibilityLabel="Visit your link in bio page"
+												accessibilityLabel="Visit your Link In Bio page"
 											/>
 										)}
 										<Button variant="primary" onClick={handleCustomizeBio}>
