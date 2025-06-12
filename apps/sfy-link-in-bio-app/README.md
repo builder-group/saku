@@ -296,3 +296,4 @@ export default function Page() {
 - [Shopify App Proxies Explained](https://www.youtube.com/watch?v=ZiugtHDctFk)
 - [AppProxyProvider](https://shopify.dev/docs/api/shopify-app-remix/v3/entrypoints/appproxyprovider)
 - [Client side JavaScript does not work on app proxy pages](https://github.com/Shopify/shopify-app-template-remix/issues/436)
+- [How To Deploy Your Shopify Apps](https://www.youtube.com/watch?v=DKswuVUyKaQ)

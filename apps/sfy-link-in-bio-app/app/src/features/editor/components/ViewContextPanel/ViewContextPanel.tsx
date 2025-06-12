@@ -1,12 +1,11 @@
-import { useCompute, useFeatureState } from 'feature-react/state';
+import { useCompute } from 'feature-react/state';
 import React from 'react';
 import { ResizablePanel } from '@/components';
 import { TEditor } from '../../lib';
-import { ViewControlContent } from './ViewControlContent';
+import { ViewContextContent } from './ViewContextContent';
 
-export const ViewControlPanel: React.FC<TViewControlPanelProps> = (props) => {
+export const ViewContextPanel: React.FC<TViewContextPanelProps> = (props) => {
 	const { editor } = props;
-	const activeView = useFeatureState(editor.activeView);
 
 	// TODO: Figure out better solution
 	// https://github.com/bvaughn/react-resizable-panels/issues/46
@@ -14,7 +13,7 @@ export const ViewControlPanel: React.FC<TViewControlPanelProps> = (props) => {
 		const width = rect.right - rect.left;
 		const logicalSizeUnits = {
 			minSize: 15,
-			defaultSize: 20,
+			defaultSize: 15,
 			maxSize: 25
 		};
 
@@ -35,12 +34,12 @@ export const ViewControlPanel: React.FC<TViewControlPanelProps> = (props) => {
 	return (
 		<ResizablePanel minSize={minSize} defaultSize={defaultSize} maxSize={maxSize}>
 			<div className="flex h-full flex-col bg-white">
-				<ViewControlContent editor={editor} />
+				<ViewContextContent editor={editor} />
 			</div>
 		</ResizablePanel>
 	);
 };
 
-interface TViewControlPanelProps {
+interface TViewContextPanelProps {
 	editor: TEditor;
 }

@@ -4,18 +4,18 @@ import { TEditor } from '../../lib';
 import { BlocksContent } from './BlocksContent';
 import { SettingsContent } from './SettingsContent';
 
-export const ViewControlContent: React.FC<TViewControlContentProps> = (props) => {
+export const ViewContextContent: React.FC<TViewContextContentProps> = (props) => {
 	const { editor } = props;
 	const activeView = useFeatureState(editor.activeView);
 
 	switch (activeView) {
 		case 'blocks':
-			return <BlocksContent editor={editor} />;
+			return <BlocksContent />;
 		case 'settings':
 			return <SettingsContent />;
 	}
 };
 
-interface TViewControlContentProps {
+interface TViewContextContentProps {
 	editor: TEditor;
 }

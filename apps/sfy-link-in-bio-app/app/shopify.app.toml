@@ -3,7 +3,7 @@
 client_id = "4c9dc129e68b889d9a351e14d8e36a02"
 name = "saku-link-in-bio-dev"
 handle = "saku-link-in-bio-dev"
-application_url = "https://pn-interesting-diego-singer.trycloudflare.com"
+application_url = "https://dose-pennsylvania-opportunity-ak.trycloudflare.com"
 embedded = true
 
 [build]
@@ -27,13 +27,13 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://pn-interesting-diego-singer.trycloudflare.com/auth/callback",
-  "https://pn-interesting-diego-singer.trycloudflare.com/auth/shopify/callback",
-  "https://pn-interesting-diego-singer.trycloudflare.com/api/auth/callback"
+  "https://dose-pennsylvania-opportunity-ak.trycloudflare.com/auth/callback",
+  "https://dose-pennsylvania-opportunity-ak.trycloudflare.com/auth/shopify/callback",
+  "https://dose-pennsylvania-opportunity-ak.trycloudflare.com/api/auth/callback"
 ]
 
 [app_proxy]
-url = "https://pn-interesting-diego-singer.trycloudflare.com/a/saku"
+url = "https://dose-pennsylvania-opportunity-ak.trycloudflare.com/a/saku"
 subpath = "saku"
 prefix = "a"
 

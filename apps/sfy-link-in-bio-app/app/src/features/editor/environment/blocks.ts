@@ -16,6 +16,11 @@ export const blocksMetadataMap = {
 		type: 'media',
 		icon: LayoutSectionIcon,
 		label: 'Media'
+	} satisfies TBlockMetadata,
+	text: {
+		type: 'text',
+		icon: LayoutSectionIcon,
+		label: 'Text'
 	} satisfies TBlockMetadata
 };
 
@@ -25,7 +30,7 @@ interface TBlockMetadata {
 	label: string;
 }
 
-export type TBlock = THeaderBlock | TLinkBlock | TMediaBlock;
+export type TBlock = THeaderBlock | TLinkBlock | TMediaBlock | TTextBlock;
 
 export interface THeaderBlock {
 	id: TBlockId;
@@ -40,6 +45,11 @@ export interface TLinkBlock {
 export interface TMediaBlock {
 	id: TBlockId;
 	type: 'media';
+}
+
+export interface TTextBlock {
+	id: TBlockId;
+	type: 'text';
 }
 
 export type TBlockId = string;

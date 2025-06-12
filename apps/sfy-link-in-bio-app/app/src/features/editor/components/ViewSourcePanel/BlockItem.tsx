@@ -2,21 +2,37 @@ import { useDndContext } from '@dnd-kit/core';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Icon, Text } from '@shopify/polaris';
+import { useCompute } from 'feature-react/state';
 import { TState } from 'feature-state';
 import React from 'react';
 import { DeleteIcon, DragHandleIcon } from '@/components';
 import { cn } from '@/lib';
 import { blocksMetadataMap, TBlock } from '../../environment';
+import { TEditor } from '../../lib';
 
 export const BlockItem: React.FC<TBlockItemProps> = (props) => {
-	const { block, onDelete } = props;
-	const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
-		id: block._v.id
-	});
+	const { blockState, editor } = props;
+	const blockId = useCompute(blockState, (block) => block.id);
+	const blockMetadata = useCompute(blockState, (block) => blocksMetadataMap[block.type]);
 
-	const metadata = React.useMemo(() => blocksMetadataMap[block._v.type], [block._v.type]);
+	// https://docs.dndkit.com/presets/sortable
+	const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+		id: blockId
+	});
 	const { active } = useDndContext();
 	const isAnyItemDragging = React.useMemo(() => active != null, [active]);
+
+	// =========================================================================
+	// Events
+	// =========================================================================
+
+	const handleDeleteBlock = React.useCallback(() => {
+		editor.removeBlock(blockId);
+	}, [editor, blockId]);
+
+	// =========================================================================
+	// UI
+	// =========================================================================
 
 	return (
 		<div
@@ -34,7 +50,7 @@ export const BlockItem: React.FC<TBlockItemProps> = (props) => {
 			<div className="flex w-full items-center gap-2">
 				<div>
 					<div className={cn(isAnyItemDragging ? 'block' : 'group-hover:hidden')}>
-						{metadata?.icon && <Icon source={metadata.icon} />}
+						{blockMetadata?.icon && <Icon source={blockMetadata.icon} />}
 					</div>
 					<div
 						{...attributes}
@@ -49,7 +65,7 @@ export const BlockItem: React.FC<TBlockItemProps> = (props) => {
 				</div>
 				<div className="grow">
 					<Text as="p" variant="bodySm">
-						{metadata?.label}
+						{blockMetadata?.label}
 					</Text>
 				</div>
 				<div
@@ -57,7 +73,7 @@ export const BlockItem: React.FC<TBlockItemProps> = (props) => {
 						'hidden cursor-pointer rounded-lg p-1 hover:text-red-500',
 						!isAnyItemDragging && 'group-hover:block'
 					)}
-					onClick={() => onDelete(block._v.id)}
+					onClick={handleDeleteBlock}
 				>
 					<Icon source={DeleteIcon} />
 				</div>
@@ -67,6 +83,6 @@ export const BlockItem: React.FC<TBlockItemProps> = (props) => {
 };
 
 interface TBlockItemProps {
-	block: TState<TBlock, []>;
-	onDelete: (blockId: string) => void;
+	editor: TEditor;
+	blockState: TState<TBlock, []>;
 }

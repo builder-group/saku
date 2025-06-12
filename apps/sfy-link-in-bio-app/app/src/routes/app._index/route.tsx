@@ -12,9 +12,8 @@ import {
 	Text,
 	TextField
 } from '@shopify/polaris';
-import { ExternalIcon } from '@shopify/polaris-icons';
 import React from 'react';
-import { FeedbackCard, GetInTouchCard, SitePreview } from '@/components';
+import { ClipboardButton, FeedbackCard, GetInTouchCard, SitePreview, ViewIcon } from '@/components';
 import { appConfig, shopify } from '@/environment/.server';
 import { useEditorModal } from '@/features/editor';
 import { TLoaderFunction } from '@/types';
@@ -47,7 +46,7 @@ const Page: React.FC = () => {
 		<PolarisPage>
 			<TitleBar title="Saku Link In Bio">
 				<button variant="primary" onClick={handleCustomizeBio}>
-					Customize bio
+					Customize current bio
 				</button>
 				{bioUrl != null && (
 					<button
@@ -57,7 +56,7 @@ const Page: React.FC = () => {
 							window.open(bioUrl, '_blank', 'noopener,noreferrer');
 						}}
 					>
-						View your bio
+						View current bio
 					</button>
 				)}
 			</TitleBar>
@@ -95,9 +94,21 @@ const Page: React.FC = () => {
 									</InlineStack>
 
 									{/* Action Buttons */}
-									<Button variant="primary" onClick={handleCustomizeBio}>
-										Customize
-									</Button>
+									<InlineStack gap="200" blockAlign="center">
+										{bioUrl != null && (
+											<Button
+												icon={ViewIcon}
+												variant="secondary"
+												url={bioUrl}
+												external
+												target="_blank"
+												accessibilityLabel="Visit your link in bio page"
+											/>
+										)}
+										<Button variant="primary" onClick={handleCustomizeBio}>
+											Customize
+										</Button>
+									</InlineStack>
 								</InlineStack>
 							</Box>
 						</BlockStack>
@@ -111,7 +122,7 @@ const Page: React.FC = () => {
 							<BlockStack gap="300">
 								<InlineStack align="space-between" blockAlign="center">
 									<Text as="h2" variant="headingMd">
-										Your Link In Bio
+										Your Link
 									</Text>
 									{bioUrl != null ? (
 										<Badge tone="success">Active</Badge>
@@ -126,15 +137,7 @@ const Page: React.FC = () => {
 										value={bioUrl}
 										readOnly
 										autoComplete="off"
-										connectedRight={
-											<Button
-												icon={ExternalIcon}
-												url={bioUrl}
-												external
-												target="_blank"
-												accessibilityLabel="Visit your link in bio page"
-											/>
-										}
+										connectedRight={<ClipboardButton textToCopy={bioUrl} />}
 									/>
 								) : (
 									<Button
