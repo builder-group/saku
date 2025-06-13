@@ -37,28 +37,28 @@
 		"update:latest": "pnpm update --latest"
 	},
 	"dependencies": {
-		"@asteasolutions/zod-to-openapi": "^7.3.2",
-		"@blgc/utils": "^0.0.52",
+		"@asteasolutions/zod-to-openapi": "^7.3.3",
+		"@blgc/utils": "^0.0.55",
 		"@hono/zod-openapi": "^0.19.8",
 		"@hono/zod-validator": "^0.7.0",
 		"@repo/hono-utils": "workspace:*",
-		"drizzle-orm": "^0.44.1",
-		"drizzle-zod": "^0.7.1",
+		"drizzle-orm": "^0.44.2",
+		"drizzle-zod": "^0.8.2",
 		"feature-fetch": "^0.0.43",
 		"feature-logger": "^0.0.42",
 		"head-metadata": "0.0.4",
-		"hono": "^4.7.10",
+		"hono": "^4.7.11",
 		"pg": "^8.16.0",
 		"validatenv": "^0.0.35",
 		"validation-adapters": "^0.0.25",
-		"zod": "3.25.42"
+		"zod": "3.25.64"
 	},
 	"devDependencies": {
-		"@hono/node-server": "^1.14.3",
+		"@hono/node-server": "^1.14.4",
 		"@rollup/plugin-replace": "^6.0.2",
-		"@types/node": "^22.15.29",
-		"@types/pg": "^8.15.2",
-		"@types/react": "^19.1.6",
+		"@types/node": "^24.0.1",
+		"@types/pg": "^8.15.4",
+		"@types/react": "^19.1.8",
 		"dotenv": "^16.5.0",
 		"drizzle-kit": "^0.31.1"
 	}
