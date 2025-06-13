@@ -1,13 +1,13 @@
 // Only load .env in development (for db credentials)
 const nodeEnv = process.env['NODE_ENV'] ?? 'local';
 if (nodeEnv === 'local') {
-	const dotenv = await import('dotenv');
+	const dotenv = require('dotenv');
 	dotenv.config({ path: `.env.${nodeEnv}` });
 	console.log(`Loaded dotenv from '.env.${nodeEnv}'.`);
 }
 
 /** @type { import("drizzle-kit").Config } */
-export default {
+module.exports = {
 	schema: './src/environment/db/schemas/index.ts',
 	out: './drizzle/migrations',
 	dialect: 'postgresql',
