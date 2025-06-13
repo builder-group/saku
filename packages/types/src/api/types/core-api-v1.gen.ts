@@ -4,183 +4,183 @@
  */
 
 export interface paths {
-    "/v1/health": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Check API health
-         * @description Returns the current health status of the API
-         */
-        get: operations["checkHealth"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/info": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get API info
-         * @description Returns the current info of the API
-         */
-        get: operations["getInfo"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
+	'/v1/health': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		/**
+		 * Check API health
+		 * @description Returns the current health status of the API
+		 */
+		get: operations['checkHealth'];
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	'/v1/info': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		/**
+		 * Get API info
+		 * @description Returns the current info of the API
+		 */
+		get: operations['getInfo'];
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
 }
 export type webhooks = Record<string, never>;
 export interface components {
-    schemas: {
-        HealthDto: {
-            /**
-             * @example Up
-             * @enum {string}
-             */
-            status: "Up" | "Down";
-            /** @example App is up and running */
-            message: string;
-            /** @example v1.0.0d */
-            version: string;
-        };
-        AppErrorDto: {
-            /**
-             * @description A URI reference that identifies the problem type.
-             * @default about:blank
-             * @example https://docs.example.com/errors/validation-error
-             */
-            type: string;
-            /**
-             * @description A short, human-readable summary of the problem type.
-             * @example Validation failed for the request parameters.
-             */
-            title: string;
-            /**
-             * @description The HTTP status code for this occurrence of the problem.
-             * @example 400
-             */
-            status: number;
-            /**
-             * @description A human-readable explanation specific to this error occurrence.
-             * @example Field `email` must be a valid email address.
-             */
-            detail?: string;
-            /**
-             * @description A URI reference that identifies the specific occurrence of the problem.
-             * @example /api/users/1234
-             */
-            instance?: string;
-            /**
-             * @description An application-specific error code, useful for client-side logic.
-             * @example VALIDATION_ERROR
-             */
-            code?: string;
-            /**
-             * @description Extension member for additional error context (e.g., per-field validation).
-             * @example [
-             *       {
-             *         "field": "email",
-             *         "reason": "must be a valid email"
-             *       },
-             *       {
-             *         "field": "password",
-             *         "reason": "is required"
-             *       }
-             *     ]
-             */
-            errors?: {
-                [key: string]: unknown;
-            }[];
-        };
-        InfoDto: {
-            /** @example v1.0.0d */
-            version: string;
-            /** @example https://api.saku.so */
-            url: string;
-            /** @example production */
-            env: string;
-        };
-    };
-    responses: never;
-    parameters: never;
-    requestBodies: never;
-    headers: never;
-    pathItems: never;
+	schemas: {
+		HealthDto: {
+			/**
+			 * @example Up
+			 * @enum {string}
+			 */
+			status: 'Up' | 'Down';
+			/** @example App is up and running */
+			message: string;
+			/** @example v1.0.0d */
+			version: string;
+		};
+		AppErrorDto: {
+			/**
+			 * @description A URI reference that identifies the problem type.
+			 * @default about:blank
+			 * @example https://docs.example.com/errors/validation-error
+			 */
+			type: string;
+			/**
+			 * @description A short, human-readable summary of the problem type.
+			 * @example Validation failed for the request parameters.
+			 */
+			title: string;
+			/**
+			 * @description The HTTP status code for this occurrence of the problem.
+			 * @example 400
+			 */
+			status: number;
+			/**
+			 * @description A human-readable explanation specific to this error occurrence.
+			 * @example Field `email` must be a valid email address.
+			 */
+			detail?: string;
+			/**
+			 * @description A URI reference that identifies the specific occurrence of the problem.
+			 * @example /api/users/1234
+			 */
+			instance?: string;
+			/**
+			 * @description An application-specific error code, useful for client-side logic.
+			 * @example VALIDATION_ERROR
+			 */
+			code?: string;
+			/**
+			 * @description Extension member for additional error context (e.g., per-field validation).
+			 * @example [
+			 *       {
+			 *         "field": "email",
+			 *         "reason": "must be a valid email"
+			 *       },
+			 *       {
+			 *         "field": "password",
+			 *         "reason": "is required"
+			 *       }
+			 *     ]
+			 */
+			errors?: {
+				[key: string]: unknown;
+			}[];
+		};
+		InfoDto: {
+			/** @example v1.0.0d */
+			version: string;
+			/** @example https://api.saku.so */
+			url: string;
+			/** @example production */
+			env: string;
+		};
+	};
+	responses: never;
+	parameters: never;
+	requestBodies: never;
+	headers: never;
+	pathItems: never;
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    checkHealth: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HealthDto"];
-                };
-            };
-            /** @description Internal server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AppErrorDto"];
-                };
-            };
-        };
-    };
-    getInfo: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InfoDto"];
-                };
-            };
-            /** @description Internal server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AppErrorDto"];
-                };
-            };
-        };
-    };
+	checkHealth: {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		requestBody?: never;
+		responses: {
+			/** @description Successful response */
+			200: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['HealthDto'];
+				};
+			};
+			/** @description Internal server error */
+			500: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['AppErrorDto'];
+				};
+			};
+		};
+	};
+	getInfo: {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		requestBody?: never;
+		responses: {
+			/** @description Successful response */
+			200: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['InfoDto'];
+				};
+			};
+			/** @description Internal server error */
+			500: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['AppErrorDto'];
+				};
+			};
+		};
+	};
 }

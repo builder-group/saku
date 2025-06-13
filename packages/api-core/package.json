@@ -49,6 +49,7 @@
 		"head-metadata": "0.0.4",
 		"hono": "^4.7.11",
 		"pg": "^8.16.0",
+		"valibot": "^1.1.0",
 		"validatenv": "^0.0.35",
 		"validation-adapters": "^0.0.25",
 		"zod": "3.25.64"
