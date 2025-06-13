@@ -1,5 +1,11 @@
 # Shopify `Saku - Link In Bio` App
 
+### Quick Links
+
+- [App Bridge Library](https://shopify.dev/docs/api/app-bridge-library)
+- [Polaris Components](https://polaris-react.shopify.com/components)
+- [Polaris Icons](https://polaris-react.shopify.com/icons)
+
 ## 📐 Architecture
 
 ### Differences to [`shopify-app-template-remix`](https://github.com/Shopify/shopify-app-template-remix) template

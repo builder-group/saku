@@ -7,11 +7,6 @@ export const EditorModal: React.FC<TEditorModalProps> = (props) => {
 	const { src, isOpenState, onShow, onHide } = props;
 	const isOpen = useFeatureState(isOpenState);
 
-	const handleSave = React.useCallback(() => {
-		isOpenState.set(false);
-		onHide?.();
-	}, [isOpenState, onHide]);
-
 	const handleHide = React.useCallback(() => {
 		isOpenState.set(false);
 		onHide?.();
