@@ -1,7 +1,7 @@
 import { Select, Text, TextField } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react/state';
 import React from 'react';
-import { AccordionSection } from '@/components/layout/AccordionSection';
+import { AccordionSection } from '@/components';
 import { TTextBlock } from '../../../environment';
 import { TBlockEditorComponentProps } from '../blockEditorsRegistry';
 
@@ -79,7 +79,7 @@ export const TextBlockEditor: React.FC<TBlockEditorComponentProps<TTextBlock>> =
 					</div>
 				</div>
 			</AccordionSection>
-			<AccordionSection title="Styles">
+			<AccordionSection title="Style">
 				{/* Alignment */}
 				<div className="space-y-1">
 					<div>

@@ -33,10 +33,6 @@ export const ViewSourcePanel: React.FC<TViewSourcePanelProps> = (props) => {
 	// UI
 	// =========================================================================
 
-	if (sizes == null) {
-		return null;
-	}
-
 	return (
 		<ResizablePanel minSize={sizes.minSize} defaultSize={sizes.defaultSize} maxSize={sizes.maxSize}>
 			<div className="flex h-full flex-col bg-white">

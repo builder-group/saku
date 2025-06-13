@@ -1,4 +1,4 @@
-import { Icon } from '@shopify/polaris';
+import { Icon, Text } from '@shopify/polaris';
 import { useCompute, useFeatureState } from 'feature-react/state';
 import React from 'react';
 import { ResizablePanel } from '@/components';
@@ -54,10 +54,6 @@ export const ViewNavPanel: React.FC<TViewNavPanelProps> = (props) => {
 	// UI
 	// =========================================================================
 
-	if (sizes == null) {
-		return null;
-	}
-
 	return (
 		<ResizablePanel
 			collapsible={true}
@@ -71,21 +67,22 @@ export const ViewNavPanel: React.FC<TViewNavPanelProps> = (props) => {
 			<div className="flex h-full flex-col bg-white">
 				<nav className="flex flex-col gap-1 p-2">
 					{navigationItems.map((item, index) => {
-						const IconComponent = item.icon;
 						return (
 							<button
 								key={index}
 								className={cn(
-									'group flex w-full cursor-pointer items-center gap-3 rounded-lg p-3 text-left text-gray-700 transition-colors hover:bg-neutral-50',
+									'flex w-full cursor-pointer items-center gap-3 rounded-lg p-3 text-left text-neutral-700 hover:bg-neutral-50',
 									activeView === item.type && 'bg-neutral-100 text-[#005BD3]'
 								)}
 								onClick={() => handleSwitchView(item.type as TViewType)}
 							>
-								<div className="flex h-5 w-5 flex-shrink-0 items-center justify-center">
-									<Icon source={IconComponent} />
+								<div className="flex h-5 w-5 items-center justify-center">
+									<Icon source={item.icon} />
 								</div>
 								{!sidebarCollapsed && (
-									<span className={'truncate text-sm font-medium'}>{item.label}</span>
+									<Text as="span" variant="bodyMd" truncate>
+										{item.label}
+									</Text>
 								)}
 							</button>
 						);

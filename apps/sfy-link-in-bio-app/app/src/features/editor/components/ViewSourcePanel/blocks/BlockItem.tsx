@@ -31,7 +31,7 @@ export const BlockItem: React.FC<TBlockItemProps> = (props) => {
 	// =========================================================================
 
 	const handleDeleteBlock = React.useCallback(
-		(e: React.MouseEvent<HTMLDivElement>) => {
+		(e: React.MouseEvent<HTMLButtonElement>) => {
 			e.stopPropagation(); // Prevent the event from bubbling up to the parent (select event)
 			editor.removeBlock(blockId);
 		},
@@ -79,7 +79,7 @@ export const BlockItem: React.FC<TBlockItemProps> = (props) => {
 			<Text as="p" variant="bodyMd">
 				{blockMetadata?.label}
 			</Text>
-			<div
+			<button
 				className={cn(
 					'ml-auto hidden cursor-pointer rounded-lg p-0.5 hover:bg-neutral-200 hover:text-red-500',
 					!isAnyItemDragging && 'group-hover:block'
@@ -87,7 +87,7 @@ export const BlockItem: React.FC<TBlockItemProps> = (props) => {
 				onClick={handleDeleteBlock}
 			>
 				<Icon source={DeleteIcon} />
-			</div>
+			</button>
 		</div>
 	);
 };
