@@ -15,6 +15,7 @@ export const shopify = Object.assign(
 		authPathPrefix: '/auth',
 		sessionStorage: shopifySessionStorage,
 		distribution: AppDistribution.AppStore,
+		useOnlineTokens: true,
 		future: {
 			unstable_newEmbeddedAuthStrategy: true,
 			removeRest: true

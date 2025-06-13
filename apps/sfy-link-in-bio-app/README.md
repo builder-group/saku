@@ -303,3 +303,65 @@ export default function Page() {
 - [AppProxyProvider](https://shopify.dev/docs/api/shopify-app-remix/v3/entrypoints/appproxyprovider)
 - [Client side JavaScript does not work on app proxy pages](https://github.com/Shopify/shopify-app-template-remix/issues/436)
 - [How To Deploy Your Shopify Apps](https://www.youtube.com/watch?v=DKswuVUyKaQ)
+
+### Session Storage Data Structure
+
+When using [`@shopify/shopify-app-session-storage`](https://www.npmjs.com/package/@shopify/shopify-app-session-storage), you get two types of sessions during app installation:
+
+#### Offline Session (Permanent API Access)
+
+- **Purpose**: Long-lived access token for background API calls
+- **Expires**: Never (`undefined`)
+- **Use case**: Webhooks, scheduled tasks, server-to-server operations
+
+```json
+{
+	"id": "offline_my-shop.myshopify.com",
+	"shop": "my-shop.myshopify.com",
+	"state": "",
+	"isOnline": false,
+	"scope": "write_products,read_customers",
+	"expires": undefined,
+	"accessToken": "shpat_abc123...xyz789",
+	"onlineAccessInfo": undefined
+}
+```
+
+#### Online Session (User Context + Temporary Access)
+
+- **Purpose**: User-specific operations with account info
+- **Expires**: 24 hours
+- **Use case**: User actions, personalized features, installer identification
+
+```json
+{
+	"id": "my-shop.myshopify.com_987654321",
+	"shop": "my-shop.myshopify.com",
+	"state": "",
+	"isOnline": true,
+	"scope": "write_products,read_customers",
+	"expires": "2025-06-14T13:39:33.336Z",
+	"accessToken": "shpat_def456...uvw012",
+	"onlineAccessInfo": {
+		"expires_in": 86399,
+		"associated_user_scope": "write_products,read_customers",
+		"session": "session_token_hash_string",
+		"account_number": null,
+		"associated_user": {
+			"id": 987654321,
+			"first_name": "John",
+			"last_name": "Doe",
+			"email": "john@example.com",
+			"account_owner": true,
+			"locale": "en-US",
+			"collaborator": false,
+			"email_verified": true
+		}
+	}
+}
+```
+
+#### Resources
+
+- [Offline Access Tokens](https://shopify.dev/docs/apps/build/authentication-authorization/access-tokens/offline-access-tokens)
+- [Online Access Tokens](https://shopify.dev/docs/apps/build/authentication-authorization/access-tokens/online-access-tokens)

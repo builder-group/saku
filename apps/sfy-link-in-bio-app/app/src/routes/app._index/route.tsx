@@ -166,7 +166,7 @@ export const loader: TLoaderFunction<TLoaderData> = async ({ request }) => {
 			domain: session.shop
 		},
 		appEnv: {
-			version: appConfig.packageVersion,
+			version: appConfig.version,
 			social: {
 				discord: appConfig.social.discord
 			},
