@@ -20,7 +20,13 @@ export const ViewNavPanel: React.FC<TViewNavPanelProps> = (props) => {
 	const sizes = useCompute(editor.boundingRect, (rect) => {
 		const width = rect.right - rect.left;
 		if (width <= 0) {
-			return null;
+			// Note: Return default sizes instead of null to prevent the panel from being hidden on hot reload
+			return {
+				collapsedSize: 4,
+				minSize: 8,
+				defaultSize: 4,
+				maxSize: 12
+			};
 		}
 
 		const toPercent = (pixels: number) => (pixels / width) * 100;

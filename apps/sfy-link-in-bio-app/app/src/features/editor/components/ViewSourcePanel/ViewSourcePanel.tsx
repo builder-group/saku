@@ -12,7 +12,12 @@ export const ViewSourcePanel: React.FC<TViewSourcePanelProps> = (props) => {
 	const sizes = useCompute(editor.boundingRect, (rect) => {
 		const width = rect.right - rect.left;
 		if (width <= 0) {
-			return null;
+			// Note: Return default sizes instead of null to prevent the panel from being hidden on hot reload
+			return {
+				minSize: 10,
+				defaultSize: 15,
+				maxSize: 20
+			};
 		}
 
 		const toPercent = (pixels: number) => (pixels / width) * 100;

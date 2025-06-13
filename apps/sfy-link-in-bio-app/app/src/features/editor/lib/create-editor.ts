@@ -83,7 +83,10 @@ export interface TEditor {
 	addBlock: (block: TBlock) => void;
 	removeBlock: (blockId: TBlockId) => void;
 	swapBlocks: (blockId1: TBlockId, blockId2: TBlockId) => void;
-	updateBlock: (blockId: TBlockId, updates: Partial<Omit<TBlock, 'id' | 'type'>>) => void;
+	updateBlock<GBlock extends TBlock>(
+		blockId: TBlockId,
+		updates: Partial<Omit<GBlock, 'id' | 'type'>>
+	): void;
 	selectBlock: (blockId: TBlockId) => void;
 	unselectBlock: () => void;
 }

@@ -12,25 +12,26 @@ export const ViewContextPanel: React.FC<TViewContextPanelProps> = (props) => {
 	const sizes = useCompute(editor.boundingRect, (rect) => {
 		const width = rect.right - rect.left;
 		if (width <= 0) {
-			return null;
+			// Note: Return default sizes instead of null to prevent the panel from being hidden on hot reload
+			return {
+				minSize: 20,
+				defaultSize: 25,
+				maxSize: 30
+			};
 		}
 
 		const toPercent = (pixels: number) => (pixels / width) * 100;
 
 		return {
-			minSize: toPercent(225), // ~ 15
-			defaultSize: toPercent(300), // ~ 20
-			maxSize: toPercent(375) // ~ 25
+			minSize: toPercent(300), // ~ 20
+			defaultSize: toPercent(375), // ~ 25
+			maxSize: toPercent(450) // ~ 30
 		};
 	});
 
 	// =========================================================================
 	// UI
 	// =========================================================================
-
-	if (sizes == null) {
-		return null;
-	}
 
 	return (
 		<ResizablePanel minSize={sizes.minSize} defaultSize={sizes.defaultSize} maxSize={sizes.maxSize}>

@@ -3,7 +3,7 @@ description:
 globs: 
 alwaysApply: false
 ---
-# Vitest Testing Guidelines
+# Vitest Guidelines
 
 Core testing patterns and best practices for writing clear, maintainable, and effective tests using Vitest.
 

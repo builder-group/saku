@@ -3,7 +3,7 @@ description:
 globs: 
 alwaysApply: false
 ---
-# Hono API Development Guidelines
+# Hono Guidelines
 
 Core development guidelines for building type-safe, maintainable APIs using the Hono framework. These patterns ensure consistent, secure, and performant backend services while maintaining strict type safety and clean architecture.
 

@@ -3,7 +3,7 @@ description:
 globs: 
 alwaysApply: false
 ---
-# Drizzle ORM Guidelines
+# DrizzleORM Guidelines
 
 Core patterns and best practices for using Drizzle ORM in our PostgreSQL-based applications. These guidelines ensure type-safe, maintainable, and performant database operations.
 

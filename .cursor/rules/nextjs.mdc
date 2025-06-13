@@ -3,7 +3,7 @@ description:
 globs: 
 alwaysApply: false
 ---
-# Next.js Development Guidelines
+# Next.js Guidelines
 
 Core development guidelines for Next.js applications, focusing on App Router, Server Components, and type safety. These patterns ensure maintainable, performant applications while maximizing the benefits of React Server Components and TypeScript.
 

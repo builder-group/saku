@@ -15,11 +15,7 @@ export const BlockEditor: React.FC<TBlockEditorProps> = (props) => {
 		[blockState]
 	);
 
-	return (
-		<div className="space-y-4 p-4">
-			<EditorComponent blockState={blockState} editor={editor} />
-		</div>
-	);
+	return <EditorComponent blockState={blockState} editor={editor} />;
 };
 
 interface TBlockEditorProps {

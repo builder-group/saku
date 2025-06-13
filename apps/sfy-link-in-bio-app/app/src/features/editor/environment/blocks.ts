@@ -41,7 +41,8 @@ export const blocksMetadataMap = {
 		icon: LayoutSectionIcon,
 		label: 'Text',
 		defaultData: {
-			text: ''
+			text: '',
+			alignment: 'center' as const
 		}
 	} satisfies TBlockMetadata<'text'>
 } as const;
@@ -108,5 +109,7 @@ export interface TImageMedia {
 
 export interface TTextBlock extends TBlockBase {
 	type: 'text';
+	title?: string;
 	text: string;
+	alignment?: 'left' | 'center' | 'right';
 }

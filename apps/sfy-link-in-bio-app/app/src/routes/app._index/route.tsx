@@ -2,11 +2,8 @@ import { useLoaderData } from '@remix-run/react';
 import { TitleBar } from '@shopify/app-bridge-react';
 import {
 	Badge,
-	BlockStack,
-	Box,
 	Button,
 	Card,
-	InlineStack,
 	Layout,
 	Page as PolarisPage,
 	Text,
@@ -65,62 +62,56 @@ const Page: React.FC = () => {
 
 			<Layout>
 				<Layout.Section>
-					{/* Bio Template Preview */}
-					<Card padding="0">
-						<BlockStack gap="0">
-							{/* Large Preview Section */}
-							<SitePreview className="mx-4 mt-4" url={bioUrl ?? ''} />
+					{/* Bio Preview Card */}
+					<Card>
+						<SitePreview url={bioUrl ?? ''} />
 
-							{/* Theme List Item */}
-							<Box padding="400">
-								<InlineStack align="space-between" blockAlign="center" gap="400">
-									{/* Thumbnail and Content Row */}
-									<InlineStack gap="300" blockAlign="center">
-										{/* Small Thumbnail */}
-										<div className="h-16 w-24 rounded-md bg-gray-200" />
+						{/* Theme List Item */}
+						<div className="mt-4 flex items-center justify-between gap-4">
+							<div className="flex items-center gap-3">
+								{/* Small Thumbnail */}
+								<div className="h-16 w-24 rounded-md bg-gray-200" />
 
-										{/* Content */}
-										<BlockStack gap="100" inlineAlign="start">
-											<InlineStack gap="200" blockAlign="center" wrap>
-												<Text as="h3" variant="headingMd">
-													default-bio
-												</Text>
-												<Badge tone="success">Current</Badge>
-											</InlineStack>
-											<Text as="p" variant="bodyMd" tone="subdued">
-												Last Updated: Today
-											</Text>
-										</BlockStack>
-									</InlineStack>
+								{/* Content */}
+								<div className="flex flex-col items-start gap-1">
+									<div className="flex flex-wrap items-center gap-2">
+										<Text as="h3" variant="headingMd">
+											default-bio
+										</Text>
+										<Badge tone="success">Current</Badge>
+									</div>
+									<Text as="p" variant="bodyMd" tone="subdued">
+										Last Updated: Today
+									</Text>
+								</div>
+							</div>
 
-									{/* Action Buttons */}
-									<InlineStack gap="200" blockAlign="center">
-										{bioUrl != null && (
-											<Button
-												icon={ViewIcon}
-												variant="secondary"
-												url={bioUrl}
-												external
-												target="_blank"
-												accessibilityLabel="Visit your Link In Bio page"
-											/>
-										)}
-										<Button variant="primary" onClick={handleCustomizeBio}>
-											Customize
-										</Button>
-									</InlineStack>
-								</InlineStack>
-							</Box>
-						</BlockStack>
+							{/* Action Buttons */}
+							<div className="flex items-center gap-2">
+								{bioUrl != null && (
+									<Button
+										icon={ViewIcon}
+										variant="secondary"
+										url={bioUrl}
+										external
+										target="_blank"
+										accessibilityLabel="Visit your Link In Bio page"
+									/>
+								)}
+								<Button variant="primary" onClick={handleCustomizeBio}>
+									Customize
+								</Button>
+							</div>
+						</div>
 					</Card>
 				</Layout.Section>
 
 				<Layout.Section variant="oneThird">
-					<BlockStack gap="500">
-						{/* Your LinkShop URL */}
+					<div className="flex flex-col gap-5">
+						{/* Your Link Card */}
 						<Card>
-							<BlockStack gap="300">
-								<InlineStack align="space-between" blockAlign="center">
+							<div className="flex flex-col gap-3">
+								<div className="flex items-center justify-between">
 									<Text as="h2" variant="headingMd">
 										Your Link
 									</Text>
@@ -129,7 +120,7 @@ const Page: React.FC = () => {
 									) : (
 										<Badge tone="warning">Inactive</Badge>
 									)}
-								</InlineStack>
+								</div>
 
 								{bioUrl != null ? (
 									<TextField
@@ -149,7 +140,7 @@ const Page: React.FC = () => {
 										Activate
 									</Button>
 								)}
-							</BlockStack>
+							</div>
 						</Card>
 
 						<FeedbackCard email={appEnv.support.email} reviewUrl={appEnv.distribution.shopify} />
@@ -158,7 +149,7 @@ const Page: React.FC = () => {
 							discordUrl={appEnv.social.discord}
 							email={appEnv.support.email}
 						/>
-					</BlockStack>
+					</div>
 				</Layout.Section>
 			</Layout>
 		</PolarisPage>

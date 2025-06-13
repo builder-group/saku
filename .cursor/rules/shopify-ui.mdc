@@ -1,0 +1,69 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Shopify UI Guidelines
+
+Core UI conventions for building Shopify-style admin apps using Shopify Polaris and TailwindCSS. These rules ensure a consistent, maintainable, and authentic Shopify look and feel while keeping the codebase simple and modern.
+
+## Core Principles
+- **KISS (Keep It Simple, Stupid)** - Always choose the simplest, most maintainable solution
+- **Shopify Look** - Always use Shopify Polaris components for UI elements to match Shopify admin style
+- **Tailwind for Layout** - Always use TailwindCSS and semantic HTML tags for layout, spacing, and grouping
+- **TypeScript First** - Always use TypeScript with strict typing (`strict: true`) everywhere
+- **Less is More** - Always avoid unnecessary complexity, the best code is no code
+
+## UI Elements
+- Always use Shopify Polaris components for interactive and semantic UI elements:
+  - `Button`, `TextField`, `Select`, `Badge`, `Card`, `Text`, `Icon`, `Banner`, etc.
+- Always use these components for accessibility, keyboard support, and visual consistency with Shopify admin
+- Never reimplement core UI elements that Polaris provides
+
+✅ Good:
+```tsx
+<Button variant="primary">Save</Button>
+<TextField label="Name" value={name} onChange={setName} />
+<Card>
+  <Text as="h2" variant="headingMd">Section</Text>
+</Card>
+```
+
+❌ Bad:
+```tsx
+<button className="btn-primary">Save</button> // Wrong: Not using Polaris Button
+<input type="text" /> // Wrong: Not using Polaris TextField
+<div className="card">...</div> // Wrong: Not using Polaris Card
+```
+
+## Layout and Spacing
+- Always use TailwindCSS utility classes and semantic HTML tags for layout, spacing, and grouping
+- Never use Polaris layout primitives (`Box`, `BlockStack`, `InlineStack`, etc.) for layout or spacing
+- Always use `div`, `section`, or other semantic tags with Tailwind for flex, grid, spacing, and alignment
+
+✅ Good:
+```tsx
+<div className="flex items-center gap-4">
+  <Text as="h2" variant="headingMd">Title</Text>
+  <Badge>Active</Badge>
+</div>
+<div className="space-y-4">
+  <TextField ... />
+  <Button ... />
+</div>
+```
+
+❌ Bad:
+```tsx
+<Box padding="400">...</Box> // Wrong: Use Tailwind for padding
+<InlineStack gap="400">...</InlineStack> // Wrong: Use flex and gap in Tailwind
+<BlockStack gap="400">...</BlockStack> // Wrong: Use flex-col and gap in Tailwind
+```
+
+## Reasoning
+- Polaris UI elements guarantee a Shopify look, accessibility, and behavior
+- Tailwind gives full control and consistency for layout, spacing, and responsiveness
+- This approach keeps the codebase simple, modern, and easy to maintain
+
+## Related Rules
+- [style-guide.mdc](mdc:.cursor/rules/style-guide.mdc): Core coding standards
