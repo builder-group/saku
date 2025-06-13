@@ -1,0 +1,50 @@
+{
+	"name": "@repo/hono-utils",
+	"version": "0.0.1",
+	"private": true,
+	"description": "",
+	"keywords": [],
+	"homepage": "",
+	"bugs": {
+		"url": "https://github.com/builder-group/saku/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/builder-group/saku.git"
+	},
+	"license": "AGPL-3.0-or-later",
+	"author": "@bennobuilder",
+	"main": "./dist/cjs/index.js",
+	"module": "./dist/esm/index.js",
+	"source": "./src/index.ts",
+	"types": "./dist/types/index.d.ts",
+	"files": [
+		"dist",
+		"README.md"
+	],
+	"scripts": {
+		"build": "shx rm -rf dist && rollup -c rollup.config.js",
+		"build:prod": "export NODE_ENV=production && pnpm build",
+		"clean": "shx rm -rf dist && shx rm -rf .turbo && shx rm -rf node_modules",
+		"install:clean": "pnpm run clean && pnpm install",
+		"lint": "eslint . --fix",
+		"start:dev": "tsc -w",
+		"test": "vitest run",
+		"update:latest": "pnpm update --latest"
+	},
+	"dependencies": {
+		"@asteasolutions/zod-to-openapi": "^7.3.3",
+		"@blgc/utils": "^0.0.55",
+		"@hono/zod-openapi": "^0.19.8",
+		"@oslojs/crypto": "^1.0.1",
+		"@oslojs/encoding": "^1.1.0",
+		"arctic": "^3.7.0",
+		"feature-fetch": "^0.0.43",
+		"hono": "^4.7.11",
+		"jose": "^6.0.11"
+	},
+	"devDependencies": {
+		"@repo/types": "workspace:*",
+		"@types/node": "^24.0.1"
+	}
+}

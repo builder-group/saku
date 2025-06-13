@@ -1,0 +1,5 @@
+apis:
+  statusphere@v1:
+    root: https://raw.githubusercontent.com/github/rest-api-description/refs/heads/main/descriptions/ghes-3.15/ghes-3.15.json
+    x-openapi-ts:
+      output: ../types/github-api-v1-1-4.gen.ts
