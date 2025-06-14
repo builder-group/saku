@@ -62,49 +62,106 @@ src/
 ## Schema Definition
 - Always use Zod for request/response schemas
 - Always define explicit types for all operations
-- Always document API contracts
+- Always document API contracts with OpenAPI examples
 - Always validate all inputs
+- Always use DTO (Data Transfer Object) suffix for schemas that represent API contracts
+- Always use descriptive parameter names (e.g., `userId`, `sessionId` instead of generic `id`)
+- Always use consistent tag grouping (e.g., `['auth', 'shopify']` instead of `['shopify-auth']`)
 
 ✅ Good:
 ```typescript
-// src/app/routes/v1/users/schema.ts
-import { z } from 'zod';
-import { createRoute } from '@/lib/api';
-import { ErrorResponse, SuccessResponse } from '@/lib/responses';
+// src/app/routes/v1.users/schema.ts
+import { createRoute, z } from '@hono/zod-openapi';
+import { JsonSuccessResponse, BadRequestResponse } from '@repo/hono-utils';
 
-export const SCreateUser = z.object({
-  email: z.string().email(),
-  name: z.string().min(1)
-});
+// DTO schemas with clear naming
+const SUserDto = z
+  .object({
+    id: z.string().uuid().openapi({ example: '123e4567-e89b-12d3-a456-426614174000' }),
+    email: z.string().email().openapi({ example: 'user@example.com' }),
+    name: z.string().min(2).openapi({ example: 'John Doe' }),
+    role: z.enum(['USER', 'ADMIN']).openapi({ example: 'USER' })
+  })
+  .openapi('UserDto');
+
+// Export TypeScript type for internal use
+export type TUserDto = z.infer<typeof SUserDto>;
+
+// Create input DTO by omitting auto-generated fields
+const SCreateUserDto = SUserDto.omit({ id: true });
 
 export const CreateUserRoute = createRoute({
   method: 'post',
   path: '/v1/users',
-  tags: ['users'],
+  tags: ['users'], // Consistent tag grouping
   summary: 'Create new user',
+  description: 'Create a new user account with validated input',
+  operationId: 'createUser',
   request: {
     body: {
       content: {
         'application/json': {
-          schema: SCreateUser
+          schema: SCreateUserDto
         }
       }
     }
   },
   responses: {
-    200: SuccessResponse('User created'),
-    400: ErrorResponse('Invalid input'),
-    401: ErrorResponse('Unauthorized')
+    201: JsonSuccessResponse(SUserDto),
+    400: BadRequestResponse
+  }
+});
+
+export const GetUserRoute = createRoute({
+  method: 'get',
+  path: '/v1/users/{userId}', // Descriptive parameter name
+  tags: ['users'],
+  summary: 'Get user by ID',
+  operationId: 'getUser',
+  request: {
+    params: z.object({
+      userId: z.string().uuid().openapi({ example: '123e4567-e89b-12d3-a456-426614174000' })
+    })
+  },
+  responses: {
+    200: JsonSuccessResponse(SUserDto)
   }
 });
 ```
 
 ❌ Bad:
 ```typescript
-// Wrong: Missing validation and documentation
+// Wrong: No schema defined resulting in missing validation and documentation
 router.post('/users', async (c) => {
   const body = await c.req.json();  // Wrong: No schema validation
   return c.json(await db.users.create({ data: body }));  // Wrong: Untyped data
+});
+
+// Wrong: Missing DTO suffix, generic parameter names, poor tag grouping
+const SUser = z.object({  // Wrong: Missing Dto suffix
+  email: z.string(),      // Wrong: No OpenAPI examples
+  name: z.string()
+});
+
+export const CreateUserRoute = createRoute({
+  method: 'post',
+  path: '/v1/users/{id}',  // Wrong: Generic 'id' parameter
+  tags: ['user-management'], // Wrong: Inconsistent tag format
+  request: {
+    params: z.object({
+      id: z.string()  // Wrong: Generic parameter name
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: SUser  // Wrong: Using main schema for input
+        }
+      }
+    }
+  },
+  responses: {
+    200: { description: 'Success' }  // Wrong: No typed response
+  }
 });
 ```
 
@@ -306,44 +363,81 @@ router.post('/users', async (c) => {
 ```
 
 ## Input Validation
-- Always define request schemas using Zod
+- Always define request schemas using Zod with DTO suffix
 - Always validate request body, query, and params
-- Always use typed schemas with OpenAPI definitions
+- Always use typed schemas with OpenAPI definitions and examples
+- Always use descriptive parameter names in path definitions
 - Never trust client input without validation
 
 ✅ Good:
 ```typescript
 // src/app/routes/v1.users/schema.ts
-import { z } from 'zod';
-import { createRoute } from '@/lib/api';
+import { createRoute, z } from '@hono/zod-openapi';
+import { JsonSuccessResponse, BadRequestResponse } from '@repo/hono-utils';
 
-export const SCreateUserInput = z.object({
-  email: z.string().email(),
-  name: z.string().min(2),
-  role: z.enum(['USER', 'ADMIN'])
-});
+const SUserDto = z
+  .object({
+    id: z.string().uuid().openapi({ example: '123e4567-e89b-12d3-a456-426614174000' }),
+    email: z.string().email().openapi({ example: 'user@example.com' }),
+    name: z.string().min(2).openapi({ example: 'John Doe' }),
+    role: z.enum(['USER', 'ADMIN']).openapi({ example: 'USER' })
+  })
+  .openapi('UserDto');
+
+export type TUserDto = z.infer<typeof SUserDto>;
+
+const SCreateUserDto = SUserDto.omit({ id: true });
 
 export const CreateUserRoute = createRoute({
   method: 'post',
   path: '/v1/users',
+  tags: ['users'],
+  summary: 'Create new user',
+  operationId: 'createUser',
   request: {
-    body: SCreateUserInput
+    body: {
+      content: {
+        'application/json': {
+          schema: SCreateUserDto
+        }
+      }
+    }
   },
   responses: {
-    201: z.object({
-      user: SUser
+    201: JsonSuccessResponse(SUserDto),
+    400: BadRequestResponse
+  }
+});
+
+export const GetUserRoute = createRoute({
+  method: 'get',
+  path: '/v1/users/{userId}', // Descriptive parameter name
+  tags: ['users'],
+  summary: 'Get user by ID',
+  operationId: 'getUser',
+  request: {
+    params: z.object({
+      userId: z.string().uuid().openapi({ example: '123e4567-e89b-12d3-a456-426614174000' })
     })
+  },
+  responses: {
+    200: JsonSuccessResponse(SUserDto),
+    404: NotFoundResponse
   }
 });
 ```
 
 ❌ Bad:
 ```typescript
-// Wrong: No schema validation
-router.post('/users', async (c) => {
-  const data = await c.req.json();
-  // Wrong: Using unvalidated input directly
-  return await db.user.create({ data });
+// Wrong: No DTO suffix, missing validation, generic parameter names
+const SUser = z.object({  // Wrong: Missing Dto suffix
+  email: z.string(),      // Wrong: No OpenAPI examples
+  name: z.string()        // Wrong: No validation rules
+});
+
+router.post('/users/{id}', async (c) => {  // Wrong: Generic 'id' parameter
+  const data = await c.req.json();         // Wrong: No schema validation
+  return await db.user.create({ data });   // Wrong: Using unvalidated input
 });
 ```
 
@@ -381,3 +475,4 @@ router.post('/admin/users', async (c) => {
 
 ## Related Rules
 - [style-guide.mdc](mdc:.cursor/rules/style-guide.mdc): Core coding standards
+

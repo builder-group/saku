@@ -40,9 +40,12 @@ export type TShopProviderData = TShopifyProviderData;
  */
 export interface TShopifyProviderData {
 	// From offline session (permanent API access)
+	sessionId: string; // e.g. "my-shop.myshopify.com_987654321"
 	accessToken: string; // OAuth 2.0 access token
+	expiresAt: string | null; // Access token expiry in ISO format
 	scopes: string; // Granted scopes (e.g. "write_products")
-	shopDomain: string; // e.g. "coffee-shop.myshopify.com"
+	state: string;
+	isOnline: boolean; // Whether the session is online (true) or offline (false)
 
 	// Installer info from online session (person who installed the app)
 	installer: {
