@@ -52,6 +52,20 @@ export const appConfig = {
 		validator: zValidator(z.string()),
 		defaultValue: ciDefault('')
 	}),
+	client: {
+		appUrl: validateEnvVar({
+			envKey: 'API_CORE_CLIENT_APP_URL',
+			validator: urlValidator,
+			middlewares: [
+				nonEmptyStringMiddleware,
+				(value) => (value?.endsWith('/') ? value.slice(0, -1) : value)
+			],
+			defaultValue: combineDefaults(
+				devDefault('http://127.0.0.1:3000'),
+				ciDefault('https://app.saku.so')
+			)
+		})
+	},
 	dev: {
 		port: devPort
 	}
