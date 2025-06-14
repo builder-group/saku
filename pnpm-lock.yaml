@@ -77,6 +77,9 @@ importers:
       '@repo/api-core':
         specifier: workspace:*
         version: link:../../../packages/api-core
+      '@repo/types':
+        specifier: workspace:*
+        version: link:../../../packages/types
       '@shopify/app-bridge-react':
         specifier: ^4.1.10
         version: 4.1.10(react-dom@18.3.1(react@18.3.1))(react@18.3.1)

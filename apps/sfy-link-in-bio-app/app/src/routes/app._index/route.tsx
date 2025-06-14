@@ -14,6 +14,7 @@ import { ClipboardButton, FeedbackCard, GetInTouchCard, SitePreview, ViewIcon } 
 import { appConfig, shopify } from '@/environment/.server';
 import { useEditorModal } from '@/features/editor';
 import { TLoaderFunction } from '@/types';
+import { coreApiClient } from '../../environment';
 
 const Page: React.FC = () => {
 	const { shop, appEnv } = useLoaderData<typeof loader>();
@@ -160,6 +161,13 @@ export default Page;
 
 export const loader: TLoaderFunction<TLoaderData> = async ({ request }) => {
 	const { session } = await shopify.authenticate.admin(request);
+
+	const healthResult = await coreApiClient.get('/v1/health');
+	if (healthResult.isOk()) {
+		console.log('[core-api] health check passed', healthResult.value.data);
+	} else {
+		console.log('[core-api] health check failed', healthResult.error.message);
+	}
 
 	return {
 		shop: {

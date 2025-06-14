@@ -40,6 +40,7 @@
 		"@remix-run/react": "^2.16.8",
 		"@remix-run/serve": "^2.16.8",
 		"@repo/api-core": "workspace:*",
+		"@repo/types": "workspace:*",
 		"@shopify/app-bridge-react": "^4.1.10",
 		"@shopify/polaris": "^13.9.5",
 		"@shopify/polaris-icons": "^9.3.1",

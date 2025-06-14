@@ -3,7 +3,7 @@
 client_id = "4c9dc129e68b889d9a351e14d8e36a02"
 name = "saku-link-in-bio-dev"
 handle = "saku-link-in-bio-dev"
-application_url = "https://requirement-singer-date-al.trycloudflare.com"
+application_url = "https://moral-physically-sp-olympic.trycloudflare.com"
 embedded = true
 
 [build]
@@ -26,10 +26,10 @@ api_version = "2025-04"
 scopes = "write_products"
 
 [auth]
-redirect_urls = ["https://requirement-singer-date-al.trycloudflare.com/auth/callback", "https://requirement-singer-date-al.trycloudflare.com/auth/shopify/callback", "https://requirement-singer-date-al.trycloudflare.com/api/auth/callback"]
+redirect_urls = ["https://moral-physically-sp-olympic.trycloudflare.com/auth/callback", "https://moral-physically-sp-olympic.trycloudflare.com/auth/shopify/callback", "https://moral-physically-sp-olympic.trycloudflare.com/api/auth/callback"]
 
 [app_proxy]
-url = "https://requirement-singer-date-al.trycloudflare.com/a/saku"
+url = "https://moral-physically-sp-olympic.trycloudflare.com/a/saku"
 subpath = "saku"
 prefix = "a"
 
