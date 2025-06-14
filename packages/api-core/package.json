@@ -48,6 +48,7 @@
 		"feature-logger": "^0.0.42",
 		"head-metadata": "0.0.4",
 		"hono": "^4.7.11",
+		"jose": "^6.0.11",
 		"pg": "^8.16.0",
 		"valibot": "^1.1.0",
 		"validatenv": "^0.0.38",
