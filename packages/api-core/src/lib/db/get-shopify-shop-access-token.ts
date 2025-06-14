@@ -21,23 +21,27 @@ export async function getShopifyShopAccessToken(shopId: string): Promise<string>
 	}
 
 	const providerData = shops[0]?.providerData as TShopifyProviderData;
-	if (!providerData?.accessToken) {
-		throw new AppError('#ERR_ACCESS_TOKEN_NOT_FOUND', 404, {
-			detail: `Access token not found for shop: ${shopId}`
-		});
+
+	// Prefer offline token (never expires) over online token (expires every 24h)
+	if (providerData?.offlineSession?.accessToken) {
+		return providerData.offlineSession.accessToken;
 	}
 
-	// Check if we have an access token that might be expired
-	if (providerData.expiresAt != null) {
-		const expiryDate = new Date(providerData.expiresAt);
+	// Fallback to online token if offline not available
+	if (providerData?.onlineSession?.accessToken) {
+		const expiryDate = new Date(providerData.onlineSession.expiresAt);
 		const now = new Date();
 
 		if (now >= expiryDate) {
 			throw new AppError('#ERR_ACCESS_TOKEN_EXPIRED', 401, {
-				detail: `Online access token has expired for shop: ${shopId}. Please reinstall the app or use offline token.`
+				detail: `Online access token has expired for shop: ${shopId}. Token expired at: ${providerData.onlineSession.expiresAt}`
 			});
 		}
+
+		return providerData.onlineSession.accessToken;
 	}
 
-	return providerData.accessToken;
+	throw new AppError('#ERR_ACCESS_TOKEN_NOT_FOUND', 404, {
+		detail: `No access token found for shop: ${shopId}`
+	});
 }

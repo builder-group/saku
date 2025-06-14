@@ -1,6 +1,5 @@
 import { AppError } from '@repo/hono-utils';
 import { and, eq } from 'drizzle-orm';
-import { logger } from '@/environment';
 import { db, shopAccountTable } from '@/environment/db';
 import type { TShopifySessionDto } from '../schema';
 import { parseSessionId } from './parse-session-id';
@@ -43,40 +42,36 @@ export async function getShopifySession(sessionId: string): Promise<TShopifySess
 		});
 	}
 
-	// TODO: Figure out what to do in those cases
 	const isOnline = sessionData.type === 'online';
-	if (isOnline !== providerData.isOnline) {
-		logger.warn('[get-shopify-session] Session is online but provider data is offline');
-	}
-	if (sessionId !== providerData.sessionId) {
-		logger.warn('[get-shopify-session] Session ID does not match provider data', {
-			sessionId,
-			providerSessionId: providerData.sessionId
+	const sessionInfo = isOnline ? providerData.onlineSession : providerData.offlineSession;
+	if (sessionInfo == null) {
+		throw new AppError('#ERR_SESSION_TYPE_NOT_FOUND', 404, {
+			detail: `${isOnline ? 'Online' : 'Offline'} session not found for shop: ${providerAccountId}`
 		});
 	}
 
-	// Reconstruct session data
 	return {
 		id: sessionId,
 		shop: providerAccountId,
-		state: providerData.state,
+		state: sessionInfo.state,
 		isOnline,
-		scope: providerData.scopes,
-		expires: providerData.expiresAt,
-		accessToken: providerData.accessToken,
-		onlineAccessInfo: isOnline
-			? {
-					associated_user: {
-						id: parseInt(providerData.installer.shopifyId),
-						first_name: providerData.installer.firstName,
-						last_name: providerData.installer.lastName,
-						email: providerData.installer.email,
-						account_owner: providerData.installer.isOwner,
-						locale: providerData.installer.locale,
-						collaborator: providerData.installer.isCollaborator,
-						email_verified: providerData.installer.emailVerified
+		scope: sessionInfo.scopes,
+		expires: isOnline && 'expiresAt' in sessionInfo ? (sessionInfo.expiresAt as string) : null,
+		accessToken: sessionInfo.accessToken,
+		onlineAccessInfo:
+			isOnline && providerData.installer != null
+				? {
+						associated_user: {
+							id: parseInt(providerData.installer.shopifyId),
+							first_name: providerData.installer.firstName,
+							last_name: providerData.installer.lastName,
+							email: providerData.installer.email,
+							account_owner: providerData.installer.isOwner,
+							locale: providerData.installer.locale,
+							collaborator: providerData.installer.isCollaborator,
+							email_verified: providerData.installer.emailVerified
+						}
 					}
-				}
-			: null
+				: null
 	};
 }

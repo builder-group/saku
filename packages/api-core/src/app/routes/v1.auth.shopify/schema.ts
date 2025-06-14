@@ -18,6 +18,7 @@ const SShopifySessionAssociatedUserDto = z
 		email_verified: z.boolean().openapi({ example: true })
 	})
 	.openapi('ShopifySessionAssociatedUserDto');
+export type TShopifySessionAssociatedUserDto = z.infer<typeof SShopifySessionAssociatedUserDto>;
 
 const SShopifySessionOnlineAccessInfoDto = z
 	.object({

@@ -1,4 +1,3 @@
-import { notEmpty } from '@blgc/utils';
 import { and, eq } from 'drizzle-orm';
 import { db, shopAccountTable } from '@/environment/db';
 import type { TShopifySessionDto } from '../schema';
@@ -15,37 +14,58 @@ export async function getShopifySessionsByShop(shopId: string): Promise<TShopify
 			and(eq(shopAccountTable.provider, 'shopify'), eq(shopAccountTable.providerAccountId, shopId))
 		);
 
-	return shopAccounts
-		.map((account) => {
-			const providerData = account.providerData;
-			if (providerData == null) {
-				return null;
-			}
+	const sessions: TShopifySessionDto[] = [];
 
-			// Reconstruct session data
-			return {
-				id: providerData.sessionId,
+	for (const account of shopAccounts) {
+		const providerData = account.providerData;
+		if (providerData == null) {
+			continue;
+		}
+
+		// Add online session if exists
+		if (providerData.onlineSession) {
+			const session: TShopifySessionDto = {
+				id: providerData.onlineSession.sessionId,
 				shop: shopId,
-				state: providerData.state,
-				isOnline: providerData.isOnline,
-				scope: providerData.scopes,
-				expires: providerData.expiresAt,
-				accessToken: providerData.accessToken,
-				onlineAccessInfo: providerData.isOnline
-					? {
-							associated_user: {
-								id: parseInt(providerData.installer.shopifyId),
-								first_name: providerData.installer.firstName,
-								last_name: providerData.installer.lastName,
-								email: providerData.installer.email,
-								account_owner: providerData.installer.isOwner,
-								locale: providerData.installer.locale,
-								collaborator: providerData.installer.isCollaborator,
-								email_verified: providerData.installer.emailVerified
+				state: providerData.onlineSession.state,
+				isOnline: true,
+				scope: providerData.onlineSession.scopes,
+				expires: providerData.onlineSession.expiresAt,
+				accessToken: providerData.onlineSession.accessToken,
+				onlineAccessInfo:
+					providerData.installer != null
+						? {
+								associated_user: {
+									id: parseInt(providerData.installer.shopifyId),
+									first_name: providerData.installer.firstName,
+									last_name: providerData.installer.lastName,
+									email: providerData.installer.email,
+									account_owner: providerData.installer.isOwner,
+									locale: providerData.installer.locale,
+									collaborator: providerData.installer.isCollaborator,
+									email_verified: providerData.installer.emailVerified
+								}
 							}
-						}
-					: null
+						: null
 			};
-		})
-		.filter(notEmpty);
+
+			sessions.push(session);
+		}
+
+		// Add offline session if exists
+		if (providerData.offlineSession) {
+			sessions.push({
+				id: providerData.offlineSession.sessionId,
+				shop: shopId,
+				state: providerData.offlineSession.state,
+				isOnline: false,
+				scope: providerData.offlineSession.scopes,
+				expires: null,
+				accessToken: providerData.offlineSession.accessToken,
+				onlineAccessInfo: null
+			});
+		}
+	}
+
+	return sessions;
 }
