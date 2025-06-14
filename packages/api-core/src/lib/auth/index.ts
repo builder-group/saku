@@ -1,1 +1,1 @@
-export * from './verify-shopify-client-session';
+export * from './verify-shopify-session';

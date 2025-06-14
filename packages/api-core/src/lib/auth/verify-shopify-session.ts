@@ -1,9 +1,30 @@
 import { extractErrorData } from '@blgc/utils';
 import { AppError } from '@repo/hono-utils';
+import type { Context } from 'hono';
 import { jwtVerify, type JWTPayload } from 'jose';
 import { shopifyConfig } from '@/environment';
 
-export async function verifyShopifyClientSession(token: string): Promise<TShopifyJWTPayload> {
+export async function verifyShopifySession(c: Context): Promise<TShopifySessionPayload> {
+	const authHeader = c.req.header('authorization');
+
+	if (authHeader == null) {
+		throw new AppError('#ERR_MISSING_AUTH_HEADER', 401, {
+			detail: 'Missing authorization header'
+		});
+	}
+
+	if (!authHeader.startsWith('Bearer ')) {
+		throw new AppError('#ERR_INVALID_AUTH_FORMAT', 401, {
+			detail: 'Authorization header must use Bearer token format'
+		});
+	}
+
+	const token = authHeader.substring(7); // Remove "Bearer " prefix
+
+	return await verifyShopifySessionToken(token);
+}
+
+export async function verifyShopifySessionToken(token: string): Promise<TShopifySessionPayload> {
 	// Verify the JWT
 	let payload: JWTPayload;
 	try {
@@ -28,15 +49,6 @@ export async function verifyShopifyClientSession(token: string): Promise<TShopif
 		});
 	}
 
-	// Validate issuer and destination match (same shop domain)
-	const issuerShop = extractShopFromUrl(payload['iss'] as string);
-	const destShop = extractShopFromUrl(payload['dest'] as string);
-	if (issuerShop !== destShop) {
-		throw new AppError('#ERR_JWT_SHOP_MISMATCH', 401, {
-			detail: 'Issuer and destination shop domains do not match'
-		});
-	}
-
 	// Validate audience matches our app's client ID
 	if (payload['aud'] !== shopifyConfig.apiKey) {
 		throw new AppError('#ERR_JWT_AUDIENCE_MISMATCH', 401, {
@@ -50,23 +62,17 @@ export async function verifyShopifyClientSession(token: string): Promise<TShopif
 		dest: payload['dest'] as string,
 		aud: payload['aud'] as string,
 		sub: payload['sub'] as string,
-		shopId: destShop
+		shopId: payload['dest'] as string,
+		userId: payload['sub'] as string
 	};
 }
 
-function extractShopFromUrl(url: string): string {
-	try {
-		const parsedUrl = new URL(url);
-		return parsedUrl.hostname;
-	} catch {
-		return url;
-	}
-}
-
-export type TShopifyJWTPayload = JWTPayload & {
+// https://shopify.dev/docs/apps/build/authentication-authorization/session-tokens
+export type TShopifySessionPayload = JWTPayload & {
 	iss: string;
 	dest: string;
 	aud: string;
 	sub: string;
 	shopId: string;
+	userId: string;
 };
