@@ -1,9 +1,8 @@
 import { AppError } from '@repo/hono-utils';
-import { and, eq, sql } from 'drizzle-orm';
 import {
 	db,
-	logger,
 	shopAccountTable,
+	shopifySessionTable,
 	TEmailOTPProviderData,
 	TTransaction as TPgTransaction,
 	TShopifyProviderData,
@@ -22,28 +21,13 @@ export async function createShopifySession(
 			? `${input.shop}_${input.onlineAccessInfo?.associated_user?.id}`
 			: `offline_${input.shop}`);
 
-	logger.info(`Creating shopify session: ${sessionId}`);
-
 	const result = await db.transaction(async (tx) => {
-		// Check if shop account already exists
-		const existingShopAccount = await tx
-			.select()
-			.from(shopAccountTable)
-			.where(
-				and(
-					eq(shopAccountTable.provider, 'shopify'),
-					eq(shopAccountTable.providerAccountId, input.shop)
-				)
-			)
-			.limit(1);
+		// 1. Store session data (works for both online and offline)
+		await upsertSession(tx, input, sessionId);
 
-		// No account exists - create user and shop account
-		if (!existingShopAccount.length) {
-			await createUserAndShopAccount(tx, input, sessionId);
-		}
-		// Account exists - just update session
-		else {
-			await updateSession(tx, input, sessionId);
+		// 2. Create shop account + user if online session
+		if (input.isOnline) {
+			await createUserAndShopAccount(tx, input);
 		}
 
 		return {
@@ -55,15 +39,44 @@ export async function createShopifySession(
 	return result;
 }
 
-async function createUserAndShopAccount(
+async function upsertSession(
 	tx: TPgTransaction,
 	input: TCreateShopifySessionDto,
 	sessionId: string
-) {
+): Promise<void> {
+	await tx
+		.insert(shopifySessionTable)
+		.values({
+			sessionId,
+			shopId: input.shop,
+			isOnline: input.isOnline,
+			accessToken: input.accessToken,
+			scopes: input.scope,
+			state: input.state,
+			expiresAt: input.expires != null ? new Date(input.expires) : null,
+			updatedAt: new Date(),
+			createdAt: new Date()
+		})
+		.onConflictDoUpdate({
+			target: shopifySessionTable.sessionId,
+			set: {
+				accessToken: input.accessToken,
+				scopes: input.scope,
+				state: input.state,
+				expiresAt: input.expires != null ? new Date(input.expires) : null,
+				updatedAt: new Date()
+			}
+		});
+}
+
+async function createUserAndShopAccount(
+	tx: TPgTransaction,
+	input: TCreateShopifySessionDto
+): Promise<void> {
 	const associatedUser = input.onlineAccessInfo?.associated_user;
 	if (associatedUser == null) {
-		throw new AppError('#ERR_MISSING_ASSOCIATED_USER', 400, {
-			detail: 'Associated user is required to create new shop account'
+		throw new AppError('#ERR_USER_CREATE_FAILED', 500, {
+			detail: 'Failed to create or find user'
 		});
 	}
 
@@ -97,7 +110,7 @@ async function createUserAndShopAccount(
 		});
 	}
 
-	// 2. Create OTP user account for future login
+	// 2. Create OTP user account for future login (only if it doesn't exist)
 	await tx
 		.insert(userAccountTable)
 		.values({
@@ -111,71 +124,28 @@ async function createUserAndShopAccount(
 		})
 		.onConflictDoNothing();
 
-	// 3. Create shop account with session data
-	const { sessionData, sessionProperty } = getSessionData(input, sessionId);
-
-	await tx.insert(shopAccountTable).values({
-		userId: user.id,
-		accountType: 'oauth',
-		provider: 'shopify',
-		providerAccountId: input.shop,
-		providerData: {
-			installer: {
-				shopifyId: associatedUser.id.toString(),
-				firstName: associatedUser.first_name,
-				lastName: associatedUser.last_name,
-				email: associatedUser.email,
-				emailVerified: associatedUser.email_verified,
-				isOwner: associatedUser.account_owner,
-				locale: associatedUser.locale,
-				isCollaborator: associatedUser.collaborator
-			},
-			[sessionProperty]: sessionData
-		} as TShopifyProviderData,
-		updatedAt: new Date(),
-		createdAt: new Date()
-	});
-}
-
-async function updateSession(
-	tx: TPgTransaction,
-	input: TCreateShopifySessionDto,
-	sessionId: string
-) {
-	const { sessionData, sessionProperty } = getSessionData(input, sessionId);
-
-	// Update existing shop account
+	// 3. Create shop account with installer data (only if it doesn't exist)
 	await tx
-		.update(shopAccountTable)
-		.set({
-			providerData: sql`jsonb_set(provider_data, '{${sql.raw(sessionProperty)}}', ${JSON.stringify(sessionData)}::jsonb)`,
-			updatedAt: new Date()
+		.insert(shopAccountTable)
+		.values({
+			userId: user.id,
+			accountType: 'oauth',
+			provider: 'shopify',
+			providerAccountId: input.shop,
+			providerData: {
+				installer: {
+					shopifyId: associatedUser.id.toString(),
+					firstName: associatedUser.first_name,
+					lastName: associatedUser.last_name,
+					email: associatedUser.email,
+					emailVerified: associatedUser.email_verified,
+					isOwner: associatedUser.account_owner,
+					locale: associatedUser.locale,
+					isCollaborator: associatedUser.collaborator
+				}
+			} as TShopifyProviderData,
+			updatedAt: new Date(),
+			createdAt: new Date()
 		})
-		.where(
-			and(
-				eq(shopAccountTable.provider, 'shopify'),
-				eq(shopAccountTable.providerAccountId, input.shop)
-			)
-		);
-}
-
-function getSessionData(input: TCreateShopifySessionDto, sessionId: string) {
-	const sessionData = input.isOnline
-		? {
-				sessionId,
-				accessToken: input.accessToken,
-				scopes: input.scope,
-				state: input.state,
-				expiresAt: input.expires
-			}
-		: {
-				sessionId,
-				accessToken: input.accessToken,
-				scopes: input.scope,
-				state: input.state
-			};
-
-	const sessionProperty = input.isOnline ? 'onlineSession' : 'offlineSession';
-
-	return { sessionData, sessionProperty };
+		.onConflictDoNothing();
 }

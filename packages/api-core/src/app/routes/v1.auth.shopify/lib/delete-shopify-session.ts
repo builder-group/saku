@@ -1,31 +1,43 @@
 import { AppError } from '@repo/hono-utils';
 import { and, eq } from 'drizzle-orm';
-import { db, shopAccountTable } from '@/environment/db';
-import { parseSessionId } from './parse-session-id';
+import { db, shopAccountTable, shopifySessionTable, TShopProviderType } from '@/environment/db';
 
 export async function deleteShopifySession(sessionId: string): Promise<void> {
-	// Extract shop domain from session ID
-	const sessionData = parseSessionId(sessionId);
-	if (sessionData == null) {
-		throw new AppError('#ERR_INVALID_SESSION_ID', 400, {
-			detail: 'Invalid session ID format'
-		});
-	}
-	const { shopDomain: providerAccountId } = sessionData;
+	const deletedSessions = await db
+		.delete(shopifySessionTable)
+		.where(eq(shopifySessionTable.sessionId, sessionId))
+		.returning({ sessionId: shopifySessionTable.sessionId });
 
-	const deleted = await db
-		.delete(shopAccountTable)
-		.where(
-			and(
-				eq(shopAccountTable.provider, 'shopify'),
-				eq(shopAccountTable.providerAccountId, providerAccountId)
-			)
-		)
-		.returning({ id: shopAccountTable.userId });
-
-	if (!deleted.length) {
+	if (!deletedSessions.length) {
 		throw new AppError('#ERR_SESSION_NOT_FOUND', 404, {
 			detail: 'Shopify session not found'
 		});
 	}
+}
+
+export async function deleteShopAccount(
+	provider: TShopProviderType,
+	providerAccountId: string
+): Promise<void> {
+	await db.transaction(async (tx) => {
+		// 1. Delete all sessions for this shop first
+		await tx.delete(shopifySessionTable).where(eq(shopifySessionTable.shopId, providerAccountId));
+
+		// 2. Delete the shop account
+		const deletedAccounts = await tx
+			.delete(shopAccountTable)
+			.where(
+				and(
+					eq(shopAccountTable.provider, provider),
+					eq(shopAccountTable.providerAccountId, providerAccountId)
+				)
+			)
+			.returning({ userId: shopAccountTable.userId });
+
+		if (!deletedAccounts.length) {
+			throw new AppError('#ERR_SHOP_ACCOUNT_NOT_FOUND', 404, {
+				detail: 'Shop account not found'
+			});
+		}
+	});
 }

@@ -1,71 +1,57 @@
 import { and, eq } from 'drizzle-orm';
-import { db, shopAccountTable } from '@/environment/db';
+import { db, shopAccountTable, shopifySessionTable } from '@/environment/db';
 import type { TShopifySessionDto } from '../schema';
 
 export async function getShopifySessionsByShop(shopId: string): Promise<TShopifySessionDto[]> {
+	// Get all sessions for this shop
+	const sessions = await db
+		.select()
+		.from(shopifySessionTable)
+		.where(eq(shopifySessionTable.shopId, shopId));
+	if (!sessions.length) {
+		return [];
+	}
+
+	// Get installer data from shop account (for online sessions)
 	const shopAccounts = await db
 		.select({
-			userId: shopAccountTable.userId,
-			providerData: shopAccountTable.providerData,
-			createdAt: shopAccountTable.createdAt
+			providerData: shopAccountTable.providerData
 		})
 		.from(shopAccountTable)
 		.where(
 			and(eq(shopAccountTable.provider, 'shopify'), eq(shopAccountTable.providerAccountId, shopId))
-		);
+		)
+		.limit(1);
+	const installer = shopAccounts[0]?.providerData?.installer;
 
-	const sessions: TShopifySessionDto[] = [];
+	return sessions.map((session) => {
+		const sessionDto: TShopifySessionDto = {
+			id: session.sessionId,
+			shop: session.shopId,
+			state: session.state,
+			isOnline: session.isOnline,
+			scope: session.scopes,
+			expires: session.expiresAt?.toISOString() ?? null,
+			accessToken: session.accessToken,
+			onlineAccessInfo: null
+		};
 
-	for (const account of shopAccounts) {
-		const providerData = account.providerData;
-		if (providerData == null) {
-			continue;
-		}
-
-		// Add online session if exists
-		if (providerData.onlineSession) {
-			const session: TShopifySessionDto = {
-				id: providerData.onlineSession.sessionId,
-				shop: shopId,
-				state: providerData.onlineSession.state,
-				isOnline: true,
-				scope: providerData.onlineSession.scopes,
-				expires: providerData.onlineSession.expiresAt,
-				accessToken: providerData.onlineSession.accessToken,
-				onlineAccessInfo:
-					providerData.installer != null
-						? {
-								associated_user: {
-									id: parseInt(providerData.installer.shopifyId),
-									first_name: providerData.installer.firstName,
-									last_name: providerData.installer.lastName,
-									email: providerData.installer.email,
-									account_owner: providerData.installer.isOwner,
-									locale: providerData.installer.locale,
-									collaborator: providerData.installer.isCollaborator,
-									email_verified: providerData.installer.emailVerified
-								}
-							}
-						: null
+		// Add installer data for online sessions
+		if (session.isOnline && installer != null) {
+			sessionDto.onlineAccessInfo = {
+				associated_user: {
+					id: parseInt(installer.shopifyId),
+					first_name: installer.firstName,
+					last_name: installer.lastName,
+					email: installer.email,
+					account_owner: installer.isOwner,
+					locale: installer.locale,
+					collaborator: installer.isCollaborator,
+					email_verified: installer.emailVerified
+				}
 			};
-
-			sessions.push(session);
 		}
 
-		// Add offline session if exists
-		if (providerData.offlineSession) {
-			sessions.push({
-				id: providerData.offlineSession.sessionId,
-				shop: shopId,
-				state: providerData.offlineSession.state,
-				isOnline: false,
-				scope: providerData.offlineSession.scopes,
-				expires: null,
-				accessToken: providerData.offlineSession.accessToken,
-				onlineAccessInfo: null
-			});
-		}
-	}
-
-	return sessions;
+		return sessionDto;
+	});
 }

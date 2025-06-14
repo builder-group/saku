@@ -1,44 +1,35 @@
 import { AppError } from '@repo/hono-utils';
-import { and, eq } from 'drizzle-orm';
-import { db, shopAccountTable } from '@/environment/db';
-import type { TShopifyProviderData } from '@/environment/db/schemas/shop';
+import { eq } from 'drizzle-orm';
+import { db, shopifySessionTable } from '@/environment/db';
 
 export async function getShopifyShopAccessToken(shopId: string): Promise<string> {
-	const shops = await db
-		.select({
-			providerData: shopAccountTable.providerData
-		})
-		.from(shopAccountTable)
-		.where(
-			and(eq(shopAccountTable.provider, 'shopify'), eq(shopAccountTable.providerAccountId, shopId))
-		)
-		.limit(1);
-
-	if (!shops.length) {
+	// Get sessions for this shop
+	const sessions = await db
+		.select()
+		.from(shopifySessionTable)
+		.where(eq(shopifySessionTable.shopId, shopId));
+	if (!sessions.length) {
 		throw new AppError('#ERR_SHOP_NOT_FOUND', 404, {
 			detail: `Shop not found: ${shopId}`
 		});
 	}
 
-	const providerData = shops[0]?.providerData as TShopifyProviderData;
-
 	// Prefer offline token (never expires) over online token (expires every 24h)
-	if (providerData?.offlineSession?.accessToken) {
-		return providerData.offlineSession.accessToken;
+	const offlineSession = sessions.find((session) => !session.isOnline);
+	if (offlineSession != null) {
+		return offlineSession.accessToken;
 	}
 
 	// Fallback to online token if offline not available
-	if (providerData?.onlineSession?.accessToken) {
-		const expiryDate = new Date(providerData.onlineSession.expiresAt);
-		const now = new Date();
-
-		if (now >= expiryDate) {
+	const onlineSession = sessions.find((session) => session.isOnline);
+	if (onlineSession != null) {
+		if (onlineSession.expiresAt && new Date() >= onlineSession.expiresAt) {
 			throw new AppError('#ERR_ACCESS_TOKEN_EXPIRED', 401, {
-				detail: `Online access token has expired for shop: ${shopId}. Token expired at: ${providerData.onlineSession.expiresAt}`
+				detail: `Online access token has expired for shop: ${shopId}. Token expired at: ${onlineSession.expiresAt.toISOString()}`
 			});
 		}
 
-		return providerData.onlineSession.accessToken;
+		return onlineSession.accessToken;
 	}
 
 	throw new AppError('#ERR_ACCESS_TOKEN_NOT_FOUND', 404, {
