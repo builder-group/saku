@@ -31,40 +31,6 @@ export const shopAccountTable = pgTable(
 	(table) => [primaryKey({ columns: [table.provider, table.providerAccountId] })]
 );
 
-/**
- * Shopify Session Table
- *
- * Stores sessions separately from shop accounts because offline sessions may arrive
- * before shop accounts exist (no user data). Online sessions create accounts later.
- *
- * No foreign key constraints - offline sessions would violate them during creation.
- * Cascade deletion handled programmatically via deleteShopAccount().
- */
-export const shopifySessionTable = pgTable('shopify_session', {
-	// Session ID (e.g. "offline_my-shop.myshopify.com" or "my-shop.myshopify.com_123456")
-	sessionId: text('session_id').primaryKey(),
-
-	// Shop domain (e.g. "my-shop.myshopify.com")
-	shopId: text('shop_id').notNull(),
-
-	// Session type
-	isOnline: text('is_online').$type<boolean>().notNull(),
-
-	// OAuth data
-	accessToken: text('access_token').notNull(),
-	scopes: text('scopes').notNull(),
-	state: text('state').notNull(),
-	// Online sessions have expiry, offline sessions don't
-	expiresAt: timestamp('expires_at', { mode: 'date' }),
-
-	updatedAt: timestamp('updated_at', { mode: 'date' })
-		.notNull()
-		.$defaultFn(() => new Date()),
-	createdAt: timestamp('created_at', { mode: 'date' })
-		.notNull()
-		.$defaultFn(() => new Date())
-});
-
 export type TShopProviderType = 'shopify';
 
 export type TShopProviderData = TShopifyProviderData;
@@ -73,6 +39,9 @@ export type TShopProviderData = TShopifyProviderData;
  * Shopify Provider Data
  */
 export interface TShopifyProviderData {
+	// Note: OAuth data is stored in the ShopifySessionTable
+	// because offline sessions may arrive before shop accounts exist (no user data).
+
 	// Installer info from online session (person who installed the app)
 	installer?: {
 		shopifyId: string; // e.g. "987654321"
