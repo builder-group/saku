@@ -33,7 +33,7 @@
 		"update:latest": "pnpm update --latest"
 	},
 	"dependencies": {
-		"@asteasolutions/zod-to-openapi": "^7.3.3",
+		"@asteasolutions/zod-to-openapi": "^7.3.4",
 		"@blgc/utils": "^0.0.55",
 		"@hono/zod-openapi": "^0.19.8",
 		"@oslojs/crypto": "^1.0.1",

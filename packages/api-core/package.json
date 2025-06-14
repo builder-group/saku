@@ -37,7 +37,7 @@
 		"update:latest": "pnpm update --latest"
 	},
 	"dependencies": {
-		"@asteasolutions/zod-to-openapi": "^7.3.3",
+		"@asteasolutions/zod-to-openapi": "^7.3.4",
 		"@blgc/utils": "^0.0.55",
 		"@hono/zod-openapi": "^0.19.8",
 		"@hono/zod-validator": "^0.7.0",
@@ -50,7 +50,7 @@
 		"hono": "^4.7.11",
 		"pg": "^8.16.0",
 		"valibot": "^1.1.0",
-		"validatenv": "^0.0.35",
+		"validatenv": "^0.0.38",
 		"validation-adapters": "^0.0.25",
 		"zod": "3.25.64"
 	},
