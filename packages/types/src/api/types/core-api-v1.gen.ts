@@ -4,477 +4,596 @@
  */
 
 export interface paths {
-	'/v1/auth/shopify/session': {
-		parameters: {
-			query?: never;
-			header?: never;
-			path?: never;
-			cookie?: never;
-		};
-		get?: never;
-		put?: never;
-		/**
-		 * Create Shopify session
-		 * @description Store a new Shopify session from app installation or authentication
-		 */
-		post: operations['createShopifySession'];
-		delete?: never;
-		options?: never;
-		head?: never;
-		patch?: never;
-		trace?: never;
-	};
-	'/v1/auth/shopify/session/{sessionId}': {
-		parameters: {
-			query?: never;
-			header?: never;
-			path?: never;
-			cookie?: never;
-		};
-		/**
-		 * Get Shopify session by ID
-		 * @description Retrieve a specific Shopify session by its ID
-		 */
-		get: operations['getShopifySession'];
-		put?: never;
-		post?: never;
-		/**
-		 * Delete Shopify session
-		 * @description Remove a Shopify session by its ID
-		 */
-		delete: operations['deleteShopifySession'];
-		options?: never;
-		head?: never;
-		patch?: never;
-		trace?: never;
-	};
-	'/v1/auth/shopify/session/shop/{shopId}': {
-		parameters: {
-			query?: never;
-			header?: never;
-			path?: never;
-			cookie?: never;
-		};
-		/**
-		 * Get Shopify session by shop
-		 * @description Retrieve Shopify sessions for a specific shop domain
-		 */
-		get: operations['getShopifySessionByShop'];
-		put?: never;
-		post?: never;
-		delete?: never;
-		options?: never;
-		head?: never;
-		patch?: never;
-		trace?: never;
-	};
-	'/v1/health': {
-		parameters: {
-			query?: never;
-			header?: never;
-			path?: never;
-			cookie?: never;
-		};
-		/**
-		 * Check API health
-		 * @description Returns the current health status of the API
-		 */
-		get: operations['checkHealth'];
-		put?: never;
-		post?: never;
-		delete?: never;
-		options?: never;
-		head?: never;
-		patch?: never;
-		trace?: never;
-	};
-	'/v1/info': {
-		parameters: {
-			query?: never;
-			header?: never;
-			path?: never;
-			cookie?: never;
-		};
-		/**
-		 * Get API info
-		 * @description Returns the current info of the API
-		 */
-		get: operations['getInfo'];
-		put?: never;
-		post?: never;
-		delete?: never;
-		options?: never;
-		head?: never;
-		patch?: never;
-		trace?: never;
-	};
+    "/v1/auth/shopify/session": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create Shopify session
+         * @description Store a new Shopify session from app installation or authentication
+         */
+        post: operations["createShopifySession"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/auth/shopify/session/{sessionId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Shopify session by ID
+         * @description Retrieve a specific Shopify session by its ID
+         */
+        get: operations["getShopifySession"];
+        put?: never;
+        post?: never;
+        /**
+         * Delete Shopify session
+         * @description Remove a Shopify session by its ID
+         */
+        delete: operations["deleteShopifySession"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/auth/shopify/session/shop/{shopId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Shopify session by shop
+         * @description Retrieve Shopify sessions for a specific shop domain
+         */
+        get: operations["getShopifySessionByShop"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/health": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Check API health
+         * @description Returns the current health status of the API
+         */
+        get: operations["checkHealth"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/info": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get API info
+         * @description Returns the current info of the API
+         */
+        get: operations["getInfo"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/shopify/ugc/upload-url": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create file upload URL
+         * @description Generate a signed upload URL for user-generated content files
+         */
+        post: operations["createUgcUploadUrl"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
-	schemas: {
-		ShopifySessionAssociatedUserDto: {
-			/** @example 987654321 */
-			id: number;
-			/** @example John */
-			first_name: string;
-			/** @example Doe */
-			last_name: string;
-			/**
-			 * Format: email
-			 * @example john@example.com
-			 */
-			email: string;
-			/** @example true */
-			account_owner: boolean;
-			/** @example en-US */
-			locale: string;
-			/** @example false */
-			collaborator: boolean;
-			/** @example true */
-			email_verified: boolean;
-		};
-		ShopifySessionOnlineAccessInfoDto: {
-			/** @example 86399 */
-			expires_in?: number;
-			/** @example write_products,read_customers */
-			associated_user_scope?: string;
-			/** @example session_token_hash_string */
-			session?: string;
-			account_number?: number | null;
-			associated_user: components['schemas']['ShopifySessionAssociatedUserDto'];
-		} | null;
-		ShopifySessionDto: {
-			/** @example my-shop.myshopify.com_987654321 */
-			id: string;
-			/** @example my-shop.myshopify.com */
-			shop: string;
-			/** @example  */
-			state: string;
-			/** @example true */
-			isOnline: boolean;
-			/** @example write_products,read_customers */
-			scope: string;
-			/**
-			 * Format: date-time
-			 * @example 2025-06-14T13:39:33.336Z
-			 */
-			expires: string | null;
-			/** @example shpat_def456...uvw012 */
-			accessToken: string;
-			onlineAccessInfo: components['schemas']['ShopifySessionOnlineAccessInfoDto'];
-		};
-		AppErrorDto: {
-			/**
-			 * @description A URI reference that identifies the problem type.
-			 * @default about:blank
-			 * @example https://docs.example.com/errors/validation-error
-			 */
-			type: string;
-			/**
-			 * @description A short, human-readable summary of the problem type.
-			 * @example Validation failed for the request parameters.
-			 */
-			title: string;
-			/**
-			 * @description The HTTP status code for this occurrence of the problem.
-			 * @example 400
-			 */
-			status: number;
-			/**
-			 * @description A human-readable explanation specific to this error occurrence.
-			 * @example Field `email` must be a valid email address.
-			 */
-			detail?: string;
-			/**
-			 * @description A URI reference that identifies the specific occurrence of the problem.
-			 * @example /api/users/1234
-			 */
-			instance?: string;
-			/**
-			 * @description An application-specific error code, useful for client-side logic.
-			 * @example VALIDATION_ERROR
-			 */
-			code?: string;
-			/**
-			 * @description Extension member for additional error context (e.g., per-field validation).
-			 * @example [
-			 *       {
-			 *         "field": "email",
-			 *         "reason": "must be a valid email"
-			 *       },
-			 *       {
-			 *         "field": "password",
-			 *         "reason": "is required"
-			 *       }
-			 *     ]
-			 */
-			errors?: {
-				[key: string]: unknown;
-			}[];
-		};
-		HealthDto: {
-			/**
-			 * @example Up
-			 * @enum {string}
-			 */
-			status: 'Up' | 'Down';
-			/** @example App is up and running */
-			message: string;
-			/** @example v1.0.0d */
-			version: string;
-		};
-		InfoDto: {
-			/** @example v1.0.0d */
-			version: string;
-			/** @example https://api.saku.so */
-			url: string;
-			/** @example production */
-			env: string;
-		};
-	};
-	responses: never;
-	parameters: never;
-	requestBodies: never;
-	headers: never;
-	pathItems: never;
+    schemas: {
+        ShopifySessionAssociatedUserDto: {
+            /** @example 987654321 */
+            id: number;
+            /** @example John */
+            first_name: string;
+            /** @example Doe */
+            last_name: string;
+            /**
+             * Format: email
+             * @example john@example.com
+             */
+            email: string;
+            /** @example true */
+            account_owner: boolean;
+            /** @example en-US */
+            locale: string;
+            /** @example false */
+            collaborator: boolean;
+            /** @example true */
+            email_verified: boolean;
+        };
+        ShopifySessionOnlineAccessInfoDto: {
+            /** @example 86399 */
+            expires_in?: number;
+            /** @example write_products,read_customers */
+            associated_user_scope?: string;
+            /** @example session_token_hash_string */
+            session?: string;
+            /** @example null */
+            account_number?: number | null;
+            associated_user: components["schemas"]["ShopifySessionAssociatedUserDto"];
+        } | null;
+        ShopifySessionDto: {
+            /** @example my-shop.myshopify.com_987654321 */
+            id: string;
+            /** @example my-shop.myshopify.com */
+            shop: string;
+            /** @example  */
+            state: string;
+            /** @example true */
+            isOnline: boolean;
+            /** @example write_products,read_customers */
+            scope: string;
+            /**
+             * Format: date-time
+             * @example 2025-06-14T13:39:33.336Z
+             */
+            expires: string | null;
+            /** @example shpat_def456...uvw012 */
+            accessToken: string;
+            onlineAccessInfo: components["schemas"]["ShopifySessionOnlineAccessInfoDto"];
+        };
+        AppErrorDto: {
+            /**
+             * @description A URI reference that identifies the problem type.
+             * @default about:blank
+             * @example https://docs.example.com/errors/validation-error
+             */
+            type: string;
+            /**
+             * @description A short, human-readable summary of the problem type.
+             * @example Validation failed for the request parameters.
+             */
+            title: string;
+            /**
+             * @description The HTTP status code for this occurrence of the problem.
+             * @example 400
+             */
+            status: number;
+            /**
+             * @description A human-readable explanation specific to this error occurrence.
+             * @example Field `email` must be a valid email address.
+             */
+            detail?: string;
+            /**
+             * @description A URI reference that identifies the specific occurrence of the problem.
+             * @example /api/users/1234
+             */
+            instance?: string;
+            /**
+             * @description An application-specific error code, useful for client-side logic.
+             * @example VALIDATION_ERROR
+             */
+            code?: string;
+            /**
+             * @description Extension member for additional error context (e.g., per-field validation).
+             * @example [
+             *       {
+             *         "field": "email",
+             *         "reason": "must be a valid email"
+             *       },
+             *       {
+             *         "field": "password",
+             *         "reason": "is required"
+             *       }
+             *     ]
+             */
+            errors?: {
+                [key: string]: unknown;
+            }[];
+        };
+        HealthDto: {
+            /**
+             * @example Up
+             * @enum {string}
+             */
+            status: "Up" | "Down";
+            /** @example App is up and running */
+            message: string;
+            /** @example v1.0.0d */
+            version: string;
+        };
+        InfoDto: {
+            /** @example v1.0.0d */
+            version: string;
+            /** @example https://api.saku.so */
+            url: string;
+            /** @example production */
+            env: string;
+        };
+        UploadParameterDto: {
+            /** @example key */
+            name: string;
+            /** @example tmp/ugc/abc123/image.jpg */
+            value: string;
+        };
+        StagedUploadTargetDto: {
+            /**
+             * Format: uri
+             * @example https://shopify-staged-uploads.storage.googleapis.com/
+             */
+            url: string;
+            /**
+             * Format: uri
+             * @example https://cdn.shopify.com/s/files/1/0123/4567/files/image.jpg
+             */
+            resourceUrl: string | null;
+            /** @example [
+             *       {
+             *         "name": "key",
+             *         "value": "tmp/ugc/abc123/image.jpg"
+             *       },
+             *       {
+             *         "name": "Content-Type",
+             *         "value": "image/jpeg"
+             *       },
+             *       {
+             *         "name": "acl",
+             *         "value": "private"
+             *       }
+             *     ] */
+            parameters: components["schemas"]["UploadParameterDto"][];
+        };
+        CreateUploadUrlResponseDto: {
+            uploadTarget: components["schemas"]["StagedUploadTargetDto"];
+            /** @example ugc_abc123def456 */
+            uploadId: string;
+            /**
+             * Format: date-time
+             * @example 2024-01-15T10:30:00Z
+             */
+            expiresAt: string;
+        };
+        CreateUploadUrlDto: {
+            /** @example product-image.jpg */
+            filename: string;
+            /** @example image/jpeg */
+            mimeType: string;
+            /** @example 1024000 */
+            fileSize: number;
+            /**
+             * @example IMAGE
+             * @enum {string}
+             */
+            contentType: "IMAGE" | "VIDEO" | "FILE";
+        };
+    };
+    responses: never;
+    parameters: never;
+    requestBodies: never;
+    headers: never;
+    pathItems: never;
 }
 export type $defs = Record<string, never>;
 export interface operations {
-	createShopifySession: {
-		parameters: {
-			query?: never;
-			header?: never;
-			path?: never;
-			cookie?: never;
-		};
-		requestBody?: {
-			content: {
-				'application/json': {
-					/** @example my-shop.myshopify.com */
-					shop: string;
-					/** @example  */
-					state: string;
-					/** @example true */
-					isOnline: boolean;
-					/** @example write_products,read_customers */
-					scope: string;
-					/**
-					 * Format: date-time
-					 * @example 2025-06-14T13:39:33.336Z
-					 */
-					expires: string | null;
-					/** @example shpat_def456...uvw012 */
-					accessToken: string;
-					onlineAccessInfo: components['schemas']['ShopifySessionOnlineAccessInfoDto'];
-					/** @example my-shop.myshopify.com_987654321 */
-					id?: string;
-				};
-			};
-		};
-		responses: {
-			/** @description Successful response */
-			201: {
-				headers: {
-					[name: string]: unknown;
-				};
-				content: {
-					'application/json': components['schemas']['ShopifySessionDto'];
-				};
-			};
-			/** @description Bad request */
-			400: {
-				headers: {
-					[name: string]: unknown;
-				};
-				content: {
-					'application/json': components['schemas']['AppErrorDto'];
-				};
-			};
-			/** @description Internal server error */
-			500: {
-				headers: {
-					[name: string]: unknown;
-				};
-				content: {
-					'application/json': components['schemas']['AppErrorDto'];
-				};
-			};
-		};
-	};
-	getShopifySession: {
-		parameters: {
-			query?: never;
-			header?: never;
-			path: {
-				sessionId: string;
-			};
-			cookie?: never;
-		};
-		requestBody?: never;
-		responses: {
-			/** @description Successful response */
-			200: {
-				headers: {
-					[name: string]: unknown;
-				};
-				content: {
-					'application/json': components['schemas']['ShopifySessionDto'];
-				};
-			};
-			/** @description Resource not found */
-			404: {
-				headers: {
-					[name: string]: unknown;
-				};
-				content: {
-					'application/json': components['schemas']['AppErrorDto'];
-				};
-			};
-			/** @description Internal server error */
-			500: {
-				headers: {
-					[name: string]: unknown;
-				};
-				content: {
-					'application/json': components['schemas']['AppErrorDto'];
-				};
-			};
-		};
-	};
-	deleteShopifySession: {
-		parameters: {
-			query?: never;
-			header?: never;
-			path: {
-				sessionId: string;
-			};
-			cookie?: never;
-		};
-		requestBody?: never;
-		responses: {
-			/** @description Session deleted successfully */
-			204: {
-				headers: {
-					[name: string]: unknown;
-				};
-				content?: never;
-			};
-			/** @description Resource not found */
-			404: {
-				headers: {
-					[name: string]: unknown;
-				};
-				content: {
-					'application/json': components['schemas']['AppErrorDto'];
-				};
-			};
-			/** @description Internal server error */
-			500: {
-				headers: {
-					[name: string]: unknown;
-				};
-				content: {
-					'application/json': components['schemas']['AppErrorDto'];
-				};
-			};
-		};
-	};
-	getShopifySessionByShop: {
-		parameters: {
-			query?: never;
-			header?: never;
-			path: {
-				shopId: string;
-			};
-			cookie?: never;
-		};
-		requestBody?: never;
-		responses: {
-			/** @description Successful response */
-			200: {
-				headers: {
-					[name: string]: unknown;
-				};
-				content: {
-					'application/json': components['schemas']['ShopifySessionDto'][];
-				};
-			};
-			/** @description Resource not found */
-			404: {
-				headers: {
-					[name: string]: unknown;
-				};
-				content: {
-					'application/json': components['schemas']['AppErrorDto'];
-				};
-			};
-			/** @description Internal server error */
-			500: {
-				headers: {
-					[name: string]: unknown;
-				};
-				content: {
-					'application/json': components['schemas']['AppErrorDto'];
-				};
-			};
-		};
-	};
-	checkHealth: {
-		parameters: {
-			query?: never;
-			header?: never;
-			path?: never;
-			cookie?: never;
-		};
-		requestBody?: never;
-		responses: {
-			/** @description Successful response */
-			200: {
-				headers: {
-					[name: string]: unknown;
-				};
-				content: {
-					'application/json': components['schemas']['HealthDto'];
-				};
-			};
-			/** @description Internal server error */
-			500: {
-				headers: {
-					[name: string]: unknown;
-				};
-				content: {
-					'application/json': components['schemas']['AppErrorDto'];
-				};
-			};
-		};
-	};
-	getInfo: {
-		parameters: {
-			query?: never;
-			header?: never;
-			path?: never;
-			cookie?: never;
-		};
-		requestBody?: never;
-		responses: {
-			/** @description Successful response */
-			200: {
-				headers: {
-					[name: string]: unknown;
-				};
-				content: {
-					'application/json': components['schemas']['InfoDto'];
-				};
-			};
-			/** @description Internal server error */
-			500: {
-				headers: {
-					[name: string]: unknown;
-				};
-				content: {
-					'application/json': components['schemas']['AppErrorDto'];
-				};
-			};
-		};
-	};
+    createShopifySession: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": {
+                    /** @example my-shop.myshopify.com */
+                    shop: string;
+                    /** @example  */
+                    state: string;
+                    /** @example true */
+                    isOnline: boolean;
+                    /** @example write_products,read_customers */
+                    scope: string;
+                    /**
+                     * Format: date-time
+                     * @example 2025-06-14T13:39:33.336Z
+                     */
+                    expires: string | null;
+                    /** @example shpat_def456...uvw012 */
+                    accessToken: string;
+                    onlineAccessInfo: components["schemas"]["ShopifySessionOnlineAccessInfoDto"];
+                    /** @example my-shop.myshopify.com_987654321 */
+                    id?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Successful response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ShopifySessionDto"];
+                };
+            };
+            /** @description Bad request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppErrorDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppErrorDto"];
+                };
+            };
+        };
+    };
+    getShopifySession: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                sessionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ShopifySessionDto"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppErrorDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppErrorDto"];
+                };
+            };
+        };
+    };
+    deleteShopifySession: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                sessionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Session deleted successfully */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppErrorDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppErrorDto"];
+                };
+            };
+        };
+    };
+    getShopifySessionByShop: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                shopId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ShopifySessionDto"][];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppErrorDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppErrorDto"];
+                };
+            };
+        };
+    };
+    checkHealth: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HealthDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppErrorDto"];
+                };
+            };
+        };
+    };
+    getInfo: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InfoDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppErrorDto"];
+                };
+            };
+        };
+    };
+    createUgcUploadUrl: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["CreateUploadUrlDto"];
+            };
+        };
+        responses: {
+            /** @description Successful response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreateUploadUrlResponseDto"];
+                };
+            };
+            /** @description Bad request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppErrorDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppErrorDto"];
+                };
+            };
+        };
+    };
 }

@@ -16,5 +16,8 @@ export const shopifyConfig = {
 		validator: vValidator(v.string()),
 		description: 'Shopify API secret key for app authentication',
 		example: 'def456uvw012'
-	})
+	}),
+	shop: {
+		adminApi: (shopId: string) => `https://${shopId}/admin/api/2025-04/graphql.json`
+	}
 };

@@ -62,7 +62,7 @@ export async function verifyShopifySessionToken(token: string): Promise<TShopify
 		dest: payload['dest'] as string,
 		aud: payload['aud'] as string,
 		sub: payload['sub'] as string,
-		shopId: payload['dest'] as string,
+		shopId: payload['dest'].replace('https://', '') as string,
 		userId: payload['sub'] as string
 	};
 }

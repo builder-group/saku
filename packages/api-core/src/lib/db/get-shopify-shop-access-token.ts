@@ -27,5 +27,17 @@ export async function getShopifyShopAccessToken(shopId: string): Promise<string>
 		});
 	}
 
+	// Check if we have an access token that might be expired
+	if (providerData.expiresAt != null) {
+		const expiryDate = new Date(providerData.expiresAt);
+		const now = new Date();
+
+		if (now >= expiryDate) {
+			throw new AppError('#ERR_ACCESS_TOKEN_EXPIRED', 401, {
+				detail: `Online access token has expired for shop: ${shopId}. Please reinstall the app or use offline token.`
+			});
+		}
+	}
+
 	return providerData.accessToken;
 }
