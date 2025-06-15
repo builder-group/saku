@@ -1,0 +1,9 @@
+{
+	"extends": "@blgc/config/typescript/library",
+	"compilerOptions": {
+		"outDir": "./dist",
+		"declarationDir": "./dist",
+		"rootDir": "./src"
+	},
+	"include": ["src"]
+}

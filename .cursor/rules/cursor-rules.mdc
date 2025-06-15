@@ -14,6 +14,7 @@ Cursor rules are markdown files that provide AI-friendly documentation about our
 - **Context** - Include necessary implementation details and dependencies
 - **Maintenance** - Keep rules updated with current best practices
 
+
 ## File Organization
 
 ### Directory Structure
@@ -171,4 +172,84 @@ Reasoning: Smaller components are easier to test, maintain, and reuse.
 - Try to keep components small  # Wrong: Not specific
 - Maybe split up big components  # Wrong: Not declarative
 - Reuse when possible  # Wrong: No clear criteria
+```
+
+## Creating Effective Examples
+
+### Example Guidelines
+- **Always use simple, generic examples** - Create examples that demonstrate the pattern clearly without domain complexity
+- **Never use complex codebase examples** - Avoid bloated, real-world code that obscures the main point
+- **Always focus on the principle** - Make the good vs bad distinction obvious and immediate
+- **Always keep examples short** - Use minimal code that still shows the complete pattern
+
+✅ Good:
+```typescript
+// Simple example that clearly shows the pattern
+const SUserDto = z
+  .object({
+    id: z.string().uuid(),
+    name: z.string(),
+    email: z.string().email()
+  })
+  .openapi('UserDto');
+
+export type TUserDto = z.infer<typeof SUserDto>;
+```
+
+❌ Bad:
+```typescript
+// Complex real-world example that obscures the point
+const SShopifySessionOnlineAccessInfoDto = z
+  .object({
+    expires_in: z.number().optional().openapi({ example: 86399 }),
+    associated_user_scope: z
+      .string()
+      .optional()
+      .openapi({ example: 'write_products,read_customers' }),
+    session: z.string().optional().openapi({ example: 'session_token_hash_string' }),
+    account_number: z.number().nullable().optional().openapi({ example: null }),
+    associated_user: SShopifySessionAssociatedUserDto
+  })
+  .openapi('ShopifySessionOnlineAccessInfoDto');
+```
+
+### Example Creation Process
+1. **Identify the core pattern** - What specific concept are you demonstrating?
+2. **Create minimal example** - Use the simplest code that shows the pattern
+3. **Add clear contrast** - Show obvious good vs bad examples
+4. **Explain the why** - Add brief comments explaining the principle
+
+✅ Good approach:
+```markdown
+## Function Naming
+- Always use descriptive function names
+- Always use camelCase for functions
+
+✅ Good:
+```typescript
+function calculateTotalPrice(items: Item[]): number {
+  return items.reduce((sum, item) => sum + item.price, 0);
+}
+```
+
+❌ Bad:
+```typescript
+function calc(items) {  // Wrong: Unclear name, no types
+  return items.reduce((a, b) => a + b.price, 0);
+}
+```
+```
+
+❌ Bad approach:
+```markdown
+## Function Implementation
+Look at this complex real-world example from our payment processing system:
+
+```typescript
+async function processShopifyWebhookPaymentIntentSucceededWithRetryLogicAndErrorHandling(
+  webhookData: TComplexShopifyWebhookPayload
+): Promise<TProcessedPaymentResult> {
+  // 50 lines of complex business logic...
+}
+```
 ```

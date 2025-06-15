@@ -1,0 +1,39 @@
+meta {
+  name: Create Shopify Session
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://127.0.0.1:8787/v1/auth/shopify/session
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "id": "my-shop.myshopify.com_987654321",
+    "shop": "my-shop.myshopify.com",
+    "state": "",
+    "isOnline": true,
+    "scope": "write_products,read_customers",
+    "expires": "2025-06-14T13:39:33.336Z",
+    "accessToken": "shpat_def456...uvw012",
+    "onlineAccessInfo": {
+      "expires_in": 86399,
+      "associated_user_scope": "write_products,read_customers",
+      "session": "session_token_hash_string",
+      "account_number": null,
+      "associated_user": {
+        "id": 987654321,
+        "first_name": "John",
+        "last_name": "Doe",
+        "email": "john@example.com",
+        "account_owner": true,
+        "locale": "en-US",
+        "collaborator": false,
+        "email_verified": true
+      }
+    }
+  }
+}

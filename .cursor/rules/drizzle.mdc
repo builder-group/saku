@@ -5,32 +5,30 @@ alwaysApply: false
 ---
 # DrizzleORM Guidelines
 
-Core patterns and best practices for using Drizzle ORM in our PostgreSQL-based applications. These guidelines ensure type-safe, maintainable, and performant database operations.
+Core patterns for using Drizzle ORM with PostgreSQL. These guidelines ensure type-safe, maintainable database operations.
 
 ## Core Principles
 - **Type Safety** - Always leverage TypeScript and Drizzle's type system
-- **SQL First** - Always prefer SQL-like query syntax over ORM abstractions
-- **Performance** - Always optimize queries for PostgreSQL's strengths
-- **Maintainability** - Always keep database logic clear and explicit
+- **SQL First** - Always prefer SQL-like syntax over ORM abstractions  
+- **Transactions** - Always use transactions for multi-table operations
+- **Explicit Returns** - Always return specific columns, never `*`
 
 ## Schema Definition
-
-### Table Creation
-- Always use `pgTable` for PostgreSQL tables
-- Always define explicit column types
-- Always add proper indexes
-- Always use UUID for IDs unless there's a specific reason not to
+- Always use `pgTable` with explicit column types
+- Always include `updatedAt` and `createdAt` timestamps
+- Always use `text('id')` with UUID for primary keys
+- Always define proper constraints and foreign keys
 
 ✅ Good:
 ```typescript
-import { pgTable, text, timestamp, uniqueIndex } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, primaryKey } from 'drizzle-orm/pg-core';
 
 export const userTable = pgTable('user', {
   id: text('id')
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
-    
-  email: text('email').notNull(),
+
+  email: text('email').unique().notNull(),
   name: text('name').notNull(),
   
   updatedAt: timestamp('updated_at', { mode: 'date' })
@@ -39,87 +37,103 @@ export const userTable = pgTable('user', {
   createdAt: timestamp('created_at', { mode: 'date' })
     .notNull()
     .$defaultFn(() => new Date())
-}, (table) => ({
-  emailIdx: uniqueIndex('email_idx').on(table.email)
-}));
+});
+
+// Composite primary key pattern
+export const userRoleTable = pgTable('user_role', {
+  userId: text('user_id')
+    .notNull()
+    .references(() => userTable.id, { onDelete: 'cascade' }),
+  role: text('role').notNull(),
+  
+  updatedAt: timestamp('updated_at', { mode: 'date' })
+    .notNull()
+    .$defaultFn(() => new Date()),
+  createdAt: timestamp('created_at', { mode: 'date' })
+    .notNull()
+    .$defaultFn(() => new Date())
+}, (table) => [
+  primaryKey({ columns: [table.userId, table.role] })
+]);
 ```
 
 ❌ Bad:
 ```typescript
-// Wrong: Missing types, indexes, and timestamps
+// Wrong: Missing timestamps, constraints, and types
 const users = pgTable('users', {
   id: text('id'),
-  email: text('email'),
-  name: text('name')
+  name: text('name'),
+  email: text('email')
 });
 ```
 
-## Query Patterns
-
-### Select Queries
-- Always use SQL-like syntax for better readability
-- Always specify exact columns needed
-- Always use proper joins when needed
-- Always handle pagination explicitly
+## Select Queries
+- Always specify exact columns in select object
+- Always use `and()` for multiple conditions
+- Always use `.limit(1)` for single record queries
+- Always check array length for existence
 
 ✅ Good:
 ```typescript
-// Single table select with conditions
-const user = await db
+// Single record select
+const users = await db
   .select({
     id: userTable.id,
-    email: userTable.email
+    email: userTable.email,
+    name: userTable.name
   })
   .from(userTable)
   .where(eq(userTable.email, email))
   .limit(1);
 
-// Join with related data
-const posts = await db
+if (!users.length) {
+  throw new AppError('#ERR_USER_NOT_FOUND', 404);
+}
+
+// Multiple conditions
+const activeUsers = await db
   .select({
-    id: postTable.id,
-    title: postTable.title,
-    author: {
-      id: userTable.id,
-      name: userTable.name
-    }
+    id: userTable.id,
+    name: userTable.name
   })
-  .from(postTable)
-  .innerJoin(userTable, eq(postTable.authorId, userTable.id))
-  .where(eq(postTable.published, true))
-  .orderBy(desc(postTable.createdAt))
-  .limit(10)
-  .offset(page * 10);
+  .from(userTable)
+  .where(
+    and(
+      eq(userTable.active, true),
+      eq(userTable.role, 'admin')
+    )
+  );
 ```
 
 ❌ Bad:
 ```typescript
-// Wrong: Using query builder abstractions
+// Wrong: Selecting all columns, no limit, using findFirst
 const user = await db.query.userTable.findFirst({
   where: { email }
 });
 
-// Wrong: Selecting all columns
-const posts = await db
-  .select()
-  .from(postTable)
-  .innerJoin(userTable, eq(postTable.authorId, userTable.id));
+const users = await db
+  .select()  // Wrong: Selecting all columns
+  .from(userTable)
+  .where(eq(userTable.email, email));
 ```
 
-### Insert Operations
-- Always validate data before insertion
-- Always use batch inserts for multiple rows
-- Always return needed data after insert
+## Insert Operations
+- Always use `.returning()` with specific columns
+- Always destructure the first result with `[newRecord]`
+- Always set `updatedAt` and `createdAt` explicitly
+- Always validate before insertion
 
 ✅ Good:
 ```typescript
-// Single insert with return value
+// Single insert with return
 const [user] = await db
   .insert(userTable)
   .values({
-    email,
-    name,
-    role: 'user' as const
+    email: 'user@example.com',
+    name: 'John Doe',
+    updatedAt: new Date(),
+    createdAt: new Date()
   })
   .returning({
     id: userTable.id,
@@ -130,14 +144,12 @@ const [user] = await db
 const users = await db
   .insert(userTable)
   .values(validatedUsers)
-  .returning({
-    id: userTable.id
-  });
+  .returning({ id: userTable.id });
 ```
 
 ❌ Bad:
 ```typescript
-// Wrong: Not returning inserted data
+// Wrong: No returning, no timestamps
 await db.insert(userTable).values(userData);
 
 // Wrong: Multiple single inserts instead of batch
@@ -146,17 +158,17 @@ for (const user of users) {
 }
 ```
 
-### Update Operations
-- Always use where clauses for updates
-- Always validate update data
-- Always return updated data when needed
+## Update Operations
+- Always use `.where()` with explicit conditions
+- Always update `updatedAt` field
+- Always use `.returning()` when data is needed
 
 ✅ Good:
 ```typescript
 const [updated] = await db
   .update(userTable)
   .set({
-    name: newName,
+    name: 'New Name',
     updatedAt: new Date()
   })
   .where(eq(userTable.id, userId))
@@ -168,96 +180,126 @@ const [updated] = await db
 
 ❌ Bad:
 ```typescript
-// Wrong: Missing where clause
+// Wrong: Missing where clause, no updatedAt
 await db.update(userTable).set(data);
 
-// Wrong: Not returning updated data when needed
+// Wrong: Not returning when needed
 await db
   .update(userTable)
   .set(data)
   .where(eq(userTable.id, id));
 ```
 
-### Delete Operations
-- Always use where clauses for deletes
-- Always consider soft deletes for important data
-- Always handle cascading deletes explicitly
+## Delete Operations
+- Always use `.where()` with explicit conditions
+- Always use `.returning()` to confirm deletion
+- Always check result length to verify deletion
 
 ✅ Good:
 ```typescript
-// Hard delete with where clause
-const [deleted] = await db
+const deleted = await db
   .delete(userTable)
   .where(eq(userTable.id, userId))
-  .returning({
-    id: userTable.id
-  });
+  .returning({ id: userTable.id });
 
-// Soft delete
-const [deactivated] = await db
-  .update(userTable)
-  .set({
-    deletedAt: new Date(),
-    updatedAt: new Date()
-  })
-  .where(eq(userTable.id, userId))
-  .returning({
-    id: userTable.id
-  });
+if (!deleted.length) {
+  throw new AppError('#ERR_USER_NOT_FOUND', 404);
+}
 ```
 
 ❌ Bad:
 ```typescript
-// Wrong: Delete without where clause
+// Wrong: No where clause, no confirmation
 await db.delete(userTable);
 
-// Wrong: Not handling cascading deletes
+// Wrong: Not checking if anything was deleted
 await db
   .delete(userTable)
   .where(eq(userTable.id, userId));
 ```
 
-### Error Handling
+## Transactions
 - Always use transactions for multi-table operations
-- Always handle unique constraint violations
-- Always validate data before database operations
+- Always return data from transaction
+- Always handle the transaction result properly
 
 ✅ Good:
 ```typescript
-try {
-  const [user] = await db.transaction(async (tx) => {
-    const [user] = await tx
-      .insert(userTable)
-      .values(userData)
-      .returning();
-      
-    await tx
-      .insert(profileTable)
-      .values({
-        userId: user.id,
-        ...profileData
-      });
-      
-    return [user];
-  });
-} catch (error) {
-  if (error.code === '23505') { // Unique violation
-    throw new AppError('#ERR_DUPLICATE', 409);
-  }
-  throw error;
-}
+const result = await db.transaction(async (tx) => {
+  // 1. Create user
+  const [user] = await tx
+    .insert(userTable)
+    .values({
+      email: 'user@example.com',
+      name: 'John Doe',
+      updatedAt: new Date(),
+      createdAt: new Date()
+    })
+    .returning({ id: userTable.id });
+
+  // 2. Create user role
+  await tx
+    .insert(userRoleTable)
+    .values({
+      userId: user.id,
+      role: 'admin',
+      updatedAt: new Date(),
+      createdAt: new Date()
+    });
+
+  return user;
+});
+
+return result;
 ```
 
 ❌ Bad:
 ```typescript
 // Wrong: No transaction for multi-table operation
 const user = await db.insert(userTable).values(userData);
-await db.insert(profileTable).values({ userId: user.id });
+await db.insert(userRoleTable).values({ userId: user.id });
 
-// Wrong: Not handling database errors
-try {
-  await db.insert(userTable).values(userData);
-} catch (e) {
-  throw e;
+// Wrong: Not handling transaction result
+await db.transaction(async (tx) => {
+  await tx.insert(userTable).values(userData);
+  await tx.insert(userRoleTable).values(roleData);
+});
+```
+
+## Error Handling
+- Always throw `AppError` for business logic errors
+- Always check array length for existence
+- Always validate parsed data before use
+
+✅ Good:
+```typescript
+// Existence check with proper error
+if (!users.length) {
+  throw new AppError('#ERR_USER_NOT_FOUND', 404, {
+    detail: 'User not found'
+  });
+}
+
+// Data validation
+const userData = users[0];
+if (userData?.email == null) {
+  throw new AppError('#ERR_INVALID_USER_DATA', 500, {
+    detail: 'Invalid user data'
+  });
 }
 ```
+
+❌ Bad:
+```typescript
+// Wrong: Generic error handling
+if (!user) {
+  throw new Error('User not found');
+}
+
+// Wrong: Not checking for null/undefined
+const email = result[0].email;
+```
+
+## Related Rules
+- [style-guide.mdc](mdc:.cursor/rules/style-guide.mdc): Core coding standards
+- [hono.mdc](mdc:.cursor/rules/hono.mdc): API route patterns

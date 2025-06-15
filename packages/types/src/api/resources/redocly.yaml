@@ -1,0 +1,5 @@
+apis:
+  core@v1:
+    root: http://localhost:8787/v1/doc
+    x-openapi-ts:
+      output: ../types/core-api-v1.gen.ts

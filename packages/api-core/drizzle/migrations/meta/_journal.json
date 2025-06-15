@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1749920014569,
+      "tag": "0000_next_moonstone",
+      "breakpoints": true
+    }
+  ]
+}

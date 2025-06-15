@@ -67,7 +67,11 @@ export const BlocksContent: React.FC<TBlocksContentProps> = ({ editor }) => {
 				</Text>
 				<BlockSelectorPopover
 					editor={editor}
-					activator={<Button icon={PlusIcon} disabled={isDragging} variant="plain" />}
+					activator={
+						<div className="flex items-center justify-center">
+							<Button icon={PlusIcon} disabled={isDragging} variant="plain" />
+						</div>
+					}
 					width="auto"
 				/>
 			</PanelHeader>

@@ -5,379 +5,229 @@ alwaysApply: false
 ---
 # Hono Guidelines
 
-Core development guidelines for building type-safe, maintainable APIs using the Hono framework. These patterns ensure consistent, secure, and performant backend services while maintaining strict type safety and clean architecture.
+Core guidelines for building type-safe, maintainable APIs using Hono. These patterns ensure consistent, secure, and performant backend services.
 
 ## Core Principles
 - **KISS (Keep It Simple, Stupid)** - Always choose the simplest, most maintainable solution
-- **TypeScript First** - Always use TypeScript with strict typing (`strict: true`) everywhere
+- **TypeScript First** - Always use TypeScript with strict typing everywhere
 - **Less is More** - Always avoid unnecessary complexity, the best code is no code
-- **Functional Programming** - Always use functions over classes, except when classes make clear sense
-- **Error Handling** - Always use consistent, typed error handling with clear messages
+- **Business Logic in lib/** - Always separate concerns cleanly
 
 ## Route Organization
-- Always structure routes by version and resource using dot notation folders
-- Always separate concerns clearly within each route folder
-- Always follow consistent naming patterns
-- Always maintain clear directory structure
-- Always keep route folders flat for better discoverability
+- Always structure routes using dot notation: `v1.auth.shopify/`, `v1.users/`
+- Always keep three files per route: `schema.ts`, `index.ts`, `lib/`
+- Always organize business logic functions in separate files within `lib/`
 
 ✅ Good:
 ```typescript
-// Clear separation of concerns with flat route structure
-src/
-  app/
-    routes/
-      v1.users/              # All /v1/users routes
-        index.ts            # Route implementations
-        schema.ts          # Schema definitions
-        lib/               # Business logic
-          operations.ts
-          validation.ts
-          types.ts
-      v1.products/          # All /v1/products routes
-        index.ts
-        schema.ts
-        lib/
-          operations.ts
-          validation.ts
-          types.ts
+// Clear route structure
+src/app/routes/
+├── v1.users/              # Maps to /v1/users/*
+│   ├── schema.ts          # Route schemas & types
+│   ├── index.ts           # Route handlers
+│   └── lib/               # Business logic
+│       ├── index.ts       # Exports
+│       ├── create-user.ts
+│       └── get-user.ts
 ```
 
 ❌ Bad:
 ```typescript
-// Wrong: Nested directory structure makes routes hard to find
-src/
-  routes/              
-    v1/                # Wrong: Nested version directory
-      users/           # Wrong: Nested resource directory
-        index.ts
-        [id]/          # Wrong: Deeply nested dynamic routes
-          index.ts
-          products.ts
-    v2/
-      products/
-        index.ts
+// Wrong: Nested or inconsistent structure
+src/routes/
+├── v1/                    # Wrong: Nested version
+│   └── users/             # Wrong: Nested resource
+│       └── users.ts       # Wrong: Single file for all routes
 ```
 
 ## Schema Definition
-- Always use Zod for request/response schemas
-- Always define explicit types for all operations
-- Always document API contracts
-- Always validate all inputs
+- Always use Zod with `DTO` suffix for API contracts
+- Always include OpenAPI examples for all fields
+- Always use descriptive parameter names (`userId`, not `id`)
+- Always export TypeScript types from schemas
 
 ✅ Good:
 ```typescript
-// src/app/routes/v1/users/schema.ts
-import { z } from 'zod';
-import { createRoute } from '@/lib/api';
-import { ErrorResponse, SuccessResponse } from '@/lib/responses';
+// schema.ts
+import { createRoute, z } from '@hono/zod-openapi';
+import { JsonSuccessResponse, BadRequestResponse } from '@repo/hono-utils';
 
-export const SCreateUser = z.object({
-  email: z.string().email(),
-  name: z.string().min(1)
-});
+const SUserDto = z
+  .object({
+    id: z.string().uuid().openapi({ example: '123e4567-e89b-12d3' }),
+    email: z.string().email().openapi({ example: 'user@example.com' }),
+    name: z.string().openapi({ example: 'John Doe' })
+  })
+  .openapi('UserDto');
+
+export type TUserDto = z.infer<typeof SUserDto>;
 
 export const CreateUserRoute = createRoute({
   method: 'post',
   path: '/v1/users',
   tags: ['users'],
-  summary: 'Create new user',
+  summary: 'Create user',
+  operationId: 'createUser',
   request: {
     body: {
       content: {
         'application/json': {
-          schema: SCreateUser
+          schema: SUserDto.omit({ id: true })
         }
       }
     }
   },
   responses: {
-    200: SuccessResponse('User created'),
-    400: ErrorResponse('Invalid input'),
-    401: ErrorResponse('Unauthorized')
+    201: JsonSuccessResponse(SUserDto),
+    400: BadRequestResponse
   }
 });
 ```
 
 ❌ Bad:
 ```typescript
-// Wrong: Missing validation and documentation
-router.post('/users', async (c) => {
-  const body = await c.req.json();  // Wrong: No schema validation
-  return c.json(await db.users.create({ data: body }));  // Wrong: Untyped data
+// Wrong: Missing DTO suffix, no examples, generic parameters
+const SUser = z.object({        // Wrong: Missing Dto suffix
+  email: z.string(),            // Wrong: No OpenAPI example
+  name: z.string()
+});
+
+export const CreateRoute = createRoute({
+  path: '/users/{id}',          // Wrong: Generic 'id' parameter
+  responses: {
+    200: { description: 'OK' }  // Wrong: No typed response
+  }
 });
 ```
 
 ## Route Implementation
-- Always keep all resource routes in a single index.ts file
-- Always use descriptive dot notation for route folders
-- Always group related route operations in the same folder
+- Always keep route handlers clean and focused on HTTP concerns
+- Always import business logic functions from `./lib`
+- Always use consistent error handling with `AppError`
+- Always validate inputs with `c.req.valid()`
 
 ✅ Good:
 ```typescript
-// src/app/routes/v1.users/index.ts
-import { router } from '@/lib/router';
-import { 
-  CreateUserRoute, 
-  GetUserRoute,
-  GetUserProductsRoute,
-  CreateUserProductRoute 
-} from './schema';
-import { 
-  createUser, 
-  getUser,
-  getUserProducts,
-  createUserProduct 
-} from './lib/operations';
+// index.ts
+import { AppError } from '@repo/hono-utils';
+import { router } from '@/app/router';
+import { createUser, getUser } from './lib';
+import { CreateUserRoute, GetUserRoute } from './schema';
 
-// Base user routes
 router.openapi(CreateUserRoute, async (c) => {
   const input = c.req.valid('json');
-  return c.json(await createUser(input));
+  const user = await createUser(input);
+  return c.json(user, 201);
 });
 
 router.openapi(GetUserRoute, async (c) => {
-  const userId = c.req.param('id');
-  return c.json(await getUser(userId));
+  const { userId } = c.req.valid('param');
+  const user = await getUser(userId);
+  return c.json(user, 200);
 });
-
-// Nested product routes
-router.openapi(GetUserProductsRoute, async (c) => {
-  const userId = c.req.param('id');
-  return c.json(await getUserProducts(userId));
-});
-
-router.openapi(CreateUserProductRoute, async (c) => {
-  const userId = c.req.param('id');
-  const input = c.req.valid('json');
-  return c.json(await createUserProduct(userId, input));
-});
-
-// src/app/routes/v1.users/schema.ts
-import { z } from 'zod';
-import { createRoute } from '@/lib/api';
-
-export const CreateUserRoute = createRoute({
-  method: 'post',
-  path: '/v1/users',
-  // ... schema definition
-});
-
-export const GetUserProductsRoute = createRoute({
-  method: 'get',
-  path: '/v1/users/:id/products',
-  // ... schema definition
-});
-
-// src/app/routes/v1.users/lib/operations.ts
-import { TCreateUserInput, TUser, TProduct } from './types';
-
-export async function createUser(
-  input: TCreateUserInput
-): Promise<TUser> {
-  // Implementation
-}
-
-export async function getUserProducts(
-  userId: string
-): Promise<TProduct[]> {
-  // Implementation
-}
 ```
 
 ❌ Bad:
 ```typescript
-// Wrong: Routes scattered across multiple files and directories
-// src/app/routes/v1/users/index.ts
-router.get('/v1/users', async (c) => {
-  // Wrong: Route handler in nested directory
+// Wrong: Business logic mixed with HTTP concerns
+router.post('/users', async (c) => {
+  const data = await c.req.json();     // Wrong: No validation
+  
+  // Wrong: Database operations in route handler
+  const existing = await db.user.findUnique({ 
+    where: { email: data.email } 
+  });
+  
+  if (existing) {
+    return c.json({ error: 'User exists' }, 409); // Wrong: Custom error format
+  }
+  
+  const user = await db.user.create({ data }); // Wrong: No error handling
+  return c.json(user);
 });
-
-// Wrong: Schema separated from route
-// src/app/schemas/users.ts
-export const userSchema = z.object({
-  // Wrong: Schema far from usage
-});
-
-// Wrong: Operations mixed with routes
-// src/app/routes/v1/users/products.ts
-export async function getUserProducts() {
-  // Wrong: Business logic mixed with route
-}
 ```
 
-## Business Logic
-- Always separate business logic from route handlers
-- Always use proper types for inputs and outputs
-- Always implement proper error handling
-- Always validate business rules
+## Business Logic Organization
+- Always separate each operation into its own file
+- Always export all functions from `lib/index.ts`
+- Always use proper TypeScript types for inputs and outputs
+- Always handle errors with `AppError`
 
 ✅ Good:
 ```typescript
-// src/app/routes/v1/users/lib/operations.ts
-import { TCreateUserInput, TUser } from './types';
-import { AppError } from '@/lib/errors';
-import { db } from '@/lib/db';
+// lib/index.ts
+export * from './create-user';
+export * from './get-user';
 
-export async function createUser(
-  input: TCreateUserInput
-): Promise<TUser> {
-  // Check for existing user
-  const existing = await findUserByEmail(input.email);
+// lib/create-user.ts
+import { AppError } from '@repo/hono-utils';
+import { db } from '@/lib/db';
+import type { TCreateUserDto, TUserDto } from '../schema';
+
+export async function createUser(input: TCreateUserDto): Promise<TUserDto> {
+  const existing = await db.user.findUnique({
+    where: { email: input.email }
+  });
+  
   if (existing != null) {
-    throw new AppError('#ERR_CONFLICT', 409, {
-      description: 'User already exists'
+    throw new AppError('#ERR_USER_EXISTS', 409, {
+      detail: 'User already exists'
     });
   }
   
-  // Create user with validated input
-  return db.user.create({
-    data: input
-  });
+  const user = await db.user.create({ data: input });
+  return user;
 }
 ```
 
 ❌ Bad:
 ```typescript
-// Wrong: Missing types and improper error handling
-export async function createUser(input: any) {  // Wrong: Untyped input
-  if (!input.email) {
-    throw new Error('Invalid email');  // Wrong: Generic error
-  }
-  return db.user.create({ data: input });  // Wrong: Unvalidated data
+// Wrong: All operations in one file, no types
+// lib/operations.ts
+export async function createUser(data) {        // Wrong: No types
+  return db.user.create({ data });              // Wrong: No validation
+}
+
+export async function getUser(id) {
+  const user = await db.user.findUnique({ where: { id } });
+  if (!user) throw new Error('Not found');      // Wrong: Generic error
+  return user;
 }
 ```
 
 ## Error Handling
-- Always use the centralized error handling system
-- Always throw typed errors from the `@repo/hono-utils` module
-- Always include error codes for client-side handling
-- Never expose internal error details to clients
+- Always use `AppError` from `@repo/hono-utils`
+- Always include error codes with `#ERR_` prefix
+- Always provide helpful detail messages
+- Always re-throw `AppError` instances in route handlers
 
 ✅ Good:
 ```typescript
-// src/app/routes/v1.users/lib/operations.ts
-import { AppError } from '@repo/hono-utils';
-
-export async function createUser(input: TCreateUserInput): Promise<TUser> {
-  const existing = await db.user.findUnique({ 
-    where: { email: input.email } 
+// In business logic
+if (user == null) {
+  throw new AppError('#ERR_USER_NOT_FOUND', 404, {
+    detail: 'User not found'
   });
-  
-  if (existing) {
-    throw new AppError('#ERR_USER_EXISTS', 409, {
-      message: 'A user with this email already exists'
-    });
-  }
-  
-  try {
-    return await db.user.create({ data: input });
-  } catch (error) {
-    throw new AppError('#ERR_USER_CREATE_FAILED', 500);
-  }
+}
+```
+
+❌ Bad:
+```typescript
+// Wrong: Generic error handling
+if (!user) {
+  throw new Error('User not found');           // Wrong: Generic Error
 }
 
-// src/app/routes/v1.users/index.ts
-router.openapi(CreateUserRoute, async (c) => {
-  try {
-    const input = c.req.valid('json');
-    const user = await createUser(input);
-    return c.json(user);
-  } catch (error) {
-    // Error handler middleware will catch and format the error
-    throw error;
-  }
-});
-```
-
-❌ Bad:
-```typescript
-// Wrong: Inconsistent error handling
-router.post('/users', async (c) => {
-  try {
-    const data = await c.req.json();
-    const user = await db.user.create({ data });
-    return c.json(user);
-  } catch (e) {
-    // Wrong: Exposing internal error details
-    return c.json({ error: e.message }, 500);
-  }
-});
-```
-
-## Input Validation
-- Always define request schemas using Zod
-- Always validate request body, query, and params
-- Always use typed schemas with OpenAPI definitions
-- Never trust client input without validation
-
-✅ Good:
-```typescript
-// src/app/routes/v1.users/schema.ts
-import { z } from 'zod';
-import { createRoute } from '@/lib/api';
-
-export const SCreateUserInput = z.object({
-  email: z.string().email(),
-  name: z.string().min(2),
-  role: z.enum(['USER', 'ADMIN'])
-});
-
-export const CreateUserRoute = createRoute({
-  method: 'post',
-  path: '/v1/users',
-  request: {
-    body: SCreateUserInput
-  },
-  responses: {
-    201: z.object({
-      user: SUser
-    })
-  }
-});
-```
-
-❌ Bad:
-```typescript
-// Wrong: No schema validation
-router.post('/users', async (c) => {
-  const data = await c.req.json();
-  // Wrong: Using unvalidated input directly
-  return await db.user.create({ data });
-});
-```
-
-## Authentication & Authorization
-- Always validate session in middleware
-- Always check permissions before operations
-- Always use role-based access control
-- Never expose sensitive operations without auth
-
-✅ Good:
-```typescript
-// src/app/routes/v1.users/index.ts
-import { getClientSession } from '@/lib';
-
-router.openapi(CreateUserRoute, async (c) => {
-    const session = await getClientSession(c);
-  if (!session.hasSession()) {
-    throw new AppError('#ERR_UNAUTHORIZED', 401);
-  }
-
-  const input = c.req.valid('json');
-  return c.json(await createUser(input));
-});
-```
-
-❌ Bad:
-```typescript
-// Wrong: No authentication or authorization
-router.post('/admin/users', async (c) => {
-  // Wrong: Sensitive operation without auth
-  const users = await db.user.findMany();
-  return c.json(users);
-});
+// Wrong: Custom error responses
+try {
+  const user = await getUser(id);
+  return c.json(user);
+} catch (e) {
+  return c.json({ error: e.message }, 500);      // Wrong: Custom format
+}
 ```
 
 ## Related Rules
 - [style-guide.mdc](mdc:.cursor/rules/style-guide.mdc): Core coding standards
+- [drizzle.mdc](mdc:.cursor/rules/drizzle.mdc): Database patterns
+
