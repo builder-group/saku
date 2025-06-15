@@ -1,6 +1,8 @@
 import { jsonb, pgTable, primaryKey, text, timestamp } from 'drizzle-orm/pg-core';
 import { TAccountType, userTable } from './user';
 
+// TODO: Maybe support multiple users/workspaces per shop later?
+// Currenlty a shop can only be owned by a single user and the owner changes based on who last connected the app to the shop.
 export const shopAccountTable = pgTable(
 	'shop_account',
 	{
@@ -42,8 +44,8 @@ export interface TShopifyProviderData {
 	// Note: OAuth data is stored in the ShopifySessionTable
 	// because offline sessions may arrive before shop accounts exist (no user data).
 
-	// Installer info from online session (person who installed the app)
-	installer?: {
+	// Last installer info from online session (person who last connected the app)
+	lastInstaller?: {
 		shopifyId: string; // e.g. "987654321"
 		email: string; // e.g. "john@coffeeshop.com"
 		firstName: string; // e.g. "John"

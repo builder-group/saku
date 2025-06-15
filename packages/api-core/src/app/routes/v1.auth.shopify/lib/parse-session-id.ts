@@ -1,35 +1,3 @@
-export type TOfflineSessionData = {
-	type: 'offline';
-	shopDomain: string;
-};
-
-export type TOnlineSessionData = {
-	type: 'online';
-	shopDomain: string;
-	userId: string;
-};
-
-export type TSessionData = TOfflineSessionData | TOnlineSessionData;
-
-/**
- * Parses a Shopify session ID to extract session type and relevant data
- *
- * @param sessionId - The session ID to parse
- * @returns Session data with type and extracted information, or null if invalid
- *
- * @example
- * // Offline session (just shop domain)
- * parseSessionId('my-shop.myshopify.com')
- * // Returns: { type: 'offline', shopDomain: 'my-shop.myshopify.com' }
- *
- * // Online session (shop domain + user ID)
- * parseSessionId('my-shop.myshopify.com_987654321')
- * // Returns: { type: 'online', shopDomain: 'my-shop.myshopify.com', userId: '987654321' }
- *
- * // Invalid session
- * parseSessionId('invalid_session_format_too_many_parts')
- * // Returns: null
- */
 export function parseSessionId(sessionId: unknown): TSessionData | null {
 	if (typeof sessionId !== 'string') {
 		return null;
@@ -69,3 +37,16 @@ export function parseSessionId(sessionId: unknown): TSessionData | null {
 
 	return null;
 }
+
+export type TOfflineSessionData = {
+	type: 'offline';
+	shopDomain: string;
+};
+
+export type TOnlineSessionData = {
+	type: 'online';
+	shopDomain: string;
+	userId: string;
+};
+
+export type TSessionData = TOfflineSessionData | TOnlineSessionData;

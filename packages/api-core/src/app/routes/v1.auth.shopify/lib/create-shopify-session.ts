@@ -18,7 +18,7 @@ export async function createShopifySession(
 	const sessionId =
 		input.id ??
 		(input.isOnline
-			? `${input.shop}_${input.onlineAccessInfo?.associated_user?.id}`
+			? `${input.shop}_${input.onlineAccessInfo?.associated_user?.id ?? 'unknown'}`
 			: `offline_${input.shop}`);
 
 	const result = await db.transaction(async (tx) => {
@@ -60,6 +60,8 @@ async function upsertSession(
 		.onConflictDoUpdate({
 			target: shopifySessionTable.sessionId,
 			set: {
+				shopId: input.shop,
+				isOnline: input.isOnline,
 				accessToken: input.accessToken,
 				scopes: input.scope,
 				state: input.state,
@@ -72,12 +74,10 @@ async function upsertSession(
 async function createUserAndShopAccount(
 	tx: TPgTransaction,
 	input: TCreateShopifySessionDto
-): Promise<void> {
+): Promise<boolean> {
 	const associatedUser = input.onlineAccessInfo?.associated_user;
 	if (associatedUser == null) {
-		throw new AppError('#ERR_USER_CREATE_FAILED', 500, {
-			detail: 'Failed to create or find user'
-		});
+		return false;
 	}
 
 	// 1. Create or find user by email
@@ -94,15 +94,15 @@ async function createUserAndShopAccount(
 		.onConflictDoUpdate({
 			target: userTable.email,
 			set: {
-				displayName: `${associatedUser.first_name} ${associatedUser.last_name}`,
+				// Don't update displayName - user might have customized it in our app
+				// displayName: `${associatedUser.first_name} ${associatedUser.last_name}`,
+				// Do update emailVerifiedAt - we trust Shopify's verification status
 				emailVerifiedAt: associatedUser.email_verified ? new Date() : null,
 				updatedAt: new Date()
 			}
 		})
 		.returning({
-			id: userTable.id,
-			handle: userTable.handle,
-			email: userTable.email
+			id: userTable.id
 		});
 	if (user == null) {
 		throw new AppError('#ERR_USER_CREATE_FAILED', 500, {
@@ -124,7 +124,7 @@ async function createUserAndShopAccount(
 		})
 		.onConflictDoNothing();
 
-	// 3. Create shop account with installer data (only if it doesn't exist)
+	// 3. Create shop account with installer data
 	await tx
 		.insert(shopAccountTable)
 		.values({
@@ -133,7 +133,7 @@ async function createUserAndShopAccount(
 			provider: 'shopify',
 			providerAccountId: input.shop,
 			providerData: {
-				installer: {
+				lastInstaller: {
 					shopifyId: associatedUser.id.toString(),
 					firstName: associatedUser.first_name,
 					lastName: associatedUser.last_name,
@@ -147,5 +147,28 @@ async function createUserAndShopAccount(
 			updatedAt: new Date(),
 			createdAt: new Date()
 		})
-		.onConflictDoNothing();
+		.onConflictDoUpdate({
+			target: [shopAccountTable.provider, shopAccountTable.providerAccountId],
+			set: {
+				// Update userId to current installer - shop "ownership" can change
+				// TODO: Maybe support multiple installers per shop later?
+				userId: user.id,
+				accountType: 'oauth',
+				providerData: {
+					lastInstaller: {
+						shopifyId: associatedUser.id.toString(),
+						firstName: associatedUser.first_name,
+						lastName: associatedUser.last_name,
+						email: associatedUser.email,
+						emailVerified: associatedUser.email_verified,
+						isOwner: associatedUser.account_owner,
+						locale: associatedUser.locale,
+						isCollaborator: associatedUser.collaborator
+					}
+				},
+				updatedAt: new Date()
+			}
+		});
+
+	return true;
 }
