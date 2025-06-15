@@ -1,5 +1,5 @@
 import * as v from 'valibot';
-import { validateEnvVar } from 'validatenv';
+import { ciDefault, validateEnvVar } from 'validatenv';
 import { vValidator } from 'validation-adapters/valibot';
 
 const env = validateEnvVar({
@@ -20,6 +20,11 @@ export const appConfig = {
 	env,
 	packageVersion,
 	version: `v${packageVersion}${env.slice(0, 1)}`,
+	secret: validateEnvVar({
+		envKey: 'API_CORE_SECRET',
+		validator: vValidator(v.string()),
+		defaultValue: ciDefault('')
+	}),
 	social: {
 		discord: 'https://discord.com/invite/w4xE3bSjhQ'
 	},
