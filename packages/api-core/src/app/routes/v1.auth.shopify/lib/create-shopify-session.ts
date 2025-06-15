@@ -1,4 +1,5 @@
 import { AppError } from '@repo/hono-utils';
+import { and, eq } from 'drizzle-orm';
 import {
 	db,
 	shopAccountTable,
@@ -20,7 +21,7 @@ export async function createShopifySession(input: TShopifySessionDto): Promise<v
 
 		// 2. Create shop account + user if online session
 		if (input.isOnline) {
-			await createUserAndShopAccount(tx, input);
+			await upsertUserAndShopAccount(tx, input);
 		}
 
 		return input;
@@ -77,60 +78,81 @@ async function upsertSession(tx: TPgTransaction, input: TShopifySessionDto): Pro
 		});
 }
 
-async function createUserAndShopAccount(
+async function upsertUserAndShopAccount(
 	tx: TPgTransaction,
 	input: TShopifySessionDto
-): Promise<boolean> {
+): Promise<void> {
 	const associatedUser = input.onlineAccessInfo?.associated_user;
 	if (associatedUser == null) {
-		return false;
+		return;
 	}
 
-	// 1. Create or find user by email
-	const [user] = await tx
-		.insert(userTable)
-		.values({
-			handle: createHandleFromEmail(associatedUser.email),
-			displayName: `${associatedUser.first_name} ${associatedUser.last_name}`,
-			email: associatedUser.email,
-			emailVerifiedAt: associatedUser.email_verified ? new Date() : null,
-			updatedAt: new Date(),
-			createdAt: new Date()
-		})
-		.onConflictDoUpdate({
-			target: userTable.email,
-			set: {
-				// Don't update displayName - user might have customized it in our app
-				// displayName: `${associatedUser.first_name} ${associatedUser.last_name}`,
-				// Do update emailVerifiedAt - we trust Shopify's verification status
-				emailVerifiedAt: associatedUser.email_verified ? new Date() : null,
-				updatedAt: new Date()
-			}
-		})
-		.returning({
+	// 1. Find existing user by email
+	let [user] = await tx
+		.select({
 			id: userTable.id
-		});
+		})
+		.from(userTable)
+		.where(eq(userTable.email, associatedUser.email))
+		.limit(1);
+
+	// 2. Create user and OTP account if they don't exist
 	if (user == null) {
-		throw new AppError('#ERR_USER_CREATE_FAILED', 500, {
-			detail: 'Failed to create or find user'
+		// Create user
+		[user] = await tx
+			.insert(userTable)
+			.values({
+				handle: createHandleFromEmail(associatedUser.email),
+				displayName: `${associatedUser.first_name} ${associatedUser.last_name}`,
+				email: associatedUser.email,
+				emailVerifiedAt: associatedUser.email_verified ? new Date() : null,
+				updatedAt: new Date(),
+				createdAt: new Date()
+			})
+			.returning({
+				id: userTable.id
+			});
+		if (user == null) {
+			throw new AppError('#ERR_USER_CREATE_FAILED', 500, {
+				detail: 'Failed to create user'
+			});
+		}
+
+		// Create OTP account for future login
+		await tx
+			.insert(userAccountTable)
+			.values({
+				userId: user.id,
+				accountType: 'otp',
+				provider: 'email',
+				providerAccountId: associatedUser.email,
+				providerData: {} satisfies TEmailOTPProviderData,
+				updatedAt: new Date(),
+				createdAt: new Date()
+			})
+			.onConflictDoNothing();
+	}
+
+	// 3. Check if shop is already connected to a different user
+	const [existingShopAccount] = await tx
+		.select({
+			userId: shopAccountTable.userId
+		})
+		.from(shopAccountTable)
+		.where(
+			and(
+				eq(shopAccountTable.provider, 'shopify'),
+				eq(shopAccountTable.providerAccountId, input.shop)
+			)
+		)
+		.limit(1);
+	if (existingShopAccount != null && existingShopAccount.userId !== user.id) {
+		throw new AppError('#ERR_SHOP_ALREADY_CONNECTED', 409, {
+			detail: `Shop ${input.shop} is already connected to another account. Please disconnect the existing connection first before connecting to a new account.`
 		});
 	}
 
-	// 2. Create OTP user account for future login (only if it doesn't exist)
-	await tx
-		.insert(userAccountTable)
-		.values({
-			userId: user.id,
-			accountType: 'otp',
-			provider: 'email',
-			providerAccountId: associatedUser.email,
-			providerData: {} satisfies TEmailOTPProviderData,
-			updatedAt: new Date(),
-			createdAt: new Date()
-		})
-		.onConflictDoNothing();
-
-	// 3. Create shop account with installer data
+	// 4. Create/update shop account
 	await tx
 		.insert(shopAccountTable)
 		.values({
@@ -139,7 +161,7 @@ async function createUserAndShopAccount(
 			provider: 'shopify',
 			providerAccountId: input.shop,
 			providerData: {
-				lastInstaller: {
+				installer: {
 					shopifyId: associatedUser.id.toString(),
 					firstName: associatedUser.first_name,
 					lastName: associatedUser.last_name,
@@ -156,12 +178,8 @@ async function createUserAndShopAccount(
 		.onConflictDoUpdate({
 			target: [shopAccountTable.provider, shopAccountTable.providerAccountId],
 			set: {
-				// Update userId to current installer - shop "ownership" can change
-				// TODO: Maybe support connecting a shop to multiple users/workspaces later?
-				userId: user.id,
-				accountType: 'oauth',
 				providerData: {
-					lastInstaller: {
+					installer: {
 						shopifyId: associatedUser.id.toString(),
 						firstName: associatedUser.first_name,
 						lastName: associatedUser.last_name,
@@ -175,6 +193,4 @@ async function createUserAndShopAccount(
 				updatedAt: new Date()
 			}
 		});
-
-	return true;
 }

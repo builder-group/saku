@@ -2,7 +2,6 @@ import { jsonb, pgTable, primaryKey, text, timestamp } from 'drizzle-orm/pg-core
 import { TAccountType, userTable } from './user';
 
 // TODO: Maybe support connecting a shop to multiple users/workspaces later?
-// Currently a shop account can only be linked to a single user and the "owner" changes based on who last connected the app to the shop.
 export const shopAccountTable = pgTable(
 	'shop_account',
 	{
@@ -45,8 +44,7 @@ export type TShopProviderData = TShopifyProviderData;
  * and one shop account might have multiple active sessions (online + offline).
  */
 export interface TShopifyProviderData {
-	// Last installer info from online session (person who last connected the app)
-	lastInstaller?: {
+	installer?: {
 		shopifyId: string; // e.g. "987654321"
 		email: string; // e.g. "john@coffeeshop.com"
 		firstName: string; // e.g. "John"

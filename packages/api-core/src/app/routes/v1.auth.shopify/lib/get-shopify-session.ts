@@ -4,12 +4,11 @@ import { db, shopifySessionTable } from '@/environment/db';
 import type { TShopifySessionDto } from '../schema';
 
 export async function getShopifySession(sessionId: string): Promise<TShopifySessionDto> {
-	const sessions = await db
+	const [session] = await db
 		.select()
 		.from(shopifySessionTable)
 		.where(eq(shopifySessionTable.sessionId, sessionId))
 		.limit(1);
-	const session = sessions[0];
 	if (session == null) {
 		throw new AppError('#ERR_SESSION_NOT_FOUND', 404, {
 			detail: 'Shopify session not found'

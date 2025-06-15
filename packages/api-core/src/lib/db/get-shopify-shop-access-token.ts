@@ -13,7 +13,6 @@ export async function getShopifyShopAccessToken(shopId: string): Promise<string>
 			desc(shopifySessionTable.expiresAt)
 		)
 		.limit(1);
-
 	if (session == null) {
 		throw new AppError('#ERR_ACCESS_TOKEN_NOT_FOUND', 404, {
 			detail: `No access token found for shop: ${shopId}`

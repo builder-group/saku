@@ -23,9 +23,9 @@ export const errorHandler: hono.ErrorHandler = async (err, c) => {
 		);
 	}
 
-	logger.error('Error', {
-		throwable: err
-	});
+	if (err instanceof AppError) {
+		logger.error(`Error: ${err.code} (${err.status})`);
+	}
 
 	return utilsErrorHandler(err, c);
 };

@@ -41,8 +41,8 @@ export const shopifySessionTable = pgTable('shopify_session', {
 export interface TShopifySessionData {
 	// Online session user info (when available)
 	//
-	// Note that this is not the same as the associated app user in the ShopAccountTable
-	// this is the Shopify user that is only associated with the session.
+	// Note: This is not the same as the associated app user in the ShopAccountTable.
+	// This is the Shopify user that is associated with the session.
 	//
 	// https://github.com/Shopify/shopify-app-js/blob/main/packages/apps/session-storage/shopify-app-session-storage-prisma/src/prisma.ts
 	onlineAccessInfo?: {

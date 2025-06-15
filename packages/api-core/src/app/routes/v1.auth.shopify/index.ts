@@ -12,6 +12,8 @@ import {
 	GetSessionRoute
 } from './schema';
 
+// TODO: Verify shared app secret.. so that nb can create a session other than the backend for frontend..
+
 router.openapi(CreateSessionRoute, async (c) => {
 	const input = c.req.valid('json');
 	await createShopifySession(input);
