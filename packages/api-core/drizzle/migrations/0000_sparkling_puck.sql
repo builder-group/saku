@@ -1,3 +1,16 @@
+CREATE TABLE "shopify_session" (
+	"session_id" text PRIMARY KEY NOT NULL,
+	"shop_id" text NOT NULL,
+	"is_online" text NOT NULL,
+	"access_token" text NOT NULL,
+	"scopes" text NOT NULL,
+	"state" text NOT NULL,
+	"session_data" jsonb,
+	"expires_at" timestamp,
+	"updated_at" timestamp NOT NULL,
+	"created_at" timestamp NOT NULL
+);
+--> statement-breakpoint
 CREATE TABLE "shop_account" (
 	"user_id" text NOT NULL,
 	"account_type" text NOT NULL,
@@ -7,18 +20,6 @@ CREATE TABLE "shop_account" (
 	"updated_at" timestamp NOT NULL,
 	"created_at" timestamp NOT NULL,
 	CONSTRAINT "shop_account_provider_provider_account_id_pk" PRIMARY KEY("provider","provider_account_id")
-);
---> statement-breakpoint
-CREATE TABLE "shopify_session" (
-	"session_id" text PRIMARY KEY NOT NULL,
-	"shop_id" text NOT NULL,
-	"is_online" text NOT NULL,
-	"access_token" text NOT NULL,
-	"scopes" text NOT NULL,
-	"state" text NOT NULL,
-	"expires_at" timestamp,
-	"updated_at" timestamp NOT NULL,
-	"created_at" timestamp NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "user_account" (

@@ -14,8 +14,8 @@ import {
 
 router.openapi(CreateSessionRoute, async (c) => {
 	const input = c.req.valid('json');
-	const session = await createShopifySession(input);
-	return c.json(session, 201);
+	await createShopifySession(input);
+	return c.body(null, 204);
 });
 
 router.openapi(GetSessionRoute, async (c) => {

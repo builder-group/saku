@@ -4,7 +4,6 @@ import { db, shopifySessionTable } from '@/environment/db';
 import type { TShopifySessionDto } from '../schema';
 
 export async function getShopifySession(sessionId: string): Promise<TShopifySessionDto> {
-	// Get session
 	const sessions = await db
 		.select()
 		.from(shopifySessionTable)
@@ -17,8 +16,7 @@ export async function getShopifySession(sessionId: string): Promise<TShopifySess
 		});
 	}
 
-	// Build base session response
-	const sessionDto: TShopifySessionDto = {
+	return {
 		id: session.sessionId,
 		shop: session.shopId,
 		state: session.state,
@@ -26,46 +24,24 @@ export async function getShopifySession(sessionId: string): Promise<TShopifySess
 		scope: session.scopes,
 		expires: session.expiresAt?.toISOString() ?? null,
 		accessToken: session.accessToken,
-		onlineAccessInfo: null
+		onlineAccessInfo:
+			session.sessionData?.onlineAccessInfo != null
+				? {
+						associated_user: {
+							id: session.sessionData.onlineAccessInfo.associatedUser.id,
+							first_name: session.sessionData.onlineAccessInfo.associatedUser.firstName,
+							last_name: session.sessionData.onlineAccessInfo.associatedUser.lastName,
+							email: session.sessionData.onlineAccessInfo.associatedUser.email,
+							account_owner: session.sessionData.onlineAccessInfo.associatedUser.accountOwner,
+							locale: session.sessionData.onlineAccessInfo.associatedUser.locale,
+							collaborator: session.sessionData.onlineAccessInfo.associatedUser.collaborator,
+							email_verified: session.sessionData.onlineAccessInfo.associatedUser.emailVerified
+						},
+						expires_in: session.sessionData.onlineAccessInfo.expiresIn,
+						associated_user_scope: session.sessionData.onlineAccessInfo.associatedUserScope,
+						session: session.sessionData.onlineAccessInfo.session,
+						account_number: session.sessionData.onlineAccessInfo.accountNumber
+					}
+				: null
 	};
-
-	// Note: We don't populate onlineAccessInfo because it should represent the user who
-	// created THIS specific session, not the current shop owner.
-	// Since we don't store the original session creator info,
-	// we leave this null to avoid data inconsistency.
-	//
-	// TODO: Consider storing original session creator in session table if onlineAccessInfo is needed
-	//
-	// if (session.isOnline) {
-	// 	const shopAccounts = await db
-	// 		.select({
-	// 			providerData: shopAccountTable.providerData
-	// 		})
-	// 		.from(shopAccountTable)
-	// 		.where(
-	// 			and(
-	// 				eq(shopAccountTable.provider, 'shopify'),
-	// 				eq(shopAccountTable.providerAccountId, session.shopId)
-	// 			)
-	// 		)
-	// 		.limit(1);
-	// 	const lastInstaller = shopAccounts[0]?.providerData?.lastInstaller;
-
-	// 	if (lastInstaller != null) {
-	// 		sessionDto.onlineAccessInfo = {
-	// 			associated_user: {
-	// 				id: parseInt(lastInstaller.shopifyId),
-	// 				first_name: lastInstaller.firstName,
-	// 				last_name: lastInstaller.lastName,
-	// 				email: lastInstaller.email,
-	// 				account_owner: lastInstaller.isOwner,
-	// 				locale: lastInstaller.locale,
-	// 				collaborator: lastInstaller.isCollaborator,
-	// 				email_verified: lastInstaller.emailVerified
-	// 			}
-	// 		};
-	// 	}
-	// }
-
-	return sessionDto;
 }

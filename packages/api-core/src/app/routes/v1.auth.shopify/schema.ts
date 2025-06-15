@@ -47,11 +47,6 @@ const SShopifySessionDto = z
 	.openapi('ShopifySessionDto');
 export type TShopifySessionDto = z.infer<typeof SShopifySessionDto>;
 
-const SCreateShopifySessionDto = SShopifySessionDto.omit({ id: true }).extend({
-	id: z.string().optional().openapi({ example: 'my-shop.myshopify.com_987654321' })
-});
-export type TCreateShopifySessionDto = z.infer<typeof SCreateShopifySessionDto>;
-
 export const CreateSessionRoute = createRoute({
 	method: 'post',
 	path: '/v1/auth/shopify/session',
@@ -63,13 +58,15 @@ export const CreateSessionRoute = createRoute({
 		body: {
 			content: {
 				'application/json': {
-					schema: SCreateShopifySessionDto
+					schema: SShopifySessionDto
 				}
 			}
 		}
 	},
 	responses: {
-		201: JsonSuccessResponse(SShopifySessionDto),
+		204: {
+			description: 'Session created successfully'
+		},
 		400: BadRequestResponse,
 		500: InternalServerErrorResponse
 	}

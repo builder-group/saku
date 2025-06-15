@@ -1,10 +1,10 @@
-import { pgTable, text, timestamp } from 'drizzle-orm/pg-core';
+import { jsonb, pgTable, text, timestamp } from 'drizzle-orm/pg-core';
 
 /**
  * Shopify Session Table
  *
- * Note: Stores sessions separately from shop accounts because offline sessions may arrive
- * before shop accounts exist (no user data). Online sessions create accounts later.
+ * Note: Stores sessions separately from shop accounts because offline sessions might arrive
+ * before shop accounts exist (no user data). Arrival of online session will create shop account later.
  *
  * Note: No foreign key constraints - offline sessions would violate them during creation.
  * Cascade deletion handled programmatically.
@@ -23,6 +23,10 @@ export const shopifySessionTable = pgTable('shopify_session', {
 	accessToken: text('access_token').notNull(),
 	scopes: text('scopes').notNull(),
 	state: text('state').notNull(),
+
+	// Additional session metadata
+	sessionData: jsonb('session_data').$type<TShopifySessionData>(),
+
 	// Online sessions have expiry, offline sessions don't
 	expiresAt: timestamp('expires_at', { mode: 'date' }),
 
@@ -33,3 +37,30 @@ export const shopifySessionTable = pgTable('shopify_session', {
 		.notNull()
 		.$defaultFn(() => new Date())
 });
+
+export interface TShopifySessionData {
+	// Online session user info (when available)
+	//
+	// Note that this is not the same as the associated app user in the ShopAccountTable
+	// this is the Shopify user that is only associated with the session.
+	//
+	// https://github.com/Shopify/shopify-app-js/blob/main/packages/apps/session-storage/shopify-app-session-storage-prisma/src/prisma.ts
+	onlineAccessInfo?: {
+		associatedUser: {
+			id: number;
+			firstName: string;
+			lastName: string;
+			email: string;
+			emailVerified: boolean;
+			accountOwner: boolean;
+			locale: string;
+			collaborator: boolean;
+		};
+		associatedUserScope?: string;
+		expiresIn?: number;
+		session?: string;
+		accountNumber?: number;
+	};
+
+	[key: string]: unknown;
+}

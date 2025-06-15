@@ -6,54 +6,59 @@ import {
 	TEmailOTPProviderData,
 	TTransaction as TPgTransaction,
 	TShopifyProviderData,
+	TShopifySessionData,
 	userAccountTable,
 	userTable
 } from '@/environment';
-import type { TCreateShopifySessionDto, TShopifySessionDto } from '../schema';
+import type { TShopifySessionDto } from '../schema';
 import { createHandleFromEmail } from './create-handle-from-email';
 
-export async function createShopifySession(
-	input: TCreateShopifySessionDto
-): Promise<TShopifySessionDto> {
-	const sessionId =
-		input.id ??
-		(input.isOnline
-			? `${input.shop}_${input.onlineAccessInfo?.associated_user?.id ?? 'unknown'}`
-			: `offline_${input.shop}`);
-
-	const result = await db.transaction(async (tx) => {
+export async function createShopifySession(input: TShopifySessionDto): Promise<void> {
+	await db.transaction(async (tx) => {
 		// 1. Store session data (works for both online and offline)
-		await upsertSession(tx, input, sessionId);
+		await upsertSession(tx, input);
 
 		// 2. Create shop account + user if online session
 		if (input.isOnline) {
 			await createUserAndShopAccount(tx, input);
 		}
 
-		return {
-			id: sessionId,
-			...input
-		};
+		return input;
 	});
-
-	return result;
 }
 
-async function upsertSession(
-	tx: TPgTransaction,
-	input: TCreateShopifySessionDto,
-	sessionId: string
-): Promise<void> {
+async function upsertSession(tx: TPgTransaction, input: TShopifySessionDto): Promise<void> {
+	const sessionData: TShopifySessionData = {};
+	if (input.isOnline && input.onlineAccessInfo != null) {
+		sessionData.onlineAccessInfo = {
+			associatedUser: {
+				id: input.onlineAccessInfo.associated_user.id,
+				firstName: input.onlineAccessInfo.associated_user.first_name,
+				lastName: input.onlineAccessInfo.associated_user.last_name,
+				email: input.onlineAccessInfo.associated_user.email,
+				emailVerified: input.onlineAccessInfo.associated_user.email_verified,
+				accountOwner: input.onlineAccessInfo.associated_user.account_owner,
+				locale: input.onlineAccessInfo.associated_user.locale,
+				collaborator: input.onlineAccessInfo.associated_user.collaborator
+			},
+			associatedUserScope: input.onlineAccessInfo.associated_user_scope,
+			expiresIn: input.onlineAccessInfo.expires_in,
+			session: input.onlineAccessInfo.session,
+			accountNumber: input.onlineAccessInfo.account_number ?? undefined
+		};
+	}
+
 	await tx
 		.insert(shopifySessionTable)
 		.values({
-			sessionId,
+			sessionId: input.id,
 			shopId: input.shop,
 			isOnline: input.isOnline,
 			accessToken: input.accessToken,
 			scopes: input.scope,
 			state: input.state,
 			expiresAt: input.expires != null ? new Date(input.expires) : null,
+			sessionData,
 			updatedAt: new Date(),
 			createdAt: new Date()
 		})
@@ -66,6 +71,7 @@ async function upsertSession(
 				scopes: input.scope,
 				state: input.state,
 				expiresAt: input.expires != null ? new Date(input.expires) : null,
+				sessionData,
 				updatedAt: new Date()
 			}
 		});
@@ -73,7 +79,7 @@ async function upsertSession(
 
 async function createUserAndShopAccount(
 	tx: TPgTransaction,
-	input: TCreateShopifySessionDto
+	input: TShopifySessionDto
 ): Promise<boolean> {
 	const associatedUser = input.onlineAccessInfo?.associated_user;
 	if (associatedUser == null) {
@@ -151,7 +157,7 @@ async function createUserAndShopAccount(
 			target: [shopAccountTable.provider, shopAccountTable.providerAccountId],
 			set: {
 				// Update userId to current installer - shop "ownership" can change
-				// TODO: Maybe support multiple installers per shop later?
+				// TODO: Maybe support connecting a shop to multiple users/workspaces later?
 				userId: user.id,
 				accountType: 'oauth',
 				providerData: {
