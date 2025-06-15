@@ -6,7 +6,14 @@
 		"declarationDir": "./dist/types",
 		"paths": {
 			"@/*": ["./src/*"]
-		}
+		},
+		"plugins": [
+			{
+				"name": "gql.tada/ts-plugin",
+				"schema": "https://shopify.dev/admin-graphql-direct-proxy/2025-01",
+				"tadaOutputLocation": "./src/environment/gql/graphql-env.d.ts"
+			}
+		]
 	},
 	"include": ["src"]
 }
