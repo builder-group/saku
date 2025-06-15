@@ -7,9 +7,13 @@ meta {
 get {
   url: http://127.0.0.1:8787/v1/auth/shopify/session/:shop
   body: none
-  auth: inherit
+  auth: bearer
 }
 
 params:path {
   shop: my-shop.myshopify.com
+}
+
+auth:bearer {
+  token: super-secret
 }

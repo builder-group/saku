@@ -7,7 +7,11 @@ meta {
 post {
   url: http://127.0.0.1:8787/v1/auth/shopify/session
   body: json
-  auth: inherit
+  auth: bearer
+}
+
+auth:bearer {
+  token: super-secret
 }
 
 body:json {

@@ -7,9 +7,13 @@ meta {
 delete {
   url: http://127.0.0.1:8787/v1/auth/shopify/session/:id
   body: none
-  auth: inherit
+  auth: bearer
 }
 
 params:path {
   id: my-shop.myshopify.com_987654321
+}
+
+auth:bearer {
+  token: super-secret
 }
