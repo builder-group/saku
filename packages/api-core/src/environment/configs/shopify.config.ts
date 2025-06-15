@@ -5,14 +5,12 @@ import { vValidator } from 'validation-adapters/valibot';
 export const shopifyConfig = {
 	apiKey: validateEnvVar({
 		envKey: 'SHOPIFY_API_KEY',
-		value: process.env['SHOPIFY_API_KEY'],
 		validator: vValidator(v.string()),
 		description: 'Shopify API key for app authentication',
 		example: 'abc123xyz789'
 	}),
 	apiSecret: validateEnvVar({
 		envKey: 'SHOPIFY_API_SECRET',
-		value: process.env['SHOPIFY_API_SECRET'],
 		validator: vValidator(v.string()),
 		description: 'Shopify API secret key for app authentication',
 		example: 'def456uvw012'

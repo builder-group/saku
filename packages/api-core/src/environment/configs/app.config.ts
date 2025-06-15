@@ -52,6 +52,11 @@ export const appConfig = {
 		validator: zValidator(z.string()),
 		defaultValue: ciDefault('')
 	}),
+	accessSecret: validateEnvVar({
+		envKey: 'API_CORE_ACCESS_SECRET',
+		validator: zValidator(z.string()),
+		defaultValue: ciDefault('')
+	}),
 	client: {
 		appUrl: validateEnvVar({
 			envKey: 'API_CORE_CLIENT_APP_URL',

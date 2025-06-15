@@ -2,7 +2,7 @@ import { type coreApiV1 } from '@repo/types/api';
 import { Session } from '@shopify/shopify-api';
 import { type SessionStorage } from '@shopify/shopify-app-session-storage';
 import { coreApiClient } from '@/environment';
-import { appConfig } from '@/environment/.server';
+import { apiConfig } from '@/environment/.server';
 
 // Based on: https://github.com/Shopify/shopify-app-js/blob/main/packages/apps/session-storage/shopify-app-session-storage-prisma/src/prisma.ts
 export class ApiSessionStorage implements SessionStorage {
@@ -10,7 +10,7 @@ export class ApiSessionStorage implements SessionStorage {
 		const sessionDto = this.sessionToSessionDto(session);
 		const result = await coreApiClient.post('/v1/auth/shopify/session', sessionDto, {
 			headers: {
-				authorization: `Bearer ${appConfig.secret}`
+				authorization: `Bearer ${apiConfig.core.secret}`
 			}
 		});
 		return result.isOk();
@@ -20,7 +20,7 @@ export class ApiSessionStorage implements SessionStorage {
 		const result = await coreApiClient.get('/v1/auth/shopify/session/{sessionId}', {
 			pathParams: { sessionId: id },
 			headers: {
-				authorization: `Bearer ${appConfig.secret}`
+				authorization: `Bearer ${apiConfig.core.secret}`
 			}
 		});
 
@@ -35,7 +35,7 @@ export class ApiSessionStorage implements SessionStorage {
 		const result = await coreApiClient.del('/v1/auth/shopify/session/{sessionId}', {
 			pathParams: { sessionId: id },
 			headers: {
-				authorization: `Bearer ${appConfig.secret}`
+				authorization: `Bearer ${apiConfig.core.secret}`
 			}
 		});
 
@@ -52,7 +52,7 @@ export class ApiSessionStorage implements SessionStorage {
 		const result = await coreApiClient.get('/v1/auth/shopify/session/shop/{shopId}', {
 			pathParams: { shopId: shop },
 			headers: {
-				authorization: `Bearer ${appConfig.secret}`
+				authorization: `Bearer ${apiConfig.core.secret}`
 			}
 		});
 

@@ -5,35 +5,30 @@ import { vValidator } from 'validation-adapters/valibot';
 export const shopifyConfig = {
 	apiKey: validateEnvVar({
 		envKey: 'SHOPIFY_API_KEY',
-		value: process.env['SHOPIFY_API_KEY'],
 		validator: vValidator(v.string()),
 		description: 'Shopify API key for app authentication',
 		example: 'abc123xyz789'
 	}),
 	apiSecret: validateEnvVar({
 		envKey: 'SHOPIFY_API_SECRET',
-		value: process.env['SHOPIFY_API_SECRET'],
 		validator: vValidator(v.string()),
 		description: 'Shopify API secret key for app authentication',
 		example: 'def456uvw012'
 	}),
 	appUrl: validateEnvVar({
 		envKey: 'SHOPIFY_APP_URL',
-		value: process.env['SHOPIFY_APP_URL'],
 		validator: vValidator(v.pipe(v.string(), v.url())),
 		description: 'Public URL where the Shopify app is hosted',
 		example: 'https://your-app.ngrok.io'
 	}),
 	scopes: validateEnvVar({
 		envKey: 'SCOPES',
-		value: process.env['SCOPES'],
 		validator: vValidator(v.string()),
 		description: 'Comma-separated list of Shopify API scopes',
 		example: 'read_products,write_products,read_orders'
 	}).split(','),
 	shopCustomDomain: validateEnvVar({
 		envKey: 'SHOP_CUSTOM_DOMAIN',
-		value: process.env['SHOP_CUSTOM_DOMAIN'],
 		validator: vValidator(v.optional(v.string())),
 		description: 'Optional custom domain for shop access',
 		example: 'custom-shop.example.com'
