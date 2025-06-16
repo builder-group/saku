@@ -32,68 +32,110 @@ export const MediaBlockEditor: React.FC<TBlockEditorComponentProps<TMediaBlock>>
 				return;
 			}
 
-			try {
-				setFile(file);
-				setIsUploading(true);
+			setFile(file);
+			setIsUploading(true);
 
-				// 1. Get upload URL and parameters
-				const idToken = await shopify.idToken();
-				const uploadUrlResult = await coreApiClient.post(
-					'/v1/shopify/ugc/upload-url',
-					{
-						filename: file.name,
-						mimeType: file.type,
-						fileSize: file.size,
-						contentType: 'IMAGE' as const
-					},
-					{
-						headers: {
-							Authorization: `Bearer ${idToken}`
+			const idToken = await shopify.idToken();
+
+			// 1. Create staged upload targets
+			const createFilesResult = await coreApiClient.post(
+				'/v1/shopify/ugc/files',
+				{
+					files: [
+						{
+							filename: file.name,
+							mimeType: file.type,
+							fileSize: file.size,
+							contentType: 'IMAGE' as const
 						}
+					]
+				},
+				{
+					headers: {
+						Authorization: `Bearer ${idToken}`
 					}
-				);
-
-				if (uploadUrlResult.isErr()) {
-					console.error('Failed to get upload URL:', uploadUrlResult.error);
-					return;
 				}
-
-				const { uploadTarget } = uploadUrlResult.value.data;
-
-				// 2. Create form data for upload
-				const formData = new FormData();
-				uploadTarget.parameters.forEach((param: { name: string; value: string }) => {
-					formData.append(param.name, param.value);
-				});
-				formData.append('file', file);
-
-				// 3. Upload to Google Cloud Storage
-				const uploadResult = await fetchClient.post(uploadTarget.url, formData, {
-					parseAs: 'text'
-				});
-
-				if (uploadResult.isErr()) {
-					console.error('Failed to upload file:', uploadResult.error);
-					return;
-				}
-
-				// 4. Update block state with the resource URL
-				if (uploadTarget.resourceUrl != null) {
-					blockState.set((prev) => ({
-						...prev,
-						media: {
-							...prev.media,
-							type: 'image',
-							url: uploadTarget.resourceUrl as string
-						}
-					}));
-					console.log('Uploaded file:', uploadTarget.resourceUrl);
-				}
-			} catch (error) {
-				console.error('Failed to upload file:', error);
-			} finally {
-				setIsUploading(false);
+			);
+			if (createFilesResult.isErr()) {
+				console.error('Failed to create upload target:', createFilesResult.error);
+				return;
 			}
+
+			const createdFile = createFilesResult.value.data.files[0];
+			if (createdFile == null || createdFile.uploadTarget == null) {
+				console.error('No upload target returned');
+				return;
+			}
+
+			const { uploadTarget, uploadId } = createdFile;
+			const resourceUrl = uploadTarget.resourceUrl;
+			if (resourceUrl == null || uploadTarget.url == null) {
+				console.error('Missing required upload target properties');
+				return;
+			}
+
+			// 2. Upload to Google Cloud Storage
+			const formData = new FormData();
+			uploadTarget.parameters.forEach((param) => {
+				formData.append(param.name, param.value);
+			});
+			formData.append('file', file);
+
+			const uploadResult = await fetchClient.post(uploadTarget.url, formData, {
+				parseAs: 'text'
+			});
+			if (uploadResult.isErr()) {
+				console.error('Failed to upload file:', uploadResult.error);
+				return;
+			}
+
+			// 3. Submit the uploaded file to Shopify
+			const submitResult = await coreApiClient.post(
+				'/v1/shopify/ugc/files/submit',
+				{
+					files: [
+						{
+							uploadId,
+							resourceUrl,
+							filename: file.name,
+							contentType: 'IMAGE' as const
+						}
+					]
+				},
+				{
+					headers: {
+						Authorization: `Bearer ${idToken}`
+					}
+				}
+			);
+			if (submitResult.isErr()) {
+				console.error('Failed to submit file:', submitResult.error);
+				return;
+			}
+
+			const submittedFile = submitResult.value.data.files[0];
+			if (submittedFile == null) {
+				console.error('No file data returned');
+				return;
+			}
+
+			if (submittedFile.status === 'ERROR') {
+				console.error('Failed to process file:', submittedFile.error);
+				return;
+			}
+
+			// 4. Update block state with the file ID
+			blockState.set((prev) => ({
+				...prev,
+				media: {
+					...prev.media,
+					type: 'image',
+					url: resourceUrl
+				}
+			}));
+			console.log('Uploaded and processed file:', submittedFile.id);
+
+			setIsUploading(false);
 		},
 		[blockState, shopify]
 	);

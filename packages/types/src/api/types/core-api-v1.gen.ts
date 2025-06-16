@@ -108,7 +108,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/shopify/ugc/upload-url": {
+    "/v1/shopify/ugc/files": {
         parameters: {
             query?: never;
             header?: never;
@@ -118,10 +118,30 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Create file upload URL
-         * @description Generate a signed upload URL for user-generated content files
+         * Create staged upload targets for files
+         * @description Generate signed upload URLs for multiple user-generated content files
          */
-        post: operations["createUgcUploadUrl"];
+        post: operations["createUgcFiles"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/shopify/ugc/files/submit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Submit uploaded files to Shopify media library
+         * @description Process uploaded files and add them to the Shopify media library
+         */
+        post: operations["submitUgcFiles"];
         delete?: never;
         options?: never;
         head?: never;
@@ -132,6 +152,55 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        AppErrorDto: {
+            /**
+             * @description A URI reference that identifies the problem type.
+             * @default about:blank
+             * @example https://docs.example.com/errors/validation-error
+             */
+            type: string;
+            /**
+             * @description A short, human-readable summary of the problem type.
+             * @example Validation failed for the request parameters.
+             */
+            title: string;
+            /**
+             * @description The HTTP status code for this occurrence of the problem.
+             * @example 400
+             */
+            status: number;
+            /**
+             * @description A human-readable explanation specific to this error occurrence.
+             * @example Field `email` must be a valid email address.
+             */
+            detail?: string;
+            /**
+             * @description A URI reference that identifies the specific occurrence of the problem.
+             * @example /api/users/1234
+             */
+            instance?: string;
+            /**
+             * @description An application-specific error code, useful for client-side logic.
+             * @example VALIDATION_ERROR
+             */
+            code?: string;
+            /**
+             * @description Extension member for additional error context (e.g., per-field validation).
+             * @example [
+             *       {
+             *         "field": "email",
+             *         "reason": "must be a valid email"
+             *       },
+             *       {
+             *         "field": "password",
+             *         "reason": "is required"
+             *       }
+             *     ]
+             */
+            errors?: {
+                [key: string]: unknown;
+            }[];
+        };
         ShopifySessionAssociatedUserDto: {
             /** @example 987654321 */
             id: number;
@@ -184,55 +253,6 @@ export interface components {
             accessToken: string;
             onlineAccessInfo: components["schemas"]["ShopifySessionOnlineAccessInfoDto"];
         };
-        AppErrorDto: {
-            /**
-             * @description A URI reference that identifies the problem type.
-             * @default about:blank
-             * @example https://docs.example.com/errors/validation-error
-             */
-            type: string;
-            /**
-             * @description A short, human-readable summary of the problem type.
-             * @example Validation failed for the request parameters.
-             */
-            title: string;
-            /**
-             * @description The HTTP status code for this occurrence of the problem.
-             * @example 400
-             */
-            status: number;
-            /**
-             * @description A human-readable explanation specific to this error occurrence.
-             * @example Field `email` must be a valid email address.
-             */
-            detail?: string;
-            /**
-             * @description A URI reference that identifies the specific occurrence of the problem.
-             * @example /api/users/1234
-             */
-            instance?: string;
-            /**
-             * @description An application-specific error code, useful for client-side logic.
-             * @example VALIDATION_ERROR
-             */
-            code?: string;
-            /**
-             * @description Extension member for additional error context (e.g., per-field validation).
-             * @example [
-             *       {
-             *         "field": "email",
-             *         "reason": "must be a valid email"
-             *       },
-             *       {
-             *         "field": "password",
-             *         "reason": "is required"
-             *       }
-             *     ]
-             */
-            errors?: {
-                [key: string]: unknown;
-            }[];
-        };
         HealthDto: {
             /**
              * @example Up
@@ -269,33 +289,21 @@ export interface components {
              * @example https://cdn.shopify.com/s/files/1/0123/4567/files/image.jpg
              */
             resourceUrl: string | null;
-            /** @example [
-             *       {
-             *         "name": "key",
-             *         "value": "tmp/ugc/abc123/image.jpg"
-             *       },
-             *       {
-             *         "name": "Content-Type",
-             *         "value": "image/jpeg"
-             *       },
-             *       {
-             *         "name": "acl",
-             *         "value": "private"
-             *       }
-             *     ] */
             parameters: components["schemas"]["UploadParameterDto"][];
         };
-        CreateUploadUrlResponseDto: {
-            uploadTarget: components["schemas"]["StagedUploadTargetDto"];
-            /** @example ugc_abc123def456 */
-            uploadId: string;
-            /**
-             * Format: date-time
-             * @example 2024-01-15T10:30:00Z
-             */
-            expiresAt: string;
+        CreateFilesResponseDto: {
+            files: {
+                uploadTarget: components["schemas"]["StagedUploadTargetDto"];
+                /** @example ugc_abc123def456 */
+                uploadId: string;
+                /**
+                 * Format: date-time
+                 * @example 2024-01-15T10:30:00Z
+                 */
+                expiresAt: string;
+            }[];
         };
-        CreateUploadUrlDto: {
+        FileDto: {
             /** @example product-image.jpg */
             filename: string;
             /** @example image/jpeg */
@@ -307,6 +315,52 @@ export interface components {
              * @enum {string}
              */
             contentType: "IMAGE" | "VIDEO" | "FILE";
+        };
+        CreateFilesRequestDto: {
+            files: components["schemas"]["FileDto"][];
+        };
+        SubmitFileSuccessDto: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            status: "SUCCESS";
+            /** @example gid://shopify/MediaImage/12345678 */
+            id: string;
+            /** @example ugc_abc123def456 */
+            uploadId: string;
+        };
+        SubmitFileErrorDto: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            status: "ERROR";
+            /** @example Failed to process file */
+            error: string;
+            /** @example ugc_abc123def456 */
+            uploadId: string;
+        };
+        SubmitFilesResponseDto: {
+            files: (components["schemas"]["SubmitFileSuccessDto"] | components["schemas"]["SubmitFileErrorDto"])[];
+        };
+        SubmitFilesRequestDto: {
+            files: {
+                /** @example ugc_abc123def456 */
+                uploadId: string;
+                /**
+                 * Format: uri
+                 * @example https://cdn.shopify.com/s/files/1/0123/4567/files/product-1.jpg
+                 */
+                resourceUrl: string;
+                /** @example product-1.jpg */
+                filename: string;
+                /**
+                 * @example IMAGE
+                 * @enum {string}
+                 */
+                contentType: "IMAGE" | "VIDEO" | "FILE";
+            }[];
         };
     };
     responses: never;
@@ -326,37 +380,16 @@ export interface operations {
         };
         requestBody?: {
             content: {
-                "application/json": {
-                    /** @example my-shop.myshopify.com */
-                    shop: string;
-                    /** @example  */
-                    state: string;
-                    /** @example true */
-                    isOnline: boolean;
-                    /** @example write_products,read_customers */
-                    scope: string;
-                    /**
-                     * Format: date-time
-                     * @example 2025-06-14T13:39:33.336Z
-                     */
-                    expires: string | null;
-                    /** @example shpat_def456...uvw012 */
-                    accessToken: string;
-                    onlineAccessInfo: components["schemas"]["ShopifySessionOnlineAccessInfoDto"];
-                    /** @example my-shop.myshopify.com_987654321 */
-                    id?: string;
-                };
+                "application/json": components["schemas"]["ShopifySessionDto"];
             };
         };
         responses: {
-            /** @description Successful response */
-            201: {
+            /** @description Session created successfully */
+            204: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content: {
-                    "application/json": components["schemas"]["ShopifySessionDto"];
-                };
+                content?: never;
             };
             /** @description Bad request */
             400: {
@@ -554,7 +587,7 @@ export interface operations {
             };
         };
     };
-    createUgcUploadUrl: {
+    createUgcFiles: {
         parameters: {
             query?: never;
             header?: never;
@@ -563,7 +596,7 @@ export interface operations {
         };
         requestBody?: {
             content: {
-                "application/json": components["schemas"]["CreateUploadUrlDto"];
+                "application/json": components["schemas"]["CreateFilesRequestDto"];
             };
         };
         responses: {
@@ -573,7 +606,49 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["CreateUploadUrlResponseDto"];
+                    "application/json": components["schemas"]["CreateFilesResponseDto"];
+                };
+            };
+            /** @description Bad request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppErrorDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppErrorDto"];
+                };
+            };
+        };
+    };
+    submitUgcFiles: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["SubmitFilesRequestDto"];
+            };
+        };
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubmitFilesResponseDto"];
                 };
             };
             /** @description Bad request */

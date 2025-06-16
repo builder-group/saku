@@ -3,7 +3,7 @@
 client_id = "4c9dc129e68b889d9a351e14d8e36a02"
 name = "saku-link-in-bio-dev"
 handle = "saku-link-in-bio-dev"
-application_url = "https://theme-ownership-trinity-strips.trycloudflare.com"
+application_url = "https://xbox-melbourne-advisor-helicopter.trycloudflare.com"
 embedded = true
 
 [build]
@@ -26,10 +26,10 @@ uri = "/webhooks/app/scopes_update"
 scopes = "write_products,write_files"
 
 [auth]
-redirect_urls = ["https://theme-ownership-trinity-strips.trycloudflare.com/auth/callback", "https://theme-ownership-trinity-strips.trycloudflare.com/auth/shopify/callback", "https://theme-ownership-trinity-strips.trycloudflare.com/api/auth/callback"]
+redirect_urls = ["https://xbox-melbourne-advisor-helicopter.trycloudflare.com/auth/callback", "https://xbox-melbourne-advisor-helicopter.trycloudflare.com/auth/shopify/callback", "https://xbox-melbourne-advisor-helicopter.trycloudflare.com/api/auth/callback"]
 
 [app_proxy]
-url = "https://theme-ownership-trinity-strips.trycloudflare.com/a/saku"
+url = "https://xbox-melbourne-advisor-helicopter.trycloudflare.com/a/saku"
 subpath = "saku"
 prefix = "a"
 
