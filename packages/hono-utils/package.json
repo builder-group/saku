@@ -34,17 +34,17 @@
 	},
 	"dependencies": {
 		"@asteasolutions/zod-to-openapi": "^7.3.4",
-		"@blgc/utils": "^0.0.55",
+		"@blgc/utils": "^0.0.56",
 		"@hono/zod-openapi": "^0.19.8",
 		"@oslojs/crypto": "^1.0.1",
 		"@oslojs/encoding": "^1.1.0",
 		"arctic": "^3.7.0",
-		"feature-fetch": "^0.0.47",
+		"feature-fetch": "^0.0.48",
 		"hono": "^4.7.11",
 		"jose": "^6.0.11"
 	},
 	"devDependencies": {
 		"@repo/types": "workspace:*",
-		"@types/node": "^24.0.1"
+		"@types/node": "^24.0.3"
 	}
 }

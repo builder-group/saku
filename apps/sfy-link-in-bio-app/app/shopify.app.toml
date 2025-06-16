@@ -3,7 +3,7 @@
 client_id = "4c9dc129e68b889d9a351e14d8e36a02"
 name = "saku-link-in-bio-dev"
 handle = "saku-link-in-bio-dev"
-application_url = "https://caps-forbidden-symantec-printed.trycloudflare.com"
+application_url = "https://theme-ownership-trinity-strips.trycloudflare.com"
 embedded = true
 
 [build]
@@ -13,23 +13,23 @@ automatically_update_urls_on_dev = true
 [webhooks]
 api_version = "2025-04"
 
-  [[webhooks.subscriptions]]
-  topics = [ "app/uninstalled" ]
-  uri = "/webhooks/app/uninstalled"
+[[webhooks.subscriptions]]
+topics = ["app/uninstalled"]
+uri = "/webhooks/app/uninstalled"
 
-  [[webhooks.subscriptions]]
-  topics = [ "app/scopes_update" ]
-  uri = "/webhooks/app/scopes_update"
+[[webhooks.subscriptions]]
+topics = ["app/scopes_update"]
+uri = "/webhooks/app/scopes_update"
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = "write_products"
+scopes = "write_products,write_files"
 
 [auth]
-redirect_urls = ["https://caps-forbidden-symantec-printed.trycloudflare.com/auth/callback", "https://caps-forbidden-symantec-printed.trycloudflare.com/auth/shopify/callback", "https://caps-forbidden-symantec-printed.trycloudflare.com/api/auth/callback"]
+redirect_urls = ["https://theme-ownership-trinity-strips.trycloudflare.com/auth/callback", "https://theme-ownership-trinity-strips.trycloudflare.com/auth/shopify/callback", "https://theme-ownership-trinity-strips.trycloudflare.com/api/auth/callback"]
 
 [app_proxy]
-url = "https://caps-forbidden-symantec-printed.trycloudflare.com/a/saku"
+url = "https://theme-ownership-trinity-strips.trycloudflare.com/a/saku"
 subpath = "saku"
 prefix = "a"
 

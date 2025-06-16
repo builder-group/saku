@@ -30,7 +30,7 @@
 		"update:latest": "pnpm update --latest '!react' '!react-dom' '!@types/react' '!@types/react-dom'"
 	},
 	"dependencies": {
-		"@blgc/utils": "^0.0.55",
+		"@blgc/utils": "^0.0.56",
 		"@dnd-kit/core": "^6.3.1",
 		"@dnd-kit/modifiers": "^9.0.0",
 		"@dnd-kit/sortable": "^10.0.0",
@@ -47,10 +47,10 @@
 		"@shopify/shopify-app-remix": "^3.8.3",
 		"@shopify/shopify-app-session-storage-memory": "^4.0.18",
 		"clsx": "^2.1.1",
-		"feature-fetch": "^0.0.47",
+		"feature-fetch": "^0.0.48",
 		"feature-logger": "^0.0.42",
-		"feature-react": "^0.0.52",
-		"feature-state": "^0.0.51",
+		"feature-react": "^0.0.54",
+		"feature-state": "^0.0.52",
 		"hono": "^4.7.11",
 		"isbot": "^5.1.28",
 		"lucide-react": "^0.515.0",
@@ -60,12 +60,12 @@
 		"tailwind-merge": "^3.3.1",
 		"valibot": "^1.1.0",
 		"validatenv": "^0.0.38",
-		"validation-adapters": "^0.0.25",
+		"validation-adapters": "^0.0.28",
 		"vite-tsconfig-paths": "^5.1.4"
 	},
 	"devDependencies": {
 		"@tailwindcss/vite": "^4.1.10",
-		"@types/node": "^24.0.1",
+		"@types/node": "^24.0.3",
 		"@types/react": "^18.3.1",
 		"@types/react-dom": "^18.3.1",
 		"tailwindcss": "^4.1.10"

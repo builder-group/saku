@@ -54,7 +54,7 @@ export async function createStagedUpload(
 		});
 	}
 
-	const stagedUploadsCreate = result.value.data?.data?.stagedUploadsCreate;
+	const stagedUploadsCreate = result.value.data?.stagedUploadsCreate;
 	if (stagedUploadsCreate == null) {
 		throw new AppError('#ERR_SHOPIFY_API_ERROR', 500, {
 			detail: 'No data returned from GraphQL query'

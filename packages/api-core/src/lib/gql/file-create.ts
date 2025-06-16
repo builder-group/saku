@@ -49,7 +49,7 @@ export async function createShopifyFile(
 		});
 	}
 
-	const fileCreate = result.value.data?.data?.fileCreate;
+	const fileCreate = result.value.data?.fileCreate;
 	if (fileCreate == null) {
 		throw new AppError('#ERR_SHOPIFY_API_ERROR', 500, {
 			detail: 'No data returned from GraphQL query'
