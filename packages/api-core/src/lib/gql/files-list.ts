@@ -1,4 +1,4 @@
-import { Err, Ok, type TResult } from '@blgc/utils';
+import { Err, notEmpty, Ok, type TResult } from '@blgc/utils';
 import { AppError } from '@repo/hono-utils';
 import { gql, shopifyAdminApiClient, shopifyConfig } from '@/environment';
 
@@ -27,6 +27,7 @@ export const FILES_LIST = gql(`
           }
         }
         ... on MediaImage {
+          __typename
           id
           image {
             id
@@ -37,6 +38,7 @@ export const FILES_LIST = gql(`
           mimeType
         }
         ... on Video {
+          __typename
           id
           sources {
             url
@@ -46,6 +48,7 @@ export const FILES_LIST = gql(`
           }
         }
         ... on GenericFile {
+          __typename
           id
           mimeType
           url
@@ -70,7 +73,7 @@ export async function listFiles(
 	const queryString =
 		typeof query === 'object' && query != null
 			? [
-					query.filename && `filename:${query.filename}`,
+					query.fileName && `filename:${query.fileName}`,
 					...(query.fileTypes?.map((type) => `mediaType:${type}`) ?? [])
 				]
 					.filter(Boolean)
@@ -100,67 +103,68 @@ export async function listFiles(
 
 	const files = result.value.data?.files;
 	return Ok({
-		files: files.nodes.map((file) => {
-			let fileDetails: TFileDetails | null = null;
-			let fileUrl: string | null = null;
-			switch (file.__typename) {
-				case 'MediaImage':
-					if (file.image != null) {
-						fileUrl = file.image.url;
-						fileDetails = {
-							type: 'image',
-							id: file.image.id ?? undefined,
-							width: file.image.width ?? undefined,
-							height: file.image.height ?? undefined,
-							mimeType: file.mimeType ?? undefined
-						};
-					}
-					break;
-				case 'Video':
-					if (file.sources?.[0] != null) {
-						fileUrl = file.sources[0].url;
-						fileDetails = {
-							type: 'video',
-							width: file.sources[0].width,
-							height: file.sources[0].height,
-							format: file.sources[0].format
-						};
-					}
-					break;
-				case 'GenericFile':
-					if (file.url != null) {
-						fileUrl = file.url;
-						fileDetails = {
-							type: 'file',
-							mimeType: file.mimeType ?? undefined
-						};
-					}
-					break;
-				default:
-				// do nothing
-			}
+		files: files.nodes
+			.map((file) => {
+				let fileDetails: TFileDetails | null = null;
+				let fileUrl: string | null = null;
+				switch (file.__typename) {
+					case 'MediaImage':
+						if (file.image != null) {
+							fileUrl = file.image.url;
+							fileDetails = {
+								type: 'image',
+								id: file.image.id ?? undefined,
+								width: file.image.width ?? undefined,
+								height: file.image.height ?? undefined,
+								mimeType: file.mimeType ?? undefined
+							};
+						}
+						break;
+					case 'Video':
+						if (file.sources?.[0] != null) {
+							fileUrl = file.sources[0].url;
+							fileDetails = {
+								type: 'video',
+								width: file.sources[0].width,
+								height: file.sources[0].height,
+								format: file.sources[0].format
+							};
+						}
+						break;
+					case 'GenericFile':
+						if (file.url != null) {
+							fileUrl = file.url;
+							fileDetails = {
+								type: 'file',
+								mimeType: file.mimeType ?? undefined
+							};
+						}
+						break;
+					default:
+					// do nothing
+				}
 
-			if (fileDetails == null || fileUrl == null) {
-				throw new AppError('#ERR_INVALID_FILE_DATA', 500, {
-					detail: 'Invalid file data returned from Shopify'
-				});
-			}
+				if (fileDetails == null || fileUrl == null) {
+					return null;
+				}
 
-			return {
-				id: file.id,
-				alt: file.alt ?? '',
-				createdAt: file.createdAt,
-				previewImage:
-					file.preview?.image?.id != null && file.preview?.image?.url != null
-						? {
-								id: file.preview.image.id,
-								url: file.preview.image.url
-							}
-						: undefined,
-				url: fileUrl,
-				details: fileDetails
-			};
-		}),
+				return {
+					id: file.id,
+					alt: file.alt ?? '',
+					createdAt: file.createdAt,
+					fileName: new URL(fileUrl).pathname.split('/').pop()?.split('?')[0] ?? '',
+					previewImage:
+						file.preview?.image?.id != null && file.preview?.image?.url != null
+							? {
+									id: file.preview.image.id,
+									url: file.preview.image.url
+								}
+							: undefined,
+					url: fileUrl,
+					details: fileDetails
+				};
+			})
+			.filter(notEmpty),
 		pageInfo: {
 			hasNextPage: files.pageInfo.hasNextPage,
 			endCursor: files.pageInfo.endCursor ?? undefined
@@ -172,7 +176,7 @@ export type TFileType = 'IMAGE' | 'VIDEO' | 'FILE' | 'MODEL_3D' | 'EXTERNAL_VIDE
 
 export interface TFilesListStructuredQuery {
 	fileTypes?: TFileType[];
-	filename?: string;
+	fileName?: string;
 }
 
 export interface TFilesListInput {
@@ -187,6 +191,7 @@ export type TFilesListSuccess = {
 		id: string;
 		alt: string;
 		createdAt: string;
+		fileName: string;
 		previewImage?: {
 			id: string;
 			url: string;

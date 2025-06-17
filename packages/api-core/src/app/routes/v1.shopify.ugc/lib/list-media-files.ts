@@ -7,20 +7,17 @@ export async function listMediaFiles(
 ): Promise<TListMediaFilesResponseDto> {
 	const accessToken = await getShopifyShopAccessToken(shopId);
 
-	// Convert query params to structured query if fileTypes or filename is provided
-	const query =
-		input.fileTypes || input.filename
-			? {
-					fileTypes: input.fileTypes,
-					filename: input.filename
-				}
-			: undefined;
-
 	const result = (
 		await listFiles(shopId, accessToken, {
 			first: input.first,
 			after: input.after,
-			query,
+			query:
+				input.fileTypes != null || input.fileName != null
+					? {
+							fileTypes: input.fileTypes,
+							fileName: input.fileName
+						}
+					: undefined,
 			sortKey: input.sortKey
 		})
 	).unwrap();

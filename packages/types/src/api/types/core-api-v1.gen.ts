@@ -379,6 +379,8 @@ export interface components {
             };
             /** Format: uri */
             url: string;
+            /** @example product-1.jpg */
+            fileName: string;
             details: {
                 /** @enum {string} */
                 type: "image";
@@ -636,7 +638,7 @@ export interface operations {
                 after?: string;
                 sortKey?: "CREATED_AT" | "FILENAME" | "ID" | "ORIGINAL_UPLOAD_SIZE" | "RELEVANCE" | "UPDATED_AT";
                 fileTypes?: ("IMAGE" | "VIDEO" | "FILE" | "MODEL_3D" | "EXTERNAL_VIDEO")[];
-                filename?: string;
+                fileName?: string;
             };
             header?: never;
             path?: never;

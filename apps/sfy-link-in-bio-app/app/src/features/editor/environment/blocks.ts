@@ -104,7 +104,10 @@ export type TMedia = TImageMedia;
 export interface TImageMedia {
 	type: 'image';
 	url: string;
+	mimeType?: string;
+	fileName?: string;
 	altText?: string;
+	previewImageUrl?: string;
 }
 
 export interface TTextBlock extends TBlockBase {

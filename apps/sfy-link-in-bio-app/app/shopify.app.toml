@@ -3,7 +3,7 @@
 client_id = "4c9dc129e68b889d9a351e14d8e36a02"
 name = "saku-link-in-bio-dev"
 handle = "saku-link-in-bio-dev"
-application_url = "https://liberia-qui-cj-goals.trycloudflare.com"
+application_url = "https://surface-visible-screw-assure.trycloudflare.com"
 embedded = true
 
 [build]
@@ -26,10 +26,10 @@ uri = "/webhooks/app/scopes_update"
 scopes = "write_products,write_files"
 
 [auth]
-redirect_urls = ["https://liberia-qui-cj-goals.trycloudflare.com/auth/callback", "https://liberia-qui-cj-goals.trycloudflare.com/auth/shopify/callback", "https://liberia-qui-cj-goals.trycloudflare.com/api/auth/callback"]
+redirect_urls = ["https://surface-visible-screw-assure.trycloudflare.com/auth/callback", "https://surface-visible-screw-assure.trycloudflare.com/auth/shopify/callback", "https://surface-visible-screw-assure.trycloudflare.com/api/auth/callback"]
 
 [app_proxy]
-url = "https://liberia-qui-cj-goals.trycloudflare.com/a/saku"
+url = "https://surface-visible-screw-assure.trycloudflare.com/a/saku"
 subpath = "saku"
 prefix = "a"
 

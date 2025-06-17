@@ -13,6 +13,7 @@ export {
 	PaintBrushFlatIcon,
 	PlusCircleIcon,
 	PlusIcon,
+	ReplaceIcon,
 	SettingsIcon,
 	ViewIcon
 } from '@shopify/polaris-icons'; // https://polaris-react.shopify.com/icons

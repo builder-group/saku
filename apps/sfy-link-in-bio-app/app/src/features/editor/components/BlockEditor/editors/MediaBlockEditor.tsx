@@ -1,64 +1,56 @@
 import { useAppBridge } from '@shopify/app-bridge-react';
-import { DropZone, Icon, Select, Text, Thumbnail } from '@shopify/polaris';
-import { NoteIcon } from '@shopify/polaris-icons';
+import { DropZone, Icon, InlineError, Select, Spinner, Text } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react/state';
 import React from 'react';
-import { AccordionSection, DeleteIcon } from '@/components';
-import { uploadFiles } from '@/lib';
+import { AccordionSection, DeleteIcon, ReplaceIcon } from '@/components';
+import { listMediaFiles, uploadFiles } from '@/lib';
 import { TMediaBlock } from '../../../environment';
 import { TBlockEditorComponentProps } from '../blockEditorsRegistry';
 
 export const MediaBlockEditor: React.FC<TBlockEditorComponentProps<TMediaBlock>> = (props) => {
 	const { blockState } = props;
 	const block = useFeatureState(blockState);
-
-	const [file, setFile] = React.useState<File>();
-	const [isUploading, setIsUploading] = React.useState(false);
-	const formattedFileSize = React.useMemo(() => {
-		return `${((file?.size ?? 0) / 1024).toFixed(2)} KB`;
-	}, [file]);
-	const validFileTypes = ['image/gif', 'image/jpeg', 'image/png'];
-
 	const shopify = useAppBridge();
+
+	const [isUploading, setIsUploading] = React.useState(false);
+	const [error, setError] = React.useState<string | null>(null);
 
 	// =========================================================================
 	// Events
 	// =========================================================================
 
-	const handleDropZoneDrop = React.useCallback(
-		async (_dropFiles: File[], acceptedFiles: File[], _rejectedFiles: File[]) => {
+	const handleDrop = React.useCallback(
+		async (_dropFiles: File[], acceptedFiles: File[]) => {
 			const file = acceptedFiles[0];
 			if (file == null) {
 				return;
 			}
 
-			setFile(file);
 			setIsUploading(true);
+			setError(null);
 
 			const result = await uploadFiles({
 				files: [file],
 				contentType: 'IMAGE',
 				shopify
 			});
-
 			if (result.isErr()) {
-				console.error('Failed to upload file:', result.error.message);
+				setError('Failed to upload image. Please try again.');
 				setIsUploading(false);
 				return;
 			}
 
-			// Update block state with the file URL
-			const uploadedFile = result.value[0];
+			const [uploadedFile] = result.value;
 			if (uploadedFile != null) {
-				blockState.set((prev) => ({
+				blockState.set((prev: TMediaBlock) => ({
 					...prev,
 					media: {
-						...prev.media,
 						type: 'image',
-						url: uploadedFile.resourceUrl
+						url: uploadedFile.resourceUrl,
+						fileName: file.name,
+						mimeType: file.type
 					}
 				}));
-				console.log('Uploaded and processed file:', uploadedFile.id);
 			}
 
 			setIsUploading(false);
@@ -66,12 +58,63 @@ export const MediaBlockEditor: React.FC<TBlockEditorComponentProps<TMediaBlock>>
 		[blockState, shopify]
 	);
 
-	const handleDeleteFile = React.useCallback(() => {
-		setFile(undefined);
+	const handleFilePicker = React.useCallback(async () => {
+		setError(null);
+
+		const result = await listMediaFiles({
+			shopify,
+			fileTypes: ['IMAGE']
+		});
+		if (result.isErr()) {
+			setError('Failed to load media files. Please try again.');
+			return;
+		}
+
+		// Find current file ID based on the URL
+		const currentFileId = block.media?.url
+			? result.value.files.find((file) => file.url === block.media.url)?.id
+			: undefined;
+
+		// Open picker with media files
+		const picker = await shopify.picker({
+			heading: 'Select an image',
+			multiple: false,
+			headers: [{ content: 'Preview' }, { content: 'Created' }],
+			items: result.value.files.map((file) => {
+				const fileName = new URL(file.url).pathname.split('/').pop()?.split('?')[0] ?? '';
+				return {
+					id: file.id,
+					heading: fileName || 'Untitled',
+					data: [new Date(file.createdAt).toLocaleDateString()],
+					thumbnail: { url: file.url },
+					selected: file.id === currentFileId
+				};
+			})
+		});
+
+		const selectedId = (await picker.selected)?.[0];
+		if (selectedId != null) {
+			const selectedFile = result.value.files.find((f) => f.id === selectedId);
+			if (selectedFile != null) {
+				blockState.set((prev: TMediaBlock) => ({
+					...prev,
+					media: {
+						type: 'image',
+						url: selectedFile.url,
+						fileName: new URL(selectedFile.url).pathname.split('/').pop()?.split('?')[0] ?? '',
+						width: selectedFile.details.type === 'image' ? selectedFile.details.width : undefined,
+						height: selectedFile.details.type === 'image' ? selectedFile.details.height : undefined,
+						previewImageUrl: selectedFile.previewImage?.url
+					}
+				}));
+			}
+		}
+	}, [blockState, shopify, block]);
+
+	const handleRemove = React.useCallback(() => {
 		blockState.set((prev) => ({
 			...prev,
 			media: {
-				...prev.media,
 				type: 'image',
 				url: ''
 			}
@@ -80,7 +123,7 @@ export const MediaBlockEditor: React.FC<TBlockEditorComponentProps<TMediaBlock>>
 
 	const handleMediaTypeChange = React.useCallback(
 		(value: string) => {
-			blockState.set((prev) => ({ ...prev, media: { ...prev.media, type: value as 'image' } }));
+			blockState.set((prev) => ({ ...prev, media: { type: value as 'image', url: '' } }));
 		},
 		[blockState]
 	);
@@ -110,73 +153,83 @@ export const MediaBlockEditor: React.FC<TBlockEditorComponentProps<TMediaBlock>>
 						/>
 					</div>
 
-					{/* Image Upload */}
+					{/* Image Type */}
 					{block.media?.type === 'image' && (
 						<div className="space-y-1">
 							<div>
-								<Text as="span" variant="bodySm" tone="subdued">
+								<Text as="span" variant="bodySm" tone={error != null ? 'critical' : 'subdued'}>
 									Image
 								</Text>
 							</div>
-							<div className="flex w-full items-center">
-								<div className="h-10 w-10">
-									<DropZone
-										allowMultiple={false}
-										onDrop={handleDropZoneDrop}
-										disabled={isUploading}
-									>
-										{file != null ? (
-											<Thumbnail
-												size="small"
-												alt={file.name}
-												source={
-													validFileTypes.includes(file.type)
-														? window.URL.createObjectURL(file)
-														: NoteIcon
-												}
+							<div className="flex items-center gap-2">
+								<div className="h-10 w-10 flex-shrink-0">
+									<DropZone onDrop={handleDrop} allowMultiple={false}>
+										{isUploading ? (
+											<div className="flex h-10 w-10 items-center justify-center">
+												<Spinner size="small" />
+											</div>
+										) : block.media?.url.length > 0 ? (
+											<img
+												src={block.media.url}
+												alt={block.media.altText ?? ''}
+												className="h-10 w-10 rounded-lg object-cover"
 											/>
 										) : (
 											<DropZone.FileUpload />
 										)}
 									</DropZone>
 								</div>
-								{file != null ? (
-									<div className="flex w-full items-center justify-between pl-2">
-										<div className="flex flex-1 flex-col">
-											<Text variant="bodyMd" as="span" truncate>
-												{file.name}
+								<div className="flex min-w-0 flex-1 flex-col gap-0.5">
+									{isUploading ? (
+										<Text as="span">Uploading...</Text>
+									) : block.media?.url.length > 0 ? (
+										<Text as="span" truncate>
+											{block.media.fileName ?? 'Untitled'}
+										</Text>
+									) : (
+										<>
+											<Text as="span">
+												Drop files to upload or{' '}
+												<button
+													type="button"
+													onClick={handleFilePicker}
+													className="cursor-pointer text-blue-500 hover:text-blue-600"
+												>
+													browse
+												</button>
 											</Text>
-											<Text variant="bodySm" as="span" tone="subdued">
-												{formattedFileSize}
+											<Text as="span" variant="bodySm" tone="subdued">
+												Accepts .jpg, .png, and .gif
 											</Text>
-										</div>
+										</>
+									)}
+								</div>
+								{block.media.url.length > 0 && (
+									<div className="flex flex-shrink-0 items-center gap-2">
+										<button
+											className={'cursor-pointer rounded-lg p-0.5 hover:bg-neutral-200'}
+											onClick={handleFilePicker}
+											disabled={isUploading}
+										>
+											<Icon source={ReplaceIcon} />
+										</button>
 										<button
 											className={
-												'ml-2 cursor-pointer rounded-lg p-0.5 hover:bg-neutral-200 hover:text-red-500'
+												'cursor-pointer rounded-lg p-0.5 hover:bg-neutral-200 hover:text-red-500'
 											}
-											onClick={handleDeleteFile}
+											onClick={handleRemove}
 											disabled={isUploading}
 										>
 											<Icon source={DeleteIcon} />
 										</button>
 									</div>
-								) : isUploading ? (
-									<div className="flex w-full flex-1 flex-col pl-2">
-										<Text variant="bodyMd" as="span">
-											Uploading...
-										</Text>
-									</div>
-								) : (
-									<div className="flex w-full flex-1 flex-col pl-2">
-										<Text variant="bodyMd" as="span">
-											No file selected
-										</Text>
-										<Text variant="bodySm" as="span" tone="subdued">
-											{validFileTypes.map((type) => type.replace('image/', '')).join(', ')}
-										</Text>
-									</div>
 								)}
 							</div>
+							{error != null && (
+								<div className="mt-2">
+									<InlineError message={error} fieldID="media-upload-error" />
+								</div>
+							)}
 						</div>
 					)}
 				</div>

@@ -174,6 +174,7 @@ const SMediaFileDto = z
 			})
 			.optional(),
 		url: z.string().url(),
+		fileName: z.string().openapi({ example: 'product-1.jpg' }),
 		details: z.discriminatedUnion('type', [
 			z.object({
 				type: z.literal('image'),
@@ -213,13 +214,22 @@ const SListMediaFilesQueryParamsDto = z
 				description: 'Field to sort results by'
 			}),
 		fileTypes: z
-			.array(z.enum(['IMAGE', 'VIDEO', 'FILE', 'MODEL_3D', 'EXTERNAL_VIDEO']))
+			.preprocess(
+				(val) => {
+					// Handle both single value and array of values
+					if (typeof val === 'string') {
+						return [val];
+					}
+					return val;
+				},
+				z.array(z.enum(['IMAGE', 'VIDEO', 'FILE', 'MODEL_3D', 'EXTERNAL_VIDEO']))
+			)
 			.optional()
 			.openapi({
 				example: ['IMAGE', 'VIDEO'],
-				description: 'Filter by file types'
+				description: 'Filter by file types. Can be specified multiple times for multiple types.'
 			}),
-		filename: z.string().optional().openapi({
+		fileName: z.string().optional().openapi({
 			example: 'banner',
 			description: 'Filter by filename'
 		})
