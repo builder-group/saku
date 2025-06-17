@@ -3,3 +3,4 @@ export * from './configs';
 export * from './db';
 export * from './gql';
 export * from './logger';
+export * from './pika';

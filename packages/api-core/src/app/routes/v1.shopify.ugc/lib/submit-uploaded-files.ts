@@ -1,36 +1,34 @@
 import { AppError } from '@repo/hono-utils';
 import { createFiles, getShopifyShopAccessToken } from '@/lib';
-import type {
-	TSubmitFileErrorDto,
-	TSubmitFilesRequestDto,
-	TSubmitFilesResponseDto,
-	TSubmitFileSuccessDto
-} from '../schema';
+import { TSubmitUploadedFilesRequestDto, TSubmitUploadedFilesResponseDto } from '../schema';
 
-export async function submitFiles(
+export async function submitUploadedFiles(
 	shopId: string,
-	input: TSubmitFilesRequestDto
-): Promise<TSubmitFilesResponseDto> {
+	input: TSubmitUploadedFilesRequestDto
+): Promise<TSubmitUploadedFilesResponseDto> {
 	const accessToken = await getShopifyShopAccessToken(shopId);
 
-	// Create all files
-	const result = await createFiles(
-		shopId,
-		accessToken,
-		input.files.map((file) => ({
-			alt: file.filename,
-			contentType: mapContentTypeToResource(file.contentType),
-			originalSource: file.resourceUrl
-		}))
-	);
-	if (result.isErr()) {
-		throw result.error;
+	const createdFiles = (
+		await createFiles(
+			shopId,
+			accessToken,
+			input.files.map((file) => ({
+				alt: file.filename,
+				contentType: mapContentTypeToResource(file.contentType),
+				originalSource: file.resourceUrl
+			}))
+		)
+	).unwrap();
+
+	if (createdFiles.length !== input.files.length) {
+		throw new AppError('#ERR_INVALID_RESPONSE', 500, {
+			detail: 'Invalid response from Shopify'
+		});
 	}
 
-	// Map created files to response format
-	const files: (TSubmitFileSuccessDto | TSubmitFileErrorDto)[] = input.files.map(
-		(inputFile, index) => {
-			const createdFile = result.value[index];
+	return {
+		files: input.files.map((inputFile, index) => {
+			const createdFile = createdFiles[index];
 			if (createdFile == null) {
 				return {
 					uploadId: inputFile.uploadId,
@@ -44,10 +42,8 @@ export async function submitFiles(
 				uploadId: inputFile.uploadId,
 				status: 'SUCCESS'
 			};
-		}
-	);
-
-	return { files };
+		})
+	};
 }
 
 function mapContentTypeToResource(contentType: string): 'IMAGE' | 'VIDEO' | 'FILE' {

@@ -1,2 +1,3 @@
-export * from './create-files';
-export * from './submit-files';
+export * from './create-upload-targets';
+export * from './list-media-files';
+export * from './submit-uploaded-files';

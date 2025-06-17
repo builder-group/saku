@@ -2,6 +2,7 @@ import { Err, Ok, type TResult } from '@blgc/utils';
 import { AppError } from '@repo/hono-utils';
 import { gql, shopifyAdminApiClient, shopifyConfig, VariablesOf } from '@/environment';
 
+// https://shopify.dev/docs/api/admin-graphql/latest/mutations/stagedUploadsCreate
 export const STAGED_UPLOADS_CREATE = gql(`
 	mutation stagedUploadsCreate($uploads: [StagedUploadInput!]!) {
 		stagedUploadsCreate(input: $uploads) {
@@ -24,8 +25,8 @@ export const STAGED_UPLOADS_CREATE = gql(`
 export async function createStagedUploads(
 	shopId: string,
 	accessToken: string,
-	uploads: TStagedUploadInput[]
-): Promise<TResult<TStagedMediaUploadTarget[], AppError>> {
+	uploads: TStagedUploadsCreateInput[]
+): Promise<TResult<TStagedUploadsCreatePayload, AppError>> {
 	const result = await shopifyAdminApiClient.query(STAGED_UPLOADS_CREATE, {
 		prefixUrl: shopifyConfig.shop.adminApi(shopId),
 		variables: {
@@ -73,31 +74,32 @@ export async function createStagedUploads(
 		);
 	}
 
-	// Map and validate each target
-	const targets = stagedTargets.map((target) => {
-		if (target?.url == null || target?.resourceUrl == null || target?.parameters == null) {
-			throw new AppError('#ERR_INVALID_UPLOAD_TARGET', 500, {
-				detail: 'Invalid upload target returned from Shopify'
-			});
-		}
+	return Ok(
+		stagedTargets.map((target) => {
+			if (target?.url == null || target?.resourceUrl == null || target?.parameters == null) {
+				throw new AppError('#ERR_INVALID_UPLOAD_TARGET', 500, {
+					detail: 'Invalid upload target returned from Shopify'
+				});
+			}
 
-		return {
-			url: target.url,
-			resourceUrl: target.resourceUrl,
-			parameters: target.parameters
-		};
-	});
-
-	return Ok(targets);
+			return {
+				url: target.url,
+				resourceUrl: target.resourceUrl,
+				parameters: target.parameters
+			};
+		})
+	);
 }
 
-export type TStagedUploadInput = VariablesOf<typeof STAGED_UPLOADS_CREATE>['uploads'][number];
+export type TStagedUploadsCreateInput = VariablesOf<
+	typeof STAGED_UPLOADS_CREATE
+>['uploads'][number];
 
-export type TStagedMediaUploadTarget = {
+export type TStagedUploadsCreatePayload = {
 	url: string;
 	resourceUrl: string;
 	parameters: Array<{
 		name: string;
 		value: string;
 	}>;
-};
+}[];

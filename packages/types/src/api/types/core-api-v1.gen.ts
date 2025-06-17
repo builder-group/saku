@@ -115,13 +115,17 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /**
+         * List files from media library
+         * @description Retrieve a paginated list of files from the Shopify media library with optional filtering
+         */
+        get: operations["listUgcMediaFiles"];
         put?: never;
         /**
-         * Create staged upload targets for files
+         * Create upload targets for files
          * @description Generate signed upload URLs for multiple user-generated content files
          */
-        post: operations["createUgcFiles"];
+        post: operations["createUgcUploadTargets"];
         delete?: never;
         options?: never;
         head?: never;
@@ -138,10 +142,10 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * Submit uploaded files to Shopify media library
+         * Submit uploaded files to media library
          * @description Process uploaded files and add them to the Shopify media library
          */
-        post: operations["submitUgcFiles"];
+        post: operations["submitUgcUploadedFiles"];
         delete?: never;
         options?: never;
         head?: never;
@@ -201,38 +205,6 @@ export interface components {
                 [key: string]: unknown;
             }[];
         };
-        ShopifySessionAssociatedUserDto: {
-            /** @example 987654321 */
-            id: number;
-            /** @example John */
-            first_name: string;
-            /** @example Doe */
-            last_name: string;
-            /**
-             * Format: email
-             * @example john@example.com
-             */
-            email: string;
-            /** @example true */
-            account_owner: boolean;
-            /** @example en-US */
-            locale: string;
-            /** @example false */
-            collaborator: boolean;
-            /** @example true */
-            email_verified: boolean;
-        };
-        ShopifySessionOnlineAccessInfoDto: {
-            /** @example 86399 */
-            expires_in?: number;
-            /** @example write_products,read_customers */
-            associated_user_scope?: string;
-            /** @example session_token_hash_string */
-            session?: string;
-            /** @example null */
-            account_number?: number | null;
-            associated_user: components["schemas"]["ShopifySessionAssociatedUserDto"];
-        } | null;
         ShopifySessionDto: {
             /** @example my-shop.myshopify.com_987654321 */
             id: string;
@@ -251,7 +223,37 @@ export interface components {
             expires: string | null;
             /** @example shpat_def456...uvw012 */
             accessToken: string;
-            onlineAccessInfo: components["schemas"]["ShopifySessionOnlineAccessInfoDto"];
+            onlineAccessInfo: {
+                /** @example 86399 */
+                expires_in?: number;
+                /** @example write_products,read_customers */
+                associated_user_scope?: string;
+                /** @example session_token_hash_string */
+                session?: string;
+                /** @example null */
+                account_number?: number | null;
+                associated_user: {
+                    /** @example 987654321 */
+                    id: number;
+                    /** @example John */
+                    first_name: string;
+                    /** @example Doe */
+                    last_name: string;
+                    /**
+                     * Format: email
+                     * @example john@example.com
+                     */
+                    email: string;
+                    /** @example true */
+                    account_owner: boolean;
+                    /** @example en-US */
+                    locale: string;
+                    /** @example false */
+                    collaborator: boolean;
+                    /** @example true */
+                    email_verified: boolean;
+                };
+            } | null;
         };
         HealthDto: {
             /**
@@ -278,22 +280,21 @@ export interface components {
             /** @example tmp/ugc/abc123/image.jpg */
             value: string;
         };
-        StagedUploadTargetDto: {
-            /**
-             * Format: uri
-             * @example https://shopify-staged-uploads.storage.googleapis.com/
-             */
-            url: string;
-            /**
-             * Format: uri
-             * @example https://cdn.shopify.com/s/files/1/0123/4567/files/image.jpg
-             */
-            resourceUrl: string | null;
-            parameters: components["schemas"]["UploadParameterDto"][];
-        };
-        CreateFilesResponseDto: {
+        CreateUploadTargetsResponseDto: {
             files: {
-                uploadTarget: components["schemas"]["StagedUploadTargetDto"];
+                uploadTarget: {
+                    /**
+                     * Format: uri
+                     * @example https://shopify-staged-uploads.storage.googleapis.com/
+                     */
+                    url: string;
+                    /**
+                     * Format: uri
+                     * @example https://cdn.shopify.com/s/files/1/0123/4567/files/image.jpg
+                     */
+                    resourceUrl: string | null;
+                    parameters: components["schemas"]["UploadParameterDto"][];
+                };
                 /** @example ugc_abc123def456 */
                 uploadId: string;
                 /**
@@ -303,23 +304,22 @@ export interface components {
                 expiresAt: string;
             }[];
         };
-        FileDto: {
-            /** @example product-image.jpg */
-            filename: string;
-            /** @example image/jpeg */
-            mimeType: string;
-            /** @example 1024000 */
-            fileSize: number;
-            /**
-             * @example IMAGE
-             * @enum {string}
-             */
-            contentType: "IMAGE" | "VIDEO" | "FILE";
+        CreateUploadTargetsRequestDto: {
+            files: {
+                /** @example product-image.jpg */
+                filename: string;
+                /** @example image/jpeg */
+                mimeType: string;
+                /** @example 1024000 */
+                fileSize: number;
+                /**
+                 * @example IMAGE
+                 * @enum {string}
+                 */
+                contentType: "IMAGE" | "VIDEO" | "FILE";
+            }[];
         };
-        CreateFilesRequestDto: {
-            files: components["schemas"]["FileDto"][];
-        };
-        SubmitFileSuccessDto: {
+        SubmitUploadedFileSuccessDto: {
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
@@ -330,7 +330,7 @@ export interface components {
             /** @example ugc_abc123def456 */
             uploadId: string;
         };
-        SubmitFileErrorDto: {
+        SubmitUploadedFileErrorDto: {
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
@@ -341,10 +341,10 @@ export interface components {
             /** @example ugc_abc123def456 */
             uploadId: string;
         };
-        SubmitFilesResponseDto: {
-            files: (components["schemas"]["SubmitFileSuccessDto"] | components["schemas"]["SubmitFileErrorDto"])[];
+        SubmitUploadedFilesResponseDto: {
+            files: (components["schemas"]["SubmitUploadedFileSuccessDto"] | components["schemas"]["SubmitUploadedFileErrorDto"])[];
         };
-        SubmitFilesRequestDto: {
+        SubmitUploadedFilesRequestDto: {
             files: {
                 /** @example ugc_abc123def456 */
                 uploadId: string;
@@ -361,6 +361,48 @@ export interface components {
                  */
                 contentType: "IMAGE" | "VIDEO" | "FILE";
             }[];
+        };
+        MediaFileDto: {
+            /** @example gid://shopify/MediaImage/12345678 */
+            id: string;
+            /** @example Product lifestyle image */
+            alt: string;
+            /**
+             * Format: date-time
+             * @example 2024-01-15T10:30:00Z
+             */
+            createdAt: string;
+            previewImage?: {
+                id: string;
+                /** Format: uri */
+                url: string;
+            };
+            /** Format: uri */
+            url: string;
+            details: {
+                /** @enum {string} */
+                type: "image";
+                id?: string;
+                width?: number;
+                height?: number;
+            } | {
+                /** @enum {string} */
+                type: "video";
+                width: number;
+                height: number;
+                format: string;
+            } | {
+                /** @enum {string} */
+                type: "file";
+                mimeType?: string;
+            };
+        };
+        ListMediaFilesResponseDto: {
+            files: components["schemas"]["MediaFileDto"][];
+            pageInfo: {
+                hasNextPage: boolean;
+                endCursor?: string;
+            };
         };
     };
     responses: never;
@@ -587,26 +629,28 @@ export interface operations {
             };
         };
     };
-    createUgcFiles: {
+    listUgcMediaFiles: {
         parameters: {
-            query?: never;
+            query?: {
+                first?: number;
+                after?: string;
+                sortKey?: "CREATED_AT" | "FILENAME" | "ID" | "ORIGINAL_UPLOAD_SIZE" | "RELEVANCE" | "UPDATED_AT";
+                fileTypes?: ("IMAGE" | "VIDEO" | "FILE" | "MODEL_3D" | "EXTERNAL_VIDEO")[];
+                filename?: string;
+            };
             header?: never;
             path?: never;
             cookie?: never;
         };
-        requestBody?: {
-            content: {
-                "application/json": components["schemas"]["CreateFilesRequestDto"];
-            };
-        };
+        requestBody?: never;
         responses: {
             /** @description Successful response */
-            201: {
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["CreateFilesResponseDto"];
+                    "application/json": components["schemas"]["ListMediaFilesResponseDto"];
                 };
             };
             /** @description Bad request */
@@ -629,7 +673,7 @@ export interface operations {
             };
         };
     };
-    submitUgcFiles: {
+    createUgcUploadTargets: {
         parameters: {
             query?: never;
             header?: never;
@@ -638,7 +682,49 @@ export interface operations {
         };
         requestBody?: {
             content: {
-                "application/json": components["schemas"]["SubmitFilesRequestDto"];
+                "application/json": components["schemas"]["CreateUploadTargetsRequestDto"];
+            };
+        };
+        responses: {
+            /** @description Successful response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreateUploadTargetsResponseDto"];
+                };
+            };
+            /** @description Bad request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppErrorDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppErrorDto"];
+                };
+            };
+        };
+    };
+    submitUgcUploadedFiles: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["SubmitUploadedFilesRequestDto"];
             };
         };
         responses: {
@@ -648,7 +734,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["SubmitFilesResponseDto"];
+                    "application/json": components["schemas"]["SubmitUploadedFilesResponseDto"];
                 };
             };
             /** @description Bad request */

@@ -51,6 +51,7 @@
 		"hono": "^4.7.11",
 		"jose": "^6.0.11",
 		"pg": "^8.16.0",
+		"pika-id": "^1.1.3",
 		"valibot": "^1.1.0",
 		"validatenv": "^0.0.38",
 		"validation-adapters": "^0.0.28",

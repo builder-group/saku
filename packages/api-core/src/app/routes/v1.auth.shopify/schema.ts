@@ -6,34 +6,7 @@ import {
 	NotFoundResponse
 } from '@repo/hono-utils';
 
-const SShopifySessionAssociatedUserDto = z
-	.object({
-		id: z.number().openapi({ example: 987654321 }),
-		first_name: z.string().openapi({ example: 'John' }),
-		last_name: z.string().openapi({ example: 'Doe' }),
-		email: z.string().email().openapi({ example: 'john@example.com' }),
-		account_owner: z.boolean().openapi({ example: true }),
-		locale: z.string().openapi({ example: 'en-US' }),
-		collaborator: z.boolean().openapi({ example: false }),
-		email_verified: z.boolean().openapi({ example: true })
-	})
-	.openapi('ShopifySessionAssociatedUserDto');
-export type TShopifySessionAssociatedUserDto = z.infer<typeof SShopifySessionAssociatedUserDto>;
-
-const SShopifySessionOnlineAccessInfoDto = z
-	.object({
-		expires_in: z.number().optional().openapi({ example: 86399 }),
-		associated_user_scope: z
-			.string()
-			.optional()
-			.openapi({ example: 'write_products,read_customers' }),
-		session: z.string().optional().openapi({ example: 'session_token_hash_string' }),
-		account_number: z.number().nullable().optional().openapi({ example: null }),
-		associated_user: SShopifySessionAssociatedUserDto
-	})
-	.openapi('ShopifySessionOnlineAccessInfoDto');
-
-const SShopifySessionDto = z
+const SShopifySessionRequestDto = z
 	.object({
 		id: z.string().openapi({ example: 'my-shop.myshopify.com_987654321' }),
 		shop: z.string().openapi({ example: 'my-shop.myshopify.com' }),
@@ -42,10 +15,30 @@ const SShopifySessionDto = z
 		scope: z.string().openapi({ example: 'write_products,read_customers' }),
 		expires: z.string().datetime().nullable().openapi({ example: '2025-06-14T13:39:33.336Z' }),
 		accessToken: z.string().openapi({ example: 'shpat_def456...uvw012' }),
-		onlineAccessInfo: SShopifySessionOnlineAccessInfoDto.nullable()
+		onlineAccessInfo: z
+			.object({
+				expires_in: z.number().optional().openapi({ example: 86399 }),
+				associated_user_scope: z
+					.string()
+					.optional()
+					.openapi({ example: 'write_products,read_customers' }),
+				session: z.string().optional().openapi({ example: 'session_token_hash_string' }),
+				account_number: z.number().nullable().optional().openapi({ example: null }),
+				associated_user: z.object({
+					id: z.number().openapi({ example: 987654321 }),
+					first_name: z.string().openapi({ example: 'John' }),
+					last_name: z.string().openapi({ example: 'Doe' }),
+					email: z.string().email().openapi({ example: 'john@example.com' }),
+					account_owner: z.boolean().openapi({ example: true }),
+					locale: z.string().openapi({ example: 'en-US' }),
+					collaborator: z.boolean().openapi({ example: false }),
+					email_verified: z.boolean().openapi({ example: true })
+				})
+			})
+			.nullable()
 	})
 	.openapi('ShopifySessionDto');
-export type TShopifySessionDto = z.infer<typeof SShopifySessionDto>;
+export type TShopifySessionDto = z.infer<typeof SShopifySessionRequestDto>;
 
 export const CreateSessionRoute = createRoute({
 	method: 'post',
@@ -58,7 +51,7 @@ export const CreateSessionRoute = createRoute({
 		body: {
 			content: {
 				'application/json': {
-					schema: SShopifySessionDto
+					schema: SShopifySessionRequestDto
 				}
 			}
 		}
@@ -85,7 +78,7 @@ export const GetSessionRoute = createRoute({
 		})
 	},
 	responses: {
-		200: JsonSuccessResponse(SShopifySessionDto),
+		200: JsonSuccessResponse(SShopifySessionRequestDto),
 		404: NotFoundResponse,
 		500: InternalServerErrorResponse
 	}
@@ -125,7 +118,7 @@ export const GetSessionByShopRoute = createRoute({
 		})
 	},
 	responses: {
-		200: JsonSuccessResponse(z.array(SShopifySessionDto)),
+		200: JsonSuccessResponse(z.array(SShopifySessionRequestDto)),
 		404: NotFoundResponse,
 		500: InternalServerErrorResponse
 	}

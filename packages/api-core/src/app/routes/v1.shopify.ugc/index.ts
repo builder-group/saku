@@ -1,18 +1,25 @@
 import { router } from '@/app/router';
 import { verifyShopifySession } from '@/lib';
-import { createFiles, submitFiles } from './lib';
-import { CreateFilesRoute, SubmitFilesRoute } from './schema';
+import { createUploadTargets, listMediaFiles, submitUploadedFiles } from './lib';
+import { CreateUploadTargetsRoute, ListMediaFilesRoute, SubmitUploadedFilesRoute } from './schema';
 
-router.openapi(CreateFilesRoute, async (c) => {
+router.openapi(CreateUploadTargetsRoute, async (c) => {
 	const input = c.req.valid('json');
 	const { shopId } = await verifyShopifySession(c);
-	const result = await createFiles(shopId, input);
+	const result = await createUploadTargets(shopId, input);
 	return c.json(result, 201);
 });
 
-router.openapi(SubmitFilesRoute, async (c) => {
+router.openapi(SubmitUploadedFilesRoute, async (c) => {
 	const input = c.req.valid('json');
 	const { shopId } = await verifyShopifySession(c);
-	const result = await submitFiles(shopId, input);
+	const result = await submitUploadedFiles(shopId, input);
+	return c.json(result, 200);
+});
+
+router.openapi(ListMediaFilesRoute, async (c) => {
+	const input = c.req.valid('query');
+	const { shopId } = await verifyShopifySession(c);
+	const result = await listMediaFiles(shopId, input);
 	return c.json(result, 200);
 });

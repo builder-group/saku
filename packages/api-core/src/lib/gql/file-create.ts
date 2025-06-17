@@ -2,6 +2,7 @@ import { Err, Ok, type TResult } from '@blgc/utils';
 import { AppError } from '@repo/hono-utils';
 import { gql, shopifyAdminApiClient, shopifyConfig, VariablesOf } from '@/environment';
 
+// https://shopify.dev/docs/api/admin-graphql/latest/mutations/fileCreate
 export const FILE_CREATE = gql(`
 	mutation fileCreate($files: [FileCreateInput!]!) {
 		fileCreate(files: $files) {
@@ -22,8 +23,8 @@ export const FILE_CREATE = gql(`
 export async function createFiles(
 	shopId: string,
 	accessToken: string,
-	files: TFileInput[]
-): Promise<TResult<TFile[], AppError>> {
+	files: TFileCreateInput[]
+): Promise<TResult<TFileCreatePayload, AppError>> {
 	const result = await shopifyAdminApiClient.query(FILE_CREATE, {
 		prefixUrl: shopifyConfig.shop.adminApi(shopId),
 		variables: { files },
@@ -49,7 +50,6 @@ export async function createFiles(
 		);
 	}
 
-	// Check for user errors
 	if (fileCreate.userErrors?.length) {
 		return Err(
 			new AppError('#ERR_USER_ERROR', 400, {
@@ -58,30 +58,29 @@ export async function createFiles(
 		);
 	}
 
-	// Map and validate each file
-	const createdFiles = fileCreate.files.map((file) => {
-		if (file?.id == null || file?.fileStatus == null || file?.createdAt == null) {
-			throw new AppError('#ERR_INVALID_RESPONSE', 500, {
-				detail: 'Invalid file data returned from Shopify'
-			});
-		}
+	return Ok(
+		fileCreate.files.map((file) => {
+			if (file?.id == null || file?.fileStatus == null || file?.createdAt == null) {
+				throw new AppError('#ERR_INVALID_FILE_DATA', 500, {
+					detail: 'Invalid file data returned from Shopify'
+				});
+			}
 
-		return {
-			id: file.id,
-			fileStatus: file.fileStatus,
-			alt: file.alt ?? '',
-			createdAt: file.createdAt
-		};
-	});
-
-	return Ok(createdFiles);
+			return {
+				id: file.id,
+				fileStatus: file.fileStatus,
+				alt: file.alt ?? '',
+				createdAt: file.createdAt
+			};
+		})
+	);
 }
 
-export type TFileInput = VariablesOf<typeof FILE_CREATE>['files'][number];
+export type TFileCreateInput = VariablesOf<typeof FILE_CREATE>['files'][number];
 
-export type TFile = {
+export type TFileCreatePayload = {
 	id: string;
 	fileStatus: string;
 	alt: string;
 	createdAt: string;
-};
+}[];
