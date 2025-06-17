@@ -24,7 +24,7 @@ export async function createFiles(
 	shopId: string,
 	accessToken: string,
 	files: TFileCreateInput[]
-): Promise<TResult<TFileCreatePayload, AppError>> {
+): Promise<TResult<TFileCreateSuccess, AppError>> {
 	const result = await shopifyAdminApiClient.query(FILE_CREATE, {
 		prefixUrl: shopifyConfig.shop.adminApi(shopId),
 		variables: { files },
@@ -78,7 +78,7 @@ export async function createFiles(
 
 export type TFileCreateInput = VariablesOf<typeof FILE_CREATE>['files'][number];
 
-export type TFileCreatePayload = {
+export type TFileCreateSuccess = {
 	id: string;
 	fileStatus: string;
 	alt: string;

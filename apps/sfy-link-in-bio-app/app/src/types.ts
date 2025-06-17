@@ -12,3 +12,8 @@ export type TActionFunction<GResponse = null> = (args: ActionFunctionArgs) => Pr
 export type TLinksFunction = LinksFunction;
 
 export type THeadersFunction = HeadersFunction;
+
+export interface TError {
+	code: `#ERR_${string}`;
+	message: string;
+}

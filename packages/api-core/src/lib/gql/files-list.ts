@@ -63,7 +63,7 @@ export async function listFiles(
 	shopId: string,
 	accessToken: string,
 	input: TFilesListInput
-): Promise<TResult<TFilesListPayload, AppError>> {
+): Promise<TResult<TFilesListSuccess, AppError>> {
 	const { first = 20, after, query, sortKey = 'CREATED_AT' } = input;
 
 	// Convert structured query to string if needed
@@ -182,7 +182,7 @@ export interface TFilesListInput {
 	sortKey?: 'CREATED_AT' | 'FILENAME' | 'ID' | 'ORIGINAL_UPLOAD_SIZE' | 'RELEVANCE' | 'UPDATED_AT';
 }
 
-export type TFilesListPayload = {
+export type TFilesListSuccess = {
 	files: {
 		id: string;
 		alt: string;

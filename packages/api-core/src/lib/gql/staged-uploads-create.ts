@@ -26,7 +26,7 @@ export async function createStagedUploads(
 	shopId: string,
 	accessToken: string,
 	uploads: TStagedUploadsCreateInput[]
-): Promise<TResult<TStagedUploadsCreatePayload, AppError>> {
+): Promise<TResult<TStagedUploadsCreateSuccess, AppError>> {
 	const result = await shopifyAdminApiClient.query(STAGED_UPLOADS_CREATE, {
 		prefixUrl: shopifyConfig.shop.adminApi(shopId),
 		variables: {
@@ -95,7 +95,7 @@ export type TStagedUploadsCreateInput = VariablesOf<
 	typeof STAGED_UPLOADS_CREATE
 >['uploads'][number];
 
-export type TStagedUploadsCreatePayload = {
+export type TStagedUploadsCreateSuccess = {
 	url: string;
 	resourceUrl: string;
 	parameters: Array<{
