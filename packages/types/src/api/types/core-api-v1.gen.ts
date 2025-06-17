@@ -637,6 +637,7 @@ export interface operations {
                 first?: number;
                 after?: string;
                 sortKey?: "CREATED_AT" | "FILENAME" | "ID" | "ORIGINAL_UPLOAD_SIZE" | "RELEVANCE" | "UPDATED_AT";
+                reverse?: boolean | null;
                 fileTypes?: ("IMAGE" | "VIDEO" | "FILE" | "MODEL_3D" | "EXTERNAL_VIDEO")[];
                 fileName?: string;
             };

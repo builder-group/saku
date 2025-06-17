@@ -63,7 +63,10 @@ export const MediaBlockEditor: React.FC<TBlockEditorComponentProps<TMediaBlock>>
 
 		const result = await listMediaFiles({
 			shopify,
-			fileTypes: ['IMAGE']
+			fileTypes: ['IMAGE'],
+			first: 50,
+			sortKey: 'UPDATED_AT',
+			reverse: true
 		});
 		if (result.isErr()) {
 			setError('Failed to load media files. Please try again.');

@@ -198,7 +198,7 @@ const SMediaFileDto = z
 
 const SListMediaFilesQueryParamsDto = z
 	.object({
-		first: z.number().int().min(1).max(250).optional().openapi({
+		first: z.coerce.number().int().min(1).max(250).optional().openapi({
 			example: 20,
 			description: 'Number of items to return (max 250)'
 		}),
@@ -213,6 +213,10 @@ const SListMediaFilesQueryParamsDto = z
 				example: 'CREATED_AT',
 				description: 'Field to sort results by'
 			}),
+		reverse: z.coerce.boolean().optional().openapi({
+			example: false,
+			description: 'Reverse the sort order (true for descending, false for ascending)'
+		}),
 		fileTypes: z
 			.preprocess(
 				(val) => {

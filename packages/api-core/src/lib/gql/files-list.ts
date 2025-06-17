@@ -8,13 +8,15 @@ export const FILES_LIST = gql(`
     $first: Int!, 
     $after: String, 
     $query: String,
-    $sortKey: FileSortKeys
+    $sortKey: FileSortKeys,
+    $reverse: Boolean
   ) {
     files(
       first: $first, 
       after: $after,
       query: $query,
-      sortKey: $sortKey
+      sortKey: $sortKey,
+      reverse: $reverse
     ) {
       nodes {
         id
@@ -67,7 +69,7 @@ export async function listFiles(
 	accessToken: string,
 	input: TFilesListInput
 ): Promise<TResult<TFilesListSuccess, AppError>> {
-	const { first = 20, after, query, sortKey = 'CREATED_AT' } = input;
+	const { first = 20, after, query, sortKey = 'CREATED_AT', reverse = false } = input;
 
 	// Convert structured query to string if needed
 	const queryString =
@@ -86,7 +88,8 @@ export async function listFiles(
 			first,
 			after,
 			query: queryString,
-			sortKey
+			sortKey,
+			reverse
 		},
 		headers: {
 			'X-Shopify-Access-Token': accessToken
@@ -184,6 +187,7 @@ export interface TFilesListInput {
 	after?: string;
 	query?: string | TFilesListStructuredQuery;
 	sortKey?: 'CREATED_AT' | 'FILENAME' | 'ID' | 'ORIGINAL_UPLOAD_SIZE' | 'RELEVANCE' | 'UPDATED_AT';
+	reverse?: boolean;
 }
 
 export type TFilesListSuccess = {

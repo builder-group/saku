@@ -18,7 +18,8 @@ export async function listMediaFiles(
 							fileName: input.fileName
 						}
 					: undefined,
-			sortKey: input.sortKey
+			sortKey: input.sortKey,
+			reverse: input.reverse
 		})
 	).unwrap();
 
