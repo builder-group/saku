@@ -73,30 +73,44 @@ export const MediaBlockEditor: React.FC<TBlockEditorComponentProps<TMediaBlock>>
 			return;
 		}
 
-		// Find current file ID based on the URL
-		const currentFileId = block.media?.url
-			? result.value.files.find((file) => file.url === block.media.url)?.id
-			: undefined;
+		// Create items array for the picker
+		const items = result.value.files.map((file) => {
+			const fileName = new URL(file.url).pathname.split('/').pop()?.split('?')[0] ?? '';
+			return {
+				id: file.id,
+				heading: fileName || 'Untitled',
+				data: [new Date(file.createdAt).toLocaleDateString()],
+				thumbnail: { url: file.url },
+				selected: false
+			};
+		});
+
+		// If we have a current media item add it at the top
+		if (block.media?.url != null) {
+			items.unshift({
+				id: 'current',
+				heading: block.media.fileName || 'Untitled',
+				data: [''],
+				thumbnail: { url: block.media.url },
+				selected: true
+			});
+		}
 
 		// Open picker with media files
 		const picker = await shopify.picker({
 			heading: 'Select an image',
 			multiple: false,
 			headers: [{ content: 'Preview' }, { content: 'Created' }],
-			items: result.value.files.map((file) => {
-				const fileName = new URL(file.url).pathname.split('/').pop()?.split('?')[0] ?? '';
-				return {
-					id: file.id,
-					heading: fileName || 'Untitled',
-					data: [new Date(file.createdAt).toLocaleDateString()],
-					thumbnail: { url: file.url },
-					selected: file.id === currentFileId
-				};
-			})
+			items
 		});
 
 		const selectedId = (await picker.selected)?.[0];
 		if (selectedId != null) {
+			// If the selected item is our current item (not in search results), keep using current data
+			if (selectedId === 'current') {
+				return;
+			}
+
 			const selectedFile = result.value.files.find((f) => f.id === selectedId);
 			if (selectedFile != null) {
 				blockState.set((prev: TMediaBlock) => ({
