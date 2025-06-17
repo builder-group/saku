@@ -37,7 +37,6 @@ const SCreateUploadTargetsResponseDto = z
 					resourceUrl: z
 						.string()
 						.url()
-						.nullable()
 						.openapi({ example: 'https://cdn.shopify.com/s/files/1/0123/4567/files/image.jpg' }),
 					parameters: z.array(
 						z

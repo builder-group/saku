@@ -292,7 +292,7 @@ export interface components {
                      * Format: uri
                      * @example https://cdn.shopify.com/s/files/1/0123/4567/files/image.jpg
                      */
-                    resourceUrl: string | null;
+                    resourceUrl: string;
                     parameters: components["schemas"]["UploadParameterDto"][];
                 };
                 /** @example ugc_abc123def456 */

@@ -26,7 +26,6 @@ export async function uploadFiles(
 			}
 		}
 	);
-
 	if (createFilesResult.isErr()) {
 		return Err({
 			code: '#ERR_CREATE_UPLOAD_TARGET',
@@ -50,9 +49,6 @@ export async function uploadFiles(
 
 		const { uploadTarget, uploadId } = createdFile;
 		const resourceUrl = uploadTarget.resourceUrl;
-		if (resourceUrl == null || uploadTarget.url == null) {
-			throw new Error('Missing required upload target properties');
-		}
 
 		const formData = new FormData();
 		uploadTarget.parameters.forEach((param) => {
@@ -60,7 +56,7 @@ export async function uploadFiles(
 		});
 
 		const file = files[index];
-		if (!file) {
+		if (file == null) {
 			throw new Error('File not found at index ' + index);
 		}
 		formData.append('file', file);
@@ -68,7 +64,6 @@ export async function uploadFiles(
 		const uploadResult = await fetchClient.post(uploadTarget.url, formData, {
 			parseAs: 'text'
 		});
-
 		if (uploadResult.isErr()) {
 			throw new Error(`Failed to upload file: ${uploadResult.error.message}`);
 		}
@@ -95,7 +90,9 @@ export async function uploadFiles(
 		'/v1/shopify/ugc/files/submit',
 		{
 			files: uploadedFiles.map((file) => ({
-				...file,
+				uploadId: file.uploadId,
+				filename: file.filename,
+				resourceUrl: file.resourceUrl,
 				contentType
 			}))
 		},
@@ -105,7 +102,6 @@ export async function uploadFiles(
 			}
 		}
 	);
-
 	if (submitResult.isErr()) {
 		return Err({
 			code: '#ERR_SUBMIT_FILE',
@@ -114,7 +110,7 @@ export async function uploadFiles(
 	}
 
 	const submittedFiles = submitResult.value.data.files;
-	if (!submittedFiles?.length) {
+	if (!submittedFiles?.length || submittedFiles.length !== uploadedFiles.length) {
 		return Err({
 			code: '#ERR_NO_FILE_DATA',
 			message: 'No file data returned'
@@ -137,13 +133,10 @@ export async function uploadFiles(
 	// Return all successfully processed files
 	return Ok(
 		submittedFiles
-			.filter(
-				(file): file is { status: 'SUCCESS'; id: string; uploadId: string } =>
-					file.status === 'SUCCESS' && 'id' in file
-			)
-			.map((file) => ({
+			.filter((file) => file.status === 'SUCCESS')
+			.map((file, index) => ({
 				id: file.id,
-				resourceUrl: uploadedFiles.find((u) => u.uploadId === file.uploadId)?.resourceUrl ?? ''
+				resourceUrl: uploadedFiles[index]?.resourceUrl ?? ''
 			}))
 	);
 }
