@@ -1,3 +1,4 @@
+export * from '../Block';
 export * from './AboutBlock';
 export * from './LinkBlock';
 export * from './MediaBlock';

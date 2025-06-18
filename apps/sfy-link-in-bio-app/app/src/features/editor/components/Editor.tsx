@@ -25,7 +25,7 @@ export const Editor: React.FC<TEditorProps> = (props) => {
 	);
 
 	return (
-		<div ref={elementRef} className="flex min-h-screen w-full flex-col">
+		<div ref={elementRef} className="flex h-screen w-full flex-col">
 			{hasBoundingRect ? (
 				<ResizablePanelGroup direction="horizontal" className="flex-1">
 					<ViewNavPanel editor={editor} />

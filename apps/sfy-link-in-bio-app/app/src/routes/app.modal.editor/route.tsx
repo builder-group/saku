@@ -67,6 +67,16 @@ export const loader: TLoaderFunction<TLoaderData> = async ({ request }) => {
 				title: 'Hello',
 				text: 'This is a text block',
 				alignment: 'left'
+			},
+			{
+				id: shortId(),
+				type: 'media',
+				styles: {},
+				media: {
+					type: 'image',
+					url: 'https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3dzkxMTZlNGp4N3dhdGJwNWtuMWJtd3JpNHl2bTNzemE3YjFvaTFieCZlcD12MV9naWZzX3JlbGF0ZWQmY3Q9Zw/so8KXAphERsre/giphy.gif',
+					altText: 'Image'
+				}
 			}
 		]
 	};

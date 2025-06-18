@@ -14,7 +14,8 @@ export const CanvasPanel: React.FC<TCanvasPanelProps> = (props) => {
 
 	return (
 		<ResizablePanel>
-			<PanelHeader className="justify-end">
+			{/* Fixed Header */}
+			<PanelHeader className="h-12 justify-end">
 				<InlineStack gap="200" blockAlign="center">
 					<Button
 						icon={ViewIcon}
@@ -30,8 +31,11 @@ export const CanvasPanel: React.FC<TCanvasPanelProps> = (props) => {
 				</InlineStack>
 			</PanelHeader>
 
-			<div className="flex h-full flex-1 bg-gray-50 p-4">
-				<BlockCanvas editor={editor} />
+			{/* Scrollable content */}
+			<div className="h-[calc(100%-3rem)] w-full overflow-y-auto bg-neutral-50">
+				<div className="flex min-h-full w-full flex-col p-4">
+					<BlockCanvas editor={editor} />
+				</div>
 			</div>
 		</ResizablePanel>
 	);
