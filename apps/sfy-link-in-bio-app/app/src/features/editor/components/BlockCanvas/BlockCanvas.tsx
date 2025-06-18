@@ -5,7 +5,7 @@ import { TEditor } from '../../lib';
 import { Block } from './Block';
 
 export const BlockCanvas: React.FC<TCanvasProps> = (props) => {
-	const { editor } = props;
+	const { editor, scrollContainerRef } = props;
 
 	const blocks = useCompute(editor.blockIds, (blocks) => {
 		return blocks.map((blockId) => editor.blockMap[blockId]).filter(notEmpty);
@@ -18,7 +18,12 @@ export const BlockCanvas: React.FC<TCanvasProps> = (props) => {
 	return (
 		<div className="flex w-full flex-col items-center gap-4">
 			{blocks.map((block) => (
-				<Block key={block._v.id} blockState={block} editor={editor} />
+				<Block
+					key={block._v.id}
+					blockState={block}
+					editor={editor}
+					scrollContainerRef={scrollContainerRef}
+				/>
 			))}
 		</div>
 	);
@@ -26,4 +31,5 @@ export const BlockCanvas: React.FC<TCanvasProps> = (props) => {
 
 interface TCanvasProps {
 	editor: TEditor;
+	scrollContainerRef: React.RefObject<HTMLDivElement>;
 }
