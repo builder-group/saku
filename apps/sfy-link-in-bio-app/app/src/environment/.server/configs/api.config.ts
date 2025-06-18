@@ -27,7 +27,7 @@ export const apiConfig = {
 	core: {
 		url: coreApiUrl,
 		hostname: getHostname(coreApiUrl),
-		secret: validateEnvVar({
+		accessSecret: validateEnvVar({
 			envKey: 'CLIENT_API_CORE_ACCESS_SECRET',
 			validator: vValidator(v.string()),
 			defaultValue: ciDefault('')

@@ -1,9 +1,13 @@
 import { Button, InlineStack } from '@shopify/polaris';
 import React from 'react';
 import { ResizablePanel, ViewIcon } from '@/components';
+import { TEditor } from '../lib';
+import { BlockCanvas } from './BlockCanvas';
 import { PanelHeader } from './PanelHeader';
 
-export const CanvasPanel: React.FC = () => {
+export const CanvasPanel: React.FC<TCanvasPanelProps> = (props) => {
+	const { editor } = props;
+
 	const handleSave = React.useCallback(() => {
 		// TODO: Persist the editor state
 	}, []);
@@ -26,7 +30,13 @@ export const CanvasPanel: React.FC = () => {
 				</InlineStack>
 			</PanelHeader>
 
-			<div className="flex h-full flex-1 items-center justify-center bg-gray-50 p-4">Canvas</div>
+			<div className="flex h-full flex-1 bg-gray-50 p-4">
+				<BlockCanvas editor={editor} />
+			</div>
 		</ResizablePanel>
 	);
 };
+
+interface TCanvasPanelProps {
+	editor: TEditor;
+}

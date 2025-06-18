@@ -32,7 +32,7 @@ export const Editor: React.FC<TEditorProps> = (props) => {
 					<ResizableHandle className="w-px bg-neutral-200" />
 					<ViewSourcePanel editor={editor} />
 					<ResizableHandle className="w-px bg-neutral-200" />
-					<CanvasPanel />
+					<CanvasPanel editor={editor} />
 					<ResizableHandle className="w-px bg-neutral-200" />
 					<ViewContextPanel editor={editor} />
 				</ResizablePanelGroup>

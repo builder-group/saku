@@ -10,7 +10,7 @@ export class ApiSessionStorage implements SessionStorage {
 		const sessionDto = this.sessionToSessionDto(session);
 		const result = await coreApiClient.post('/v1/auth/shopify/session', sessionDto, {
 			headers: {
-				authorization: `Bearer ${apiConfig.core.secret}`
+				authorization: `Bearer ${apiConfig.core.accessSecret}`
 			}
 		});
 		return result.isOk();
@@ -20,7 +20,7 @@ export class ApiSessionStorage implements SessionStorage {
 		const result = await coreApiClient.get('/v1/auth/shopify/session/{sessionId}', {
 			pathParams: { sessionId: id },
 			headers: {
-				authorization: `Bearer ${apiConfig.core.secret}`
+				authorization: `Bearer ${apiConfig.core.accessSecret}`
 			}
 		});
 
@@ -35,7 +35,7 @@ export class ApiSessionStorage implements SessionStorage {
 		const result = await coreApiClient.del('/v1/auth/shopify/session/{sessionId}', {
 			pathParams: { sessionId: id },
 			headers: {
-				authorization: `Bearer ${apiConfig.core.secret}`
+				authorization: `Bearer ${apiConfig.core.accessSecret}`
 			}
 		});
 
@@ -52,7 +52,7 @@ export class ApiSessionStorage implements SessionStorage {
 		const result = await coreApiClient.get('/v1/auth/shopify/session/shop/{shopId}', {
 			pathParams: { shopId: shop },
 			headers: {
-				authorization: `Bearer ${apiConfig.core.secret}`
+				authorization: `Bearer ${apiConfig.core.accessSecret}`
 			}
 		});
 
