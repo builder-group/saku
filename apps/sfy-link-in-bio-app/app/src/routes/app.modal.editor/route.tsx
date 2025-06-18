@@ -42,13 +42,13 @@ export const loader: TLoaderFunction<TLoaderData> = async ({ request }) => {
 				id: shortId(),
 				type: 'link',
 				styles: {},
-				url: 'https://www.shopify.com'
+				url: 'https://www.saku.so'
 			},
 			{
 				id: shortId(),
 				type: 'link',
 				styles: {},
-				url: 'https://www.apps.shopify.com'
+				url: 'https://www.shopify.com'
 			},
 			{
 				id: shortId(),
@@ -59,6 +59,14 @@ export const loader: TLoaderFunction<TLoaderData> = async ({ request }) => {
 					url: 'https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3dzkxMTZlNGp4N3dhdGJwNWtuMWJtd3JpNHl2bTNzemE3YjFvaTFieCZlcD12MV9naWZzX3JlbGF0ZWQmY3Q9Zw/so8KXAphERsre/giphy.gif',
 					altText: 'Image'
 				}
+			},
+			{
+				id: shortId(),
+				type: 'text',
+				styles: {},
+				title: 'Hello',
+				text: 'This is a text block',
+				alignment: 'left'
 			}
 		]
 	};

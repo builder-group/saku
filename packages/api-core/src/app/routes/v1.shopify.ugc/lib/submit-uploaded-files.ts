@@ -13,6 +13,7 @@ export async function submitUploadedFiles(
 			shopId,
 			accessToken,
 			input.files.map((file) => ({
+				filename: file.filename,
 				alt: file.filename,
 				contentType: mapContentTypeToResource(file.contentType),
 				originalSource: file.resourceUrl

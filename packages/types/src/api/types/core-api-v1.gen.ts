@@ -152,6 +152,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/url/metadata": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get metadata from URL
+         * @description Fetches and extracts metadata from the provided URL including title, description, media URLs and icons
+         */
+        get: operations["getUrlMetadata"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -404,6 +424,77 @@ export interface components {
             pageInfo: {
                 hasNextPage: boolean;
                 endCursor?: string;
+            };
+        };
+        UrlMetadataDto: {
+            /**
+             * Format: uri
+             * @description The URL that was fetched
+             * @example https://example.com
+             */
+            url: string;
+            /**
+             * @description The page title from meta tags or title tag
+             * @example Example Page Title
+             */
+            title?: string;
+            /**
+             * @description The page description from meta tags
+             * @example A brief description of the page content
+             */
+            description?: string;
+            site?: {
+                /**
+                 * @description The name of the website
+                 * @example Example Site
+                 */
+                name?: string;
+                /**
+                 * Format: uri
+                 * @description URL to the site-wide video if available
+                 * @example https://example.com/video
+                 */
+                video?: string;
+            };
+            media?: {
+                /**
+                 * Format: uri
+                 * @description Primary image URL from og:image or similar tags
+                 * @example https://example.com/image.jpg
+                 */
+                image?: string;
+                /**
+                 * Format: uri
+                 * @description Primary video URL from og:video or similar tags
+                 * @example https://example.com/video.mp4
+                 */
+                video?: string;
+                /**
+                 * Format: uri
+                 * @description Primary audio URL if available
+                 * @example https://example.com/audio.mp3
+                 */
+                audio?: string;
+            };
+            icons?: {
+                /**
+                 * Format: uri
+                 * @description URL to the favicon
+                 * @example https://example.com/favicon.ico
+                 */
+                favicon?: string;
+                /**
+                 * Format: uri
+                 * @description URL to the touch icon (e.g. apple-touch-icon)
+                 * @example https://example.com/apple-touch-icon.png
+                 */
+                touch?: string;
+                /**
+                 * Format: uri
+                 * @description URL to the mask icon (e.g. Safari pinned tab)
+                 * @example https://example.com/mask-icon.svg
+                 */
+                mask?: string;
             };
         };
     };
@@ -742,6 +833,55 @@ export interface operations {
             };
             /** @description Bad request */
             400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppErrorDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppErrorDto"];
+                };
+            };
+        };
+    };
+    getUrlMetadata: {
+        parameters: {
+            query: {
+                url: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UrlMetadataDto"];
+                };
+            };
+            /** @description Bad request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppErrorDto"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };

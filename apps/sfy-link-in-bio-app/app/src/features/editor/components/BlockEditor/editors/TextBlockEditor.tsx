@@ -13,9 +13,13 @@ export const TextBlockEditor: React.FC<TBlockEditorComponentProps<TTextBlock>> =
 	// Events
 	// =========================================================================
 
-	const handleHeadlineChange = React.useCallback(
+	const handleTitleChange = React.useCallback(
 		(value: string) => {
-			blockState.set((prev) => ({ ...prev, title: value }));
+			if (value === '') {
+				blockState.set((prev) => ({ ...prev, title: undefined }));
+			} else {
+				blockState.set((prev) => ({ ...prev, title: value }));
+			}
 		},
 		[blockState]
 	);
@@ -28,8 +32,8 @@ export const TextBlockEditor: React.FC<TBlockEditorComponentProps<TTextBlock>> =
 	);
 
 	const handleAlignmentChange = React.useCallback(
-		(value: string) => {
-			blockState.set((prev) => ({ ...prev, alignment: value as 'left' | 'center' | 'right' }));
+		(value: TTextBlock['alignment']) => {
+			blockState.set((prev) => ({ ...prev, alignment: value }));
 		},
 		[blockState]
 	);
@@ -50,12 +54,13 @@ export const TextBlockEditor: React.FC<TBlockEditorComponentProps<TTextBlock>> =
 							</Text>
 						</div>
 						<TextField
-							id="headline-field"
-							label="Headline"
+							id="title-field"
+							label="Title"
 							labelHidden
 							value={block.title ?? ''}
-							onChange={handleHeadlineChange}
+							onChange={handleTitleChange}
 							autoComplete="off"
+							placeholder="Add your title here"
 						/>
 					</div>
 
@@ -70,7 +75,7 @@ export const TextBlockEditor: React.FC<TBlockEditorComponentProps<TTextBlock>> =
 							id="text-field"
 							label="Text"
 							labelHidden
-							value={block.text ?? ''}
+							value={block.text}
 							onChange={handleTextChange}
 							multiline={4}
 							autoComplete="off"
@@ -96,7 +101,7 @@ export const TextBlockEditor: React.FC<TBlockEditorComponentProps<TTextBlock>> =
 							{ label: 'Center', value: 'center' },
 							{ label: 'Right', value: 'right' }
 						]}
-						value={block.alignment ?? 'center'}
+						value={block.alignment}
 						onChange={handleAlignmentChange}
 					/>
 				</div>

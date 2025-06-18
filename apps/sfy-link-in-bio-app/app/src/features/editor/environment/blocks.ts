@@ -114,5 +114,5 @@ export interface TTextBlock extends TBlockBase {
 	type: 'text';
 	title?: string;
 	text: string;
-	alignment?: 'left' | 'center' | 'right';
+	alignment: 'left' | 'center' | 'right';
 }
