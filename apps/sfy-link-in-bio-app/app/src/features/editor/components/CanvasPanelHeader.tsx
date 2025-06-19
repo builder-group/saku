@@ -1,3 +1,4 @@
+import { useAppBridge } from '@shopify/app-bridge-react';
 import { Button, InlineStack } from '@shopify/polaris';
 import React from 'react';
 import { ViewIcon } from '@/components';
@@ -6,14 +7,15 @@ import { PanelHeader } from './PanelHeader';
 
 export const CanvasPanelHeader: React.FC<TCanvasPanelHeaderProps> = (props) => {
 	const { editor } = props;
+	const shopify = useAppBridge();
 
 	const [isSaving, setIsSaving] = React.useState(false);
 
 	const handleSave = React.useCallback(async () => {
 		setIsSaving(true);
-		await editor.save();
+		await editor.save(shopify);
 		setIsSaving(false);
-	}, [editor]);
+	}, [editor, shopify]);
 
 	return (
 		<PanelHeader className="h-12 justify-end">
