@@ -6,7 +6,7 @@ import {
 	NotFoundResponse
 } from '@repo/hono-utils';
 
-const SShopifySessionRequestDto = z
+const SShopifySessionDto = z
 	.object({
 		id: z.string().openapi({ example: 'my-shop.myshopify.com_987654321' }),
 		shop: z.string().openapi({ example: 'my-shop.myshopify.com' }),
@@ -38,7 +38,7 @@ const SShopifySessionRequestDto = z
 			.nullable()
 	})
 	.openapi('ShopifySessionDto');
-export type TShopifySessionDto = z.infer<typeof SShopifySessionRequestDto>;
+export type TShopifySessionDto = z.infer<typeof SShopifySessionDto>;
 
 export const CreateSessionRoute = createRoute({
 	method: 'post',
@@ -51,7 +51,7 @@ export const CreateSessionRoute = createRoute({
 		body: {
 			content: {
 				'application/json': {
-					schema: SShopifySessionRequestDto
+					schema: SShopifySessionDto
 				}
 			}
 		}
@@ -78,7 +78,7 @@ export const GetSessionRoute = createRoute({
 		})
 	},
 	responses: {
-		200: JsonSuccessResponse(SShopifySessionRequestDto),
+		200: JsonSuccessResponse(SShopifySessionDto),
 		404: NotFoundResponse,
 		500: InternalServerErrorResponse
 	}
@@ -118,7 +118,7 @@ export const GetSessionByShopRoute = createRoute({
 		})
 	},
 	responses: {
-		200: JsonSuccessResponse(z.array(SShopifySessionRequestDto)),
+		200: JsonSuccessResponse(z.array(SShopifySessionDto)),
 		404: NotFoundResponse,
 		500: InternalServerErrorResponse
 	}

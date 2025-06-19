@@ -108,6 +108,46 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/shopify/site": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List connected sites
+         * @description Returns all sites that are connected to the authenticated Shopify shop.
+         */
+        get: operations["listShopifySites"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/shopify/site/{siteId}/content": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Update site content
+         * @description Updates the content of a site connected to the authenticated Shopify shop.
+         */
+        put: operations["updateShopifySiteContent"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/shopify/ugc/files": {
         parameters: {
             query?: never;
@@ -146,6 +186,40 @@ export interface paths {
          * @description Process uploaded files and add them to the Shopify media library
          */
         post: operations["submitUgcUploadedFiles"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/site/{siteId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get site by ID */
+        get: operations["getSite"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/site/{siteId}/content": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get site content */
+        get: operations["getSiteContent"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -275,69 +349,59 @@ export interface components {
                 };
             } | null;
         };
-        HealthDto: {
+        SiteSummaryDto: {
             /**
-             * @example Up
-             * @enum {string}
+             * Format: uuid
+             * @example 123e4567-e89b-12d3
              */
-            status: "Up" | "Down";
-            /** @example App is up and running */
-            message: string;
-            /** @example v1.0.0d */
-            version: string;
+            id: string;
+            /**
+             * Format: uuid
+             * @example 123e4567-e89b-12d3
+             */
+            userId: string;
+            /** @example bio */
+            handle: string;
+            /** @example My Bio Site */
+            displayName?: string;
+            /**
+             * Format: date-time
+             * @example 2024-03-20T00:00:00Z
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @example 2024-03-20T00:00:00Z
+             */
+            updatedAt: string;
         };
-        InfoDto: {
-            /** @example v1.0.0d */
-            version: string;
-            /** @example https://api.saku.so */
-            url: string;
-            /** @example production */
-            env: string;
-        };
-        UploadParameterDto: {
-            /** @example key */
-            name: string;
-            /** @example tmp/ugc/abc123/image.jpg */
-            value: string;
-        };
-        CreateUploadTargetsResponseDto: {
-            files: {
-                uploadTarget: {
-                    /**
-                     * Format: uri
-                     * @example https://shopify-staged-uploads.storage.googleapis.com/
-                     */
-                    url: string;
-                    /**
-                     * Format: uri
-                     * @example https://cdn.shopify.com/s/files/1/0123/4567/files/image.jpg
-                     */
-                    resourceUrl: string;
-                    parameters: components["schemas"]["UploadParameterDto"][];
-                };
-                /** @example ugc_abc123def456 */
-                uploadId: string;
-                /**
-                 * Format: date-time
-                 * @example 2024-01-15T10:30:00Z
-                 */
-                expiresAt: string;
-            }[];
-        };
-        CreateUploadTargetsRequestDto: {
-            files: {
-                /** @example product-image.jpg */
-                filename: string;
-                /** @example image/jpeg */
-                mimeType: string;
-                /** @example 1024000 */
-                fileSize: number;
-                /**
-                 * @example IMAGE
-                 * @enum {string}
-                 */
-                contentType: "IMAGE" | "VIDEO" | "FILE";
-            }[];
+        SiteContentDto: Record<string, never>;
+        SiteDto: {
+            /**
+             * Format: uuid
+             * @example 123e4567-e89b-12d3
+             */
+            id: string;
+            /**
+             * Format: uuid
+             * @example 123e4567-e89b-12d3
+             */
+            userId: string;
+            /** @example bio */
+            handle: string;
+            /** @example My Bio Site */
+            displayName?: string;
+            /**
+             * Format: date-time
+             * @example 2024-03-20T00:00:00Z
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @example 2024-03-20T00:00:00Z
+             */
+            updatedAt: string;
+            content: components["schemas"]["SiteContentDto"];
         };
         SubmitUploadedFileSuccessDto: {
             /**
@@ -360,71 +424,6 @@ export interface components {
             error: string;
             /** @example ugc_abc123def456 */
             uploadId: string;
-        };
-        SubmitUploadedFilesResponseDto: {
-            files: (components["schemas"]["SubmitUploadedFileSuccessDto"] | components["schemas"]["SubmitUploadedFileErrorDto"])[];
-        };
-        SubmitUploadedFilesRequestDto: {
-            files: {
-                /** @example ugc_abc123def456 */
-                uploadId: string;
-                /**
-                 * Format: uri
-                 * @example https://cdn.shopify.com/s/files/1/0123/4567/files/product-1.jpg
-                 */
-                resourceUrl: string;
-                /** @example product-1.jpg */
-                filename: string;
-                /**
-                 * @example IMAGE
-                 * @enum {string}
-                 */
-                contentType: "IMAGE" | "VIDEO" | "FILE";
-            }[];
-        };
-        MediaFileDto: {
-            /** @example gid://shopify/MediaImage/12345678 */
-            id: string;
-            /** @example Product lifestyle image */
-            alt: string;
-            /**
-             * Format: date-time
-             * @example 2024-01-15T10:30:00Z
-             */
-            createdAt: string;
-            previewImage?: {
-                id: string;
-                /** Format: uri */
-                url: string;
-            };
-            /** Format: uri */
-            url: string;
-            /** @example product-1.jpg */
-            fileName: string;
-            details: {
-                /** @enum {string} */
-                type: "image";
-                id?: string;
-                width?: number;
-                height?: number;
-            } | {
-                /** @enum {string} */
-                type: "video";
-                width: number;
-                height: number;
-                format: string;
-            } | {
-                /** @enum {string} */
-                type: "file";
-                mimeType?: string;
-            };
-        };
-        ListMediaFilesResponseDto: {
-            files: components["schemas"]["MediaFileDto"][];
-            pageInfo: {
-                hasNextPage: boolean;
-                endCursor?: string;
-            };
         };
         UrlMetadataDto: {
             /**
@@ -679,7 +678,17 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["HealthDto"];
+                    "application/json": {
+                        /**
+                         * @example Up
+                         * @enum {string}
+                         */
+                        status: "Up" | "Down";
+                        /** @example App is up and running */
+                        message: string;
+                        /** @example v1.0.0d */
+                        version: string;
+                    };
                 };
             };
             /** @description Internal server error */
@@ -708,11 +717,84 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["InfoDto"];
+                    "application/json": {
+                        /** @example v1.0.0d */
+                        version: string;
+                        /** @example https://api.saku.so */
+                        url: string;
+                        /** @example production */
+                        env: string;
+                    };
                 };
             };
             /** @description Internal server error */
             500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppErrorDto"];
+                };
+            };
+        };
+    };
+    listShopifySites: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SiteSummaryDto"][];
+                };
+            };
+        };
+    };
+    updateShopifySiteContent: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                siteId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": {
+                    content: components["schemas"]["SiteContentDto"];
+                };
+            };
+        };
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SiteDto"];
+                };
+            };
+            /** @description Bad request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppErrorDto"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -744,7 +826,49 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ListMediaFilesResponseDto"];
+                    "application/json": {
+                        files: {
+                            /** @example gid://shopify/MediaImage/12345678 */
+                            id: string;
+                            /** @example Product lifestyle image */
+                            alt: string;
+                            /**
+                             * Format: date-time
+                             * @example 2024-01-15T10:30:00Z
+                             */
+                            createdAt: string;
+                            previewImage?: {
+                                id: string;
+                                /** Format: uri */
+                                url: string;
+                            };
+                            /** Format: uri */
+                            url: string;
+                            /** @example product-1.jpg */
+                            fileName: string;
+                            details: {
+                                /** @enum {string} */
+                                type: "image";
+                                id?: string;
+                                width?: number;
+                                height?: number;
+                            } | {
+                                /** @enum {string} */
+                                type: "video";
+                                width: number;
+                                height: number;
+                                format: string;
+                            } | {
+                                /** @enum {string} */
+                                type: "file";
+                                mimeType?: string;
+                            };
+                        }[];
+                        pageInfo: {
+                            hasNextPage: boolean;
+                            endCursor?: string;
+                        };
+                    };
                 };
             };
             /** @description Bad request */
@@ -776,7 +900,21 @@ export interface operations {
         };
         requestBody?: {
             content: {
-                "application/json": components["schemas"]["CreateUploadTargetsRequestDto"];
+                "application/json": {
+                    files: {
+                        /** @example product-image.jpg */
+                        filename: string;
+                        /** @example image/jpeg */
+                        mimeType: string;
+                        /** @example 1024000 */
+                        fileSize: number;
+                        /**
+                         * @example IMAGE
+                         * @enum {string}
+                         */
+                        contentType: "IMAGE" | "VIDEO" | "FILE";
+                    }[];
+                };
             };
         };
         responses: {
@@ -786,7 +924,35 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["CreateUploadTargetsResponseDto"];
+                    "application/json": {
+                        files: {
+                            uploadTarget: {
+                                /**
+                                 * Format: uri
+                                 * @example https://shopify-staged-uploads.storage.googleapis.com/
+                                 */
+                                url: string;
+                                /**
+                                 * Format: uri
+                                 * @example https://cdn.shopify.com/s/files/1/0123/4567/files/image.jpg
+                                 */
+                                resourceUrl: string;
+                                parameters: {
+                                    /** @example key */
+                                    name: string;
+                                    /** @example tmp/ugc/abc123/image.jpg */
+                                    value: string;
+                                }[];
+                            };
+                            /** @example ugc_abc123def456 */
+                            uploadId: string;
+                            /**
+                             * Format: date-time
+                             * @example 2024-01-15T10:30:00Z
+                             */
+                            expiresAt: string;
+                        }[];
+                    };
                 };
             };
             /** @description Bad request */
@@ -818,7 +984,24 @@ export interface operations {
         };
         requestBody?: {
             content: {
-                "application/json": components["schemas"]["SubmitUploadedFilesRequestDto"];
+                "application/json": {
+                    files: {
+                        /** @example ugc_abc123def456 */
+                        uploadId: string;
+                        /**
+                         * Format: uri
+                         * @example https://cdn.shopify.com/s/files/1/0123/4567/files/product-1.jpg
+                         */
+                        resourceUrl: string;
+                        /** @example product-1.jpg */
+                        filename: string;
+                        /**
+                         * @example IMAGE
+                         * @enum {string}
+                         */
+                        contentType: "IMAGE" | "VIDEO" | "FILE";
+                    }[];
+                };
             };
         };
         responses: {
@@ -828,7 +1011,9 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["SubmitUploadedFilesResponseDto"];
+                    "application/json": {
+                        files: (components["schemas"]["SubmitUploadedFileSuccessDto"] | components["schemas"]["SubmitUploadedFileErrorDto"])[];
+                    };
                 };
             };
             /** @description Bad request */
@@ -842,6 +1027,68 @@ export interface operations {
             };
             /** @description Internal server error */
             500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppErrorDto"];
+                };
+            };
+        };
+    };
+    getSite: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                siteId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SiteDto"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppErrorDto"];
+                };
+            };
+        };
+    };
+    getSiteContent: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                siteId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SiteContentDto"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };

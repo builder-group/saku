@@ -1,6 +1,6 @@
 import { router } from '@/app/router';
 import { appConfig } from '@/environment';
-import { GetInfoRoute, TInfoDto } from './schema';
+import { GetInfoRoute } from './schema';
 
 router.openapi(GetInfoRoute, (c) => {
 	return c.json(
@@ -8,7 +8,7 @@ router.openapi(GetInfoRoute, (c) => {
 			version: appConfig.version,
 			url: appConfig.url,
 			env: appConfig.env
-		} satisfies TInfoDto,
+		},
 		200
 	);
 });

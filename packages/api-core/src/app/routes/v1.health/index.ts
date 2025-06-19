@@ -1,6 +1,6 @@
 import { router } from '@/app/router';
 import { appConfig } from '@/environment';
-import { CheckHealthRoute, THealthDto } from './schema';
+import { CheckHealthRoute } from './schema';
 
 router.openapi(CheckHealthRoute, (c) => {
 	return c.json(
@@ -8,7 +8,7 @@ router.openapi(CheckHealthRoute, (c) => {
 			message: 'App is up and running',
 			status: 'Up',
 			version: appConfig.version
-		} satisfies THealthDto,
+		} as const,
 		200
 	);
 });

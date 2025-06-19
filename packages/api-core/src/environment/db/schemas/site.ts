@@ -21,7 +21,7 @@ export const siteTable = pgTable('site', {
 	displayName: text('display_name'),
 
 	// Site content
-	content: jsonb('content').$type<Record<string, unknown>>(),
+	content: jsonb('content').$type<Record<string, unknown>>().notNull(),
 
 	// Publishing status
 	// isPublished: text('is_published')

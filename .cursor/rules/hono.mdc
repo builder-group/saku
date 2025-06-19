@@ -11,33 +11,38 @@ Core guidelines for building type-safe, maintainable APIs using Hono. These patt
 - **KISS (Keep It Simple, Stupid)** - Always choose the simplest, most maintainable solution
 - **TypeScript First** - Always use TypeScript with strict typing everywhere
 - **Less is More** - Always avoid unnecessary complexity, the best code is no code
-- **Business Logic in lib/** - Always separate concerns cleanly
+- **Clean Routes** - Always keep route handlers focused on request/response flow
+- **Smart Separation** - Only extract code to lib/ when it adds value
 
 ## Route Organization
-- Always structure routes using dot notation: `v1.auth.shopify/`, `v1.users/`
-- Always keep three files per route: `schema.ts`, `index.ts`, `lib/`
-- Always organize business logic functions in separate files within `lib/`
+
+### Directory Structure
+- Always structure routes using dot notation for clear API paths
+- Always keep route handlers in `index.ts`
+- Always keep schemas in `schema.ts`
+- Always use `lib/` for complex or reused functionality
 
 ✅ Good:
 ```typescript
-// Clear route structure
 src/app/routes/
-├── v1.users/              # Maps to /v1/users/*
-│   ├── schema.ts          # Route schemas & types
-│   ├── index.ts           # Route handlers
-│   └── lib/               # Business logic
-│       ├── index.ts       # Exports
-│       ├── create-user.ts
-│       └── get-user.ts
+├── v1.user/                  # User resource
+│   ├── index.ts              # Route handlers with direct DB ops
+│   └── schema.ts             # API contracts
+│
+├── v1.auth/                  # Auth operations
+│   ├── index.ts              # Route handlers
+│   ├── schema.ts             # API contracts
+│   └── lib/                  # Complex/reused logic
+│       ├── verify-token.ts   # Token verification
+│       └── hash-password.ts  # Password hashing
 ```
 
 ❌ Bad:
 ```typescript
-// Wrong: Nested or inconsistent structure
 src/routes/
-├── v1/                    # Wrong: Nested version
-│   └── users/             # Wrong: Nested resource
-│       └── users.ts       # Wrong: Single file for all routes
+├── v1/                  # Wrong: Nested version
+│   └── users/           # Wrong: Nested resource
+│       └── users.ts     # Wrong: Single file for all routes
 ```
 
 ## Schema Definition
@@ -101,98 +106,93 @@ export const CreateRoute = createRoute({
 ```
 
 ## Route Implementation
-- Always keep route handlers clean and focused on HTTP concerns
-- Always import business logic functions from `./lib`
-- Always use consistent error handling with `AppError`
+- Always keep simple CRUD operations in route handlers
+- Always keep request/response flow clear in route handlers
+- Always extract complex business logic to lib/
 - Always validate inputs with `c.req.valid()`
 
 ✅ Good:
 ```typescript
-// index.ts
-import { AppError } from '@repo/hono-utils';
-import { router } from '@/app/router';
-import { createUser, getUser } from './lib';
-import { CreateUserRoute, GetUserRoute } from './schema';
-
-router.openapi(CreateUserRoute, async (c) => {
-  const input = c.req.valid('json');
-  const user = await createUser(input);
-  return c.json(user, 201);
-});
-
+// Simple CRUD stays in index.ts
 router.openapi(GetUserRoute, async (c) => {
-  const { userId } = c.req.valid('param');
-  const user = await getUser(userId);
-  return c.json(user, 200);
-});
-```
-
-❌ Bad:
-```typescript
-// Wrong: Business logic mixed with HTTP concerns
-router.post('/users', async (c) => {
-  const data = await c.req.json();     // Wrong: No validation
+  const { id } = c.req.valid('param');
   
-  // Wrong: Database operations in route handler
-  const existing = await db.user.findUnique({ 
-    where: { email: data.email } 
-  });
-  
-  if (existing) {
-    return c.json({ error: 'User exists' }, 409); // Wrong: Custom error format
+  const [user] = await db
+    .select()
+    .from(userTable)
+    .where(eq(userTable.id, id))
+    .limit(1);
+    
+  if (user == null) {
+    throw new AppError('#ERR_NOT_FOUND', 404);
   }
   
-  const user = await db.user.create({ data }); // Wrong: No error handling
   return c.json(user);
 });
-```
 
-## Business Logic Organization
-- Always separate each operation into its own file
-- Always export all functions from `lib/index.ts`
-- Always use proper TypeScript types for inputs and outputs
-- Always handle errors with `AppError`
-
-✅ Good:
-```typescript
-// lib/index.ts
-export * from './create-user';
-export * from './get-user';
-
-// lib/create-user.ts
-import { AppError } from '@repo/hono-utils';
-import { db } from '@/lib/db';
-import type { TCreateUserDto, TUserDto } from '../schema';
-
-export async function createUser(input: TCreateUserDto): Promise<TUserDto> {
-  const existing = await db.user.findUnique({
-    where: { email: input.email }
-  });
+// Complex operations use lib functions
+router.openapi(RegisterUserRoute, async (c) => {
+  const input = c.req.valid('json');
   
-  if (existing != null) {
-    throw new AppError('#ERR_USER_EXISTS', 409, {
-      detail: 'User already exists'
-    });
-  }
+  // Clear flow with complex operations in lib/
+  const hashedPassword = await hashPassword(input.password);
+  const user = await createUser({ ...input, password: hashedPassword });
+  const token = await generateAuthToken(user);
+  await sendWelcomeEmail(user.email);
   
-  const user = await db.user.create({ data: input });
-  return user;
-}
+  return c.json({ user, token });
+});
 ```
 
 ❌ Bad:
 ```typescript
-// Wrong: All operations in one file, no types
-// lib/operations.ts
-export async function createUser(data) {        // Wrong: No types
-  return db.user.create({ data });              // Wrong: No validation
+// Wrong: Simple CRUD operation doesn't need lib/
+// lib/get-user.ts
+export async function getUser(id: string) {
+  return await db
+    .select()
+    .from(userTable)
+    .where(eq(userTable.id, id))
+    .limit(1);
 }
 
-export async function getUser(id) {
-  const user = await db.user.findUnique({ where: { id } });
-  if (!user) throw new Error('Not found');      // Wrong: Generic error
-  return user;
+// Wrong: Route-specific validation doesn't need lib/
+// lib/validate-create-input.ts
+export function validateCreateUserInput(input: unknown) {
+  return SCreateUserDto.parse(input);
 }
+
+// Wrong: Complex business logic in route handler
+router.openapi(RegisterUserRoute, async (c) => {
+  const input = c.req.valid('json');
+  
+  // Wrong: These operations should be in lib/
+  const hashedPassword = await bcrypt.hash(input.password, 10);
+  const existingUser = await db
+    .select()
+    .from(userTable)
+    .where(eq(userTable.email, input.email))
+    .limit(1);
+    
+  if (existingUser.length > 0) {
+    throw new AppError('#ERR_USER_EXISTS', 409);
+  }
+  
+  const [user] = await db
+    .insert(userTable)
+    .values({ ...input, password: hashedPassword })
+    .returning();
+    
+  const token = jwt.sign(
+    { id: user.id, role: user.role },
+    process.env.JWT_SECRET,
+    { expiresIn: '24h' }
+  );
+  
+  await sendWelcomeEmail(user.email);
+  
+  return c.json({ user, token });
+});
 ```
 
 ## Error Handling
@@ -203,7 +203,6 @@ export async function getUser(id) {
 
 ✅ Good:
 ```typescript
-// In business logic
 if (user == null) {
   throw new AppError('#ERR_USER_NOT_FOUND', 404, {
     detail: 'User not found'
@@ -230,4 +229,3 @@ try {
 ## Related Rules
 - [style-guide.mdc](mdc:.cursor/rules/style-guide.mdc): Core coding standards
 - [drizzle.mdc](mdc:.cursor/rules/drizzle.mdc): Database patterns
-

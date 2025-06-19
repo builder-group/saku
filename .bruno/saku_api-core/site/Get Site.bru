@@ -1,0 +1,15 @@
+meta {
+  name: Get Site
+  type: http
+  seq: 1
+}
+
+get {
+  url: http://127.0.0.1:8787/v1/site/:siteId
+  body: none
+  auth: inherit
+}
+
+params:path {
+  siteId: 63e733a7-143a-413c-b28d-c69da3d397e0
+}
