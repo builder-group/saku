@@ -1,7 +1,7 @@
 import { useFeatureState } from 'feature-react';
 import { TState } from 'feature-state';
 import React from 'react';
-import type { TAboutBlock } from '../../../environment';
+import type { TAboutBlock } from '../../../types';
 
 export const AboutBlock: React.FC<TAboutBlockProps> = (props) => {
 	const { blockState } = props;

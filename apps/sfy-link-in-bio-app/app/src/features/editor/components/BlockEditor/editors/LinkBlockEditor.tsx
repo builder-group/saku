@@ -4,7 +4,7 @@ import { useFeatureState } from 'feature-react/state';
 import React from 'react';
 import { AccordionSection, ImageUploadField, TImageUploadOnChangeImage } from '@/components';
 import { coreApiClient } from '@/environment';
-import { TLinkBlock } from '../../../environment';
+import { TLinkBlock } from '../../../types';
 import { TBlockEditorComponentProps } from '../blockEditorsRegistry';
 
 export const LinkBlockEditor: React.FC<TBlockEditorComponentProps<TLinkBlock>> = (props) => {

@@ -1,7 +1,7 @@
 import { useFeatureState } from 'feature-react';
 import { TState } from 'feature-state';
 import React from 'react';
-import type { TTextBlock } from '../../../environment';
+import type { TTextBlock } from '../../../types';
 
 export const TextBlock: React.FC<TTextBlockProps> = (props) => {
 	const { blockState } = props;

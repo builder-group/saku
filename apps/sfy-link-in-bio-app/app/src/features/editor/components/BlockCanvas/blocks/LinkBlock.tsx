@@ -1,7 +1,7 @@
 import { useFeatureState } from 'feature-react';
 import { TState } from 'feature-state';
 import React from 'react';
-import type { TLinkBlock } from '../../../environment';
+import type { TLinkBlock } from '../../../types';
 
 export const LinkBlock: React.FC<TLinkBlockProps> = (props) => {
 	const { blockState } = props;

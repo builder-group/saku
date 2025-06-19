@@ -1,7 +1,7 @@
 import { TState } from 'feature-state';
 import React from 'react';
-import { TBlock } from '../../../environment';
 import { TEditor } from '../../../lib';
+import { TBlock } from '../../../types';
 import { BlockEditor } from '../../BlockEditor';
 
 export const BlocksContentCustomizeTab: React.FC<TBlocksContentCustomizeTabProps> = (props) => {

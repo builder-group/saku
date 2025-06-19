@@ -4,8 +4,9 @@ import { shortId } from '@blgc/utils';
 import { Icon, Popover, Text } from '@shopify/polaris';
 import React from 'react';
 import { useResizeObserver } from '@/hooks';
-import { blocksMetadata, blocksMetadataMap, TBlock, TBlockType } from '../../../environment';
+import { blocksMetadata, blocksMetadataMap } from '../../../environment';
 import { TEditor } from '../../../lib';
+import { TBlock, TBlockType } from '../../../types';
 
 export const BlockSelectorPopover: React.FC<TBlockSelectorPopoverProps> = (props) => {
 	const { editor, activator, width = 'auto' } = props;

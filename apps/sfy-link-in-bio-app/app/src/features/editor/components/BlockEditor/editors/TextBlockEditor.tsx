@@ -2,7 +2,7 @@ import { Select, Text, TextField } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react/state';
 import React from 'react';
 import { AccordionSection } from '@/components';
-import { TTextBlock } from '../../../environment';
+import { TTextBlock } from '../../../types';
 import { TBlockEditorComponentProps } from '../blockEditorsRegistry';
 
 export const TextBlockEditor: React.FC<TBlockEditorComponentProps<TTextBlock>> = (props) => {

@@ -1,8 +1,8 @@
 import { useCompute } from 'feature-react/state';
 import { TState } from 'feature-state';
 import React from 'react';
-import { TBlock } from '../../environment';
 import { TEditor } from '../../lib';
+import { TBlock } from '../../types';
 import { blockEditorsRegistry, TBlockEditorComponentProps } from './blockEditorsRegistry';
 
 export const BlockEditor: React.FC<TBlockEditorProps> = (props) => {

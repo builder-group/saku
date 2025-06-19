@@ -1,6 +1,6 @@
 import { TState } from 'feature-state';
-import { TBlock } from '../../environment';
 import { TEditor } from '../../lib';
+import { TBlock } from '../../types';
 import { AboutBlockEditor, LinkBlockEditor, MediaBlockEditor, TextBlockEditor } from './editors';
 
 export const blockEditorsRegistry = {
