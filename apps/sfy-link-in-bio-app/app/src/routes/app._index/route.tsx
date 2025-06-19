@@ -1,4 +1,5 @@
 import { useLoaderData } from '@remix-run/react';
+import { coreApiV1 } from '@repo/types/api';
 import { TitleBar } from '@shopify/app-bridge-react';
 import {
 	Badge,
@@ -11,13 +12,14 @@ import {
 } from '@shopify/polaris';
 import React from 'react';
 import { ClipboardButton, FeedbackCard, GetInTouchCard, SitePreview, ViewIcon } from '@/components';
+import { coreApiClient } from '@/environment';
 import { appConfig, shopify } from '@/environment/.server';
 import { useEditorModal } from '@/features/editor';
+import { getSessionTokenFromRequest } from '@/lib/.server';
 import { TLoaderFunction } from '@/types';
-import { coreApiClient } from '../../environment';
 
 const Page: React.FC = () => {
-	const { shop, appEnv } = useLoaderData<typeof loader>();
+	const { shop, appEnv, sites } = useLoaderData<typeof loader>();
 
 	const bioUrl = React.useMemo(
 		() => (shop.domain != null ? `https://${shop.domain}/a/saku/bio` : null),
@@ -39,6 +41,8 @@ const Page: React.FC = () => {
 	// =========================================================================
 	// UI
 	// =========================================================================
+
+	console.log({ sites });
 
 	return (
 		<PolarisPage>
@@ -169,7 +173,20 @@ export const loader: TLoaderFunction<TLoaderData> = async ({ request }) => {
 		console.log('[core-api] health check failed', healthResult.error.message);
 	}
 
+	const sessionToken = getSessionTokenFromRequest(request);
+
+	const sitesResult = await coreApiClient.get('/v1/shopify/site', {
+		headers: {
+			Authorization: `Bearer ${sessionToken}`
+		}
+	});
+	const sites: coreApiV1.components['schemas']['SiteSummaryDto'][] = [];
+	if (sitesResult.isOk()) {
+		sites.push(...sitesResult.value.data);
+	}
+
 	return {
+		sites,
 		shop: {
 			domain: session.shop
 		},
@@ -189,6 +206,7 @@ export const loader: TLoaderFunction<TLoaderData> = async ({ request }) => {
 };
 
 interface TLoaderData {
+	sites: coreApiV1.components['schemas']['SiteSummaryDto'][];
 	shop: {
 		domain: string;
 	};

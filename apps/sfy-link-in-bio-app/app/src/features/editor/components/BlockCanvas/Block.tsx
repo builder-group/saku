@@ -15,27 +15,31 @@ export const Block: React.FC<TBlockProps> = (props) => {
 		(id) => {
 			const isSelected = blockState._v.id === id;
 
-			if (isSelected && blockRef.current && scrollContainerRef.current) {
-				const scrollContainer = scrollContainerRef.current;
-				// Get the container's height and scroll position
-				const containerHeight = scrollContainer.clientHeight;
-				const containerScroll = scrollContainer.scrollTop;
-				const containerRect = scrollContainer.getBoundingClientRect();
+			// Scroll to the block if it is selected,
+			// with a small delay to ensure the block is rendered at its new position (e.g. if re-ordering blocks)
+			setTimeout(() => {
+				if (isSelected && blockRef.current != null && scrollContainerRef.current != null) {
+					const scrollContainer = scrollContainerRef.current;
+					// Get the container's height and scroll position
+					const containerHeight = scrollContainer.clientHeight;
+					const containerScroll = scrollContainer.scrollTop;
+					const containerRect = scrollContainer.getBoundingClientRect();
 
-				// Get the block's position relative to the container
-				const blockRect = blockRef.current.getBoundingClientRect();
-				const blockTop = blockRect.top - containerRect.top + containerScroll;
-				const blockHeight = blockRect.height;
+					// Get the block's position relative to the container
+					const blockRect = blockRef.current.getBoundingClientRect();
+					const blockTop = blockRect.top - containerRect.top + containerScroll;
+					const blockHeight = blockRect.height;
 
-				// Calculate the target scroll position to center the block
-				const targetScroll = blockTop - (containerHeight - blockHeight) / 2;
+					// Calculate the target scroll position to center the block
+					const targetScroll = blockTop - (containerHeight - blockHeight) / 2;
 
-				// Smooth scroll to the target position
-				scrollContainer.scrollTo({
-					top: targetScroll,
-					behavior: 'smooth'
-				});
-			}
+					// Smooth scroll to the target position
+					scrollContainer.scrollTo({
+						top: targetScroll,
+						behavior: 'smooth'
+					});
+				}
+			}, 10);
 
 			return isSelected;
 		},
