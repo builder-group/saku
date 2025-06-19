@@ -1,13 +1,11 @@
 import { Text } from '@shopify/polaris';
-import { useFeatureState } from 'feature-react/state';
 import { TState } from 'feature-state';
 import React from 'react';
-import { TBlock } from '../../../environment';
 import { TEditor } from '../../../lib';
+import { TBlock } from '../../../types';
 
 export const BlocksContentAnalyticsTab: React.FC<TBlocksContentAnalyticsTabProps> = (props) => {
 	const { blockState } = props;
-	const block = useFeatureState(blockState);
 
 	return (
 		<div className="space-y-4 p-4">

@@ -1,2 +1,2 @@
-export * from './blocks';
-export * from './views';
+export * from './blocks-metadata';
+export * from './views-metadata';

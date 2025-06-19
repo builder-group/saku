@@ -1,7 +1,7 @@
 import { useFeatureState } from 'feature-react';
 import { TState } from 'feature-state';
 import React from 'react';
-import type { TMediaBlock } from '../../../environment';
+import type { TMediaBlock } from '../../../types';
 
 export const MediaBlock: React.FC<TMediaBlockProps> = (props) => {
 	const { blockState } = props;

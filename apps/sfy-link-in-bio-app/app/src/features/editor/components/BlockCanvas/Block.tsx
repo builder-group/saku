@@ -2,8 +2,8 @@ import { useCompute } from 'feature-react';
 import { TState } from 'feature-state';
 import React from 'react';
 import { cn } from '@/lib';
-import { TAboutBlock, TLinkBlock, TMediaBlock, TTextBlock, type TBlock } from '../../environment';
 import { TEditor } from '../../lib';
+import { TAboutBlock, TLinkBlock, TMediaBlock, TTextBlock, type TBlock } from '../../types';
 import { AboutBlock, LinkBlock, MediaBlock, TextBlock } from './blocks';
 
 export const Block: React.FC<TBlockProps> = (props) => {

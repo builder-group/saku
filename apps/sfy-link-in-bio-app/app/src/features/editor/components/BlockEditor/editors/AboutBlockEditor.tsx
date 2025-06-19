@@ -2,7 +2,7 @@ import { Text, TextField } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react/state';
 import React from 'react';
 import { AccordionSection, ImageUploadField, type TImageUploadOnChangeImage } from '@/components';
-import { TAboutBlock } from '../../../environment';
+import { TAboutBlock } from '../../../types';
 import { TBlockEditorComponentProps } from '../blockEditorsRegistry';
 
 export const AboutBlockEditor: React.FC<TBlockEditorComponentProps<TAboutBlock>> = (props) => {

@@ -2,7 +2,7 @@ import { InlineError, Select, Text } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react/state';
 import React from 'react';
 import { AccordionSection, ImageUploadField, TImageUploadOnChangeImage } from '@/components';
-import { TMediaBlock } from '../../../environment';
+import { TMediaBlock } from '../../../types';
 import { TBlockEditorComponentProps } from '../blockEditorsRegistry';
 
 export const MediaBlockEditor: React.FC<TBlockEditorComponentProps<TMediaBlock>> = (props) => {

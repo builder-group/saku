@@ -1,8 +1,18 @@
-import { shortId } from '@blgc/utils';
+import { notEmpty, shortId } from '@blgc/utils';
 import { createState, TState } from 'feature-state';
-import { TBlock, TBlockId, TViewType } from '../environment';
+import { TViewType } from '../environment';
+import { TBlock, TBlockId, TDocumentNode } from '../types';
 
-export function createEditor(blocks: TBlock[] = []): TEditor {
+export function createEditor(documentNode: TDocumentNode): TEditor {
+	const pageNode = documentNode.children[0];
+	if (pageNode == null || pageNode.type !== 'page') {
+		throw new Error('Document must have a page node');
+	}
+	const blocks = pageNode.blocks;
+
+	const documentId = documentNode.id;
+	const pageId = pageNode.id;
+
 	return {
 		id: shortId(),
 
@@ -23,6 +33,9 @@ export function createEditor(blocks: TBlock[] = []): TEditor {
 			},
 			{} as Record<TBlockId, TState<TBlock, []>>
 		),
+
+		documentId,
+		pageId,
 
 		switchView(view) {
 			this.activeView.set(view);
@@ -64,6 +77,27 @@ export function createEditor(blocks: TBlock[] = []): TEditor {
 		},
 		unselectBlock() {
 			this.selectedBlockId.set(null);
+		},
+
+		async save() {
+			const documentNode = this.toDocumentNode();
+
+			console.log({ documentNode });
+		},
+
+		toDocumentNode() {
+			return {
+				type: 'document',
+				id: this.documentId,
+				version: 'v0.0.1',
+				children: [
+					{
+						type: 'page',
+						id: this.pageId,
+						blocks: this.blockIds._v.map((id) => this.blockMap[id]?._v).filter(notEmpty)
+					}
+				]
+			};
 		}
 	};
 }
@@ -78,6 +112,9 @@ export interface TEditor {
 	blockIds: TState<TBlockId[], []>;
 	blockMap: Record<TBlockId, TState<TBlock, []>>;
 
+	documentId: string;
+	pageId: string;
+
 	switchView: (view: TViewType) => void;
 
 	addBlock: (block: TBlock) => void;
@@ -89,6 +126,10 @@ export interface TEditor {
 	): void;
 	selectBlock: (blockId: TBlockId) => void;
 	unselectBlock: () => void;
+
+	save: () => Promise<void>;
+
+	toDocumentNode: () => TDocumentNode;
 }
 
 export interface TBoundingRect {
