@@ -2,18 +2,18 @@ import { shortId } from '@blgc/utils';
 import { useLoaderData } from '@remix-run/react';
 import { withGlobalBind } from 'feature-react/state';
 import React from 'react';
-import { createEditor, Editor, TDocumentNode, TEditor } from '@/features/editor';
+import { createEditor, Editor, TEditor, TSiteNode } from '@/features/editor';
 import { TLoaderFunction } from '@/types';
 import './styles.module.css';
 
 const Page: React.FC = () => {
-	const { documentNode } = useLoaderData<typeof loader>();
+	const { siteNode } = useLoaderData<typeof loader>();
 
 	const editor = React.useMemo<TEditor>(() => {
-		const editor = createEditor(documentNode);
+		const editor = createEditor(siteNode);
 		withGlobalBind(`__editor_${editor.id}`, editor);
 		return editor;
-	}, [documentNode]);
+	}, [siteNode]);
 
 	return (
 		<div className="flex min-h-screen w-full">
@@ -28,8 +28,8 @@ export const loader: TLoaderFunction<TLoaderData> = async ({ request }) => {
 	// TODO: Load actual data from the database
 
 	return {
-		documentNode: {
-			type: 'document',
+		siteNode: {
+			type: 'site',
 			id: shortId(),
 			version: 'v0.0.1',
 			children: [
@@ -94,5 +94,5 @@ export const loader: TLoaderFunction<TLoaderData> = async ({ request }) => {
 };
 
 interface TLoaderData {
-	documentNode: TDocumentNode;
+	siteNode: TSiteNode;
 }

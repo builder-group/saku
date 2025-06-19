@@ -2,16 +2,19 @@ import { AppError } from '@repo/hono-utils';
 import { and, eq } from 'drizzle-orm';
 import {
 	db,
-	shopAccountTable,
 	shopifySessionTable,
-	TEmailOTPProviderData,
+	siteAccountTable,
+	siteConnectionTable,
+	siteTable,
+	TEmailOTPUserProviderData,
 	TTransaction as TPgTransaction,
-	TShopifyProviderData,
 	TShopifySessionData,
+	TSiteProviderData,
 	userAccountTable,
 	userTable
 } from '@/environment';
 import type { TShopifySessionDto } from '../schema';
+import { createDisplayNameFromShop } from './create-display-name-from-shop';
 import { createHandleFromEmail } from './create-handle-from-email';
 
 export async function createShopifySession(input: TShopifySessionDto): Promise<void> {
@@ -19,9 +22,9 @@ export async function createShopifySession(input: TShopifySessionDto): Promise<v
 		// 1. Store session data (works for both online and offline)
 		await upsertSession(tx, input);
 
-		// 2. Create shop account + user if online session
+		// 2. Create user, site account, and shop site if online session
 		if (input.isOnline) {
-			await upsertUserAndShopAccount(tx, input);
+			await upsertUserAndSiteAccount(tx, input);
 		}
 
 		return input;
@@ -78,7 +81,7 @@ async function upsertSession(tx: TPgTransaction, input: TShopifySessionDto): Pro
 		});
 }
 
-async function upsertUserAndShopAccount(
+async function upsertUserAndSiteAccount(
 	tx: TPgTransaction,
 	input: TShopifySessionDto
 ): Promise<void> {
@@ -126,7 +129,7 @@ async function upsertUserAndShopAccount(
 				accountType: 'otp',
 				provider: 'email',
 				providerAccountId: associatedUser.email,
-				providerData: {} satisfies TEmailOTPProviderData,
+				providerData: {} satisfies TEmailOTPUserProviderData,
 				updatedAt: new Date(),
 				createdAt: new Date()
 			})
@@ -134,27 +137,30 @@ async function upsertUserAndShopAccount(
 	}
 
 	// 3. Check if shop is already connected to a different user
-	const [existingShopAccount] = await tx
+	const [existingSiteAccount] = await tx
 		.select({
-			userId: shopAccountTable.userId
+			userId: siteAccountTable.userId
 		})
-		.from(shopAccountTable)
+		.from(siteAccountTable)
 		.where(
 			and(
-				eq(shopAccountTable.provider, 'shopify'),
-				eq(shopAccountTable.providerAccountId, input.shop)
+				eq(siteAccountTable.provider, 'shopify'),
+				eq(siteAccountTable.providerAccountId, input.shop)
 			)
 		)
 		.limit(1);
-	if (existingShopAccount != null && existingShopAccount.userId !== user.id) {
+	if (existingSiteAccount != null && existingSiteAccount.userId !== user.id) {
 		throw new AppError('#ERR_SHOP_ALREADY_CONNECTED', 409, {
 			detail: `Shop ${input.shop} is already connected to another account. Please disconnect the existing connection first before connecting to a new account.`
 		});
 	}
 
-	// 4. Create/update shop account
+	// 4. Create/update site account and shop site
+	const isNewShop = existingSiteAccount == null;
+
+	// Create/update site account
 	await tx
-		.insert(shopAccountTable)
+		.insert(siteAccountTable)
 		.values({
 			userId: user.id,
 			accountType: 'oauth',
@@ -171,12 +177,12 @@ async function upsertUserAndShopAccount(
 					locale: associatedUser.locale,
 					isCollaborator: associatedUser.collaborator
 				}
-			} as TShopifyProviderData,
+			} satisfies TSiteProviderData,
 			updatedAt: new Date(),
 			createdAt: new Date()
 		})
 		.onConflictDoUpdate({
-			target: [shopAccountTable.provider, shopAccountTable.providerAccountId],
+			target: [siteAccountTable.provider, siteAccountTable.providerAccountId],
 			set: {
 				providerData: {
 					installer: {
@@ -193,4 +199,39 @@ async function upsertUserAndShopAccount(
 				updatedAt: new Date()
 			}
 		});
+
+	// Create bio site and connection if it's a new shop
+	if (isNewShop) {
+		// Create shop site
+		const [site] = await tx
+			.insert(siteTable)
+			.values({
+				userId: user.id,
+				handle: 'bio',
+				displayName: `${createDisplayNameFromShop(input.shop)} Bio`,
+				content: {}, // Empty content to start
+				updatedAt: new Date(),
+				createdAt: new Date()
+			})
+			.returning({
+				id: siteTable.id
+			});
+		if (site == null) {
+			throw new AppError('#ERR_SITE_CREATE_FAILED', 500, {
+				detail: 'Failed to create site'
+			});
+		}
+
+		// Connect bio site to Shopify store
+		await tx
+			.insert(siteConnectionTable)
+			.values({
+				siteId: site.id,
+				provider: 'shopify',
+				providerAccountId: input.shop,
+				updatedAt: new Date(),
+				createdAt: new Date()
+			})
+			.onConflictDoNothing();
+	}
 }

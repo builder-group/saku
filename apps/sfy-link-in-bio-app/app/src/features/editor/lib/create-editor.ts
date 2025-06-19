@@ -1,16 +1,16 @@
 import { notEmpty, shortId } from '@blgc/utils';
 import { createState, TState } from 'feature-state';
 import { TViewType } from '../environment';
-import { TBlock, TBlockId, TDocumentNode } from '../types';
+import { TBlock, TBlockId, TSiteNode } from '../types';
 
-export function createEditor(documentNode: TDocumentNode): TEditor {
-	const pageNode = documentNode.children[0];
+export function createEditor(siteNode: TSiteNode): TEditor {
+	const pageNode = siteNode.children[0];
 	if (pageNode == null || pageNode.type !== 'page') {
 		throw new Error('Document must have a page node');
 	}
 	const blocks = pageNode.blocks;
 
-	const documentId = documentNode.id;
+	const siteId = siteNode.id;
 	const pageId = pageNode.id;
 
 	return {
@@ -34,7 +34,7 @@ export function createEditor(documentNode: TDocumentNode): TEditor {
 			{} as Record<TBlockId, TState<TBlock, []>>
 		),
 
-		documentId,
+		siteId,
 		pageId,
 
 		switchView(view) {
@@ -80,15 +80,15 @@ export function createEditor(documentNode: TDocumentNode): TEditor {
 		},
 
 		async save() {
-			const documentNode = this.toDocumentNode();
+			const documentNode = this.toSiteNode();
 
 			console.log({ documentNode });
 		},
 
-		toDocumentNode() {
+		toSiteNode() {
 			return {
-				type: 'document',
-				id: this.documentId,
+				type: 'site',
+				id: this.siteId,
 				version: 'v0.0.1',
 				children: [
 					{
@@ -112,7 +112,7 @@ export interface TEditor {
 	blockIds: TState<TBlockId[], []>;
 	blockMap: Record<TBlockId, TState<TBlock, []>>;
 
-	documentId: string;
+	siteId: string;
 	pageId: string;
 
 	switchView: (view: TViewType) => void;
@@ -129,7 +129,7 @@ export interface TEditor {
 
 	save: () => Promise<void>;
 
-	toDocumentNode: () => TDocumentNode;
+	toSiteNode: () => TSiteNode;
 }
 
 export interface TBoundingRect {

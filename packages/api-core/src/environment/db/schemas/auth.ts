@@ -1,7 +1,7 @@
 import { jsonb, pgTable, text, timestamp } from 'drizzle-orm/pg-core';
 
 /**
- * Shopify Session Table
+ * Shopify OAuth sessions, supporting both online and offline access modes.
  *
  * Note: Stores sessions separately from shop accounts because offline sessions might arrive
  * before shop accounts exist (no user data). Arrival of online session will create shop account later.

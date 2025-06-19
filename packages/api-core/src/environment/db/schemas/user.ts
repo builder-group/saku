@@ -1,5 +1,8 @@
 import { jsonb, pgTable, primaryKey, text, timestamp } from 'drizzle-orm/pg-core';
 
+/**
+ * Core user data and profile information.
+ */
 export const userTable = pgTable('user', {
 	id: text('id')
 		.primaryKey()
@@ -25,6 +28,9 @@ export const userTable = pgTable('user', {
 		.$defaultFn(() => new Date())
 });
 
+/**
+ * User authentication accounts and provider connections.
+ */
 export const userAccountTable = pgTable(
 	'user_account',
 	{
@@ -33,17 +39,17 @@ export const userAccountTable = pgTable(
 			.references(() => userTable.id, { onDelete: 'cascade' }),
 
 		// Type of account (e.g. oauth, oidc, otp)
-		accountType: text('account_type').$type<TAccountType>().notNull(),
+		accountType: text('account_type').$type<TUserAccountType>().notNull(),
 
 		// Provider name (e.g. github, google, email)
-		provider: text('provider').$type<TProviderType>().notNull(),
+		provider: text('provider').$type<TUserProviderType>().notNull(),
 		// Provider's unique identifier for this user (e.g. UUID for GitHub, Email for OTP)
 		providerAccountId: text('provider_account_id').notNull(),
 		// Raw provider data
 		// Note: Using `jsonb` to keep schema minimal, avoid column bloat, and support flexible future providers.
 		// We likely won't need to query provider-specific fields directly - instead, we can query by provider and extract what's needed.
 		// Tradeoff: Can't select or filter by nested fields at the SQL level.
-		providerData: jsonb('provider_data').$type<TProviderData>(),
+		providerData: jsonb('provider_data').$type<TUserProviderData>(),
 
 		updatedAt: timestamp('updated_at', { mode: 'date' })
 			.notNull()
@@ -55,21 +61,22 @@ export const userAccountTable = pgTable(
 	(table) => [primaryKey({ columns: [table.provider, table.providerAccountId] })]
 );
 
-export type TAccountType = 'oauth' | 'oidc' | 'otp' | 'webauthn';
-
-export type TProviderType = 'github' | 'google' | 'atproto' | 'email';
-
-export type TProviderData = TGitHubProviderData | TGoogleProviderData | TEmailOTPProviderData;
+export type TUserAccountType = 'oauth' | 'oidc' | 'otp' | 'webauthn';
+export type TUserProviderType = 'github' | 'google' | 'atproto' | 'email';
+export type TUserProviderData =
+	| TGitHubUserProviderData
+	| TGoogleUserProviderData
+	| TEmailOTPUserProviderData;
 
 /**
  * Email OTP Provider Data
  */
-export interface TEmailOTPProviderData {}
+export interface TEmailOTPUserProviderData {}
 
 /**
  * GitHub OAuth Provider Data
  */
-export interface TGitHubProviderData {
+export interface TGitHubUserProviderData {
 	accessToken: string; // OAuth 2.0 access token
 	tokenType: string; // Typically "bearer"
 	scopes?: string[]; // Scopes granted by GitHub (e.g., "user:email")
@@ -78,7 +85,7 @@ export interface TGitHubProviderData {
 /**
  * Google OAuth + OIDC Provider Data
  */
-export interface TGoogleProviderData {
+export interface TGoogleUserProviderData {
 	accessToken: string; // OAuth 2.0 access token
 	tokenType: string; // Typically "bearer"
 	scopes?: string[]; // Granted scopes (e.g., "openid email profile")

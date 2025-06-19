@@ -3,7 +3,7 @@
 client_id = "4c9dc129e68b889d9a351e14d8e36a02"
 name = "saku-link-in-bio"
 handle = "saku-link-in-bio"
-application_url = "https://arguments-km-thai-experimental.trycloudflare.com"
+application_url = "https://k-shoot-progressive-ukraine.trycloudflare.com"
 embedded = true
 
 [build]
@@ -26,10 +26,14 @@ uri = "/webhooks/app/scopes_update"
 scopes = "write_products,write_files"
 
 [auth]
-redirect_urls = ["https://arguments-km-thai-experimental.trycloudflare.com/auth/callback", "https://arguments-km-thai-experimental.trycloudflare.com/auth/shopify/callback", "https://arguments-km-thai-experimental.trycloudflare.com/api/auth/callback"]
+redirect_urls = [
+    "https://k-shoot-progressive-ukraine.trycloudflare.com/auth/callback",
+    "https://k-shoot-progressive-ukraine.trycloudflare.com/auth/shopify/callback",
+    "https://k-shoot-progressive-ukraine.trycloudflare.com/api/auth/callback",
+]
 
 [app_proxy]
-url = "https://arguments-km-thai-experimental.trycloudflare.com/a/saku"
+url = "https://k-shoot-progressive-ukraine.trycloudflare.com/a/saku"
 subpath = "saku"
 prefix = "a"
 
