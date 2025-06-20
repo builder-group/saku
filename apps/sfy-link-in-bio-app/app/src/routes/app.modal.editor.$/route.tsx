@@ -1,4 +1,5 @@
 import { useLoaderData } from '@remix-run/react';
+import { useAppBridge } from '@shopify/app-bridge-react';
 import { withGlobalBind } from 'feature-react/state';
 import React from 'react';
 import { createEditor, Editor, siteNodePreset, TSiteNode } from '@/features/editor';
@@ -8,16 +9,17 @@ import './styles.module.css';
 
 const Page: React.FC = () => {
 	const { site } = useLoaderData<typeof loader>();
+	const shopify = useAppBridge();
 
 	const editor = React.useMemo(() => {
 		if (site == null) {
 			return null;
 		}
 
-		const editor = createEditor(site.id, site.node);
+		const editor = createEditor(site.id, shopify, site.node);
 		withGlobalBind(`__editor_${editor.id}`, editor);
 		return editor;
-	}, [site]);
+	}, [site, shopify]);
 
 	return (
 		<div className="flex min-h-screen w-full">

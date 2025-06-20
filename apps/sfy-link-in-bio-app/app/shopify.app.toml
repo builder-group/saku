@@ -3,7 +3,7 @@
 client_id = "4c9dc129e68b889d9a351e14d8e36a02"
 name = "saku-link-in-bio"
 handle = "saku-link-in-bio"
-application_url = "https://thin-advertise-defining-historical.trycloudflare.com"
+application_url = "https://movement-ware-controllers-microphone.trycloudflare.com"
 embedded = true
 
 [build]
@@ -26,10 +26,10 @@ uri = "/webhooks/app/scopes_update"
 scopes = "write_files,write_online_store_navigation,read_online_store_navigation"
 
 [auth]
-redirect_urls = ["https://thin-advertise-defining-historical.trycloudflare.com/auth/callback", "https://thin-advertise-defining-historical.trycloudflare.com/auth/shopify/callback", "https://thin-advertise-defining-historical.trycloudflare.com/api/auth/callback"]
+redirect_urls = ["https://movement-ware-controllers-microphone.trycloudflare.com/auth/callback", "https://movement-ware-controllers-microphone.trycloudflare.com/auth/shopify/callback", "https://movement-ware-controllers-microphone.trycloudflare.com/api/auth/callback"]
 
 [app_proxy]
-url = "https://thin-advertise-defining-historical.trycloudflare.com/a/saku"
+url = "https://movement-ware-controllers-microphone.trycloudflare.com/a/saku"
 subpath = "saku"
 prefix = "a"
 

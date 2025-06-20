@@ -5,7 +5,7 @@ import { coreApiClient } from '@/environment';
 import { TViewType } from '../environment';
 import { TBlock, TBlockId, TSiteNode } from '../types';
 
-export function createEditor(siteId: string, siteNode: TSiteNode): TEditor {
+export function createEditor(siteId: string, shopify: ShopifyGlobal, siteNode: TSiteNode): TEditor {
 	const pageNode = siteNode.children[0];
 	if (pageNode == null || pageNode.type !== 'page') {
 		throw new Error('Document must have a page node');
@@ -39,6 +39,8 @@ export function createEditor(siteId: string, siteNode: TSiteNode): TEditor {
 
 		siteNodeId,
 		pageNodeId,
+
+		shopify,
 
 		switchView(view) {
 			this.activeView.set(view);
@@ -82,11 +84,11 @@ export function createEditor(siteId: string, siteNode: TSiteNode): TEditor {
 			this.selectedBlockId.set(null);
 		},
 
-		async save(shopify) {
-			const idToken = await shopify.idToken();
+		async save() {
+			const idToken = await this.shopify.idToken();
 			const documentNode = this.toSiteNode();
 
-			await coreApiClient.put(
+			const result = await coreApiClient.put(
 				'/v1/shopify/site/{siteId}/content',
 				{ content: documentNode as any },
 				{
@@ -98,6 +100,8 @@ export function createEditor(siteId: string, siteNode: TSiteNode): TEditor {
 					}
 				}
 			);
+
+			return result.isOk();
 		},
 
 		toSiteNode() {
@@ -131,6 +135,8 @@ export interface TEditor {
 	siteNodeId: string;
 	pageNodeId: string;
 
+	shopify: ShopifyGlobal;
+
 	switchView: (view: TViewType) => void;
 
 	addBlock: (block: TBlock) => void;
@@ -143,7 +149,7 @@ export interface TEditor {
 	selectBlock: (blockId: TBlockId) => void;
 	unselectBlock: () => void;
 
-	save: (shopify: ShopifyGlobal) => Promise<void>;
+	save: () => Promise<boolean>;
 
 	toSiteNode: () => TSiteNode;
 }

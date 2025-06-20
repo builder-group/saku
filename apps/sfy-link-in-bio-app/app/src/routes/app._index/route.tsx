@@ -14,21 +14,16 @@ import { ClipboardButton, FeedbackCard, GetInTouchCard, SitePreview, ViewIcon } 
 import { coreApiClient } from '@/environment';
 import { appConfig, shopify } from '@/environment/.server';
 import { getSessionTokenFromRequest } from '@/lib/.server';
-import { useEditorModal } from '@/routes/app.modal.editor';
+import { useEditorModal } from '@/routes/app.modal.editor.$';
 import { TLoaderFunction } from '@/types';
 
 const Page: React.FC = () => {
 	const { env, site } = useLoaderData<typeof loader>();
 
-	const { Modal: EditorModal, isOpenState: isEditorOpenState } = useEditorModal(
-		{
-			site: {
-				id: site?.id ?? '',
-				displayName: site?.displayName ?? ''
-			}
-		},
-		[site]
-	);
+	const { Modal: EditorModal, isOpenState: isEditorOpenState } = useEditorModal({
+		siteId: site?.id ?? '',
+		title: site?.displayName ?? ''
+	});
 
 	// =========================================================================
 	// Events
