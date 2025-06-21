@@ -1,20 +1,23 @@
 import { notEmpty, shortId } from '@blgc/utils';
+import { ShopifyGlobal } from '@shopify/app-bridge-react';
 import { createState, TState } from 'feature-state';
+import { coreApiClient } from '@/environment';
 import { TViewType } from '../environment';
-import { TBlock, TBlockId, TDocumentNode } from '../types';
+import { TBlock, TBlockId, TSiteNode } from '../types';
 
-export function createEditor(documentNode: TDocumentNode): TEditor {
-	const pageNode = documentNode.children[0];
+export function createEditor(siteId: string, shopify: ShopifyGlobal, siteNode: TSiteNode): TEditor {
+	const pageNode = siteNode.children[0];
 	if (pageNode == null || pageNode.type !== 'page') {
 		throw new Error('Document must have a page node');
 	}
 	const blocks = pageNode.blocks;
 
-	const documentId = documentNode.id;
-	const pageId = pageNode.id;
+	const siteNodeId = siteNode.id;
+	const pageNodeId = pageNode.id;
 
 	return {
 		id: shortId(),
+		siteId,
 
 		activeView: createState('blocks' as TViewType),
 		boundingRect: createState({
@@ -34,8 +37,10 @@ export function createEditor(documentNode: TDocumentNode): TEditor {
 			{} as Record<TBlockId, TState<TBlock, []>>
 		),
 
-		documentId,
-		pageId,
+		siteNodeId,
+		pageNodeId,
+
+		shopify,
 
 		switchView(view) {
 			this.activeView.set(view);
@@ -80,20 +85,34 @@ export function createEditor(documentNode: TDocumentNode): TEditor {
 		},
 
 		async save() {
-			const documentNode = this.toDocumentNode();
+			const idToken = await this.shopify.idToken();
+			const documentNode = this.toSiteNode();
 
-			console.log({ documentNode });
+			const result = await coreApiClient.put(
+				'/v1/shopify/site/{siteId}/content',
+				{ content: documentNode as any },
+				{
+					pathParams: {
+						siteId: this.siteId
+					},
+					headers: {
+						Authorization: `Bearer ${idToken}`
+					}
+				}
+			);
+
+			return result.isOk();
 		},
 
-		toDocumentNode() {
+		toSiteNode() {
 			return {
-				type: 'document',
-				id: this.documentId,
+				type: 'site',
+				id: this.siteNodeId,
 				version: 'v0.0.1',
 				children: [
 					{
 						type: 'page',
-						id: this.pageId,
+						id: this.pageNodeId,
 						blocks: this.blockIds._v.map((id) => this.blockMap[id]?._v).filter(notEmpty)
 					}
 				]
@@ -104,6 +123,7 @@ export function createEditor(documentNode: TDocumentNode): TEditor {
 
 export interface TEditor {
 	id: string;
+	siteId: string;
 
 	activeView: TState<TViewType, []>;
 	boundingRect: TState<TBoundingRect, []>;
@@ -112,8 +132,10 @@ export interface TEditor {
 	blockIds: TState<TBlockId[], []>;
 	blockMap: Record<TBlockId, TState<TBlock, []>>;
 
-	documentId: string;
-	pageId: string;
+	siteNodeId: string;
+	pageNodeId: string;
+
+	shopify: ShopifyGlobal;
 
 	switchView: (view: TViewType) => void;
 
@@ -127,9 +149,9 @@ export interface TEditor {
 	selectBlock: (blockId: TBlockId) => void;
 	unselectBlock: () => void;
 
-	save: () => Promise<void>;
+	save: () => Promise<boolean>;
 
-	toDocumentNode: () => TDocumentNode;
+	toSiteNode: () => TSiteNode;
 }
 
 export interface TBoundingRect {

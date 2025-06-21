@@ -11,21 +11,18 @@ import {
 } from '@shopify/polaris';
 import React from 'react';
 import { ClipboardButton, FeedbackCard, GetInTouchCard, SitePreview, ViewIcon } from '@/components';
+import { coreApiClient } from '@/environment';
 import { appConfig, shopify } from '@/environment/.server';
-import { useEditorModal } from '@/features/editor';
+import { getSessionTokenFromRequest } from '@/lib/.server';
+import { useEditorModal } from '@/routes/app.modal.editor.$/EditorModal';
 import { TLoaderFunction } from '@/types';
-import { coreApiClient } from '../../environment';
 
 const Page: React.FC = () => {
-	const { shop, appEnv } = useLoaderData<typeof loader>();
-
-	const bioUrl = React.useMemo(
-		() => (shop.domain != null ? `https://${shop.domain}/a/saku/bio` : null),
-		[shop.domain]
-	);
+	const { env, site } = useLoaderData<typeof loader>();
 
 	const { Modal: EditorModal, isOpenState: isEditorOpenState } = useEditorModal({
-		src: '/app/modal/editor'
+		siteId: site?.id ?? '',
+		title: site?.displayName ?? ''
 	});
 
 	// =========================================================================
@@ -41,119 +38,127 @@ const Page: React.FC = () => {
 	// =========================================================================
 
 	return (
-		<PolarisPage>
-			<TitleBar title="Saku Link In Bio">
-				<button variant="primary" onClick={handleCustomizeBio}>
-					Customize
-				</button>
-				{bioUrl != null && (
-					<button
-						onClick={() => {
-							// TitleBar buttons in embedded apps can't use <a> tags - browser blocks them
-							// window.open() with noopener,noreferrer bypasses iframe security restrictions
-							window.open(bioUrl, '_blank', 'noopener,noreferrer');
-						}}
-					>
-						Visit
-					</button>
-				)}
-			</TitleBar>
-
+		<>
 			<EditorModal />
 
-			<Layout>
-				<Layout.Section>
-					{/* Bio Preview Card */}
-					<Card>
-						<SitePreview url={bioUrl ?? ''} />
+			<PolarisPage>
+				<TitleBar title="Saku Link In Bio">
+					<button variant="primary" onClick={handleCustomizeBio}>
+						{site != null ? 'Customize' : 'Create'}
+					</button>
+					{site?.url != null && (
+						<button
+							onClick={() => {
+								// TitleBar buttons in embedded apps can't use <a> tags - browser blocks them
+								// window.open() with noopener,noreferrer bypasses iframe security restrictions
+								window.open(site.url, '_blank', 'noopener,noreferrer');
+							}}
+						>
+							Visit
+						</button>
+					)}
+				</TitleBar>
 
-						{/* Theme List Item */}
-						<div className="mt-4 flex items-center justify-between gap-4">
-							<div className="flex items-center gap-3">
-								{/* Small Thumbnail */}
-								<div className="h-16 w-24 rounded-md bg-gray-200" />
-
-								{/* Content */}
-								<div className="flex flex-col items-start gap-1">
-									<div className="flex flex-wrap items-center gap-2">
-										<Text as="h3" variant="headingMd">
-											default-bio
-										</Text>
-										<Badge tone="success">Current</Badge>
-									</div>
-									<Text as="p" variant="bodyMd" tone="subdued">
-										Last Updated: Today
-									</Text>
-								</div>
-							</div>
-
-							{/* Action Buttons */}
-							<div className="flex items-center gap-2">
-								{bioUrl != null && (
-									<Button
-										icon={ViewIcon}
-										variant="secondary"
-										url={bioUrl}
-										external
-										target="_blank"
-										accessibilityLabel="Visit your Link In Bio page"
-									/>
-								)}
-								<Button variant="primary" onClick={handleCustomizeBio}>
-									Customize
-								</Button>
-							</div>
-						</div>
-					</Card>
-				</Layout.Section>
-
-				<Layout.Section variant="oneThird">
-					<div className="flex flex-col gap-5">
-						{/* Your Link Card */}
+				<Layout>
+					<Layout.Section>
+						{/* Bio Preview Card */}
 						<Card>
-							<div className="flex flex-col gap-3">
-								<div className="flex items-center justify-between">
-									<Text as="h2" variant="headingMd">
-										Your Link
-									</Text>
-									{bioUrl != null ? (
-										<Badge tone="success">Active</Badge>
-									) : (
-										<Badge tone="warning">Inactive</Badge>
-									)}
-								</div>
+							{site != null ? (
+								<>
+									<SitePreview url={site.url} />
 
-								{bioUrl != null ? (
-									<TextField
-										label=""
-										value={bioUrl}
-										readOnly
-										autoComplete="off"
-										connectedRight={<ClipboardButton textToCopy={bioUrl} />}
-									/>
-								) : (
+									{/* Theme List Item */}
+									<div className="mt-4 flex items-center justify-between gap-4">
+										<div className="flex items-center gap-3">
+											{/* Small Thumbnail */}
+											<div className="h-16 w-24 rounded-md bg-gray-200" />
+
+											{/* Content */}
+											<div className="flex flex-col items-start gap-1">
+												<div className="flex flex-wrap items-center gap-2">
+													<Text as="h3" variant="headingMd">
+														{site.displayName ?? site.handle}
+													</Text>
+													<Badge tone="success">Current</Badge>
+												</div>
+												<Text as="p" variant="bodyMd" tone="subdued">
+													Last Updated:{' '}
+													{site.updatedAt != null
+														? new Date(site.updatedAt).toLocaleDateString()
+														: 'Never'}
+												</Text>
+											</div>
+										</div>
+
+										{/* Action Buttons */}
+										<div className="flex items-center gap-2">
+											<Button
+												icon={ViewIcon}
+												variant="secondary"
+												url={site.url}
+												external
+												target="_blank"
+												accessibilityLabel="Visit your Link In Bio page"
+											/>
+											<Button variant="primary" onClick={handleCustomizeBio}>
+												Customize
+											</Button>
+										</div>
+									</div>
+								</>
+							) : (
+								<div className="mt-4 flex flex-col items-center gap-4 p-4">
+									<Text as="h3" variant="headingMd">
+										No Bio Site Found
+									</Text>
 									<Button
 										variant="primary"
 										onClick={() => {
 											// TODO
 										}}
 									>
-										Activate
+										Create Bio Site
 									</Button>
-								)}
-							</div>
+								</div>
+							)}
 						</Card>
+					</Layout.Section>
 
-						<FeedbackCard email={appEnv.support.email} reviewUrl={appEnv.distribution.shopify} />
-						<GetInTouchCard
-							version={appEnv.version}
-							discordUrl={appEnv.social.discord}
-							email={appEnv.support.email}
-						/>
-					</div>
-				</Layout.Section>
-			</Layout>
-		</PolarisPage>
+					<Layout.Section variant="oneThird">
+						<div className="flex flex-col gap-5">
+							{/* Your Link Card */}
+							{site != null && (
+								<Card>
+									<div className="flex flex-col gap-3">
+										<div className="flex items-center justify-between">
+											<Text as="h2" variant="headingMd">
+												Your Link
+											</Text>
+											<Badge tone="success">Current</Badge>
+										</div>
+
+										<TextField
+											label=""
+											value={site.url}
+											readOnly
+											autoComplete="off"
+											connectedRight={<ClipboardButton textToCopy={site.url} />}
+										/>
+									</div>
+								</Card>
+							)}
+
+							<FeedbackCard email={env.support.email} reviewUrl={env.distribution.shopify} />
+							<GetInTouchCard
+								version={env.version}
+								discordUrl={env.social.discord}
+								email={env.support.email}
+							/>
+						</div>
+					</Layout.Section>
+				</Layout>
+			</PolarisPage>
+		</>
 	);
 };
 
@@ -161,38 +166,48 @@ export default Page;
 
 export const loader: TLoaderFunction<TLoaderData> = async ({ request }) => {
 	const { session } = await shopify.authenticate.admin(request);
+	const sessionToken = getSessionTokenFromRequest(request);
+	const env = {
+		version: appConfig.version,
+		social: {
+			discord: appConfig.social.discord
+		},
+		support: {
+			email: appConfig.support.email
+		},
+		distribution: {
+			shopify: appConfig.distribution.shopify
+		}
+	};
 
-	const healthResult = await coreApiClient.get('/v1/health');
-	if (healthResult.isOk()) {
-		console.log('[core-api] health check passed', healthResult.value.data);
-	} else {
-		console.log('[core-api] health check failed', healthResult.error.message);
+	const sitesResult = await coreApiClient.get('/v1/shopify/site', {
+		headers: {
+			Authorization: `Bearer ${sessionToken}`
+		}
+	});
+	if (sitesResult.isErr()) {
+		return {
+			site: null,
+			env
+		};
 	}
 
 	return {
-		shop: {
-			domain: session.shop
-		},
-		appEnv: {
-			version: appConfig.version,
-			social: {
-				discord: appConfig.social.discord
-			},
-			support: {
-				email: appConfig.support.email
-			},
-			distribution: {
-				shopify: appConfig.distribution.shopify
-			}
-		}
+		site:
+			sitesResult.value.data.map((site) => ({
+				id: site.id,
+				handle: site.handle,
+				url: `https://${session.shop}/a/saku/${site.handle}`,
+				displayName: site.displayName,
+				updatedAt: site.updatedAt
+			}))[0] ?? null,
+		env
 	};
 };
 
 interface TLoaderData {
-	shop: {
-		domain: string;
-	};
-	appEnv: {
+	site: TSite | null;
+	env: {
 		version: string;
 		social: {
 			discord: string;
@@ -204,4 +219,12 @@ interface TLoaderData {
 			shopify: string;
 		};
 	};
+}
+
+interface TSite {
+	id: string;
+	handle: string;
+	url: string;
+	displayName?: string;
+	updatedAt: string;
 }

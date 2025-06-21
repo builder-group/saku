@@ -7,8 +7,8 @@ export interface TBaseNode {
 	type: string;
 }
 
-export interface TDocumentNode extends TBaseNode {
-	type: 'document';
+export interface TSiteNode extends TBaseNode {
+	type: 'site';
 	version: `v0.0.1`;
 	children: TNode[];
 }
@@ -20,7 +20,7 @@ interface TPageNode extends TBaseNode {
 }
 
 export type TNodeId = string;
-export type TNode = TDocumentNode | TPageNode;
+export type TNode = TSiteNode | TPageNode;
 export type TNodeType = TNode['type'];
 
 export type TVersion = `v${number}.${number}.${number}`;

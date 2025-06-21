@@ -4,7 +4,7 @@ import { createState, TState } from 'feature-state';
 import React from 'react';
 
 export const EditorModal: React.FC<TEditorModalProps> = (props) => {
-	const { src, isOpenState, onShow, onHide } = props;
+	const { siteId, title, isOpenState, onShow, onHide } = props;
 	const isOpen = useFeatureState(isOpenState);
 
 	const handleHide = React.useCallback(() => {
@@ -14,32 +14,41 @@ export const EditorModal: React.FC<TEditorModalProps> = (props) => {
 
 	return (
 		<Modal
-			id="editor-modal"
-			src={src}
+			id={`editor-modal-${siteId}`}
+			src={`/app/modal/editor?siteId=${siteId}`} // https://shopify.dev/docs/api/app-bridge/using-modals-in-your-app#modals-with-a-route
 			open={isOpen}
 			onHide={handleHide}
 			onShow={onShow}
 			variant="max"
 		>
-			<TitleBar title="default-bio" />
+			<TitleBar title={title} />
 		</Modal>
 	);
 };
 
 interface TEditorModalProps {
-	src?: string;
+	siteId: string;
+	title: string;
 	isOpenState: TState<boolean, []>;
 	onShow?: () => void;
 	onHide?: () => void;
 }
 
 export function useEditorModal(config: TUseEditorModalConfig) {
-	const { src, onShow, onHide } = config;
+	const { siteId, title, onShow, onHide } = config;
 	const isOpenState = React.useMemo(() => createState(false), []);
 
 	const ModalCallback = React.useCallback(() => {
-		return <EditorModal src={src} isOpenState={isOpenState} onShow={onShow} onHide={onHide} />;
-	}, [isOpenState, onHide, onShow, src]);
+		return (
+			<EditorModal
+				siteId={siteId}
+				title={title}
+				isOpenState={isOpenState}
+				onShow={onShow}
+				onHide={onHide}
+			/>
+		);
+	}, [isOpenState, onHide, onShow, siteId, title]);
 
 	return React.useMemo(
 		() => ({
@@ -51,7 +60,8 @@ export function useEditorModal(config: TUseEditorModalConfig) {
 }
 
 interface TUseEditorModalConfig {
-	src?: TEditorModalProps['src']; // https://shopify.dev/docs/api/app-bridge/using-modals-in-your-app#modals-with-a-route
+	siteId: TEditorModalProps['siteId'];
+	title: TEditorModalProps['title'];
 	onShow?: TEditorModalProps['onShow'];
 	onHide?: TEditorModalProps['onHide'];
 }

@@ -6,6 +6,14 @@
 - [Polaris Components](https://polaris-react.shopify.com/components)
 - [Polaris Icons](https://polaris-react.shopify.com/icons)
 
+### [Access Scopes](https://shopify.dev/docs/api/usage/access-scopes)
+
+The app requires specific Shopify API access scopes to function properly:
+
+- **`write_files`**: Required to upload and manage media files in the merchant's Files section (for [GenericFile](https://shopify.dev/docs/api/admin-graphql/latest/objects/genericfile))
+- **`write_online_store_navigation`**: Enables creation and modification of URL redirects for bio links (for [UrlRedirect](https://shopify.dev/docs/api/admin-graphql/latest/objects/UrlRedirect))
+- **`read_online_store_navigation`**: Allows reading existing URL redirects to prevent conflicts (for [UrlRedirect](https://shopify.dev/docs/api/admin-graphql/latest/objects/UrlRedirect))
+
 ## 📐 Architecture
 
 ### Differences to [`shopify-app-template-remix`](https://github.com/Shopify/shopify-app-template-remix) template

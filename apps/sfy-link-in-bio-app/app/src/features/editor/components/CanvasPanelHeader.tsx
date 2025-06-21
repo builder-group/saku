@@ -11,7 +11,12 @@ export const CanvasPanelHeader: React.FC<TCanvasPanelHeaderProps> = (props) => {
 
 	const handleSave = React.useCallback(async () => {
 		setIsSaving(true);
-		await editor.save();
+		const isSaved = await editor.save();
+		if (isSaved) {
+			editor.shopify.toast.show('Saved');
+		} else {
+			editor.shopify.toast.show('Failed to save');
+		}
 		setIsSaving(false);
 	}, [editor]);
 

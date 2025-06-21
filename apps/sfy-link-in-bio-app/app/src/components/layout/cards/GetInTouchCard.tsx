@@ -33,12 +33,12 @@ export const GetInTouchCard: React.FC<TGetInTouchCardProps> = (props) => {
 							external
 							target="_blank"
 						>
-							Join our Discord Community
+							Join Discord Community
 						</Button>
 					)}
 					{version != null && (
 						<Text as="p" variant="bodyMd">
-							App Version: v{version}
+							App Version: {version}
 						</Text>
 					)}
 				</BlockStack>
