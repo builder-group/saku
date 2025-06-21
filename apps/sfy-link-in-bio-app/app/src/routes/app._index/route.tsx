@@ -14,7 +14,7 @@ import { ClipboardButton, FeedbackCard, GetInTouchCard, SitePreview, ViewIcon } 
 import { coreApiClient } from '@/environment';
 import { appConfig, shopify } from '@/environment/.server';
 import { getSessionTokenFromRequest } from '@/lib/.server';
-import { useEditorModal } from '@/routes/app.modal.editor.$';
+import { useEditorModal } from '@/routes/app.modal.editor.$/EditorModal';
 import { TLoaderFunction } from '@/types';
 
 const Page: React.FC = () => {
