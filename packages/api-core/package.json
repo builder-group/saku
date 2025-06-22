@@ -2,9 +2,9 @@
 	"name": "@repo/api-core",
 	"version": "0.0.1",
 	"private": true,
-	"description": "",
+	"description": "Core API",
 	"keywords": [],
-	"homepage": "",
+	"homepage": "https://saku.so/?source=github",
 	"bugs": {
 		"url": "https://github.com/builder-group/saku/issues"
 	},

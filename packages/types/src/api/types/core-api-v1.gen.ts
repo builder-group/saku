@@ -4,1196 +4,1208 @@
  */
 
 export interface paths {
-    "/v1/auth/shopify/session": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Create Shopify session
-         * @description Store a new Shopify session from app installation or authentication
-         */
-        post: operations["createShopifySession"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/auth/shopify/session/{sessionId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get Shopify session by ID
-         * @description Retrieve a specific Shopify session by its ID
-         */
-        get: operations["getShopifySession"];
-        put?: never;
-        post?: never;
-        /**
-         * Delete Shopify session
-         * @description Remove a Shopify session by its ID
-         */
-        delete: operations["deleteShopifySession"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/auth/shopify/session/shop/{shopId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get Shopify session by shop
-         * @description Retrieve Shopify sessions for a specific shop domain
-         */
-        get: operations["getShopifySessionByShop"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/health": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Check API health
-         * @description Returns the current health status of the API
-         */
-        get: operations["checkHealth"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/info": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get API info
-         * @description Returns the current info of the API
-         */
-        get: operations["getInfo"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/shopify/site": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * List connected sites
-         * @description Returns all sites that are connected to the authenticated Shopify shop.
-         */
-        get: operations["listShopifySites"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/shopify/site/{siteId}/content": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        /**
-         * Update site content
-         * @description Updates the content of a site connected to the authenticated Shopify shop.
-         */
-        put: operations["updateShopifySiteContent"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/shopify/site/shop/{shop}/{handle}/content": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get site content by shop and handle */
-        get: operations["getShopifySiteContentByShopAndHandle"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/shopify/ugc/files": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * List files from media library
-         * @description Retrieve a paginated list of files from the Shopify media library with optional filtering
-         */
-        get: operations["listUgcMediaFiles"];
-        put?: never;
-        /**
-         * Create upload targets for files
-         * @description Generate signed upload URLs for multiple user-generated content files
-         */
-        post: operations["createUgcUploadTargets"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/shopify/ugc/files/submit": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Submit uploaded files to media library
-         * @description Process uploaded files and add them to the Shopify media library
-         */
-        post: operations["submitUgcUploadedFiles"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/site/{siteId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get site by ID */
-        get: operations["getSite"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/site/{siteId}/content": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get site content */
-        get: operations["getSiteContent"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/url/metadata": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get metadata from URL
-         * @description Fetches and extracts metadata from the provided URL including title, description, media URLs and icons
-         */
-        get: operations["getUrlMetadata"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
+	'/v1/auth/shopify/session': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		get?: never;
+		put?: never;
+		/**
+		 * Create Shopify session
+		 * @description Store a new Shopify session from app installation or authentication
+		 */
+		post: operations['createShopifySession'];
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	'/v1/auth/shopify/session/{sessionId}': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		/**
+		 * Get Shopify session by ID
+		 * @description Retrieve a specific Shopify session by its ID
+		 */
+		get: operations['getShopifySession'];
+		put?: never;
+		post?: never;
+		/**
+		 * Delete Shopify session
+		 * @description Remove a Shopify session by its ID
+		 */
+		delete: operations['deleteShopifySession'];
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	'/v1/auth/shopify/session/shop/{shopId}': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		/**
+		 * Get Shopify session by shop
+		 * @description Retrieve Shopify sessions for a specific shop domain
+		 */
+		get: operations['getShopifySessionByShop'];
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	'/v1/health': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		/**
+		 * Check API health
+		 * @description Returns the current health status of the API
+		 */
+		get: operations['checkHealth'];
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	'/v1/info': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		/**
+		 * Get API info
+		 * @description Returns the current info of the API
+		 */
+		get: operations['getInfo'];
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	'/v1/shopify/site': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		/**
+		 * List connected sites
+		 * @description Returns all sites that are connected to the authenticated Shopify shop.
+		 */
+		get: operations['listShopifySites'];
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	'/v1/shopify/site/{siteId}/content': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		get?: never;
+		/**
+		 * Update site content
+		 * @description Updates the content of a site connected to the authenticated Shopify shop.
+		 */
+		put: operations['updateShopifySiteContent'];
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	'/v1/shopify/site/shop/{shop}/{handle}/content': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		/** Get site content by shop and handle */
+		get: operations['getShopifySiteContentByShopAndHandle'];
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	'/v1/shopify/ugc/files': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		/**
+		 * List files from media library
+		 * @description Retrieve a paginated list of files from the Shopify media library with optional filtering
+		 */
+		get: operations['listUgcMediaFiles'];
+		put?: never;
+		/**
+		 * Create upload targets for files
+		 * @description Generate signed upload URLs for multiple user-generated content files
+		 */
+		post: operations['createUgcUploadTargets'];
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	'/v1/shopify/ugc/files/submit': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		get?: never;
+		put?: never;
+		/**
+		 * Submit uploaded files to media library
+		 * @description Process uploaded files and add them to the Shopify media library
+		 */
+		post: operations['submitUgcUploadedFiles'];
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	'/v1/site/{siteId}': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		/** Get site by ID */
+		get: operations['getSite'];
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	'/v1/site/{siteId}/content': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		/** Get site content */
+		get: operations['getSiteContent'];
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	'/v1/url/metadata': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		/**
+		 * Get metadata from URL
+		 * @description Fetches and extracts metadata from the provided URL including title, description, media URLs and icons
+		 */
+		get: operations['getUrlMetadata'];
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
 }
 export type webhooks = Record<string, never>;
 export interface components {
-    schemas: {
-        AppErrorDto: {
-            /**
-             * @description A URI reference that identifies the problem type.
-             * @default about:blank
-             * @example https://docs.example.com/errors/validation-error
-             */
-            type: string;
-            /**
-             * @description A short, human-readable summary of the problem type.
-             * @example Validation failed for the request parameters.
-             */
-            title: string;
-            /**
-             * @description The HTTP status code for this occurrence of the problem.
-             * @example 400
-             */
-            status: number;
-            /**
-             * @description A human-readable explanation specific to this error occurrence.
-             * @example Field `email` must be a valid email address.
-             */
-            detail?: string;
-            /**
-             * @description A URI reference that identifies the specific occurrence of the problem.
-             * @example /api/users/1234
-             */
-            instance?: string;
-            /**
-             * @description An application-specific error code, useful for client-side logic.
-             * @example VALIDATION_ERROR
-             */
-            code?: string;
-            /**
-             * @description Extension member for additional error context (e.g., per-field validation).
-             * @example [
-             *       {
-             *         "field": "email",
-             *         "reason": "must be a valid email"
-             *       },
-             *       {
-             *         "field": "password",
-             *         "reason": "is required"
-             *       }
-             *     ]
-             */
-            errors?: {
-                [key: string]: unknown;
-            }[];
-        };
-        ShopifySessionDto: {
-            /** @example my-shop.myshopify.com_987654321 */
-            id: string;
-            /** @example my-shop.myshopify.com */
-            shop: string;
-            /** @example  */
-            state: string;
-            /** @example true */
-            isOnline: boolean;
-            /** @example write_products,read_customers */
-            scope: string;
-            /**
-             * Format: date-time
-             * @example 2025-06-14T13:39:33.336Z
-             */
-            expires: string | null;
-            /** @example shpat_def456...uvw012 */
-            accessToken: string;
-            onlineAccessInfo: {
-                /** @example 86399 */
-                expires_in?: number;
-                /** @example write_products,read_customers */
-                associated_user_scope?: string;
-                /** @example session_token_hash_string */
-                session?: string;
-                /** @example null */
-                account_number?: number | null;
-                associated_user: {
-                    /** @example 987654321 */
-                    id: number;
-                    /** @example John */
-                    first_name: string;
-                    /** @example Doe */
-                    last_name: string;
-                    /**
-                     * Format: email
-                     * @example john@example.com
-                     */
-                    email: string;
-                    /** @example true */
-                    account_owner: boolean;
-                    /** @example en-US */
-                    locale: string;
-                    /** @example false */
-                    collaborator: boolean;
-                    /** @example true */
-                    email_verified: boolean;
-                };
-            } | null;
-        };
-        SiteSummaryDto: {
-            /**
-             * Format: uuid
-             * @example 123e4567-e89b-12d3
-             */
-            id: string;
-            /**
-             * Format: uuid
-             * @example 123e4567-e89b-12d3
-             */
-            userId: string;
-            /** @example bio */
-            handle: string;
-            /** @example My Bio Site */
-            displayName?: string;
-            /**
-             * Format: date-time
-             * @example 2024-03-20T00:00:00Z
-             */
-            createdAt: string;
-            /**
-             * Format: date-time
-             * @example 2024-03-20T00:00:00Z
-             */
-            updatedAt: string;
-        };
-        SiteContentDto: Record<string, never>;
-        SiteDto: {
-            /**
-             * Format: uuid
-             * @example 123e4567-e89b-12d3
-             */
-            id: string;
-            /**
-             * Format: uuid
-             * @example 123e4567-e89b-12d3
-             */
-            userId: string;
-            /** @example bio */
-            handle: string;
-            /** @example My Bio Site */
-            displayName?: string;
-            /**
-             * Format: date-time
-             * @example 2024-03-20T00:00:00Z
-             */
-            createdAt: string;
-            /**
-             * Format: date-time
-             * @example 2024-03-20T00:00:00Z
-             */
-            updatedAt: string;
-            content: components["schemas"]["SiteContentDto"];
-        };
-        SubmitUploadedFileSuccessDto: {
-            /**
-             * @description discriminator enum property added by openapi-typescript
-             * @enum {string}
-             */
-            status: "SUCCESS";
-            /** @example gid://shopify/MediaImage/12345678 */
-            id: string;
-            /** @example ugc_abc123def456 */
-            uploadId: string;
-        };
-        SubmitUploadedFileErrorDto: {
-            /**
-             * @description discriminator enum property added by openapi-typescript
-             * @enum {string}
-             */
-            status: "ERROR";
-            /** @example Failed to process file */
-            error: string;
-            /** @example ugc_abc123def456 */
-            uploadId: string;
-        };
-        UrlMetadataDto: {
-            /**
-             * Format: uri
-             * @description The URL that was fetched
-             * @example https://example.com
-             */
-            url: string;
-            /**
-             * @description The page title from meta tags or title tag
-             * @example Example Page Title
-             */
-            title?: string;
-            /**
-             * @description The page description from meta tags
-             * @example A brief description of the page content
-             */
-            description?: string;
-            site?: {
-                /**
-                 * @description The name of the website
-                 * @example Example Site
-                 */
-                name?: string;
-                /**
-                 * Format: uri
-                 * @description URL to the site-wide video if available
-                 * @example https://example.com/video
-                 */
-                video?: string;
-            };
-            media?: {
-                /**
-                 * Format: uri
-                 * @description Primary image URL from og:image or similar tags
-                 * @example https://example.com/image.jpg
-                 */
-                image?: string;
-                /**
-                 * Format: uri
-                 * @description Primary video URL from og:video or similar tags
-                 * @example https://example.com/video.mp4
-                 */
-                video?: string;
-                /**
-                 * Format: uri
-                 * @description Primary audio URL if available
-                 * @example https://example.com/audio.mp3
-                 */
-                audio?: string;
-            };
-            icons?: {
-                /**
-                 * Format: uri
-                 * @description URL to the favicon
-                 * @example https://example.com/favicon.ico
-                 */
-                favicon?: string;
-                /**
-                 * Format: uri
-                 * @description URL to the touch icon (e.g. apple-touch-icon)
-                 * @example https://example.com/apple-touch-icon.png
-                 */
-                touch?: string;
-                /**
-                 * Format: uri
-                 * @description URL to the mask icon (e.g. Safari pinned tab)
-                 * @example https://example.com/mask-icon.svg
-                 */
-                mask?: string;
-            };
-        };
-    };
-    responses: never;
-    parameters: never;
-    requestBodies: never;
-    headers: never;
-    pathItems: never;
+	schemas: {
+		AppErrorDto: {
+			/**
+			 * @description A URI reference that identifies the problem type.
+			 * @default about:blank
+			 * @example https://docs.example.com/errors/validation-error
+			 */
+			type: string;
+			/**
+			 * @description A short, human-readable summary of the problem type.
+			 * @example Validation failed for the request parameters.
+			 */
+			title: string;
+			/**
+			 * @description The HTTP status code for this occurrence of the problem.
+			 * @example 400
+			 */
+			status: number;
+			/**
+			 * @description A human-readable explanation specific to this error occurrence.
+			 * @example Field `email` must be a valid email address.
+			 */
+			detail?: string;
+			/**
+			 * @description A URI reference that identifies the specific occurrence of the problem.
+			 * @example /api/users/1234
+			 */
+			instance?: string;
+			/**
+			 * @description An application-specific error code, useful for client-side logic.
+			 * @example VALIDATION_ERROR
+			 */
+			code?: string;
+			/**
+			 * @description Extension member for additional error context (e.g., per-field validation).
+			 * @example [
+			 *       {
+			 *         "field": "email",
+			 *         "reason": "must be a valid email"
+			 *       },
+			 *       {
+			 *         "field": "password",
+			 *         "reason": "is required"
+			 *       }
+			 *     ]
+			 */
+			errors?: {
+				[key: string]: unknown;
+			}[];
+		};
+		ShopifySessionDto: {
+			/** @example my-shop.myshopify.com_987654321 */
+			id: string;
+			/** @example my-shop.myshopify.com */
+			shop: string;
+			/** @example  */
+			state: string;
+			/** @example true */
+			isOnline: boolean;
+			/** @example write_products,read_customers */
+			scope: string;
+			/**
+			 * Format: date-time
+			 * @example 2025-06-14T13:39:33.336Z
+			 */
+			expires: string | null;
+			/** @example shpat_def456...uvw012 */
+			accessToken: string;
+			onlineAccessInfo: {
+				/** @example 86399 */
+				expires_in?: number;
+				/** @example write_products,read_customers */
+				associated_user_scope?: string;
+				/** @example session_token_hash_string */
+				session?: string;
+				/** @example null */
+				account_number?: number | null;
+				associated_user: {
+					/** @example 987654321 */
+					id: number;
+					/** @example John */
+					first_name: string;
+					/** @example Doe */
+					last_name: string;
+					/**
+					 * Format: email
+					 * @example john@example.com
+					 */
+					email: string;
+					/** @example true */
+					account_owner: boolean;
+					/** @example en-US */
+					locale: string;
+					/** @example false */
+					collaborator: boolean;
+					/** @example true */
+					email_verified: boolean;
+				};
+			} | null;
+		};
+		SiteSummaryDto: {
+			/**
+			 * Format: uuid
+			 * @example 123e4567-e89b-12d3
+			 */
+			id: string;
+			/**
+			 * Format: uuid
+			 * @example 123e4567-e89b-12d3
+			 */
+			userId: string;
+			/** @example bio */
+			handle: string;
+			/** @example My Bio Site */
+			displayName?: string;
+			/**
+			 * Format: date-time
+			 * @example 2024-03-20T00:00:00Z
+			 */
+			createdAt: string;
+			/**
+			 * Format: date-time
+			 * @example 2024-03-20T00:00:00Z
+			 */
+			updatedAt: string;
+		};
+		SiteContentDto: Record<string, never>;
+		SiteDto: {
+			/**
+			 * Format: uuid
+			 * @example 123e4567-e89b-12d3
+			 */
+			id: string;
+			/**
+			 * Format: uuid
+			 * @example 123e4567-e89b-12d3
+			 */
+			userId: string;
+			/** @example bio */
+			handle: string;
+			/** @example My Bio Site */
+			displayName?: string;
+			/**
+			 * Format: date-time
+			 * @example 2024-03-20T00:00:00Z
+			 */
+			createdAt: string;
+			/**
+			 * Format: date-time
+			 * @example 2024-03-20T00:00:00Z
+			 */
+			updatedAt: string;
+			content: components['schemas']['SiteContentDto'];
+		};
+		SubmitUploadedFileSuccessDto: {
+			/**
+			 * @description discriminator enum property added by openapi-typescript
+			 * @enum {string}
+			 */
+			status: 'SUCCESS';
+			/** @example gid://shopify/MediaImage/12345678 */
+			id: string;
+			/** @example ugc_abc123def456 */
+			uploadId: string;
+		};
+		SubmitUploadedFileErrorDto: {
+			/**
+			 * @description discriminator enum property added by openapi-typescript
+			 * @enum {string}
+			 */
+			status: 'ERROR';
+			/** @example Failed to process file */
+			error: string;
+			/** @example ugc_abc123def456 */
+			uploadId: string;
+		};
+		UrlMetadataDto: {
+			/**
+			 * Format: uri
+			 * @description The URL that was fetched
+			 * @example https://example.com
+			 */
+			url: string;
+			/**
+			 * @description The page title from meta tags or title tag
+			 * @example Example Page Title
+			 */
+			title?: string;
+			/**
+			 * @description The page description from meta tags
+			 * @example A brief description of the page content
+			 */
+			description?: string;
+			site?: {
+				/**
+				 * @description The name of the website
+				 * @example Example Site
+				 */
+				name?: string;
+				/**
+				 * Format: uri
+				 * @description URL to the site-wide video if available
+				 * @example https://example.com/video
+				 */
+				video?: string;
+			};
+			media?: {
+				/**
+				 * Format: uri
+				 * @description Primary image URL from og:image or similar tags
+				 * @example https://example.com/image.jpg
+				 */
+				image?: string;
+				/**
+				 * Format: uri
+				 * @description Primary video URL from og:video or similar tags
+				 * @example https://example.com/video.mp4
+				 */
+				video?: string;
+				/**
+				 * Format: uri
+				 * @description Primary audio URL if available
+				 * @example https://example.com/audio.mp3
+				 */
+				audio?: string;
+			};
+			icons?: {
+				/**
+				 * Format: uri
+				 * @description URL to the favicon
+				 * @example https://example.com/favicon.ico
+				 */
+				favicon?: string;
+				/**
+				 * Format: uri
+				 * @description URL to the touch icon (e.g. apple-touch-icon)
+				 * @example https://example.com/apple-touch-icon.png
+				 */
+				touch?: string;
+				/**
+				 * Format: uri
+				 * @description URL to the mask icon (e.g. Safari pinned tab)
+				 * @example https://example.com/mask-icon.svg
+				 */
+				mask?: string;
+			};
+		};
+	};
+	responses: never;
+	parameters: never;
+	requestBodies: never;
+	headers: never;
+	pathItems: never;
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    createShopifySession: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": components["schemas"]["ShopifySessionDto"];
-            };
-        };
-        responses: {
-            /** @description Session created successfully */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Bad request */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AppErrorDto"];
-                };
-            };
-            /** @description Internal server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AppErrorDto"];
-                };
-            };
-        };
-    };
-    getShopifySession: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                sessionId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ShopifySessionDto"];
-                };
-            };
-            /** @description Resource not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AppErrorDto"];
-                };
-            };
-            /** @description Internal server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AppErrorDto"];
-                };
-            };
-        };
-    };
-    deleteShopifySession: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                sessionId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Session deleted successfully */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Resource not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AppErrorDto"];
-                };
-            };
-            /** @description Internal server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AppErrorDto"];
-                };
-            };
-        };
-    };
-    getShopifySessionByShop: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                shopId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ShopifySessionDto"][];
-                };
-            };
-            /** @description Resource not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AppErrorDto"];
-                };
-            };
-            /** @description Internal server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AppErrorDto"];
-                };
-            };
-        };
-    };
-    checkHealth: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /**
-                         * @example Up
-                         * @enum {string}
-                         */
-                        status: "Up" | "Down";
-                        /** @example App is up and running */
-                        message: string;
-                        /** @example v1.0.0d */
-                        version: string;
-                    };
-                };
-            };
-            /** @description Internal server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AppErrorDto"];
-                };
-            };
-        };
-    };
-    getInfo: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @example v1.0.0d */
-                        version: string;
-                        /** @example https://api.saku.so */
-                        url: string;
-                        /** @example production */
-                        env: string;
-                    };
-                };
-            };
-            /** @description Internal server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AppErrorDto"];
-                };
-            };
-        };
-    };
-    listShopifySites: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SiteSummaryDto"][];
-                };
-            };
-        };
-    };
-    updateShopifySiteContent: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                siteId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": {
-                    content: components["schemas"]["SiteContentDto"];
-                };
-            };
-        };
-        responses: {
-            /** @description Successful response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SiteDto"];
-                };
-            };
-            /** @description Bad request */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AppErrorDto"];
-                };
-            };
-            /** @description Resource not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AppErrorDto"];
-                };
-            };
-        };
-    };
-    getShopifySiteContentByShopAndHandle: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                shop: string;
-                handle: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SiteContentDto"];
-                };
-            };
-            /** @description Resource not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AppErrorDto"];
-                };
-            };
-        };
-    };
-    listUgcMediaFiles: {
-        parameters: {
-            query?: {
-                first?: number;
-                after?: string;
-                sortKey?: "CREATED_AT" | "FILENAME" | "ID" | "ORIGINAL_UPLOAD_SIZE" | "RELEVANCE" | "UPDATED_AT";
-                reverse?: boolean | null;
-                fileTypes?: ("IMAGE" | "VIDEO" | "FILE" | "MODEL_3D" | "EXTERNAL_VIDEO")[];
-                fileName?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        files: {
-                            /** @example gid://shopify/MediaImage/12345678 */
-                            id: string;
-                            /** @example Product lifestyle image */
-                            alt: string;
-                            /**
-                             * Format: date-time
-                             * @example 2024-01-15T10:30:00Z
-                             */
-                            createdAt: string;
-                            previewImage?: {
-                                id: string;
-                                /** Format: uri */
-                                url: string;
-                            };
-                            /** Format: uri */
-                            url: string;
-                            /** @example product-1.jpg */
-                            fileName: string;
-                            details: {
-                                /** @enum {string} */
-                                type: "image";
-                                id?: string;
-                                width?: number;
-                                height?: number;
-                            } | {
-                                /** @enum {string} */
-                                type: "video";
-                                width: number;
-                                height: number;
-                                format: string;
-                            } | {
-                                /** @enum {string} */
-                                type: "file";
-                                mimeType?: string;
-                            };
-                        }[];
-                        pageInfo: {
-                            hasNextPage: boolean;
-                            endCursor?: string;
-                        };
-                    };
-                };
-            };
-            /** @description Bad request */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AppErrorDto"];
-                };
-            };
-            /** @description Internal server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AppErrorDto"];
-                };
-            };
-        };
-    };
-    createUgcUploadTargets: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": {
-                    files: {
-                        /** @example product-image.jpg */
-                        filename: string;
-                        /** @example image/jpeg */
-                        mimeType: string;
-                        /** @example 1024000 */
-                        fileSize: number;
-                        /**
-                         * @example IMAGE
-                         * @enum {string}
-                         */
-                        contentType: "IMAGE" | "VIDEO" | "FILE";
-                    }[];
-                };
-            };
-        };
-        responses: {
-            /** @description Successful response */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        files: {
-                            uploadTarget: {
-                                /**
-                                 * Format: uri
-                                 * @example https://shopify-staged-uploads.storage.googleapis.com/
-                                 */
-                                url: string;
-                                /**
-                                 * Format: uri
-                                 * @example https://cdn.shopify.com/s/files/1/0123/4567/files/image.jpg
-                                 */
-                                resourceUrl: string;
-                                parameters: {
-                                    /** @example key */
-                                    name: string;
-                                    /** @example tmp/ugc/abc123/image.jpg */
-                                    value: string;
-                                }[];
-                            };
-                            /** @example ugc_abc123def456 */
-                            uploadId: string;
-                            /**
-                             * Format: date-time
-                             * @example 2024-01-15T10:30:00Z
-                             */
-                            expiresAt: string;
-                        }[];
-                    };
-                };
-            };
-            /** @description Bad request */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AppErrorDto"];
-                };
-            };
-            /** @description Internal server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AppErrorDto"];
-                };
-            };
-        };
-    };
-    submitUgcUploadedFiles: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": {
-                    files: {
-                        /** @example ugc_abc123def456 */
-                        uploadId: string;
-                        /**
-                         * Format: uri
-                         * @example https://cdn.shopify.com/s/files/1/0123/4567/files/product-1.jpg
-                         */
-                        resourceUrl: string;
-                        /** @example product-1.jpg */
-                        filename: string;
-                        /**
-                         * @example IMAGE
-                         * @enum {string}
-                         */
-                        contentType: "IMAGE" | "VIDEO" | "FILE";
-                    }[];
-                };
-            };
-        };
-        responses: {
-            /** @description Successful response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        files: (components["schemas"]["SubmitUploadedFileSuccessDto"] | components["schemas"]["SubmitUploadedFileErrorDto"])[];
-                    };
-                };
-            };
-            /** @description Bad request */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AppErrorDto"];
-                };
-            };
-            /** @description Internal server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AppErrorDto"];
-                };
-            };
-        };
-    };
-    getSite: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                siteId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SiteDto"];
-                };
-            };
-            /** @description Resource not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AppErrorDto"];
-                };
-            };
-        };
-    };
-    getSiteContent: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                siteId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SiteContentDto"];
-                };
-            };
-            /** @description Resource not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AppErrorDto"];
-                };
-            };
-        };
-    };
-    getUrlMetadata: {
-        parameters: {
-            query: {
-                url: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UrlMetadataDto"];
-                };
-            };
-            /** @description Bad request */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AppErrorDto"];
-                };
-            };
-            /** @description Resource not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AppErrorDto"];
-                };
-            };
-            /** @description Internal server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AppErrorDto"];
-                };
-            };
-        };
-    };
+	createShopifySession: {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		requestBody?: {
+			content: {
+				'application/json': components['schemas']['ShopifySessionDto'];
+			};
+		};
+		responses: {
+			/** @description Session created successfully */
+			204: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content?: never;
+			};
+			/** @description Bad request */
+			400: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['AppErrorDto'];
+				};
+			};
+			/** @description Internal server error */
+			500: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['AppErrorDto'];
+				};
+			};
+		};
+	};
+	getShopifySession: {
+		parameters: {
+			query?: never;
+			header?: never;
+			path: {
+				sessionId: string;
+			};
+			cookie?: never;
+		};
+		requestBody?: never;
+		responses: {
+			/** @description Successful response */
+			200: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['ShopifySessionDto'];
+				};
+			};
+			/** @description Resource not found */
+			404: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['AppErrorDto'];
+				};
+			};
+			/** @description Internal server error */
+			500: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['AppErrorDto'];
+				};
+			};
+		};
+	};
+	deleteShopifySession: {
+		parameters: {
+			query?: never;
+			header?: never;
+			path: {
+				sessionId: string;
+			};
+			cookie?: never;
+		};
+		requestBody?: never;
+		responses: {
+			/** @description Session deleted successfully */
+			204: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content?: never;
+			};
+			/** @description Resource not found */
+			404: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['AppErrorDto'];
+				};
+			};
+			/** @description Internal server error */
+			500: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['AppErrorDto'];
+				};
+			};
+		};
+	};
+	getShopifySessionByShop: {
+		parameters: {
+			query?: never;
+			header?: never;
+			path: {
+				shopId: string;
+			};
+			cookie?: never;
+		};
+		requestBody?: never;
+		responses: {
+			/** @description Successful response */
+			200: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['ShopifySessionDto'][];
+				};
+			};
+			/** @description Resource not found */
+			404: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['AppErrorDto'];
+				};
+			};
+			/** @description Internal server error */
+			500: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['AppErrorDto'];
+				};
+			};
+		};
+	};
+	checkHealth: {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		requestBody?: never;
+		responses: {
+			/** @description Successful response */
+			200: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': {
+						/**
+						 * @example Up
+						 * @enum {string}
+						 */
+						status: 'Up' | 'Down';
+						/** @example App is up and running */
+						message: string;
+						/** @example v1.0.0d */
+						version: string;
+					};
+				};
+			};
+			/** @description Internal server error */
+			500: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['AppErrorDto'];
+				};
+			};
+		};
+	};
+	getInfo: {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		requestBody?: never;
+		responses: {
+			/** @description Successful response */
+			200: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': {
+						/** @example v1.0.0d */
+						version: string;
+						/** @example https://api.saku.so */
+						url: string;
+						/** @example production */
+						env: string;
+					};
+				};
+			};
+			/** @description Internal server error */
+			500: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['AppErrorDto'];
+				};
+			};
+		};
+	};
+	listShopifySites: {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		requestBody?: never;
+		responses: {
+			/** @description Successful response */
+			200: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['SiteSummaryDto'][];
+				};
+			};
+		};
+	};
+	updateShopifySiteContent: {
+		parameters: {
+			query?: never;
+			header?: never;
+			path: {
+				siteId: string;
+			};
+			cookie?: never;
+		};
+		requestBody?: {
+			content: {
+				'application/json': {
+					content: components['schemas']['SiteContentDto'];
+				};
+			};
+		};
+		responses: {
+			/** @description Successful response */
+			200: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['SiteDto'];
+				};
+			};
+			/** @description Bad request */
+			400: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['AppErrorDto'];
+				};
+			};
+			/** @description Resource not found */
+			404: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['AppErrorDto'];
+				};
+			};
+		};
+	};
+	getShopifySiteContentByShopAndHandle: {
+		parameters: {
+			query?: never;
+			header?: never;
+			path: {
+				shop: string;
+				handle: string;
+			};
+			cookie?: never;
+		};
+		requestBody?: never;
+		responses: {
+			/** @description Successful response */
+			200: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['SiteContentDto'];
+				};
+			};
+			/** @description Resource not found */
+			404: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['AppErrorDto'];
+				};
+			};
+		};
+	};
+	listUgcMediaFiles: {
+		parameters: {
+			query?: {
+				first?: number;
+				after?: string;
+				sortKey?:
+					| 'CREATED_AT'
+					| 'FILENAME'
+					| 'ID'
+					| 'ORIGINAL_UPLOAD_SIZE'
+					| 'RELEVANCE'
+					| 'UPDATED_AT';
+				reverse?: boolean | null;
+				fileTypes?: ('IMAGE' | 'VIDEO' | 'FILE' | 'MODEL_3D' | 'EXTERNAL_VIDEO')[];
+				fileName?: string;
+			};
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		requestBody?: never;
+		responses: {
+			/** @description Successful response */
+			200: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': {
+						files: {
+							/** @example gid://shopify/MediaImage/12345678 */
+							id: string;
+							/** @example Product lifestyle image */
+							alt: string;
+							/**
+							 * Format: date-time
+							 * @example 2024-01-15T10:30:00Z
+							 */
+							createdAt: string;
+							previewImage?: {
+								id: string;
+								/** Format: uri */
+								url: string;
+							};
+							/** Format: uri */
+							url: string;
+							/** @example product-1.jpg */
+							fileName: string;
+							details:
+								| {
+										/** @enum {string} */
+										type: 'image';
+										id?: string;
+										width?: number;
+										height?: number;
+								  }
+								| {
+										/** @enum {string} */
+										type: 'video';
+										width: number;
+										height: number;
+										format: string;
+								  }
+								| {
+										/** @enum {string} */
+										type: 'file';
+										mimeType?: string;
+								  };
+						}[];
+						pageInfo: {
+							hasNextPage: boolean;
+							endCursor?: string;
+						};
+					};
+				};
+			};
+			/** @description Bad request */
+			400: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['AppErrorDto'];
+				};
+			};
+			/** @description Internal server error */
+			500: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['AppErrorDto'];
+				};
+			};
+		};
+	};
+	createUgcUploadTargets: {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		requestBody?: {
+			content: {
+				'application/json': {
+					files: {
+						/** @example product-image.jpg */
+						filename: string;
+						/** @example image/jpeg */
+						mimeType: string;
+						/** @example 1024000 */
+						fileSize: number;
+						/**
+						 * @example IMAGE
+						 * @enum {string}
+						 */
+						contentType: 'IMAGE' | 'VIDEO' | 'FILE';
+					}[];
+				};
+			};
+		};
+		responses: {
+			/** @description Successful response */
+			201: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': {
+						files: {
+							uploadTarget: {
+								/**
+								 * Format: uri
+								 * @example https://shopify-staged-uploads.storage.googleapis.com/
+								 */
+								url: string;
+								/**
+								 * Format: uri
+								 * @example https://cdn.shopify.com/s/files/1/0123/4567/files/image.jpg
+								 */
+								resourceUrl: string;
+								parameters: {
+									/** @example key */
+									name: string;
+									/** @example tmp/ugc/abc123/image.jpg */
+									value: string;
+								}[];
+							};
+							/** @example ugc_abc123def456 */
+							uploadId: string;
+							/**
+							 * Format: date-time
+							 * @example 2024-01-15T10:30:00Z
+							 */
+							expiresAt: string;
+						}[];
+					};
+				};
+			};
+			/** @description Bad request */
+			400: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['AppErrorDto'];
+				};
+			};
+			/** @description Internal server error */
+			500: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['AppErrorDto'];
+				};
+			};
+		};
+	};
+	submitUgcUploadedFiles: {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		requestBody?: {
+			content: {
+				'application/json': {
+					files: {
+						/** @example ugc_abc123def456 */
+						uploadId: string;
+						/**
+						 * Format: uri
+						 * @example https://cdn.shopify.com/s/files/1/0123/4567/files/product-1.jpg
+						 */
+						resourceUrl: string;
+						/** @example product-1.jpg */
+						filename: string;
+						/**
+						 * @example IMAGE
+						 * @enum {string}
+						 */
+						contentType: 'IMAGE' | 'VIDEO' | 'FILE';
+					}[];
+				};
+			};
+		};
+		responses: {
+			/** @description Successful response */
+			200: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': {
+						files: (
+							| components['schemas']['SubmitUploadedFileSuccessDto']
+							| components['schemas']['SubmitUploadedFileErrorDto']
+						)[];
+					};
+				};
+			};
+			/** @description Bad request */
+			400: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['AppErrorDto'];
+				};
+			};
+			/** @description Internal server error */
+			500: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['AppErrorDto'];
+				};
+			};
+		};
+	};
+	getSite: {
+		parameters: {
+			query?: never;
+			header?: never;
+			path: {
+				siteId: string;
+			};
+			cookie?: never;
+		};
+		requestBody?: never;
+		responses: {
+			/** @description Successful response */
+			200: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['SiteDto'];
+				};
+			};
+			/** @description Resource not found */
+			404: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['AppErrorDto'];
+				};
+			};
+		};
+	};
+	getSiteContent: {
+		parameters: {
+			query?: never;
+			header?: never;
+			path: {
+				siteId: string;
+			};
+			cookie?: never;
+		};
+		requestBody?: never;
+		responses: {
+			/** @description Successful response */
+			200: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['SiteContentDto'];
+				};
+			};
+			/** @description Resource not found */
+			404: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['AppErrorDto'];
+				};
+			};
+		};
+	};
+	getUrlMetadata: {
+		parameters: {
+			query: {
+				url: string;
+			};
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		requestBody?: never;
+		responses: {
+			/** @description Successful response */
+			200: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['UrlMetadataDto'];
+				};
+			};
+			/** @description Bad request */
+			400: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['AppErrorDto'];
+				};
+			};
+			/** @description Resource not found */
+			404: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['AppErrorDto'];
+				};
+			};
+			/** @description Internal server error */
+			500: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['AppErrorDto'];
+				};
+			};
+		};
+	};
 }
