@@ -34,7 +34,7 @@
 	},
 	"dependencies": {
 		"@asteasolutions/zod-to-openapi": "^7.3.4",
-		"@blgc/utils": "^0.0.56",
+		"@blgc/utils": "^0.0.57",
 		"@hono/zod-openapi": "^0.19.8",
 		"@oslojs/crypto": "^1.0.1",
 		"@oslojs/encoding": "^1.1.0",

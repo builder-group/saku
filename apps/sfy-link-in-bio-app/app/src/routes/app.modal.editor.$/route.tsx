@@ -2,9 +2,9 @@ import { useLoaderData } from '@remix-run/react';
 import { useAppBridge } from '@shopify/app-bridge-react';
 import { withGlobalBind } from 'feature-react/state';
 import React from 'react';
+import { coreApiClient } from '@/environment';
 import { createEditor, Editor, siteNodePreset, TSiteNode } from '@/features/editor';
 import { TLoaderFunction } from '@/types';
-import { coreApiClient } from '../../environment';
 import './styles.module.css';
 
 const Page: React.FC = () => {

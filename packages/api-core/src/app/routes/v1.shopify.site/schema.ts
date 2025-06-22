@@ -44,3 +44,27 @@ export const UpdateShopifySiteContentRoute = createRoute({
 		404: NotFoundResponse
 	}
 });
+
+export const GetSiteContentByShopAndHandleRoute = createRoute({
+	method: 'get',
+	path: '/v1/shopify/site/shop/{shop}/{handle}/content',
+	tags: ['shopify', 'site'],
+	summary: 'Get site content by shop and handle',
+	operationId: 'getShopifySiteContentByShopAndHandle',
+	request: {
+		params: z.object({
+			shop: z.string().openapi({
+				example: 'my-shop.myshopify.com',
+				description: 'Shop domain'
+			}),
+			handle: z.string().openapi({
+				example: 'bio',
+				description: 'Site handle/slug'
+			})
+		})
+	},
+	responses: {
+		200: JsonSuccessResponse(SSiteContentDto),
+		404: NotFoundResponse
+	}
+});

@@ -148,6 +148,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/shopify/site/shop/{shop}/{handle}/content": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get site content by shop and handle */
+        get: operations["getShopifySiteContentByShopAndHandle"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/shopify/ugc/files": {
         parameters: {
             query?: never;
@@ -791,6 +808,38 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AppErrorDto"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppErrorDto"];
+                };
+            };
+        };
+    };
+    getShopifySiteContentByShopAndHandle: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                shop: string;
+                handle: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SiteContentDto"];
                 };
             };
             /** @description Resource not found */

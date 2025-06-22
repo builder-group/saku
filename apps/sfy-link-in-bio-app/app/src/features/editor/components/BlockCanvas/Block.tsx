@@ -46,7 +46,7 @@ export const Block: React.FC<TBlockProps> = (props) => {
 		[blockState]
 	);
 
-	const renderBlock = () => {
+	const renderBlock = React.useCallback(() => {
 		switch (blockState._v.type) {
 			case 'about':
 				return <AboutBlock blockState={blockState as TState<TAboutBlock, []>} />;
@@ -59,7 +59,7 @@ export const Block: React.FC<TBlockProps> = (props) => {
 			default:
 				return null;
 		}
-	};
+	}, [blockState]);
 
 	return (
 		<div

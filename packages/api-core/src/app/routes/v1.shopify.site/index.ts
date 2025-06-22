@@ -1,9 +1,13 @@
 import { AppError } from '@repo/hono-utils';
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import { router } from '@/app/router';
 import { db, siteAccountTable, siteConnectionTable, siteTable } from '@/environment';
 import { verifyShopifySession } from '@/lib';
-import { GetShopifySitesRoute, UpdateShopifySiteContentRoute } from './schema';
+import {
+	GetShopifySitesRoute,
+	GetSiteContentByShopAndHandleRoute,
+	UpdateShopifySiteContentRoute
+} from './schema';
 
 router.openapi(GetShopifySitesRoute, async (c) => {
 	const { shopId } = await verifyShopifySession(c);
@@ -105,4 +109,39 @@ router.openapi(UpdateShopifySiteContentRoute, async (c) => {
 		},
 		200
 	);
+});
+
+router.openapi(GetSiteContentByShopAndHandleRoute, async (c) => {
+	const { shop, handle } = c.req.valid('param');
+
+	const [site] = await db
+		.select({
+			content: siteTable.content
+		})
+		.from(siteTable)
+		.innerJoin(siteConnectionTable, eq(siteTable.id, siteConnectionTable.siteId))
+		.innerJoin(
+			siteAccountTable,
+			and(
+				eq(siteConnectionTable.provider, siteAccountTable.provider),
+				eq(siteConnectionTable.providerAccountId, siteAccountTable.providerAccountId)
+			)
+		)
+		.where(
+			and(
+				eq(siteTable.handle, handle),
+				eq(siteAccountTable.provider, 'shopify'),
+				eq(siteAccountTable.providerAccountId, shop)
+			)
+		)
+		.limit(1);
+
+	if (site == null) {
+		throw new AppError('#ERR_SITE_NOT_FOUND', 404, {
+			title: 'Site not found',
+			detail: `Site with handle '${handle}' not found for shop '${shop}'`
+		});
+	}
+
+	return c.json(site.content, 200);
 });

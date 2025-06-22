@@ -1,7 +1,7 @@
 import { AppError, errorHandler as utilsErrorHandler } from '@repo/hono-utils';
 import type * as hono from 'hono/types';
 import { DatabaseError } from 'pg';
-import { logger } from '../../environment';
+import { logger } from '@/environment';
 
 export const errorHandler: hono.ErrorHandler = async (err, c) => {
 	if (err instanceof DatabaseError) {
