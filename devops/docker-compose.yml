@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  # Shopify Link-in-Bio App
+  sfy-link-in-bio-app:
+    build:
+      context: ../
+      dockerfile: devops/apps/sfy-link-in-bio-app/Dockerfile
+      args:
+        PROJECT: '@repo/sfy-link-in-bio-app'
+    ports:
+      - '3000:3000'
+    env_file:
+      - .env.local
+    restart: unless-stopped
