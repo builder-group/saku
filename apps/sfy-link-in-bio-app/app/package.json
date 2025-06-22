@@ -20,13 +20,10 @@
 		"install:clean": "pnpm run clean && pnpm install",
 		"lint": "eslint --cache --cache-location ./node_modules/.cache/eslint .",
 		"shopify": "shopify",
-		"shopify:config:link": "shopify app config link",
-		"shopify:config:use": "shopify app config use",
-		"shopify:deploy": "shopify app deploy",
-		"shopify:env": "shopify app env",
-		"shopify:generate": "shopify app generate",
+		"shopify:deploy:local": "shopify app deploy -c shopify.app.local.toml",
+		"shopify:deploy:prod": "shopify app deploy -c shopify.app.prod.toml",
 		"start": "remix-serve ./build/server/index.js",
-		"start:dev": "shopify app dev",
+		"start:dev": "shopify app dev -c shopify.app.local.toml",
 		"update:latest": "pnpm update --latest '!react' '!react-dom' '!@types/react' '!@types/react-dom'"
 	},
 	"dependencies": {

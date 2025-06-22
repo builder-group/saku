@@ -1,9 +1,9 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
 client_id = "4c9dc129e68b889d9a351e14d8e36a02"
-name = "saku-link-in-bio"
-handle = "saku-link-in-bio"
-application_url = "https://diff-shelter-subdivision-livestock.trycloudflare.com"
+name = "Saku Link In Bio (Local)"
+handle = "saku-link-in-bio-local"
+application_url = "https://segment-partition-vi-cannon.trycloudflare.com"
 embedded = true
 
 [build]
@@ -26,10 +26,10 @@ uri = "/webhooks/app/scopes_update"
 scopes = "write_files,write_online_store_navigation,read_online_store_navigation"
 
 [auth]
-redirect_urls = ["https://diff-shelter-subdivision-livestock.trycloudflare.com/auth/callback", "https://diff-shelter-subdivision-livestock.trycloudflare.com/auth/shopify/callback", "https://diff-shelter-subdivision-livestock.trycloudflare.com/api/auth/callback"]
+redirect_urls = ["https://segment-partition-vi-cannon.trycloudflare.com/auth/callback", "https://segment-partition-vi-cannon.trycloudflare.com/auth/shopify/callback", "https://segment-partition-vi-cannon.trycloudflare.com/api/auth/callback"]
 
 [app_proxy]
-url = "https://diff-shelter-subdivision-livestock.trycloudflare.com/a/saku"
+url = "https://segment-partition-vi-cannon.trycloudflare.com/a/saku"
 subpath = "saku"
 prefix = "a"
 

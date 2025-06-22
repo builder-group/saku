@@ -7,10 +7,10 @@ node_modules
 
 # Local env files
 .env
+.env.dev
+.env.prod
 .env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env.test
 
 # Testing
 coverage
