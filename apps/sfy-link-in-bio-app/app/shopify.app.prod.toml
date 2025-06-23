@@ -3,7 +3,7 @@
 client_id = "2b94f79e87ae864f86d54772206e0d2e"
 name = "Saku Link In Bio"
 handle = "saku-link-in-bio"
-application_url = "https://responsible-cooler-pl-mighty.trycloudflare.com"
+application_url = "https://saku-link-in-bio.fly.dev"
 embedded = true
 
 [build]
@@ -22,10 +22,14 @@ uri = "/webhooks/app/uninstalled"
 scopes = "write_files,write_online_store_navigation,read_online_store_navigation"
 
 [auth]
-redirect_urls = ["https://responsible-cooler-pl-mighty.trycloudflare.com/auth/callback", "https://responsible-cooler-pl-mighty.trycloudflare.com/auth/shopify/callback", "https://responsible-cooler-pl-mighty.trycloudflare.com/api/auth/callback"]
+redirect_urls = [
+    "https://saku-link-in-bio.fly.dev/auth/callback",
+    "https://saku-link-in-bio.fly.dev/auth/shopify/callback",
+    "https://saku-link-in-bio.fly.dev/api/auth/callback",
+]
 
 [app_proxy]
-url = "https://responsible-cooler-pl-mighty.trycloudflare.com/a/saku"
+url = "https://saku-link-in-bio.fly.dev/a/saku"
 subpath = "saku"
 prefix = "a"
 

@@ -1,13 +1,16 @@
-# fly.toml app configuration file generated for saku-link-in-bio-falling-snow-6959 on 2025-06-22T16:25:58+02:00
+# fly.toml app configuration file generated for saku-link-in-bio on 2025-06-23T07:03:21+02:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'saku-link-in-bio-falling-snow-6959'
+app = 'saku-link-in-bio'
 primary_region = 'fra'
 
 [build]
-dockerfile = "Dockerfile"
+dockerfile = 'Dockerfile'
+
+[env]
+PORT = '3000'
 
 [http_service]
 internal_port = 3000
