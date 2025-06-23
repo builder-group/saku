@@ -2,30 +2,25 @@
 
 Centralized deployment and infrastructure configuration for the Saku monorepo.
 
-## Why Centralized?
-
-Monorepo issues solved:
-- Docker build context needs full repo access for `turbo prune`
-- Turborepo workspace resolution from root
-- Shared infrastructure without duplication
-
 ## Structure
 
 ```
 devops/
 ├── docker-compose.yml              # Local development
-├── .env.local                     # Development environment
-├── apps/
-│   └── sfy-link-in-bio-app/
-│       ├── Dockerfile
-│       └── fly.toml
-└── README.md
+├── .env.template                   # Copy to .env.local
+└── sfy-link-in-bio-app/
+    ├── Dockerfile
+    └── fly.toml
 ```
 
 ## Usage
 
 ### Local Development
+
 ```bash
+# Copy environment template
+cp devops/.env.template devops/.env.local
+
 # Start services
 pnpm run docker:dev
 
@@ -33,26 +28,37 @@ pnpm run docker:dev
 pnpm run docker:dev:down
 ```
 
-### Production
-```bash
-# Build
-pnpm run docker:build:sfy-link-in-bio
+### Production Deployment
 
-# Deploy to Fly.io
+```bash
+# Build & deploy to Fly.io
 pnpm run fly:deploy:sfy-link-in-bio
 ```
 
-### Environment Variables
+## ❓ FAQ
 
-**Local**: Copy `devops/.env.template` to `devops/.env.local` and fill in your values
+### Why centralized DevOps over per-app configs?
 
-**Production**: Use Fly.io secrets
-```bash
-fly secrets import < apps/sfy-link-in-bio-app/app/.env.prod -a your-app-name
-```
+* `turbo prune` needs full repo access
+* Turborepo must run from root for proper workspace resolution
 
-## Adding Apps
+### Why run Docker commands from the monorepo root?
 
-1. Create `devops/apps/your-app/` with `Dockerfile` and `fly.toml`
-2. Add service to `docker-compose.yml`
-3. Add scripts to root `package.json` 
+All Docker actions (`build`, `deploy`) run from root to:
+
+1. Resolve dependencies with `turbo prune`
+2. Provide full context via `COPY . .`
+3. Access shared packages like `@repo/types` and `@repo/api-core`
+
+### How do I add a new app?
+
+1. Create `devops/your-app/` with `Dockerfile` and `fly.toml`
+2. Add commands to root `package.json`:
+   ```json
+   "docker:build:your-app": "docker build -f devops/your-app/Dockerfile -t saku-your-app .",
+   "fly:deploy:your-app": "fly deploy -c devops/your-app/fly.toml"
+   ```
+
+## 💡 Resources / References
+
+- [Dockerizing Turborepo Remix Application](https://medium.com/@joudwawad/dockerizing-turborepo-remix-application-fca679002c23)

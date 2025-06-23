@@ -5,9 +5,7 @@ services:
   sfy-link-in-bio-app:
     build:
       context: ../
-      dockerfile: devops/apps/sfy-link-in-bio-app/Dockerfile
-      args:
-        PROJECT: '@repo/sfy-link-in-bio-app'
+      dockerfile: devops/sfy-link-in-bio-app/Dockerfile
     ports:
       - '3000:3000'
     env_file:
