@@ -44,6 +44,7 @@ Research Docker best practices for your specific app type (Node.js API, Remix ap
 - **Reference**: See `devops/sfy-link-in-bio-app/Dockerfile` as Remix example
 
 Update key parts:
+
 - `turbo prune @repo/your-app --docker`
 - `pnpm turbo run build --filter=@repo/your-app`
 - File paths and build commands for your app type
@@ -51,6 +52,7 @@ Update key parts:
 ### 3. Create fly.toml
 
 **Option A - Copy existing:**
+
 ```bash
 # Copy from similar app type
 cp devops/sfy-link-in-bio-app/fly.toml devops/your-app/fly.toml
@@ -60,6 +62,7 @@ fly launch --no-deploy -c devops/your-app/fly.toml
 ```
 
 **Option B - Generate new:**
+
 ```bash
 fly launch --no-deploy --name your-app --internal-port 3000 --dockerfile devops/your-app/Dockerfile
 ```
@@ -87,6 +90,15 @@ Add to root `package.json`:
 
 ```bash
 pnpm fly:deploy:your-app
+```
+
+## 🔧 Troubleshooting
+
+### Check deployment logs
+
+```bash
+# View live logs
+fly logs -a your-app
 ```
 
 ## ❓ FAQ
