@@ -115,7 +115,3 @@ All Docker actions (`build`, `deploy`) run from root to:
 1. Resolve dependencies with `turbo prune`
 2. Provide full context via `COPY . .`
 3. Access shared packages like `@repo/types` and `@repo/api-core`
-
-## 💡 Resources / References
-
-- [Dockerizing Turborepo Remix Application](https://medium.com/@joudwawad/dockerizing-turborepo-remix-application-fca679002c23)
