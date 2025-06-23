@@ -7,7 +7,6 @@ app = 'saku-link-in-bio-falling-snow-6959'
 primary_region = 'fra'
 
 [build]
-dockerfile = "./devops/apps/sfy-link-in-bio-app/Dockerfile"
 [build.args]
 PROJECT = "@repo/sfy-link-in-bio-app"
 

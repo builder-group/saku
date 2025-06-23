@@ -20,7 +20,7 @@
 		"docker:dev": "cd devops && docker compose up --build",
 		"docker:dev:down": "cd devops && docker compose down",
 		"docker:run:sfy-link-in-bio": "docker run -p 3000:3000 saku-sfy-link-in-bio",
-		"fly:deploy:sfy-link-in-bio": "fly deploy --config devops/apps/sfy-link-in-bio-app/fly.toml",
+		"fly:deploy:sfy-link-in-bio": "fly deploy -c devops/apps/sfy-link-in-bio-app/fly.toml --dockerfile devops/apps/sfy-link-in-bio-app/Dockerfile",
 		"format": "prettier --write \"**/*.{ts,tsx,md,json,js,jsx}\"",
 		"install:clean": "pnpm clean && pnpm install && pnpm build",
 		"lint": "turbo run lint",
