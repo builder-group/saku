@@ -16,10 +16,9 @@
 	"scripts": {
 		"build": "turbo run build",
 		"clean": "turbo run clean && shx rm -rf .turbo && shx rm -rf .vercel && shx rm -rf node_modules",
-		"docker:build:sfy-link-in-bio-app": "docker build -f devops/sfy-link-in-bio-app/Dockerfile -t saku-sfy-link-in-bio-app .",
 		"docker:dev": "docker compose up --build -f devops/docker-compose.yaml",
 		"docker:dev:down": "docker compose down -f devops/docker-compose.yaml",
-		"fly:deploy:sfy-link-in-bio-app": "fly deploy -c devops/sfy-link-in-bio-app/fly.toml",
+		"fly:deploy:sfy-link-in-bio-app": "fly deploy -c devops/sfy-link-in-bio-app/fly.toml --no-cache",
 		"format": "prettier --write \"**/*.{ts,tsx,md,json,js,jsx}\"",
 		"install:clean": "pnpm clean && pnpm install && pnpm build",
 		"lint": "turbo run lint",

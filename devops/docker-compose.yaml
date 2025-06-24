@@ -6,6 +6,8 @@ services:
     build:
       context: ../
       dockerfile: devops/sfy-link-in-bio-app/Dockerfile
+      args:
+        - VITE_CLIENT_API_CORE_URL=${VITE_CLIENT_API_CORE_URL:-http://127.0.0.1:8787}
     ports:
       - '3000:3000'
     env_file:

@@ -7,6 +7,7 @@ router.openapi(GetInfoRoute, (c) => {
 		{
 			version: appConfig.version,
 			url: appConfig.url,
+			appUrl: appConfig.client.appUrl,
 			env: appConfig.env
 		},
 		200

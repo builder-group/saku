@@ -75,6 +75,9 @@ fly secrets import < .env.prod -a your-app
 
 # Or set individual secrets
 fly secrets set DATABASE_URL=postgres://... -a your-app
+
+# Check secrets
+fly secrets list -a your-app
 ```
 
 ### 5. Add deployment commands
@@ -82,7 +85,6 @@ fly secrets set DATABASE_URL=postgres://... -a your-app
 Add to root `package.json`:
 
 ```json
-"docker:build:your-app": "docker build -f devops/your-app/Dockerfile -t saku-your-app .",
 "fly:deploy:your-app": "fly deploy -c devops/your-app/fly.toml"
 ```
 

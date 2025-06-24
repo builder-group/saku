@@ -9,6 +9,11 @@ primary_region = 'fra'
 [build]
 dockerfile = 'Dockerfile'
 
+[build.args]
+# Set these via environment variables or modify directly (https://saku-link-in-bio.fly.dev/api):
+# fly deploy --build-arg VITE_CLIENT_API_CORE_URL=https://api.saku.so
+VITE_CLIENT_API_CORE_URL = 'https://saku-link-in-bio.fly.dev/api'
+
 [env]
 PORT = '3000'
 

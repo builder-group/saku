@@ -60,6 +60,15 @@ RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store \
 
 # Copy source code and build the project
 COPY --from=pruner /app/out/full/ .
+
+# Remove any .env files that might override environment variables from build args
+RUN find . -name ".env*" -type f -delete
+
+# Set environment variables from build args (for Vite bundling)
+ARG VITE_CLIENT_API_CORE_URL
+ENV VITE_CLIENT_API_CORE_URL=$VITE_CLIENT_API_CORE_URL
+
+# Build the project
 RUN pnpm turbo run build --filter=@repo/sfy-link-in-bio-app
 
 # =============================================================================

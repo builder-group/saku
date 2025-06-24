@@ -13,6 +13,7 @@ export const GetInfoRoute = createRoute({
 			z.object({
 				version: z.string().openapi({ example: 'v1.0.0d' }),
 				url: z.string().openapi({ example: 'https://api.saku.so' }),
+				appUrl: z.string().openapi({ example: 'https://app.saku.so' }),
 				env: z.string().openapi({ example: 'production' })
 			})
 		),
