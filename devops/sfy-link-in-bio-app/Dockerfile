@@ -1,17 +1,23 @@
 # syntax=docker/dockerfile:1
 
+# =============================================================================
+# Multi-stage Docker build for Remix app in Turborepo monorepo
+# Based on official Turborepo Docker guide:
+# https://turborepo.com/docs/guides/tools/docker
+# =============================================================================
+
 ARG NODE_VERSION=20.14.0
 ARG PNPM_VERSION=10.12.1
 
 # =============================================================================
 # BASE STAGE
-# Foundation with Node.js, system dependencies, and pnpm
+# Foundation with Node.js and pnpm
 # =============================================================================
 FROM node:${NODE_VERSION}-slim AS base
 
 LABEL fly_launch_runtime="Remix"
 
-# Install system dependencies for native Node.js modules
+# Install system dependencies
 RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y \
     build-essential \
@@ -22,67 +28,45 @@ RUN apt-get update -qq && \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Install pnpm globally
-RUN npm install -g pnpm@$PNPM_VERSION
+# Install pnpm and turbo
+RUN npm install -g pnpm@$PNPM_VERSION turbo
 
 WORKDIR /app
 
 # =============================================================================
 # PRUNER STAGE
-# Create minimal subset of monorepo for specific app using Turbo
+# Generate pruned monorepo for the target workspace
 # =============================================================================
 FROM base AS pruner
 
-RUN npm install -g turbo
+# Copy entire monorepo
 COPY . .
+
+# Generate a partial monorepo with a pruned lockfile for target workspace
 RUN turbo prune @repo/sfy-link-in-bio-app --docker
 
 # =============================================================================
-# DEPENDENCIES STAGE
-# Install all dependencies (including devDependencies) for building
-# =============================================================================
-FROM base AS deps
-
-# Copy package files for Docker layer caching
-COPY --from=pruner /app/out/json/ .
-
-# Install with pnpm cache mount for faster rebuilds
-RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store \
-    pnpm install --frozen-lockfile
-
-# =============================================================================
-# PRODUCTION DEPENDENCIES STAGE
-# Install only production dependencies for final runtime image
-# =============================================================================
-FROM base AS production-deps
-
-COPY --from=pruner /app/out/json/ .
-ENV NODE_ENV=production
-
-# Install only production dependencies
-RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store \
-    pnpm install --frozen-lockfile --prod
-
-# =============================================================================
 # BUILDER STAGE
-# Build the application using full dependencies
+# Install dependencies and build the application
 # =============================================================================
 FROM base AS builder
 
-ENV NODE_ENV=production
+WORKDIR /app
 
-# Copy source code and build dependencies
+# Copy package.json and install dependencies
+COPY --from=pruner /app/out/json/ .
+RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store \
+    pnpm install --frozen-lockfile
+
+# Copy source code and build the project
 COPY --from=pruner /app/out/full/ .
-COPY --from=deps /app/node_modules ./node_modules
-
-# Build the application
 RUN pnpm turbo run build --filter=@repo/sfy-link-in-bio-app
 
 # =============================================================================
-# PRODUCTION STAGE
+# RUNTIME STAGE
 # Final minimal runtime image
 # =============================================================================
-FROM node:${NODE_VERSION}-slim AS production
+FROM node:${NODE_VERSION}-slim AS runtime
 
 WORKDIR /app
 
@@ -92,9 +76,7 @@ RUN apt-get update -qq && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-RUN npm install -g pnpm@$PNPM_VERSION
-
-# Create non-root user for security
+# Create non-root user
 RUN groupadd --gid 1001 nodejs && \
     useradd --uid 1001 --gid nodejs --shell /bin/bash --create-home remix
 
@@ -103,13 +85,13 @@ ENV NODE_ENV=production
 ENV HOST=0.0.0.0
 ENV PORT=3000
 
-# Copy built application and production dependencies
+# Copy built application and runtime files
 COPY --from=builder --chown=remix:nodejs /app/apps/sfy-link-in-bio-app/app/build ./build
 COPY --from=builder --chown=remix:nodejs /app/apps/sfy-link-in-bio-app/app/package.json ./package.json
 COPY --from=builder --chown=remix:nodejs /app/apps/sfy-link-in-bio-app/app/public ./public
-COPY --from=production-deps --chown=remix:nodejs /app/node_modules ./node_modules
+COPY --from=builder --chown=remix:nodejs /app/node_modules ./node_modules
 
 USER remix
 EXPOSE 3000
 
-CMD ["pnpm", "run", "start"]
+CMD ["npm", "run", "start"]
