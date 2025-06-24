@@ -52,5 +52,14 @@
 
 	// https://gql-tada.0no.co/get-started/installation#vscode-setup
 	"typescript.tsdk": "node_modules/typescript/lib",
-	"typescript.enablePromptUseWorkspaceTsdk": true
+	"typescript.enablePromptUseWorkspaceTsdk": true,
+
+	// https://github.com/foxundermoon/vs-shell-format/issues/62
+	"[dockerfile]": {
+		"editor.formatOnSave": false
+	},
+	"shellformat.effectLanguages": [
+		"shellscript"
+		// ... excluding dockerfile
+	]
 }
