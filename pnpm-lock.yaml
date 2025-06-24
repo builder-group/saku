@@ -241,6 +241,9 @@ importers:
       drizzle-kit:
         specifier: ^0.31.1
         version: 0.31.1
+      minimist:
+        specifier: ^1.2.8
+        version: 1.2.8
 
   packages/hono-utils:
     dependencies:

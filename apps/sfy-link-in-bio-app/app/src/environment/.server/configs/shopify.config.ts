@@ -22,7 +22,7 @@ export const shopifyConfig = {
 		example: 'https://your-app.ngrok.io'
 	}),
 	scopes: validateEnvVar({
-		envKey: 'SCOPES',
+		envKey: 'SHOPIFY_SCOPES',
 		validator: vValidator(v.string()),
 		description: 'Comma-separated list of Shopify API scopes',
 		example: 'read_products,write_products,read_orders'

@@ -36,7 +36,7 @@ CREATE TABLE "site" (
 	"user_id" text NOT NULL,
 	"handle" text NOT NULL,
 	"display_name" text,
-	"content" jsonb,
+	"content" jsonb NOT NULL,
 	"updated_at" timestamp NOT NULL,
 	"created_at" timestamp NOT NULL,
 	CONSTRAINT "site_handle_unique" UNIQUE("handle")

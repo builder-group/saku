@@ -126,6 +126,42 @@ Our project supports multiple deployment stages to ensure proper development and
 
 > **Note**: Additional stages (dev, qsa, etc.) may be added as the project evolves to support more complex deployment workflows.
 
+## 🗄️ Database Migrations
+
+### Local Development
+
+```bash
+# Generate migration for local development (uses dotenv)
+pnpm db:generate:local
+
+# Apply migrations to local development (uses dotenv)
+pnpm db:migrate:local
+```
+
+### Production
+
+```bash
+# Production migrations are typically handled by CI/CD deployment pipeline
+# Only use these commands locally for special cases (debugging, hotfixes, etc.)
+
+# Generate migration for production
+DB_URL=postgres://user:pass@host:5432/db pnpm db:generate:prod
+
+# Apply migrations to production
+DB_URL=postgres://user:pass@host:5432/db pnpm db:migrate:prod
+```
+
+### How it Works
+
+- **Local**: Uses `migrations/local` (gitignored), loads `.env.local`
+- **Production**: Uses `migrations/` (shared), reads from environment
+- **Developers**: Each has isolated local migrations to prevent conflicts
+- **Deployment**: Production uses shared migration files
+
+### Resources / References
+
+- https://github.com/drizzle-team/drizzle-orm/discussions/2832#discussioncomment-10463438
+
 ## 📄 License
 
 By contributing to Saku, you agree that your contributions will be licensed under the license defined in [`LICENSE.md`](./LICENSE.md).

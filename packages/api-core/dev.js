@@ -1,14 +1,12 @@
 import { serve } from '@hono/node-server';
+import dotenv from 'dotenv';
+
+// Load .env for app config
+const nodeEnv = process.env['NODE_ENV'] ?? 'local';
+dotenv.config({ path: `.env.${nodeEnv}` });
+console.log(`Loaded dotenv from '.env.${nodeEnv}'.`);
 
 (async () => {
-	// Only load .env in development (for app config)
-	const nodeEnv = process.env['NODE_ENV'] ?? 'local';
-	if (nodeEnv === 'local') {
-		const dotenv = await import('dotenv');
-		dotenv.config({ path: `.env.${nodeEnv}` });
-		console.log(`Loaded dotenv from '.env.${nodeEnv}'.`);
-	}
-
 	const { createApp, apiCoreAppConfig } = await import('./src');
 
 	const app = createApp();
@@ -19,4 +17,6 @@ import { serve } from '@hono/node-server';
 		fetch: app.fetch,
 		port: apiCoreAppConfig.dev.port
 	});
-})();
+})().catch((e) => {
+	console.error('Failed to run server by exception: ', e);
+});

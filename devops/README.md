@@ -71,7 +71,7 @@ fly launch --no-deploy --name your-app --internal-port 3000 --dockerfile devops/
 
 ```bash
 # Import from .env file
-cat apps/your-app/.env.prod | fly secrets import < .env.local -a your-app
+fly secrets import < .env.prod -a your-app
 
 # Or set individual secrets
 fly secrets set DATABASE_URL=postgres://... -a your-app
