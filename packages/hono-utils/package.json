@@ -40,11 +40,11 @@
 		"@oslojs/encoding": "^1.1.0",
 		"arctic": "^3.7.0",
 		"feature-fetch": "^0.0.48",
-		"hono": "^4.7.11",
+		"hono": "^4.8.3",
 		"jose": "^6.0.11"
 	},
 	"devDependencies": {
 		"@repo/types": "workspace:*",
-		"@types/node": "^24.0.3"
+		"@types/node": "^24.0.4"
 	}
 }
