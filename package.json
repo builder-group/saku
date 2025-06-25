@@ -15,7 +15,7 @@
 	"author": "@bennobuilder",
 	"scripts": {
 		"build": "turbo run build",
-		"clean": "turbo run clean && shx rm -rf .turbo && shx rm -rf .vercel && shx rm -rf node_modules",
+		"clean": "turbo run clean --force && shx rm -rf .turbo && shx rm -rf .vercel && shx rm -rf node_modules",
 		"docker:dev": "docker compose up --build -f devops/docker-compose.yaml",
 		"docker:dev:down": "docker compose down -f devops/docker-compose.yaml",
 		"fly:deploy:sfy-link-in-bio-app": "fly deploy -c devops/sfy-link-in-bio-app/fly.toml",
@@ -24,7 +24,7 @@
 		"lint": "turbo run lint",
 		"start:dev": "turbo run start:dev",
 		"test": "turbo run test",
-		"update:latest": "turbo run update:latest && pnpm update --latest '!vite' && pnpm build"
+		"update:latest": "turbo run update:latest --force && pnpm update --latest '!vite' && pnpm build"
 	},
 	"devDependencies": {
 		"@blgc/config": "^0.0.35",
