@@ -1,4 +1,4 @@
 packages:
-  - "apps/sfy-*-app/*"
+  - "apps/sfy-*/*"
   - "apps/*"
   - "packages/*"

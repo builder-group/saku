@@ -71,7 +71,7 @@ ARG VITE_CLIENT_API_CORE_URL
 # Vite didn't pick up environment variables set via ENV, so we use .env file as workaround
 # https://vite.dev/guide/env-and-mode#env-variables
 RUN set -e; \
-    echo "VITE_CLIENT_API_CORE_URL=$VITE_CLIENT_API_CORE_URL" > apps/sfy-link-in-bio-app/app/.env
+    echo "VITE_CLIENT_API_CORE_URL=$VITE_CLIENT_API_CORE_URL" > apps/sfy-link-in-bio/app/.env
 
 # Build the project
 RUN pnpm turbo run build --filter=@repo/sfy-link-in-bio-app
@@ -100,9 +100,9 @@ ENV HOST=0.0.0.0
 ENV PORT=3000
 
 # Copy built application and runtime files
-COPY --from=builder --chown=remix:nodejs /app/apps/sfy-link-in-bio-app/app/build ./build
-COPY --from=builder --chown=remix:nodejs /app/apps/sfy-link-in-bio-app/app/package.json ./package.json
-COPY --from=builder --chown=remix:nodejs /app/apps/sfy-link-in-bio-app/app/public ./public
+COPY --from=builder --chown=remix:nodejs /app/apps/sfy-link-in-bio/app/build ./build
+COPY --from=builder --chown=remix:nodejs /app/apps/sfy-link-in-bio/app/package.json ./package.json
+COPY --from=builder --chown=remix:nodejs /app/apps/sfy-link-in-bio/app/public ./public
 COPY --from=builder --chown=remix:nodejs /app/node_modules ./node_modules
 
 USER remix

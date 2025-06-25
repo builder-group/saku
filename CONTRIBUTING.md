@@ -90,15 +90,74 @@ For specific packages, additional fields should be included as shown below. Note
 }
 ```
 
-### 📂 File & Folder Naming Conventions
+## 🏷️ Naming Conventions
 
-- Use **lowercase kebab-case** for folders and files (`some-folder/`, `some-file.ts`)
-- Use **singular names for categories** (`component/`, `layout/`, `config/`)
-- Use **plural names for collections** (`hooks/`, `utils/`, `tests/`, `assets/`)
-- **React components**: `PascalCase` -> `Button.tsx`, `UserProfile.tsx`
-- **Class files**: `PascalCase` -> `User.ts`, `DatabaseConnection.ts`
-- **Function files**: `snake-case` -> `get-users.ts`, `fetch-data.ts`
-- Keep names **clear, descriptive, and consistent**—avoid unnecessary abbreviations
+### 📂 File & Folder Naming
+
+- Use **kebab-case** for files and folders (`some-folder/`, `some-file.ts`)
+- Use **singular** for categories (`component/`, `layout/`, `config/`)
+- Use **plural** for collections (`hooks/`, `utils/`, `tests/`)
+- **React components**: `PascalCase` (`Button.tsx`, `UserProfile.tsx`)
+- **Classes**: `PascalCase` (`User.ts`, `DatabaseClient.ts`)
+- **Functions**: `snake-case` (`get-users.ts`, `send-email.ts`)
+- Keep names **clear, consistent, and minimal**
+
+### 🧱 App & Package Structure
+
+```
+apps/<scope>-<feature>/
+packages/<scope>-<feature>/
+```
+
+- `scope`: high-level domain or context (e.g. `sfy`, `web`, `api`)
+- `feature`: specific unit or functionality (`link-in-bio`, `dashboard`, `core`, etc.)
+- Only include `scope` when needed for clarity or grouping
+
+**Examples**:
+
+| Path                    | Purpose                 |
+| ----------------------- | ----------------------- |
+| `apps/sfy-link-in-bio/` | Shopify-specific app    |
+| `apps/web-dashboard/`   | Web frontend            |
+| `packages/api-core/`    | Shared backend logic    |
+| `packages/ui/`          | Shared UI components    |
+| `packages/types/`       | Global TypeScript types |
+
+### 📦 `package.json` Naming
+
+```
+@repo/<scope>-<feature>
+```
+
+Examples:
+
+- `@repo/sfy-link-in-bio-app`
+- `@repo/api-core`
+- `@repo/ui`
+
+### 🚀 Fly.io App Naming
+
+```
+saku-<scope>-<feature>\[-env]
+```
+
+Examples:
+
+- `saku-sfy-link-in-bio`
+- `saku-api-core`
+- `saku-web-dashboard-dev`
+
+### 🌐 Subdomain Naming
+
+```
+<scope>-<feature>.saku.so
+```
+
+Examples:
+
+- `sfy-link-in-bio.saku.so`
+- `api-core.saku.so`
+- `dashboard.saku.so` (simplified for user-facing domains)
 
 ## 🚀 Deployment & Stages
 

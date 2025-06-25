@@ -20,18 +20,18 @@ The app requires specific Shopify API access scopes to function properly:
 
 #### 1. **Nested App Structure**
 
-Due to the limitations of nesting `pnpm` workspaces, we've modified the project structure to work within our monorepo. The Shopify App is now nested under `apps/sfy-link-in-bio-app/app/` to fit within the monorepo structure defined in `pnpm-workspace.yaml`:
+Due to the limitations of nesting `pnpm` workspaces, we've modified the project structure to work within our monorepo. The Shopify App is now nested under `apps/sfy-link-in-bio/app/` to fit within the monorepo structure defined in `pnpm-workspace.yaml`:
 
 ```yaml
 packages:
-  - 'apps/sfy-*-app/*'
+  - 'apps/sfy-*/*'
   # ..
 ```
 
 **Monorepo Structure:**
 
 ```
-apps/sfy-link-in-bio-app/
+apps/sfy-link-in-bio/
 ├── app/
 │   ├── env.d.ts
 │   ├── package.json

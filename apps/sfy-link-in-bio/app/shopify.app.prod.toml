@@ -3,7 +3,7 @@
 client_id = "2b94f79e87ae864f86d54772206e0d2e"
 name = "Saku Link In Bio"
 handle = "saku-link-in-bio"
-application_url = "https://saku-link-in-bio.fly.dev"
+application_url = "https://sfy-link-in-bio-app.saku.so"
 embedded = true
 
 [build]
@@ -23,13 +23,13 @@ scopes = "write_files,write_online_store_navigation,read_online_store_navigation
 
 [auth]
 redirect_urls = [
-    "https://saku-link-in-bio.fly.dev/auth/callback",
-    "https://saku-link-in-bio.fly.dev/auth/shopify/callback",
-    "https://saku-link-in-bio.fly.dev/api/auth/callback",
+    "https://sfy-link-in-bio-app.saku.so/auth/callback",
+    "https://sfy-link-in-bio-app.saku.so/auth/shopify/callback",
+    "https://sfy-link-in-bio-app.saku.so/api/auth/callback",
 ]
 
 [app_proxy]
-url = "https://saku-link-in-bio.fly.dev/a/saku"
+url = "https://sfy-link-in-bio-app.saku.so/a/saku"
 subpath = "saku"
 prefix = "a"
 
