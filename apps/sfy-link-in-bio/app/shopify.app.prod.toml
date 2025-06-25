@@ -22,12 +22,16 @@ topics = ["app/scopes_update"]
 uri = "/webhooks/app/scopes_update"
 
 [[webhooks.subscriptions]]
-compliance_topics = [
-    "customers/data_request",
-    "customers/redact",
-    "shop/redact",
-]
-uri = "/api/v1/webhook/shopify"
+compliance_topics = ["customers/data_request"]
+uri = "/api/v1/webhook/shopify/customers/data_request"
+
+[[webhooks.subscriptions]]
+compliance_topics = ["customers/redact"]
+uri = "/api/v1/webhook/shopify/customers/redact"
+
+[[webhooks.subscriptions]]
+compliance_topics = ["shop/redact"]
+uri = "/api/v1/webhook/shopify/shop/redact"
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
