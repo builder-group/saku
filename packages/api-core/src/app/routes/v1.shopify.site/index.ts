@@ -45,9 +45,9 @@ router.openapi(GetShopifySitesRoute, async (c) => {
 });
 
 router.openapi(UpdateShopifySiteContentRoute, async (c) => {
+	const { shopId } = await verifyShopifySession(c);
 	const { siteId } = c.req.valid('param');
 	const { content } = c.req.valid('json');
-	const { shopId } = await verifyShopifySession(c);
 
 	// Check if site exists and is connected to this Shopify shop
 	const [existingSite] = await db

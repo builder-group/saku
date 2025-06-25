@@ -15,8 +15,8 @@ import {
 } from './schema';
 
 router.openapi(CreateSessionRoute, async (c) => {
-	const input = c.req.valid('json');
 	await verifySharedSecret(c, appConfig.accessSecret);
+	const input = c.req.valid('json');
 
 	await createShopifySession(input);
 
@@ -24,8 +24,8 @@ router.openapi(CreateSessionRoute, async (c) => {
 });
 
 router.openapi(GetSessionRoute, async (c) => {
-	const { sessionId } = c.req.valid('param');
 	await verifySharedSecret(c, appConfig.accessSecret);
+	const { sessionId } = c.req.valid('param');
 
 	const session = await getShopifySession(sessionId);
 
@@ -33,8 +33,8 @@ router.openapi(GetSessionRoute, async (c) => {
 });
 
 router.openapi(DeleteSessionRoute, async (c) => {
-	const { sessionId } = c.req.valid('param');
 	await verifySharedSecret(c, appConfig.accessSecret);
+	const { sessionId } = c.req.valid('param');
 
 	await deleteShopifySession(sessionId);
 
@@ -42,8 +42,8 @@ router.openapi(DeleteSessionRoute, async (c) => {
 });
 
 router.openapi(GetSessionByShopRoute, async (c) => {
-	const { shopId } = c.req.valid('param');
 	await verifySharedSecret(c, appConfig.accessSecret);
+	const { shopId } = c.req.valid('param');
 
 	const sessions = await getShopifySessionsByShop(shopId);
 

@@ -4,8 +4,8 @@ import { getMetadata, getPredefinedFavicon } from './lib';
 import { GetUrlMetadataRoute } from './schema';
 
 router.openapi(GetUrlMetadataRoute, async (c) => {
-	const { url } = c.req.valid('query');
 	await verifyShopifySession(c);
+	const { url } = c.req.valid('query');
 
 	const metadata = await getMetadata(url);
 

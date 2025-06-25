@@ -21,12 +21,24 @@ uri = "/webhooks/app/uninstalled"
 topics = ["app/scopes_update"]
 uri = "/webhooks/app/scopes_update"
 
+[[webhooks.subscriptions]]
+compliance_topics = [
+    "customers/data_request",
+    "customers/redact",
+    "shop/redact",
+]
+uri = "/api/v1/webhook/shopify"
+
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
 scopes = "write_files,write_online_store_navigation,read_online_store_navigation"
 
 [auth]
-redirect_urls = ["https://football-anderson-sing-permits.trycloudflare.com/auth/callback", "https://football-anderson-sing-permits.trycloudflare.com/auth/shopify/callback", "https://football-anderson-sing-permits.trycloudflare.com/api/auth/callback"]
+redirect_urls = [
+    "https://football-anderson-sing-permits.trycloudflare.com/auth/callback",
+    "https://football-anderson-sing-permits.trycloudflare.com/auth/shopify/callback",
+    "https://football-anderson-sing-permits.trycloudflare.com/api/auth/callback",
+]
 
 [app_proxy]
 url = "https://football-anderson-sing-permits.trycloudflare.com/a/saku"
