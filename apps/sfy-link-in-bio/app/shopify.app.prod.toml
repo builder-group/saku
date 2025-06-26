@@ -15,11 +15,11 @@ api_version = "2025-04"
 
 [[webhooks.subscriptions]]
 topics = ["app/uninstalled"]
-uri = "/webhooks/app/uninstalled"
+uri = "/api/v1/webhook/shopify/app/uninstalled"
 
 [[webhooks.subscriptions]]
 topics = ["app/scopes_update"]
-uri = "/webhooks/app/scopes_update"
+uri = "/api/v1/webhook/shopify/app/scopes_update"
 
 [[webhooks.subscriptions]]
 compliance_topics = ["customers/data_request"]

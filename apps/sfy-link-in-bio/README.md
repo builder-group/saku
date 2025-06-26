@@ -166,6 +166,17 @@ Shopify Extensions will reside at the monorepo level (alongside the `apps/` dire
 
 ## 📚 Good to Know
 
+### Webhook URL Updates in Development
+
+Unlike app proxy URLs which auto-update on `shopify app dev` restart, webhook URLs require manual deployment:
+
+```bash
+shopify app dev          # Start development server
+shopify app deploy       # In another terminal - updates webhook URLs
+```
+
+⚠️ **Note**: Webhook events will be sent to old tunnel URLs until you deploy. [This is a known Shopify CLI limitation.](https://community.shopify.dev/t/webhooks-ulr-not-updated/14731)
+
 ### How to Create a Sales Channel App
 
 1. Create the app via CLI: `shopify app dev --reset`

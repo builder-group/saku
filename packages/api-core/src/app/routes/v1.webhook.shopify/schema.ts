@@ -111,3 +111,73 @@ export const ShopRedactWebhookRoute = createRoute({
 		401: UnauthorizedResponse
 	}
 });
+
+export const AppUninstalledWebhookRoute = createRoute({
+	method: 'post',
+	path: '/v1/webhook/shopify/app/uninstalled',
+	tags: ['webhooks', 'shopify', 'app'],
+	summary: 'App uninstalled webhook',
+	description: 'Receives webhook immediately when a store owner uninstalls the app',
+	operationId: 'handleAppUninstalled',
+	request: {
+		body: {
+			content: {
+				'application/json': {
+					schema: z.object({
+						id: z.number().int().openapi({ example: 548380009 }),
+						name: z.string().openapi({ example: 'Super Toys' }),
+						email: z.string().email().openapi({ example: 'super@supertoys.com' }),
+						domain: z.string().nullable().openapi({ example: 'supertoys.com' }),
+						myshopify_domain: z.string().openapi({ example: 'super-toys.myshopify.com' }),
+						plan_name: z.string().openapi({ example: 'enterprise' }),
+						plan_display_name: z.string().openapi({ example: 'Shopify Plus' }),
+						country_code: z.string().openapi({ example: 'US' }),
+						currency: z.string().openapi({ example: 'USD' }),
+						timezone: z.string().openapi({ example: '(GMT-05:00) Eastern Time (US & Canada)' })
+					})
+				}
+			}
+		}
+	},
+	responses: {
+		200: JsonSuccessResponse(
+			z.object({
+				message: z.string().openapi({ example: 'App uninstalled webhook received and processed' })
+			})
+		),
+		400: BadRequestResponse,
+		401: UnauthorizedResponse
+	}
+});
+
+export const AppScopesUpdateWebhookRoute = createRoute({
+	method: 'post',
+	path: '/v1/webhook/shopify/app/scopes_update',
+	tags: ['webhooks', 'shopify', 'app'],
+	summary: 'App scopes update webhook',
+	description: 'Receives webhook when app scopes are updated for a store',
+	operationId: 'handleAppScopesUpdate',
+	request: {
+		body: {
+			content: {
+				'application/json': {
+					schema: z.object({
+						id: z.number().int().openapi({ example: 548380009 }),
+						previous: z.array(z.string()).openapi({ example: ['read_products'] }),
+						current: z.array(z.string()).openapi({ example: ['read_products', 'write_products'] }),
+						updated_at: z.string().datetime().openapi({ example: '2024-06-25T00:00:00.000Z' })
+					})
+				}
+			}
+		}
+	},
+	responses: {
+		200: JsonSuccessResponse(
+			z.object({
+				message: z.string().openapi({ example: 'App scopes update webhook received and processed' })
+			})
+		),
+		400: BadRequestResponse,
+		401: UnauthorizedResponse
+	}
+});

@@ -3,7 +3,7 @@
 client_id = "4c9dc129e68b889d9a351e14d8e36a02"
 name = "Saku Link In Bio (Local)"
 handle = "saku-link-in-bio-local"
-application_url = "https://football-anderson-sing-permits.trycloudflare.com"
+application_url = "https://specifies-lodging-handy-equipment.trycloudflare.com"
 embedded = true
 
 [build]
@@ -15,11 +15,11 @@ api_version = "2025-04"
 
 [[webhooks.subscriptions]]
 topics = ["app/uninstalled"]
-uri = "/webhooks/app/uninstalled"
+uri = "/api/v1/webhook/shopify/app/uninstalled"
 
 [[webhooks.subscriptions]]
 topics = ["app/scopes_update"]
-uri = "/webhooks/app/scopes_update"
+uri = "/api/v1/webhook/shopify/app/scopes_update"
 
 [[webhooks.subscriptions]]
 compliance_topics = ["customers/data_request"]
@@ -38,14 +38,10 @@ uri = "/api/v1/webhook/shopify/shop/redact"
 scopes = "write_files,write_online_store_navigation,read_online_store_navigation"
 
 [auth]
-redirect_urls = [
-    "https://football-anderson-sing-permits.trycloudflare.com/auth/callback",
-    "https://football-anderson-sing-permits.trycloudflare.com/auth/shopify/callback",
-    "https://football-anderson-sing-permits.trycloudflare.com/api/auth/callback",
-]
+redirect_urls = ["https://specifies-lodging-handy-equipment.trycloudflare.com/auth/callback", "https://specifies-lodging-handy-equipment.trycloudflare.com/auth/shopify/callback", "https://specifies-lodging-handy-equipment.trycloudflare.com/api/auth/callback"]
 
 [app_proxy]
-url = "https://football-anderson-sing-permits.trycloudflare.com/a/saku"
+url = "https://specifies-lodging-handy-equipment.trycloudflare.com/a/saku"
 subpath = "saku"
 prefix = "a"
 
