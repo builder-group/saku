@@ -1,9 +1,16 @@
 import { createApp } from '@repo/api-core';
 import { Hono } from 'hono';
+import { apiConfig, appConfig } from '@/environment/.server';
+import { createApiProxy } from '@/lib/.server';
 
 /**
- * Server-only Hono app instance.
+ * Server-only API handler.
  *
- * Created in a `.server.ts` file to ensure it is NEVER bundled for the client.
+ * In development: Proxies to localhost API Core server
+ * In production: Uses embedded API Core package
  */
-export const app = createApp(new Hono().basePath('/api'));
+
+export const app =
+	appConfig.env === 'development'
+		? { request: createApiProxy({ targetUrl: apiConfig.core.url, stripPrefix: '/api' }) }
+		: createApp(new Hono().basePath('/api'));
