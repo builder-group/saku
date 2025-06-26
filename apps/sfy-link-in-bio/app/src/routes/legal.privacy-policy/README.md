@@ -1,0 +1,2 @@
+- [StageTimer Privacy Policy](https://stagetimer.io/privacy-policy/)
+- [Judge.me Privacy Policy](https://judge.me/privacy)

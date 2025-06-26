@@ -11,7 +11,6 @@ We use an **6-digit base-36 OTP (valid for 300 seconds)** instead of a tradition
 
 - **Short-lived & secure:**  
   OTPs are:
-
   - Valid for only 5 minutes
   - One-time use
   - ~2B possible combinations (6 base-36 digits)
