@@ -2,7 +2,8 @@ import { AppError } from '@repo/hono-utils';
 import { eq } from 'drizzle-orm';
 import { router } from '@/app/router';
 import { db, siteTable } from '@/environment';
-import { GetSiteContentRoute, GetSiteRoute } from './schema';
+import { fetchExternalHtml, parseLinkpopHtml } from './lib';
+import { GetSiteContentRoute, GetSiteRoute, ParseExternalSiteRoute } from './schema';
 
 router.openapi(GetSiteRoute, async (c) => {
 	const { siteId } = c.req.valid('param');
@@ -61,4 +62,46 @@ router.openapi(GetSiteContentRoute, async (c) => {
 	}
 
 	return c.json(site.content, 200);
+});
+
+router.openapi(ParseExternalSiteRoute, async (c) => {
+	const { url: urlString } = c.req.valid('query');
+
+	let url: URL;
+	try {
+		url = new URL(urlString);
+	} catch (error) {
+		throw new AppError('#ERR_INVALID_URL_FORMAT', 400, {
+			title: 'Invalid URL format',
+			detail: 'The provided URL is not in a valid format'
+		});
+	}
+
+	const hostname = url.hostname.toLowerCase();
+	const pathname = url.pathname;
+
+	switch (hostname) {
+		case 'linkpop.com':
+		case 'www.linkpop.com': {
+			const handle = pathname.substring(1);
+			const html = await fetchExternalHtml(`https://linkpop.com/${handle}`);
+			const parsedData = await parseLinkpopHtml(html);
+			// TODO: Map data
+
+			return c.json(
+				{
+					provider: 'linkpop',
+					handle: handle,
+					data: {}
+				},
+				200
+			);
+		}
+
+		default:
+			throw new AppError('#ERR_UNSUPPORTED_PROVIDER', 400, {
+				title: 'Unsupported provider',
+				detail: `Provider ${hostname} is not supported. Currently supported: linkpop.com`
+			});
+	}
 });

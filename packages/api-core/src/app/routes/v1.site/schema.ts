@@ -1,5 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi';
-import { JsonSuccessResponse, NotFoundResponse } from '@repo/hono-utils';
+import { BadRequestResponse, JsonSuccessResponse, NotFoundResponse } from '@repo/hono-utils';
 
 // Summary DTO (without content) for list views
 export const SSiteSummaryDto = z
@@ -62,5 +62,31 @@ export const GetSiteContentRoute = createRoute({
 	responses: {
 		200: JsonSuccessResponse(SSiteContentDto),
 		404: NotFoundResponse
+	}
+});
+
+export const ParseExternalSiteRoute = createRoute({
+	method: 'get',
+	path: '/v1/site/parse/external',
+	tags: ['site'],
+	summary: 'Parse external link-in-bio URL',
+	operationId: 'parseExternalSite',
+	request: {
+		query: z.object({
+			url: z.string().url().openapi({
+				example: 'https://linkpop.com/johndoe',
+				description: 'External link-in-bio URL to parse'
+			})
+		})
+	},
+	responses: {
+		200: JsonSuccessResponse(
+			z.object({
+				provider: z.string().openapi({ example: 'linkpop' }),
+				handle: z.string().openapi({ example: 'johndoe' }),
+				data: z.object({}).passthrough().openapi({ example: {} })
+			})
+		),
+		400: BadRequestResponse
 	}
 });

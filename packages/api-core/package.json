@@ -55,6 +55,7 @@
 		"valibot": "^1.1.0",
 		"validatenv": "^0.0.38",
 		"validation-adapters": "^0.0.28",
+		"xml-tokenizer": "^0.0.33",
 		"zod": "3.25.67"
 	},
 	"devDependencies": {
@@ -64,7 +65,7 @@
 		"@types/pg": "^8.15.4",
 		"@types/react": "^19.1.8",
 		"dotenv": "^16.5.0",
-		"drizzle-kit": "^0.31.2",
+		"drizzle-kit": "^0.31.3",
 		"minimist": "^1.2.8"
 	}
 }
