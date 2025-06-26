@@ -1,5 +1,10 @@
 import { createRoute, z } from '@hono/zod-openapi';
-import { BadRequestResponse, JsonSuccessResponse, UnauthorizedResponse } from '@repo/hono-utils';
+import {
+	BadRequestResponse,
+	captureRawBodyMiddleware,
+	JsonSuccessResponse,
+	UnauthorizedResponse
+} from '@repo/hono-utils';
 
 export const CustomersDataRequestWebhookRoute = createRoute({
 	method: 'post',
@@ -8,6 +13,7 @@ export const CustomersDataRequestWebhookRoute = createRoute({
 	summary: 'Customer data request webhook',
 	description: 'Receives webhook when customers request their data from a store owner',
 	operationId: 'handleCustomerDataRequest',
+	middleware: [captureRawBodyMiddleware] as const,
 	request: {
 		body: {
 			content: {
@@ -49,6 +55,7 @@ export const CustomersRedactWebhookRoute = createRoute({
 	summary: 'Customer data redaction webhook',
 	description: 'Receives webhook when store owners request customer data deletion',
 	operationId: 'handleCustomerRedact',
+	middleware: [captureRawBodyMiddleware] as const,
 	request: {
 		body: {
 			content: {
@@ -89,6 +96,7 @@ export const ShopRedactWebhookRoute = createRoute({
 	summary: 'Shop data redaction webhook',
 	description: 'Receives webhook 48 hours after a store owner uninstalls the app',
 	operationId: 'handleShopRedact',
+	middleware: [captureRawBodyMiddleware] as const,
 	request: {
 		body: {
 			content: {
@@ -119,6 +127,7 @@ export const AppUninstalledWebhookRoute = createRoute({
 	summary: 'App uninstalled webhook',
 	description: 'Receives webhook immediately when a store owner uninstalls the app',
 	operationId: 'handleAppUninstalled',
+	middleware: [captureRawBodyMiddleware] as const,
 	request: {
 		body: {
 			content: {
@@ -157,6 +166,7 @@ export const AppScopesUpdateWebhookRoute = createRoute({
 	summary: 'App scopes update webhook',
 	description: 'Receives webhook when app scopes are updated for a store',
 	operationId: 'handleAppScopesUpdate',
+	middleware: [captureRawBodyMiddleware] as const,
 	request: {
 		body: {
 			content: {

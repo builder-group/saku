@@ -1,3 +1,5 @@
+import { logger } from '@/environment';
+
 /**
  * Creates a proxy function that forwards requests to a target API server.
  *
@@ -22,14 +24,19 @@ export function createApiProxy(config: TCreateApiProxyConfig) {
 			headers: new Headers(request.headers)
 		};
 
+		logger.info(`Proxying request to ${urlToFetch}`);
+
 		// Add body for methods that support it
 		if (request.method !== 'GET' && request.method !== 'HEAD' && request.body != null) {
 			fetchOptions.body = request.body;
+			// duplex: 'half' is required by Node.js undici when sending a body
+			fetchOptions.duplex = 'half';
 		}
 
 		try {
 			return await fetch(urlToFetch, fetchOptions);
 		} catch (error) {
+			logger.error('Error proxying request', { error });
 			return new Response(
 				`Proxy Error: ${error instanceof Error ? error.message : 'Unknown error'}`,
 				{

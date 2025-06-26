@@ -263,6 +263,106 @@ export interface paths {
 		patch?: never;
 		trace?: never;
 	};
+	'/v1/webhook/shopify/customers/data_request': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		get?: never;
+		put?: never;
+		/**
+		 * Customer data request webhook
+		 * @description Receives webhook when customers request their data from a store owner
+		 */
+		post: operations['handleCustomerDataRequest'];
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	'/v1/webhook/shopify/customers/redact': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		get?: never;
+		put?: never;
+		/**
+		 * Customer data redaction webhook
+		 * @description Receives webhook when store owners request customer data deletion
+		 */
+		post: operations['handleCustomerRedact'];
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	'/v1/webhook/shopify/shop/redact': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		get?: never;
+		put?: never;
+		/**
+		 * Shop data redaction webhook
+		 * @description Receives webhook 48 hours after a store owner uninstalls the app
+		 */
+		post: operations['handleShopRedact'];
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	'/v1/webhook/shopify/app/uninstalled': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		get?: never;
+		put?: never;
+		/**
+		 * App uninstalled webhook
+		 * @description Receives webhook immediately when a store owner uninstalls the app
+		 */
+		post: operations['handleAppUninstalled'];
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	'/v1/webhook/shopify/app/scopes_update': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		get?: never;
+		put?: never;
+		/**
+		 * App scopes update webhook
+		 * @description Receives webhook when app scopes are updated for a store
+		 */
+		post: operations['handleAppScopesUpdate'];
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -739,6 +839,8 @@ export interface operations {
 						version: string;
 						/** @example https://api.saku.so */
 						url: string;
+						/** @example https://app.saku.so */
+						appUrl: string;
 						/** @example production */
 						env: string;
 					};
@@ -1199,6 +1301,325 @@ export interface operations {
 			};
 			/** @description Internal server error */
 			500: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['AppErrorDto'];
+				};
+			};
+		};
+	};
+	handleCustomerDataRequest: {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		requestBody?: {
+			content: {
+				'application/json': {
+					/** @example 954889 */
+					shop_id: number;
+					/** @example my-shop.myshopify.com */
+					shop_domain: string;
+					/** @example [
+					 *       299938,
+					 *       280263,
+					 *       220458
+					 *     ] */
+					orders_requested: number[];
+					customer: {
+						/** @example 191167 */
+						id: number;
+						/**
+						 * Format: email
+						 * @example john@example.com
+						 */
+						email: string;
+						/** @example 555-625-1199 */
+						phone: string;
+					};
+					data_request: {
+						/** @example 9999 */
+						id: number;
+					};
+				};
+			};
+		};
+		responses: {
+			/** @description Successful response */
+			200: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': {
+						/** @example Data request webhook received and processed */
+						message: string;
+					};
+				};
+			};
+			/** @description Bad request */
+			400: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['AppErrorDto'];
+				};
+			};
+			/** @description Unauthorized */
+			401: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['AppErrorDto'];
+				};
+			};
+		};
+	};
+	handleCustomerRedact: {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		requestBody?: {
+			content: {
+				'application/json': {
+					/** @example 954889 */
+					shop_id: number;
+					/** @example my-shop.myshopify.com */
+					shop_domain: string;
+					customer: {
+						/** @example 191167 */
+						id: number;
+						/**
+						 * Format: email
+						 * @example john@example.com
+						 */
+						email: string;
+						/** @example 555-625-1199 */
+						phone: string;
+					};
+					/** @example [
+					 *       299938,
+					 *       280263,
+					 *       220458
+					 *     ] */
+					orders_to_redact: number[];
+				};
+			};
+		};
+		responses: {
+			/** @description Successful response */
+			200: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': {
+						/** @example Customer redaction webhook received and processed */
+						message: string;
+					};
+				};
+			};
+			/** @description Bad request */
+			400: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['AppErrorDto'];
+				};
+			};
+			/** @description Unauthorized */
+			401: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['AppErrorDto'];
+				};
+			};
+		};
+	};
+	handleShopRedact: {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		requestBody?: {
+			content: {
+				'application/json': {
+					/** @example 954889 */
+					shop_id: number;
+					/** @example my-shop.myshopify.com */
+					shop_domain: string;
+				};
+			};
+		};
+		responses: {
+			/** @description Successful response */
+			200: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': {
+						/** @example Shop redaction webhook received and processed */
+						message: string;
+					};
+				};
+			};
+			/** @description Bad request */
+			400: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['AppErrorDto'];
+				};
+			};
+			/** @description Unauthorized */
+			401: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['AppErrorDto'];
+				};
+			};
+		};
+	};
+	handleAppUninstalled: {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		requestBody?: {
+			content: {
+				'application/json': {
+					/** @example 548380009 */
+					id: number;
+					/** @example Super Toys */
+					name: string;
+					/**
+					 * Format: email
+					 * @example super@supertoys.com
+					 */
+					email: string;
+					/** @example supertoys.com */
+					domain: string | null;
+					/** @example super-toys.myshopify.com */
+					myshopify_domain: string;
+					/** @example enterprise */
+					plan_name: string;
+					/** @example Shopify Plus */
+					plan_display_name: string;
+					/** @example US */
+					country_code: string;
+					/** @example USD */
+					currency: string;
+					/** @example (GMT-05:00) Eastern Time (US & Canada) */
+					timezone: string;
+				};
+			};
+		};
+		responses: {
+			/** @description Successful response */
+			200: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': {
+						/** @example App uninstalled webhook received and processed */
+						message: string;
+					};
+				};
+			};
+			/** @description Bad request */
+			400: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['AppErrorDto'];
+				};
+			};
+			/** @description Unauthorized */
+			401: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['AppErrorDto'];
+				};
+			};
+		};
+	};
+	handleAppScopesUpdate: {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		requestBody?: {
+			content: {
+				'application/json': {
+					/** @example 548380009 */
+					id: number;
+					/** @example [
+					 *       "read_products"
+					 *     ] */
+					previous: string[];
+					/** @example [
+					 *       "read_products",
+					 *       "write_products"
+					 *     ] */
+					current: string[];
+					/**
+					 * Format: date-time
+					 * @example 2024-06-25T00:00:00.000Z
+					 */
+					updated_at: string;
+				};
+			};
+		};
+		responses: {
+			/** @description Successful response */
+			200: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': {
+						/** @example App scopes update webhook received and processed */
+						message: string;
+					};
+				};
+			};
+			/** @description Bad request */
+			400: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['AppErrorDto'];
+				};
+			};
+			/** @description Unauthorized */
+			401: {
 				headers: {
 					[name: string]: unknown;
 				};
