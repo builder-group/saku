@@ -2,24 +2,15 @@ import { useLoaderData } from '@remix-run/react';
 import { TitleBar } from '@shopify/app-bridge-react';
 import {
 	Badge,
-	BlockStack,
 	Button,
 	Card,
-	InlineStack,
 	Layout,
 	Page as PolarisPage,
 	Text,
 	TextField
 } from '@shopify/polaris';
 import React from 'react';
-import {
-	ApiHealthBadge,
-	ClipboardButton,
-	FeedbackCard,
-	GetInTouchCard,
-	SitePreview,
-	ViewIcon
-} from '@/components';
+import { ClipboardButton, FeedbackCard, SitePreview, ViewIcon } from '@/components';
 import { coreApiClient } from '@/environment';
 import { appConfig, shopify, shopifyConfig } from '@/environment/.server';
 import { getSessionTokenFromRequest } from '@/lib/.server';
@@ -157,13 +148,6 @@ const Page: React.FC = () => {
 								</Card>
 							)}
 							<FeedbackCard email={env.support.email} reviewUrl={env.distribution.shopify} />
-							<BlockStack gap="200">
-								<GetInTouchCard discordUrl={env.social.discord} email={env.support.email} />
-								<InlineStack gap="100">
-									<Badge tone="info">{env.version}</Badge>
-									<ApiHealthBadge />
-								</InlineStack>
-							</BlockStack>
 						</div>
 					</Layout.Section>
 				</Layout>

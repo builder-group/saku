@@ -16,6 +16,7 @@ const Page: React.FC = () => {
 				<Link to="/app" rel="home">
 					Home
 				</Link>
+				<Link to="/app/settings">Settings</Link>
 			</NavMenu>
 			<Outlet />
 		</AppProvider>
