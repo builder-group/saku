@@ -27,7 +27,6 @@ export const CanvasPanelHeader: React.FC<TCanvasPanelHeaderProps> = (props) => {
 					icon={ViewIcon}
 					variant="secondary"
 					url={'todo'}
-					external
 					target="_blank"
 					accessibilityLabel="Visit your Link In Bio page"
 				/>

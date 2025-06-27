@@ -96,7 +96,6 @@ const Page: React.FC = () => {
 												icon={ViewIcon}
 												variant="secondary"
 												url={site.url}
-												external
 												target="_blank"
 												accessibilityLabel="Visit your Link In Bio page"
 											/>

@@ -17,23 +17,15 @@ export const GetInTouchCard: React.FC<TGetInTouchCardProps> = (props) => {
 							fullWidth
 							variant="secondary"
 							icon={EmailIcon}
-							url={email}
-							external
+							url={`mailto:${email}`}
 							target="_blank"
 						>
 							Send us an email
 						</Button>
 					)}
 					{discordUrl != null && (
-						<Button
-							fullWidth
-							variant="secondary"
-							icon={ChatIcon}
-							url={discordUrl}
-							external
-							target="_blank"
-						>
-							Join Discord Community
+						<Button fullWidth variant="secondary" icon={ChatIcon} url={discordUrl} target="_blank">
+							Join Discord community
 						</Button>
 					)}
 				</BlockStack>
