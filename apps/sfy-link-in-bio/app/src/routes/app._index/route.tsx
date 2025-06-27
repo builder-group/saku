@@ -2,25 +2,34 @@ import { useLoaderData } from '@remix-run/react';
 import { TitleBar } from '@shopify/app-bridge-react';
 import {
 	Badge,
+	BlockStack,
 	Button,
 	Card,
+	InlineStack,
 	Layout,
 	Page as PolarisPage,
 	Text,
 	TextField
 } from '@shopify/polaris';
 import React from 'react';
-import { ClipboardButton, FeedbackCard, GetInTouchCard, SitePreview, ViewIcon } from '@/components';
+import {
+	ApiHealthBadge,
+	ClipboardButton,
+	FeedbackCard,
+	GetInTouchCard,
+	SitePreview,
+	ViewIcon
+} from '@/components';
 import { coreApiClient } from '@/environment';
 import { appConfig, shopify } from '@/environment/.server';
 import { getSessionTokenFromRequest } from '@/lib/.server';
-import { useEditorModal } from '@/routes/app.modal.editor.$/EditorModal';
+import { usePageEditorModal } from '@/routes/app.modal.page-editor.$/PageEditorModal';
 import { TLoaderFunction } from '@/types';
 
 const Page: React.FC = () => {
 	const { env, site } = useLoaderData<typeof loader>();
 
-	const { Modal: EditorModal, isOpenState: isEditorOpenState } = useEditorModal({
+	const { Modal: EditorModal, isOpenState: isEditorOpenState } = usePageEditorModal({
 		siteId: site?.id ?? '',
 		title: site?.displayName ?? ''
 	});
@@ -147,13 +156,14 @@ const Page: React.FC = () => {
 									</div>
 								</Card>
 							)}
-
 							<FeedbackCard email={env.support.email} reviewUrl={env.distribution.shopify} />
-							<GetInTouchCard
-								version={env.version}
-								discordUrl={env.social.discord}
-								email={env.support.email}
-							/>
+							<BlockStack gap="200">
+								<GetInTouchCard discordUrl={env.social.discord} email={env.support.email} />
+								<InlineStack gap="100">
+									<Badge tone="info">{env.version}</Badge>
+									<ApiHealthBadge />
+								</InlineStack>
+							</BlockStack>
 						</div>
 					</Layout.Section>
 				</Layout>

@@ -4,7 +4,7 @@ import { RequestError } from 'feature-fetch';
 import React from 'react';
 import { coreApiClient } from '@/environment';
 import { shopify, shopifyConfig } from '@/environment/.server';
-import { getBlocks, StaticBlockCanvas, TSiteNode } from '@/features/editor';
+import { StaticNodeCanvas, TPageNode, TSiteNode } from '@/features/page-editor';
 import { useLoaderResult } from '@/hooks';
 import { TLoaderFunctionWithResult } from '@/types';
 
@@ -16,16 +16,16 @@ const Page: React.FC = () => {
 	}
 
 	const { appUrl, siteNode } = result.value;
-	const blocks = getBlocks(siteNode);
-	if (blocks == null) {
-		return null;
+	const pageNode = siteNode.children[0] as TPageNode;
+	if (pageNode == null) {
+		return <p>No page node found</p>;
 	}
 
 	return (
 		<AppProxyProvider appUrl={appUrl}>
 			<link rel="stylesheet" href={`${appUrl}/src/styles.css`} />
 
-			<StaticBlockCanvas blocks={blocks} />
+			<StaticNodeCanvas nodes={pageNode.children} />
 		</AppProxyProvider>
 	);
 };

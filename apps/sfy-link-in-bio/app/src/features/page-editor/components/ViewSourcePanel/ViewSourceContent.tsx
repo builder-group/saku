@@ -1,0 +1,21 @@
+import { useFeatureState } from 'feature-react/state';
+import React from 'react';
+import { TPageEditor } from '../../lib';
+import { LayersContent } from './layers';
+import { SettingsContent } from './settings';
+
+export const ViewSourceContent: React.FC<TViewSourceContentProps> = (props) => {
+	const { editor } = props;
+	const activeView = useFeatureState(editor.activeView);
+
+	switch (activeView) {
+		case 'layers':
+			return <LayersContent editor={editor} />;
+		case 'settings':
+			return <SettingsContent />;
+	}
+};
+
+interface TViewSourceContentProps {
+	editor: TPageEditor;
+}
