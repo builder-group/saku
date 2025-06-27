@@ -10,7 +10,7 @@ import {
 	TextField
 } from '@shopify/polaris';
 import React from 'react';
-import { ClipboardButton, FeedbackCard, SitePreview, ViewIcon } from '@/components';
+import { ClipboardButton, FeedbackCard, GetInTouchCard, SitePreview, ViewIcon } from '@/components';
 import { coreApiClient } from '@/environment';
 import { appConfig, shopify, shopifyConfig } from '@/environment/.server';
 import { getSessionTokenFromRequest } from '@/lib/.server';
@@ -148,6 +148,7 @@ const Page: React.FC = () => {
 								</Card>
 							)}
 							<FeedbackCard email={env.support.email} reviewUrl={env.distribution.shopify} />
+							<GetInTouchCard email={env.support.email} discordUrl={env.social.discord} />
 						</div>
 					</Layout.Section>
 				</Layout>
