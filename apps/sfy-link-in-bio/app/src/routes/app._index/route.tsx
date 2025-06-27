@@ -21,7 +21,7 @@ import {
 	ViewIcon
 } from '@/components';
 import { coreApiClient } from '@/environment';
-import { appConfig, shopify } from '@/environment/.server';
+import { appConfig, shopify, shopifyConfig } from '@/environment/.server';
 import { getSessionTokenFromRequest } from '@/lib/.server';
 import { usePageEditorModal } from '@/routes/app.modal.page-editor.$/PageEditorModal';
 import { TLoaderFunction } from '@/types';
@@ -207,7 +207,7 @@ export const loader: TLoaderFunction<TLoaderData> = async ({ request }) => {
 			sitesResult.value.data.map((site) => ({
 				id: site.id,
 				handle: site.handle,
-				url: `https://${session.shop}/a/saku/${site.handle}`,
+				url: `${shopifyConfig.proxy.url(session.shop)}/${site.handle}`,
 				displayName: site.displayName,
 				updatedAt: site.updatedAt
 			}))[0] ?? null,
