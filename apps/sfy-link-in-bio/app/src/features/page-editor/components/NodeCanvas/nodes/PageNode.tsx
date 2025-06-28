@@ -19,11 +19,22 @@ export const PageNode = React.forwardRef<HTMLDivElement, TPageNodeProps>((props,
 	);
 
 	return (
-		<div {...divProps} ref={ref} className="w-full max-w-md">
-			{/* Page container with padding and layout */}
-			<div className="relative overflow-hidden rounded-3xl bg-white shadow-sm transition-colors">
-				{/* Content area with padding */}
-				<div className="flex w-full flex-col gap-3 p-6">
+		<div
+			{...divProps}
+			ref={ref}
+			className="min-h-screen w-full"
+			style={{ backgroundColor: node.style.backgroundColor }}
+		>
+			<div className="mx-auto w-full max-w-md">
+				<div
+					className="flex w-full flex-col p-6"
+					style={{
+						gap: node.style.children?.spacing,
+						fontFamily: node.style.children?.fontFamily,
+						fontSize: node.style.children?.fontSize,
+						color: node.style.children?.textColor
+					}}
+				>
 					{childNodes.length === 0 ? (
 						<div className="flex min-h-[96px] items-center justify-center text-neutral-400">
 							Empty page...
@@ -34,10 +45,6 @@ export const PageNode = React.forwardRef<HTMLDivElement, TPageNodeProps>((props,
 						))
 					)}
 				</div>
-
-				{/* Border and highlight effects */}
-				<div className="pointer-events-none absolute inset-0 rounded-3xl ring-1 ring-black/[0.08]" />
-				<div className="pointer-events-none absolute inset-[1px] rounded-[23px] ring-1 ring-white/[0.22]" />
 			</div>
 		</div>
 	);

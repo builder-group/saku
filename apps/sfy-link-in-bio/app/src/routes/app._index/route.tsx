@@ -11,8 +11,7 @@ import {
 } from '@shopify/polaris';
 import React from 'react';
 import { ClipboardButton, FeedbackCard, GetInTouchCard, SitePreview, ViewIcon } from '@/components';
-import { coreApiClient } from '@/environment';
-import { appConfig, shopify, shopifyConfig } from '@/environment/.server';
+import { appConfig, shopify } from '@/environment/.server';
 import { getSessionTokenFromRequest } from '@/lib/.server';
 import { usePageEditorModal } from '@/routes/app.modal.page-editor.$/PageEditorModal';
 import { TLoaderFunction } from '@/types';
@@ -174,29 +173,40 @@ export const loader: TLoaderFunction<TLoaderData> = async ({ request }) => {
 		}
 	};
 
-	const sitesResult = await coreApiClient.get('/v1/shopify/site', {
-		headers: {
-			Authorization: `Bearer ${sessionToken}`
-		}
-	});
-	if (sitesResult.isErr()) {
-		return {
-			site: null,
-			env
-		};
-	}
-
 	return {
-		site:
-			sitesResult.value.data.map((site) => ({
-				id: site.id,
-				handle: site.handle,
-				url: `${shopifyConfig.proxy.url(session.shop)}/${site.handle}`,
-				displayName: site.displayName,
-				updatedAt: site.updatedAt
-			}))[0] ?? null,
+		site: {
+			id: 'preset',
+			handle: 'preset',
+			url: 'https://preset.com',
+			displayName: 'Preset',
+			updatedAt: new Date().toISOString()
+		},
 		env
 	};
+
+	// const sitesResult = await coreApiClient.get('/v1/shopify/site', {
+	// 	headers: {
+	// 		Authorization: `Bearer ${sessionToken}`
+	// 	}
+	// });
+	// if (sitesResult.isErr()) {
+	// 	return {
+	// 		site: null,
+	// 		env
+	// 	};
+	// }
+
+	// return {
+	// 	site:
+	// 		sitesResult.value.data.map((site) => ({
+	// 			id: site.id,
+	// 			handle: site.handle,
+	// 			url: `${shopifyConfig.proxy.url(session.shop)}/${site.handle}`,
+	// 			displayName: site.displayName,
+	// 			updatedAt: site.updatedAt
+	// 		}))[0] ?? null,
+	// 	env
+	// };
 };
 
 interface TLoaderData {

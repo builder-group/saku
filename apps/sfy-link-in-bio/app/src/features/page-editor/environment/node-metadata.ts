@@ -9,7 +9,22 @@ export const nodeMetadataMap = {
 		label: 'Page',
 		hidden: true,
 		defaultData: {
-			children: []
+			children: [],
+			style: {
+				backgroundColor: '#F8F9FA',
+				children: {
+					backgroundColor: '#FFFFFF',
+					spacing: 16,
+					padding: 16,
+					margin: 8,
+					fontFamily: 'Inter',
+					fontSize: 16,
+					textColor: '#2F4F4F',
+					textAlign: 'center' as const,
+					borderRadius: 12,
+					shadow: true
+				}
+			}
 		}
 	} satisfies TNodeMetadata<'page'>,
 	site: {
@@ -18,7 +33,7 @@ export const nodeMetadataMap = {
 		label: 'Site',
 		hidden: true,
 		defaultData: {
-			version: 'v0.0.1',
+			version: 'v0.0.1' as const,
 			children: []
 		}
 	} satisfies TNodeMetadata<'site'>,
@@ -28,9 +43,23 @@ export const nodeMetadataMap = {
 		label: 'About',
 		hidden: false,
 		defaultData: {
-			name: '',
-			bio: '',
-			avatarUrl: ''
+			name: 'Your Name',
+			bio: 'Tell us about yourself',
+			media: {
+				type: 'image' as const,
+				url: ''
+			},
+			style: {
+				padding: 'inherit' as const,
+				margin: 'inherit' as const,
+				backgroundColor: 'inherit' as const,
+				fontFamily: 'inherit' as const,
+				fontSize: 'inherit' as const,
+				textColor: 'inherit' as const,
+				textAlign: 'inherit' as const,
+				borderRadius: 'inherit' as const,
+				shadow: 'inherit' as const
+			}
 		}
 	} satisfies TNodeMetadata<'about'>,
 	link: {
@@ -39,7 +68,21 @@ export const nodeMetadataMap = {
 		label: 'Link',
 		hidden: false,
 		defaultData: {
-			url: ''
+			url: 'https://example.com',
+			meta: {
+				title: 'New Link'
+			},
+			style: {
+				padding: 'inherit' as const,
+				margin: 'inherit' as const,
+				backgroundColor: 'inherit' as const,
+				fontFamily: 'inherit' as const,
+				fontSize: 'inherit' as const,
+				textColor: 'inherit' as const,
+				textAlign: 'inherit' as const,
+				borderRadius: 'inherit' as const,
+				shadow: 'inherit' as const
+			}
 		}
 	} satisfies TNodeMetadata<'link'>,
 	media: {
@@ -49,9 +92,15 @@ export const nodeMetadataMap = {
 		hidden: false,
 		defaultData: {
 			media: {
-				type: 'image',
-				url: '',
-				altText: ''
+				type: 'image' as const,
+				url: ''
+			},
+			style: {
+				padding: 'inherit' as const,
+				margin: 'inherit' as const,
+				backgroundColor: 'inherit' as const,
+				borderRadius: 'inherit' as const,
+				shadow: 'inherit' as const
 			}
 		}
 	} satisfies TNodeMetadata<'media'>,
@@ -61,8 +110,18 @@ export const nodeMetadataMap = {
 		label: 'Text',
 		hidden: false,
 		defaultData: {
-			text: '',
-			alignment: 'center' as const
+			text: 'Add your text here',
+			style: {
+				padding: 'inherit' as const,
+				margin: 'inherit' as const,
+				backgroundColor: 'inherit' as const,
+				fontFamily: 'inherit' as const,
+				fontSize: 'inherit' as const,
+				textColor: 'inherit' as const,
+				textAlign: 'inherit' as const,
+				borderRadius: 'inherit' as const,
+				shadow: 'inherit' as const
+			}
 		}
 	} satisfies TNodeMetadata<'text'>
 } as const;

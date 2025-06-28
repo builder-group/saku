@@ -26,13 +26,37 @@ export const Node: React.FC<TNodeProps> = (props) => {
 				/>
 			);
 		case 'about':
-			return <AboutNode ref={nodeState.ref} nodeState={nodeState as TNodeState<TAboutNode>} />;
+			return (
+				<AboutNode
+					ref={nodeState.ref}
+					nodeState={nodeState as TNodeState<TAboutNode>}
+					editor={editor}
+				/>
+			);
 		case 'link':
-			return <LinkNode ref={nodeState.ref} nodeState={nodeState as TNodeState<TLinkNode>} />;
+			return (
+				<LinkNode
+					ref={nodeState.ref}
+					nodeState={nodeState as TNodeState<TLinkNode>}
+					editor={editor}
+				/>
+			);
 		case 'media':
-			return <MediaNode ref={nodeState.ref} nodeState={nodeState as TNodeState<TMediaNode>} />;
+			return (
+				<MediaNode
+					ref={nodeState.ref}
+					nodeState={nodeState as TNodeState<TMediaNode>}
+					editor={editor}
+				/>
+			);
 		case 'text':
-			return <TextNode ref={nodeState.ref} nodeState={nodeState as TNodeState<TTextNode>} />;
+			return (
+				<TextNode
+					ref={nodeState.ref}
+					nodeState={nodeState as TNodeState<TTextNode>}
+					editor={editor}
+				/>
+			);
 		default:
 			return null;
 	}

@@ -27,8 +27,8 @@
 	"explorer.fileNesting.patterns": {
 		"*.ts": "${capture}.js, ${capture}.test.ts, ${capture}.md",
 		"*.js": "${capture}.js.map, ${capture}.min.js, ${capture}.d.ts, ${capture}.test.js, ${capture}.md",
-		"*.jsx": "${capture}.js, ${capture}.md",
-		"*.tsx": "${capture}.ts, ${capture}.stories.tsx, ${capture}.md",
+		"*.jsx": "${capture}.js, ${capture}.md, ${capture}.module.css",
+		"*.tsx": "${capture}.ts, ${capture}.stories.tsx, ${capture}.md, ${capture}.module.css",
 		".npmrc": ".nvmrc, .yarnrc.yml",
 		".gitignore": ".eslintignore, .prettierignore, .dockerignore",
 		"README.md": "CONTRIBUTING.md, CODE_OF_CONDUCT.md",

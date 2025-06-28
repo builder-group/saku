@@ -1,13 +1,16 @@
-import { Select, Text, TextField } from '@shopify/polaris';
+import { Text, TextField } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react/state';
 import React from 'react';
 import { AccordionSection } from '@/components';
 import { TTextNode } from '../../../types';
+import { SelectStyleField, TextStyleField, ToggleStyleField } from '../fields';
 import { TNodeEditorComponentProps } from '../nodeEditorRegistry';
 
 export const TextNodeEditor: React.FC<TNodeEditorComponentProps<TTextNode>> = (props) => {
-	const { nodeState } = props;
+	const { nodeState, editor } = props;
 	const node = useFeatureState(nodeState);
+
+	const parentNodeState = React.useMemo(() => editor.getRootNode(), [editor]);
 
 	// =========================================================================
 	// Events
@@ -31,28 +34,20 @@ export const TextNodeEditor: React.FC<TNodeEditorComponentProps<TTextNode>> = (p
 		[nodeState]
 	);
 
-	const handleAlignmentChange = React.useCallback(
-		(value: TTextNode['alignment']) => {
-			nodeState.set((prev) => ({ ...prev, alignment: value }));
-		},
-		[nodeState]
-	);
-
 	// =========================================================================
 	// UI
 	// =========================================================================
 
 	return (
 		<>
-			<AccordionSection title="Content">
+			{/* Content Section */}
+			<AccordionSection title="Content" defaultOpen={true}>
 				<div className="space-y-4">
 					{/* Title */}
 					<div className="space-y-1">
-						<div>
-							<Text as="span" variant="bodySm" tone="subdued">
-								Title
-							</Text>
-						</div>
+						<Text as="span" variant="bodySm" tone="subdued">
+							Title
+						</Text>
 						<TextField
 							id="title-field"
 							label="Title"
@@ -66,11 +61,9 @@ export const TextNodeEditor: React.FC<TNodeEditorComponentProps<TTextNode>> = (p
 
 					{/* Text */}
 					<div className="space-y-1">
-						<div>
-							<Text as="span" variant="bodySm" tone="subdued">
-								Text
-							</Text>
-						</div>
+						<Text as="span" variant="bodySm" tone="subdued">
+							Text
+						</Text>
 						<TextField
 							id="text-field"
 							label="Text"
@@ -84,25 +77,137 @@ export const TextNodeEditor: React.FC<TNodeEditorComponentProps<TTextNode>> = (p
 					</div>
 				</div>
 			</AccordionSection>
-			<AccordionSection title="Style">
-				{/* Alignment */}
-				<div className="space-y-1">
-					<div>
-						<Text as="span" variant="bodySm" tone="subdued">
-							Alignment
-						</Text>
+
+			{/* Style Section */}
+			<AccordionSection title="Style" defaultOpen={true}>
+				<div className="space-y-3">
+					<div className="grid grid-cols-2 gap-3">
+						<TextStyleField
+							label="Padding"
+							node={nodeState}
+							parentNode={parentNodeState}
+							nodeValueMapper={(node) => node.style.padding}
+							nodeValueSetter={(node, value) => ({
+								...node,
+								style: { ...node.style, padding: value }
+							})}
+							parentValueMapper={(parent) => parent.style.children?.padding}
+							type="number"
+							autoComplete="off"
+						/>
+
+						<TextStyleField
+							label="Margin"
+							node={nodeState}
+							parentNode={parentNodeState}
+							nodeValueMapper={(node) => node.style.margin}
+							nodeValueSetter={(node, value) => ({
+								...node,
+								style: { ...node.style, margin: value }
+							})}
+							parentValueMapper={(parent) => parent.style.children?.margin}
+							type="number"
+							autoComplete="off"
+						/>
 					</div>
-					<Select
-						id="alignment-field"
-						label="Alignment"
-						labelHidden
+
+					<TextStyleField
+						label="Background Color"
+						node={nodeState}
+						parentNode={parentNodeState}
+						nodeValueMapper={(node) => node.style.backgroundColor}
+						nodeValueSetter={(node, value) => ({
+							...node,
+							style: { ...node.style, backgroundColor: value }
+						})}
+						parentValueMapper={(parent) => parent.style.children?.backgroundColor}
+						autoComplete="off"
+					/>
+
+					<TextStyleField
+						label="Font Family"
+						node={nodeState}
+						parentNode={parentNodeState}
+						nodeValueMapper={(node) => node.style.fontFamily}
+						nodeValueSetter={(node, value) => ({
+							...node,
+							style: { ...node.style, fontFamily: value }
+						})}
+						parentValueMapper={(parent) => parent.style.children?.fontFamily}
+						autoComplete="off"
+					/>
+
+					<div className="grid grid-cols-2 gap-3">
+						<TextStyleField
+							label="Font Size"
+							node={nodeState}
+							parentNode={parentNodeState}
+							nodeValueMapper={(node) => node.style.fontSize}
+							nodeValueSetter={(node, value) => ({
+								...node,
+								style: { ...node.style, fontSize: value }
+							})}
+							parentValueMapper={(parent) => parent.style.children?.fontSize}
+							type="number"
+							autoComplete="off"
+						/>
+
+						<TextStyleField
+							label="Text Color"
+							node={nodeState}
+							parentNode={parentNodeState}
+							nodeValueMapper={(node) => node.style.textColor}
+							nodeValueSetter={(node, value) => ({
+								...node,
+								style: { ...node.style, textColor: value }
+							})}
+							parentValueMapper={(parent) => parent.style.children?.textColor}
+							autoComplete="off"
+						/>
+					</div>
+
+					<SelectStyleField
+						label="Text Align"
+						node={nodeState}
+						parentNode={parentNodeState}
+						nodeValueMapper={(node) => node.style.textAlign}
+						nodeValueSetter={(node, value) => ({
+							...node,
+							style: { ...node.style, textAlign: value }
+						})}
+						parentValueMapper={(parent) => parent.style.children?.textAlign}
 						options={[
 							{ label: 'Left', value: 'left' },
 							{ label: 'Center', value: 'center' },
 							{ label: 'Right', value: 'right' }
 						]}
-						value={node.alignment}
-						onChange={handleAlignmentChange}
+					/>
+
+					<TextStyleField
+						label="Border Radius"
+						node={nodeState}
+						parentNode={parentNodeState}
+						nodeValueMapper={(node) => node.style.borderRadius}
+						nodeValueSetter={(node, value) => ({
+							...node,
+							style: { ...node.style, borderRadius: value }
+						})}
+						parentValueMapper={(parent) => parent.style.children?.borderRadius}
+						type="number"
+						autoComplete="off"
+					/>
+
+					<ToggleStyleField
+						label="Shadow"
+						node={nodeState}
+						parentNode={parentNodeState}
+						nodeValueMapper={(node) => node.style.shadow}
+						nodeValueSetter={(node, value) => ({
+							...node,
+							style: { ...node.style, shadow: value }
+						})}
+						parentValueMapper={(parent) => parent.style.children?.shadow}
+						ariaLabel="Enable shadow"
 					/>
 				</div>
 			</AccordionSection>
