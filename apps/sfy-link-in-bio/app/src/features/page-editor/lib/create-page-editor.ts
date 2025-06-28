@@ -23,6 +23,7 @@ export function createPageEditor(
 
 		activeView: createState('layers' as TViewType),
 		isReady: createState(false),
+		isDraggingLayer: createState(false),
 		shopify,
 		boundingRect: createState<TBoundingRect>({
 			left: 0,
@@ -149,6 +150,40 @@ export function createPageEditor(
 			});
 		},
 
+		reorderNode(nodeId, targetNodeId) {
+			const node = this.nodeMap[nodeId]?._v;
+			const targetNode = this.nodeMap[targetNodeId]?._v;
+			if (node == null || targetNode == null) {
+				return;
+			}
+
+			// Check if they have the same parent
+			if (node.parentId !== targetNode.parentId || node.parentId == null) {
+				return;
+			}
+
+			const parentState = this.nodeMap[node.parentId];
+			if (parentState == null) {
+				return;
+			}
+
+			parentState.set((v) => {
+				if ('children' in v) {
+					const children = [...v.children];
+					const fromIndex = children.indexOf(nodeId);
+					const toIndex = children.indexOf(targetNodeId);
+
+					if (fromIndex !== -1 && toIndex !== -1 && fromIndex !== toIndex) {
+						children.splice(fromIndex, 1);
+						children.splice(toIndex, 0, nodeId);
+					}
+
+					return { ...v, children };
+				}
+				return v;
+			});
+		},
+
 		moveNode(nodeId, newParentId) {
 			const nodeState = this.nodeMap[nodeId];
 			const newParentState = this.nodeMap[newParentId];
@@ -244,6 +279,7 @@ export interface TPageEditor {
 
 	activeView: TState<TViewType, []>;
 	isReady: TState<boolean, []>;
+	isDraggingLayer: TState<boolean, []>;
 	shopify: ShopifyGlobal;
 	boundingRect: TState<TBoundingRect, []>;
 	canvasBoundingRect: TState<TBoundingRect, []>;
@@ -258,6 +294,7 @@ export interface TPageEditor {
 	addNode: (node: TNode, parentId?: TNodeId) => void;
 	removeNode: (nodeId: TNodeId) => void;
 	swapNodes: (nodeId1: TNodeId, nodeId2: TNodeId) => void;
+	reorderNode: (nodeId: TNodeId, targetNodeId: TNodeId) => void;
 	moveNode: (nodeId: TNodeId, newParentId: TNodeId) => void;
 	updateNode: <GNode extends TFlattenedNode<TNode>>(
 		nodeId: TNodeId,

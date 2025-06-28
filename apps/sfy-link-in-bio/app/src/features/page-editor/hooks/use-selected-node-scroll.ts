@@ -1,8 +1,10 @@
 import { useListener } from 'feature-react';
+import React from 'react';
 import { TPageEditor } from '../lib';
 
 export function useSelectedNodeScroll(editor: TPageEditor): void {
-	useListener(editor.selectedNodeId, ({ value: selectedNodeId }) => {
+	const scrollToSelectedNode = React.useCallback(() => {
+		const selectedNodeId = editor.selectedNodeId._v;
 		const selectedNode = selectedNodeId == null ? null : editor.nodeMap[selectedNodeId];
 		if (selectedNode == null) {
 			return;
@@ -38,5 +40,17 @@ export function useSelectedNodeScroll(editor: TPageEditor): void {
 				behavior: 'smooth'
 			});
 		}, 10);
+	}, [editor]);
+
+	// Scroll when selection changes
+	useListener(editor.selectedNodeId, () => {
+		scrollToSelectedNode();
+	});
+
+	// Scroll when dragging ends (to show new position)
+	useListener(editor.isDraggingLayer, ({ value: isDragging }) => {
+		if (!isDragging) {
+			scrollToSelectedNode();
+		}
 	});
 }

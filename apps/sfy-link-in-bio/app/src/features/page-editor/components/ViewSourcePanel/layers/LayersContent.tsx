@@ -11,7 +11,7 @@ import {
 import { restrictToParentElement } from '@dnd-kit/modifiers';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { Button, Icon, Text } from '@shopify/polaris';
-import { useCompute } from 'feature-react/state';
+import { useCompute, useFeatureState } from 'feature-react/state';
 import React from 'react';
 import { PlusCircleIcon, PlusIcon } from '@/components';
 import { cn } from '@/lib';
@@ -25,6 +25,7 @@ export const LayersContent: React.FC<TLayersContentProps> = ({ editor }) => {
 	const nodes = useCompute(rootNode, (rootNode) => {
 		return rootNode.children.map((nodeId) => editor.nodeMap[nodeId]).filter(notEmpty);
 	});
+	const isDragging = useFeatureState(editor.isDraggingLayer);
 
 	// https://docs.dndkit.com/presets/sortable
 	const sensors = useSensors(
@@ -34,23 +35,25 @@ export const LayersContent: React.FC<TLayersContentProps> = ({ editor }) => {
 			}
 		})
 	);
-	const [isDragging, setIsDragging] = React.useState(false);
 
 	// =========================================================================
 	// Events
 	// =========================================================================
 
-	const handleDragStart = React.useCallback((_: DragStartEvent) => {
-		setIsDragging(true);
-	}, []);
+	const handleDragStart = React.useCallback(
+		(_: DragStartEvent) => {
+			editor.isDraggingLayer.set(true);
+		},
+		[editor]
+	);
 
 	const handleDragEnd = React.useCallback(
 		(event: DragEndEvent) => {
 			const { active, over } = event;
-			setIsDragging(false);
+			editor.isDraggingLayer.set(false);
 
 			if (over != null && active.id !== over.id) {
-				editor.swapNodes(active.id as string, over.id as string);
+				editor.reorderNode(active.id as string, over.id as string);
 			}
 		},
 		[editor]
