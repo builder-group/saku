@@ -25,7 +25,7 @@ const Page: React.FC = () => {
 		<AppProxyProvider appUrl={appUrl}>
 			<link rel="stylesheet" href={`${appUrl}/src/styles.css`} />
 
-			<StaticNodeCanvas nodes={pageNode.children} />
+			<StaticNodeCanvas nodes={[pageNode]} />
 		</AppProxyProvider>
 	);
 };

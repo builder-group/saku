@@ -3,8 +3,8 @@ import { TState } from 'feature-state';
 import React from 'react';
 import { cn } from '@/lib';
 import { TFlattenedNode, TPageEditor } from '../../lib';
-import { TAboutNode, TLinkNode, TMediaNode, TNode, TTextNode } from '../../types';
-import { AboutNode, LinkNode, MediaNode, TextNode } from './nodes';
+import { TAboutNode, TLinkNode, TMediaNode, TNode, TPageNode, TTextNode } from '../../types';
+import { AboutNode, LinkNode, MediaNode, PageNode, TextNode } from './nodes';
 
 export const Node: React.FC<TNodeProps> = (props) => {
 	const { nodeState, editor, scrollContainerRef } = props;
@@ -54,12 +54,20 @@ export const Node: React.FC<TNodeProps> = (props) => {
 				return <LinkNode nodeState={nodeState as TState<TFlattenedNode<TLinkNode>, []>} />;
 			case 'media':
 				return <MediaNode nodeState={nodeState as TState<TFlattenedNode<TMediaNode>, []>} />;
+			case 'page':
+				return (
+					<PageNode
+						nodeState={nodeState as TState<TFlattenedNode<TPageNode>, []>}
+						editor={editor}
+						scrollContainerRef={scrollContainerRef}
+					/>
+				);
 			case 'text':
 				return <TextNode nodeState={nodeState as TState<TFlattenedNode<TTextNode>, []>} />;
 			default:
 				return null;
 		}
-	}, [nodeState]);
+	}, [nodeState, editor, scrollContainerRef]);
 
 	return (
 		<div
