@@ -1,27 +1,41 @@
-import { TState } from 'feature-state';
 import React from 'react';
-import { TFlattenedNode, TPageEditor } from '../../lib';
-import { TNode } from '../../types';
+import { useBoundingRectObserver } from '@/hooks';
+import { useSelectedNodeScroll } from '../../hooks';
+import { TPageEditor } from '../../lib';
 import { Node } from './Node';
+import { NodeIndicators } from './NodeIndicators';
 
 export const NodeCanvas: React.FC<TNodeCanvasProps> = (props) => {
-	const { editor, scrollContainerRef } = props;
+	const { editor } = props;
 
-	const rootNode = React.useMemo(() => editor.getRootNode(), [editor]);
+	const rootNodeState = React.useMemo(
+		() => editor.nodeMap[editor.rootId],
+		[editor.nodeMap, editor.rootId]
+	);
+
+	useBoundingRectObserver(
+		editor.canvasRef,
+		editor.canvasBoundingRect._v,
+		(rect) => {
+			editor.canvasBoundingRect.set(rect);
+		},
+		[]
+	);
+
+	useSelectedNodeScroll(editor);
+
+	if (rootNodeState == null) {
+		return null;
+	}
 
 	return (
-		<div className="flex w-full flex-col items-center gap-4">
-			<Node
-				key={rootNode._v.id}
-				nodeState={rootNode as TState<TFlattenedNode<TNode>, []>}
-				editor={editor}
-				scrollContainerRef={scrollContainerRef}
-			/>
+		<div ref={editor.canvasRef} className="relative flex w-full flex-col items-center gap-4">
+			<NodeIndicators editor={editor} />
+			<Node key={rootNodeState._v.id} nodeState={rootNodeState} editor={editor} />
 		</div>
 	);
 };
 
 interface TNodeCanvasProps {
 	editor: TPageEditor;
-	scrollContainerRef: React.RefObject<HTMLDivElement>;
 }

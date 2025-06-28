@@ -7,19 +7,15 @@ import { NodeCanvas } from './NodeCanvas';
 export const CanvasPanel: React.FC<TCanvasPanelProps> = (props) => {
 	const { editor } = props;
 
-	const scrollContainerRef = React.useRef<HTMLDivElement>(null);
-
 	return (
 		<ResizablePanel>
 			<CanvasPanelHeader editor={editor} />
 
 			<div
-				ref={scrollContainerRef}
+				ref={editor.canvasContainerRef}
 				className="h-[calc(100%-3rem)] w-full overflow-y-auto bg-neutral-50"
 			>
-				<div className="flex min-h-full w-full flex-col p-4">
-					<NodeCanvas editor={editor} scrollContainerRef={scrollContainerRef} />
-				</div>
+				<NodeCanvas editor={editor} />
 			</div>
 		</ResizablePanel>
 	);

@@ -7,6 +7,7 @@ export const nodeMetadataMap = {
 		type: 'page',
 		icon: LayoutSectionIcon,
 		label: 'Page',
+		hidden: true,
 		defaultData: {
 			children: []
 		}
@@ -15,6 +16,7 @@ export const nodeMetadataMap = {
 		type: 'site',
 		icon: LayoutSectionIcon,
 		label: 'Site',
+		hidden: true,
 		defaultData: {
 			version: 'v0.0.1',
 			children: []
@@ -24,6 +26,7 @@ export const nodeMetadataMap = {
 		type: 'about',
 		icon: LayoutSectionIcon,
 		label: 'About',
+		hidden: false,
 		defaultData: {
 			name: '',
 			bio: '',
@@ -34,6 +37,7 @@ export const nodeMetadataMap = {
 		type: 'link',
 		icon: LayoutSectionIcon,
 		label: 'Link',
+		hidden: false,
 		defaultData: {
 			url: ''
 		}
@@ -42,6 +46,7 @@ export const nodeMetadataMap = {
 		type: 'media',
 		icon: LayoutSectionIcon,
 		label: 'Media',
+		hidden: false,
 		defaultData: {
 			media: {
 				type: 'image',
@@ -54,6 +59,7 @@ export const nodeMetadataMap = {
 		type: 'text',
 		icon: LayoutSectionIcon,
 		label: 'Text',
+		hidden: false,
 		defaultData: {
 			text: '',
 			alignment: 'center' as const
@@ -65,6 +71,7 @@ export interface TNodeMetadata<GType extends TNodeType> {
 	type: GType;
 	icon: IconSource;
 	label: string;
+	hidden: boolean;
 	defaultData: Omit<Extract<TNode, { type: GType }>, 'id' | 'type'>;
 }
 

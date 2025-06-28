@@ -1,4 +1,5 @@
 import { Spinner } from '@shopify/polaris';
+import { useCompute } from 'feature-react';
 import React from 'react';
 import { ResizableHandle, ResizablePanelGroup } from '@/components';
 import { useBoundingRectObserver } from '@/hooks';
@@ -11,22 +12,21 @@ import { ViewSourcePanel } from './ViewSourcePanel';
 export const Editor: React.FC<TEditorProps> = (props) => {
 	const { editor } = props;
 
-	const elementRef = React.useRef<HTMLDivElement>(null);
-	const [hasBoundingRect, setHasBoundingRect] = React.useState(false);
+	const isReady = useCompute(editor.isReady, (ready) => ready);
 
 	useBoundingRectObserver(
-		elementRef,
+		editor.editorRef,
 		editor.boundingRect._v,
 		(rect) => {
 			editor.boundingRect.set(rect);
-			setHasBoundingRect(true);
+			editor.isReady.set(true);
 		},
 		[editor]
 	);
 
 	return (
-		<div ref={elementRef} className="flex h-screen w-full flex-col">
-			{hasBoundingRect ? (
+		<div ref={editor.editorRef} className="flex h-screen w-full flex-col">
+			{isReady ? (
 				<ResizablePanelGroup direction="horizontal" className="flex-1">
 					<ViewNavPanel editor={editor} />
 					<ResizableHandle className="w-px bg-neutral-200" />

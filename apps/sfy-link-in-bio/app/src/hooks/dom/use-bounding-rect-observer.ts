@@ -71,12 +71,21 @@ export function useBoundingRectObserver<
 			return;
 		}
 
-		// Observe style and class changes
+		// Observe style and class changes on the element itself
 		const mutationObserver = new MutationObserver(handleBoundingRect);
 		mutationObserver.observe(element, {
 			attributes: true,
 			attributeFilter: ['style', 'class']
 		});
+
+		// Observe DOM structure changes on parent (e.g. for reordering detection)
+		const parentMutationObserver = new MutationObserver(handleBoundingRect);
+		if (element.parentElement) {
+			parentMutationObserver.observe(element.parentElement, {
+				childList: true, // Detect when children are added/removed/reordered
+				subtree: false // Only direct children, not deep changes
+			});
+		}
 
 		// Observe size changes of element and all ancestors
 		const resizeObserver = new ResizeObserver(handleBoundingRect);
@@ -101,6 +110,7 @@ export function useBoundingRectObserver<
 
 		return () => {
 			mutationObserver.disconnect();
+			parentMutationObserver.disconnect();
 			resizeObserver.disconnect();
 			scrollElements.forEach((el) => {
 				el.removeEventListener('scroll', handleBoundingRect);

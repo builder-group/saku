@@ -1,9 +1,11 @@
 import { shortId } from '@blgc/utils';
 import { ShopifyGlobal } from '@shopify/app-bridge-react';
 import { createState, TState } from 'feature-state';
+import React from 'react';
 import { coreApiClient } from '@/environment';
 import { TViewType } from '../environment';
 import { TNode, TNodeId, TPageNode, TSiteNode } from '../types';
+import { createNodeState, TNodeState } from './create-node-state';
 import { flattenNode, TFlattenedNode, unflattenNode } from './flatten-node';
 
 export function createPageEditor(
@@ -16,18 +18,28 @@ export function createPageEditor(
 		siteId,
 
 		rootId: pageNode.id,
-		nodeMap: flattenNode(pageNode, (node) => createState(node)),
+		nodeMap: flattenNode(pageNode, (node) => createNodeState(node)),
 		selectedNodeId: createState<TNodeId | null>(null),
 
 		activeView: createState('layers' as TViewType),
-		boundingRect: createState({
+		isReady: createState(false),
+		shopify,
+		boundingRect: createState<TBoundingRect>({
+			left: 0,
+			top: 0,
+			bottom: 0,
+			right: 0
+		}),
+		canvasBoundingRect: createState<TBoundingRect>({
 			left: 0,
 			top: 0,
 			bottom: 0,
 			right: 0
 		}),
 
-		shopify,
+		editorRef: React.createRef<HTMLDivElement>(),
+		canvasRef: React.createRef<HTMLDivElement>(),
+		canvasContainerRef: React.createRef<HTMLDivElement>(),
 
 		switchView(view) {
 			this.activeView.set(view);
@@ -53,9 +65,9 @@ export function createPageEditor(
 				if (this.nodeMap[nodeId] != null) {
 					this.nodeMap[nodeId]?.set(flatNode);
 				}
-				// Create new node state
+				// Create new node state with ref
 				else {
-					this.nodeMap[nodeId] = createState(flatNode);
+					this.nodeMap[nodeId] = createNodeState(flatNode);
 				}
 			});
 
@@ -227,13 +239,18 @@ export interface TPageEditor {
 	siteId: string;
 
 	rootId: TNodeId;
-	nodeMap: Record<TNodeId, TState<TFlattenedNode<TNode>, []>>;
+	nodeMap: Record<TNodeId, TNodeState>;
 	selectedNodeId: TState<TNodeId | null, []>;
 
 	activeView: TState<TViewType, []>;
-	boundingRect: TState<TBoundingRect, []>;
-
+	isReady: TState<boolean, []>;
 	shopify: ShopifyGlobal;
+	boundingRect: TState<TBoundingRect, []>;
+	canvasBoundingRect: TState<TBoundingRect, []>;
+
+	editorRef: React.RefObject<HTMLDivElement>;
+	canvasRef: React.RefObject<HTMLDivElement>;
+	canvasContainerRef: React.RefObject<HTMLDivElement>;
 
 	switchView: (view: TViewType) => void;
 

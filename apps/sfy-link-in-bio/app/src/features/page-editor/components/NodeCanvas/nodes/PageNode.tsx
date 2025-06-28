@@ -1,13 +1,12 @@
 import { notEmpty } from '@blgc/utils';
 import { useCompute, useFeatureState } from 'feature-react';
-import { TState } from 'feature-state';
 import React from 'react';
-import { TFlattenedNode, TPageEditor } from '../../../lib';
+import { TNodeState, TPageEditor } from '../../../lib';
 import { TPageNode } from '../../../types';
 import { Node } from '../Node';
 
-export const PageNode: React.FC<TPageNodeProps> = (props) => {
-	const { nodeState, editor, scrollContainerRef } = props;
+export const PageNode = React.forwardRef<HTMLDivElement, TPageNodeProps>((props, ref) => {
+	const { nodeState, editor, ...divProps } = props;
 	const node = useFeatureState(nodeState);
 
 	// Get child nodes from the editor's nodeMap
@@ -20,9 +19,9 @@ export const PageNode: React.FC<TPageNodeProps> = (props) => {
 	);
 
 	return (
-		<div className="w-full max-w-md">
+		<div {...divProps} ref={ref} className="w-full max-w-md">
 			{/* Page container with padding and layout */}
-			<div className="relative overflow-hidden rounded-3xl bg-white shadow-sm transition-colors hover:bg-[#f5f5f5]">
+			<div className="relative overflow-hidden rounded-3xl bg-white shadow-sm transition-colors">
 				{/* Content area with padding */}
 				<div className="flex w-full flex-col gap-3 p-6">
 					{childNodes.length === 0 ? (
@@ -31,12 +30,7 @@ export const PageNode: React.FC<TPageNodeProps> = (props) => {
 						</div>
 					) : (
 						childNodes.map((childNodeState) => (
-							<Node
-								key={childNodeState._v.id}
-								nodeState={childNodeState}
-								editor={editor}
-								scrollContainerRef={scrollContainerRef}
-							/>
+							<Node key={childNodeState._v.id} nodeState={childNodeState} editor={editor} />
 						))
 					)}
 				</div>
@@ -47,10 +41,10 @@ export const PageNode: React.FC<TPageNodeProps> = (props) => {
 			</div>
 		</div>
 	);
-};
+});
+PageNode.displayName = 'PageNode';
 
-interface TPageNodeProps {
-	nodeState: TState<TFlattenedNode<TPageNode>, []>;
+interface TPageNodeProps extends React.HTMLProps<HTMLDivElement> {
+	nodeState: TNodeState<TPageNode>;
 	editor: TPageEditor;
-	scrollContainerRef: React.RefObject<HTMLDivElement>;
 }
