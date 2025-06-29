@@ -3,7 +3,7 @@ import { ShopifyGlobal } from '@shopify/app-bridge-react';
 import { createState, TState } from 'feature-state';
 import React from 'react';
 import { coreApiClient } from '@/environment';
-import { TViewType } from '../environment';
+import { TSettingsSectionType, TViewType } from '../environment';
 import { TNode, TNodeId, TPageNode, TSiteNode } from '../types';
 import { createNodeState, TNodeState } from './create-node-state';
 import { flattenNode, TFlattenedNode, unflattenNode } from './flatten-node';
@@ -22,6 +22,8 @@ export function createPageEditor(
 		selectedNodeId: createState<TNodeId | null>(null),
 
 		activeView: createState('layers' as TViewType),
+		activeSettingsSection: createState<TSettingsSectionType | null>('appearance'),
+
 		isReady: createState(false),
 		isDraggingLayer: createState(false),
 		shopify,
@@ -45,6 +47,11 @@ export function createPageEditor(
 		switchView(view) {
 			this.activeView.set(view);
 			this.unselectNode();
+			this.switchSettingsSection('appearance');
+		},
+
+		switchSettingsSection(section) {
+			this.activeSettingsSection.set(section);
 		},
 
 		getRootNode() {
@@ -279,6 +286,8 @@ export interface TPageEditor {
 	selectedNodeId: TState<TNodeId | null, []>;
 
 	activeView: TState<TViewType, []>;
+	activeSettingsSection: TState<TSettingsSectionType | null, []>;
+
 	isReady: TState<boolean, []>;
 	isDraggingLayer: TState<boolean, []>;
 	shopify: ShopifyGlobal;
@@ -290,6 +299,7 @@ export interface TPageEditor {
 	canvasContainerRef: React.RefObject<HTMLDivElement>;
 
 	switchView: (view: TViewType) => void;
+	switchSettingsSection: (section: TSettingsSectionType | null) => void;
 
 	getRootNode: () => TState<TFlattenedNode<TPageNode>, []>;
 	addNode: (node: TNode, parentId?: TNodeId) => void;

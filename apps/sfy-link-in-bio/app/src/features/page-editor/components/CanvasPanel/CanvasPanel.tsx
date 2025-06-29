@@ -1,8 +1,8 @@
 import React from 'react';
 import { ResizablePanel } from '@/components';
-import { TPageEditor } from '../lib';
+import { TPageEditor } from '../../lib';
+import { NodeCanvas } from '../NodeCanvas';
 import { CanvasPanelHeader } from './CanvasPanelHeader';
-import { NodeCanvas } from './NodeCanvas';
 
 export const CanvasPanel: React.FC<TCanvasPanelProps> = (props) => {
 	const { editor } = props;

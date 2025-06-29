@@ -93,9 +93,6 @@ export const TextStyleField = <GNodeValue, GParentNodeValue, GValue>(
 				value={displayValue}
 				onChange={handleChange}
 				readOnly={isInherited}
-				helpText={
-					parentValue != null && isInherited ? `Inherited from parent: ${parentValue}` : undefined
-				}
 			/>
 		</div>
 	);

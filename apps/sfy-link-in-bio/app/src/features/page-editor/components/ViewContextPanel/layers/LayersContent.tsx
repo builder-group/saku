@@ -32,14 +32,14 @@ export const LayersContent: React.FC<TLayersContentProps> = (props) => {
 	}
 
 	return (
-		<div className="h-full">
+		<div className="flex h-full flex-col">
 			<PanelHeader>
 				{/* Offset 8px Tab padding which can't be removed */}
 				<div className="-ml-2">
 					<Tabs tabs={layersContentTabs} selected={selectedTabIndex} onSelect={handleTabChange} />
 				</div>
 			</PanelHeader>
-			<div className="h-full">
+			<div className="flex-1 overflow-auto">
 				{selectedTabIndex === 0 && (
 					<LayersContentCustomizeTab nodeState={selectedNode} editor={editor} />
 				)}

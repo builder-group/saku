@@ -64,7 +64,7 @@ export const LayersContent: React.FC<TLayersContentProps> = ({ editor }) => {
 	// =========================================================================
 
 	return (
-		<>
+		<div className="flex h-full flex-col">
 			<PanelHeader className="flex flex-row items-center justify-between">
 				<Text as="h2" variant="headingMd">
 					Layers
@@ -79,7 +79,7 @@ export const LayersContent: React.FC<TLayersContentProps> = ({ editor }) => {
 					width="auto"
 				/>
 			</PanelHeader>
-			<div className="p-2">
+			<div className="flex-1 overflow-auto p-2">
 				<DndContext
 					sensors={sensors}
 					collisionDetection={closestCenter}
@@ -117,7 +117,7 @@ export const LayersContent: React.FC<TLayersContentProps> = ({ editor }) => {
 					width="activator"
 				/>
 			</div>
-		</>
+		</div>
 	);
 };
 

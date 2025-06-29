@@ -19,6 +19,7 @@ export * from './YouTubeIcon';
 // Third Party Icons
 export {
 	ChevronDownIcon,
+	ChevronRightIcon,
 	ClipboardCheckIcon,
 	ClipboardIcon,
 	DeleteIcon,

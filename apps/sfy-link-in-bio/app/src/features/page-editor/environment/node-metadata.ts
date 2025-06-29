@@ -126,16 +126,12 @@ export const nodeMetadataMap = {
 	} satisfies TNodeMetadata<'text'>
 } as const;
 
+export const nodeMetadata = Object.values(nodeMetadataMap);
+
 export interface TNodeMetadata<GType extends TNodeType> {
 	type: GType;
 	icon: IconSource;
 	label: string;
 	hidden: boolean;
 	defaultData: Omit<Extract<TNode, { type: GType }>, 'id' | 'type'>;
-}
-
-export const nodeMetadata = Object.values(nodeMetadataMap);
-
-export function getNodeMetadata<GType extends TNodeType>(type: GType): TNodeMetadata<GType> {
-	return nodeMetadataMap[type] as unknown as TNodeMetadata<GType>;
 }

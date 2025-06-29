@@ -1,8 +1,8 @@
 import { Button, InlineStack } from '@shopify/polaris';
 import React from 'react';
 import { ViewIcon } from '@/components';
-import { TPageEditor } from '../lib';
-import { PanelHeader } from './PanelHeader';
+import { TPageEditor } from '../../lib';
+import { PanelHeader } from '../PanelHeader';
 
 export const CanvasPanelHeader: React.FC<TCanvasPanelHeaderProps> = (props) => {
 	const { editor } = props;

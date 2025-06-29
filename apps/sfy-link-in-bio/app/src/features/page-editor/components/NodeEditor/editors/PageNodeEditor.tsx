@@ -1,4 +1,3 @@
-import { Text } from '@shopify/polaris';
 import React from 'react';
 import { AccordionSection } from '@/components';
 import { TPageNode } from '../../../types';
@@ -14,8 +13,8 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TPageNode>> = (p
 
 	return (
 		<>
-			{/* Page Styling Section */}
-			<AccordionSection title="Page Styling" defaultOpen={true}>
+			{/* Page Style Section */}
+			<AccordionSection title="Style" defaultOpen={true}>
 				<div className="space-y-3">
 					<TextStyleField
 						label="Background Color"
@@ -31,14 +30,9 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TPageNode>> = (p
 				</div>
 			</AccordionSection>
 
-			{/* Child Defaults Section */}
-			<AccordionSection title="Child Defaults" defaultOpen={true}>
+			{/* Child Style Section */}
+			<AccordionSection title="Child Style" defaultOpen={true}>
 				<div className="space-y-3">
-					<Text as="p" variant="bodySm" tone="subdued">
-						These settings define the default styles for all child elements (links, text, media,
-						etc.). Children can inherit these values or override them individually.
-					</Text>
-
 					<div className="grid grid-cols-2 gap-3">
 						<TextStyleField
 							label="Spacing"
