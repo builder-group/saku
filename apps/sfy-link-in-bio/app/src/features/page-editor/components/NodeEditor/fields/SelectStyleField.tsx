@@ -5,8 +5,8 @@ import React from 'react';
 import { LinkIcon, LinkOffIcon } from '@/components';
 import { TStyleProperty } from '../../../types';
 
-export const SelectStyleField = <GNode, GParentNode, TValue>(
-	props: TSelectStyleFieldProps<GNode, GParentNode, TValue>
+export const SelectStyleField = <GNodeValue, GParentNodeValue, GValue>(
+	props: TSelectStyleFieldProps<GNodeValue, GParentNodeValue, GValue>
 ) => {
 	const {
 		label,
@@ -19,7 +19,9 @@ export const SelectStyleField = <GNode, GParentNode, TValue>(
 	} = props;
 
 	const currentValue = useCompute(node, nodeValueMapper);
-	const parentValue = useCompute(parentNode, (parent) => parentValueMapper?.(parent));
+	const parentValue =
+		useCompute(parentNode, (parent) => (parent != null ? parentValueMapper?.(parent) : null)) ??
+		undefined;
 	const isInherited = React.useMemo(() => currentValue === 'inherit', [currentValue]);
 	const displayValue = React.useMemo(() => {
 		if (isInherited) {
@@ -32,20 +34,30 @@ export const SelectStyleField = <GNode, GParentNode, TValue>(
 
 	const handleChange = React.useCallback(
 		(newValue: string) => {
-			const convertedValue: TValue | undefined = newValue === '' ? undefined : (newValue as TValue);
-			node.set((prev) => nodeValueSetter(prev, convertedValue));
+			if (isInherited) {
+				return;
+			}
+
+			const convertedValue: TStyleProperty<GValue> | undefined =
+				newValue === '' ? undefined : (newValue as GValue);
+
+			nodeValueSetter(node, convertedValue);
 		},
-		[node, nodeValueSetter]
+		[node, nodeValueSetter, isInherited]
 	);
 
 	const handleToggleInheritance = React.useCallback(() => {
+		if (parentValue == null) {
+			return;
+		}
+
 		// Unsyncing: Set to parent value or undefined
 		if (currentValue === 'inherit') {
-			node.set((prev) => nodeValueSetter(prev, parentValue));
+			nodeValueSetter(node, parentValue);
 		}
 		// Syncing: Set to inherit
 		else {
-			node.set((prev) => nodeValueSetter(prev, 'inherit'));
+			nodeValueSetter(node, 'inherit' as GValue);
 		}
 	}, [node, nodeValueSetter, currentValue, parentValue]);
 
@@ -78,12 +90,15 @@ export const SelectStyleField = <GNode, GParentNode, TValue>(
 	);
 };
 
-export interface TSelectStyleFieldProps<GNode, GParentNode, TValue>
+export interface TSelectStyleFieldProps<GNodeValue, GParentNodeValue, GValue>
 	extends Omit<SelectProps, 'value' | 'onChange' | 'label' | 'labelHidden'> {
 	label: string;
-	node: TState<GNode, []>;
-	parentNode: TState<GParentNode, []>;
-	nodeValueMapper: (node: GNode) => TStyleProperty<TValue> | undefined;
-	nodeValueSetter: (node: GNode, value: TStyleProperty<TValue> | undefined) => GNode;
-	parentValueMapper?: (parent: GParentNode) => TValue | undefined;
+	node: TState<GNodeValue, []>;
+	parentNode?: TState<GParentNodeValue, []>;
+	nodeValueMapper: (value: GNodeValue) => TStyleProperty<GValue> | undefined;
+	nodeValueSetter: (
+		node: TState<GNodeValue, []>,
+		value: GParentNodeValue extends unknown ? GValue | undefined : TStyleProperty<GValue>
+	) => void;
+	parentValueMapper?: (parent: GParentNodeValue) => GValue | undefined;
 }

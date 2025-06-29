@@ -86,11 +86,11 @@ export const TextNodeEditor: React.FC<TNodeEditorComponentProps<TTextNode>> = (p
 							label="Padding"
 							node={nodeState}
 							parentNode={parentNodeState}
-							nodeValueMapper={(node) => node.style.padding}
-							nodeValueSetter={(node, value) => ({
-								...node,
-								style: { ...node.style, padding: value }
-							})}
+							nodeValueMapper={(value) => value.style.padding}
+							nodeValueSetter={(node, value) => {
+								node._v.style.padding = value;
+								node._notify();
+							}}
 							parentValueMapper={(parent) => parent.style.children?.padding}
 							type="number"
 							autoComplete="off"
@@ -100,11 +100,11 @@ export const TextNodeEditor: React.FC<TNodeEditorComponentProps<TTextNode>> = (p
 							label="Margin"
 							node={nodeState}
 							parentNode={parentNodeState}
-							nodeValueMapper={(node) => node.style.margin}
-							nodeValueSetter={(node, value) => ({
-								...node,
-								style: { ...node.style, margin: value }
-							})}
+							nodeValueMapper={(value) => value.style.margin}
+							nodeValueSetter={(node, value) => {
+								node._v.style.margin = value;
+								node._notify();
+							}}
 							parentValueMapper={(parent) => parent.style.children?.margin}
 							type="number"
 							autoComplete="off"
@@ -115,11 +115,11 @@ export const TextNodeEditor: React.FC<TNodeEditorComponentProps<TTextNode>> = (p
 						label="Background Color"
 						node={nodeState}
 						parentNode={parentNodeState}
-						nodeValueMapper={(node) => node.style.backgroundColor}
-						nodeValueSetter={(node, value) => ({
-							...node,
-							style: { ...node.style, backgroundColor: value }
-						})}
+						nodeValueMapper={(value) => value.style.backgroundColor}
+						nodeValueSetter={(node, value) => {
+							node._v.style.backgroundColor = value;
+							node._notify();
+						}}
 						parentValueMapper={(parent) => parent.style.children?.backgroundColor}
 						autoComplete="off"
 					/>
@@ -128,11 +128,11 @@ export const TextNodeEditor: React.FC<TNodeEditorComponentProps<TTextNode>> = (p
 						label="Font Family"
 						node={nodeState}
 						parentNode={parentNodeState}
-						nodeValueMapper={(node) => node.style.fontFamily}
-						nodeValueSetter={(node, value) => ({
-							...node,
-							style: { ...node.style, fontFamily: value }
-						})}
+						nodeValueMapper={(value) => value.style.fontFamily}
+						nodeValueSetter={(node, value) => {
+							node._v.style.fontFamily = value;
+							node._notify();
+						}}
 						parentValueMapper={(parent) => parent.style.children?.fontFamily}
 						autoComplete="off"
 					/>
@@ -142,11 +142,11 @@ export const TextNodeEditor: React.FC<TNodeEditorComponentProps<TTextNode>> = (p
 							label="Font Size"
 							node={nodeState}
 							parentNode={parentNodeState}
-							nodeValueMapper={(node) => node.style.fontSize}
-							nodeValueSetter={(node, value) => ({
-								...node,
-								style: { ...node.style, fontSize: value }
-							})}
+							nodeValueMapper={(value) => value.style.fontSize}
+							nodeValueSetter={(node, value) => {
+								node._v.style.fontSize = value;
+								node._notify();
+							}}
 							parentValueMapper={(parent) => parent.style.children?.fontSize}
 							type="number"
 							autoComplete="off"
@@ -156,11 +156,11 @@ export const TextNodeEditor: React.FC<TNodeEditorComponentProps<TTextNode>> = (p
 							label="Text Color"
 							node={nodeState}
 							parentNode={parentNodeState}
-							nodeValueMapper={(node) => node.style.textColor}
-							nodeValueSetter={(node, value) => ({
-								...node,
-								style: { ...node.style, textColor: value }
-							})}
+							nodeValueMapper={(value) => value.style.textColor}
+							nodeValueSetter={(node, value) => {
+								node._v.style.textColor = value;
+								node._notify();
+							}}
 							parentValueMapper={(parent) => parent.style.children?.textColor}
 							autoComplete="off"
 						/>
@@ -170,11 +170,11 @@ export const TextNodeEditor: React.FC<TNodeEditorComponentProps<TTextNode>> = (p
 						label="Text Align"
 						node={nodeState}
 						parentNode={parentNodeState}
-						nodeValueMapper={(node) => node.style.textAlign}
-						nodeValueSetter={(node, value) => ({
-							...node,
-							style: { ...node.style, textAlign: value }
-						})}
+						nodeValueMapper={(value) => value.style.textAlign}
+						nodeValueSetter={(node, value) => {
+							node._v.style.textAlign = value;
+							node._notify();
+						}}
 						parentValueMapper={(parent) => parent.style.children?.textAlign}
 						options={[
 							{ label: 'Left', value: 'left' },
@@ -187,11 +187,11 @@ export const TextNodeEditor: React.FC<TNodeEditorComponentProps<TTextNode>> = (p
 						label="Border Radius"
 						node={nodeState}
 						parentNode={parentNodeState}
-						nodeValueMapper={(node) => node.style.borderRadius}
-						nodeValueSetter={(node, value) => ({
-							...node,
-							style: { ...node.style, borderRadius: value }
-						})}
+						nodeValueMapper={(value) => value.style.borderRadius}
+						nodeValueSetter={(node, value) => {
+							node._v.style.borderRadius = value;
+							node._notify();
+						}}
 						parentValueMapper={(parent) => parent.style.children?.borderRadius}
 						type="number"
 						autoComplete="off"
@@ -201,11 +201,11 @@ export const TextNodeEditor: React.FC<TNodeEditorComponentProps<TTextNode>> = (p
 						label="Shadow"
 						node={nodeState}
 						parentNode={parentNodeState}
-						nodeValueMapper={(node) => node.style.shadow}
-						nodeValueSetter={(node, value) => ({
-							...node,
-							style: { ...node.style, shadow: value }
-						})}
+						nodeValueMapper={(value) => value.style.shadow}
+						nodeValueSetter={(node, value) => {
+							node._v.style.shadow = value;
+							node._notify();
+						}}
 						parentValueMapper={(parent) => parent.style.children?.shadow}
 						ariaLabel="Enable shadow"
 					/>

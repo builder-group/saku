@@ -229,6 +229,7 @@ export function createPageEditor(
 		selectNode(nodeId) {
 			if (this.nodeMap[nodeId] != null) {
 				this.selectedNodeId.set(nodeId);
+				this.activeView.set('layers');
 			}
 		},
 

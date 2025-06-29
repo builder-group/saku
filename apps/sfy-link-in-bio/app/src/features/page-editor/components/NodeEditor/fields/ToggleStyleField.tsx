@@ -5,8 +5,8 @@ import React from 'react';
 import { Knob, LinkIcon, LinkOffIcon } from '@/components';
 import { TStyleProperty } from '../../../types';
 
-export const ToggleStyleField = <GNode, GParentNode>(
-	props: TToggleStyleFieldProps<GNode, GParentNode>
+export const ToggleStyleField = <GNodeValue, GParentNodeValue>(
+	props: TToggleStyleFieldProps<GNodeValue, GParentNodeValue>
 ) => {
 	const {
 		label,
@@ -19,7 +19,9 @@ export const ToggleStyleField = <GNode, GParentNode>(
 	} = props;
 
 	const currentValue = useCompute(node, nodeValueMapper);
-	const parentValue = useCompute(parentNode, (parent) => parentValueMapper?.(parent));
+	const parentValue =
+		useCompute(parentNode, (parent) => (parent != null ? parentValueMapper?.(parent) : null)) ??
+		undefined;
 	const isInherited = React.useMemo(() => currentValue === 'inherit', [currentValue]);
 	const selected = React.useMemo(() => {
 		if (isInherited) {
@@ -30,19 +32,28 @@ export const ToggleStyleField = <GNode, GParentNode>(
 	}, [currentValue, parentValue, isInherited]);
 
 	const handleToggle = React.useCallback(() => {
-		if (isInherited) return;
+		if (isInherited) {
+			return;
+		}
 
-		node.set((prev) => nodeValueSetter(prev, !currentValue));
+		nodeValueSetter(node, !currentValue);
 	}, [node, nodeValueSetter, isInherited, currentValue]);
 
 	const handleToggleInheritance = React.useCallback(() => {
+		if (parentValue == null) {
+			return;
+		}
+
 		// Unsyncing: Set to parent value or false
 		if (currentValue === 'inherit') {
-			node.set((prev) => nodeValueSetter(prev, parentValue === true));
+			nodeValueSetter(node, parentValue === true);
 		}
 		// Syncing: Set to inherit
 		else {
-			node.set((prev) => nodeValueSetter(prev, 'inherit'));
+			nodeValueSetter(
+				node,
+				'inherit' as GParentNodeValue extends unknown ? boolean : TStyleProperty<boolean>
+			);
 		}
 	}, [node, nodeValueSetter, currentValue, parentValue]);
 
@@ -75,12 +86,15 @@ export const ToggleStyleField = <GNode, GParentNode>(
 	);
 };
 
-export interface TToggleStyleFieldProps<GNode, GParentNode> {
+export interface TToggleStyleFieldProps<GNodeValue, GParentNodeValue> {
 	label: string;
-	node: TState<GNode, []>;
-	parentNode: TState<GParentNode, []>;
-	nodeValueMapper: (node: GNode) => TStyleProperty<boolean> | undefined;
-	nodeValueSetter: (node: GNode, value: TStyleProperty<boolean> | undefined) => GNode;
-	parentValueMapper?: (parent: GParentNode) => boolean | undefined;
+	node: TState<GNodeValue, []>;
+	parentNode?: TState<GParentNodeValue, []>;
+	nodeValueMapper: (value: GNodeValue) => TStyleProperty<boolean> | undefined;
+	nodeValueSetter: (
+		node: TState<GNodeValue, []>,
+		value: GParentNodeValue extends unknown ? boolean | undefined : TStyleProperty<boolean>
+	) => void;
+	parentValueMapper?: (parent: GParentNodeValue) => boolean | undefined;
 	ariaLabel?: string;
 }

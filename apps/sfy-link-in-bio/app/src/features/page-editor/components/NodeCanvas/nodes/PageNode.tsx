@@ -9,7 +9,6 @@ export const PageNode = React.forwardRef<HTMLDivElement, TPageNodeProps>((props,
 	const { nodeState, editor, ...divProps } = props;
 	const node = useFeatureState(nodeState);
 
-	// Get child nodes from the editor's nodeMap
 	const childNodes = useCompute(
 		nodeState,
 		(node) => {

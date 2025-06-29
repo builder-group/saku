@@ -3,7 +3,7 @@
 client_id = "4c9dc129e68b889d9a351e14d8e36a02"
 name = "Saku Link In Bio (Local)"
 handle = "saku-link-in-bio-local"
-application_url = "https://body-karaoke-some-episodes.trycloudflare.com"
+application_url = "https://conventional-met-licenses-oliver.trycloudflare.com"
 embedded = true
 
 [build]
@@ -38,10 +38,10 @@ uri = "/api/v1/webhook/shopify/shop/redact"
 scopes = "write_files,write_online_store_navigation,read_online_store_navigation"
 
 [auth]
-redirect_urls = ["https://body-karaoke-some-episodes.trycloudflare.com/auth/callback", "https://body-karaoke-some-episodes.trycloudflare.com/auth/shopify/callback", "https://body-karaoke-some-episodes.trycloudflare.com/api/auth/callback"]
+redirect_urls = ["https://conventional-met-licenses-oliver.trycloudflare.com/auth/callback", "https://conventional-met-licenses-oliver.trycloudflare.com/auth/shopify/callback", "https://conventional-met-licenses-oliver.trycloudflare.com/api/auth/callback"]
 
 [app_proxy]
-url = "https://body-karaoke-some-episodes.trycloudflare.com/a/saku-local"
+url = "https://conventional-met-licenses-oliver.trycloudflare.com/a/saku-local"
 subpath = "saku-local"
 prefix = "a"
 

@@ -1,35 +1,9 @@
 import React from 'react';
-import { TPageEditor } from '../../../../lib';
-import { TTextNode } from '../../../../types';
+import { TTextNode, TWithResolvedStyles } from '../../../../types';
 
 export const StaticTextNode = React.forwardRef<HTMLDivElement, TStaticTextNodeProps>(
 	(props, ref) => {
-		const { node, editor, ...divProps } = props;
-
-		// Style calculations with inheritance
-		const style = React.useMemo(() => {
-			const pageNode = editor.getRootNode()._v;
-
-			function resolveStyle<T>(value: T | 'inherit' | undefined, fallback?: T): T | undefined {
-				if (value === 'inherit') return fallback;
-				return value ?? fallback;
-			}
-
-			return {
-				padding: resolveStyle(node.style.padding, pageNode?.style.children?.padding),
-				margin: resolveStyle(node.style.margin, pageNode?.style.children?.margin),
-				backgroundColor: resolveStyle(
-					node.style.backgroundColor,
-					pageNode?.style.children?.backgroundColor
-				),
-				fontFamily: resolveStyle(node.style.fontFamily, pageNode?.style.children?.fontFamily),
-				fontSize: resolveStyle(node.style.fontSize, pageNode?.style.children?.fontSize),
-				textColor: resolveStyle(node.style.textColor, pageNode?.style.children?.textColor),
-				textAlign: resolveStyle(node.style.textAlign, pageNode?.style.children?.textAlign),
-				borderRadius: resolveStyle(node.style.borderRadius, pageNode?.style.children?.borderRadius),
-				shadow: resolveStyle(node.style.shadow, pageNode?.style.children?.shadow)
-			};
-		}, [node.style, editor]);
+		const { node, ...divProps } = props;
 
 		// Content component
 		const content = (
@@ -38,10 +12,11 @@ export const StaticTextNode = React.forwardRef<HTMLDivElement, TStaticTextNodePr
 					<h3
 						className="m-0 mb-2 font-medium break-words"
 						style={{
-							fontFamily: style.fontFamily,
-							fontSize: style.fontSize ? style.fontSize * 1.25 : undefined, // Scale up for title
-							color: style.textColor,
-							textAlign: style.textAlign
+							fontFamily: node.style.fontFamily,
+							fontSize:
+								typeof node.style.fontSize === 'number' ? node.style.fontSize * 1.25 : undefined, // Scale up for title
+							color: node.style.textColor,
+							textAlign: node.style.textAlign
 						}}
 					>
 						{node.title}
@@ -50,10 +25,10 @@ export const StaticTextNode = React.forwardRef<HTMLDivElement, TStaticTextNodePr
 				<p
 					className="m-0 leading-relaxed break-words"
 					style={{
-						fontFamily: style.fontFamily,
-						fontSize: style.fontSize,
-						color: style.textColor,
-						textAlign: style.textAlign
+						fontFamily: node.style.fontFamily,
+						fontSize: node.style.fontSize,
+						color: node.style.textColor,
+						textAlign: node.style.textAlign
 					}}
 				>
 					{node.text || 'Empty text...'}
@@ -63,16 +38,16 @@ export const StaticTextNode = React.forwardRef<HTMLDivElement, TStaticTextNodePr
 
 		return (
 			<div {...divProps} ref={ref} className="w-full max-w-md">
-				{style.backgroundColor ? (
+				{node.style.backgroundColor ? (
 					// Card style with background
 					<div
 						className="relative overflow-hidden"
 						style={{
-							padding: style.padding,
-							margin: style.margin,
-							backgroundColor: style.backgroundColor,
-							borderRadius: style.borderRadius,
-							boxShadow: style.shadow ? '0 4px 6px -1px rgb(0 0 0 / 0.1)' : undefined
+							padding: node.style.padding,
+							margin: node.style.margin,
+							backgroundColor: node.style.backgroundColor,
+							borderRadius: node.style.borderRadius,
+							boxShadow: node.style.shadow ? '0 4px 6px -1px rgb(0 0 0 / 0.1)' : undefined
 						}}
 					>
 						{content}
@@ -81,8 +56,8 @@ export const StaticTextNode = React.forwardRef<HTMLDivElement, TStaticTextNodePr
 					// Flat style without background
 					<div
 						style={{
-							padding: style.padding,
-							margin: style.margin
+							padding: node.style.padding,
+							margin: node.style.margin
 						}}
 					>
 						{content}
@@ -95,6 +70,5 @@ export const StaticTextNode = React.forwardRef<HTMLDivElement, TStaticTextNodePr
 StaticTextNode.displayName = 'StaticTextNode';
 
 interface TStaticTextNodeProps extends React.HTMLProps<HTMLDivElement> {
-	node: TTextNode;
-	editor: TPageEditor;
+	node: TWithResolvedStyles<TTextNode>;
 }

@@ -5,8 +5,8 @@ import React from 'react';
 import { LinkIcon, LinkOffIcon } from '@/components';
 import { TStyleProperty } from '../../../types';
 
-export const TextStyleField = <GNode, GParentNode, TValue>(
-	props: TTextStyleFieldProps<GNode, GParentNode, TValue>
+export const TextStyleField = <GNodeValue, GParentNodeValue, GValue>(
+	props: TTextStyleFieldProps<GNodeValue, GParentNodeValue, GValue>
 ) => {
 	const {
 		label,
@@ -19,11 +19,13 @@ export const TextStyleField = <GNode, GParentNode, TValue>(
 	} = props;
 
 	const currentValue = useCompute(node, nodeValueMapper);
-	const parentValue = useCompute(parentNode, (parent) => parentValueMapper?.(parent));
+	const parentValue = useCompute(parentNode, (parent) =>
+		parent != null ? parentValueMapper?.(parent) : undefined
+	);
 	const isInherited = React.useMemo(() => currentValue === 'inherit', [currentValue]);
 	const displayValue = React.useMemo(() => {
-		if (isInherited) {
-			return parentValue != null ? String(parentValue) : '';
+		if (isInherited && parentValue != null) {
+			return String(parentValue);
 		} else if (currentValue != null && currentValue !== 'inherit') {
 			return String(currentValue);
 		}
@@ -32,27 +34,34 @@ export const TextStyleField = <GNode, GParentNode, TValue>(
 
 	const handleChange = React.useCallback(
 		(newValue: string) => {
-			// Convert to appropriate type based on the input
-			let convertedValue: TValue | undefined = newValue === '' ? undefined : (newValue as TValue);
-
-			// If it's a number field, convert to number
-			if (textFieldProps.type === 'number' && newValue !== '') {
-				convertedValue = Number(newValue) as TValue;
+			if (isInherited) {
+				return;
 			}
 
-			node.set((prev) => nodeValueSetter(prev, convertedValue));
+			let convertedValue: TStyleProperty<GValue> | undefined =
+				newValue === '' ? undefined : (newValue as GValue);
+
+			if (textFieldProps.type === 'number' && newValue !== '') {
+				convertedValue = Number(newValue) as GValue;
+			}
+
+			nodeValueSetter(node, convertedValue);
 		},
-		[node, nodeValueSetter, textFieldProps.type]
+		[node, nodeValueSetter, textFieldProps.type, isInherited]
 	);
 
 	const handleToggleInheritance = React.useCallback(() => {
+		if (parentValue == null) {
+			return;
+		}
+
 		// Unsyncing: Set to parent value or undefined
 		if (currentValue === 'inherit') {
-			node.set((prev) => nodeValueSetter(prev, parentValue));
+			nodeValueSetter(node, parentValue);
 		}
 		// Syncing: Set to inherit
 		else {
-			node.set((prev) => nodeValueSetter(prev, 'inherit'));
+			nodeValueSetter(node, 'inherit' as GValue);
 		}
 	}, [node, nodeValueSetter, currentValue, parentValue]);
 
@@ -67,7 +76,11 @@ export const TextStyleField = <GNode, GParentNode, TValue>(
 						type="button"
 						onClick={handleToggleInheritance}
 						className="flex cursor-pointer items-center justify-center opacity-60 transition-opacity hover:opacity-100"
-						title={isInherited ? 'Unlink from parent' : 'Link to parent'}
+						title={
+							isInherited
+								? `Unlink from parent (${parentValue})`
+								: `Link to parent (${parentValue})`
+						}
 					>
 						{isInherited ? <LinkOffIcon className="h-3 w-3" /> : <LinkIcon className="h-3 w-3" />}
 					</button>
@@ -80,17 +93,23 @@ export const TextStyleField = <GNode, GParentNode, TValue>(
 				value={displayValue}
 				onChange={handleChange}
 				readOnly={isInherited}
+				helpText={
+					parentValue != null && isInherited ? `Inherited from parent: ${parentValue}` : undefined
+				}
 			/>
 		</div>
 	);
 };
 
-export interface TTextStyleFieldProps<GNode, GParentNode, TValue>
+export interface TTextStyleFieldProps<GNodeValue, GParentNodeValue, GValue>
 	extends Omit<TextFieldProps, 'value' | 'onChange' | 'label' | 'labelHidden'> {
 	label: string;
-	node: TState<GNode, []>;
-	parentNode: TState<GParentNode, []>;
-	nodeValueMapper: (node: GNode) => TStyleProperty<TValue> | undefined;
-	nodeValueSetter: (node: GNode, value: TStyleProperty<TValue> | undefined) => GNode;
-	parentValueMapper?: (parent: GParentNode) => TValue | undefined;
+	node: TState<GNodeValue, []>;
+	parentNode?: TState<GParentNodeValue, []>;
+	nodeValueMapper: (value: GNodeValue) => TStyleProperty<GValue> | undefined;
+	nodeValueSetter: (
+		node: TState<GNodeValue, []>,
+		value: GParentNodeValue extends unknown ? GValue | undefined : TStyleProperty<GValue>
+	) => void;
+	parentValueMapper?: (parent: GParentNodeValue) => GValue | undefined;
 }

@@ -6,8 +6,6 @@ export type TNodeId = string;
 export type TNode = TSiteNode | TPageNode | TAboutNode | TLinkNode | TMediaNode | TTextNode;
 export type TNodeType = TNode['type'];
 
-export type TStyleProperty<T> = 'inherit' | T;
-
 export interface TBaseNode {
 	id: TNodeId;
 	type: string;
@@ -163,3 +161,16 @@ export interface TSocialLink {
 	handle: string;
 	url?: string;
 }
+
+export type TStyleProperty<T> = 'inherit' | T;
+
+export type TResolvedStyleProperty<T> = T extends TStyleProperty<infer U> ? U | undefined : T;
+
+export type TWithResolvedStyles<TNode extends { style: Record<string, any> }> = Omit<
+	TNode,
+	'style'
+> & {
+	style: {
+		[K in keyof TNode['style']]: TResolvedStyleProperty<TNode['style'][K]>;
+	};
+};

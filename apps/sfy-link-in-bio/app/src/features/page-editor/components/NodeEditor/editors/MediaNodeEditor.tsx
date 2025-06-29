@@ -89,11 +89,11 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 							label="Padding"
 							node={nodeState}
 							parentNode={parentNodeState}
-							nodeValueMapper={(node) => node.style.padding}
-							nodeValueSetter={(node, value) => ({
-								...node,
-								style: { ...node.style, padding: value }
-							})}
+							nodeValueMapper={(value) => value.style.padding}
+							nodeValueSetter={(node, value) => {
+								node._v.style.padding = value;
+								node._notify();
+							}}
 							parentValueMapper={(parent) => parent.style.children?.padding}
 							type="number"
 							autoComplete="off"
@@ -103,11 +103,11 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 							label="Margin"
 							node={nodeState}
 							parentNode={parentNodeState}
-							nodeValueMapper={(node) => node.style.margin}
-							nodeValueSetter={(node, value) => ({
-								...node,
-								style: { ...node.style, margin: value }
-							})}
+							nodeValueMapper={(value) => value.style.margin}
+							nodeValueSetter={(node, value) => {
+								node._v.style.margin = value;
+								node._notify();
+							}}
 							parentValueMapper={(parent) => parent.style.children?.margin}
 							type="number"
 							autoComplete="off"
@@ -118,11 +118,11 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 						label="Background Color"
 						node={nodeState}
 						parentNode={parentNodeState}
-						nodeValueMapper={(node) => node.style.backgroundColor}
-						nodeValueSetter={(node, value) => ({
-							...node,
-							style: { ...node.style, backgroundColor: value }
-						})}
+						nodeValueMapper={(value) => value.style.backgroundColor}
+						nodeValueSetter={(node, value) => {
+							node._v.style.backgroundColor = value;
+							node._notify();
+						}}
 						parentValueMapper={(parent) => parent.style.children?.backgroundColor}
 						autoComplete="off"
 					/>
@@ -131,11 +131,11 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 						label="Border Radius"
 						node={nodeState}
 						parentNode={parentNodeState}
-						nodeValueMapper={(node) => node.style.borderRadius}
-						nodeValueSetter={(node, value) => ({
-							...node,
-							style: { ...node.style, borderRadius: value }
-						})}
+						nodeValueMapper={(value) => value.style.borderRadius}
+						nodeValueSetter={(node, value) => {
+							node._v.style.borderRadius = value;
+							node._notify();
+						}}
 						parentValueMapper={(parent) => parent.style.children?.borderRadius}
 						type="number"
 						autoComplete="off"
@@ -145,11 +145,11 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 						label="Shadow"
 						node={nodeState}
 						parentNode={parentNodeState}
-						nodeValueMapper={(node) => node.style.shadow}
-						nodeValueSetter={(node, value) => ({
-							...node,
-							style: { ...node.style, shadow: value }
-						})}
+						nodeValueMapper={(value) => value.style.shadow}
+						nodeValueSetter={(node, value) => {
+							node._v.style.shadow = value;
+							node._notify();
+						}}
 						parentValueMapper={(parent) => parent.style.children?.shadow}
 						ariaLabel="Enable shadow"
 					/>
