@@ -3,7 +3,7 @@ import { useCompute } from 'feature-react/state';
 import { TState } from 'feature-state';
 import React from 'react';
 import { LinkIcon, LinkOffIcon } from '@/components';
-import { TStyleProperty } from '../../../types';
+import { TStyleReference } from '../../../types';
 
 export const TextStyleField = <GNodeValue, GParentNodeValue, GValue>(
 	props: TTextStyleFieldProps<GNodeValue, GParentNodeValue, GValue>
@@ -38,7 +38,7 @@ export const TextStyleField = <GNodeValue, GParentNodeValue, GValue>(
 				return;
 			}
 
-			let convertedValue: TStyleProperty<GValue> | undefined =
+			let convertedValue: TStyleReference<GValue> | undefined =
 				newValue === '' ? undefined : (newValue as GValue);
 
 			if (textFieldProps.type === 'number' && newValue !== '') {
@@ -103,10 +103,10 @@ export interface TTextStyleFieldProps<GNodeValue, GParentNodeValue, GValue>
 	label: string;
 	node: TState<GNodeValue, []>;
 	parentNode?: TState<GParentNodeValue, []>;
-	nodeValueMapper: (value: GNodeValue) => TStyleProperty<GValue> | undefined;
+	nodeValueMapper: (value: GNodeValue) => TStyleReference<GValue> | undefined;
 	nodeValueSetter: (
 		node: TState<GNodeValue, []>,
-		value: GParentNodeValue extends unknown ? GValue | undefined : TStyleProperty<GValue>
+		value: GParentNodeValue extends unknown ? GValue | undefined : TStyleReference<GValue>
 	) => void;
 	parentValueMapper?: (parent: GParentNodeValue) => GValue | undefined;
 }

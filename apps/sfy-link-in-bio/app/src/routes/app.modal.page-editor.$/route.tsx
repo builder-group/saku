@@ -3,13 +3,7 @@ import { useAppBridge } from '@shopify/app-bridge-react';
 import { withGlobalBind } from 'feature-react/state';
 import React from 'react';
 import { coreApiClient } from '@/environment';
-import {
-	createPageEditor,
-	Editor,
-	siteNodePreset,
-	TPageNode,
-	TSiteNode
-} from '@/features/page-editor';
+import { createPageEditor, Editor, kangarooPreset, TSite } from '@/features/page-editor';
 import { TLoaderFunction } from '@/types';
 import './styles.module.css';
 
@@ -22,7 +16,7 @@ const Page: React.FC = () => {
 			return null;
 		}
 
-		const editor = createPageEditor(site.id, shopify, site.node.children[0] as TPageNode);
+		const editor = createPageEditor(site, shopify);
 		withGlobalBind(`__editor_${editor.id}`, editor);
 		return editor;
 	}, [site, shopify]);
@@ -47,10 +41,7 @@ export const loader: TLoaderFunction<TLoaderData> = async ({ request }) => {
 
 	if (siteId === 'preset') {
 		return {
-			site: {
-				id: siteId,
-				node: siteNodePreset
-			}
+			site: kangarooPreset
 		};
 	}
 
@@ -66,16 +57,12 @@ export const loader: TLoaderFunction<TLoaderData> = async ({ request }) => {
 	}
 
 	return {
-		site: {
-			id: siteId,
-			node: siteResult.value.data.content as unknown as TSiteNode
-		}
+		site: Object.assign(siteResult.value.data.content as unknown as TSite, {
+			id: siteId
+		})
 	};
 };
 
 interface TLoaderData {
-	site: {
-		id: string;
-		node: TSiteNode;
-	} | null;
+	site: TSite | null;
 }

@@ -1,10 +1,14 @@
 import { ServerErr, ServerOk } from '@blgc/utils';
 import { AppProxyProvider } from '@shopify/shopify-app-remix/react';
-import { RequestError } from 'feature-fetch';
 import React from 'react';
-import { coreApiClient } from '@/environment';
 import { shopify, shopifyConfig } from '@/environment/.server';
-import { StaticNodeCanvas, TPageNode, TSiteNode } from '@/features/page-editor';
+import {
+	extractSiteFontUrls,
+	kangarooPreset,
+	resolveSite,
+	StaticNodeCanvas,
+	TResolvedSite
+} from '@/features/page-editor';
 import { useLoaderResult } from '@/hooks';
 import { TLoaderFunctionWithResult } from '@/types';
 
@@ -15,17 +19,17 @@ const Page: React.FC = () => {
 		return <p>{`${result.error.code}: ${result.error.message}`}</p>;
 	}
 
-	const { appUrl, siteNode } = result.value;
-	const pageNode = siteNode.children[0] as TPageNode;
-	if (pageNode == null) {
-		return <p>No page node found</p>;
-	}
+	const { appUrl, site } = result.value;
+	const fontUrls = extractSiteFontUrls(site);
 
 	return (
 		<AppProxyProvider appUrl={appUrl}>
 			<link rel="stylesheet" href={`${appUrl}/src/styles.css`} />
+			{fontUrls.map((fontUrl, index) => (
+				<link key={`font-${index}`} rel="stylesheet" href={fontUrl} />
+			))}
 
-			<StaticNodeCanvas nodes={[pageNode]} />
+			<StaticNodeCanvas nodes={[site.root]} />
 		</AppProxyProvider>
 	);
 };
@@ -54,30 +58,35 @@ export const loader: TLoaderFunctionWithResult<TSuccessData, TErrorData> = async
 		});
 	}
 
-	const result = await coreApiClient.get('/v1/shopify/site/shop/{shop}/{handle}/content', {
-		pathParams: {
-			shop: session.shop,
-			handle
-		}
-	});
-	if (result.isErr()) {
-		if (result.error instanceof RequestError && result.error.status === 404) {
-			return ServerErr<TSuccessData, TErrorData>({
-				code: '#ERR_NOT_FOUND',
-				message: 'Site not found'
-			});
-		}
-
-		return ServerErr<TSuccessData, TErrorData>({
-			code: '#ERR_SERVER_ERROR',
-			message: result.error.message
-		});
-	}
-
 	return ServerOk<TSuccessData, TErrorData>({
 		appUrl: shopifyConfig.appUrl,
-		siteNode: result.value.data as unknown as TSiteNode
+		site: resolveSite(kangarooPreset)
 	});
+
+	// const result = await coreApiClient.get('/v1/shopify/site/shop/{shop}/{handle}/content', {
+	// 	pathParams: {
+	// 		shop: session.shop,
+	// 		handle
+	// 	}
+	// });
+	// if (result.isErr()) {
+	// 	if (result.error instanceof RequestError && result.error.status === 404) {
+	// 		return ServerErr<TSuccessData, TErrorData>({
+	// 			code: '#ERR_NOT_FOUND',
+	// 			message: 'Site not found'
+	// 		});
+	// 	}
+
+	// 	return ServerErr<TSuccessData, TErrorData>({
+	// 		code: '#ERR_SERVER_ERROR',
+	// 		message: result.error.message
+	// 	});
+	// }
+
+	// return ServerOk<TSuccessData, TErrorData>({
+	// 	appUrl: shopifyConfig.appUrl,
+	// 	site: resolveSite(result.value.data as unknown as TSite)
+	// });
 };
 
 interface TErrorData {
@@ -87,5 +96,5 @@ interface TErrorData {
 
 interface TSuccessData {
 	appUrl: string;
-	siteNode: TSiteNode;
+	site: TResolvedSite;
 }

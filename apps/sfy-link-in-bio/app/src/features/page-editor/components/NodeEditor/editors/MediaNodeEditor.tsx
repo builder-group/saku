@@ -20,7 +20,10 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 
 	const handleMediaTypeChange = React.useCallback(
 		(value: string) => {
-			nodeState.set((prev) => ({ ...prev, media: { type: value as 'image', url: '' } }));
+			nodeState.set((prev) => ({
+				...prev,
+				media: { type: value as 'image', url: '', altText: undefined }
+			}));
 		},
 		[nodeState]
 	);
@@ -30,8 +33,9 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 			nodeState.set((prev) => ({
 				...prev,
 				media: {
-					...prev.media,
-					...value
+					type: 'image',
+					url: value.url,
+					altText: value.fileName ? `Image: ${value.fileName}` : undefined
 				}
 			}));
 		},

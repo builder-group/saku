@@ -1,5 +1,5 @@
 import React from 'react';
-import { type TNode } from '../../types';
+import { TResolvedNode } from '../../types';
 import {
 	StaticAboutNode,
 	StaticLinkNode,
@@ -28,5 +28,5 @@ export const StaticNode: React.FC<TStaticNodeProps> = (props) => {
 };
 
 interface TStaticNodeProps {
-	node: TNode;
+	node: TResolvedNode;
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { TNode } from '../../types';
+import { TResolvedNode } from '../../types';
 import { StaticNode } from './StaticNode';
 
 export const StaticNodeCanvas: React.FC<TCanvasProps> = (props) => {
@@ -19,5 +19,5 @@ export const StaticNodeCanvas: React.FC<TCanvasProps> = (props) => {
 };
 
 interface TCanvasProps {
-	nodes: TNode[];
+	nodes: TResolvedNode[];
 }

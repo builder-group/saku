@@ -3,7 +3,7 @@ import { useCompute } from 'feature-react/state';
 import { TState } from 'feature-state';
 import React from 'react';
 import { Knob, LinkIcon, LinkOffIcon } from '@/components';
-import { TStyleProperty } from '../../../types';
+import { TStyleReference } from '../../../types';
 
 export const ToggleStyleField = <GNodeValue, GParentNodeValue>(
 	props: TToggleStyleFieldProps<GNodeValue, GParentNodeValue>
@@ -52,7 +52,7 @@ export const ToggleStyleField = <GNodeValue, GParentNodeValue>(
 		else {
 			nodeValueSetter(
 				node,
-				'inherit' as GParentNodeValue extends unknown ? boolean : TStyleProperty<boolean>
+				'inherit' as GParentNodeValue extends unknown ? boolean : TStyleReference<boolean>
 			);
 		}
 	}, [node, nodeValueSetter, currentValue, parentValue]);
@@ -90,10 +90,10 @@ export interface TToggleStyleFieldProps<GNodeValue, GParentNodeValue> {
 	label: string;
 	node: TState<GNodeValue, []>;
 	parentNode?: TState<GParentNodeValue, []>;
-	nodeValueMapper: (value: GNodeValue) => TStyleProperty<boolean> | undefined;
+	nodeValueMapper: (value: GNodeValue) => TStyleReference<boolean> | undefined;
 	nodeValueSetter: (
 		node: TState<GNodeValue, []>,
-		value: GParentNodeValue extends unknown ? boolean | undefined : TStyleProperty<boolean>
+		value: GParentNodeValue extends unknown ? boolean | undefined : TStyleReference<boolean>
 	) => void;
 	parentValueMapper?: (parent: GParentNodeValue) => boolean | undefined;
 	ariaLabel?: string;

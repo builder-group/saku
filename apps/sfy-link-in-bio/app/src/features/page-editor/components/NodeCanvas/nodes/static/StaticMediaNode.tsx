@@ -1,5 +1,5 @@
 import React from 'react';
-import { TMediaNode, TWithResolvedStyles } from '../../../../types';
+import { TResolvedMediaNode } from '../../../../types';
 
 export const StaticMediaNode = React.forwardRef<HTMLDivElement, TStaticMediaNodeProps>(
 	(props, ref) => {
@@ -68,5 +68,5 @@ export const StaticMediaNode = React.forwardRef<HTMLDivElement, TStaticMediaNode
 StaticMediaNode.displayName = 'StaticMediaNode';
 
 interface TStaticMediaNodeProps extends React.HTMLProps<HTMLDivElement> {
-	node: TWithResolvedStyles<TMediaNode>;
+	node: TResolvedMediaNode;
 }

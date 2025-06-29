@@ -1,5 +1,5 @@
 import React from 'react';
-import { TLinkNode, TWithResolvedStyles } from '../../../../types';
+import { TResolvedLinkNode } from '../../../../types';
 
 export const StaticLinkNode = React.forwardRef<HTMLDivElement, TStaticLinkNodeProps>(
 	(props, ref) => {
@@ -52,5 +52,5 @@ export const StaticLinkNode = React.forwardRef<HTMLDivElement, TStaticLinkNodePr
 StaticLinkNode.displayName = 'StaticLinkNode';
 
 interface TStaticLinkNodeProps extends React.HTMLProps<HTMLDivElement> {
-	node: TWithResolvedStyles<TLinkNode>;
+	node: TResolvedLinkNode;
 }

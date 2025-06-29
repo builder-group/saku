@@ -1,5 +1,5 @@
 import React from 'react';
-import { TTextNode, TWithResolvedStyles } from '../../../../types';
+import { TResolvedTextNode } from '../../../../types';
 
 export const StaticTextNode = React.forwardRef<HTMLDivElement, TStaticTextNodeProps>(
 	(props, ref) => {
@@ -70,5 +70,5 @@ export const StaticTextNode = React.forwardRef<HTMLDivElement, TStaticTextNodePr
 StaticTextNode.displayName = 'StaticTextNode';
 
 interface TStaticTextNodeProps extends React.HTMLProps<HTMLDivElement> {
-	node: TWithResolvedStyles<TTextNode>;
+	node: TResolvedTextNode;
 }

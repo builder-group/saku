@@ -3,7 +3,12 @@ import { Text, TextField } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react/state';
 import React from 'react';
 import { AccordionSection, ImageUploadField, type TImageUploadOnChangeImage } from '@/components';
-import { generateSocialUrl, socialMetadataMap, TSocialMetadata } from '../../../environment';
+import {
+	fontOptions,
+	generateSocialUrl,
+	socialMetadataMap,
+	TSocialMetadata
+} from '../../../environment';
 import { TAboutNode, TSocialLink } from '../../../types';
 import { SelectStyleField, TextStyleField, ToggleStyleField } from '../fields';
 import { TNodeEditorComponentProps } from '../nodeEditorRegistry';
@@ -63,7 +68,7 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 				media: {
 					type: 'image',
 					url: image.url,
-					fileName: image.fileName
+					altText: image.fileName ? `Image: ${image.fileName}` : undefined
 				}
 			}));
 		},
@@ -222,7 +227,7 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 						autoComplete="off"
 					/>
 
-					<TextStyleField
+					<SelectStyleField
 						label="Font Family"
 						node={nodeState}
 						parentNode={parentNodeState}
@@ -230,9 +235,12 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 						nodeValueSetter={(node, value) => {
 							node._v.style.fontFamily = value;
 							node._notify();
+							if (value !== 'inherit' && value != null) {
+								editor.applyFont(value);
+							}
 						}}
 						parentValueMapper={(parent) => parent.style.children?.fontFamily}
-						autoComplete="off"
+						options={fontOptions}
 					/>
 
 					<div className="grid grid-cols-2 gap-3">

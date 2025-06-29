@@ -3,23 +3,24 @@ import { ShopifyGlobal } from '@shopify/app-bridge-react';
 import { createState, TState } from 'feature-state';
 import React from 'react';
 import { coreApiClient } from '@/environment';
-import { TSettingsSectionType, TViewType } from '../environment';
-import { TNode, TNodeId, TPageNode, TSiteNode } from '../types';
+import { fontFamilyToMetadata, TSettingsSectionType, TViewType } from '../environment';
+import { TAsset, TAssetId, TFontAsset, TNode, TNodeId, TPageNode, TSite } from '../types';
 import { createNodeState, TNodeState } from './create-node-state';
 import { flattenNode, TFlattenedNode, unflattenNode } from './flatten-node';
 
-export function createPageEditor(
-	siteId: string,
-	shopify: ShopifyGlobal,
-	pageNode: TPageNode
-): TPageEditor {
+export function createPageEditor(site: TSite, shopify: ShopifyGlobal): TPageEditor {
 	return {
 		id: shortId(),
-		siteId,
+		site: {
+			id: site.id,
+			version: site.version
+		},
 
-		rootId: pageNode.id,
-		nodeMap: flattenNode(pageNode, (node) => createNodeState(node)),
+		nodeMap: flattenNode(site.root, (node) => createNodeState(node)),
+		rootNodeId: site.root.id,
 		selectedNodeId: createState<TNodeId | null>(null),
+
+		assets: Object.fromEntries(site.assets.map((asset) => [asset.id, asset])),
 
 		activeView: createState('layers' as TViewType),
 		activeSettingsSection: createState<TSettingsSectionType | null>('appearance'),
@@ -55,11 +56,11 @@ export function createPageEditor(
 		},
 
 		getRootNode() {
-			return this.nodeMap[this.rootId] as TState<TFlattenedNode<TPageNode>, []>;
+			return this.nodeMap[this.rootNodeId] as TState<TFlattenedNode<TPageNode>, []>;
 		},
 
 		addNode(node, parentId) {
-			const targetParentId = parentId ?? this.rootId;
+			const targetParentId = parentId ?? this.rootNodeId;
 
 			// Flatten the entire node subtree with correct parentId for root
 			const flattenedSubtree = flattenNode(node, (flatNode) => {
@@ -244,23 +245,137 @@ export function createPageEditor(
 			this.selectedNodeId.set(null);
 		},
 
+		applyFont(fontFamily) {
+			// Get metadata from font family
+			const fontMetadata = fontFamilyToMetadata[fontFamily];
+			if (fontMetadata == null) {
+				return;
+			}
+
+			// Skip system fonts
+			if (fontMetadata.googleFont == null) {
+				return;
+			}
+
+			const assetId = `font-${fontMetadata.key}`;
+			if (this.assets[assetId] != null) {
+				return;
+			}
+
+			// Create new font asset
+			const fontAsset: TFontAsset = {
+				id: assetId,
+				type: 'font',
+				contentType: 'font/woff2',
+				content: {
+					type: 'url',
+					url: `https://fonts.googleapis.com/css2?family=${fontMetadata.googleFont}&display=swap`
+				},
+				fileName: `${fontMetadata.name}.woff2`
+			};
+
+			// Add to assets
+			this.assets[assetId] = fontAsset;
+
+			// Load the font
+			this.loadFont(assetId);
+		},
+
+		loadFont(assetId) {
+			const asset = this.assets[assetId];
+			if (asset == null || asset.type !== 'font' || asset.content.type !== 'url') {
+				return;
+			}
+
+			// Check if already loaded in DOM
+			if (document.querySelector(`link[data-font-id="${assetId}"]`) != null) {
+				return;
+			}
+
+			// Create and inject CSS link tag
+			const link = document.createElement('link');
+			link.rel = 'stylesheet';
+			link.href = asset.content.url;
+			link.setAttribute('data-font-id', assetId);
+			document.head.appendChild(link);
+		},
+
+		loadFonts() {
+			Object.keys(this.assets).forEach((assetId) => {
+				const asset = this.assets[assetId];
+				if (asset?.type === 'font') {
+					this.loadFont(assetId);
+				}
+			});
+		},
+
+		getUsedAssetIds() {
+			const usedAssets = new Set<string>();
+
+			// Scan all nodes for asset references
+			Object.values(this.nodeMap).forEach((nodeState) => {
+				const node = nodeState._v;
+
+				// Check if node has style with fontFamily
+				if ('style' in node && node.style && typeof node.style === 'object') {
+					const style = node.style as { fontFamily?: string };
+					if (style.fontFamily != null && typeof style.fontFamily === 'string') {
+						// Map font family to asset ID
+						const fontMetadata = fontFamilyToMetadata[style.fontFamily];
+						if (fontMetadata?.googleFont) {
+							usedAssets.add(`font-${fontMetadata.key}`);
+						}
+					}
+				}
+			});
+
+			return usedAssets;
+		},
+
+		cleanupUnusedAssets() {
+			const usedAssets = this.getUsedAssetIds();
+			const assetsToRemove: string[] = [];
+
+			// Find unused assets
+			Object.keys(this.assets).forEach((assetId) => {
+				if (!usedAssets.has(assetId)) {
+					assetsToRemove.push(assetId);
+				}
+			});
+
+			// Remove unused assets
+			assetsToRemove.forEach((assetId) => {
+				const asset = this.assets[assetId];
+
+				// Remove from assets map
+				delete this.assets[assetId];
+
+				// Remove from DOM if it's a font
+				if (asset?.type === 'font') {
+					const linkElement = document.querySelector(`link[data-font-id="${assetId}"]`);
+					if (linkElement != null) {
+						linkElement.remove();
+					}
+				}
+			});
+
+			return assetsToRemove;
+		},
+
 		async save() {
 			const idToken = await this.shopify.idToken();
-			const pageNode = this.toPageNode();
+
+			// Clean up unused assets before saving
+			this.cleanupUnusedAssets();
 
 			const result = await coreApiClient.put(
 				'/v1/shopify/site/{siteId}/content',
 				{
-					content: {
-						type: 'site',
-						id: 'root',
-						version: 'v0.0.1',
-						children: [pageNode]
-					} satisfies TSiteNode as any
+					content: this.toSite() as any
 				},
 				{
 					pathParams: {
-						siteId: this.siteId as string
+						siteId: this.site.id
 					},
 					headers: {
 						Authorization: `Bearer ${idToken}`
@@ -271,19 +386,25 @@ export function createPageEditor(
 			return result.isOk();
 		},
 
-		toPageNode() {
-			return unflattenNode(this.nodeMap, this.rootId, (state) => state._v) as TPageNode;
+		toSite() {
+			return {
+				...this.site,
+				root: unflattenNode(this.nodeMap, this.rootNodeId, (state) => state._v) as TPageNode,
+				assets: Object.values(this.assets)
+			} satisfies TSite;
 		}
 	};
 }
 
 export interface TPageEditor {
 	id: string;
-	siteId: string;
+	site: Omit<TSite, 'root' | 'assets'>;
 
-	rootId: TNodeId;
-	nodeMap: Record<TNodeId, TNodeState>;
+	rootNodeId: TNodeId;
 	selectedNodeId: TState<TNodeId | null, []>;
+	nodeMap: Record<TNodeId, TNodeState>;
+
+	assets: Record<TAssetId, TAsset>;
 
 	activeView: TState<TViewType, []>;
 	activeSettingsSection: TState<TSettingsSectionType | null, []>;
@@ -314,9 +435,16 @@ export interface TPageEditor {
 	selectNode: (nodeId: TNodeId) => void;
 	unselectNode: () => void;
 
+	applyFont: (fontFamily: string) => void;
+	loadFont: (assetId: string) => void;
+	loadFonts: () => void;
+
+	getUsedAssetIds: () => Set<string>;
+	cleanupUnusedAssets: () => string[];
+
 	save: () => Promise<boolean>;
 
-	toPageNode: () => TPageNode;
+	toSite: () => TSite;
 }
 
 export interface TBoundingRect {

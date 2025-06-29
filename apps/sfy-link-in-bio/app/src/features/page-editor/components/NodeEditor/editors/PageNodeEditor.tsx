@@ -1,11 +1,12 @@
 import React from 'react';
 import { AccordionSection } from '@/components';
+import { fontOptions } from '../../../environment';
 import { TPageNode } from '../../../types';
 import { SelectStyleField, TextStyleField, ToggleStyleField } from '../fields';
 import { TNodeEditorComponentProps } from '../nodeEditorRegistry';
 
 export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TPageNode>> = (props) => {
-	const { nodeState } = props;
+	const { nodeState, editor } = props;
 
 	// =========================================================================
 	// UI
@@ -96,7 +97,7 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TPageNode>> = (p
 						/>
 					</div>
 
-					<TextStyleField
+					<SelectStyleField
 						label="Font Family"
 						node={nodeState}
 						nodeValueMapper={(value) => value.style.children?.fontFamily}
@@ -104,10 +105,12 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TPageNode>> = (p
 							if (node._v.style.children != null) {
 								node._v.style.children.fontFamily = value;
 								node._notify();
+								if (value != null) {
+									editor.applyFont(value);
+								}
 							}
 						}}
-						autoComplete="off"
-						placeholder="Inter"
+						options={fontOptions}
 					/>
 
 					<div className="grid grid-cols-2 gap-3">

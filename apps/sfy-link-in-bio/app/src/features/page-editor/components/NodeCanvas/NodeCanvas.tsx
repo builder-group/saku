@@ -9,8 +9,8 @@ export const NodeCanvas: React.FC<TNodeCanvasProps> = (props) => {
 	const { editor } = props;
 
 	const rootNodeState = React.useMemo(
-		() => editor.nodeMap[editor.rootId],
-		[editor.nodeMap, editor.rootId]
+		() => editor.nodeMap[editor.rootNodeId],
+		[editor.nodeMap, editor.rootNodeId]
 	);
 
 	useBoundingRectObserver(

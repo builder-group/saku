@@ -2,6 +2,7 @@ import { Text, TextField } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react/state';
 import React from 'react';
 import { AccordionSection } from '@/components';
+import { fontOptions } from '../../../environment';
 import { TTextNode } from '../../../types';
 import { SelectStyleField, TextStyleField, ToggleStyleField } from '../fields';
 import { TNodeEditorComponentProps } from '../nodeEditorRegistry';
@@ -124,7 +125,7 @@ export const TextNodeEditor: React.FC<TNodeEditorComponentProps<TTextNode>> = (p
 						autoComplete="off"
 					/>
 
-					<TextStyleField
+					<SelectStyleField
 						label="Font Family"
 						node={nodeState}
 						parentNode={parentNodeState}
@@ -132,9 +133,12 @@ export const TextNodeEditor: React.FC<TNodeEditorComponentProps<TTextNode>> = (p
 						nodeValueSetter={(node, value) => {
 							node._v.style.fontFamily = value;
 							node._notify();
+							if (value !== 'inherit' && value != null) {
+								editor.applyFont(value);
+							}
 						}}
 						parentValueMapper={(parent) => parent.style.children?.fontFamily}
-						autoComplete="off"
+						options={fontOptions}
 					/>
 
 					<div className="grid grid-cols-2 gap-3">

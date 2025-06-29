@@ -24,6 +24,10 @@ export const Editor: React.FC<TEditorProps> = (props) => {
 		[editor]
 	);
 
+	React.useEffect(() => {
+		editor.loadFonts();
+	}, [editor]);
+
 	return (
 		<div ref={editor.editorRef} className="flex h-screen w-full flex-col">
 			{isReady ? (

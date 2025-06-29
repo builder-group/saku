@@ -1,6 +1,6 @@
 import React from 'react';
 import { socialIconMap } from '../../../../environment';
-import { TAboutNode, TWithResolvedStyles } from '../../../../types';
+import { TResolvedAboutNode } from '../../../../types';
 
 export const StaticAboutNode = React.forwardRef<HTMLDivElement, TStaticAboutNodeProps>(
 	(props, ref) => {
@@ -115,5 +115,5 @@ export const StaticAboutNode = React.forwardRef<HTMLDivElement, TStaticAboutNode
 StaticAboutNode.displayName = 'StaticAboutNode';
 
 interface TStaticAboutNodeProps extends React.HTMLProps<HTMLDivElement> {
-	node: TWithResolvedStyles<TAboutNode>;
+	node: TResolvedAboutNode;
 }
