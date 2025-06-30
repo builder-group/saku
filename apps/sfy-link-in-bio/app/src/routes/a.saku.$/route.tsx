@@ -61,7 +61,7 @@ export const loader: TLoaderFunctionWithResult<TSuccessData, TErrorData> = async
 		});
 	}
 
-	// Return kangaroo preset for now if local env and handle is "preset"
+	// Return preset if local environment and handle is "preset"
 	if (appConfig.env === 'local' && handle === 'preset') {
 		return ServerOk<TSuccessData, TErrorData>({
 			appUrl: shopifyConfig.appUrl,
