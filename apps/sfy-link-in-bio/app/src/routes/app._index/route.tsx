@@ -15,7 +15,7 @@ import { appConfig, shopify, shopifyConfig } from '@/environment/.server';
 import { getSessionTokenFromRequest, redirectWithAuth } from '@/lib/.server';
 import { usePageEditorModal } from '@/routes/app.modal.page-editor.$/PageEditorModal';
 import { TLoaderFunction } from '@/types';
-import { coreApiClient } from '../../environment';
+import { coreApiClient, logger } from '../../environment';
 
 const Page: React.FC = () => {
 	const { env, site } = useLoaderData<typeof loader>();
@@ -181,6 +181,7 @@ export const loader: TLoaderFunction<TLoaderData> = async ({ request }) => {
 		}
 	});
 	if (workspaceResult.isErr()) {
+		logger.error('Failed to fetch workspace', workspaceResult.error);
 		// TODO: Handle error
 		return {
 			site: null,

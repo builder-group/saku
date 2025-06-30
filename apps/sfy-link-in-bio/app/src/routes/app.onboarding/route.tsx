@@ -1,51 +1,75 @@
 import { type LoaderFunction } from '@remix-run/node';
-import { useNavigate } from '@remix-run/react';
-import { useAppBridge } from '@shopify/app-bridge-react';
-import { Button } from '@shopify/polaris';
+import { useNavigate, useSearchParams } from '@remix-run/react';
 import React from 'react';
 import { coreApiClient } from '@/environment';
 import { shopify } from '@/environment/.server';
-import { kangarooPreset } from '@/features/page-editor';
 import { getSessionTokenFromRequest, redirectWithAuth } from '@/lib/.server/shopify';
+import {
+	createOnboardingContext,
+	type TOnboardingContext,
+	type TOnboardingStep
+} from './create-onboarding-context';
+import { LinkpopPreviewStep, LinkpopUrlStep, TemplatesStep, WelcomeStep } from './steps';
 
-const Page: React.FC = () => {
+export default function OnboardingRoute() {
 	const navigate = useNavigate();
-	const shopify = useAppBridge();
-
-	const handleCreateSite = React.useCallback(async () => {
-		// Get session token from Shopify App Bridge
-		const idToken = await shopify.idToken();
-
-		// Call API to create a new site (use a default handle for now)
-		await coreApiClient.post(
-			'/v1/shopify/site',
-			{
-				handle: 'bio',
-				displayName: 'My Bio Site',
-				content: kangarooPreset as any
-			},
-			{
-				headers: {
-					Authorization: `Bearer ${idToken}`
-				}
-			}
-		);
-
-		// API should mark onboarding as complete when site is created
-		navigate('/app');
-	}, [shopify, navigate]);
-
-	return (
-		<div className="flex flex-col items-center gap-6 p-10">
-			<h1>Welcome! Let&apos;s get started.</h1>
-			<Button variant="primary" onClick={handleCreateSite}>
-				Create My First Site
-			</Button>
-		</div>
+	const [searchParams] = useSearchParams();
+	const stepParam = React.useMemo(
+		() => searchParams.get('step') as TOnboardingStep['type'] | null,
+		[searchParams]
 	);
-};
 
-export default Page;
+	const onboardingContext = React.useMemo<TOnboardingContext>(() => {
+		const appUrl = typeof window !== 'undefined' ? window.location.origin : '';
+		return createOnboardingContext(appUrl);
+	}, []);
+
+	const [stepType, setStepType] = React.useState<TOnboardingStep['type']>('welcome');
+
+	React.useEffect(() => {
+		if (stepParam != null && onboardingContext.stepr.goToVisited(stepParam)) {
+			setStepType(stepParam);
+			return;
+		}
+
+		// If not already on 'welcome', navigate to the initial 'welcome' step
+		if (onboardingContext.stepr.current._v?.type !== 'welcome') {
+			onboardingContext.stepr.goTo({ type: 'welcome' });
+		}
+		// Already on 'welcome' - update the URL silently
+		else if (stepParam !== 'welcome') {
+			navigate('?step=welcome', { replace: true });
+		}
+	}, [onboardingContext, stepParam, navigate]);
+
+	React.useEffect(() => {
+		const unsubscribe = onboardingContext.stepr.onStepVisited((cx) => {
+			if (cx.value.type !== stepParam) {
+				navigate(`?step=${cx.value.type}`, { replace: false });
+				// Update UI immediately without waiting for navigation to complete.
+				// This avoids a brief lack that would occur if we waited for the iframe to update.
+				setStepType(cx.value.type);
+			}
+		});
+
+		return () => {
+			unsubscribe?.();
+		};
+	}, [onboardingContext, navigate, stepParam]);
+
+	switch (stepType) {
+		case 'welcome':
+			return <WelcomeStep onboardingContext={onboardingContext} />;
+		case 'linkpop-url':
+			return <LinkpopUrlStep onboardingContext={onboardingContext} />;
+		case 'linkpop-preview':
+			return <LinkpopPreviewStep onboardingContext={onboardingContext} />;
+		case 'templates':
+			return <TemplatesStep onboardingContext={onboardingContext} />;
+		default:
+			return <WelcomeStep onboardingContext={onboardingContext} />;
+	}
+}
 
 export const loader: LoaderFunction = async ({ request }) => {
 	await shopify.authenticate.admin(request);
