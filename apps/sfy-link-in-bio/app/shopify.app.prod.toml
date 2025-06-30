@@ -6,9 +6,16 @@ handle = "saku-link-in-bio"
 application_url = "https://sfy-link-in-bio-app.saku.so"
 embedded = true
 
-[build]
-include_config_on_deploy = true
-automatically_update_urls_on_dev = true
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "write_files,write_online_store_navigation,read_online_store_navigation"
+
+[auth]
+redirect_urls = [
+    "https://sfy-link-in-bio-app.saku.so/auth/callback",
+    "https://sfy-link-in-bio-app.saku.so/auth/shopify/callback",
+    "https://sfy-link-in-bio-app.saku.so/api/auth/callback",
+]
 
 [webhooks]
 api_version = "2025-04"
@@ -33,17 +40,6 @@ uri = "/api/v1/webhook/shopify/customers/redact"
 compliance_topics = ["shop/redact"]
 uri = "/api/v1/webhook/shopify/shop/redact"
 
-[access_scopes]
-# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = "write_files,write_online_store_navigation,read_online_store_navigation"
-
-[auth]
-redirect_urls = [
-    "https://sfy-link-in-bio-app.saku.so/auth/callback",
-    "https://sfy-link-in-bio-app.saku.so/auth/shopify/callback",
-    "https://sfy-link-in-bio-app.saku.so/api/auth/callback",
-]
-
 [app_proxy]
 url = "https://sfy-link-in-bio-app.saku.so/a/saku"
 subpath = "saku"
@@ -51,3 +47,7 @@ prefix = "a"
 
 [pos]
 embedded = false
+
+[build]
+include_config_on_deploy = true
+automatically_update_urls_on_dev = true

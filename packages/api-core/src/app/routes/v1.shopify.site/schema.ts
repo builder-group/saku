@@ -14,6 +14,39 @@ export const GetShopifySitesRoute = createRoute({
 	}
 });
 
+export const CreateShopifySiteRoute = createRoute({
+	method: 'post',
+	path: '/v1/shopify/site',
+	tags: ['shopify', 'site'],
+	summary: 'Create new site',
+	description: 'Creates a new site in the workspace connected to the authenticated Shopify shop.',
+	operationId: 'createShopifySite',
+	request: {
+		body: {
+			content: {
+				'application/json': {
+					schema: z.object({
+						handle: z.string().openapi({
+							example: 'bio',
+							description: 'Site handle/slug'
+						}),
+						displayName: z.string().optional().openapi({
+							example: 'My Bio Site',
+							description: 'Human-friendly site name'
+						}),
+						content: SSiteContentDto
+					})
+				}
+			}
+		}
+	},
+	responses: {
+		201: JsonSuccessResponse(SSiteDto),
+		400: BadRequestResponse,
+		404: NotFoundResponse
+	}
+});
+
 export const UpdateShopifySiteContentRoute = createRoute({
 	method: 'put',
 	path: '/v1/shopify/site/{siteId}/content',

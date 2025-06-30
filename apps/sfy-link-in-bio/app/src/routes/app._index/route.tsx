@@ -11,10 +11,11 @@ import {
 } from '@shopify/polaris';
 import React from 'react';
 import { ClipboardButton, FeedbackCard, GetInTouchCard, SitePreview, ViewIcon } from '@/components';
-import { appConfig, shopify } from '@/environment/.server';
-import { getSessionTokenFromRequest } from '@/lib/.server';
+import { appConfig, shopify, shopifyConfig } from '@/environment/.server';
+import { getSessionTokenFromRequest, redirectWithAuth } from '@/lib/.server';
 import { usePageEditorModal } from '@/routes/app.modal.page-editor.$/PageEditorModal';
 import { TLoaderFunction } from '@/types';
+import { coreApiClient } from '../../environment';
 
 const Page: React.FC = () => {
 	const { env, site } = useLoaderData<typeof loader>();
@@ -173,40 +174,51 @@ export const loader: TLoaderFunction<TLoaderData> = async ({ request }) => {
 		}
 	};
 
+	// 1. Check workspace onboarding status
+	const workspaceResult = await coreApiClient.get('/v1/shopify/workspace', {
+		headers: {
+			Authorization: `Bearer ${sessionToken}`
+		}
+	});
+	if (workspaceResult.isErr()) {
+		// TODO: Handle error
+		return {
+			site: null,
+			env
+		};
+	}
+
+	const workspace = workspaceResult.value.data;
+
+	// 2. Check if onboarding is needed
+	if (workspace.onboardingCompletedAt == null) {
+		throw redirectWithAuth(request, '/app/onboarding');
+	}
+
+	// 3. Onboarding complete - fetch sites
+	const sitesResult = await coreApiClient.get('/v1/shopify/site', {
+		headers: {
+			Authorization: `Bearer ${sessionToken}`
+		}
+	});
+	if (sitesResult.isErr()) {
+		return {
+			site: null,
+			env
+		};
+	}
+
 	return {
-		site: {
-			id: 'preset',
-			handle: 'preset',
-			url: 'https://preset.com',
-			displayName: 'Preset',
-			updatedAt: new Date().toISOString()
-		},
+		site:
+			sitesResult.value.data.map((site) => ({
+				id: site.id,
+				handle: site.handle,
+				url: `${shopifyConfig.proxy.url(session.shop)}/${site.handle}`,
+				displayName: site.displayName,
+				updatedAt: site.updatedAt
+			}))[0] ?? null,
 		env
 	};
-
-	// const sitesResult = await coreApiClient.get('/v1/shopify/site', {
-	// 	headers: {
-	// 		Authorization: `Bearer ${sessionToken}`
-	// 	}
-	// });
-	// if (sitesResult.isErr()) {
-	// 	return {
-	// 		site: null,
-	// 		env
-	// 	};
-	// }
-
-	// return {
-	// 	site:
-	// 		sitesResult.value.data.map((site) => ({
-	// 			id: site.id,
-	// 			handle: site.handle,
-	// 			url: `${shopifyConfig.proxy.url(session.shop)}/${site.handle}`,
-	// 			displayName: site.displayName,
-	// 			updatedAt: site.updatedAt
-	// 		}))[0] ?? null,
-	// 	env
-	// };
 };
 
 interface TLoaderData {

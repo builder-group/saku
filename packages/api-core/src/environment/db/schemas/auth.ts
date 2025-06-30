@@ -10,7 +10,7 @@ import { jsonb, pgTable, text, timestamp } from 'drizzle-orm/pg-core';
  * Cascade deletion handled programmatically.
  */
 export const shopifySessionTable = pgTable('shopify_session', {
-	// Session ID (e.g. "offline_my-shop.myshopify.com" or "my-shop.myshopify.com_123456")
+	// Session ID (e.g. "offline_my-shop.myshopify.com", "my-shop.myshopify.com_123456")
 	sessionId: text('session_id').primaryKey(),
 
 	// Shop domain (e.g. "my-shop.myshopify.com")

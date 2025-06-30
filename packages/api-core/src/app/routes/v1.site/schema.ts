@@ -5,7 +5,7 @@ import { BadRequestResponse, JsonSuccessResponse, NotFoundResponse } from '@repo
 export const SSiteSummaryDto = z
 	.object({
 		id: z.string().uuid().openapi({ example: '123e4567-e89b-12d3' }),
-		userId: z.string().uuid().openapi({ example: '123e4567-e89b-12d3' }),
+		workspaceId: z.string().uuid().openapi({ example: '123e4567-e89b-12d3' }),
 		handle: z.string().openapi({ example: 'bio' }),
 		displayName: z.string().optional().openapi({ example: 'My Bio Site' }),
 		createdAt: z.string().datetime().openapi({ example: '2024-03-20T00:00:00Z' }),

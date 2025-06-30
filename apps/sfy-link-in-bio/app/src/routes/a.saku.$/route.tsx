@@ -1,16 +1,19 @@
 import { ServerErr, ServerOk } from '@blgc/utils';
 import { AppProxyProvider } from '@shopify/shopify-app-remix/react';
+import { isStatusCode } from 'feature-fetch';
 import React from 'react';
-import { shopify, shopifyConfig } from '@/environment/.server';
+import { appConfig, shopify, shopifyConfig } from '@/environment/.server';
 import {
 	getSiteFontUrls,
 	kangarooPreset,
 	resolveSite,
 	StaticNodeCanvas,
-	TResolvedSite
+	TResolvedSite,
+	TSite
 } from '@/features/page-editor';
 import { useLoaderResult } from '@/hooks';
 import { TLoaderFunctionWithResult } from '@/types';
+import { coreApiClient } from '../../environment';
 
 const Page: React.FC = () => {
 	const result = useLoaderResult<TSuccessData, TErrorData>();
@@ -58,35 +61,38 @@ export const loader: TLoaderFunctionWithResult<TSuccessData, TErrorData> = async
 		});
 	}
 
+	// Return kangaroo preset for now if local env and handle is "preset"
+	if (appConfig.env === 'local' && handle === 'preset') {
+		return ServerOk<TSuccessData, TErrorData>({
+			appUrl: shopifyConfig.appUrl,
+			site: resolveSite(kangarooPreset)
+		});
+	}
+
+	const result = await coreApiClient.get('/v1/shopify/site/shop/{shop}/{handle}/content', {
+		pathParams: {
+			shop: session.shop,
+			handle
+		}
+	});
+	if (result.isErr()) {
+		if (isStatusCode(result.error, 404)) {
+			return ServerErr<TSuccessData, TErrorData>({
+				code: '#ERR_NOT_FOUND',
+				message: 'Site not found'
+			});
+		}
+
+		return ServerErr<TSuccessData, TErrorData>({
+			code: '#ERR_SERVER_ERROR',
+			message: result.error.message ?? 'Unknown error occurred'
+		});
+	}
+
 	return ServerOk<TSuccessData, TErrorData>({
 		appUrl: shopifyConfig.appUrl,
-		site: resolveSite(kangarooPreset)
+		site: resolveSite(result.value.data as unknown as TSite)
 	});
-
-	// const result = await coreApiClient.get('/v1/shopify/site/shop/{shop}/{handle}/content', {
-	// 	pathParams: {
-	// 		shop: session.shop,
-	// 		handle
-	// 	}
-	// });
-	// if (result.isErr()) {
-	// 	if (result.error instanceof RequestError && result.error.status === 404) {
-	// 		return ServerErr<TSuccessData, TErrorData>({
-	// 			code: '#ERR_NOT_FOUND',
-	// 			message: 'Site not found'
-	// 		});
-	// 	}
-
-	// 	return ServerErr<TSuccessData, TErrorData>({
-	// 		code: '#ERR_SERVER_ERROR',
-	// 		message: result.error.message
-	// 	});
-	// }
-
-	// return ServerOk<TSuccessData, TErrorData>({
-	// 	appUrl: shopifyConfig.appUrl,
-	// 	site: resolveSite(result.value.data as unknown as TSite)
-	// });
 };
 
 interface TErrorData {

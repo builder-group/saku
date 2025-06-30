@@ -121,7 +121,11 @@ export interface paths {
          */
         get: operations["listShopifySites"];
         put?: never;
-        post?: never;
+        /**
+         * Create new site
+         * @description Creates a new site in the workspace connected to the authenticated Shopify shop.
+         */
+        post: operations["createShopifySite"];
         delete?: never;
         options?: never;
         head?: never;
@@ -203,6 +207,26 @@ export interface paths {
          * @description Process uploaded files and add them to the Shopify media library
          */
         post: operations["submitUgcUploadedFiles"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/shopify/workspace": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get workspace info
+         * @description Returns workspace information for the authenticated Shopify shop, including onboarding status.
+         */
+        get: operations["getShopifyWorkspace"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -493,7 +517,7 @@ export interface components {
              * Format: uuid
              * @example 123e4567-e89b-12d3
              */
-            userId: string;
+            workspaceId: string;
             /** @example bio */
             handle: string;
             /** @example My Bio Site */
@@ -520,7 +544,7 @@ export interface components {
              * Format: uuid
              * @example 123e4567-e89b-12d3
              */
-            userId: string;
+            workspaceId: string;
             /** @example bio */
             handle: string;
             /** @example My Bio Site */
@@ -595,6 +619,35 @@ export interface components {
                 type: "file";
                 mimeType?: string;
             };
+        };
+        WorkspaceDto: {
+            /**
+             * Format: uuid
+             * @example 123e4567-e89b-12d3
+             */
+            id: string;
+            /** @example my-store.myshopify.com */
+            handle: string;
+            /** @example My Store */
+            displayName?: string;
+            /** @example https://cdn.shopify.com/logo.png */
+            image?: string;
+            /**
+             * Format: date-time
+             * @description When onboarding was completed. null if onboarding is needed.
+             * @example 2024-03-20T00:00:00Z
+             */
+            onboardingCompletedAt: string | null;
+            /**
+             * Format: date-time
+             * @example 2024-03-20T00:00:00Z
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @example 2024-03-20T00:00:00Z
+             */
+            updatedAt: string;
         };
         UrlMetadataDto: {
             /**
@@ -931,6 +984,60 @@ export interface operations {
             };
         };
     };
+    createShopifySite: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": {
+                    /**
+                     * @description Site handle/slug
+                     * @example bio
+                     */
+                    handle: string;
+                    /**
+                     * @description Human-friendly site name
+                     * @example My Bio Site
+                     */
+                    displayName?: string;
+                    content: components["schemas"]["SiteContentDto"];
+                };
+            };
+        };
+        responses: {
+            /** @description Successful response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SiteDto"];
+                };
+            };
+            /** @description Bad request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppErrorDto"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppErrorDto"];
+                };
+            };
+        };
+    };
     updateShopifySiteContent: {
         parameters: {
             query?: never;
@@ -1196,6 +1303,35 @@ export interface operations {
             };
             /** @description Internal server error */
             500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppErrorDto"];
+                };
+            };
+        };
+    };
+    getShopifyWorkspace: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkspaceDto"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
