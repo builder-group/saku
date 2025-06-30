@@ -26,6 +26,7 @@ export {
 	DragHandleIcon,
 	ExternalIcon,
 	LayoutSectionIcon,
+	PageDownIcon,
 	PaintBrushFlatIcon,
 	PlusCircleIcon,
 	PlusIcon,
