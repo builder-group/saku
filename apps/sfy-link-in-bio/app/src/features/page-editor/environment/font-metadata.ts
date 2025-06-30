@@ -1,123 +1,117 @@
-export const fontsMetadataMap = {
+import { TFont } from '../types';
+
+export const fontMetadataMap = {
 	inter: {
 		name: 'Inter',
-		family: 'Inter, sans-serif',
+		font: { family: 'Inter', weight: 400, style: 'normal' },
 		category: 'sans-serif',
 		googleFont: 'Inter:wght@400;500;600;700'
 	} satisfies TFontMetadata,
 	roboto: {
 		name: 'Roboto',
-		family: 'Roboto, sans-serif',
+		font: { family: 'Roboto', weight: 400, style: 'normal' },
 		category: 'sans-serif',
 		googleFont: 'Roboto:wght@400;500;700'
 	} satisfies TFontMetadata,
 	openSans: {
 		name: 'Open Sans',
-		family: '"Open Sans", sans-serif',
+		font: { family: 'Open Sans', weight: 400, style: 'normal' },
 		category: 'sans-serif',
 		googleFont: 'Open+Sans:wght@400;600;700'
 	} satisfies TFontMetadata,
 	lato: {
 		name: 'Lato',
-		family: 'Lato, sans-serif',
+		font: { family: 'Lato', weight: 400, style: 'normal' },
 		category: 'sans-serif',
 		googleFont: 'Lato:wght@400;700'
 	} satisfies TFontMetadata,
 	montserrat: {
 		name: 'Montserrat',
-		family: 'Montserrat, sans-serif',
+		font: { family: 'Montserrat', weight: 400, style: 'normal' },
 		category: 'sans-serif',
 		googleFont: 'Montserrat:wght@400;600;700'
 	} satisfies TFontMetadata,
 	poppins: {
 		name: 'Poppins',
-		family: 'Poppins, sans-serif',
+		font: { family: 'Poppins', weight: 400, style: 'normal' },
 		category: 'sans-serif',
 		googleFont: 'Poppins:wght@400;500;600;700'
 	} satisfies TFontMetadata,
 	playfairDisplay: {
 		name: 'Playfair Display',
-		family: '"Playfair Display", serif',
+		font: { family: 'Playfair Display', weight: 400, style: 'normal' },
 		category: 'serif',
 		googleFont: 'Playfair+Display:wght@400;700'
 	} satisfies TFontMetadata,
 	merriweather: {
 		name: 'Merriweather',
-		family: 'Merriweather, serif',
+		font: { family: 'Merriweather', weight: 400, style: 'normal' },
 		category: 'serif',
 		googleFont: 'Merriweather:wght@400;700'
 	} satisfies TFontMetadata,
 	b612: {
 		name: 'B612',
-		family: 'B612, sans-serif',
+		font: { family: 'B612', weight: 400, style: 'normal' },
 		category: 'sans-serif',
 		googleFont: 'B612:wght@400;700'
 	} satisfies TFontMetadata,
 	biorhyme: {
 		name: 'BioRhyme',
-		family: 'BioRhyme, serif',
+		font: { family: 'BioRhyme', weight: 400, style: 'normal' },
 		category: 'serif',
 		googleFont: 'BioRhyme:wght@400;700'
 	} satisfies TFontMetadata,
 	cairo: {
 		name: 'Cairo',
-		family: 'Cairo, sans-serif',
+		font: { family: 'Cairo', weight: 400, style: 'normal' },
 		category: 'sans-serif',
 		googleFont: 'Cairo:wght@400;600;700'
 	} satisfies TFontMetadata,
 	karla: {
 		name: 'Karla',
-		family: 'Karla, sans-serif',
+		font: { family: 'Karla', weight: 400, style: 'normal' },
 		category: 'sans-serif',
 		googleFont: 'Karla:wght@400;700'
 	} satisfies TFontMetadata,
 	lora: {
 		name: 'Lora',
-		family: 'Lora, serif',
+		font: { family: 'Lora', weight: 400, style: 'normal' },
 		category: 'serif',
 		googleFont: 'Lora:wght@400;700'
 	} satisfies TFontMetadata,
 	mulish: {
 		name: 'Mulish',
-		family: 'Mulish, sans-serif',
+		font: { family: 'Mulish', weight: 400, style: 'normal' },
 		category: 'sans-serif',
 		googleFont: 'Mulish:wght@400;600;700'
 	} satisfies TFontMetadata,
 	vollkorn: {
 		name: 'Vollkorn',
-		family: 'Vollkorn, serif',
+		font: { family: 'Vollkorn', weight: 400, style: 'normal' },
 		category: 'serif',
 		googleFont: 'Vollkorn:wght@400;700'
 	} satisfies TFontMetadata,
 	system: {
 		name: 'System Default',
-		family: 'system-ui, -apple-system, sans-serif',
+		font: { family: 'system-ui', weight: 400, style: 'normal' },
 		category: 'system',
 		googleFont: null
 	} satisfies TFontMetadata
 };
 
-export const fontsMetadata = Object.values(fontsMetadataMap);
+export const fontMetadata = Object.values(fontMetadataMap);
 
-export const fontFamilyToMetadata = Object.entries(fontsMetadataMap).reduce(
-	(acc, [key, metadata]) => {
-		acc[metadata.family] = Object.assign(metadata, { key });
-		return acc;
-	},
-	{} as Record<string, TFontMetadata & { key: string }>
-);
+export function getFontMetadataByFamily(
+	family: string
+): (typeof fontMetadataMap)[keyof typeof fontMetadataMap] | null {
+	return Object.values(fontMetadataMap).find((metadata) => metadata.font.family === family) ?? null;
+}
 
-// Font options for dropdowns
-export const fontOptions = Object.values(fontsMetadataMap).map((metadata) => ({
-	label: metadata.name,
-	value: metadata.family
-}));
-
-export type TFontType = keyof typeof fontsMetadataMap;
+export type TFontType = keyof typeof fontMetadataMap;
 
 export interface TFontMetadata {
 	name: string;
-	family: string;
+	font: TFont;
 	category: 'sans-serif' | 'serif' | 'system';
 	googleFont: string | null;
 }

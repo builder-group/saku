@@ -1,4 +1,4 @@
-export * from './fonts-metadata';
+export * from './font-metadata';
 export * from './node-metadata';
 export * from './settings-metadata';
 export * from './social-icon';

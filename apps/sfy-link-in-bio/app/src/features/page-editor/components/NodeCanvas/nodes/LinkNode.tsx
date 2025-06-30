@@ -1,7 +1,7 @@
 import { useCombinedCompute } from 'feature-react';
 import React from 'react';
-import { resolveNode, TNodeState, TPageEditor } from '../../../lib';
-import { TLinkNode, TPageNode, TWithResolvedStyles } from '../../../types';
+import { resolveLinkNode, TNodeState, TPageEditor } from '../../../lib';
+import { TLinkNode, TResolvedLinkNode } from '../../../types';
 import { StaticLinkNode } from './static';
 
 export const LinkNode = React.forwardRef<HTMLDivElement, TLinkNodeProps>((props, ref) => {
@@ -9,8 +9,8 @@ export const LinkNode = React.forwardRef<HTMLDivElement, TLinkNodeProps>((props,
 
 	const node = useCombinedCompute(
 		[editor.getRootNode(), nodeState],
-		([pageNodeValue, nodeValue]): TWithResolvedStyles<TLinkNode> => {
-			return resolveNode(nodeValue, pageNodeValue as unknown as TPageNode);
+		([pageNodeValue, nodeValue]): TResolvedLinkNode => {
+			return resolveLinkNode(nodeValue, editor.assetsMap, pageNodeValue?.style.children);
 		}
 	);
 

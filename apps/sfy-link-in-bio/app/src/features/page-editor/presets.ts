@@ -6,30 +6,54 @@ export const kangarooPreset: TSite = {
 	id: shortId(),
 	assets: [
 		{
-			id: 'font-inter',
+			hash: 'inter-400-normal',
 			type: 'font',
 			contentType: 'font/woff2',
-			content: {
+			storage: {
 				type: 'url',
 				url: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap'
+			},
+			font: {
+				family: 'Inter',
+				weight: 400,
+				style: 'normal'
 			}
 		},
 		{
-			id: 'font-playfairDisplay',
+			hash: 'playfair-400-normal',
 			type: 'font',
 			contentType: 'font/woff2',
-			content: {
+			storage: {
 				type: 'url',
 				url: 'https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap'
+			},
+			font: {
+				family: 'Playfair Display',
+				weight: 400,
+				style: 'normal'
 			}
 		},
 		{
-			id: 'font-lora',
+			hash: 'lora-400-normal',
 			type: 'font',
 			contentType: 'font/woff2',
-			content: {
+			storage: {
 				type: 'url',
 				url: 'https://fonts.googleapis.com/css2?family=Lora:wght@400;700&display=swap'
+			},
+			font: {
+				family: 'Lora',
+				weight: 400,
+				style: 'normal'
+			}
+		},
+		{
+			hash: 'kangaroo-profile-image',
+			type: 'image',
+			contentType: 'image/gif',
+			storage: {
+				type: 'url',
+				url: 'https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3dzkxMTZlNGp4N3dhdGJwNWtuMWJtd3JpNHl2bTNzemE3YjFvaTFieCZlcD12MV9naWZzX3JlbGF0ZWQmY3Q9Zw/so8KXAphERsre/giphy.gif'
 			}
 		}
 	],
@@ -42,11 +66,7 @@ export const kangarooPreset: TSite = {
 				type: 'about',
 				name: 'Kangaroo Joey',
 				bio: '🦘 Hopping through life one bounce at a time! Australian wildlife enthusiast and adventure seeker.',
-				media: {
-					type: 'image',
-					url: 'https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3dzkxMTZlNGp4N3dhdGJwNWtuMWJtd3JpNHl2bTNzemE3YjFvaTFieCZlcD12MV9naWZzX3JlbGF0ZWQmY3Q9Zw/so8KXAphERsre/giphy.gif',
-					altText: 'Cute kangaroo GIF'
-				},
+				profilePicture: 'kangaroo-profile-image',
 				socialLinks: [
 					{
 						id: shortId(),
@@ -64,8 +84,12 @@ export const kangarooPreset: TSite = {
 				style: {
 					padding: 'inherit',
 					margin: 'inherit',
-					backgroundColor: '#FFFFFF', // Card style with white background
-					fontFamily: '"Playfair Display", serif',
+					backgroundColor: '#FFFFFF',
+					font: {
+						family: 'Playfair Display',
+						weight: 400,
+						style: 'normal'
+					},
 					fontSize: 'inherit',
 					textColor: 'inherit',
 					textAlign: 'center',
@@ -79,21 +103,17 @@ export const kangarooPreset: TSite = {
 				url: 'https://australianwildlife.org',
 				meta: {
 					title: 'Australian Wildlife Foundation',
-					description: 'Supporting native Australian animals and their habitats',
-					faviconUrl:
-						'https://www.australianwildlife.org/themes/custom/dvb/assets/images/favicon.svg'
+					description: 'Supporting native Australian animals and their habitats'
 				},
 				fetchedMeta: {
 					title: 'Australian Wildlife Foundation',
-					description: 'Supporting native Australian animals and their habitats',
-					faviconUrl:
-						'https://www.australianwildlife.org/themes/custom/dvb/assets/images/favicon.svg'
+					description: 'Supporting native Australian animals and their habitats'
 				},
 				style: {
 					padding: 'inherit',
 					margin: 'inherit',
-					backgroundColor: '#8FBC8F', // Forest green
-					fontFamily: 'inherit',
+					backgroundColor: '#8FBC8F',
+					font: 'inherit',
 					fontSize: 'inherit',
 					textColor: '#FFFFFF',
 					textAlign: 'center',
@@ -112,10 +132,10 @@ export const kangarooPreset: TSite = {
 				style: {
 					padding: 20,
 					margin: 'inherit',
-					backgroundColor: '#D2B48C', // Tan
-					fontFamily: 'inherit',
+					backgroundColor: '#D2B48C',
+					font: 'inherit',
 					fontSize: 'inherit',
-					textColor: '#8B4513', // Saddle brown
+					textColor: '#8B4513',
 					textAlign: 'center',
 					borderRadius: 16,
 					shadow: true
@@ -126,13 +146,13 @@ export const kangarooPreset: TSite = {
 				type: 'media',
 				media: {
 					type: 'image',
-					url: 'https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3dzkxMTZlNGp4N3dhdGJwNWtuMWJtd3JpNHl2bTNzemE3YjFvaTFieCZlcD12MV9naWZzX3JlbGF0ZWQmY3Q9Zw/so8KXAphERsre/giphy.gif',
+					hash: 'kangaroo-profile-image',
 					altText: 'Adorable kangaroo hopping around'
 				},
 				style: {
 					padding: 16,
 					margin: 'inherit',
-					backgroundColor: '#F0F8FF', // Light blue background for media card
+					backgroundColor: '#F0F8FF',
 					borderRadius: 24,
 					shadow: true
 				}
@@ -145,10 +165,14 @@ export const kangarooPreset: TSite = {
 				style: {
 					padding: 16,
 					margin: 'inherit',
-					backgroundColor: '#F5FFFA', // Mint cream background for text card
-					fontFamily: 'Lora, serif',
+					backgroundColor: '#F5FFFA',
+					font: {
+						family: 'Lora',
+						weight: 400,
+						style: 'normal'
+					},
 					fontSize: 14,
-					textColor: '#556B2F', // Dark olive green
+					textColor: '#556B2F',
 					textAlign: 'left',
 					borderRadius: 12,
 					shadow: 'inherit'
@@ -165,8 +189,8 @@ export const kangarooPreset: TSite = {
 				style: {
 					padding: 'inherit',
 					margin: 'inherit',
-					backgroundColor: '#DEB887', // Burlywood
-					fontFamily: 'inherit',
+					backgroundColor: '#DEB887',
+					font: 'inherit',
 					fontSize: 'inherit',
 					textColor: '#8B4513',
 					textAlign: 'center',
@@ -176,15 +200,19 @@ export const kangarooPreset: TSite = {
 			}
 		],
 		style: {
-			backgroundColor: '#F5F5DC', // Beige - natural sandy color (page background)
+			backgroundColor: '#F5F5DC',
 			children: {
-				backgroundColor: '#FFFFFF', // White card backgrounds for children by default
+				backgroundColor: '#FFFFFF',
 				spacing: 16,
 				padding: 16,
 				margin: 8,
-				fontFamily: 'Inter',
+				font: {
+					family: 'Inter',
+					weight: 400,
+					style: 'normal'
+				},
 				fontSize: 16,
-				textColor: '#2F4F4F', // Dark slate gray
+				textColor: '#2F4F4F',
 				textAlign: 'center',
 				borderRadius: 12,
 				shadow: true

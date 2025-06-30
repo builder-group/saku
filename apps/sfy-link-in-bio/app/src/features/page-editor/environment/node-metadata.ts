@@ -17,7 +17,11 @@ export const nodeMetadataMap = {
 					spacing: 16,
 					padding: 16,
 					margin: 8,
-					fontFamily: 'Inter',
+					font: {
+						family: 'Inter',
+						weight: 400,
+						style: 'normal'
+					},
 					fontSize: 16,
 					textColor: '#2F4F4F',
 					textAlign: 'center' as const,
@@ -27,16 +31,6 @@ export const nodeMetadataMap = {
 			}
 		}
 	} satisfies TNodeMetadata<'page'>,
-	site: {
-		type: 'site',
-		icon: LayoutSectionIcon,
-		label: 'Site',
-		hidden: true,
-		defaultData: {
-			version: 'v0.0.1' as const,
-			children: []
-		}
-	} satisfies TNodeMetadata<'site'>,
 	about: {
 		type: 'about',
 		icon: LayoutSectionIcon,
@@ -45,15 +39,11 @@ export const nodeMetadataMap = {
 		defaultData: {
 			name: 'Your Name',
 			bio: 'Tell us about yourself',
-			media: {
-				type: 'image' as const,
-				url: ''
-			},
 			style: {
 				padding: 'inherit' as const,
 				margin: 'inherit' as const,
 				backgroundColor: 'inherit' as const,
-				fontFamily: 'inherit' as const,
+				font: 'inherit' as const,
 				fontSize: 'inherit' as const,
 				textColor: 'inherit' as const,
 				textAlign: 'inherit' as const,
@@ -76,7 +66,7 @@ export const nodeMetadataMap = {
 				padding: 'inherit' as const,
 				margin: 'inherit' as const,
 				backgroundColor: 'inherit' as const,
-				fontFamily: 'inherit' as const,
+				font: 'inherit' as const,
 				fontSize: 'inherit' as const,
 				textColor: 'inherit' as const,
 				textAlign: 'inherit' as const,
@@ -93,7 +83,7 @@ export const nodeMetadataMap = {
 		defaultData: {
 			media: {
 				type: 'image' as const,
-				url: ''
+				hash: ''
 			},
 			style: {
 				padding: 'inherit' as const,
@@ -115,7 +105,7 @@ export const nodeMetadataMap = {
 				padding: 'inherit' as const,
 				margin: 'inherit' as const,
 				backgroundColor: 'inherit' as const,
-				fontFamily: 'inherit' as const,
+				font: 'inherit' as const,
 				fontSize: 'inherit' as const,
 				textColor: 'inherit' as const,
 				textAlign: 'inherit' as const,

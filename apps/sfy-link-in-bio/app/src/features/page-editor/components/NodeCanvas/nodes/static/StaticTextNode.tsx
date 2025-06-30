@@ -12,7 +12,7 @@ export const StaticTextNode = React.forwardRef<HTMLDivElement, TStaticTextNodePr
 					<h3
 						className="m-0 mb-2 font-medium break-words"
 						style={{
-							fontFamily: node.style.fontFamily,
+							fontFamily: node.style.font?.family,
 							fontSize:
 								typeof node.style.fontSize === 'number' ? node.style.fontSize * 1.25 : undefined, // Scale up for title
 							color: node.style.textColor,
@@ -25,7 +25,7 @@ export const StaticTextNode = React.forwardRef<HTMLDivElement, TStaticTextNodePr
 				<p
 					className="m-0 leading-relaxed break-words"
 					style={{
-						fontFamily: node.style.fontFamily,
+						fontFamily: node.style.font?.family,
 						fontSize: node.style.fontSize,
 						color: node.style.textColor,
 						textAlign: node.style.textAlign

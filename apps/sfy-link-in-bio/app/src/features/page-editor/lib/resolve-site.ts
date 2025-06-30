@@ -1,159 +1,210 @@
 import {
 	TAboutNode,
+	TAsset,
+	TAssetHash,
 	TLinkNode,
 	TMediaNode,
 	TNode,
 	TPageNode,
+	TResolvedAboutNode,
+	TResolvedLinkNode,
+	TResolvedMediaNode,
 	TResolvedPageNode,
 	TResolvedSite,
+	TResolvedTextNode,
 	TSite,
 	TStyleReference,
-	TTextNode,
-	TWithResolvedStyles
-} from '@/features/page-editor';
-
-/**
- * Resolve a style reference using inheritance fallback
- */
-function resolveStyle<T>(value: TStyleReference<T>, fallback?: T): T | undefined {
-	if (value === 'inherit') return fallback;
-	return value ?? fallback;
-}
+	TTextNode
+} from '../types';
 
 /**
  * Resolve a complete site with all nodes and style inheritance
  */
 export function resolveSite(site: TSite): TResolvedSite {
+	const assetsMap = site.assets.reduce(
+		(map, asset) => {
+			map[asset.hash] = asset;
+			return map;
+		},
+		{} as Record<TAssetHash, TAsset>
+	);
+
 	return {
 		...site,
-		root: resolvePageNode(site.root)
+		root: resolvePageNode(site.root, assetsMap)
 	};
 }
 
-/**
- * Resolve a page node and all its children
- */
-export function resolvePageNode(pageNode: TPageNode): TResolvedPageNode {
+export function resolvePageNode(
+	node: TPageNode,
+	assetsMap: Record<TAssetHash, TAsset>
+): TResolvedPageNode {
 	return {
-		...pageNode,
+		...node,
 		style: {
-			backgroundColor: resolveStyle(pageNode.style.backgroundColor),
-			children: pageNode.style.children
+			backgroundColor: resolveStyle(node.style.backgroundColor),
+			children: node.style.children
 				? {
-						backgroundColor: resolveStyle(pageNode.style.children.backgroundColor),
-						spacing: resolveStyle(pageNode.style.children.spacing),
-						padding: resolveStyle(pageNode.style.children.padding),
-						margin: resolveStyle(pageNode.style.children.margin),
-						fontFamily: resolveStyle(pageNode.style.children.fontFamily),
-						fontSize: resolveStyle(pageNode.style.children.fontSize),
-						textColor: resolveStyle(pageNode.style.children.textColor),
-						textAlign: resolveStyle(pageNode.style.children.textAlign),
-						borderRadius: resolveStyle(pageNode.style.children.borderRadius),
-						shadow: resolveStyle(pageNode.style.children.shadow)
+						backgroundColor: resolveStyle(node.style.children.backgroundColor),
+						spacing: resolveStyle(node.style.children.spacing),
+						padding: resolveStyle(node.style.children.padding),
+						margin: resolveStyle(node.style.children.margin),
+						font: resolveStyle(node.style.children.font),
+						fontSize: resolveStyle(node.style.children.fontSize),
+						textColor: resolveStyle(node.style.children.textColor),
+						textAlign: resolveStyle(node.style.children.textAlign),
+						borderRadius: resolveStyle(node.style.children.borderRadius),
+						shadow: resolveStyle(node.style.children.shadow)
 					}
 				: undefined
 		},
-		children: pageNode.children.map((child) => resolveNode(child, pageNode))
+		children: node.children.map((child) => resolveChildNode(child, assetsMap, node.style.children))
 	};
 }
 
-/**
- * Generic node resolver with typesafe return types
- */
-export function resolveNode<T extends TNode>(
-	node: T,
-	pageNode?: TPageNode
-): TWithResolvedStyles<T> {
-	const defaults = pageNode?.style.children;
+export function resolveAboutNode(
+	node: TAboutNode,
+	assetsMap: Record<TAssetHash, TAsset>,
+	defaultStyles?: TPageNode['style']['children']
+): TResolvedAboutNode {
+	return {
+		...node,
+		profilePicture: resolveAsset(node.profilePicture, assetsMap),
+		style: {
+			padding: resolveStyle(node.style.padding, defaultStyles?.padding),
+			margin: resolveStyle(node.style.margin, defaultStyles?.margin),
+			backgroundColor: resolveStyle(node.style.backgroundColor, defaultStyles?.backgroundColor),
+			font: resolveStyle(node.style.font, defaultStyles?.font),
+			fontSize: resolveStyle(node.style.fontSize, defaultStyles?.fontSize),
+			textColor: resolveStyle(node.style.textColor, defaultStyles?.textColor),
+			textAlign: resolveStyle(node.style.textAlign, defaultStyles?.textAlign),
+			borderRadius: resolveStyle(node.style.borderRadius, defaultStyles?.borderRadius),
+			shadow: resolveStyle(node.style.shadow, defaultStyles?.shadow)
+		}
+	};
+}
 
+export function resolveLinkNode(
+	node: TLinkNode,
+	assetsMap: Record<TAssetHash, TAsset>,
+	defaultStyles?: TPageNode['style']['children']
+): TResolvedLinkNode {
+	return {
+		...node,
+		meta: {
+			title: node.meta.title,
+			description: node.meta.description,
+			favicon: resolveAsset(node.meta.favicon, assetsMap)
+		},
+		fetchedMeta: node.fetchedMeta
+			? {
+					title: node.fetchedMeta.title,
+					description: node.fetchedMeta.description,
+					favicon: resolveAsset(node.fetchedMeta.favicon, assetsMap)
+				}
+			: undefined,
+		style: {
+			padding: resolveStyle(node.style.padding, defaultStyles?.padding),
+			margin: resolveStyle(node.style.margin, defaultStyles?.margin),
+			backgroundColor: resolveStyle(node.style.backgroundColor, defaultStyles?.backgroundColor),
+			font: resolveStyle(node.style.font, defaultStyles?.font),
+			fontSize: resolveStyle(node.style.fontSize, defaultStyles?.fontSize),
+			textColor: resolveStyle(node.style.textColor, defaultStyles?.textColor),
+			textAlign: resolveStyle(node.style.textAlign, defaultStyles?.textAlign),
+			borderRadius: resolveStyle(node.style.borderRadius, defaultStyles?.borderRadius),
+			shadow: resolveStyle(node.style.shadow, defaultStyles?.shadow)
+		}
+	};
+}
+
+export function resolveMediaNode(
+	node: TMediaNode,
+	assetsMap: Record<TAssetHash, TAsset>,
+	defaultStyles?: TPageNode['style']['children']
+): TResolvedMediaNode {
+	return {
+		...node,
+		media: {
+			type: node.media.type,
+			url: resolveAsset(node.media.hash, assetsMap) ?? '',
+			altText: node.media.altText
+		},
+		style: {
+			padding: resolveStyle(node.style.padding, defaultStyles?.padding),
+			margin: resolveStyle(node.style.margin, defaultStyles?.margin),
+			backgroundColor: resolveStyle(node.style.backgroundColor, defaultStyles?.backgroundColor),
+			borderRadius: resolveStyle(node.style.borderRadius, defaultStyles?.borderRadius),
+			shadow: resolveStyle(node.style.shadow, defaultStyles?.shadow)
+		}
+	};
+}
+
+export function resolveTextNode(
+	node: TTextNode,
+	defaultStyles?: TPageNode['style']['children']
+): TResolvedTextNode {
+	return {
+		...node,
+		style: {
+			padding: resolveStyle(node.style.padding, defaultStyles?.padding),
+			margin: resolveStyle(node.style.margin, defaultStyles?.margin),
+			backgroundColor: resolveStyle(node.style.backgroundColor, defaultStyles?.backgroundColor),
+			font: resolveStyle(node.style.font, defaultStyles?.font),
+			fontSize: resolveStyle(node.style.fontSize, defaultStyles?.fontSize),
+			textColor: resolveStyle(node.style.textColor, defaultStyles?.textColor),
+			textAlign: resolveStyle(node.style.textAlign, defaultStyles?.textAlign),
+			borderRadius: resolveStyle(node.style.borderRadius, defaultStyles?.borderRadius),
+			shadow: resolveStyle(node.style.shadow, defaultStyles?.shadow)
+		}
+	};
+}
+
+function resolveChildNode(
+	node: TNode,
+	assetsMap: Record<TAssetHash, TAsset>,
+	defaultStyles?: TPageNode['style']['children']
+) {
 	switch (node.type) {
-		case 'page':
-			return resolvePageNode(node as TPageNode) as TWithResolvedStyles<T>;
-
-		case 'about': {
-			const aboutNode = node as TAboutNode;
-			return {
-				...aboutNode,
-				style: {
-					padding: resolveStyle(aboutNode.style.padding, defaults?.padding),
-					margin: resolveStyle(aboutNode.style.margin, defaults?.margin),
-					backgroundColor: resolveStyle(aboutNode.style.backgroundColor, defaults?.backgroundColor),
-					fontFamily: resolveStyle(aboutNode.style.fontFamily, defaults?.fontFamily),
-					fontSize: resolveStyle(aboutNode.style.fontSize, defaults?.fontSize),
-					textColor: resolveStyle(aboutNode.style.textColor, defaults?.textColor),
-					textAlign: resolveStyle(aboutNode.style.textAlign, defaults?.textAlign),
-					borderRadius: resolveStyle(aboutNode.style.borderRadius, defaults?.borderRadius),
-					shadow: resolveStyle(aboutNode.style.shadow, defaults?.shadow)
-				}
-			} as TWithResolvedStyles<T>;
-		}
-
-		case 'link': {
-			const linkNode = node as TLinkNode;
-			return {
-				...linkNode,
-				style: {
-					padding: resolveStyle(linkNode.style.padding, defaults?.padding),
-					margin: resolveStyle(linkNode.style.margin, defaults?.margin),
-					backgroundColor: resolveStyle(linkNode.style.backgroundColor, defaults?.backgroundColor),
-					fontFamily: resolveStyle(linkNode.style.fontFamily, defaults?.fontFamily),
-					fontSize: resolveStyle(linkNode.style.fontSize, defaults?.fontSize),
-					textColor: resolveStyle(linkNode.style.textColor, defaults?.textColor),
-					textAlign: resolveStyle(linkNode.style.textAlign, defaults?.textAlign),
-					borderRadius: resolveStyle(linkNode.style.borderRadius, defaults?.borderRadius),
-					shadow: resolveStyle(linkNode.style.shadow, defaults?.shadow)
-				}
-			} as TWithResolvedStyles<T>;
-		}
-
-		case 'media': {
-			const mediaNode = node as TMediaNode;
-			return {
-				...mediaNode,
-				style: {
-					padding: resolveStyle(mediaNode.style.padding, defaults?.padding),
-					margin: resolveStyle(mediaNode.style.margin, defaults?.margin),
-					backgroundColor: resolveStyle(mediaNode.style.backgroundColor, defaults?.backgroundColor),
-					borderRadius: resolveStyle(mediaNode.style.borderRadius, defaults?.borderRadius),
-					shadow: resolveStyle(mediaNode.style.shadow, defaults?.shadow)
-				}
-			} as TWithResolvedStyles<T>;
-		}
-
-		case 'text': {
-			const textNode = node as TTextNode;
-			return {
-				...textNode,
-				style: {
-					padding: resolveStyle(textNode.style.padding, defaults?.padding),
-					margin: resolveStyle(textNode.style.margin, defaults?.margin),
-					backgroundColor: resolveStyle(textNode.style.backgroundColor, defaults?.backgroundColor),
-					fontFamily: resolveStyle(textNode.style.fontFamily, defaults?.fontFamily),
-					fontSize: resolveStyle(textNode.style.fontSize, defaults?.fontSize),
-					textColor: resolveStyle(textNode.style.textColor, defaults?.textColor),
-					textAlign: resolveStyle(textNode.style.textAlign, defaults?.textAlign),
-					borderRadius: resolveStyle(textNode.style.borderRadius, defaults?.borderRadius),
-					shadow: resolveStyle(textNode.style.shadow, defaults?.shadow)
-				}
-			} as TWithResolvedStyles<T>;
-		}
-
+		case 'about':
+			return resolveAboutNode(node, assetsMap, defaultStyles);
+		case 'link':
+			return resolveLinkNode(node, assetsMap, defaultStyles);
+		case 'media':
+			return resolveMediaNode(node, assetsMap, defaultStyles);
+		case 'text':
+			return resolveTextNode(node, defaultStyles);
 		default:
 			throw new Error(`Unknown node type: ${(node as any).type}`);
 	}
 }
 
-/**
- * Extract font URLs from a site's assets for static rendering
- */
-export function extractSiteFontUrls(site: TSite): string[] {
-	return site.assets
-		.filter((asset) => asset.type === 'font' && asset.content.type === 'url')
-		.map((asset) => {
-			if (asset.content.type === 'url') {
-				return asset.content.url;
-			}
-			return '';
-		})
-		.filter(Boolean);
+function resolveAsset(
+	hash: TAssetHash | undefined,
+	assetsMap: Record<TAssetHash, TAsset>
+): string | undefined {
+	if (!hash) {
+		return undefined;
+	}
+
+	const asset = assetsMap[hash];
+	if (!asset) {
+		return undefined;
+	}
+
+	if (asset.storage.type === 'url') {
+		return asset.storage.url;
+	}
+
+	if (asset.storage.type === 'embedded') {
+		return asset.storage.data; // base64
+	}
+
+	return undefined;
+}
+
+export function resolveStyle<T>(value: TStyleReference<T>, fallback?: T): T | undefined {
+	if (value === 'inherit') {
+		return fallback;
+	}
+	return value;
 }

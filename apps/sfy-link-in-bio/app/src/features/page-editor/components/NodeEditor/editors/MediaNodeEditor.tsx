@@ -10,9 +10,20 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 	const { nodeState, editor } = props;
 	const node = useFeatureState(nodeState);
 
-	const [imageError, setImageError] = React.useState<string | null>(null);
-
 	const parentNodeState = React.useMemo(() => editor.getRootNode(), [editor]);
+
+	const [mediaImageError, setImageError] = React.useState<string | null>(null);
+	const mediaImage = React.useMemo(() => {
+		const asset = editor.getImageAsset(node.media?.hash);
+		if (asset == null || asset.storage.type !== 'url') {
+			return undefined;
+		}
+
+		return {
+			url: asset.storage.url,
+			fileName: asset.fileName
+		};
+	}, [node.media, editor]);
 
 	// =========================================================================
 	// Events
@@ -22,24 +33,27 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 		(value: string) => {
 			nodeState.set((prev) => ({
 				...prev,
-				media: { type: value as 'image', url: '', altText: undefined }
+				media: { type: value as 'image', hash: '', altText: undefined }
 			}));
 		},
 		[nodeState]
 	);
 
-	const handleImageChange = React.useCallback(
+	const handleMediaImageChange = React.useCallback(
 		(value: TImageUploadOnChangeImage) => {
-			nodeState.set((prev) => ({
-				...prev,
-				media: {
-					type: 'image',
-					url: value.url,
-					altText: value.fileName ? `Image: ${value.fileName}` : undefined
-				}
-			}));
+			const hash = editor.registerImage(value.url, value.fileName);
+			if (hash != null) {
+				nodeState.set((prev) => ({
+					...prev,
+					media: {
+						type: 'image',
+						hash,
+						altText: value.fileName ? `Image: ${value.fileName}` : undefined
+					}
+				}));
+			}
 		},
-		[nodeState]
+		[nodeState, editor]
 	);
 
 	// =========================================================================
@@ -73,12 +87,12 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 								Image
 							</Text>
 							<ImageUploadField
-								image={node.media}
-								onChange={handleImageChange}
+								image={mediaImage}
+								onChange={handleMediaImageChange}
 								onError={setImageError}
 							/>
-							{imageError != null && (
-								<InlineError message={imageError} fieldID="media-upload-error" />
+							{mediaImageError != null && (
+								<InlineError message={mediaImageError} fieldID="media-upload-error" />
 							)}
 						</div>
 					)}

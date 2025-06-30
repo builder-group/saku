@@ -1,10 +1,10 @@
 import { shortId } from '@blgc/utils';
-import { Text, TextField } from '@shopify/polaris';
+import { InlineError, Text, TextField } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react/state';
 import React from 'react';
 import { AccordionSection, ImageUploadField, type TImageUploadOnChangeImage } from '@/components';
 import {
-	fontOptions,
+	fontMetadata,
 	generateSocialUrl,
 	socialMetadataMap,
 	TSocialMetadata
@@ -19,9 +19,27 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 
 	const parentNodeState = React.useMemo(() => editor.getRootNode(), [editor]);
 
-	// =========================================================================
-	// Computed Values
-	// =========================================================================
+	const fontOptions = React.useMemo(() => {
+		return fontMetadata.map((font) => ({
+			label: font.name,
+			value: font.font.family
+		}));
+	}, []);
+
+	const [profilePictureImageError, setProfilePictureImageError] = React.useState<string | null>(
+		null
+	);
+	const profilePictureImage = React.useMemo(() => {
+		const asset = editor.getImageAsset(node.profilePicture);
+		if (asset == null || asset.storage.type !== 'url') {
+			return undefined;
+		}
+
+		return {
+			url: asset.storage.url,
+			fileName: asset.fileName
+		};
+	}, [node.profilePicture, editor]);
 
 	const socialHandles = React.useMemo(() => {
 		const handles: Record<TSocialLink['provider'], string> = Object.keys(socialMetadataMap).reduce(
@@ -61,18 +79,17 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 		[nodeState]
 	);
 
-	const handleMediaChange = React.useCallback(
+	const handleProfilePictureChange = React.useCallback(
 		(image: TImageUploadOnChangeImage) => {
-			nodeState.set((prev) => ({
-				...prev,
-				media: {
-					type: 'image',
-					url: image.url,
-					altText: image.fileName ? `Image: ${image.fileName}` : undefined
-				}
-			}));
+			const hash = editor.registerImage(image.url, image.fileName);
+			if (hash != null) {
+				nodeState.set((prev) => ({
+					...prev,
+					profilePicture: hash
+				}));
+			}
 		},
-		[nodeState]
+		[nodeState, editor]
 	);
 
 	const handleSocialHandleChange = React.useCallback(
@@ -150,7 +167,17 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 						<Text as="span" variant="bodySm" tone="subdued">
 							Avatar
 						</Text>
-						<ImageUploadField image={node.media} onChange={handleMediaChange} />
+						<ImageUploadField
+							image={profilePictureImage}
+							onChange={handleProfilePictureChange}
+							onError={setProfilePictureImageError}
+						/>
+						{profilePictureImageError != null && (
+							<InlineError
+								message={profilePictureImageError}
+								fieldID="profile-picture-upload-error"
+							/>
+						)}
 					</div>
 				</div>
 			</AccordionSection>
@@ -231,15 +258,22 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 						label="Font Family"
 						node={nodeState}
 						parentNode={parentNodeState}
-						nodeValueMapper={(value) => value.style.fontFamily}
+						nodeValueMapper={(value) =>
+							value.style.font === 'inherit' ? 'inherit' : value.style.font?.family
+						}
 						nodeValueSetter={(node, value) => {
-							node._v.style.fontFamily = value;
-							node._notify();
-							if (value !== 'inherit' && value != null) {
-								editor.applyFont(value);
+							if (value === 'inherit') {
+								node._v.style.font = 'inherit' as const;
+								node._notify();
+							} else if (value != null) {
+								const font = editor.registerFontFamily(value);
+								if (font != null) {
+									node._v.style.font = font;
+									node._notify();
+								}
 							}
 						}}
-						parentValueMapper={(parent) => parent.style.children?.fontFamily}
+						parentValueMapper={(parent) => parent.style.children?.font?.family}
 						options={fontOptions}
 					/>
 

@@ -5,9 +5,13 @@ export const StaticLinkNode = React.forwardRef<HTMLDivElement, TStaticLinkNodePr
 	(props, ref) => {
 		const { node, ...divProps } = props;
 
-		const title = node.meta?.title;
-		const description = node.meta?.description;
-		const faviconUrl = node.meta?.faviconUrl;
+		const { title, description, faviconUrl } = React.useMemo(() => {
+			return {
+				title: node.meta?.title ?? node.fetchedMeta?.title,
+				description: node.meta?.description ?? node.fetchedMeta?.description,
+				faviconUrl: node.meta?.favicon ?? node.fetchedMeta?.favicon
+			};
+		}, [node]);
 
 		return (
 			<div {...divProps} ref={ref} className="w-full max-w-md">
@@ -17,7 +21,7 @@ export const StaticLinkNode = React.forwardRef<HTMLDivElement, TStaticLinkNodePr
 						padding: node.style.padding,
 						margin: node.style.margin,
 						backgroundColor: node.style.backgroundColor,
-						fontFamily: node.style.fontFamily,
+						fontFamily: node.style.font?.family,
 						fontSize: node.style.fontSize,
 						color: node.style.textColor,
 						textAlign: node.style.textAlign,

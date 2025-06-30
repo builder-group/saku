@@ -3,10 +3,22 @@ import { ShopifyGlobal } from '@shopify/app-bridge-react';
 import { createState, TState } from 'feature-state';
 import React from 'react';
 import { coreApiClient } from '@/environment';
-import { fontFamilyToMetadata, TSettingsSectionType, TViewType } from '../environment';
-import { TAsset, TAssetId, TFontAsset, TNode, TNodeId, TPageNode, TSite } from '../types';
+import { getFontMetadataByFamily, TSettingsSectionType, TViewType } from '../environment';
+import {
+	TAsset,
+	TAssetHash,
+	TFont,
+	TFontAsset,
+	TImageAsset,
+	TNode,
+	TNodeId,
+	TPageNode,
+	TSite
+} from '../types';
 import { createNodeState, TNodeState } from './create-node-state';
 import { flattenNode, TFlattenedNode, unflattenNode } from './flatten-node';
+import { getFontHash } from './get-font-hash';
+import { getNodeAssetHashes } from './get-node-asset-hashes';
 
 export function createPageEditor(site: TSite, shopify: ShopifyGlobal): TPageEditor {
 	return {
@@ -20,7 +32,13 @@ export function createPageEditor(site: TSite, shopify: ShopifyGlobal): TPageEdit
 		rootNodeId: site.root.id,
 		selectedNodeId: createState<TNodeId | null>(null),
 
-		assets: Object.fromEntries(site.assets.map((asset) => [asset.id, asset])),
+		assetsMap: site.assets.reduce(
+			(map, asset) => {
+				map[asset.hash] = asset;
+				return map;
+			},
+			{} as Record<TAssetHash, TAsset>
+		),
 
 		activeView: createState('layers' as TViewType),
 		activeSettingsSection: createState<TSettingsSectionType | null>('appearance'),
@@ -245,114 +263,145 @@ export function createPageEditor(site: TSite, shopify: ShopifyGlobal): TPageEdit
 			this.selectedNodeId.set(null);
 		},
 
-		applyFont(fontFamily) {
-			// Get metadata from font family
-			const fontMetadata = fontFamilyToMetadata[fontFamily];
+		registerFontFamily(fontFamily) {
+			const fontMetadata = getFontMetadataByFamily(fontFamily);
 			if (fontMetadata == null) {
-				return;
+				return null;
 			}
 
-			// Skip system fonts
+			// Skip non-google fonts (like system fonts)
 			if (fontMetadata.googleFont == null) {
-				return;
+				return null;
 			}
 
-			const assetId = `font-${fontMetadata.key}`;
-			if (this.assets[assetId] != null) {
-				return;
+			// Check if font already registered
+			const hash = getFontHash(fontMetadata.font);
+			if (this.assetsMap[hash] != null) {
+				return fontMetadata.font as TFont;
 			}
 
-			// Create new font asset
-			const fontAsset: TFontAsset = {
-				id: assetId,
+			// Register the font
+			this.assetsMap[hash] = {
 				type: 'font',
 				contentType: 'font/woff2',
-				content: {
+				storage: {
 					type: 'url',
 					url: `https://fonts.googleapis.com/css2?family=${fontMetadata.googleFont}&display=swap`
 				},
-				fileName: `${fontMetadata.name}.woff2`
+				font: fontMetadata.font,
+				hash
 			};
 
-			// Add to assets
-			this.assets[assetId] = fontAsset;
+			this.loadFont(hash);
 
-			// Load the font
-			this.loadFont(assetId);
+			return fontMetadata.font as TFont;
 		},
 
-		loadFont(assetId) {
-			const asset = this.assets[assetId];
-			if (asset == null || asset.type !== 'font' || asset.content.type !== 'url') {
+		getImageAsset(hash) {
+			if (hash == null) {
+				return null;
+			}
+
+			const asset = this.assetsMap[hash];
+			if (asset == null || asset.type !== 'image') {
+				return null;
+			}
+
+			return asset;
+		},
+
+		registerImage(url, fileName, dimensions) {
+			const hash = shortId(); // TODO: use proper content hash
+
+			// Check if image already registered
+			if (this.assetsMap[hash] != null) {
+				return hash;
+			}
+
+			// Register the image
+			this.assetsMap[hash] = {
+				type: 'image',
+				contentType: 'image/jpeg', // TODO:
+				storage: {
+					type: 'url',
+					url
+				},
+				dimensions,
+				fileName,
+				hash
+			};
+
+			return hash;
+		},
+
+		getFontAsset(hash) {
+			if (hash == null) {
+				return null;
+			}
+
+			const asset = this.assetsMap[hash];
+			if (asset == null || asset.type !== 'font') {
+				return null;
+			}
+
+			return asset;
+		},
+		loadFont(fontOrHash) {
+			const hash = typeof fontOrHash === 'string' ? fontOrHash : getFontHash(fontOrHash);
+			const asset = this.assetsMap[hash];
+			if (asset == null || asset.type !== 'font' || asset.storage.type !== 'url') {
 				return;
 			}
 
 			// Check if already loaded in DOM
-			if (document.querySelector(`link[data-font-id="${assetId}"]`) != null) {
+			if (document.querySelector(`link[data-font-id="${hash}"]`) != null) {
 				return;
 			}
 
 			// Create and inject CSS link tag
 			const link = document.createElement('link');
 			link.rel = 'stylesheet';
-			link.href = asset.content.url;
-			link.setAttribute('data-font-id', assetId);
+			link.href = asset.storage.url;
+			link.setAttribute('data-font-id', hash);
 			document.head.appendChild(link);
 		},
 
 		loadFonts() {
-			Object.keys(this.assets).forEach((assetId) => {
-				const asset = this.assets[assetId];
+			Object.keys(this.assetsMap).forEach((hash) => {
+				const asset = this.assetsMap[hash];
 				if (asset?.type === 'font') {
-					this.loadFont(assetId);
+					this.loadFont(hash);
 				}
 			});
 		},
 
-		getUsedAssetIds() {
-			const usedAssets = new Set<string>();
-
-			// Scan all nodes for asset references
-			Object.values(this.nodeMap).forEach((nodeState) => {
+		cleanupAssets() {
+			// Get all asset hashes used by nodes
+			const usedHashes = Object.values(this.nodeMap).reduce((acc, nodeState) => {
 				const node = nodeState._v;
-
-				// Check if node has style with fontFamily
-				if ('style' in node && node.style && typeof node.style === 'object') {
-					const style = node.style as { fontFamily?: string };
-					if (style.fontFamily != null && typeof style.fontFamily === 'string') {
-						// Map font family to asset ID
-						const fontMetadata = fontFamilyToMetadata[style.fontFamily];
-						if (fontMetadata?.googleFont) {
-							usedAssets.add(`font-${fontMetadata.key}`);
-						}
-					}
-				}
-			});
-
-			return usedAssets;
-		},
-
-		cleanupUnusedAssets() {
-			const usedAssets = this.getUsedAssetIds();
-			const assetsToRemove: string[] = [];
+				const hashes = getNodeAssetHashes(node);
+				hashes.forEach((hash) => acc.add(hash));
+				return acc;
+			}, new Set<TAssetHash>());
 
 			// Find unused assets
-			Object.keys(this.assets).forEach((assetId) => {
-				if (!usedAssets.has(assetId)) {
-					assetsToRemove.push(assetId);
+			const assetsToRemove: TAssetHash[] = [];
+			Object.keys(this.assetsMap).forEach((hash) => {
+				if (!usedHashes.has(hash)) {
+					assetsToRemove.push(hash);
 				}
 			});
 
 			// Remove unused assets
-			assetsToRemove.forEach((assetId) => {
-				const asset = this.assets[assetId];
+			assetsToRemove.forEach((hash) => {
+				const asset = this.assetsMap[hash];
 
 				// Remove from assets map
-				delete this.assets[assetId];
+				delete this.assetsMap[hash];
 
 				// Remove from DOM if it's a font
 				if (asset?.type === 'font') {
-					const linkElement = document.querySelector(`link[data-font-id="${assetId}"]`);
+					const linkElement = document.querySelector(`link[data-font-id="${hash}"]`);
 					if (linkElement != null) {
 						linkElement.remove();
 					}
@@ -366,7 +415,7 @@ export function createPageEditor(site: TSite, shopify: ShopifyGlobal): TPageEdit
 			const idToken = await this.shopify.idToken();
 
 			// Clean up unused assets before saving
-			this.cleanupUnusedAssets();
+			this.cleanupAssets();
 
 			const result = await coreApiClient.put(
 				'/v1/shopify/site/{siteId}/content',
@@ -390,7 +439,7 @@ export function createPageEditor(site: TSite, shopify: ShopifyGlobal): TPageEdit
 			return {
 				...this.site,
 				root: unflattenNode(this.nodeMap, this.rootNodeId, (state) => state._v) as TPageNode,
-				assets: Object.values(this.assets)
+				assets: Object.values(this.assetsMap)
 			} satisfies TSite;
 		}
 	};
@@ -404,7 +453,7 @@ export interface TPageEditor {
 	selectedNodeId: TState<TNodeId | null, []>;
 	nodeMap: Record<TNodeId, TNodeState>;
 
-	assets: Record<TAssetId, TAsset>;
+	assetsMap: Record<TAssetHash, TAsset>;
 
 	activeView: TState<TViewType, []>;
 	activeSettingsSection: TState<TSettingsSectionType | null, []>;
@@ -435,12 +484,19 @@ export interface TPageEditor {
 	selectNode: (nodeId: TNodeId) => void;
 	unselectNode: () => void;
 
-	applyFont: (fontFamily: string) => void;
-	loadFont: (assetId: string) => void;
+	getFontAsset: (hash: TAssetHash | undefined | null) => TFontAsset | null;
+	registerFontFamily: (fontFamily: string) => TFont | null;
+	loadFont: (fontOrHash: TFont | string) => void;
 	loadFonts: () => void;
 
-	getUsedAssetIds: () => Set<string>;
-	cleanupUnusedAssets: () => string[];
+	getImageAsset: (hash: TAssetHash | undefined | null) => TImageAsset | null;
+	registerImage: (
+		url: string,
+		fileName?: string,
+		dimensions?: { width: number; height: number }
+	) => TAssetHash | null;
+
+	cleanupAssets: () => TAssetHash[];
 
 	save: () => Promise<boolean>;
 

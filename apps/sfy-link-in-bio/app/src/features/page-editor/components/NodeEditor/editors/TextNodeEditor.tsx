@@ -2,7 +2,7 @@ import { Text, TextField } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react/state';
 import React from 'react';
 import { AccordionSection } from '@/components';
-import { fontOptions } from '../../../environment';
+import { fontMetadata } from '../../../environment';
 import { TTextNode } from '../../../types';
 import { SelectStyleField, TextStyleField, ToggleStyleField } from '../fields';
 import { TNodeEditorComponentProps } from '../nodeEditorRegistry';
@@ -12,6 +12,13 @@ export const TextNodeEditor: React.FC<TNodeEditorComponentProps<TTextNode>> = (p
 	const node = useFeatureState(nodeState);
 
 	const parentNodeState = React.useMemo(() => editor.getRootNode(), [editor]);
+
+	const fontOptions = React.useMemo(() => {
+		return fontMetadata.map((font) => ({
+			label: font.name,
+			value: font.font.family
+		}));
+	}, []);
 
 	// =========================================================================
 	// Events
@@ -129,15 +136,22 @@ export const TextNodeEditor: React.FC<TNodeEditorComponentProps<TTextNode>> = (p
 						label="Font Family"
 						node={nodeState}
 						parentNode={parentNodeState}
-						nodeValueMapper={(value) => value.style.fontFamily}
+						nodeValueMapper={(value) =>
+							value.style.font === 'inherit' ? 'inherit' : value.style.font?.family
+						}
 						nodeValueSetter={(node, value) => {
-							node._v.style.fontFamily = value;
-							node._notify();
-							if (value !== 'inherit' && value != null) {
-								editor.applyFont(value);
+							if (value === 'inherit') {
+								node._v.style.font = 'inherit' as const;
+								node._notify();
+							} else if (value != null) {
+								const font = editor.registerFontFamily(value);
+								if (font != null) {
+									node._v.style.font = font;
+									node._notify();
+								}
 							}
 						}}
-						parentValueMapper={(parent) => parent.style.children?.fontFamily}
+						parentValueMapper={(parent) => parent.style.children?.font?.family}
 						options={fontOptions}
 					/>
 

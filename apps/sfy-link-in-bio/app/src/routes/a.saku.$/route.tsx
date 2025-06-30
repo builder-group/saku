@@ -3,7 +3,7 @@ import { AppProxyProvider } from '@shopify/shopify-app-remix/react';
 import React from 'react';
 import { shopify, shopifyConfig } from '@/environment/.server';
 import {
-	extractSiteFontUrls,
+	getSiteFontUrls,
 	kangarooPreset,
 	resolveSite,
 	StaticNodeCanvas,
@@ -20,7 +20,7 @@ const Page: React.FC = () => {
 	}
 
 	const { appUrl, site } = result.value;
-	const fontUrls = extractSiteFontUrls(site);
+	const fontUrls = getSiteFontUrls(site);
 
 	return (
 		<AppProxyProvider appUrl={appUrl}>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { TPageNode } from '../../../../types';
+import { TResolvedPageNode } from '../../../../types';
 import { StaticNode } from '../../StaticNode';
 
 export const StaticPageNode: React.FC<TStaticPageNodeProps> = (props) => {
@@ -12,7 +12,7 @@ export const StaticPageNode: React.FC<TStaticPageNodeProps> = (props) => {
 					className="flex w-full flex-col p-6"
 					style={{
 						gap: node.style.children?.spacing,
-						fontFamily: node.style.children?.fontFamily,
+						fontFamily: node.style.children?.font?.family,
 						fontSize: node.style.children?.fontSize,
 						color: node.style.children?.textColor
 					}}
@@ -31,5 +31,5 @@ export const StaticPageNode: React.FC<TStaticPageNodeProps> = (props) => {
 };
 
 interface TStaticPageNodeProps {
-	node: TPageNode;
+	node: TResolvedPageNode;
 }

@@ -5,6 +5,10 @@ export interface TSite {
 	assets: TAsset[];
 }
 
+export interface TResolvedSite extends Omit<TSite, 'root'> {
+	root: TResolvedPageNode;
+}
+
 // =========================================================================
 // Node
 // =========================================================================
@@ -12,6 +16,13 @@ export interface TSite {
 export type TNodeId = string;
 export type TNode = TPageNode | TAboutNode | TLinkNode | TMediaNode | TTextNode;
 export type TNodeType = TNode['type'];
+
+export type TResolvedNode =
+	| TResolvedPageNode
+	| TResolvedAboutNode
+	| TResolvedLinkNode
+	| TResolvedMediaNode
+	| TResolvedTextNode;
 
 export interface TBaseNode {
 	id: TNodeId;
@@ -27,25 +38,30 @@ export interface TPageNode extends TBaseNode {
 		backgroundColor?: string;
 		// Child defaults (inherited by children)
 		children?: {
-			backgroundColor?: string; // Default background for child cards
-			spacing?: number; // Gap between child items
-			padding?: number; // Default padding for child items
-			margin?: number; // Default margin for child items
-			fontFamily?: string; // Default font family for children
-			fontSize?: number; // Default font size for children
-			textColor?: string; // Default text color for children
-			textAlign?: 'left' | 'center' | 'right'; // Default text alignment for children
-			borderRadius?: number; // Default border radius for children
-			shadow?: boolean; // Default shadow for children
+			backgroundColor?: string;
+			spacing?: number;
+			padding?: number;
+			margin?: number;
+			font?: TFont;
+			fontSize?: number;
+			textColor?: string;
+			textAlign?: 'left' | 'center' | 'right';
+			borderRadius?: number;
+			shadow?: boolean;
 		};
 	};
+}
+
+export interface TResolvedPageNode extends Omit<TPageNode, 'style' | 'children'> {
+	style: TResolveStyle<TPageNode['style']>;
+	children: TResolvedNode[];
 }
 
 export interface TAboutNode extends TBaseNode {
 	type: 'about';
 	name: string;
 	bio?: string;
-	media: TMedia;
+	profilePicture?: TAssetHash;
 	socialLinks?: TSocialLink[];
 	style: {
 		// Layout
@@ -54,7 +70,7 @@ export interface TAboutNode extends TBaseNode {
 		// Background
 		backgroundColor?: TStyleReference<string>;
 		// Typography
-		fontFamily?: TStyleReference<string>;
+		font?: TStyleReference<TFont>;
 		fontSize?: TStyleReference<number>;
 		textColor?: TStyleReference<string>;
 		textAlign?: TStyleReference<'left' | 'center' | 'right'>;
@@ -63,7 +79,9 @@ export interface TAboutNode extends TBaseNode {
 		shadow?: TStyleReference<boolean>;
 	};
 }
-export interface TResolvedAboutNode extends Omit<TAboutNode, 'style'> {
+
+export interface TResolvedAboutNode extends Omit<TAboutNode, 'style' | 'profilePicture'> {
+	profilePicture?: string; // Resolved URL or base64
 	style: TResolveStyle<TAboutNode['style']>;
 }
 
@@ -79,7 +97,7 @@ export interface TLinkNode extends TBaseNode {
 		// Background
 		backgroundColor?: TStyleReference<string>;
 		// Typography
-		fontFamily?: TStyleReference<string>;
+		font?: TStyleReference<TFont>;
 		fontSize?: TStyleReference<number>;
 		textColor?: TStyleReference<string>;
 		textAlign?: TStyleReference<'left' | 'center' | 'right'>;
@@ -88,7 +106,10 @@ export interface TLinkNode extends TBaseNode {
 		shadow?: TStyleReference<boolean>;
 	};
 }
-export interface TResolvedLinkNode extends Omit<TLinkNode, 'style'> {
+
+export interface TResolvedLinkNode extends Omit<TLinkNode, 'style' | 'meta'> {
+	meta: TResolvedLinkMeta;
+	fetchedMeta?: TResolvedLinkMeta;
 	style: TResolveStyle<TLinkNode['style']>;
 }
 
@@ -106,7 +127,9 @@ export interface TMediaNode extends TBaseNode {
 		shadow?: TStyleReference<boolean>;
 	};
 }
-export interface TResolvedMediaNode extends Omit<TMediaNode, 'style'> {
+
+export interface TResolvedMediaNode extends Omit<TMediaNode, 'style' | 'media'> {
+	media: TResolvedMedia;
 	style: TResolveStyle<TMediaNode['style']>;
 }
 
@@ -121,7 +144,7 @@ export interface TTextNode extends TBaseNode {
 		// Background
 		backgroundColor?: TStyleReference<string>;
 		// Typography
-		fontFamily?: TStyleReference<string>;
+		font?: TStyleReference<TFont>;
 		fontSize?: TStyleReference<number>;
 		textColor?: TStyleReference<string>;
 		textAlign?: TStyleReference<'left' | 'center' | 'right'>;
@@ -130,6 +153,7 @@ export interface TTextNode extends TBaseNode {
 		shadow?: TStyleReference<boolean>;
 	};
 }
+
 export interface TResolvedTextNode extends Omit<TTextNode, 'style'> {
 	style: TResolveStyle<TTextNode['style']>;
 }
@@ -138,42 +162,67 @@ export interface TResolvedTextNode extends Omit<TTextNode, 'style'> {
 // Asset
 // =========================================================================
 
-export type TAssetId = string;
+export type TAssetHash = string; // SHA-256 hash as hex string
 
 export interface TBaseAsset {
-	id: TAssetId;
+	hash: TAssetHash; // Content hash
 	type: string;
 	contentType: string; // MIME type
-	content: { type: 'url'; url: string } | { type: 'binary'; data: string }; // base64 for binary
 	fileName?: string;
+	size?: number; // bytes
+	storage: { type: 'url'; url: string } | { type: 'embedded'; data: string }; // base64
 }
 
 export interface TFontAsset extends TBaseAsset {
 	type: 'font';
 	contentType: 'font/woff' | 'font/woff2' | 'font/ttf' | 'font/otf';
+	font: TFont;
 }
 
 export interface TImageAsset extends TBaseAsset {
 	type: 'image';
 	contentType: 'image/png' | 'image/jpeg' | 'image/gif' | 'image/webp' | 'image/svg+xml';
+	dimensions?: { width: number; height: number };
 }
 
 export type TAsset = TFontAsset | TImageAsset;
 
 // =========================================================================
-// Utils (simplified)
+// Utils
 // =========================================================================
+
+export interface TFont {
+	family: string;
+	weight?: number;
+	style?: 'normal' | 'italic';
+}
 
 export interface TImageMedia {
 	type: 'image';
-	url: string;
+	hash: TAssetHash;
 	altText?: string;
 }
+
+export type TMedia = TImageMedia;
+
+export interface TResolvedImageMedia {
+	type: 'image';
+	url: string; // Resolved URL or base64
+	altText?: string;
+}
+
+export type TResolvedMedia = TResolvedImageMedia;
 
 export interface TLinkMeta {
 	title?: string;
 	description?: string;
-	faviconUrl?: string;
+	favicon?: TAssetHash;
+}
+
+export interface TResolvedLinkMeta {
+	title?: string;
+	description?: string;
+	favicon?: string; // Resolved URL or base64
 }
 
 export type TStyleReference<T> = 'inherit' | T;
@@ -181,8 +230,6 @@ export type TStyleReference<T> = 'inherit' | T;
 export type TResolveStyle<T> = {
 	[K in keyof T]: T[K] extends TStyleReference<infer U> ? U : T[K];
 };
-
-export type TMedia = TImageMedia;
 
 export interface TSocialLink {
 	id: string;
@@ -202,33 +249,3 @@ export interface TSocialLink {
 	handle: string;
 	url?: string;
 }
-
-export interface TResolvedPageNode extends Omit<TPageNode, 'style' | 'children'> {
-	style: TResolveStyle<TPageNode['style']>;
-	children: TResolvedNode[];
-}
-
-// Generic resolved node type
-export type TResolvedNode =
-	| TResolvedPageNode
-	| TResolvedAboutNode
-	| TResolvedLinkNode
-	| TResolvedMediaNode
-	| TResolvedTextNode;
-
-export interface TResolvedSite extends Omit<TSite, 'root'> {
-	root: TResolvedPageNode;
-}
-
-// Helper type for components that need resolved styles
-export type TWithResolvedStyles<T extends TNode> = T extends TPageNode
-	? TResolvedPageNode
-	: T extends TAboutNode
-		? TResolvedAboutNode
-		: T extends TLinkNode
-			? TResolvedLinkNode
-			: T extends TMediaNode
-				? TResolvedMediaNode
-				: T extends TTextNode
-					? TResolvedTextNode
-					: never;

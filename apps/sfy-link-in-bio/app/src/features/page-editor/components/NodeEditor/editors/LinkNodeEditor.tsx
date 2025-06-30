@@ -1,10 +1,10 @@
 import { useAppBridge } from '@shopify/app-bridge-react';
-import { Button, Text, TextField } from '@shopify/polaris';
+import { Button, InlineError, Text, TextField } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react/state';
 import React from 'react';
 import { AccordionSection, ImageUploadField, TImageUploadOnChangeImage } from '@/components';
 import { coreApiClient } from '@/environment';
-import { fontOptions } from '../../../environment';
+import { fontMetadata } from '../../../environment';
 import { TLinkNode } from '../../../types';
 import { SelectStyleField, TextStyleField, ToggleStyleField } from '../fields';
 import { TNodeEditorComponentProps } from '../nodeEditorRegistry';
@@ -18,6 +18,26 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 
 	const parentNodeState = React.useMemo(() => editor.getRootNode(), [editor]);
 
+	const fontOptions = React.useMemo(() => {
+		return fontMetadata.map((font) => ({
+			label: font.name,
+			value: font.font.family
+		}));
+	}, []);
+
+	const [faviconImageError, setFaviconImageError] = React.useState<string | null>(null);
+	const faviconImage = React.useMemo(() => {
+		const asset = editor.getImageAsset(node.meta?.favicon);
+		if (asset == null || asset.storage.type !== 'url') {
+			return undefined;
+		}
+
+		return {
+			url: asset.storage.url,
+			fileName: asset.fileName
+		};
+	}, [node.meta?.favicon, editor]);
+
 	const { canResetTitle, canResetFavicon } = React.useMemo(() => {
 		return {
 			canResetTitle:
@@ -25,9 +45,9 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 				node.fetchedMeta?.title != null &&
 				node.meta.title !== node.fetchedMeta.title,
 			canResetFavicon:
-				node.meta?.faviconUrl != null &&
-				node.fetchedMeta?.faviconUrl != null &&
-				node.meta.faviconUrl !== node.fetchedMeta.faviconUrl
+				node.meta?.favicon != null &&
+				node.fetchedMeta?.favicon != null &&
+				node.meta.favicon !== node.fetchedMeta.favicon
 		};
 	}, [node.meta, node.fetchedMeta]);
 
@@ -61,15 +81,19 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 			}
 
 			const metadata = result.value.data;
+			const faviconHash = metadata.icons?.favicon
+				? (editor.registerImage(metadata.icons.favicon, 'favicon') ?? undefined)
+				: undefined;
+
 			nodeState.set((prev) => ({
 				...prev,
 				fetchedMeta: {
 					title: metadata.title,
-					faviconUrl: metadata.icons?.favicon
+					favicon: faviconHash
 				},
 				meta: {
 					title: metadata.title,
-					faviconUrl: metadata.icons?.favicon
+					favicon: faviconHash
 				}
 			}));
 		} finally {
@@ -94,20 +118,21 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 		}));
 	}, [nodeState]);
 
-	const handleFaviconChange = React.useCallback(
+	const handleFaviconImageChange = React.useCallback(
 		(image: TImageUploadOnChangeImage) => {
+			const hash = editor.registerImage(image.url, image.fileName ?? 'favicon');
 			nodeState.set((prev) => ({
 				...prev,
-				meta: { ...prev.meta, faviconUrl: image.url }
+				meta: { ...prev.meta, favicon: hash ?? undefined }
 			}));
 		},
-		[nodeState]
+		[nodeState, editor]
 	);
 
 	const handleFaviconReset = React.useCallback(() => {
 		nodeState.set((prev) => ({
 			...prev,
-			meta: { ...prev.meta, faviconUrl: prev.fetchedMeta?.faviconUrl }
+			meta: { ...prev.meta, favicon: prev.fetchedMeta?.favicon }
 		}));
 	}, [nodeState]);
 
@@ -183,16 +208,13 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 							)}
 						</div>
 						<ImageUploadField
-							image={
-								node.meta?.faviconUrl != null
-									? {
-											url: node.meta.faviconUrl,
-											fileName: 'Favicon'
-										}
-									: undefined
-							}
-							onChange={handleFaviconChange}
+							image={faviconImage}
+							onChange={handleFaviconImageChange}
+							onError={setFaviconImageError}
 						/>
+						{faviconImageError != null && (
+							<InlineError message={faviconImageError} fieldID="favicon-upload-error" />
+						)}
 					</div>
 				</div>
 			</AccordionSection>
@@ -247,15 +269,22 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 						label="Font Family"
 						node={nodeState}
 						parentNode={parentNodeState}
-						nodeValueMapper={(value) => value.style.fontFamily}
+						nodeValueMapper={(value) =>
+							value.style.font === 'inherit' ? 'inherit' : value.style.font?.family
+						}
 						nodeValueSetter={(node, value) => {
-							node._v.style.fontFamily = value;
-							node._notify();
-							if (value !== 'inherit' && value != null) {
-								editor.applyFont(value);
+							if (value === 'inherit') {
+								node._v.style.font = 'inherit' as const;
+								node._notify();
+							} else if (value != null) {
+								const font = editor.registerFontFamily(value);
+								if (font != null) {
+									node._v.style.font = font;
+									node._notify();
+								}
 							}
 						}}
-						parentValueMapper={(parent) => parent.style.children?.fontFamily}
+						parentValueMapper={(parent) => parent.style.children?.font?.family}
 						options={fontOptions}
 					/>
 

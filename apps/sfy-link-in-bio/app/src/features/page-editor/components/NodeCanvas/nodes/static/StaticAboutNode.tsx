@@ -10,11 +10,11 @@ export const StaticAboutNode = React.forwardRef<HTMLDivElement, TStaticAboutNode
 		const content = (
 			<div className="flex flex-col items-center gap-4">
 				{/* Avatar */}
-				{node.media?.url ? (
+				{node.profilePicture ? (
 					<div className="h-20 w-20 overflow-hidden rounded-full">
 						<img
-							src={node.media.url}
-							alt={node.media.altText || node.name}
+							src={node.profilePicture}
+							alt={node.name}
 							className="h-full w-full object-cover"
 							draggable={false}
 						/>
@@ -29,7 +29,7 @@ export const StaticAboutNode = React.forwardRef<HTMLDivElement, TStaticAboutNode
 				<h1
 					className="text-xl font-semibold"
 					style={{
-						fontFamily: node.style.fontFamily,
+						fontFamily: node.style.font?.family,
 						fontSize:
 							typeof node.style.fontSize === 'number' ? node.style.fontSize * 1.25 : undefined, // Scale up for title
 						color: node.style.textColor,
@@ -44,7 +44,7 @@ export const StaticAboutNode = React.forwardRef<HTMLDivElement, TStaticAboutNode
 					<p
 						className="text-center leading-relaxed"
 						style={{
-							fontFamily: node.style.fontFamily,
+							fontFamily: node.style.font?.family,
 							fontSize: node.style.fontSize,
 							color: node.style.textColor,
 							textAlign: node.style.textAlign

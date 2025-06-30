@@ -3,7 +3,7 @@
 client_id = "4c9dc129e68b889d9a351e14d8e36a02"
 name = "Saku Link In Bio (Local)"
 handle = "saku-link-in-bio-local"
-application_url = "https://latex-zoo-arrive-download.trycloudflare.com"
+application_url = "https://radios-initial-spoke-requested.trycloudflare.com"
 embedded = true
 
 [build]
@@ -38,10 +38,10 @@ uri = "/api/v1/webhook/shopify/shop/redact"
 scopes = "write_files,write_online_store_navigation,read_online_store_navigation"
 
 [auth]
-redirect_urls = ["https://latex-zoo-arrive-download.trycloudflare.com/auth/callback", "https://latex-zoo-arrive-download.trycloudflare.com/auth/shopify/callback", "https://latex-zoo-arrive-download.trycloudflare.com/api/auth/callback"]
+redirect_urls = ["https://radios-initial-spoke-requested.trycloudflare.com/auth/callback", "https://radios-initial-spoke-requested.trycloudflare.com/auth/shopify/callback", "https://radios-initial-spoke-requested.trycloudflare.com/api/auth/callback"]
 
 [app_proxy]
-url = "https://latex-zoo-arrive-download.trycloudflare.com/a/saku-local"
+url = "https://radios-initial-spoke-requested.trycloudflare.com/a/saku-local"
 subpath = "saku-local"
 prefix = "a"
 

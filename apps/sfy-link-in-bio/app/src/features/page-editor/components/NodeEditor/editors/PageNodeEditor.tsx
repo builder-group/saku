@@ -1,12 +1,19 @@
 import React from 'react';
 import { AccordionSection } from '@/components';
-import { fontOptions } from '../../../environment';
+import { fontMetadata } from '../../../environment';
 import { TPageNode } from '../../../types';
 import { SelectStyleField, TextStyleField, ToggleStyleField } from '../fields';
 import { TNodeEditorComponentProps } from '../nodeEditorRegistry';
 
 export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TPageNode>> = (props) => {
 	const { nodeState, editor } = props;
+
+	const fontOptions = React.useMemo(() => {
+		return fontMetadata.map((font) => ({
+			label: font.name,
+			value: font.font.family
+		}));
+	}, []);
 
 	// =========================================================================
 	// UI
@@ -100,13 +107,13 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TPageNode>> = (p
 					<SelectStyleField
 						label="Font Family"
 						node={nodeState}
-						nodeValueMapper={(value) => value.style.children?.fontFamily}
+						nodeValueMapper={(value) => value.style.children?.font?.family}
 						nodeValueSetter={(node, value) => {
-							if (node._v.style.children != null) {
-								node._v.style.children.fontFamily = value;
-								node._notify();
-								if (value != null) {
-									editor.applyFont(value);
+							if (node._v.style.children != null && value != null) {
+								const font = editor.registerFontFamily(value);
+								if (font != null) {
+									node._v.style.children.font = font;
+									node._notify();
 								}
 							}
 						}}
