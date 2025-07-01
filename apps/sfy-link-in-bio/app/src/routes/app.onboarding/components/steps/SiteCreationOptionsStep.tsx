@@ -13,8 +13,11 @@ export const SiteCreationOptionsStep: React.FC<TSiteCreationOptionsStepProps> = 
 			? [currentStep.selectedOption]
 			: ['create-new'];
 	}, [onboardingContext]);
-
 	const [selected, setSelected] = React.useState<TSiteCreationOption[]>(initialSelection);
+
+	// =========================================================================
+	// Events
+	// =========================================================================
 
 	const handleChange = React.useCallback((selectedOptions: string[]) => {
 		const option = selectedOptions[0] as TSiteCreationOption;
@@ -23,22 +26,14 @@ export const SiteCreationOptionsStep: React.FC<TSiteCreationOptionsStepProps> = 
 
 	const handleContinue = React.useCallback(() => {
 		const option = selected[0];
-
-		// Store the selection by setting the current step with the selection
-		onboardingContext.stepr.current.set({
-			type: 'site-creation-options',
-			selectedOption: option
-		});
-
-		switch (option) {
-			case 'create-new':
-				onboardingContext.stepr.goTo({ type: 'templates' });
-				break;
-			case 'import-linkpop':
-				onboardingContext.stepr.goTo({ type: 'import-linkpop' });
-				break;
+		if (option != null) {
+			onboardingContext.continueFromSiteCreationOptions(option);
 		}
 	}, [onboardingContext, selected]);
+
+	// =========================================================================
+	// UI
+	// =========================================================================
 
 	return (
 		<StepLayout
@@ -55,7 +50,7 @@ export const SiteCreationOptionsStep: React.FC<TSiteCreationOptionsStepProps> = 
 						label: 'Create new site from scratch'
 					},
 					{
-						value: 'import-linkpop',
+						value: 'linkpop',
 						label: 'Import from LinkPop'
 					}
 				]}

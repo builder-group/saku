@@ -1,6 +1,89 @@
 import { shortId } from '@blgc/utils';
 import { TSite } from './types';
 
+export const blankPreset: TSite = {
+	version: 'v0.0.1',
+	id: shortId(),
+	assets: [
+		{
+			hash: 'inter-400-normal',
+			type: 'font',
+			contentType: 'font/woff2',
+			storage: {
+				type: 'url',
+				url: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap'
+			},
+			font: {
+				family: 'Inter',
+				weight: 400,
+				style: 'normal'
+			}
+		}
+	],
+	root: {
+		type: 'page',
+		id: shortId(),
+		children: [
+			{
+				id: shortId(),
+				type: 'about',
+				name: 'Your Name',
+				bio: 'Welcome to your bio page! Add a short description about yourself or your brand.',
+				style: {
+					padding: 'inherit',
+					margin: 'inherit',
+					backgroundColor: '#FFFFFF',
+					font: 'inherit',
+					fontSize: 'inherit',
+					textColor: 'inherit',
+					textAlign: 'center',
+					borderRadius: 'inherit',
+					shadow: 'inherit'
+				}
+			},
+			{
+				id: shortId(),
+				type: 'link',
+				url: 'https://your-store.myshopify.com',
+				meta: {
+					title: 'Visit My Store',
+					description: 'Shop our latest products'
+				},
+				style: {
+					padding: 'inherit',
+					margin: 'inherit',
+					backgroundColor: '#F3F3F3',
+					font: 'inherit',
+					fontSize: 'inherit',
+					textColor: 'inherit',
+					textAlign: 'center',
+					borderRadius: 'inherit',
+					shadow: 'inherit'
+				}
+			}
+		],
+		style: {
+			backgroundColor: '#FFFFFF',
+			children: {
+				backgroundColor: '#FFFFFF',
+				spacing: 16,
+				padding: 16,
+				margin: 8,
+				font: {
+					family: 'Inter',
+					weight: 400,
+					style: 'normal'
+				},
+				fontSize: 16,
+				textColor: '#2F4F4F',
+				textAlign: 'center',
+				borderRadius: 12,
+				shadow: false
+			}
+		}
+	}
+};
+
 export const kangarooPreset: TSite = {
 	version: 'v0.0.1',
 	id: shortId(),

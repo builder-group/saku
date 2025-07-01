@@ -4,62 +4,56 @@ import { LinkIcon } from '@/components';
 import type { TOnboardingContext } from '../../create-onboarding-context';
 import { StepLayout } from '../StepLayout';
 
-export const ImportLinkpopStep: React.FC<TImportLinkpopStepProps> = (props) => {
+export const LinkpopUrlStep: React.FC<TLinkpopUrlStepProps> = (props) => {
 	const { onboardingContext } = props;
 
 	const initialHandle = React.useMemo(() => {
 		const currentStep = onboardingContext.stepr.current.get();
-		return currentStep.type === 'import-linkpop' && currentStep.handle ? currentStep.handle : '';
+		return currentStep.type === 'linkpop-url' && currentStep.handle ? currentStep.handle : '';
 	}, [onboardingContext]);
-
 	const [handle, setHandle] = React.useState(initialHandle);
 
-	const handleChange = React.useCallback(
-		(e: React.ChangeEvent<HTMLInputElement>) => {
-			const value = e.target.value;
+	// =========================================================================
+	// Events
+	// =========================================================================
 
-			// Try to extract handle from full URL if pasted
-			try {
-				const url = new URL(value);
-				if (url.hostname === 'linkpop.com') {
-					const pathSegments = url.pathname.split('/').filter(Boolean);
-					const newHandle = pathSegments[0]; // First segment is the handle
-					if (newHandle) {
-						setHandle(newHandle);
-						// Store the handle in the step data
-						onboardingContext.stepr.current.set({
-							type: 'import-linkpop',
-							handle: newHandle
-						});
-						return;
-					}
+	const handleChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+		const value = e.target.value;
+
+		// Try to extract handle from full URL if pasted
+		try {
+			const url = new URL(value);
+			if (url.hostname === 'linkpop.com') {
+				const pathSegments = url.pathname.split('/').filter(Boolean);
+				const newHandle = pathSegments[0]; // First segment is the handle
+				if (newHandle) {
+					setHandle(newHandle);
+					return;
 				}
-			} catch {
-				// Not a valid URL, continue with normal input handling
 			}
+		} catch {
+			// Not a valid URL, continue with normal input handling
+		}
 
-			// Remove any leading/trailing slashes for direct input
-			const newHandle = value.replace(/^\/+|\/+$/g, '');
-			setHandle(newHandle);
-			// Store the handle in the step data
-			onboardingContext.stepr.current.set({
-				type: 'import-linkpop',
-				handle: newHandle
-			});
-		},
-		[onboardingContext]
-	);
+		// Remove any leading/trailing slashes for direct input
+		const newHandle = value.replace(/^\/+|\/+$/g, '');
+		setHandle(newHandle);
+	}, []);
 
 	const handleContinue = React.useCallback(() => {
-		if (handle.trim()) {
-			const fullUrl = `https://linkpop.com/${handle.trim()}`;
-			onboardingContext.stepr.goTo({ type: 'linkpop-preview', url: fullUrl });
+		const trimmedHandle = handle.trim();
+		if (trimmedHandle) {
+			onboardingContext.continueFromLinkpopUrl(trimmedHandle);
 		}
 	}, [onboardingContext, handle]);
 
 	const handleBack = React.useCallback(() => {
-		onboardingContext.stepr.goBack();
+		onboardingContext.goBack();
 	}, [onboardingContext]);
+
+	// =========================================================================
+	// UI
+	// =========================================================================
 
 	return (
 		<StepLayout
@@ -105,6 +99,6 @@ export const ImportLinkpopStep: React.FC<TImportLinkpopStepProps> = (props) => {
 	);
 };
 
-interface TImportLinkpopStepProps {
+interface TLinkpopUrlStepProps {
 	onboardingContext: TOnboardingContext;
 }

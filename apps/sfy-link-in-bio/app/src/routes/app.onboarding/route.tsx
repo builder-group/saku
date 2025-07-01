@@ -1,12 +1,13 @@
 import { type LoaderFunction } from '@remix-run/node';
 import { useNavigate, useSearchParams } from '@remix-run/react';
+import { useAppBridge } from '@shopify/app-bridge-react';
 import React from 'react';
 import { coreApiClient } from '@/environment';
 import { shopify } from '@/environment/.server';
 import { getSessionTokenFromRequest, redirectWithAuth } from '@/lib/.server';
 import {
-	ImportLinkpopStep,
 	LinkpopPreviewStep,
+	LinkpopUrlStep,
 	SiteCreationOptionsStep,
 	TemplatesStep,
 	WelcomeStep
@@ -20,6 +21,7 @@ import {
 export default function OnboardingRoute() {
 	const navigate = useNavigate();
 	const [searchParams] = useSearchParams();
+	const shopifyBridge = useAppBridge();
 	const stepParam = React.useMemo(
 		() => searchParams.get('step') as TOnboardingStep['type'] | null,
 		[searchParams]
@@ -27,8 +29,11 @@ export default function OnboardingRoute() {
 
 	const onboardingContext = React.useMemo<TOnboardingContext>(() => {
 		const appUrl = typeof window !== 'undefined' ? window.location.origin : '';
-		return createOnboardingContext(appUrl);
-	}, []);
+		return createOnboardingContext({
+			callbackUrl: appUrl,
+			shopify: shopifyBridge
+		});
+	}, [shopifyBridge]);
 
 	const [stepType, setStepType] = React.useState<TOnboardingStep['type']>('welcome');
 
@@ -68,8 +73,8 @@ export default function OnboardingRoute() {
 			return <WelcomeStep onboardingContext={onboardingContext} />;
 		case 'site-creation-options':
 			return <SiteCreationOptionsStep onboardingContext={onboardingContext} />;
-		case 'import-linkpop':
-			return <ImportLinkpopStep onboardingContext={onboardingContext} />;
+		case 'linkpop-url':
+			return <LinkpopUrlStep onboardingContext={onboardingContext} />;
 		case 'linkpop-preview':
 			return <LinkpopPreviewStep onboardingContext={onboardingContext} />;
 		case 'templates':
