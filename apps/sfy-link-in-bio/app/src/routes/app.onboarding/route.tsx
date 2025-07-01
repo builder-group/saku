@@ -3,13 +3,19 @@ import { useNavigate, useSearchParams } from '@remix-run/react';
 import React from 'react';
 import { coreApiClient } from '@/environment';
 import { shopify } from '@/environment/.server';
-import { getSessionTokenFromRequest, redirectWithAuth } from '@/lib/.server/shopify';
+import { getSessionTokenFromRequest, redirectWithAuth } from '@/lib/.server';
+import {
+	ImportLinkpopStep,
+	LinkpopPreviewStep,
+	SiteCreationOptionsStep,
+	TemplatesStep,
+	WelcomeStep
+} from './components';
 import {
 	createOnboardingContext,
 	type TOnboardingContext,
 	type TOnboardingStep
 } from './create-onboarding-context';
-import { LinkpopPreviewStep, LinkpopUrlStep, TemplatesStep, WelcomeStep } from './steps';
 
 export default function OnboardingRoute() {
 	const navigate = useNavigate();
@@ -60,14 +66,16 @@ export default function OnboardingRoute() {
 	switch (stepType) {
 		case 'welcome':
 			return <WelcomeStep onboardingContext={onboardingContext} />;
-		case 'linkpop-url':
-			return <LinkpopUrlStep onboardingContext={onboardingContext} />;
+		case 'site-creation-options':
+			return <SiteCreationOptionsStep onboardingContext={onboardingContext} />;
+		case 'import-linkpop':
+			return <ImportLinkpopStep onboardingContext={onboardingContext} />;
 		case 'linkpop-preview':
 			return <LinkpopPreviewStep onboardingContext={onboardingContext} />;
 		case 'templates':
 			return <TemplatesStep onboardingContext={onboardingContext} />;
 		default:
-			return <WelcomeStep onboardingContext={onboardingContext} />;
+			return null;
 	}
 }
 

@@ -17,6 +17,11 @@ export interface TOnboardingContext {
 
 export type TOnboardingStep =
 	| { type: 'welcome' }
-	| { type: 'linkpop-url' }
-	| { type: 'linkpop-preview'; url: string }
-	| { type: 'templates' };
+	| { type: 'site-creation-options'; selectedOption?: TSiteCreationOption }
+	| { type: 'import-linkpop'; handle?: string }
+	| { type: 'linkpop-preview'; url?: string }
+	| { type: 'templates'; selectedTemplate?: TTemplate };
+
+export type TSiteCreationOption = 'create-new' | 'import-linkpop';
+
+export type TTemplate = 'blank';

@@ -34,4 +34,10 @@ export {
 	SettingsIcon,
 	ViewIcon
 } from '@shopify/polaris-icons'; // https://polaris-react.shopify.com/icons
-export { Link2Icon as LinkIcon, Link2OffIcon as LinkOffIcon } from 'lucide-react'; // https://lucide.dev/icons/
+export {
+	LayoutListIcon,
+	LayoutTemplateIcon,
+	Link2Icon as LinkIcon,
+	Link2OffIcon as LinkOffIcon,
+	ScanEyeIcon
+} from 'lucide-react'; // https://lucide.dev/icons/

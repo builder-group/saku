@@ -10,7 +10,14 @@ import {
 	TextField
 } from '@shopify/polaris';
 import React from 'react';
-import { ClipboardButton, FeedbackCard, GetInTouchCard, SitePreview, ViewIcon } from '@/components';
+import {
+	ClipboardButton,
+	FeedbackCard,
+	GetInTouchCard,
+	IframeContent,
+	SitePreview,
+	ViewIcon
+} from '@/components';
 import { appConfig, shopify, shopifyConfig } from '@/environment/.server';
 import { getSessionTokenFromRequest, redirectWithAuth } from '@/lib/.server';
 import { usePageEditorModal } from '@/routes/app.modal.page-editor.$/PageEditorModal';
@@ -65,7 +72,7 @@ const Page: React.FC = () => {
 						<Card>
 							{site != null ? (
 								<>
-									<SitePreview url={site.url} />
+									<SitePreview url={site.url} content={<IframeContent url={site.url} />} />
 
 									{/* Theme List Item */}
 									<div className="mt-4 flex items-center justify-between gap-4">
