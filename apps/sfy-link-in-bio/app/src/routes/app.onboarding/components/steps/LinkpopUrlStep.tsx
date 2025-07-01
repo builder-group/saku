@@ -1,4 +1,4 @@
-import { Button } from '@shopify/polaris';
+import { Banner, Button } from '@shopify/polaris';
 import React from 'react';
 import { LinkIcon } from '@/components';
 import type { TOnboardingContext } from '../../create-onboarding-context';
@@ -12,6 +12,9 @@ export const LinkpopUrlStep: React.FC<TLinkpopUrlStepProps> = (props) => {
 		return currentStep.type === 'linkpop-url' && currentStep.handle ? currentStep.handle : '';
 	}, [onboardingContext]);
 	const [handle, setHandle] = React.useState(initialHandle);
+
+	const [isLoading, setIsLoading] = React.useState(false);
+	const [error, setError] = React.useState<string | null>(null);
 
 	// =========================================================================
 	// Events
@@ -40,10 +43,14 @@ export const LinkpopUrlStep: React.FC<TLinkpopUrlStepProps> = (props) => {
 		setHandle(newHandle);
 	}, []);
 
-	const handleContinue = React.useCallback(() => {
-		const trimmedHandle = handle.trim();
-		if (trimmedHandle) {
-			onboardingContext.continueFromLinkpopUrl(trimmedHandle);
+	const handleContinue = React.useCallback(async () => {
+		setIsLoading(true);
+		setError(null);
+
+		const result = await onboardingContext.continueFromLinkpopUrl(handle.trim());
+		if (result.isErr()) {
+			setError(result.error);
+			setIsLoading(false);
 		}
 	}, [onboardingContext, handle]);
 
@@ -80,18 +87,25 @@ export const LinkpopUrlStep: React.FC<TLinkpopUrlStepProps> = (props) => {
 				</div>
 			</div>
 
+			{error != null && (
+				<Banner tone="critical" onDismiss={() => setError(null)}>
+					{error}
+				</Banner>
+			)}
+
 			<div className="flex flex-col gap-2">
 				<Button
 					variant="primary"
 					size="large"
 					fullWidth
 					onClick={handleContinue}
-					disabled={!handle.trim()}
+					disabled={!handle.trim() || isLoading}
+					loading={isLoading}
 				>
 					Continue
 				</Button>
 
-				<Button variant="monochromePlain" onClick={handleBack}>
+				<Button variant="monochromePlain" onClick={handleBack} disabled={isLoading}>
 					Go back
 				</Button>
 			</div>

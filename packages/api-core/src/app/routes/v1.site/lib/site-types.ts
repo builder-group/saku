@@ -1,12 +1,10 @@
+// TODO: Create shared Site types (for both frontend and backend)
+
 export interface TSite {
 	version: `v0.0.1`;
 	id: string;
 	root: TPageNode;
 	assets: TAsset[];
-}
-
-export interface TResolvedSite extends Omit<TSite, 'root'> {
-	root: TResolvedPageNode;
 }
 
 // =========================================================================
@@ -16,13 +14,6 @@ export interface TResolvedSite extends Omit<TSite, 'root'> {
 export type TNodeId = string;
 export type TNode = TPageNode | TAboutNode | TLinkNode | TMediaNode | TTextNode;
 export type TNodeType = TNode['type'];
-
-export type TResolvedNode =
-	| TResolvedPageNode
-	| TResolvedAboutNode
-	| TResolvedLinkNode
-	| TResolvedMediaNode
-	| TResolvedTextNode;
 
 export interface TBaseNode {
 	id: TNodeId;
@@ -52,11 +43,6 @@ export interface TPageNode extends TBaseNode {
 	};
 }
 
-export interface TResolvedPageNode extends Omit<TPageNode, 'style' | 'children'> {
-	style: TResolveStyle<TPageNode['style']>;
-	children: TResolvedNode[];
-}
-
 export interface TAboutNode extends TBaseNode {
 	type: 'about';
 	name: string;
@@ -78,11 +64,6 @@ export interface TAboutNode extends TBaseNode {
 		borderRadius?: TStyleReference<number>;
 		shadow?: TStyleReference<boolean>;
 	};
-}
-
-export interface TResolvedAboutNode extends Omit<TAboutNode, 'style' | 'profilePicture'> {
-	profilePicture?: string; // Resolved URL or base64
-	style: TResolveStyle<TAboutNode['style']>;
 }
 
 export interface TLinkNode extends TBaseNode {
@@ -107,12 +88,6 @@ export interface TLinkNode extends TBaseNode {
 	};
 }
 
-export interface TResolvedLinkNode extends Omit<TLinkNode, 'style' | 'meta'> {
-	meta: TResolvedLinkMeta;
-	fetchedMeta?: TResolvedLinkMeta;
-	style: TResolveStyle<TLinkNode['style']>;
-}
-
 export interface TMediaNode extends TBaseNode {
 	type: 'media';
 	media: TMedia;
@@ -126,11 +101,6 @@ export interface TMediaNode extends TBaseNode {
 		borderRadius?: TStyleReference<number>;
 		shadow?: TStyleReference<boolean>;
 	};
-}
-
-export interface TResolvedMediaNode extends Omit<TMediaNode, 'style' | 'media'> {
-	media: TResolvedMedia;
-	style: TResolveStyle<TMediaNode['style']>;
 }
 
 export interface TTextNode extends TBaseNode {
@@ -152,10 +122,6 @@ export interface TTextNode extends TBaseNode {
 		borderRadius?: TStyleReference<number>;
 		shadow?: TStyleReference<boolean>;
 	};
-}
-
-export interface TResolvedTextNode extends Omit<TTextNode, 'style'> {
-	style: TResolveStyle<TTextNode['style']>;
 }
 
 // =========================================================================
@@ -205,31 +171,13 @@ export interface TImageMedia {
 
 export type TMedia = TImageMedia;
 
-export interface TResolvedImageMedia {
-	type: 'image';
-	url: string; // Resolved URL or base64
-	altText?: string;
-}
-
-export type TResolvedMedia = TResolvedImageMedia;
-
 export interface TLinkMeta {
 	title?: string;
 	description?: string;
 	favicon?: TAssetHash;
 }
 
-export interface TResolvedLinkMeta {
-	title?: string;
-	description?: string;
-	favicon?: string; // Resolved URL or base64
-}
-
 export type TStyleReference<T> = 'inherit' | T;
-
-export type TResolveStyle<T> = {
-	[K in keyof T]: T[K] extends TStyleReference<infer U> ? U : T[K];
-};
 
 export interface TSocialLink {
 	id: string;

@@ -2,7 +2,7 @@ import { useNavigate } from '@remix-run/react';
 import { Banner, Button } from '@shopify/polaris';
 import React from 'react';
 import { ScanEyeIcon, SitePreview } from '@/components';
-import { kangarooPreset, resolveSite, StaticNodeCanvas } from '@/features/page-editor';
+import { resolveSite, StaticNodeCanvas } from '@/features/page-editor';
 import type { TOnboardingContext } from '../../create-onboarding-context';
 import { StepLayout } from '../StepLayout';
 
@@ -10,9 +10,17 @@ export const LinkpopPreviewStep: React.FC<TLinkpopPreviewStepProps> = (props) =>
 	const { onboardingContext } = props;
 	const navigate = useNavigate();
 
-	const resolvedSite = React.useMemo(() => resolveSite(kangarooPreset), []);
+	const resolvedSite = React.useMemo(() => {
+		const currentStep = onboardingContext.stepr.current.get();
+		return currentStep.type === 'linkpop-preview' && currentStep.site
+			? resolveSite(currentStep.site)
+			: null;
+	}, [onboardingContext]);
+
 	const [isLoading, setIsLoading] = React.useState(false);
-	const [error, setError] = React.useState<string | null>(null);
+	const [error, setError] = React.useState<string | null>(
+		resolvedSite == null ? 'Failed to load preview' : null
+	);
 
 	// =========================================================================
 	// Events
@@ -29,9 +37,8 @@ export const LinkpopPreviewStep: React.FC<TLinkpopPreviewStepProps> = (props) =>
 			return;
 		}
 
-		// Use navigate with replace to prevent back navigation
 		navigate('/app?openEditor=true', {
-			replace: true,
+			replace: true, // To prevent back navigation
 			state: { fromOnboarding: true }
 		});
 	}, [navigate, onboardingContext]);
@@ -48,16 +55,18 @@ export const LinkpopPreviewStep: React.FC<TLinkpopPreviewStepProps> = (props) =>
 		<StepLayout
 			icon={<ScanEyeIcon className="size-4" />}
 			title="Preview Import"
-			description="Preview how your Saku site will look after importing"
+			description="Preview how your Link In Bio page will look after importing"
 			contentClassName="flex flex-col gap-6"
 		>
-			<div className="relative left-1/2 w-[640px] -translate-x-1/2">
-				<SitePreview
-					url="preview"
-					content={<StaticNodeCanvas nodes={[resolvedSite.root]} />}
-					disableUrlClick
-				/>
-			</div>
+			{resolvedSite != null && (
+				<div className="relative left-1/2 w-[640px] -translate-x-1/2">
+					<SitePreview
+						url="preview"
+						content={<StaticNodeCanvas nodes={[resolvedSite.root]} />}
+						disableUrlClick
+					/>
+				</div>
+			)}
 
 			{error != null && (
 				<Banner tone="critical" onDismiss={() => setError(null)}>

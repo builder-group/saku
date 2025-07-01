@@ -2,7 +2,6 @@ import { useNavigate } from '@remix-run/react';
 import { Banner, Button, OptionList } from '@shopify/polaris';
 import React from 'react';
 import { LayoutTemplateIcon } from '@/components';
-import { blankPreset, TSite } from '@/features/page-editor';
 import type { TOnboardingContext, TTemplate } from '../../create-onboarding-context';
 import { StepLayout } from '../StepLayout';
 
@@ -17,6 +16,7 @@ export const TemplatesStep: React.FC<TTemplatesStepProps> = (props) => {
 			: ['blank'];
 	}, [onboardingContext]);
 	const [selected, setSelected] = React.useState<TTemplate[]>(initialSelection);
+
 	const [isLoading, setIsLoading] = React.useState(false);
 	const [error, setError] = React.useState<string | null>(null);
 
@@ -31,36 +31,25 @@ export const TemplatesStep: React.FC<TTemplatesStepProps> = (props) => {
 	}, []);
 
 	const handleContinue = React.useCallback(async () => {
-		const template = selected[0];
-
-		// Store the selection
-		onboardingContext.stepr.current.set({
-			type: 'templates',
-			selectedTemplate: template
-		});
-
 		setIsLoading(true);
 		setError(null);
 
-		let preset: TSite;
-		switch (template) {
-			case 'blank':
-				preset = blankPreset;
-				break;
-			default:
-				preset = blankPreset;
+		const selectedTemplate = selected[0];
+		if (selectedTemplate == null) {
+			setError('Please select a template');
+			setIsLoading(false);
+			return;
 		}
 
-		const result = await onboardingContext.continueFromTemplates(preset);
+		const result = await onboardingContext.continueFromTemplates(selectedTemplate);
 		if (result.isErr()) {
 			setError(result.error);
 			setIsLoading(false);
 			return;
 		}
 
-		// Use navigate with replace to prevent back navigation
 		navigate('/app?openEditor=true', {
-			replace: true,
+			replace: true, // To prevent back navigation
 			state: { fromOnboarding: true }
 		});
 	}, [onboardingContext, selected, navigate]);

@@ -1,7 +1,7 @@
 import { Err, Ok, shortId, type TResult } from '@blgc/utils';
 import type { ShopifyGlobal } from '@shopify/app-bridge-types';
 import { coreApiClient } from '@/environment';
-import type { TSite } from '@/features/page-editor';
+import { blankPreset, type TSite } from '@/features/page-editor';
 import { createStepr, type TStepr } from '@/lib/ui';
 
 export function createOnboardingContext(
@@ -19,7 +19,7 @@ export function createOnboardingContext(
 			this.stepr.goTo({ type: 'site-creation-options' });
 		},
 
-		continueFromSiteCreationOptions(option: TSiteCreationOption) {
+		continueFromSiteCreationOptions(option) {
 			// Store the selection
 			this.stepr.current.set({
 				type: 'site-creation-options',
@@ -36,33 +36,79 @@ export function createOnboardingContext(
 			}
 		},
 
-		continueFromLinkpopUrl(handle: string) {
-			// Store the handle
+		async continueFromLinkpopUrl(handle) {
 			this.stepr.current.set({
 				type: 'linkpop-url',
 				handle
 			});
 
 			const fullUrl = `https://linkpop.com/${handle.trim()}`;
-			this.stepr.goTo({ type: 'linkpop-preview', url: fullUrl });
+			const idToken = await this.shopify.idToken();
+
+			const result = await coreApiClient.get('/v1/site/parse/external', {
+				queryParams: {
+					url: fullUrl
+				},
+				headers: {
+					Authorization: `Bearer ${idToken}`
+				}
+			});
+			if (result.isErr()) {
+				return Err('Failed to parse your LinkPop page. Please try again.');
+			}
+
+			this.stepr.goTo({
+				type: 'linkpop-preview',
+				url: fullUrl,
+				site: result.value.data.data as unknown as TSite
+			});
+
+			return Ok(undefined);
 		},
 
-		async continueFromLinkpopPreview(): Promise<TResult<void, string>> {
-			// TODO: Import the actual LinkPop site
-			// For now, use blank preset as placeholder
+		async continueFromLinkpopPreview() {
 			const currentStep = this.stepr.current.get();
-			if (currentStep.type !== 'linkpop-preview') {
+			if (currentStep.type !== 'linkpop-preview' || currentStep.site == null) {
 				return Err('Invalid step');
 			}
 
-			// TODO: Fetch and parse LinkPop content
-			// const linkpopSite = await fetchLinkpopSite(currentStep.url);
-			// return this.continueToEditor(linkpopSite);
+			const idToken = await this.shopify.idToken();
 
-			return Err('LinkPop import not yet implemented');
+			const createResult = await coreApiClient.post(
+				'/v1/shopify/site',
+				{
+					handle: 'bio',
+					displayName: 'My Bio Page',
+					content: currentStep.site as any
+				},
+				{
+					headers: {
+						Authorization: `Bearer ${idToken}`
+					}
+				}
+			);
+			if (createResult.isErr()) {
+				return Err('Failed to create your bio page. Please try again.');
+			}
+
+			return Ok(undefined);
 		},
 
-		async continueFromTemplates(preset: TSite): Promise<TResult<void, string>> {
+		async continueFromTemplates(selectedTemplate) {
+			this.stepr.current.set({
+				type: 'templates',
+				selectedTemplate
+			});
+
+			let preset: TSite;
+			switch (selectedTemplate) {
+				case 'blank':
+					preset = blankPreset;
+					break;
+				default:
+					preset = blankPreset;
+			}
+
 			const idToken = await this.shopify.idToken();
 
 			const result = await coreApiClient.post(
@@ -100,9 +146,9 @@ export interface TOnboardingContext {
 
 	continueFromWelcome: () => void;
 	continueFromSiteCreationOptions: (option: TSiteCreationOption) => void;
-	continueFromLinkpopUrl: (handle: string) => void;
+	continueFromLinkpopUrl: (handle: string) => Promise<TResult<void, string>>;
 	continueFromLinkpopPreview: () => Promise<TResult<void, string>>;
-	continueFromTemplates: (preset: TSite) => Promise<TResult<void, string>>;
+	continueFromTemplates: (selectedTemplate: TTemplate) => Promise<TResult<void, string>>;
 	goBack: () => void;
 }
 
@@ -115,7 +161,7 @@ export type TOnboardingStep =
 	| { type: 'welcome' }
 	| { type: 'site-creation-options'; selectedOption?: TSiteCreationOption }
 	| { type: 'linkpop-url'; handle?: string }
-	| { type: 'linkpop-preview'; url?: string }
+	| { type: 'linkpop-preview'; url?: string; site?: TSite }
 	| { type: 'templates'; selectedTemplate?: TTemplate };
 
 export type TSiteCreationOption = 'create-new' | 'linkpop';

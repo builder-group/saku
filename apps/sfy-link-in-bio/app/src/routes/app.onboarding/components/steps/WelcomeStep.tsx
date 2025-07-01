@@ -30,7 +30,7 @@ export const WelcomeStep: React.FC<TWelcomeStepProps> = (props) => {
 
 			<div className="mt-2">
 				<Text as="p" variant="bodyLg" tone="subdued" alignment="center">
-					Turn your bio link into a shoppable storefront
+					Transform your social media bio link into a sales-focused landing page
 				</Text>
 			</div>
 

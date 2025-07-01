@@ -20,6 +20,12 @@ export const CanvasPanelHeader: React.FC<TCanvasPanelHeaderProps> = (props) => {
 		setIsSaving(false);
 	}, [editor]);
 
+	const handlePreview = React.useCallback(() => {
+		editor.shopify.toast.show(
+			'Preview coming soon! For now, save your changes and visit the live site.'
+		);
+	}, [editor]);
+
 	const handleJSONExport = React.useCallback(() => {
 		const json = JSON.stringify(editor.toSite(), null, 2);
 
@@ -48,17 +54,16 @@ export const CanvasPanelHeader: React.FC<TCanvasPanelHeaderProps> = (props) => {
 		<PanelHeader className="h-12 justify-end">
 			<InlineStack gap="200" blockAlign="center">
 				<Button
-					icon={ViewIcon}
-					variant="secondary"
-					url={'todo'}
-					target="_blank"
-					accessibilityLabel="Visit your Link In Bio page"
-				/>
-				<Button
 					icon={PageDownIcon}
 					variant="secondary"
 					onClick={handleJSONExport}
 					accessibilityLabel="Export as JSON"
+				/>
+				<Button
+					icon={ViewIcon}
+					variant="secondary"
+					onClick={handlePreview}
+					accessibilityLabel="Preview your Link In Bio page"
 				/>
 				<Button variant="primary" onClick={handleSave} disabled={isSaving}>
 					{isSaving ? 'Saving...' : 'Save'}

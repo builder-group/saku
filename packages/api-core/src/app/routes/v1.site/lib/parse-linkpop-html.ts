@@ -114,7 +114,7 @@ export async function parseLinkpopHtml(html: string): Promise<TLinkPopData> {
 	};
 }
 
-interface TLinkPopData {
+export interface TLinkPopData {
 	page?: {
 		id: string;
 		bio: string;
