@@ -56,7 +56,7 @@ export const StaticAboutNode = React.forwardRef<HTMLDivElement, TStaticAboutNode
 
 				{/* Social Links */}
 				{node.socialLinks && node.socialLinks.length > 0 && (
-					<div className="flex flex-wrap justify-center gap-3">
+					<div className="flex flex-wrap justify-center gap-4">
 						{node.socialLinks.map((social) => {
 							const IconComponent = socialIconMap[social.provider];
 							if (IconComponent == null) {
@@ -69,10 +69,13 @@ export const StaticAboutNode = React.forwardRef<HTMLDivElement, TStaticAboutNode
 									href={social.url || `#${social.handle}`}
 									target="_blank"
 									rel="noopener noreferrer"
-									className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition-colors hover:bg-gray-200"
+									className="flex h-6 w-6 items-center justify-center"
+									style={{
+										color: node.style.textColor
+									}}
 									title={`${social.provider}: ${social.handle}`}
 								>
-									<IconComponent className="h-5 w-5" />
+									<IconComponent className="h-full w-full" />
 								</a>
 							);
 						})}

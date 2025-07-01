@@ -1,4 +1,5 @@
 import React from 'react';
+import { LogoIcon } from '@/components';
 import { TResolvedPageNode } from '../../../../types';
 import { StaticNode } from '../../StaticNode';
 
@@ -24,6 +25,20 @@ export const StaticPageNode: React.FC<TStaticPageNodeProps> = (props) => {
 					) : (
 						node.children.map((childNode) => <StaticNode key={childNode.id} node={childNode} />)
 					)}
+
+					{/* Watermark */}
+					<a
+						href="https://saku.so"
+						target="_blank"
+						rel="noopener noreferrer"
+						className="mx-auto mt-12 flex items-center gap-2 pb-6 text-sm no-underline invert-100 hover:opacity-75"
+						style={{
+							color: node.style.backgroundColor
+						}}
+					>
+						<LogoIcon className="h-6 w-6" />
+						<span>Powered by Saku</span>
+					</a>
 				</div>
 			</div>
 		</div>

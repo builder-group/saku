@@ -139,6 +139,9 @@ export interface TLinkPopData {
 			title: string;
 			url?: string;
 			productId?: string;
+			media?: {
+				url: string;
+			};
 		}[];
 		socialMediaAccounts?: {
 			id: string;

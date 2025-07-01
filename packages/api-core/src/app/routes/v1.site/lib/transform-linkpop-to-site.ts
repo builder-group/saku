@@ -1,13 +1,22 @@
-import { shortId } from '@blgc/utils';
+import { rgbToHex, shortId } from '@blgc/utils';
 import { AppError } from '@repo/hono-utils';
 import { getFontMetadataByFamily } from './font-metadata';
 import { getFontHash } from './get-font-hash';
 import { TLinkPopData } from './parse-linkpop-html';
-import { TAboutNode, TFontAsset, TLinkNode, TSite, TSocialLink, TTextNode } from './site-types';
+import {
+	TAboutNode,
+	TAsset,
+	TFontAsset,
+	TImageAsset,
+	TLinkNode,
+	TSite,
+	TSocialLink,
+	TTextNode
+} from './site-types';
 
 export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 	const children: (TAboutNode | TLinkNode | TTextNode)[] = [];
-	const assets: TFontAsset[] = [];
+	const assets: TAsset[] = [];
 	const page = linkpopData.page;
 
 	// Create font asset for primary font
@@ -17,24 +26,32 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 
 	// Create about node if we have profile data
 	if (page?.title != null || page?.bio != null) {
+		// Create image asset for profile picture if it exists
+		let profilePictureHash: string | undefined;
+		if (page?.media?.url != null) {
+			const imageAsset = createImageAssetFromUrl(page.media.url);
+			assets.push(imageAsset);
+			profilePictureHash = imageAsset.hash;
+		}
+
 		const aboutNode: TAboutNode = {
 			id: shortId(),
 			type: 'about',
 			name: page.title ?? 'Your Name',
 			bio: page.bio,
-			profilePicture: page.media?.url,
+			profilePicture: profilePictureHash,
 			socialLinks: transformSocialLinks(page.socialMediaAccounts ?? []),
 			visible: true,
 			style: {
 				padding: 'inherit',
 				margin: 'inherit',
-				backgroundColor: 'inherit',
+				backgroundColor: 'transparent',
 				font: 'inherit',
-				fontSize: 'inherit',
-				textColor: 'inherit',
+				fontSize: 16,
+				textColor: convertRgbaToHex(page?.themeSettings?.fontColor) ?? '#ffffff',
 				textAlign: 'inherit',
-				borderRadius: 'inherit',
-				shadow: 'inherit'
+				borderRadius: 0,
+				shadow: false
 			}
 		};
 		children.push(aboutNode);
@@ -42,8 +59,19 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 
 	// Transform links and text nodes
 	if (page?.links != null && page.links.length > 0) {
-		for (const link of page.links) {
+		// Reverse the links to match original order
+		const reversedLinks = [...page.links].reverse();
+
+		for (const link of reversedLinks) {
 			if (link.url != null) {
+				// Create favicon asset if link has media
+				let faviconHash: string | undefined;
+				if (link.media?.url != null) {
+					const faviconAsset = createImageAssetFromUrl(link.media.url);
+					assets.push(faviconAsset);
+					faviconHash = faviconAsset.hash;
+				}
+
 				// Create link node for links with URLs
 				children.push({
 					id: shortId(),
@@ -51,7 +79,8 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 					url: link.url,
 					visible: true,
 					meta: {
-						title: link.title
+						title: link.title,
+						favicon: faviconHash
 					},
 					style: {
 						padding: 'inherit',
@@ -99,22 +128,22 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 			visible: true,
 			children,
 			style: {
-				backgroundColor: page?.themeSettings?.backgroundColor ?? '#ffffff',
+				backgroundColor: convertRgbaToHex(page?.themeSettings?.backgroundColor) ?? '#ffffff',
 				children: {
-					backgroundColor: page?.themeSettings?.linkCardColor ?? '#000000',
+					backgroundColor: convertRgbaToHex(page?.themeSettings?.linkCardColor) ?? '#ffffff',
 					spacing: 16,
-					padding: 16,
-					margin: 8,
+					padding: 8,
+					margin: 0,
 					font: {
 						family: primaryFont,
 						weight: 400,
 						style: 'normal'
 					},
-					fontSize: 16,
-					textColor: page?.themeSettings?.fontColor ?? '#000000',
+					fontSize: 14,
+					textColor: convertRgbaToHex(page?.themeSettings?.linkCardFontColor) ?? '#000000',
 					textAlign: 'center',
-					borderRadius: 8,
-					shadow: false
+					borderRadius: getBorderRadiusFromShape(page?.themeSettings?.linkCardShape),
+					shadow: true
 				}
 			}
 		}
@@ -152,6 +181,7 @@ function mapSocialPlatform(platform: string): TSocialLink['provider'] | null {
 		tiktok: 'tiktok',
 		linkedin: 'linkedin',
 		facebook: 'facebook',
+		shop: 'shopify', // LinkPop uses "shop" for Shopify stores
 		shopify: 'shopify',
 		bluesky: 'bluesky',
 		discord: 'discord',
@@ -163,20 +193,20 @@ function mapSocialPlatform(platform: string): TSocialLink['provider'] | null {
 	return platformMap[platformLower] ?? null;
 }
 
-function constructSocialUrl(provider: TSocialLink['provider'], handle: string): string {
+function constructSocialUrl(provider: TSocialLink['provider'], handleOrUrl: string): string {
 	const urlMap: Record<TSocialLink['provider'], string> = {
-		instagram: `https://instagram.com/${handle}`,
-		twitter: `https://twitter.com/${handle}`,
-		youtube: `https://youtube.com/@${handle}`,
-		tiktok: `https://tiktok.com/@${handle}`,
-		linkedin: `https://linkedin.com/in/${handle}`,
-		facebook: `https://facebook.com/${handle}`,
-		shopify: `https://${handle}.myshopify.com`,
-		bluesky: `https://bsky.app/profile/${handle}`,
-		discord: `https://discord.gg/${handle}`,
-		github: `https://github.com/${handle}`,
-		google: `https://plus.google.com/${handle}`,
-		spotify: `https://open.spotify.com/user/${handle}`
+		instagram: `https://instagram.com/${handleOrUrl}`,
+		twitter: `https://twitter.com/${handleOrUrl}`,
+		youtube: `https://youtube.com/@${handleOrUrl}`,
+		tiktok: `https://tiktok.com/@${handleOrUrl}`,
+		linkedin: `https://linkedin.com/in/${handleOrUrl}`,
+		facebook: `https://facebook.com/${handleOrUrl}`,
+		shopify: handleOrUrl, // This case is handled above
+		bluesky: `https://bsky.app/profile/${handleOrUrl}`,
+		discord: `https://discord.gg/${handleOrUrl}`,
+		github: `https://github.com/${handleOrUrl}`,
+		google: `https://plus.google.com/${handleOrUrl}`,
+		spotify: `https://open.spotify.com/user/${handleOrUrl}`
 	};
 
 	return urlMap[provider];
@@ -209,4 +239,67 @@ function createFontAsset(fontFamily: string): TFontAsset {
 			style: 'normal'
 		}
 	};
+}
+
+function createImageAssetFromUrl(url: string): TImageAsset {
+	const hash = shortId(); // TODO: Re-upload the image to Shopify CDN
+	const pathname = new URL(url).pathname.toLowerCase();
+
+	let contentType: TImageAsset['contentType'] = 'image/jpeg';
+	if (pathname.endsWith('.png')) {
+		contentType = 'image/png';
+	} else if (pathname.endsWith('.gif')) {
+		contentType = 'image/gif';
+	} else if (pathname.endsWith('.webp')) {
+		contentType = 'image/webp';
+	} else if (pathname.endsWith('.svg')) {
+		contentType = 'image/svg+xml';
+	}
+
+	return {
+		type: 'image',
+		hash,
+		contentType,
+		fileName: pathname.split('/').pop() || `image-${hash}`,
+		storage: {
+			type: 'url',
+			url
+		}
+	};
+}
+
+function convertRgbaToHex(rgba: string | null | undefined): string | null {
+	if (rgba == null) return null;
+
+	// Parse rgba(r,g,b,a) format
+	const match = rgba.match(/rgba?\(([^)]+)\)/);
+	if (match == null || match[1] == null) {
+		return null;
+	}
+	const values = match[1].split(',').map((v) => v.trim());
+	if (values.length < 3) {
+		return null;
+	}
+	const r = parseInt(values[0] ?? '0', 10);
+	const g = parseInt(values[1] ?? '0', 10);
+	const b = parseInt(values[2] ?? '0', 10);
+
+	return rgbToHex([r, g, b]);
+}
+
+function getBorderRadiusFromShape(shape: string | null | undefined): number {
+	if (shape == null) {
+		return 8;
+	}
+
+	switch (shape) {
+		case 'square':
+			return 0;
+		case 'rounded_small':
+			return 4;
+		case 'rounded_large':
+			return 9999; // Very large radius for pill shape
+		default:
+			return 8; // Default fallback
+	}
 }

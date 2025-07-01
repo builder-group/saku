@@ -411,7 +411,7 @@ export function createPageEditor(site: TSite, shopify: ShopifyGlobal): TPageEdit
 			return assetsToRemove;
 		},
 
-		async save() {
+		async publish() {
 			const idToken = await this.shopify.idToken();
 
 			// Clean up unused assets before saving
@@ -498,7 +498,7 @@ export interface TPageEditor {
 
 	cleanupAssets: () => TAssetHash[];
 
-	save: () => Promise<boolean>;
+	publish: () => Promise<boolean>;
 
 	toSite: () => TSite;
 }

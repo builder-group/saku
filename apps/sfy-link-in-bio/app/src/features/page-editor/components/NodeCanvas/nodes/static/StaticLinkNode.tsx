@@ -15,8 +15,11 @@ export const StaticLinkNode = React.forwardRef<HTMLDivElement, TStaticLinkNodePr
 
 		return (
 			<div {...divProps} ref={ref} className="w-full max-w-md">
-				<div
-					className="relative overflow-hidden bg-white"
+				<a
+					href={node.url}
+					target="_blank"
+					rel="noopener noreferrer"
+					className="relative flex w-full cursor-pointer items-center gap-3 overflow-hidden bg-white text-inherit no-underline hover:opacity-90"
 					style={{
 						padding: node.style.padding,
 						margin: node.style.margin,
@@ -29,10 +32,15 @@ export const StaticLinkNode = React.forwardRef<HTMLDivElement, TStaticLinkNodePr
 						boxShadow: node.style.shadow ? '0 4px 6px -1px rgb(0 0 0 / 0.1)' : undefined
 					}}
 				>
-					<div className="flex w-full items-center gap-3 p-4">
+					<div className="flex min-h-12 w-full items-center gap-3">
 						{/* Site Icon */}
-						{faviconUrl && (
-							<div className="h-8 w-8 flex-shrink-0 overflow-hidden rounded bg-gray-100">
+						{faviconUrl != null && (
+							<div
+								className="h-12 w-12 flex-shrink-0 overflow-hidden bg-gray-100"
+								style={{
+									borderRadius: node.style.borderRadius
+								}}
+							>
 								<img
 									src={faviconUrl}
 									alt={title ?? 'Site Icon'}
@@ -44,11 +52,11 @@ export const StaticLinkNode = React.forwardRef<HTMLDivElement, TStaticLinkNodePr
 
 						{/* Link Details */}
 						<div className="min-w-0 flex-grow">
-							{title && <p className="truncate font-medium">{title}</p>}
-							{description && <p className="truncate text-sm opacity-70">{description}</p>}
+							{title != null && <p className="truncate font-medium">{title}</p>}
+							{description != null && <p className="truncate text-sm opacity-70">{description}</p>}
 						</div>
 					</div>
-				</div>
+				</a>
 			</div>
 		);
 	}

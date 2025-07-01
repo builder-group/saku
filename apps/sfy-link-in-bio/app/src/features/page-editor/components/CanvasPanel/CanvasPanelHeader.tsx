@@ -7,22 +7,22 @@ import { PanelHeader } from '../PanelHeader';
 export const CanvasPanelHeader: React.FC<TCanvasPanelHeaderProps> = (props) => {
 	const { editor } = props;
 
-	const [isSaving, setIsSaving] = React.useState(false);
+	const [isPublishing, setIsPublishing] = React.useState(false);
 
-	const handleSave = React.useCallback(async () => {
-		setIsSaving(true);
-		const isSaved = await editor.save();
-		if (isSaved) {
-			editor.shopify.toast.show('Saved');
+	const handlePublish = React.useCallback(async () => {
+		setIsPublishing(true);
+		const isPublished = await editor.publish();
+		if (isPublished) {
+			editor.shopify.toast.show('Published');
 		} else {
-			editor.shopify.toast.show('Failed to save');
+			editor.shopify.toast.show('Failed to publish');
 		}
-		setIsSaving(false);
+		setIsPublishing(false);
 	}, [editor]);
 
 	const handlePreview = React.useCallback(() => {
 		editor.shopify.toast.show(
-			'Preview coming soon! For now, save your changes and visit the live site.'
+			'Preview coming soon! For now, publish your changes and visit the live site.'
 		);
 	}, [editor]);
 
@@ -65,8 +65,13 @@ export const CanvasPanelHeader: React.FC<TCanvasPanelHeaderProps> = (props) => {
 					onClick={handlePreview}
 					accessibilityLabel="Preview your Link In Bio page"
 				/>
-				<Button variant="primary" onClick={handleSave} disabled={isSaving}>
-					{isSaving ? 'Saving...' : 'Save'}
+				<Button
+					variant="primary"
+					onClick={handlePublish}
+					disabled={isPublishing}
+					loading={isPublishing}
+				>
+					Publish
 				</Button>
 			</InlineStack>
 		</PanelHeader>
