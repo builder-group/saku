@@ -12,6 +12,7 @@ import {
 	TSite
 } from '@/features/page-editor';
 import { useLoaderResult } from '@/hooks';
+import styles from '@/styles.css?url';
 import { TLoaderFunctionWithResult } from '@/types';
 import { coreApiClient } from '../../environment';
 
@@ -27,7 +28,7 @@ const Page: React.FC = () => {
 
 	return (
 		<AppProxyProvider appUrl={appUrl}>
-			<link rel="stylesheet" href={`${appUrl}/src/styles.css`} />
+			<link rel="stylesheet" href={`${appUrl}${styles}`} />
 			{fontUrls.map((fontUrl, index) => (
 				<link key={`font-${index}`} rel="stylesheet" href={fontUrl} />
 			))}
