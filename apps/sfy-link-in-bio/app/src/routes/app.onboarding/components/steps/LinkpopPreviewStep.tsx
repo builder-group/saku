@@ -1,5 +1,6 @@
 import { useNavigate } from '@remix-run/react';
 import { Banner, Button } from '@shopify/polaris';
+import { useCompute } from 'feature-react';
 import React from 'react';
 import { ScanEyeIcon, SitePreview } from '@/components';
 import { resolveSite, StaticNodeCanvas } from '@/features/page-editor';
@@ -10,12 +11,11 @@ export const LinkpopPreviewStep: React.FC<TLinkpopPreviewStepProps> = (props) =>
 	const { onboardingContext } = props;
 	const navigate = useNavigate();
 
-	const resolvedSite = React.useMemo(() => {
-		const currentStep = onboardingContext.stepr.current.get();
+	const resolvedSite = useCompute(onboardingContext.stepr.current, (currentStep) => {
 		return currentStep.type === 'linkpop-preview' && currentStep.site
 			? resolveSite(currentStep.site)
 			: null;
-	}, [onboardingContext]);
+	});
 
 	const [isLoading, setIsLoading] = React.useState(false);
 	const [error, setError] = React.useState<string | null>(

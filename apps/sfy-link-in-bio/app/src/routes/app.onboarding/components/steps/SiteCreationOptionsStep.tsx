@@ -1,4 +1,5 @@
 import { Button, OptionList } from '@shopify/polaris';
+import { useCompute } from 'feature-react';
 import React from 'react';
 import { LayoutListIcon } from '@/components';
 import type { TOnboardingContext, TSiteCreationOption } from '../../create-onboarding-context';
@@ -7,12 +8,15 @@ import { StepLayout } from '../StepLayout';
 export const SiteCreationOptionsStep: React.FC<TSiteCreationOptionsStepProps> = (props) => {
 	const { onboardingContext } = props;
 
-	const initialSelection = React.useMemo<TSiteCreationOption[]>(() => {
-		const currentStep = onboardingContext.stepr.current.get();
-		return currentStep.type === 'site-creation-options' && currentStep.selectedOption
-			? [currentStep.selectedOption]
-			: ['create-new'];
-	}, [onboardingContext]);
+	const initialSelection = useCompute(
+		onboardingContext.stepr.current,
+		(currentStep): TSiteCreationOption[] => {
+			return currentStep.type === 'site-creation-options' && currentStep.selectedOption
+				? [currentStep.selectedOption]
+				: ['create-new'];
+		},
+		[onboardingContext]
+	);
 	const [selected, setSelected] = React.useState<TSiteCreationOption[]>(initialSelection);
 
 	// =========================================================================

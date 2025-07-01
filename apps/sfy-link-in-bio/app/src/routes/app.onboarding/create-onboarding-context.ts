@@ -54,6 +54,16 @@ export function createOnboardingContext(
 				}
 			});
 			if (result.isErr()) {
+				// Check if it's a LinkPop parsing error
+				if (result.error.code === '#ERR_LINKPOP_DATA_NOT_FOUND') {
+					// Go directly to templates with a message about the fallback
+					this.stepr.goTo({
+						type: 'templates',
+						selectedTemplate: 'blank',
+						fallbackReason: 'linkpop_parse_error'
+					});
+					return Ok(undefined);
+				}
 				return Err('Failed to parse your LinkPop page. Please try again.');
 			}
 
@@ -162,7 +172,7 @@ export type TOnboardingStep =
 	| { type: 'site-creation-options'; selectedOption?: TSiteCreationOption }
 	| { type: 'linkpop-url'; handle?: string }
 	| { type: 'linkpop-preview'; url?: string; site?: TSite }
-	| { type: 'templates'; selectedTemplate?: TTemplate };
+	| { type: 'templates'; selectedTemplate?: TTemplate; fallbackReason?: 'linkpop_parse_error' };
 
 export type TSiteCreationOption = 'create-new' | 'linkpop';
 

@@ -1,5 +1,6 @@
 import { useNavigate } from '@remix-run/react';
 import { Banner, Button, OptionList } from '@shopify/polaris';
+import { useCompute } from 'feature-react';
 import React from 'react';
 import { LayoutTemplateIcon } from '@/components';
 import type { TOnboardingContext, TTemplate } from '../../create-onboarding-context';
@@ -9,12 +10,19 @@ export const TemplatesStep: React.FC<TTemplatesStepProps> = (props) => {
 	const { onboardingContext } = props;
 	const navigate = useNavigate();
 
-	const initialSelection = React.useMemo<TTemplate[]>(() => {
-		const currentStep = onboardingContext.stepr.current.get();
-		return currentStep.type === 'templates' && currentStep.selectedTemplate
-			? [currentStep.selectedTemplate]
-			: ['blank'];
-	}, [onboardingContext]);
+	const showLinkpopFallbackMessage = useCompute(onboardingContext.stepr.current, (currentStep) => {
+		return currentStep.type === 'templates' && currentStep.fallbackReason === 'linkpop_parse_error';
+	});
+
+	const initialSelection = useCompute(
+		onboardingContext.stepr.current,
+		(currentStep): TTemplate[] => {
+			return currentStep.type === 'templates' && currentStep.selectedTemplate
+				? [currentStep.selectedTemplate]
+				: ['blank'];
+		},
+		[]
+	);
 	const [selected, setSelected] = React.useState<TTemplate[]>(initialSelection);
 
 	const [isLoading, setIsLoading] = React.useState(false);
@@ -69,6 +77,12 @@ export const TemplatesStep: React.FC<TTemplatesStepProps> = (props) => {
 			description="Start with a template or begin with a blank canvas"
 			contentClassName="flex flex-col gap-6"
 		>
+			{showLinkpopFallbackMessage && (
+				<Banner tone="warning">
+					We couldn't import your LinkPop page. Let's create a new page from scratch instead.
+				</Banner>
+			)}
+
 			<div className="flex flex-col gap-2">
 				<OptionList
 					onChange={handleChange}

@@ -1,49 +1,72 @@
+import { writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
 import { AppError } from '@repo/hono-utils';
 import { htmlConfig, tokenize, type TXmlToken } from 'xml-tokenizer';
+import { logger } from '@/environment';
 
 export async function parseLinkpopHtml(html: string): Promise<TLinkPopData> {
 	let foundLinkpopData: string | null = null;
 	let isInMetaTag = false;
 	let currentAttributes: Record<string, string> = {};
 
-	tokenize(
-		html,
-		(token: TXmlToken, stream) => {
-			switch (token.type) {
-				case 'ElementStart': {
-					if (token.local.toLowerCase() === 'meta') {
-						isInMetaTag = true;
-						currentAttributes = {};
-					}
-					break;
-				}
-
-				case 'Attribute': {
-					if (isInMetaTag) {
-						currentAttributes[token.local] = token.value;
-					}
-					break;
-				}
-
-				case 'ElementEnd': {
-					if (isInMetaTag && (token.end.type === 'Empty' || token.end.type === 'Close')) {
-						const dataFlight = currentAttributes['data-flight'];
-						if (dataFlight && dataFlight.includes('LinkpopData')) {
-							foundLinkpopData = dataFlight;
-							stream.goToEnd();
+	try {
+		tokenize(
+			html,
+			(token: TXmlToken, stream) => {
+				switch (token.type) {
+					case 'ElementStart': {
+						if (token.local.toLowerCase() === 'meta') {
+							isInMetaTag = true;
+							currentAttributes = {};
 						}
-						isInMetaTag = false;
-						currentAttributes = {};
+						break;
 					}
-					break;
-				}
 
-				default:
-					break;
-			}
-		},
-		htmlConfig
-	);
+					case 'Attribute': {
+						if (isInMetaTag) {
+							currentAttributes[token.local] = token.value;
+						}
+						break;
+					}
+
+					case 'ElementEnd': {
+						if (isInMetaTag && (token.end.type === 'Empty' || token.end.type === 'Close')) {
+							const dataFlight = currentAttributes['data-flight'];
+							if (dataFlight && dataFlight.includes('LinkpopData')) {
+								foundLinkpopData = dataFlight;
+								stream.goToEnd();
+							}
+							isInMetaTag = false;
+							currentAttributes = {};
+						}
+						break;
+					}
+
+					default:
+						break;
+				}
+			},
+			{ ...htmlConfig, contextSliceSize: 250 }
+		);
+	} catch (e) {
+		logger.error('Error parsing Linkpop HTML', { error: e });
+
+		// Save the HTML to a file with timestamp in /tmp
+		const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+		const filename = `linkpop-debug-${timestamp}.html`;
+		const filepath = join('/tmp', filename);
+		try {
+			await writeFile(filepath, html, 'utf8');
+			logger.info(`Saved debug HTML to ${filepath}`);
+		} catch (writeError) {
+			logger.error('Failed to save debug HTML', { error: writeError });
+		}
+
+		throw new AppError('#ERR_LINKPOP_DATA_NOT_FOUND', 400, {
+			title: 'LinkPop data not found',
+			detail: 'Could not extract LinkPop page data from the HTML'
+		});
+	}
 
 	if (foundLinkpopData == null) {
 		throw new AppError('#ERR_LINKPOP_DATA_NOT_FOUND', 400, {

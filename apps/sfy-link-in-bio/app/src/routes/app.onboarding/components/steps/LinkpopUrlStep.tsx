@@ -1,4 +1,5 @@
 import { Banner, Button } from '@shopify/polaris';
+import { useCompute } from 'feature-react';
 import React from 'react';
 import { LinkIcon } from '@/components';
 import type { TOnboardingContext } from '../../create-onboarding-context';
@@ -7,10 +8,9 @@ import { StepLayout } from '../StepLayout';
 export const LinkpopUrlStep: React.FC<TLinkpopUrlStepProps> = (props) => {
 	const { onboardingContext } = props;
 
-	const initialHandle = React.useMemo(() => {
-		const currentStep = onboardingContext.stepr.current.get();
+	const initialHandle = useCompute(onboardingContext.stepr.current, (currentStep) => {
 		return currentStep.type === 'linkpop-url' && currentStep.handle ? currentStep.handle : '';
-	}, [onboardingContext]);
+	});
 	const [handle, setHandle] = React.useState(initialHandle);
 
 	const [isLoading, setIsLoading] = React.useState(false);
