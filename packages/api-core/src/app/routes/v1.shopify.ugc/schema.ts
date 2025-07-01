@@ -201,37 +201,39 @@ export const ListMediaFilesRoute = createRoute({
 		200: JsonSuccessResponse(
 			z.object({
 				files: z.array(
-					z.object({
-						id: z.string().openapi({ example: 'gid://shopify/MediaImage/12345678' }),
-						alt: z.string().openapi({ example: 'Product lifestyle image' }),
-						createdAt: z.string().datetime().openapi({ example: '2024-01-15T10:30:00Z' }),
-						previewImage: z
-							.object({
-								id: z.string(),
-								url: z.string().url()
-							})
-							.optional(),
-						url: z.string().url(),
-						fileName: z.string().openapi({ example: 'product-1.jpg' }),
-						details: z.discriminatedUnion('type', [
-							z.object({
-								type: z.literal('image'),
-								id: z.string().optional(),
-								width: z.number().optional(),
-								height: z.number().optional()
-							}),
-							z.object({
-								type: z.literal('video'),
-								width: z.number(),
-								height: z.number(),
-								format: z.string()
-							}),
-							z.object({
-								type: z.literal('file'),
-								mimeType: z.string().optional()
-							})
-						])
-					})
+					z
+						.object({
+							id: z.string().openapi({ example: 'gid://shopify/MediaImage/12345678' }),
+							alt: z.string().openapi({ example: 'Product lifestyle image' }),
+							createdAt: z.string().datetime().openapi({ example: '2024-01-15T10:30:00Z' }),
+							previewImage: z
+								.object({
+									id: z.string(),
+									url: z.string().url()
+								})
+								.optional(),
+							url: z.string().url(),
+							fileName: z.string().openapi({ example: 'product-1.jpg' }),
+							details: z.discriminatedUnion('type', [
+								z.object({
+									type: z.literal('image'),
+									id: z.string().optional(),
+									width: z.number().optional(),
+									height: z.number().optional()
+								}),
+								z.object({
+									type: z.literal('video'),
+									width: z.number(),
+									height: z.number(),
+									format: z.string()
+								}),
+								z.object({
+									type: z.literal('file'),
+									mimeType: z.string().optional()
+								})
+							])
+						})
+						.openapi('MediaFileDto')
 				),
 				pageInfo: z.object({
 					hasNextPage: z.boolean(),

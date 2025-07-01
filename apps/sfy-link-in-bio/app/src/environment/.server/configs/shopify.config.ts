@@ -1,8 +1,15 @@
 import * as v from 'valibot';
 import { validateEnvVar } from 'validatenv';
 import { vValidator } from 'validation-adapters/valibot';
+import { appConfig } from './app.config';
+
+const appProxyPath = appConfig.env === 'production' ? '/a/saku' : '/a/saku-local';
 
 export const shopifyConfig = {
+	proxy: {
+		path: appProxyPath,
+		url: (shop: string) => `https://${shop}${appProxyPath}`
+	},
 	apiKey: validateEnvVar({
 		envKey: 'SHOPIFY_API_KEY',
 		validator: vValidator(v.string()),

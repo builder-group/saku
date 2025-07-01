@@ -1,0 +1,305 @@
+import { rgbToHex, shortId } from '@blgc/utils';
+import { AppError } from '@repo/hono-utils';
+import { getFontMetadataByFamily } from './font-metadata';
+import { getFontHash } from './get-font-hash';
+import { TLinkPopData } from './parse-linkpop-html';
+import {
+	TAboutNode,
+	TAsset,
+	TFontAsset,
+	TImageAsset,
+	TLinkNode,
+	TSite,
+	TSocialLink,
+	TTextNode
+} from './site-types';
+
+export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
+	const children: (TAboutNode | TLinkNode | TTextNode)[] = [];
+	const assets: TAsset[] = [];
+	const page = linkpopData.page;
+
+	// Create font asset for primary font
+	const primaryFont = page?.themeSettings?.primaryFont ?? 'Inter';
+	const fontAsset = createFontAsset(primaryFont);
+	assets.push(fontAsset);
+
+	// Create about node if we have profile data
+	if (page?.title != null || page?.bio != null) {
+		// Create image asset for profile picture if it exists
+		let profilePictureHash: string | undefined;
+		if (page?.media?.url != null) {
+			const imageAsset = createImageAssetFromUrl(page.media.url);
+			assets.push(imageAsset);
+			profilePictureHash = imageAsset.hash;
+		}
+
+		const aboutNode: TAboutNode = {
+			id: shortId(),
+			type: 'about',
+			name: page.title ?? 'Your Name',
+			bio: page.bio,
+			profilePicture: profilePictureHash,
+			socialLinks: transformSocialLinks(page.socialMediaAccounts ?? []),
+			visible: true,
+			style: {
+				padding: 'inherit',
+				margin: 'inherit',
+				backgroundColor: 'transparent',
+				font: 'inherit',
+				fontSize: 16,
+				textColor: convertRgbaToHex(page?.themeSettings?.fontColor) ?? '#ffffff',
+				textAlign: 'inherit',
+				borderRadius: 0,
+				shadow: false
+			}
+		};
+		children.push(aboutNode);
+	}
+
+	// Transform links and text nodes
+	if (page?.links != null && page.links.length > 0) {
+		// Reverse the links to match original order
+		const reversedLinks = [...page.links].reverse();
+
+		for (const link of reversedLinks) {
+			if (link.url != null) {
+				// Create favicon asset if link has media
+				let faviconHash: string | undefined;
+				if (link.media?.url != null) {
+					const faviconAsset = createImageAssetFromUrl(link.media.url);
+					assets.push(faviconAsset);
+					faviconHash = faviconAsset.hash;
+				}
+
+				// Create link node for links with URLs
+				children.push({
+					id: shortId(),
+					type: 'link',
+					url: link.url,
+					visible: true,
+					meta: {
+						title: link.title,
+						favicon: faviconHash
+					},
+					style: {
+						padding: 'inherit',
+						margin: 'inherit',
+						backgroundColor: 'inherit',
+						font: 'inherit',
+						fontSize: 'inherit',
+						textColor: 'inherit',
+						textAlign: 'inherit',
+						borderRadius: 'inherit',
+						shadow: 'inherit'
+					}
+				} satisfies TLinkNode);
+			} else {
+				// Create text node for links without URLs
+				children.push({
+					id: shortId(),
+					type: 'text',
+					title: undefined,
+					text: link.title,
+					visible: true,
+					style: {
+						padding: 'inherit',
+						margin: 'inherit',
+						backgroundColor: 'inherit',
+						font: 'inherit',
+						fontSize: 'inherit',
+						textColor: 'inherit',
+						textAlign: 'inherit',
+						borderRadius: 'inherit',
+						shadow: 'inherit'
+					}
+				} satisfies TTextNode);
+			}
+		}
+	}
+
+	return {
+		version: 'v0.0.1',
+		id: shortId(),
+		assets,
+		root: {
+			id: shortId(),
+			type: 'page',
+			visible: true,
+			children,
+			style: {
+				backgroundColor: convertRgbaToHex(page?.themeSettings?.backgroundColor) ?? '#ffffff',
+				children: {
+					backgroundColor: convertRgbaToHex(page?.themeSettings?.linkCardColor) ?? '#ffffff',
+					spacing: 16,
+					padding: 8,
+					margin: 0,
+					font: {
+						family: primaryFont,
+						weight: 400,
+						style: 'normal'
+					},
+					fontSize: 14,
+					textColor: convertRgbaToHex(page?.themeSettings?.linkCardFontColor) ?? '#000000',
+					textAlign: 'center',
+					borderRadius: getBorderRadiusFromShape(page?.themeSettings?.linkCardShape),
+					shadow: true
+				}
+			}
+		}
+	};
+}
+
+function transformSocialLinks(
+	linkpopSocialLinks: Array<{ id: string; handle: string; network: string }>
+): TSocialLink[] {
+	const validSocialLinks: TSocialLink[] = [];
+
+	for (const social of linkpopSocialLinks) {
+		const provider = mapSocialPlatform(social.network);
+		if (provider != null) {
+			validSocialLinks.push({
+				id: shortId(),
+				provider,
+				handle: social.handle,
+				url: constructSocialUrl(provider, social.handle)
+			});
+		}
+	}
+
+	return validSocialLinks;
+}
+
+function mapSocialPlatform(platform: string): TSocialLink['provider'] | null {
+	const platformLower = platform.toLowerCase();
+
+	const platformMap: Record<string, TSocialLink['provider']> = {
+		instagram: 'instagram',
+		twitter: 'twitter',
+		x: 'twitter', // X is the new Twitter
+		youtube: 'youtube',
+		tiktok: 'tiktok',
+		linkedin: 'linkedin',
+		facebook: 'facebook',
+		shop: 'shopify', // LinkPop uses "shop" for Shopify stores
+		shopify: 'shopify',
+		bluesky: 'bluesky',
+		discord: 'discord',
+		github: 'github',
+		google: 'google',
+		spotify: 'spotify'
+	};
+
+	return platformMap[platformLower] ?? null;
+}
+
+function constructSocialUrl(provider: TSocialLink['provider'], handleOrUrl: string): string {
+	const urlMap: Record<TSocialLink['provider'], string> = {
+		instagram: `https://instagram.com/${handleOrUrl}`,
+		twitter: `https://twitter.com/${handleOrUrl}`,
+		youtube: `https://youtube.com/@${handleOrUrl}`,
+		tiktok: `https://tiktok.com/@${handleOrUrl}`,
+		linkedin: `https://linkedin.com/in/${handleOrUrl}`,
+		facebook: `https://facebook.com/${handleOrUrl}`,
+		shopify: handleOrUrl, // This case is handled above
+		bluesky: `https://bsky.app/profile/${handleOrUrl}`,
+		discord: `https://discord.gg/${handleOrUrl}`,
+		github: `https://github.com/${handleOrUrl}`,
+		google: `https://plus.google.com/${handleOrUrl}`,
+		spotify: `https://open.spotify.com/user/${handleOrUrl}`
+	};
+
+	return urlMap[provider];
+}
+
+function createFontAsset(fontFamily: string): TFontAsset {
+	const fontMetadata = getFontMetadataByFamily(fontFamily);
+	if (fontMetadata == null) {
+		throw new AppError(`#ERR_FONT_METADATA_NOT_FOUND`, 400, {
+			detail: `Font metadata not found for family: ${fontFamily}`
+		});
+	}
+
+	return {
+		type: 'font',
+		hash: getFontHash({
+			family: fontFamily,
+			weight: 400,
+			style: 'normal'
+		}),
+		contentType: 'font/woff2', // Google Fonts serves woff2
+		fileName: `${fontFamily.toLowerCase().replace(/\s+/g, '-')}.woff2`,
+		storage: {
+			type: 'url',
+			url: `https://fonts.googleapis.com/css2?family=${fontMetadata.googleFont}&display=swap`
+		},
+		font: {
+			family: fontFamily,
+			weight: 400,
+			style: 'normal'
+		}
+	};
+}
+
+function createImageAssetFromUrl(url: string): TImageAsset {
+	const hash = shortId(); // TODO: Re-upload the image to Shopify CDN
+	const pathname = new URL(url).pathname.toLowerCase();
+
+	let contentType: TImageAsset['contentType'] = 'image/jpeg';
+	if (pathname.endsWith('.png')) {
+		contentType = 'image/png';
+	} else if (pathname.endsWith('.gif')) {
+		contentType = 'image/gif';
+	} else if (pathname.endsWith('.webp')) {
+		contentType = 'image/webp';
+	} else if (pathname.endsWith('.svg')) {
+		contentType = 'image/svg+xml';
+	}
+
+	return {
+		type: 'image',
+		hash,
+		contentType,
+		fileName: pathname.split('/').pop() || `image-${hash}`,
+		storage: {
+			type: 'url',
+			url
+		}
+	};
+}
+
+function convertRgbaToHex(rgba: string | null | undefined): string | null {
+	if (rgba == null) return null;
+
+	// Parse rgba(r,g,b,a) format
+	const match = rgba.match(/rgba?\(([^)]+)\)/);
+	if (match == null || match[1] == null) {
+		return null;
+	}
+	const values = match[1].split(',').map((v) => v.trim());
+	if (values.length < 3) {
+		return null;
+	}
+	const r = parseInt(values[0] ?? '0', 10);
+	const g = parseInt(values[1] ?? '0', 10);
+	const b = parseInt(values[2] ?? '0', 10);
+
+	return rgbToHex([r, g, b]);
+}
+
+function getBorderRadiusFromShape(shape: string | null | undefined): number {
+	if (shape == null) {
+		return 8;
+	}
+
+	switch (shape) {
+		case 'square':
+			return 0;
+		case 'rounded_small':
+			return 4;
+		case 'rounded_large':
+			return 9999; // Very large radius for pill shape
+		default:
+			return 8; // Default fallback
+	}
+}

@@ -2,7 +2,7 @@ import { AppError } from '@repo/hono-utils';
 import { eq } from 'drizzle-orm';
 import { router } from '@/app/router';
 import { db, siteTable } from '@/environment';
-import { fetchExternalHtml, parseLinkpopHtml } from './lib';
+import { fetchExternalHtml, parseLinkpopHtml, transformLinkpopToSite } from './lib';
 import { GetSiteContentRoute, GetSiteRoute, ParseExternalSiteRoute } from './schema';
 
 router.openapi(GetSiteRoute, async (c) => {
@@ -11,7 +11,7 @@ router.openapi(GetSiteRoute, async (c) => {
 	const [site] = await db
 		.select({
 			id: siteTable.id,
-			userId: siteTable.userId,
+			workspaceId: siteTable.workspaceId,
 			handle: siteTable.handle,
 			displayName: siteTable.displayName,
 			content: siteTable.content,
@@ -32,7 +32,7 @@ router.openapi(GetSiteRoute, async (c) => {
 	return c.json(
 		{
 			id: site.id,
-			userId: site.userId,
+			workspaceId: site.workspaceId,
 			handle: site.handle,
 			displayName: site.displayName ?? undefined,
 			content: site.content,
@@ -86,13 +86,13 @@ router.openapi(ParseExternalSiteRoute, async (c) => {
 			const handle = pathname.substring(1);
 			const html = await fetchExternalHtml(`https://linkpop.com/${handle}`);
 			const parsedData = await parseLinkpopHtml(html);
-			// TODO: Map data
+			const site = transformLinkpopToSite(parsedData);
 
 			return c.json(
 				{
 					provider: 'linkpop',
 					handle: handle,
-					data: {}
+					data: site as any
 				},
 				200
 			);

@@ -1,12 +1,20 @@
 import { ServerErr, ServerOk } from '@blgc/utils';
 import { AppProxyProvider } from '@shopify/shopify-app-remix/react';
-import { RequestError } from 'feature-fetch';
+import { isStatusCode } from 'feature-fetch';
 import React from 'react';
-import { coreApiClient } from '@/environment';
-import { shopify, shopifyConfig } from '@/environment/.server';
-import { getBlocks, StaticBlockCanvas, TSiteNode } from '@/features/editor';
+import { appConfig, shopify, shopifyConfig } from '@/environment/.server';
+import {
+	getSiteFontUrls,
+	kangarooPreset,
+	resolveSite,
+	StaticNodeCanvas,
+	TResolvedSite,
+	TSite
+} from '@/features/page-editor';
 import { useLoaderResult } from '@/hooks';
+import styles from '@/styles.css?url';
 import { TLoaderFunctionWithResult } from '@/types';
+import { coreApiClient } from '../../environment';
 
 const Page: React.FC = () => {
 	const result = useLoaderResult<TSuccessData, TErrorData>();
@@ -15,17 +23,17 @@ const Page: React.FC = () => {
 		return <p>{`${result.error.code}: ${result.error.message}`}</p>;
 	}
 
-	const { appUrl, siteNode } = result.value;
-	const blocks = getBlocks(siteNode);
-	if (blocks == null) {
-		return null;
-	}
+	const { appUrl, site } = result.value;
+	const fontUrls = getSiteFontUrls(site);
 
 	return (
 		<AppProxyProvider appUrl={appUrl}>
-			<link rel="stylesheet" href={`${appUrl}/src/styles.css`} />
+			<link rel="stylesheet" href={`${appUrl}${styles}`} />
+			{fontUrls.map((fontUrl, index) => (
+				<link key={`font-${index}`} rel="stylesheet" href={fontUrl} />
+			))}
 
-			<StaticBlockCanvas blocks={blocks} />
+			<StaticNodeCanvas nodes={[site.root]} />
 		</AppProxyProvider>
 	);
 };
@@ -54,6 +62,14 @@ export const loader: TLoaderFunctionWithResult<TSuccessData, TErrorData> = async
 		});
 	}
 
+	// Return preset if local environment and handle is "preset"
+	if (appConfig.env === 'local' && handle === 'preset') {
+		return ServerOk<TSuccessData, TErrorData>({
+			appUrl: shopifyConfig.appUrl,
+			site: resolveSite(kangarooPreset)
+		});
+	}
+
 	const result = await coreApiClient.get('/v1/shopify/site/shop/{shop}/{handle}/content', {
 		pathParams: {
 			shop: session.shop,
@@ -61,7 +77,7 @@ export const loader: TLoaderFunctionWithResult<TSuccessData, TErrorData> = async
 		}
 	});
 	if (result.isErr()) {
-		if (result.error instanceof RequestError && result.error.status === 404) {
+		if (isStatusCode(result.error, 404)) {
 			return ServerErr<TSuccessData, TErrorData>({
 				code: '#ERR_NOT_FOUND',
 				message: 'Site not found'
@@ -70,13 +86,13 @@ export const loader: TLoaderFunctionWithResult<TSuccessData, TErrorData> = async
 
 		return ServerErr<TSuccessData, TErrorData>({
 			code: '#ERR_SERVER_ERROR',
-			message: result.error.message
+			message: result.error.message ?? 'Unknown error occurred'
 		});
 	}
 
 	return ServerOk<TSuccessData, TErrorData>({
 		appUrl: shopifyConfig.appUrl,
-		siteNode: result.value.data as unknown as TSiteNode
+		site: resolveSite(result.value.data as unknown as TSite)
 	});
 };
 
@@ -87,5 +103,5 @@ interface TErrorData {
 
 interface TSuccessData {
 	appUrl: string;
-	siteNode: TSiteNode;
+	site: TResolvedSite;
 }

@@ -2,7 +2,7 @@ import React from 'react';
 import { cn } from '../../lib';
 
 export const SitePreview: React.FC<TSitePreviewProps> = (props) => {
-	const { url, className, ...divProps } = props;
+	const { url, content, className, disableUrlClick = false, ...divProps } = props;
 
 	return (
 		<div
@@ -22,29 +22,32 @@ export const SitePreview: React.FC<TSitePreviewProps> = (props) => {
 						</div>
 						{/* Address Bar */}
 						<div className="flex h-4 flex-1 items-center justify-center rounded bg-white">
-							<a
-								className="max-w-xs truncate px-2 text-xs text-gray-500 hover:underline"
-								href={url}
-								target="_blank"
-							>
-								{url}
-							</a>
+							{disableUrlClick ? (
+								<span className="max-w-xs truncate px-2 text-xs text-gray-500">{url}</span>
+							) : (
+								<a
+									className="max-w-xs truncate px-2 text-xs text-gray-500 hover:underline"
+									href={url}
+									target="_blank"
+									rel="noopener noreferrer"
+								>
+									{url}
+								</a>
+							)}
 						</div>
 					</div>
 
 					{/* Browser Content */}
 					<div className="relative h-72 overflow-hidden rounded-b-lg bg-white">
-						<iframe
-							src={`${url}?preview=true`}
-							title="Desktop Preview"
-							className="h-full w-full origin-top-left scale-45 border-0"
+						<div
+							className="h-full w-full origin-top-left scale-45"
 							style={{
 								width: '222%',
 								height: '222%'
 							}}
-							loading="lazy"
-							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-						/>
+						>
+							{content}
+						</div>
 					</div>
 				</div>
 			</div>
@@ -54,17 +57,15 @@ export const SitePreview: React.FC<TSitePreviewProps> = (props) => {
 				<div className="rounded-3xl border-4 border-gray-800 bg-gray-800 p-1 shadow-xl">
 					{/* Screen */}
 					<div className="relative h-80 overflow-hidden rounded-2xl bg-white">
-						<iframe
-							src={`${url}?preview=true`}
-							title="Mobile Preview"
-							className="h-full w-full origin-top-left scale-42 border-0"
+						<div
+							className="h-full w-full origin-top-left scale-42"
 							style={{
 								width: '238%',
 								height: '238%'
 							}}
-							loading="lazy"
-							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-						/>
+						>
+							{content}
+						</div>
 					</div>
 
 					{/* Home Indicator */}
@@ -77,6 +78,26 @@ export const SitePreview: React.FC<TSitePreviewProps> = (props) => {
 	);
 };
 
-interface TSitePreviewProps extends React.HTMLAttributes<HTMLDivElement> {
+interface TSitePreviewProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'content'> {
+	url: string;
+	content: React.ReactNode;
+	disableUrlClick?: boolean;
+}
+
+export const IframeContent: React.FC<IframeContentProps> = (props) => {
+	const { url } = props;
+
+	return (
+		<iframe
+			src={`${url}?preview=true`}
+			title="Site Preview"
+			className="h-full w-full border-0"
+			loading="lazy"
+			allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+		/>
+	);
+};
+
+interface IframeContentProps {
 	url: string;
 }

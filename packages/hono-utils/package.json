@@ -35,7 +35,7 @@
 	"dependencies": {
 		"@asteasolutions/zod-to-openapi": "^7.3.4",
 		"@blgc/utils": "^0.0.57",
-		"@hono/zod-openapi": "^0.19.8",
+		"@hono/zod-openapi": "^0.19.9",
 		"@oslojs/crypto": "^1.0.1",
 		"@oslojs/encoding": "^1.1.0",
 		"arctic": "^3.7.0",
@@ -45,6 +45,6 @@
 	},
 	"devDependencies": {
 		"@repo/types": "workspace:*",
-		"@types/node": "^24.0.4"
+		"@types/node": "^24.0.7"
 	}
 }

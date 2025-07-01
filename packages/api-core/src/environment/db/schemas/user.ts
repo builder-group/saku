@@ -8,7 +8,7 @@ export const userTable = pgTable('user', {
 		.primaryKey()
 		.$defaultFn(() => crypto.randomUUID()),
 
-	// Public-facing and URL-friendly user handle/slug (e.g. username)
+	// URL-friendly user handle (e.g. "bennobuilder")
 	handle: text('handle').unique().notNull(),
 	// Human-friendly user name
 	displayName: text('display_name'),
@@ -38,10 +38,10 @@ export const userAccountTable = pgTable(
 			.notNull()
 			.references(() => userTable.id, { onDelete: 'cascade' }),
 
-		// Type of account (e.g. oauth, oidc, otp)
+		// Type of account (e.g. "oauth", "oidc", "otp")
 		accountType: text('account_type').$type<TUserAccountType>().notNull(),
 
-		// Provider name (e.g. github, google, email)
+		// Provider name (e.g. "github", "google", "email")
 		provider: text('provider').$type<TUserProviderType>().notNull(),
 		// Provider's unique identifier for this user (e.g. UUID for GitHub, Email for OTP)
 		providerAccountId: text('provider_account_id').notNull(),
@@ -69,12 +69,12 @@ export type TUserProviderData =
 	| TEmailOTPUserProviderData;
 
 /**
- * Email OTP Provider Data
+ * Email OTP User Provider Data
  */
 export interface TEmailOTPUserProviderData {}
 
 /**
- * GitHub OAuth Provider Data
+ * GitHub OAuth User Provider Data
  */
 export interface TGitHubUserProviderData {
 	accessToken: string; // OAuth 2.0 access token
@@ -83,7 +83,7 @@ export interface TGitHubUserProviderData {
 }
 
 /**
- * Google OAuth + OIDC Provider Data
+ * Google OAuth + OIDC User Provider Data
  */
 export interface TGoogleUserProviderData {
 	accessToken: string; // OAuth 2.0 access token

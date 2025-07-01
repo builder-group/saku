@@ -23,7 +23,7 @@ export const FeedbackCard: React.FC<TFeedbackCardProps> = (props) => {
 							A quick review would mean the world to us - we really appreciate your support!
 						</Text>
 						<InlineStack gap="200">
-							<Button variant="primary" url={reviewUrl} external target="_blank">
+							<Button variant="primary" url={reviewUrl} target="_blank">
 								Leave a review
 							</Button>
 						</InlineStack>
@@ -41,7 +41,7 @@ export const FeedbackCard: React.FC<TFeedbackCardProps> = (props) => {
 							We're sorry to hear that you had a bad experience. Let us fix it!
 						</Text>
 						<InlineStack gap="200">
-							<Button variant="primary" url={improveRequestUrl} external target="_blank">
+							<Button variant="primary" url={improveRequestUrl} target="_blank">
 								Let us know how we can improve
 							</Button>
 						</InlineStack>

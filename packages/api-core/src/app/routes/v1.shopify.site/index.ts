@@ -1,9 +1,10 @@
 import { AppError } from '@repo/hono-utils';
-import { and, eq } from 'drizzle-orm';
+import { and, eq, isNull } from 'drizzle-orm';
 import { router } from '@/app/router';
-import { db, siteAccountTable, siteConnectionTable, siteTable } from '@/environment';
+import { db, siteTable, workspaceAccountTable, workspaceTable } from '@/environment';
 import { verifyShopifySession } from '@/lib';
 import {
+	CreateShopifySiteRoute,
 	GetShopifySitesRoute,
 	GetSiteContentByShopAndHandleRoute,
 	UpdateShopifySiteContentRoute
@@ -12,29 +13,30 @@ import {
 router.openapi(GetShopifySitesRoute, async (c) => {
 	const { shopId } = await verifyShopifySession(c);
 
+	// Find sites in workspaces that have this Shopify store connected
 	const sites = await db
 		.select({
 			id: siteTable.id,
-			userId: siteTable.userId,
+			workspaceId: siteTable.workspaceId,
 			handle: siteTable.handle,
 			displayName: siteTable.displayName,
 			createdAt: siteTable.createdAt,
 			updatedAt: siteTable.updatedAt
 		})
 		.from(siteTable)
-		.innerJoin(siteConnectionTable, eq(siteConnectionTable.siteId, siteTable.id))
 		.innerJoin(
-			siteAccountTable,
-			eq(siteAccountTable.providerAccountId, shopId) &&
-				eq(siteAccountTable.provider, 'shopify') &&
-				eq(siteAccountTable.provider, siteConnectionTable.provider) &&
-				eq(siteAccountTable.providerAccountId, siteConnectionTable.providerAccountId)
+			workspaceAccountTable,
+			and(
+				eq(workspaceAccountTable.workspaceId, siteTable.workspaceId),
+				eq(workspaceAccountTable.provider, 'shopify'),
+				eq(workspaceAccountTable.providerAccountId, shopId)
+			)
 		);
 
 	return c.json(
 		sites.map((site) => ({
 			id: site.id,
-			userId: site.userId,
+			workspaceId: site.workspaceId,
 			handle: site.handle,
 			displayName: site.displayName ?? undefined,
 			createdAt: site.createdAt.toISOString(),
@@ -44,24 +46,100 @@ router.openapi(GetShopifySitesRoute, async (c) => {
 	);
 });
 
+router.openapi(CreateShopifySiteRoute, async (c) => {
+	const { shopId } = await verifyShopifySession(c);
+	const { handle, displayName, content } = c.req.valid('json');
+
+	// Find workspace connected to this Shopify shop
+	const [workspace] = await db
+		.select({
+			id: workspaceTable.id
+		})
+		.from(workspaceTable)
+		.innerJoin(
+			workspaceAccountTable,
+			and(
+				eq(workspaceAccountTable.workspaceId, workspaceTable.id),
+				eq(workspaceAccountTable.provider, 'shopify'),
+				eq(workspaceAccountTable.providerAccountId, shopId)
+			)
+		)
+		.limit(1);
+	if (workspace == null) {
+		throw new AppError('#ERR_WORKSPACE_NOT_FOUND', 404, {
+			title: 'Workspace not found',
+			detail: `No workspace found for shop ${shopId}`
+		});
+	}
+
+	// Create the site
+	const [site] = await db
+		.insert(siteTable)
+		.values({
+			workspaceId: workspace.id,
+			handle,
+			displayName,
+			content,
+			updatedAt: new Date(),
+			createdAt: new Date()
+		})
+		.returning({
+			id: siteTable.id,
+			workspaceId: siteTable.workspaceId,
+			handle: siteTable.handle,
+			displayName: siteTable.displayName,
+			content: siteTable.content,
+			createdAt: siteTable.createdAt,
+			updatedAt: siteTable.updatedAt
+		});
+	if (site == null) {
+		throw new AppError('#ERR_SITE_CREATE_FAILED', 500, {
+			title: 'Site creation failed',
+			detail: 'Failed to create site'
+		});
+	}
+
+	// Mark onboarding as complete (first site created)
+	await db
+		.update(workspaceTable)
+		.set({
+			onboardingCompletedAt: new Date(),
+			updatedAt: new Date()
+		})
+		.where(and(eq(workspaceTable.id, workspace.id), isNull(workspaceTable.onboardingCompletedAt)));
+
+	return c.json(
+		{
+			id: site.id,
+			workspaceId: site.workspaceId,
+			handle: site.handle,
+			displayName: site.displayName ?? undefined,
+			content: site.content,
+			createdAt: site.createdAt.toISOString(),
+			updatedAt: site.updatedAt.toISOString()
+		},
+		201
+	);
+});
+
 router.openapi(UpdateShopifySiteContentRoute, async (c) => {
 	const { shopId } = await verifyShopifySession(c);
 	const { siteId } = c.req.valid('param');
 	const { content } = c.req.valid('json');
 
-	// Check if site exists and is connected to this Shopify shop
+	// Check if site exists and belongs to a workspace connected to this Shopify shop
 	const [existingSite] = await db
 		.select({
 			id: siteTable.id
 		})
 		.from(siteTable)
-		.innerJoin(siteConnectionTable, eq(siteConnectionTable.siteId, siteTable.id))
 		.innerJoin(
-			siteAccountTable,
-			eq(siteAccountTable.providerAccountId, shopId) &&
-				eq(siteAccountTable.provider, 'shopify') &&
-				eq(siteAccountTable.provider, siteConnectionTable.provider) &&
-				eq(siteAccountTable.providerAccountId, siteConnectionTable.providerAccountId)
+			workspaceAccountTable,
+			and(
+				eq(workspaceAccountTable.workspaceId, siteTable.workspaceId),
+				eq(workspaceAccountTable.provider, 'shopify'),
+				eq(workspaceAccountTable.providerAccountId, shopId)
+			)
 		)
 		.where(eq(siteTable.id, siteId))
 		.limit(1);
@@ -82,7 +160,7 @@ router.openapi(UpdateShopifySiteContentRoute, async (c) => {
 		.where(eq(siteTable.id, siteId))
 		.returning({
 			id: siteTable.id,
-			userId: siteTable.userId,
+			workspaceId: siteTable.workspaceId,
 			handle: siteTable.handle,
 			displayName: siteTable.displayName,
 			content: siteTable.content,
@@ -100,7 +178,7 @@ router.openapi(UpdateShopifySiteContentRoute, async (c) => {
 	return c.json(
 		{
 			id: site.id,
-			userId: site.userId,
+			workspaceId: site.workspaceId,
 			handle: site.handle,
 			displayName: site.displayName ?? undefined,
 			content: site.content,
@@ -114,26 +192,21 @@ router.openapi(UpdateShopifySiteContentRoute, async (c) => {
 router.openapi(GetSiteContentByShopAndHandleRoute, async (c) => {
 	const { shop, handle } = c.req.valid('param');
 
+	// Find site by handle in workspace connected to this Shopify shop
 	const [site] = await db
 		.select({
 			content: siteTable.content
 		})
 		.from(siteTable)
-		.innerJoin(siteConnectionTable, eq(siteTable.id, siteConnectionTable.siteId))
 		.innerJoin(
-			siteAccountTable,
+			workspaceAccountTable,
 			and(
-				eq(siteConnectionTable.provider, siteAccountTable.provider),
-				eq(siteConnectionTable.providerAccountId, siteAccountTable.providerAccountId)
+				eq(workspaceAccountTable.workspaceId, siteTable.workspaceId),
+				eq(workspaceAccountTable.provider, 'shopify'),
+				eq(workspaceAccountTable.providerAccountId, shop)
 			)
 		)
-		.where(
-			and(
-				eq(siteTable.handle, handle),
-				eq(siteAccountTable.provider, 'shopify'),
-				eq(siteAccountTable.providerAccountId, shop)
-			)
-		)
+		.where(eq(siteTable.handle, handle))
 		.limit(1);
 
 	if (site == null) {

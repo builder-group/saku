@@ -1,6 +1,6 @@
 import { eq } from 'drizzle-orm';
 import { router } from '@/app/router';
-import { db, logger, shopifySessionTable, siteAccountTable } from '@/environment';
+import { db, logger, shopifySessionTable, workspaceAccountTable } from '@/environment';
 import { verifyShopifyWebhook } from '@/lib';
 import {
 	AppScopesUpdateWebhookRoute,
@@ -62,11 +62,12 @@ router.openapi(ShopRedactWebhookRoute, async (c) => {
 	// 1. Delete Shopify sessions for this shop
 	await db.delete(shopifySessionTable).where(eq(shopifySessionTable.shopId, shopDomain));
 
-	// 2. Delete shop account data (this will cascade delete site connections, .. automatically)
+	// 2. Delete workspace account data (Shopify store connection)
 	await db
-		.delete(siteAccountTable)
+		.delete(workspaceAccountTable)
 		.where(
-			eq(siteAccountTable.provider, 'shopify') && eq(siteAccountTable.providerAccountId, shopDomain)
+			eq(workspaceAccountTable.provider, 'shopify') &&
+				eq(workspaceAccountTable.providerAccountId, shopDomain)
 		);
 
 	// Note: We do NOT delete user accounts in shop/redact

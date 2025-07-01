@@ -19,6 +19,7 @@ export function createApp(app: Hono = new Hono()): Hono {
 		corsMiddleware({
 			origin: [
 				appConfig.client.appUrl,
+				{ strategy: 'tld', domain: 'myshopify.com' },
 				...(appConfig.env === 'local' || appConfig.env === 'development'
 					? ([{ strategy: 'tld', domain: 'trycloudflare.com' }] satisfies TCorsOrigin)
 					: [])

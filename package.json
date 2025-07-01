@@ -29,8 +29,8 @@
 	"devDependencies": {
 		"@blgc/config": "^0.0.35",
 		"@shopify/cli": "^3.81.2",
-		"eslint": "^9.29.0",
-		"prettier": "^3.6.1",
+		"eslint": "^9.30.0",
+		"prettier": "^3.6.2",
 		"rollup": "^4.44.1",
 		"rollup-presets": "^0.0.21",
 		"shx": "^0.4.0",

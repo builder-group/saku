@@ -3,27 +3,40 @@ import { TitleBar } from '@shopify/app-bridge-react';
 import {
 	Badge,
 	Button,
+	ButtonGroup,
 	Card,
 	Layout,
 	Page as PolarisPage,
+	Spinner,
 	Text,
 	TextField
 } from '@shopify/polaris';
+import { useFeatureState } from 'feature-react';
 import React from 'react';
-import { ClipboardButton, FeedbackCard, GetInTouchCard, SitePreview, ViewIcon } from '@/components';
-import { coreApiClient } from '@/environment';
-import { appConfig, shopify } from '@/environment/.server';
-import { getSessionTokenFromRequest } from '@/lib/.server';
-import { useEditorModal } from '@/routes/app.modal.editor.$/EditorModal';
+import {
+	ClipboardButton,
+	FeedbackCard,
+	GetInTouchCard,
+	IframeContent,
+	SitePreview,
+	ViewIcon
+} from '@/components';
+import { appConfig, shopify, shopifyConfig } from '@/environment/.server';
+import { getSessionTokenFromRequest, redirectWithAuth } from '@/lib/.server';
+import { usePageEditorModal } from '@/routes/app.modal.page-editor.$/PageEditorModal';
 import { TLoaderFunction } from '@/types';
+import { coreApiClient, logger } from '../../environment';
 
 const Page: React.FC = () => {
-	const { env, site } = useLoaderData<typeof loader>();
+	const { env, site, shouldOpenEditor } = useLoaderData<typeof loader>();
 
-	const { Modal: EditorModal, isOpenState: isEditorOpenState } = useEditorModal({
+	const { Modal: EditorModal, isOpenState: isEditorOpenState } = usePageEditorModal({
 		siteId: site?.id ?? '',
 		title: site?.displayName ?? ''
 	});
+	const isEditorOpen = useFeatureState(isEditorOpenState);
+
+	const [isLoadingEditor, setIsLoadingEditor] = React.useState(shouldOpenEditor);
 
 	// =========================================================================
 	// Events
@@ -34,8 +47,75 @@ const Page: React.FC = () => {
 	}, [isEditorOpenState]);
 
 	// =========================================================================
+	// Effects
+	// =========================================================================
+
+	// Auto-open editor if shouldOpenEditor is true
+	React.useEffect(() => {
+		if (shouldOpenEditor && site?.id != null) {
+			// Clean up URL first (to not get stuck in a "openEditor=true" loop)
+			const url = new URL(window.location.href);
+			url.searchParams.delete('openEditor');
+			window.history.replaceState({}, '', url.pathname + url.search);
+
+			// Open the editor
+			isEditorOpenState.set(true);
+		}
+	}, [shouldOpenEditor, site?.id, isEditorOpenState]);
+
+	// Stop loading when editor opens
+	React.useEffect(() => {
+		if (isEditorOpen && isLoadingEditor) {
+			setIsLoadingEditor(false);
+		}
+	}, [isEditorOpen, isLoadingEditor]);
+
+	// =========================================================================
 	// UI
 	// =========================================================================
+
+	// Show loading state when opening editor from onboarding
+	if (isLoadingEditor && site?.id != null) {
+		return (
+			<div className="flex h-screen items-center justify-center">
+				<div className="flex flex-col items-center gap-2">
+					<Spinner size="small" />
+					<Text as="p" variant="bodyMd" tone="subdued">
+						Loading Editor
+					</Text>
+				</div>
+			</div>
+		);
+	}
+
+	// Show no site state - this shouldn't normally happen if onboarding works correctly
+	if (site == null) {
+		return (
+			<div className="flex h-screen items-center justify-center">
+				<div className="flex flex-col items-center gap-4 text-center">
+					<Text as="h2" variant="headingLg">
+						No Bio Site Found
+					</Text>
+					<Text as="p" variant="bodyMd" tone="subdued">
+						Something went wrong. Please try refreshing the page or contact support.
+					</Text>
+					<ButtonGroup>
+						<Button variant="primary" onClick={() => window.location.reload()}>
+							Refresh Page
+						</Button>
+						<Button
+							variant="secondary"
+							url={`mailto:${env.support.email}`}
+							target="_blank"
+							external
+						>
+							Contact Support
+						</Button>
+					</ButtonGroup>
+				</div>
+			</div>
+		);
+	}
 
 	return (
 		<>
@@ -44,116 +124,88 @@ const Page: React.FC = () => {
 			<PolarisPage>
 				<TitleBar title="Saku Link In Bio">
 					<button variant="primary" onClick={handleCustomizeBio}>
-						{site != null ? 'Customize' : 'Create'}
+						Customize
 					</button>
-					{site?.url != null && (
-						<button
-							onClick={() => {
-								// TitleBar buttons in embedded apps can't use <a> tags - browser blocks them
-								// window.open() with noopener,noreferrer bypasses iframe security restrictions
-								window.open(site.url, '_blank', 'noopener,noreferrer');
-							}}
-						>
-							Visit
-						</button>
-					)}
+					<button
+						onClick={() => {
+							// TitleBar buttons in embedded apps can't use <a> tags - browser blocks them
+							// window.open() with noopener,noreferrer bypasses iframe security restrictions
+							window.open(site.url, '_blank', 'noopener,noreferrer');
+						}}
+					>
+						Visit
+					</button>
 				</TitleBar>
 
 				<Layout>
 					<Layout.Section>
 						{/* Bio Preview Card */}
 						<Card>
-							{site != null ? (
-								<>
-									<SitePreview url={site.url} />
+							<SitePreview url={site.url} content={<IframeContent url={site.url} />} />
 
-									{/* Theme List Item */}
-									<div className="mt-4 flex items-center justify-between gap-4">
-										<div className="flex items-center gap-3">
-											{/* Small Thumbnail */}
-											<div className="h-16 w-24 rounded-md bg-gray-200" />
+							{/* Theme List Item */}
+							<div className="mt-4 flex items-center justify-between gap-4">
+								<div className="flex items-center gap-3">
+									{/* Small Thumbnail */}
+									<div className="h-16 w-24 rounded-md bg-gray-200" />
 
-											{/* Content */}
-											<div className="flex flex-col items-start gap-1">
-												<div className="flex flex-wrap items-center gap-2">
-													<Text as="h3" variant="headingMd">
-														{site.displayName ?? site.handle}
-													</Text>
-													<Badge tone="success">Current</Badge>
-												</div>
-												<Text as="p" variant="bodyMd" tone="subdued">
-													Last Updated:{' '}
-													{site.updatedAt != null
-														? new Date(site.updatedAt).toLocaleDateString()
-														: 'Never'}
-												</Text>
-											</div>
+									{/* Content */}
+									<div className="flex flex-col items-start gap-1">
+										<div className="flex flex-wrap items-center gap-2">
+											<Text as="h3" variant="headingMd">
+												{site.displayName ?? site.handle}
+											</Text>
+											<Badge tone="success">Current</Badge>
 										</div>
-
-										{/* Action Buttons */}
-										<div className="flex items-center gap-2">
-											<Button
-												icon={ViewIcon}
-												variant="secondary"
-												url={site.url}
-												external
-												target="_blank"
-												accessibilityLabel="Visit your Link In Bio page"
-											/>
-											<Button variant="primary" onClick={handleCustomizeBio}>
-												Customize
-											</Button>
-										</div>
+										<Text as="p" variant="bodyMd" tone="subdued">
+											Last Updated:{' '}
+											{site.updatedAt != null
+												? new Date(site.updatedAt).toLocaleDateString()
+												: 'Never'}
+										</Text>
 									</div>
-								</>
-							) : (
-								<div className="mt-4 flex flex-col items-center gap-4 p-4">
-									<Text as="h3" variant="headingMd">
-										No Bio Site Found
-									</Text>
+								</div>
+
+								{/* Action Buttons */}
+								<div className="flex items-center gap-2">
 									<Button
-										variant="primary"
-										onClick={() => {
-											// TODO
-										}}
-									>
-										Create Bio Site
+										icon={ViewIcon}
+										variant="secondary"
+										url={site.url}
+										target="_blank"
+										accessibilityLabel="Visit your Link In Bio page"
+									/>
+									<Button variant="primary" onClick={handleCustomizeBio}>
+										Customize
 									</Button>
 								</div>
-							)}
+							</div>
 						</Card>
 					</Layout.Section>
 
 					<Layout.Section variant="oneThird">
 						<div className="flex flex-col gap-5">
 							{/* Your Link Card */}
-							{site != null && (
-								<Card>
-									<div className="flex flex-col gap-3">
-										<div className="flex items-center justify-between">
-											<Text as="h2" variant="headingMd">
-												Your Link
-											</Text>
-											<Badge tone="success">Current</Badge>
-										</div>
-
-										<TextField
-											label=""
-											value={site.url}
-											readOnly
-											autoComplete="off"
-											connectedRight={<ClipboardButton textToCopy={site.url} />}
-										/>
+							<Card>
+								<div className="flex flex-col gap-3">
+									<div className="flex items-center justify-between">
+										<Text as="h2" variant="headingMd">
+											Your Link
+										</Text>
+										<Badge tone="success">Current</Badge>
 									</div>
-								</Card>
-							)}
 
+									<TextField
+										label=""
+										value={site.url}
+										readOnly
+										autoComplete="off"
+										connectedRight={<ClipboardButton textToCopy={site.url} />}
+									/>
+								</div>
+							</Card>
 							<FeedbackCard email={env.support.email} reviewUrl={env.distribution.shopify} />
-							<GetInTouchCard
-								version={env.version}
-								discordUrl={env.social.discord}
-								email={env.support.email}
-							/>
+							<GetInTouchCard email={env.support.email} discordUrl={env.social.discord} />
 						</div>
 					</Layout.Section>
 				</Layout>
@@ -167,6 +219,9 @@ export default Page;
 export const loader: TLoaderFunction<TLoaderData> = async ({ request }) => {
 	const { session } = await shopify.authenticate.admin(request);
 	const sessionToken = getSessionTokenFromRequest(request);
+	const url = new URL(request.url);
+	const shouldOpenEditor = url.searchParams.get('openEditor') === 'true';
+
 	const env = {
 		version: appConfig.version,
 		social: {
@@ -180,6 +235,30 @@ export const loader: TLoaderFunction<TLoaderData> = async ({ request }) => {
 		}
 	};
 
+	// 1. Check workspace onboarding status
+	const workspaceResult = await coreApiClient.get('/v1/shopify/workspace', {
+		headers: {
+			Authorization: `Bearer ${sessionToken}`
+		}
+	});
+	if (workspaceResult.isErr()) {
+		logger.error('Failed to fetch workspace', workspaceResult.error);
+		// TODO: Handle error
+		return {
+			site: null,
+			env,
+			shouldOpenEditor: false
+		};
+	}
+
+	const workspace = workspaceResult.value.data;
+
+	// 2. Check if onboarding is needed
+	if (workspace.onboardingCompletedAt == null) {
+		throw redirectWithAuth(request, '/app/onboarding');
+	}
+
+	// 3. Onboarding complete - fetch sites
 	const sitesResult = await coreApiClient.get('/v1/shopify/site', {
 		headers: {
 			Authorization: `Bearer ${sessionToken}`
@@ -188,7 +267,8 @@ export const loader: TLoaderFunction<TLoaderData> = async ({ request }) => {
 	if (sitesResult.isErr()) {
 		return {
 			site: null,
-			env
+			env,
+			shouldOpenEditor: false
 		};
 	}
 
@@ -197,11 +277,12 @@ export const loader: TLoaderFunction<TLoaderData> = async ({ request }) => {
 			sitesResult.value.data.map((site) => ({
 				id: site.id,
 				handle: site.handle,
-				url: `https://${session.shop}/a/saku/${site.handle}`,
+				url: `${shopifyConfig.proxy.url(session.shop)}/${site.handle}`,
 				displayName: site.displayName,
 				updatedAt: site.updatedAt
 			}))[0] ?? null,
-		env
+		env,
+		shouldOpenEditor
 	};
 };
 
@@ -219,6 +300,7 @@ interface TLoaderData {
 			shopify: string;
 		};
 	};
+	shouldOpenEditor: boolean;
 }
 
 interface TSite {

@@ -4,9 +4,9 @@ import { cn } from '../../lib';
 import { ChevronDownIcon } from '../display';
 
 export const AccordionSection: React.FC<AccordionSectionProps> = (props) => {
-	const { title, children, onToggle, open: controlledIsOpen } = props;
+	const { title, children, onToggle, open: controlledIsOpen, defaultOpen = true } = props;
 	const isControlled = React.useMemo(() => controlledIsOpen != null, [controlledIsOpen]);
-	const [internalOpen, setInternalOpen] = React.useState(true);
+	const [internalOpen, setInternalOpen] = React.useState(defaultOpen);
 	const isOpen = React.useMemo(
 		() => (isControlled ? (controlledIsOpen as boolean) : internalOpen),
 		[isControlled, controlledIsOpen, internalOpen]
@@ -53,5 +53,6 @@ export interface AccordionSectionProps {
 	title: string;
 	children: React.ReactNode;
 	open?: boolean;
+	defaultOpen?: boolean;
 	onToggle?: (open: boolean) => void;
 }

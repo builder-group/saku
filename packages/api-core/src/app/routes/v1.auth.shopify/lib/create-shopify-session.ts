@@ -3,18 +3,19 @@ import { and, eq } from 'drizzle-orm';
 import {
 	db,
 	shopifySessionTable,
-	siteAccountTable,
-	siteConnectionTable,
-	siteTable,
 	TEmailOTPUserProviderData,
 	TTransaction as TPgTransaction,
 	TShopifySessionData,
-	TSiteProviderData,
+	TWorkspaceProviderData,
+	TWorkspaceRole,
 	userAccountTable,
-	userTable
+	userTable,
+	workspaceAccountTable,
+	workspaceMemberTable,
+	workspaceTable
 } from '@/environment';
+import { createDisplayNameFromShop, createHandleFromShop } from '@/lib';
 import type { TShopifySessionDto } from '../schema';
-import { createDisplayNameFromShop } from './create-display-name-from-shop';
 import { createHandleFromEmail } from './create-handle-from-email';
 
 export async function createShopifySession(session: TShopifySessionDto): Promise<void> {
@@ -22,9 +23,9 @@ export async function createShopifySession(session: TShopifySessionDto): Promise
 		// 1. Store session data (works for both online and offline)
 		await upsertSession(tx, session);
 
-		// 2. Create user, site account, and shop site if online session
+		// 2. Create user, workspace, and workspace account if online session
 		if (session.isOnline) {
-			await upsertUserAndSiteAccount(tx, session);
+			await upsertUserAndWorkspace(tx, session);
 		}
 
 		return session;
@@ -81,7 +82,7 @@ async function upsertSession(tx: TPgTransaction, session: TShopifySessionDto): P
 		});
 }
 
-async function upsertUserAndSiteAccount(
+async function upsertUserAndWorkspace(
 	tx: TPgTransaction,
 	session: TShopifySessionDto
 ): Promise<void> {
@@ -136,33 +137,102 @@ async function upsertUserAndSiteAccount(
 			.onConflictDoNothing();
 	}
 
-	// 3. Check if shop is already connected to a different user
-	const [existingSiteAccount] = await tx
+	const shopHandle = createHandleFromShop(session.shop);
+
+	// 3. Find or create workspace for this Shopify store
+	// Note: For now, workspace = single Shopify store (1:1 relationship)
+	// While the schema supports multiple stores per workspace (future SaaS),
+	// we currently enforce 1 store = 1 workspace for simplicity.
+	// This is enforced by setting the workspace handle to the shop handle.
+	let [workspace] = await tx
 		.select({
-			userId: siteAccountTable.userId
+			id: workspaceTable.id
 		})
-		.from(siteAccountTable)
+		.from(workspaceTable)
+		.where(eq(workspaceTable.handle, shopHandle))
+		.limit(1);
+
+	// Create workspace for this Shopify store
+	if (workspace == null) {
+		[workspace] = await tx
+			.insert(workspaceTable)
+			.values({
+				handle: shopHandle,
+				displayName: createDisplayNameFromShop(session.shop),
+				updatedAt: new Date(),
+				createdAt: new Date()
+			})
+			.returning({
+				id: workspaceTable.id
+			});
+		if (workspace == null) {
+			throw new AppError('#ERR_WORKSPACE_CREATE_FAILED', 500, {
+				detail: 'Failed to create workspace'
+			});
+		}
+	}
+
+	// 4. Add user to workspace with appropriate role
+	const isAccountOwner = associatedUser.account_owner;
+	const isCollaborator = associatedUser.collaborator;
+
+	let workspaceRole: TWorkspaceRole;
+	if (isAccountOwner) {
+		workspaceRole = 'owner';
+	} else if (isCollaborator) {
+		workspaceRole = 'member'; // Collaborators get limited access
+	} else {
+		workspaceRole = 'admin'; // Staff members get admin access
+	}
+
+	// Check if user is already a member of this workspace
+	const [existingMember] = await tx
+		.select({
+			role: workspaceMemberTable.role
+		})
+		.from(workspaceMemberTable)
 		.where(
 			and(
-				eq(siteAccountTable.provider, 'shopify'),
-				eq(siteAccountTable.providerAccountId, session.shop)
+				eq(workspaceMemberTable.workspaceId, workspace.id),
+				eq(workspaceMemberTable.userId, user.id)
 			)
 		)
 		.limit(1);
-	if (existingSiteAccount != null && existingSiteAccount.userId !== user.id) {
-		throw new AppError('#ERR_SHOP_ALREADY_CONNECTED', 409, {
-			detail: `Shop ${session.shop} is already connected to another account. Please disconnect the existing connection first before connecting to a new account.`
+
+	// User is already a member - update role if they're now the account owner
+	// (handles case where staff member becomes owner, or owner status changes)
+	if (existingMember) {
+		if (isAccountOwner && existingMember.role !== 'owner') {
+			await tx
+				.update(workspaceMemberTable)
+				.set({
+					role: 'owner',
+					updatedAt: new Date()
+				})
+				.where(
+					and(
+						eq(workspaceMemberTable.workspaceId, workspace.id),
+						eq(workspaceMemberTable.userId, user.id)
+					)
+				);
+		}
+	}
+	// Add new user to workspace
+	else {
+		await tx.insert(workspaceMemberTable).values({
+			workspaceId: workspace.id,
+			userId: user.id,
+			role: workspaceRole,
+			updatedAt: new Date(),
+			createdAt: new Date()
 		});
 	}
 
-	// 4. Create/update site account and shop site
-	const isNewShop = existingSiteAccount == null;
-
-	// Create/update site account
+	// 5. Create workspace account (Shopify connection) - preserve original installer
 	await tx
-		.insert(siteAccountTable)
+		.insert(workspaceAccountTable)
 		.values({
-			userId: user.id,
+			workspaceId: workspace.id,
 			accountType: 'oauth',
 			provider: 'shopify',
 			providerAccountId: session.shop,
@@ -177,61 +247,9 @@ async function upsertUserAndSiteAccount(
 					locale: associatedUser.locale,
 					isCollaborator: associatedUser.collaborator
 				}
-			} satisfies TSiteProviderData,
+			} satisfies TWorkspaceProviderData,
 			updatedAt: new Date(),
 			createdAt: new Date()
 		})
-		.onConflictDoUpdate({
-			target: [siteAccountTable.provider, siteAccountTable.providerAccountId],
-			set: {
-				providerData: {
-					installer: {
-						shopifyId: associatedUser.id.toString(),
-						firstName: associatedUser.first_name,
-						lastName: associatedUser.last_name,
-						email: associatedUser.email,
-						emailVerified: associatedUser.email_verified,
-						isOwner: associatedUser.account_owner,
-						locale: associatedUser.locale,
-						isCollaborator: associatedUser.collaborator
-					}
-				},
-				updatedAt: new Date()
-			}
-		});
-
-	// Create bio site and connection if it's a new shop
-	if (isNewShop) {
-		// Create shop site
-		const [site] = await tx
-			.insert(siteTable)
-			.values({
-				userId: user.id,
-				handle: 'bio',
-				displayName: `${createDisplayNameFromShop(session.shop)} Bio`,
-				content: {}, // Empty content to start
-				updatedAt: new Date(),
-				createdAt: new Date()
-			})
-			.returning({
-				id: siteTable.id
-			});
-		if (site == null) {
-			throw new AppError('#ERR_SITE_CREATE_FAILED', 500, {
-				detail: 'Failed to create site'
-			});
-		}
-
-		// Connect bio site to Shopify store
-		await tx
-			.insert(siteConnectionTable)
-			.values({
-				siteId: site.id,
-				provider: 'shopify',
-				providerAccountId: session.shop,
-				updatedAt: new Date(),
-				createdAt: new Date()
-			})
-			.onConflictDoNothing();
-	}
+		.onConflictDoNothing(); // Don't overwrite existing installer data
 }
