@@ -1,5 +1,5 @@
 import { AppError } from '@repo/hono-utils';
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import {
 	db,
 	shopifySessionTable,
@@ -7,14 +7,15 @@ import {
 	TTransaction as TPgTransaction,
 	TShopifySessionData,
 	TWorkspaceProviderData,
+	TWorkspaceRole,
 	userAccountTable,
 	userTable,
 	workspaceAccountTable,
 	workspaceMemberTable,
 	workspaceTable
 } from '@/environment';
+import { createDisplayNameFromShop, createHandleFromShop } from '@/lib';
 import type { TShopifySessionDto } from '../schema';
-import { createDisplayNameFromShop } from './create-display-name-from-shop';
 import { createHandleFromEmail } from './create-handle-from-email';
 
 export async function createShopifySession(session: TShopifySessionDto): Promise<void> {
@@ -136,16 +137,19 @@ async function upsertUserAndWorkspace(
 			.onConflictDoNothing();
 	}
 
+	const shopHandle = createHandleFromShop(session.shop);
+
 	// 3. Find or create workspace for this Shopify store
 	// Note: For now, workspace = single Shopify store (1:1 relationship)
 	// While the schema supports multiple stores per workspace (future SaaS),
-	// we currently enforce 1 store = 1 workspace for simplicity
+	// we currently enforce 1 store = 1 workspace for simplicity.
+	// This is enforced by setting the workspace handle to the shop handle.
 	let [workspace] = await tx
 		.select({
 			id: workspaceTable.id
 		})
 		.from(workspaceTable)
-		.where(eq(workspaceTable.handle, session.shop))
+		.where(eq(workspaceTable.handle, shopHandle))
 		.limit(1);
 
 	// Create workspace for this Shopify store
@@ -153,7 +157,7 @@ async function upsertUserAndWorkspace(
 		[workspace] = await tx
 			.insert(workspaceTable)
 			.values({
-				handle: session.shop, // Use shop domain as workspace handle (for now) to enforce that a Shopify store = 1 workspace
+				handle: shopHandle,
 				displayName: createDisplayNameFromShop(session.shop),
 				updatedAt: new Date(),
 				createdAt: new Date()
@@ -168,25 +172,63 @@ async function upsertUserAndWorkspace(
 		}
 	}
 
-	// 4. Add user to workspace as owner (if not already a member)
-	await tx
-		.insert(workspaceMemberTable)
-		.values({
+	// 4. Add user to workspace with appropriate role
+	const isAccountOwner = associatedUser.account_owner;
+	const isCollaborator = associatedUser.collaborator;
+
+	let workspaceRole: TWorkspaceRole;
+	if (isAccountOwner) {
+		workspaceRole = 'owner';
+	} else if (isCollaborator) {
+		workspaceRole = 'member'; // Collaborators get limited access
+	} else {
+		workspaceRole = 'admin'; // Staff members get admin access
+	}
+
+	// Check if user is already a member of this workspace
+	const [existingMember] = await tx
+		.select({
+			role: workspaceMemberTable.role
+		})
+		.from(workspaceMemberTable)
+		.where(
+			and(
+				eq(workspaceMemberTable.workspaceId, workspace.id),
+				eq(workspaceMemberTable.userId, user.id)
+			)
+		)
+		.limit(1);
+
+	// User is already a member - update role if they're now the account owner
+	// (handles case where staff member becomes owner, or owner status changes)
+	if (existingMember) {
+		if (isAccountOwner && existingMember.role !== 'owner') {
+			await tx
+				.update(workspaceMemberTable)
+				.set({
+					role: 'owner',
+					updatedAt: new Date()
+				})
+				.where(
+					and(
+						eq(workspaceMemberTable.workspaceId, workspace.id),
+						eq(workspaceMemberTable.userId, user.id)
+					)
+				);
+		}
+	}
+	// Add new user to workspace
+	else {
+		await tx.insert(workspaceMemberTable).values({
 			workspaceId: workspace.id,
 			userId: user.id,
-			role: 'owner',
+			role: workspaceRole,
 			updatedAt: new Date(),
 			createdAt: new Date()
-		})
-		.onConflictDoUpdate({
-			target: [workspaceMemberTable.workspaceId, workspaceMemberTable.userId],
-			set: {
-				role: 'owner', // Ensure installer is always owner
-				updatedAt: new Date()
-			}
 		});
+	}
 
-	// 5. Create/update workspace account (Shopify connection)
+	// 5. Create workspace account (Shopify connection) - preserve original installer
 	await tx
 		.insert(workspaceAccountTable)
 		.values({
@@ -209,26 +251,5 @@ async function upsertUserAndWorkspace(
 			updatedAt: new Date(),
 			createdAt: new Date()
 		})
-		.onConflictDoUpdate({
-			target: [
-				workspaceAccountTable.workspaceId,
-				workspaceAccountTable.provider,
-				workspaceAccountTable.providerAccountId
-			],
-			set: {
-				providerData: {
-					installer: {
-						shopifyId: associatedUser.id.toString(),
-						firstName: associatedUser.first_name,
-						lastName: associatedUser.last_name,
-						email: associatedUser.email,
-						emailVerified: associatedUser.email_verified,
-						isOwner: associatedUser.account_owner,
-						locale: associatedUser.locale,
-						isCollaborator: associatedUser.collaborator
-					}
-				},
-				updatedAt: new Date()
-			}
-		});
+		.onConflictDoNothing(); // Don't overwrite existing installer data
 }
