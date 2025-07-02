@@ -226,8 +226,8 @@ importers:
         specifier: ^0.0.28
         version: 0.0.28
       xml-tokenizer:
-        specifier: ^0.0.35
-        version: 0.0.35
+        specifier: ^0.0.36
+        version: 0.0.36
       zod:
         specifier: 3.25.67
         version: 3.25.67
@@ -6114,8 +6114,8 @@ packages:
   xml-tokenizer@0.0.32:
     resolution: {integrity: sha512-0f86fWVZUrxLrFxs3ZIgmtmPKVHm0Wc0J2TBZbivBE+cSPjgg2p4bAb246xKEfNbvjsGg37cFJuXsVRoE3OlHQ==}
 
-  xml-tokenizer@0.0.35:
-    resolution: {integrity: sha512-WnI62Bh0ZpTHuteR+1F5LakukR2WjyxNbFHWnHRyFWa43M9NbTIRtQyL3iFAE39RPIX7cbAkLwIybnOHIoYNWA==}
+  xml-tokenizer@0.0.36:
+    resolution: {integrity: sha512-Fs7vnsi6UU8ZoyLa/PpH3HtDiH+neuxKfe1pFP/Es3sTVbRnGCrbEln2W06IxMKJ1l5dd1sNs6kzSAmMyxtSRg==}
 
   xtend@4.0.2:
     resolution: {integrity: sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==}
@@ -12761,7 +12761,7 @@ snapshots:
 
   xml-tokenizer@0.0.32: {}
 
-  xml-tokenizer@0.0.35: {}
+  xml-tokenizer@0.0.36: {}
 
   xtend@4.0.2: {}
 

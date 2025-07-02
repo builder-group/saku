@@ -55,7 +55,7 @@
 		"valibot": "^1.1.0",
 		"validatenv": "^0.0.38",
 		"validation-adapters": "^0.0.28",
-		"xml-tokenizer": "^0.0.35",
+		"xml-tokenizer": "^0.0.36",
 		"zod": "3.25.67"
 	},
 	"devDependencies": {
