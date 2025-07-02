@@ -47,7 +47,7 @@
 		"feature-fetch": "^0.0.48",
 		"feature-logger": "^0.0.42",
 		"gql.tada": "^1.8.11",
-		"head-metadata": "0.0.4",
+		"head-metadata": "0.0.7",
 		"hono": "^4.8.3",
 		"jose": "^6.0.11",
 		"pg": "^8.16.3",
@@ -55,7 +55,7 @@
 		"valibot": "^1.1.0",
 		"validatenv": "^0.0.38",
 		"validation-adapters": "^0.0.28",
-		"xml-tokenizer": "^0.0.36",
+		"xml-tokenizer": "^0.0.40",
 		"zod": "3.25.67"
 	},
 	"devDependencies": {

@@ -1,8 +1,8 @@
 import { writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { AppError } from '@repo/hono-utils';
+import { htmlConfig, tokenize, type TXmlToken } from 'xml-tokenizer';
 import { logger } from '@/environment';
-import { htmlConfig, tokenize, type TXmlToken } from '@/lib';
 
 export async function parseLinkpopHtml(html: string): Promise<TLinkPopData> {
 	const linkpopDataString = await getLinkpopDataString(html);
