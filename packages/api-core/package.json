@@ -55,16 +55,16 @@
 		"valibot": "^1.1.0",
 		"validatenv": "^0.0.38",
 		"validation-adapters": "^0.0.28",
-		"xml-tokenizer": "^0.0.33",
+		"xml-tokenizer": "^0.0.35",
 		"zod": "3.25.67"
 	},
 	"devDependencies": {
 		"@hono/node-server": "^1.14.4",
 		"@rollup/plugin-replace": "^6.0.2",
-		"@types/node": "^24.0.7",
+		"@types/node": "^24.0.10",
 		"@types/pg": "^8.15.4",
 		"@types/react": "^19.1.8",
-		"dotenv": "^17.0.0",
+		"dotenv": "^17.0.1",
 		"drizzle-kit": "^0.31.4",
 		"minimist": "^1.2.8"
 	}

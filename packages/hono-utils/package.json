@@ -45,6 +45,6 @@
 	},
 	"devDependencies": {
 		"@repo/types": "workspace:*",
-		"@types/node": "^24.0.7"
+		"@types/node": "^24.0.10"
 	}
 }
