@@ -16,21 +16,7 @@ import { tokenize } from '@/lib/xml-tokenizer';
 tokenize(html, callback, htmlConfig); // Works as expected
 ```
 
-### Example Case: Parsing LinkPop HTML
-
-When parsing HTML from `linkpop.com/mrbeast`:
-
-```typescript
-// NPM package version (fails in production)
-let linkPopDataString = await getLinkpopDataStringNpm(html);
-// Error: XmlError: invalid name token at 6:6 (;}],null]
-
-// Inlined version (works in both dev and prod)
-linkPopDataString = await getLinkpopDataString(html);
-// Successfully extracts LinkPop data
-```
-
-**Production Error:**
+**Full Error:**
 ```
 error: XmlError: invalid name token at 6:6 (;}],null]
 " /><!DOCTYPE html><)
@@ -48,6 +34,29 @@ at getLinkpopDataStringNpm (file:///app/build/server/index.js?t=1751437367000:10
   pos: { row: 6, col: 6, contextSlice: ';}],null]\n" /><!DOCTYPE html><' }
 }
 ```
+
+### How to Reproduce
+
+1. Replace the inlined import with the npm package:
+```typescript
+// In parse-linkpop-html.ts, change:
+import { tokenize } from '@/lib/xml-tokenizer';
+// to:
+import { tokenize } from 'xml-tokenizer';
+```
+
+2. Build and run with Docker:
+```bash
+cd devops
+docker compose up --build
+```
+
+3. Test the endpoint:
+```bash
+curl "http://localhost:3000/api/v1/site/parse/external?url=https://linkpop.com/mrbeast"
+```
+
+The NPM package version will fail with the error shown above, while the inlined version works correctly.
 
 ### Current Understanding
 
