@@ -140,7 +140,7 @@ async function upsertUserAndWorkspace(
 	const shopHandle = createHandleFromShop(session.shop);
 
 	// 3. Find or create workspace for this Shopify store
-	// Note: For now, workspace = single Shopify store (1:1 relationship)
+	// Note: Currently, workspace = single Shopify store (1:1 relationship)
 	// While the schema supports multiple stores per workspace (future SaaS),
 	// we currently enforce 1 store = 1 workspace for simplicity.
 	// This is enforced by setting the workspace handle to the shop handle.

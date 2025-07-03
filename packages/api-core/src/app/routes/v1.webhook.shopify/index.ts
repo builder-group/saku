@@ -1,7 +1,14 @@
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import { router } from '@/app/router';
-import { db, logger, shopifySessionTable, workspaceAccountTable } from '@/environment';
+import {
+	db,
+	logger,
+	shopifySessionTable,
+	workspaceAccountTable,
+	workspaceTable
+} from '@/environment';
 import { verifyShopifyWebhook } from '@/lib';
+import { createHandleFromShop } from '@/lib/shopify';
 import {
 	AppScopesUpdateWebhookRoute,
 	AppUninstalledWebhookRoute,
@@ -60,23 +67,71 @@ router.openapi(ShopRedactWebhookRoute, async (c) => {
 	// This happens 48 hours after app uninstallation
 
 	// 1. Delete Shopify sessions for this shop
-	await db.delete(shopifySessionTable).where(eq(shopifySessionTable.shopId, shopDomain));
+	const deletedSessions = await db
+		.delete(shopifySessionTable)
+		.where(eq(shopifySessionTable.shopId, shopDomain))
+		.returning({ sessionId: shopifySessionTable.sessionId });
+
+	logger.info(`Deleted ${deletedSessions.length} Shopify sessions for shop: ${shopDomain}`);
 
 	// 2. Delete workspace account data (Shopify store connection)
-	await db
+	const deletedShopifyAccounts = await db
 		.delete(workspaceAccountTable)
 		.where(
-			eq(workspaceAccountTable.provider, 'shopify') &&
+			and(
+				eq(workspaceAccountTable.provider, 'shopify'),
 				eq(workspaceAccountTable.providerAccountId, shopDomain)
-		);
+			)
+		)
+		.returning({ workspaceId: workspaceAccountTable.workspaceId });
+
+	logger.info(
+		`Deleted ${deletedShopifyAccounts.length} workspace accounts for shop: ${shopDomain}`
+	);
+
+	const shopHandle = createHandleFromShop(shopDomain);
+
+	// 3. Delete workspace if it was created specifically for this Shopify store
+	// and no other accounts are connected to it
+	// Note: Currently, workspace = single Shopify store (1:1 relationship)
+	// While the schema supports multiple stores per workspace (future SaaS),
+	// we currently enforce 1 store = 1 workspace for simplicity.
+	// This is enforced by setting the workspace handle to the shop handle.
+	for (const deletedShopifyAccount of deletedShopifyAccounts) {
+		const workspaceId = deletedShopifyAccount.workspaceId;
+
+		// Get workspace info and remaining account count
+		const [workspace] = await db
+			.select({
+				id: workspaceTable.id,
+				remainingAccountCount: db.$count(
+					workspaceAccountTable,
+					eq(workspaceAccountTable.workspaceId, workspaceId)
+				)
+			})
+			.from(workspaceTable)
+			.where(and(eq(workspaceTable.id, workspaceId), eq(workspaceTable.handle, shopHandle)))
+			.limit(1);
+
+		// Only delete if workspace exists with correct handle and has no remaining accounts
+		// Note: Shopify account was deleted in the previous step
+		// Note: This will cascade delete: sites, workspace members, and all related content
+		if (workspace != null && workspace.remainingAccountCount === 0) {
+			await db.delete(workspaceTable).where(eq(workspaceTable.id, workspaceId));
+			logger.info(
+				`Deleted workspace and all associated data for shop: ${shopDomain} (ID: ${workspaceId}, handle: ${shopHandle})`
+			);
+			logger.info(`  - Cascade deleted: sites, workspace members, site content`);
+		}
+	}
 
 	// Note: We do NOT delete user accounts in shop/redact
-	// - Users may have multiple shops
+	// - Users may have multiple shops/workspaces
 	// - Users may reconnect the same shop later
 	// - Privacy laws require explicit consent for account deletion
 	// - This webhook is about shop data, not user account deletion
 
-	logger.info(`Deleted all data for shop: ${shopDomain}`);
+	logger.info(`Shop redaction completed for: ${shopDomain}`);
 
 	return c.json(
 		{
@@ -101,7 +156,7 @@ router.openapi(AppUninstalledWebhookRoute, async (c) => {
 		.where(eq(shopifySessionTable.shopId, shopDomain))
 		.returning({ sessionId: shopifySessionTable.sessionId });
 
-	logger.info(`Deleted ${deletedSessions.length} sessions for shop: ${shopDomain}`);
+	logger.info(`Deleted ${deletedSessions.length} Shopify sessions for shop: ${shopDomain}`);
 
 	// Note: We do NOT delete shop account data here
 	// - Shop data deletion happens in shop/redact webhook (48 hours later)

@@ -19,7 +19,7 @@ CREATE TABLE "site" (
 	"content" jsonb NOT NULL,
 	"updated_at" timestamp NOT NULL,
 	"created_at" timestamp NOT NULL,
-	CONSTRAINT "site_handle_unique" UNIQUE("handle")
+	CONSTRAINT "handle_per_workspace_idx" UNIQUE("workspace_id","handle")
 );
 --> statement-breakpoint
 CREATE TABLE "user_account" (
