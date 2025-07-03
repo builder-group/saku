@@ -44,7 +44,6 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 			visible: true,
 			style: {
 				padding: 'inherit',
-				margin: 'inherit',
 				backgroundColor: 'transparent',
 				font: 'inherit',
 				fontSize: 16,
@@ -84,7 +83,6 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 					},
 					style: {
 						padding: 'inherit',
-						margin: 'inherit',
 						backgroundColor: 'inherit',
 						font: 'inherit',
 						fontSize: 'inherit',
@@ -104,7 +102,6 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 					visible: true,
 					style: {
 						padding: 'inherit',
-						margin: 'inherit',
 						backgroundColor: 'inherit',
 						font: 'inherit',
 						fontSize: 'inherit',
@@ -133,7 +130,6 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 					backgroundColor: convertRgbaToHex(page?.themeSettings?.linkCardColor) ?? '#ffffff',
 					spacing: 16,
 					padding: 8,
-					margin: 0,
 					font: {
 						family: primaryFont,
 						weight: 400,
