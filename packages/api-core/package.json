@@ -41,6 +41,7 @@
 		"@blgc/utils": "^0.0.57",
 		"@hono/zod-openapi": "^0.19.9",
 		"@hono/zod-validator": "^0.7.0",
+		"@repo/editor": "workspace:*",
 		"@repo/hono-utils": "workspace:*",
 		"drizzle-orm": "^0.44.2",
 		"drizzle-zod": "^0.8.2",

@@ -1,9 +1,9 @@
+import { TStyleReference } from '@repo/editor';
 import { Text, TextField, TextFieldProps } from '@shopify/polaris';
 import { useCompute } from 'feature-react/state';
 import { TState } from 'feature-state';
 import React from 'react';
 import { LinkIcon, LinkOffIcon } from '@/components';
-import { TStyleReference } from '../../../types';
 
 export const TextStyleField = <GNodeValue, GParentNodeValue, GValue>(
 	props: TTextStyleFieldProps<GNodeValue, GParentNodeValue, GValue>

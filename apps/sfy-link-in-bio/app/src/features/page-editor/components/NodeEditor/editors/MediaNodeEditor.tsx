@@ -1,8 +1,8 @@
+import { TMediaNode } from '@repo/editor';
 import { InlineError, Select, Text } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react/state';
 import React from 'react';
 import { AccordionSection, ImageUploadField, TImageUploadOnChangeImage } from '@/components';
-import { TMediaNode } from '../../../types';
 import { TextStyleField, ToggleStyleField } from '../fields';
 import { TNodeEditorComponentProps } from '../nodeEditorRegistry';
 
@@ -100,8 +100,14 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 			</AccordionSection>
 
 			{/* Style Section */}
-			<AccordionSection title="Style" defaultOpen={true}>
-				<div className="space-y-3">
+			<AccordionSection title="Style" defaultOpen={true} collapsibleClassName="px-0 space-y-3">
+				{/* Layout */}
+				<div className="space-y-3 px-4">
+					<div>
+						<Text as="span" variant="headingXs" tone="subdued">
+							Layout
+						</Text>
+					</div>
 					<div className="grid grid-cols-2 gap-3">
 						<TextStyleField
 							label="Padding"
@@ -118,59 +124,61 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 						/>
 
 						<TextStyleField
-							label="Margin"
+							label="Border Radius"
 							node={nodeState}
 							parentNode={parentNodeState}
-							nodeValueMapper={(value) => value.style.margin}
+							nodeValueMapper={(value) => value.style.borderRadius}
 							nodeValueSetter={(node, value) => {
-								node._v.style.margin = value;
+								node._v.style.borderRadius = value;
 								node._notify();
 							}}
-							parentValueMapper={(parent) => parent.style.children?.margin}
+							parentValueMapper={(parent) => parent.style.children?.borderRadius}
 							type="number"
 							autoComplete="off"
 						/>
 					</div>
+				</div>
 
-					<TextStyleField
-						label="Background Color"
-						node={nodeState}
-						parentNode={parentNodeState}
-						nodeValueMapper={(value) => value.style.backgroundColor}
-						nodeValueSetter={(node, value) => {
-							node._v.style.backgroundColor = value;
-							node._notify();
-						}}
-						parentValueMapper={(parent) => parent.style.children?.backgroundColor}
-						autoComplete="off"
-					/>
+				<div className="h-px bg-gray-200" />
 
-					<TextStyleField
-						label="Border Radius"
-						node={nodeState}
-						parentNode={parentNodeState}
-						nodeValueMapper={(value) => value.style.borderRadius}
-						nodeValueSetter={(node, value) => {
-							node._v.style.borderRadius = value;
-							node._notify();
-						}}
-						parentValueMapper={(parent) => parent.style.children?.borderRadius}
-						type="number"
-						autoComplete="off"
-					/>
+				{/* Background & Effects */}
+				<div className="space-y-3 px-4">
+					<div>
+						<Text as="span" variant="headingXs" tone="subdued">
+							Background & Effects
+						</Text>
+					</div>
+					<div className="space-y-3">
+						<div>
+							<TextStyleField
+								label="Background Color"
+								node={nodeState}
+								parentNode={parentNodeState}
+								nodeValueMapper={(value) => value.style.backgroundColor}
+								nodeValueSetter={(node, value) => {
+									node._v.style.backgroundColor = value;
+									node._notify();
+								}}
+								parentValueMapper={(parent) => parent.style.children?.backgroundColor}
+								autoComplete="off"
+							/>
+						</div>
 
-					<ToggleStyleField
-						label="Shadow"
-						node={nodeState}
-						parentNode={parentNodeState}
-						nodeValueMapper={(value) => value.style.shadow}
-						nodeValueSetter={(node, value) => {
-							node._v.style.shadow = value;
-							node._notify();
-						}}
-						parentValueMapper={(parent) => parent.style.children?.shadow}
-						ariaLabel="Enable shadow"
-					/>
+						<div>
+							<ToggleStyleField
+								label="Shadow"
+								node={nodeState}
+								parentNode={parentNodeState}
+								nodeValueMapper={(value) => value.style.shadow}
+								nodeValueSetter={(node, value) => {
+									node._v.style.shadow = value;
+									node._notify();
+								}}
+								parentValueMapper={(parent) => parent.style.children?.shadow}
+								ariaLabel="Enable shadow"
+							/>
+						</div>
+					</div>
 				</div>
 			</AccordionSection>
 		</>

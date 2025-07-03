@@ -1,9 +1,10 @@
 import { useLoaderData } from '@remix-run/react';
+import { TSite } from '@repo/editor';
 import { useAppBridge } from '@shopify/app-bridge-react';
 import { withGlobalBind } from 'feature-react/state';
 import React from 'react';
 import { coreApiClient } from '@/environment';
-import { createPageEditor, Editor, kangarooPreset, TSite } from '@/features/page-editor';
+import { createPageEditor, Editor, kangarooPreset } from '@/features/page-editor';
 import { TLoaderFunction } from '@/types';
 import './styles.module.css';
 

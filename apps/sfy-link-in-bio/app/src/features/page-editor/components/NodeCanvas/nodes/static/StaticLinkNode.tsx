@@ -22,7 +22,6 @@ export const StaticLinkNode = React.forwardRef<HTMLDivElement, TStaticLinkNodePr
 					className="relative flex w-full cursor-pointer items-center gap-3 overflow-hidden bg-white text-inherit no-underline hover:opacity-90"
 					style={{
 						padding: node.style.padding,
-						margin: node.style.margin,
 						backgroundColor: node.style.backgroundColor,
 						fontFamily: node.style.font?.family,
 						fontSize: node.style.fontSize,

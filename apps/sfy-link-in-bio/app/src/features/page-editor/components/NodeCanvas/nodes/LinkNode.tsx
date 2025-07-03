@@ -1,7 +1,8 @@
+import { TLinkNode } from '@repo/editor';
 import { useCombinedCompute } from 'feature-react';
 import React from 'react';
 import { resolveLinkNode, TNodeState, TPageEditor } from '../../../lib';
-import { TLinkNode, TResolvedLinkNode } from '../../../types';
+import { TResolvedLinkNode } from '../../../types';
 import { StaticLinkNode } from './static';
 
 export const LinkNode = React.forwardRef<HTMLDivElement, TLinkNodeProps>((props, ref) => {

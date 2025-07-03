@@ -1,6 +1,6 @@
+import { TNode, TNodeType } from '@repo/editor';
 import { IconSource } from '@shopify/polaris';
 import { LayoutSectionIcon } from '@/components';
-import { TNode, TNodeType } from '../types';
 
 export const nodeMetadataMap = {
 	page: {
@@ -16,7 +16,6 @@ export const nodeMetadataMap = {
 					backgroundColor: '#FFFFFF',
 					spacing: 16,
 					padding: 16,
-					margin: 8,
 					font: {
 						family: 'Inter',
 						weight: 400,
@@ -41,7 +40,6 @@ export const nodeMetadataMap = {
 			bio: 'Tell us about yourself',
 			style: {
 				padding: 'inherit' as const,
-				margin: 'inherit' as const,
 				backgroundColor: 'inherit' as const,
 				font: 'inherit' as const,
 				fontSize: 'inherit' as const,
@@ -64,7 +62,6 @@ export const nodeMetadataMap = {
 			},
 			style: {
 				padding: 'inherit' as const,
-				margin: 'inherit' as const,
 				backgroundColor: 'inherit' as const,
 				font: 'inherit' as const,
 				fontSize: 'inherit' as const,
@@ -87,7 +84,6 @@ export const nodeMetadataMap = {
 			},
 			style: {
 				padding: 'inherit' as const,
-				margin: 'inherit' as const,
 				backgroundColor: 'inherit' as const,
 				borderRadius: 'inherit' as const,
 				shadow: 'inherit' as const
@@ -103,7 +99,6 @@ export const nodeMetadataMap = {
 			text: 'Add your text here',
 			style: {
 				padding: 'inherit' as const,
-				margin: 'inherit' as const,
 				backgroundColor: 'inherit' as const,
 				font: 'inherit' as const,
 				fontSize: 'inherit' as const,

@@ -6,15 +6,17 @@ import {
 	TMediaNode,
 	TNode,
 	TPageNode,
+	TSite,
+	TStyleReference,
+	TTextNode
+} from '@repo/editor';
+import {
 	TResolvedAboutNode,
 	TResolvedLinkNode,
 	TResolvedMediaNode,
 	TResolvedPageNode,
 	TResolvedSite,
-	TResolvedTextNode,
-	TSite,
-	TStyleReference,
-	TTextNode
+	TResolvedTextNode
 } from '../types';
 
 /**

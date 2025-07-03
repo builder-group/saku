@@ -1,10 +1,7 @@
 import { shortId } from '@blgc/utils';
-import { ShopifyGlobal } from '@shopify/app-bridge-react';
-import { createState, TState } from 'feature-state';
-import React from 'react';
-import { coreApiClient } from '@/environment';
-import { getFontMetadataByFamily, TSettingsSectionType, TViewType } from '../environment';
 import {
+	getFontHash,
+	getFontMetadataByFamily,
 	TAsset,
 	TAssetHash,
 	TFont,
@@ -14,10 +11,14 @@ import {
 	TNodeId,
 	TPageNode,
 	TSite
-} from '../types';
+} from '@repo/editor';
+import { ShopifyGlobal } from '@shopify/app-bridge-react';
+import { createState, TState } from 'feature-state';
+import React from 'react';
+import { coreApiClient } from '@/environment';
+import { TSettingsSectionType, TViewType } from '../environment';
 import { createNodeState, TNodeState } from './create-node-state';
 import { flattenNode, TFlattenedNode, unflattenNode } from './flatten-node';
-import { getFontHash } from './get-font-hash';
 import { getNodeAssetHashes } from './get-node-asset-hashes';
 
 export function createPageEditor(site: TSite, shopify: ShopifyGlobal): TPageEditor {

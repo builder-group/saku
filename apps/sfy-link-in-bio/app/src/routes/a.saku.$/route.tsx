@@ -1,4 +1,5 @@
 import { ServerErr, ServerOk } from '@blgc/utils';
+import { TSite } from '@repo/editor';
 import { AppProxyProvider } from '@shopify/shopify-app-remix/react';
 import { isStatusCode } from 'feature-fetch';
 import React from 'react';
@@ -8,8 +9,7 @@ import {
 	kangarooPreset,
 	resolveSite,
 	StaticNodeCanvas,
-	TResolvedSite,
-	TSite
+	TResolvedSite
 } from '@/features/page-editor';
 import { useLoaderResult } from '@/hooks';
 import styles from '@/styles.css?url';

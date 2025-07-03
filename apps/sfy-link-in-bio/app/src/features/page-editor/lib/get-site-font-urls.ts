@@ -1,5 +1,6 @@
 import { notEmpty } from '@blgc/utils';
-import { TResolvedSite, TSite } from '../types';
+import { TSite } from '@repo/editor';
+import { TResolvedSite } from '../types';
 
 export function getSiteFontUrls(site: TSite | TResolvedSite): string[] {
 	return site.assets

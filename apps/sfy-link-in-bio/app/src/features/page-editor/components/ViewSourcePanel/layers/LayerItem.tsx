@@ -1,6 +1,7 @@
 import { useDndContext } from '@dnd-kit/core';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { TNode } from '@repo/editor';
 import { Icon, Text } from '@shopify/polaris';
 import { useCompute } from 'feature-react/state';
 import { TState } from 'feature-state';
@@ -9,7 +10,6 @@ import { DeleteIcon, DragHandleIcon } from '@/components';
 import { cn } from '@/lib';
 import { nodeMetadataMap } from '../../../environment';
 import { TFlattenedNode, TPageEditor } from '../../../lib';
-import { TNode } from '../../../types';
 
 export const LayerItem: React.FC<TLayerItemProps> = (props) => {
 	const { nodeState, editor } = props;

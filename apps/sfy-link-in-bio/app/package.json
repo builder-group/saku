@@ -24,6 +24,7 @@
 		"shopify:deploy:prod": "shopify app deploy -c shopify.app.prod.toml",
 		"start": "remix-serve ./build/server/index.js",
 		"start:dev": "shopify app dev -c shopify.app.local.toml",
+		"typecheck": "tsc --noEmit",
 		"update:latest": "pnpm update --latest '!react' '!react-dom' '!@types/react' '!@types/react-dom'"
 	},
 	"dependencies": {
@@ -38,6 +39,7 @@
 		"@remix-run/react": "^2.16.8",
 		"@remix-run/serve": "^2.16.8",
 		"@repo/api-core": "workspace:*",
+		"@repo/editor": "workspace:*",
 		"@repo/types": "workspace:*",
 		"@shopify/app-bridge-react": "^4.1.10",
 		"@shopify/polaris": "^13.9.5",

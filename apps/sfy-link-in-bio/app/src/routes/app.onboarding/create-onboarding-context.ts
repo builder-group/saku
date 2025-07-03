@@ -1,7 +1,8 @@
 import { Err, Ok, shortId, type TResult } from '@blgc/utils';
+import { TSite } from '@repo/editor';
 import type { ShopifyGlobal } from '@shopify/app-bridge-types';
 import { coreApiClient } from '@/environment';
-import { blankPreset, type TSite } from '@/features/page-editor';
+import { blankPreset } from '@/features/page-editor';
 import { createStepr, type TStepr } from '@/lib/ui';
 
 export function createOnboardingContext(

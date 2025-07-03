@@ -1,6 +1,4 @@
-// TODO: Create shared font metadata (e.g. client fetches supported fonts from backend)
-
-import { TFont } from './site-types';
+import { TFont } from './types';
 
 export const fontMetadataMap = {
 	inter: {

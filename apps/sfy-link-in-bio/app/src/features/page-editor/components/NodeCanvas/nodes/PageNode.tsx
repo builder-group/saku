@@ -1,8 +1,8 @@
 import { notEmpty } from '@blgc/utils';
+import { TPageNode } from '@repo/editor';
 import { useCompute, useFeatureState } from 'feature-react';
 import React from 'react';
 import { TNodeState, TPageEditor } from '../../../lib';
-import { TPageNode } from '../../../types';
 import { Node } from '../Node';
 
 export const PageNode = React.forwardRef<HTMLDivElement, TPageNodeProps>((props, ref) => {

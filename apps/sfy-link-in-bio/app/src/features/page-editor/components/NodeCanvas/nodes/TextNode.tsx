@@ -1,7 +1,8 @@
+import { TTextNode } from '@repo/editor';
 import { useCombinedCompute } from 'feature-react';
 import React from 'react';
 import { resolveTextNode, TNodeState, TPageEditor } from '../../../lib';
-import { TResolvedTextNode, TTextNode } from '../../../types';
+import { TResolvedTextNode } from '../../../types';
 import { StaticTextNode } from './static';
 
 export const TextNode = React.forwardRef<HTMLDivElement, TTextNodeProps>((props, ref) => {

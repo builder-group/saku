@@ -1,6 +1,6 @@
+import { TNode } from '@repo/editor';
 import { createState, TState } from 'feature-state';
 import React from 'react';
-import { TNode } from '../types';
 import { TBoundingRect } from './create-page-editor';
 import { TFlattenedNode } from './flatten-node';
 

@@ -21,7 +21,6 @@ router.openapi(GetSiteRoute, async (c) => {
 		.from(siteTable)
 		.where(eq(siteTable.id, siteId))
 		.limit(1);
-
 	if (site == null) {
 		throw new AppError('#ERR_SITE_NOT_FOUND', 404, {
 			title: 'Site not found',

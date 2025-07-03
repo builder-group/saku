@@ -1,7 +1,8 @@
+import { TAboutNode } from '@repo/editor';
 import { useCombinedCompute } from 'feature-react';
 import React from 'react';
 import { resolveAboutNode, TNodeState, TPageEditor } from '../../../lib';
-import type { TAboutNode, TResolvedAboutNode } from '../../../types';
+import type { TResolvedAboutNode } from '../../../types';
 import { StaticAboutNode } from './static';
 
 export const AboutNode = React.forwardRef<HTMLDivElement, TAboutNodeProps>((props, ref) => {

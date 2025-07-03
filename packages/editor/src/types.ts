@@ -1,5 +1,3 @@
-// TODO: Create shared Site types (for both frontend and backend)
-
 export interface TSite {
 	version: `v0.0.1`;
 	id: string;
@@ -32,7 +30,6 @@ export interface TPageNode extends TBaseNode {
 			backgroundColor?: string;
 			spacing?: number;
 			padding?: number;
-			margin?: number;
 			font?: TFont;
 			fontSize?: number;
 			textColor?: string;
@@ -52,7 +49,6 @@ export interface TAboutNode extends TBaseNode {
 	style: {
 		// Layout
 		padding?: TStyleReference<number>;
-		margin?: TStyleReference<number>;
 		// Background
 		backgroundColor?: TStyleReference<string>;
 		// Typography
@@ -74,7 +70,6 @@ export interface TLinkNode extends TBaseNode {
 	style: {
 		// Layout
 		padding?: TStyleReference<number>;
-		margin?: TStyleReference<number>;
 		// Background
 		backgroundColor?: TStyleReference<string>;
 		// Typography
@@ -94,7 +89,6 @@ export interface TMediaNode extends TBaseNode {
 	style: {
 		// Layout
 		padding?: TStyleReference<number>;
-		margin?: TStyleReference<number>;
 		// Background
 		backgroundColor?: TStyleReference<string>;
 		// Border and effects
@@ -110,7 +104,6 @@ export interface TTextNode extends TBaseNode {
 	style: {
 		// Layout
 		padding?: TStyleReference<number>;
-		margin?: TStyleReference<number>;
 		// Background
 		backgroundColor?: TStyleReference<string>;
 		// Typography

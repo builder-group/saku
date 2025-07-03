@@ -1,6 +1,5 @@
-import { TAssetHash, TNode } from '../types';
+import { getFontHash, TAssetHash, TNode } from '@repo/editor';
 import { TFlattenedNode } from './flatten-node';
-import { getFontHash } from './get-font-hash';
 
 /**
  * Extracts all asset hashes referenced by a node

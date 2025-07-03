@@ -92,7 +92,6 @@ export const StaticAboutNode = React.forwardRef<HTMLDivElement, TStaticAboutNode
 						className="relative overflow-hidden"
 						style={{
 							padding: node.style.padding,
-							margin: node.style.margin,
 							backgroundColor: node.style.backgroundColor,
 							borderRadius: node.style.borderRadius,
 							boxShadow: node.style.shadow ? '0 4px 6px -1px rgb(0 0 0 / 0.1)' : undefined
@@ -104,8 +103,7 @@ export const StaticAboutNode = React.forwardRef<HTMLDivElement, TStaticAboutNode
 					// Flat style without background
 					<div
 						style={{
-							padding: node.style.padding,
-							margin: node.style.margin
+							padding: node.style.padding
 						}}
 					>
 						{content}

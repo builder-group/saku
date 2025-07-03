@@ -1,4 +1,4 @@
-import { TSocialLink } from '../types';
+import { TSocialLink } from '@repo/editor';
 
 export const socialMetadataMap = {
 	instagram: {

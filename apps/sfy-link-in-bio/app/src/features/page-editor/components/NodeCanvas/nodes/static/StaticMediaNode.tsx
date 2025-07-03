@@ -16,7 +16,6 @@ export const StaticMediaNode = React.forwardRef<HTMLDivElement, TStaticMediaNode
 					className="relative overflow-hidden"
 					style={{
 						padding: node.style.padding,
-						margin: node.style.margin,
 						backgroundColor: node.style.backgroundColor,
 						borderRadius: node.style.borderRadius,
 						boxShadow: node.style.shadow ? '0 4px 6px -1px rgb(0 0 0 / 0.1)' : undefined

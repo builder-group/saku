@@ -1,12 +1,12 @@
 'use client';
 
 import { shortId } from '@blgc/utils';
+import { TNode, TNodeType } from '@repo/editor';
 import { Icon, Popover, Text } from '@shopify/polaris';
 import React from 'react';
 import { useResizeObserver } from '@/hooks';
 import { nodeMetadata, nodeMetadataMap } from '../../../environment';
 import { TPageEditor } from '../../../lib';
-import { TNode, TNodeType } from '../../../types';
 
 export const LayerSelectorPopover: React.FC<TLayerSelectorPopoverProps> = (props) => {
 	const { editor, activator, width = 'auto' } = props;

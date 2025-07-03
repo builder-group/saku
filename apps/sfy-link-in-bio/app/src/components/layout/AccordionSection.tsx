@@ -4,7 +4,16 @@ import { cn } from '../../lib';
 import { ChevronDownIcon } from '../display';
 
 export const AccordionSection: React.FC<AccordionSectionProps> = (props) => {
-	const { title, children, onToggle, open: controlledIsOpen, defaultOpen = true } = props;
+	const {
+		title,
+		children,
+		onToggle,
+		open: controlledIsOpen,
+		defaultOpen = true,
+		className,
+		collapsibleClassName,
+		...divProps
+	} = props;
 	const isControlled = React.useMemo(() => controlledIsOpen != null, [controlledIsOpen]);
 	const [internalOpen, setInternalOpen] = React.useState(defaultOpen);
 	const isOpen = React.useMemo(
@@ -21,16 +30,18 @@ export const AccordionSection: React.FC<AccordionSectionProps> = (props) => {
 	}, [isControlled, onToggle, isOpen]);
 
 	return (
-		<div>
+		<>
 			<div
 				className={cn(
 					'flex cursor-pointer items-center justify-between border-b border-neutral-200 px-4 py-3 hover:bg-neutral-50',
-					isOpen && 'bg-neutral-100'
+					isOpen && 'bg-neutral-100',
+					className
 				)}
 				onClick={handleToggle}
 				role="button"
 				tabIndex={0}
 				aria-expanded={isOpen}
+				{...divProps}
 			>
 				<Text as="h3" variant="headingSm">
 					{title}
@@ -43,16 +54,18 @@ export const AccordionSection: React.FC<AccordionSectionProps> = (props) => {
 				</span>
 			</div>
 			<Collapsible open={isOpen} id={`accordion-section-${title.replace(/\s+/g, '-')}`}>
-				<div className="border-b border-neutral-200 px-4 py-4">{children}</div>
+				<div className={cn('border-b border-neutral-200 px-4 py-4', collapsibleClassName)}>
+					{children}
+				</div>
 			</Collapsible>
-		</div>
+		</>
 	);
 };
 
-export interface AccordionSectionProps {
+export interface AccordionSectionProps extends React.HTMLAttributes<HTMLDivElement> {
 	title: string;
-	children: React.ReactNode;
 	open?: boolean;
 	defaultOpen?: boolean;
 	onToggle?: (open: boolean) => void;
+	collapsibleClassName?: string;
 }

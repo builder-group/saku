@@ -1,4 +1,4 @@
-import { TNode, TNodeId } from '../types';
+import { TNode, TNodeId } from '@repo/editor';
 
 /**
  * Flattens a hierarchical node structure into a flat map

@@ -1,6 +1,6 @@
+import { TNode } from '@repo/editor';
 import { TState } from 'feature-state';
 import { TFlattenedNode, TPageEditor } from '../../lib';
-import { TNode } from '../../types';
 import { AboutNodeEditor, LinkNodeEditor, MediaNodeEditor, TextNodeEditor } from './editors';
 
 export const nodeEditorRegistry = {

@@ -1,9 +1,9 @@
+import { TStyleReference } from '@repo/editor';
 import { Text } from '@shopify/polaris';
 import { useCompute } from 'feature-react/state';
 import { TState } from 'feature-state';
 import React from 'react';
 import { Knob, LinkIcon, LinkOffIcon } from '@/components';
-import { TStyleReference } from '../../../types';
 
 export const ToggleStyleField = <GNodeValue, GParentNodeValue>(
 	props: TToggleStyleFieldProps<GNodeValue, GParentNodeValue>

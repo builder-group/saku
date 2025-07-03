@@ -1,5 +1,5 @@
 import { shortId } from '@blgc/utils';
-import { TSite } from './types';
+import { TSite } from '@repo/editor';
 
 export const blankPreset: TSite = {
 	version: 'v0.0.1',
@@ -31,7 +31,6 @@ export const blankPreset: TSite = {
 				bio: 'Welcome to your bio page! Add a short description about yourself or your brand.',
 				style: {
 					padding: 'inherit',
-					margin: 'inherit',
 					backgroundColor: '#FFFFFF',
 					font: 'inherit',
 					fontSize: 'inherit',
@@ -51,7 +50,6 @@ export const blankPreset: TSite = {
 				},
 				style: {
 					padding: 'inherit',
-					margin: 'inherit',
 					backgroundColor: '#F3F3F3',
 					font: 'inherit',
 					fontSize: 'inherit',
@@ -68,7 +66,6 @@ export const blankPreset: TSite = {
 				backgroundColor: '#FFFFFF',
 				spacing: 16,
 				padding: 16,
-				margin: 8,
 				font: {
 					family: 'Inter',
 					weight: 400,
@@ -166,7 +163,6 @@ export const kangarooPreset: TSite = {
 				],
 				style: {
 					padding: 'inherit',
-					margin: 'inherit',
 					backgroundColor: '#FFFFFF',
 					font: {
 						family: 'Playfair Display',
@@ -194,7 +190,6 @@ export const kangarooPreset: TSite = {
 				},
 				style: {
 					padding: 'inherit',
-					margin: 'inherit',
 					backgroundColor: '#8FBC8F',
 					font: 'inherit',
 					fontSize: 'inherit',
@@ -214,7 +209,6 @@ export const kangarooPreset: TSite = {
 				},
 				style: {
 					padding: 20,
-					margin: 'inherit',
 					backgroundColor: '#D2B48C',
 					font: 'inherit',
 					fontSize: 'inherit',
@@ -234,7 +228,6 @@ export const kangarooPreset: TSite = {
 				},
 				style: {
 					padding: 16,
-					margin: 'inherit',
 					backgroundColor: '#F0F8FF',
 					borderRadius: 24,
 					shadow: true
@@ -247,7 +240,6 @@ export const kangarooPreset: TSite = {
 				text: "Kangaroos can't walk backwards! They use their powerful tail for balance and can hop up to 40 mph. Baby kangaroos are only 2 cm when born! 🦘✨",
 				style: {
 					padding: 16,
-					margin: 'inherit',
 					backgroundColor: '#F5FFFA',
 					font: {
 						family: 'Lora',
@@ -271,7 +263,6 @@ export const kangarooPreset: TSite = {
 				},
 				style: {
 					padding: 'inherit',
-					margin: 'inherit',
 					backgroundColor: '#DEB887',
 					font: 'inherit',
 					fontSize: 'inherit',
@@ -288,7 +279,6 @@ export const kangarooPreset: TSite = {
 				backgroundColor: '#FFFFFF',
 				spacing: 16,
 				padding: 16,
-				margin: 8,
 				font: {
 					family: 'Inter',
 					weight: 400,

@@ -1,7 +1,7 @@
+import { TAboutNode, TLinkNode, TMediaNode, TPageNode, TTextNode } from '@repo/editor';
 import React from 'react';
 import { useBoundingRectObserver } from '@/hooks';
 import { TNodeState, TPageEditor } from '../../lib';
-import { TAboutNode, TLinkNode, TMediaNode, TPageNode, TTextNode } from '../../types';
 import { AboutNode, LinkNode, MediaNode, PageNode, TextNode } from './nodes';
 
 export const Node: React.FC<TNodeProps> = (props) => {
