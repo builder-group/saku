@@ -19,7 +19,7 @@ export const WelcomeStep: React.FC<TWelcomeStepProps> = (props) => {
 	// =========================================================================
 
 	return (
-		<div className="relative mx-auto mt-8 flex w-full max-w-sm flex-col items-center px-3 text-center md:mt-20 md:px-8">
+		<div className="relative mx-auto flex w-full max-w-sm flex-col items-center px-3 pt-8 text-center md:px-8 md:pt-20">
 			<LogoIcon className="size-16" />
 
 			<div className="mt-4">

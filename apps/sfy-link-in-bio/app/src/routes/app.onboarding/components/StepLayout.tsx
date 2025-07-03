@@ -8,7 +8,7 @@ export const StepLayout: React.FC<TStepLayoutProps> = (props) => {
 	return (
 		<div
 			className={cn(
-				'relative mx-auto mt-8 flex w-full max-w-sm flex-col items-center px-3 pb-16 text-center md:mt-20 md:px-8',
+				'relative mx-auto flex w-full max-w-sm flex-col items-center px-3 pt-8 pb-16 text-center md:px-8 md:pt-20',
 				className
 			)}
 			{...divProps}
