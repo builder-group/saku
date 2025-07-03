@@ -72,6 +72,21 @@ router.openapi(CreateShopifySiteRoute, async (c) => {
 		});
 	}
 
+	// Check if handle already exists for this workspace
+	const [existingSite] = await db
+		.select({
+			id: siteTable.id
+		})
+		.from(siteTable)
+		.where(and(eq(siteTable.workspaceId, workspace.id), eq(siteTable.handle, handle)))
+		.limit(1);
+	if (existingSite != null) {
+		throw new AppError('#ERR_SITE_HANDLE_EXISTS', 409, {
+			title: 'Handle already exists',
+			detail: `A site with handle '${handle}' already exists in this workspace`
+		});
+	}
+
 	// Create the site
 	const [site] = await db
 		.insert(siteTable)
