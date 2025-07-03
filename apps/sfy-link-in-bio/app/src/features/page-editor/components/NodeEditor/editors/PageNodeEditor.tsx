@@ -2,7 +2,7 @@ import { fontMetadata, TPageNode } from '@repo/editor';
 import { Text } from '@shopify/polaris';
 import React from 'react';
 import { AccordionSection } from '@/components';
-import { SelectStyleField, TextStyleField, ToggleStyleField } from '../fields';
+import { ColorStyleField, SelectStyleField, TextStyleField, ToggleStyleField } from '../fields';
 import { TNodeEditorComponentProps } from '../nodeEditorRegistry';
 
 export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TPageNode>> = (props) => {
@@ -24,7 +24,7 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TPageNode>> = (p
 			{/* Page Style Section */}
 			<AccordionSection title="Style" defaultOpen={true}>
 				<div className="space-y-3">
-					<TextStyleField
+					<ColorStyleField
 						label="Background Color"
 						node={nodeState}
 						nodeValueMapper={(value) => value.style.backgroundColor}
@@ -160,7 +160,7 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TPageNode>> = (p
 								placeholder="16"
 							/>
 
-							<TextStyleField
+							<ColorStyleField
 								label="Text Color"
 								node={nodeState}
 								nodeValueMapper={(value) => value.style.children?.textColor}
@@ -188,7 +188,7 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TPageNode>> = (p
 					</div>
 					<div className="space-y-3">
 						<div>
-							<TextStyleField
+							<ColorStyleField
 								label="Background Color"
 								node={nodeState}
 								nodeValueMapper={(value) => value.style.children?.backgroundColor}

@@ -19,9 +19,9 @@ export const SelectStyleField = <GNodeValue, GParentNodeValue, GValue>(
 	} = props;
 
 	const currentValue = useCompute(node, nodeValueMapper);
-	const parentValue =
-		useCompute(parentNode, (parent) => (parent != null ? parentValueMapper?.(parent) : null)) ??
-		undefined;
+	const parentValue = useCompute(parentNode, (parent) =>
+		parent != null ? parentValueMapper?.(parent) : undefined
+	);
 	const isInherited = React.useMemo(() => currentValue === 'inherit', [currentValue]);
 	const displayValue = React.useMemo(() => {
 		if (isInherited) {
@@ -31,6 +31,10 @@ export const SelectStyleField = <GNodeValue, GParentNodeValue, GValue>(
 		}
 		return '';
 	}, [currentValue, parentValue, isInherited]);
+
+	// =========================================================================
+	// Events
+	// =========================================================================
 
 	const handleChange = React.useCallback(
 		(newValue: string) => {
@@ -60,6 +64,10 @@ export const SelectStyleField = <GNodeValue, GParentNodeValue, GValue>(
 			nodeValueSetter(node, 'inherit' as GValue);
 		}
 	}, [node, nodeValueSetter, currentValue, parentValue]);
+
+	// =========================================================================
+	// UI
+	// =========================================================================
 
 	return (
 		<div className="space-y-1">

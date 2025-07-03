@@ -3,7 +3,7 @@ import { InlineError, Select, Text } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react/state';
 import React from 'react';
 import { AccordionSection, ImageUploadField, TImageUploadOnChangeImage } from '@/components';
-import { TextStyleField, ToggleStyleField } from '../fields';
+import { ColorStyleField, TextStyleField, ToggleStyleField } from '../fields';
 import { TNodeEditorComponentProps } from '../nodeEditorRegistry';
 
 export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = (props) => {
@@ -150,7 +150,7 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 					</div>
 					<div className="space-y-3">
 						<div>
-							<TextStyleField
+							<ColorStyleField
 								label="Background Color"
 								node={nodeState}
 								parentNode={parentNodeState}

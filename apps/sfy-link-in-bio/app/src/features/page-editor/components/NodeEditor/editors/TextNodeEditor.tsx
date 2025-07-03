@@ -3,7 +3,7 @@ import { Text, TextField } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react/state';
 import React from 'react';
 import { AccordionSection } from '@/components';
-import { SelectStyleField, TextStyleField, ToggleStyleField } from '../fields';
+import { ColorStyleField, SelectStyleField, TextStyleField, ToggleStyleField } from '../fields';
 import { TNodeEditorComponentProps } from '../nodeEditorRegistry';
 
 export const TextNodeEditor: React.FC<TNodeEditorComponentProps<TTextNode>> = (props) => {
@@ -192,7 +192,7 @@ export const TextNodeEditor: React.FC<TNodeEditorComponentProps<TTextNode>> = (p
 								autoComplete="off"
 							/>
 
-							<TextStyleField
+							<ColorStyleField
 								label="Text Color"
 								node={nodeState}
 								parentNode={parentNodeState}
@@ -219,7 +219,7 @@ export const TextNodeEditor: React.FC<TNodeEditorComponentProps<TTextNode>> = (p
 					</div>
 					<div className="space-y-3">
 						<div>
-							<TextStyleField
+							<ColorStyleField
 								label="Background Color"
 								node={nodeState}
 								parentNode={parentNodeState}

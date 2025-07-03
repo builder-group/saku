@@ -19,9 +19,9 @@ export const ToggleStyleField = <GNodeValue, GParentNodeValue>(
 	} = props;
 
 	const currentValue = useCompute(node, nodeValueMapper);
-	const parentValue =
-		useCompute(parentNode, (parent) => (parent != null ? parentValueMapper?.(parent) : null)) ??
-		undefined;
+	const parentValue = useCompute(parentNode, (parent) =>
+		parent != null ? parentValueMapper?.(parent) : undefined
+	);
 	const isInherited = React.useMemo(() => currentValue === 'inherit', [currentValue]);
 	const selected = React.useMemo(() => {
 		if (isInherited) {
@@ -30,6 +30,10 @@ export const ToggleStyleField = <GNodeValue, GParentNodeValue>(
 			return currentValue === true;
 		}
 	}, [currentValue, parentValue, isInherited]);
+
+	// =========================================================================
+	// Events
+	// =========================================================================
 
 	const handleToggle = React.useCallback(() => {
 		if (isInherited) {
@@ -56,6 +60,10 @@ export const ToggleStyleField = <GNodeValue, GParentNodeValue>(
 			);
 		}
 	}, [node, nodeValueSetter, currentValue, parentValue]);
+
+	// =========================================================================
+	// UI
+	// =========================================================================
 
 	return (
 		<div className="space-y-1">

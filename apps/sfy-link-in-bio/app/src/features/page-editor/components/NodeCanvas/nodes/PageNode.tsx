@@ -2,6 +2,7 @@ import { notEmpty } from '@blgc/utils';
 import { TPageNode } from '@repo/editor';
 import { useCompute, useFeatureState } from 'feature-react';
 import React from 'react';
+import { LogoIcon } from '@/components';
 import { TNodeState, TPageEditor } from '../../../lib';
 import { Node } from '../Node';
 
@@ -34,15 +35,23 @@ export const PageNode = React.forwardRef<HTMLDivElement, TPageNodeProps>((props,
 						color: node.style.children?.textColor
 					}}
 				>
-					{childNodes.length === 0 ? (
-						<div className="flex min-h-[96px] items-center justify-center text-neutral-400">
-							Empty page...
-						</div>
-					) : (
-						childNodes.map((childNodeState) => (
-							<Node key={childNodeState._v.id} nodeState={childNodeState} editor={editor} />
-						))
-					)}
+					{childNodes.map((childNodeState) => (
+						<Node key={childNodeState._v.id} nodeState={childNodeState} editor={editor} />
+					))}
+
+					{/* Watermark */}
+					<a
+						href="https://saku.so"
+						target="_blank"
+						rel="noopener noreferrer"
+						className="mx-auto mt-12 flex items-center gap-2 pb-6 text-sm no-underline invert-100 hover:opacity-75"
+						style={{
+							color: node.style.backgroundColor
+						}}
+					>
+						<LogoIcon className="h-6 w-6" />
+						<span>Powered by Saku</span>
+					</a>
 				</div>
 			</div>
 		</div>

@@ -4,10 +4,14 @@ import { TResolvedPageNode } from '../../../../types';
 import { StaticNode } from '../../StaticNode';
 
 export const StaticPageNode: React.FC<TStaticPageNodeProps> = (props) => {
-	const { node } = props;
+	const { node, ...divProps } = props;
 
 	return (
-		<div className="min-h-screen w-full" style={{ backgroundColor: node.style.backgroundColor }}>
+		<div
+			{...divProps}
+			className="min-h-screen w-full"
+			style={{ backgroundColor: node.style.backgroundColor }}
+		>
 			<div className="mx-auto w-full max-w-md">
 				<div
 					className="flex w-full flex-col p-6"
@@ -18,13 +22,9 @@ export const StaticPageNode: React.FC<TStaticPageNodeProps> = (props) => {
 						color: node.style.children?.textColor
 					}}
 				>
-					{node.children.length === 0 ? (
-						<div className="flex min-h-[96px] items-center justify-center text-neutral-400">
-							Empty page...
-						</div>
-					) : (
-						node.children.map((childNode) => <StaticNode key={childNode.id} node={childNode} />)
-					)}
+					{node.children.map((childNode) => (
+						<StaticNode key={childNode.id} node={childNode} />
+					))}
 
 					{/* Watermark */}
 					<a
@@ -45,6 +45,6 @@ export const StaticPageNode: React.FC<TStaticPageNodeProps> = (props) => {
 	);
 };
 
-interface TStaticPageNodeProps {
+interface TStaticPageNodeProps extends React.HTMLProps<HTMLDivElement> {
 	node: TResolvedPageNode;
 }

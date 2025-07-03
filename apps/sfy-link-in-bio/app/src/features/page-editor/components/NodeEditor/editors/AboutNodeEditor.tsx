@@ -5,7 +5,7 @@ import { useFeatureState } from 'feature-react/state';
 import React from 'react';
 import { AccordionSection, ImageUploadField, type TImageUploadOnChangeImage } from '@/components';
 import { generateSocialUrl, socialMetadataMap, TSocialMetadata } from '../../../environment';
-import { SelectStyleField, TextStyleField, ToggleStyleField } from '../fields';
+import { ColorStyleField, SelectStyleField, TextStyleField, ToggleStyleField } from '../fields';
 import { TNodeEditorComponentProps } from '../nodeEditorRegistry';
 
 export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = (props) => {
@@ -310,7 +310,7 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 								autoComplete="off"
 							/>
 
-							<TextStyleField
+							<ColorStyleField
 								label="Text Color"
 								node={nodeState}
 								parentNode={parentNodeState}
@@ -337,7 +337,7 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 					</div>
 					<div className="space-y-3">
 						<div>
-							<TextStyleField
+							<ColorStyleField
 								label="Background Color"
 								node={nodeState}
 								parentNode={parentNodeState}

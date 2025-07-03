@@ -32,6 +32,10 @@ export const TextStyleField = <GNodeValue, GParentNodeValue, GValue>(
 		return '';
 	}, [currentValue, parentValue, isInherited]);
 
+	// =========================================================================
+	// Events
+	// =========================================================================
+
 	const handleChange = React.useCallback(
 		(newValue: string) => {
 			if (isInherited) {
@@ -40,7 +44,6 @@ export const TextStyleField = <GNodeValue, GParentNodeValue, GValue>(
 
 			let convertedValue: TStyleReference<GValue> | undefined =
 				newValue === '' ? undefined : (newValue as GValue);
-
 			if (textFieldProps.type === 'number' && newValue !== '') {
 				convertedValue = Number(newValue) as GValue;
 			}
@@ -64,6 +67,10 @@ export const TextStyleField = <GNodeValue, GParentNodeValue, GValue>(
 			nodeValueSetter(node, 'inherit' as GValue);
 		}
 	}, [node, nodeValueSetter, currentValue, parentValue]);
+
+	// =========================================================================
+	// UI
+	// =========================================================================
 
 	return (
 		<div className="space-y-1">
