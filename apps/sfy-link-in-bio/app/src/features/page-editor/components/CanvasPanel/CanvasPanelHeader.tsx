@@ -2,7 +2,6 @@ import { Button } from '@shopify/polaris';
 import React from 'react';
 import { ViewIcon } from '@/components';
 import { useConfetti } from '@/hooks';
-import { requestReview } from '@/lib';
 import { TPageEditor } from '../../lib';
 import { PanelHeader } from '../PanelHeader';
 
@@ -20,11 +19,7 @@ export const CanvasPanelHeader: React.FC<TCanvasPanelHeaderProps> = (props) => {
 		setIsPublishing(true);
 		const isPublished = await editor.publish();
 		if (isPublished) {
-			editor.shopify.toast.show('Published');
 			triggerConfetti();
-			await requestReview(editor.shopify);
-		} else {
-			editor.shopify.toast.show('Failed to publish');
 		}
 		setIsPublishing(false);
 	}, [editor, triggerConfetti]);

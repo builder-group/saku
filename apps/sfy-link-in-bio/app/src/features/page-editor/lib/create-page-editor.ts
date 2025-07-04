@@ -13,9 +13,11 @@ import {
 	TSite
 } from '@repo/editor';
 import { ShopifyGlobal } from '@shopify/app-bridge-react';
+import { FetchError, NetworkError, RequestError } from 'feature-fetch';
 import { createState, TState } from 'feature-state';
 import React from 'react';
 import { coreApiClient } from '@/environment';
+import { requestReview } from '@/lib';
 import { TSettingsSectionType, TViewType } from '../environment';
 import { createNodeState, TNodeState } from './create-node-state';
 import { flattenNode, TFlattenedNode, unflattenNode } from './flatten-node';
@@ -482,7 +484,75 @@ export function createPageEditor(
 				}
 			);
 
-			return result.isOk();
+			const isPublished = result.isOk();
+
+			if (isPublished) {
+				this.shopify.toast.show('Published', {
+					action: 'View site',
+					onAction: () => {
+						window.open(this.site.url, '_blank');
+					}
+				});
+				await requestReview(this.shopify);
+				return true;
+			} else {
+				const error = result.error;
+				const timestamp = new Date().toISOString();
+
+				// Handle network errors
+				if (error instanceof NetworkError) {
+					this.shopify.toast.show(
+						'Network connection issue. Please check your internet and try again.',
+						{
+							isError: true,
+							duration: 5000
+						}
+					);
+					return false;
+				}
+
+				// Handle request errors
+				if (error instanceof RequestError) {
+					switch (error.status) {
+						case 429:
+							this.shopify.toast.show('Too many requests. Please wait a moment and try again.', {
+								isError: true,
+								duration: 5000
+							});
+							return false;
+						case 503:
+							this.shopify.toast.show(
+								'Service is temporarily unavailable. Please try again later.',
+								{
+									isError: true,
+									duration: 5000
+								}
+							);
+							return false;
+					}
+				}
+
+				// For all other errors, provide detailed error information
+				const errorDetails = {
+					code: error?.code ?? '#ERR_UNKNOWN',
+					message: error?.message ?? 'An unknown error occurred',
+					description: error instanceof FetchError ? error.message : undefined,
+					throwable: error instanceof FetchError ? error.throwable?.message : undefined
+				};
+				this.shopify.toast.show('Failed to publish', {
+					isError: true,
+					action: 'Contact support',
+					onAction: () => {
+						const subject = encodeURIComponent(`Publishing Error: ${errorDetails.code}`);
+						const body = encodeURIComponent(
+							`Error details:\nCode: ${errorDetails.code}\nMessage: ${errorDetails.message}\nDescription: ${errorDetails.description ?? 'N/A'}\nThrowable: ${errorDetails.throwable ?? 'N/A'}\nTimestamp: ${timestamp}`
+						);
+						window.open(`mailto:support@saku.so?subject=${subject}&body=${body}`, '_blank');
+					}
+				});
+
+				return false;
+			}
 		},
 
 		toSite() {

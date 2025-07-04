@@ -52,35 +52,24 @@ const client = fetch(url); // Wrong: Raw fetch usage
 - Always provide meaningful error messages
 - Always propagate errors with proper context
 
+#### Error Types and Classes
+- **NetworkError**: For connection-level failures (timeout, DNS, offline)
+- **RequestError**: For HTTP-level failures (status codes, validation)
+- **FetchError**: Base class for all fetch-related errors
+
 ✅ Good:
 ```typescript
-async function getUser(id: string): Promise<TUser> {
-  const response = await apiClient.get(`/users/${id}`);
-  
-  if (response.isErr()) {
-    if (response.error instanceof NetworkError) {
-      throw new AppError('Failed to connect to API', { cause: response.error });
-    }
-    if (isStatusCode(response.error, 404)) {
-      throw new NotFoundError(`User ${id} not found`);
-    }
-    throw response.error;
+if (response.isErr()) {
+  if (response.error instanceof NetworkError) {
+    logger.error('Network connectivity issue', { error: response.error });
+    throw new AppError('Failed to connect', { cause: response.error });
   }
-  
-  return response.value.data;
-}
-```
-
-❌ Bad:
-```typescript
-async function getUser(id: string) {
-  try {
-    const res = await fetch(`/users/${id}`);
-    return await res.json();
-  } catch (e) {
-    console.error(e); // Wrong: Poor error handling
-    return null; // Wrong: Swallowing errors
+  if (response.error instanceof RequestError) {
+    if (response.error.response?.status === 404) {
+      return Result.err(new NotFoundError(`User ${id} not found`));
+    }
   }
+  throw response.error;
 }
 ```
 

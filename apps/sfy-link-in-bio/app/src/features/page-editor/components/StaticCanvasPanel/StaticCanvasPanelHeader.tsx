@@ -3,7 +3,6 @@ import { useFeatureState } from 'feature-react';
 import React from 'react';
 import { DesktopIcon, LiveIcon, MobileIcon, PageDownIcon } from '@/components';
 import { useConfetti } from '@/hooks';
-import { requestReview } from '@/lib';
 import { PanelHeader } from '../PanelHeader';
 import { TStaticCanvasPanelContext } from './create-static-canvas-panel-context';
 
@@ -23,11 +22,7 @@ export const StaticCanvasPanelHeader: React.FC<TStaticCanvasPanelHeaderProps> = 
 		setIsPublishing(true);
 		const isPublished = await cx.editor.publish();
 		if (isPublished) {
-			cx.editor.shopify.toast.show('Published');
 			triggerConfetti();
-			await requestReview(cx.editor.shopify);
-		} else {
-			cx.editor.shopify.toast.show('Failed to publish');
 		}
 		setIsPublishing(false);
 	}, [cx, triggerConfetti]);
