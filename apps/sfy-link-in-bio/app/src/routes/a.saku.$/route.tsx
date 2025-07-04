@@ -17,13 +17,12 @@ import { TLoaderFunctionWithResult } from '@/types';
 import { coreApiClient } from '../../environment';
 
 const Page: React.FC = () => {
-	const result = useLoaderResult<TSuccessData, TErrorData>();
-
-	if (result.isErr()) {
-		return <p>{`${result.error.code}: ${result.error.message}`}</p>;
+	const loaderResult = useLoaderResult<TSuccessLoaderData, TErrorLoaderData>();
+	if (loaderResult.isErr()) {
+		return <p>{`${loaderResult.error.code}: ${loaderResult.error.message}`}</p>;
 	}
 
-	const { appUrl, site } = result.value;
+	const { appUrl, site } = loaderResult.value;
 	const fontUrls = getSiteFontUrls(site);
 
 	return (
@@ -40,7 +39,9 @@ const Page: React.FC = () => {
 
 export default Page;
 
-export const loader: TLoaderFunctionWithResult<TSuccessData, TErrorData> = async ({ request }) => {
+export const loader: TLoaderFunctionWithResult<TSuccessLoaderData, TErrorLoaderData> = async ({
+	request
+}) => {
 	const { session } = await shopify.authenticate.public.appProxy(request);
 
 	const url = new URL(request.url);
@@ -49,14 +50,14 @@ export const loader: TLoaderFunctionWithResult<TSuccessData, TErrorData> = async
 	const handle = pathSegments[2]; // ['a', 'saku', 'bio']
 
 	if (handle == null) {
-		return ServerErr<TSuccessData, TErrorData>({
+		return ServerErr<TSuccessLoaderData, TErrorLoaderData>({
 			code: '#ERR_BAD_REQUEST',
 			message: 'No handle provided in URL'
 		});
 	}
 
 	if (session?.shop == null) {
-		return ServerErr<TSuccessData, TErrorData>({
+		return ServerErr<TSuccessLoaderData, TErrorLoaderData>({
 			code: '#ERR_UNAUTHORIZED',
 			message: 'No shop provided in session'
 		});
@@ -64,7 +65,7 @@ export const loader: TLoaderFunctionWithResult<TSuccessData, TErrorData> = async
 
 	// Return preset if local environment and handle is "preset"
 	if (appConfig.env === 'local' && handle === 'preset') {
-		return ServerOk<TSuccessData, TErrorData>({
+		return ServerOk<TSuccessLoaderData, TErrorLoaderData>({
 			appUrl: shopifyConfig.appUrl,
 			site: resolveSite(kangarooPreset)
 		});
@@ -78,30 +79,30 @@ export const loader: TLoaderFunctionWithResult<TSuccessData, TErrorData> = async
 	});
 	if (result.isErr()) {
 		if (isStatusCode(result.error, 404)) {
-			return ServerErr<TSuccessData, TErrorData>({
+			return ServerErr<TSuccessLoaderData, TErrorLoaderData>({
 				code: '#ERR_NOT_FOUND',
 				message: 'Site not found'
 			});
 		}
 
-		return ServerErr<TSuccessData, TErrorData>({
+		return ServerErr<TSuccessLoaderData, TErrorLoaderData>({
 			code: '#ERR_SERVER_ERROR',
 			message: result.error.message ?? 'Unknown error occurred'
 		});
 	}
 
-	return ServerOk<TSuccessData, TErrorData>({
+	return ServerOk<TSuccessLoaderData, TErrorLoaderData>({
 		appUrl: shopifyConfig.appUrl,
 		site: resolveSite(result.value.data as unknown as TSite)
 	});
 };
 
-interface TErrorData {
+interface TErrorLoaderData {
 	code: `#ERR_${string}`;
 	message: string;
 }
 
-interface TSuccessData {
+interface TSuccessLoaderData {
 	appUrl: string;
 	site: TResolvedSite;
 }

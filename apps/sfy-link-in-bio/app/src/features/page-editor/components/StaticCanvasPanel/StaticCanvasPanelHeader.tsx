@@ -1,7 +1,7 @@
 import { Button, ButtonGroup, Icon } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react';
 import React from 'react';
-import { DesktopIcon, MobileIcon, PageDownIcon } from '@/components';
+import { DesktopIcon, LiveIcon, MobileIcon, PageDownIcon } from '@/components';
 import { useConfetti } from '@/hooks';
 import { requestReview } from '@/lib';
 import { PanelHeader } from '../PanelHeader';
@@ -56,6 +56,10 @@ export const StaticCanvasPanelHeader: React.FC<TStaticCanvasPanelHeaderProps> = 
 			});
 	}, [cx]);
 
+	const handleViewProductionSite = React.useCallback(() => {
+		window.open(cx.editor.site.url, '_blank');
+	}, [cx]);
+
 	// =========================================================================
 	// UI
 	// =========================================================================
@@ -86,7 +90,12 @@ export const StaticCanvasPanelHeader: React.FC<TStaticCanvasPanelHeaderProps> = 
 					onClick={handleJsonExport}
 					accessibilityLabel="Export as JSON"
 				/>
-
+				<Button
+					icon={LiveIcon}
+					variant="secondary"
+					onClick={handleViewProductionSite}
+					accessibilityLabel="View production site"
+				/>
 				<Button
 					variant="primary"
 					onClick={handlePublish}

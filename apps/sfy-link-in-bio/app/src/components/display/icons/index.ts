@@ -28,6 +28,7 @@ export {
 	DuplicateIcon,
 	ExternalIcon,
 	LayoutSectionIcon,
+	LiveIcon,
 	MobileIcon,
 	PageDownIcon,
 	PaintBrushFlatIcon,

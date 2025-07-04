@@ -21,12 +21,17 @@ import { createNodeState, TNodeState } from './create-node-state';
 import { flattenNode, TFlattenedNode, unflattenNode } from './flatten-node';
 import { getNodeAssetHashes } from './get-node-asset-hashes';
 
-export function createPageEditor(site: TSite, shopify: ShopifyGlobal): TPageEditor {
+export function createPageEditor(
+	site: TSite,
+	siteUrl: string,
+	shopify: ShopifyGlobal
+): TPageEditor {
 	return {
 		id: shortId(),
 		site: {
 			id: site.id,
-			version: site.version
+			version: site.version,
+			url: siteUrl
 		},
 
 		nodeMap: flattenNode(site.root, (node) => createNodeState(node)),
@@ -482,7 +487,8 @@ export function createPageEditor(site: TSite, shopify: ShopifyGlobal): TPageEdit
 
 		toSite() {
 			return {
-				...this.site,
+				id: this.site.id,
+				version: this.site.version,
 				root: unflattenNode(this.nodeMap, this.rootNodeId, (state) => state._v) as TPageNode,
 				assets: Object.values(this.assetsMap)
 			} satisfies TSite;
@@ -492,7 +498,11 @@ export function createPageEditor(site: TSite, shopify: ShopifyGlobal): TPageEdit
 
 export interface TPageEditor {
 	id: string;
-	site: Omit<TSite, 'root' | 'assets'>;
+	site: {
+		id: TSite['id'];
+		version: TSite['version'];
+		url: string;
+	};
 
 	rootNodeId: TNodeId;
 	selectedNodeId: TState<TNodeId | null, []>;
