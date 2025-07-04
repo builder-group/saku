@@ -5,8 +5,8 @@ import { withGlobalBind } from 'feature-react/state';
 import React from 'react';
 import { coreApiClient } from '@/environment';
 import { createPageEditor, Editor, kangarooPreset } from '@/features/page-editor';
-import { TLoaderFunction } from '@/types';
-import './styles.module.css';
+import { TLinksFunction, TLoaderFunction } from '@/types';
+import styles from './styles.css?url';
 
 const Page: React.FC = () => {
 	const { site } = useLoaderData<typeof loader>();
@@ -67,3 +67,5 @@ export const loader: TLoaderFunction<TLoaderData> = async ({ request }) => {
 interface TLoaderData {
 	site: TSite | null;
 }
+
+export const links: TLinksFunction = () => [{ rel: 'stylesheet', href: styles }];
