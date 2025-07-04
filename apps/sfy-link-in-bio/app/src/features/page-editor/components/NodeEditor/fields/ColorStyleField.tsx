@@ -1,13 +1,24 @@
-import { TStyleReference } from '@repo/editor';
+import {
+	hexToRgba,
+	hsbaToRgba,
+	inheritStyle,
+	isInheritedStyle,
+	isValidHex,
+	resolveStyleReference,
+	rgbaToHex,
+	rgbaToHsba,
+	TRgba,
+	TStyleReference
+} from '@repo/editor';
 import { ColorPicker, HSBAColor, Popover, Text, TextField, TextFieldProps } from '@shopify/polaris';
 import { useCompute } from 'feature-react/state';
 import { TState } from 'feature-state';
 import React from 'react';
 import { LinkIcon, LinkOffIcon } from '@/components';
-import { cn, expandShortHex, hexToHsba, hsbaToHex, isValidHex } from '@/lib';
+import { cn } from '@/lib';
 
-export const ColorStyleField = <GNodeValue, GParentNodeValue, GValue>(
-	props: TColorStyleFieldProps<GNodeValue, GParentNodeValue, GValue>
+export const ColorStyleField = <GNodeValue, GParentNodeValue>(
+	props: TColorStyleFieldProps<GNodeValue, GParentNodeValue>
 ) => {
 	const {
 		label,
@@ -21,71 +32,96 @@ export const ColorStyleField = <GNodeValue, GParentNodeValue, GValue>(
 
 	const [popoverActive, setPopoverActive] = React.useState(false);
 	const [inputValue, setInputValue] = React.useState('');
+	const lastChangeFromText = React.useRef(false);
 
 	const currentValue = useCompute(node, nodeValueMapper);
 	const parentValue = useCompute(parentNode, (parent) =>
 		parent != null ? parentValueMapper?.(parent) : undefined
 	);
-	const isInherited = React.useMemo(() => currentValue === 'inherit', [currentValue]);
-	const displayValue = React.useMemo(() => {
-		let value = '';
-		if (isInherited && parentValue != null) {
-			value = String(parentValue);
-		} else if (currentValue != null && currentValue !== 'inherit') {
-			value = String(currentValue);
-		}
-		setInputValue(value);
-		return value;
-	}, [currentValue, parentValue, isInherited]);
 
-	const isInputValid = React.useMemo(() => {
-		if (inputValue === '') {
-			return true;
+	const isValueInherited = React.useMemo(() => isInheritedStyle(currentValue), [currentValue]);
+	const resolvedValue = React.useMemo(
+		() => resolveStyleReference(currentValue, parentValue),
+		[currentValue, parentValue]
+	);
+
+	const displayValue = React.useMemo(() => {
+		const hex = resolvedValue != null ? rgbaToHex(resolvedValue) : '';
+		if (!lastChangeFromText.current) {
+			setInputValue(hex);
 		}
-		const normalizedValue = inputValue.startsWith('#') ? inputValue : `#${inputValue}`;
-		return isValidHex(normalizedValue);
-	}, [inputValue]);
+		return hex;
+	}, [resolvedValue]);
 
 	const pickerColor = React.useMemo(() => {
-		return hexToHsba(expandShortHex(displayValue));
-	}, [displayValue]);
+		if (resolvedValue == null) {
+			return { hue: 0, saturation: 0, brightness: 1, alpha: 1 };
+		}
+
+		const hsba = rgbaToHsba(resolvedValue);
+		return {
+			hue: hsba.hue,
+			saturation: hsba.saturation,
+			brightness: hsba.brightness,
+			alpha: hsba.alpha
+		};
+	}, [resolvedValue]);
+
+	const error = React.useMemo(() => {
+		if (inputValue === '') {
+			return false;
+		}
+		return !isValidHex(inputValue);
+	}, [inputValue]);
 
 	// =========================================================================
 	// Events
 	// =========================================================================
 
+	const handleValueChange = React.useCallback(
+		(value: Parameters<typeof nodeValueSetter>[1], fromText = false) => {
+			lastChangeFromText.current = fromText;
+			nodeValueSetter(node, value);
+		},
+		[node, nodeValueSetter]
+	);
+
 	const handleTextChange = React.useCallback(
 		(newValue: string) => {
-			if (isInherited) {
+			if (isValueInherited) {
 				return;
 			}
 
-			setInputValue(newValue);
-
+			// Handle empty input
 			if (newValue === '') {
-				nodeValueSetter(node, undefined);
+				setInputValue('');
+				handleValueChange(
+					undefined as GParentNodeValue extends never ? TRgba | undefined : TStyleReference<TRgba>,
+					true
+				);
 				return;
 			}
 
+			// Always enforce # prefix for non-empty values
 			const normalizedValue = newValue.startsWith('#') ? newValue : `#${newValue}`;
+			setInputValue(normalizedValue);
+
 			if (isValidHex(normalizedValue)) {
-				nodeValueSetter(node, normalizedValue as GValue);
+				handleValueChange(hexToRgba(normalizedValue), true);
 			}
 		},
-		[node, nodeValueSetter, isInherited]
+		[handleValueChange, isValueInherited]
 	);
 
 	const handleColorChange = React.useCallback(
 		(hsba: HSBAColor) => {
-			if (isInherited) {
+			if (isValueInherited) {
 				return;
 			}
 
-			const { alpha, ...hsbColor } = hsba;
-			const hexColor = hsbaToHex(hsbColor);
-			nodeValueSetter(node, hexColor as GValue);
+			handleValueChange(hsbaToRgba(hsba));
 		},
-		[node, nodeValueSetter, isInherited]
+		[handleValueChange, isValueInherited]
 	);
 
 	const handleToggleInheritance = React.useCallback(() => {
@@ -94,37 +130,30 @@ export const ColorStyleField = <GNodeValue, GParentNodeValue, GValue>(
 		}
 
 		// Unsyncing: Set to parent value or undefined
-		if (currentValue === 'inherit') {
-			nodeValueSetter(node, parentValue);
+		if (isValueInherited) {
+			handleValueChange(parentValue);
 		}
 		// Syncing: Set to inherit
 		else {
-			nodeValueSetter(node, 'inherit' as GValue);
+			handleValueChange(
+				inheritStyle() as GParentNodeValue extends never
+					? TRgba | undefined
+					: TStyleReference<TRgba>
+			);
 		}
-	}, [node, nodeValueSetter, currentValue, parentValue]);
+	}, [handleValueChange, isValueInherited, parentValue]);
 
 	const togglePopoverActive = React.useCallback(() => {
-		if (!isInherited) {
+		if (!isValueInherited) {
 			setPopoverActive((active) => !active);
 		}
-	}, [isInherited]);
+	}, [isValueInherited]);
 
 	const handleFocus = React.useCallback(() => {
-		if (!isInherited) {
+		if (!isValueInherited) {
 			setPopoverActive(true);
 		}
-	}, [isInherited]);
-
-	// =========================================================================
-	// Effects
-	// =========================================================================
-
-	// Close color picker if field becomes inherited while open
-	React.useEffect(() => {
-		if (isInherited && popoverActive) {
-			setPopoverActive(false);
-		}
-	}, [isInherited, popoverActive]);
+	}, [isValueInherited]);
 
 	// =========================================================================
 	// UI
@@ -142,12 +171,16 @@ export const ColorStyleField = <GNodeValue, GParentNodeValue, GValue>(
 						onClick={handleToggleInheritance}
 						className="flex cursor-pointer items-center justify-center opacity-60 transition-opacity hover:opacity-100"
 						title={
-							isInherited
-								? `Unlink from parent (${parentValue})`
-								: `Link to parent (${parentValue})`
+							isValueInherited
+								? `Unlink from parent (${rgbaToHex(parentValue)})`
+								: `Link to parent (${rgbaToHex(parentValue)})`
 						}
 					>
-						{isInherited ? <LinkOffIcon className="h-3 w-3" /> : <LinkIcon className="h-3 w-3" />}
+						{isValueInherited ? (
+							<LinkOffIcon className="h-3 w-3" />
+						) : (
+							<LinkIcon className="h-3 w-3" />
+						)}
 					</button>
 				)}
 			</div>
@@ -162,20 +195,20 @@ export const ColorStyleField = <GNodeValue, GParentNodeValue, GValue>(
 							value={inputValue}
 							onChange={handleTextChange}
 							onFocus={handleFocus}
-							readOnly={isInherited}
+							readOnly={isValueInherited}
 							prefix={
 								<button
 									type="button"
 									onClick={togglePopoverActive}
 									className={cn(
 										'-ml-1 flex h-5 w-5 items-center justify-center rounded-full border border-gray-200',
-										!isInherited ? 'cursor-pointer' : 'cursor-default'
+										!isValueInherited ? 'cursor-pointer' : 'cursor-default'
 									)}
-									style={{ backgroundColor: expandShortHex(displayValue) }}
+									style={{ backgroundColor: displayValue || undefined }}
 								/>
 							}
 							autoComplete="off"
-							error={!isInputValid}
+							error={error}
 						/>
 					</div>
 				}
@@ -184,14 +217,14 @@ export const ColorStyleField = <GNodeValue, GParentNodeValue, GValue>(
 				autofocusTarget="none"
 			>
 				<div className="p-4" onClick={(e) => e.stopPropagation()}>
-					<ColorPicker onChange={handleColorChange} color={pickerColor} allowAlpha={false} />
+					<ColorPicker onChange={handleColorChange} color={pickerColor} allowAlpha />
 				</div>
 			</Popover>
 		</div>
 	);
 };
 
-export interface TColorStyleFieldProps<GNodeValue, GParentNodeValue, GValue>
+export interface TColorStyleFieldProps<GNodeValue, GParentNodeValue>
 	extends Omit<
 		TextFieldProps,
 		'value' | 'onChange' | 'label' | 'labelHidden' | 'prefix' | 'error'
@@ -199,10 +232,10 @@ export interface TColorStyleFieldProps<GNodeValue, GParentNodeValue, GValue>
 	label: string;
 	node: TState<GNodeValue, []>;
 	parentNode?: TState<GParentNodeValue, []>;
-	nodeValueMapper: (value: GNodeValue) => TStyleReference<GValue> | undefined;
+	nodeValueMapper: (value: GNodeValue) => TStyleReference<TRgba> | undefined;
 	nodeValueSetter: (
 		node: TState<GNodeValue, []>,
-		value: GParentNodeValue extends unknown ? GValue | undefined : TStyleReference<GValue>
+		value: GParentNodeValue extends never ? TRgba | undefined : TStyleReference<TRgba>
 	) => void;
-	parentValueMapper?: (parent: GParentNodeValue) => GValue | undefined;
+	parentValueMapper?: (parent: GParentNodeValue) => TRgba | undefined;
 }

@@ -1,7 +1,9 @@
-import { rgbToHex, shortId } from '@blgc/utils';
+import { shortId } from '@blgc/utils';
 import {
+	cssRgbaToRgba,
 	getFontHash,
 	getFontMetadataByFamily,
+	inheritStyle,
 	TAboutNode,
 	TAsset,
 	TFontAsset,
@@ -43,12 +45,12 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 			socialLinks: transformSocialLinks(page.socialMediaAccounts ?? []),
 			visible: true,
 			style: {
-				padding: 'inherit',
-				backgroundColor: 'transparent',
-				font: 'inherit',
+				padding: inheritStyle(),
+				backgroundColor: { r: 1, g: 1, b: 1, a: 0 }, // Transparent
+				font: inheritStyle(),
 				fontSize: 16,
-				textColor: convertRgbaToHex(page?.themeSettings?.fontColor) ?? '#ffffff',
-				textAlign: 'inherit',
+				textColor: cssRgbaToRgba(page?.themeSettings?.fontColor),
+				textAlign: inheritStyle(),
 				borderRadius: 0,
 				shadow: false
 			}
@@ -82,14 +84,14 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 						favicon: faviconHash
 					},
 					style: {
-						padding: 'inherit',
-						backgroundColor: 'inherit',
-						font: 'inherit',
-						fontSize: 'inherit',
-						textColor: 'inherit',
-						textAlign: 'inherit',
-						borderRadius: 'inherit',
-						shadow: 'inherit'
+						padding: inheritStyle(),
+						backgroundColor: inheritStyle(),
+						font: inheritStyle(),
+						fontSize: inheritStyle(),
+						textColor: inheritStyle(),
+						textAlign: inheritStyle(),
+						borderRadius: inheritStyle(),
+						shadow: inheritStyle()
 					}
 				} satisfies TLinkNode);
 			} else {
@@ -101,14 +103,14 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 					text: link.title,
 					visible: true,
 					style: {
-						padding: 'inherit',
-						backgroundColor: 'inherit',
-						font: 'inherit',
-						fontSize: 'inherit',
-						textColor: 'inherit',
-						textAlign: 'inherit',
-						borderRadius: 'inherit',
-						shadow: 'inherit'
+						padding: inheritStyle(),
+						backgroundColor: inheritStyle(),
+						font: inheritStyle(),
+						fontSize: inheritStyle(),
+						textColor: inheritStyle(),
+						textAlign: inheritStyle(),
+						borderRadius: inheritStyle(),
+						shadow: inheritStyle()
 					}
 				} satisfies TTextNode);
 			}
@@ -125,9 +127,9 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 			visible: true,
 			children,
 			style: {
-				backgroundColor: convertRgbaToHex(page?.themeSettings?.backgroundColor) ?? '#ffffff',
+				backgroundColor: cssRgbaToRgba(page?.themeSettings?.backgroundColor),
 				children: {
-					backgroundColor: convertRgbaToHex(page?.themeSettings?.linkCardColor) ?? '#ffffff',
+					backgroundColor: cssRgbaToRgba(page?.themeSettings?.linkCardColor),
 					spacing: 16,
 					padding: 8,
 					font: {
@@ -136,7 +138,7 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 						style: 'normal'
 					},
 					fontSize: 14,
-					textColor: convertRgbaToHex(page?.themeSettings?.linkCardFontColor) ?? '#000000',
+					textColor: cssRgbaToRgba(page?.themeSettings?.linkCardFontColor),
 					textAlign: 'center',
 					borderRadius: getBorderRadiusFromShape(page?.themeSettings?.linkCardShape),
 					shadow: true
@@ -262,25 +264,6 @@ function createImageAssetFromUrl(url: string): TImageAsset {
 			url
 		}
 	};
-}
-
-function convertRgbaToHex(rgba: string | null | undefined): string | null {
-	if (rgba == null) return null;
-
-	// Parse rgba(r,g,b,a) format
-	const match = rgba.match(/rgba?\(([^)]+)\)/);
-	if (match == null || match[1] == null) {
-		return null;
-	}
-	const values = match[1].split(',').map((v) => v.trim());
-	if (values.length < 3) {
-		return null;
-	}
-	const r = parseInt(values[0] ?? '0', 10);
-	const g = parseInt(values[1] ?? '0', 10);
-	const b = parseInt(values[2] ?? '0', 10);
-
-	return rgbToHex([r, g, b]);
 }
 
 function getBorderRadiusFromShape(shape: string | null | undefined): number {

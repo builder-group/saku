@@ -1,4 +1,4 @@
-import { TNode, TNodeType } from '@repo/editor';
+import { hexToRgba, inheritStyle, TNode, TNodeType } from '@repo/editor';
 import { IconSource } from '@shopify/polaris';
 import { LayoutSectionIcon } from '@/components';
 
@@ -11,9 +11,9 @@ export const nodeMetadataMap = {
 		defaultData: {
 			children: [],
 			style: {
-				backgroundColor: '#F8F9FA',
+				backgroundColor: hexToRgba('#F8F9FA'),
 				children: {
-					backgroundColor: '#FFFFFF',
+					backgroundColor: hexToRgba('#FFFFFF'),
 					spacing: 16,
 					padding: 16,
 					font: {
@@ -22,7 +22,7 @@ export const nodeMetadataMap = {
 						style: 'normal'
 					},
 					fontSize: 16,
-					textColor: '#2F4F4F',
+					textColor: hexToRgba('#2F4F4F'),
 					textAlign: 'center' as const,
 					borderRadius: 12,
 					shadow: true
@@ -39,14 +39,14 @@ export const nodeMetadataMap = {
 			name: 'Your Name',
 			bio: 'Tell us about yourself',
 			style: {
-				padding: 'inherit' as const,
-				backgroundColor: 'inherit' as const,
-				font: 'inherit' as const,
-				fontSize: 'inherit' as const,
-				textColor: 'inherit' as const,
-				textAlign: 'inherit' as const,
-				borderRadius: 'inherit' as const,
-				shadow: 'inherit' as const
+				padding: inheritStyle(),
+				backgroundColor: inheritStyle(),
+				font: inheritStyle(),
+				fontSize: inheritStyle(),
+				textColor: inheritStyle(),
+				textAlign: inheritStyle(),
+				borderRadius: inheritStyle(),
+				shadow: inheritStyle()
 			}
 		}
 	} satisfies TNodeMetadata<'about'>,
@@ -61,14 +61,14 @@ export const nodeMetadataMap = {
 				title: 'New Link'
 			},
 			style: {
-				padding: 'inherit' as const,
-				backgroundColor: 'inherit' as const,
-				font: 'inherit' as const,
-				fontSize: 'inherit' as const,
-				textColor: 'inherit' as const,
-				textAlign: 'inherit' as const,
-				borderRadius: 'inherit' as const,
-				shadow: 'inherit' as const
+				padding: inheritStyle(),
+				backgroundColor: inheritStyle(),
+				font: inheritStyle(),
+				fontSize: inheritStyle(),
+				textColor: inheritStyle(),
+				textAlign: inheritStyle(),
+				borderRadius: inheritStyle(),
+				shadow: inheritStyle()
 			}
 		}
 	} satisfies TNodeMetadata<'link'>,
@@ -83,10 +83,10 @@ export const nodeMetadataMap = {
 				hash: ''
 			},
 			style: {
-				padding: 'inherit' as const,
-				backgroundColor: 'inherit' as const,
-				borderRadius: 'inherit' as const,
-				shadow: 'inherit' as const
+				padding: inheritStyle(),
+				backgroundColor: inheritStyle(),
+				borderRadius: inheritStyle(),
+				shadow: inheritStyle()
 			}
 		}
 	} satisfies TNodeMetadata<'media'>,
@@ -98,14 +98,14 @@ export const nodeMetadataMap = {
 		defaultData: {
 			text: 'Add your text here',
 			style: {
-				padding: 'inherit' as const,
-				backgroundColor: 'inherit' as const,
-				font: 'inherit' as const,
-				fontSize: 'inherit' as const,
-				textColor: 'inherit' as const,
-				textAlign: 'inherit' as const,
-				borderRadius: 'inherit' as const,
-				shadow: 'inherit' as const
+				padding: inheritStyle(),
+				backgroundColor: inheritStyle(),
+				font: inheritStyle(),
+				fontSize: inheritStyle(),
+				textColor: inheritStyle(),
+				textAlign: inheritStyle(),
+				borderRadius: inheritStyle(),
+				shadow: inheritStyle()
 			}
 		}
 	} satisfies TNodeMetadata<'text'>

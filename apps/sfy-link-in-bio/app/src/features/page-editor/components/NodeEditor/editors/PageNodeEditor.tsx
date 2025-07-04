@@ -2,6 +2,7 @@ import { fontMetadata, TPageNode } from '@repo/editor';
 import { Text } from '@shopify/polaris';
 import React from 'react';
 import { AccordionSection } from '@/components';
+import { TFlattenedNode } from '../../../lib';
 import { ColorStyleField, SelectStyleField, TextStyleField, ToggleStyleField } from '../fields';
 import { TNodeEditorComponentProps } from '../nodeEditorRegistry';
 
@@ -24,7 +25,7 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TPageNode>> = (p
 			{/* Page Style Section */}
 			<AccordionSection title="Style" defaultOpen={true}>
 				<div className="space-y-3">
-					<ColorStyleField
+					<ColorStyleField<TFlattenedNode<TPageNode>, never>
 						label="Background Color"
 						node={nodeState}
 						nodeValueMapper={(value) => value.style.backgroundColor}
@@ -52,7 +53,7 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TPageNode>> = (p
 						</Text>
 					</div>
 					<div className="grid grid-cols-3 gap-3">
-						<TextStyleField
+						<TextStyleField<TFlattenedNode<TPageNode>, never, number>
 							label="Spacing"
 							node={nodeState}
 							nodeValueMapper={(value) => value.style.children?.spacing}
@@ -67,7 +68,7 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TPageNode>> = (p
 							placeholder="16"
 						/>
 
-						<TextStyleField
+						<TextStyleField<TFlattenedNode<TPageNode>, never, number>
 							label="Padding"
 							node={nodeState}
 							nodeValueMapper={(value) => value.style.children?.padding}
@@ -82,7 +83,7 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TPageNode>> = (p
 							placeholder="16"
 						/>
 
-						<TextStyleField
+						<TextStyleField<TFlattenedNode<TPageNode>, never, number>
 							label="Border Radius"
 							node={nodeState}
 							nodeValueMapper={(value) => value.style.children?.borderRadius}
@@ -110,7 +111,7 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TPageNode>> = (p
 					</div>
 					<div className="space-y-3">
 						<div className="grid grid-cols-2 gap-3">
-							<SelectStyleField
+							<SelectStyleField<TFlattenedNode<TPageNode>, never, string>
 								label="Font Family"
 								node={nodeState}
 								nodeValueMapper={(value) => value.style.children?.font?.family}
@@ -126,7 +127,7 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TPageNode>> = (p
 								options={fontOptions}
 							/>
 
-							<SelectStyleField
+							<SelectStyleField<TFlattenedNode<TPageNode>, never, 'left' | 'center' | 'right'>
 								label="Text Align"
 								node={nodeState}
 								nodeValueMapper={(value) => value.style.children?.textAlign}
@@ -145,7 +146,7 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TPageNode>> = (p
 						</div>
 
 						<div className="grid grid-cols-2 gap-3">
-							<TextStyleField
+							<TextStyleField<TFlattenedNode<TPageNode>, never, number>
 								label="Font Size"
 								node={nodeState}
 								nodeValueMapper={(value) => value.style.children?.fontSize}
@@ -160,7 +161,7 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TPageNode>> = (p
 								placeholder="16"
 							/>
 
-							<ColorStyleField
+							<ColorStyleField<TFlattenedNode<TPageNode>, never>
 								label="Text Color"
 								node={nodeState}
 								nodeValueMapper={(value) => value.style.children?.textColor}
@@ -188,7 +189,7 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TPageNode>> = (p
 					</div>
 					<div className="space-y-3">
 						<div>
-							<ColorStyleField
+							<ColorStyleField<TFlattenedNode<TPageNode>, never>
 								label="Background Color"
 								node={nodeState}
 								nodeValueMapper={(value) => value.style.children?.backgroundColor}
@@ -204,7 +205,7 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TPageNode>> = (p
 						</div>
 
 						<div>
-							<ToggleStyleField
+							<ToggleStyleField<TFlattenedNode<TPageNode>, never>
 								label="Shadow"
 								node={nodeState}
 								nodeValueMapper={(value) => value.style.children?.shadow}

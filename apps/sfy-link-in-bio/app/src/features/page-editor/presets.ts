@@ -1,5 +1,5 @@
 import { shortId } from '@blgc/utils';
-import { TSite } from '@repo/editor';
+import { hexToRgba, inheritStyle, TSite } from '@repo/editor';
 
 export const blankPreset: TSite = {
 	version: 'v0.0.1',
@@ -30,14 +30,14 @@ export const blankPreset: TSite = {
 				name: 'Your Name',
 				bio: 'Welcome to your bio page! Add a short description about yourself or your brand.',
 				style: {
-					padding: 'inherit',
-					backgroundColor: '#FFFFFF',
-					font: 'inherit',
-					fontSize: 'inherit',
-					textColor: 'inherit',
+					padding: inheritStyle(),
+					backgroundColor: hexToRgba('#FFFFFF'),
+					font: inheritStyle(),
+					fontSize: inheritStyle(),
+					textColor: inheritStyle(),
 					textAlign: 'center',
-					borderRadius: 'inherit',
-					shadow: 'inherit'
+					borderRadius: inheritStyle(),
+					shadow: inheritStyle()
 				}
 			},
 			{
@@ -49,21 +49,21 @@ export const blankPreset: TSite = {
 					description: 'Shop our latest products'
 				},
 				style: {
-					padding: 'inherit',
-					backgroundColor: '#F3F3F3',
-					font: 'inherit',
-					fontSize: 'inherit',
-					textColor: 'inherit',
+					padding: inheritStyle(),
+					backgroundColor: hexToRgba('#F3F3F3'),
+					font: inheritStyle(),
+					fontSize: inheritStyle(),
+					textColor: inheritStyle(),
 					textAlign: 'center',
-					borderRadius: 'inherit',
-					shadow: 'inherit'
+					borderRadius: inheritStyle(),
+					shadow: inheritStyle()
 				}
 			}
 		],
 		style: {
-			backgroundColor: '#FFFFFF',
+			backgroundColor: hexToRgba('#FFFFFF'),
 			children: {
-				backgroundColor: '#FFFFFF',
+				backgroundColor: hexToRgba('#FFFFFF'),
 				spacing: 16,
 				padding: 16,
 				font: {
@@ -72,7 +72,7 @@ export const blankPreset: TSite = {
 					style: 'normal'
 				},
 				fontSize: 16,
-				textColor: '#2F4F4F',
+				textColor: hexToRgba('#2F4F4F'),
 				textAlign: 'center',
 				borderRadius: 12,
 				shadow: false
@@ -162,18 +162,18 @@ export const kangarooPreset: TSite = {
 					}
 				],
 				style: {
-					padding: 'inherit',
-					backgroundColor: '#FFFFFF',
+					padding: inheritStyle(),
+					backgroundColor: hexToRgba('#FFFFFF'),
 					font: {
 						family: 'Playfair Display',
 						weight: 400,
 						style: 'normal'
 					},
-					fontSize: 'inherit',
-					textColor: 'inherit',
+					fontSize: inheritStyle(),
+					textColor: inheritStyle(),
 					textAlign: 'center',
-					borderRadius: 'inherit',
-					shadow: 'inherit'
+					borderRadius: inheritStyle(),
+					shadow: inheritStyle()
 				}
 			},
 			{
@@ -189,14 +189,14 @@ export const kangarooPreset: TSite = {
 					description: 'Supporting native Australian animals and their habitats'
 				},
 				style: {
-					padding: 'inherit',
-					backgroundColor: '#8FBC8F',
-					font: 'inherit',
-					fontSize: 'inherit',
-					textColor: '#FFFFFF',
+					padding: inheritStyle(),
+					backgroundColor: hexToRgba('#8FBC8F'),
+					font: inheritStyle(),
+					fontSize: inheritStyle(),
+					textColor: hexToRgba('#FFFFFF'),
 					textAlign: 'center',
-					borderRadius: 'inherit',
-					shadow: 'inherit'
+					borderRadius: inheritStyle(),
+					shadow: inheritStyle()
 				}
 			},
 			{
@@ -209,10 +209,10 @@ export const kangarooPreset: TSite = {
 				},
 				style: {
 					padding: 20,
-					backgroundColor: '#D2B48C',
-					font: 'inherit',
-					fontSize: 'inherit',
-					textColor: '#8B4513',
+					backgroundColor: hexToRgba('#D2B48C'),
+					font: inheritStyle(),
+					fontSize: inheritStyle(),
+					textColor: hexToRgba('#8B4513'),
 					textAlign: 'center',
 					borderRadius: 16,
 					shadow: true
@@ -228,7 +228,7 @@ export const kangarooPreset: TSite = {
 				},
 				style: {
 					padding: 16,
-					backgroundColor: '#F0F8FF',
+					backgroundColor: hexToRgba('#F0F8FF'),
 					borderRadius: 24,
 					shadow: true
 				}
@@ -240,17 +240,17 @@ export const kangarooPreset: TSite = {
 				text: "Kangaroos can't walk backwards! They use their powerful tail for balance and can hop up to 40 mph. Baby kangaroos are only 2 cm when born! 🦘✨",
 				style: {
 					padding: 16,
-					backgroundColor: '#F5FFFA',
+					backgroundColor: hexToRgba('#F5FFFA'),
 					font: {
 						family: 'Lora',
 						weight: 400,
 						style: 'normal'
 					},
 					fontSize: 14,
-					textColor: '#556B2F',
+					textColor: hexToRgba('#556B2F'),
 					textAlign: 'left',
 					borderRadius: 12,
-					shadow: 'inherit'
+					shadow: inheritStyle()
 				}
 			},
 			{
@@ -262,21 +262,21 @@ export const kangarooPreset: TSite = {
 					description: 'Email me for wildlife photography collaborations'
 				},
 				style: {
-					padding: 'inherit',
-					backgroundColor: '#DEB887',
-					font: 'inherit',
-					fontSize: 'inherit',
-					textColor: '#8B4513',
+					padding: inheritStyle(),
+					backgroundColor: hexToRgba('#DEB887'),
+					font: inheritStyle(),
+					fontSize: inheritStyle(),
+					textColor: hexToRgba('#8B4513'),
 					textAlign: 'center',
-					borderRadius: 'inherit',
+					borderRadius: inheritStyle(),
 					shadow: false
 				}
 			}
 		],
 		style: {
-			backgroundColor: '#F5F5DC',
+			backgroundColor: hexToRgba('#F5F5DC'),
 			children: {
-				backgroundColor: '#FFFFFF',
+				backgroundColor: hexToRgba('#FFFFFF'),
 				spacing: 16,
 				padding: 16,
 				font: {
@@ -285,7 +285,7 @@ export const kangarooPreset: TSite = {
 					style: 'normal'
 				},
 				fontSize: 16,
-				textColor: '#2F4F4F',
+				textColor: hexToRgba('#2F4F4F'),
 				textAlign: 'center',
 				borderRadius: 12,
 				shadow: true

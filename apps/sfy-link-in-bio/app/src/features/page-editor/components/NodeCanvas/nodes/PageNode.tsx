@@ -1,15 +1,17 @@
 import { notEmpty } from '@blgc/utils';
 import { TPageNode } from '@repo/editor';
-import { useCompute, useFeatureState } from 'feature-react';
+import { useCompute } from 'feature-react';
 import React from 'react';
 import { LogoIcon } from '@/components';
-import { TNodeState, TPageEditor } from '../../../lib';
+import { resolvePageNodeWithoutChildren, TNodeState, TPageEditor } from '../../../lib';
 import { Node } from '../Node';
 
 export const PageNode = React.forwardRef<HTMLDivElement, TPageNodeProps>((props, ref) => {
 	const { nodeState, editor, ...divProps } = props;
-	const node = useFeatureState(nodeState);
 
+	const node = useCompute(nodeState, (nodeValue) => {
+		return resolvePageNodeWithoutChildren(nodeValue);
+	});
 	const childNodes = useCompute(
 		nodeState,
 		(node) => {

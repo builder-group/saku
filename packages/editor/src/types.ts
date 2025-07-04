@@ -1,3 +1,5 @@
+import { TRgba } from './color';
+
 export interface TSite {
 	version: `v0.0.1`;
 	id: string;
@@ -24,15 +26,15 @@ export interface TPageNode extends TBaseNode {
 	children: TNode[];
 	style: {
 		// Page container styles
-		backgroundColor?: string;
+		backgroundColor?: TRgba;
 		// Child defaults (inherited by children)
 		children?: {
-			backgroundColor?: string;
+			backgroundColor?: TRgba;
 			spacing?: number;
 			padding?: number;
 			font?: TFont;
 			fontSize?: number;
-			textColor?: string;
+			textColor?: TRgba;
 			textAlign?: 'left' | 'center' | 'right';
 			borderRadius?: number;
 			shadow?: boolean;
@@ -50,11 +52,11 @@ export interface TAboutNode extends TBaseNode {
 		// Layout
 		padding?: TStyleReference<number>;
 		// Background
-		backgroundColor?: TStyleReference<string>;
+		backgroundColor?: TStyleReference<TRgba>;
 		// Typography
 		font?: TStyleReference<TFont>;
 		fontSize?: TStyleReference<number>;
-		textColor?: TStyleReference<string>;
+		textColor?: TStyleReference<TRgba>;
 		textAlign?: TStyleReference<'left' | 'center' | 'right'>;
 		// Border and effects
 		borderRadius?: TStyleReference<number>;
@@ -71,11 +73,11 @@ export interface TLinkNode extends TBaseNode {
 		// Layout
 		padding?: TStyleReference<number>;
 		// Background
-		backgroundColor?: TStyleReference<string>;
+		backgroundColor?: TStyleReference<TRgba>;
 		// Typography
 		font?: TStyleReference<TFont>;
 		fontSize?: TStyleReference<number>;
-		textColor?: TStyleReference<string>;
+		textColor?: TStyleReference<TRgba>;
 		textAlign?: TStyleReference<'left' | 'center' | 'right'>;
 		// Border and effects
 		borderRadius?: TStyleReference<number>;
@@ -90,7 +92,7 @@ export interface TMediaNode extends TBaseNode {
 		// Layout
 		padding?: TStyleReference<number>;
 		// Background
-		backgroundColor?: TStyleReference<string>;
+		backgroundColor?: TStyleReference<TRgba>;
 		// Border and effects
 		borderRadius?: TStyleReference<number>;
 		shadow?: TStyleReference<boolean>;
@@ -105,11 +107,11 @@ export interface TTextNode extends TBaseNode {
 		// Layout
 		padding?: TStyleReference<number>;
 		// Background
-		backgroundColor?: TStyleReference<string>;
+		backgroundColor?: TStyleReference<TRgba>;
 		// Typography
 		font?: TStyleReference<TFont>;
 		fontSize?: TStyleReference<number>;
-		textColor?: TStyleReference<string>;
+		textColor?: TStyleReference<TRgba>;
 		textAlign?: TStyleReference<'left' | 'center' | 'right'>;
 		// Border and effects
 		borderRadius?: TStyleReference<number>;
@@ -170,7 +172,7 @@ export interface TLinkMeta {
 	favicon?: TAssetHash;
 }
 
-export type TStyleReference<T> = 'inherit' | T;
+export type TStyleReference<T> = { type: 'inherit' } | T;
 
 export interface TSocialLink {
 	id: string;

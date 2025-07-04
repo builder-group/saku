@@ -1,4 +1,10 @@
-import { fontMetadata, TLinkNode } from '@repo/editor';
+import {
+	fontMetadata,
+	inheritStyle,
+	isInheritedStyle,
+	resolveStyleReference,
+	TLinkNode
+} from '@repo/editor';
 import { useAppBridge } from '@shopify/app-bridge-react';
 import { Button, InlineError, Text, TextField } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react/state';
@@ -273,12 +279,10 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 								label="Font Family"
 								node={nodeState}
 								parentNode={parentNodeState}
-								nodeValueMapper={(value) =>
-									value.style.font === 'inherit' ? 'inherit' : value.style.font?.family
-								}
+								nodeValueMapper={(value) => resolveStyleReference(value.style.font)?.family}
 								nodeValueSetter={(node, value) => {
-									if (value === 'inherit') {
-										node._v.style.font = 'inherit' as const;
+									if (isInheritedStyle(value)) {
+										node._v.style.font = inheritStyle();
 										node._notify();
 									} else if (value != null) {
 										const font = editor.registerFontFamily(value);
@@ -288,7 +292,9 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 										}
 									}
 								}}
-								parentValueMapper={(parent) => parent.style.children?.font?.family}
+								parentValueMapper={(parent) =>
+									resolveStyleReference(parent.style.children?.font)?.family
+								}
 								options={fontOptions}
 							/>
 

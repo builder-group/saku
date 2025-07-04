@@ -3,6 +3,7 @@ import {
 	TLinkNode,
 	TMediaNode,
 	TPageNode,
+	TRgba,
 	TSite,
 	TStyleReference,
 	TTextNode
@@ -20,7 +21,10 @@ export type TResolvedNode =
 	| TResolvedTextNode;
 
 export interface TResolvedPageNode extends Omit<TPageNode, 'style' | 'children'> {
-	style: TResolveStyle<TPageNode['style']>;
+	style: {
+		backgroundColor: TResolveStyle<TPageNode['style']>['backgroundColor'];
+		children?: TResolveStyle<NonNullable<TPageNode['style']['children']>>;
+	};
 	children: TResolvedNode[];
 }
 
@@ -29,7 +33,7 @@ export interface TResolvedAboutNode extends Omit<TAboutNode, 'style' | 'profileP
 	style: TResolveStyle<TAboutNode['style']>;
 }
 
-export interface TResolvedLinkNode extends Omit<TLinkNode, 'style' | 'meta'> {
+export interface TResolvedLinkNode extends Omit<TLinkNode, 'style' | 'meta' | 'fetchedMeta'> {
 	meta: TResolvedLinkMeta;
 	fetchedMeta?: TResolvedLinkMeta;
 	style: TResolveStyle<TLinkNode['style']>;
@@ -58,6 +62,8 @@ export interface TResolvedLinkMeta {
 	favicon?: string; // Resolved URL or base64
 }
 
-export type TResolveStyle<T> = {
-	[K in keyof T]: T[K] extends TStyleReference<infer U> ? U : T[K];
+type TResolveColor<T> = T extends TRgba ? string : T;
+
+type TResolveStyle<T> = {
+	[K in keyof T]: T[K] extends TStyleReference<infer U> ? TResolveColor<U> : T[K];
 };

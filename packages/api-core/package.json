@@ -57,10 +57,10 @@
 		"validatenv": "^0.0.38",
 		"validation-adapters": "^0.0.28",
 		"xml-tokenizer": "^0.0.40",
-		"zod": "3.25.67"
+		"zod": "3.25.72"
 	},
 	"devDependencies": {
-		"@hono/node-server": "^1.14.4",
+		"@hono/node-server": "^1.15.0",
 		"@rollup/plugin-replace": "^6.0.2",
 		"@types/node": "^24.0.10",
 		"@types/pg": "^8.15.4",

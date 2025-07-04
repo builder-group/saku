@@ -1,4 +1,4 @@
-import { getFontHash, TAssetHash, TNode } from '@repo/editor';
+import { getFontHash, isInheritedStyle, TAssetHash, TNode } from '@repo/editor';
 import { TFlattenedNode } from './flatten-node';
 
 /**
@@ -15,7 +15,7 @@ export function getNodeAssetHashes(node: TFlattenedNode<TNode> | TNode): TAssetH
 			}
 
 			// Font asset (if not inherited)
-			if (node.style?.font && node.style.font !== 'inherit') {
+			if (node.style?.font && !isInheritedStyle(node.style.font)) {
 				hashes.push(getFontHash(node.style.font));
 			}
 			break;
@@ -28,7 +28,7 @@ export function getNodeAssetHashes(node: TFlattenedNode<TNode> | TNode): TAssetH
 			}
 
 			// Font asset (if not inherited)
-			if (node.style?.font && node.style.font !== 'inherit') {
+			if (node.style?.font && !isInheritedStyle(node.style.font)) {
 				hashes.push(getFontHash(node.style.font));
 			}
 			break;
@@ -36,7 +36,7 @@ export function getNodeAssetHashes(node: TFlattenedNode<TNode> | TNode): TAssetH
 
 		case 'text': {
 			// Font asset (if not inherited)
-			if (node.style?.font && node.style.font !== 'inherit') {
+			if (node.style?.font && !isInheritedStyle(node.style.font)) {
 				hashes.push(getFontHash(node.style.font));
 			}
 			break;

@@ -1,4 +1,6 @@
 import {
+	resolveStyleReference,
+	rgbaToCssRgba,
 	TAboutNode,
 	TAsset,
 	TAssetHash,
@@ -6,6 +8,7 @@ import {
 	TMediaNode,
 	TNode,
 	TPageNode,
+	TRgba,
 	TSite,
 	TStyleReference,
 	TTextNode
@@ -18,10 +21,8 @@ import {
 	TResolvedSite,
 	TResolvedTextNode
 } from '../types';
+import { TFlattenedNode } from './flatten-node';
 
-/**
- * Resolve a complete site with all nodes and style inheritance
- */
 export function resolveSite(site: TSite): TResolvedSite {
 	const assetsMap = site.assets.reduce(
 		(map, asset) => {
@@ -42,25 +43,32 @@ export function resolvePageNode(
 	assetsMap: Record<TAssetHash, TAsset>
 ): TResolvedPageNode {
 	return {
+		...resolvePageNodeWithoutChildren(node),
+		children: node.children.map((child) => resolveChildNode(child, assetsMap, node.style.children))
+	};
+}
+
+export function resolvePageNodeWithoutChildren(
+	node: TPageNode | TFlattenedNode<TPageNode>
+): Omit<TResolvedPageNode, 'children'> {
+	return {
 		...node,
 		style: {
-			backgroundColor: resolveStyle(node.style.backgroundColor),
+			backgroundColor: resolveColor(node.style.backgroundColor),
 			children: node.style.children
 				? {
-						backgroundColor: resolveStyle(node.style.children.backgroundColor),
-						spacing: resolveStyle(node.style.children.spacing),
-						padding: resolveStyle(node.style.children.padding),
-						margin: resolveStyle(node.style.children.margin),
-						font: resolveStyle(node.style.children.font),
-						fontSize: resolveStyle(node.style.children.fontSize),
-						textColor: resolveStyle(node.style.children.textColor),
-						textAlign: resolveStyle(node.style.children.textAlign),
-						borderRadius: resolveStyle(node.style.children.borderRadius),
-						shadow: resolveStyle(node.style.children.shadow)
+						backgroundColor: resolveColor(node.style.children.backgroundColor),
+						spacing: resolveStyleReference(node.style.children.spacing),
+						padding: resolveStyleReference(node.style.children.padding),
+						font: resolveStyleReference(node.style.children.font),
+						fontSize: resolveStyleReference(node.style.children.fontSize),
+						textColor: resolveColor(node.style.children.textColor),
+						textAlign: resolveStyleReference(node.style.children.textAlign),
+						borderRadius: resolveStyleReference(node.style.children.borderRadius),
+						shadow: resolveStyleReference(node.style.children.shadow)
 					}
 				: undefined
-		},
-		children: node.children.map((child) => resolveChildNode(child, assetsMap, node.style.children))
+		}
 	};
 }
 
@@ -73,15 +81,14 @@ export function resolveAboutNode(
 		...node,
 		profilePicture: resolveAsset(node.profilePicture, assetsMap),
 		style: {
-			padding: resolveStyle(node.style.padding, defaultStyles?.padding),
-			margin: resolveStyle(node.style.margin, defaultStyles?.margin),
-			backgroundColor: resolveStyle(node.style.backgroundColor, defaultStyles?.backgroundColor),
-			font: resolveStyle(node.style.font, defaultStyles?.font),
-			fontSize: resolveStyle(node.style.fontSize, defaultStyles?.fontSize),
-			textColor: resolveStyle(node.style.textColor, defaultStyles?.textColor),
-			textAlign: resolveStyle(node.style.textAlign, defaultStyles?.textAlign),
-			borderRadius: resolveStyle(node.style.borderRadius, defaultStyles?.borderRadius),
-			shadow: resolveStyle(node.style.shadow, defaultStyles?.shadow)
+			padding: resolveStyleReference(node.style.padding, defaultStyles?.padding),
+			backgroundColor: resolveColor(node.style.backgroundColor, defaultStyles?.backgroundColor),
+			font: resolveStyleReference(node.style.font, defaultStyles?.font),
+			fontSize: resolveStyleReference(node.style.fontSize, defaultStyles?.fontSize),
+			textColor: resolveColor(node.style.textColor, defaultStyles?.textColor),
+			textAlign: resolveStyleReference(node.style.textAlign, defaultStyles?.textAlign),
+			borderRadius: resolveStyleReference(node.style.borderRadius, defaultStyles?.borderRadius),
+			shadow: resolveStyleReference(node.style.shadow, defaultStyles?.shadow)
 		}
 	};
 }
@@ -106,15 +113,14 @@ export function resolveLinkNode(
 				}
 			: undefined,
 		style: {
-			padding: resolveStyle(node.style.padding, defaultStyles?.padding),
-			margin: resolveStyle(node.style.margin, defaultStyles?.margin),
-			backgroundColor: resolveStyle(node.style.backgroundColor, defaultStyles?.backgroundColor),
-			font: resolveStyle(node.style.font, defaultStyles?.font),
-			fontSize: resolveStyle(node.style.fontSize, defaultStyles?.fontSize),
-			textColor: resolveStyle(node.style.textColor, defaultStyles?.textColor),
-			textAlign: resolveStyle(node.style.textAlign, defaultStyles?.textAlign),
-			borderRadius: resolveStyle(node.style.borderRadius, defaultStyles?.borderRadius),
-			shadow: resolveStyle(node.style.shadow, defaultStyles?.shadow)
+			padding: resolveStyleReference(node.style.padding, defaultStyles?.padding),
+			backgroundColor: resolveColor(node.style.backgroundColor, defaultStyles?.backgroundColor),
+			font: resolveStyleReference(node.style.font, defaultStyles?.font),
+			fontSize: resolveStyleReference(node.style.fontSize, defaultStyles?.fontSize),
+			textColor: resolveColor(node.style.textColor, defaultStyles?.textColor),
+			textAlign: resolveStyleReference(node.style.textAlign, defaultStyles?.textAlign),
+			borderRadius: resolveStyleReference(node.style.borderRadius, defaultStyles?.borderRadius),
+			shadow: resolveStyleReference(node.style.shadow, defaultStyles?.shadow)
 		}
 	};
 }
@@ -132,11 +138,10 @@ export function resolveMediaNode(
 			altText: node.media.altText
 		},
 		style: {
-			padding: resolveStyle(node.style.padding, defaultStyles?.padding),
-			margin: resolveStyle(node.style.margin, defaultStyles?.margin),
-			backgroundColor: resolveStyle(node.style.backgroundColor, defaultStyles?.backgroundColor),
-			borderRadius: resolveStyle(node.style.borderRadius, defaultStyles?.borderRadius),
-			shadow: resolveStyle(node.style.shadow, defaultStyles?.shadow)
+			padding: resolveStyleReference(node.style.padding, defaultStyles?.padding),
+			backgroundColor: resolveColor(node.style.backgroundColor, defaultStyles?.backgroundColor),
+			borderRadius: resolveStyleReference(node.style.borderRadius, defaultStyles?.borderRadius),
+			shadow: resolveStyleReference(node.style.shadow, defaultStyles?.shadow)
 		}
 	};
 }
@@ -148,15 +153,14 @@ export function resolveTextNode(
 	return {
 		...node,
 		style: {
-			padding: resolveStyle(node.style.padding, defaultStyles?.padding),
-			margin: resolveStyle(node.style.margin, defaultStyles?.margin),
-			backgroundColor: resolveStyle(node.style.backgroundColor, defaultStyles?.backgroundColor),
-			font: resolveStyle(node.style.font, defaultStyles?.font),
-			fontSize: resolveStyle(node.style.fontSize, defaultStyles?.fontSize),
-			textColor: resolveStyle(node.style.textColor, defaultStyles?.textColor),
-			textAlign: resolveStyle(node.style.textAlign, defaultStyles?.textAlign),
-			borderRadius: resolveStyle(node.style.borderRadius, defaultStyles?.borderRadius),
-			shadow: resolveStyle(node.style.shadow, defaultStyles?.shadow)
+			padding: resolveStyleReference(node.style.padding, defaultStyles?.padding),
+			backgroundColor: resolveColor(node.style.backgroundColor, defaultStyles?.backgroundColor),
+			font: resolveStyleReference(node.style.font, defaultStyles?.font),
+			fontSize: resolveStyleReference(node.style.fontSize, defaultStyles?.fontSize),
+			textColor: resolveColor(node.style.textColor, defaultStyles?.textColor),
+			textAlign: resolveStyleReference(node.style.textAlign, defaultStyles?.textAlign),
+			borderRadius: resolveStyleReference(node.style.borderRadius, defaultStyles?.borderRadius),
+			shadow: resolveStyleReference(node.style.shadow, defaultStyles?.shadow)
 		}
 	};
 }
@@ -204,9 +208,13 @@ function resolveAsset(
 	return undefined;
 }
 
-export function resolveStyle<T>(value: TStyleReference<T>, fallback?: T): T | undefined {
-	if (value === 'inherit') {
-		return fallback;
+export function resolveColor(
+	value: TStyleReference<TRgba> | undefined,
+	fallback?: TRgba
+): string | undefined {
+	if (value == null) {
+		return undefined;
 	}
-	return value;
+	const color = resolveStyleReference(value, fallback);
+	return color != null ? rgbaToCssRgba(color) : undefined;
 }

@@ -1,14 +1,26 @@
+import { useAppBridge } from '@shopify/app-bridge-react';
 import { BlockStack, Button, Card, InlineStack, Text } from '@shopify/polaris';
 import React from 'react';
+import { requestReview } from '@/lib';
 
 export const FeedbackCard: React.FC<TFeedbackCardProps> = (props) => {
 	const { email, reviewUrl } = props;
+	const shopify = useAppBridge();
 
 	const [feedbackState, setFeedbackState] = React.useState<TFeedbackState>('initial');
 	const improveRequestUrl = React.useMemo(() => {
 		const subject = encodeURIComponent('Saku Link In Bio - Feedback for Improvement');
 		const body = encodeURIComponent('Hi,\n\nI have some feedback about Saku Link In Bio:\n\n');
 		return `mailto:${email}?subject=${subject}&body=${body}`;
+	}, [email]);
+
+	const handlePositiveFeedback = React.useCallback(async () => {
+		setFeedbackState('positive');
+		await requestReview(shopify);
+	}, [shopify]);
+
+	const handleNegativeFeedback = React.useCallback(() => {
+		setFeedbackState('negative');
 	}, []);
 
 	switch (feedbackState) {
@@ -59,10 +71,10 @@ export const FeedbackCard: React.FC<TFeedbackCardProps> = (props) => {
 							How would you describe your experience using Saku Link In Bio?
 						</Text>
 						<InlineStack gap="200">
-							<Button variant="secondary" onClick={() => setFeedbackState('positive')}>
+							<Button variant="secondary" onClick={handlePositiveFeedback}>
 								👍 Good
 							</Button>
-							<Button variant="secondary" onClick={() => setFeedbackState('negative')}>
+							<Button variant="secondary" onClick={handleNegativeFeedback}>
 								👎 Bad
 							</Button>
 						</InlineStack>

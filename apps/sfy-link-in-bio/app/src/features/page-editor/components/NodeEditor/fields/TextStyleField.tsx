@@ -1,4 +1,9 @@
-import { TStyleReference } from '@repo/editor';
+import {
+	inheritStyle,
+	isInheritedStyle,
+	resolveStyleReference,
+	TStyleReference
+} from '@repo/editor';
 import { Text, TextField, TextFieldProps } from '@shopify/polaris';
 import { useCompute } from 'feature-react/state';
 import { TState } from 'feature-state';
@@ -22,15 +27,11 @@ export const TextStyleField = <GNodeValue, GParentNodeValue, GValue>(
 	const parentValue = useCompute(parentNode, (parent) =>
 		parent != null ? parentValueMapper?.(parent) : undefined
 	);
-	const isInherited = React.useMemo(() => currentValue === 'inherit', [currentValue]);
+	const isValueInherited = React.useMemo(() => isInheritedStyle(currentValue), [currentValue]);
 	const displayValue = React.useMemo(() => {
-		if (isInherited && parentValue != null) {
-			return String(parentValue);
-		} else if (currentValue != null && currentValue !== 'inherit') {
-			return String(currentValue);
-		}
-		return '';
-	}, [currentValue, parentValue, isInherited]);
+		const resolvedValue = resolveStyleReference(currentValue, parentValue);
+		return resolvedValue != null ? String(resolvedValue) : '';
+	}, [currentValue, parentValue]);
 
 	// =========================================================================
 	// Events
@@ -38,7 +39,7 @@ export const TextStyleField = <GNodeValue, GParentNodeValue, GValue>(
 
 	const handleChange = React.useCallback(
 		(newValue: string) => {
-			if (isInherited) {
+			if (isValueInherited) {
 				return;
 			}
 
@@ -48,9 +49,14 @@ export const TextStyleField = <GNodeValue, GParentNodeValue, GValue>(
 				convertedValue = Number(newValue) as GValue;
 			}
 
-			nodeValueSetter(node, convertedValue);
+			nodeValueSetter(
+				node,
+				convertedValue as GParentNodeValue extends never
+					? GValue | undefined
+					: TStyleReference<GValue>
+			);
 		},
-		[node, nodeValueSetter, textFieldProps.type, isInherited]
+		[node, nodeValueSetter, textFieldProps.type, isValueInherited]
 	);
 
 	const handleToggleInheritance = React.useCallback(() => {
@@ -59,14 +65,19 @@ export const TextStyleField = <GNodeValue, GParentNodeValue, GValue>(
 		}
 
 		// Unsyncing: Set to parent value or undefined
-		if (currentValue === 'inherit') {
+		if (isValueInherited) {
 			nodeValueSetter(node, parentValue);
 		}
 		// Syncing: Set to inherit
 		else {
-			nodeValueSetter(node, 'inherit' as GValue);
+			nodeValueSetter(
+				node,
+				inheritStyle() as GParentNodeValue extends never
+					? GValue | undefined
+					: TStyleReference<GValue>
+			);
 		}
-	}, [node, nodeValueSetter, currentValue, parentValue]);
+	}, [node, nodeValueSetter, isValueInherited, parentValue]);
 
 	// =========================================================================
 	// UI
@@ -84,12 +95,16 @@ export const TextStyleField = <GNodeValue, GParentNodeValue, GValue>(
 						onClick={handleToggleInheritance}
 						className="flex cursor-pointer items-center justify-center opacity-60 transition-opacity hover:opacity-100"
 						title={
-							isInherited
+							isValueInherited
 								? `Unlink from parent (${parentValue})`
 								: `Link to parent (${parentValue})`
 						}
 					>
-						{isInherited ? <LinkOffIcon className="h-3 w-3" /> : <LinkIcon className="h-3 w-3" />}
+						{isValueInherited ? (
+							<LinkOffIcon className="h-3 w-3" />
+						) : (
+							<LinkIcon className="h-3 w-3" />
+						)}
 					</button>
 				)}
 			</div>
@@ -99,7 +114,7 @@ export const TextStyleField = <GNodeValue, GParentNodeValue, GValue>(
 				labelHidden
 				value={displayValue}
 				onChange={handleChange}
-				readOnly={isInherited}
+				readOnly={isValueInherited}
 			/>
 		</div>
 	);
@@ -113,7 +128,7 @@ export interface TTextStyleFieldProps<GNodeValue, GParentNodeValue, GValue>
 	nodeValueMapper: (value: GNodeValue) => TStyleReference<GValue> | undefined;
 	nodeValueSetter: (
 		node: TState<GNodeValue, []>,
-		value: GParentNodeValue extends unknown ? GValue | undefined : TStyleReference<GValue>
+		value: GParentNodeValue extends never ? GValue | undefined : TStyleReference<GValue>
 	) => void;
 	parentValueMapper?: (parent: GParentNodeValue) => GValue | undefined;
 }

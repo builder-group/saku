@@ -1,4 +1,9 @@
-import { TStyleReference } from '@repo/editor';
+import {
+	inheritStyle,
+	isInheritedStyle,
+	resolveStyleReference,
+	TStyleReference
+} from '@repo/editor';
 import { Text } from '@shopify/polaris';
 import { useCompute } from 'feature-react/state';
 import { TState } from 'feature-state';
@@ -22,26 +27,23 @@ export const ToggleStyleField = <GNodeValue, GParentNodeValue>(
 	const parentValue = useCompute(parentNode, (parent) =>
 		parent != null ? parentValueMapper?.(parent) : undefined
 	);
-	const isInherited = React.useMemo(() => currentValue === 'inherit', [currentValue]);
+	const isValueInherited = React.useMemo(() => isInheritedStyle(currentValue), [currentValue]);
 	const selected = React.useMemo(() => {
-		if (isInherited) {
-			return parentValue === true;
-		} else {
-			return currentValue === true;
-		}
-	}, [currentValue, parentValue, isInherited]);
+		const resolvedValue = resolveStyleReference(currentValue, parentValue);
+		return resolvedValue === true;
+	}, [currentValue, parentValue]);
 
 	// =========================================================================
 	// Events
 	// =========================================================================
 
 	const handleToggle = React.useCallback(() => {
-		if (isInherited) {
+		if (isValueInherited) {
 			return;
 		}
 
 		nodeValueSetter(node, !currentValue);
-	}, [node, nodeValueSetter, isInherited, currentValue]);
+	}, [node, nodeValueSetter, isValueInherited, currentValue]);
 
 	const handleToggleInheritance = React.useCallback(() => {
 		if (parentValue == null) {
@@ -49,17 +51,19 @@ export const ToggleStyleField = <GNodeValue, GParentNodeValue>(
 		}
 
 		// Unsyncing: Set to parent value or false
-		if (currentValue === 'inherit') {
+		if (isValueInherited) {
 			nodeValueSetter(node, parentValue === true);
 		}
 		// Syncing: Set to inherit
 		else {
 			nodeValueSetter(
 				node,
-				'inherit' as GParentNodeValue extends unknown ? boolean : TStyleReference<boolean>
+				inheritStyle() as GParentNodeValue extends never
+					? boolean | undefined
+					: TStyleReference<boolean>
 			);
 		}
-	}, [node, nodeValueSetter, currentValue, parentValue]);
+	}, [node, nodeValueSetter, isValueInherited, parentValue]);
 
 	// =========================================================================
 	// UI
@@ -76,9 +80,13 @@ export const ToggleStyleField = <GNodeValue, GParentNodeValue>(
 						type="button"
 						onClick={handleToggleInheritance}
 						className="flex cursor-pointer items-center justify-center opacity-60 transition-opacity hover:opacity-100"
-						title={isInherited ? 'Unlink from parent' : 'Link to parent'}
+						title={isValueInherited ? 'Unlink from parent' : 'Link to parent'}
 					>
-						{isInherited ? <LinkOffIcon className="h-3 w-3" /> : <LinkIcon className="h-3 w-3" />}
+						{isValueInherited ? (
+							<LinkOffIcon className="h-3 w-3" />
+						) : (
+							<LinkIcon className="h-3 w-3" />
+						)}
 					</button>
 				)}
 			</div>
@@ -87,7 +95,7 @@ export const ToggleStyleField = <GNodeValue, GParentNodeValue>(
 					ariaLabel={ariaLabel || `Toggle ${label}`}
 					selected={selected}
 					onClick={handleToggle}
-					disabled={isInherited}
+					disabled={isValueInherited}
 				/>
 			</div>
 		</div>
@@ -101,7 +109,7 @@ export interface TToggleStyleFieldProps<GNodeValue, GParentNodeValue> {
 	nodeValueMapper: (value: GNodeValue) => TStyleReference<boolean> | undefined;
 	nodeValueSetter: (
 		node: TState<GNodeValue, []>,
-		value: GParentNodeValue extends unknown ? boolean | undefined : TStyleReference<boolean>
+		value: GParentNodeValue extends never ? boolean | undefined : TStyleReference<boolean>
 	) => void;
 	parentValueMapper?: (parent: GParentNodeValue) => boolean | undefined;
 	ariaLabel?: string;
