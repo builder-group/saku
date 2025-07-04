@@ -147,7 +147,11 @@ const Page: React.FC = () => {
 							<div className="mt-4 flex items-center justify-between gap-4">
 								<div className="flex items-center gap-3">
 									{/* Small Thumbnail */}
-									<div className="h-16 w-24 rounded-md bg-gray-200" />
+									<div className="flex h-16 w-24 items-center justify-center rounded-md bg-gray-200 px-3">
+										<Text as="span" variant="bodyMd" tone="subdued" truncate>
+											/{site.handle}
+										</Text>
+									</div>
 
 									{/* Content */}
 									<div className="flex flex-col items-start gap-1">
