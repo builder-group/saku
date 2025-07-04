@@ -13,6 +13,8 @@ export const ViewContextContent: React.FC<TViewContextContentProps> = (props) =>
 			return <LayersContent editor={editor} />;
 		case 'settings':
 			return <SettingsContent editor={editor} />;
+		default:
+			return null;
 	}
 };
 

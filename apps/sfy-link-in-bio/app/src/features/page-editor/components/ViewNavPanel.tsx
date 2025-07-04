@@ -3,17 +3,13 @@ import { useCompute, useFeatureState } from 'feature-react/state';
 import React from 'react';
 import { ResizablePanel } from '@/components';
 import { cn } from '@/lib';
-import { TViewMetadata, TViewType, viewMetadataMap } from '../environment';
+import { TViewType, viewMetadata } from '../environment';
 import { TPageEditor } from '../lib';
 
 export const ViewNavPanel: React.FC<TViewNavPanelProps> = (props) => {
 	const { editor } = props;
 	const [sidebarCollapsed, setSidebarCollapsed] = React.useState(true);
 	const activeView = useFeatureState(editor.activeView);
-
-	const navigationItems = React.useMemo<TViewMetadata[]>(() => {
-		return [viewMetadataMap.layers, viewMetadataMap.settings];
-	}, []);
 
 	// TODO: Figure out better solution
 	// https://github.com/bvaughn/react-resizable-panels/issues/46
@@ -66,7 +62,7 @@ export const ViewNavPanel: React.FC<TViewNavPanelProps> = (props) => {
 		>
 			<div className="flex h-full flex-col bg-white">
 				<nav className="flex flex-col gap-1 p-2">
-					{navigationItems.map((item, index) => {
+					{viewMetadata.map((item, index) => {
 						return (
 							<button
 								key={index}

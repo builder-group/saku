@@ -1,4 +1,5 @@
-import { Button, InlineStack } from '@shopify/polaris';
+import { Button } from '@shopify/polaris';
+import { useCompute } from 'feature-react';
 import React from 'react';
 import { PageDownIcon, ViewIcon } from '@/components';
 import { useConfetti } from '@/hooks';
@@ -11,6 +12,13 @@ export const CanvasPanelHeader: React.FC<TCanvasPanelHeaderProps> = (props) => {
 
 	const [isPublishing, setIsPublishing] = React.useState(false);
 	const triggerConfetti = useConfetti();
+
+	const canPreview = useCompute(editor.activeView, (view) => view !== 'preview');
+	const canExportJson = useCompute(editor.activeView, (view) => view === 'preview');
+
+	// =========================================================================
+	// Events
+	// =========================================================================
 
 	const handlePublish = React.useCallback(async () => {
 		setIsPublishing(true);
@@ -26,12 +34,10 @@ export const CanvasPanelHeader: React.FC<TCanvasPanelHeaderProps> = (props) => {
 	}, [editor, triggerConfetti]);
 
 	const handlePreview = React.useCallback(() => {
-		editor.shopify.toast.show(
-			'Preview coming soon! For now, publish your changes and visit the live site.'
-		);
+		editor.switchView('preview');
 	}, [editor]);
 
-	const handleJSONExport = React.useCallback(() => {
+	const handleJsonExport = React.useCallback(() => {
 		const json = JSON.stringify(editor.toSite(), null, 2);
 
 		// Copy to clipboard
@@ -55,21 +61,29 @@ export const CanvasPanelHeader: React.FC<TCanvasPanelHeaderProps> = (props) => {
 			});
 	}, [editor]);
 
+	// =========================================================================
+	// UI
+	// =========================================================================
+
 	return (
 		<PanelHeader className="h-12 justify-end">
-			<InlineStack gap="200" blockAlign="center">
-				<Button
-					icon={PageDownIcon}
-					variant="secondary"
-					onClick={handleJSONExport}
-					accessibilityLabel="Export as JSON"
-				/>
-				<Button
-					icon={ViewIcon}
-					variant="secondary"
-					onClick={handlePreview}
-					accessibilityLabel="Preview your Link In Bio page"
-				/>
+			<div className="flex items-center gap-2">
+				{canExportJson && (
+					<Button
+						icon={PageDownIcon}
+						variant="secondary"
+						onClick={handleJsonExport}
+						accessibilityLabel="Export as JSON"
+					/>
+				)}
+				{canPreview && (
+					<Button
+						icon={ViewIcon}
+						variant="secondary"
+						onClick={handlePreview}
+						accessibilityLabel="Preview your Link In Bio page"
+					/>
+				)}
 				<Button
 					variant="primary"
 					onClick={handlePublish}
@@ -78,7 +92,7 @@ export const CanvasPanelHeader: React.FC<TCanvasPanelHeaderProps> = (props) => {
 				>
 					Publish
 				</Button>
-			</InlineStack>
+			</div>
 		</PanelHeader>
 	);
 };

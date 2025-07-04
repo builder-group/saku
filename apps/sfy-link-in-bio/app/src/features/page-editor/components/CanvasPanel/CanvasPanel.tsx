@@ -1,11 +1,16 @@
+import { useCompute } from 'feature-react';
 import React from 'react';
 import { ResizablePanel } from '@/components';
-import { TPageEditor } from '../../lib';
-import { NodeCanvas } from '../NodeCanvas';
+import { resolveSite, TPageEditor } from '../../lib';
+import { NodeCanvas, StaticNodeCanvas } from '../NodeCanvas';
 import { CanvasPanelHeader } from './CanvasPanelHeader';
 
 export const CanvasPanel: React.FC<TCanvasPanelProps> = (props) => {
 	const { editor } = props;
+	const showStaticNodeCanvas = useCompute(
+		editor.activeView,
+		(activeView) => activeView === 'preview'
+	);
 
 	return (
 		<ResizablePanel>
@@ -15,7 +20,11 @@ export const CanvasPanel: React.FC<TCanvasPanelProps> = (props) => {
 				ref={editor.canvasContainerRef}
 				className="h-[calc(100%-3rem)] w-full overflow-y-auto bg-neutral-50"
 			>
-				<NodeCanvas editor={editor} />
+				{showStaticNodeCanvas ? (
+					<StaticNodeCanvas nodes={[resolveSite(editor.toSite()).root]} />
+				) : (
+					<NodeCanvas editor={editor} />
+				)}
 			</div>
 		</ResizablePanel>
 	);

@@ -38,32 +38,35 @@ export function useBoundingRectObserver<
 ): void {
 	const prevRectRef = React.useRef<GBoundingRect>(baseValue);
 
-	const handleBoundingRect = React.useCallback(() => {
-		const element = ref.current;
-		if (element == null) {
-			return;
-		}
-
-		const prevRect = prevRectRef.current;
-		const newRect = element.getBoundingClientRect();
-		const updates = { ...prevRect } as GBoundingRect;
-		let hasChanges = false;
-
-		// Only update properties that exist in baseValue and have changed
-		Object.keys(baseValue).forEach((key) => {
-			const prop = key as keyof GBoundingRect;
-			const newValue = newRect[prop as keyof DOMRect];
-			if (prevRect[prop] !== newValue) {
-				updates[prop] = newValue as GBoundingRect[keyof GBoundingRect];
-				hasChanges = true;
+	const handleBoundingRect = React.useCallback(
+		(forceUpdate = false) => {
+			const element = ref.current;
+			if (element == null) {
+				return;
 			}
-		});
 
-		if (hasChanges) {
-			prevRectRef.current = updates;
-			callback(updates);
-		}
-	}, [ref, ...deps]);
+			const prevRect = prevRectRef.current;
+			const newRect = element.getBoundingClientRect();
+			const updates = { ...prevRect } as GBoundingRect;
+			let hasChanges = forceUpdate;
+
+			// Only update properties that exist in baseValue and have changed
+			Object.keys(baseValue).forEach((key) => {
+				const prop = key as keyof GBoundingRect;
+				const newValue = newRect[prop as keyof DOMRect];
+				if (prevRect[prop] !== newValue) {
+					updates[prop] = newValue as GBoundingRect[keyof GBoundingRect];
+					hasChanges = true;
+				}
+			});
+
+			if (hasChanges) {
+				prevRectRef.current = updates;
+				callback(updates);
+			}
+		},
+		[ref, ...deps]
+	);
 
 	React.useEffect(() => {
 		const element = ref.current;
@@ -71,15 +74,19 @@ export function useBoundingRectObserver<
 			return;
 		}
 
+		const callback = () => {
+			handleBoundingRect();
+		};
+
 		// Observe style and class changes on the element itself
-		const mutationObserver = new MutationObserver(handleBoundingRect);
+		const mutationObserver = new MutationObserver(callback);
 		mutationObserver.observe(element, {
 			attributes: true,
 			attributeFilter: ['style', 'class']
 		});
 
 		// Observe DOM structure changes on parent (e.g. for reordering detection)
-		const parentMutationObserver = new MutationObserver(handleBoundingRect);
+		const parentMutationObserver = new MutationObserver(callback);
 		if (element.parentElement) {
 			parentMutationObserver.observe(element.parentElement, {
 				childList: true, // Detect when children are added/removed/reordered
@@ -88,7 +95,7 @@ export function useBoundingRectObserver<
 		}
 
 		// Observe size changes of element and all ancestors
-		const resizeObserver = new ResizeObserver(handleBoundingRect);
+		const resizeObserver = new ResizeObserver(callback);
 		let current: Element | null = element;
 		while (current) {
 			resizeObserver.observe(current);
@@ -100,24 +107,27 @@ export function useBoundingRectObserver<
 		current = element;
 		while (current) {
 			scrollElements.add(current);
-			current.addEventListener('scroll', handleBoundingRect, { passive: true });
+			current.addEventListener('scroll', callback, { passive: true });
 			current = current.parentElement;
 		}
-		window.addEventListener('scroll', handleBoundingRect, { passive: true });
+		window.addEventListener('scroll', callback, { passive: true });
 
-		// Initial check
-		handleBoundingRect();
+		// Force the initial update to ensure proper initialization during hot reload.
+		// This is necessary because prevRectRef persists across hot reloads while the
+		// component re-mounts, which can cause the change detection to skip updates
+		// since it compares against stale values in the ref.
+		handleBoundingRect(true);
 
 		return () => {
 			mutationObserver.disconnect();
 			parentMutationObserver.disconnect();
 			resizeObserver.disconnect();
 			scrollElements.forEach((el) => {
-				el.removeEventListener('scroll', handleBoundingRect);
+				el.removeEventListener('scroll', callback);
 			});
-			window.removeEventListener('scroll', handleBoundingRect);
+			window.removeEventListener('scroll', callback);
 		};
-	}, [ref, handleBoundingRect, ...deps]);
+	}, [ref, handleBoundingRect]);
 }
 
 interface TPartialBoundingRect {
