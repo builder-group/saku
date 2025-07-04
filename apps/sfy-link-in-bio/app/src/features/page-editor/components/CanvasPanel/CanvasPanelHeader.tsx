@@ -1,7 +1,6 @@
 import { Button } from '@shopify/polaris';
-import { useCompute } from 'feature-react';
 import React from 'react';
-import { PageDownIcon, ViewIcon } from '@/components';
+import { ViewIcon } from '@/components';
 import { useConfetti } from '@/hooks';
 import { requestReview } from '@/lib';
 import { TPageEditor } from '../../lib';
@@ -12,9 +11,6 @@ export const CanvasPanelHeader: React.FC<TCanvasPanelHeaderProps> = (props) => {
 
 	const [isPublishing, setIsPublishing] = React.useState(false);
 	const triggerConfetti = useConfetti();
-
-	const canPreview = useCompute(editor.activeView, (view) => view !== 'preview');
-	const canExportJson = useCompute(editor.activeView, (view) => view === 'preview');
 
 	// =========================================================================
 	// Events
@@ -37,30 +33,6 @@ export const CanvasPanelHeader: React.FC<TCanvasPanelHeaderProps> = (props) => {
 		editor.switchView('preview');
 	}, [editor]);
 
-	const handleJsonExport = React.useCallback(() => {
-		const json = JSON.stringify(editor.toSite(), null, 2);
-
-		// Copy to clipboard
-		navigator.clipboard
-			.writeText(json)
-			.then(() => {
-				editor.shopify.toast.show('JSON copied to clipboard');
-			})
-			// Fallback: Download as file
-			.catch(() => {
-				const blob = new Blob([json], { type: 'application/json' });
-				const url = URL.createObjectURL(blob);
-				const link = document.createElement('a');
-				link.href = url;
-				link.download = `site-${editor.site.id}.json`;
-				document.body.appendChild(link);
-				link.click();
-				document.body.removeChild(link);
-				URL.revokeObjectURL(url);
-				editor.shopify.toast.show('JSON downloaded');
-			});
-	}, [editor]);
-
 	// =========================================================================
 	// UI
 	// =========================================================================
@@ -68,22 +40,12 @@ export const CanvasPanelHeader: React.FC<TCanvasPanelHeaderProps> = (props) => {
 	return (
 		<PanelHeader className="h-12 justify-end">
 			<div className="flex items-center gap-2">
-				{canExportJson && (
-					<Button
-						icon={PageDownIcon}
-						variant="secondary"
-						onClick={handleJsonExport}
-						accessibilityLabel="Export as JSON"
-					/>
-				)}
-				{canPreview && (
-					<Button
-						icon={ViewIcon}
-						variant="secondary"
-						onClick={handlePreview}
-						accessibilityLabel="Preview your Link In Bio page"
-					/>
-				)}
+				<Button
+					icon={ViewIcon}
+					variant="secondary"
+					onClick={handlePreview}
+					accessibilityLabel="Preview your Link In Bio page"
+				/>
 				<Button
 					variant="primary"
 					onClick={handlePublish}

@@ -4,6 +4,7 @@ import React from 'react';
 import { ResizableHandle, ResizablePanelGroup } from '@/components';
 import { TPageEditor } from '../lib';
 import { CanvasPanel } from './CanvasPanel';
+import { StaticCanvasPanel } from './StaticCanvasPanel';
 import { ViewContextPanel } from './ViewContextPanel';
 import { ViewNavPanel } from './ViewNavPanel';
 import { ViewSourcePanel } from './ViewSourcePanel';
@@ -42,7 +43,7 @@ export const EditorContent: React.FC<TEditorContentProps> = (props) => {
 				<ResizablePanelGroup direction="horizontal" className="flex-1">
 					<ViewNavPanel editor={editor} />
 					<ResizableHandle className="w-px bg-neutral-200" />
-					<CanvasPanel editor={editor} />
+					<StaticCanvasPanel editor={editor} />
 				</ResizablePanelGroup>
 			);
 		default:
