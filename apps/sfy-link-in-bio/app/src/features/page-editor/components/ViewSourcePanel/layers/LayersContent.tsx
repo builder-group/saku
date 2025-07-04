@@ -54,6 +54,7 @@ export const LayersContent: React.FC<TLayersContentProps> = ({ editor }) => {
 
 			if (over != null && active.id !== over.id) {
 				editor.reorderNode(active.id as string, over.id as string);
+				editor.selectNode(active.id as string);
 			}
 		},
 		[editor]

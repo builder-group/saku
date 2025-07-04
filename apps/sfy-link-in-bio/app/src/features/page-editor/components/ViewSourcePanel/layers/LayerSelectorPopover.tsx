@@ -24,11 +24,12 @@ export const LayerSelectorPopover: React.FC<TLayerSelectorPopoverProps> = (props
 
 	const handleLayerSelect = React.useCallback(
 		(layerType: TNodeType) => {
-			editor.addNode({
+			const nodeId = editor.addNode({
 				id: shortId(),
 				type: layerType,
 				...nodeMetadataMap[layerType].defaultData
 			} as TNode);
+			editor.selectNode(nodeId);
 
 			setPopoverActive(false);
 		},

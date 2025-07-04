@@ -162,7 +162,7 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 								onClick={handleUrlFetch}
 								disabled={isFetchingUrlMetadata}
 							>
-								{isFetchingUrlMetadata ? 'Fetching...' : 'Fetch'}
+								{isFetchingUrlMetadata ? 'Fetching Metadata...' : 'Fetch Metadata'}
 							</Button>
 						</div>
 						<TextField

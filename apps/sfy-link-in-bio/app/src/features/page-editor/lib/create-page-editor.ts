@@ -1,4 +1,4 @@
-import { shortId } from '@blgc/utils';
+import { deepCopy, shortId } from '@blgc/utils';
 import {
 	getFontHash,
 	getFontMetadataByFamily,
@@ -78,7 +78,7 @@ export function createPageEditor(site: TSite, shopify: ShopifyGlobal): TPageEdit
 			return this.nodeMap[this.rootNodeId] as TState<TFlattenedNode<TPageNode>, []>;
 		},
 
-		addNode(node, parentId) {
+		addNode(node, parentId, index) {
 			const targetParentId = parentId ?? this.rootNodeId;
 
 			// Flatten the entire node subtree with correct parentId for root
@@ -99,21 +99,29 @@ export function createPageEditor(site: TSite, shopify: ShopifyGlobal): TPageEdit
 				}
 			});
 
-			// Add the root node to parent's children
+			// Add the root node to parent's children at the specified index
 			const parentState = this.nodeMap[targetParentId];
 			if (parentState != null) {
 				parentState.set((v) => {
 					if ('children' in v) {
 						// Only add if not already in children
 						if (!v.children.includes(node.id)) {
-							return { ...v, children: [...v.children, node.id] };
+							const children = [...v.children];
+							if (index != null && index >= 0 && index <= children.length) {
+								// Insert at specified index
+								children.splice(index, 0, node.id);
+							} else {
+								// Append to end if index is not specified or out of bounds
+								children.push(node.id);
+							}
+							return { ...v, children };
 						}
 					}
 					return v;
 				});
 			}
 
-			this.selectNode(node.id);
+			return node.id;
 		},
 
 		removeNode(nodeId) {
@@ -264,6 +272,41 @@ export function createPageEditor(site: TSite, shopify: ShopifyGlobal): TPageEdit
 			this.selectedNodeId.set(null);
 		},
 
+		copyNode(nodeId) {
+			const node = this.nodeMap[nodeId]?._v;
+			if (node == null || node.parentId == null) {
+				return null;
+			}
+
+			// Get parent node and find index of original node
+			const parentState = this.nodeMap[node.parentId];
+			if (parentState == null || !('children' in parentState._v)) {
+				return null;
+			}
+			const parentNode = parentState._v;
+			const nodeIndex = parentNode.children.indexOf(nodeId);
+			if (nodeIndex === -1) {
+				return null;
+			}
+
+			// Unflatten the node and its subtree
+			const originalNode = unflattenNode(this.nodeMap, nodeId, (state) => state._v) as TNode;
+
+			// Create new IDs for all nodes in the subtree
+			function replaceIds(node: TNode): TNode {
+				node.id = shortId();
+				if ('children' in node) {
+					node.children = node.children.map(replaceIds);
+				}
+				return node;
+			}
+
+			const copiedNode = replaceIds(deepCopy(originalNode));
+
+			// Add the copied node right after the original node
+			return this.addNode(copiedNode, node.parentId, nodeIndex + 1);
+		},
+
 		registerFontFamily(fontFamily) {
 			const fontMetadata = getFontMetadataByFamily(fontFamily);
 			if (fontMetadata == null) {
@@ -347,6 +390,7 @@ export function createPageEditor(site: TSite, shopify: ShopifyGlobal): TPageEdit
 
 			return asset;
 		},
+
 		loadFont(fontOrHash) {
 			const hash = typeof fontOrHash === 'string' ? fontOrHash : getFontHash(fontOrHash);
 			const asset = this.assetsMap[hash];
@@ -473,7 +517,7 @@ export interface TPageEditor {
 	switchSettingsSection: (section: TSettingsSectionType | null) => void;
 
 	getRootNode: () => TState<TFlattenedNode<TPageNode>, []>;
-	addNode: (node: TNode, parentId?: TNodeId) => void;
+	addNode: (node: TNode, parentId?: TNodeId, index?: number) => TNodeId;
 	removeNode: (nodeId: TNodeId) => void;
 	swapNodes: (nodeId1: TNodeId, nodeId2: TNodeId) => void;
 	reorderNode: (nodeId: TNodeId, targetNodeId: TNodeId) => void;
@@ -484,6 +528,7 @@ export interface TPageEditor {
 	) => void;
 	selectNode: (nodeId: TNodeId) => void;
 	unselectNode: () => void;
+	copyNode: (nodeId: TNodeId) => TNodeId | null;
 
 	getFontAsset: (hash: TAssetHash | undefined | null) => TFontAsset | null;
 	registerFontFamily: (fontFamily: string) => TFont | null;

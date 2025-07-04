@@ -6,7 +6,7 @@ import { Icon, Text } from '@shopify/polaris';
 import { useCompute } from 'feature-react/state';
 import { TState } from 'feature-state';
 import React from 'react';
-import { DeleteIcon, DragHandleIcon } from '@/components';
+import { DeleteIcon, DragHandleIcon, DuplicateIcon } from '@/components';
 import { cn } from '@/lib';
 import { nodeMetadataMap } from '../../../environment';
 import { TFlattenedNode, TPageEditor } from '../../../lib';
@@ -35,6 +35,17 @@ export const LayerItem: React.FC<TLayerItemProps> = (props) => {
 		(e: React.MouseEvent<HTMLButtonElement>) => {
 			e.stopPropagation(); // Prevent the event from bubbling up to the parent (select event)
 			editor.removeNode(nodeId);
+		},
+		[editor, nodeId]
+	);
+
+	const handleCopyNode = React.useCallback(
+		(e: React.MouseEvent<HTMLButtonElement>) => {
+			e.stopPropagation(); // Prevent the event from bubbling up to the parent (select event)
+			const copiedNodeId = editor.copyNode(nodeId);
+			if (copiedNodeId != null) {
+				editor.selectNode(copiedNodeId);
+			}
 		},
 		[editor, nodeId]
 	);
@@ -80,15 +91,20 @@ export const LayerItem: React.FC<TLayerItemProps> = (props) => {
 			<Text as="p" variant="bodyMd">
 				{nodeMetadata?.label}
 			</Text>
-			<button
-				className={cn(
-					'ml-auto hidden cursor-pointer rounded-lg p-0.5 hover:bg-neutral-200 hover:text-red-500',
-					!isAnyItemDragging && 'group-hover:block'
-				)}
-				onClick={handleDeleteNode}
-			>
-				<Icon source={DeleteIcon} />
-			</button>
+			<div className={cn('ml-auto hidden gap-1', !isAnyItemDragging && 'group-hover:flex')}>
+				<button
+					className="cursor-pointer rounded-lg p-0.5 hover:bg-neutral-200"
+					onClick={handleCopyNode}
+				>
+					<Icon source={DuplicateIcon} />
+				</button>
+				<button
+					className="cursor-pointer rounded-lg p-0.5 hover:bg-neutral-200 hover:text-red-500"
+					onClick={handleDeleteNode}
+				>
+					<Icon source={DeleteIcon} />
+				</button>
+			</div>
 		</div>
 	);
 };

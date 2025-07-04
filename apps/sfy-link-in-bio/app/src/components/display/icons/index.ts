@@ -25,6 +25,7 @@ export {
 	DeleteIcon,
 	DesktopIcon,
 	DragHandleIcon,
+	DuplicateIcon,
 	ExternalIcon,
 	LayoutSectionIcon,
 	MobileIcon,
