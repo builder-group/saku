@@ -1,165 +1,74 @@
-// Type definitions for different Instagram URL formats
-type TInstagramReelUrl = {
-	type: 'reel';
-	url: string;
-	account: string;
-	accountUrl: string;
-};
-
-type TInstagramPostUrl = {
-	type: 'post';
-	url: string;
-	postId: string;
-};
-
-type TInstagramTvUrl = {
-	type: 'tv';
-	url: string;
-	videoId: string;
-};
-
-type TInstagramGuideUrl = {
-	type: 'guide';
-	url: string;
-	account: string;
-	accountUrl: string;
-	guideSlug: string;
-	guideId: string;
-};
-
-type TInstagramAccountUrl = {
-	type: 'account';
-	url: string;
-	account: string;
-};
-
-type TInstagramUrlResult =
-	| TInstagramReelUrl
-	| TInstagramPostUrl
-	| TInstagramTvUrl
-	| TInstagramGuideUrl
-	| TInstagramAccountUrl
-	| null;
-
 /**
- * Parse Instagram URLs into structured data
- * Returns null if not a valid Instagram URL
+ * Parse Instagram URLs into structured data.
+ * Supports profile, post, and reel URLs.
+ * Returns null if not a valid Instagram URL.
  */
-export function parseInstagramUrl(inputUrl: string): TInstagramUrlResult {
-	let url;
+export function parseInstagramUrl(inputUrl: string | URL): TInstagramUrl | null {
+	let url: URL;
 	try {
 		url = new URL(inputUrl);
 	} catch {
 		return null;
 	}
 
-	// Simple hostname check
 	if (!url.hostname.includes('instagram.com')) {
 		return null;
 	}
 
-	// Split path into parts and remove empty strings
-	const parts = url.pathname.split('/').filter(Boolean);
-	if (!parts.length) {
+	// Get path segments
+	const segments = url.pathname.split('/').filter(Boolean);
+	if (segments.length === 0) {
 		return null;
 	}
 
-	const firstPart = parts[0];
-	if (firstPart == null) {
-		return null;
-	}
-
-	// Simple URL builder
-	const makeUrl = (path: string) => `https://www.instagram.com/${path}`;
-
-	// Handle reel URLs
-	if (firstPart === 'reel' || firstPart === 'reels') {
-		// Direct reel URL: /reel/[code] or /reels/[code]
-		const code = parts[1];
-		if (code == null) {
-			return null;
-		}
-
-		return {
-			type: 'reel',
-			url: makeUrl(parts.join('/')),
-			account: firstPart,
-			accountUrl: makeUrl(firstPart)
-		};
-	}
-
-	// Handle account-specific reel URL: /[account]/reel/[code] or /[account]/reels/[code]
-	if (parts.length > 2 && (parts[1] === 'reel' || parts[1] === 'reels')) {
-		const code = parts[2];
-		if (code == null) {
-			return null;
-		}
-
-		return {
-			type: 'reel',
-			url: makeUrl(parts.join('/')),
-			account: firstPart,
-			accountUrl: makeUrl(firstPart)
-		};
-	}
+	const [type, id] = segments;
 
 	// Handle post URLs
-	if (firstPart === 'p') {
-		const postId = parts[1];
-		if (postId == null) {
-			return null;
-		}
-
+	if (type === 'p' && id) {
 		return {
 			type: 'post',
-			url: makeUrl(parts.join('/')),
-			postId
+			url: `https://www.instagram.com/p/${id}`,
+			postId: id
 		};
 	}
 
-	// Handle TV URLs
-	if (firstPart === 'tv') {
-		const videoId = parts[1];
-		if (videoId == null) {
-			return null;
-		}
-
+	// Handle reel URLs
+	if ((type === 'reel' || type === 'reels') && id) {
 		return {
-			type: 'tv',
-			url: makeUrl(parts.join('/')),
-			videoId
+			type: 'reel',
+			url: `https://www.instagram.com/reel/${id}`,
+			reelId: id
 		};
 	}
 
-	// Handle guide URLs: /[account]/guide/[slug]/[id]
-	if (parts.length >= 4 && parts[1] === 'guide') {
-		const account = parts[0];
-		const guideSlug = parts[2];
-		const guideId = parts[3];
-		if (!account || !guideSlug || !guideId) return null;
-
+	// Handle profile URLs (anything not matching above patterns)
+	if (type && !['p', 'reel', 'reels'].includes(type)) {
 		return {
-			type: 'guide',
-			url: makeUrl(parts.join('/')),
-			account,
-			accountUrl: makeUrl(account),
-			guideSlug,
-			guideId
+			type: 'profile',
+			url: `https://www.instagram.com/${type}`,
+			username: type
 		};
 	}
 
-	// Skip special paths and incomplete guide URLs
-	if (
-		['explore', 'direct', 'stories', 'tags', 'locations'].includes(firstPart) ||
-		(parts.length > 1 && parts[1] === 'guide')
-	) {
-		return null;
-	}
-
-	// Handle account URLs
-	return {
-		type: 'account',
-		url: makeUrl(firstPart),
-		account: firstPart
-	};
+	return null;
 }
+
+interface TInstagramReelUrl {
+	type: 'reel';
+	url: string;
+	reelId: string;
+}
+
+interface TInstagramPostUrl {
+	type: 'post';
+	url: string;
+	postId: string;
+}
+
+interface TInstagramProfileUrl {
+	type: 'profile';
+	url: string;
+	username: string;
+}
+
+type TInstagramUrl = TInstagramReelUrl | TInstagramPostUrl | TInstagramProfileUrl;

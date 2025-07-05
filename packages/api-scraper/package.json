@@ -35,5 +35,8 @@
 	"dependencies": {
 		"feature-fetch": "^0.0.49",
 		"xml-tokenizer": "^0.0.40"
+	},
+	"devDependencies": {
+		"dotenv": "^17.0.1"
 	}
 }

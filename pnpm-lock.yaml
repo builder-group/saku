@@ -277,6 +277,10 @@ importers:
       xml-tokenizer:
         specifier: ^0.0.40
         version: 0.0.40
+    devDependencies:
+      dotenv:
+        specifier: ^17.0.1
+        version: 17.0.1
 
   packages/editor: {}
 

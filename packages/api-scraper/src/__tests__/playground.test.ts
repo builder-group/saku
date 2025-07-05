@@ -1,67 +1,57 @@
-import fs from 'node:fs';
-import { describe, it } from 'vitest';
-import { htmlConfig, tokenize, type TXmlToken } from 'xml-tokenizer';
-import { parseInstagramUrl } from '../lib';
+import { describe, expect, it } from 'vitest';
+import { appConfig } from '../environment';
+import { fetchClient, proxiedFetchClient } from '../fetch-client';
 
 describe('playground', () => {
-	it('should extract instagram urls from html', () => {
-		// Read the HTML file
-		const html = fs.readFileSync(`${__dirname}/resources/.local/google.html`, 'utf-8');
-
-		// Track unique URLs by type
-		const reels = new Set<string>();
-		const posts = new Set<string>();
-		const accounts = new Set<string>();
-
-		// Process HTML and extract URLs
-		tokenize(
-			html,
-			(token: TXmlToken) => {
-				if (token.type === 'Attribute' && token.local === 'href') {
-					// Try to parse as Instagram URL
-					const result = parseInstagramUrl(token.value);
-					if (result == null) {
-						return;
-					}
-
-					// Add to appropriate set based on type
-					switch (result.type) {
-						case 'reel':
-							reels.add(result.url);
-							if (result.accountUrl) {
-								accounts.add(result.accountUrl);
-							}
-							break;
-						case 'post':
-							posts.add(result.url);
-							break;
-						case 'account':
-							accounts.add(result.url);
-							break;
-					}
+	it('should work with proxied client', { timeout: 0 }, async () => {
+		const result = await proxiedFetchClient.get(
+			'https://i.instagram.com/api/v1/users/web_profile_info',
+			{
+				queryParams: {
+					username: 'harley'
+				},
+				headers: {
+					'x-ig-app-id': '936619743392459'
 				}
+			}
+		);
+		if (!result.isOk()) {
+			console.error('❌ Request failed:', {
+				error: result.error,
+				code: result.error.code,
+				message: result.error instanceof Error ? result.error.message : String(result.error)
+			});
+		}
+		expect(result.isOk()).toBe(true);
+		if (result.isOk()) {
+			expect(result.value.data).toBeDefined();
+		}
+	});
+
+	it('should work with raw oxylabs request', { timeout: 0 }, async () => {
+		const result = await fetchClient.post(
+			'https://realtime.oxylabs.io/v1/queries',
+			{
+				source: 'google',
+				url: 'https://www.google.com/search?q=site%3Ainstagram.com+%22linkpop.com'
 			},
-			htmlConfig
+			{
+				headers: {
+					Authorization: `Basic ${Buffer.from(`${appConfig.username}:${appConfig.password}`).toString('base64')}`
+				}
+			}
 		);
+		if (!result.isOk()) {
+			console.error('❌ Request failed:', {
+				error: result.error,
+				code: result.error.code,
+				message: result.error instanceof Error ? result.error.message : String(result.error)
+			});
+		}
 
-		// Log results
-		console.log('\nExtracted Instagram URLs:');
-		console.log('------------------------');
-		console.log(`Reels found: ${reels.size}`);
-		console.log(`Posts found: ${posts.size}`);
-		console.log(`Accounts found: ${accounts.size}`);
-		console.log('------------------------');
-
-		// Write results to file for inspection
-		const results = {
-			reels: Array.from(reels).sort(),
-			posts: Array.from(posts).sort(),
-			accounts: Array.from(accounts).sort()
-		};
-
-		fs.writeFileSync(
-			`${__dirname}/resources/.local/instagram-urls.json`,
-			JSON.stringify(results, null, 2)
-		);
+		expect(result.isOk()).toBe(true);
+		if (result.isOk()) {
+			expect(result.value.data).toBeDefined();
+		}
 	});
 });
