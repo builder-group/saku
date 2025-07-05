@@ -1,2 +1,2 @@
-export * from './fetch-client';
+export * from './environment';
 export * from './lib';

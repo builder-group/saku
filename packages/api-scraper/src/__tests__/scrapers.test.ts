@@ -1,6 +1,11 @@
 import fs from 'node:fs';
 import { describe, it } from 'vitest';
-import { extractInstagramUsername, extractUrls, fetchInstagramUser } from '../lib';
+import {
+	extractInstagramUsername,
+	extractUrls,
+	fetchInstagramUser,
+	TCategorizedUrls
+} from '../lib';
 
 describe('Scrapers', () => {
 	const RESOURCES_DIR = `${__dirname}/resources/.local`;
@@ -14,25 +19,25 @@ describe('Scrapers', () => {
 			const html = fs.readFileSync(`${RESOURCES_DIR}/google.html`, 'utf-8');
 
 			// Extract Instagram URLs
-			const instagramUrls = extractUrls(html);
+			const categorizedUrls = extractUrls(html);
 
 			// Save the results for next step
 			fs.writeFileSync(
-				`${RESOURCES_DIR}/instagram-step1-urls.json`,
-				JSON.stringify(instagramUrls, null, 2)
+				`${RESOURCES_DIR}/step1-categorized-urls.json`,
+				JSON.stringify(categorizedUrls, null, 2)
 			);
 		});
 
 		// Step 2: Fetch Instagram user data focusing on bio links
 		it('Step 2: Extract Instagram bio links and basic profile data', { timeout: 0 }, async () => {
 			// Read results from previous step
-			const instagramUrls = JSON.parse(
-				fs.readFileSync(`${RESOURCES_DIR}/instagram-step1-urls.json`, 'utf-8')
-			);
+			const categorizedUrls = JSON.parse(
+				fs.readFileSync(`${RESOURCES_DIR}/step1-categorized-urls.json`, 'utf-8')
+			) as TCategorizedUrls;
 
 			// Process limited number of Instagram profile URLs
 			const results = [];
-			const profileUrls = instagramUrls.profiles.slice(0, MAX_PROFILES);
+			const profileUrls = categorizedUrls.instagram.profiles.slice(0, MAX_PROFILES);
 
 			for (const url of profileUrls) {
 				const username = extractInstagramUsername(url);

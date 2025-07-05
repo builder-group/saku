@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { appConfig } from '../environment';
-import { fetchClient, proxiedFetchClient } from '../fetch-client';
+import { fetchClient, proxiedFetchClient } from '../environment/clients/api-client';
 
 describe('playground', () => {
 	it('should work with proxied client', { timeout: 0 }, async () => {

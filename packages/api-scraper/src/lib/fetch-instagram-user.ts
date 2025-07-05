@@ -1,15 +1,13 @@
-import { fetchClient } from '../fetch-client';
-import { rotateUserAgent } from './user-agent-rotator';
+import { proxiedFetchClient, TOxylabsResponse } from '../environment';
 
 export async function fetchInstagramUser(username: string): Promise<TInstagramUser | null> {
-	const result = await fetchClient.get<TInstagramUserResponse>(
+	const result = await proxiedFetchClient.get<TOxylabsResponse>(
 		'https://i.instagram.com/api/v1/users/web_profile_info',
 		{
 			queryParams: {
 				username
 			},
 			headers: {
-				'User-Agent': rotateUserAgent(),
 				'x-ig-app-id': '936619743392459'
 			}
 		}
@@ -18,7 +16,16 @@ export async function fetchInstagramUser(username: string): Promise<TInstagramUs
 		return null;
 	}
 
-	return result.value.data.data.user;
+	const content = result.value.data.results[0]?.content;
+	if (content == null) {
+		return null;
+	}
+	const json = JSON.parse(content) as TInstagramUserResponse;
+	if (json.data.user == null) {
+		return null;
+	}
+
+	return json.data.user;
 }
 
 interface TInstagramBioLink {

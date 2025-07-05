@@ -4,6 +4,13 @@ export function withOxylabs(config: TOxylabsConfig): TRequestMiddleware {
 	const { username, password, endpoint = 'https://realtime.oxylabs.io/v1/queries', debug } = config;
 	const authHeader = `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`;
 
+	console.log('🔍 Oxylabs config:', {
+		username,
+		password,
+		endpoint,
+		debug
+	});
+
 	return (next: TFetchLike) => {
 		return async (url: string | URL, init?: RequestInit) => {
 			// Prepare Oxylabs request body
@@ -81,10 +88,10 @@ interface TOxylabsRequest {
 	method?: string;
 }
 
-interface TOxylabsResult {
+export interface TOxylabsResult {
 	content: string;
 }
 
-interface TOxylabsResponse {
+export interface TOxylabsResponse {
 	results: TOxylabsResult[];
 }

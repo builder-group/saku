@@ -1,6 +1,6 @@
 import { createApiFetchClient } from 'feature-fetch';
-import { appConfig } from './environment';
-import { withOxylabs } from './lib';
+import { appConfig } from '../configs';
+import { withOxylabs } from './with-oxylabs';
 
 export const fetchClient = createApiFetchClient();
 
