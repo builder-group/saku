@@ -1,0 +1,39 @@
+{
+	"name": "@repo/api-scraper",
+	"version": "0.0.1",
+	"private": true,
+	"description": "Scrape data from the web",
+	"keywords": [],
+	"homepage": "https://saku.so/?source=github",
+	"bugs": {
+		"url": "https://github.com/builder-group/saku/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/builder-group/saku.git"
+	},
+	"license": "AGPL-3.0-or-later",
+	"author": "@bennobuilder",
+	"main": "./dist/cjs/index.js",
+	"module": "./dist/esm/index.js",
+	"source": "./src/index.ts",
+	"types": "./dist/types/index.d.ts",
+	"files": [
+		"dist",
+		"README.md"
+	],
+	"scripts": {
+		"build": "shx rm -rf dist && rollup -c rollup.config.js",
+		"build:prod": "export NODE_ENV=production && pnpm build",
+		"clean": "shx rm -rf dist && shx rm -rf .turbo && shx rm -rf node_modules",
+		"install:clean": "pnpm run clean && pnpm install",
+		"lint": "eslint . --fix",
+		"start:dev": "tsc -w",
+		"test": "vitest run",
+		"update:latest": "pnpm update --latest"
+	},
+	"dependencies": {
+		"feature-fetch": "^0.0.49",
+		"xml-tokenizer": "^0.0.40"
+	}
+}

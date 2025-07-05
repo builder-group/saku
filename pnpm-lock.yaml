@@ -269,6 +269,15 @@ importers:
         specifier: ^1.2.8
         version: 1.2.8
 
+  packages/api-scraper:
+    dependencies:
+      feature-fetch:
+        specifier: ^0.0.49
+        version: 0.0.49(graphql@16.11.0)
+      xml-tokenizer:
+        specifier: ^0.0.40
+        version: 0.0.40
+
   packages/editor: {}
 
   packages/hono-utils:
@@ -7913,7 +7922,7 @@ snapshots:
       '@babel/plugin-syntax-typescript': 7.27.1(@babel/core@7.28.0)
       '@vanilla-extract/babel-plugin-debug-ids': 1.2.2
       '@vanilla-extract/css': 1.17.4
-      esbuild: 0.17.6
+      esbuild: 0.18.20
       eval: 0.1.8
       find-up: 5.0.0
       javascript-stringify: 2.1.0

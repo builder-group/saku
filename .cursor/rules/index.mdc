@@ -17,5 +17,6 @@ This document serves as the central index for all active Cursor rules within thi
 - [hono.mdc](mdc:.cursor/rules/hono.mdc): Backend API development with Hono
 - [nextjs.mdc](mdc:.cursor/rules/nextjs.mdc): Frontend development with Next.js
 - [vitest.mdc](mdc:.cursor/rules/vitest.mdc): Testing patterns and best practices with Vitest
+- [xml-tokenizer.mdc](mdc:.cursor/rules/xml-tokenizer.mdc): Stream-based XML/HTML parsing with xml-tokenizer
 
 Each rule file contains comprehensive guidelines for its domain. We can split these into more specific rules as the project grows and patterns emerge.
