@@ -1,7 +1,7 @@
-import { proxiedFetchClient, TOxylabsResponse } from '../environment';
+import { proxiedFetchClient, TOxylabMiddlewareResponse } from '../environment';
 
 export async function fetchInstagramUser(username: string): Promise<TInstagramUser | null> {
-	const result = await proxiedFetchClient.get<TOxylabsResponse>(
+	const result = await proxiedFetchClient.get<TOxylabMiddlewareResponse>(
 		'https://i.instagram.com/api/v1/users/web_profile_info',
 		{
 			queryParams: {
@@ -17,7 +17,7 @@ export async function fetchInstagramUser(username: string): Promise<TInstagramUs
 	}
 
 	const content = result.value.data.results[0]?.content;
-	if (content == null) {
+	if (content == null || !content.length) {
 		return null;
 	}
 	const json = JSON.parse(content) as TInstagramUserResponse;

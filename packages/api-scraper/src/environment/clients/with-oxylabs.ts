@@ -60,7 +60,7 @@ export function withOxylabs(config: TOxylabsConfig): TRequestMiddleware {
 			return new Response(
 				JSON.stringify({
 					status: oxyResponse.status,
-					data: data
+					...data
 				}),
 				{
 					headers: {
@@ -88,10 +88,17 @@ interface TOxylabsRequest {
 	method?: string;
 }
 
-export interface TOxylabsResult {
-	content: string;
+interface TOxylabsResponse {
+	results: TOxylabsResult[];
+	job: Record<string, unknown>;
 }
 
-export interface TOxylabsResponse {
-	results: TOxylabsResult[];
+export interface TOxylabsResult {
+	content: string;
+	url: string;
+	status_code: number;
+}
+
+export interface TOxylabMiddlewareResponse extends TOxylabsResponse {
+	status: number;
 }
