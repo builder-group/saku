@@ -4,19 +4,13 @@ export function withOxylabs(config: TOxylabsConfig): TRequestMiddleware {
 	const { username, password, endpoint = 'https://realtime.oxylabs.io/v1/queries', debug } = config;
 	const authHeader = `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`;
 
-	console.log('🔍 Oxylabs config:', {
-		username,
-		password,
-		endpoint,
-		debug
-	});
-
 	return (next: TFetchLike) => {
 		return async (url: string | URL, init?: RequestInit) => {
-			// Convert headers to object if present, excluding content-type which Oxylabs handles
+			// Convert headers to object if present
 			const customHeaders =
 				init?.headers != null
 					? Object.fromEntries(
+							// Let content-type be handled by Oxylabs
 							Object.entries(Object.fromEntries(new Headers(init.headers))).filter(
 								([key]) => key.toLowerCase() !== 'content-type'
 							)
