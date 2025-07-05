@@ -13,22 +13,41 @@ export function withOxylabs(config: TOxylabsConfig): TRequestMiddleware {
 
 	return (next: TFetchLike) => {
 		return async (url: string | URL, init?: RequestInit) => {
+			// Convert headers to object if present, excluding content-type which Oxylabs handles
+			const customHeaders =
+				init?.headers != null
+					? Object.fromEntries(
+							Object.entries(Object.fromEntries(new Headers(init.headers))).filter(
+								([key]) => key.toLowerCase() !== 'content-type'
+							)
+						)
+					: {};
+
+			// Prepare context array with required parameters
+			const context: TOxylabsContext[] = [{ key: 'user_agent_type', value: 'desktop_chrome' }];
+
+			// Only add headers to context if we have custom headers
+			if (Object.keys(customHeaders).length > 0) {
+				context.push(
+					{ key: 'force_headers', value: true },
+					{ key: 'headers', value: customHeaders }
+				);
+			}
+
+			// Add method and content if POST request
+			if (init?.method?.toLowerCase() === 'post' && init?.body != null) {
+				context.push(
+					{ key: 'http_method', value: 'post' },
+					{ key: 'content', value: Buffer.from(init.body.toString()).toString('base64') }
+				);
+			}
+
 			// Prepare Oxylabs request body
 			const oxyRequest: TOxylabsRequest = {
 				source: 'universal',
 				url: url.toString(),
-				force_headers: true,
-				headers: init?.headers != null ? Object.fromEntries(new Headers(init.headers)) : {}
+				context
 			};
-
-			// Let Oxylabs handle the content-type
-			delete oxyRequest.headers['content-type'];
-
-			// If original request had a body, include it base64 encoded
-			if (init?.body != null) {
-				oxyRequest.body = Buffer.from(init.body.toString()).toString('base64');
-				oxyRequest.method = init?.method;
-			}
 
 			if (debug) {
 				console.log('🔍 Sending request to Oxylabs:', {
@@ -82,10 +101,12 @@ export interface TOxylabsConfig {
 interface TOxylabsRequest {
 	source: string;
 	url: string;
-	force_headers: boolean;
-	headers: Record<string, string>;
-	body?: string;
-	method?: string;
+	context: TOxylabsContext[];
+}
+
+interface TOxylabsContext {
+	key: string;
+	value: unknown;
 }
 
 interface TOxylabsResponse {
