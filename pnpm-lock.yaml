@@ -278,6 +278,9 @@ importers:
         specifier: ^0.0.40
         version: 0.0.40
     devDependencies:
+      '@blgc/types':
+        specifier: ^0.0.17
+        version: 0.0.17
       dotenv:
         specifier: ^17.0.1
         version: 17.0.1

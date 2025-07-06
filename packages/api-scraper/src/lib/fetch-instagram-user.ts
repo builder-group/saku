@@ -1,13 +1,14 @@
-import { proxiedFetchClient, TOxylabMiddlewareResponse } from '../environment';
+import { fetchClient } from '../environment';
 
 export async function fetchInstagramUser(username: string): Promise<TInstagramUser | null> {
-	const result = await proxiedFetchClient.get<TOxylabMiddlewareResponse>(
+	const result = await fetchClient.proxyGet(
 		'https://i.instagram.com/api/v1/users/web_profile_info',
 		{
 			queryParams: {
 				username
 			},
 			headers: {
+				'Content-Type': 'application/json; charset=utf-8',
 				'x-ig-app-id': '936619743392459'
 			}
 		}

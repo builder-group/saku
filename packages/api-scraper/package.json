@@ -37,6 +37,7 @@
 		"xml-tokenizer": "^0.0.40"
 	},
 	"devDependencies": {
+		"@blgc/types": "^0.0.17",
 		"dotenv": "^17.0.1"
 	}
 }
