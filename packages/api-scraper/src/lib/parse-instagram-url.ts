@@ -1,6 +1,6 @@
 /**
  * Parse Instagram URLs into structured data.
- * Supports profile, post, and reel URLs.
+ * Supports user, post, and reel URLs.
  * Returns null if not a valid Instagram URL.
  */
 export function parseInstagramUrl(inputUrl: string | URL): TInstagramUrl | null {
@@ -41,10 +41,10 @@ export function parseInstagramUrl(inputUrl: string | URL): TInstagramUrl | null 
 		};
 	}
 
-	// Handle profile URLs (anything not matching above patterns)
-	if (type && !['p', 'reel', 'reels'].includes(type)) {
+	// Handle user URLs (anything not matching above patterns)
+	if (type != null && !['p', 'reel', 'reels'].includes(type)) {
 		return {
-			type: 'profile',
+			type: 'user',
 			url: `https://www.instagram.com/${type}`,
 			username: type
 		};
@@ -65,10 +65,10 @@ interface TInstagramPostUrl {
 	postId: string;
 }
 
-interface TInstagramProfileUrl {
-	type: 'profile';
+interface TInstagramUserUrl {
+	type: 'user';
 	url: string;
 	username: string;
 }
 
-type TInstagramUrl = TInstagramReelUrl | TInstagramPostUrl | TInstagramProfileUrl;
+type TInstagramUrl = TInstagramReelUrl | TInstagramPostUrl | TInstagramUserUrl;

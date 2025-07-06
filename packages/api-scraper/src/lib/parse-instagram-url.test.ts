@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { parseInstagramUrl } from './instagram-url-parser';
+import { parseInstagramUrl } from './parse-instagram-url';
 
 describe('parseInstagramUrl', () => {
 	it('should parse post URLs', () => {
@@ -31,16 +31,16 @@ describe('parseInstagramUrl', () => {
 		});
 	});
 
-	it('should parse profile URLs', () => {
+	it('should parse user URLs', () => {
 		expect(parseInstagramUrl('https://www.instagram.com/username')).toEqual({
-			type: 'profile',
+			type: 'user',
 			url: 'https://www.instagram.com/username',
 			username: 'username'
 		});
 
 		// Should handle different domains
 		expect(parseInstagramUrl('https://instagram.com/username')).toEqual({
-			type: 'profile',
+			type: 'user',
 			url: 'https://www.instagram.com/username',
 			username: 'username'
 		});

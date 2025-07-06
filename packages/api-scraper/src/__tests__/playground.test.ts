@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { htmlConfig, xmlToSimplifiedObject } from 'xml-tokenizer';
 import { fetchClient } from '../environment';
-import { findSearchResultsContent } from '../lib';
+import { findGoogleSearchResultsHtml } from '../lib';
 
 describe('playground', () => {
 	it('should work with proxied client', { timeout: 0 }, async () => {
@@ -33,7 +33,7 @@ describe('playground', () => {
 
 	it('should find search results', { timeout: 0 }, async () => {
 		const html = fs.readFileSync(`${__dirname}/resources/.local/google.html`, 'utf-8');
-		const content = findSearchResultsContent(html);
+		const content = findGoogleSearchResultsHtml(html);
 		const object = xmlToSimplifiedObject(content || '', htmlConfig);
 		console.log(object);
 	});

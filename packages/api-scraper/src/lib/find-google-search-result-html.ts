@@ -1,6 +1,6 @@
 import { htmlConfig, tokenize } from 'xml-tokenizer';
 
-export function findSearchResultsContent(html: string): string | null {
+export function findGoogleSearchResultsHtml(html: string): string | null {
 	let foundSearchResultsH1 = false;
 	let divStart = -1;
 	let divEnd = -1;

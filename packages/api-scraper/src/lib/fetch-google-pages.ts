@@ -2,13 +2,20 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { RequestError } from 'feature-fetch';
 import { fetchClient } from '../environment';
-import { findSearchResultsContent } from './find-search-result-content';
+import { createObjectHash } from './create-object-hash';
+import { findGoogleSearchResultsHtml } from './find-google-search-result-html';
 
 export async function fetchGooglePages(
 	searchQuery: string,
 	config: TFetchGooglePagesConfig
 ): Promise<TFetchGooglePagesResult> {
-	const { maxPages = 5, outputDir, startPage = 1, delayBetweenRequests = 500 } = config;
+	const {
+		maxPages = 5,
+		outputDir,
+		startPage = 1,
+		delayBetweenRequests = 500,
+		useCache = false
+	} = config;
 	const resultsPerPage = 100; // Google allows up to 100 results per page
 
 	// Ensure output directory exists
@@ -23,25 +30,50 @@ export async function fetchGooglePages(
 
 	for (let page = startPage; page < startPage + maxPages && shouldContinue; page++) {
 		const start = (page - 1) * resultsPerPage;
-		const fileName = `google-page-${page.toString().padStart(3, '0')}.html`;
+
+		const searchQueryParams: TGoogleSearchQueryParams = {
+			q: searchQuery,
+			start: start.toString(),
+			num: resultsPerPage.toString(),
+			hl: 'en',
+			gl: 'us'
+		};
+
+		const hash = createObjectHash(searchQueryParams, 8);
+		const fileName = `google-${hash}.json`;
 		const filePath = path.join(outputDir, fileName);
 
-		console.log(`📄 Fetching page ${page} (start=${start})...`);
+		// Check cache first if enabled
+		if (useCache && fs.existsSync(filePath)) {
+			let pageData: TPageData | null = null;
+			try {
+				const fileContent = fs.readFileSync(filePath, 'utf-8');
+				pageData = JSON.parse(fileContent) as TPageData;
+			} catch (error) {
+				console.log(`⚠️  Cache data invalid for ${fileName}, refetching...`);
+			}
+
+			if (pageData != null) {
+				console.log(`📂 Using cached results from ${pageData.metadata.timestamp}`);
+				pages.push({
+					status: 'success',
+					filePath,
+					cached: true
+				} satisfies TSuccessPageResult);
+				continue;
+			}
+		}
+
+		console.log(`📄 Fetching results (start=${start})...`);
 
 		const result = await fetchClient.proxyGet('https://www.google.com/search', {
-			queryParams: {
-				q: searchQuery,
-				start: start.toString(),
-				num: resultsPerPage.toString(), // Maximum results per page
-				hl: 'en', // Language
-				gl: 'us' // Country
-			},
+			queryParams: searchQueryParams,
 			locale: 'en-US',
 			geoLocation: 'United States',
 			userAgentType: 'desktop_chrome'
 		});
 		if (result.isErr()) {
-			const errorMsg = `Failed to fetch page ${page}: ${result.error}`;
+			const errorMsg = `Failed to fetch results: ${result.error}`;
 			console.error(`❌ ${errorMsg}`);
 
 			if (result.error instanceof RequestError) {
@@ -50,63 +82,63 @@ export async function fetchGooglePages(
 			}
 
 			pages.push({
-				page,
-				fileName,
 				status: 'error',
-				error: errorMsg,
-				timestamp: new Date().toISOString()
+				query: searchQueryParams,
+				error: errorMsg
 			} satisfies TErrorPageResult);
 			continue;
 		}
 
 		const content = result.value.data.results[0]?.content;
 		if (content == null || !content.length) {
-			const errorMsg = `Page ${page} returned empty content`;
+			const errorMsg = `Search returned empty content`;
 			console.error(`❌ ${errorMsg}`);
 			pages.push({
-				page,
-				fileName,
 				status: 'error',
-				error: errorMsg,
-				timestamp: new Date().toISOString()
+				query: searchQueryParams,
+				error: errorMsg
 			} satisfies TErrorPageResult);
 			continue;
 		}
 
 		// Extract just the search results content
-		const searchResultsContent = findSearchResultsContent(content);
-		if (searchResultsContent == null) {
-			console.log(`🔍 No more search results found on page ${page}`);
+		const searchResultsHtml = findGoogleSearchResultsHtml(content);
+		if (searchResultsHtml == null) {
+			console.log(`🔍 No more search results found`);
 			shouldContinue = false;
 			break;
 		}
 
-		// Save the page to the output directory
+		const timestamp = new Date().toISOString();
+		const pageData: TPageData = {
+			html: searchResultsHtml,
+			metadata: {
+				query: searchQueryParams,
+				timestamp
+			}
+		};
+
+		// Save the combined data
 		try {
-			fs.writeFileSync(filePath, searchResultsContent, 'utf-8');
+			fs.writeFileSync(filePath, JSON.stringify(pageData, null, 2), 'utf-8');
 		} catch (error) {
-			const errorMsg = `Failed to save page ${page}: ${error}`;
+			const errorMsg = `Failed to save results: ${error}`;
 			console.error(`❌ ${errorMsg}`);
 			pages.push({
-				page,
-				fileName,
 				status: 'error',
-				error: errorMsg,
-				timestamp: new Date().toISOString()
+				query: searchQueryParams,
+				error: errorMsg
 			} satisfies TErrorPageResult);
 			continue;
 		}
 
 		pages.push({
-			page,
-			fileName,
-			filePath,
 			status: 'success',
-			contentLength: searchResultsContent.length,
-			timestamp: new Date().toISOString()
+			filePath,
+			cached: false
 		} satisfies TSuccessPageResult);
 
-		console.log(`✅ Page ${page} saved as ${fileName} (${searchResultsContent.length} chars)`);
+		console.log(`✅ Results saved as ${fileName} (${searchResultsHtml.length} chars)`);
 
 		// Add delay between requests to avoid rate limiting
 		if (page < startPage + maxPages - 1 && shouldContinue) {
@@ -118,7 +150,9 @@ export async function fetchGooglePages(
 	const successfulPages = pages.filter((p) => p.status === 'success');
 	const failedPages = pages.filter((p) => p.status === 'error');
 
-	console.log(`🎉 Completed: ${successfulPages.length}/${maxPages} pages fetched successfully`);
+	console.log(
+		`🎉 Completed: ${successfulPages.length}/${successfulPages.length + failedPages.length} pages fetched successfully`
+	);
 	if (failedPages.length > 0) {
 		console.log(`❌ Failed: ${failedPages.length} pages had errors`);
 	}
@@ -128,60 +162,51 @@ export async function fetchGooglePages(
 
 	return {
 		searchQuery,
-		config: {
-			maxPages,
-			outputDir,
-			startPage,
-			delayBetweenRequests
-		},
 		pages,
-		statistics: {
-			total: maxPages,
-			successful: successfulPages.length,
-			failed: failedPages.length
-		},
 		timestamp: new Date().toISOString()
 	};
 }
+
 export interface TFetchGooglePagesConfig {
 	outputDir: string;
 	maxPages?: number;
 	startPage?: number;
 	delayBetweenRequests?: number;
+	useCache?: boolean;
 }
 
-export interface TSuccessPageResult {
-	page: number;
-	fileName: string;
-	filePath: string;
-	status: 'success';
-	contentLength: number;
-	timestamp: string;
+export interface TGoogleSearchQueryParams extends Record<string, string> {
+	q: string;
+	start: string;
+	num: string;
+	hl: string;
+	gl: string;
 }
 
-export interface TErrorPageResult {
-	page: number;
-	fileName: string;
-	status: 'error';
-	error: string;
+export interface TPageData {
+	html: string;
+	metadata: {
+		query: TGoogleSearchQueryParams;
+		timestamp: string;
+	};
+}
+
+export interface TFetchGooglePagesResult {
+	searchQuery: string;
+	pages: TPageResult[];
 	timestamp: string;
 }
 
 export type TPageResult = TSuccessPageResult | TErrorPageResult;
 
-export interface TFetchGooglePagesResult {
-	searchQuery: string;
-	config: {
-		maxPages: number;
-		outputDir: string;
-		startPage: number;
-		delayBetweenRequests: number;
-	};
-	pages: TPageResult[];
-	statistics: {
-		total: number;
-		successful: number;
-		failed: number;
-	};
-	timestamp: string;
+export interface TSuccessPageResult {
+	status: 'success';
+	filePath: string;
+	cached: boolean;
+}
+
+export interface TErrorPageResult {
+	status: 'error';
+	query: TGoogleSearchQueryParams;
+	error: string;
 }

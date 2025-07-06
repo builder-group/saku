@@ -1,14 +1,14 @@
 import { htmlConfig, tokenize, type TXmlToken } from 'xml-tokenizer';
-import { parseInstagramUrl } from './instagram-url-parser';
+import { parseInstagramUrl } from './parse-instagram-url';
 
 /**
  * Extract and categorize URLs from HTML content.
- * Returns Instagram URLs (posts, reels, profiles) and unknown URLs.
+ * Returns Instagram URLs (posts, reels, users) and unknown URLs.
  */
 export function extractUrls(html: string): TCategorizedUrls {
 	const reels = new Set<string>();
 	const posts = new Set<string>();
-	const profiles = new Set<string>();
+	const users = new Set<string>();
 	const unknown = new Set<string>();
 
 	tokenize(
@@ -31,8 +31,8 @@ export function extractUrls(html: string): TCategorizedUrls {
 						case 'post':
 							posts.add(result.url);
 							break;
-						case 'profile':
-							profiles.add(result.url);
+						case 'user':
+							users.add(result.url);
 							break;
 					}
 				} else {
@@ -47,7 +47,7 @@ export function extractUrls(html: string): TCategorizedUrls {
 		instagram: {
 			reels: Array.from(reels),
 			posts: Array.from(posts),
-			profiles: Array.from(profiles)
+			users: Array.from(users)
 		},
 		unknown: Array.from(unknown)
 	};
@@ -57,7 +57,7 @@ export interface TCategorizedUrls {
 	instagram: {
 		reels: string[];
 		posts: string[];
-		profiles: string[];
+		users: string[];
 	};
 	unknown: string[];
 }

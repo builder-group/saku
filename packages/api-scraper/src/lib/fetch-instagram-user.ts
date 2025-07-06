@@ -34,28 +34,30 @@ export async function fetchInstagramUser(username: string): Promise<TInstagramUs
 	return null;
 }
 
-interface TInstagramBioLink {
-	title: string;
-	lynx_url: string;
-	url: string;
-	link_type: string;
-}
-
-interface TInstagramUser {
-	biography: string | null;
-	bio_links: TInstagramBioLink[];
-	ai_agent_type: string | null;
-	ai_agent_owner_username: string | null;
-	fb_profile_biolink: string | null;
+export interface TInstagramUser {
 	username: string;
-	full_name: string;
-	profile_pic_url: string;
-	profile_pic_url_hd: string;
-	is_private: boolean;
+	full_name?: string;
+	biography: string;
+	bio_links: {
+		title: string;
+		lynx_url?: string;
+		url: string;
+		link_type?: string;
+	}[];
+	profile_pic_url_hd?: string;
+	is_private?: boolean;
 	is_verified: boolean;
-	follower_count: number;
-	following_count: number;
-	media_count: number;
+	external_url?: string;
+	edge_followed_by?: {
+		count?: number;
+	};
+	edge_follow?: {
+		count?: number;
+	};
+	id?: string;
+	is_business_account?: boolean;
+	business_address_json?: string;
+	category_name?: string;
 }
 
 interface TInstagramUserResponse {

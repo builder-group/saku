@@ -3,110 +3,180 @@ import path from 'node:path';
 import { describe, it } from 'vitest';
 import {
 	extractInstagramUsername,
+	extractUrls,
 	fetchGooglePages,
-	fetchInstagramUser,
+	fetchInstagramUsers,
+	TFetchInstagramUsersResult,
+	TInstagramUserData,
+	TPageData,
 	type TCategorizedUrls,
 	type TFetchGooglePagesResult
 } from '../lib';
 
 describe('Scrapers', () => {
-	const RESOURCES_DIR = `${__dirname}/resources/.local`;
-
 	describe('Instagram Bio Links Scraper', () => {
-		const MAX_PROFILES = 5;
-		const GOOGLE_PAGES_DIR = path.join(RESOURCES_DIR, 'google-pages');
-		const EXTRACTED_URLS_DIR = path.join(RESOURCES_DIR, 'extracted-urls');
-		const SEARCH_QUERY = 'site:instagram.com "/a/linkshop"';
+		const jobId = 'linkpop';
+		const bioLinkPattern = 'linkpop.com';
+		const resourcesDir = `${__dirname}/resources/.local`;
+		const config = {
+			resourcesDir,
+			step1: {
+				outputFile: path.join(resourcesDir, `${jobId}_step1_google-search-pages.json`),
+				googlePagesCache: path.join(resourcesDir, '.cache/google-pages'),
+				searchQuery: `site:instagram.com "${bioLinkPattern}"`
+			},
+			step2: {
+				outputFile: path.join(resourcesDir, `${jobId}_step2_extracted-instagram-urls.json`)
+			},
+			step3: {
+				outputFile: path.join(resourcesDir, `${jobId}_step3_instagram-profiles.json`),
+				instagramUsersCache: path.join(resourcesDir, '.cache/instagram-users')
+			},
+			step4: {
+				outputFile: path.join(resourcesDir, `${jobId}_step4_bio-link-analysis.json`)
+			}
+		};
 
-		it('Step 1: Fetch Google search pages via proxy', { timeout: 0 }, async () => {
-			const googlePages = await fetchGooglePages(SEARCH_QUERY, {
-				maxPages: 2,
-				outputDir: GOOGLE_PAGES_DIR
+		it('Step 1: Fetch Google search pages', { timeout: 0 }, async () => {
+			const googlePagesResult = await fetchGooglePages(config.step1.searchQuery, {
+				outputDir: config.step1.googlePagesCache,
+				maxPages: 50,
+				useCache: true
 			});
 
-			console.log('📊 Fetch Results:', {
-				searchQuery: googlePages.searchQuery,
-				statistics: googlePages.statistics,
-				config: googlePages.config,
-				timestamp: googlePages.timestamp
-			});
-
-			googlePages.pages.forEach((page) => {
-				if (page.status === 'success') {
-					console.log(
-						`✅ Page ${page.page}: ${page.fileName} (${page.contentLength} chars) -> ${page.filePath}`
-					);
-				} else {
-					console.log(`❌ Page ${page.page}: ${page.error}`);
-				}
-			});
-
-			fs.writeFileSync(
-				path.join(RESOURCES_DIR, 'step1-fetch-result.json'),
-				JSON.stringify(googlePages, null, 2)
-			);
+			const result1: TStep1Result = googlePagesResult;
+			fs.writeFileSync(config.step1.outputFile, JSON.stringify(result1, null, 2));
 		});
 
-		it('Step 2: Extract Instagram URLs from saved HTML files', { timeout: 0 }, async () => {
-			// Read results from previous step
-			const fetchResult = JSON.parse(
-				fs.readFileSync(path.join(RESOURCES_DIR, 'step1-fetch-result.json'), 'utf-8')
-			) as TFetchGooglePagesResult;
+		interface TStep1Result extends TFetchGooglePagesResult {}
 
-			// TODO
-		});
+		it('Step 2: Extract Instagram URLs from Google search pages', { timeout: 0 }, async () => {
+			const step1Result = JSON.parse(
+				fs.readFileSync(config.step1.outputFile, 'utf-8')
+			) as TStep1Result;
 
-		it('Step 3: Extract Instagram bio links and basic profile data', { timeout: 0 }, async () => {
-			// Read results from previous step
-			const categorizedUrls = JSON.parse(
-				fs.readFileSync(path.join(EXTRACTED_URLS_DIR, 'combined-categorized-urls.json'), 'utf-8')
-			) as TCategorizedUrls;
-
-			// Process limited number of Instagram profile URLs
-			const results = [];
-			const profileUrls = categorizedUrls.instagram.profiles.slice(0, MAX_PROFILES);
-
-			console.log(`🔍 Processing ${profileUrls.length} Instagram profiles...`);
-
-			for (const url of profileUrls) {
-				const username = extractInstagramUsername(url);
-				if (username == null) {
-					console.warn(`Could not extract username from URL: ${url}`);
+			const pages: TStep2Result['pages'] = [];
+			const instagramUsernames: Set<string> = new Set();
+			for (const page of step1Result.pages) {
+				if (page.status === 'error') {
 					continue;
 				}
 
-				console.log(`👤 Fetching data for @${username}...`);
-
-				const userData = await fetchInstagramUser(username);
-				if (userData != null) {
-					results.push({
-						username: userData.username,
-						profile_url: url,
-						bio_links: userData.bio_links,
-						follower_count: userData.follower_count,
-						full_name: userData.full_name,
-						biography: userData.biography
-					});
-
-					console.log(
-						`✅ @${username}: ${userData.bio_links.length} bio links, ${userData.follower_count} followers`
-					);
-				} else {
-					console.warn(`❌ Failed to fetch data for @${username}`);
+				let pageData: TPageData;
+				try {
+					const fileContent = fs.readFileSync(page.filePath, 'utf-8');
+					pageData = JSON.parse(fileContent) as TPageData;
+				} catch (error) {
+					console.error(`❌ Error reading file ${page.filePath}: ${error}`);
+					continue;
 				}
 
-				// Random delay between 1-3 seconds
-				const delay = Math.floor(Math.random() * (3000 + 1)) + 1000;
-				await new Promise((resolve) => setTimeout(resolve, delay));
+				const urls = extractUrls(pageData.html);
+				pages.push({
+					page: {
+						filePath: page.filePath
+					},
+					urls
+				});
+				urls.instagram.users.forEach((user) => {
+					const username = extractInstagramUsername(user);
+					if (username == null) {
+						console.warn(`Could not extract username from URL: ${user}`);
+						return;
+					}
+					instagramUsernames.add(username);
+				});
 			}
 
-			// Save the focused results
-			fs.writeFileSync(
-				path.join(RESOURCES_DIR, 'step3-bio-links.json'),
-				JSON.stringify(results, null, 2)
-			);
-
-			console.log(`🎉 Completed! Found ${results.length} profiles with bio link data`);
+			const result2: TStep2Result = {
+				instagram: {
+					usernames: Array.from(instagramUsernames)
+				},
+				pages,
+				timestamp: new Date().toISOString()
+			};
+			fs.writeFileSync(config.step2.outputFile, JSON.stringify(result2, null, 2));
 		});
+
+		interface TStep2Result {
+			instagram: {
+				usernames: string[];
+			};
+			pages: { page: { filePath: string }; urls: TCategorizedUrls }[];
+			timestamp: string;
+		}
+
+		it('Step 3: Fetch Instagram bio links and basic user data', { timeout: 0 }, async () => {
+			const step2Result = JSON.parse(
+				fs.readFileSync(path.join(config.step2.outputFile), 'utf-8')
+			) as TStep2Result;
+
+			const usersResult = await fetchInstagramUsers(step2Result.instagram.usernames, {
+				outputDir: config.step3.instagramUsersCache,
+				useCache: true
+			});
+
+			const result3: TStep3Result = usersResult;
+			fs.writeFileSync(config.step3.outputFile, JSON.stringify(result3, null, 2));
+		});
+
+		interface TStep3Result extends TFetchInstagramUsersResult {}
+
+		it('Step 4: Extract bio links from Instagram users', { timeout: 0 }, async () => {
+			const step3Result = JSON.parse(
+				fs.readFileSync(path.join(config.step3.outputFile), 'utf-8')
+			) as TStep3Result;
+
+			const result4: TStep4Result = {
+				users: [],
+				timestamp: new Date().toISOString()
+			};
+
+			for (const userResult of step3Result.users) {
+				if (userResult.status === 'error') {
+					console.warn(`⚠️ Skipping user due to error: ${userResult.error}`);
+					continue;
+				}
+
+				let userData: TInstagramUserData;
+				try {
+					const fileContent = fs.readFileSync(userResult.filePath, 'utf-8');
+					userData = JSON.parse(fileContent) as TInstagramUserData;
+				} catch (error) {
+					console.error(`❌ Error reading user data from ${userResult.filePath}: ${error}`);
+					continue;
+				}
+				const { user } = userData;
+
+				// Filter bio links containing the pattern
+				const matchingBioLink = user.bio_links.find((link) => link.url.includes(bioLinkPattern));
+
+				// Only include users that have a matching bio link
+				if (matchingBioLink != null) {
+					result4.users.push({
+						username: user.username,
+						bioLink: matchingBioLink.url,
+						isVerified: user.is_verified,
+						followerCount: user.edge_followed_by?.count
+					});
+				} else {
+					console.warn(`⚠️ Skipping @${user.username} - no bio links matching "${bioLinkPattern}"`);
+				}
+			}
+
+			console.log(`✅ Found ${result4.users.length} users with ${bioLinkPattern} bio link`);
+
+			fs.writeFileSync(config.step4.outputFile, JSON.stringify(result4, null, 2));
+		});
+
+		interface TStep4Result {
+			users: Array<{
+				username: string;
+				bioLink: string;
+				isVerified: boolean;
+				followerCount?: number;
+			}>;
+			timestamp: string;
+		}
 	});
 });
