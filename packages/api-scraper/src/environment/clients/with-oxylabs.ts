@@ -62,9 +62,17 @@ export function withOxylabs<GFeatures extends TFeatureDefinition[]>(
 				);
 			}
 
+			const url = buildUrl(prefixUrl, {
+				path,
+				pathParams,
+				queryParams,
+				pathSerializer,
+				querySerializer
+			});
+
 			// Prepare the request payload according to Oxylabs API docs
 			const payload: TOxylabsRequest = {
-				source: 'universal',
+				source: url.includes('google.com') ? 'google' : 'universal', // Note: Oxylabs doesn't support google search url in 'universal' source
 				url: buildUrl(prefixUrl, {
 					path,
 					pathParams,
@@ -102,7 +110,10 @@ export function withOxylabs<GFeatures extends TFeatureDefinition[]>(
 
 			if (debug) {
 				console.log('🔍 Oxylabs response status:', response.response.status);
-				console.log('🔍 Oxylabs response data:', response.data);
+				console.log(
+					'🔍 Oxylabs response content:',
+					response.data.results[0]?.content.slice(0, 500)
+				);
 			}
 
 			return Ok(response);
@@ -126,7 +137,7 @@ export interface TOxylabsConfig {
 }
 
 export interface TOxylabsRequest {
-	source: 'universal';
+	source: 'universal' | 'google';
 	url: string;
 	user_agent_type?: 'desktop' | 'desktop_chrome' | 'mobile' | 'mobile_android' | 'mobile_ios';
 	geo_location?: 'United States' | string;

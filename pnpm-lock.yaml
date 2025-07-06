@@ -271,6 +271,9 @@ importers:
 
   packages/api-scraper:
     dependencies:
+      '@blgc/utils':
+        specifier: ^0.0.57
+        version: 0.0.57
       feature-fetch:
         specifier: ^0.0.49
         version: 0.0.49(graphql@16.11.0)

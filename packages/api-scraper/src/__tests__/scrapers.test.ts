@@ -1,10 +1,12 @@
 import fs from 'node:fs';
+import path from 'node:path';
 import { describe, it } from 'vitest';
 import {
 	extractInstagramUsername,
-	extractUrls,
+	fetchGooglePages,
 	fetchInstagramUser,
-	TCategorizedUrls
+	type TCategorizedUrls,
+	type TFetchGooglePagesResult
 } from '../lib';
 
 describe('Scrapers', () => {
@@ -12,32 +14,59 @@ describe('Scrapers', () => {
 
 	describe('Instagram Bio Links Scraper', () => {
 		const MAX_PROFILES = 5;
+		const GOOGLE_PAGES_DIR = path.join(RESOURCES_DIR, 'google-pages');
+		const EXTRACTED_URLS_DIR = path.join(RESOURCES_DIR, 'extracted-urls');
+		const SEARCH_QUERY = 'site:instagram.com "/a/linkshop"';
 
-		// Step 1: Extract Instagram URLs from HTML
-		it('Step 1: Extract Instagram URLs from HTML source', { timeout: 0 }, async () => {
-			// Read the HTML source
-			const html = fs.readFileSync(`${RESOURCES_DIR}/google.html`, 'utf-8');
+		it('Step 1: Fetch Google search pages via proxy', { timeout: 0 }, async () => {
+			const googlePages = await fetchGooglePages(SEARCH_QUERY, {
+				maxPages: 2,
+				outputDir: GOOGLE_PAGES_DIR
+			});
 
-			// Extract Instagram URLs
-			const categorizedUrls = extractUrls(html);
+			console.log('📊 Fetch Results:', {
+				searchQuery: googlePages.searchQuery,
+				statistics: googlePages.statistics,
+				config: googlePages.config,
+				timestamp: googlePages.timestamp
+			});
 
-			// Save the results for next step
+			googlePages.pages.forEach((page) => {
+				if (page.status === 'success') {
+					console.log(
+						`✅ Page ${page.page}: ${page.fileName} (${page.contentLength} chars) -> ${page.filePath}`
+					);
+				} else {
+					console.log(`❌ Page ${page.page}: ${page.error}`);
+				}
+			});
+
 			fs.writeFileSync(
-				`${RESOURCES_DIR}/step1-categorized-urls.json`,
-				JSON.stringify(categorizedUrls, null, 2)
+				path.join(RESOURCES_DIR, 'step1-fetch-result.json'),
+				JSON.stringify(googlePages, null, 2)
 			);
 		});
 
-		// Step 2: Fetch Instagram user data focusing on bio links
-		it('Step 2: Extract Instagram bio links and basic profile data', { timeout: 0 }, async () => {
+		it('Step 2: Extract Instagram URLs from saved HTML files', { timeout: 0 }, async () => {
+			// Read results from previous step
+			const fetchResult = JSON.parse(
+				fs.readFileSync(path.join(RESOURCES_DIR, 'step1-fetch-result.json'), 'utf-8')
+			) as TFetchGooglePagesResult;
+
+			// TODO
+		});
+
+		it('Step 3: Extract Instagram bio links and basic profile data', { timeout: 0 }, async () => {
 			// Read results from previous step
 			const categorizedUrls = JSON.parse(
-				fs.readFileSync(`${RESOURCES_DIR}/step1-categorized-urls.json`, 'utf-8')
+				fs.readFileSync(path.join(EXTRACTED_URLS_DIR, 'combined-categorized-urls.json'), 'utf-8')
 			) as TCategorizedUrls;
 
 			// Process limited number of Instagram profile URLs
 			const results = [];
 			const profileUrls = categorizedUrls.instagram.profiles.slice(0, MAX_PROFILES);
+
+			console.log(`🔍 Processing ${profileUrls.length} Instagram profiles...`);
 
 			for (const url of profileUrls) {
 				const username = extractInstagramUsername(url);
@@ -46,14 +75,24 @@ describe('Scrapers', () => {
 					continue;
 				}
 
+				console.log(`👤 Fetching data for @${username}...`);
+
 				const userData = await fetchInstagramUser(username);
 				if (userData != null) {
 					results.push({
 						username: userData.username,
 						profile_url: url,
 						bio_links: userData.bio_links,
-						follower_count: userData.follower_count
+						follower_count: userData.follower_count,
+						full_name: userData.full_name,
+						biography: userData.biography
 					});
+
+					console.log(
+						`✅ @${username}: ${userData.bio_links.length} bio links, ${userData.follower_count} followers`
+					);
+				} else {
+					console.warn(`❌ Failed to fetch data for @${username}`);
 				}
 
 				// Random delay between 1-3 seconds
@@ -63,9 +102,11 @@ describe('Scrapers', () => {
 
 			// Save the focused results
 			fs.writeFileSync(
-				`${RESOURCES_DIR}/instagram-step2-bio-links.json`,
+				path.join(RESOURCES_DIR, 'step3-bio-links.json'),
 				JSON.stringify(results, null, 2)
 			);
+
+			console.log(`🎉 Completed! Found ${results.length} profiles with bio link data`);
 		});
 	});
 });

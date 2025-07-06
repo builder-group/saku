@@ -21,12 +21,17 @@ export async function fetchInstagramUser(username: string): Promise<TInstagramUs
 	if (content == null || !content.length) {
 		return null;
 	}
-	const json = JSON.parse(content) as TInstagramUserResponse;
-	if (json.data.user == null) {
-		return null;
+
+	try {
+		const json = JSON.parse(content) as TInstagramUserResponse;
+		if (json.data.user != null) {
+			return json.data.user;
+		}
+	} catch (error) {
+		console.error('❌ Error parsing Instagram user response:', error);
 	}
 
-	return json.data.user;
+	return null;
 }
 
 interface TInstagramBioLink {
