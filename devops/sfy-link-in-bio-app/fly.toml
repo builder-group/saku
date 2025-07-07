@@ -13,6 +13,8 @@ dockerfile = 'Dockerfile'
 # Set these via environment variables or modify directly (https://sfy-link-in-bio-app.saku.so/api):
 # fly deploy --build-arg VITE_CLIENT_API_CORE_URL=https://api.saku.so
 VITE_CLIENT_API_CORE_URL = 'https://sfy-link-in-bio-app.saku.so/api'
+VITE_POSTHOG_KEY = 'phc_5Z678901234567890123456789012345'
+VITE_POSTHOG_HOST = 'https://us.i.posthog.com'
 
 [env]
 PORT = '3000'

@@ -8,6 +8,8 @@ services:
       dockerfile: devops/sfy-link-in-bio-app/Dockerfile
       args:
         - VITE_CLIENT_API_CORE_URL=${VITE_CLIENT_API_CORE_URL:-http://127.0.0.1:8787}
+        - VITE_POSTHOG_KEY=${VITE_POSTHOG_KEY:-phc_5Z678901234567890123456789012345}
+        - VITE_POSTHOG_HOST=${VITE_POSTHOG_HOST:-https://us.i.posthog.com}
     ports:
       - '3000:3000'
     env_file:

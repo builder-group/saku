@@ -66,12 +66,16 @@ RUN find . -name ".env*" -type f -delete
 
 # Build arguments for Vite environment variables
 ARG VITE_CLIENT_API_CORE_URL
+ARG VITE_POSTHOG_KEY
+ARG VITE_POSTHOG_HOST
 
 # Write build args to .env file for Vite to read
 # Vite didn't pick up environment variables set via ENV, so we use .env file as workaround
 # https://vite.dev/guide/env-and-mode#env-variables
 RUN set -e; \
-    echo "VITE_CLIENT_API_CORE_URL=$VITE_CLIENT_API_CORE_URL" > apps/sfy-link-in-bio/app/.env
+    echo "VITE_CLIENT_API_CORE_URL=$VITE_CLIENT_API_CORE_URL" > apps/sfy-link-in-bio/app/.env; \
+    echo "VITE_POSTHOG_KEY=$VITE_POSTHOG_KEY" >> apps/sfy-link-in-bio/app/.env; \
+    echo "VITE_POSTHOG_HOST=$VITE_POSTHOG_HOST" >> apps/sfy-link-in-bio/app/.env
 
 # Build the project
 RUN pnpm turbo run build --filter=@repo/sfy-link-in-bio-app
