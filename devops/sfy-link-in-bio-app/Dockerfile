@@ -31,6 +31,9 @@ RUN apt-get update -qq && \
 # Install pnpm and turbo
 RUN npm install -g pnpm@$PNPM_VERSION turbo
 
+# Set environment identifier (e.g. for vite.config.ts)
+ENV DOCKER=1
+
 WORKDIR /app
 
 # =============================================================================
@@ -51,6 +54,21 @@ RUN turbo prune @repo/sfy-link-in-bio-app --docker
 # =============================================================================
 FROM base AS builder
 
+# Build-time args for Vite environment variables
+ARG VITE_CLIENT_API_CORE_URL
+ARG VITE_POSTHOG_KEY
+ARG VITE_POSTHOG_HOST
+
+# Validate required build args
+RUN test -n "$VITE_CLIENT_API_CORE_URL" || (echo "VITE_CLIENT_API_CORE_URL build arg is required" && false)
+RUN test -n "$VITE_POSTHOG_KEY" || (echo "VITE_POSTHOG_KEY build arg is required" && false)
+RUN test -n "$VITE_POSTHOG_HOST" || (echo "VITE_POSTHOG_HOST build arg is required" && false)
+
+# Set as system environment variables for the build
+ENV VITE_CLIENT_API_CORE_URL=$VITE_CLIENT_API_CORE_URL \
+    VITE_POSTHOG_KEY=$VITE_POSTHOG_KEY \
+    VITE_POSTHOG_HOST=$VITE_POSTHOG_HOST
+
 WORKDIR /app
 
 # Copy package.json and install dependencies
@@ -61,24 +79,13 @@ RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store \
 # Copy source code and build the project
 COPY --from=pruner /app/out/full/ .
 
-# Remove any .env files that might override environment variables from build args
-RUN find . -name ".env*" -type f -delete
-
-# Build arguments for Vite environment variables
-ARG VITE_CLIENT_API_CORE_URL
-ARG VITE_POSTHOG_KEY
-ARG VITE_POSTHOG_HOST
-
-# Write build args to .env file for Vite to read
-# Vite didn't pick up environment variables set via ENV, so we use .env file as workaround
-# https://vite.dev/guide/env-and-mode#env-variables
-RUN set -e; \
-    echo "VITE_CLIENT_API_CORE_URL=$VITE_CLIENT_API_CORE_URL" > apps/sfy-link-in-bio/app/.env; \
-    echo "VITE_POSTHOG_KEY=$VITE_POSTHOG_KEY" >> apps/sfy-link-in-bio/app/.env; \
-    echo "VITE_POSTHOG_HOST=$VITE_POSTHOG_HOST" >> apps/sfy-link-in-bio/app/.env
-
-# Build the project
-RUN pnpm turbo run build --filter=@repo/sfy-link-in-bio-app
+# Build the project with Turbo in loose mode
+# Using --env-mode=loose because:
+# 1. We set our VITE_* variables as container ENV vars above
+# 2. By default (strict mode), Turbo blocks these container ENV vars from reaching the build
+# 3. Loose mode allows our container ENV vars to pass through to Vite during build
+# See: https://turbo.build/repo/docs/reference/configuration#env
+RUN pnpm turbo run build --filter=@repo/sfy-link-in-bio-app --env-mode=loose
 
 # =============================================================================
 # RUNTIME STAGE

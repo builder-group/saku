@@ -16,8 +16,8 @@
 	"scripts": {
 		"build": "turbo run build",
 		"clean": "turbo run clean --force && shx rm -rf .turbo && shx rm -rf .vercel && shx rm -rf node_modules",
-		"docker:dev": "docker compose up --build -f devops/docker-compose.yaml",
-		"docker:dev:down": "docker compose down -f devops/docker-compose.yaml",
+		"docker:dev": "docker compose -f devops/docker-compose.yaml up --build",
+		"docker:dev:down": "docker compose -f devops/docker-compose.yaml down",
 		"fly:deploy:sfy-link-in-bio-app": "fly deploy -c devops/sfy-link-in-bio-app/fly.toml",
 		"format": "prettier --write \"**/*.{ts,tsx,md,json,js,jsx}\"",
 		"install:clean": "pnpm clean && pnpm install && pnpm build",

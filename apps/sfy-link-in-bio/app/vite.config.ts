@@ -52,7 +52,10 @@ export default defineConfig({
 		}
 	},
 	define: {
-		['import.meta.env.PACKAGE_VERSION']: JSON.stringify(process.env['npm_package_version'])
+		['import.meta.env.PACKAGE_VERSION']: defineViteEnv('npm_package_version'),
+		['import.meta.env.VITE_CLIENT_API_CORE_URL']: defineViteEnv('VITE_CLIENT_API_CORE_URL'),
+		['import.meta.env.VITE_POSTHOG_KEY']: defineViteEnv('VITE_POSTHOG_KEY'),
+		['import.meta.env.VITE_POSTHOG_HOST']: defineViteEnv('VITE_POSTHOG_HOST')
 	},
 	ssr: {
 		noExternal: [
@@ -88,3 +91,23 @@ export default defineConfig({
 		include: ['@shopify/app-bridge-react', '@shopify/polaris']
 	}
 }) satisfies UserConfig;
+
+// Helper to validate and stringify Vite env vars
+// Note: Can't use NODE_ENV (always 'production' in build) or enforce vars in local dev (no env loading in build command)
+function defineViteEnv(key: string) {
+	const value = process.env[key];
+
+	if (!value?.length) {
+		// In container/CI, fail hard to prevent corrupted production builds
+		if (process.env['CI'] || process.env['DOCKER']) {
+			throw new Error(`${key} is required for container/CI builds`);
+		}
+		// In local dev, just warn and continue
+		else {
+			console.warn(`[vite.config.ts] Warning: ${key} is not set`);
+			return JSON.stringify('');
+		}
+	}
+
+	return JSON.stringify(value);
+}
