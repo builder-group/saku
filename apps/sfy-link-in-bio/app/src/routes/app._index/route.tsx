@@ -21,11 +21,11 @@ import {
 	SitePreview,
 	ViewIcon
 } from '@/components';
-import { appConfig, shopify, shopifyConfig } from '@/environment/.server';
+import { appConfig, coreApiClient, logger } from '@/environment';
+import { shopify, shopifyConfig } from '@/environment/.server';
 import { getSessionTokenFromRequest, redirectWithAuth } from '@/lib/.server';
 import { usePageEditorModal } from '@/routes/app.modal.page-editor.$/PageEditorModal';
 import { TLoaderFunction } from '@/types';
-import { coreApiClient, logger } from '../../environment';
 
 const Page: React.FC = () => {
 	const { env, site, shouldOpenEditor } = useLoaderData<typeof loader>();

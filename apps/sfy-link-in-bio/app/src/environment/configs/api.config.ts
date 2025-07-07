@@ -1,12 +1,5 @@
 import { getHostname } from '@blgc/utils';
-import {
-	ciDefault,
-	combineDefaults,
-	devDefault,
-	nonEmptyStringMiddleware,
-	urlValidator,
-	validateEnvVar
-} from 'validatenv';
+import { nonEmptyStringMiddleware, urlValidator, validateEnvVar } from 'validatenv';
 
 const coreApiUrl = validateEnvVar(
 	{
@@ -17,11 +10,7 @@ const coreApiUrl = validateEnvVar(
 		middlewares: [
 			nonEmptyStringMiddleware,
 			(value) => (value?.endsWith('/') ? value.slice(0, -1) : value)
-		],
-		defaultValue: combineDefaults(
-			devDefault('http://127.0.0.1:8787'),
-			ciDefault('http://127.0.0.1:8787')
-		)
+		]
 	},
 	{}
 );

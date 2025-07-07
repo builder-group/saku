@@ -16,7 +16,7 @@ import { ShopifyGlobal } from '@shopify/app-bridge-react';
 import { FetchError, NetworkError, RequestError } from 'feature-fetch';
 import { createState, TState } from 'feature-state';
 import React from 'react';
-import { coreApiClient } from '@/environment';
+import { appConfig, coreApiClient } from '@/environment';
 import { requestReview } from '@/lib';
 import { TSettingsSectionType, TViewType } from '../environment';
 import { createNodeState, TNodeState } from './create-node-state';
@@ -547,7 +547,10 @@ export function createPageEditor(
 						const body = encodeURIComponent(
 							`Error details:\nCode: ${errorDetails.code}\nMessage: ${errorDetails.message}\nDescription: ${errorDetails.description ?? 'N/A'}\nThrowable: ${errorDetails.throwable ?? 'N/A'}\nTimestamp: ${timestamp}`
 						);
-						window.open(`mailto:support@saku.so?subject=${subject}&body=${body}`, '_blank');
+						window.open(
+							`mailto:${appConfig.support.email}?subject=${subject}&body=${body}`,
+							'_blank'
+						);
 					}
 				});
 

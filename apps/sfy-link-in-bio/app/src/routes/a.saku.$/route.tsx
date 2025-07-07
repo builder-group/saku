@@ -3,7 +3,8 @@ import { TSite } from '@repo/editor';
 import { AppProxyProvider } from '@shopify/shopify-app-remix/react';
 import { isStatusCode } from 'feature-fetch';
 import React from 'react';
-import { appConfig, shopify, shopifyConfig } from '@/environment/.server';
+import { appConfig, coreApiClient } from '@/environment';
+import { shopify, shopifyConfig } from '@/environment/.server';
 import {
 	getSiteFontUrls,
 	kangarooPreset,
@@ -14,7 +15,6 @@ import {
 import { useLoaderResult } from '@/hooks';
 import styles from '@/styles.css?url';
 import { TLoaderFunctionWithResult } from '@/types';
-import { coreApiClient } from '../../environment';
 
 const Page: React.FC = () => {
 	const loaderResult = useLoaderResult<TSuccessLoaderData, TErrorLoaderData>();

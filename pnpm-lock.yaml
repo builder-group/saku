@@ -128,6 +128,9 @@ importers:
       lucide-react:
         specifier: ^0.525.0
         version: 0.525.0(react@18.3.1)
+      posthog-js:
+        specifier: ^1.256.2
+        version: 1.256.2
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -3155,6 +3158,9 @@ packages:
   feature-state@0.0.53:
     resolution: {integrity: sha512-wIWgo7YTECvf+TmNDH9za8eYiF7SV1pUuofAKGJeTvhileOI3YOHbUIdE+jThFDAP+F1jSuj63l1jG5GORz/UA==}
 
+  fflate@0.4.8:
+    resolution: {integrity: sha512-FJqqoDBR00Mdj9ppamLa/Y7vxm+PRmNWA67N846RvsoYVMKB4q3y/de5PA7gUmRMYK/8CMz2GDZQmCRN1wBcWA==}
+
   figures@6.1.0:
     resolution: {integrity: sha512-d+l3qxjSesT4V7v2fh+QnmFnUWv9lSpjarhShNTgBOfA0ttejbQUAlHLitbjkoRiDulW0OPoQPYIGhIC8ohejg==}
     engines: {node: '>=18'}
@@ -4811,6 +4817,20 @@ packages:
     resolution: {integrity: sha512-9ZhXKM/rw350N1ovuWHbGxnGh/SNJ4cnxHiM0rxE4VN41wsg8P8zWn9hv/buK00RP4WvlOyr/RBDiptyxVbkZQ==}
     engines: {node: '>=0.10.0'}
 
+  posthog-js@1.256.2:
+    resolution: {integrity: sha512-ypepnUHr33i5a1Uk39mozZXXTENRPC17HCG3WHKK6aRcpNwNs8uEqXaIKICGNM+qre+totKeTgl0WoaUFYmyoQ==}
+    peerDependencies:
+      '@rrweb/types': 2.0.0-alpha.17
+      rrweb-snapshot: 2.0.0-alpha.17
+    peerDependenciesMeta:
+      '@rrweb/types':
+        optional: true
+      rrweb-snapshot:
+        optional: true
+
+  preact@10.26.9:
+    resolution: {integrity: sha512-SSjF9vcnF27mJK1XyFMNJzFd5u3pQiATFqoaDy03XuN00u4ziveVVEGt5RKJrDR8MHE/wJo9Nnad56RLzS2RMA==}
+
   prelude-ls@1.2.1:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
     engines: {node: '>= 0.8.0'}
@@ -6017,6 +6037,9 @@ packages:
   web-streams-polyfill@3.3.3:
     resolution: {integrity: sha512-d2JWLCivmZYTSIoge9MsgFCZrt571BikcWGYkjC1khllbTeDlGqZ2D8vD8E/lJa8WGWbb7Plm8/XJYV7IJHZZw==}
     engines: {node: '>= 8'}
+
+  web-vitals@4.2.4:
+    resolution: {integrity: sha512-r4DIlprAGwJ7YM11VZp4R884m0Vmgr6EAKe3P+kO0PPj3Unqyvv59rczf6UiGcb9Z8QxZVcqKNwv/g0WNdWwsw==}
 
   webidl-conversions@3.0.1:
     resolution: {integrity: sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ==}
@@ -9178,6 +9201,8 @@ snapshots:
       '@blgc/types': 0.0.17
       '@blgc/utils': 0.0.57
 
+  fflate@0.4.8: {}
+
   figures@6.1.0:
     dependencies:
       is-unicode-supported: 2.1.0
@@ -11211,6 +11236,15 @@ snapshots:
     dependencies:
       xtend: 4.0.2
 
+  posthog-js@1.256.2:
+    dependencies:
+      core-js: 3.43.0
+      fflate: 0.4.8
+      preact: 10.26.9
+      web-vitals: 4.2.4
+
+  preact@10.26.9: {}
+
   prelude-ls@1.2.1: {}
 
   prettier-plugin-css-order@2.1.2(postcss@8.5.6)(prettier@3.6.2):
@@ -12610,6 +12644,8 @@ snapshots:
       '@zxing/text-encoding': 0.9.0
 
   web-streams-polyfill@3.3.3: {}
+
+  web-vitals@4.2.4: {}
 
   webidl-conversions@3.0.1: {}
 

@@ -1,7 +1,7 @@
 import * as v from 'valibot';
 import { validateEnvVar } from 'validatenv';
 import { vValidator } from 'validation-adapters/valibot';
-import { appConfig } from './app.config';
+import { appConfig } from '../../configs';
 
 const appProxyPath = appConfig.env === 'production' ? '/a/saku' : '/a/saku-local';
 

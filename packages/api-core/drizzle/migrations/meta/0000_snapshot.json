@@ -1,542 +1,503 @@
 {
-  "id": "d8d41fab-c3f1-490c-8381-a551909965d7",
-  "prevId": "00000000-0000-0000-0000-000000000000",
-  "version": "7",
-  "dialect": "postgresql",
-  "tables": {
-    "public.shopify_session": {
-      "name": "shopify_session",
-      "schema": "",
-      "columns": {
-        "session_id": {
-          "name": "session_id",
-          "type": "text",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "shop_id": {
-          "name": "shop_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "is_online": {
-          "name": "is_online",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "access_token": {
-          "name": "access_token",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "scopes": {
-          "name": "scopes",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "state": {
-          "name": "state",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "session_data": {
-          "name": "session_data",
-          "type": "jsonb",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "expires_at": {
-          "name": "expires_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.site": {
-      "name": "site",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "text",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "workspace_id": {
-          "name": "workspace_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "handle": {
-          "name": "handle",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "display_name": {
-          "name": "display_name",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "content": {
-          "name": "content",
-          "type": "jsonb",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "site_workspace_id_workspace_id_fk": {
-          "name": "site_workspace_id_workspace_id_fk",
-          "tableFrom": "site",
-          "tableTo": "workspace",
-          "columnsFrom": [
-            "workspace_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "handle_per_workspace_idx": {
-          "name": "handle_per_workspace_idx",
-          "nullsNotDistinct": false,
-          "columns": [
-            "workspace_id",
-            "handle"
-          ]
-        }
-      },
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.user_account": {
-      "name": "user_account",
-      "schema": "",
-      "columns": {
-        "user_id": {
-          "name": "user_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "account_type": {
-          "name": "account_type",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "provider": {
-          "name": "provider",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "provider_account_id": {
-          "name": "provider_account_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "provider_data": {
-          "name": "provider_data",
-          "type": "jsonb",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "user_account_user_id_user_id_fk": {
-          "name": "user_account_user_id_user_id_fk",
-          "tableFrom": "user_account",
-          "tableTo": "user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {
-        "user_account_provider_provider_account_id_pk": {
-          "name": "user_account_provider_provider_account_id_pk",
-          "columns": [
-            "provider",
-            "provider_account_id"
-          ]
-        }
-      },
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.user": {
-      "name": "user",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "text",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "handle": {
-          "name": "handle",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "display_name": {
-          "name": "display_name",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "image": {
-          "name": "image",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "email": {
-          "name": "email",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "email_verified_at": {
-          "name": "email_verified_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "user_handle_unique": {
-          "name": "user_handle_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "handle"
-          ]
-        },
-        "user_email_unique": {
-          "name": "user_email_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "email"
-          ]
-        }
-      },
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.workspace_account": {
-      "name": "workspace_account",
-      "schema": "",
-      "columns": {
-        "workspace_id": {
-          "name": "workspace_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "account_type": {
-          "name": "account_type",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "provider": {
-          "name": "provider",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "provider_account_id": {
-          "name": "provider_account_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "provider_data": {
-          "name": "provider_data",
-          "type": "jsonb",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "workspace_account_workspace_id_workspace_id_fk": {
-          "name": "workspace_account_workspace_id_workspace_id_fk",
-          "tableFrom": "workspace_account",
-          "tableTo": "workspace",
-          "columnsFrom": [
-            "workspace_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {
-        "workspace_account_workspace_id_provider_provider_account_id_pk": {
-          "name": "workspace_account_workspace_id_provider_provider_account_id_pk",
-          "columns": [
-            "workspace_id",
-            "provider",
-            "provider_account_id"
-          ]
-        }
-      },
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.workspace_member": {
-      "name": "workspace_member",
-      "schema": "",
-      "columns": {
-        "workspace_id": {
-          "name": "workspace_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "user_id": {
-          "name": "user_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "role": {
-          "name": "role",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "workspace_member_workspace_id_workspace_id_fk": {
-          "name": "workspace_member_workspace_id_workspace_id_fk",
-          "tableFrom": "workspace_member",
-          "tableTo": "workspace",
-          "columnsFrom": [
-            "workspace_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "workspace_member_user_id_user_id_fk": {
-          "name": "workspace_member_user_id_user_id_fk",
-          "tableFrom": "workspace_member",
-          "tableTo": "user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "restrict",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {
-        "workspace_member_workspace_id_user_id_pk": {
-          "name": "workspace_member_workspace_id_user_id_pk",
-          "columns": [
-            "workspace_id",
-            "user_id"
-          ]
-        }
-      },
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.workspace": {
-      "name": "workspace",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "text",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "handle": {
-          "name": "handle",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "display_name": {
-          "name": "display_name",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "image": {
-          "name": "image",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "onboarding_completed_at": {
-          "name": "onboarding_completed_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "workspace_handle_unique": {
-          "name": "workspace_handle_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "handle"
-          ]
-        }
-      },
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    }
-  },
-  "enums": {},
-  "schemas": {},
-  "sequences": {},
-  "roles": {},
-  "policies": {},
-  "views": {},
-  "_meta": {
-    "columns": {},
-    "schemas": {},
-    "tables": {}
-  }
+	"id": "d8d41fab-c3f1-490c-8381-a551909965d7",
+	"prevId": "00000000-0000-0000-0000-000000000000",
+	"version": "7",
+	"dialect": "postgresql",
+	"tables": {
+		"public.shopify_session": {
+			"name": "shopify_session",
+			"schema": "",
+			"columns": {
+				"session_id": {
+					"name": "session_id",
+					"type": "text",
+					"primaryKey": true,
+					"notNull": true
+				},
+				"shop_id": {
+					"name": "shop_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"is_online": {
+					"name": "is_online",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"access_token": {
+					"name": "access_token",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"scopes": {
+					"name": "scopes",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"state": {
+					"name": "state",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"session_data": {
+					"name": "session_data",
+					"type": "jsonb",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"expires_at": {
+					"name": "expires_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"updated_at": {
+					"name": "updated_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": true
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"policies": {},
+			"checkConstraints": {},
+			"isRLSEnabled": false
+		},
+		"public.site": {
+			"name": "site",
+			"schema": "",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "text",
+					"primaryKey": true,
+					"notNull": true
+				},
+				"workspace_id": {
+					"name": "workspace_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"handle": {
+					"name": "handle",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"display_name": {
+					"name": "display_name",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"content": {
+					"name": "content",
+					"type": "jsonb",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"updated_at": {
+					"name": "updated_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": true
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {
+				"site_workspace_id_workspace_id_fk": {
+					"name": "site_workspace_id_workspace_id_fk",
+					"tableFrom": "site",
+					"tableTo": "workspace",
+					"columnsFrom": ["workspace_id"],
+					"columnsTo": ["id"],
+					"onDelete": "cascade",
+					"onUpdate": "no action"
+				}
+			},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {
+				"handle_per_workspace_idx": {
+					"name": "handle_per_workspace_idx",
+					"nullsNotDistinct": false,
+					"columns": ["workspace_id", "handle"]
+				}
+			},
+			"policies": {},
+			"checkConstraints": {},
+			"isRLSEnabled": false
+		},
+		"public.user_account": {
+			"name": "user_account",
+			"schema": "",
+			"columns": {
+				"user_id": {
+					"name": "user_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"account_type": {
+					"name": "account_type",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"provider": {
+					"name": "provider",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"provider_account_id": {
+					"name": "provider_account_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"provider_data": {
+					"name": "provider_data",
+					"type": "jsonb",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"updated_at": {
+					"name": "updated_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": true
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {
+				"user_account_user_id_user_id_fk": {
+					"name": "user_account_user_id_user_id_fk",
+					"tableFrom": "user_account",
+					"tableTo": "user",
+					"columnsFrom": ["user_id"],
+					"columnsTo": ["id"],
+					"onDelete": "cascade",
+					"onUpdate": "no action"
+				}
+			},
+			"compositePrimaryKeys": {
+				"user_account_provider_provider_account_id_pk": {
+					"name": "user_account_provider_provider_account_id_pk",
+					"columns": ["provider", "provider_account_id"]
+				}
+			},
+			"uniqueConstraints": {},
+			"policies": {},
+			"checkConstraints": {},
+			"isRLSEnabled": false
+		},
+		"public.user": {
+			"name": "user",
+			"schema": "",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "text",
+					"primaryKey": true,
+					"notNull": true
+				},
+				"handle": {
+					"name": "handle",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"display_name": {
+					"name": "display_name",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"image": {
+					"name": "image",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"email": {
+					"name": "email",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"email_verified_at": {
+					"name": "email_verified_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"updated_at": {
+					"name": "updated_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": true
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {
+				"user_handle_unique": {
+					"name": "user_handle_unique",
+					"nullsNotDistinct": false,
+					"columns": ["handle"]
+				},
+				"user_email_unique": {
+					"name": "user_email_unique",
+					"nullsNotDistinct": false,
+					"columns": ["email"]
+				}
+			},
+			"policies": {},
+			"checkConstraints": {},
+			"isRLSEnabled": false
+		},
+		"public.workspace_account": {
+			"name": "workspace_account",
+			"schema": "",
+			"columns": {
+				"workspace_id": {
+					"name": "workspace_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"account_type": {
+					"name": "account_type",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"provider": {
+					"name": "provider",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"provider_account_id": {
+					"name": "provider_account_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"provider_data": {
+					"name": "provider_data",
+					"type": "jsonb",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"updated_at": {
+					"name": "updated_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": true
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {
+				"workspace_account_workspace_id_workspace_id_fk": {
+					"name": "workspace_account_workspace_id_workspace_id_fk",
+					"tableFrom": "workspace_account",
+					"tableTo": "workspace",
+					"columnsFrom": ["workspace_id"],
+					"columnsTo": ["id"],
+					"onDelete": "cascade",
+					"onUpdate": "no action"
+				}
+			},
+			"compositePrimaryKeys": {
+				"workspace_account_workspace_id_provider_provider_account_id_pk": {
+					"name": "workspace_account_workspace_id_provider_provider_account_id_pk",
+					"columns": ["workspace_id", "provider", "provider_account_id"]
+				}
+			},
+			"uniqueConstraints": {},
+			"policies": {},
+			"checkConstraints": {},
+			"isRLSEnabled": false
+		},
+		"public.workspace_member": {
+			"name": "workspace_member",
+			"schema": "",
+			"columns": {
+				"workspace_id": {
+					"name": "workspace_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"user_id": {
+					"name": "user_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"role": {
+					"name": "role",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"updated_at": {
+					"name": "updated_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": true
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {
+				"workspace_member_workspace_id_workspace_id_fk": {
+					"name": "workspace_member_workspace_id_workspace_id_fk",
+					"tableFrom": "workspace_member",
+					"tableTo": "workspace",
+					"columnsFrom": ["workspace_id"],
+					"columnsTo": ["id"],
+					"onDelete": "cascade",
+					"onUpdate": "no action"
+				},
+				"workspace_member_user_id_user_id_fk": {
+					"name": "workspace_member_user_id_user_id_fk",
+					"tableFrom": "workspace_member",
+					"tableTo": "user",
+					"columnsFrom": ["user_id"],
+					"columnsTo": ["id"],
+					"onDelete": "restrict",
+					"onUpdate": "no action"
+				}
+			},
+			"compositePrimaryKeys": {
+				"workspace_member_workspace_id_user_id_pk": {
+					"name": "workspace_member_workspace_id_user_id_pk",
+					"columns": ["workspace_id", "user_id"]
+				}
+			},
+			"uniqueConstraints": {},
+			"policies": {},
+			"checkConstraints": {},
+			"isRLSEnabled": false
+		},
+		"public.workspace": {
+			"name": "workspace",
+			"schema": "",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "text",
+					"primaryKey": true,
+					"notNull": true
+				},
+				"handle": {
+					"name": "handle",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"display_name": {
+					"name": "display_name",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"image": {
+					"name": "image",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"onboarding_completed_at": {
+					"name": "onboarding_completed_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"updated_at": {
+					"name": "updated_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": true
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {
+				"workspace_handle_unique": {
+					"name": "workspace_handle_unique",
+					"nullsNotDistinct": false,
+					"columns": ["handle"]
+				}
+			},
+			"policies": {},
+			"checkConstraints": {},
+			"isRLSEnabled": false
+		}
+	},
+	"enums": {},
+	"schemas": {},
+	"sequences": {},
+	"roles": {},
+	"policies": {},
+	"views": {},
+	"_meta": {
+		"columns": {},
+		"schemas": {},
+		"tables": {}
+	}
 }

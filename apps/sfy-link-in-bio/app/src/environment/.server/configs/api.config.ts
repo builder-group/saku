@@ -1,13 +1,6 @@
 import { getHostname } from '@blgc/utils';
 import * as v from 'valibot';
-import {
-	ciDefault,
-	combineDefaults,
-	devDefault,
-	nonEmptyStringMiddleware,
-	urlValidator,
-	validateEnvVar
-} from 'validatenv';
+import { nonEmptyStringMiddleware, urlValidator, validateEnvVar } from 'validatenv';
 import { vValidator } from 'validation-adapters/valibot';
 
 const coreApiUrl = validateEnvVar({
@@ -16,11 +9,7 @@ const coreApiUrl = validateEnvVar({
 	middlewares: [
 		nonEmptyStringMiddleware,
 		(value) => (value?.endsWith('/') ? value.slice(0, -1) : value)
-	],
-	defaultValue: combineDefaults(
-		devDefault('http://127.0.0.1:8787'),
-		ciDefault('http://127.0.0.1:8787')
-	)
+	]
 });
 
 export const apiConfig = {
@@ -29,8 +18,7 @@ export const apiConfig = {
 		hostname: getHostname(coreApiUrl),
 		accessSecret: validateEnvVar({
 			envKey: 'CLIENT_API_CORE_ACCESS_SECRET',
-			validator: vValidator(v.string()),
-			defaultValue: ciDefault('')
+			validator: vValidator(v.string())
 		})
 	}
 };

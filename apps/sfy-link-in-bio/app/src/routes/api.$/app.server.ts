@@ -1,6 +1,7 @@
 import { createApp } from '@repo/api-core';
 import { Hono } from 'hono';
-import { apiConfig, appConfig } from '@/environment/.server';
+import { appConfig } from '@/environment';
+import { apiConfig } from '@/environment/.server';
 import { createApiProxy } from '@/lib/.server';
 
 /**

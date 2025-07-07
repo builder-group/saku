@@ -51,10 +51,18 @@ export default defineConfig({
 			allow: ['src', 'node_modules']
 		}
 	},
+	define: {
+		['import.meta.env.PACKAGE_VERSION']: JSON.stringify(process.env['npm_package_version'])
+	},
 	ssr: {
-		// Fix: validation-adapters sub-exports (/valibot, /zod) cause SSR module resolution issues
-		// Might be not necessary if we update validation-adapters package.json exports to use nested conditional exports correctly?
-		noExternal: ['validation-adapters', 'feature-react']
+		noExternal: [
+			'posthog-js',
+			'posthog-js/react',
+			// Fix: validation-adapters sub-exports (/valibot, /zod) cause SSR module resolution issues
+			// Might be not necessary if we update validation-adapters package.json exports to use nested conditional exports correctly?
+			'validation-adapters',
+			'feature-react'
+		]
 	},
 	plugins: [
 		tailwindcss(),

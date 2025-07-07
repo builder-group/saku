@@ -15,7 +15,7 @@ import {
 } from '@shopify/polaris';
 import React from 'react';
 import { ApiHealthBadge } from '@/components';
-import { appConfig } from '@/environment/.server';
+import { appConfig } from '@/environment';
 import { TLoaderFunction } from '@/types';
 
 // https://polaris-react.shopify.com/patterns/app-settings-layout
