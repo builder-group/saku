@@ -25,14 +25,22 @@ export async function fetchXUser(username: string): Promise<TXUser | null> {
 
 	if (result.isErr()) {
 		if (result.error instanceof RequestError && result.error.response?.status === 429) {
-			const resetTime = result.error.response.headers.get('x-rate-limit-reset');
-			const limit = result.error.response.headers.get('x-rate-limit-limit');
 			console.warn('⚠️ X API Rate limited:', {
-				limit,
-				resetTime: resetTime ? new Date(Number(resetTime) * 1000).toISOString() : 'unknown',
-				username
+				username,
+				limit: result.error.response.headers.get('x-rate-limit-limit'),
+				resetTime: result.error.response.headers.get('x-rate-limit-reset'),
+				remaining: result.error.response.headers.get('x-rate-limit-remaining')
 			});
-			return null;
+
+			const timeout = calculateRateLimitTimeout(result.error.response);
+			if (timeout > 0) {
+				console.log(
+					'⏳ Waiting for rate limit reset until:',
+					new Date(Date.now() + timeout).toLocaleString()
+				);
+				await new Promise((resolve) => setTimeout(resolve, timeout));
+			}
+			return fetchXUser(username);
 		}
 
 		console.error('❌ Error fetching X user:', result.error);
@@ -40,6 +48,16 @@ export async function fetchXUser(username: string): Promise<TXUser | null> {
 	}
 
 	return result.value.data.data;
+}
+
+function calculateRateLimitTimeout(response: Response): number {
+	const rateLimitReset = Number(response.headers.get('x-rate-limit-reset'));
+	const rateLimitRemaining = Number(response.headers.get('x-rate-limit-remaining'));
+	if (rateLimitRemaining === 0) {
+		const timeTillReset = rateLimitReset * 1000 - Date.now();
+		return timeTillReset;
+	}
+	return 0;
 }
 
 export interface TXUser {
