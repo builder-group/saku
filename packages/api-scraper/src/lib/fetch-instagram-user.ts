@@ -1,7 +1,7 @@
-import { fetchClient } from '../environment';
+import { oxyLabsFetchClient } from '../environment';
 
 export async function fetchInstagramUser(username: string): Promise<TInstagramUser | null> {
-	const result = await fetchClient.proxyGet(
+	const result = await oxyLabsFetchClient.proxyGet(
 		'https://i.instagram.com/api/v1/users/web_profile_info',
 		{
 			queryParams: {
@@ -14,24 +14,25 @@ export async function fetchInstagramUser(username: string): Promise<TInstagramUs
 		}
 	);
 	if (result.isErr()) {
+		console.error('❌ Error fetching Instagram user:', result.error);
 		return null;
 	}
 
 	const content = result.value.data.results[0]?.content;
 	if (content == null || !content.length) {
+		console.error('❌ Error parsing Instagram user response: empty content');
 		return null;
 	}
 
+	let json;
 	try {
-		const json = JSON.parse(content) as TInstagramUserResponse;
-		if (json.data.user != null) {
-			return json.data.user;
-		}
+		json = JSON.parse(content) as TInstagramUserResponse;
 	} catch (error) {
 		console.error('❌ Error parsing Instagram user response:', error);
+		return null;
 	}
 
-	return null;
+	return json.data.user;
 }
 
 export interface TInstagramUser {

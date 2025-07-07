@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { RequestError } from 'feature-fetch';
-import { fetchClient } from '../environment';
+import { oxyLabsFetchClient } from '../environment';
 import { createObjectHash } from './create-object-hash';
 import { findGoogleSearchResultsHtml } from './find-google-search-result-html';
 
@@ -66,7 +66,7 @@ export async function fetchGooglePages(
 
 		console.log(`📄 Fetching results (start=${start})...`);
 
-		const result = await fetchClient.proxyGet('https://www.google.com/search', {
+		const result = await oxyLabsFetchClient.proxyGet('https://www.google.com/search', {
 			queryParams: searchQueryParams,
 			locale: 'en-US',
 			geoLocation: 'United States',

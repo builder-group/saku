@@ -1,14 +1,17 @@
 import { htmlConfig, tokenize, type TXmlToken } from 'xml-tokenizer';
 import { parseInstagramUrl } from './parse-instagram-url';
+import { parseXUrl } from './parse-x-url';
 
 /**
  * Extract and categorize URLs from HTML content.
- * Returns Instagram URLs (posts, reels, users) and unknown URLs.
+ * Returns Instagram URLs (posts, reels, users), X URLs (posts, users), and unknown URLs.
  */
 export function extractUrls(html: string): TCategorizedUrls {
 	const reels = new Set<string>();
 	const posts = new Set<string>();
 	const users = new Set<string>();
+	const xPosts = new Set<string>();
+	const xUsers = new Set<string>();
 	const unknown = new Set<string>();
 
 	tokenize(
@@ -22,22 +25,37 @@ export function extractUrls(html: string): TCategorizedUrls {
 					return;
 				}
 
-				const result = parseInstagramUrl(url);
-				if (result != null) {
-					switch (result.type) {
+				const instagramResult = parseInstagramUrl(url);
+				if (instagramResult != null) {
+					switch (instagramResult.type) {
 						case 'reel':
-							reels.add(result.url);
+							reels.add(instagramResult.url);
 							break;
 						case 'post':
-							posts.add(result.url);
+							posts.add(instagramResult.url);
 							break;
 						case 'user':
-							users.add(result.url);
+							users.add(instagramResult.url);
 							break;
 					}
-				} else {
-					unknown.add(token.value);
+					return;
 				}
+
+				const xResult = parseXUrl(url);
+				if (xResult != null) {
+					switch (xResult.type) {
+						case 'post':
+							xPosts.add(xResult.url);
+							xUsers.add(xResult.userUrl);
+							break;
+						case 'user':
+							xUsers.add(xResult.url);
+							break;
+					}
+					return;
+				}
+
+				unknown.add(token.value);
 			}
 		},
 		htmlConfig
@@ -49,6 +67,10 @@ export function extractUrls(html: string): TCategorizedUrls {
 			posts: Array.from(posts),
 			users: Array.from(users)
 		},
+		x: {
+			posts: Array.from(xPosts),
+			users: Array.from(xUsers)
+		},
 		unknown: Array.from(unknown)
 	};
 }
@@ -56,6 +78,10 @@ export function extractUrls(html: string): TCategorizedUrls {
 export interface TCategorizedUrls {
 	instagram: {
 		reels: string[];
+		posts: string[];
+		users: string[];
+	};
+	x: {
 		posts: string[];
 		users: string[];
 	};

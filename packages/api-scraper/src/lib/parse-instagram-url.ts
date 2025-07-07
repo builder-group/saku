@@ -24,7 +24,7 @@ export function parseInstagramUrl(inputUrl: string | URL): TInstagramUrl | null 
 	const [type, id] = segments;
 
 	// Handle post URLs
-	if (type === 'p' && id) {
+	if (type === 'p' && id != null) {
 		return {
 			type: 'post',
 			url: `https://www.instagram.com/p/${id}`,
@@ -33,7 +33,7 @@ export function parseInstagramUrl(inputUrl: string | URL): TInstagramUrl | null 
 	}
 
 	// Handle reel URLs
-	if ((type === 'reel' || type === 'reels') && id) {
+	if ((type === 'reel' || type === 'reels') && id != null) {
 		return {
 			type: 'reel',
 			url: `https://www.instagram.com/reel/${id}`,
