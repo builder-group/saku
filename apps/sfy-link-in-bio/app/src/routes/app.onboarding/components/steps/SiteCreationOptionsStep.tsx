@@ -35,6 +35,10 @@ export const SiteCreationOptionsStep: React.FC<TSiteCreationOptionsStepProps> = 
 		}
 	}, [onboardingContext, selected]);
 
+	const handleBack = React.useCallback(() => {
+		onboardingContext.goBack();
+	}, [onboardingContext]);
+
 	// =========================================================================
 	// UI
 	// =========================================================================
@@ -61,9 +65,15 @@ export const SiteCreationOptionsStep: React.FC<TSiteCreationOptionsStepProps> = 
 				selected={selected}
 			/>
 
-			<Button variant="primary" size="large" fullWidth onClick={handleContinue}>
-				Continue
-			</Button>
+			<div className="flex flex-col gap-2">
+				<Button variant="primary" size="large" fullWidth onClick={handleContinue}>
+					Continue to editor
+				</Button>
+
+				<Button variant="monochromePlain" onClick={handleBack}>
+					Go back
+				</Button>
+			</div>
 		</StepLayout>
 	);
 };

@@ -8,16 +8,49 @@ import { createStepr, type TStepr } from '@/lib/ui';
 export function createOnboardingContext(
 	config: TCreateOnboardingContextConfig
 ): TOnboardingContext {
-	const { callbackUrl, shopify } = config;
+	const { shopify, shopId } = config;
 
 	return {
-		_callbackUrl: callbackUrl,
 		id: shortId(),
 		shopify,
+		shopId,
 		stepr: createStepr<TOnboardingStep>({ initialStep: { type: 'welcome' } }),
 
 		continueFromWelcome() {
+			this.stepr.goTo({ type: 'handle' });
+		},
+
+		async continueFromHandle(handle: string) {
+			const idToken = await this.shopify.idToken();
+			const trimmedHandle = handle.trim();
+
+			// Check if the handle is available
+			const availabilityResult = await coreApiClient.get('/v1/shopify/redirect/availability', {
+				queryParams: {
+					path: `/${trimmedHandle}`
+				},
+				headers: {
+					Authorization: `Bearer ${idToken}`
+				}
+			});
+			if (availabilityResult.isErr()) {
+				return Err('Failed to check handle availability. Please try again.');
+			}
+
+			const { isAvailable, conflictReason } = availabilityResult.value.data;
+			if (!isAvailable) {
+				return Err(conflictReason ?? 'This handle is not available. Please try a different one.');
+			}
+
+			// Store the handle in the step
+			this.stepr.current.set({
+				type: 'handle',
+				handle: trimmedHandle
+			});
+
 			this.stepr.goTo({ type: 'site-creation-options' });
+
+			return Ok(undefined);
 		},
 
 		continueFromSiteCreationOptions(option) {
@@ -85,10 +118,17 @@ export function createOnboardingContext(
 
 			const idToken = await this.shopify.idToken();
 
+			// Get the handle from the handle step
+			const handleStep = this.stepr.getVisited('handle') as {
+				type: 'handle';
+				handle?: string;
+			} | null;
+			const handle = handleStep?.handle ?? 'bio';
+
 			const createResult = await coreApiClient.post(
 				'/v1/shopify/site',
 				{
-					handle: 'bio',
+					handle,
 					displayName: 'My Bio Page',
 					content: currentStep.site as any
 				},
@@ -122,10 +162,17 @@ export function createOnboardingContext(
 
 			const idToken = await this.shopify.idToken();
 
+			// Get the handle from the handle step
+			const handleStep = this.stepr.getVisited('handle') as {
+				type: 'handle';
+				handle?: string;
+			} | null;
+			const handle = handleStep?.handle ?? 'bio';
+
 			const result = await coreApiClient.post(
 				'/v1/shopify/site',
 				{
-					handle: 'bio',
+					handle,
 					displayName: 'My Bio Page',
 					content: preset as any
 				},
@@ -150,12 +197,13 @@ export function createOnboardingContext(
 }
 
 export interface TOnboardingContext {
-	_callbackUrl: string;
 	id: string;
 	shopify: ShopifyGlobal;
+	shopId: string;
 	stepr: TStepr<TOnboardingStep>;
 
 	continueFromWelcome: () => void;
+	continueFromHandle: (handle: string) => Promise<TResult<void, string>>;
 	continueFromSiteCreationOptions: (option: TSiteCreationOption) => void;
 	continueFromLinkpopUrl: (handle: string) => Promise<TResult<void, string>>;
 	continueFromLinkpopPreview: () => Promise<TResult<void, string>>;
@@ -164,12 +212,13 @@ export interface TOnboardingContext {
 }
 
 export interface TCreateOnboardingContextConfig {
-	callbackUrl: string;
 	shopify: ShopifyGlobal;
+	shopId: string;
 }
 
 export type TOnboardingStep =
 	| { type: 'welcome' }
+	| { type: 'handle'; handle?: string }
 	| { type: 'site-creation-options'; selectedOption?: TSiteCreationOption }
 	| { type: 'linkpop-url'; handle?: string }
 	| { type: 'linkpop-preview'; url?: string; site?: TSite }

@@ -108,6 +108,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/shopify/redirect/availability": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Check URL redirect path availability
+         * @description Checks if a URL path is available for creating a redirect by validating against reserved paths and existing redirects.
+         */
+        get: operations["checkUrlRedirectAvailability"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/shopify/site": {
         parameters: {
             query?: never;
@@ -955,6 +975,81 @@ export interface operations {
             };
             /** @description Internal server error */
             500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppErrorDto"];
+                };
+            };
+        };
+    };
+    checkUrlRedirectAvailability: {
+        parameters: {
+            query: {
+                path: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * @description Whether the URL path is available for redirect creation
+                         * @example true
+                         */
+                        isAvailable: boolean;
+                        /**
+                         * @description Type of conflict if path is not available
+                         * @example null
+                         * @enum {string|null}
+                         */
+                        conflictType: "reserved_path" | "existing_redirect" | null;
+                        /**
+                         * @description Human-readable explanation of why the path is not available
+                         * @example null
+                         */
+                        conflictReason: string | null;
+                        /** @description List of existing redirects that conflict with the requested path */
+                        existingRedirects: {
+                            /**
+                             * @description Shopify redirect ID
+                             * @example gid://shopify/UrlRedirect/12345
+                             */
+                            id: string;
+                            /**
+                             * @description The redirect path
+                             * @example /my-custom-path
+                             */
+                            path: string;
+                            /**
+                             * @description The redirect target
+                             * @example /products/my-product
+                             */
+                            target: string;
+                        }[];
+                        /**
+                         * @description List of Shopify reserved paths when conflict type is reserved_path
+                         * @example [
+                         *       "/products",
+                         *       "/collections",
+                         *       "/pages"
+                         *     ]
+                         */
+                        reservedPaths: string[];
+                    };
+                };
+            };
+            /** @description Bad request */
+            400: {
                 headers: {
                     [name: string]: unknown;
                 };

@@ -1,3 +1,4 @@
+export * from './HandleStep';
 export * from './LinkpopPreviewStep';
 export * from './LinkpopUrlStep';
 export * from './SiteCreationOptionsStep';

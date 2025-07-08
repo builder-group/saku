@@ -1,11 +1,12 @@
-import { type LoaderFunction } from '@remix-run/node';
-import { useNavigate, useSearchParams } from '@remix-run/react';
+import { useLoaderData, useNavigate, useSearchParams } from '@remix-run/react';
 import { useAppBridge } from '@shopify/app-bridge-react';
 import React from 'react';
 import { coreApiClient } from '@/environment';
 import { shopify } from '@/environment/.server';
 import { getSessionTokenFromRequest, redirectWithAuth } from '@/lib/.server';
+import { TLoaderFunction } from '@/types';
 import {
+	HandleStep,
 	LinkpopPreviewStep,
 	LinkpopUrlStep,
 	SiteCreationOptionsStep,
@@ -19,6 +20,7 @@ import {
 } from './create-onboarding-context';
 
 export default function OnboardingRoute() {
+	const { shop } = useLoaderData<typeof loader>();
 	const navigate = useNavigate();
 	const [searchParams] = useSearchParams();
 	const shopifyBridge = useAppBridge();
@@ -28,12 +30,11 @@ export default function OnboardingRoute() {
 	);
 
 	const onboardingContext = React.useMemo<TOnboardingContext>(() => {
-		const appUrl = typeof window !== 'undefined' ? window.location.origin : '';
 		return createOnboardingContext({
-			callbackUrl: appUrl,
-			shopify: shopifyBridge
+			shopify: shopifyBridge,
+			shopId: shop
 		});
-	}, [shopifyBridge]);
+	}, [shopifyBridge, shop]);
 
 	const [stepType, setStepType] = React.useState<TOnboardingStep['type']>('welcome');
 
@@ -71,6 +72,8 @@ export default function OnboardingRoute() {
 	switch (stepType) {
 		case 'welcome':
 			return <WelcomeStep onboardingContext={onboardingContext} />;
+		case 'handle':
+			return <HandleStep onboardingContext={onboardingContext} />;
 		case 'site-creation-options':
 			return <SiteCreationOptionsStep onboardingContext={onboardingContext} />;
 		case 'linkpop-url':
@@ -84,8 +87,8 @@ export default function OnboardingRoute() {
 	}
 }
 
-export const loader: LoaderFunction = async ({ request }) => {
-	await shopify.authenticate.admin(request);
+export const loader: TLoaderFunction<TLoaderData> = async ({ request }) => {
+	const { session } = await shopify.authenticate.admin(request);
 	const sessionToken = getSessionTokenFromRequest(request);
 
 	// Check if already onboarded
@@ -99,5 +102,11 @@ export const loader: LoaderFunction = async ({ request }) => {
 		throw redirectWithAuth(request, '/app');
 	}
 
-	return null;
+	return {
+		shop: session.shop
+	};
 };
+
+interface TLoaderData {
+	shop: string;
+}

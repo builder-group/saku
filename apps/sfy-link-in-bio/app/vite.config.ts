@@ -3,8 +3,19 @@ import mdx from '@mdx-js/rollup';
 import { vitePlugin as remix } from '@remix-run/dev';
 import { installGlobals } from '@remix-run/node';
 import tailwindcss from '@tailwindcss/vite';
+import dotenv from 'dotenv';
 import { defineConfig, type UserConfig } from 'vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
+
+// Vite loads env vars at runtime, but not during config evaluation.
+// Since we use them in `define` for build-time constants, we manually load them in dev.
+// In production, env vars are set via deployment (e.g. Docker) to avoid accidentally loading dev files (e.g. during local deployment).
+if (process.env['NODE_ENV'] === 'development') {
+	const envFiles = ['.env', '.env.local'];
+	envFiles.forEach((file) => {
+		dotenv.config({ path: file });
+	});
+}
 
 installGlobals({ nativeFetch: true });
 
