@@ -1,43 +1,59 @@
 import { ServerErr, ServerOk } from '@blgc/utils';
 import { TSite } from '@repo/editor';
 import { useAppBridge } from '@shopify/app-bridge-react';
+import { Spinner, Text } from '@shopify/polaris';
 import { withGlobalBind } from 'feature-react/state';
 import React from 'react';
 import { coreApiClient } from '@/environment';
 import { shopify, shopifyConfig } from '@/environment/.server';
 import { createPageEditor, Editor } from '@/features/page-editor';
-import { useLoaderResult } from '@/hooks';
+import { withLoaderResult } from '@/lib';
 import { TLinksFunction, TLoaderFunctionWithResult } from '@/types';
 import styles from './styles.css?url';
 
-const Page: React.FC = () => {
-	const loaderResult = useLoaderResult<TSuccessLoaderData, TErrorLoaderData>();
-	const shopify = useAppBridge();
+const Page = withLoaderResult<TSuccessLoaderData, TErrorLoaderData>({
+	Success: ({ data }) => {
+		const { site } = data;
+		const shopify = useAppBridge();
 
-	const editor = React.useMemo(() => {
-		if (loaderResult.isErr()) {
-			return null;
-		}
-		const { site } = loaderResult.value;
+		const editor = React.useMemo(() => {
+			const editor = createPageEditor(
+				{ ...site.content, id: site.id, handle: site.handle, url: site.url },
+				shopify
+			);
+			withGlobalBind(`__editor_${editor.id}`, editor);
+			return editor;
+		}, [site, shopify]);
 
-		const editor = createPageEditor(
-			{ ...site.content, id: site.id, handle: site.handle, url: site.url },
-			shopify
+		return (
+			<div className="flex min-h-screen w-full">
+				{editor != null ? <Editor editor={editor} /> : <div>No site</div>}
+			</div>
 		);
-		withGlobalBind(`__editor_${editor.id}`, editor);
-		return editor;
-	}, [loaderResult, shopify]);
-
-	if (loaderResult.isErr()) {
-		return <p>{`${loaderResult.error.code}: ${loaderResult.error.message}`}</p>;
-	}
-
-	return (
-		<div className="flex min-h-screen w-full">
-			{editor != null ? <Editor editor={editor} /> : <div>No site</div>}
+	},
+	Error: ({ error }) => (
+		<div className="flex min-h-screen w-full items-center justify-center">
+			<div className="flex flex-col items-center gap-2 text-center">
+				<Text as="h2" variant="headingLg">
+					Error Loading Editor
+				</Text>
+				<Text as="p" variant="bodyMd" tone="subdued">
+					{error.code}: {error.message}
+				</Text>
+			</div>
 		</div>
-	);
-};
+	),
+	Loading: () => (
+		<div className="flex min-h-screen w-full items-center justify-center">
+			<div className="flex flex-col items-center gap-2">
+				<Spinner size="small" />
+				<Text as="p" variant="bodyMd" tone="subdued">
+					Loading Editor...
+				</Text>
+			</div>
+		</div>
+	)
+});
 
 export default Page;
 
@@ -49,7 +65,7 @@ export const loader: TLoaderFunctionWithResult<TSuccessLoaderData, TErrorLoaderD
 	const url = new URL(request.url);
 	const siteId = url.searchParams.get('siteId');
 	if (siteId == null) {
-		return ServerErr<TSuccessLoaderData, TErrorLoaderData>({
+		return ServerErr({
 			code: '#ERR_BAD_REQUEST',
 			message: 'No siteId provided in URL'
 		});
@@ -61,7 +77,7 @@ export const loader: TLoaderFunctionWithResult<TSuccessLoaderData, TErrorLoaderD
 		}
 	});
 	if (siteResult.isErr()) {
-		return ServerErr<TSuccessLoaderData, TErrorLoaderData>({
+		return ServerErr({
 			code: '#ERR_SERVER_ERROR',
 			message: siteResult.error.message ?? 'Unknown error occurred'
 		});

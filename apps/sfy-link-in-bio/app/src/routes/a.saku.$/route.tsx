@@ -1,8 +1,8 @@
 import { ServerErr, ServerOk } from '@blgc/utils';
 import { TSite } from '@repo/editor';
+import { Spinner, Text } from '@shopify/polaris';
 import { AppProxyProvider } from '@shopify/shopify-app-remix/react';
 import { isStatusCode } from 'feature-fetch';
-import React from 'react';
 import { appConfig, coreApiClient } from '@/environment';
 import { shopify, shopifyConfig } from '@/environment/.server';
 import {
@@ -12,30 +12,49 @@ import {
 	StaticNodeCanvas,
 	TResolvedSite
 } from '@/features/page-editor';
-import { useLoaderResult } from '@/hooks';
+import { withLoaderResult } from '@/lib';
 import styles from '@/styles.css?url';
 import { TLoaderFunctionWithResult } from '@/types';
 
-const Page: React.FC = () => {
-	const loaderResult = useLoaderResult<TSuccessLoaderData, TErrorLoaderData>();
-	if (loaderResult.isErr()) {
-		return <p>{`${loaderResult.error.code}: ${loaderResult.error.message}`}</p>;
-	}
+const Page = withLoaderResult<TSuccessLoaderData, TErrorLoaderData>({
+	Success: ({ data }) => {
+		const { appUrl, site } = data;
+		const fontUrls = getSiteFontUrls(site);
 
-	const { appUrl, site } = loaderResult.value;
-	const fontUrls = getSiteFontUrls(site);
+		return (
+			<AppProxyProvider appUrl={appUrl}>
+				<link rel="stylesheet" href={`${appUrl}${styles}`} />
+				{fontUrls.map((fontUrl, index) => (
+					<link key={`font-${index}`} rel="stylesheet" href={fontUrl} />
+				))}
 
-	return (
-		<AppProxyProvider appUrl={appUrl}>
-			<link rel="stylesheet" href={`${appUrl}${styles}`} />
-			{fontUrls.map((fontUrl, index) => (
-				<link key={`font-${index}`} rel="stylesheet" href={fontUrl} />
-			))}
-
-			<StaticNodeCanvas nodes={[site.root]} />
-		</AppProxyProvider>
-	);
-};
+				<StaticNodeCanvas nodes={[site.root]} />
+			</AppProxyProvider>
+		);
+	},
+	Error: ({ error }) => (
+		<div className="flex min-h-screen items-center justify-center p-4">
+			<div className="flex flex-col items-center gap-2 text-center">
+				<Text as="h2" variant="headingLg">
+					Page Not Found
+				</Text>
+				<Text as="p" variant="bodyMd" tone="subdued">
+					{error.code}: {error.message}
+				</Text>
+			</div>
+		</div>
+	),
+	Loading: () => (
+		<div className="flex min-h-screen items-center justify-center">
+			<div className="flex flex-col items-center gap-2">
+				<Spinner size="small" />
+				<Text as="p" variant="bodyMd" tone="subdued">
+					Loading...
+				</Text>
+			</div>
+		</div>
+	)
+});
 
 export default Page;
 
@@ -50,14 +69,14 @@ export const loader: TLoaderFunctionWithResult<TSuccessLoaderData, TErrorLoaderD
 	const handle = pathSegments[2]; // ['a', 'saku', 'bio']
 
 	if (handle == null) {
-		return ServerErr<TSuccessLoaderData, TErrorLoaderData>({
+		return ServerErr({
 			code: '#ERR_BAD_REQUEST',
 			message: 'No handle provided in URL'
 		});
 	}
 
 	if (session?.shop == null) {
-		return ServerErr<TSuccessLoaderData, TErrorLoaderData>({
+		return ServerErr({
 			code: '#ERR_UNAUTHORIZED',
 			message: 'No shop provided in session'
 		});
@@ -65,7 +84,7 @@ export const loader: TLoaderFunctionWithResult<TSuccessLoaderData, TErrorLoaderD
 
 	// Return preset if local environment and handle is "preset"
 	if (appConfig.env === 'local' && handle === 'preset') {
-		return ServerOk<TSuccessLoaderData, TErrorLoaderData>({
+		return ServerOk({
 			appUrl: shopifyConfig.appUrl,
 			site: resolveSite(kangarooPreset)
 		});
@@ -79,19 +98,19 @@ export const loader: TLoaderFunctionWithResult<TSuccessLoaderData, TErrorLoaderD
 	});
 	if (result.isErr()) {
 		if (isStatusCode(result.error, 404)) {
-			return ServerErr<TSuccessLoaderData, TErrorLoaderData>({
+			return ServerErr({
 				code: '#ERR_NOT_FOUND',
 				message: 'Site not found'
 			});
 		}
 
-		return ServerErr<TSuccessLoaderData, TErrorLoaderData>({
+		return ServerErr({
 			code: '#ERR_SERVER_ERROR',
 			message: result.error.message ?? 'Unknown error occurred'
 		});
 	}
 
-	return ServerOk<TSuccessLoaderData, TErrorLoaderData>({
+	return ServerOk({
 		appUrl: shopifyConfig.appUrl,
 		site: resolveSite(result.value.data as unknown as TSite)
 	});
