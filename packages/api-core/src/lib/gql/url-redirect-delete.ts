@@ -16,7 +16,7 @@ export const URL_REDIRECT_DELETE = gql(`
 `);
 
 export async function deleteUrlRedirect(
-	input: TUrlRedirectInput,
+	input: TUrlRedirectDeleteInput,
 	config: TDeleteUrlRedirectConfig
 ): Promise<TResult<TUrlRedirectDeleteSuccess, AppError>> {
 	const { shopId, accessToken } = config;
@@ -72,7 +72,7 @@ interface TDeleteUrlRedirectConfig {
 	accessToken: string;
 }
 
-export type TUrlRedirectInput = {
+export type TUrlRedirectDeleteInput = {
 	id: string;
 };
 

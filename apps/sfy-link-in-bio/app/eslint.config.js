@@ -12,6 +12,9 @@ export default [
 				shopify: 'readonly'
 			}
 		},
+		rules: {
+			'react/prop-types': 'off'
+		},
 		ignores: ['build/**', 'dist/**', '.shopify/**', 'node_modules/**']
 	}
 ];

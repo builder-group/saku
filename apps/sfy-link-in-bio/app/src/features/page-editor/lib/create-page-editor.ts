@@ -23,17 +23,14 @@ import { createNodeState, TNodeState } from './create-node-state';
 import { flattenNode, TFlattenedNode, unflattenNode } from './flatten-node';
 import { getNodeAssetHashes } from './get-node-asset-hashes';
 
-export function createPageEditor(
-	site: TSite,
-	siteUrl: string,
-	shopify: ShopifyGlobal
-): TPageEditor {
+export function createPageEditor(site: TExtendedSite, shopify: ShopifyGlobal): TPageEditor {
 	return {
 		id: shortId(),
 		site: {
 			id: site.id,
+			handle: site.handle,
 			version: site.version,
-			url: siteUrl
+			url: site.url
 		},
 
 		nodeMap: flattenNode(site.root, (node) => createNodeState(node)),
@@ -485,7 +482,6 @@ export function createPageEditor(
 			);
 
 			const isPublished = result.isOk();
-
 			if (isPublished) {
 				this.shopify.toast.show('Published', {
 					action: 'View site',
@@ -560,7 +556,6 @@ export function createPageEditor(
 
 		toSite() {
 			return {
-				id: this.site.id,
 				version: this.site.version,
 				root: unflattenNode(this.nodeMap, this.rootNodeId, (state) => state._v) as TPageNode,
 				assets: Object.values(this.assetsMap)
@@ -572,9 +567,10 @@ export function createPageEditor(
 export interface TPageEditor {
 	id: string;
 	site: {
-		id: TSite['id'];
-		version: TSite['version'];
-		url: string;
+		id: TExtendedSite['id'];
+		handle: TExtendedSite['handle'];
+		url: TExtendedSite['url'];
+		version: TExtendedSite['version'];
 	};
 
 	rootNodeId: TNodeId;
@@ -637,4 +633,10 @@ export interface TBoundingRect {
 	top: number;
 	bottom: number;
 	right: number;
+}
+
+export interface TExtendedSite extends TSite {
+	id: string;
+	handle: string;
+	url: string;
 }

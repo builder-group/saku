@@ -20,7 +20,7 @@ export const URL_REDIRECT_CREATE = gql(`
 `);
 
 export async function createUrlRedirect(
-	input: TUrlRedirectInput,
+	input: TUrlRedirectCreateInput,
 	config: TCreateUrlRedirectConfig
 ): Promise<TResult<TUrlRedirectCreateSuccess, AppError>> {
 	const { shopId, accessToken } = config;
@@ -86,7 +86,7 @@ interface TCreateUrlRedirectConfig {
 	accessToken: string;
 }
 
-export type TUrlRedirectInput = VariablesOf<typeof URL_REDIRECT_CREATE>['urlRedirect'];
+export type TUrlRedirectCreateInput = VariablesOf<typeof URL_REDIRECT_CREATE>['urlRedirect'];
 
 export type TUrlRedirectCreateSuccess = {
 	id: string;

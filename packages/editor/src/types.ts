@@ -2,7 +2,6 @@ import { TRgba } from './color';
 
 export interface TSite {
 	version: `v0.0.1`;
-	id: string;
 	root: TPageNode;
 	assets: TAsset[];
 }

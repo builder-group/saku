@@ -41,5 +41,6 @@ export const shopifyConfig = {
 	proxy: {
 		path: appProxyPath,
 		url: (shop: string) => `https://${shop}${appProxyPath}`
-	}
+	},
+	url: (shop: string) => `https://${shop}`
 };

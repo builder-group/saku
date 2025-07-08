@@ -3,7 +3,6 @@ import { hexToRgba, inheritStyle, TSite } from '@repo/editor';
 
 export const blankPreset: TSite = {
 	version: 'v0.0.1',
-	id: shortId(),
 	assets: [
 		{
 			hash: 'inter-400-normal',
@@ -83,7 +82,6 @@ export const blankPreset: TSite = {
 
 export const kangarooPreset: TSite = {
 	version: 'v0.0.1',
-	id: shortId(),
 	assets: [
 		{
 			hash: 'inter-400-normal',

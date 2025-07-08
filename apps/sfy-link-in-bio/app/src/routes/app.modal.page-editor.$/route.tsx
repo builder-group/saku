@@ -18,9 +18,12 @@ const Page: React.FC = () => {
 		if (loaderResult.isErr()) {
 			return null;
 		}
-		const { siteContent, siteUrl } = loaderResult.value;
+		const { site } = loaderResult.value;
 
-		const editor = createPageEditor(siteContent, siteUrl, shopify);
+		const editor = createPageEditor(
+			{ ...site.content, id: site.id, handle: site.handle, url: site.url },
+			shopify
+		);
 		withGlobalBind(`__editor_${editor.id}`, editor);
 		return editor;
 	}, [loaderResult, shopify]);
@@ -66,8 +69,12 @@ export const loader: TLoaderFunctionWithResult<TSuccessLoaderData, TErrorLoaderD
 	const siteData = siteResult.value.data;
 
 	return ServerOk({
-		siteUrl: `${shopifyConfig.proxy.url(shop)}/${siteData.handle}`,
-		siteContent: siteData.content as unknown as TSite
+		site: {
+			id: siteData.id,
+			handle: siteData.handle,
+			url: `${shopifyConfig.proxy.url(shop)}/${siteData.handle}`,
+			content: siteData.content as unknown as TSite
+		}
 	});
 };
 
@@ -77,8 +84,12 @@ interface TErrorLoaderData {
 }
 
 interface TSuccessLoaderData {
-	siteUrl: string;
-	siteContent: TSite;
+	site: {
+		id: string;
+		handle: string;
+		url: string;
+		content: TSite;
+	};
 }
 
 export const links: TLinksFunction = () => [{ rel: 'stylesheet', href: styles }];

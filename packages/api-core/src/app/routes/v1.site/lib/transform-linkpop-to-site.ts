@@ -119,7 +119,6 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 
 	return {
 		version: 'v0.0.1',
-		id: shortId(),
 		assets,
 		root: {
 			id: shortId(),

@@ -34,9 +34,9 @@ export const URL_REDIRECTS_SEARCH = gql(`
 `);
 
 export async function searchUrlRedirects(
-	input: TUrlRedirectSearchInput,
+	input: TUrlRedirectsSearchInput,
 	config: TSearchUrlRedirectsConfig
-): Promise<TResult<TUrlRedirectSearchSuccess, AppError>> {
+): Promise<TResult<TUrlRedirectsSearchSuccess, AppError>> {
 	const { shopId, accessToken } = config;
 	const { first = 20, after, query, sortKey = 'PATH', reverse = false } = input;
 
@@ -96,20 +96,20 @@ interface TSearchUrlRedirectsConfig {
 	accessToken: string;
 }
 
-export interface TUrlRedirectSearchStructuredQuery {
+export interface TUrlRedirectsSearchStructuredQuery {
 	path?: `/${string}`;
 	target?: `/${string}`;
 }
 
-export interface TUrlRedirectSearchInput {
+export interface TUrlRedirectsSearchInput {
 	first?: number;
 	after?: string;
-	query?: string | TUrlRedirectSearchStructuredQuery;
+	query?: string | TUrlRedirectsSearchStructuredQuery;
 	sortKey?: 'ID' | 'PATH' | 'RELEVANCE';
 	reverse?: boolean;
 }
 
-export type TUrlRedirectSearchSuccess = {
+export type TUrlRedirectsSearchSuccess = {
 	urlRedirects: {
 		id: string;
 		path: `/${string}`;

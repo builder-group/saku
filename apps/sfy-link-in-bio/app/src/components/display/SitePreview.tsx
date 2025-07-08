@@ -84,7 +84,7 @@ interface TSitePreviewProps extends Omit<React.HTMLAttributes<HTMLDivElement>, '
 	disableUrlClick?: boolean;
 }
 
-export const IframeContent: React.FC<IframeContentProps> = (props) => {
+export const IframeContent: React.FC<TIframeContentProps> = (props) => {
 	const { url } = props;
 
 	return (
@@ -98,6 +98,6 @@ export const IframeContent: React.FC<IframeContentProps> = (props) => {
 	);
 };
 
-interface IframeContentProps {
+interface TIframeContentProps {
 	url: string;
 }
