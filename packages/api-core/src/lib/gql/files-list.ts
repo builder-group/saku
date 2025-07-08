@@ -194,7 +194,7 @@ export interface TFilesListInput {
 	reverse?: boolean;
 }
 
-export type TFilesListSuccess = {
+export interface TFilesListSuccess {
 	files: {
 		id: string;
 		alt: string;
@@ -211,7 +211,7 @@ export type TFilesListSuccess = {
 		hasNextPage: boolean;
 		endCursor?: string;
 	};
-};
+}
 
 type TFileDetails =
 	| {

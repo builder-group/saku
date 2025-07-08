@@ -88,8 +88,8 @@ interface TCreateUrlRedirectConfig {
 
 export type TUrlRedirectCreateInput = VariablesOf<typeof URL_REDIRECT_CREATE>['urlRedirect'];
 
-export type TUrlRedirectCreateSuccess = {
+export interface TUrlRedirectCreateSuccess {
 	id: string;
 	path: `/${string}`;
 	target: `/${string}`;
-};
+}

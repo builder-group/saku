@@ -72,10 +72,10 @@ interface TDeleteUrlRedirectConfig {
 	accessToken: string;
 }
 
-export type TUrlRedirectDeleteInput = {
+export interface TUrlRedirectDeleteInput {
 	id: string;
-};
+}
 
-export type TUrlRedirectDeleteSuccess = {
+export interface TUrlRedirectDeleteSuccess {
 	id: string;
-};
+}

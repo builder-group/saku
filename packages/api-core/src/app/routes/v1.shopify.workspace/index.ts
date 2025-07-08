@@ -29,7 +29,6 @@ router.openapi(GetShopifyWorkspaceRoute, async (c) => {
 			)
 		)
 		.limit(1);
-
 	if (workspace == null) {
 		throw new AppError('#ERR_WORKSPACE_NOT_FOUND', 404, {
 			title: 'Workspace not found',

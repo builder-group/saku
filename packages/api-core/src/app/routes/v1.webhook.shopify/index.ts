@@ -7,8 +7,12 @@ import {
 	workspaceAccountTable,
 	workspaceTable
 } from '@/environment';
-import { verifyShopifyWebhook } from '@/lib';
-import { createHandleFromShop } from '@/lib/shopify';
+import {
+	createHandleFromShop,
+	getShopifyShopAccessToken,
+	removeAppProxyRedirects,
+	verifyShopifyWebhook
+} from '@/lib';
 import {
 	AppScopesUpdateWebhookRoute,
 	AppUninstalledWebhookRoute,
@@ -148,6 +152,21 @@ router.openapi(AppUninstalledWebhookRoute, async (c) => {
 
 	logger.info(`Received ${topic} webhook for shop: ${input.name} (${shopDomain})`);
 	logger.info(`Shop ID: ${input.id}, Plan: ${input.plan_display_name} (Event: ${eventId})`);
+
+	const accessToken = await getShopifyShopAccessToken(shopDomain);
+
+	// Delete all redirects that target the app proxy path
+	const deletedRedirects = await removeAppProxyRedirects({
+		shopId: shopDomain,
+		accessToken
+	});
+	if (deletedRedirects.isErr()) {
+		logger.error(`Error deleting redirects: ${deletedRedirects.error}`);
+	} else {
+		logger.info(
+			`Deleted ${deletedRedirects.value.redirectsDeleted} redirects for shop: ${shopDomain}`
+		);
+	}
 
 	// Delete Shopify sessions immediately when app is uninstalled
 	// This prevents access token usage after uninstallation

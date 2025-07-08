@@ -109,7 +109,7 @@ export interface TUrlRedirectsSearchInput {
 	reverse?: boolean;
 }
 
-export type TUrlRedirectsSearchSuccess = {
+export interface TUrlRedirectsSearchSuccess {
 	urlRedirects: {
 		id: string;
 		path: `/${string}`;
@@ -119,4 +119,4 @@ export type TUrlRedirectsSearchSuccess = {
 		hasNextPage: boolean;
 		endCursor?: string;
 	};
-};
+}
