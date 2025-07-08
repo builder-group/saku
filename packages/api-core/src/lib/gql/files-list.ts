@@ -65,10 +65,10 @@ export const FILES_LIST = gql(`
 `);
 
 export async function listFiles(
-	shopId: string,
-	accessToken: string,
-	input: TFilesListInput
+	input: TFilesListInput,
+	config: TListFilesConfig
 ): Promise<TResult<TFilesListSuccess, AppError>> {
+	const { shopId, accessToken } = config;
 	const { first = 20, after, query, sortKey = 'CREATED_AT', reverse = false } = input;
 
 	// Convert structured query to string if needed
@@ -95,7 +95,6 @@ export async function listFiles(
 			'X-Shopify-Access-Token': accessToken
 		}
 	});
-
 	if (result.isErr()) {
 		return Err(
 			new AppError('#ERR_SHOPIFY_API_ERROR', 500, {
@@ -104,7 +103,7 @@ export async function listFiles(
 		);
 	}
 
-	const files = result.value.data?.files;
+	const files = result.value.data.files;
 	return Ok({
 		files: files.nodes
 			.map((file) => {
@@ -173,6 +172,11 @@ export async function listFiles(
 			endCursor: files.pageInfo.endCursor ?? undefined
 		}
 	});
+}
+
+interface TListFilesConfig {
+	shopId: string;
+	accessToken: string;
 }
 
 export type TFileType = 'IMAGE' | 'VIDEO' | 'FILE' | 'MODEL_3D' | 'EXTERNAL_VIDEO';

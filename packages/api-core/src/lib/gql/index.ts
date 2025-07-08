@@ -1,3 +1,5 @@
 export * from './file-create';
 export * from './files-list';
 export * from './staged-uploads-create';
+export * from './url-redirect-create';
+export * from './url-redirect-search';

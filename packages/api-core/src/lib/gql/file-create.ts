@@ -21,18 +21,18 @@ export const FILE_CREATE = gql(`
 `);
 
 export async function createFiles(
-	shopId: string,
-	accessToken: string,
-	files: TFileCreateInput[]
+	input: TFileCreateInput[],
+	config: TCreateFilesConfig
 ): Promise<TResult<TFileCreateSuccess, AppError>> {
+	const { shopId, accessToken } = config;
+
 	const result = await shopifyAdminApiClient.query(FILE_CREATE, {
 		prefixUrl: shopifyConfig.shop.adminApi(shopId),
-		variables: { files },
+		variables: { files: input },
 		headers: {
 			'X-Shopify-Access-Token': accessToken
 		}
 	});
-
 	if (result.isErr()) {
 		return Err(
 			new AppError('#ERR_SHOPIFY_API_ERROR', 500, {
@@ -41,8 +41,8 @@ export async function createFiles(
 		);
 	}
 
-	const fileCreate = result.value.data?.fileCreate;
-	if (!fileCreate?.files?.length) {
+	const fileCreate = result.value.data.fileCreate;
+	if (fileCreate == null) {
 		return Err(
 			new AppError('#ERR_NO_FILES_CREATED', 500, {
 				detail: 'No files were created in Shopify'
@@ -50,16 +50,24 @@ export async function createFiles(
 		);
 	}
 
-	if (fileCreate.userErrors?.length) {
+	const { files, userErrors } = fileCreate;
+	if (userErrors?.length) {
 		return Err(
 			new AppError('#ERR_USER_ERROR', 400, {
-				detail: fileCreate.userErrors.map((e) => e.message).join(', ')
+				detail: userErrors.map((e) => e.message).join(', ')
+			})
+		);
+	}
+	if (!files?.length) {
+		return Err(
+			new AppError('#ERR_NO_FILES_CREATED', 500, {
+				detail: 'No files were created in Shopify'
 			})
 		);
 	}
 
 	return Ok(
-		fileCreate.files.map((file) => {
+		files.map((file) => {
 			if (file?.id == null || file?.fileStatus == null || file?.createdAt == null) {
 				throw new AppError('#ERR_INVALID_FILE_DATA', 500, {
 					detail: 'Invalid file data returned from Shopify'
@@ -74,6 +82,11 @@ export async function createFiles(
 			};
 		})
 	);
+}
+
+interface TCreateFilesConfig {
+	shopId: string;
+	accessToken: string;
 }
 
 export type TFileCreateInput = VariablesOf<typeof FILE_CREATE>['files'][number];

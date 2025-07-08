@@ -23,14 +23,15 @@ export const STAGED_UPLOADS_CREATE = gql(`
 `);
 
 export async function createStagedUploads(
-	shopId: string,
-	accessToken: string,
-	uploads: TStagedUploadsCreateInput[]
+	input: TStagedUploadsCreateInput[],
+	config: TCreateStagedUploadsConfig
 ): Promise<TResult<TStagedUploadsCreateSuccess, AppError>> {
+	const { shopId, accessToken } = config;
+
 	const result = await shopifyAdminApiClient.query(STAGED_UPLOADS_CREATE, {
 		prefixUrl: shopifyConfig.shop.adminApi(shopId),
 		variables: {
-			uploads: uploads.map((upload) => ({
+			uploads: input.map((upload) => ({
 				...upload,
 				httpMethod: 'POST' as const
 			}))
@@ -39,7 +40,6 @@ export async function createStagedUploads(
 			'X-Shopify-Access-Token': accessToken
 		}
 	});
-
 	if (result.isErr()) {
 		return Err(
 			new AppError('#ERR_SHOPIFY_API_ERROR', 500, {
@@ -51,8 +51,8 @@ export async function createStagedUploads(
 	const stagedUploadsCreate = result.value.data?.stagedUploadsCreate;
 	if (stagedUploadsCreate == null) {
 		return Err(
-			new AppError('#ERR_SHOPIFY_API_ERROR', 500, {
-				detail: 'No data returned from GraphQL query'
+			new AppError('#ERR_NO_UPLOAD_TARGET_CREATED', 500, {
+				detail: 'No upload targets were created in Shopify'
 			})
 		);
 	}
@@ -65,11 +65,10 @@ export async function createStagedUploads(
 			})
 		);
 	}
-
 	if (!stagedTargets?.length) {
 		return Err(
-			new AppError('#ERR_NO_UPLOAD_TARGET', 500, {
-				detail: 'No upload targets returned from Shopify'
+			new AppError('#ERR_NO_UPLOAD_TARGET_CREATED', 500, {
+				detail: 'No upload targets were created in Shopify'
 			})
 		);
 	}
@@ -89,6 +88,11 @@ export async function createStagedUploads(
 			};
 		})
 	);
+}
+
+interface TCreateStagedUploadsConfig {
+	shopId: string;
+	accessToken: string;
 }
 
 export type TStagedUploadsCreateInput = VariablesOf<

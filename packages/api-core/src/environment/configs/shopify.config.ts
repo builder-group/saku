@@ -17,5 +17,17 @@ export const shopifyConfig = {
 	}),
 	shop: {
 		adminApi: (shopId: string) => `https://${shopId}/admin/api/2025-04/graphql.json`
-	}
+	},
+	// https://help.shopify.com/en/manual/online-store/menus-and-links/url-redirect
+	reservedPaths: [
+		'/apps',
+		'/application',
+		'/cart',
+		'/carts',
+		'/orders',
+		'/services',
+		'/shop',
+		'/products',
+		'/collections'
+	]
 };

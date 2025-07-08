@@ -19,20 +19,19 @@ import {
 
 router.openapi(CreateUploadTargetsRoute, async (c) => {
 	const { shopId } = await verifyShopifySession(c);
-	const input = c.req.valid('json');
+	const { files } = c.req.valid('json');
 
 	const accessToken = await getShopifyShopAccessToken(shopId);
 
 	const createdTargets = (
 		await createStagedUploads(
-			shopId,
-			accessToken,
-			input.files.map((file) => ({
+			files.map((file) => ({
 				filename: file.filename,
 				mimeType: file.mimeType,
 				resource: mapContentTypeToResource(file.contentType),
 				fileSize: file.fileSize.toString()
-			}))
+			})),
+			{ shopId, accessToken }
 		)
 	).unwrap();
 
@@ -54,24 +53,23 @@ router.openapi(CreateUploadTargetsRoute, async (c) => {
 
 router.openapi(SubmitUploadedFilesRoute, async (c) => {
 	const { shopId } = await verifyShopifySession(c);
-	const input = c.req.valid('json');
+	const { files } = c.req.valid('json');
 
 	const accessToken = await getShopifyShopAccessToken(shopId);
 
 	const createdFiles = (
 		await createFiles(
-			shopId,
-			accessToken,
-			input.files.map((file) => ({
+			files.map((file) => ({
 				filename: file.filename,
 				alt: file.filename,
 				contentType: mapContentTypeToResource(file.contentType),
 				originalSource: file.resourceUrl
-			}))
+			})),
+			{ shopId, accessToken }
 		)
 	).unwrap();
 
-	if (createdFiles.length !== input.files.length) {
+	if (createdFiles.length !== files.length) {
 		throw new AppError('#ERR_INVALID_RESPONSE', 500, {
 			detail: 'Invalid response from Shopify'
 		});
@@ -79,7 +77,7 @@ router.openapi(SubmitUploadedFilesRoute, async (c) => {
 
 	return c.json(
 		{
-			files: input.files.map((inputFile, index) => {
+			files: files.map((inputFile, index) => {
 				const createdFile = createdFiles[index];
 				if (createdFile == null) {
 					return {
@@ -102,24 +100,27 @@ router.openapi(SubmitUploadedFilesRoute, async (c) => {
 
 router.openapi(ListMediaFilesRoute, async (c) => {
 	const { shopId } = await verifyShopifySession(c);
-	const input = c.req.valid('query');
+	const { first, after, fileTypes, fileName, sortKey, reverse } = c.req.valid('query');
 
 	const accessToken = await getShopifyShopAccessToken(shopId);
 
 	const { files, pageInfo } = (
-		await listFiles(shopId, accessToken, {
-			first: input.first,
-			after: input.after,
-			query:
-				input.fileTypes != null || input.fileName != null
-					? {
-							fileTypes: input.fileTypes,
-							fileName: input.fileName
-						}
-					: undefined,
-			sortKey: input.sortKey,
-			reverse: input.reverse
-		})
+		await listFiles(
+			{
+				first,
+				after,
+				query:
+					fileTypes != null || fileName != null
+						? {
+								fileTypes,
+								fileName
+							}
+						: undefined,
+				sortKey,
+				reverse
+			},
+			{ shopId, accessToken }
+		)
 	).unwrap();
 
 	return c.json({ files, pageInfo }, 200);
