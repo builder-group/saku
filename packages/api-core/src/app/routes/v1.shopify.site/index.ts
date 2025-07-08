@@ -1,8 +1,20 @@
 import { AppError } from '@repo/hono-utils';
 import { and, eq, isNull } from 'drizzle-orm';
 import { router } from '@/app/router';
-import { db, siteTable, workspaceAccountTable, workspaceTable } from '@/environment';
-import { verifyShopifySession } from '@/lib';
+import {
+	db,
+	logger,
+	shopifyConfig,
+	siteTable,
+	workspaceAccountTable,
+	workspaceTable
+} from '@/environment';
+import {
+	createShopifyUrlRedirect,
+	deleteUrlRedirect,
+	getShopifyShopAccessToken,
+	verifyShopifySession
+} from '@/lib';
 import {
 	CreateShopifySiteRoute,
 	GetShopifySitesRoute,
@@ -48,7 +60,9 @@ router.openapi(GetShopifySitesRoute, async (c) => {
 
 router.openapi(CreateShopifySiteRoute, async (c) => {
 	const { shopId } = await verifyShopifySession(c);
-	const { handle, displayName, content } = c.req.valid('json');
+	const { handle, displayName, content, createRedirect = true } = c.req.valid('json');
+
+	const accessToken = await getShopifyShopAccessToken(shopId);
 
 	// Find workspace connected to this Shopify shop
 	const [workspace] = await db
@@ -87,6 +101,29 @@ router.openapi(CreateShopifySiteRoute, async (c) => {
 		});
 	}
 
+	// Create URL redirect if requested
+	let redirectId: string | null = null;
+	if (createRedirect) {
+		const redirectResult = await createShopifyUrlRedirect(
+			`/${handle}` as `/${string}`,
+			`${shopifyConfig.proxy.path}/${handle}` as `/${string}`,
+			{
+				shopId,
+				accessToken
+			}
+		);
+		if (redirectResult.isErr()) {
+			if (redirectResult.error.code === '#ERR_REDIRECT_PATH_TAKEN') {
+				throw redirectResult.error;
+			}
+			throw new AppError('#ERR_REDIRECT_CREATE_FAILED', 500, {
+				title: 'Failed to create redirect',
+				detail: 'Could not create URL redirect for the site'
+			});
+		}
+		redirectId = redirectResult.value.id;
+	}
+
 	// Create the site
 	const [site] = await db
 		.insert(siteTable)
@@ -108,13 +145,21 @@ router.openapi(CreateShopifySiteRoute, async (c) => {
 			updatedAt: siteTable.updatedAt
 		});
 	if (site == null) {
+		// Site creation failed, try to clean up the redirect if one was created
+		if (redirectId != null) {
+			const deleteResult = await deleteUrlRedirect({ id: redirectId }, { shopId, accessToken });
+			if (deleteResult.isErr()) {
+				logger.error('Failed to clean up redirect after site creation failed:', deleteResult.error);
+			}
+		}
+
 		throw new AppError('#ERR_SITE_CREATE_FAILED', 500, {
 			title: 'Site creation failed',
 			detail: 'Failed to create site'
 		});
 	}
 
-	// Mark onboarding as complete (first site created)
+	// Mark onboarding as complete (if it's the first site created)
 	await db
 		.update(workspaceTable)
 		.set({

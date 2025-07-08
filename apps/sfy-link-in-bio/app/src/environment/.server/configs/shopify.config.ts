@@ -1,3 +1,4 @@
+import { ApiVersion } from '@shopify/shopify-app-remix/server';
 import * as v from 'valibot';
 import { validateEnvVar } from 'validatenv';
 import { vValidator } from 'validation-adapters/valibot';
@@ -6,10 +7,7 @@ import { appConfig } from '../../configs';
 const appProxyPath = appConfig.env === 'production' ? '/a/saku' : '/a/saku-local';
 
 export const shopifyConfig = {
-	proxy: {
-		path: appProxyPath,
-		url: (shop: string) => `https://${shop}${appProxyPath}`
-	},
+	apiVersion: ApiVersion.April25,
 	apiKey: validateEnvVar({
 		envKey: 'SHOPIFY_API_KEY',
 		validator: vValidator(v.string()),
@@ -39,5 +37,9 @@ export const shopifyConfig = {
 		validator: vValidator(v.optional(v.string())),
 		description: 'Optional custom domain for shop access',
 		example: 'custom-shop.example.com'
-	})
+	}),
+	proxy: {
+		path: appProxyPath,
+		url: (shop: string) => `https://${shop}${appProxyPath}`
+	}
 };

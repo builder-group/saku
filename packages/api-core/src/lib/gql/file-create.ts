@@ -54,7 +54,8 @@ export async function createFiles(
 	if (userErrors?.length) {
 		return Err(
 			new AppError('#ERR_USER_ERROR', 400, {
-				detail: userErrors.map((e) => e.message).join(', ')
+				detail: userErrors.map((e) => e.message).join(', '),
+				errors: userErrors
 			})
 		);
 	}

@@ -34,7 +34,11 @@ export const CreateShopifySiteRoute = createRoute({
 							example: 'My Bio Site',
 							description: 'Human-friendly site name'
 						}),
-						content: SSiteContentDto
+						content: SSiteContentDto,
+						createRedirect: z.coerce.boolean().optional().openapi({
+							example: true,
+							description: 'Whether to create a URL redirect for the site (defaults to true)'
+						})
 					})
 				}
 			}

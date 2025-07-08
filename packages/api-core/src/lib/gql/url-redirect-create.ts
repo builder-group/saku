@@ -41,7 +41,7 @@ export async function createUrlRedirect(
 	}
 
 	const urlRedirectCreate = result.value.data?.urlRedirectCreate;
-	if (urlRedirectCreate?.urlRedirect == null) {
+	if (urlRedirectCreate == null) {
 		return Err(
 			new AppError('#ERR_NO_REDIRECT_CREATED', 500, {
 				detail: 'No URL redirect was created in Shopify'
@@ -51,9 +51,25 @@ export async function createUrlRedirect(
 
 	const { urlRedirect, userErrors } = urlRedirectCreate;
 	if (userErrors?.length) {
+		if (userErrors.some((e) => e.message.includes('Path has already been taken'))) {
+			return Err(
+				new AppError('#ERR_REDIRECT_PATH_TAKEN', 409, {
+					title: 'Path already taken',
+					detail: `The path (${input.path}) you are trying to use is already taken. Please try a different path.`
+				})
+			);
+		}
 		return Err(
 			new AppError('#ERR_USER_ERROR', 400, {
-				detail: userErrors.map((e) => e.message).join(', ')
+				detail: userErrors.map((e) => e.message).join(', '),
+				errors: userErrors
+			})
+		);
+	}
+	if (urlRedirect == null) {
+		return Err(
+			new AppError('#ERR_NO_REDIRECT_CREATED', 500, {
+				detail: 'No URL redirect was created in Shopify'
 			})
 		);
 	}

@@ -10,7 +10,7 @@ import { shopifyConfig } from './configs';
 const shopifyApp: ReturnType<typeof createShopifyApp> = createShopifyApp({
 	apiKey: shopifyConfig.apiKey,
 	apiSecretKey: shopifyConfig.apiSecret,
-	apiVersion: ApiVersion.January25,
+	apiVersion: shopifyConfig.apiVersion,
 	scopes: shopifyConfig.scopes,
 	appUrl: shopifyConfig.appUrl,
 	authPathPrefix: '/auth',
@@ -27,5 +27,5 @@ const shopifyApp: ReturnType<typeof createShopifyApp> = createShopifyApp({
 });
 
 export const shopify: typeof shopifyApp & { apiVersion: ApiVersion } = Object.assign(shopifyApp, {
-	apiVersion: ApiVersion.January25
+	apiVersion: shopifyConfig.apiVersion
 });

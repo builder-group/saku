@@ -61,7 +61,8 @@ export async function createStagedUploads(
 	if (userErrors?.length) {
 		return Err(
 			new AppError('#ERR_USER_ERROR', 400, {
-				detail: userErrors.map((error) => error.message).join(', ')
+				detail: userErrors.map((error) => error.message).join(', '),
+				errors: userErrors
 			})
 		);
 	}
