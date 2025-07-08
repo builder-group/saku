@@ -3,8 +3,8 @@ import { xFetchClient } from '../environment';
 
 // https://docs.x.com/x-api/users/user-lookup-by-username
 // Rate limits (Free tier):
-// - 3 requests / 15 mins PER USER
 // - 3 requests / 15 mins PER APP
+// - 96 requests / 24 hours PER APP
 export async function fetchXUser(username: string): Promise<TXUser | null> {
 	const result = await xFetchClient.get<TXUserResponse>(`/users/by/username/${username}`, {
 		queryParams: {
@@ -25,22 +25,39 @@ export async function fetchXUser(username: string): Promise<TXUser | null> {
 
 	if (result.isErr()) {
 		if (result.error instanceof RequestError && result.error.response?.status === 429) {
-			console.warn('⚠️ X API Rate limited:', {
+			const headers = result.error.response.headers;
+
+			// Check 24h app limit
+			const appLimit24hRemaining = Number(headers.get('x-app-limit-24hour-remaining'));
+			const appLimit24hReset = Number(headers.get('x-app-limit-24hour-reset'));
+			if (appLimit24hRemaining === 0) {
+				const resetDate = new Date(appLimit24hReset * 1000);
+				console.warn('⚠️ X API 24h App Rate limit reached:', {
+					username,
+					resetTime: resetDate.toLocaleString(),
+					remaining: appLimit24hRemaining
+				});
+				return null;
+			}
+
+			// Handle 15min app limit
+			const appLimitReset = Number(headers.get('x-rate-limit-reset'));
+			const timeTillReset = appLimitReset * 1000 - Date.now();
+
+			console.warn('⚠️ X API 15min App Rate limit reached:', {
 				username,
-				limit: result.error.response.headers.get('x-rate-limit-limit'),
-				resetTime: result.error.response.headers.get('x-rate-limit-reset'),
-				remaining: result.error.response.headers.get('x-rate-limit-remaining')
+				resetTime: new Date(appLimitReset * 1000).toLocaleString(),
+				remaining: headers.get('x-rate-limit-remaining')
 			});
 
-			const timeout = calculateRateLimitTimeout(result.error.response);
-			if (timeout > 0) {
+			if (timeTillReset > 0) {
 				console.log(
-					'⏳ Waiting for rate limit reset until:',
-					new Date(Date.now() + timeout).toLocaleString()
+					'⏳ Waiting for app rate limit reset until:',
+					new Date(Date.now() + timeTillReset).toLocaleString()
 				);
-				await new Promise((resolve) => setTimeout(resolve, timeout));
+				await new Promise((resolve) => setTimeout(resolve, timeTillReset));
+				return fetchXUser(username);
 			}
-			return fetchXUser(username);
 		}
 
 		console.error('❌ Error fetching X user:', result.error);
@@ -48,16 +65,6 @@ export async function fetchXUser(username: string): Promise<TXUser | null> {
 	}
 
 	return result.value.data.data;
-}
-
-function calculateRateLimitTimeout(response: Response): number {
-	const rateLimitReset = Number(response.headers.get('x-rate-limit-reset'));
-	const rateLimitRemaining = Number(response.headers.get('x-rate-limit-remaining'));
-	if (rateLimitRemaining === 0) {
-		const timeTillReset = rateLimitReset * 1000 - Date.now();
-		return timeTillReset;
-	}
-	return 0;
 }
 
 export interface TXUser {
