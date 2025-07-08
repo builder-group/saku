@@ -215,6 +215,7 @@ describe('Scrapers', () => {
 				if (bioLink != null) {
 					result4.instagram.users.push({
 						username: instagramUser.username,
+						profileUrl: `https://instagram.com/${instagramUser.username}`,
 						bioLink,
 						isVerified: instagramUser.is_verified,
 						followerCount: instagramUser.edge_followed_by?.count
@@ -243,6 +244,7 @@ describe('Scrapers', () => {
 				if (bioLink != null) {
 					result4.x.users.push({
 						username: xUser.username,
+						profileUrl: `https://x.com/${xUser.username}`,
 						bioLink,
 						isVerified: xUser.verified,
 						followerCount: xUser.public_metrics?.followers_count
@@ -257,6 +259,7 @@ describe('Scrapers', () => {
 			instagram: {
 				users: {
 					username: string;
+					profileUrl: string;
 					bioLink: string;
 					isVerified: boolean;
 					followerCount?: number;
@@ -265,6 +268,7 @@ describe('Scrapers', () => {
 			x: {
 				users: {
 					username: string;
+					profileUrl: string;
 					bioLink: string;
 					isVerified: boolean;
 					followerCount?: number;
