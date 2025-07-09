@@ -11,7 +11,7 @@ export interface TSite {
 // =========================================================================
 
 export type TNodeId = string;
-export type TNode = TPageNode | TAboutNode | TLinkNode | TMediaNode | TTextNode;
+export type TNode = TPageNode | TAboutNode | TLinkNode | TMediaNode | TTextNode | TProductNode;
 export type TNodeType = TNode['type'];
 
 export interface TBaseNode {
@@ -115,6 +115,18 @@ export interface TTextNode extends TBaseNode {
 		// Border and effects
 		borderRadius?: TStyleReference<number>;
 		shadow?: TStyleReference<boolean>;
+	};
+}
+
+export interface TProductNode extends TBaseNode {
+	type: 'product';
+	productId: string;
+	variantIds: string[];
+	style: {
+		// Layout
+		padding?: TStyleReference<number>;
+		// Background
+		backgroundColor?: TStyleReference<TRgba>;
 	};
 }
 

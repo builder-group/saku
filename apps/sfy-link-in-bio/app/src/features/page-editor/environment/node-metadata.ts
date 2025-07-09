@@ -108,7 +108,20 @@ export const nodeMetadataMap = {
 				shadow: inheritStyle()
 			}
 		}
-	} satisfies TNodeMetadata<'text'>
+	} satisfies TNodeMetadata<'text'>,
+	product: {
+		type: 'product',
+		icon: LayoutSectionIcon,
+		label: 'Product',
+		hidden: false,
+		defaultData: {
+			productId: '',
+			style: {
+				padding: inheritStyle(),
+				backgroundColor: inheritStyle()
+			}
+		}
+	} satisfies TNodeMetadata<'product'>
 } as const;
 
 export const nodeMetadata = Object.values(nodeMetadataMap);

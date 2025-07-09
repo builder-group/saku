@@ -2,6 +2,7 @@ import { TNode } from '@repo/editor';
 import { TState } from 'feature-state';
 import { TFlattenedNode, TPageEditor } from '../../lib';
 import { AboutNodeEditor, LinkNodeEditor, MediaNodeEditor, TextNodeEditor } from './editors';
+import { ProductNodeEditor } from './editors/ProductNodeEditor';
 
 export const nodeEditorRegistry = {
 	site: null,
@@ -9,7 +10,8 @@ export const nodeEditorRegistry = {
 	about: AboutNodeEditor,
 	link: LinkNodeEditor,
 	media: MediaNodeEditor,
-	text: TextNodeEditor
+	text: TextNodeEditor,
+	product: ProductNodeEditor
 } as const;
 
 export interface TNodeEditorComponentProps<GNode extends TNode = TNode> {

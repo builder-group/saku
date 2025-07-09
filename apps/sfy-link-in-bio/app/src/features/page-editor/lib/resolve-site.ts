@@ -1,3 +1,4 @@
+import { notEmpty } from '@blgc/utils';
 import {
 	resolveStyleReference,
 	rgbaToCssRgba,
@@ -8,6 +9,7 @@ import {
 	TMediaNode,
 	TNode,
 	TPageNode,
+	TProductNode,
 	TRgba,
 	TSite,
 	TStyleReference,
@@ -17,7 +19,9 @@ import {
 	TResolvedAboutNode,
 	TResolvedLinkNode,
 	TResolvedMediaNode,
+	TResolvedNode,
 	TResolvedPageNode,
+	TResolvedProductNode,
 	TResolvedSite,
 	TResolvedTextNode
 } from '../types';
@@ -44,7 +48,9 @@ export function resolvePageNode(
 ): TResolvedPageNode {
 	return {
 		...resolvePageNodeWithoutChildren(node),
-		children: node.children.map((child) => resolveChildNode(child, assetsMap, node.style.children))
+		children: node.children
+			.map((child) => resolveChildNode(child, assetsMap, node.style.children))
+			.filter(notEmpty)
 	};
 }
 
@@ -165,11 +171,24 @@ export function resolveTextNode(
 	};
 }
 
+export function resolveProductNode(
+	node: TProductNode,
+	defaultStyles?: TPageNode['style']['children']
+): TResolvedProductNode {
+	return {
+		...node,
+		style: {
+			padding: resolveStyleReference(node.style.padding, defaultStyles?.padding),
+			backgroundColor: resolveColor(node.style.backgroundColor, defaultStyles?.backgroundColor)
+		}
+	};
+}
+
 function resolveChildNode(
 	node: TNode,
 	assetsMap: Record<TAssetHash, TAsset>,
 	defaultStyles?: TPageNode['style']['children']
-) {
+): TResolvedNode | null {
 	switch (node.type) {
 		case 'about':
 			return resolveAboutNode(node, assetsMap, defaultStyles);
@@ -179,8 +198,10 @@ function resolveChildNode(
 			return resolveMediaNode(node, assetsMap, defaultStyles);
 		case 'text':
 			return resolveTextNode(node, defaultStyles);
+		case 'product':
+			return resolveProductNode(node, defaultStyles);
 		default:
-			throw new Error(`Unknown node type: ${(node as any).type}`);
+			return null;
 	}
 }
 

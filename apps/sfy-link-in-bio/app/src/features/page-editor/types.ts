@@ -3,6 +3,7 @@ import {
 	TLinkNode,
 	TMediaNode,
 	TPageNode,
+	TProductNode,
 	TRgba,
 	TSite,
 	TStyleReference,
@@ -18,7 +19,8 @@ export type TResolvedNode =
 	| TResolvedAboutNode
 	| TResolvedLinkNode
 	| TResolvedMediaNode
-	| TResolvedTextNode;
+	| TResolvedTextNode
+	| TResolvedProductNode;
 
 export interface TResolvedPageNode extends Omit<TPageNode, 'style' | 'children'> {
 	style: {
@@ -46,6 +48,10 @@ export interface TResolvedMediaNode extends Omit<TMediaNode, 'style' | 'media'> 
 
 export interface TResolvedTextNode extends Omit<TTextNode, 'style'> {
 	style: TResolveStyle<TTextNode['style']>;
+}
+
+export interface TResolvedProductNode extends Omit<TProductNode, 'style'> {
+	style: TResolveStyle<TProductNode['style']>;
 }
 
 export interface TResolvedImageMedia {
