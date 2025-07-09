@@ -1105,6 +1105,11 @@ export interface operations {
                      * @example true
                      */
                     createRedirect?: boolean | null;
+                    /**
+                     * @description If true and createRedirect is true, will override any existing redirect with the same path
+                     * @example false
+                     */
+                    overrideRedirect?: boolean | null;
                 };
             };
         };

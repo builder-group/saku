@@ -14,7 +14,10 @@ export const HandleStep: React.FC<THandleStepProps> = (props) => {
 	});
 	const [handle, setHandle] = React.useState(initialHandle);
 	const [isLoading, setIsLoading] = React.useState(false);
-	const [error, setError] = React.useState<{ message: string; canOverride: boolean } | null>(null);
+	const [error, setError] = React.useState<{
+		message: string;
+		canOverrideRedirect: boolean;
+	} | null>(null);
 
 	const isHandleValid = React.useMemo(() => {
 		return handle.trim() && handle.length > 0;
@@ -46,13 +49,13 @@ export const HandleStep: React.FC<THandleStepProps> = (props) => {
 		if (result.isErr()) {
 			setError({
 				message: result.error.message,
-				canOverride: result.error.canOverride
+				canOverrideRedirect: result.error.canOverrideRedirect
 			});
 			setIsLoading(false);
 		}
 	}, [onboardingContext, handle]);
 
-	const handleOverride = React.useCallback(async () => {
+	const handleOverrideRedirect = React.useCallback(async () => {
 		setIsLoading(true);
 		setError(null);
 
@@ -60,7 +63,7 @@ export const HandleStep: React.FC<THandleStepProps> = (props) => {
 		if (result.isErr()) {
 			setError({
 				message: result.error.message,
-				canOverride: false
+				canOverrideRedirect: false
 			});
 			setIsLoading(false);
 		}
@@ -111,35 +114,35 @@ export const HandleStep: React.FC<THandleStepProps> = (props) => {
 				</div>
 			</div>
 
-			{error != null && !error.canOverride && (
+			{error != null && !error.canOverrideRedirect && (
 				<Banner tone="critical" onDismiss={() => setError(null)}>
 					{error.message}
 				</Banner>
 			)}
 
-			{error?.canOverride && (
+			{error?.canOverrideRedirect && (
 				<Banner tone="warning">
-					<p className="text-left">Handle already in use. You can:</p>
+					<p className="text-left">This URL is already in use. You can:</p>
 					<ul className="mt-2 list-inside list-disc text-left">
 						<li>Choose a different handle</li>
-						<li>Override it (replaces existing redirect)</li>
+						<li>Override the existing URL redirect</li>
 					</ul>
 				</Banner>
 			)}
 
 			<div className="flex flex-col gap-2">
-				{error?.canOverride ? (
+				{error?.canOverrideRedirect ? (
 					<>
 						<Button
 							variant="primary"
 							size="large"
 							fullWidth
-							onClick={handleOverride}
+							onClick={handleOverrideRedirect}
 							disabled={!isHandleValid || isLoading}
 							loading={isLoading}
 							tone="critical"
 						>
-							Override existing handle
+							Override existing URL
 						</Button>
 						<Button
 							variant="secondary"

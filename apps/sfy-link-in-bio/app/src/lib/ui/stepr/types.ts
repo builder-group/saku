@@ -7,10 +7,12 @@ export interface TStepr<GStep extends TSteprBaseStep> {
 	id: string;
 	current: TState<GStep, []>;
 
-	getVisited(step: GStep['type'] | null | undefined): GStep | null;
-	hasVisited(step: GStep['type'] | null | undefined): boolean;
+	getVisited<GType extends GStep['type']>(
+		stepType: GType | null | undefined
+	): TStepByType<GStep, GType> | null;
+	hasVisited(stepType: GStep['type'] | null | undefined): boolean;
 
-	goToVisited(step: GStep['type']): boolean;
+	goToVisited(stepType: GStep['type']): boolean;
 	goToLastVisited(): GStep['type'] | null;
 	goTo(step: GStep, options?: TStateSetOptions<GStep>): void;
 	goBack(): boolean;
@@ -27,3 +29,12 @@ export type TStepVisitedListener<GStep extends TSteprBaseStep> = (
 export interface TSteprBaseStep {
 	type: string;
 }
+
+export type TStepByType<
+	GStep extends { type: string },
+	GType extends GStep['type']
+> = GStep extends {
+	type: GType;
+}
+	? GStep
+	: never;

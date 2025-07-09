@@ -38,6 +38,11 @@ export const CreateShopifySiteRoute = createRoute({
 						createRedirect: z.coerce.boolean().optional().openapi({
 							example: true,
 							description: 'Whether to create a URL redirect for the site (defaults to true)'
+						}),
+						overrideRedirect: z.coerce.boolean().optional().openapi({
+							example: false,
+							description:
+								'If true and createRedirect is true, will override any existing redirect with the same path'
 						})
 					})
 				}

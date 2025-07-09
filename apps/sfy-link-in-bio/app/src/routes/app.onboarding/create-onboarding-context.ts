@@ -37,7 +37,7 @@ export function createOnboardingContext(
 			if (availabilityResult.isErr()) {
 				return Err({
 					message: 'Failed to check handle availability. Please try again.',
-					canOverride: false
+					canOverrideRedirect: false
 				});
 			}
 
@@ -47,15 +47,14 @@ export function createOnboardingContext(
 			if (!isAvailable && (!override || conflictType !== 'existing_redirect')) {
 				return Err({
 					message: conflictReason ?? 'This handle is not available. Please try a different one.',
-					canOverride: conflictType === 'existing_redirect',
-					conflictType
+					canOverrideRedirect: conflictType === 'existing_redirect'
 				});
 			}
 
 			this.stepr.current.set({
 				type: 'handle',
 				handle: trimmedHandle,
-				override
+				shouldOverrideRedirect: override
 			});
 
 			this.stepr.goTo({ type: 'site-creation-options' });
@@ -129,19 +128,18 @@ export function createOnboardingContext(
 
 			const idToken = await this.shopify.idToken();
 
-			// Get the handle from the handle step
-			const handleStep = this.stepr.getVisited('handle') as {
-				type: 'handle';
-				handle?: string;
-			} | null;
-			const handle = handleStep?.handle ?? 'bio';
+			// Get the handle and override flag from the handle step
+			const { handle = 'bio', shouldOverrideRedirect = false } =
+				this.stepr.getVisited('handle') ?? {};
 
 			const createResult = await coreApiClient.post(
 				'/v1/shopify/site',
 				{
 					handle,
 					displayName: 'My Bio Page',
-					content: currentStep.site as any
+					content: currentStep.site as any,
+					createRedirect: true,
+					overrideRedirect: shouldOverrideRedirect
 				},
 				{
 					headers: {
@@ -173,19 +171,18 @@ export function createOnboardingContext(
 
 			const idToken = await this.shopify.idToken();
 
-			// Get the handle from the handle step
-			const handleStep = this.stepr.getVisited('handle') as {
-				type: 'handle';
-				handle?: string;
-			} | null;
-			const handle = handleStep?.handle ?? 'bio';
+			// Get the handle and override flag from the handle step
+			const { handle = 'bio', shouldOverrideRedirect = false } =
+				this.stepr.getVisited('handle') ?? {};
 
 			const result = await coreApiClient.post(
 				'/v1/shopify/site',
 				{
 					handle,
 					displayName: 'My Bio Page',
-					content: preset as any
+					content: preset as any,
+					createRedirect: true,
+					overrideRedirect: shouldOverrideRedirect
 				},
 				{
 					headers: {
@@ -232,7 +229,11 @@ export interface TCreateOnboardingContextConfig {
 
 export type TOnboardingStep =
 	| { type: 'welcome' }
-	| { type: 'handle'; handle?: string; override?: boolean }
+	| {
+			type: 'handle';
+			handle?: string;
+			shouldOverrideRedirect?: boolean;
+	  }
 	| { type: 'site-creation-options'; selectedOption?: TSiteCreationOption }
 	| { type: 'linkpop-url'; handle?: string }
 	| { type: 'linkpop-preview'; url?: string; site?: TSite }
@@ -244,8 +245,7 @@ export type TTemplate = 'blank';
 
 export interface THandleStepError {
 	message: string;
-	canOverride: boolean;
-	conflictType?: 'reserved_path' | 'existing_redirect' | null;
+	canOverrideRedirect: boolean;
 }
 
 export interface TLinkpopStepError {

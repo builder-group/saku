@@ -1,7 +1,12 @@
 import { Err, Ok, type TResult } from '@blgc/utils';
 import { AppError } from '@repo/hono-utils';
 import { shopifyConfig } from '@/environment';
-import { createUrlRedirect, type TUrlRedirectCreateSuccess } from '../gql';
+import {
+	createUrlRedirect,
+	searchUrlRedirects,
+	updateUrlRedirect,
+	type TUrlRedirectCreateSuccess
+} from '../gql';
 import { isUrlRedirectPathReserved } from './is-url-redirect-path-reserved';
 
 /**
@@ -18,7 +23,7 @@ export async function createShopifyUrlRedirect(
 	target: `/${string}`,
 	config: TCreateShopifyUrlRedirectConfig
 ): Promise<TResult<TUrlRedirectCreateSuccess, AppError>> {
-	const { shopId, accessToken } = config;
+	const { shopId, accessToken, override = false } = config;
 
 	// Validate path is provided
 	if (!path.length || !target.length) {
@@ -52,14 +57,66 @@ export async function createShopifyUrlRedirect(
 			accessToken
 		}
 	);
-	if (result.isErr()) {
-		return result;
+
+	// If creation failed due to path conflict and override is true, try to update existing redirect
+	if (result.isErr() && result.error.code === '#ERR_REDIRECT_PATH_TAKEN' && override) {
+		// Find existing redirect
+		const findResult = await searchUrlRedirects(
+			{
+				first: 1,
+				query: { path: normalizedPath }
+			},
+			{ shopId, accessToken }
+		);
+		if (findResult.isErr()) {
+			return Err(
+				new AppError('#ERR_SHOPIFY_API_ERROR', 500, {
+					detail: `Failed to find existing redirect: ${findResult.error.message}`
+				})
+			);
+		}
+
+		const existingRedirect = findResult.value.urlRedirects[0];
+		if (existingRedirect == null) {
+			return Err(
+				new AppError('#ERR_REDIRECT_NOT_FOUND', 404, {
+					detail: `Could not find redirect with path '${normalizedPath}'`
+				})
+			);
+		}
+
+		// Update existing redirect
+		const updateResult = await updateUrlRedirect(
+			{
+				id: existingRedirect.id,
+				path: normalizedPath,
+				target: normalizedTarget
+			},
+			{
+				shopId,
+				accessToken
+			}
+		);
+		if (updateResult.isErr()) {
+			return Err(
+				new AppError('#ERR_SHOPIFY_API_ERROR', 500, {
+					detail: `Failed to update redirect: ${updateResult.error.message}`
+				})
+			);
+		}
+
+		return Ok({
+			id: updateResult.value.id,
+			path: updateResult.value.path,
+			target: updateResult.value.target
+		});
 	}
 
-	return Ok(result.value);
+	return result;
 }
 
 interface TCreateShopifyUrlRedirectConfig {
 	shopId: string;
 	accessToken: string;
+	override?: boolean;
 }

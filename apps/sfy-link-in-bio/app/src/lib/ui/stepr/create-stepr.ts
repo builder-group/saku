@@ -1,6 +1,6 @@
 import { shortId, withNew } from '@blgc/utils';
 import { createState } from 'feature-state';
-import { TStepr, TSteprBaseStep } from './types';
+import { TStepByType, TStepr, TSteprBaseStep } from './types';
 
 export function createStepr<GStep extends TSteprBaseStep>(
 	config: TCreateSteprConfig<GStep>
@@ -36,11 +36,14 @@ export function createStepr<GStep extends TSteprBaseStep>(
 			});
 		},
 
-		getVisited(this: TStepr<GStep>, step) {
-			return step != null ? (this._visited[step] ?? null) : null;
+		getVisited<GType extends GStep['type']>(
+			this: TStepr<GStep>,
+			stepType: GType | null | undefined
+		): TStepByType<GStep, GType> | null {
+			return stepType != null ? (this._visited[stepType] as TStepByType<GStep, GType>) : null;
 		},
-		hasVisited(this: TStepr<GStep>, step) {
-			return step != null && step in this._visited;
+		hasVisited(this: TStepr<GStep>, stepType) {
+			return stepType != null && stepType in this._visited;
 		},
 
 		goTo(this: TStepr<GStep>, step, options = {}) {

@@ -60,7 +60,13 @@ router.openapi(GetShopifySitesRoute, async (c) => {
 
 router.openapi(CreateShopifySiteRoute, async (c) => {
 	const { shopId } = await verifyShopifySession(c);
-	const { handle, displayName, content, createRedirect = true } = c.req.valid('json');
+	const {
+		handle,
+		displayName,
+		content,
+		createRedirect = true,
+		overrideRedirect = false
+	} = c.req.valid('json');
 
 	const accessToken = await getShopifyShopAccessToken(shopId);
 
@@ -109,11 +115,12 @@ router.openapi(CreateShopifySiteRoute, async (c) => {
 			`${shopifyConfig.proxy.path}/${handle}` as `/${string}`,
 			{
 				shopId,
-				accessToken
+				accessToken,
+				override: overrideRedirect
 			}
 		);
 		if (redirectResult.isErr()) {
-			if (redirectResult.error.code === '#ERR_REDIRECT_PATH_TAKEN') {
+			if (redirectResult.error.code === '#ERR_REDIRECT_PATH_TAKEN' && !overrideRedirect) {
 				throw redirectResult.error;
 			}
 			throw new AppError('#ERR_REDIRECT_CREATE_FAILED', 500, {
