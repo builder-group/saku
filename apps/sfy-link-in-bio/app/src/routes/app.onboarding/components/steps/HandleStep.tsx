@@ -14,7 +14,7 @@ export const HandleStep: React.FC<THandleStepProps> = (props) => {
 	});
 	const [handle, setHandle] = React.useState(initialHandle);
 	const [isLoading, setIsLoading] = React.useState(false);
-	const [error, setError] = React.useState<string | null>(null);
+	const [error, setError] = React.useState<{ message: string; canOverride: boolean } | null>(null);
 
 	const isHandleValid = React.useMemo(() => {
 		return handle.trim() && handle.length > 0;
@@ -35,6 +35,7 @@ export const HandleStep: React.FC<THandleStepProps> = (props) => {
 		// Remove any leading/trailing slashes and spaces
 		const newHandle = e.target.value.replace(/^\/+|\/+$/g, '').trim();
 		setHandle(newHandle);
+		setError(null);
 	}, []);
 
 	const handleContinue = React.useCallback(async () => {
@@ -43,10 +44,33 @@ export const HandleStep: React.FC<THandleStepProps> = (props) => {
 
 		const result = await onboardingContext.continueFromHandle(handle);
 		if (result.isErr()) {
-			setError(result.error);
+			setError({
+				message: result.error.message,
+				canOverride: result.error.canOverride
+			});
 			setIsLoading(false);
 		}
 	}, [onboardingContext, handle]);
+
+	const handleOverride = React.useCallback(async () => {
+		setIsLoading(true);
+		setError(null);
+
+		const result = await onboardingContext.continueFromHandle(handle, { override: true });
+		if (result.isErr()) {
+			setError({
+				message: result.error.message,
+				canOverride: false
+			});
+			setIsLoading(false);
+		}
+	}, [onboardingContext, handle]);
+
+	const handleChooseDifferent = React.useCallback(() => {
+		const randomNum = Math.floor(Math.random() * 99) + 1;
+		setHandle(`${handle}${randomNum}`);
+		setError(null);
+	}, [handle]);
 
 	const handleBack = React.useCallback(() => {
 		onboardingContext.goBack();
@@ -87,23 +111,58 @@ export const HandleStep: React.FC<THandleStepProps> = (props) => {
 				</div>
 			</div>
 
-			{error != null && (
+			{error != null && !error.canOverride && (
 				<Banner tone="critical" onDismiss={() => setError(null)}>
-					{error}
+					{error.message}
+				</Banner>
+			)}
+
+			{error?.canOverride && (
+				<Banner tone="warning">
+					<p className="text-left">Handle already in use. You can:</p>
+					<ul className="mt-2 list-inside list-disc text-left">
+						<li>Choose a different handle</li>
+						<li>Override it (replaces existing redirect)</li>
+					</ul>
 				</Banner>
 			)}
 
 			<div className="flex flex-col gap-2">
-				<Button
-					variant="primary"
-					size="large"
-					fullWidth
-					onClick={handleContinue}
-					disabled={!isHandleValid || isLoading}
-					loading={isLoading}
-				>
-					Continue
-				</Button>
+				{error?.canOverride ? (
+					<>
+						<Button
+							variant="primary"
+							size="large"
+							fullWidth
+							onClick={handleOverride}
+							disabled={!isHandleValid || isLoading}
+							loading={isLoading}
+							tone="critical"
+						>
+							Override existing handle
+						</Button>
+						<Button
+							variant="secondary"
+							size="large"
+							fullWidth
+							onClick={handleChooseDifferent}
+							disabled={isLoading}
+						>
+							Choose different handle
+						</Button>
+					</>
+				) : (
+					<Button
+						variant="primary"
+						size="large"
+						fullWidth
+						onClick={handleContinue}
+						disabled={!isHandleValid || isLoading}
+						loading={isLoading}
+					>
+						Continue
+					</Button>
+				)}
 
 				<Button variant="monochromePlain" onClick={handleBack} disabled={isLoading}>
 					Go back

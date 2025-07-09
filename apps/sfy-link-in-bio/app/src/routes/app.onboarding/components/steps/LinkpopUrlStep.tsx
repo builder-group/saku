@@ -12,9 +12,8 @@ export const LinkpopUrlStep: React.FC<TLinkpopUrlStepProps> = (props) => {
 		return currentStep.type === 'linkpop-url' && currentStep.handle ? currentStep.handle : '';
 	});
 	const [handle, setHandle] = React.useState(initialHandle);
-
 	const [isLoading, setIsLoading] = React.useState(false);
-	const [error, setError] = React.useState<string | null>(null);
+	const [error, setError] = React.useState<{ message: string; isNotFound: boolean } | null>(null);
 
 	// =========================================================================
 	// Events
@@ -41,6 +40,7 @@ export const LinkpopUrlStep: React.FC<TLinkpopUrlStepProps> = (props) => {
 		// Remove any leading/trailing slashes for direct input
 		const newHandle = value.replace(/^\/+|\/+$/g, '');
 		setHandle(newHandle);
+		setError(null);
 	}, []);
 
 	const handleContinue = React.useCallback(async () => {
@@ -53,6 +53,13 @@ export const LinkpopUrlStep: React.FC<TLinkpopUrlStepProps> = (props) => {
 			setIsLoading(false);
 		}
 	}, [onboardingContext, handle]);
+
+	const handleFallbackToTemplate = React.useCallback(() => {
+		onboardingContext.stepr.goTo({
+			type: 'templates',
+			selectedTemplate: 'blank'
+		});
+	}, [onboardingContext]);
 
 	const handleBack = React.useCallback(() => {
 		onboardingContext.goBack();
@@ -87,23 +94,58 @@ export const LinkpopUrlStep: React.FC<TLinkpopUrlStepProps> = (props) => {
 				</div>
 			</div>
 
-			{error != null && (
+			{error != null && !error.isNotFound && (
 				<Banner tone="critical" onDismiss={() => setError(null)}>
-					{error}
+					{error.message}
+				</Banner>
+			)}
+
+			{error?.isNotFound && (
+				<Banner tone="warning">
+					<p className="text-left">LinkPop page not found. You can:</p>
+					<ul className="mt-2 list-inside list-disc text-left">
+						<li>Check the handle and try again</li>
+						<li>Use a different handle</li>
+						<li>Start with a blank template</li>
+					</ul>
 				</Banner>
 			)}
 
 			<div className="flex flex-col gap-2">
-				<Button
-					variant="primary"
-					size="large"
-					fullWidth
-					onClick={handleContinue}
-					disabled={!handle.trim() || isLoading}
-					loading={isLoading}
-				>
-					Continue
-				</Button>
+				{error?.isNotFound ? (
+					<>
+						<Button
+							variant="primary"
+							size="large"
+							fullWidth
+							onClick={handleContinue}
+							disabled={!handle.trim() || isLoading}
+							loading={isLoading}
+						>
+							Try again
+						</Button>
+						<Button
+							variant="secondary"
+							size="large"
+							fullWidth
+							onClick={handleFallbackToTemplate}
+							disabled={isLoading}
+						>
+							Start with blank template
+						</Button>
+					</>
+				) : (
+					<Button
+						variant="primary"
+						size="large"
+						fullWidth
+						onClick={handleContinue}
+						disabled={!handle.trim() || isLoading}
+						loading={isLoading}
+					>
+						Continue
+					</Button>
+				)}
 
 				<Button variant="monochromePlain" onClick={handleBack} disabled={isLoading}>
 					Go back

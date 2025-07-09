@@ -20,7 +20,8 @@ export function createOnboardingContext(
 			this.stepr.goTo({ type: 'handle' });
 		},
 
-		async continueFromHandle(handle: string) {
+		async continueFromHandle(handle, options = {}) {
+			const { override = false } = options;
 			const idToken = await this.shopify.idToken();
 			const trimmedHandle = handle.trim();
 
@@ -34,18 +35,27 @@ export function createOnboardingContext(
 				}
 			});
 			if (availabilityResult.isErr()) {
-				return Err('Failed to check handle availability. Please try again.');
+				return Err({
+					message: 'Failed to check handle availability. Please try again.',
+					canOverride: false
+				});
 			}
 
-			const { isAvailable, conflictReason } = availabilityResult.value.data;
-			if (!isAvailable) {
-				return Err(conflictReason ?? 'This handle is not available. Please try a different one.');
+			const { isAvailable, conflictReason, conflictType } = availabilityResult.value.data;
+
+			// Handle is not available and not overriding an existing redirect
+			if (!isAvailable && (!override || conflictType !== 'existing_redirect')) {
+				return Err({
+					message: conflictReason ?? 'This handle is not available. Please try a different one.',
+					canOverride: conflictType === 'existing_redirect',
+					conflictType
+				});
 			}
 
-			// Store the handle in the step
 			this.stepr.current.set({
 				type: 'handle',
-				handle: trimmedHandle
+				handle: trimmedHandle,
+				override
 			});
 
 			this.stepr.goTo({ type: 'site-creation-options' });
@@ -71,13 +81,8 @@ export function createOnboardingContext(
 		},
 
 		async continueFromLinkpopUrl(handle) {
-			this.stepr.current.set({
-				type: 'linkpop-url',
-				handle
-			});
-
-			const fullUrl = `https://linkpop.com/${handle.trim()}`;
 			const idToken = await this.shopify.idToken();
+			const fullUrl = `https://linkpop.com/${handle.trim()}`;
 
 			const result = await coreApiClient.get('/v1/site/parse/external', {
 				queryParams: {
@@ -90,16 +95,22 @@ export function createOnboardingContext(
 			if (result.isErr()) {
 				// Check if it's a LinkPop parsing error
 				if (result.error.code === '#ERR_LINKPOP_DATA_NOT_FOUND') {
-					// Go directly to templates with a message about the fallback
-					this.stepr.goTo({
-						type: 'templates',
-						selectedTemplate: 'blank',
-						fallbackReason: 'linkpop_parse_error'
+					return Err({
+						message: 'Could not find your LinkPop page. Please check the handle and try again.',
+						isNotFound: true
 					});
-					return Ok(undefined);
 				}
-				return Err('Failed to parse your LinkPop page. Please try again.');
+				return Err({
+					message: 'Failed to parse your LinkPop page. Please try again.',
+					isNotFound: false
+				});
 			}
+
+			// Store the handle
+			this.stepr.current.set({
+				type: 'linkpop-url',
+				handle: handle.trim()
+			});
 
 			this.stepr.goTo({
 				type: 'linkpop-preview',
@@ -203,9 +214,12 @@ export interface TOnboardingContext {
 	stepr: TStepr<TOnboardingStep>;
 
 	continueFromWelcome: () => void;
-	continueFromHandle: (handle: string) => Promise<TResult<void, string>>;
+	continueFromHandle: (
+		handle: string,
+		options?: { override?: boolean }
+	) => Promise<TResult<void, THandleStepError>>;
 	continueFromSiteCreationOptions: (option: TSiteCreationOption) => void;
-	continueFromLinkpopUrl: (handle: string) => Promise<TResult<void, string>>;
+	continueFromLinkpopUrl: (handle: string) => Promise<TResult<void, TLinkpopStepError>>;
 	continueFromLinkpopPreview: () => Promise<TResult<void, string>>;
 	continueFromTemplates: (selectedTemplate: TTemplate) => Promise<TResult<void, string>>;
 	goBack: () => void;
@@ -218,12 +232,23 @@ export interface TCreateOnboardingContextConfig {
 
 export type TOnboardingStep =
 	| { type: 'welcome' }
-	| { type: 'handle'; handle?: string }
+	| { type: 'handle'; handle?: string; override?: boolean }
 	| { type: 'site-creation-options'; selectedOption?: TSiteCreationOption }
 	| { type: 'linkpop-url'; handle?: string }
 	| { type: 'linkpop-preview'; url?: string; site?: TSite }
-	| { type: 'templates'; selectedTemplate?: TTemplate; fallbackReason?: 'linkpop_parse_error' };
+	| { type: 'templates'; selectedTemplate?: TTemplate };
 
 export type TSiteCreationOption = 'create-new' | 'linkpop';
 
 export type TTemplate = 'blank';
+
+export interface THandleStepError {
+	message: string;
+	canOverride: boolean;
+	conflictType?: 'reserved_path' | 'existing_redirect' | null;
+}
+
+export interface TLinkpopStepError {
+	message: string;
+	isNotFound: boolean;
+}
