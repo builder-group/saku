@@ -37,7 +37,7 @@ export async function getShopifyOnlineAccessToken(
 		);
 	}
 
-	if (session.expiresAt && new Date() >= session.expiresAt) {
+	if (session.expiresAt != null && new Date() >= session.expiresAt) {
 		return Err(
 			new AppError('#ERR_ACCESS_TOKEN_EXPIRED', 401, {
 				detail:
