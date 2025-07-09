@@ -9,7 +9,7 @@ import {
 } from '@/environment';
 import {
 	createHandleFromShop,
-	getShopifyShopAccessToken,
+	getShopifyOnlineAccessToken,
 	removeAppProxyRedirects,
 	verifyShopifyWebhook
 } from '@/lib';
@@ -153,7 +153,7 @@ router.openapi(AppUninstalledWebhookRoute, async (c) => {
 	logger.info(`Received ${topic} webhook for shop: ${input.name} (${shopDomain})`);
 	logger.info(`Shop ID: ${input.id}, Plan: ${input.plan_display_name} (Event: ${eventId})`);
 
-	const accessToken = await getShopifyShopAccessToken(shopDomain);
+	const accessToken = (await getShopifyOnlineAccessToken(shopDomain)).unwrap();
 
 	// Delete all redirects that target the app proxy path
 	const deletedRedirects = await removeAppProxyRedirects({

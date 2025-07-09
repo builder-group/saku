@@ -12,7 +12,7 @@ import {
 import {
 	createShopifyUrlRedirect,
 	deleteUrlRedirect,
-	getShopifyShopAccessToken,
+	getShopifyOfflineAccessToken,
 	verifyShopifySession
 } from '@/lib';
 import {
@@ -68,7 +68,7 @@ router.openapi(CreateShopifySiteRoute, async (c) => {
 		overrideRedirect = false
 	} = c.req.valid('json');
 
-	const accessToken = await getShopifyShopAccessToken(shopId);
+	const accessToken = (await getShopifyOfflineAccessToken(shopId)).unwrap();
 
 	// Find workspace connected to this Shopify shop
 	const [workspace] = await db

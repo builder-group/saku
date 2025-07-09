@@ -4,7 +4,7 @@ import { pika } from '@/environment';
 import {
 	createFiles,
 	createStagedUploads,
-	getShopifyShopAccessToken,
+	getShopifyOfflineAccessToken,
 	listFiles,
 	verifyShopifySession
 } from '@/lib';
@@ -21,7 +21,7 @@ router.openapi(CreateUploadTargetsRoute, async (c) => {
 	const { shopId } = await verifyShopifySession(c);
 	const { files } = c.req.valid('json');
 
-	const accessToken = await getShopifyShopAccessToken(shopId);
+	const accessToken = (await getShopifyOfflineAccessToken(shopId)).unwrap();
 
 	const createdTargets = (
 		await createStagedUploads(
@@ -55,7 +55,7 @@ router.openapi(SubmitUploadedFilesRoute, async (c) => {
 	const { shopId } = await verifyShopifySession(c);
 	const { files } = c.req.valid('json');
 
-	const accessToken = await getShopifyShopAccessToken(shopId);
+	const accessToken = (await getShopifyOfflineAccessToken(shopId)).unwrap();
 
 	const createdFiles = (
 		await createFiles(
@@ -102,7 +102,7 @@ router.openapi(ListMediaFilesRoute, async (c) => {
 	const { shopId } = await verifyShopifySession(c);
 	const { first, after, fileTypes, fileName, sortKey, reverse } = c.req.valid('query');
 
-	const accessToken = await getShopifyShopAccessToken(shopId);
+	const accessToken = (await getShopifyOfflineAccessToken(shopId)).unwrap();
 
 	const { files, pageInfo } = (
 		await listFiles(

@@ -52,7 +52,7 @@ export async function removeAppProxyRedirects(
 	const redirectsToDelete = searchResult.value.urlRedirects.filter(
 		(redirect) => redirect.target.startsWith(`${appProxyPath}/`) || redirect.target === appProxyPath
 	);
-	if (redirectsToDelete.length === 0) {
+	if (!redirectsToDelete.length) {
 		return Ok({
 			redirectsFound: searchResult.value.urlRedirects.length,
 			redirectsDeleted: 0,
@@ -82,6 +82,9 @@ export async function removeAppProxyRedirects(
 
 export interface TRemoveAppProxyRedirectsConfig {
 	shopId: string;
+	/**
+	 * Requires an online access token (user session) for bulk operations
+	 */
 	accessToken: string;
 }
 
