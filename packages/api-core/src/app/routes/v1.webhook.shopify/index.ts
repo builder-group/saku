@@ -4,10 +4,11 @@ import {
 	db,
 	logger,
 	shopifySessionTable,
+	siteTable,
 	workspaceAccountTable,
 	workspaceTable
 } from '@/environment';
-import { createHandleFromShop, verifyShopifyWebhook } from '@/lib';
+import { createHandleFromShop, sendUninstallFeedbackEmail, verifyShopifyWebhook } from '@/lib';
 import {
 	AppScopesUpdateWebhookRoute,
 	AppUninstalledWebhookRoute,
@@ -159,6 +160,48 @@ router.openapi(AppUninstalledWebhookRoute, async (c) => {
 		.returning({ sessionId: shopifySessionTable.sessionId });
 
 	logger.info(`Deleted ${deletedSessions.length} Shopify sessions for shop: ${shopDomain}`);
+
+	// Get the workspace ID for this shop
+	const [shopifyAccount] = await db
+		.select({
+			workspaceId: workspaceAccountTable.workspaceId
+		})
+		.from(workspaceAccountTable)
+		.where(
+			and(
+				eq(workspaceAccountTable.provider, 'shopify'),
+				eq(workspaceAccountTable.providerAccountId, shopDomain)
+			)
+		)
+		.limit(1);
+
+	// Get all link-in-bio pages for this workspace
+	const sites =
+		shopifyAccount != null
+			? await db
+					.select({
+						handle: siteTable.handle
+					})
+					.from(siteTable)
+					.where(eq(siteTable.workspaceId, shopifyAccount.workspaceId))
+			: [];
+
+	// Format URLs as shopDomain/handle
+	const linkInBioPages = sites.map((site) => `${shopDomain}/${site.handle}`);
+
+	const sendUninstallFeedbackEmailResult = await sendUninstallFeedbackEmail({
+		email: input.email,
+		shopName: input.name,
+		linkInBioPages,
+		totalVisits: 0, // TODO: Add analytics tracking
+		feedbackUrl: '' // TODO: Add feedback URL
+	});
+	if (sendUninstallFeedbackEmailResult.isErr()) {
+		logger.error(
+			`Error sending uninstall feedback email for shop: ${shopDomain}`,
+			sendUninstallFeedbackEmailResult.error
+		);
+	}
 
 	// Note: We do NOT delete shop account data here
 	// - Shop data deletion happens in shop/redact webhook (48 hours later)

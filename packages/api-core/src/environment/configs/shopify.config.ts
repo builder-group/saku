@@ -11,15 +11,11 @@ export const shopifyConfig = {
 	apiVersion,
 	apiKey: validateEnvVar({
 		envKey: 'SHOPIFY_API_KEY',
-		validator: vValidator(v.string()),
-		description: 'Shopify API key for app authentication',
-		example: 'abc123xyz789'
+		validator: vValidator(v.string())
 	}),
 	apiSecret: validateEnvVar({
 		envKey: 'SHOPIFY_API_SECRET',
-		validator: vValidator(v.string()),
-		description: 'Shopify API secret key for app authentication',
-		example: 'def456uvw012'
+		validator: vValidator(v.string())
 	}),
 	shop: {
 		adminApi: (shopId: string) => `https://${shopId}/admin/api/${apiVersion}/graphql.json`

@@ -10,33 +10,23 @@ export const shopifyConfig = {
 	apiVersion: ApiVersion.July25,
 	apiKey: validateEnvVar({
 		envKey: 'SHOPIFY_API_KEY',
-		validator: vValidator(v.string()),
-		description: 'Shopify API key for app authentication',
-		example: 'abc123xyz789'
+		validator: vValidator(v.string())
 	}),
 	apiSecret: validateEnvVar({
 		envKey: 'SHOPIFY_API_SECRET',
-		validator: vValidator(v.string()),
-		description: 'Shopify API secret key for app authentication',
-		example: 'def456uvw012'
+		validator: vValidator(v.string())
 	}),
 	appUrl: validateEnvVar({
 		envKey: 'SHOPIFY_APP_URL',
-		validator: vValidator(v.pipe(v.string(), v.url())),
-		description: 'Public URL where the Shopify app is hosted',
-		example: 'https://your-app.ngrok.io'
+		validator: vValidator(v.pipe(v.string(), v.url()))
 	}),
 	scopes: validateEnvVar({
 		envKey: 'SHOPIFY_SCOPES',
-		validator: vValidator(v.string()),
-		description: 'Comma-separated list of Shopify API scopes',
-		example: 'read_products,write_products,read_orders'
+		validator: vValidator(v.string())
 	}).split(','),
 	shopCustomDomain: validateEnvVar({
 		envKey: 'SHOP_CUSTOM_DOMAIN',
-		validator: vValidator(v.optional(v.string())),
-		description: 'Optional custom domain for shop access',
-		example: 'custom-shop.example.com'
+		validator: vValidator(v.optional(v.string()))
 	}),
 	proxy: {
 		path: appProxyPath,

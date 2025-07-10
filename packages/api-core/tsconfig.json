@@ -1,6 +1,8 @@
 {
 	"extends": "@blgc/config/typescript/library",
 	"compilerOptions": {
+		"jsx": "react-jsx",
+		"jsxImportSource": "react",
 		"outDir": "./dist",
 		"rootDir": "./src",
 		"declarationDir": "./dist/types",

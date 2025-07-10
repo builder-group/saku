@@ -8,7 +8,7 @@ export const TransactionalFooter: React.FC<TTransactionalFooterProps> = (props) 
 		<Tailwind>
 			<Hr className="mx-0 my-6 w-full border border-neutral-200" />
 
-			{beforeContent}
+			<>{beforeContent}</>
 
 			<Text className="text-[12px] leading-6 text-neutral-500">
 				This email was intended for <span className="text-black">{email}</span>. If you were not
