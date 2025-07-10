@@ -116,6 +116,7 @@ export const nodeMetadataMap = {
 		hidden: false,
 		defaultData: {
 			productId: '',
+			variantIds: [],
 			style: {
 				padding: inheritStyle(),
 				backgroundColor: inheritStyle()

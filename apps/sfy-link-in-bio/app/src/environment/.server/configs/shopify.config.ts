@@ -1,3 +1,4 @@
+import { ApiVersion } from '@shopify/shopify-app-remix/server';
 import * as v from 'valibot';
 import { validateEnvVar } from 'validatenv';
 import { vValidator } from 'validation-adapters/valibot';
@@ -6,7 +7,7 @@ import { appConfig } from '../../configs';
 const appProxyPath = appConfig.env === 'production' ? '/a/saku' : '/a/saku-local';
 
 export const shopifyConfig = {
-	apiVersion: '2025-07',
+	apiVersion: ApiVersion.July25,
 	apiKey: validateEnvVar({
 		envKey: 'SHOPIFY_API_KEY',
 		validator: vValidator(v.string()),

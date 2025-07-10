@@ -203,7 +203,8 @@ function constructSocialUrl(provider: TSocialLink['provider'], handleOrUrl: stri
 		discord: `https://discord.gg/${handleOrUrl}`,
 		github: `https://github.com/${handleOrUrl}`,
 		google: `https://plus.google.com/${handleOrUrl}`,
-		spotify: `https://open.spotify.com/user/${handleOrUrl}`
+		spotify: `https://open.spotify.com/user/${handleOrUrl}`,
+		pinterest: `https://pinterest.com/${handleOrUrl}`
 	};
 
 	return urlMap[provider];

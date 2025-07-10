@@ -1,10 +1,11 @@
+import { ApiVersion } from '@shopify/shopify-api';
 import * as v from 'valibot';
 import { validateEnvVar } from 'validatenv';
 import { vValidator } from 'validation-adapters/valibot';
 import { appConfig } from './app.config';
 
 const appProxyPath = appConfig.env === 'production' ? '/a/saku' : '/a/saku-local';
-const apiVersion = '2025-07';
+const apiVersion = ApiVersion.July25;
 
 export const shopifyConfig = {
 	apiVersion,
