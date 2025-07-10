@@ -93,7 +93,10 @@ export function createOnboardingContext(
 			});
 			if (result.isErr()) {
 				// Check if it's a LinkPop parsing error
-				if (result.error.code === '#ERR_LINKPOP_DATA_NOT_FOUND') {
+				if (
+					result.error.code === '#ERR_LINKPOP_DATA_NOT_FOUND' ||
+					result.error.code === '#ERR_EXTERNAL_HTML'
+				) {
 					return Err({
 						message: 'Could not find your LinkPop page. Please check the handle and try again.',
 						isNotFound: true

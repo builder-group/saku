@@ -18,7 +18,7 @@ redirect_urls = [
 ]
 
 [webhooks]
-api_version = "2025-04"
+api_version = "2025-07"
 
 [[webhooks.subscriptions]]
 topics = ["app/uninstalled"]

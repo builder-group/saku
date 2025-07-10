@@ -4,7 +4,7 @@ import { vValidator } from 'validation-adapters/valibot';
 import { appConfig } from './app.config';
 
 const appProxyPath = appConfig.env === 'production' ? '/a/saku' : '/a/saku-local';
-const apiVersion = '2025-04';
+const apiVersion = '2025-07';
 
 export const shopifyConfig = {
 	apiVersion,

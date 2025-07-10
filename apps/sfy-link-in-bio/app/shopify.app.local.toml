@@ -3,7 +3,7 @@
 client_id = "4c9dc129e68b889d9a351e14d8e36a02"
 name = "Saku Link In Bio (Local)"
 handle = "saku-link-in-bio-local"
-application_url = "https://radius-mustang-ep-width.trycloudflare.com"
+application_url = "https://designing-neighborhood-statistics-cute.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -11,10 +11,10 @@ embedded = true
 scopes = "write_files,write_online_store_navigation,read_online_store_navigation"
 
 [auth]
-redirect_urls = ["https://radius-mustang-ep-width.trycloudflare.com/auth/callback", "https://radius-mustang-ep-width.trycloudflare.com/auth/shopify/callback", "https://radius-mustang-ep-width.trycloudflare.com/api/auth/callback"]
+redirect_urls = ["https://designing-neighborhood-statistics-cute.trycloudflare.com/auth/callback", "https://designing-neighborhood-statistics-cute.trycloudflare.com/auth/shopify/callback", "https://designing-neighborhood-statistics-cute.trycloudflare.com/api/auth/callback"]
 
 [webhooks]
-api_version = "2025-04"
+api_version = "2025-07"
 
 [[webhooks.subscriptions]]
 topics = ["app/uninstalled"]
@@ -37,7 +37,7 @@ compliance_topics = ["shop/redact"]
 uri = "/api/v1/webhook/shopify/shop/redact"
 
 [app_proxy]
-url = "https://radius-mustang-ep-width.trycloudflare.com/a/saku-local"
+url = "https://designing-neighborhood-statistics-cute.trycloudflare.com/a/saku-local"
 subpath = "saku-local"
 prefix = "a"
 
