@@ -48,6 +48,7 @@
 		"openapi:generate:api": "npx openapi-typescript --redocly ./src/api/resources/redocly.yaml",
 		"openapi:generate:github": "npx openapi-typescript --redocly ./src/github/resources/redocly.yaml",
 		"redocly": "npx @redocly/cli",
+		"test": "echo \"🧪 No tests defined yet.\"",
 		"update:latest": "pnpm update --latest"
 	},
 	"devDependencies": {

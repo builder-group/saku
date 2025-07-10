@@ -1,8 +1,8 @@
 {
-	"name": "@repo/hono-utils",
+	"name": "@repo/transactional",
 	"version": "0.0.1",
 	"private": true,
-	"description": "Utilities for Hono",
+	"description": "",
 	"keywords": [],
 	"homepage": "https://saku.so/?source=github",
 	"bugs": {
@@ -26,25 +26,21 @@
 		"build": "shx rm -rf dist && rollup -c rollup.config.js",
 		"build:prod": "export NODE_ENV=production && pnpm build",
 		"clean": "shx rm -rf dist && shx rm -rf .turbo && shx rm -rf node_modules",
+		"email:dev": "email dev --port 3001 --dir ./src/email/templates",
+		"email:export": "email export",
 		"install:clean": "pnpm run clean && pnpm install",
 		"lint": "eslint . --fix",
 		"start:dev": "tsc -w",
-		"test": "vitest run",
+		"test": "echo \"🧪 No tests defined yet.\"",
 		"update:latest": "pnpm update --latest"
 	},
 	"dependencies": {
-		"@asteasolutions/zod-to-openapi": "^7.3.4",
-		"@blgc/utils": "^0.0.57",
-		"@hono/zod-openapi": "^0.19.9",
-		"@oslojs/crypto": "^1.0.1",
-		"@oslojs/encoding": "^1.1.0",
-		"arctic": "^3.7.0",
-		"feature-fetch": "^0.0.49",
-		"hono": "^4.8.4",
-		"jose": "^6.0.11"
+		"@react-email/components": "^0.2.0"
 	},
 	"devDependencies": {
-		"@repo/types": "workspace:*",
-		"@types/node": "^24.0.12"
+		"@react-email/preview-server": "4.1.1",
+		"@types/react": "^19.1.8",
+		"react": "^19.1.0",
+		"react-email": "^4.1.1"
 	}
 }
