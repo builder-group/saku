@@ -199,7 +199,8 @@ export interface TSocialLink {
 		| 'discord'
 		| 'github'
 		| 'google'
-		| 'spotify';
+		| 'spotify'
+		| 'pinterest';
 	handle: string;
 	url?: string;
 }

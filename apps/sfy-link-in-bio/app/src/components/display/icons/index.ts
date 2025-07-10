@@ -9,6 +9,7 @@ export * from './InstagramIcon';
 export * from './LinkedInIcon';
 export * from './LogoIcon';
 export * from './NotoEmojiCherryBlossomIcon';
+export * from './PinterestIcon';
 export * from './ShopifyIcon';
 export * from './SpotifyIcon';
 export * from './TikTokIcon';
