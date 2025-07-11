@@ -102,19 +102,6 @@ export const nodeMetadataMap = {
 			}
 		}
 	} satisfies TNodeMetadata<'product'>,
-	asset: {
-		type: 'asset',
-		icon: LayoutSectionIcon,
-		label: 'Asset',
-		internal: false,
-		hidden: appConfig.env !== 'development',
-		defaultData: {
-			symbol: 'BTC',
-			exchange: 'Binance',
-			price: 0,
-			currency: 'USDT'
-		}
-	} satisfies TNodeMetadata<'asset'>,
 	promised: {
 		type: 'promised',
 		internal: true

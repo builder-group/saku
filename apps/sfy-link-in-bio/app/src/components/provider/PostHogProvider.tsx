@@ -9,6 +9,11 @@ export const PosthogProvider: React.FC<TPosthogProviderProps> = (props) => {
 	const [hydrated, setHydrated] = React.useState(false);
 
 	React.useEffect(() => {
+		if (appConfig.env !== 'production') {
+			logger.info('🦔 Skipping PostHog initialization in non-production environment');
+			return;
+		}
+
 		logger.info('🦔 Initializing PostHog...', {
 			key: posthogConfig.key,
 			host: posthogConfig.host

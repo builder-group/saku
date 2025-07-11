@@ -18,7 +18,6 @@ export const nodeEditorRegistry = {
 	media: MediaNodeEditor,
 	text: TextNodeEditor,
 	product: ProductNodeEditor,
-	asset: null,
 	promised: null
 } as const;
 

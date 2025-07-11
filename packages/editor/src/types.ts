@@ -18,8 +18,7 @@ export type TNode =
 	| TMediaNode
 	| TTextNode
 	| TProductNode
-	| TAssetNode
-	| TPromisedNode<TLinkNode | TAssetNode>;
+	| TPromisedNode<TLinkNode | TProductNode>;
 export type TNodeType = TNode['type'];
 
 export interface TBaseNode {
@@ -136,14 +135,6 @@ export interface TProductNode extends TBaseNode {
 		// Background
 		backgroundColor?: TStyleReference<TRgba>;
 	};
-}
-
-export interface TAssetNode extends TBaseNode {
-	type: 'asset';
-	symbol: 'BTC';
-	exchange?: 'Binance';
-	price: number;
-	currency: 'USDT';
 }
 
 export interface TPromisedNode<GNode extends TBaseNode> extends TBaseNode {
