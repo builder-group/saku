@@ -25,7 +25,7 @@ const packageVersion = validateEnvVar({
 const devPort = validateEnvVar({
 	envKey: 'API_CORE_DEV_PORT',
 	validator: portValidator,
-	defaultValue: devDefault(8787)
+	defaultValue: 8787
 });
 
 const url = validateEnvVar({
