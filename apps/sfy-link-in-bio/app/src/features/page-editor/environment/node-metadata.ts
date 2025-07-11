@@ -1,40 +1,18 @@
-import { hexToRgba, inheritStyle, TNode, TNodeType } from '@repo/editor';
+import { inheritStyle, TNode, TNodeType } from '@repo/editor';
 import { IconSource } from '@shopify/polaris';
 import { LayoutSectionIcon } from '@/components';
+import { appConfig } from '@/environment';
 
 export const nodeMetadataMap = {
 	page: {
 		type: 'page',
-		icon: LayoutSectionIcon,
-		label: 'Page',
-		hidden: true,
-		defaultData: {
-			children: [],
-			style: {
-				backgroundColor: hexToRgba('#F8F9FA'),
-				children: {
-					backgroundColor: hexToRgba('#FFFFFF'),
-					spacing: 16,
-					padding: 16,
-					font: {
-						family: 'Inter',
-						weight: 400,
-						style: 'normal'
-					},
-					fontSize: 16,
-					textColor: hexToRgba('#2F4F4F'),
-					textAlign: 'center' as const,
-					borderRadius: 12,
-					shadow: true
-				}
-			}
-		}
+		internal: true
 	} satisfies TNodeMetadata<'page'>,
 	about: {
 		type: 'about',
 		icon: LayoutSectionIcon,
 		label: 'About',
-		hidden: false,
+		internal: false,
 		defaultData: {
 			name: 'Your Name',
 			bio: 'Tell us about yourself',
@@ -54,7 +32,7 @@ export const nodeMetadataMap = {
 		type: 'link',
 		icon: LayoutSectionIcon,
 		label: 'Link',
-		hidden: false,
+		internal: false,
 		defaultData: {
 			url: 'https://example.com',
 			meta: {
@@ -76,7 +54,7 @@ export const nodeMetadataMap = {
 		type: 'media',
 		icon: LayoutSectionIcon,
 		label: 'Media',
-		hidden: false,
+		internal: false,
 		defaultData: {
 			media: {
 				type: 'image' as const,
@@ -94,7 +72,7 @@ export const nodeMetadataMap = {
 		type: 'text',
 		icon: LayoutSectionIcon,
 		label: 'Text',
-		hidden: false,
+		internal: false,
 		defaultData: {
 			text: 'Add your text here',
 			style: {
@@ -113,7 +91,8 @@ export const nodeMetadataMap = {
 		type: 'product',
 		icon: LayoutSectionIcon,
 		label: 'Product',
-		hidden: false,
+		internal: false,
+		hidden: appConfig.env !== 'development',
 		defaultData: {
 			productId: '',
 			variantIds: [],
@@ -122,15 +101,37 @@ export const nodeMetadataMap = {
 				backgroundColor: inheritStyle()
 			}
 		}
-	} satisfies TNodeMetadata<'product'>
-} as const;
+	} satisfies TNodeMetadata<'product'>,
+	asset: {
+		type: 'asset',
+		icon: LayoutSectionIcon,
+		label: 'Asset',
+		internal: false,
+		hidden: appConfig.env !== 'development',
+		defaultData: {
+			symbol: 'BTC',
+			exchange: 'Binance',
+			price: 0,
+			currency: 'USDT'
+		}
+	} satisfies TNodeMetadata<'asset'>,
+	promised: {
+		type: 'promised',
+		internal: true
+	} satisfies TNodeMetadata<'promised'>
+} as Record<TNodeType, TNodeMetadata<TNodeType>>;
 
 export const nodeMetadata = Object.values(nodeMetadataMap);
 
-export interface TNodeMetadata<GType extends TNodeType> {
+export type TNodeMetadata<GType extends TNodeType> = {
 	type: GType;
-	icon: IconSource;
-	label: string;
-	hidden: boolean;
-	defaultData: Omit<Extract<TNode, { type: GType }>, 'id' | 'type'>;
-}
+	hidden?: boolean;
+} & (
+	| {
+			internal: false;
+			icon: IconSource;
+			label: string;
+			defaultData: Omit<Extract<TNode, { type: GType }>, 'id' | 'type'>;
+	  }
+	| { internal: true; defaultData?: Omit<Extract<TNode, { type: GType }>, 'id' | 'type'> }
+);

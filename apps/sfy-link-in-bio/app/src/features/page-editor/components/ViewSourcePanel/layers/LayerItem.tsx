@@ -58,6 +58,10 @@ export const LayerItem: React.FC<TLayerItemProps> = (props) => {
 	// UI
 	// =========================================================================
 
+	if (nodeMetadata.internal || nodeMetadata.hidden) {
+		return null;
+	}
+
 	return (
 		<div
 			ref={setNodeRef}

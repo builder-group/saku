@@ -24,10 +24,15 @@ export const LayerSelectorPopover: React.FC<TLayerSelectorPopoverProps> = (props
 
 	const handleLayerSelect = React.useCallback(
 		(layerType: TNodeType) => {
+			const nodeMetadata = nodeMetadataMap[layerType];
+			if (nodeMetadata.internal) {
+				return;
+			}
+
 			const nodeId = editor.addNode({
 				id: shortId(),
 				type: layerType,
-				...nodeMetadataMap[layerType].defaultData
+				...nodeMetadata.defaultData
 			} as TNode);
 			editor.selectNode(nodeId);
 
@@ -76,6 +81,7 @@ export const LayerSelectorPopover: React.FC<TLayerSelectorPopoverProps> = (props
 			<div className="p-2" style={{ width: popoverWidth }}>
 				<div className="flex flex-col gap-2">
 					{nodeMetadata
+						.filter((nodeMetadata) => !nodeMetadata.internal)
 						.filter((nodeMetadata) => !nodeMetadata.hidden)
 						.map((nodeMetadata) => (
 							<div

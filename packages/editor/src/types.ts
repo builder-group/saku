@@ -11,7 +11,15 @@ export interface TSite {
 // =========================================================================
 
 export type TNodeId = string;
-export type TNode = TPageNode | TAboutNode | TLinkNode | TMediaNode | TTextNode | TProductNode;
+export type TNode =
+	| TPageNode
+	| TAboutNode
+	| TLinkNode
+	| TMediaNode
+	| TTextNode
+	| TProductNode
+	| TAssetNode
+	| TPromisedNode<TLinkNode | TAssetNode>;
 export type TNodeType = TNode['type'];
 
 export interface TBaseNode {
@@ -128,6 +136,20 @@ export interface TProductNode extends TBaseNode {
 		// Background
 		backgroundColor?: TStyleReference<TRgba>;
 	};
+}
+
+export interface TAssetNode extends TBaseNode {
+	type: 'asset';
+	symbol: 'BTC';
+	exchange?: 'Binance';
+	price: number;
+	currency: 'USDT';
+}
+
+export interface TPromisedNode<GNode extends TBaseNode> extends TBaseNode {
+	type: 'promised';
+	cached: GNode;
+	next: Promise<GNode>;
 }
 
 // =========================================================================

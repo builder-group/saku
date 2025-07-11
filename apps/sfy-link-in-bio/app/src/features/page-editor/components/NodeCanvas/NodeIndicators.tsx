@@ -18,8 +18,8 @@ export const NodeIndicators: React.FC<TNodeIndicatorsProps> = (props) => {
 					return null;
 				}
 
-				// Skip hidden nodes
-				if (nodeMetadataMap[nodeState._v.type].hidden) {
+				// Skip internal nodes
+				if (nodeMetadataMap[nodeState._v.type].internal) {
 					return null;
 				}
 
