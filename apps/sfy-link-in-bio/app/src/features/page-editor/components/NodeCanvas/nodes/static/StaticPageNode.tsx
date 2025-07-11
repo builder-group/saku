@@ -31,10 +31,7 @@ export const StaticPageNode: React.FC<TStaticPageNodeProps> = (props) => {
 						href="https://saku.so"
 						target="_blank"
 						rel="noopener noreferrer"
-						className="mx-auto mt-12 flex items-center gap-2 pb-6 text-sm no-underline invert-100 hover:opacity-75"
-						style={{
-							color: node.style.backgroundColor
-						}}
+						className="mx-auto mt-12 flex items-center gap-2 pb-6 text-sm text-white no-underline mix-blend-difference hover:opacity-75"
 					>
 						<LogoIcon className="h-6 w-6" />
 						<span>Powered by Saku</span>
