@@ -25,6 +25,7 @@ export type TResolvedNode =
 export interface TResolvedPageNode extends Omit<TPageNode, 'style' | 'children'> {
 	style: {
 		backgroundColor: TResolveStyle<TPageNode['style']>['backgroundColor'];
+		watermarkColor: string;
 		children?: TResolveStyle<NonNullable<TPageNode['style']['children']>>;
 	};
 	children: TResolvedNode[];

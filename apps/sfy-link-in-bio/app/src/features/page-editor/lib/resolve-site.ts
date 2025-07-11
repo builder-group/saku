@@ -1,5 +1,6 @@
 import { notEmpty } from '@blgc/utils';
 import {
+	getBestContrastColor,
 	resolveStyleReference,
 	rgbaToCssRgba,
 	TAboutNode,
@@ -61,6 +62,9 @@ export function resolvePageNodeWithoutChildren(
 		...node,
 		style: {
 			backgroundColor: resolveColor(node.style.backgroundColor),
+			watermarkColor: resolveColor(
+				getBestContrastColor(node.style.backgroundColor ?? { r: 255, g: 255, b: 255, a: 1 })
+			) as string,
 			children: node.style.children
 				? {
 						backgroundColor: resolveColor(node.style.children.backgroundColor),
