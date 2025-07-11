@@ -20,7 +20,7 @@ export const UninstallFeedbackEmail: TEmailFC<TUninstallFeedbackEmailProps> = (p
 	return (
 		<Html>
 			<Head />
-			<Preview>Thank you for trying Saku - quick feedback?</Preview>
+			<Preview>Thanks for trying Saku – here's what's changed</Preview>
 			<Tailwind>
 				<Body className="mx-auto my-auto bg-white font-sans">
 					<Container className="mx-auto my-10 max-w-[600px] rounded border border-solid border-neutral-200 px-10 py-5">
@@ -34,19 +34,44 @@ export const UninstallFeedbackEmail: TEmailFC<TUninstallFeedbackEmailProps> = (p
 						</Section>
 
 						<Heading className="mx-0 my-7 p-0 text-xl font-medium text-black">
-							Thank you for trying Saku, {shopName}
+							Thanks for giving Saku a try, {shopName}
 						</Heading>
 
 						<Text className="text-sm leading-6 text-black">
-							We noticed you uninstalled Saku — no hard feelings! Thank you for giving us a try.
+							We noticed you've uninstalled — no hard feelings at all! We truly appreciate the time
+							you spent with us.
 						</Text>
 
-						<Text className="text-sm leading-6 text-black">
-							Would you mind sharing why you uninstalled? (pricing, features, setup, etc.) Your
-							feedback helps us improve for other merchants.
+						{linkInBioPages && linkInBioPages.length > 0 && (
+							<>
+								<Text className="mt-6 text-sm leading-6 font-medium text-black">
+									Here's what's changed:
+								</Text>
+								<Text className="text-sm leading-6 text-neutral-600">
+									• Your Saku pages ({totalVisits?.toLocaleString() || '0'} total visits) are now
+									offline:
+								</Text>
+								{linkInBioPages.map((page, index) => (
+									<Text key={index} className="ml-6 text-sm leading-6 text-neutral-600">
+										◦ {page}
+									</Text>
+								))}
+								<Text className="mt-2 text-sm leading-6 text-neutral-600">
+									• Your data will be automatically deleted in 48 hours
+								</Text>
+								<Text className="text-sm leading-6 text-neutral-600">
+									• You can reinstall anytime before then to restore everything
+								</Text>
+							</>
+						)}
+
+						<Text className="mt-6 text-sm leading-6 text-black">
+							We're always working to improve — and your feedback helps a lot.
+							{'\n'}
+							If you have 30 seconds, could you tell us why you uninstalled?
 						</Text>
 
-						<Section className="my-6">
+						<Section className="my-4">
 							<Button
 								className="rounded-lg bg-black px-6 py-3 text-center text-[14px] font-semibold text-white no-underline"
 								href={feedbackUrl}
@@ -56,32 +81,13 @@ export const UninstallFeedbackEmail: TEmailFC<TUninstallFeedbackEmailProps> = (p
 						</Section>
 
 						<Text className="text-sm leading-6 text-neutral-600">
-							Prefer to reply? Just hit reply — we read every message.
+							Or just reply to this email — we read every message and truly value your input.
 						</Text>
 
-						{linkInBioPages && linkInBioPages.length > 0 && (
-							<>
-								<Text className="text-sm leading-6 text-black">
-									During your time with Saku, your pages received{' '}
-									{totalVisits?.toLocaleString() || '[visits]'} visits. They're now offline:
-								</Text>
-								{linkInBioPages.map((page, index) => (
-									<Text key={index} className="text-sm leading-6 text-neutral-600">
-										• {page}
-									</Text>
-								))}
-							</>
-						)}
-
-						<Text className="text-sm leading-6 text-black">
-							All data will be permanently deleted in 2 days unless you reinstall. If you do
-							reinstall before then, everything will be restored.
-						</Text>
-
-						<Text className="text-sm leading-6 text-black">
-							Cheers,
+						<Text className="mt-6 text-sm leading-6 text-black">
+							Thanks again,
 							<br />
-							The Saku Team 🌸
+							Benno & the Saku Team 🌸
 						</Text>
 
 						<TransactionalFooter email={email} discordUrl={discordUrl} />

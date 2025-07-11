@@ -32,15 +32,15 @@
 		"lint": "eslint . --fix",
 		"start:dev": "tsc -w",
 		"test": "echo \"🧪 No tests defined yet.\"",
-		"update:latest": "pnpm update --latest"
+		"update:latest": "pnpm update --latest '!react' '!@types/react'"
 	},
 	"dependencies": {
 		"@react-email/components": "^0.2.0"
 	},
 	"devDependencies": {
 		"@react-email/preview-server": "4.1.1",
-		"@types/react": "^19.1.8",
-		"react": "^19.1.0",
+		"@types/react": "^18.3.1",
+		"react": "18.3.1",
 		"react-email": "^4.1.1"
 	}
 }

@@ -34,7 +34,7 @@
 		"lint": "eslint . --fix",
 		"start:dev": "tsx watch ./dev.js",
 		"test": "vitest run",
-		"update:latest": "pnpm update --latest '!zod'"
+		"update:latest": "pnpm update --latest '!@types/react'"
 	},
 	"dependencies": {
 		"@asteasolutions/zod-to-openapi": "^7.3.4",
@@ -60,14 +60,14 @@
 		"validatenv": "^0.0.38",
 		"validation-adapters": "^0.0.28",
 		"xml-tokenizer": "^0.0.40",
-		"zod": "3.25.76"
+		"zod": "4.0.5"
 	},
 	"devDependencies": {
 		"@hono/node-server": "^1.15.0",
 		"@rollup/plugin-replace": "^6.0.2",
-		"@types/node": "^24.0.12",
+		"@types/node": "^24.0.13",
 		"@types/pg": "^8.15.4",
-		"@types/react": "^19.1.8",
+		"@types/react": "^18.3.1",
 		"drizzle-kit": "^0.31.4",
 		"minimist": "^1.2.8"
 	}

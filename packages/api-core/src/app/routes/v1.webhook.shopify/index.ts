@@ -161,46 +161,49 @@ router.openapi(AppUninstalledWebhookRoute, async (c) => {
 
 	logger.info(`Deleted ${deletedSessions.length} Shopify sessions for shop: ${shopDomain}`);
 
-	// Get the workspace ID for this shop
-	const [shopifyAccount] = await db
-		.select({
-			workspaceId: workspaceAccountTable.workspaceId
-		})
-		.from(workspaceAccountTable)
-		.where(
-			and(
-				eq(workspaceAccountTable.provider, 'shopify'),
-				eq(workspaceAccountTable.providerAccountId, shopDomain)
+	// Continue only if sessions were deleted (i.e. hook wasn't triggered earlier)
+	if (deletedSessions.length > 0) {
+		// Get the workspace ID for this shop
+		const [shopifyAccount] = await db
+			.select({
+				workspaceId: workspaceAccountTable.workspaceId
+			})
+			.from(workspaceAccountTable)
+			.where(
+				and(
+					eq(workspaceAccountTable.provider, 'shopify'),
+					eq(workspaceAccountTable.providerAccountId, shopDomain)
+				)
 			)
-		)
-		.limit(1);
+			.limit(1);
 
-	// Get all link-in-bio pages for this workspace
-	const sites =
-		shopifyAccount != null
-			? await db
-					.select({
-						handle: siteTable.handle
-					})
-					.from(siteTable)
-					.where(eq(siteTable.workspaceId, shopifyAccount.workspaceId))
-			: [];
+		// Get all link-in-bio pages for this workspace
+		const sites =
+			shopifyAccount != null
+				? await db
+						.select({
+							handle: siteTable.handle
+						})
+						.from(siteTable)
+						.where(eq(siteTable.workspaceId, shopifyAccount.workspaceId))
+				: [];
 
-	// Format URLs as shopDomain/handle
-	const linkInBioPages = sites.map((site) => `${shopDomain}/${site.handle}`);
+		// Format URLs as shopDomain/handle
+		const linkInBioPages = sites.map((site) => `${shopDomain}/${site.handle}`);
 
-	const sendUninstallFeedbackEmailResult = await sendUninstallFeedbackEmail({
-		email: input.email,
-		shopName: input.name,
-		linkInBioPages,
-		totalVisits: 0, // TODO: Add analytics tracking
-		feedbackUrl: '' // TODO: Add feedback URL
-	});
-	if (sendUninstallFeedbackEmailResult.isErr()) {
-		logger.error(
-			`Error sending uninstall feedback email for shop: ${shopDomain}`,
-			sendUninstallFeedbackEmailResult.error
-		);
+		const sendUninstallFeedbackEmailResult = await sendUninstallFeedbackEmail({
+			email: input.email,
+			shopName: input.name,
+			linkInBioPages,
+			totalVisits: 0, // TODO: Add analytics tracking
+			feedbackUrl: '' // TODO: Add feedback URL
+		});
+		if (sendUninstallFeedbackEmailResult.isErr()) {
+			logger.error(
+				`Error sending uninstall feedback email for shop: ${shopDomain}`,
+				sendUninstallFeedbackEmailResult.error
+			);
+		}
 	}
 
 	// Note: We do NOT delete shop account data here

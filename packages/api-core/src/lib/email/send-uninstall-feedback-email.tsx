@@ -18,7 +18,7 @@ export async function sendUninstallFeedbackEmail(
 	const result = await resend.emails.send({
 		from: emailConfig.from,
 		to: props.email,
-		subject: `Thank you for trying Saku! 🌸`,
+		subject: `Thanks for trying Saku 🌸 – here's what's changed`,
 		react: (
 			<UninstallFeedbackEmail
 				email={email}

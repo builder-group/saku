@@ -40,7 +40,7 @@ export const SAppErrorDto = z
 			example: 'VALIDATION_ERROR'
 		}),
 		errors: z
-			.array(z.record(z.unknown()))
+			.array(z.record(z.string(), z.unknown()))
 			.optional()
 			.openapi({
 				description: 'Extension member for additional error context (e.g., per-field validation).',
