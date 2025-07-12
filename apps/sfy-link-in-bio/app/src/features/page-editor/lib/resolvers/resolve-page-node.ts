@@ -23,26 +23,26 @@ export function resolvePageNode(node: TPageNode, cx: TNodeResolutionContext): TR
 export function resolvePageNodeWithoutChildren(
 	node: TPageNode | TFlattenedNode<TPageNode>
 ): Omit<TResolvedPageNode, 'children'> {
+	const { style, ...rest } = node;
+
 	return {
-		...node,
+		...rest,
 		style: {
-			backgroundColor: resolveColor(node.style.backgroundColor),
+			backgroundColor: resolveColor(style.backgroundColor),
 			watermarkColor: resolveColor(
-				getBestContrastColor(node.style.backgroundColor ?? { r: 255, g: 255, b: 255, a: 1 })
+				getBestContrastColor(style.backgroundColor ?? { r: 255, g: 255, b: 255, a: 1 })
 			) as string,
-			children: node.style.children
-				? {
-						backgroundColor: resolveColor(node.style.children.backgroundColor),
-						spacing: resolveStyleReference(node.style.children.spacing),
-						padding: resolveStyleReference(node.style.children.padding),
-						font: resolveStyleReference(node.style.children.font),
-						fontSize: resolveStyleReference(node.style.children.fontSize),
-						textColor: resolveColor(node.style.children.textColor),
-						textAlign: resolveStyleReference(node.style.children.textAlign),
-						borderRadius: resolveStyleReference(node.style.children.borderRadius),
-						shadow: resolveStyleReference(node.style.children.shadow)
-					}
-				: undefined
+			children: {
+				backgroundColor: resolveColor(style.children.backgroundColor),
+				spacing: resolveStyleReference(style.children.spacing),
+				padding: resolveStyleReference(style.children.padding),
+				font: resolveStyleReference(style.children.font),
+				fontSize: resolveStyleReference(style.children.fontSize),
+				textColor: resolveColor(style.children.textColor),
+				textAlign: resolveStyleReference(style.children.textAlign),
+				borderRadius: resolveStyleReference(style.children.borderRadius),
+				shadow: resolveStyleReference(style.children.shadow)
+			}
 		}
 	};
 }

@@ -14,8 +14,11 @@ export const nodeMetadataMap: TNodeMetadataMap = {
 		label: 'About',
 		internal: false,
 		defaultData: {
-			name: 'Your Name',
-			bio: 'Tell us about yourself',
+			content: {
+				name: 'Your Name',
+				bio: 'Tell us about yourself',
+				socialLinks: []
+			},
 			style: {
 				padding: inheritStyle(),
 				backgroundColor: inheritStyle(),
@@ -34,9 +37,11 @@ export const nodeMetadataMap: TNodeMetadataMap = {
 		label: 'Link',
 		internal: false,
 		defaultData: {
-			url: 'https://example.com',
-			meta: {
-				title: 'New Link'
+			content: {
+				url: 'https://www.shopify.com/',
+				userMetadata: {
+					title: 'Add your title here'
+				}
 			},
 			style: {
 				padding: inheritStyle(),
@@ -56,10 +61,7 @@ export const nodeMetadataMap: TNodeMetadataMap = {
 		label: 'Media',
 		internal: false,
 		defaultData: {
-			media: {
-				type: 'image' as const,
-				hash: ''
-			},
+			content: {},
 			style: {
 				padding: inheritStyle(),
 				backgroundColor: inheritStyle(),
@@ -74,7 +76,9 @@ export const nodeMetadataMap: TNodeMetadataMap = {
 		label: 'Text',
 		internal: false,
 		defaultData: {
-			text: 'Add your text here',
+			content: {
+				text: 'Add your text here'
+			},
 			style: {
 				padding: inheritStyle(),
 				backgroundColor: inheritStyle(),
@@ -94,11 +98,16 @@ export const nodeMetadataMap: TNodeMetadataMap = {
 		internal: false,
 		hidden: appConfig.env !== 'development',
 		defaultData: {
-			productId: '',
-			variantIds: [],
+			content: {},
 			style: {
 				padding: inheritStyle(),
-				backgroundColor: inheritStyle()
+				backgroundColor: inheritStyle(),
+				font: inheritStyle(),
+				fontSize: inheritStyle(),
+				textColor: inheritStyle(),
+				textAlign: inheritStyle(),
+				borderRadius: inheritStyle(),
+				shadow: inheritStyle()
 			}
 		}
 	}

@@ -3,11 +3,10 @@ import { TSite } from '@repo/editor';
 import { Spinner, Text } from '@shopify/polaris';
 import { AppProxyProvider } from '@shopify/shopify-app-remix/react';
 import { isStatusCode } from 'feature-fetch';
-import { appConfig, coreApiClient } from '@/environment';
+import { coreApiClient } from '@/environment';
 import { shopify, shopifyConfig } from '@/environment/.server';
 import {
 	getSiteFontUrls,
-	kangarooPreset,
 	resolveSite,
 	StaticNodeCanvas,
 	TResolvedSite
@@ -79,14 +78,6 @@ export const loader: TLoaderFunctionWithResult<TSuccessLoaderData, TErrorLoaderD
 		return ServerErr({
 			code: '#ERR_UNAUTHORIZED',
 			message: 'No shop provided in session'
-		});
-	}
-
-	// Return preset if local environment and handle is "preset"
-	if (appConfig.env === 'local' && handle === 'preset') {
-		return ServerOk({
-			appUrl: shopifyConfig.appUrl,
-			site: resolveSite(kangarooPreset)
 		});
 	}
 

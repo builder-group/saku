@@ -17,7 +17,7 @@ import { TNodeEditorComponentProps } from '../nodeEditorRegistry';
 
 export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = (props) => {
 	const { nodeState, editor } = props;
-	const node = useFeatureState(nodeState);
+	const { content } = useFeatureState(nodeState);
 
 	const parentNodeState = React.useMemo(() => editor.getRootNode(), [editor]);
 
@@ -32,7 +32,7 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 		null
 	);
 	const profilePictureImage = React.useMemo(() => {
-		const asset = editor.getImageAsset(node.profilePicture);
+		const asset = editor.getImageAsset(content.profilePicture);
 		if (asset == null || asset.storage.type !== 'url') {
 			return undefined;
 		}
@@ -41,7 +41,7 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 			url: asset.storage.url,
 			fileName: asset.fileName
 		};
-	}, [node.profilePicture, editor]);
+	}, [content.profilePicture, editor]);
 
 	const socialHandles = React.useMemo(() => {
 		const handles: Record<TSocialLink['provider'], string> = Object.keys(socialMetadataMap).reduce(
@@ -52,12 +52,12 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 			{} as Record<TSocialLink['provider'], string>
 		);
 
-		node.socialLinks?.forEach((link) => {
+		content.socialLinks?.forEach((link) => {
 			handles[link.provider] = link.handle;
 		});
 
 		return handles;
-	}, [node.socialLinks]);
+	}, [content.socialLinks]);
 
 	// =========================================================================
 	// Events
@@ -65,18 +65,20 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 
 	const handleNameChange = React.useCallback(
 		(value: string) => {
-			nodeState.set((prev) => ({ ...prev, name: value }));
+			nodeState._v.content.name = value;
+			nodeState._notify();
 		},
 		[nodeState]
 	);
 
 	const handleBioChange = React.useCallback(
 		(value: string) => {
-			if (value === '') {
-				nodeState.set((prev) => ({ ...prev, bio: undefined }));
+			if (!value.length) {
+				nodeState._v.content.bio = undefined;
 			} else {
-				nodeState.set((prev) => ({ ...prev, bio: value }));
+				nodeState._v.content.bio = value;
 			}
+			nodeState._notify();
 		},
 		[nodeState]
 	);
@@ -85,10 +87,8 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 		(image: TImageUploadOnChangeImage) => {
 			const hash = editor.registerImage(image.url, image.fileName);
 			if (hash != null) {
-				nodeState.set((prev) => ({
-					...prev,
-					profilePicture: hash
-				}));
+				nodeState._v.content.profilePicture = hash;
+				nodeState._notify();
 			}
 		},
 		[nodeState, editor]
@@ -97,7 +97,7 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 	const handleSocialHandleChange = React.useCallback(
 		(provider: TSocialLink['provider'], handle: string) => {
 			nodeState.set((prev) => {
-				const currentLinks = prev.socialLinks ?? [];
+				const currentLinks = prev.content.socialLinks ?? [];
 
 				// Remove existing link for this provider
 				const filteredLinks = currentLinks.filter((link) => link.provider !== provider);
@@ -115,7 +115,10 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 
 				return {
 					...prev,
-					socialLinks: filteredLinks.length > 0 ? filteredLinks : undefined
+					content: {
+						...prev.content,
+						socialLinks: filteredLinks
+					}
 				};
 			});
 		},
@@ -140,7 +143,7 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 							id="name-field"
 							label="Name"
 							labelHidden
-							value={node.name}
+							value={content.name}
 							onChange={handleNameChange}
 							autoComplete="off"
 							placeholder="Enter your name"
@@ -156,7 +159,7 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 							id="bio-field"
 							label="Bio"
 							labelHidden
-							value={node.bio ?? ''}
+							value={content.bio}
 							onChange={handleBioChange}
 							multiline={4}
 							autoComplete="off"
@@ -265,7 +268,11 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 								label="Font Family"
 								node={nodeState}
 								parentNode={parentNodeState}
-								nodeValueMapper={(value) => resolveStyleReference(value.style.font)?.family}
+								nodeValueMapper={(value) =>
+									isInheritedStyle(value.style.font)
+										? { type: 'inherit' }
+										: resolveStyleReference(value.style.font)?.family
+								}
 								nodeValueSetter={(node, value) => {
 									if (isInheritedStyle(value)) {
 										node._v.style.font = inheritStyle();
@@ -278,9 +285,7 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 										}
 									}
 								}}
-								parentValueMapper={(parent) =>
-									resolveStyleReference(parent.style.children?.font)?.family
-								}
+								parentValueMapper={(parent) => parent.style.children.font.family}
 								options={fontOptions}
 							/>
 

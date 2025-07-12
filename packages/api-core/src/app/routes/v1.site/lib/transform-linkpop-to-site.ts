@@ -3,6 +3,7 @@ import {
 	cssRgbaToRgba,
 	getFontHash,
 	getFontMetadataByFamily,
+	hexToRgba,
 	inheritStyle,
 	TAboutNode,
 	TAsset,
@@ -39,17 +40,19 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 		const aboutNode: TAboutNode = {
 			id: shortId(),
 			type: 'about',
-			name: page.title ?? 'Your Name',
-			bio: page.bio,
-			profilePicture: profilePictureHash,
-			socialLinks: transformSocialLinks(page.socialMediaAccounts ?? []),
+			content: {
+				name: page.title ?? 'Your Name',
+				bio: page.bio,
+				profilePicture: profilePictureHash,
+				socialLinks: transformSocialLinks(page.socialMediaAccounts ?? [])
+			},
 			visible: true,
 			style: {
 				padding: inheritStyle(),
 				backgroundColor: { r: 1, g: 1, b: 1, a: 0 }, // Transparent
 				font: inheritStyle(),
 				fontSize: 16,
-				textColor: cssRgbaToRgba(page?.themeSettings?.fontColor),
+				textColor: cssRgbaToRgba(page?.themeSettings?.fontColor) ?? hexToRgba('#000000'),
 				textAlign: inheritStyle(),
 				borderRadius: 0,
 				shadow: false
@@ -77,12 +80,14 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 				children.push({
 					id: shortId(),
 					type: 'link',
-					url: link.url,
-					visible: true,
-					meta: {
-						title: link.title,
-						favicon: faviconHash
+					content: {
+						url: link.url,
+						userMetadata: {
+							title: link.title,
+							favicon: faviconHash
+						}
 					},
+					visible: true,
 					style: {
 						padding: inheritStyle(),
 						backgroundColor: inheritStyle(),
@@ -99,8 +104,9 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 				children.push({
 					id: shortId(),
 					type: 'text',
-					title: undefined,
-					text: link.title,
+					content: {
+						text: link.title
+					},
 					visible: true,
 					style: {
 						padding: inheritStyle(),
@@ -126,9 +132,11 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 			visible: true,
 			children,
 			style: {
-				backgroundColor: cssRgbaToRgba(page?.themeSettings?.backgroundColor),
+				backgroundColor:
+					cssRgbaToRgba(page?.themeSettings?.backgroundColor) ?? hexToRgba('#FFFFFF'),
 				children: {
-					backgroundColor: cssRgbaToRgba(page?.themeSettings?.linkCardColor),
+					backgroundColor:
+						cssRgbaToRgba(page?.themeSettings?.linkCardColor) ?? hexToRgba('#FFFFFF'),
 					spacing: 16,
 					padding: 8,
 					font: {
@@ -137,7 +145,7 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 						style: 'normal'
 					},
 					fontSize: 14,
-					textColor: cssRgbaToRgba(page?.themeSettings?.linkCardFontColor),
+					textColor: cssRgbaToRgba(page?.themeSettings?.linkCardFontColor) ?? hexToRgba('#000000'),
 					textAlign: 'center',
 					borderRadius: getBorderRadiusFromShape(page?.themeSettings?.linkCardShape),
 					shadow: true

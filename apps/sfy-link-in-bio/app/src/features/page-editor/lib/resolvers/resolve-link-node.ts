@@ -7,29 +7,30 @@ export function resolveLinkNode(
 	node: TLinkNode,
 	cx: TNodeResolutionContext
 ): TResolvedPromisedNode<TResolvedLinkNode> {
+	const { content, style, ...rest } = node;
+
 	const resolvedNode: TResolvedLinkNode = {
-		...node,
-		meta: {
-			title: node.meta.title,
-			description: node.meta.description,
-			favicon: resolveAsset(node.meta.favicon, cx.assetsMap)
+		...rest,
+		content: {
+			url: content.url,
+			meta: {
+				title: content.userMetadata.title ?? content.fetchedMetadata?.title,
+				description: content.userMetadata.description ?? content.fetchedMetadata?.description,
+				favicon: resolveAsset(
+					content.userMetadata.favicon ?? content.fetchedMetadata?.favicon,
+					cx.assetsMap
+				)
+			}
 		},
-		fetchedMeta: node.fetchedMeta
-			? {
-					title: node.fetchedMeta.title,
-					description: node.fetchedMeta.description,
-					favicon: resolveAsset(node.fetchedMeta.favicon, cx.assetsMap)
-				}
-			: undefined,
 		style: {
-			padding: resolveStyleReference(node.style.padding, cx.defaultStyles?.padding),
-			backgroundColor: resolveColor(node.style.backgroundColor, cx.defaultStyles?.backgroundColor),
-			font: resolveStyleReference(node.style.font, cx.defaultStyles?.font),
-			fontSize: resolveStyleReference(node.style.fontSize, cx.defaultStyles?.fontSize),
-			textColor: resolveColor(node.style.textColor, cx.defaultStyles?.textColor),
-			textAlign: resolveStyleReference(node.style.textAlign, cx.defaultStyles?.textAlign),
-			borderRadius: resolveStyleReference(node.style.borderRadius, cx.defaultStyles?.borderRadius),
-			shadow: resolveStyleReference(node.style.shadow, cx.defaultStyles?.shadow)
+			padding: resolveStyleReference(style.padding, cx.defaultStyles?.padding),
+			backgroundColor: resolveColor(style.backgroundColor, cx.defaultStyles?.backgroundColor),
+			font: resolveStyleReference(style.font, cx.defaultStyles?.font),
+			fontSize: resolveStyleReference(style.fontSize, cx.defaultStyles?.fontSize),
+			textColor: resolveColor(style.textColor, cx.defaultStyles?.textColor),
+			textAlign: resolveStyleReference(style.textAlign, cx.defaultStyles?.textAlign),
+			borderRadius: resolveStyleReference(style.borderRadius, cx.defaultStyles?.borderRadius),
+			shadow: resolveStyleReference(style.shadow, cx.defaultStyles?.shadow)
 		}
 	};
 
@@ -39,6 +40,7 @@ export function resolveLinkNode(
 		cached: resolvedNode,
 		next: (async () => {
 			await new Promise((resolve) => setTimeout(resolve, 3000));
+
 			// TODO: Refetch link metadata
 			return resolvedNode;
 		})()

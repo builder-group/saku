@@ -166,10 +166,10 @@ export function createOnboardingContext(
 			let preset: TSite;
 			switch (selectedTemplate) {
 				case 'blank':
-					preset = blankPreset;
+					preset = blankPreset({ shopId: this.shopId });
 					break;
 				default:
-					preset = blankPreset;
+					preset = blankPreset({ shopId: this.shopId });
 			}
 
 			const idToken = await this.shopify.idToken();

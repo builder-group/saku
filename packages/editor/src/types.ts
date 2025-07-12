@@ -24,116 +24,137 @@ export interface TPageNode extends TBaseNode {
 	children: TNode[];
 	style: {
 		// Page container styles
-		backgroundColor?: TRgba;
+		backgroundColor: TRgba;
 		// Child defaults (inherited by children)
-		children?: {
-			backgroundColor?: TRgba;
-			spacing?: number;
-			padding?: number;
-			font?: TFont;
-			fontSize?: number;
-			textColor?: TRgba;
-			textAlign?: 'left' | 'center' | 'right';
-			borderRadius?: number;
-			shadow?: boolean;
+		children: {
+			backgroundColor: TRgba;
+			spacing: number;
+			padding: number;
+			font: TFont;
+			fontSize: number;
+			textColor: TRgba;
+			textAlign: 'left' | 'center' | 'right';
+			borderRadius: number;
+			shadow: boolean;
 		};
 	};
 }
 
 export interface TAboutNode extends TBaseNode {
 	type: 'about';
-	name: string;
-	bio?: string;
-	profilePicture?: TAssetHash;
-	socialLinks?: TSocialLink[];
+	content: {
+		name: string;
+		bio?: string;
+		profilePicture?: TAssetHash;
+		socialLinks: TSocialLink[];
+	};
 	style: {
 		// Layout
-		padding?: TStyleReference<number>;
+		padding: TStyleReference<number>;
 		// Background
-		backgroundColor?: TStyleReference<TRgba>;
+		backgroundColor: TStyleReference<TRgba>;
 		// Typography
-		font?: TStyleReference<TFont>;
-		fontSize?: TStyleReference<number>;
-		textColor?: TStyleReference<TRgba>;
-		textAlign?: TStyleReference<'left' | 'center' | 'right'>;
+		font: TStyleReference<TFont>;
+		fontSize: TStyleReference<number>;
+		textColor: TStyleReference<TRgba>;
+		textAlign: TStyleReference<'left' | 'center' | 'right'>;
 		// Border and effects
-		borderRadius?: TStyleReference<number>;
-		shadow?: TStyleReference<boolean>;
+		borderRadius: TStyleReference<number>;
+		shadow: TStyleReference<boolean>;
 	};
 }
 
 export interface TLinkNode extends TBaseNode {
 	type: 'link';
-	url: string;
-	meta: TLinkMeta; // Current display values
-	fetchedMeta?: TLinkMeta; // Original fetched values (for reset)
+	content: {
+		url: string;
+		userMetadata: TLinkMetadata;
+		fetchedMetadata?: TLinkMetadata;
+	};
 	style: {
 		// Layout
-		padding?: TStyleReference<number>;
+		padding: TStyleReference<number>;
 		// Background
-		backgroundColor?: TStyleReference<TRgba>;
+		backgroundColor: TStyleReference<TRgba>;
 		// Typography
-		font?: TStyleReference<TFont>;
-		fontSize?: TStyleReference<number>;
-		textColor?: TStyleReference<TRgba>;
-		textAlign?: TStyleReference<'left' | 'center' | 'right'>;
+		font: TStyleReference<TFont>;
+		fontSize: TStyleReference<number>;
+		textColor: TStyleReference<TRgba>;
+		textAlign: TStyleReference<'left' | 'center' | 'right'>;
 		// Border and effects
-		borderRadius?: TStyleReference<number>;
-		shadow?: TStyleReference<boolean>;
+		borderRadius: TStyleReference<number>;
+		shadow: TStyleReference<boolean>;
 	};
 }
 
 export interface TMediaNode extends TBaseNode {
 	type: 'media';
-	media: TMedia;
+	content: {
+		media?: TMedia;
+	};
 	style: {
 		// Layout
-		padding?: TStyleReference<number>;
+		padding: TStyleReference<number>;
 		// Background
-		backgroundColor?: TStyleReference<TRgba>;
+		backgroundColor: TStyleReference<TRgba>;
 		// Border and effects
-		borderRadius?: TStyleReference<number>;
-		shadow?: TStyleReference<boolean>;
+		borderRadius: TStyleReference<number>;
+		shadow: TStyleReference<boolean>;
 	};
 }
 
 export interface TTextNode extends TBaseNode {
 	type: 'text';
-	title?: string;
-	text: string;
+	content: {
+		title?: string;
+		text: string;
+	};
 	style: {
 		// Layout
-		padding?: TStyleReference<number>;
+		padding: TStyleReference<number>;
 		// Background
-		backgroundColor?: TStyleReference<TRgba>;
+		backgroundColor: TStyleReference<TRgba>;
 		// Typography
-		font?: TStyleReference<TFont>;
-		fontSize?: TStyleReference<number>;
-		textColor?: TStyleReference<TRgba>;
-		textAlign?: TStyleReference<'left' | 'center' | 'right'>;
+		font: TStyleReference<TFont>;
+		fontSize: TStyleReference<number>;
+		textColor: TStyleReference<TRgba>;
+		textAlign: TStyleReference<'left' | 'center' | 'right'>;
 		// Border and effects
-		borderRadius?: TStyleReference<number>;
-		shadow?: TStyleReference<boolean>;
+		borderRadius: TStyleReference<number>;
+		shadow: TStyleReference<boolean>;
 	};
 }
 
 export interface TProductNode extends TBaseNode {
 	type: 'product';
-	productId: string;
-	variantIds: string[];
+	content: {
+		product?: {
+			id: string;
+			title: string;
+			media?: TImageAsset[];
+			options: { name: string; values: string[] }[];
+			variants: {
+				id: string;
+				title: string;
+				price: { amount: string; currencyCode: string };
+				image?: TImageAsset;
+				selectedOptions: Array<{ name: string; value: string }>;
+			}[];
+		};
+	};
 	style: {
 		// Layout
-		padding?: TStyleReference<number>;
+		padding: TStyleReference<number>;
 		// Background
-		backgroundColor?: TStyleReference<TRgba>;
+		backgroundColor: TStyleReference<TRgba>;
 		// Typography
-		font?: TStyleReference<TFont>;
-		fontSize?: TStyleReference<number>;
-		textColor?: TStyleReference<TRgba>;
-		textAlign?: TStyleReference<'left' | 'center' | 'right'>;
+		font: TStyleReference<TFont>;
+		fontSize: TStyleReference<number>;
+		textColor: TStyleReference<TRgba>;
+		textAlign: TStyleReference<'left' | 'center' | 'right'>;
 		// Border and effects
-		borderRadius?: TStyleReference<number>;
-		shadow?: TStyleReference<boolean>;
+		borderRadius: TStyleReference<number>;
+		shadow: TStyleReference<boolean>;
 	};
 }
 
@@ -162,6 +183,7 @@ export interface TImageAsset extends TBaseAsset {
 	type: 'image';
 	contentType: 'image/png' | 'image/jpeg' | 'image/gif' | 'image/webp' | 'image/svg+xml';
 	dimensions?: { width: number; height: number };
+	altText?: string;
 }
 
 export type TAsset = TFontAsset | TImageAsset;
@@ -184,7 +206,7 @@ export interface TImageMedia {
 
 export type TMedia = TImageMedia;
 
-export interface TLinkMeta {
+export interface TLinkMetadata {
 	title?: string;
 	description?: string;
 	favicon?: TAssetHash;

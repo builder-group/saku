@@ -1,6 +1,6 @@
 'use client';
 
-import { shortId } from '@blgc/utils';
+import { deepCopy, shortId } from '@blgc/utils';
 import { TNode } from '@repo/editor';
 import { Icon, Popover, Text } from '@shopify/polaris';
 import React from 'react';
@@ -32,7 +32,7 @@ export const LayerSelectorPopover: React.FC<TLayerSelectorPopoverProps> = (props
 			const nodeId = editor.addNode({
 				id: shortId(),
 				type: layerType,
-				...nodeMetadata.defaultData
+				...deepCopy(nodeMetadata.defaultData)
 			} as TNode);
 			editor.selectNode(nodeId);
 

@@ -9,7 +9,7 @@ import { Node } from '../Node';
 export const PageNode = React.forwardRef<HTMLDivElement, TPageNodeProps>((props, ref) => {
 	const { nodeState, editor, ...divProps } = props;
 
-	const node = useCompute(nodeState, (nodeValue) => {
+	const { style } = useCompute(nodeState, (nodeValue) => {
 		return resolvePageNodeWithoutChildren(nodeValue);
 	});
 	const childNodes = useCompute(
@@ -25,16 +25,16 @@ export const PageNode = React.forwardRef<HTMLDivElement, TPageNodeProps>((props,
 			{...divProps}
 			ref={ref}
 			className="min-h-screen w-full"
-			style={{ backgroundColor: node.style.backgroundColor }}
+			style={{ backgroundColor: style.backgroundColor }}
 		>
 			<div className="mx-auto w-full max-w-md">
 				<div
 					className="flex w-full flex-col p-6"
 					style={{
-						gap: node.style.children?.spacing,
-						fontFamily: node.style.children?.font?.family,
-						fontSize: node.style.children?.fontSize,
-						color: node.style.children?.textColor
+						gap: style.children.spacing,
+						fontFamily: style.children.font?.family,
+						fontSize: style.children.fontSize,
+						color: style.children.textColor
 					}}
 				>
 					{childNodes.map((childNodeState) => (
@@ -47,7 +47,7 @@ export const PageNode = React.forwardRef<HTMLDivElement, TPageNodeProps>((props,
 						target="_blank"
 						rel="noopener noreferrer"
 						className="mx-auto mt-12 flex items-center gap-2 pb-6 text-sm no-underline hover:opacity-75"
-						style={{ color: node.style.watermarkColor }}
+						style={{ color: style.watermarkColor }}
 					>
 						<LogoIcon className="h-6 w-6" />
 						<span>Powered by Saku</span>

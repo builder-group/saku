@@ -16,7 +16,7 @@ import { TNodeEditorComponentProps } from '../nodeEditorRegistry';
 
 export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (props) => {
 	const { nodeState, editor } = props;
-	const node = useFeatureState(nodeState);
+	const { content } = useFeatureState(nodeState);
 	const shopify = useAppBridge();
 
 	const [isFetchingUrlMetadata, setIsFetchingUrlMetadata] = React.useState(false);
@@ -32,7 +32,9 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 
 	const [faviconImageError, setFaviconImageError] = React.useState<string | null>(null);
 	const faviconImage = React.useMemo(() => {
-		const asset = editor.getImageAsset(node.meta?.favicon);
+		const asset = editor.getImageAsset(
+			content.userMetadata.favicon ?? content.fetchedMetadata?.favicon
+		);
 		if (asset == null || asset.storage.type !== 'url') {
 			return undefined;
 		}
@@ -41,20 +43,36 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 			url: asset.storage.url,
 			fileName: asset.fileName
 		};
-	}, [node.meta?.favicon, editor]);
+	}, [content.userMetadata.favicon, content.fetchedMetadata?.favicon, editor]);
 
-	const { canResetTitle, canResetFavicon } = React.useMemo(() => {
-		return {
-			canResetTitle:
-				node.meta?.title != null &&
-				node.fetchedMeta?.title != null &&
-				node.meta.title !== node.fetchedMeta.title,
-			canResetFavicon:
-				node.meta?.favicon != null &&
-				node.fetchedMeta?.favicon != null &&
-				node.meta.favicon !== node.fetchedMeta.favicon
-		};
-	}, [node.meta, node.fetchedMeta]);
+	const titleValue = React.useMemo(() => {
+		return content.userMetadata.title ?? content.fetchedMetadata?.title;
+	}, [content.userMetadata.title, content.fetchedMetadata?.title]);
+	const descriptionValue = React.useMemo(() => {
+		return content.userMetadata.description ?? content.fetchedMetadata?.description;
+	}, [content.userMetadata.description, content.fetchedMetadata?.description]);
+
+	const canResetTitle = React.useMemo(
+		() =>
+			content.fetchedMetadata?.title != null &&
+			content.userMetadata.title != null &&
+			content.userMetadata.title !== content.fetchedMetadata.title,
+		[content.userMetadata.title, content.fetchedMetadata?.title]
+	);
+	const canResetDescription = React.useMemo(
+		() =>
+			content.fetchedMetadata?.description != null &&
+			content.userMetadata.description != null &&
+			content.userMetadata.description !== content.fetchedMetadata.description,
+		[content.userMetadata.description, content.fetchedMetadata?.description]
+	);
+	const canResetFavicon = React.useMemo(
+		() =>
+			content.fetchedMetadata?.favicon != null &&
+			content.userMetadata.favicon != null &&
+			content.userMetadata.favicon !== content.fetchedMetadata.favicon,
+		[content.userMetadata.favicon, content.fetchedMetadata?.favicon]
+	);
 
 	// =========================================================================
 	// Events
@@ -62,7 +80,8 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 
 	const handleUrlChange = React.useCallback(
 		(value: string) => {
-			nodeState.set((prev) => ({ ...prev, url: value }));
+			nodeState._v.content.url = value;
+			nodeState._notify();
 		},
 		[nodeState]
 	);
@@ -72,7 +91,7 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 		try {
 			const idToken = await shopify.idToken();
 			const result = await coreApiClient.get('/v1/url/metadata', {
-				queryParams: { url: node.url },
+				queryParams: { url: content.url },
 				headers: { Authorization: `Bearer ${idToken}` }
 			});
 
@@ -85,60 +104,69 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 				return;
 			}
 
-			const metadata = result.value.data;
-			const faviconHash = metadata.icons?.favicon
-				? (editor.registerImage(metadata.icons.favicon, 'favicon') ?? undefined)
-				: undefined;
+			const urlMetadata = result.value.data;
+			const faviconHash =
+				urlMetadata.icons?.favicon != null
+					? (editor.registerImage(urlMetadata.icons.favicon, 'favicon') ?? undefined)
+					: undefined;
 
-			nodeState.set((prev) => ({
-				...prev,
-				fetchedMeta: {
-					title: metadata.title,
-					favicon: faviconHash
-				},
-				meta: {
-					title: metadata.title,
-					favicon: faviconHash
-				}
-			}));
+			nodeState._v.content.fetchedMetadata = {
+				title: urlMetadata.title,
+				description: urlMetadata.description,
+				favicon: faviconHash
+			};
+			nodeState._notify();
 		} finally {
 			setIsFetchingUrlMetadata(false);
 		}
-	}, [node.url, nodeState, shopify]);
+	}, [editor, content.url, nodeState, shopify]);
 
 	const handleTitleChange = React.useCallback(
 		(value: string) => {
-			nodeState.set((prev) => ({
-				...prev,
-				meta: { ...prev.meta, title: value }
-			}));
+			if (!value.length) {
+				nodeState._v.content.userMetadata.title = undefined;
+			} else {
+				nodeState._v.content.userMetadata.title = value;
+			}
+			nodeState._notify();
 		},
 		[nodeState]
 	);
 
 	const handleTitleReset = React.useCallback(() => {
-		nodeState.set((prev) => ({
-			...prev,
-			meta: { ...prev.meta, title: prev.fetchedMeta?.title }
-		}));
+		nodeState._v.content.userMetadata.title = undefined;
+		nodeState._notify();
+	}, [nodeState]);
+
+	const handleDescriptionChange = React.useCallback(
+		(value: string) => {
+			if (!value.length) {
+				nodeState._v.content.userMetadata.description = undefined;
+			} else {
+				nodeState._v.content.userMetadata.description = value;
+			}
+			nodeState._notify();
+		},
+		[nodeState]
+	);
+
+	const handleDescriptionReset = React.useCallback(() => {
+		nodeState._v.content.userMetadata.description = undefined;
+		nodeState._notify();
 	}, [nodeState]);
 
 	const handleFaviconImageChange = React.useCallback(
 		(image: TImageUploadOnChangeImage) => {
 			const hash = editor.registerImage(image.url, image.fileName ?? 'favicon');
-			nodeState.set((prev) => ({
-				...prev,
-				meta: { ...prev.meta, favicon: hash ?? undefined }
-			}));
+			nodeState._v.content.userMetadata.favicon = hash ?? undefined;
+			nodeState._notify();
 		},
 		[nodeState, editor]
 	);
 
 	const handleFaviconReset = React.useCallback(() => {
-		nodeState.set((prev) => ({
-			...prev,
-			meta: { ...prev.meta, favicon: prev.fetchedMeta?.favicon }
-		}));
+		nodeState._v.content.userMetadata.favicon = undefined;
+		nodeState._notify();
 	}, [nodeState]);
 
 	// =========================================================================
@@ -169,7 +197,7 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 							id="url-field"
 							label="URL"
 							labelHidden
-							value={node.url}
+							value={content.url}
 							onChange={handleUrlChange}
 							autoComplete="off"
 							placeholder="https://example.com"
@@ -193,10 +221,33 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 							id="title-field"
 							label="Title"
 							labelHidden
-							value={node.meta?.title ?? ''}
+							value={titleValue}
 							onChange={handleTitleChange}
 							autoComplete="off"
 							placeholder="Link title"
+						/>
+					</div>
+
+					{/* Description */}
+					<div className="space-y-1">
+						<div className="flex items-center justify-between">
+							<Text as="span" variant="bodySm" tone="subdued">
+								Description
+							</Text>
+							{canResetDescription && (
+								<Button variant="plain" size="micro" onClick={handleDescriptionReset}>
+									Reset
+								</Button>
+							)}
+						</div>
+						<TextField
+							id="description-field"
+							label="Description"
+							labelHidden
+							value={descriptionValue}
+							onChange={handleDescriptionChange}
+							autoComplete="off"
+							placeholder="Link description"
 						/>
 					</div>
 
@@ -279,7 +330,11 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 								label="Font Family"
 								node={nodeState}
 								parentNode={parentNodeState}
-								nodeValueMapper={(value) => resolveStyleReference(value.style.font)?.family}
+								nodeValueMapper={(value) =>
+									isInheritedStyle(value.style.font)
+										? { type: 'inherit' }
+										: resolveStyleReference(value.style.font)?.family
+								}
 								nodeValueSetter={(node, value) => {
 									if (isInheritedStyle(value)) {
 										node._v.style.font = inheritStyle();
@@ -292,9 +347,7 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 										}
 									}
 								}}
-								parentValueMapper={(parent) =>
-									resolveStyleReference(parent.style.children?.font)?.family
-								}
+								parentValueMapper={(parent) => parent.style.children.font.family}
 								options={fontOptions}
 							/>
 

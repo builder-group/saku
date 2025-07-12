@@ -1,5 +1,4 @@
 import { TNode } from '@repo/editor';
-import { useCompute } from 'feature-react/state';
 import { TState } from 'feature-state';
 import React from 'react';
 import { TFlattenedNode, TPageEditor } from '../../lib';
@@ -8,9 +7,9 @@ import { nodeEditorRegistry, TNodeEditorComponentProps } from './nodeEditorRegis
 export const NodeEditor: React.FC<TNodeEditorProps> = (props) => {
 	const { nodeState, editor } = props;
 
-	const EditorComponent = useCompute(
-		nodeState,
-		(node) => nodeEditorRegistry[node.type] as React.ComponentType<TNodeEditorComponentProps<any>>,
+	const EditorComponent = React.useMemo(
+		() =>
+			nodeEditorRegistry[nodeState._v.type] as React.ComponentType<TNodeEditorComponentProps<any>>,
 		[nodeState]
 	);
 
