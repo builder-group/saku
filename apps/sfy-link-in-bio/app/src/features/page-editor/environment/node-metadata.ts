@@ -1,13 +1,13 @@
-import { inheritStyle, TNode, TNodeType } from '@repo/editor';
+import { inheritStyle, TNode } from '@repo/editor';
 import { IconSource } from '@shopify/polaris';
 import { LayoutSectionIcon } from '@/components';
 import { appConfig } from '@/environment';
 
-export const nodeMetadataMap = {
+export const nodeMetadataMap: TNodeMetadataMap = {
 	page: {
 		type: 'page',
 		internal: true
-	} satisfies TNodeMetadata<'page'>,
+	},
 	about: {
 		type: 'about',
 		icon: LayoutSectionIcon,
@@ -27,7 +27,7 @@ export const nodeMetadataMap = {
 				shadow: inheritStyle()
 			}
 		}
-	} satisfies TNodeMetadata<'about'>,
+	},
 	link: {
 		type: 'link',
 		icon: LayoutSectionIcon,
@@ -49,7 +49,7 @@ export const nodeMetadataMap = {
 				shadow: inheritStyle()
 			}
 		}
-	} satisfies TNodeMetadata<'link'>,
+	},
 	media: {
 		type: 'media',
 		icon: LayoutSectionIcon,
@@ -67,7 +67,7 @@ export const nodeMetadataMap = {
 				shadow: inheritStyle()
 			}
 		}
-	} satisfies TNodeMetadata<'media'>,
+	},
 	text: {
 		type: 'text',
 		icon: LayoutSectionIcon,
@@ -86,7 +86,7 @@ export const nodeMetadataMap = {
 				shadow: inheritStyle()
 			}
 		}
-	} satisfies TNodeMetadata<'text'>,
+	},
 	product: {
 		type: 'product',
 		icon: LayoutSectionIcon,
@@ -101,16 +101,16 @@ export const nodeMetadataMap = {
 				backgroundColor: inheritStyle()
 			}
 		}
-	} satisfies TNodeMetadata<'product'>,
-	promised: {
-		type: 'promised',
-		internal: true
-	} satisfies TNodeMetadata<'promised'>
-} as Record<TNodeType, TNodeMetadata<TNodeType>>;
+	}
+};
 
 export const nodeMetadata = Object.values(nodeMetadataMap);
 
-export type TNodeMetadata<GType extends TNodeType> = {
+export type TNodeMetadataMap = {
+	[K in Extract<TNode, { type: string }>['type']]: TNodeMetadata<K>;
+};
+
+export type TNodeMetadata<GType extends TNode['type']> = {
 	type: GType;
 	hidden?: boolean;
 } & (

@@ -11,15 +11,7 @@ export interface TSite {
 // =========================================================================
 
 export type TNodeId = string;
-export type TNode =
-	| TPageNode
-	| TAboutNode
-	| TLinkNode
-	| TMediaNode
-	| TTextNode
-	| TProductNode
-	| TPromisedNode<TLinkNode | TProductNode>;
-export type TNodeType = TNode['type'];
+export type TNode = TPageNode | TAboutNode | TLinkNode | TMediaNode | TTextNode | TProductNode;
 
 export interface TBaseNode {
 	id: TNodeId;
@@ -134,13 +126,15 @@ export interface TProductNode extends TBaseNode {
 		padding?: TStyleReference<number>;
 		// Background
 		backgroundColor?: TStyleReference<TRgba>;
+		// Typography
+		font?: TStyleReference<TFont>;
+		fontSize?: TStyleReference<number>;
+		textColor?: TStyleReference<TRgba>;
+		textAlign?: TStyleReference<'left' | 'center' | 'right'>;
+		// Border and effects
+		borderRadius?: TStyleReference<number>;
+		shadow?: TStyleReference<boolean>;
 	};
-}
-
-export interface TPromisedNode<GNode extends TBaseNode> extends TBaseNode {
-	type: 'promised';
-	cached: GNode;
-	next: Promise<GNode>;
 }
 
 // =========================================================================

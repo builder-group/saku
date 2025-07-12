@@ -11,7 +11,10 @@ export const TextNode = React.forwardRef<HTMLDivElement, TTextNodeProps>((props,
 	const node = useCombinedCompute(
 		[editor.getRootNode(), nodeState],
 		([pageNodeValue, nodeValue]): TResolvedTextNode => {
-			return resolveTextNode(nodeValue, pageNodeValue?.style.children);
+			return resolveTextNode(nodeValue, {
+				assetsMap: editor.assetsMap,
+				defaultStyles: pageNodeValue?.style.children
+			});
 		}
 	);
 

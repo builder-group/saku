@@ -89,7 +89,7 @@ export default defineConfig({
 				v3_relativeSplatPath: true,
 				v3_throwAbortReason: true,
 				v3_lazyRouteDiscovery: true,
-				v3_singleFetch: true,
+				v3_singleFetch: true, // TODO: https://github.com/Shopify/shopify-app-template-remix/issues/921
 				v3_routeConfig: true
 			}
 		}),

@@ -1,7 +1,6 @@
 import { Await, useLoaderData } from '@remix-run/react';
 import { Text } from '@shopify/polaris';
 import React from 'react';
-import { TLoaderFunction } from '@/types';
 
 // https://reactrouter.com/how-to/suspense
 
@@ -163,7 +162,10 @@ const initialNodes: TNode[] = [
 	}
 ];
 
-export const loader: TLoaderFunction<{ nodes: TNode[] }> = async () => {
+export const loader = () => {
+	// Doesn't work in dev due to Cloudflare tunnel (no streaming support)
+	// Works only in prod or localhost (thus without the proxy)
+	// https://github.com/Shopify/shopify-app-template-remix/issues/323
 	return {
 		nodes: initialNodes.map((node) => {
 			switch (node.type) {

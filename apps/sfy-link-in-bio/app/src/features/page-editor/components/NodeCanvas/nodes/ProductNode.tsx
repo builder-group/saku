@@ -1,16 +1,16 @@
-import { TLinkNode } from '@repo/editor';
+import { TProductNode } from '@repo/editor';
 import { useCombinedCompute } from 'feature-react';
 import React from 'react';
-import { resolveLinkNode, TNodeState, TPageEditor } from '../../../lib';
+import { resolveProductNode, TNodeState, TPageEditor } from '../../../lib';
 import { StaticPromisedNode } from './static';
 
-export const LinkNode = React.forwardRef<HTMLDivElement, TLinkNodeProps>((props, ref) => {
+export const ProductNode = React.forwardRef<HTMLDivElement, TProductNodeProps>((props, ref) => {
 	const { nodeState, editor, ...divProps } = props;
 
 	const node = useCombinedCompute(
 		[editor.getRootNode(), nodeState],
 		([pageNodeValue, nodeValue]) => {
-			return resolveLinkNode(nodeValue, {
+			return resolveProductNode(nodeValue, {
 				assetsMap: editor.assetsMap,
 				defaultStyles: pageNodeValue?.style.children
 			});
@@ -19,9 +19,9 @@ export const LinkNode = React.forwardRef<HTMLDivElement, TLinkNodeProps>((props,
 
 	return <StaticPromisedNode {...divProps} ref={ref} node={node} />;
 });
-LinkNode.displayName = 'LinkNode';
+ProductNode.displayName = 'ProductNode';
 
-interface TLinkNodeProps extends React.HTMLProps<HTMLDivElement> {
-	nodeState: TNodeState<TLinkNode>;
+interface TProductNodeProps extends React.HTMLProps<HTMLDivElement> {
+	nodeState: TNodeState<TProductNode>;
 	editor: TPageEditor;
 }

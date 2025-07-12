@@ -1,5 +1,8 @@
 import {
 	TAboutNode,
+	TAsset,
+	TAssetHash,
+	TBaseNode,
 	TLinkNode,
 	TMediaNode,
 	TPageNode,
@@ -20,7 +23,8 @@ export type TResolvedNode =
 	| TResolvedLinkNode
 	| TResolvedMediaNode
 	| TResolvedTextNode
-	| TResolvedProductNode;
+	| TResolvedProductNode
+	| TResolvedPromisedNode<TResolvedNode>;
 
 export interface TResolvedPageNode extends Omit<TPageNode, 'style' | 'children'> {
 	style: {
@@ -55,6 +59,12 @@ export interface TResolvedProductNode extends Omit<TProductNode, 'style'> {
 	style: TResolveStyle<TProductNode['style']>;
 }
 
+export interface TResolvedPromisedNode<GNode extends TResolvedNode> extends TBaseNode {
+	type: 'promised';
+	cached: GNode;
+	next: Promise<GNode>;
+}
+
 export interface TResolvedImageMedia {
 	type: 'image';
 	url: string; // Resolved URL or base64
@@ -69,8 +79,13 @@ export interface TResolvedLinkMeta {
 	favicon?: string; // Resolved URL or base64
 }
 
-type TResolveColor<T> = T extends TRgba ? string : T;
+export type TResolveColor<T> = T extends TRgba ? string : T;
 
-type TResolveStyle<T> = {
+export type TResolveStyle<T> = {
 	[K in keyof T]: T[K] extends TStyleReference<infer U> ? TResolveColor<U> : T[K];
 };
+
+export interface TNodeResolutionContext {
+	assetsMap: Record<TAssetHash, TAsset>;
+	defaultStyles?: TPageNode['style']['children'];
+}

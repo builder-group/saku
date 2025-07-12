@@ -3,4 +3,4 @@ export * from './create-page-editor';
 export * from './flatten-node';
 export * from './get-node-asset-hashes';
 export * from './get-site-font-urls';
-export * from './resolve-site';
+export * from './resolvers';
