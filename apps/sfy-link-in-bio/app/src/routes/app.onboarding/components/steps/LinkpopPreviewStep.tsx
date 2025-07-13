@@ -13,7 +13,7 @@ export const LinkpopPreviewStep: React.FC<TLinkpopPreviewStepProps> = (props) =>
 
 	const resolvedSite = useCompute(onboardingContext.stepr.current, (currentStep) => {
 		return currentStep.type === 'linkpop-preview' && currentStep.site
-			? resolveSite(currentStep.site)
+			? resolveSite(currentStep.site, onboardingContext.shopId)
 			: null;
 	});
 

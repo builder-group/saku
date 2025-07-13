@@ -13,17 +13,17 @@ import styles from './styles.css?url';
 
 const Page = withLoaderResult<TSuccessLoaderData, TErrorLoaderData>({
 	Success: ({ data }) => {
-		const { site } = data;
+		const { site, shopId } = data;
 		const shopify = useAppBridge();
 
 		const editor = React.useMemo(() => {
 			const editor = createPageEditor(
 				{ ...site.content, id: site.id, handle: site.handle, url: site.url },
-				shopify
+				{ shopify, shopId }
 			);
 			withGlobalBind(`__editor_${editor.id}`, editor);
 			return editor;
-		}, [site, shopify]);
+		}, [site.content, site.id, site.handle, site.url, shopify, shopId]);
 
 		return (
 			<div className="flex min-h-screen w-full">
@@ -90,7 +90,8 @@ export const loader: TLoaderFunctionWithResult<TSuccessLoaderData, TErrorLoaderD
 			handle: siteData.handle,
 			url: `${shopifyConfig.proxy.url(shop)}/${siteData.handle}`,
 			content: siteData.content as unknown as TSite
-		}
+		},
+		shopId: shop
 	});
 };
 
@@ -106,6 +107,7 @@ interface TSuccessLoaderData {
 		url: string;
 		content: TSite;
 	};
+	shopId: string;
 }
 
 export const links: TLinksFunction = () => [{ rel: 'stylesheet', href: styles }];

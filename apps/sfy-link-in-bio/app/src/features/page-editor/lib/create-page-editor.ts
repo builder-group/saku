@@ -23,7 +23,12 @@ import { createNodeState, TNodeState } from './create-node-state';
 import { flattenNode, TFlattenedNode, unflattenNode } from './flatten-node';
 import { getNodeAssetHashes } from './get-node-asset-hashes';
 
-export function createPageEditor(site: TExtendedSite, shopify: ShopifyGlobal): TPageEditor {
+export function createPageEditor(
+	site: TExtendedSite,
+	config: TCreatePageEditorConfig
+): TPageEditor {
+	const { shopify, shopId } = config;
+
 	return {
 		id: shortId(),
 		site: {
@@ -51,6 +56,7 @@ export function createPageEditor(site: TExtendedSite, shopify: ShopifyGlobal): T
 		isReady: createState(false),
 		isDraggingLayer: createState(false),
 		shopify,
+		shopId,
 		boundingRect: createState<TBoundingRect>({
 			left: 0,
 			top: 0,
@@ -564,6 +570,11 @@ export function createPageEditor(site: TExtendedSite, shopify: ShopifyGlobal): T
 	};
 }
 
+export interface TCreatePageEditorConfig {
+	shopify: ShopifyGlobal;
+	shopId: string;
+}
+
 export interface TPageEditor {
 	id: string;
 	site: {
@@ -585,6 +596,7 @@ export interface TPageEditor {
 	isReady: TState<boolean, []>;
 	isDraggingLayer: TState<boolean, []>;
 	shopify: ShopifyGlobal;
+	shopId: string;
 	boundingRect: TState<TBoundingRect, []>;
 	canvasBoundingRect: TState<TBoundingRect, []>;
 

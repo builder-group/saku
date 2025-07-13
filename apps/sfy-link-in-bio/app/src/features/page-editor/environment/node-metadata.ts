@@ -105,7 +105,6 @@ export const nodeMetadataMap: TNodeMetadataMap = {
 				font: inheritStyle(),
 				fontSize: inheritStyle(),
 				textColor: inheritStyle(),
-				textAlign: inheritStyle(),
 				borderRadius: inheritStyle(),
 				shadow: inheritStyle()
 			}

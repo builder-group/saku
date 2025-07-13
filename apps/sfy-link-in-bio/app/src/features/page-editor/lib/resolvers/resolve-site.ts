@@ -2,7 +2,7 @@ import { TAsset, TAssetHash, TSite } from '@repo/editor';
 import { TResolvedSite } from '../../types';
 import { resolvePageNode } from './resolve-page-node';
 
-export function resolveSite(site: TSite): TResolvedSite {
+export function resolveSite(site: TSite, shopId: string): TResolvedSite {
 	const assetsMap = site.assets.reduce(
 		(map, asset) => {
 			map[asset.hash] = asset;
@@ -13,6 +13,6 @@ export function resolveSite(site: TSite): TResolvedSite {
 
 	return {
 		...site,
-		root: resolvePageNode(site.root, { assetsMap })
+		root: resolvePageNode(site.root, { assetsMap, shopId })
 	};
 }

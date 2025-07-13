@@ -2,7 +2,7 @@ import { TProductNode } from '@repo/editor';
 import { useCombinedCompute } from 'feature-react';
 import React from 'react';
 import { resolveProductNode, TNodeState, TPageEditor } from '../../../lib';
-import { StaticPromisedNode } from './static';
+import { StaticProductNode, StaticPromisedNode } from './static';
 
 export const ProductNode = React.forwardRef<HTMLDivElement, TProductNodeProps>((props, ref) => {
 	const { nodeState, editor, ...divProps } = props;
@@ -12,12 +12,17 @@ export const ProductNode = React.forwardRef<HTMLDivElement, TProductNodeProps>((
 		([pageNodeValue, nodeValue]) => {
 			return resolveProductNode(nodeValue, {
 				assetsMap: editor.assetsMap,
-				defaultStyles: pageNodeValue?.style.children
+				defaultStyles: pageNodeValue?.style.children,
+				shopId: editor.shopId
 			});
 		}
 	);
 
-	return <StaticPromisedNode {...divProps} ref={ref} node={node} />;
+	return node.type === 'promised' ? (
+		<StaticPromisedNode {...divProps} ref={ref} node={node} />
+	) : (
+		<StaticProductNode {...divProps} ref={ref} node={node} />
+	);
 });
 ProductNode.displayName = 'ProductNode';
 

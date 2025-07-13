@@ -12,7 +12,8 @@ export const AboutNode = React.forwardRef<HTMLDivElement, TAboutNodeProps>((prop
 		([pageNodeValue, nodeValue]) => {
 			return resolveAboutNode(nodeValue, {
 				assetsMap: editor.assetsMap,
-				defaultStyles: pageNodeValue?.style.children
+				defaultStyles: pageNodeValue?.style.children,
+				shopId: editor.shopId
 			});
 		}
 	);

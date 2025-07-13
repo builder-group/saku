@@ -131,14 +131,14 @@ export interface TProductNode extends TBaseNode {
 		product?: {
 			id: string;
 			title: string;
-			media?: TImageAsset[];
+			images: TAssetHash[];
 			options: { name: string; values: string[] }[];
 			variants: {
 				id: string;
 				title: string;
 				price: { amount: string; currencyCode: string };
-				image?: TImageAsset;
-				selectedOptions: Array<{ name: string; value: string }>;
+				image?: TAssetHash;
+				selectedOptions: { name: string; value: string }[];
 			}[];
 		};
 	};
@@ -151,7 +151,6 @@ export interface TProductNode extends TBaseNode {
 		font: TStyleReference<TFont>;
 		fontSize: TStyleReference<number>;
 		textColor: TStyleReference<TRgba>;
-		textAlign: TStyleReference<'left' | 'center' | 'right'>;
 		// Border and effects
 		borderRadius: TStyleReference<number>;
 		shadow: TStyleReference<boolean>;

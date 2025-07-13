@@ -13,7 +13,8 @@ export const TextNode = React.forwardRef<HTMLDivElement, TTextNodeProps>((props,
 		([pageNodeValue, nodeValue]): TResolvedTextNode => {
 			return resolveTextNode(nodeValue, {
 				assetsMap: editor.assetsMap,
-				defaultStyles: pageNodeValue?.style.children
+				defaultStyles: pageNodeValue?.style.children,
+				shopId: editor.shopId
 			});
 		}
 	);

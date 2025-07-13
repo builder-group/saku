@@ -9,7 +9,7 @@ import { StaticCanvasPanelHeader } from './StaticCanvasPanelHeader';
 export const StaticCanvasPanel: React.FC<TStaticCanvasPanelProps> = (props) => {
 	const { editor } = props;
 
-	const rootNode = React.useMemo(() => resolveSite(editor.toSite()).root, [editor]);
+	const rootNode = React.useMemo(() => resolveSite(editor.toSite(), editor.shopId).root, [editor]);
 	const staticCanvasPanelContext = React.useMemo(
 		() => createStaticCanvasPanelContext(editor),
 		[editor]

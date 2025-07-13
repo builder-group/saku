@@ -6,7 +6,7 @@ import { resolveColor } from './resolve-color';
 export function resolveLinkNode(
 	node: TLinkNode,
 	cx: TNodeResolutionContext
-): TResolvedPromisedNode<TResolvedLinkNode> {
+): TResolvedPromisedNode<TResolvedLinkNode> | TResolvedLinkNode {
 	const { content, style, ...rest } = node;
 
 	const resolvedNode: TResolvedLinkNode = {
@@ -34,15 +34,17 @@ export function resolveLinkNode(
 		}
 	};
 
-	return {
-		type: 'promised',
-		id: node.id,
-		cached: resolvedNode,
-		next: (async () => {
-			await new Promise((resolve) => setTimeout(resolve, 3000));
+	return resolvedNode;
 
-			// TODO: Refetch link metadata
-			return resolvedNode;
-		})()
-	};
+	// return {
+	// 	type: 'promised',
+	// 	id: node.id,
+	// 	cached: resolvedNode,
+	// 	next: (async () => {
+	// 		await new Promise((resolve) => setTimeout(resolve, 3000));
+
+	// 		// TODO: Refetch link metadata
+	// 		return resolvedNode;
+	// 	})()
+	// };
 }

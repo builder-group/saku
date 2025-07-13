@@ -4,10 +4,16 @@ import {
 	inheritStyle,
 	isInheritedStyle,
 	resolveStyleReference,
-	TImageAsset,
 	TProductNode
 } from '@repo/editor';
-import { Button, IndexTable, Scrollable, Text, useIndexResourceState } from '@shopify/polaris';
+import {
+	Banner,
+	Button,
+	IndexTable,
+	Scrollable,
+	Text,
+	useIndexResourceState
+} from '@shopify/polaris';
 import { DeleteIcon } from '@shopify/polaris-icons';
 import { useFeatureState } from 'feature-react/state';
 import React from 'react';
@@ -30,20 +36,50 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 	}, []);
 
 	const canChangeProduct = React.useMemo(() => content.product != null, [content.product]);
+	const productImages = React.useMemo(
+		() =>
+			content.product?.images
+				.map((image) => {
+					const asset = editor.getImageAsset(image);
+					if (asset == null || asset.storage.type !== 'url') {
+						return null;
+					}
+					return {
+						url: asset.storage.url,
+						fileName: asset.fileName
+					};
+				})
+				.filter(notEmpty) ?? [],
+		[content.product, editor]
+	);
 
-	const variantRows = React.useMemo<TProductVariantRow[]>(() => {
-		if (content.product == null) {
-			return [];
-		}
+	const variantRows = React.useMemo<TProductVariantRow[]>(
+		() =>
+			content.product?.variants
+				.map((variant) => {
+					if (content.product == null) {
+						return null;
+					}
 
-		return content.product.variants.map((variant) => ({
-			id: variant.id,
-			title: content.product?.title as string,
-			variantTitle: variant.title,
-			price: `${variant.price.amount} ${variant.price.currencyCode}`,
-			image: variant.image?.storage.type === 'url' ? variant.image.storage.url : undefined
-		}));
-	}, [content.product]);
+					let image: { url: string; fileName?: string } | undefined;
+					if (variant.image != null) {
+						const asset = editor.getImageAsset(variant.image);
+						if (asset != null && asset.storage.type === 'url') {
+							image = { url: asset.storage.url, fileName: asset.fileName };
+						}
+					}
+
+					return {
+						id: variant.id,
+						title: content.product.title,
+						variantTitle: variant.title,
+						price: `${variant.price.amount} ${variant.price.currencyCode}`,
+						image
+					};
+				})
+				.filter(notEmpty) ?? [],
+		[content.product, editor]
+	);
 
 	const { selectedResources, allResourcesSelected, handleSelectionChange, clearSelection } =
 		useIndexResourceState(variantRows as Record<string, any>[]);
@@ -105,41 +141,14 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 		nodeState._v.content.product = {
 			id: product.id,
 			title: product.title,
-			media: product.images
-				.map((img) => {
-					const hash = editor.registerImage(img.originalSrc);
-					if (hash == null) {
-						return null;
-					}
-
-					return {
-						type: 'image',
-						hash,
-						contentType: 'image/png',
-						storage: { type: 'url', url: img.originalSrc },
-						altText: img.altText
-					} as TImageAsset;
-				})
+			images: product.images
+				.map((image) => editor.registerImage(image.originalSrc))
 				.filter(notEmpty),
 			options: product.options.map((opt) => ({ name: opt.name, values: opt.values })),
 			variants: product.variants
 				.map((variant) => {
 					if (variant.id == null || variant.title == null || variant.price == null) {
 						return null;
-					}
-
-					let image: TImageAsset | undefined;
-					if (variant.image?.originalSrc != null) {
-						const hash = editor.registerImage(variant.image.originalSrc);
-						if (hash != null) {
-							image = {
-								type: 'image',
-								hash,
-								contentType: 'image/png',
-								storage: { type: 'url', url: variant.image.originalSrc },
-								altText: variant.image.altText
-							};
-						}
 					}
 
 					return {
@@ -149,7 +158,10 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 							amount: variant.price,
 							currencyCode: 'USD'
 						},
-						image,
+						image:
+							variant.image?.originalSrc != null
+								? (editor.registerImage(variant.image.originalSrc) ?? undefined)
+								: undefined,
 						selectedOptions:
 							variant.selectedOptions
 								?.map((opt, idx) => {
@@ -229,11 +241,11 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 													position={1}
 													disabled={true}
 												>
-													<div className="flex w-full flex-row items-center gap-3 p-2">
-														{content.product.media?.[0]?.storage.type === 'url' ? (
+													<IndexTable.Cell className="flex w-full flex-row items-center gap-3 p-2">
+														{productImages[0] != null ? (
 															<img
-																src={content.product.media[0].storage.url}
-																alt=""
+																src={productImages[0].url}
+																alt={productImages[0].fileName}
 																className="h-10 w-10 flex-shrink-0 rounded-md bg-gray-100 object-cover"
 															/>
 														) : (
@@ -248,7 +260,7 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 																</Text>
 															</div>
 														</div>
-													</div>
+													</IndexTable.Cell>
 												</IndexTable.Row>
 											)}
 											{/* Subheader for variants at position 2 */}
@@ -280,11 +292,11 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 													selected={selectedResources.includes(row.id)}
 													position={3 + index}
 												>
-													<div className="flex w-full flex-row items-center gap-3 p-2">
+													<IndexTable.Cell className="flex w-full flex-row items-center gap-3 p-2">
 														{row.image != null ? (
 															<img
-																src={row.image}
-																alt=""
+																src={row.image.url}
+																alt={row.image.fileName}
 																className="h-10 w-10 flex-shrink-0 rounded-md bg-gray-100 object-cover"
 															/>
 														) : (
@@ -307,7 +319,7 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 																</Text>
 															)}
 														</div>
-													</div>
+													</IndexTable.Cell>
 												</IndexTable.Row>
 											))}
 										</IndexTable>
@@ -318,6 +330,16 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 							<Button onClick={handleSelectProduct} variant="primary">
 								Select
 							</Button>
+						)}
+
+						{/* Warning Banner for multiple variants */}
+						{content.product != null && content.product.variants.length > 1 && (
+							<div className="mt-4">
+								<Banner tone="warning">
+									Multiple variants detected. Only the first variant is currently supported for
+									sale. Support for multiple variants is coming soon.
+								</Banner>
+							</div>
 						)}
 					</div>
 				</div>
@@ -373,49 +395,30 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 						</Text>
 					</div>
 					<div className="space-y-3">
-						<div className="grid grid-cols-2 gap-3">
-							<SelectStyleField
-								label="Font Family"
-								node={nodeState}
-								parentNode={parentNodeState}
-								nodeValueMapper={(value) =>
-									isInheritedStyle(value.style.font)
-										? { type: 'inherit' }
-										: resolveStyleReference(value.style.font)?.family
-								}
-								nodeValueSetter={(node, value) => {
-									if (isInheritedStyle(value)) {
-										node._v.style.font = inheritStyle();
-										node._notify();
-									} else if (value != null) {
-										const font = editor.registerFontFamily(value);
-										if (font != null) {
-											node._v.style.font = font;
-											node._notify();
-										}
-									}
-								}}
-								parentValueMapper={(parent) => parent.style.children.font.family}
-								options={fontOptions}
-							/>
-
-							<SelectStyleField
-								label="Text Align"
-								node={nodeState}
-								parentNode={parentNodeState}
-								nodeValueMapper={(value) => value.style.textAlign}
-								nodeValueSetter={(node, value) => {
-									node._v.style.textAlign = value;
+						<SelectStyleField
+							label="Font Family"
+							node={nodeState}
+							parentNode={parentNodeState}
+							nodeValueMapper={(value) =>
+								isInheritedStyle(value.style.font)
+									? { type: 'inherit' }
+									: resolveStyleReference(value.style.font)?.family
+							}
+							nodeValueSetter={(node, value) => {
+								if (isInheritedStyle(value)) {
+									node._v.style.font = inheritStyle();
 									node._notify();
-								}}
-								parentValueMapper={(parent) => parent.style.children?.textAlign}
-								options={[
-									{ label: 'Left', value: 'left' },
-									{ label: 'Center', value: 'center' },
-									{ label: 'Right', value: 'right' }
-								]}
-							/>
-						</div>
+								} else if (value != null) {
+									const font = editor.registerFontFamily(value);
+									if (font != null) {
+										node._v.style.font = font;
+										node._notify();
+									}
+								}
+							}}
+							parentValueMapper={(parent) => parent.style.children.font.family}
+							options={fontOptions}
+						/>
 
 						<div className="grid grid-cols-2 gap-3">
 							<TextStyleField
@@ -498,6 +501,9 @@ interface TProductVariantRow {
 	id: string;
 	title: string;
 	price: string;
-	image?: string;
+	image?: {
+		url: string;
+		fileName?: string;
+	};
 	variantTitle?: string;
 }

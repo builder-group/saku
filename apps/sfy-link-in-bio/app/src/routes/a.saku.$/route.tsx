@@ -103,7 +103,7 @@ export const loader: TLoaderFunctionWithResult<TSuccessLoaderData, TErrorLoaderD
 
 	return ServerOk({
 		appUrl: shopifyConfig.appUrl,
-		site: resolveSite(result.value.data as unknown as TSite)
+		site: resolveSite(result.value.data as unknown as TSite, session.shop)
 	});
 };
 

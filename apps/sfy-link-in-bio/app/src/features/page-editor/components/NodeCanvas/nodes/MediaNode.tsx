@@ -12,7 +12,8 @@ export const MediaNode = React.forwardRef<HTMLDivElement, TMediaNodeProps>((prop
 		([pageNodeValue, nodeValue]) => {
 			return resolveMediaNode(nodeValue, {
 				assetsMap: editor.assetsMap,
-				defaultStyles: pageNodeValue?.style.children
+				defaultStyles: pageNodeValue?.style.children,
+				shopId: editor.shopId
 			});
 		}
 	);

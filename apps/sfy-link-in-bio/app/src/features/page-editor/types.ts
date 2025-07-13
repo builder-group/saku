@@ -64,7 +64,23 @@ export interface TResolvedTextNode extends Omit<TTextNode, 'style'> {
 	style: TResolveStyle<TTextNode['style']>;
 }
 
-export interface TResolvedProductNode extends Omit<TProductNode, 'style'> {
+export interface TResolvedProductNode extends Omit<TProductNode, 'style' | 'content'> {
+	content: {
+		product?: {
+			id: string;
+			title: string;
+			images: string[]; // Resolved URL or base64
+			options: { name: string; values: string[] }[];
+			variant?: {
+				id: string;
+				title: string;
+				price: { amount: string; currencyCode: string };
+				image?: string; // Resolved URL or base64
+				selectedOptions: { name: string; value: string }[];
+			};
+			checkoutUrl: string;
+		};
+	};
 	style: TResolveStyle<TProductNode['style']>;
 }
 
@@ -95,4 +111,5 @@ export type TResolveStyle<T> = {
 export interface TNodeResolutionContext {
 	assetsMap: Record<TAssetHash, TAsset>;
 	defaultStyles?: TPageNode['style']['children'];
+	shopId: string;
 }

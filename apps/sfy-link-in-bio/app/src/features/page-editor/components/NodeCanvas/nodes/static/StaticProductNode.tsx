@@ -4,25 +4,68 @@ import { TResolvedProductNode } from '../../../../types';
 export const StaticProductNode = React.forwardRef<HTMLDivElement, TStaticProductNodeProps>(
 	(props, ref) => {
 		const {
-			node: { content, style },
+			node: {
+				content: { product },
+				style
+			},
 			...divProps
 		} = props;
 
+		const imageUrl = React.useMemo(() => product?.images?.[0], [product?.images]);
+
+		if (product == null) {
+			return null;
+		}
+
 		return (
 			<div {...divProps} ref={ref} className="w-full max-w-md">
-				<div
-					className="relative overflow-hidden"
+				<a
+					href={product.checkoutUrl}
+					target="_blank"
+					rel="noopener noreferrer"
+					className="relative flex w-full items-center gap-3 overflow-hidden bg-white text-inherit no-underline hover:opacity-90"
 					style={{
 						padding: style.padding,
 						backgroundColor: style.backgroundColor,
+						fontFamily: style.font?.family,
+						fontSize: style.fontSize,
+						color: style.textColor,
 						borderRadius: style.borderRadius,
 						boxShadow: style.shadow ? '0 4px 6px -1px rgb(0 0 0 / 0.1)' : undefined
 					}}
 				>
-					<div className="flex min-h-12 w-full flex-col justify-start p-4">
-						{JSON.stringify(content)}
+					{/* Product Image */}
+					{imageUrl != null && (
+						<div
+							className="h-12 w-12 flex-shrink-0 overflow-hidden bg-gray-100"
+							style={{ borderRadius: style.borderRadius }}
+						>
+							<img
+								src={imageUrl}
+								alt={product.title}
+								className="h-full w-full object-cover"
+								draggable={false}
+							/>
+						</div>
+					)}
+
+					{/* Product Details and Price */}
+					<div className="flex min-w-0 flex-grow items-center justify-between">
+						<div className="flex min-w-0 flex-col justify-center">
+							<p className="truncate font-medium">{product.title}</p>
+							{product.variant?.title && (
+								<p className="text-base-content/50 mt-0.5 truncate text-xs">
+									{product.variant.title}
+								</p>
+							)}
+						</div>
+						{product.variant?.price != null && (
+							<p className="text-base-content/50 ml-3 min-w-fit text-right text-xs">
+								{product.variant.price.currencyCode} {product.variant.price.amount}
+							</p>
+						)}
 					</div>
-				</div>
+				</a>
 			</div>
 		);
 	}

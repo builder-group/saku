@@ -14,7 +14,11 @@ export function resolvePageNode(node: TPageNode, cx: TNodeResolutionContext): TR
 		...resolvePageNodeWithoutChildren(node),
 		children: node.children
 			.map((child) =>
-				resolvePageNodeChild(child, { assetsMap: cx.assetsMap, defaultStyles: node.style.children })
+				resolvePageNodeChild(child, {
+					assetsMap: cx.assetsMap,
+					defaultStyles: node.style.children,
+					shopId: cx.shopId
+				})
 			)
 			.filter(notEmpty)
 	};
