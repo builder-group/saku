@@ -19,8 +19,6 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 	const { content } = useFeatureState(nodeState);
 	const shopify = useAppBridge();
 
-	const [isFetchingUrlMetadata, setIsFetchingUrlMetadata] = React.useState(false);
-
 	const parentNodeState = React.useMemo(() => editor.getRootNode(), [editor]);
 
 	const fontOptions = React.useMemo(() => {
@@ -29,6 +27,8 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 			value: font.font.family
 		}));
 	}, []);
+
+	const [isFetchingUrlMetadata, setIsFetchingUrlMetadata] = React.useState(false);
 
 	const [faviconImageError, setFaviconImageError] = React.useState<string | null>(null);
 	const faviconImage = React.useMemo(() => {
