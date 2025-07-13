@@ -10,7 +10,7 @@ export const GetGoogleOAuthLoginRoute = createRoute({
 	operationId: 'googleOAuthLogin',
 	request: {
 		query: z.object({
-			callbackUrl: z.string().url().openapi({
+			callbackUrl: z.url().openapi({
 				example: 'https://example.com/callback',
 				description: 'The URL to redirect back to after authentication'
 			})

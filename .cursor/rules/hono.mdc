@@ -60,7 +60,7 @@ import { JsonSuccessResponse, BadRequestResponse } from '@repo/hono-utils';
 const SUserDto = z
   .object({
     id: z.string().uuid().openapi({ example: '123e4567-e89b-12d3' }),
-    email: z.string().email().openapi({ example: 'user@example.com' }),
+    email: z.email().openapi({ example: 'user@example.com' }),
     name: z.string().openapi({ example: 'John Doe' })
   })
   .openapi('UserDto');

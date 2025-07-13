@@ -37,10 +37,10 @@
 		"update:latest": "pnpm update --latest '!@types/react'"
 	},
 	"dependencies": {
-		"@asteasolutions/zod-to-openapi": "^7.3.4",
+		"@asteasolutions/zod-to-openapi": "^8.0.0-beta.3",
 		"@blgc/utils": "^0.0.57",
-		"@hono/zod-openapi": "^0.19.9",
-		"@hono/zod-validator": "^0.7.0",
+		"@hono/zod-openapi": "1.0.0-beta.1",
+		"@hono/zod-validator": "^0.7.1",
 		"@repo/editor": "workspace:*",
 		"@repo/hono-utils": "workspace:*",
 		"@repo/transactional": "workspace:*",

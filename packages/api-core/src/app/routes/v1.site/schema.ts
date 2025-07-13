@@ -4,12 +4,12 @@ import { BadRequestResponse, JsonSuccessResponse, NotFoundResponse } from '@repo
 // Summary DTO (without content) for list views
 export const SSiteSummaryDto = z
 	.object({
-		id: z.string().uuid().openapi({ example: '123e4567-e89b-12d3' }),
-		workspaceId: z.string().uuid().openapi({ example: '123e4567-e89b-12d3' }),
+		id: z.uuid().openapi({ example: '123e4567-e89b-12d3' }),
+		workspaceId: z.uuid().openapi({ example: '123e4567-e89b-12d3' }),
 		handle: z.string().openapi({ example: 'bio' }),
 		displayName: z.string().optional().openapi({ example: 'My Bio Site' }),
-		createdAt: z.string().datetime().openapi({ example: '2024-03-20T00:00:00Z' }),
-		updatedAt: z.string().datetime().openapi({ example: '2024-03-20T00:00:00Z' })
+		createdAt: z.iso.datetime().openapi({ example: '2024-03-20T00:00:00Z' }),
+		updatedAt: z.iso.datetime().openapi({ example: '2024-03-20T00:00:00Z' })
 	})
 	.openapi('SiteSummaryDto');
 export type TSiteSummaryDto = z.infer<typeof SSiteSummaryDto>;
@@ -73,7 +73,7 @@ export const ParseExternalSiteRoute = createRoute({
 	operationId: 'parseExternalSite',
 	request: {
 		query: z.object({
-			url: z.string().url().openapi({
+			url: z.url().openapi({
 				example: 'https://linkpop.com/johndoe',
 				description: 'External link-in-bio URL to parse'
 			})
@@ -84,9 +84,33 @@ export const ParseExternalSiteRoute = createRoute({
 			z.object({
 				provider: z.string().openapi({ example: 'linkpop' }),
 				handle: z.string().openapi({ example: 'johndoe' }),
-				data: z.object({}).passthrough().openapi({ example: {} })
+				data: z.object({}).loose().openapi({ example: {} })
 			})
 		),
 		400: BadRequestResponse
+	}
+});
+
+export const GetSiteContentByWorkspaceAndHandleRoute = createRoute({
+	method: 'get',
+	path: '/v1/site/workspace/{workspaceHandle}/{handle}/content',
+	tags: ['site'],
+	summary: 'Get site content by workspace handle and site handle',
+	operationId: 'getSiteContentByWorkspaceAndHandle',
+	request: {
+		params: z.object({
+			workspaceHandle: z.string().openapi({
+				example: 'bennos-studio',
+				description: 'Workspace handle'
+			}),
+			handle: z.string().openapi({
+				example: 'bio',
+				description: 'Site handle/slug'
+			})
+		})
+	},
+	responses: {
+		200: JsonSuccessResponse(SSiteContentDto),
+		404: NotFoundResponse
 	}
 });

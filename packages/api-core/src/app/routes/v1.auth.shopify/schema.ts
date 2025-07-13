@@ -13,7 +13,7 @@ const SShopifySessionDto = z
 		state: z.string().openapi({ example: '' }),
 		isOnline: z.boolean().openapi({ example: true }),
 		scope: z.string().openapi({ example: 'write_products,read_customers' }),
-		expires: z.string().datetime().nullable().openapi({ example: '2025-06-14T13:39:33.336Z' }),
+		expires: z.iso.datetime().nullable().openapi({ example: '2025-06-14T13:39:33.336Z' }),
 		accessToken: z.string().openapi({ example: 'shpat_def456...uvw012' }),
 		onlineAccessInfo: z
 			.object({
@@ -28,7 +28,7 @@ const SShopifySessionDto = z
 					id: z.number().openapi({ example: 987654321 }),
 					first_name: z.string().openapi({ example: 'John' }),
 					last_name: z.string().openapi({ example: 'Doe' }),
-					email: z.string().email().openapi({ example: 'john@example.com' }),
+					email: z.email().openapi({ example: 'john@example.com' }),
 					account_owner: z.boolean().openapi({ example: true }),
 					locale: z.string().openapi({ example: 'en-US' }),
 					collaborator: z.boolean().openapi({ example: false }),

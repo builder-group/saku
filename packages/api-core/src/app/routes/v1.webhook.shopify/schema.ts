@@ -26,7 +26,7 @@ export const CustomersDataRequestWebhookRoute = createRoute({
 							.openapi({ example: [299938, 280263, 220458] }),
 						customer: z.object({
 							id: z.number().int().openapi({ example: 191167 }),
-							email: z.string().email().openapi({ example: 'john@example.com' }),
+							email: z.email().openapi({ example: 'john@example.com' }),
 							phone: z.string().openapi({ example: '555-625-1199' })
 						}),
 						data_request: z.object({
@@ -65,7 +65,7 @@ export const CustomersRedactWebhookRoute = createRoute({
 						shop_domain: z.string().openapi({ example: 'my-shop.myshopify.com' }),
 						customer: z.object({
 							id: z.number().int().openapi({ example: 191167 }),
-							email: z.string().email().openapi({ example: 'john@example.com' }),
+							email: z.email().openapi({ example: 'john@example.com' }),
 							phone: z.string().openapi({ example: '555-625-1199' })
 						}),
 						orders_to_redact: z
@@ -135,7 +135,7 @@ export const AppUninstalledWebhookRoute = createRoute({
 					schema: z.object({
 						id: z.number().int().openapi({ example: 548380009 }),
 						name: z.string().openapi({ example: 'Super Toys' }),
-						email: z.string().email().openapi({ example: 'super@supertoys.com' }),
+						email: z.email().openapi({ example: 'super@supertoys.com' }),
 						domain: z.string().nullable().openapi({ example: 'supertoys.com' }),
 						myshopify_domain: z.string().openapi({ example: 'super-toys.myshopify.com' }),
 						plan_name: z.string().openapi({ example: 'enterprise' }),
@@ -175,7 +175,7 @@ export const AppScopesUpdateWebhookRoute = createRoute({
 						id: z.number().int().openapi({ example: 548380009 }),
 						previous: z.array(z.string()).openapi({ example: ['read_products'] }),
 						current: z.array(z.string()).openapi({ example: ['read_products', 'write_products'] }),
-						updated_at: z.string().datetime().openapi({ example: '2024-06-25T00:00:00.000Z' })
+						updated_at: z.iso.datetime().openapi({ example: '2024-06-25T00:00:00.000Z' })
 					})
 				}
 			}

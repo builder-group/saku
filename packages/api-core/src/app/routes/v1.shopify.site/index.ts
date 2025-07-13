@@ -275,7 +275,6 @@ router.openapi(GetSiteContentByShopAndHandleRoute, async (c) => {
 		)
 		.where(eq(siteTable.handle, handle))
 		.limit(1);
-
 	if (site == null) {
 		throw new AppError('#ERR_SITE_NOT_FOUND', 404, {
 			title: 'Site not found',

@@ -7,12 +7,12 @@ export const SWorkspaceDto = z
 		handle: z.string().openapi({ example: 'my-store.myshopify.com' }),
 		displayName: z.string().optional().openapi({ example: 'My Store' }),
 		image: z.string().optional().openapi({ example: 'https://cdn.shopify.com/logo.png' }),
-		onboardingCompletedAt: z.string().datetime().nullable().openapi({
+		onboardingCompletedAt: z.iso.datetime().nullable().openapi({
 			example: '2024-03-20T00:00:00Z',
 			description: 'When onboarding was completed. null if onboarding is needed.'
 		}),
-		createdAt: z.string().datetime().openapi({ example: '2024-03-20T00:00:00Z' }),
-		updatedAt: z.string().datetime().openapi({ example: '2024-03-20T00:00:00Z' })
+		createdAt: z.iso.datetime().openapi({ example: '2024-03-20T00:00:00Z' }),
+		updatedAt: z.iso.datetime().openapi({ example: '2024-03-20T00:00:00Z' })
 	})
 	.openapi('WorkspaceDto');
 export type TWorkspaceDto = z.infer<typeof SWorkspaceDto>;

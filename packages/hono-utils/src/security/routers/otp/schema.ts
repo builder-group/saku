@@ -17,7 +17,7 @@ export const PostOtpLoginRoute = createRoute({
 							example: 'user@example.com',
 							description: 'Identifier to send OTP to (email, phone, etc)'
 						}),
-						callbackUrl: z.string().url().openapi({
+						callbackUrl: z.url().openapi({
 							example: 'https://example.com/dashboard',
 							description: 'URL to redirect to after verification'
 						})
@@ -71,7 +71,7 @@ export const GetOtpCallbackRoute = createRoute({
 				example: 'ab12cd',
 				description: 'The 6-character one-time password'
 			}),
-			callbackUrl: z.string().url().openapi({
+			callbackUrl: z.url().openapi({
 				example: 'https://example.com/dashboard',
 				description: 'URL to redirect to after verification'
 			})

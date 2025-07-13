@@ -304,6 +304,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/site/workspace/{workspaceHandle}/{handle}/content": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get site content by workspace handle and site handle */
+        get: operations["getSiteContentByWorkspaceAndHandle"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/url/metadata": {
         parameters: {
             query?: never;
@@ -489,7 +506,7 @@ export interface components {
             /** @example write_products,read_customers */
             scope: string;
             /**
-             * Format: date-time
+             * Format: date
              * @example 2025-06-14T13:39:33.336Z
              */
             expires: string | null;
@@ -543,17 +560,19 @@ export interface components {
             /** @example My Bio Site */
             displayName?: string;
             /**
-             * Format: date-time
+             * Format: date
              * @example 2024-03-20T00:00:00Z
              */
             createdAt: string;
             /**
-             * Format: date-time
+             * Format: date
              * @example 2024-03-20T00:00:00Z
              */
             updatedAt: string;
         };
-        SiteContentDto: Record<string, never>;
+        SiteContentDto: {
+            [key: string]: unknown;
+        };
         SiteDto: {
             /**
              * Format: uuid
@@ -570,12 +589,12 @@ export interface components {
             /** @example My Bio Site */
             displayName?: string;
             /**
-             * Format: date-time
+             * Format: date
              * @example 2024-03-20T00:00:00Z
              */
             createdAt: string;
             /**
-             * Format: date-time
+             * Format: date
              * @example 2024-03-20T00:00:00Z
              */
             updatedAt: string;
@@ -609,7 +628,7 @@ export interface components {
             /** @example Product lifestyle image */
             alt: string;
             /**
-             * Format: date-time
+             * Format: date
              * @example 2024-01-15T10:30:00Z
              */
             createdAt: string;
@@ -653,18 +672,18 @@ export interface components {
             /** @example https://cdn.shopify.com/logo.png */
             image?: string;
             /**
-             * Format: date-time
+             * Format: date
              * @description When onboarding was completed. null if onboarding is needed.
              * @example 2024-03-20T00:00:00Z
              */
             onboardingCompletedAt: string | null;
             /**
-             * Format: date-time
+             * Format: date
              * @example 2024-03-20T00:00:00Z
              */
             createdAt: string;
             /**
-             * Format: date-time
+             * Format: date
              * @example 2024-03-20T00:00:00Z
              */
             updatedAt: string;
@@ -987,6 +1006,7 @@ export interface operations {
     checkUrlRedirectAvailability: {
         parameters: {
             query: {
+                /** @description The URL path to check (must start with /) */
                 path: string;
             };
             header?: never;
@@ -1148,6 +1168,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
+                /** @description Site ID */
                 siteId: string;
             };
             cookie?: never;
@@ -1194,7 +1215,9 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
+                /** @description Shop domain */
                 shop: string;
+                /** @description Site handle/slug */
                 handle: string;
             };
             cookie?: never;
@@ -1224,11 +1247,17 @@ export interface operations {
     listUgcMediaFiles: {
         parameters: {
             query?: {
+                /** @description Number of items to return (max 250) */
                 first?: number;
+                /** @description Cursor for pagination */
                 after?: string;
+                /** @description Field to sort results by */
                 sortKey?: "CREATED_AT" | "FILENAME" | "ID" | "ORIGINAL_UPLOAD_SIZE" | "RELEVANCE" | "UPDATED_AT";
+                /** @description Reverse the sort order (true for descending, false for ascending) */
                 reverse?: boolean | null;
+                /** @description Filter by file types. Can be specified multiple times for multiple types. */
                 fileTypes?: ("IMAGE" | "VIDEO" | "FILE" | "MODEL_3D" | "EXTERNAL_VIDEO")[];
+                /** @description Filter by filename */
                 fileName?: string;
             };
             header?: never;
@@ -1328,7 +1357,7 @@ export interface operations {
                             /** @example ugc_abc123def456 */
                             uploadId: string;
                             /**
-                             * Format: date-time
+                             * Format: date
                              * @example 2024-01-15T10:30:00Z
                              */
                             expiresAt: string;
@@ -1451,6 +1480,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
+                /** @description Site ID */
                 siteId: string;
             };
             cookie?: never;
@@ -1482,6 +1512,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
+                /** @description Site ID */
                 siteId: string;
             };
             cookie?: never;
@@ -1511,6 +1542,7 @@ export interface operations {
     parseExternalSite: {
         parameters: {
             query: {
+                /** @description External link-in-bio URL to parse */
                 url: string;
             };
             header?: never;
@@ -1531,7 +1563,9 @@ export interface operations {
                         /** @example johndoe */
                         handle: string;
                         /** @example {} */
-                        data: Record<string, never>;
+                        data: {
+                            [key: string]: unknown;
+                        };
                     };
                 };
             };
@@ -1546,9 +1580,44 @@ export interface operations {
             };
         };
     };
+    getSiteContentByWorkspaceAndHandle: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Workspace handle */
+                workspaceHandle: string;
+                /** @description Site handle/slug */
+                handle: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SiteContentDto"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppErrorDto"];
+                };
+            };
+        };
+    };
     getUrlMetadata: {
         parameters: {
             query: {
+                /** @description The URL to fetch metadata from */
                 url: string;
             };
             header?: never;
@@ -1874,7 +1943,7 @@ export interface operations {
                      *     ] */
                     current: string[];
                     /**
-                     * Format: date-time
+                     * Format: date
                      * @example 2024-06-25T00:00:00.000Z
                      */
                     updated_at: string;

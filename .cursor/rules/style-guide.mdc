@@ -148,7 +148,7 @@ enum EUserRole {
 const SUserProfile = z.object({
   firstName: z.string().min(2),
   lastName: z.string().min(2),
-  dateOfBirth: z.date().optional(),
+  dateOfBirth: z.iso.datetime().optional(),
   phoneNumber: z.string().regex(/^\+?[1-9]\d{1,14}$/).optional()
 });
 
@@ -190,7 +190,7 @@ enum OrderStatus {                    # Wrong: Missing E prefix
 const userSchema = z.object({         # Wrong: Missing S prefix
   FirstName: z.string(),            # Wrong: PascalCase
   last_name: z.string(),            # Wrong: snake_case
-  DOB: z.date()                     # Wrong: Abbreviation
+  DOB: z.iso.datetime()                     # Wrong: Abbreviation
 });
 ```
 

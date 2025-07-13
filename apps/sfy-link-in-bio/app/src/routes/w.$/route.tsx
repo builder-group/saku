@@ -1,10 +1,9 @@
-import { notEmpty, ServerErr, ServerOk } from '@blgc/utils';
+import { ServerErr, ServerOk } from '@blgc/utils';
 import { TSite } from '@repo/editor';
 import { Spinner, Text } from '@shopify/polaris';
-import { AppProxyProvider } from '@shopify/shopify-app-remix/react';
 import { isStatusCode } from 'feature-fetch';
 import { coreApiClient } from '@/environment';
-import { shopify, shopifyConfig } from '@/environment/.server';
+import { shopifyConfig } from '@/environment/.server';
 import {
 	getSiteFontUrls,
 	resolveSite,
@@ -12,7 +11,6 @@ import {
 	TResolvedSite
 } from '@/features/page-editor';
 import { withLoaderResult } from '@/lib';
-import styles from '@/styles.css?url';
 import { TLoaderFunctionWithResult } from '@/types';
 
 const Page = withLoaderResult<TSuccessLoaderData, TErrorLoaderData>({
@@ -21,14 +19,13 @@ const Page = withLoaderResult<TSuccessLoaderData, TErrorLoaderData>({
 		const fontUrls = getSiteFontUrls(site);
 
 		return (
-			<AppProxyProvider appUrl={appUrl}>
-				<link rel="stylesheet" href={`${appUrl}${styles}`} />
+			<>
 				{fontUrls.map((fontUrl, index) => (
 					<link key={`font-${index}`} rel="stylesheet" href={fontUrl} />
 				))}
 
 				<StaticNodeCanvas nodes={[site.root]} />
-			</AppProxyProvider>
+			</>
 		);
 	},
 	Error: ({ error }) => (
@@ -60,30 +57,31 @@ export default Page;
 export const loader: TLoaderFunctionWithResult<TSuccessLoaderData, TErrorLoaderData> = async ({
 	request
 }) => {
-	const { session } = await shopify.authenticate.public.appProxy(request);
-
 	const url = new URL(request.url);
-	// Extract handle from path: /a/saku/bio -> "bio"
-	const pathSegments = url.pathname.split('/').filter(notEmpty);
-	const handle = pathSegments[2]; // ['a', 'saku', 'bio']
+	// Extract workspaceHandle and handle from path: /w/{workspaceHandle}/{handle}
+	const pathSegments = url.pathname.split('/').filter(Boolean); // ['w', '{workspaceHandle}', '{handle}']
+	const workspaceHandle = pathSegments[1];
+	const handle = pathSegments[2];
 
-	if (handle == null) {
+	console.log('DEBUG path extraction', { pathSegments, workspaceHandle, handle });
+
+	if (!workspaceHandle) {
+		return ServerErr({
+			code: '#ERR_BAD_REQUEST',
+			message: 'No workspace handle provided in URL'
+		});
+	}
+
+	if (!handle) {
 		return ServerErr({
 			code: '#ERR_BAD_REQUEST',
 			message: 'No handle provided in URL'
 		});
 	}
 
-	if (session?.shop == null) {
-		return ServerErr({
-			code: '#ERR_UNAUTHORIZED',
-			message: 'No shop provided in session'
-		});
-	}
-
-	const result = await coreApiClient.get('/v1/shopify/site/shop/{shop}/{handle}/content', {
+	const result = await coreApiClient.get('/v1/site/workspace/{workspaceHandle}/{handle}/content', {
 		pathParams: {
-			shop: session.shop,
+			workspaceHandle,
 			handle
 		}
 	});
@@ -103,7 +101,7 @@ export const loader: TLoaderFunctionWithResult<TSuccessLoaderData, TErrorLoaderD
 
 	return ServerOk({
 		appUrl: shopifyConfig.appUrl,
-		site: resolveSite(result.value.data as unknown as TSite, session.shop)
+		site: resolveSite(result.value.data as unknown as TSite, workspaceHandle)
 	});
 };
 
