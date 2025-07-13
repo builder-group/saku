@@ -1,7 +1,6 @@
 import { inheritStyle, TNode } from '@repo/editor';
 import { IconSource } from '@shopify/polaris';
 import { LayoutSectionIcon } from '@/components';
-import { appConfig } from '@/environment';
 
 export const nodeMetadataMap: TNodeMetadataMap = {
 	page: {
@@ -96,7 +95,6 @@ export const nodeMetadataMap: TNodeMetadataMap = {
 		icon: LayoutSectionIcon,
 		label: 'Product',
 		internal: false,
-		hidden: appConfig.env !== 'development',
 		defaultData: {
 			content: {},
 			style: {
