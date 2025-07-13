@@ -1,10 +1,11 @@
 import { notEmpty } from '@blgc/utils';
 import { TImageAsset, TProductNode } from '@repo/editor';
-import { Button, IndexTable, Text, useIndexResourceState } from '@shopify/polaris';
+import { Button, IndexTable, Scrollable, Text, useIndexResourceState } from '@shopify/polaris';
+import { DeleteIcon } from '@shopify/polaris-icons';
 import { useFeatureState } from 'feature-react/state';
 import React from 'react';
 import { AccordionSection } from '@/components';
-import { isProduct } from '../../../../../lib';
+import { capitalizeFirstLetter, isProduct, mutateWithReferenceUpdate } from '@/lib';
 import { TNodeEditorComponentProps } from '../nodeEditorRegistry';
 
 export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>> = (props) => {
@@ -13,41 +14,62 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 
 	const canChangeProduct = React.useMemo(() => content.product != null, [content.product]);
 
-	const tableRows = React.useMemo<TProductTableRow[]>(() => {
+	const variantRows = React.useMemo<TProductVariantRow[]>(() => {
 		if (content.product == null) {
 			return [];
 		}
 
-		const rows: TProductTableRow[] = [
-			{
-				id: content.product.id,
-				type: 'Product',
-				title: content.product.title,
-				price: '',
-				image:
-					content.product.media?.[0]?.storage.type === 'url'
-						? content.product.media[0].storage.url
-						: undefined
-			}
-		];
-
-		for (const variant of content.product.variants) {
-			rows.push({
-				id: variant.id,
-				type: 'Variant' as const,
-				title: content.product.title,
-				variantTitle: variant.title,
-				price: `${variant.price.amount} ${variant.price.currencyCode}`,
-				image: variant.image?.storage.type === 'url' ? variant.image.storage.url : undefined
-			});
-		}
-
-		return rows;
+		return content.product.variants.map((variant) => ({
+			id: variant.id,
+			title: content.product?.title as string,
+			variantTitle: variant.title,
+			price: `${variant.price.amount} ${variant.price.currencyCode}`,
+			image: variant.image?.storage.type === 'url' ? variant.image.storage.url : undefined
+		}));
 	}, [content.product]);
 
-	const { selectedResources, allResourcesSelected, handleSelectionChange } = useIndexResourceState(
-		tableRows as Record<string, any>[]
+	const { selectedResources, allResourcesSelected, handleSelectionChange, clearSelection } =
+		useIndexResourceState(variantRows as Record<string, any>[]);
+
+	const resourceName = React.useMemo(() => ({ singular: 'variant', plural: 'variants' }), []);
+	const bulkActions = React.useMemo(
+		() => [
+			{
+				icon: DeleteIcon,
+				destructive: true,
+				content: `Delete ${selectedResources.length > 1 ? `${selectedResources.length} ${resourceName.plural}` : resourceName.singular}`,
+				disabled: variantRows.length === 1 || selectedResources.length >= variantRows.length,
+				onAction: () => {
+					if (nodeState._v.content.product == null) {
+						return;
+					}
+
+					nodeState._v.content.product = mutateWithReferenceUpdate(
+						nodeState._v.content.product,
+						(draft) => {
+							draft.variants = draft.variants.filter(
+								(variant) => !selectedResources.includes(variant.id)
+							);
+						}
+					);
+					nodeState._notify();
+
+					clearSelection();
+				}
+			}
+		],
+		[clearSelection, nodeState, selectedResources, resourceName, variantRows.length]
 	);
+
+	const variantsSubheaderSelected = React.useMemo(() => {
+		if (selectedResources.length === variantRows.length && variantRows.length > 0) {
+			return true;
+		}
+		if (selectedResources.length > 0) {
+			return 'indeterminate';
+		}
+		return false;
+	}, [selectedResources, variantRows.length]);
 
 	// =========================================================================
 	// Events
@@ -60,6 +82,8 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 			editor.shopify.toast.show('No products selected');
 			return;
 		}
+
+		clearSelection();
 
 		nodeState._v.content.product = {
 			id: product.id,
@@ -125,7 +149,7 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 				.filter(notEmpty)
 		};
 		nodeState._notify();
-	}, [nodeState, editor]);
+	}, [clearSelection, nodeState, editor]);
 
 	// =========================================================================
 	// UI
@@ -149,58 +173,75 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 						</div>
 
 						{content.product != null ? (
-							<div className="max-h-64 overflow-x-auto overflow-y-auto rounded-md border border-gray-200 bg-white">
-								<div className="h-full w-full overflow-hidden">
-									<IndexTable
-										resourceName={{ singular: 'item', plural: 'items' }}
-										itemCount={tableRows.length}
-										selectedItemsCount={allResourcesSelected ? 'All' : selectedResources.length}
-										condensed
-										onSelectionChange={handleSelectionChange}
-										headings={[{ title: '' }]}
-									>
-										{/* Product row (no subheader) */}
-										{tableRows[0] != null && (
+							<div className="rounded-md border border-gray-200 bg-white">
+								<Scrollable
+									// Note: Using style because "Scrollable" doesn't consider Tailwind classes
+									style={{ maxHeight: 256 }}
+								>
+									<div className="h-full w-full overflow-hidden">
+										<IndexTable
+											resourceName={resourceName}
+											itemCount={variantRows.length}
+											selectedItemsCount={allResourcesSelected ? 'All' : selectedResources.length}
+											onSelectionChange={handleSelectionChange}
+											headings={[{ title: '' }]}
+											bulkActions={bulkActions}
+										>
+											{/* Product subheader at position 0 */}
 											<IndexTable.Row
-												id={tableRows[0].id}
-												key={tableRows[0].id}
-												selected={selectedResources.includes(tableRows[0].id)}
+												rowType="subheader"
+												id="product-subheader"
 												position={0}
+												disabled={true}
 											>
-												<div className="flex w-full flex-row items-center gap-3 px-4 py-2">
-													{tableRows[0].image ? (
-														<img
-															src={tableRows[0].image}
-															alt=""
-															className="h-10 w-10 flex-shrink-0 rounded-md bg-gray-100 object-cover"
-														/>
-													) : (
-														<div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-md bg-gray-100 text-xs text-gray-400">
-															N/A
-														</div>
-													)}
-													<div className="flex flex-1 flex-col justify-center">
-														<div className="flex flex-row items-center justify-between">
-															<Text as="span" variant="bodyMd" fontWeight="semibold">
-																{tableRows[0].title}
-															</Text>
-															<Text as="span" variant="bodyMd" alignment="end">
-																{tableRows[0].price}
-															</Text>
+												<IndexTable.Cell
+													colSpan={1}
+													scope="colgroup"
+													as="th"
+													id="product-subheader"
+												>
+													Product
+												</IndexTable.Cell>
+											</IndexTable.Row>
+											{/* Product row as a disabled IndexTable.Row at position 1 */}
+											{content.product && (
+												<IndexTable.Row
+													id={content.product.id}
+													key={content.product.id}
+													selected={false}
+													position={1}
+													disabled={true}
+												>
+													<div className="flex w-full flex-row items-center gap-3 p-2">
+														{content.product.media?.[0]?.storage.type === 'url' ? (
+															<img
+																src={content.product.media[0].storage.url}
+																alt=""
+																className="h-10 w-10 flex-shrink-0 rounded-md bg-gray-100 object-cover"
+															/>
+														) : (
+															<div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-md bg-gray-100 text-xs text-gray-400">
+																N/A
+															</div>
+														)}
+														<div className="flex flex-1 flex-col justify-center">
+															<div className="flex flex-row items-center justify-between">
+																<Text as="span" variant="bodyMd" fontWeight="semibold">
+																	{content.product.title}
+																</Text>
+															</div>
 														</div>
 													</div>
-												</div>
-											</IndexTable.Row>
-										)}
-
-										{/* Variants subheader and rows */}
-										{tableRows.length > 1 && (
-											<>
+												</IndexTable.Row>
+											)}
+											{/* Subheader for variants at position 2 */}
+											{variantRows.length > 0 && (
 												<IndexTable.Row
 													rowType="subheader"
 													id="variants-subheader"
-													position={1}
-													selected={false}
+													position={2}
+													selectionRange={[0, variantRows.length]}
+													selected={variantsSubheaderSelected}
 												>
 													<IndexTable.Cell
 														colSpan={1}
@@ -208,50 +249,53 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 														as="th"
 														id="variants-subheader"
 													>
-														Variants
+														{variantRows.length > 1
+															? capitalizeFirstLetter(resourceName.plural)
+															: capitalizeFirstLetter(resourceName.singular)}
 													</IndexTable.Cell>
 												</IndexTable.Row>
-												{tableRows.slice(1).map((row, index) => (
-													<IndexTable.Row
-														id={row.id}
-														key={row.id}
-														selected={selectedResources.includes(row.id)}
-														position={2 + index}
-													>
-														<div className="flex w-full flex-row items-center gap-3 px-4 py-2">
-															{row.image ? (
-																<img
-																	src={row.image}
-																	alt=""
-																	className="h-10 w-10 flex-shrink-0 rounded-md bg-gray-100 object-cover"
-																/>
-															) : (
-																<div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-md bg-gray-100 text-xs text-gray-400">
-																	N/A
-																</div>
-															)}
-															<div className="flex flex-1 flex-col justify-center">
-																<div className="flex flex-row items-center justify-between">
-																	<Text as="span" variant="bodyMd" fontWeight="semibold">
-																		{row.title}
-																	</Text>
-																	<Text as="span" variant="bodyMd" alignment="end">
-																		{row.price}
-																	</Text>
-																</div>
-																{row.variantTitle != null && (
-																	<Text as="span" variant="bodySm" tone="subdued">
-																		{row.variantTitle}
-																	</Text>
-																)}
+											)}
+											{/* Variant rows at positions 3+ */}
+											{variantRows.map((row, index) => (
+												<IndexTable.Row
+													id={row.id}
+													key={row.id}
+													selected={selectedResources.includes(row.id)}
+													position={3 + index}
+												>
+													<div className="flex w-full flex-row items-center gap-3 p-2">
+														{row.image != null ? (
+															<img
+																src={row.image}
+																alt=""
+																className="h-10 w-10 flex-shrink-0 rounded-md bg-gray-100 object-cover"
+															/>
+														) : (
+															<div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-md bg-gray-100 text-xs text-gray-400">
+																N/A
 															</div>
+														)}
+														<div className="flex flex-1 flex-col justify-center">
+															<div className="flex flex-row items-center justify-between">
+																<Text as="span" variant="bodyMd" fontWeight="semibold">
+																	{row.title}
+																</Text>
+																<Text as="span" variant="bodyMd" alignment="end">
+																	{row.price}
+																</Text>
+															</div>
+															{row.variantTitle != null && (
+																<Text as="span" variant="bodySm" tone="subdued">
+																	{row.variantTitle}
+																</Text>
+															)}
 														</div>
-													</IndexTable.Row>
-												))}
-											</>
-										)}
-									</IndexTable>
-								</div>
+													</div>
+												</IndexTable.Row>
+											))}
+										</IndexTable>
+									</div>
+								</Scrollable>
 							</div>
 						) : (
 							<Button onClick={handleSelectProduct} variant="primary">
@@ -270,9 +314,8 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 	);
 };
 
-interface TProductTableRow {
+interface TProductVariantRow {
 	id: string;
-	type: 'Product' | 'Variant';
 	title: string;
 	price: string;
 	image?: string;
