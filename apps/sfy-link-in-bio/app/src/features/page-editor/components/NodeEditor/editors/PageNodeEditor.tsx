@@ -81,6 +81,8 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TPageNode>> = (p
 							type="number"
 							autoComplete="off"
 							placeholder="16"
+							min={0}
+							max={100}
 						/>
 
 						<TextStyleField<TFlattenedNode<TPageNode>, never, number>
@@ -96,6 +98,8 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TPageNode>> = (p
 							type="number"
 							autoComplete="off"
 							placeholder="12"
+							min={0}
+							max={999}
 						/>
 					</div>
 				</div>
@@ -159,6 +163,8 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TPageNode>> = (p
 								type="number"
 								autoComplete="off"
 								placeholder="16"
+								min={0}
+								max={96}
 							/>
 
 							<ColorStyleField<TFlattenedNode<TPageNode>, never>

@@ -1,4 +1,4 @@
-import { notEmpty, ServerErr, ServerOk } from '@blgc/utils';
+import { ServerErr, ServerOk } from '@blgc/utils';
 import { TSite } from '@repo/editor';
 import { Spinner, Text } from '@shopify/polaris';
 import { AppProxyProvider } from '@shopify/shopify-app-remix/react';
@@ -64,7 +64,7 @@ export const loader: TLoaderFunctionWithResult<TSuccessLoaderData, TErrorLoaderD
 
 	const url = new URL(request.url);
 	// Extract handle from path: /a/saku/bio -> "bio"
-	const pathSegments = url.pathname.split('/').filter(notEmpty);
+	const pathSegments = url.pathname.split('/').filter(Boolean);
 	const handle = pathSegments[2]; // ['a', 'saku', 'bio']
 
 	if (handle == null) {

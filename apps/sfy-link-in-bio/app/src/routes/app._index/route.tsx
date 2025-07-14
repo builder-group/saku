@@ -30,13 +30,14 @@ import { TLoaderFunctionWithResult } from '@/types';
 
 const Page = withLoaderResult<TSuccessLoaderData, TErrorLoaderData>({
 	Success: ({ data }) => {
-		const { site, shouldOpenEditor } = data;
+		const { site, shouldOpenEditor, platformUrl } = data;
 		const { Modal: EditorModal, isOpenState: isEditorOpenState } = usePageEditorModal({
 			siteId: site.id,
 			title: `${site.displayName} (/${site.handle})`
 		});
 		const isEditorOpen = useFeatureState(isEditorOpenState);
 		const [isLoadingEditor, setIsLoadingEditor] = React.useState(shouldOpenEditor);
+
 		// =========================================================================
 		// Events
 		// =========================================================================
@@ -164,10 +165,14 @@ const Page = withLoaderResult<TSuccessLoaderData, TErrorLoaderData>({
 									<div className="flex flex-col gap-3">
 										<div className="flex items-center justify-between">
 											<Text as="h2" variant="headingMd">
-												Your Link
+												Your Shopify-hosted Link
 											</Text>
 											<Badge tone="success">Current</Badge>
 										</div>
+
+										<Text as="p" tone="subdued">
+											Hosted on your Shopify store domain.
+										</Text>
 
 										<TextField
 											label=""
@@ -175,6 +180,29 @@ const Page = withLoaderResult<TSuccessLoaderData, TErrorLoaderData>({
 											readOnly
 											autoComplete="off"
 											connectedRight={<ClipboardButton textToCopy={site.url} />}
+										/>
+									</div>
+								</Card>
+								{/* Your Platform Link Card */}
+								<Card>
+									<div className="flex flex-col gap-3">
+										<div className="flex items-center justify-between">
+											<Text as="h2" variant="headingMd">
+												Your External Platform Link
+											</Text>
+											<Badge tone="success">Current</Badge>
+										</div>
+
+										<Text as="p" tone="subdued">
+											Hosted on an independent domain outside Shopify.
+										</Text>
+
+										<TextField
+											label=""
+											value={platformUrl}
+											readOnly
+											autoComplete="off"
+											connectedRight={<ClipboardButton textToCopy={platformUrl} />}
 										/>
 									</div>
 								</Card>
@@ -299,6 +327,7 @@ export const loader: TLoaderFunctionWithResult<TSuccessLoaderData, TErrorLoaderD
 			displayName: site.displayName,
 			updatedAt: site.updatedAt
 		},
+		platformUrl: `https://saku.so/w/${workspace.handle}/${site.handle}`,
 		shouldOpenEditor
 	});
 };
@@ -317,5 +346,6 @@ interface TSuccessLoaderData {
 		displayName?: string;
 		updatedAt: string;
 	};
+	platformUrl: string;
 	shouldOpenEditor: boolean;
 }

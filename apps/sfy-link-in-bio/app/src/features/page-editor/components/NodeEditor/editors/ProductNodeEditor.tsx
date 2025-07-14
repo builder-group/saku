@@ -367,6 +367,8 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 							parentValueMapper={(parent) => parent.style.children?.padding}
 							type="number"
 							autoComplete="off"
+							min={0}
+							max={100}
 						/>
 
 						<TextStyleField
@@ -381,6 +383,8 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 							parentValueMapper={(parent) => parent.style.children?.borderRadius}
 							type="number"
 							autoComplete="off"
+							min={0}
+							max={999}
 						/>
 					</div>
 				</div>
@@ -433,6 +437,8 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 								parentValueMapper={(parent) => parent.style.children?.fontSize}
 								type="number"
 								autoComplete="off"
+								min={0}
+								max={96}
 							/>
 
 							<ColorStyleField

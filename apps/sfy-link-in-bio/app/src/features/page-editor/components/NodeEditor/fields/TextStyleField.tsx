@@ -20,6 +20,8 @@ export const TextStyleField = <GNodeValue, GParentNodeValue, GValue>(
 		nodeValueMapper,
 		parentValueMapper,
 		nodeValueSetter,
+		min,
+		max,
 		...textFieldProps
 	} = props;
 
@@ -46,7 +48,10 @@ export const TextStyleField = <GNodeValue, GParentNodeValue, GValue>(
 			let convertedValue: TStyleReference<GValue> | undefined =
 				newValue === '' ? undefined : (newValue as GValue);
 			if (textFieldProps.type === 'number' && newValue !== '') {
-				convertedValue = Number(newValue) as GValue;
+				let num = Number(newValue);
+				if (typeof min === 'number' && num < min) num = min;
+				if (typeof max === 'number' && num > max) num = max;
+				convertedValue = num as GValue;
 			}
 
 			nodeValueSetter(
@@ -56,7 +61,7 @@ export const TextStyleField = <GNodeValue, GParentNodeValue, GValue>(
 					: TStyleReference<GValue>
 			);
 		},
-		[node, nodeValueSetter, textFieldProps.type, isValueInherited]
+		[node, nodeValueSetter, textFieldProps.type, isValueInherited, min, max]
 	);
 
 	const handleToggleInheritance = React.useCallback(() => {
@@ -115,6 +120,7 @@ export const TextStyleField = <GNodeValue, GParentNodeValue, GValue>(
 				value={displayValue}
 				onChange={handleChange}
 				readOnly={isValueInherited}
+				{...(textFieldProps.type === 'number' ? { min, max } : {})}
 			/>
 		</div>
 	);
@@ -131,4 +137,6 @@ export interface TTextStyleFieldProps<GNodeValue, GParentNodeValue, GValue>
 		value: GParentNodeValue extends never ? GValue | undefined : TStyleReference<GValue>
 	) => void;
 	parentValueMapper?: (parent: GParentNodeValue) => GValue | undefined;
+	min?: number;
+	max?: number;
 }

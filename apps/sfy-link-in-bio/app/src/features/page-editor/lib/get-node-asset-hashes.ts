@@ -23,9 +23,12 @@ export function getNodeAssetHashes(node: TFlattenedNode<TNode> | TNode): TAssetH
 		}
 
 		case 'link': {
-			// Favicon asset
+			// Favicon asset/s
 			if (node.content.userMetadata?.favicon != null) {
 				hashes.push(node.content.userMetadata.favicon);
+			}
+			if (node.content.fetchedMetadata?.favicon != null) {
+				hashes.push(node.content.fetchedMetadata.favicon);
 			}
 
 			// Font asset (if not inherited)

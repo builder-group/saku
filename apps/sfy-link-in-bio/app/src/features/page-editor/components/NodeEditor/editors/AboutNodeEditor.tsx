@@ -235,6 +235,8 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 							parentValueMapper={(parent) => parent.style.children?.padding}
 							type="number"
 							autoComplete="off"
+							min={0}
+							max={100}
 						/>
 
 						<TextStyleField
@@ -249,6 +251,8 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 							parentValueMapper={(parent) => parent.style.children?.borderRadius}
 							type="number"
 							autoComplete="off"
+							min={0}
+							max={999}
 						/>
 					</div>
 				</div>

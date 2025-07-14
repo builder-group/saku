@@ -117,6 +117,8 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 							parentValueMapper={(parent) => parent.style.children?.padding}
 							type="number"
 							autoComplete="off"
+							min={0}
+							max={100}
 						/>
 
 						<TextStyleField
@@ -131,6 +133,8 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 							parentValueMapper={(parent) => parent.style.children?.borderRadius}
 							type="number"
 							autoComplete="off"
+							min={0}
+							max={999}
 						/>
 					</div>
 				</div>

@@ -63,8 +63,6 @@ export const loader: TLoaderFunctionWithResult<TSuccessLoaderData, TErrorLoaderD
 	const workspaceHandle = pathSegments[1];
 	const handle = pathSegments[2];
 
-	console.log('DEBUG path extraction', { pathSegments, workspaceHandle, handle });
-
 	if (!workspaceHandle) {
 		return ServerErr({
 			code: '#ERR_BAD_REQUEST',

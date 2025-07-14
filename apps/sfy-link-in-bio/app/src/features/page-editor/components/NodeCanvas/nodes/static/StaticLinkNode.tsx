@@ -8,6 +8,16 @@ export const StaticLinkNode = React.forwardRef<HTMLDivElement, TStaticLinkNodePr
 			...divProps
 		} = props;
 
+		const iconBorderRadius = React.useMemo(() => {
+			const padding = style.padding ?? 0;
+			const outerRadius = style.borderRadius;
+			if (outerRadius == null || outerRadius === 0) {
+				return undefined;
+			}
+			const ratio = outerRadius / (outerRadius + padding);
+			return outerRadius * Math.pow(ratio, 1.5);
+		}, [style.borderRadius, style.padding]);
+
 		return (
 			<div {...divProps} ref={ref} className="w-full max-w-md">
 				<a
@@ -32,7 +42,7 @@ export const StaticLinkNode = React.forwardRef<HTMLDivElement, TStaticLinkNodePr
 							<div
 								className="h-12 w-12 flex-shrink-0 overflow-hidden bg-gray-100"
 								style={{
-									borderRadius: style.borderRadius
+									borderRadius: iconBorderRadius
 								}}
 							>
 								<img
