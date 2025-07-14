@@ -188,7 +188,7 @@ const Page = withLoaderResult<TSuccessLoaderData, TErrorLoaderData>({
 									<div className="flex flex-col gap-3">
 										<div className="flex items-center justify-between">
 											<Text as="h2" variant="headingMd">
-												Your External Platform Link
+												Your External Link
 											</Text>
 											<Badge tone="success">Current</Badge>
 										</div>
