@@ -3,7 +3,6 @@ import { TSite } from '@repo/editor';
 import { Spinner, Text } from '@shopify/polaris';
 import { isStatusCode } from 'feature-fetch';
 import { coreApiClient } from '@/environment';
-import { shopifyConfig } from '@/environment/.server';
 import {
 	getSiteFontUrls,
 	resolveSite,
@@ -15,7 +14,7 @@ import { TLoaderFunctionWithResult } from '@/types';
 
 const Page = withLoaderResult<TSuccessLoaderData, TErrorLoaderData>({
 	Success: ({ data }) => {
-		const { appUrl, site } = data;
+		const { site } = data;
 		const fontUrls = getSiteFontUrls(site);
 
 		return (
@@ -98,8 +97,7 @@ export const loader: TLoaderFunctionWithResult<TSuccessLoaderData, TErrorLoaderD
 	}
 
 	return ServerOk({
-		appUrl: shopifyConfig.appUrl,
-		site: resolveSite(result.value.data as unknown as TSite, workspaceHandle)
+		site: resolveSite(result.value.data as unknown as TSite, `${workspaceHandle}.myshopify.com`)
 	});
 };
 
@@ -109,6 +107,5 @@ interface TErrorLoaderData {
 }
 
 interface TSuccessLoaderData {
-	appUrl: string;
 	site: TResolvedSite;
 }
