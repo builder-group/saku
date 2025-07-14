@@ -11,6 +11,7 @@ export * from './LogoIcon';
 export * from './NotoEmojiCherryBlossomIcon';
 export * from './PinterestIcon';
 export * from './ShopifyIcon';
+export * from './SpinnerIcon';
 export * from './SpotifyIcon';
 export * from './TikTokIcon';
 export * from './WipIcon';
