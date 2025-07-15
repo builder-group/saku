@@ -1,10 +1,11 @@
 import { TAboutNode } from '@repo/editor';
 import { useCombinedCompute } from 'feature-react';
 import React from 'react';
-import { resolveAboutNode, TNodeState, TPageEditor } from '../../../lib';
+import { resolveAboutNode } from '../../../lib';
 import { StaticAboutNode } from './static';
+import { TNodeProps } from './types';
 
-export const AboutNode = React.forwardRef<HTMLDivElement, TAboutNodeProps>((props, ref) => {
+export const AboutNode = React.forwardRef<HTMLDivElement, TNodeProps<TAboutNode>>((props, ref) => {
 	const { nodeState, editor, ...divProps } = props;
 
 	const node = useCombinedCompute(
@@ -21,8 +22,3 @@ export const AboutNode = React.forwardRef<HTMLDivElement, TAboutNodeProps>((prop
 	return <StaticAboutNode {...divProps} ref={ref} node={node} />;
 });
 AboutNode.displayName = 'AboutNode';
-
-interface TAboutNodeProps extends React.HTMLProps<HTMLDivElement> {
-	nodeState: TNodeState<TAboutNode>;
-	editor: TPageEditor;
-}

@@ -3,10 +3,11 @@ import { TPageNode } from '@repo/editor';
 import { useCompute } from 'feature-react';
 import React from 'react';
 import { LogoIcon } from '@/components';
-import { resolvePageNodeWithoutChildren, TNodeState, TPageEditor } from '../../../lib';
+import { resolvePageNodeWithoutChildren } from '../../../lib';
 import { Node } from '../Node';
+import { TNodeProps } from './types';
 
-export const PageNode = React.forwardRef<HTMLDivElement, TPageNodeProps>((props, ref) => {
+export const PageNode = React.forwardRef<HTMLDivElement, TNodeProps<TPageNode>>((props, ref) => {
 	const { nodeState, editor, ...divProps } = props;
 
 	const { style } = useCompute(nodeState, (nodeValue) => {
@@ -58,8 +59,3 @@ export const PageNode = React.forwardRef<HTMLDivElement, TPageNodeProps>((props,
 	);
 });
 PageNode.displayName = 'PageNode';
-
-interface TPageNodeProps extends React.HTMLProps<HTMLDivElement> {
-	nodeState: TNodeState<TPageNode>;
-	editor: TPageEditor;
-}

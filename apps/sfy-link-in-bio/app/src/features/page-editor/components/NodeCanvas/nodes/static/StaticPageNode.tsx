@@ -2,8 +2,9 @@ import React from 'react';
 import { LogoIcon } from '@/components';
 import { TResolvedPageNode } from '../../../../types';
 import { StaticNode } from '../../StaticNode';
+import { TStaticNodeProps } from '../types';
 
-export const StaticPageNode: React.FC<TStaticPageNodeProps> = (props) => {
+export const StaticPageNode: React.FC<TStaticNodeProps<TResolvedPageNode>> = (props) => {
 	const {
 		node: { children, style },
 		...divProps
@@ -45,7 +46,3 @@ export const StaticPageNode: React.FC<TStaticPageNodeProps> = (props) => {
 		</div>
 	);
 };
-
-interface TStaticPageNodeProps extends React.HTMLProps<HTMLDivElement> {
-	node: TResolvedPageNode;
-}

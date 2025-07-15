@@ -2,16 +2,25 @@ import {
 	TAboutNode,
 	TLinkNode,
 	TMediaNode,
+	TNode,
 	TPageNode,
 	TProductNode,
 	TTextNode
 } from '@repo/editor';
 import React from 'react';
 import { useBoundingRectObserver } from '@/hooks';
-import { TNodeState, TPageEditor } from '../../lib';
-import { AboutNode, LinkNode, MediaNode, PageNode, ProductNode, TextNode } from './nodes';
+import { TNodeState } from '../../lib';
+import {
+	AboutNode,
+	LinkNode,
+	MediaNode,
+	PageNode,
+	ProductNode,
+	TextNode,
+	TNodeProps
+} from './nodes';
 
-export const Node: React.FC<TNodeProps> = (props) => {
+export const Node: React.FC<TNodeProps<TNode>> = (props) => {
 	const { nodeState, editor } = props;
 
 	useBoundingRectObserver(
@@ -76,8 +85,3 @@ export const Node: React.FC<TNodeProps> = (props) => {
 			return null;
 	}
 };
-
-interface TNodeProps {
-	nodeState: TNodeState;
-	editor: TPageEditor;
-}

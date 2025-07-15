@@ -1,10 +1,11 @@
 import { TMediaNode } from '@repo/editor';
 import { useCombinedCompute } from 'feature-react';
 import React from 'react';
-import { resolveMediaNode, TNodeState, TPageEditor } from '../../../lib';
+import { resolveMediaNode } from '../../../lib';
 import { StaticMediaNode } from './static';
+import { TNodeProps } from './types';
 
-export const MediaNode = React.forwardRef<HTMLDivElement, TMediaNodeProps>((props, ref) => {
+export const MediaNode = React.forwardRef<HTMLDivElement, TNodeProps<TMediaNode>>((props, ref) => {
 	const { nodeState, editor, ...divProps } = props;
 
 	const node = useCombinedCompute(
@@ -21,8 +22,3 @@ export const MediaNode = React.forwardRef<HTMLDivElement, TMediaNodeProps>((prop
 	return <StaticMediaNode {...divProps} ref={ref} node={node} />;
 });
 MediaNode.displayName = 'MediaNode';
-
-interface TMediaNodeProps extends React.HTMLProps<HTMLDivElement> {
-	nodeState: TNodeState<TMediaNode>;
-	editor: TPageEditor;
-}
