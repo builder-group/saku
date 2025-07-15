@@ -3,9 +3,15 @@ import { TId } from './id';
 
 export interface TSite {
 	version: `v0.0.1`;
+	root: TNode;
+	assets: TAsset[];
+}
+
+export interface TFlatSite {
+	version: TSite['version'];
 	rootId: TNodeId;
-	nodes: Record<TNodeId, TNode>;
-	assets: Record<TAssetId, TAsset>;
+	nodes: Record<TNodeId, TFlatNode>;
+	assets: Record<TAssetHash, TAsset>;
 }
 
 // =========================================================================
@@ -13,7 +19,15 @@ export interface TSite {
 // =========================================================================
 
 export type TNodeId = TId<'node'>;
+
 export type TNode = TPageNode | TAboutNode | TLinkNode | TMediaNode | TTextNode | TProductNode;
+export type TFlatNode =
+	| TFlatPageNode
+	| TAboutNode
+	| TLinkNode
+	| TMediaNode
+	| TTextNode
+	| TProductNode;
 
 export interface TBaseNode {
 	id: TNodeId;
@@ -23,7 +37,7 @@ export interface TBaseNode {
 
 export interface TPageNode extends TBaseNode {
 	type: 'page';
-	children: TNodeId[];
+	children: TNode[];
 	style: {
 		// Page container styles
 		backgroundColor: TRgba;
@@ -42,12 +56,16 @@ export interface TPageNode extends TBaseNode {
 	};
 }
 
+export interface TFlatPageNode extends Omit<TPageNode, 'children'> {
+	children: TNodeId[];
+}
+
 export interface TAboutNode extends TBaseNode {
 	type: 'about';
 	content: {
 		name: string;
 		bio?: string;
-		profilePicture?: TAssetId;
+		profilePicture?: TAssetHash;
 		socialLinks: TSocialLink[];
 	};
 	style: TLayoutMixin & TBackgroundMixin & TBorderMixin & TTypographyMixin;
@@ -86,13 +104,13 @@ export interface TProductNode extends TBaseNode {
 		product?: {
 			id: string;
 			title: string;
-			images: TAssetId[];
+			images: TAssetHash[];
 			options: { name: string; values: string[] }[];
 			variants: {
 				id: string;
 				title: string;
 				price: { amount: string; currencyCode: string };
-				image?: TAssetId;
+				image?: TAssetHash;
 				selectedOptions: { name: string; value: string }[];
 			}[];
 		};
@@ -170,11 +188,11 @@ export interface TFont {
 	style?: 'normal' | 'italic';
 }
 
-export type TMedia = TImageMedia | TYouTubeMedia;
+export type TMedia = TImageMedia; // | TYouTubeMedia;
 
 export interface TImageMedia {
 	type: 'image';
-	assetId: TAssetId;
+	hash: TAssetHash;
 	altText?: string;
 }
 
@@ -182,13 +200,13 @@ export interface TYouTubeMedia {
 	type: 'youtube';
 	url: string;
 	videoId: string;
-	thumbnail?: TAssetId;
+	thumbnail?: TAssetHash;
 }
 
 export interface TLinkMetadata {
 	title?: string;
 	description?: string;
-	favicon?: TAssetId;
+	favicon?: TAssetHash;
 }
 
 export type TStyleReference<T> = { type: 'inherit' } | T;

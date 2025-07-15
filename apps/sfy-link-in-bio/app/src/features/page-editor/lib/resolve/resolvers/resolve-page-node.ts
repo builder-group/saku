@@ -1,7 +1,12 @@
 import { notEmpty } from '@blgc/utils';
-import { getBestContrastColor, resolveStyleReference, TNode, TPageNode } from '@repo/editor';
-import { TNodeResolutionContext, TResolvedNode, TResolvedPageNode } from '../../types';
-import { TFlattenedNode } from '../flatten-node';
+import {
+	getBestContrastColor,
+	resolveStyleReference,
+	TFlatNode,
+	TFlatPageNode
+} from '@repo/editor';
+import { TResolvedNode, TResolvedPageNode } from '../../../types';
+import { TNodeResolutionContext } from '../types';
 import { resolveAboutNode } from './resolve-about-node';
 import { resolveColor } from './resolve-color';
 import { resolveLinkNode } from './resolve-link-node';
@@ -9,23 +14,32 @@ import { resolveMediaNode } from './resolve-media-node';
 import { resolveProductNode } from './resolve-product-node';
 import { resolveTextNode } from './resolve-text-node';
 
-export function resolvePageNode(node: TPageNode, cx: TNodeResolutionContext): TResolvedPageNode {
+export function resolvePageNode(
+	node: TFlatPageNode,
+	cx: TNodeResolutionContext
+): TResolvedPageNode {
 	return {
 		...resolvePageNodeWithoutChildren(node),
 		children: node.children
-			.map((child) =>
-				resolvePageNodeChild(child, {
-					assetsMap: cx.assetsMap,
-					defaultStyles: node.style.children,
-					shopId: cx.shopId
-				})
-			)
+			.map((childId) => {
+				const childNode = cx.site.getNode(childId);
+				if (childNode == null) {
+					return null;
+				}
+				return resolvePageNodeChild(childNode, {
+					site: cx.site,
+					parentId: node.id,
+					resolved: {
+						parentStyles: node.style.children
+					}
+				});
+			})
 			.filter(notEmpty)
 	};
 }
 
 export function resolvePageNodeWithoutChildren(
-	node: TPageNode | TFlattenedNode<TPageNode>
+	node: TFlatPageNode
 ): Omit<TResolvedPageNode, 'children'> {
 	const { style, ...rest } = node;
 
@@ -51,7 +65,7 @@ export function resolvePageNodeWithoutChildren(
 	};
 }
 
-function resolvePageNodeChild(node: TNode, cx: TNodeResolutionContext): TResolvedNode | null {
+function resolvePageNodeChild(node: TFlatNode, cx: TNodeResolutionContext): TResolvedNode | null {
 	switch (node.type) {
 		case 'about':
 			return resolveAboutNode(node, cx);

@@ -1,19 +1,22 @@
 import { deepCopy } from '@blgc/utils';
-import { TNode, TNodeId } from '@repo/editor';
+import { TFlatNode, TNodeId } from '@repo/editor';
 import { createState, TState } from 'feature-state';
 import React from 'react';
 import { TBoundingRect } from './create-page-editor';
 
-export function createNodeState<GNode extends TNode>(
+export function createNodeState<GNode extends TFlatNode>(
 	node: GNode,
 	parentId?: TNodeId
 ): TNodeState<GNode> {
-	const { id, type, ...nodeData } = node;
-	const state = createState(nodeData);
+	const state = createState(node);
 
 	return Object.assign(state, {
-		id,
-		type,
+		get id() {
+			return (this as TNodeState<GNode>)._v.id;
+		},
+		get type() {
+			return (this as TNodeState<GNode>)._v.type;
+		},
 		parentId,
 		ref: React.createRef<HTMLDivElement>(),
 		boundingRect: createState<TBoundingRect>({
@@ -22,32 +25,17 @@ export function createNodeState<GNode extends TNode>(
 			bottom: 0,
 			right: 0
 		}),
-		toNode() {
-			return {
-				id,
-				type,
-				...state._v
-			} as GNode;
-		},
-		toCopiedNode() {
-			return {
-				id,
-				type,
-				...deepCopy(state._v)
-			} as GNode;
+		copied(this: TNodeState<GNode>) {
+			return deepCopy(this._v);
 		}
 	});
 }
 
-export type TNodeState<GNode extends TNode = TNode> = TState<TNodeStateValue<GNode>, []> & {
+export type TNodeState<GNode extends TFlatNode = TFlatNode> = TState<GNode, []> & {
 	id: TNodeId;
 	type: GNode['type'];
 	parentId?: TNodeId;
 	ref: React.RefObject<HTMLDivElement>;
 	boundingRect: TState<TBoundingRect, []>;
-	toNode: () => GNode;
-	toCopiedNode: () => GNode;
+	copied: () => GNode;
 };
-
-// We omit 'id' and 'type' from the state value because they are immutable identifiers in the editor and should not be part of the mutable node state.
-export type TNodeStateValue<GNode extends TNode = TNode> = Omit<GNode, 'id' | 'type'>;

@@ -1,3 +1,4 @@
+import { TFlatSite } from '@repo/editor';
 import { AppError } from '@repo/hono-utils';
 import { and, eq, isNull } from 'drizzle-orm';
 import { router } from '@/app/router';
@@ -15,6 +16,7 @@ import {
 	getShopifyOfflineAccessToken,
 	verifyShopifySession
 } from '@/lib';
+import { TFlatSiteContentDto } from '../v1.site/schema';
 import {
 	CreateShopifySiteRoute,
 	GetShopifySitesRoute,
@@ -63,10 +65,11 @@ router.openapi(CreateShopifySiteRoute, async (c) => {
 	const {
 		handle,
 		displayName,
-		content,
+		content: rawContent,
 		createRedirect = true,
 		overrideRedirect = false
 	} = c.req.valid('json');
+	const content: TFlatSite = rawContent as TFlatSite;
 
 	const accessToken = (await getShopifyOfflineAccessToken(shopId)).unwrap();
 
@@ -181,7 +184,7 @@ router.openapi(CreateShopifySiteRoute, async (c) => {
 			workspaceId: site.workspaceId,
 			handle: site.handle,
 			displayName: site.displayName ?? undefined,
-			content: site.content,
+			content: site.content as TFlatSiteContentDto,
 			createdAt: site.createdAt.toISOString(),
 			updatedAt: site.updatedAt.toISOString()
 		},
@@ -192,7 +195,8 @@ router.openapi(CreateShopifySiteRoute, async (c) => {
 router.openapi(UpdateShopifySiteContentRoute, async (c) => {
 	const { shopId } = await verifyShopifySession(c);
 	const { siteId } = c.req.valid('param');
-	const { content } = c.req.valid('json');
+	const { content: rawContent } = c.req.valid('json');
+	const content: TFlatSite = rawContent as TFlatSite;
 
 	// Check if site exists and belongs to a workspace connected to this Shopify shop
 	const [existingSite] = await db
@@ -248,7 +252,7 @@ router.openapi(UpdateShopifySiteContentRoute, async (c) => {
 			workspaceId: site.workspaceId,
 			handle: site.handle,
 			displayName: site.displayName ?? undefined,
-			content: site.content,
+			content: site.content as TFlatSiteContentDto,
 			createdAt: site.createdAt.toISOString(),
 			updatedAt: site.updatedAt.toISOString()
 		},
@@ -282,5 +286,5 @@ router.openapi(GetSiteContentByShopAndHandleRoute, async (c) => {
 		});
 	}
 
-	return c.json(site.content, 200);
+	return c.json(site.content as TFlatSiteContentDto, 200);
 });

@@ -1,5 +1,5 @@
 import { ServerErr, ServerOk } from '@blgc/utils';
-import { TSite } from '@repo/editor';
+import { TFlatSite } from '@repo/editor';
 import { useAppBridge } from '@shopify/app-bridge-react';
 import { Spinner, Text } from '@shopify/polaris';
 import { withGlobalBind } from 'feature-react/state';
@@ -89,7 +89,7 @@ export const loader: TLoaderFunctionWithResult<TSuccessLoaderData, TErrorLoaderD
 			id: siteData.id,
 			handle: siteData.handle,
 			url: `${shopifyConfig.proxy.url(shop)}/${siteData.handle}`,
-			content: siteData.content as unknown as TSite
+			content: siteData.content as unknown as TFlatSite
 		},
 		shopId: shop
 	});
@@ -105,7 +105,7 @@ interface TSuccessLoaderData {
 		id: string;
 		handle: string;
 		url: string;
-		content: TSite;
+		content: TFlatSite;
 	};
 	shopId: string;
 }

@@ -1,7 +1,7 @@
 import { TProductNode } from '@repo/editor';
 import { useCombinedCompute } from 'feature-react';
 import React from 'react';
-import { resolveProductNode } from '../../../lib';
+import { EditorSiteProvider, resolveProductNode } from '../../../lib';
 import { StaticProductNode, StaticPromisedNode } from './static';
 import { TNodeProps } from './types';
 
@@ -13,9 +13,10 @@ export const ProductNode = React.forwardRef<HTMLDivElement, TNodeProps<TProductN
 			[editor.getRootNode(), nodeState],
 			([pageNodeValue, nodeValue]) => {
 				return resolveProductNode(nodeValue, {
-					assetsMap: editor.assetsMap,
-					defaultStyles: pageNodeValue?.style.children,
-					shopId: editor.shopId
+					site: new EditorSiteProvider(editor),
+					resolved: {
+						parentStyles: pageNodeValue?.style.children
+					}
 				});
 			}
 		);

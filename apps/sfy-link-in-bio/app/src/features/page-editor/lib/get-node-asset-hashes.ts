@@ -1,11 +1,10 @@
 import { notEmpty } from '@blgc/utils';
-import { getFontHash, isInheritedStyle, TAssetHash, TNode } from '@repo/editor';
-import { TFlattenedNode } from './flatten-node';
+import { getFontHash, isInheritedStyle, TAssetHash, TFlatNode } from '@repo/editor';
 
 /**
  * Extracts all asset hashes referenced by a node
  */
-export function getNodeAssetHashes(node: TFlattenedNode<TNode> | TNode): TAssetHash[] {
+export function getNodeAssetHashes(node: TFlatNode): TAssetHash[] {
 	const hashes: TAssetHash[] = [];
 
 	switch (node.type) {

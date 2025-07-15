@@ -1,4 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi';
+import { TFlatSite } from '@repo/editor';
 import { BadRequestResponse, JsonSuccessResponse, NotFoundResponse } from '@repo/hono-utils';
 
 // Summary DTO (without content) for list views
@@ -14,13 +15,21 @@ export const SSiteSummaryDto = z
 	.openapi('SiteSummaryDto');
 export type TSiteSummaryDto = z.infer<typeof SSiteSummaryDto>;
 
-export const SSiteContentDto = z.object({}).passthrough().openapi('SiteContentDto');
-export type TSiteContentDto = z.infer<typeof SSiteContentDto>;
+// export const SSiteContentDto = z
+// 	.custom<TSite>((val) => typeof val === 'object' && val !== null && !Array.isArray(val))
+// 	.openapi('SiteContentDto');
+// export type TSiteContentDto = z.infer<typeof SSiteContentDto>;
+
+export const SFlatSiteContentDto = z
+	// .custom<TFlatSite>((val) => typeof val === 'object' && val !== null && !Array.isArray(val))
+	.looseObject<TFlatSite>({} as any) // TODO: z.custom doesn't work yet with 'zod-to-openapi' library (Zod v4)
+	.openapi('FlatSiteContentDto', {});
+export type TFlatSiteContentDto = z.infer<typeof SFlatSiteContentDto>;
 
 // Full DTO (with content) for detailed views
 export const SSiteDto = SSiteSummaryDto.merge(
 	z.object({
-		content: SSiteContentDto
+		content: SFlatSiteContentDto
 	})
 ).openapi('SiteDto');
 export type TSiteDto = z.infer<typeof SSiteDto>;
@@ -33,7 +42,7 @@ export const GetSiteRoute = createRoute({
 	operationId: 'getSite',
 	request: {
 		params: z.object({
-			siteId: z.string().uuid().openapi({
+			siteId: z.uuid().openapi({
 				example: '123e4567-e89b-12d3',
 				description: 'Site ID'
 			})
@@ -53,14 +62,14 @@ export const GetSiteContentRoute = createRoute({
 	operationId: 'getSiteContent',
 	request: {
 		params: z.object({
-			siteId: z.string().uuid().openapi({
+			siteId: z.uuid().openapi({
 				example: '123e4567-e89b-12d3',
 				description: 'Site ID'
 			})
 		})
 	},
 	responses: {
-		200: JsonSuccessResponse(SSiteContentDto),
+		200: JsonSuccessResponse(SFlatSiteContentDto),
 		404: NotFoundResponse
 	}
 });
@@ -84,7 +93,7 @@ export const ParseExternalSiteRoute = createRoute({
 			z.object({
 				provider: z.string().openapi({ example: 'linkpop' }),
 				handle: z.string().openapi({ example: 'johndoe' }),
-				data: z.object({}).loose().openapi({ example: {} })
+				content: SFlatSiteContentDto
 			})
 		),
 		400: BadRequestResponse
@@ -110,7 +119,7 @@ export const GetSiteContentByWorkspaceAndHandleRoute = createRoute({
 		})
 	},
 	responses: {
-		200: JsonSuccessResponse(SSiteContentDto),
+		200: JsonSuccessResponse(SFlatSiteContentDto),
 		404: NotFoundResponse
 	}
 });

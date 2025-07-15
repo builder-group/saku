@@ -1,5 +1,5 @@
 import { shortId } from '@blgc/utils';
-import { hexToRgba, inheritStyle, TSite } from '@repo/editor';
+import { createId, hexToRgba, inheritStyle, TSite } from '@repo/editor';
 import { createDisplayNameFromShop } from '@/lib';
 
 export function blankPreset(config: TBlankPresetConfig): TSite {
@@ -9,7 +9,9 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 		version: 'v0.0.1',
 		assets: [
 			{
+				id: createId('asset'),
 				type: 'font',
+				hash: 'inter-400-normal',
 				contentType: 'font/woff2',
 				storage: {
 					type: 'url',
@@ -19,11 +21,12 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					family: 'Inter',
 					weight: 400,
 					style: 'normal'
-				},
-				hash: 'inter-400-normal'
+				}
 			},
 			{
+				id: createId('asset'),
 				type: 'font',
+				hash: 'lora-400-normal',
 				contentType: 'font/woff2',
 				storage: {
 					type: 'url',
@@ -33,12 +36,12 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					family: 'Lora',
 					weight: 400,
 					style: 'normal'
-				},
-				hash: 'lora-400-normal'
+				}
 			},
 			{
-				hash: 'welcome-gif',
+				id: createId('asset'),
 				type: 'image',
+				hash: 'welcome-gif',
 				contentType: 'image/gif',
 				storage: {
 					type: 'url',
@@ -49,10 +52,10 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 		],
 		root: {
 			type: 'page',
-			id: shortId(),
+			id: createId('node'),
 			children: [
 				{
-					id: shortId(),
+					id: createId('node'),
 					type: 'about',
 					content: {
 						name: createDisplayNameFromShop(shopId),
@@ -79,7 +82,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					}
 				},
 				{
-					id: shortId(),
+					id: createId('node'),
 					type: 'link',
 					content: {
 						url: `https://${shopId}`,
@@ -99,7 +102,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					}
 				},
 				{
-					id: shortId(),
+					id: createId('node'),
 					type: 'text',
 					content: {
 						title: '📙 Or some text',
@@ -121,7 +124,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					}
 				},
 				{
-					id: shortId(),
+					id: createId('node'),
 					type: 'text',
 					content: {
 						text: '🔮 Let your imagination flow'
@@ -138,7 +141,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					}
 				},
 				{
-					id: shortId(),
+					id: createId('node'),
 					type: 'media',
 					content: {
 						media: {

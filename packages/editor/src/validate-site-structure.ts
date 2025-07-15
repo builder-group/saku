@@ -1,9 +1,9 @@
-import { TNodeId, TSite } from './types';
+import { TFlatSite, TNodeId } from './types';
 
 /**
  * Validates that all node references exist and there are no circular dependencies
  */
-export function validateSiteStructure(site: TSite): boolean {
+export function validateSiteStructure(site: TFlatSite): boolean {
 	const visited = new Set<TNodeId>();
 	const visiting = new Set<TNodeId>();
 

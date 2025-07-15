@@ -7,6 +7,11 @@ export function resolveColor(
 	if (value == null) {
 		return undefined;
 	}
+
 	const color = resolveStyleReference(value, fallback);
-	return color != null ? rgbaToCssRgba(color) : undefined;
+	if (color == null) {
+		return undefined;
+	}
+
+	return rgbaToCssRgba(color);
 }

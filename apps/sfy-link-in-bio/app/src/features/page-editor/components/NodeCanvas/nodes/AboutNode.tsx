@@ -1,7 +1,7 @@
 import { TAboutNode } from '@repo/editor';
 import { useCombinedCompute } from 'feature-react';
 import React from 'react';
-import { resolveAboutNode } from '../../../lib';
+import { EditorSiteProvider, resolveAboutNode } from '../../../lib';
 import { StaticAboutNode } from './static';
 import { TNodeProps } from './types';
 
@@ -12,9 +12,10 @@ export const AboutNode = React.forwardRef<HTMLDivElement, TNodeProps<TAboutNode>
 		[editor.getRootNode(), nodeState],
 		([pageNodeValue, nodeValue]) => {
 			return resolveAboutNode(nodeValue, {
-				assetsMap: editor.assetsMap,
-				defaultStyles: pageNodeValue?.style.children,
-				shopId: editor.shopId
+				site: new EditorSiteProvider(editor),
+				resolved: {
+					parentStyles: pageNodeValue?.style.children
+				}
 			});
 		}
 	);

@@ -1,7 +1,7 @@
 import { TMediaNode } from '@repo/editor';
 import { useCombinedCompute } from 'feature-react';
 import React from 'react';
-import { resolveMediaNode } from '../../../lib';
+import { EditorSiteProvider, resolveMediaNode } from '../../../lib';
 import { StaticMediaNode } from './static';
 import { TNodeProps } from './types';
 
@@ -12,9 +12,10 @@ export const MediaNode = React.forwardRef<HTMLDivElement, TNodeProps<TMediaNode>
 		[editor.getRootNode(), nodeState],
 		([pageNodeValue, nodeValue]) => {
 			return resolveMediaNode(nodeValue, {
-				assetsMap: editor.assetsMap,
-				defaultStyles: pageNodeValue?.style.children,
-				shopId: editor.shopId
+				site: new EditorSiteProvider(editor),
+				resolved: {
+					parentStyles: pageNodeValue?.style.children
+				}
 			});
 		}
 	);

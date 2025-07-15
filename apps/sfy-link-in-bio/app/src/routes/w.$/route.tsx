@@ -1,5 +1,5 @@
 import { ServerErr, ServerOk } from '@blgc/utils';
-import { TSite } from '@repo/editor';
+import { TFlatSite } from '@repo/editor';
 import { Spinner, Text } from '@shopify/polaris';
 import { isStatusCode } from 'feature-fetch';
 import { coreApiClient } from '@/environment';
@@ -14,8 +14,7 @@ import { TLoaderFunctionWithResult } from '@/types';
 
 const Page = withLoaderResult<TSuccessLoaderData, TErrorLoaderData>({
 	Success: ({ data }) => {
-		const { site } = data;
-		const fontUrls = getSiteFontUrls(site);
+		const { site, fontUrls } = data;
 
 		return (
 			<>
@@ -96,8 +95,11 @@ export const loader: TLoaderFunctionWithResult<TSuccessLoaderData, TErrorLoaderD
 		});
 	}
 
+	const flatSite = result.value.data as unknown as TFlatSite;
+
 	return ServerOk({
-		site: resolveSite(result.value.data as unknown as TSite, `${workspaceHandle}.myshopify.com`)
+		site: resolveSite(flatSite, `${workspaceHandle}.myshopify.com`),
+		fontUrls: getSiteFontUrls(flatSite)
 	});
 };
 
@@ -108,4 +110,5 @@ interface TErrorLoaderData {
 
 interface TSuccessLoaderData {
 	site: TResolvedSite;
+	fontUrls: string[];
 }

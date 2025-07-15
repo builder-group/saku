@@ -1,4 +1,4 @@
-import { TNode } from '@repo/editor';
+import { TFlatNode } from '@repo/editor';
 import { useCombinedCompute, useCompute, useFeatureState } from 'feature-react';
 import React from 'react';
 import { cn } from '@/lib';
@@ -19,7 +19,7 @@ export const NodeIndicators: React.FC<TNodeIndicatorsProps> = (props) => {
 				}
 
 				// Skip internal nodes
-				if (nodeMetadataMap[nodeState._v.type].internal) {
+				if (nodeMetadataMap[nodeState.type].internal) {
 					return null;
 				}
 
@@ -35,7 +35,7 @@ interface TNodeIndicatorsProps {
 
 export const NodeIndicator: React.FC<TNodeIndicatorProps> = (props) => {
 	const { nodeState, editor } = props;
-	const nodeId = useCompute(nodeState, (node) => node.id);
+	const nodeId = React.useMemo(() => nodeState.id, [nodeState.id]);
 
 	const isSelected = useCompute(editor.selectedNodeId, (selectedId) => selectedId === nodeId, [
 		nodeId
@@ -101,6 +101,6 @@ export const NodeIndicator: React.FC<TNodeIndicatorProps> = (props) => {
 };
 
 interface TNodeIndicatorProps {
-	nodeState: TNodeState<TNode>;
+	nodeState: TNodeState<TFlatNode>;
 	editor: TPageEditor;
 }

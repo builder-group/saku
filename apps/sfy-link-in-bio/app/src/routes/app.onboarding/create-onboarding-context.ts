@@ -1,5 +1,5 @@
 import { Err, Ok, shortId, type TResult } from '@blgc/utils';
-import { TSite } from '@repo/editor';
+import { TFlatSite, toFlatSite } from '@repo/editor';
 import type { ShopifyGlobal } from '@shopify/app-bridge-types';
 import { coreApiClient } from '@/environment';
 import { blankPreset } from '@/features/page-editor';
@@ -117,7 +117,7 @@ export function createOnboardingContext(
 			this.stepr.goTo({
 				type: 'linkpop-preview',
 				url: fullUrl,
-				site: result.value.data.data as unknown as TSite
+				site: result.value.data.content as unknown as TFlatSite
 			});
 
 			return Ok(undefined);
@@ -163,13 +163,13 @@ export function createOnboardingContext(
 				selectedTemplate
 			});
 
-			let preset: TSite;
+			let preset: TFlatSite;
 			switch (selectedTemplate) {
 				case 'blank':
-					preset = blankPreset({ shopId: this.shopId });
+					preset = toFlatSite(blankPreset({ shopId: this.shopId }));
 					break;
 				default:
-					preset = blankPreset({ shopId: this.shopId });
+					preset = toFlatSite(blankPreset({ shopId: this.shopId }));
 			}
 
 			const idToken = await this.shopify.idToken();
@@ -239,7 +239,7 @@ export type TOnboardingStep =
 	  }
 	| { type: 'site-creation-options'; selectedOption?: TSiteCreationOption }
 	| { type: 'linkpop-url'; handle?: string }
-	| { type: 'linkpop-preview'; url?: string; site?: TSite }
+	| { type: 'linkpop-preview'; url?: string; site?: TFlatSite }
 	| { type: 'templates'; selectedTemplate?: TTemplate };
 
 export type TSiteCreationOption = 'create-new' | 'linkpop';

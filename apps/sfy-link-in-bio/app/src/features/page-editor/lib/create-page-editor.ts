@@ -5,13 +5,14 @@ import {
 	getFontMetadataByFamily,
 	TAsset,
 	TAssetHash,
-	TAssetId,
+	TFlatNode,
+	TFlatPageNode,
+	TFlatSite,
 	TFont,
 	TFontAsset,
 	TImageAsset,
-	TNode,
 	TNodeId,
-	TPageNode,
+	toHierarchical,
 	TSite
 } from '@repo/editor';
 import { ShopifyGlobal } from '@shopify/app-bridge-react';
@@ -21,7 +22,7 @@ import React from 'react';
 import { appConfig, coreApiClient } from '@/environment';
 import { requestReview } from '@/lib';
 import { TSettingsSectionType, TViewType } from '../environment';
-import { createNodeState, TNodeState, TNodeStateValue } from './create-node-state';
+import { createNodeState, TNodeState } from './create-node-state';
 import { getNodeAssetHashes } from './get-node-asset-hashes';
 
 export function createPageEditor(
@@ -63,15 +64,6 @@ export function createPageEditor(
 		selectedNodeId: createState<TNodeId | null>(null),
 
 		assetsMap: site.assets,
-		assetsHashMap: Object.values(site.assets).reduce(
-			(acc, asset) => {
-				if (asset.hash) {
-					acc[asset.hash] = asset.id;
-				}
-				return acc;
-			},
-			{} as Record<TAssetHash, TAssetId>
-		),
 
 		activeView: createState('layers' as TViewType),
 		activeSettingsSection: createState<TSettingsSectionType | null>('appearance'),
@@ -108,7 +100,7 @@ export function createPageEditor(
 		},
 
 		getRootNode() {
-			return this.nodeMap[this.rootNodeId] as TNodeState<TPageNode>;
+			return this.nodeMap[this.rootNodeId] as TNodeState<TFlatPageNode>;
 		},
 
 		addNode(node, parentId, index) {
@@ -273,7 +265,7 @@ export function createPageEditor(
 			});
 		},
 
-		updateNode<GNode extends TNode>(nodeId: TNodeId, updates: Partial<TNodeStateValue<GNode>>) {
+		updateNode<GNode extends TFlatNode>(nodeId: TNodeId, updates: Partial<GNode>) {
 			const nodeState = this.nodeMap[nodeId];
 			if (nodeState != null) {
 				nodeState.set((v) => ({ ...v, ...updates }));
@@ -323,7 +315,7 @@ export function createPageEditor(
 				}
 
 				// Copy the node and assign a new ID
-				const copiedNode = sourceNodeState.toCopiedNode();
+				const copiedNode = sourceNodeState.copied();
 				copiedNode.id = createId('node');
 
 				// If the node has children add it and copy children
@@ -363,15 +355,13 @@ export function createPageEditor(
 
 			// Check if font already registered
 			const hash = getFontHash(fontMetadata.font);
-			const existingAssetId = this.assetsHashMap[hash];
-			if (existingAssetId != null) {
+			if (this.assetsMap[hash] != null) {
 				return fontMetadata.font as TFont;
 			}
 
 			// Register the font
-			const id = createId('asset');
-			this.assetsMap[id] = {
-				id,
+			this.assetsMap[hash] = {
+				id: createId('asset'),
 				type: 'font',
 				hash,
 				contentType: 'font/woff2',
@@ -382,8 +372,7 @@ export function createPageEditor(
 				font: fontMetadata.font
 			};
 
-			this.assetsHashMap[hash] = id;
-			this.loadFont(id);
+			this.loadFont(hash);
 
 			return fontMetadata.font as TFont;
 		},
@@ -402,13 +391,14 @@ export function createPageEditor(
 		},
 
 		registerImage(url, fileName, dimensions) {
-			const id = createId('asset');
+			const assetId = createId('asset');
+			const hash = assetId; // Temporary workaround until proper content hashing
 
 			// Register the image
-			this.assetsMap[id] = {
-				id,
+			this.assetsMap[hash] = {
+				id: assetId,
 				type: 'image',
-				hash: '', // TODO:
+				hash,
 				contentType: 'image/jpeg', // TODO:
 				storage: {
 					type: 'url',
@@ -418,7 +408,7 @@ export function createPageEditor(
 				fileName
 			};
 
-			return id;
+			return hash;
 		},
 
 		getFontAsset(hash) {
@@ -434,28 +424,16 @@ export function createPageEditor(
 			return asset;
 		},
 
-		loadFont(fontOrId) {
-			let id: TAssetId;
-			if (typeof fontOrId === 'string') {
-				id = fontOrId;
-			}
-			// Find asset ID by font hash
-			else {
-				const hash = getFontHash(fontOrId);
-				const foundId = this.assetsHashMap[hash];
-				if (foundId == null) {
-					return; // Font not registered
-				}
-				id = foundId;
-			}
+		loadFont(fontOrHash) {
+			const hash = typeof fontOrHash === 'string' ? fontOrHash : getFontHash(fontOrHash);
 
-			const asset = this.assetsMap[id];
+			const asset = this.assetsMap[hash];
 			if (asset == null || asset.type !== 'font' || asset.storage.type !== 'url') {
 				return;
 			}
 
 			// Check if already loaded in DOM
-			if (document.querySelector(`link[data-font-id="${id}"]`) != null) {
+			if (document.querySelector(`link[data-font-id="${asset.id}"]`) != null) {
 				return;
 			}
 
@@ -463,15 +441,15 @@ export function createPageEditor(
 			const link = document.createElement('link');
 			link.rel = 'stylesheet';
 			link.href = asset.storage.url;
-			link.setAttribute('data-font-id', id);
+			link.setAttribute('data-font-id', asset.id);
 			document.head.appendChild(link);
 		},
 
 		loadFonts() {
-			Object.keys(this.assetsMap).forEach((id) => {
-				const asset = this.assetsMap[id as TAssetId];
+			Object.keys(this.assetsMap).forEach((hash) => {
+				const asset = this.assetsMap[hash];
 				if (asset?.type === 'font') {
-					this.loadFont(id as TAssetId);
+					this.loadFont(hash);
 				}
 			});
 		},
@@ -486,28 +464,23 @@ export function createPageEditor(
 			}, new Set<TAssetHash>());
 
 			// Find unused assets
-			const assetsToRemove: TAssetId[] = [];
-			Object.keys(this.assetsMap).forEach((id) => {
-				if (!usedHashes.has(id)) {
-					assetsToRemove.push(id as TAssetId);
+			const assetsToRemove: TAssetHash[] = [];
+			Object.keys(this.assetsMap).forEach((hash) => {
+				if (!usedHashes.has(hash)) {
+					assetsToRemove.push(hash as TAssetHash);
 				}
 			});
 
 			// Remove unused assets
-			assetsToRemove.forEach((id) => {
-				const asset = this.assetsMap[id];
-
-				// Remove from hash map
-				if (asset?.hash != null) {
-					delete this.assetsHashMap[asset.hash];
-				}
+			assetsToRemove.forEach((hash) => {
+				const asset = this.assetsMap[hash];
 
 				// Remove from assets map
-				delete this.assetsMap[id];
+				delete this.assetsMap[hash];
 
 				// Remove from DOM if it's a font
 				if (asset?.type === 'font') {
-					const linkElement = document.querySelector(`link[data-font-id="${id}"]`);
+					const linkElement = document.querySelector(`link[data-font-id="${hash}"]`);
 					if (linkElement != null) {
 						linkElement.remove();
 					}
@@ -526,7 +499,7 @@ export function createPageEditor(
 			const result = await coreApiClient.put(
 				'/v1/shopify/site/{siteId}/content',
 				{
-					content: this.toSite() as any
+					content: this.toFlatSite() as any
 				},
 				{
 					pathParams: {
@@ -612,18 +585,21 @@ export function createPageEditor(
 		},
 
 		toSite() {
+			return toHierarchical(this.toFlatSite());
+		},
+		toFlatSite() {
 			return {
 				version: this.site.version,
 				rootId: this.rootNodeId,
 				nodes: Object.values(this.nodeMap).reduce(
 					(acc, nodeState) => {
-						acc[nodeState.id] = nodeState.toCopiedNode();
+						acc[nodeState.id] = nodeState.copied();
 						return acc;
 					},
-					{} as Record<TNodeId, TNode>
+					{} as Record<TNodeId, TFlatNode>
 				),
 				assets: deepCopy(this.assetsMap)
-			} satisfies TSite;
+			} satisfies TFlatSite;
 		}
 	};
 }
@@ -646,8 +622,7 @@ export interface TPageEditor {
 	selectedNodeId: TState<TNodeId | null, []>;
 	nodeMap: Record<TNodeId, TNodeState>;
 
-	assetsMap: Record<TAssetId, TAsset>;
-	assetsHashMap: Record<TAssetHash, TAssetId>;
+	assetsMap: Record<TAssetHash, TAsset>;
 
 	activeView: TState<TViewType, []>;
 	activeSettingsSection: TState<TSettingsSectionType | null, []>;
@@ -666,26 +641,23 @@ export interface TPageEditor {
 	switchView: (view: TViewType) => void;
 	switchSettingsSection: (section: TSettingsSectionType | null) => void;
 
-	getRootNode: () => TNodeState<TPageNode>;
-	addNode: (node: TNode, parentId?: TNodeId, index?: number) => TNodeId;
+	getRootNode: () => TNodeState<TFlatPageNode>;
+	addNode: (node: TFlatNode, parentId?: TNodeId, index?: number) => TNodeId;
 	removeNode: (nodeId: TNodeId) => void;
 	swapNodes: (nodeId1: TNodeId, nodeId2: TNodeId) => void;
 	reorderNode: (nodeId: TNodeId, targetNodeId: TNodeId) => void;
 	moveNode: (nodeId: TNodeId, newParentId: TNodeId) => void;
-	updateNode: <GNode extends TNode>(
-		nodeId: TNodeId,
-		updates: Partial<TNodeStateValue<GNode>>
-	) => void;
+	updateNode: <GNode extends TFlatNode>(nodeId: TNodeId, updates: Partial<GNode>) => void;
 	selectNode: (nodeId: TNodeId) => void;
 	unselectNode: () => void;
 	copyNode: (nodeId: TNodeId) => TNodeId | null;
 
-	getFontAsset: (id: TAssetId | undefined | null) => TFontAsset | null;
+	getFontAsset: (hash: TAssetHash | undefined | null) => TFontAsset | null;
 	registerFontFamily: (fontFamily: string) => TFont | null;
-	loadFont: (fontOrId: TFont | TAssetId) => void;
+	loadFont: (fontOrHash: TFont | TAssetHash) => void;
 	loadFonts: () => void;
 
-	getImageAsset: (id: TAssetId | undefined | null) => TImageAsset | null;
+	getImageAsset: (hash: TAssetHash | undefined | null) => TImageAsset | null;
 	registerImage: (
 		url: string,
 		fileName?: string,
@@ -697,6 +669,7 @@ export interface TPageEditor {
 	publish: () => Promise<boolean>;
 
 	toSite: () => TSite;
+	toFlatSite: () => TFlatSite;
 }
 
 export interface TBoundingRect {
@@ -706,7 +679,7 @@ export interface TBoundingRect {
 	right: number;
 }
 
-export interface TExtendedSite extends TSite {
+export interface TExtendedSite extends TFlatSite {
 	id: string;
 	handle: string;
 	url: string;

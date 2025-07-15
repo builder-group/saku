@@ -1,14 +1,15 @@
-import { TAsset, TAssetHash } from '@repo/editor';
+import { TAssetHash } from '@repo/editor';
+import { TSiteProvider } from '../site-provider';
 
 export function resolveAsset(
 	hash: TAssetHash | undefined,
-	assetsMap: Record<TAssetHash, TAsset>
+	site: TSiteProvider
 ): string | undefined {
 	if (hash == null) {
 		return undefined;
 	}
 
-	const asset = assetsMap[hash];
+	const asset = site.getAsset(hash);
 	if (asset == null) {
 		return undefined;
 	}

@@ -1,3 +1,4 @@
+import { toFlatSite } from '@repo/editor';
 import { AppError } from '@repo/hono-utils';
 import { and, eq } from 'drizzle-orm';
 import { router } from '@/app/router';
@@ -7,7 +8,8 @@ import {
 	GetSiteContentByWorkspaceAndHandleRoute,
 	GetSiteContentRoute,
 	GetSiteRoute,
-	ParseExternalSiteRoute
+	ParseExternalSiteRoute,
+	TFlatSiteContentDto
 } from './schema';
 
 router.openapi(GetSiteRoute, async (c) => {
@@ -39,7 +41,7 @@ router.openapi(GetSiteRoute, async (c) => {
 			workspaceId: site.workspaceId,
 			handle: site.handle,
 			displayName: site.displayName ?? undefined,
-			content: site.content,
+			content: site.content as TFlatSiteContentDto,
 			createdAt: site.createdAt.toISOString(),
 			updatedAt: site.updatedAt.toISOString()
 		},
@@ -65,7 +67,7 @@ router.openapi(GetSiteContentRoute, async (c) => {
 		});
 	}
 
-	return c.json(site.content, 200);
+	return c.json(site.content as TFlatSiteContentDto, 200);
 });
 
 router.openapi(ParseExternalSiteRoute, async (c) => {
@@ -96,7 +98,7 @@ router.openapi(ParseExternalSiteRoute, async (c) => {
 				{
 					provider: 'linkpop',
 					handle: handle,
-					data: site as any
+					content: toFlatSite(site) as TFlatSiteContentDto
 				},
 				200
 			);
@@ -139,5 +141,5 @@ router.openapi(GetSiteContentByWorkspaceAndHandleRoute, async (c) => {
 		});
 	}
 
-	return c.json(site.content, 200);
+	return c.json(site.content as TFlatSiteContentDto, 200);
 });

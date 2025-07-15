@@ -1,5 +1,6 @@
 import { shortId } from '@blgc/utils';
 import {
+	createId,
 	cssRgbaToRgba,
 	getFontHash,
 	getFontMetadataByFamily,
@@ -38,7 +39,7 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 		}
 
 		const aboutNode: TAboutNode = {
-			id: shortId(),
+			id: createId('node'),
 			type: 'about',
 			content: {
 				name: page.title ?? 'Your Name',
@@ -78,7 +79,7 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 
 				// Create link node for links with URLs
 				children.push({
-					id: shortId(),
+					id: createId('node'),
 					type: 'link',
 					content: {
 						url: link.url,
@@ -102,7 +103,7 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 			} else {
 				// Create text node for links without URLs
 				children.push({
-					id: shortId(),
+					id: createId('node'),
 					type: 'text',
 					content: {
 						text: link.title
@@ -127,7 +128,7 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 		version: 'v0.0.1',
 		assets,
 		root: {
-			id: shortId(),
+			id: createId('node'),
 			type: 'page',
 			visible: true,
 			children,
@@ -227,6 +228,7 @@ function createFontAsset(fontFamily: string): TFontAsset {
 	}
 
 	return {
+		id: createId('asset'),
 		type: 'font',
 		hash: getFontHash({
 			family: fontFamily,
@@ -263,6 +265,7 @@ function createImageAssetFromUrl(url: string): TImageAsset {
 	}
 
 	return {
+		id: createId('asset'),
 		type: 'image',
 		hash,
 		contentType,
