@@ -1,9 +1,11 @@
 import { deepCopy, shortId } from '@blgc/utils';
 import {
+	createId,
 	getFontHash,
 	getFontMetadataByFamily,
 	TAsset,
 	TAssetHash,
+	TAssetId,
 	TFont,
 	TFontAsset,
 	TImageAsset,
@@ -19,8 +21,7 @@ import React from 'react';
 import { appConfig, coreApiClient } from '@/environment';
 import { requestReview } from '@/lib';
 import { TSettingsSectionType, TViewType } from '../environment';
-import { createNodeState, TNodeState } from './create-node-state';
-import { flattenNode, TFlattenedNode, unflattenNode } from './flatten-node';
+import { createNodeState, TNodeState, TNodeStateValue } from './create-node-state';
 import { getNodeAssetHashes } from './get-node-asset-hashes';
 
 export function createPageEditor(
@@ -38,16 +39,38 @@ export function createPageEditor(
 			url: site.url
 		},
 
-		nodeMap: flattenNode(site.root, (node) => createNodeState(node)),
-		rootNodeId: site.root.id,
+		nodeMap: (() => {
+			const parentMap = Object.values(site.nodes).reduce(
+				(map, node) => {
+					if ('children' in node && node.children) {
+						node.children.forEach((childId) => {
+							map[childId] = node.id;
+						});
+					}
+					return map;
+				},
+				{} as Record<TNodeId, TNodeId>
+			);
+
+			return Object.fromEntries(
+				Object.entries(site.nodes).map(([id, node]) => [
+					id,
+					createNodeState(node, parentMap[id as TNodeId])
+				])
+			);
+		})(),
+		rootNodeId: site.rootId,
 		selectedNodeId: createState<TNodeId | null>(null),
 
-		assetsMap: site.assets.reduce(
-			(map, asset) => {
-				map[asset.hash] = asset;
-				return map;
+		assetsMap: site.assets,
+		assetsHashMap: Object.values(site.assets).reduce(
+			(acc, asset) => {
+				if (asset.hash) {
+					acc[asset.hash] = asset.id;
+				}
+				return acc;
 			},
-			{} as Record<TAssetHash, TAsset>
+			{} as Record<TAssetHash, TAssetId>
 		),
 
 		activeView: createState('layers' as TViewType),
@@ -85,47 +108,36 @@ export function createPageEditor(
 		},
 
 		getRootNode() {
-			return this.nodeMap[this.rootNodeId] as TState<TFlattenedNode<TPageNode>, []>;
+			return this.nodeMap[this.rootNodeId] as TNodeState<TPageNode>;
 		},
 
 		addNode(node, parentId, index) {
 			const targetParentId = parentId ?? this.rootNodeId;
 
-			// Flatten the entire node subtree with correct parentId for root
-			const flattenedSubtree = flattenNode(node, (flatNode) => {
-				// Set correct parentId for the root node being added
-				return flatNode.id === node.id ? { ...flatNode, parentId: targetParentId } : flatNode;
-			});
+			// Update existing node
+			if (this.nodeMap[node.id] != null) {
+				this.nodeMap[node.id]?.set(node);
+			}
+			// Create new node state with ref
+			else {
+				this.nodeMap[node.id] = createNodeState(node);
+			}
 
-			// Add or update all nodes in the subtree
-			Object.entries(flattenedSubtree).forEach(([nodeId, flatNode]) => {
-				// Update existing node
-				if (this.nodeMap[nodeId] != null) {
-					this.nodeMap[nodeId]?.set(flatNode);
-				}
-				// Create new node state with ref
-				else {
-					this.nodeMap[nodeId] = createNodeState(flatNode);
-				}
-			});
-
-			// Add the root node to parent's children at the specified index
+			// Add the node to parent's children at the specified index
 			const parentState = this.nodeMap[targetParentId];
 			if (parentState != null) {
 				parentState.set((v) => {
-					if ('children' in v) {
-						// Only add if not already in children
-						if (!v.children.includes(node.id)) {
-							const children = [...v.children];
-							if (index != null && index >= 0 && index <= children.length) {
-								// Insert at specified index
-								children.splice(index, 0, node.id);
-							} else {
-								// Append to end if index is not specified or out of bounds
-								children.push(node.id);
-							}
-							return { ...v, children };
+					// Only add if not already in children
+					if ('children' in v && Array.isArray(v.children) && !v.children.includes(node.id)) {
+						const children = [...v.children];
+						if (index != null && index >= 0 && index <= children.length) {
+							// Insert at specified index
+							children.splice(index, 0, node.id);
+						} else {
+							// Append to end if index is not specified or out of bounds
+							children.push(node.id);
 						}
+						return { ...v, children };
 					}
 					return v;
 				});
@@ -139,17 +151,17 @@ export function createPageEditor(
 				this.unselectNode();
 			}
 
-			const node = this.nodeMap[nodeId]?._v;
+			const node = this.nodeMap[nodeId];
 			if (node == null) {
 				return;
 			}
 
-			// Remove from parent's children using parentId
+			// Remove from parent's children
 			if (node.parentId != null) {
 				const parentState = this.nodeMap[node.parentId];
 				if (parentState != null) {
 					parentState.set((v) => {
-						if ('children' in v) {
+						if ('children' in v && Array.isArray(v.children)) {
 							return { ...v, children: v.children.filter((id) => id !== nodeId) };
 						}
 						return v;
@@ -162,8 +174,8 @@ export function createPageEditor(
 		},
 
 		swapNodes(nodeId1, nodeId2) {
-			const node1 = this.nodeMap[nodeId1]?._v;
-			const node2 = this.nodeMap[nodeId2]?._v;
+			const node1 = this.nodeMap[nodeId1];
+			const node2 = this.nodeMap[nodeId2];
 			if (node1 == null || node2 == null) {
 				return;
 			}
@@ -179,7 +191,7 @@ export function createPageEditor(
 			}
 
 			parentState.set((v) => {
-				if ('children' in v) {
+				if ('children' in v && Array.isArray(v.children)) {
 					const children = [...v.children];
 					const index1 = children.indexOf(nodeId1);
 					const index2 = children.indexOf(nodeId2);
@@ -196,8 +208,8 @@ export function createPageEditor(
 		},
 
 		reorderNode(nodeId, targetNodeId) {
-			const node = this.nodeMap[nodeId]?._v;
-			const targetNode = this.nodeMap[targetNodeId]?._v;
+			const node = this.nodeMap[nodeId];
+			const targetNode = this.nodeMap[targetNodeId];
 			if (node == null || targetNode == null) {
 				return;
 			}
@@ -213,7 +225,7 @@ export function createPageEditor(
 			}
 
 			parentState.set((v) => {
-				if ('children' in v) {
+				if ('children' in v && Array.isArray(v.children)) {
 					const children = [...v.children];
 					const fromIndex = children.indexOf(nodeId);
 					const toIndex = children.indexOf(targetNodeId);
@@ -236,15 +248,12 @@ export function createPageEditor(
 				return;
 			}
 
-			const node = nodeState._v;
-			const oldParentId = node.parentId;
-
 			// Remove from old parent
-			if (oldParentId != null) {
-				const oldParentState = this.nodeMap[oldParentId];
+			if (nodeState.parentId != null) {
+				const oldParentState = this.nodeMap[nodeState.parentId];
 				if (oldParentState != null) {
 					oldParentState.set((v) => {
-						if ('children' in v) {
+						if ('children' in v && Array.isArray(v.children)) {
 							return { ...v, children: v.children.filter((id) => id !== nodeId) };
 						}
 						return v;
@@ -253,21 +262,21 @@ export function createPageEditor(
 			}
 
 			// Update node's parentId
-			nodeState.set((v) => ({ ...v, parentId: newParentId }));
+			nodeState.parentId = newParentId;
 
 			// Add to new parent
 			newParentState.set((v) => {
-				if ('children' in v) {
+				if ('children' in v && Array.isArray(v.children)) {
 					return { ...v, children: [...v.children, nodeId] };
 				}
 				return v;
 			});
 		},
 
-		updateNode<GNode extends TFlattenedNode<TNode>>(nodeId: TNodeId, updates: Partial<GNode>) {
+		updateNode<GNode extends TNode>(nodeId: TNodeId, updates: Partial<TNodeStateValue<GNode>>) {
 			const nodeState = this.nodeMap[nodeId];
 			if (nodeState != null) {
-				nodeState.set((v) => ({ ...v, ...updates }) as TFlattenedNode<TNode>);
+				nodeState.set((v) => ({ ...v, ...updates }));
 			}
 		},
 
@@ -283,38 +292,62 @@ export function createPageEditor(
 		},
 
 		copyNode(nodeId) {
-			const node = this.nodeMap[nodeId]?._v;
-			if (node == null || node.parentId == null) {
+			const nodeState = this.nodeMap[nodeId];
+			if (nodeState == null || nodeState.parentId == null) {
 				return null;
 			}
 
-			// Get parent node and find index of original node
-			const parentState = this.nodeMap[node.parentId];
-			if (parentState == null || !('children' in parentState._v)) {
+			// Get parent node and find index of to-be-copied node
+			const parentNode = this.nodeMap[nodeState.parentId]?._v;
+			if (
+				parentNode == null ||
+				!('children' in parentNode) ||
+				!Array.isArray(parentNode.children)
+			) {
 				return null;
 			}
-			const parentNode = parentState._v;
 			const nodeIndex = parentNode.children.indexOf(nodeId);
 			if (nodeIndex === -1) {
 				return null;
 			}
 
-			// Unflatten the node and its subtree
-			const originalNode = unflattenNode(this.nodeMap, nodeId, (state) => state._v) as TNode;
-
-			// Create new IDs for all nodes in the subtree
-			function replaceIds(node: TNode): TNode {
-				node.id = shortId();
-				if ('children' in node) {
-					node.children = node.children.map(replaceIds);
+			// Recursively copy node and all its children
+			const copyNodeRecursive = (
+				sourceNodeId: TNodeId,
+				parentId: TNodeId,
+				index?: number
+			): TNodeId | null => {
+				const sourceNodeState = this.nodeMap[sourceNodeId];
+				if (sourceNodeState == null) {
+					return null;
 				}
-				return node;
-			}
 
-			const copiedNode = replaceIds(deepCopy(originalNode));
+				// Copy the node and assign a new ID
+				const copiedNode = sourceNodeState.toCopiedNode();
+				copiedNode.id = createId('node');
 
-			// Add the copied node right after the original node
-			return this.addNode(copiedNode, node.parentId, nodeIndex + 1);
+				// If the node has children add it and copy children
+				if ('children' in copiedNode && Array.isArray(copiedNode.children)) {
+					const originalChildren = [...copiedNode.children];
+					copiedNode.children = [];
+
+					// First add this node so it exists as a parent for children
+					const newNodeId = this.addNode(copiedNode, parentId, index);
+
+					// Then copy all children
+					for (const childId of originalChildren) {
+						copyNodeRecursive(childId, newNodeId);
+					}
+
+					return newNodeId;
+				}
+
+				// Node has no children, just add it
+				return this.addNode(copiedNode, parentId, index);
+			};
+
+			// Copy the entire subtree and insert it right after the original
+			return copyNodeRecursive(nodeId, nodeState.parentId, nodeIndex + 1);
 		},
 
 		registerFontFamily(fontFamily) {
@@ -330,23 +363,27 @@ export function createPageEditor(
 
 			// Check if font already registered
 			const hash = getFontHash(fontMetadata.font);
-			if (this.assetsMap[hash] != null) {
+			const existingAssetId = this.assetsHashMap[hash];
+			if (existingAssetId != null) {
 				return fontMetadata.font as TFont;
 			}
 
 			// Register the font
-			this.assetsMap[hash] = {
+			const id = createId('asset');
+			this.assetsMap[id] = {
+				id,
 				type: 'font',
+				hash,
 				contentType: 'font/woff2',
 				storage: {
 					type: 'url',
 					url: `https://fonts.googleapis.com/css2?family=${fontMetadata.googleFont}&display=swap`
 				},
-				font: fontMetadata.font,
-				hash
+				font: fontMetadata.font
 			};
 
-			this.loadFont(hash);
+			this.assetsHashMap[hash] = id;
+			this.loadFont(id);
 
 			return fontMetadata.font as TFont;
 		},
@@ -365,27 +402,23 @@ export function createPageEditor(
 		},
 
 		registerImage(url, fileName, dimensions) {
-			const hash = shortId(); // TODO: use proper content hash
-
-			// Check if image already registered
-			if (this.assetsMap[hash] != null) {
-				return hash;
-			}
+			const id = createId('asset');
 
 			// Register the image
-			this.assetsMap[hash] = {
+			this.assetsMap[id] = {
+				id,
 				type: 'image',
+				hash: '', // TODO:
 				contentType: 'image/jpeg', // TODO:
 				storage: {
 					type: 'url',
 					url
 				},
 				dimensions,
-				fileName,
-				hash
+				fileName
 			};
 
-			return hash;
+			return id;
 		},
 
 		getFontAsset(hash) {
@@ -401,15 +434,28 @@ export function createPageEditor(
 			return asset;
 		},
 
-		loadFont(fontOrHash) {
-			const hash = typeof fontOrHash === 'string' ? fontOrHash : getFontHash(fontOrHash);
-			const asset = this.assetsMap[hash];
+		loadFont(fontOrId) {
+			let id: TAssetId;
+			if (typeof fontOrId === 'string') {
+				id = fontOrId;
+			}
+			// Find asset ID by font hash
+			else {
+				const hash = getFontHash(fontOrId);
+				const foundId = this.assetsHashMap[hash];
+				if (foundId == null) {
+					return; // Font not registered
+				}
+				id = foundId;
+			}
+
+			const asset = this.assetsMap[id];
 			if (asset == null || asset.type !== 'font' || asset.storage.type !== 'url') {
 				return;
 			}
 
 			// Check if already loaded in DOM
-			if (document.querySelector(`link[data-font-id="${hash}"]`) != null) {
+			if (document.querySelector(`link[data-font-id="${id}"]`) != null) {
 				return;
 			}
 
@@ -417,15 +463,15 @@ export function createPageEditor(
 			const link = document.createElement('link');
 			link.rel = 'stylesheet';
 			link.href = asset.storage.url;
-			link.setAttribute('data-font-id', hash);
+			link.setAttribute('data-font-id', id);
 			document.head.appendChild(link);
 		},
 
 		loadFonts() {
-			Object.keys(this.assetsMap).forEach((hash) => {
-				const asset = this.assetsMap[hash];
+			Object.keys(this.assetsMap).forEach((id) => {
+				const asset = this.assetsMap[id as TAssetId];
 				if (asset?.type === 'font') {
-					this.loadFont(hash);
+					this.loadFont(id as TAssetId);
 				}
 			});
 		},
@@ -440,23 +486,28 @@ export function createPageEditor(
 			}, new Set<TAssetHash>());
 
 			// Find unused assets
-			const assetsToRemove: TAssetHash[] = [];
-			Object.keys(this.assetsMap).forEach((hash) => {
-				if (!usedHashes.has(hash)) {
-					assetsToRemove.push(hash);
+			const assetsToRemove: TAssetId[] = [];
+			Object.keys(this.assetsMap).forEach((id) => {
+				if (!usedHashes.has(id)) {
+					assetsToRemove.push(id as TAssetId);
 				}
 			});
 
 			// Remove unused assets
-			assetsToRemove.forEach((hash) => {
-				const asset = this.assetsMap[hash];
+			assetsToRemove.forEach((id) => {
+				const asset = this.assetsMap[id];
+
+				// Remove from hash map
+				if (asset?.hash != null) {
+					delete this.assetsHashMap[asset.hash];
+				}
 
 				// Remove from assets map
-				delete this.assetsMap[hash];
+				delete this.assetsMap[id];
 
 				// Remove from DOM if it's a font
 				if (asset?.type === 'font') {
-					const linkElement = document.querySelector(`link[data-font-id="${hash}"]`);
+					const linkElement = document.querySelector(`link[data-font-id="${id}"]`);
 					if (linkElement != null) {
 						linkElement.remove();
 					}
@@ -563,8 +614,15 @@ export function createPageEditor(
 		toSite() {
 			return {
 				version: this.site.version,
-				root: unflattenNode(this.nodeMap, this.rootNodeId, (state) => state._v) as TPageNode,
-				assets: Object.values(this.assetsMap)
+				rootId: this.rootNodeId,
+				nodes: Object.values(this.nodeMap).reduce(
+					(acc, nodeState) => {
+						acc[nodeState.id] = nodeState.toCopiedNode();
+						return acc;
+					},
+					{} as Record<TNodeId, TNode>
+				),
+				assets: deepCopy(this.assetsMap)
 			} satisfies TSite;
 		}
 	};
@@ -588,7 +646,8 @@ export interface TPageEditor {
 	selectedNodeId: TState<TNodeId | null, []>;
 	nodeMap: Record<TNodeId, TNodeState>;
 
-	assetsMap: Record<TAssetHash, TAsset>;
+	assetsMap: Record<TAssetId, TAsset>;
+	assetsHashMap: Record<TAssetHash, TAssetId>;
 
 	activeView: TState<TViewType, []>;
 	activeSettingsSection: TState<TSettingsSectionType | null, []>;
@@ -607,26 +666,26 @@ export interface TPageEditor {
 	switchView: (view: TViewType) => void;
 	switchSettingsSection: (section: TSettingsSectionType | null) => void;
 
-	getRootNode: () => TState<TFlattenedNode<TPageNode>, []>;
+	getRootNode: () => TNodeState<TPageNode>;
 	addNode: (node: TNode, parentId?: TNodeId, index?: number) => TNodeId;
 	removeNode: (nodeId: TNodeId) => void;
 	swapNodes: (nodeId1: TNodeId, nodeId2: TNodeId) => void;
 	reorderNode: (nodeId: TNodeId, targetNodeId: TNodeId) => void;
 	moveNode: (nodeId: TNodeId, newParentId: TNodeId) => void;
-	updateNode: <GNode extends TFlattenedNode<TNode>>(
+	updateNode: <GNode extends TNode>(
 		nodeId: TNodeId,
-		updates: Partial<GNode>
+		updates: Partial<TNodeStateValue<GNode>>
 	) => void;
 	selectNode: (nodeId: TNodeId) => void;
 	unselectNode: () => void;
 	copyNode: (nodeId: TNodeId) => TNodeId | null;
 
-	getFontAsset: (hash: TAssetHash | undefined | null) => TFontAsset | null;
+	getFontAsset: (id: TAssetId | undefined | null) => TFontAsset | null;
 	registerFontFamily: (fontFamily: string) => TFont | null;
-	loadFont: (fontOrHash: TFont | string) => void;
+	loadFont: (fontOrId: TFont | TAssetId) => void;
 	loadFonts: () => void;
 
-	getImageAsset: (hash: TAssetHash | undefined | null) => TImageAsset | null;
+	getImageAsset: (id: TAssetId | undefined | null) => TImageAsset | null;
 	registerImage: (
 		url: string,
 		fileName?: string,
