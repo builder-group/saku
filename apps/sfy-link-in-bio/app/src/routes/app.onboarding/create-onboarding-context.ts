@@ -1,20 +1,26 @@
 import { Err, Ok, shortId, type TResult } from '@blgc/utils';
-import { TFlatSite, toFlatSite } from '@repo/editor';
+import { TFlatSite } from '@repo/editor';
 import type { ShopifyGlobal } from '@shopify/app-bridge-types';
 import { coreApiClient } from '@/environment';
-import { blankPreset } from '@/features/page-editor';
 import { createStepr, type TStepr } from '@/lib/ui';
 
 export function createOnboardingContext(
 	config: TCreateOnboardingContextConfig
 ): TOnboardingContext {
-	const { shopify, shopId } = config;
+	const { shopify, shopId, presets } = config;
 
 	return {
 		id: shortId(),
 		shopify,
 		shopId,
 		stepr: createStepr<TOnboardingStep>({ initialStep: { type: 'welcome' } }),
+		presets: presets.reduce(
+			(acc, preset) => {
+				acc[preset.id] = preset;
+				return acc;
+			},
+			{} as Record<string, TSitePreset>
+		),
 
 		continueFromWelcome() {
 			this.stepr.goTo({ type: 'handle' });
@@ -163,13 +169,9 @@ export function createOnboardingContext(
 				selectedTemplate
 			});
 
-			let preset: TFlatSite;
-			switch (selectedTemplate) {
-				case 'blank':
-					preset = toFlatSite(blankPreset({ shopId: this.shopId }));
-					break;
-				default:
-					preset = toFlatSite(blankPreset({ shopId: this.shopId }));
+			const preset = this.presets[selectedTemplate];
+			if (preset == null) {
+				return Err('Invalid template');
 			}
 
 			const idToken = await this.shopify.idToken();
@@ -183,7 +185,7 @@ export function createOnboardingContext(
 				{
 					handle,
 					displayName: 'My Bio Page',
-					content: preset as any,
+					content: preset.content as any,
 					createRedirect: true,
 					overrideRedirect: shouldOverrideRedirect
 				},
@@ -207,11 +209,18 @@ export function createOnboardingContext(
 	};
 }
 
+export interface TCreateOnboardingContextConfig {
+	shopify: ShopifyGlobal;
+	shopId: string;
+	presets: TSitePreset[];
+}
+
 export interface TOnboardingContext {
 	id: string;
 	shopify: ShopifyGlobal;
 	shopId: string;
 	stepr: TStepr<TOnboardingStep>;
+	presets: Record<string, TSitePreset>;
 
 	continueFromWelcome: () => void;
 	continueFromHandle: (
@@ -223,11 +232,6 @@ export interface TOnboardingContext {
 	continueFromLinkpopPreview: () => Promise<TResult<void, string>>;
 	continueFromTemplates: (selectedTemplate: TTemplate) => Promise<TResult<void, string>>;
 	goBack: () => void;
-}
-
-export interface TCreateOnboardingContextConfig {
-	shopify: ShopifyGlobal;
-	shopId: string;
 }
 
 export type TOnboardingStep =
@@ -254,4 +258,10 @@ export interface THandleStepError {
 export interface TLinkpopStepError {
 	message: string;
 	isNotFound: boolean;
+}
+
+export interface TSitePreset {
+	id: string;
+	label: string;
+	content: TFlatSite;
 }

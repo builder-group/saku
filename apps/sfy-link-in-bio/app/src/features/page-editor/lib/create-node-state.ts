@@ -12,10 +12,12 @@ export function createNodeState<GNode extends TFlatNode>(
 
 	return Object.assign(state, {
 		get id() {
-			return (this as TNodeState<GNode>)._v.id;
+			// Note: 'this' doesn't work in getter
+			return state._v.id;
 		},
 		get type() {
-			return (this as TNodeState<GNode>)._v.type;
+			// Note: 'this' doesn't work in getter
+			return state._v.type;
 		},
 		parentId,
 		ref: React.createRef<HTMLDivElement>(),
