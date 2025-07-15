@@ -1,4 +1,4 @@
-import { Pika } from 'pika-id';
+import { Pika } from './pika';
 
 export const pika = new Pika([
 	{

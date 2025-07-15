@@ -1,7 +1,7 @@
 'use client';
 
-import { deepCopy, shortId } from '@blgc/utils';
-import { TFlatNode } from '@repo/editor';
+import { deepCopy } from '@blgc/utils';
+import { createId, TFlatNode } from '@repo/editor';
 import { Icon, Popover, Text } from '@shopify/polaris';
 import React from 'react';
 import { useResizeObserver } from '@/hooks';
@@ -30,7 +30,7 @@ export const LayerSelectorPopover: React.FC<TLayerSelectorPopoverProps> = (props
 			}
 
 			const nodeId = editor.addNode({
-				id: shortId(),
+				id: createId('node'),
 				type: layerType,
 				...deepCopy(nodeMetadata.defaultData)
 			} as TFlatNode);
