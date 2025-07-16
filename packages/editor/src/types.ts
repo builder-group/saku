@@ -113,6 +113,7 @@ export interface TProductNode extends TBaseNode {
 				image?: TAssetHash;
 				selectedOptions: { name: string; value: string }[];
 			}[];
+			checkoutUrl: string;
 		};
 	};
 	style: TLayoutMixin & TBackgroundMixin & TBorderMixin & Omit<TTypographyMixin, 'textAlign'>;

@@ -1,16 +1,16 @@
 import { notEmpty } from '@blgc/utils';
 import { resolveStyleReference, TProductNode } from '@repo/editor';
-import { TResolvedProductNode, TResolvedPromisedNode } from '../../../types';
-import { TNodeResolutionContext } from '../types';
+import { TResolvedProductNode } from '../../../types';
+import { TNodeResolveContext } from '../types';
 import { resolveAsset } from './resolve-asset';
 import { resolveColor } from './resolve-color';
 
 export function resolveProductNode(
 	node: TProductNode,
-	cx: TNodeResolutionContext
-): TResolvedPromisedNode<TResolvedProductNode> | TResolvedProductNode {
+	cx: TNodeResolveContext
+): TResolvedProductNode {
 	const { content, style, ...rest } = node;
-	const defaultStyles = cx.resolved?.parentStyles;
+	const parentStyles = cx.resolved?.parentStyles;
 
 	let product: TResolvedProductNode['content']['product'] | undefined;
 	if (content.product != null) {
@@ -21,22 +21,13 @@ export function resolveProductNode(
 			}))
 			.filter(notEmpty)[0];
 
-		let checkoutUrl: string = '';
-		if (cx.site.shopId != null && variant?.id != null) {
-			const numericId =
-				typeof variant.id === 'string' && variant.id.includes('gid://')
-					? variant.id.split('/').pop()
-					: variant.id;
-			checkoutUrl = `https://${cx.site.shopId}/cart/${numericId}:1`;
-		}
-
 		product = {
 			id: content.product.id,
 			title: content.product.title,
 			images: content.product.images.map((asset) => resolveAsset(asset, cx.site)).filter(notEmpty),
 			options: content.product.options,
 			variant,
-			checkoutUrl
+			checkoutUrl: content.product.checkoutUrl
 		};
 	}
 
@@ -46,13 +37,13 @@ export function resolveProductNode(
 			product
 		},
 		style: {
-			padding: resolveStyleReference(style.padding, defaultStyles?.padding),
-			backgroundColor: resolveColor(style.backgroundColor, defaultStyles?.backgroundColor),
-			font: resolveStyleReference(style.font, defaultStyles?.font),
-			fontSize: resolveStyleReference(style.fontSize, defaultStyles?.fontSize),
-			textColor: resolveColor(style.textColor, defaultStyles?.textColor),
-			borderRadius: resolveStyleReference(style.borderRadius, defaultStyles?.borderRadius),
-			shadow: resolveStyleReference(style.shadow, defaultStyles?.shadow)
+			padding: resolveStyleReference(style.padding, parentStyles?.padding),
+			backgroundColor: resolveColor(style.backgroundColor, parentStyles?.backgroundColor),
+			font: resolveStyleReference(style.font, parentStyles?.font),
+			fontSize: resolveStyleReference(style.fontSize, parentStyles?.fontSize),
+			textColor: resolveColor(style.textColor, parentStyles?.textColor),
+			borderRadius: resolveStyleReference(style.borderRadius, parentStyles?.borderRadius),
+			shadow: resolveStyleReference(style.shadow, parentStyles?.shadow)
 		}
 	};
 

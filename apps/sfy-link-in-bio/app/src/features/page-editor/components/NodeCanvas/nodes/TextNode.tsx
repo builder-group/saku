@@ -1,7 +1,7 @@
 import { TTextNode } from '@repo/editor';
 import { useCombinedCompute } from 'feature-react';
 import React from 'react';
-import { EditorSiteProvider, resolveTextNode } from '../../../lib';
+import { EditorSiteResolveContext, resolveTextNode } from '../../../lib';
 import { TResolvedTextNode } from '../../../types';
 import { StaticTextNode } from './static';
 import { TNodeProps } from './types';
@@ -13,7 +13,7 @@ export const TextNode = React.forwardRef<HTMLDivElement, TNodeProps<TTextNode>>(
 		[editor.getRootNode(), nodeState],
 		([pageNodeValue, nodeValue]): TResolvedTextNode => {
 			return resolveTextNode(nodeValue, {
-				site: new EditorSiteProvider(editor),
+				site: new EditorSiteResolveContext(editor),
 				resolved: {
 					parentStyles: pageNodeValue?.style.children
 				}

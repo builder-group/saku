@@ -6,7 +6,7 @@ import {
 	TFlatPageNode
 } from '@repo/editor';
 import { TResolvedNode, TResolvedPageNode } from '../../../types';
-import { TNodeResolutionContext } from '../types';
+import { TNodeResolveContext } from '../types';
 import { resolveAboutNode } from './resolve-about-node';
 import { resolveColor } from './resolve-color';
 import { resolveLinkNode } from './resolve-link-node';
@@ -14,10 +14,7 @@ import { resolveMediaNode } from './resolve-media-node';
 import { resolveProductNode } from './resolve-product-node';
 import { resolveTextNode } from './resolve-text-node';
 
-export function resolvePageNode(
-	node: TFlatPageNode,
-	cx: TNodeResolutionContext
-): TResolvedPageNode {
+export function resolvePageNode(node: TFlatPageNode, cx: TNodeResolveContext): TResolvedPageNode {
 	return {
 		...resolvePageNodeWithoutChildren(node),
 		children: node.children
@@ -65,7 +62,7 @@ export function resolvePageNodeWithoutChildren(
 	};
 }
 
-function resolvePageNodeChild(node: TFlatNode, cx: TNodeResolutionContext): TResolvedNode | null {
+function resolvePageNodeChild(node: TFlatNode, cx: TNodeResolveContext): TResolvedNode | null {
 	switch (node.type) {
 		case 'about':
 			return resolveAboutNode(node, cx);

@@ -7,6 +7,7 @@ import {
 	getSiteFontUrls,
 	resolveSite,
 	StaticNodeCanvas,
+	StaticSiteResolveContext,
 	TResolvedSite
 } from '@/features/page-editor';
 import { withLoaderResult } from '@/lib';
@@ -98,7 +99,7 @@ export const loader: TLoaderFunctionWithResult<TSuccessLoaderData, TErrorLoaderD
 	const flatSite = result.value.data as unknown as TFlatSite;
 
 	return ServerOk({
-		site: resolveSite(flatSite, `${workspaceHandle}.myshopify.com`),
+		site: resolveSite(new StaticSiteResolveContext(flatSite)),
 		fontUrls: getSiteFontUrls(flatSite)
 	});
 };

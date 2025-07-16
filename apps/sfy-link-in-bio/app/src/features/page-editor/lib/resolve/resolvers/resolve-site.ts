@@ -1,17 +1,16 @@
-import { TFlatPageNode, TFlatSite } from '@repo/editor';
+import { TFlatPageNode } from '@repo/editor';
 import { TResolvedSite } from '../../../types';
-import { StaticSiteProvider } from '../site-provider';
+import { TSiteResolveContext } from '../types';
 import { resolvePageNode } from './resolve-page-node';
 
-export function resolveSite(site: TFlatSite, shopId: string): TResolvedSite {
-	const { rootId, nodes, assets, ...rest } = site;
+export function resolveSite(cx: TSiteResolveContext): TResolvedSite {
+	const { rootId, nodes, assets: _, ...rest } = cx.getSite();
 	const root = nodes[rootId] as TFlatPageNode;
 
 	return {
 		...rest,
 		root: resolvePageNode(root, {
-			site: new StaticSiteProvider(site, shopId)
+			site: cx
 		})
-		// assets: Object.values(assets)
 	};
 }

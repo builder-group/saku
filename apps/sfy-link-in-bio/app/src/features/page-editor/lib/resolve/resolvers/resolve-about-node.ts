@@ -1,12 +1,12 @@
 import { resolveStyleReference, TAboutNode } from '@repo/editor';
 import { TResolvedAboutNode } from '../../../types';
-import { TNodeResolutionContext } from '../types';
+import { TNodeResolveContext } from '../types';
 import { resolveAsset } from './resolve-asset';
 import { resolveColor } from './resolve-color';
 
-export function resolveAboutNode(node: TAboutNode, cx: TNodeResolutionContext): TResolvedAboutNode {
+export function resolveAboutNode(node: TAboutNode, cx: TNodeResolveContext): TResolvedAboutNode {
 	const { content, style, ...rest } = node;
-	const defaultStyles = cx.resolved?.parentStyles;
+	const parentStyles = cx.resolved?.parentStyles;
 
 	return {
 		...rest,
@@ -15,14 +15,14 @@ export function resolveAboutNode(node: TAboutNode, cx: TNodeResolutionContext): 
 			profilePicture: resolveAsset(content.profilePicture, cx.site)
 		},
 		style: {
-			padding: resolveStyleReference(style.padding, defaultStyles?.padding),
-			backgroundColor: resolveColor(style.backgroundColor, defaultStyles?.backgroundColor),
-			font: resolveStyleReference(style.font, defaultStyles?.font),
-			fontSize: resolveStyleReference(style.fontSize, defaultStyles?.fontSize),
-			textColor: resolveColor(style.textColor, defaultStyles?.textColor),
-			textAlign: resolveStyleReference(style.textAlign, defaultStyles?.textAlign),
-			borderRadius: resolveStyleReference(style.borderRadius, defaultStyles?.borderRadius),
-			shadow: resolveStyleReference(style.shadow, defaultStyles?.shadow)
+			padding: resolveStyleReference(style.padding, parentStyles?.padding),
+			backgroundColor: resolveColor(style.backgroundColor, parentStyles?.backgroundColor),
+			font: resolveStyleReference(style.font, parentStyles?.font),
+			fontSize: resolveStyleReference(style.fontSize, parentStyles?.fontSize),
+			textColor: resolveColor(style.textColor, parentStyles?.textColor),
+			textAlign: resolveStyleReference(style.textAlign, parentStyles?.textAlign),
+			borderRadius: resolveStyleReference(style.borderRadius, parentStyles?.borderRadius),
+			shadow: resolveStyleReference(style.shadow, parentStyles?.shadow)
 		}
 	};
 }

@@ -3,7 +3,7 @@ import { Banner, Button } from '@shopify/polaris';
 import { useCompute } from 'feature-react';
 import React from 'react';
 import { ScanEyeIcon, SitePreview } from '@/components';
-import { resolveSite, StaticNodeCanvas } from '@/features/page-editor';
+import { resolveSite, StaticNodeCanvas, StaticSiteResolveContext } from '@/features/page-editor';
 import type { TOnboardingContext } from '../../create-onboarding-context';
 import { StepLayout } from '../StepLayout';
 
@@ -13,7 +13,7 @@ export const LinkpopPreviewStep: React.FC<TLinkpopPreviewStepProps> = (props) =>
 
 	const resolvedSite = useCompute(onboardingContext.stepr.current, (currentStep) => {
 		return currentStep.type === 'linkpop-preview' && currentStep.site
-			? resolveSite(currentStep.site, onboardingContext.shopId)
+			? resolveSite(new StaticSiteResolveContext(currentStep.site))
 			: null;
 	});
 

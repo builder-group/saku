@@ -1,7 +1,7 @@
 import { TMediaNode } from '@repo/editor';
 import { useCombinedCompute } from 'feature-react';
 import React from 'react';
-import { EditorSiteProvider, resolveMediaNode } from '../../../lib';
+import { EditorSiteResolveContext, resolveMediaNode } from '../../../lib';
 import { StaticMediaNode } from './static';
 import { TNodeProps } from './types';
 
@@ -12,7 +12,7 @@ export const MediaNode = React.forwardRef<HTMLDivElement, TNodeProps<TMediaNode>
 		[editor.getRootNode(), nodeState],
 		([pageNodeValue, nodeValue]) => {
 			return resolveMediaNode(nodeValue, {
-				site: new EditorSiteProvider(editor),
+				site: new EditorSiteResolveContext(editor),
 				resolved: {
 					parentStyles: pageNodeValue?.style.children
 				}

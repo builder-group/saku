@@ -175,7 +175,8 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 								.filter(notEmpty) ?? []
 					};
 				})
-				.filter(notEmpty)
+				.filter(notEmpty),
+			checkoutUrl: '' // TODO:
 		};
 		nodeState._notify();
 	}, [clearSelection, nodeState, editor]);

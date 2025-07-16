@@ -1,12 +1,12 @@
 import { resolveStyleReference, TMediaNode } from '@repo/editor';
 import { TResolvedMedia, TResolvedMediaNode } from '../../../types';
-import { TNodeResolutionContext } from '../types';
+import { TNodeResolveContext } from '../types';
 import { resolveAsset } from './resolve-asset';
 import { resolveColor } from './resolve-color';
 
-export function resolveMediaNode(node: TMediaNode, cx: TNodeResolutionContext): TResolvedMediaNode {
+export function resolveMediaNode(node: TMediaNode, cx: TNodeResolveContext): TResolvedMediaNode {
 	const { content, style, ...rest } = node;
-	const defaultStyles = cx.resolved?.parentStyles;
+	const parentStyles = cx.resolved?.parentStyles;
 
 	let media: TResolvedMedia | undefined;
 	switch (content.media?.type) {
@@ -30,10 +30,10 @@ export function resolveMediaNode(node: TMediaNode, cx: TNodeResolutionContext): 
 			media
 		},
 		style: {
-			padding: resolveStyleReference(style.padding, defaultStyles?.padding),
-			backgroundColor: resolveColor(style.backgroundColor, defaultStyles?.backgroundColor),
-			borderRadius: resolveStyleReference(style.borderRadius, defaultStyles?.borderRadius),
-			shadow: resolveStyleReference(style.shadow, defaultStyles?.shadow)
+			padding: resolveStyleReference(style.padding, parentStyles?.padding),
+			backgroundColor: resolveColor(style.backgroundColor, parentStyles?.backgroundColor),
+			borderRadius: resolveStyleReference(style.borderRadius, parentStyles?.borderRadius),
+			shadow: resolveStyleReference(style.shadow, parentStyles?.shadow)
 		}
 	};
 }

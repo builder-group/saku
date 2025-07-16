@@ -9,6 +9,7 @@ import {
 	getSiteFontUrls,
 	resolveSite,
 	StaticNodeCanvas,
+	StaticSiteResolveContext,
 	TResolvedSite
 } from '@/features/page-editor';
 import { withLoaderResult } from '@/lib';
@@ -104,7 +105,7 @@ export const loader: TLoaderFunctionWithResult<TSuccessLoaderData, TErrorLoaderD
 
 	return ServerOk({
 		appUrl: shopifyConfig.appUrl,
-		site: resolveSite(flatSite, session.shop),
+		site: resolveSite(new StaticSiteResolveContext(flatSite)),
 		fontUrls: getSiteFontUrls(flatSite)
 	});
 };

@@ -2,7 +2,7 @@ import { useFeatureState } from 'feature-react';
 import React from 'react';
 import { ResizablePanel, ShadowRoot, SpinnerIcon } from '@/components';
 import tailwindStylesHref from '@/styles.css?url';
-import { EditorSiteProvider, resolvePageNode, TPageEditor } from '../../lib';
+import { EditorSiteResolveContext, resolvePageNode, TPageEditor } from '../../lib';
 import { StaticNodeCanvas } from '../NodeCanvas';
 import { createStaticCanvasPanelContext } from './create-static-canvas-panel-context';
 import { StaticCanvasPanelHeader } from './StaticCanvasPanelHeader';
@@ -13,7 +13,7 @@ export const StaticCanvasPanel: React.FC<TStaticCanvasPanelProps> = (props) => {
 	const rootNode = React.useMemo(
 		() =>
 			resolvePageNode(editor.getRootNode()._v, {
-				site: new EditorSiteProvider(editor)
+				site: new EditorSiteResolveContext(editor)
 			}),
 		[editor]
 	);
