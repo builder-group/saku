@@ -13,11 +13,11 @@ export class StaticSiteProvider implements TSiteProvider {
 		this.shopId = shopId;
 	}
 
-	getNode(id: TNodeId): TFlatNode | null {
+	public getNode(id: TNodeId): TFlatNode | null {
 		return this.site.nodes[id] || null;
 	}
 
-	getAsset(hash: TAssetHash): TAsset | null {
+	public getAsset(hash: TAssetHash): TAsset | null {
 		return this.site.assets[hash] || null;
 	}
 }
@@ -34,11 +34,11 @@ export class EditorSiteProvider implements TSiteProvider {
 		this.shopId = editor.shopId;
 	}
 
-	getNode(id: TNodeId): TFlatNode | null {
+	public getNode(id: TNodeId): TFlatNode | null {
 		return this.editor.nodeMap[id]?.get() || null;
 	}
 
-	getAsset(hash: TAssetHash): TAsset | null {
+	public getAsset(hash: TAssetHash): TAsset | null {
 		return this.editor.assetsMap[hash] || null;
 	}
 }

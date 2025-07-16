@@ -4,7 +4,7 @@ import type { Context } from 'hono';
 import { shopifyConfig } from '@/environment';
 
 /**
- * Verifies Shopify webhook HMAC signature.
+ * Verifies Shopify webhook HMAC signature and extracts metadata.
  *
  * Requires captureRawBodyMiddleware to preserve the original request body
  * before OpenAPI validation consumes it.
