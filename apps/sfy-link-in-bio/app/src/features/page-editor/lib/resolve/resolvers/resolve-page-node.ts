@@ -62,7 +62,10 @@ export function resolvePageNodeWithoutChildren(
 	};
 }
 
-function resolvePageNodeChild(node: TFlatNode, cx: TNodeResolveContext): TResolvedNode | null {
+export function resolvePageNodeChild(
+	node: TFlatNode,
+	cx: TNodeResolveContext
+): TResolvedNode | null {
 	switch (node.type) {
 		case 'about':
 			return resolveAboutNode(node, cx);

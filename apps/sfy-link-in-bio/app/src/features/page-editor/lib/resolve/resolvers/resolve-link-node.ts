@@ -1,13 +1,10 @@
 import { resolveStyleReference, TLinkNode } from '@repo/editor';
-import { TResolvedLinkNode, TResolvedPromisedNode } from '../../../types';
+import { TResolvedLinkNode } from '../../../types';
 import { TNodeResolveContext } from '../types';
 import { resolveAsset } from './resolve-asset';
 import { resolveColor } from './resolve-color';
 
-export function resolveLinkNode(
-	node: TLinkNode,
-	cx: TNodeResolveContext
-): TResolvedPromisedNode<TResolvedLinkNode> | TResolvedLinkNode {
+export function resolveLinkNode(node: TLinkNode, cx: TNodeResolveContext): TResolvedLinkNode {
 	const { content, style, ...rest } = node;
 	const parentStyles = cx.resolved?.parentStyles;
 
@@ -37,16 +34,4 @@ export function resolveLinkNode(
 	};
 
 	return resolvedNode;
-
-	// return {
-	// 	type: 'promised',
-	// 	id: node.id,
-	// 	cached: resolvedNode,
-	// 	next: (async () => {
-	// 		await new Promise((resolve) => setTimeout(resolve, 3000));
-
-	// 		// TODO: Refetch link metadata
-	// 		return resolvedNode;
-	// 	})()
-	// };
 }

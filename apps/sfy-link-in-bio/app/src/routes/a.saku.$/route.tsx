@@ -5,13 +5,8 @@ import { AppProxyProvider } from '@shopify/shopify-app-remix/react';
 import { isStatusCode } from 'feature-fetch';
 import { coreApiClient } from '@/environment';
 import { shopify, shopifyConfig } from '@/environment/.server';
-import {
-	getSiteFontUrls,
-	resolveSite,
-	StaticNodeCanvas,
-	StaticSiteResolveContext,
-	TResolvedSite
-} from '@/features/page-editor';
+import { getSiteFontUrls, StaticNodeCanvas, TResolvedSite } from '@/features/page-editor';
+import { hydrateSite, StaticSiteHydrateContext } from '@/features/page-editor/.server';
 import { withLoaderResult } from '@/lib';
 import styles from '@/styles.css?url';
 import { TLoaderFunctionWithResult } from '@/types';
@@ -105,7 +100,7 @@ export const loader: TLoaderFunctionWithResult<TSuccessLoaderData, TErrorLoaderD
 
 	return ServerOk({
 		appUrl: shopifyConfig.appUrl,
-		site: resolveSite(new StaticSiteResolveContext(flatSite)),
+		site: hydrateSite(new StaticSiteHydrateContext(flatSite, session.shop, handle)),
 		fontUrls: getSiteFontUrls(flatSite)
 	});
 };

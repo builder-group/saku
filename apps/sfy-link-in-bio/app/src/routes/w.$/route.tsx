@@ -3,13 +3,8 @@ import { TFlatSite } from '@repo/editor';
 import { Spinner, Text } from '@shopify/polaris';
 import { isStatusCode } from 'feature-fetch';
 import { coreApiClient } from '@/environment';
-import {
-	getSiteFontUrls,
-	resolveSite,
-	StaticNodeCanvas,
-	StaticSiteResolveContext,
-	TResolvedSite
-} from '@/features/page-editor';
+import { getSiteFontUrls, StaticNodeCanvas, TResolvedSite } from '@/features/page-editor';
+import { hydrateSite, StaticSiteHydrateContext } from '@/features/page-editor/.server';
 import { withLoaderResult } from '@/lib';
 import { TLoaderFunctionWithResult } from '@/types';
 
@@ -99,7 +94,9 @@ export const loader: TLoaderFunctionWithResult<TSuccessLoaderData, TErrorLoaderD
 	const flatSite = result.value.data as unknown as TFlatSite;
 
 	return ServerOk({
-		site: resolveSite(new StaticSiteResolveContext(flatSite)),
+		site: hydrateSite(
+			new StaticSiteHydrateContext(flatSite, `${workspaceHandle}.myshopify.com`, handle)
+		),
 		fontUrls: getSiteFontUrls(flatSite)
 	});
 };

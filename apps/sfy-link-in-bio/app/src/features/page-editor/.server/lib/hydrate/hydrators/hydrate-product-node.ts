@@ -7,29 +7,45 @@ export function hydrateProductNode(
 	node: TProductNode,
 	cx: TNodeHydrateContext
 ): TResolvedPromisedNode<TResolvedProductNode> {
-	const resolvedNode = resolveProductNode(node, cx);
-
 	return {
 		type: 'promised',
 		id: node.id,
-		cached: resolvedNode,
+		cached: resolveProductNode(node, cx),
 		next: (async () => {
+			const { content, ...rest } = node;
 			await new Promise((resolve) => setTimeout(resolve, 3000));
-			if (resolvedNode.content.product != null) {
-				resolvedNode.content.product.title = `${resolvedNode.content.product.title} (resolved at ${new Date().toISOString()})`;
+
+			let product: TProductNode['content']['product'] | undefined;
+			if (content.product != null) {
+				const variant = content.product.variants[0];
+
+				let checkoutUrl: string = '';
+				if (cx.site.shopId != null && variant?.id != null) {
+					const numericId =
+						typeof variant.id === 'string' && variant.id.includes('gid://')
+							? variant.id.split('/').pop()
+							: variant.id;
+					checkoutUrl = `https://${cx.site.shopId}/cart/${numericId}:1`;
+				}
+
+				product = {
+					...content.product,
+					title: `${content.product.title} (resolved at ${new Date().toISOString()})`,
+					checkoutUrl
+				};
 			}
 
-			// let checkoutUrl: string = '';
-			// if (cx.site.shopId != null && variant?.id != null) {
-			//     const numericId =
-			//         typeof variant.id === 'string' && variant.id.includes('gid://')
-			//             ? variant.id.split('/').pop()
-			//             : variant.id;
-			//     checkoutUrl = `https://${cx.site.shopId}/cart/${numericId}:1`;
-			// }
-
 			// TODO: Refetch product data
-			return resolvedNode;
+
+			return resolveProductNode(
+				{
+					content: {
+						product
+					},
+					...rest
+				},
+				cx
+			);
 		})()
 	};
 }
