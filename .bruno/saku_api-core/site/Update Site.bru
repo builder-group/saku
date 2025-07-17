@@ -7,12 +7,16 @@ meta {
 put {
   url: {{host}}/v1/site/:siteId/node/:nodeId
   body: json
-  auth: inherit
+  auth: bearer
 }
 
 params:path {
   nodeId: node_NDY4MDg1Mjg0MTYwMjIxMTg1
   siteId: 865f460a-b947-49fa-b0f1-f74c5a2a8081
+}
+
+auth:bearer {
+  token: super-secret
 }
 
 body:json {

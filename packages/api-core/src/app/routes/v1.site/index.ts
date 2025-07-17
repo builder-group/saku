@@ -2,7 +2,8 @@ import { toFlatSite } from '@repo/editor';
 import { AppError } from '@repo/hono-utils';
 import { and, eq, sql } from 'drizzle-orm';
 import { router } from '@/app/router';
-import { db, siteTable, workspaceTable } from '@/environment';
+import { appConfig, db, siteTable, workspaceTable } from '@/environment';
+import { verifySharedSecret } from '@/lib';
 import { fetchExternalHtml, parseLinkpopHtml, transformLinkpopToSite } from './lib';
 import {
 	GetSiteContentByWorkspaceAndHandleRoute,
@@ -146,6 +147,7 @@ router.openapi(GetSiteContentByWorkspaceAndHandleRoute, async (c) => {
 });
 
 router.openapi(UpdateSiteNodeRoute, async (c) => {
+	await verifySharedSecret(c, appConfig.accessSecret);
 	const { siteId, nodeId } = c.req.valid('param');
 	const node = c.req.valid('json');
 
