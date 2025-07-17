@@ -4,7 +4,7 @@
 	"private": true,
 	"description": "One-Page Editor",
 	"keywords": [],
-	"homepage": "https://saku.so/?source=github",
+	"homepage": "https://saku.so/?utm_source=github",
 	"bugs": {
 		"url": "https://github.com/builder-group/saku/issues"
 	},
