@@ -1,4 +1,4 @@
-import { TFlatSite, TNode, TNodeId, TPageNode, TSite } from './types';
+import { TFlatSite, TNode, TNodeId, TPageNode, TSite } from '../types';
 
 /**
  * Convert flat site structure to hierarchical structure

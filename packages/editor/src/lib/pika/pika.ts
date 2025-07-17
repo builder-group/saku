@@ -1,3 +1,4 @@
+import { TPikaId } from './schema';
 import { Snowflake, TDeconstructedSnowflake, TSnowflakeOptions } from './snowflake';
 
 /**
@@ -40,7 +41,7 @@ export class Pika<GPrefixes extends string> {
 	 * @returns Typed ID string in format `prefix_snowflakeId`
 	 * @throws Error if prefix is not registered
 	 */
-	public gen<GPrefix extends GPrefixes>(prefix: GPrefix): `${GPrefix}_${string}` {
+	public gen<GPrefix extends GPrefixes>(prefix: GPrefix): TPikaId<GPrefix> {
 		if (!(prefix in this._prefixes)) {
 			throw new Error(
 				`Unknown prefix: ${prefix}. Available prefixes: ${Object.keys(this._prefixes).join(', ')}`
@@ -68,7 +69,7 @@ export class Pika<GPrefixes extends string> {
 	public validate<GPrefix extends GPrefixes = GPrefixes>(
 		maybeId: unknown,
 		expectPrefix?: GPrefix
-	): maybeId is `${GPrefix}_${string}` {
+	): maybeId is TPikaId<GPrefix> {
 		if (typeof maybeId !== 'string') {
 			return false;
 		}

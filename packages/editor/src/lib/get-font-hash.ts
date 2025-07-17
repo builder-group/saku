@@ -1,4 +1,4 @@
-import { TAssetHash, TFont } from './types';
+import { TAssetHash, TFont } from '../types';
 
 export function getFontHash(font: TFont): TAssetHash {
 	return `${font.family}-${font.weight || 400}-${font.style || 'normal'}`

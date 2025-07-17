@@ -1,0 +1,60 @@
+meta {
+  name: Update Site
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{host}}/v1/site/:siteId/node/:nodeId
+  body: json
+  auth: inherit
+}
+
+params:path {
+  nodeId: node_NDY4MDg1Mjg0MTYwMjIxMTg1
+  siteId: 865f460a-b947-49fa-b0f1-f74c5a2a8081
+}
+
+body:json {
+  {
+    "id": "node_NDY4MDg1Mjg0MTYwMjIxMTg1",
+    "type": "about",
+    "style": {
+      "font": {
+        "type": "inherit"
+      },
+      "shadow": false,
+      "padding": {
+        "type": "inherit"
+      },
+      "fontSize": {
+        "type": "inherit"
+      },
+      "textAlign": "center",
+      "textColor": {
+        "type": "inherit"
+      },
+      "borderRadius": {
+        "type": "inherit"
+      },
+      "backgroundColor": {
+        "a": 0,
+        "b": 255,
+        "g": 255,
+        "r": 255
+      }
+    },
+    "content": {
+      "bio": "Welcome to your new page! Add a short description about yourself or your brand.",
+      "name": "Builder Group Dev Store (Updated)",
+      "socialLinks": [
+        {
+          "id": "8192fe7251b8d05d",
+          "url": "https://builder-group-dev-store.myshopify.com",
+          "handle": "builder-group-dev-store",
+          "provider": "shopify"
+        }
+      ]
+    }
+  }
+}

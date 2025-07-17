@@ -1,4 +1,4 @@
-import { TStyleReference } from './types';
+import { TStyleReference } from '../types';
 
 /**
  * Creates an inherited style reference

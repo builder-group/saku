@@ -1,6 +1,6 @@
 import { toFlatSite } from '@repo/editor';
 import { AppError } from '@repo/hono-utils';
-import { and, eq } from 'drizzle-orm';
+import { and, eq, sql } from 'drizzle-orm';
 import { router } from '@/app/router';
 import { db, siteTable, workspaceTable } from '@/environment';
 import { fetchExternalHtml, parseLinkpopHtml, transformLinkpopToSite } from './lib';
@@ -9,7 +9,8 @@ import {
 	GetSiteContentRoute,
 	GetSiteRoute,
 	ParseExternalSiteRoute,
-	TFlatSiteContentDto
+	TFlatSiteContentDto,
+	UpdateSiteNodeRoute
 } from './schema';
 
 router.openapi(GetSiteRoute, async (c) => {
@@ -142,4 +143,29 @@ router.openapi(GetSiteContentByWorkspaceAndHandleRoute, async (c) => {
 	}
 
 	return c.json(site.content as TFlatSiteContentDto, 200);
+});
+
+router.openapi(UpdateSiteNodeRoute, async (c) => {
+	const { siteId, nodeId } = c.req.valid('param');
+	const node = c.req.valid('json');
+
+	const [updated] = await db
+		.update(siteTable)
+		.set({
+			content: sql.raw(
+				`jsonb_set(content, '{nodes,"${nodeId}"}', '${JSON.stringify(node)}'::jsonb, true)`
+			),
+			updatedAt: new Date()
+		})
+		.where(eq(siteTable.id, siteId))
+		.returning({ id: siteTable.id });
+
+	if (updated == null) {
+		throw new AppError('#ERR_SITE_UPDATE_FAILED', 500, {
+			title: 'Update failed',
+			detail: 'Failed to update node in site'
+		});
+	}
+
+	return c.json({ success: true as const }, 200);
 });

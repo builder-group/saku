@@ -1,4 +1,4 @@
-import { TFlatSite, TNodeId } from './types';
+import { TFlatSite, TNodeId } from '../types';
 
 /**
  * Validates that all node references exist and there are no circular dependencies

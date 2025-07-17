@@ -1,6 +1,7 @@
 import { AppError, safeCompare } from '@repo/hono-utils';
 import type { Context } from 'hono';
 
+// TODO: Use HMAC signature instead of sending plain text secret
 export async function verifySharedSecret(c: Context, secret: string): Promise<void> {
 	const authHeader = c.req.header('authorization');
 

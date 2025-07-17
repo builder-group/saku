@@ -7,7 +7,7 @@ import {
 	TNode,
 	TNodeId,
 	TSite
-} from './types';
+} from '../types';
 
 /**
  * Convert hierarchical site structure to flat structure

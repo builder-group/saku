@@ -1,5 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi';
-import { TFlatSite } from '@repo/editor';
+import { createPikaIdSchema, TFlatSite, TNode } from '@repo/editor';
 import { BadRequestResponse, JsonSuccessResponse, NotFoundResponse } from '@repo/hono-utils';
 
 // Summary DTO (without content) for list views
@@ -121,5 +121,37 @@ export const GetSiteContentByWorkspaceAndHandleRoute = createRoute({
 	responses: {
 		200: JsonSuccessResponse(SFlatSiteContentDto),
 		404: NotFoundResponse
+	}
+});
+
+export const UpdateSiteNodeRoute = createRoute({
+	method: 'put',
+	path: '/v1/site/{siteId}/node/{nodeId}',
+	tags: ['site'],
+	summary: 'Update a specific node in a site',
+	operationId: 'updateSiteNode',
+	request: {
+		params: z.object({
+			siteId: z.uuid().openapi({
+				example: '123e4567-e89b-12d3',
+				description: 'Site ID'
+			}),
+			nodeId: (createPikaIdSchema('node') as unknown as z.ZodString).openapi({
+				example: 'node_NDY4MDg1Mjg0MTYwMjIxMTg1',
+				description: 'Node ID'
+			})
+		}),
+		body: {
+			content: {
+				'application/json': {
+					schema: z.looseObject<TNode>({} as any).openapi('NodeDto', {})
+				}
+			}
+		}
+	},
+	responses: {
+		200: JsonSuccessResponse(z.object({ success: z.literal(true) })),
+		404: NotFoundResponse,
+		400: BadRequestResponse
 	}
 });

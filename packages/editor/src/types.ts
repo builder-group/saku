@@ -1,5 +1,5 @@
-import { TRgba } from './color';
-import { TId } from './id';
+import { TRgba } from './lib/color';
+import { TId } from './lib/id';
 
 export interface TSite {
 	version: `v0.0.1`;
