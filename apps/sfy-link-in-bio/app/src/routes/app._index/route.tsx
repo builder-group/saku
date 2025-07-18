@@ -30,7 +30,7 @@ import { TLoaderFunctionWithResult } from '@/types';
 
 const Page = withLoaderResult<TSuccessLoaderData, TErrorLoaderData>({
 	Success: ({ data }) => {
-		const { site, shouldOpenEditor, platformUrl } = data;
+		const { site, shouldOpenEditor } = data;
 		const { Modal: EditorModal, isOpenState: isEditorOpenState } = usePageEditorModal({
 			siteId: site.id,
 			title: `${site.displayName} (/${site.handle})`
@@ -165,14 +165,14 @@ const Page = withLoaderResult<TSuccessLoaderData, TErrorLoaderData>({
 									<div className="flex flex-col gap-3">
 										<div className="flex items-center justify-between">
 											<Text as="h2" variant="headingMd">
-												Your Shopify-hosted Link
+												Your Bio Link
 											</Text>
 											<Badge tone="success">Current</Badge>
 										</div>
 
-										<Text as="p" tone="subdued">
+										{/* <Text as="p" tone="subdued">
 											Hosted on your Shopify store domain.
-										</Text>
+										</Text> */}
 
 										<TextField
 											label=""
@@ -184,7 +184,7 @@ const Page = withLoaderResult<TSuccessLoaderData, TErrorLoaderData>({
 									</div>
 								</Card>
 								{/* Your Platform Link Card */}
-								<Card>
+								{/* <Card>
 									<div className="flex flex-col gap-3">
 										<div className="flex items-center justify-between">
 											<Text as="h2" variant="headingMd">
@@ -205,7 +205,7 @@ const Page = withLoaderResult<TSuccessLoaderData, TErrorLoaderData>({
 											connectedRight={<ClipboardButton textToCopy={platformUrl} />}
 										/>
 									</div>
-								</Card>
+								</Card> */}
 								<FeedbackCard
 									email={appConfig.support.email}
 									reviewUrl={appConfig.distribution.shopify}
