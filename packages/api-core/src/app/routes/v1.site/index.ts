@@ -147,7 +147,7 @@ router.openapi(GetSiteContentByWorkspaceAndHandleRoute, async (c) => {
 });
 
 router.openapi(UpdateSiteNodeRoute, async (c) => {
-	await verifySharedSecret(c, appConfig.accessSecret);
+	(await verifySharedSecret(c, appConfig.accessSecret)).unwrap();
 	const { siteId, nodeId } = c.req.valid('param');
 	const node = c.req.valid('json');
 

@@ -25,7 +25,7 @@ import {
 } from './schema';
 
 router.openapi(GetShopifySitesRoute, async (c) => {
-	const { shopId } = await verifyShopifySession(c);
+	const { shopId } = (await verifyShopifySession(c)).unwrap();
 
 	// Find sites in workspaces that have this Shopify store connected
 	const sites = await db
@@ -61,7 +61,7 @@ router.openapi(GetShopifySitesRoute, async (c) => {
 });
 
 router.openapi(CreateShopifySiteRoute, async (c) => {
-	const { shopId } = await verifyShopifySession(c);
+	const { shopId } = (await verifyShopifySession(c)).unwrap();
 	const {
 		handle,
 		displayName,
@@ -193,7 +193,7 @@ router.openapi(CreateShopifySiteRoute, async (c) => {
 });
 
 router.openapi(UpdateShopifySiteContentRoute, async (c) => {
-	const { shopId } = await verifyShopifySession(c);
+	const { shopId } = (await verifyShopifySession(c)).unwrap();
 	const { siteId } = c.req.valid('param');
 	const { content: rawContent } = c.req.valid('json');
 	const content: TFlatSite = rawContent as TFlatSite;

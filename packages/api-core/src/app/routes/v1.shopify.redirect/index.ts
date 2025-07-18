@@ -4,7 +4,7 @@ import { checkUrlRedirectAvailability } from '@/lib/shopify';
 import { CheckUrlRedirectAvailabilityRoute } from './schema';
 
 router.openapi(CheckUrlRedirectAvailabilityRoute, async (c) => {
-	const { shopId } = await verifyShopifySession(c);
+	const { shopId } = (await verifyShopifySession(c)).unwrap();
 	const { path } = c.req.valid('query');
 
 	const accessToken = (await getShopifyOfflineAccessToken(shopId)).unwrap();

@@ -19,7 +19,7 @@ import {
 
 // https://shopify.dev/docs/apps/build/compliance/privacy-law-compliance#customers-data_request
 router.openapi(CustomersDataRequestWebhookRoute, async (c) => {
-	const { shopDomain, topic, eventId } = await verifyShopifyWebhook(c);
+	const { shopDomain, topic, eventId } = (await verifyShopifyWebhook(c)).unwrap();
 	const input = c.req.valid('json');
 
 	logger.info(`Received ${topic} webhook for shop: ${shopDomain} (Event: ${eventId})`);
@@ -39,7 +39,7 @@ router.openapi(CustomersDataRequestWebhookRoute, async (c) => {
 
 // https://shopify.dev/docs/apps/build/compliance/privacy-law-compliance#customers-redact
 router.openapi(CustomersRedactWebhookRoute, async (c) => {
-	const { shopDomain, topic, eventId } = await verifyShopifyWebhook(c);
+	const { shopDomain, topic, eventId } = (await verifyShopifyWebhook(c)).unwrap();
 	const input = c.req.valid('json');
 
 	logger.info(`Received ${topic} webhook for shop: ${shopDomain} (Event: ${eventId})`);
@@ -59,7 +59,7 @@ router.openapi(CustomersRedactWebhookRoute, async (c) => {
 
 // https://shopify.dev/docs/apps/build/compliance/privacy-law-compliance#shop-redact
 router.openapi(ShopRedactWebhookRoute, async (c) => {
-	const { shopDomain, topic, eventId } = await verifyShopifyWebhook(c);
+	const { shopDomain, topic, eventId } = (await verifyShopifyWebhook(c)).unwrap();
 
 	logger.info(`Received ${topic} webhook for shop: ${shopDomain} (Event: ${eventId})`);
 
@@ -143,7 +143,7 @@ router.openapi(ShopRedactWebhookRoute, async (c) => {
 
 // https://shopify.dev/docs/api/webhooks?reference=toml#list-of-topics-app/uninstalled
 router.openapi(AppUninstalledWebhookRoute, async (c) => {
-	const { shopDomain, topic, eventId } = await verifyShopifyWebhook(c);
+	const { shopDomain, topic, eventId } = (await verifyShopifyWebhook(c)).unwrap();
 	const input = c.req.valid('json');
 
 	logger.info(`Received ${topic} webhook for shop: ${input.name} (${shopDomain})`);
@@ -221,7 +221,7 @@ router.openapi(AppUninstalledWebhookRoute, async (c) => {
 
 // https://shopify.dev/docs/api/webhooks?reference=toml#list-of-topics-app/scopes_update
 router.openapi(AppScopesUpdateWebhookRoute, async (c) => {
-	const { shopDomain, topic, eventId } = await verifyShopifyWebhook(c);
+	const { shopDomain, topic, eventId } = (await verifyShopifyWebhook(c)).unwrap();
 	const input = c.req.valid('json');
 
 	logger.info(`Received ${topic} webhook for shop: ${shopDomain} (Event: ${eventId})`);

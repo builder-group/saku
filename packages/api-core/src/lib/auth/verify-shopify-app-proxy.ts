@@ -1,4 +1,5 @@
 import crypto from 'node:crypto';
+import { Err, Ok, type TResult } from '@blgc/utils';
 import { AppError, safeCompare } from '@repo/hono-utils';
 import type { Context } from 'hono';
 import { shopifyConfig } from '@/environment';
@@ -8,12 +9,17 @@ import { shopifyConfig } from '@/environment';
  *
  * @param c - Hono context
  * @returns App Proxy metadata if verification succeeds
- * @throws AppError if verification fails
  * @see https://shopify.dev/docs/api/app-proxies#security
  */
-export async function verifyShopifyAppProxy(c: Context): Promise<TShopifyAppProxyMetadata> {
-	const metadata = extractShopifyAppProxyMetadata(c);
+export async function verifyShopifyAppProxy(
+	c: Context
+): Promise<TResult<TShopifyAppProxyMetadata, AppError>> {
+	const metadataResult = extractShopifyAppProxyMetadata(c);
+	if (metadataResult.isErr()) {
+		return metadataResult;
+	}
 
+	const metadata = metadataResult.value;
 	const query = new URL(c.req.url).searchParams;
 
 	// Build sorted query string excluding the `hmac` param
@@ -33,50 +39,56 @@ export async function verifyShopifyAppProxy(c: Context): Promise<TShopifyAppProx
 		.digest('hex');
 
 	if (!safeCompare(calculatedHmac, metadata.hmac)) {
-		throw new AppError('#ERR_INVALID_APP_PROXY_HMAC', 401, {
-			title: 'Invalid app proxy HMAC',
-			detail: 'HMAC verification failed - request may not be from Shopify'
-		});
+		return Err(
+			new AppError('#ERR_INVALID_APP_PROXY_HMAC', 401, {
+				title: 'Invalid app proxy HMAC',
+				detail: 'HMAC verification failed - request may not be from Shopify'
+			})
+		);
 	}
 
-	return metadata;
+	return Ok(metadata);
 }
 
 /**
  * Extracts and parses metadata from Shopify App Proxy request.
  */
-function extractShopifyAppProxyMetadata(c: Context): TShopifyAppProxyMetadata {
+function extractShopifyAppProxyMetadata(c: Context): TResult<TShopifyAppProxyMetadata, AppError> {
 	const url = new URL(c.req.url);
 	const query = url.searchParams;
 
 	const hmac = query.get('hmac');
 	if (hmac == null) {
-		throw new AppError('#ERR_MISSING_HMAC', 401, {
-			title: 'Missing HMAC',
-			detail: 'HMAC query parameter is required'
-		});
+		return Err(
+			new AppError('#ERR_MISSING_HMAC', 401, {
+				title: 'Missing HMAC',
+				detail: 'HMAC query parameter is required'
+			})
+		);
 	}
 
 	const shop = query.get('shop');
 	if (shop == null) {
-		throw new AppError('#ERR_MISSING_SHOP', 400, {
-			title: 'Missing shop',
-			detail: 'Shop query parameter is required'
-		});
+		return Err(
+			new AppError('#ERR_MISSING_SHOP', 400, {
+				title: 'Missing shop',
+				detail: 'Shop query parameter is required'
+			})
+		);
 	}
 
 	const timestamp = query.get('timestamp') ?? undefined;
 	const pathPrefix = query.get('path_prefix') ?? undefined;
 	const customerId = query.get('logged_in_customer_id') ?? undefined;
 
-	return {
+	return Ok({
 		hmac,
 		shop,
 		timestamp,
 		pathPrefix,
 		customerId,
 		query: Object.fromEntries(query.entries())
-	};
+	});
 }
 
 export interface TShopifyAppProxyMetadata {

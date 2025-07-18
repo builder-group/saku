@@ -1,30 +1,38 @@
-import { extractErrorData } from '@blgc/utils';
+import { Err, extractErrorData, Ok, type TResult } from '@blgc/utils';
 import { AppError } from '@repo/hono-utils';
 import type { Context } from 'hono';
 import { jwtVerify, type JWTPayload } from 'jose';
 import { shopifyConfig } from '@/environment';
 
-export async function verifyShopifySession(c: Context): Promise<TShopifySessionPayload> {
+export async function verifyShopifySession(
+	c: Context
+): Promise<TResult<TShopifySessionPayload, AppError>> {
 	const authHeader = c.req.header('authorization');
 
 	if (authHeader == null) {
-		throw new AppError('#ERR_MISSING_AUTH_HEADER', 401, {
-			detail: 'Missing authorization header'
-		});
+		return Err(
+			new AppError('#ERR_MISSING_AUTH_HEADER', 401, {
+				detail: 'Missing authorization header'
+			})
+		);
 	}
 
 	if (!authHeader.startsWith('Bearer ')) {
-		throw new AppError('#ERR_INVALID_AUTH_FORMAT', 401, {
-			detail: 'Authorization header must use Bearer token format'
-		});
+		return Err(
+			new AppError('#ERR_INVALID_AUTH_FORMAT', 401, {
+				detail: 'Authorization header must use Bearer token format'
+			})
+		);
 	}
 
 	const token = authHeader.substring(7); // Remove "Bearer " prefix
 
-	return await verifyShopifySessionToken(token);
+	return verifyShopifySessionToken(token);
 }
 
-export async function verifyShopifySessionToken(token: string): Promise<TShopifySessionPayload> {
+export async function verifyShopifySessionToken(
+	token: string
+): Promise<TResult<TShopifySessionPayload, AppError>> {
 	// Verify the JWT
 	let payload: JWTPayload;
 	try {
@@ -32,9 +40,11 @@ export async function verifyShopifySessionToken(token: string): Promise<TShopify
 		payload = result.payload;
 	} catch (error) {
 		const { message } = extractErrorData(error);
-		throw new AppError('#ERR_JWT_VERIFICATION_FAILED', 401, {
-			detail: `JWT verification failed: ${message}`
-		});
+		return Err(
+			new AppError('#ERR_JWT_VERIFICATION_FAILED', 401, {
+				detail: `JWT verification failed: ${message}`
+			})
+		);
 	}
 
 	// Validate required claims exist
@@ -44,19 +54,23 @@ export async function verifyShopifySessionToken(token: string): Promise<TShopify
 		typeof payload['aud'] !== 'string' ||
 		typeof payload['sub'] !== 'string'
 	) {
-		throw new AppError('#ERR_INVALID_JWT_CLAIMS', 401, {
-			detail: 'Missing required claims in JWT payload'
-		});
+		return Err(
+			new AppError('#ERR_INVALID_JWT_CLAIMS', 401, {
+				detail: 'Missing required claims in JWT payload'
+			})
+		);
 	}
 
 	// Validate audience matches our app's client ID
 	if (payload['aud'] !== shopifyConfig.apiKey) {
-		throw new AppError('#ERR_JWT_AUDIENCE_MISMATCH', 401, {
-			detail: 'JWT audience does not match app client ID'
-		});
+		return Err(
+			new AppError('#ERR_JWT_AUDIENCE_MISMATCH', 401, {
+				detail: 'JWT audience does not match app client ID'
+			})
+		);
 	}
 
-	return {
+	return Ok({
 		...payload,
 		iss: payload['iss'] as string,
 		dest: payload['dest'] as string,
@@ -64,7 +78,7 @@ export async function verifyShopifySessionToken(token: string): Promise<TShopify
 		sub: payload['sub'] as string,
 		shopId: payload['dest'].replace('https://', '') as string,
 		userId: payload['sub'] as string
-	};
+	});
 }
 
 // https://shopify.dev/docs/apps/build/authentication-authorization/session-tokens
