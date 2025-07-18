@@ -1,4 +1,6 @@
 import { TLinkNode } from '@repo/editor';
+import { coreApiClient } from '@/environment';
+import { accessSecretMiddleware } from '@/environment/.server';
 import { resolveLinkNode } from '../../../../lib';
 import { TResolvedLinkNode, TResolvedPromisedNode } from '../../../../types';
 import { TNodeHydrateContext } from '../types';
@@ -13,20 +15,29 @@ export function hydrateLinkNode(
 		cached: resolveLinkNode(node, cx),
 		next: (async () => {
 			const { content, ...rest } = node;
-			await new Promise((resolve) => setTimeout(resolve, 3000));
 
-			// TODO: Refetch link metadata
+			const result = await coreApiClient.get('/v1/url/metadata', {
+				queryParams: { url: content.url },
+				requestMiddlewares: [accessSecretMiddleware]
+			});
+			if (result.isErr()) {
+				return resolveLinkNode(node, cx);
+			}
+
+			const urlMetadata = result.value.data;
+			// const faviconHash =
+			// 	urlMetadata.icons?.favicon != null
+			// 		? (editor.registerImage(urlMetadata.icons.favicon, 'favicon') ?? undefined)
+			// 		: undefined;
 
 			return resolveLinkNode(
 				{
 					content: {
 						...content,
-						userMetadata: {
-							...content.userMetadata,
-							title:
-								content.userMetadata != null
-									? `${content.userMetadata.title} (resolved at ${new Date().toISOString()})`
-									: undefined
+						fetchedMetadata: {
+							...content.fetchedMetadata,
+							title: urlMetadata.title,
+							description: urlMetadata.description
 						}
 					},
 					...rest

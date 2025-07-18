@@ -2,7 +2,7 @@ import { Err, Ok, shortId, type TResult } from '@blgc/utils';
 import { TFlatSite } from '@repo/editor';
 import type { ShopifyGlobal } from '@shopify/app-bridge-types';
 import { coreApiClient } from '@/environment';
-import { createStepr, type TStepr } from '@/lib/ui';
+import { createShopifyTokenMiddleware, createStepr, type TStepr } from '@/lib';
 
 export function createOnboardingContext(
 	config: TCreateOnboardingContextConfig
@@ -28,7 +28,6 @@ export function createOnboardingContext(
 
 		async continueFromHandle(handle, options = {}) {
 			const { override = false } = options;
-			const idToken = await this.shopify.idToken();
 			const trimmedHandle = handle.trim();
 
 			// Check if the handle is available
@@ -36,9 +35,7 @@ export function createOnboardingContext(
 				queryParams: {
 					path: `/${trimmedHandle}`
 				},
-				headers: {
-					Authorization: `Bearer ${idToken}`
-				}
+				requestMiddlewares: [createShopifyTokenMiddleware(this.shopify)]
 			});
 			if (availabilityResult.isErr()) {
 				return Err({
@@ -86,16 +83,13 @@ export function createOnboardingContext(
 		},
 
 		async continueFromLinkpopUrl(handle) {
-			const idToken = await this.shopify.idToken();
 			const fullUrl = `https://linkpop.com/${handle.trim()}`;
 
 			const result = await coreApiClient.get('/v1/site/parse/external', {
 				queryParams: {
 					url: fullUrl
 				},
-				headers: {
-					Authorization: `Bearer ${idToken}`
-				}
+				requestMiddlewares: [createShopifyTokenMiddleware(this.shopify)]
 			});
 			if (result.isErr()) {
 				// Check if it's a LinkPop parsing error
@@ -135,8 +129,6 @@ export function createOnboardingContext(
 				return Err('Invalid step');
 			}
 
-			const idToken = await this.shopify.idToken();
-
 			// Get the handle and override flag from the handle step
 			const { handle = 'bio', shouldOverrideRedirect = false } =
 				this.stepr.getVisited('handle') ?? {};
@@ -151,9 +143,7 @@ export function createOnboardingContext(
 					overrideRedirect: shouldOverrideRedirect
 				},
 				{
-					headers: {
-						Authorization: `Bearer ${idToken}`
-					}
+					requestMiddlewares: [createShopifyTokenMiddleware(this.shopify)]
 				}
 			);
 			if (createResult.isErr()) {
@@ -174,8 +164,6 @@ export function createOnboardingContext(
 				return Err('Invalid template');
 			}
 
-			const idToken = await this.shopify.idToken();
-
 			// Get the handle and override flag from the handle step
 			const { handle = 'bio', shouldOverrideRedirect = false } =
 				this.stepr.getVisited('handle') ?? {};
@@ -190,9 +178,7 @@ export function createOnboardingContext(
 					overrideRedirect: shouldOverrideRedirect
 				},
 				{
-					headers: {
-						Authorization: `Bearer ${idToken}`
-					}
+					requestMiddlewares: [createShopifyTokenMiddleware(this.shopify)]
 				}
 			);
 

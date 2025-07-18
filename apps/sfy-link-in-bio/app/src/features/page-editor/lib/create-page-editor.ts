@@ -20,7 +20,7 @@ import { FetchError, NetworkError, RequestError } from 'feature-fetch';
 import { createState, TState } from 'feature-state';
 import React from 'react';
 import { appConfig, coreApiClient } from '@/environment';
-import { requestReview } from '@/lib';
+import { createShopifyTokenMiddleware, requestReview } from '@/lib';
 import { TSettingsSectionType, TViewType } from '../environment';
 import { createNodeState, TNodeState } from './create-node-state';
 import { getNodeAssetHashes } from './get-node-asset-hashes';
@@ -491,8 +491,6 @@ export function createPageEditor(
 		},
 
 		async publish() {
-			const idToken = await this.shopify.idToken();
-
 			// Clean up unused assets before saving
 			this.cleanupAssets();
 
@@ -505,9 +503,7 @@ export function createPageEditor(
 					pathParams: {
 						siteId: this.site.id
 					},
-					headers: {
-						Authorization: `Bearer ${idToken}`
-					}
+					requestMiddlewares: [createShopifyTokenMiddleware(this.shopify)]
 				}
 			);
 
