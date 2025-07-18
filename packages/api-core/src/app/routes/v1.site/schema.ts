@@ -13,12 +13,6 @@ export const SSiteSummaryDto = z
 		updatedAt: z.iso.datetime().openapi({ example: '2024-03-20T00:00:00Z' })
 	})
 	.openapi('SiteSummaryDto');
-export type TSiteSummaryDto = z.infer<typeof SSiteSummaryDto>;
-
-// export const SSiteContentDto = z
-// 	.custom<TSite>((val) => typeof val === 'object' && val !== null && !Array.isArray(val))
-// 	.openapi('SiteContentDto');
-// export type TSiteContentDto = z.infer<typeof SSiteContentDto>;
 
 export const SFlatSiteContentDto = z
 	// .custom<TFlatSite>((val) => typeof val === 'object' && val !== null && !Array.isArray(val))

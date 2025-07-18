@@ -43,7 +43,6 @@ export const CreateUploadTargetsRoute = createRoute({
 					z.object({
 						uploadTarget: z.object({
 							url: z
-								.string()
 								.url()
 								.openapi({ example: 'https://shopify-staged-uploads.storage.googleapis.com/' }),
 							resourceUrl: z.url().openapi({

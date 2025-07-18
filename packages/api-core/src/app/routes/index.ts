@@ -3,6 +3,7 @@ import './v1.doc';
 import './v1.health';
 import './v1.info';
 import './v1.shopify.redirect';
+import './v1.shopify.shop';
 import './v1.shopify.site';
 import './v1.shopify.ugc';
 import './v1.shopify.workspace';

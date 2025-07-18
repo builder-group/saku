@@ -23,7 +23,7 @@ import {
 } from '@/components';
 import { appConfig, coreApiClient, logger } from '@/environment';
 import { shopify, shopifyConfig } from '@/environment/.server';
-import { withLoaderResult } from '@/lib';
+import { createShopifyTokenMiddleware, withLoaderResult } from '@/lib';
 import { getSessionTokenFromRequest, redirectWithAuth } from '@/lib/.server';
 import { usePageEditorModal } from '@/routes/app.modal.page-editor.$/PageEditorModal';
 import { TLoaderFunctionWithResult } from '@/types';
@@ -268,11 +268,16 @@ export const loader: TLoaderFunctionWithResult<TSuccessLoaderData, TErrorLoaderD
 	const url = new URL(request.url);
 	const shouldOpenEditor = url.searchParams.get('openEditor') === 'true';
 
+	if (sessionToken == null) {
+		return ServerErr({
+			code: '#ERR_UNAUTHORIZED',
+			message: 'Unauthorized'
+		});
+	}
+
 	// 1. Check workspace onboarding status
 	const workspaceResult = await coreApiClient.get('/v1/shopify/workspace', {
-		headers: {
-			Authorization: `Bearer ${sessionToken}`
-		}
+		requestMiddlewares: [createShopifyTokenMiddleware(sessionToken)]
 	});
 	if (workspaceResult.isErr()) {
 		logger.error('Failed to fetch workspace', workspaceResult.error);
@@ -291,9 +296,7 @@ export const loader: TLoaderFunctionWithResult<TSuccessLoaderData, TErrorLoaderD
 
 	// 3. Onboarding complete - fetch sites
 	const sitesResult = await coreApiClient.get('/v1/shopify/site', {
-		headers: {
-			Authorization: `Bearer ${sessionToken}`
-		}
+		requestMiddlewares: [createShopifyTokenMiddleware(sessionToken)]
 	});
 	if (sitesResult.isErr()) {
 		return ServerErr({

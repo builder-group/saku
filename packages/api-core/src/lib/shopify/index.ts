@@ -4,3 +4,4 @@ export * from './create-handle-from-shop';
 export * from './create-url-redirect';
 export * from './is-url-redirect-path-reserved';
 export * from './remove-app-proxy-redirects';
+export * from './theme';

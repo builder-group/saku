@@ -128,6 +128,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/shopify/shop/overview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get shop overview including theme, social links, and best-selling products
+         * @description Retrieves comprehensive shop overview including theme styling, social media links, and best-selling products for creating default templates
+         */
+        get: operations["getShopOverview"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/shopify/site": {
         parameters: {
             query?: never;
@@ -314,6 +334,23 @@ export interface paths {
         /** Get site content by workspace handle and site handle */
         get: operations["getSiteContentByWorkspaceAndHandle"];
         put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/site/{siteId}/node/{nodeId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Update a specific node in a site */
+        put: operations["updateSiteNode"];
         post?: never;
         delete?: never;
         options?: never;
@@ -519,7 +556,6 @@ export interface components {
                 associated_user_scope?: string;
                 /** @example session_token_hash_string */
                 session?: string;
-                /** @example null */
                 account_number?: number | null;
                 associated_user: {
                     /** @example 987654321 */
@@ -687,6 +723,9 @@ export interface components {
              * @example 2024-03-20T00:00:00Z
              */
             updatedAt: string;
+        };
+        NodeDto: {
+            [key: string]: unknown;
         };
         UrlMetadataDto: {
             /**
@@ -1029,14 +1068,10 @@ export interface operations {
                         isAvailable: boolean;
                         /**
                          * @description Type of conflict if path is not available
-                         * @example null
                          * @enum {string|null}
                          */
                         conflictType: "reserved_path" | "existing_redirect" | null;
-                        /**
-                         * @description Human-readable explanation of why the path is not available
-                         * @example null
-                         */
+                        /** @description Human-readable explanation of why the path is not available */
                         conflictReason: string | null;
                         /** @description List of existing redirects that conflict with the requested path */
                         existingRedirects: {
@@ -1075,6 +1110,209 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AppErrorDto"];
+                };
+            };
+        };
+    };
+    getShopOverview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        shop: {
+                            /** @example gid://shopify/Shop/123456789 */
+                            id: string;
+                            /** @example My Awesome Store */
+                            name: string;
+                            /** @example my-awesome-store.myshopify.com */
+                            domain: string;
+                            /** @example Premium products for everyone */
+                            description?: string;
+                            /**
+                             * Format: uri
+                             * @example https://cdn.shopify.com/logo.png
+                             */
+                            logo?: string;
+                            /** @example USD */
+                            currency: string;
+                            /** @example US */
+                            country: string;
+                            /** @example EN */
+                            language: string;
+                        };
+                        theme: {
+                            /** @example gid://shopify/Theme/123456789 */
+                            id: string;
+                            /** @example Dawn */
+                            name: string;
+                            /** @example MAIN */
+                            role: string;
+                            colors: {
+                                /**
+                                 * @description Primary brand color
+                                 * @example #121212
+                                 */
+                                primary: string;
+                                /**
+                                 * @description Secondary brand color
+                                 * @example #666666
+                                 */
+                                secondary: string;
+                                /**
+                                 * @description Background color
+                                 * @example #ffffff
+                                 */
+                                background: string;
+                                /**
+                                 * @description Text color
+                                 * @example #121212
+                                 */
+                                text: string;
+                                /**
+                                 * @description Button color
+                                 * @example #121212
+                                 */
+                                button: string;
+                                /**
+                                 * @description Button text color
+                                 * @example #ffffff
+                                 */
+                                buttonText: string;
+                            };
+                            typography: {
+                                /**
+                                 * @description Heading font family
+                                 * @example Assistant
+                                 */
+                                headingFont: string;
+                                /**
+                                 * @description Body font family
+                                 * @example Assistant
+                                 */
+                                bodyFont: string;
+                                /**
+                                 * @description Heading font scale percentage
+                                 * @example 100
+                                 */
+                                headingScale: number;
+                                /**
+                                 * @description Body font scale percentage
+                                 * @example 100
+                                 */
+                                bodyScale: number;
+                            };
+                            layout: {
+                                /**
+                                 * @description Maximum page width in pixels
+                                 * @example 1200
+                                 */
+                                pageWidth: number;
+                                /**
+                                 * @description Section spacing in pixels
+                                 * @example 0
+                                 */
+                                spacing: number;
+                                /**
+                                 * @description Border radius in pixels
+                                 * @example 0
+                                 */
+                                borderRadius: number;
+                            };
+                        };
+                        socialLinks: {
+                            /**
+                             * @description Social media platform
+                             * @example instagram
+                             */
+                            platform: string;
+                            /**
+                             * Format: uri
+                             * @example https://instagram.com/shopname
+                             */
+                            url: string;
+                            /** @example @shopname */
+                            username?: string;
+                        }[];
+                        bestSellingProducts: {
+                            /** @example gid://shopify/Product/123456789 */
+                            id: string;
+                            /** @example Premium T-Shirt */
+                            title: string;
+                            /** @example premium-t-shirt */
+                            handle: string;
+                            /**
+                             * Format: uri
+                             * @example https://cdn.shopify.com/image.jpg
+                             */
+                            featuredImage?: string;
+                            /** @example $29.99 */
+                            price: string;
+                            priceRange?: {
+                                /** @example $29.99 */
+                                min: string;
+                                /** @example $39.99 */
+                                max: string;
+                            };
+                        }[];
+                        stats: {
+                            /**
+                             * @description Total number of products
+                             * @example 150
+                             */
+                            totalProducts: number;
+                            /**
+                             * @description Total number of collections
+                             * @example 12
+                             */
+                            totalCollections: number;
+                            /**
+                             * @description Total number of orders
+                             * @example 1250
+                             */
+                            totalOrders?: number;
+                        };
+                    };
+                };
+            };
+            /** @description Bad request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppErrorDto"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppErrorDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example Failed to fetch shop overview */
+                        error: string;
+                    };
                 };
             };
         };
@@ -1598,6 +1836,56 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["FlatSiteContentDto"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppErrorDto"];
+                };
+            };
+        };
+    };
+    updateSiteNode: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Site ID */
+                siteId: string;
+                /** @description Node ID */
+                nodeId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["NodeDto"];
+            };
+        };
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {boolean} */
+                        success: true;
+                    };
+                };
+            };
+            /** @description Bad request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppErrorDto"];
                 };
             };
             /** @description Resource not found */
