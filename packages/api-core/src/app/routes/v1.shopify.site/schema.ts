@@ -1,6 +1,6 @@
 import { createRoute, z } from '@hono/zod-openapi';
 import { BadRequestResponse, JsonSuccessResponse, NotFoundResponse } from '@repo/hono-utils';
-import { SSiteContentDto, SSiteDto, SSiteSummaryDto } from '../v1.site/schema';
+import { SFlatSiteContentDto, SSiteDto, SSiteSummaryDto } from '../v1.site/schema';
 
 export const GetShopifySitesRoute = createRoute({
 	method: 'get',
@@ -34,7 +34,7 @@ export const CreateShopifySiteRoute = createRoute({
 							example: 'My Bio Site',
 							description: 'Human-friendly site name'
 						}),
-						content: SSiteContentDto,
+						content: SFlatSiteContentDto,
 						createRedirect: z.coerce.boolean().optional().openapi({
 							example: true,
 							description: 'Whether to create a URL redirect for the site (defaults to true)'
@@ -65,7 +65,7 @@ export const UpdateShopifySiteContentRoute = createRoute({
 	operationId: 'updateShopifySiteContent',
 	request: {
 		params: z.object({
-			siteId: z.string().uuid().openapi({
+			siteId: z.uuid().openapi({
 				example: '123e4567-e89b-12d3',
 				description: 'Site ID'
 			})
@@ -74,7 +74,7 @@ export const UpdateShopifySiteContentRoute = createRoute({
 			content: {
 				'application/json': {
 					schema: z.object({
-						content: SSiteContentDto
+						content: SFlatSiteContentDto
 					})
 				}
 			}
@@ -106,7 +106,7 @@ export const GetSiteContentByShopAndHandleRoute = createRoute({
 		})
 	},
 	responses: {
-		200: JsonSuccessResponse(SSiteContentDto),
+		200: JsonSuccessResponse(SFlatSiteContentDto),
 		404: NotFoundResponse
 	}
 });

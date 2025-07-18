@@ -10,6 +10,7 @@ import {
 } from '@dnd-kit/core';
 import { restrictToParentElement } from '@dnd-kit/modifiers';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { TNodeId } from '@repo/editor';
 import { Button, Icon, Text } from '@shopify/polaris';
 import { useCompute, useFeatureState } from 'feature-react/state';
 import React from 'react';
@@ -53,8 +54,8 @@ export const LayersContent: React.FC<TLayersContentProps> = ({ editor }) => {
 			editor.isDraggingLayer.set(false);
 
 			if (over != null && active.id !== over.id) {
-				editor.reorderNode(active.id as string, over.id as string);
-				editor.selectNode(active.id as string);
+				editor.reorderNode(active.id as TNodeId, over.id as TNodeId);
+				editor.selectNode(active.id as TNodeId);
 			}
 		},
 		[editor]

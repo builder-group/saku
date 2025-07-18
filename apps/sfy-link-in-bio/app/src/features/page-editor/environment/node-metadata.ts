@@ -1,4 +1,4 @@
-import { inheritStyle, TNode } from '@repo/editor';
+import { inheritStyle, TFlatNode } from '@repo/editor';
 import { IconSource } from '@shopify/polaris';
 import { LayoutSectionIcon } from '@/components';
 
@@ -113,10 +113,10 @@ export const nodeMetadataMap: TNodeMetadataMap = {
 export const nodeMetadata = Object.values(nodeMetadataMap);
 
 export type TNodeMetadataMap = {
-	[K in Extract<TNode, { type: string }>['type']]: TNodeMetadata<K>;
+	[K in Extract<TFlatNode, { type: string }>['type']]: TNodeMetadata<K>;
 };
 
-export type TNodeMetadata<GType extends TNode['type']> = {
+export type TNodeMetadata<GType extends TFlatNode['type']> = {
 	type: GType;
 	hidden?: boolean;
 } & (
@@ -124,7 +124,7 @@ export type TNodeMetadata<GType extends TNode['type']> = {
 			internal: false;
 			icon: IconSource;
 			label: string;
-			defaultData: Omit<Extract<TNode, { type: GType }>, 'id' | 'type'>;
+			defaultData: Omit<Extract<TFlatNode, { type: GType }>, 'id' | 'type'>;
 	  }
-	| { internal: true; defaultData?: Omit<Extract<TNode, { type: GType }>, 'id' | 'type'> }
+	| { internal: true; defaultData?: Omit<Extract<TFlatNode, { type: GType }>, 'id' | 'type'> }
 );

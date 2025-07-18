@@ -18,7 +18,7 @@ import {
 } from './schema';
 
 router.openapi(CreateUploadTargetsRoute, async (c) => {
-	const { shopId } = await verifyShopifySession(c);
+	const { shopId } = (await verifyShopifySession(c)).unwrap();
 	const { files } = c.req.valid('json');
 
 	const accessToken = (await getShopifyOfflineAccessToken(shopId)).unwrap();
@@ -52,7 +52,7 @@ router.openapi(CreateUploadTargetsRoute, async (c) => {
 });
 
 router.openapi(SubmitUploadedFilesRoute, async (c) => {
-	const { shopId } = await verifyShopifySession(c);
+	const { shopId } = (await verifyShopifySession(c)).unwrap();
 	const { files } = c.req.valid('json');
 
 	const accessToken = (await getShopifyOfflineAccessToken(shopId)).unwrap();
@@ -99,7 +99,7 @@ router.openapi(SubmitUploadedFilesRoute, async (c) => {
 });
 
 router.openapi(ListMediaFilesRoute, async (c) => {
-	const { shopId } = await verifyShopifySession(c);
+	const { shopId } = (await verifyShopifySession(c)).unwrap();
 	const { first, after, fileTypes, fileName, sortKey, reverse } = c.req.valid('query');
 
 	const accessToken = (await getShopifyOfflineAccessToken(shopId)).unwrap();

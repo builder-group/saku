@@ -2,16 +2,14 @@ import { type coreApiV1 } from '@repo/types/api';
 import { Session } from '@shopify/shopify-api';
 import { type SessionStorage } from '@shopify/shopify-app-session-storage';
 import { coreApiClient } from '@/environment';
-import { apiConfig } from '@/environment/.server';
+import { accessSecretMiddleware } from '@/environment/.server';
 
 // Based on: https://github.com/Shopify/shopify-app-js/blob/main/packages/apps/session-storage/shopify-app-session-storage-prisma/src/prisma.ts
 export class ApiSessionStorage implements SessionStorage {
 	public async storeSession(session: Session): Promise<boolean> {
 		const sessionDto = this.sessionToSessionDto(session);
 		const result = await coreApiClient.post('/v1/auth/shopify/session', sessionDto, {
-			headers: {
-				authorization: `Bearer ${apiConfig.core.accessSecret}`
-			}
+			requestMiddlewares: [accessSecretMiddleware]
 		});
 		return result.isOk();
 	}
@@ -19,9 +17,7 @@ export class ApiSessionStorage implements SessionStorage {
 	public async loadSession(id: string): Promise<Session | undefined> {
 		const result = await coreApiClient.get('/v1/auth/shopify/session/{sessionId}', {
 			pathParams: { sessionId: id },
-			headers: {
-				authorization: `Bearer ${apiConfig.core.accessSecret}`
-			}
+			requestMiddlewares: [accessSecretMiddleware]
 		});
 
 		if (result.isOk()) {
@@ -34,9 +30,7 @@ export class ApiSessionStorage implements SessionStorage {
 	public async deleteSession(id: string): Promise<boolean> {
 		const result = await coreApiClient.del('/v1/auth/shopify/session/{sessionId}', {
 			pathParams: { sessionId: id },
-			headers: {
-				authorization: `Bearer ${apiConfig.core.accessSecret}`
-			}
+			requestMiddlewares: [accessSecretMiddleware]
 		});
 
 		return result.isOk();
@@ -51,9 +45,7 @@ export class ApiSessionStorage implements SessionStorage {
 	public async findSessionsByShop(shop: string): Promise<Session[]> {
 		const result = await coreApiClient.get('/v1/auth/shopify/session/shop/{shopId}', {
 			pathParams: { shopId: shop },
-			headers: {
-				authorization: `Bearer ${apiConfig.core.accessSecret}`
-			}
+			requestMiddlewares: [accessSecretMiddleware]
 		});
 
 		if (result.isOk()) {

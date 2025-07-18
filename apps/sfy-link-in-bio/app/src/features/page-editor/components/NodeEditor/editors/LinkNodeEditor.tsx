@@ -11,6 +11,7 @@ import { useFeatureState } from 'feature-react/state';
 import React from 'react';
 import { AccordionSection, ImageUploadField, TImageUploadOnChangeImage } from '@/components';
 import { coreApiClient } from '@/environment';
+import { createShopifyTokenMiddleware } from '@/lib';
 import { ColorStyleField, SelectStyleField, TextStyleField, ToggleStyleField } from '../fields';
 import { TNodeEditorComponentProps } from '../nodeEditorRegistry';
 
@@ -89,10 +90,9 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 	const handleUrlFetch = React.useCallback(async () => {
 		setIsFetchingUrlMetadata(true);
 		try {
-			const idToken = await shopify.idToken();
 			const result = await coreApiClient.get('/v1/url/metadata', {
 				queryParams: { url: content.url },
-				headers: { Authorization: `Bearer ${idToken}` }
+				requestMiddlewares: [createShopifyTokenMiddleware(shopify)]
 			});
 
 			if (result.isErr()) {

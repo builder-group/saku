@@ -4,7 +4,7 @@
 	"private": true,
 	"description": "",
 	"keywords": [],
-	"homepage": "https://saku.so/?source=github",
+	"homepage": "https://saku.so/?utm_source=github",
 	"bugs": {
 		"url": "https://github.com/builder-group/saku/issues"
 	},
@@ -38,9 +38,9 @@
 		"@react-email/components": "^0.3.1"
 	},
 	"devDependencies": {
-		"@react-email/preview-server": "4.1.3",
+		"@react-email/preview-server": "4.2.1",
 		"@types/react": "^18.3.1",
 		"react": "18.3.1",
-		"react-email": "^4.1.3"
+		"react-email": "^4.2.1"
 	}
 }

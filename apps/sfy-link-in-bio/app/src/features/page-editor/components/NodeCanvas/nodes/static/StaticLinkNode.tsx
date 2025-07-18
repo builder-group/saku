@@ -1,7 +1,8 @@
 import React from 'react';
 import { TResolvedLinkNode } from '../../../../types';
+import { TStaticNodeProps } from '../types';
 
-export const StaticLinkNode = React.forwardRef<HTMLDivElement, TStaticLinkNodeProps>(
+export const StaticLinkNode = React.forwardRef<HTMLDivElement, TStaticNodeProps<TResolvedLinkNode>>(
 	(props, ref) => {
 		const {
 			node: { content, style },
@@ -70,7 +71,3 @@ export const StaticLinkNode = React.forwardRef<HTMLDivElement, TStaticLinkNodePr
 	}
 );
 StaticLinkNode.displayName = 'StaticLinkNode';
-
-interface TStaticLinkNodeProps extends React.HTMLProps<HTMLDivElement> {
-	node: TResolvedLinkNode;
-}

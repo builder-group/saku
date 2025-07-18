@@ -23,14 +23,14 @@ import {
 } from '@/components';
 import { appConfig, coreApiClient, logger } from '@/environment';
 import { shopify, shopifyConfig } from '@/environment/.server';
-import { withLoaderResult } from '@/lib';
+import { createShopifyTokenMiddleware, withLoaderResult } from '@/lib';
 import { getSessionTokenFromRequest, redirectWithAuth } from '@/lib/.server';
 import { usePageEditorModal } from '@/routes/app.modal.page-editor.$/PageEditorModal';
 import { TLoaderFunctionWithResult } from '@/types';
 
 const Page = withLoaderResult<TSuccessLoaderData, TErrorLoaderData>({
 	Success: ({ data }) => {
-		const { site, shouldOpenEditor, platformUrl } = data;
+		const { site, shouldOpenEditor } = data;
 		const { Modal: EditorModal, isOpenState: isEditorOpenState } = usePageEditorModal({
 			siteId: site.id,
 			title: `${site.displayName} (/${site.handle})`
@@ -165,14 +165,14 @@ const Page = withLoaderResult<TSuccessLoaderData, TErrorLoaderData>({
 									<div className="flex flex-col gap-3">
 										<div className="flex items-center justify-between">
 											<Text as="h2" variant="headingMd">
-												Your Shopify-hosted Link
+												Your Bio Link
 											</Text>
 											<Badge tone="success">Current</Badge>
 										</div>
 
-										<Text as="p" tone="subdued">
+										{/* <Text as="p" tone="subdued">
 											Hosted on your Shopify store domain.
-										</Text>
+										</Text> */}
 
 										<TextField
 											label=""
@@ -184,7 +184,7 @@ const Page = withLoaderResult<TSuccessLoaderData, TErrorLoaderData>({
 									</div>
 								</Card>
 								{/* Your Platform Link Card */}
-								<Card>
+								{/* <Card>
 									<div className="flex flex-col gap-3">
 										<div className="flex items-center justify-between">
 											<Text as="h2" variant="headingMd">
@@ -205,7 +205,7 @@ const Page = withLoaderResult<TSuccessLoaderData, TErrorLoaderData>({
 											connectedRight={<ClipboardButton textToCopy={platformUrl} />}
 										/>
 									</div>
-								</Card>
+								</Card> */}
 								<FeedbackCard
 									email={appConfig.support.email}
 									reviewUrl={appConfig.distribution.shopify}
@@ -268,11 +268,16 @@ export const loader: TLoaderFunctionWithResult<TSuccessLoaderData, TErrorLoaderD
 	const url = new URL(request.url);
 	const shouldOpenEditor = url.searchParams.get('openEditor') === 'true';
 
+	if (sessionToken == null) {
+		return ServerErr({
+			code: '#ERR_UNAUTHORIZED',
+			message: 'Unauthorized'
+		});
+	}
+
 	// 1. Check workspace onboarding status
 	const workspaceResult = await coreApiClient.get('/v1/shopify/workspace', {
-		headers: {
-			Authorization: `Bearer ${sessionToken}`
-		}
+		requestMiddlewares: [createShopifyTokenMiddleware(sessionToken)]
 	});
 	if (workspaceResult.isErr()) {
 		logger.error('Failed to fetch workspace', workspaceResult.error);
@@ -291,9 +296,7 @@ export const loader: TLoaderFunctionWithResult<TSuccessLoaderData, TErrorLoaderD
 
 	// 3. Onboarding complete - fetch sites
 	const sitesResult = await coreApiClient.get('/v1/shopify/site', {
-		headers: {
-			Authorization: `Bearer ${sessionToken}`
-		}
+		requestMiddlewares: [createShopifyTokenMiddleware(sessionToken)]
 	});
 	if (sitesResult.isErr()) {
 		return ServerErr({

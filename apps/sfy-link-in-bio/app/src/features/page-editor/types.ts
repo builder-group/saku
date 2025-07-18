@@ -1,7 +1,5 @@
 import {
 	TAboutNode,
-	TAsset,
-	TAssetHash,
 	TBaseNode,
 	TLinkNode,
 	TMediaNode,
@@ -13,7 +11,7 @@ import {
 	TTextNode
 } from '@repo/editor';
 
-export interface TResolvedSite extends Omit<TSite, 'root'> {
+export interface TResolvedSite extends Omit<TSite, 'root' | 'assets'> {
 	root: TResolvedPageNode;
 }
 
@@ -107,9 +105,3 @@ export interface TResolvedLinkMeta {
 export type TResolveStyle<T> = {
 	[K in keyof T]?: T[K] extends TStyleReference<infer U> ? (U extends TRgba ? string : U) : T[K];
 };
-
-export interface TNodeResolutionContext {
-	assetsMap: Record<TAssetHash, TAsset>;
-	defaultStyles?: TPageNode['style']['children'];
-	shopId: string;
-}

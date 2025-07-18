@@ -1,10 +1,14 @@
 import { router } from '@/app/router';
-import { verifyShopifySession } from '@/lib';
+import { verifyAccessSecret, verifyShopifySession } from '@/lib';
 import { getMetadata, getPredefinedFavicon } from './lib';
 import { GetUrlMetadataRoute } from './schema';
 
 router.openapi(GetUrlMetadataRoute, async (c) => {
-	await verifyShopifySession(c);
+	const shopifySessionResult = await verifyShopifySession(c);
+	if (shopifySessionResult.isErr()) {
+		(await verifyAccessSecret(c)).unwrap();
+	}
+
 	const { url } = c.req.valid('query');
 
 	const metadata = await getMetadata(url);

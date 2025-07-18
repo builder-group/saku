@@ -1,5 +1,6 @@
+import { Spinner } from '@shopify/polaris';
 import React from 'react';
-import { ResizablePanel, ShadowRoot, SpinnerIcon } from '@/components';
+import { ResizablePanel, ShadowRoot } from '@/components';
 import tailwindStylesHref from '@/styles.css?url';
 import { TPageEditor } from '../../lib';
 import { NodeCanvas } from '../NodeCanvas';
@@ -15,7 +16,7 @@ export const CanvasPanel: React.FC<TCanvasPanelProps> = (props) => {
 
 			{!stylesLoaded && (
 				<div className="absolute inset-0 z-10 flex h-full w-full items-center justify-center bg-neutral-50">
-					<SpinnerIcon className="h-8 w-8 animate-spin" />
+					<Spinner accessibilityLabel="Loading editor canvas..." size="small" />
 				</div>
 			)}
 

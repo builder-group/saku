@@ -1,24 +1,19 @@
 import { ServerErr, ServerOk } from '@blgc/utils';
-import { TSite } from '@repo/editor';
+import { TFlatSite } from '@repo/editor';
 import { Spinner, Text } from '@shopify/polaris';
 import { AppProxyProvider } from '@shopify/shopify-app-remix/react';
 import { isStatusCode } from 'feature-fetch';
 import { coreApiClient } from '@/environment';
 import { shopify, shopifyConfig } from '@/environment/.server';
-import {
-	getSiteFontUrls,
-	resolveSite,
-	StaticNodeCanvas,
-	TResolvedSite
-} from '@/features/page-editor';
+import { getSiteFontUrls, StaticNodeCanvas, TResolvedSite } from '@/features/page-editor';
+import { hydrateSite, StaticSiteHydrateContext } from '@/features/page-editor/.server';
 import { withLoaderResult } from '@/lib';
 import styles from '@/styles.css?url';
 import { TLoaderFunctionWithResult } from '@/types';
 
 const Page = withLoaderResult<TSuccessLoaderData, TErrorLoaderData>({
 	Success: ({ data }) => {
-		const { appUrl, site } = data;
-		const fontUrls = getSiteFontUrls(site);
+		const { appUrl, site, fontUrls } = data;
 
 		return (
 			<AppProxyProvider appUrl={appUrl}>
@@ -101,9 +96,12 @@ export const loader: TLoaderFunctionWithResult<TSuccessLoaderData, TErrorLoaderD
 		});
 	}
 
+	const flatSite = result.value.data as unknown as TFlatSite;
+
 	return ServerOk({
 		appUrl: shopifyConfig.appUrl,
-		site: resolveSite(result.value.data as unknown as TSite, session.shop)
+		site: hydrateSite(new StaticSiteHydrateContext(flatSite, session.shop, handle)),
+		fontUrls: getSiteFontUrls(flatSite)
 	});
 };
 
@@ -115,4 +113,5 @@ interface TErrorLoaderData {
 interface TSuccessLoaderData {
 	appUrl: string;
 	site: TResolvedSite;
+	fontUrls: string[];
 }

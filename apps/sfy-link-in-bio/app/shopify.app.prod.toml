@@ -1,6 +1,6 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
-client_id = "2b94f79e87ae864f86d54772206e0d2e"
+client_id = "261eeadf370db94ba2357924d18767bf"
 name = "Saku Link In Bio"
 handle = "saku-link-in-bio"
 application_url = "https://sfy-link-in-bio-app.saku.so"
@@ -8,7 +8,7 @@ embedded = true
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = "write_files,write_online_store_navigation,read_online_store_navigation"
+scopes = "write_files,write_online_store_navigation,read_online_store_navigation,read_themes"
 
 [auth]
 redirect_urls = [

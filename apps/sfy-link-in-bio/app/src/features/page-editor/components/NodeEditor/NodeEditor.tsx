@@ -1,7 +1,6 @@
-import { TNode } from '@repo/editor';
-import { TState } from 'feature-state';
+import { TFlatNode } from '@repo/editor';
 import React from 'react';
-import { TFlattenedNode, TPageEditor } from '../../lib';
+import { TNodeState, TPageEditor } from '../../lib';
 import { nodeEditorRegistry, TNodeEditorComponentProps } from './nodeEditorRegistry';
 
 export const NodeEditor: React.FC<TNodeEditorProps> = (props) => {
@@ -17,6 +16,6 @@ export const NodeEditor: React.FC<TNodeEditorProps> = (props) => {
 };
 
 interface TNodeEditorProps {
-	nodeState: TState<TFlattenedNode<TNode>, []>;
+	nodeState: TNodeState<TFlatNode>;
 	editor: TPageEditor;
 }

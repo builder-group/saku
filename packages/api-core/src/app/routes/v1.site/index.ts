@@ -1,13 +1,17 @@
+import { toFlatSite } from '@repo/editor';
 import { AppError } from '@repo/hono-utils';
-import { and, eq } from 'drizzle-orm';
+import { and, eq, sql } from 'drizzle-orm';
 import { router } from '@/app/router';
 import { db, siteTable, workspaceTable } from '@/environment';
+import { verifyAccessSecret } from '@/lib';
 import { fetchExternalHtml, parseLinkpopHtml, transformLinkpopToSite } from './lib';
 import {
 	GetSiteContentByWorkspaceAndHandleRoute,
 	GetSiteContentRoute,
 	GetSiteRoute,
-	ParseExternalSiteRoute
+	ParseExternalSiteRoute,
+	TFlatSiteContentDto,
+	UpdateSiteNodeRoute
 } from './schema';
 
 router.openapi(GetSiteRoute, async (c) => {
@@ -39,7 +43,7 @@ router.openapi(GetSiteRoute, async (c) => {
 			workspaceId: site.workspaceId,
 			handle: site.handle,
 			displayName: site.displayName ?? undefined,
-			content: site.content,
+			content: site.content as TFlatSiteContentDto,
 			createdAt: site.createdAt.toISOString(),
 			updatedAt: site.updatedAt.toISOString()
 		},
@@ -65,7 +69,7 @@ router.openapi(GetSiteContentRoute, async (c) => {
 		});
 	}
 
-	return c.json(site.content, 200);
+	return c.json(site.content as TFlatSiteContentDto, 200);
 });
 
 router.openapi(ParseExternalSiteRoute, async (c) => {
@@ -96,7 +100,7 @@ router.openapi(ParseExternalSiteRoute, async (c) => {
 				{
 					provider: 'linkpop',
 					handle: handle,
-					data: site as any
+					content: toFlatSite(site) as TFlatSiteContentDto
 				},
 				200
 			);
@@ -139,5 +143,31 @@ router.openapi(GetSiteContentByWorkspaceAndHandleRoute, async (c) => {
 		});
 	}
 
-	return c.json(site.content, 200);
+	return c.json(site.content as TFlatSiteContentDto, 200);
+});
+
+router.openapi(UpdateSiteNodeRoute, async (c) => {
+	(await verifyAccessSecret(c)).unwrap();
+	const { siteId, nodeId } = c.req.valid('param');
+	const node = c.req.valid('json');
+
+	const [updated] = await db
+		.update(siteTable)
+		.set({
+			content: sql.raw(
+				`jsonb_set(content, '{nodes,"${nodeId}"}', '${JSON.stringify(node)}'::jsonb, true)`
+			),
+			updatedAt: new Date()
+		})
+		.where(eq(siteTable.id, siteId))
+		.returning({ id: siteTable.id });
+
+	if (updated == null) {
+		throw new AppError('#ERR_SITE_UPDATE_FAILED', 500, {
+			title: 'Update failed',
+			detail: 'Failed to update node in site'
+		});
+	}
+
+	return c.json({ success: true as const }, 200);
 });

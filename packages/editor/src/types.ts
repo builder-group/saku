@@ -1,17 +1,33 @@
-import { TRgba } from './color';
+import { TRgba } from './lib/color';
+import { TId } from './lib/id';
 
 export interface TSite {
 	version: `v0.0.1`;
-	root: TPageNode;
+	root: TNode;
 	assets: TAsset[];
+}
+
+export interface TFlatSite {
+	version: TSite['version'];
+	rootId: TNodeId;
+	nodes: Record<TNodeId, TFlatNode>;
+	assets: Record<TAssetHash, TAsset>;
 }
 
 // =========================================================================
 // Node
 // =========================================================================
 
-export type TNodeId = string;
+export type TNodeId = TId<'node'>;
+
 export type TNode = TPageNode | TAboutNode | TLinkNode | TMediaNode | TTextNode | TProductNode;
+export type TFlatNode =
+	| TFlatPageNode
+	| TAboutNode
+	| TLinkNode
+	| TMediaNode
+	| TTextNode
+	| TProductNode;
 
 export interface TBaseNode {
 	id: TNodeId;
@@ -40,6 +56,10 @@ export interface TPageNode extends TBaseNode {
 	};
 }
 
+export interface TFlatPageNode extends Omit<TPageNode, 'children'> {
+	children: TNodeId[];
+}
+
 export interface TAboutNode extends TBaseNode {
 	type: 'about';
 	content: {
@@ -48,20 +68,7 @@ export interface TAboutNode extends TBaseNode {
 		profilePicture?: TAssetHash;
 		socialLinks: TSocialLink[];
 	};
-	style: {
-		// Layout
-		padding: TStyleReference<number>;
-		// Background
-		backgroundColor: TStyleReference<TRgba>;
-		// Typography
-		font: TStyleReference<TFont>;
-		fontSize: TStyleReference<number>;
-		textColor: TStyleReference<TRgba>;
-		textAlign: TStyleReference<'left' | 'center' | 'right'>;
-		// Border and effects
-		borderRadius: TStyleReference<number>;
-		shadow: TStyleReference<boolean>;
-	};
+	style: TLayoutMixin & TBackgroundMixin & TBorderMixin & TTypographyMixin;
 }
 
 export interface TLinkNode extends TBaseNode {
@@ -71,20 +78,7 @@ export interface TLinkNode extends TBaseNode {
 		userMetadata: TLinkMetadata;
 		fetchedMetadata?: TLinkMetadata;
 	};
-	style: {
-		// Layout
-		padding: TStyleReference<number>;
-		// Background
-		backgroundColor: TStyleReference<TRgba>;
-		// Typography
-		font: TStyleReference<TFont>;
-		fontSize: TStyleReference<number>;
-		textColor: TStyleReference<TRgba>;
-		textAlign: TStyleReference<'left' | 'center' | 'right'>;
-		// Border and effects
-		borderRadius: TStyleReference<number>;
-		shadow: TStyleReference<boolean>;
-	};
+	style: TLayoutMixin & TBackgroundMixin & TBorderMixin & TTypographyMixin;
 }
 
 export interface TMediaNode extends TBaseNode {
@@ -92,15 +86,7 @@ export interface TMediaNode extends TBaseNode {
 	content: {
 		media?: TMedia;
 	};
-	style: {
-		// Layout
-		padding: TStyleReference<number>;
-		// Background
-		backgroundColor: TStyleReference<TRgba>;
-		// Border and effects
-		borderRadius: TStyleReference<number>;
-		shadow: TStyleReference<boolean>;
-	};
+	style: TLayoutMixin & TBackgroundMixin & TBorderMixin;
 }
 
 export interface TTextNode extends TBaseNode {
@@ -109,20 +95,7 @@ export interface TTextNode extends TBaseNode {
 		title?: string;
 		text: string;
 	};
-	style: {
-		// Layout
-		padding: TStyleReference<number>;
-		// Background
-		backgroundColor: TStyleReference<TRgba>;
-		// Typography
-		font: TStyleReference<TFont>;
-		fontSize: TStyleReference<number>;
-		textColor: TStyleReference<TRgba>;
-		textAlign: TStyleReference<'left' | 'center' | 'right'>;
-		// Border and effects
-		borderRadius: TStyleReference<number>;
-		shadow: TStyleReference<boolean>;
-	};
+	style: TLayoutMixin & TBackgroundMixin & TBorderMixin & TTypographyMixin;
 }
 
 export interface TProductNode extends TBaseNode {
@@ -140,30 +113,21 @@ export interface TProductNode extends TBaseNode {
 				image?: TAssetHash;
 				selectedOptions: { name: string; value: string }[];
 			}[];
+			checkoutUrl: string;
 		};
 	};
-	style: {
-		// Layout
-		padding: TStyleReference<number>;
-		// Background
-		backgroundColor: TStyleReference<TRgba>;
-		// Typography
-		font: TStyleReference<TFont>;
-		fontSize: TStyleReference<number>;
-		textColor: TStyleReference<TRgba>;
-		// Border and effects
-		borderRadius: TStyleReference<number>;
-		shadow: TStyleReference<boolean>;
-	};
+	style: TLayoutMixin & TBackgroundMixin & TBorderMixin & Omit<TTypographyMixin, 'textAlign'>;
 }
 
 // =========================================================================
 // Asset
 // =========================================================================
 
+export type TAssetId = TId<'asset'>;
 export type TAssetHash = string; // SHA-256 hash as hex string
 
 export interface TBaseAsset {
+	id: TAssetId;
 	type: string;
 	hash: TAssetHash; // Content hash
 	contentType: string; // MIME type
@@ -188,6 +152,34 @@ export interface TImageAsset extends TBaseAsset {
 export type TAsset = TFontAsset | TImageAsset;
 
 // =========================================================================
+// Mixins
+// =========================================================================
+
+export interface TLayoutMixin {
+	padding: TStyleReference<number>;
+}
+
+export interface TBackgroundMixin {
+	backgroundColor: TStyleReference<TRgba>;
+}
+
+export interface TTypographyMixin {
+	font: TStyleReference<TFont>;
+	fontSize: TStyleReference<number>;
+	textColor: TStyleReference<TRgba>;
+	textAlign: TStyleReference<'left' | 'center' | 'right'>;
+}
+
+export interface TBorderMixin {
+	borderRadius: TStyleReference<number>;
+	shadow: TStyleReference<boolean>;
+}
+
+// export interface TSpacingMixin {
+// 	spacing: TStyleReference<number>;
+// }
+
+// =========================================================================
 // Utils
 // =========================================================================
 
@@ -197,13 +189,20 @@ export interface TFont {
 	style?: 'normal' | 'italic';
 }
 
+export type TMedia = TImageMedia; // | TYouTubeMedia;
+
 export interface TImageMedia {
 	type: 'image';
 	hash: TAssetHash;
 	altText?: string;
 }
 
-export type TMedia = TImageMedia;
+export interface TYouTubeMedia {
+	type: 'youtube';
+	url: string;
+	videoId: string;
+	thumbnail?: TAssetHash;
+}
 
 export interface TLinkMetadata {
 	title?: string;

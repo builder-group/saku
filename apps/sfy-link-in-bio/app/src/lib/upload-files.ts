@@ -2,6 +2,7 @@ import { Err, Ok, type TResult } from '@blgc/utils';
 import type { ShopifyGlobal } from '@shopify/app-bridge-types';
 import { coreApiClient, fetchClient } from '@/environment';
 import type { TError } from '@/types';
+import { createShopifyTokenMiddleware } from './middleware';
 
 export async function uploadFiles(
 	config: TUploadFilesConfig
@@ -21,9 +22,7 @@ export async function uploadFiles(
 			}))
 		},
 		{
-			headers: {
-				Authorization: `Bearer ${idToken}`
-			}
+			requestMiddlewares: [createShopifyTokenMiddleware(idToken)]
 		}
 	);
 	if (createFilesResult.isErr()) {
@@ -97,9 +96,7 @@ export async function uploadFiles(
 			}))
 		},
 		{
-			headers: {
-				Authorization: `Bearer ${idToken}`
-			}
+			requestMiddlewares: [createShopifyTokenMiddleware(idToken)]
 		}
 	);
 	if (submitResult.isErr()) {

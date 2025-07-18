@@ -35,7 +35,7 @@ The structure of the `package.json` file in this project should adhere to a spec
 	"private": true, // Or false if package should be published
 	"description": "Description of the package or app",
 	"keywords": [],
-	"homepage": "https://saku.so/?source=github",
+	"homepage": "https://saku.so/?utm_source=github",
 	"bugs": {
 		"url": "https://github.com/builder-group/saku/issues"
 	},
