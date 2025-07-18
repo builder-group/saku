@@ -20,7 +20,7 @@ export function hydrateProductNode(
 				const variant = content.product.variants[0];
 
 				let checkoutUrl: string = '';
-				if (cx.site.shopId != null && variant?.id != null) {
+				if (variant?.id != null) {
 					const numericId =
 						typeof variant.id === 'string' && variant.id.includes('gid://')
 							? variant.id.split('/').pop()

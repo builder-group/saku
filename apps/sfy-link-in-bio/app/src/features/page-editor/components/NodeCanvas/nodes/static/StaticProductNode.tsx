@@ -18,7 +18,37 @@ export const StaticProductNode = React.forwardRef<
 	const imageUrl = React.useMemo(() => product?.images?.[0], [product?.images]);
 
 	if (product == null) {
-		return null;
+		return (
+			<div {...divProps} ref={ref} className="w-full max-w-md">
+				<div
+					className="relative flex w-full items-center gap-3 overflow-hidden bg-white"
+					style={{
+						padding: style.padding,
+						backgroundColor: style.backgroundColor,
+						fontFamily: style.font?.family,
+						fontSize: style.fontSize,
+						color: style.textColor,
+						borderRadius: style.borderRadius,
+						boxShadow: style.shadow ? '0 4px 6px -1px rgb(0 0 0 / 0.1)' : undefined
+					}}
+				>
+					{/* Skeleton Product Image */}
+					<div
+						className="h-12 w-12 flex-shrink-0 animate-pulse overflow-hidden bg-gray-200"
+						style={{ borderRadius: style.borderRadius }}
+					/>
+
+					{/* Skeleton Product Details and Price */}
+					<div className="flex min-w-0 flex-grow items-center justify-between">
+						<div className="flex min-w-0 flex-col justify-center gap-1">
+							<div className="h-4 w-32 animate-pulse rounded bg-gray-200" />
+							<div className="h-3 w-20 animate-pulse rounded bg-gray-200" />
+						</div>
+						<div className="ml-3 h-3 w-16 animate-pulse rounded bg-gray-200" />
+					</div>
+				</div>
+			</div>
+		);
 	}
 
 	return (
