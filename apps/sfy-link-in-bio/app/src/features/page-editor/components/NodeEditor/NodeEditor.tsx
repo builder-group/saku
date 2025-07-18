@@ -1,16 +1,14 @@
-import { TNode } from '@repo/editor';
-import { useCompute } from 'feature-react/state';
-import { TState } from 'feature-state';
+import { TFlatNode } from '@repo/editor';
 import React from 'react';
-import { TFlattenedNode, TPageEditor } from '../../lib';
+import { TNodeState, TPageEditor } from '../../lib';
 import { nodeEditorRegistry, TNodeEditorComponentProps } from './nodeEditorRegistry';
 
 export const NodeEditor: React.FC<TNodeEditorProps> = (props) => {
 	const { nodeState, editor } = props;
 
-	const EditorComponent = useCompute(
-		nodeState,
-		(node) => nodeEditorRegistry[node.type] as React.ComponentType<TNodeEditorComponentProps<any>>,
+	const EditorComponent = React.useMemo(
+		() =>
+			nodeEditorRegistry[nodeState._v.type] as React.ComponentType<TNodeEditorComponentProps<any>>,
 		[nodeState]
 	);
 
@@ -18,6 +16,6 @@ export const NodeEditor: React.FC<TNodeEditorProps> = (props) => {
 };
 
 interface TNodeEditorProps {
-	nodeState: TState<TFlattenedNode<TNode>, []>;
+	nodeState: TNodeState<TFlatNode>;
 	editor: TPageEditor;
 }

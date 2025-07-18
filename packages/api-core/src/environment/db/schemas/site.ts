@@ -1,3 +1,4 @@
+import { TFlatSite } from '@repo/editor';
 import { jsonb, pgTable, text, timestamp, unique } from 'drizzle-orm/pg-core';
 import { workspaceTable } from './workspace';
 
@@ -25,7 +26,7 @@ export const siteTable = pgTable(
 		displayName: text('display_name'),
 
 		// Site content
-		content: jsonb('content').$type<Record<string, unknown>>().notNull(),
+		content: jsonb('content').$type<TFlatSite>().notNull(),
 
 		// Publishing status
 		// isPublished: text('is_published')

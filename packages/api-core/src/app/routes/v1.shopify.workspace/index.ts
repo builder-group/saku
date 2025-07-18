@@ -6,7 +6,7 @@ import { verifyShopifySession } from '@/lib';
 import { GetShopifyWorkspaceRoute } from './schema';
 
 router.openapi(GetShopifyWorkspaceRoute, async (c) => {
-	const { shopId } = await verifyShopifySession(c);
+	const { shopId } = (await verifyShopifySession(c)).unwrap();
 
 	// Find workspace connected to this Shopify shop
 	const [workspace] = await db

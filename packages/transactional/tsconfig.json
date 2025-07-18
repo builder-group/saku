@@ -1,0 +1,12 @@
+{
+	"extends": "@blgc/config/typescript/react-internal",
+	"compilerOptions": {
+		"outDir": "./dist",
+		"rootDir": "./src",
+		"declarationDir": "./dist/types",
+		"paths": {
+			"@/*": ["./src/*"]
+		}
+	},
+	"include": ["src"]
+}

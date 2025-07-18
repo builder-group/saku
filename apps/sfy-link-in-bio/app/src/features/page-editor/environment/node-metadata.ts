@@ -1,43 +1,23 @@
-import { hexToRgba, inheritStyle, TNode, TNodeType } from '@repo/editor';
+import { inheritStyle, TFlatNode } from '@repo/editor';
 import { IconSource } from '@shopify/polaris';
 import { LayoutSectionIcon } from '@/components';
 
-export const nodeMetadataMap = {
+export const nodeMetadataMap: TNodeMetadataMap = {
 	page: {
 		type: 'page',
-		icon: LayoutSectionIcon,
-		label: 'Page',
-		hidden: true,
-		defaultData: {
-			children: [],
-			style: {
-				backgroundColor: hexToRgba('#F8F9FA'),
-				children: {
-					backgroundColor: hexToRgba('#FFFFFF'),
-					spacing: 16,
-					padding: 16,
-					font: {
-						family: 'Inter',
-						weight: 400,
-						style: 'normal'
-					},
-					fontSize: 16,
-					textColor: hexToRgba('#2F4F4F'),
-					textAlign: 'center' as const,
-					borderRadius: 12,
-					shadow: true
-				}
-			}
-		}
-	} satisfies TNodeMetadata<'page'>,
+		internal: true
+	},
 	about: {
 		type: 'about',
 		icon: LayoutSectionIcon,
 		label: 'About',
-		hidden: false,
+		internal: false,
 		defaultData: {
-			name: 'Your Name',
-			bio: 'Tell us about yourself',
+			content: {
+				name: 'Your Name',
+				bio: 'Tell us about yourself',
+				socialLinks: []
+			},
 			style: {
 				padding: inheritStyle(),
 				backgroundColor: inheritStyle(),
@@ -49,16 +29,18 @@ export const nodeMetadataMap = {
 				shadow: inheritStyle()
 			}
 		}
-	} satisfies TNodeMetadata<'about'>,
+	},
 	link: {
 		type: 'link',
 		icon: LayoutSectionIcon,
 		label: 'Link',
-		hidden: false,
+		internal: false,
 		defaultData: {
-			url: 'https://example.com',
-			meta: {
-				title: 'New Link'
+			content: {
+				url: 'https://www.shopify.com/',
+				userMetadata: {
+					title: 'Add your title here'
+				}
 			},
 			style: {
 				padding: inheritStyle(),
@@ -71,17 +53,14 @@ export const nodeMetadataMap = {
 				shadow: inheritStyle()
 			}
 		}
-	} satisfies TNodeMetadata<'link'>,
+	},
 	media: {
 		type: 'media',
 		icon: LayoutSectionIcon,
 		label: 'Media',
-		hidden: false,
+		internal: false,
 		defaultData: {
-			media: {
-				type: 'image' as const,
-				hash: ''
-			},
+			content: {},
 			style: {
 				padding: inheritStyle(),
 				backgroundColor: inheritStyle(),
@@ -89,14 +68,16 @@ export const nodeMetadataMap = {
 				shadow: inheritStyle()
 			}
 		}
-	} satisfies TNodeMetadata<'media'>,
+	},
 	text: {
 		type: 'text',
 		icon: LayoutSectionIcon,
 		label: 'Text',
-		hidden: false,
+		internal: false,
 		defaultData: {
-			text: 'Add your text here',
+			content: {
+				text: 'Add your text here'
+			},
 			style: {
 				padding: inheritStyle(),
 				backgroundColor: inheritStyle(),
@@ -108,15 +89,42 @@ export const nodeMetadataMap = {
 				shadow: inheritStyle()
 			}
 		}
-	} satisfies TNodeMetadata<'text'>
-} as const;
+	},
+	product: {
+		type: 'product',
+		icon: LayoutSectionIcon,
+		label: 'Product',
+		internal: false,
+		defaultData: {
+			content: {},
+			style: {
+				padding: inheritStyle(),
+				backgroundColor: inheritStyle(),
+				font: inheritStyle(),
+				fontSize: inheritStyle(),
+				textColor: inheritStyle(),
+				borderRadius: inheritStyle(),
+				shadow: inheritStyle()
+			}
+		}
+	}
+};
 
 export const nodeMetadata = Object.values(nodeMetadataMap);
 
-export interface TNodeMetadata<GType extends TNodeType> {
+export type TNodeMetadataMap = {
+	[K in Extract<TFlatNode, { type: string }>['type']]: TNodeMetadata<K>;
+};
+
+export type TNodeMetadata<GType extends TFlatNode['type']> = {
 	type: GType;
-	icon: IconSource;
-	label: string;
-	hidden: boolean;
-	defaultData: Omit<Extract<TNode, { type: GType }>, 'id' | 'type'>;
-}
+	hidden?: boolean;
+} & (
+	| {
+			internal: false;
+			icon: IconSource;
+			label: string;
+			defaultData: Omit<Extract<TFlatNode, { type: GType }>, 'id' | 'type'>;
+	  }
+	| { internal: true; defaultData?: Omit<Extract<TFlatNode, { type: GType }>, 'id' | 'type'> }
+);

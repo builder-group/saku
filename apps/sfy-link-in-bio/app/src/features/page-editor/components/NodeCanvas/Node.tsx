@@ -1,10 +1,26 @@
-import { TAboutNode, TLinkNode, TMediaNode, TPageNode, TTextNode } from '@repo/editor';
+import {
+	TAboutNode,
+	TFlatNode,
+	TFlatPageNode,
+	TLinkNode,
+	TMediaNode,
+	TProductNode,
+	TTextNode
+} from '@repo/editor';
 import React from 'react';
 import { useBoundingRectObserver } from '@/hooks';
-import { TNodeState, TPageEditor } from '../../lib';
-import { AboutNode, LinkNode, MediaNode, PageNode, TextNode } from './nodes';
+import { TNodeState } from '../../lib';
+import {
+	AboutNode,
+	LinkNode,
+	MediaNode,
+	PageNode,
+	ProductNode,
+	TextNode,
+	TNodeProps
+} from './nodes';
 
-export const Node: React.FC<TNodeProps> = (props) => {
+export const Node: React.FC<TNodeProps<TFlatNode>> = (props) => {
 	const { nodeState, editor } = props;
 
 	useBoundingRectObserver(
@@ -16,12 +32,12 @@ export const Node: React.FC<TNodeProps> = (props) => {
 		[nodeState]
 	);
 
-	switch (nodeState._v.type) {
+	switch (nodeState.type) {
 		case 'page':
 			return (
 				<PageNode
 					ref={nodeState.ref}
-					nodeState={nodeState as TNodeState<TPageNode>}
+					nodeState={nodeState as TNodeState<TFlatPageNode>}
 					editor={editor}
 				/>
 			);
@@ -57,12 +73,15 @@ export const Node: React.FC<TNodeProps> = (props) => {
 					editor={editor}
 				/>
 			);
+		case 'product':
+			return (
+				<ProductNode
+					ref={nodeState.ref}
+					nodeState={nodeState as TNodeState<TProductNode>}
+					editor={editor}
+				/>
+			);
 		default:
 			return null;
 	}
 };
-
-interface TNodeProps {
-	nodeState: TNodeState;
-	editor: TPageEditor;
-}

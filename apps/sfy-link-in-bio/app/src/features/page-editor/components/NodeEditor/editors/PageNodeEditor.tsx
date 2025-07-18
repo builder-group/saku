@@ -1,12 +1,11 @@
-import { fontMetadata, TPageNode } from '@repo/editor';
+import { fontMetadata, TFlatPageNode } from '@repo/editor';
 import { Text } from '@shopify/polaris';
 import React from 'react';
 import { AccordionSection } from '@/components';
-import { TFlattenedNode } from '../../../lib';
 import { ColorStyleField, SelectStyleField, TextStyleField, ToggleStyleField } from '../fields';
 import { TNodeEditorComponentProps } from '../nodeEditorRegistry';
 
-export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TPageNode>> = (props) => {
+export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TFlatPageNode>> = (props) => {
 	const { nodeState, editor } = props;
 
 	const fontOptions = React.useMemo(() => {
@@ -25,7 +24,7 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TPageNode>> = (p
 			{/* Page Style Section */}
 			<AccordionSection title="Style" defaultOpen={true}>
 				<div className="space-y-3">
-					<ColorStyleField<TFlattenedNode<TPageNode>, never>
+					<ColorStyleField<TFlatPageNode, never>
 						label="Background Color"
 						node={nodeState}
 						nodeValueMapper={(value) => value.style.backgroundColor}
@@ -53,7 +52,7 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TPageNode>> = (p
 						</Text>
 					</div>
 					<div className="grid grid-cols-3 gap-3">
-						<TextStyleField<TFlattenedNode<TPageNode>, never, number>
+						<TextStyleField<TFlatPageNode, never, number>
 							label="Spacing"
 							node={nodeState}
 							nodeValueMapper={(value) => value.style.children?.spacing}
@@ -68,7 +67,7 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TPageNode>> = (p
 							placeholder="16"
 						/>
 
-						<TextStyleField<TFlattenedNode<TPageNode>, never, number>
+						<TextStyleField<TFlatPageNode, never, number>
 							label="Padding"
 							node={nodeState}
 							nodeValueMapper={(value) => value.style.children?.padding}
@@ -81,9 +80,11 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TPageNode>> = (p
 							type="number"
 							autoComplete="off"
 							placeholder="16"
+							min={0}
+							max={100}
 						/>
 
-						<TextStyleField<TFlattenedNode<TPageNode>, never, number>
+						<TextStyleField<TFlatPageNode, never, number>
 							label="Border Radius"
 							node={nodeState}
 							nodeValueMapper={(value) => value.style.children?.borderRadius}
@@ -96,6 +97,8 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TPageNode>> = (p
 							type="number"
 							autoComplete="off"
 							placeholder="12"
+							min={0}
+							max={999}
 						/>
 					</div>
 				</div>
@@ -111,7 +114,7 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TPageNode>> = (p
 					</div>
 					<div className="space-y-3">
 						<div className="grid grid-cols-2 gap-3">
-							<SelectStyleField<TFlattenedNode<TPageNode>, never, string>
+							<SelectStyleField<TFlatPageNode, never, string>
 								label="Font Family"
 								node={nodeState}
 								nodeValueMapper={(value) => value.style.children?.font?.family}
@@ -127,7 +130,7 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TPageNode>> = (p
 								options={fontOptions}
 							/>
 
-							<SelectStyleField<TFlattenedNode<TPageNode>, never, 'left' | 'center' | 'right'>
+							<SelectStyleField<TFlatPageNode, never, 'left' | 'center' | 'right'>
 								label="Text Align"
 								node={nodeState}
 								nodeValueMapper={(value) => value.style.children?.textAlign}
@@ -146,7 +149,7 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TPageNode>> = (p
 						</div>
 
 						<div className="grid grid-cols-2 gap-3">
-							<TextStyleField<TFlattenedNode<TPageNode>, never, number>
+							<TextStyleField<TFlatPageNode, never, number>
 								label="Font Size"
 								node={nodeState}
 								nodeValueMapper={(value) => value.style.children?.fontSize}
@@ -159,9 +162,11 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TPageNode>> = (p
 								type="number"
 								autoComplete="off"
 								placeholder="16"
+								min={0}
+								max={96}
 							/>
 
-							<ColorStyleField<TFlattenedNode<TPageNode>, never>
+							<ColorStyleField<TFlatPageNode, never>
 								label="Text Color"
 								node={nodeState}
 								nodeValueMapper={(value) => value.style.children?.textColor}
@@ -189,7 +194,7 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TPageNode>> = (p
 					</div>
 					<div className="space-y-3">
 						<div>
-							<ColorStyleField<TFlattenedNode<TPageNode>, never>
+							<ColorStyleField<TFlatPageNode, never>
 								label="Background Color"
 								node={nodeState}
 								nodeValueMapper={(value) => value.style.children?.backgroundColor}
@@ -205,7 +210,7 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TPageNode>> = (p
 						</div>
 
 						<div>
-							<ToggleStyleField<TFlattenedNode<TPageNode>, never>
+							<ToggleStyleField<TFlatPageNode, never>
 								label="Shadow"
 								node={nodeState}
 								nodeValueMapper={(value) => value.style.children?.shadow}

@@ -1,4 +1,4 @@
-import { TFont } from './types';
+import { TFont } from '../types';
 
 export const fontMetadataMap = {
 	inter: {

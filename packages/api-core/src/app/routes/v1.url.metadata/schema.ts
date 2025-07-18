@@ -8,7 +8,7 @@ import {
 
 const SUrlMetadataDto = z
 	.object({
-		url: z.string().url().openapi({
+		url: z.url().openapi({
 			example: 'https://example.com',
 			description: 'The URL that was fetched'
 		}),
@@ -28,7 +28,7 @@ const SUrlMetadataDto = z
 					example: 'Example Site',
 					description: 'The name of the website'
 				}),
-				video: z.string().url().optional().openapi({
+				video: z.url().optional().openapi({
 					example: 'https://example.com/video',
 					description: 'URL to the site-wide video if available'
 				})
@@ -38,15 +38,15 @@ const SUrlMetadataDto = z
 		// Media URLs
 		media: z
 			.object({
-				image: z.string().url().optional().openapi({
+				image: z.url().optional().openapi({
 					example: 'https://example.com/image.jpg',
 					description: 'Primary image URL from og:image or similar tags'
 				}),
-				video: z.string().url().optional().openapi({
+				video: z.url().optional().openapi({
 					example: 'https://example.com/video.mp4',
 					description: 'Primary video URL from og:video or similar tags'
 				}),
-				audio: z.string().url().optional().openapi({
+				audio: z.url().optional().openapi({
 					example: 'https://example.com/audio.mp3',
 					description: 'Primary audio URL if available'
 				})
@@ -56,15 +56,15 @@ const SUrlMetadataDto = z
 		// Icons
 		icons: z
 			.object({
-				favicon: z.string().url().optional().openapi({
+				favicon: z.url().optional().openapi({
 					example: 'https://example.com/favicon.ico',
 					description: 'URL to the favicon'
 				}),
-				touch: z.string().url().optional().openapi({
+				touch: z.url().optional().openapi({
 					example: 'https://example.com/apple-touch-icon.png',
 					description: 'URL to the touch icon (e.g. apple-touch-icon)'
 				}),
-				mask: z.string().url().optional().openapi({
+				mask: z.url().optional().openapi({
 					example: 'https://example.com/mask-icon.svg',
 					description: 'URL to the mask icon (e.g. Safari pinned tab)'
 				})
@@ -84,7 +84,7 @@ export const GetUrlMetadataRoute = createRoute({
 	operationId: 'getUrlMetadata',
 	request: {
 		query: z.object({
-			url: z.string().url().openapi({
+			url: z.url().openapi({
 				example: 'https://example.com',
 				description: 'The URL to fetch metadata from'
 			})

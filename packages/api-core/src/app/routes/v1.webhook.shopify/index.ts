@@ -4,10 +4,11 @@ import {
 	db,
 	logger,
 	shopifySessionTable,
+	siteTable,
 	workspaceAccountTable,
 	workspaceTable
 } from '@/environment';
-import { createHandleFromShop, verifyShopifyWebhook } from '@/lib';
+import { createHandleFromShop, sendUninstallFeedbackEmail, verifyShopifyWebhook } from '@/lib';
 import {
 	AppScopesUpdateWebhookRoute,
 	AppUninstalledWebhookRoute,
@@ -18,7 +19,7 @@ import {
 
 // https://shopify.dev/docs/apps/build/compliance/privacy-law-compliance#customers-data_request
 router.openapi(CustomersDataRequestWebhookRoute, async (c) => {
-	const { shopDomain, topic, eventId } = await verifyShopifyWebhook(c);
+	const { shopDomain, topic, eventId } = (await verifyShopifyWebhook(c)).unwrap();
 	const input = c.req.valid('json');
 
 	logger.info(`Received ${topic} webhook for shop: ${shopDomain} (Event: ${eventId})`);
@@ -38,7 +39,7 @@ router.openapi(CustomersDataRequestWebhookRoute, async (c) => {
 
 // https://shopify.dev/docs/apps/build/compliance/privacy-law-compliance#customers-redact
 router.openapi(CustomersRedactWebhookRoute, async (c) => {
-	const { shopDomain, topic, eventId } = await verifyShopifyWebhook(c);
+	const { shopDomain, topic, eventId } = (await verifyShopifyWebhook(c)).unwrap();
 	const input = c.req.valid('json');
 
 	logger.info(`Received ${topic} webhook for shop: ${shopDomain} (Event: ${eventId})`);
@@ -58,7 +59,7 @@ router.openapi(CustomersRedactWebhookRoute, async (c) => {
 
 // https://shopify.dev/docs/apps/build/compliance/privacy-law-compliance#shop-redact
 router.openapi(ShopRedactWebhookRoute, async (c) => {
-	const { shopDomain, topic, eventId } = await verifyShopifyWebhook(c);
+	const { shopDomain, topic, eventId } = (await verifyShopifyWebhook(c)).unwrap();
 
 	logger.info(`Received ${topic} webhook for shop: ${shopDomain} (Event: ${eventId})`);
 
@@ -142,7 +143,7 @@ router.openapi(ShopRedactWebhookRoute, async (c) => {
 
 // https://shopify.dev/docs/api/webhooks?reference=toml#list-of-topics-app/uninstalled
 router.openapi(AppUninstalledWebhookRoute, async (c) => {
-	const { shopDomain, topic, eventId } = await verifyShopifyWebhook(c);
+	const { shopDomain, topic, eventId } = (await verifyShopifyWebhook(c)).unwrap();
 	const input = c.req.valid('json');
 
 	logger.info(`Received ${topic} webhook for shop: ${input.name} (${shopDomain})`);
@@ -160,6 +161,51 @@ router.openapi(AppUninstalledWebhookRoute, async (c) => {
 
 	logger.info(`Deleted ${deletedSessions.length} Shopify sessions for shop: ${shopDomain}`);
 
+	// Continue only if sessions were deleted (i.e. hook wasn't triggered earlier)
+	if (deletedSessions.length > 0) {
+		// Get the workspace ID for this shop
+		const [shopifyAccount] = await db
+			.select({
+				workspaceId: workspaceAccountTable.workspaceId
+			})
+			.from(workspaceAccountTable)
+			.where(
+				and(
+					eq(workspaceAccountTable.provider, 'shopify'),
+					eq(workspaceAccountTable.providerAccountId, shopDomain)
+				)
+			)
+			.limit(1);
+
+		// Get all link-in-bio pages for this workspace
+		const sites =
+			shopifyAccount != null
+				? await db
+						.select({
+							handle: siteTable.handle
+						})
+						.from(siteTable)
+						.where(eq(siteTable.workspaceId, shopifyAccount.workspaceId))
+				: [];
+
+		// Format URLs as shopDomain/handle
+		const linkInBioPages = sites.map((site) => `${shopDomain}/${site.handle}`);
+
+		const sendUninstallFeedbackEmailResult = await sendUninstallFeedbackEmail({
+			email: input.email,
+			shopName: input.name,
+			linkInBioPages,
+			totalVisits: 0, // TODO: Add analytics tracking
+			feedbackUrl: '' // TODO: Add feedback URL
+		});
+		if (sendUninstallFeedbackEmailResult.isErr()) {
+			logger.error(
+				`Error sending uninstall feedback email for shop: ${shopDomain}`,
+				sendUninstallFeedbackEmailResult.error
+			);
+		}
+	}
+
 	// Note: We do NOT delete shop account data here
 	// - Shop data deletion happens in shop/redact webhook (48 hours later)
 	// - This allows merchants to reinstall the app and keep their data
@@ -175,7 +221,7 @@ router.openapi(AppUninstalledWebhookRoute, async (c) => {
 
 // https://shopify.dev/docs/api/webhooks?reference=toml#list-of-topics-app/scopes_update
 router.openapi(AppScopesUpdateWebhookRoute, async (c) => {
-	const { shopDomain, topic, eventId } = await verifyShopifyWebhook(c);
+	const { shopDomain, topic, eventId } = (await verifyShopifyWebhook(c)).unwrap();
 	const input = c.req.valid('json');
 
 	logger.info(`Received ${topic} webhook for shop: ${shopDomain} (Event: ${eventId})`);

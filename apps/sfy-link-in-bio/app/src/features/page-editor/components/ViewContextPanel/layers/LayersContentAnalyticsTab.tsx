@@ -1,8 +1,7 @@
-import { TNode } from '@repo/editor';
+import { TFlatNode } from '@repo/editor';
 import { Text } from '@shopify/polaris';
-import { TState } from 'feature-state';
 import React from 'react';
-import { TFlattenedNode, TPageEditor } from '../../../lib';
+import { TNodeState, TPageEditor } from '../../../lib';
 
 export const LayersContentAnalyticsTab: React.FC<TLayersContentAnalyticsTabProps> = (props) => {
 	const { nodeState } = props;
@@ -25,6 +24,6 @@ export const LayersContentAnalyticsTab: React.FC<TLayersContentAnalyticsTabProps
 };
 
 interface TLayersContentAnalyticsTabProps {
-	nodeState: TState<TFlattenedNode<TNode>, []>;
+	nodeState: TNodeState<TFlatNode>;
 	editor: TPageEditor;
 }

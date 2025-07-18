@@ -153,6 +153,24 @@ export function isValidHex(hex: string): boolean {
 	return /^#([A-Fa-f0-9]{3}|[A-Fa-f0-9]{6})$/.test(hex);
 }
 
+/**
+ * Returns black or white based on which has better contrast with the background
+ */
+export function getBestContrastColor(backgroundColor: TRgba): TRgba {
+	// Blend with white browser background based on alpha
+	const blendedR = backgroundColor.r * backgroundColor.a + 1 * (1 - backgroundColor.a);
+	const blendedG = backgroundColor.g * backgroundColor.a + 1 * (1 - backgroundColor.a);
+	const blendedB = backgroundColor.b * backgroundColor.a + 1 * (1 - backgroundColor.a);
+
+	// Calculate luminance using simple weighted average
+	const luminance = blendedR * 0.299 + blendedG * 0.587 + blendedB * 0.114;
+
+	// If background is light, use black. If dark, use white.
+	return luminance > 0.5
+		? { r: 0, g: 0, b: 0, a: 1 } // Black
+		: { r: 1, g: 1, b: 1, a: 1 }; // White
+}
+
 function clamp(n: number, min = 0, max = 1): number {
 	return Math.max(min, Math.min(max, n));
 }

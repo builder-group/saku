@@ -1,7 +1,6 @@
-import { TNode } from '@repo/editor';
-import { TState } from 'feature-state';
+import { TFlatNode } from '@repo/editor';
 import React from 'react';
-import { TFlattenedNode, TPageEditor } from '../../../lib';
+import { TNodeState, TPageEditor } from '../../../lib';
 import { NodeEditor } from '../../NodeEditor';
 
 export const LayersContentCustomizeTab: React.FC<TLayersContentCustomizeTabProps> = (props) => {
@@ -11,6 +10,6 @@ export const LayersContentCustomizeTab: React.FC<TLayersContentCustomizeTabProps
 };
 
 interface TLayersContentCustomizeTabProps {
-	nodeState: TState<TFlattenedNode<TNode>, []>;
+	nodeState: TNodeState<TFlatNode>;
 	editor: TPageEditor;
 }

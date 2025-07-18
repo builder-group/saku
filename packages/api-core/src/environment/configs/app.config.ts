@@ -1,6 +1,4 @@
 import {
-	ciDefault,
-	combineDefaults,
 	devDefault,
 	nonEmptyStringMiddleware,
 	portValidator,
@@ -12,7 +10,8 @@ import { z } from 'zod';
 
 const env = validateEnvVar({
 	envKey: 'NODE_ENV',
-	validator: zValidator(z.enum(['development', 'production', 'local', 'test']))
+	validator: zValidator(z.enum(['development', 'production', 'local', 'test'])),
+	defaultValue: 'development' as const
 });
 
 const packageVersion = validateEnvVar({
@@ -36,10 +35,7 @@ const url = validateEnvVar({
 		nonEmptyStringMiddleware,
 		(value) => (value?.endsWith('/') ? value.slice(0, -1) : value)
 	],
-	defaultValue: combineDefaults(
-		devDefault(`http://127.0.0.1:${devPort}`),
-		ciDefault('https://api.saku.so')
-	)
+	defaultValue: devDefault(`http://127.0.0.1:${devPort}`)
 });
 
 export const appConfig = {
@@ -49,13 +45,11 @@ export const appConfig = {
 	url,
 	secret: validateEnvVar({
 		envKey: 'API_CORE_SECRET',
-		validator: zValidator(z.string()),
-		defaultValue: ciDefault('')
+		validator: zValidator(z.string())
 	}),
 	accessSecret: validateEnvVar({
 		envKey: 'API_CORE_ACCESS_SECRET',
-		validator: zValidator(z.string()),
-		defaultValue: ciDefault('')
+		validator: zValidator(z.string())
 	}),
 	client: {
 		appUrl: validateEnvVar({
@@ -64,11 +58,7 @@ export const appConfig = {
 			middlewares: [
 				nonEmptyStringMiddleware,
 				(value) => (value?.endsWith('/') ? value.slice(0, -1) : value)
-			],
-			defaultValue: combineDefaults(
-				devDefault('http://127.0.0.1:3000'),
-				ciDefault('https://app.saku.so')
-			)
+			]
 		})
 	},
 	dev: {

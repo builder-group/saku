@@ -1,7 +1,7 @@
 'use client';
 
-import { shortId } from '@blgc/utils';
-import { TNode, TNodeType } from '@repo/editor';
+import { deepCopy } from '@blgc/utils';
+import { createId, TFlatNode } from '@repo/editor';
 import { Icon, Popover, Text } from '@shopify/polaris';
 import React from 'react';
 import { useResizeObserver } from '@/hooks';
@@ -23,12 +23,17 @@ export const LayerSelectorPopover: React.FC<TLayerSelectorPopoverProps> = (props
 	}, []);
 
 	const handleLayerSelect = React.useCallback(
-		(layerType: TNodeType) => {
+		(layerType: TFlatNode['type']) => {
+			const nodeMetadata = nodeMetadataMap[layerType];
+			if (nodeMetadata.internal) {
+				return;
+			}
+
 			const nodeId = editor.addNode({
-				id: shortId(),
+				id: createId('node'),
 				type: layerType,
-				...nodeMetadataMap[layerType].defaultData
-			} as TNode);
+				...deepCopy(nodeMetadata.defaultData)
+			} as TFlatNode);
 			editor.selectNode(nodeId);
 
 			setPopoverActive(false);
@@ -76,6 +81,7 @@ export const LayerSelectorPopover: React.FC<TLayerSelectorPopoverProps> = (props
 			<div className="p-2" style={{ width: popoverWidth }}>
 				<div className="flex flex-col gap-2">
 					{nodeMetadata
+						.filter((nodeMetadata) => !nodeMetadata.internal)
 						.filter((nodeMetadata) => !nodeMetadata.hidden)
 						.map((nodeMetadata) => (
 							<div

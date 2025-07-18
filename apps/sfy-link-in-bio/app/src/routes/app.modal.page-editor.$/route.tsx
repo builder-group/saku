@@ -1,5 +1,5 @@
 import { ServerErr, ServerOk } from '@blgc/utils';
-import { TSite } from '@repo/editor';
+import { TFlatSite } from '@repo/editor';
 import { useAppBridge } from '@shopify/app-bridge-react';
 import { Spinner, Text } from '@shopify/polaris';
 import { withGlobalBind } from 'feature-react/state';
@@ -13,17 +13,17 @@ import styles from './styles.css?url';
 
 const Page = withLoaderResult<TSuccessLoaderData, TErrorLoaderData>({
 	Success: ({ data }) => {
-		const { site } = data;
+		const { site, shopId } = data;
 		const shopify = useAppBridge();
 
 		const editor = React.useMemo(() => {
 			const editor = createPageEditor(
 				{ ...site.content, id: site.id, handle: site.handle, url: site.url },
-				shopify
+				{ shopify, shopId }
 			);
 			withGlobalBind(`__editor_${editor.id}`, editor);
 			return editor;
-		}, [site, shopify]);
+		}, [site.content, site.id, site.handle, site.url, shopify, shopId]);
 
 		return (
 			<div className="flex min-h-screen w-full">
@@ -89,8 +89,9 @@ export const loader: TLoaderFunctionWithResult<TSuccessLoaderData, TErrorLoaderD
 			id: siteData.id,
 			handle: siteData.handle,
 			url: `${shopifyConfig.proxy.url(shop)}/${siteData.handle}`,
-			content: siteData.content as unknown as TSite
-		}
+			content: siteData.content as unknown as TFlatSite
+		},
+		shopId: shop
 	});
 };
 
@@ -104,8 +105,9 @@ interface TSuccessLoaderData {
 		id: string;
 		handle: string;
 		url: string;
-		content: TSite;
+		content: TFlatSite;
 	};
+	shopId: string;
 }
 
 export const links: TLinksFunction = () => [{ rel: 'stylesheet', href: styles }];

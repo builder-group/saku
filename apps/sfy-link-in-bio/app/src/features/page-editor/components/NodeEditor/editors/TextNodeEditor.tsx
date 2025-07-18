@@ -14,7 +14,7 @@ import { TNodeEditorComponentProps } from '../nodeEditorRegistry';
 
 export const TextNodeEditor: React.FC<TNodeEditorComponentProps<TTextNode>> = (props) => {
 	const { nodeState, editor } = props;
-	const node = useFeatureState(nodeState);
+	const { content } = useFeatureState(nodeState);
 
 	const parentNodeState = React.useMemo(() => editor.getRootNode(), [editor]);
 
@@ -31,18 +31,20 @@ export const TextNodeEditor: React.FC<TNodeEditorComponentProps<TTextNode>> = (p
 
 	const handleTitleChange = React.useCallback(
 		(value: string) => {
-			if (value === '') {
-				nodeState.set((prev) => ({ ...prev, title: undefined }));
+			if (!value.length) {
+				nodeState._v.content.title = undefined;
 			} else {
-				nodeState.set((prev) => ({ ...prev, title: value }));
+				nodeState._v.content.title = value;
 			}
+			nodeState._notify();
 		},
 		[nodeState]
 	);
 
 	const handleTextChange = React.useCallback(
 		(value: string) => {
-			nodeState.set((prev) => ({ ...prev, text: value }));
+			nodeState._v.content.text = value;
+			nodeState._notify();
 		},
 		[nodeState]
 	);
@@ -65,7 +67,7 @@ export const TextNodeEditor: React.FC<TNodeEditorComponentProps<TTextNode>> = (p
 							id="title-field"
 							label="Title"
 							labelHidden
-							value={node.title ?? ''}
+							value={content.title}
 							onChange={handleTitleChange}
 							autoComplete="off"
 							placeholder="Add your title here"
@@ -81,7 +83,7 @@ export const TextNodeEditor: React.FC<TNodeEditorComponentProps<TTextNode>> = (p
 							id="text-field"
 							label="Text"
 							labelHidden
-							value={node.text}
+							value={content.text}
 							onChange={handleTextChange}
 							multiline={4}
 							autoComplete="off"
@@ -113,6 +115,8 @@ export const TextNodeEditor: React.FC<TNodeEditorComponentProps<TTextNode>> = (p
 							parentValueMapper={(parent) => parent.style.children?.padding}
 							type="number"
 							autoComplete="off"
+							min={0}
+							max={100}
 						/>
 
 						<TextStyleField
@@ -127,6 +131,8 @@ export const TextNodeEditor: React.FC<TNodeEditorComponentProps<TTextNode>> = (p
 							parentValueMapper={(parent) => parent.style.children?.borderRadius}
 							type="number"
 							autoComplete="off"
+							min={0}
+							max={999}
 						/>
 					</div>
 				</div>
@@ -146,7 +152,11 @@ export const TextNodeEditor: React.FC<TNodeEditorComponentProps<TTextNode>> = (p
 								label="Font Family"
 								node={nodeState}
 								parentNode={parentNodeState}
-								nodeValueMapper={(value) => resolveStyleReference(value.style.font)?.family}
+								nodeValueMapper={(value) =>
+									isInheritedStyle(value.style.font)
+										? { type: 'inherit' }
+										: resolveStyleReference(value.style.font)?.family
+								}
 								nodeValueSetter={(node, value) => {
 									if (isInheritedStyle(value)) {
 										node._v.style.font = inheritStyle();
@@ -159,9 +169,7 @@ export const TextNodeEditor: React.FC<TNodeEditorComponentProps<TTextNode>> = (p
 										}
 									}
 								}}
-								parentValueMapper={(parent) =>
-									resolveStyleReference(parent.style.children?.font)?.family
-								}
+								parentValueMapper={(parent) => parent.style.children.font.family}
 								options={fontOptions}
 							/>
 
@@ -196,6 +204,8 @@ export const TextNodeEditor: React.FC<TNodeEditorComponentProps<TTextNode>> = (p
 								parentValueMapper={(parent) => parent.style.children?.fontSize}
 								type="number"
 								autoComplete="off"
+								min={0}
+								max={96}
 							/>
 
 							<ColorStyleField

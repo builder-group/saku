@@ -5,28 +5,34 @@ import {
 	StaticLinkNode,
 	StaticMediaNode,
 	StaticPageNode,
-	StaticTextNode
+	StaticProductNode,
+	StaticPromisedNode,
+	StaticTextNode,
+	TStaticNodeProps
 } from './nodes';
 
-export const StaticNode: React.FC<TStaticNodeProps> = (props) => {
-	const { node } = props;
+export const StaticNode = React.forwardRef<HTMLDivElement, TStaticNodeProps<TResolvedNode>>(
+	(props, ref) => {
+		const { node, state } = props;
 
-	switch (node.type) {
-		case 'about':
-			return <StaticAboutNode node={node} />;
-		case 'link':
-			return <StaticLinkNode node={node} />;
-		case 'media':
-			return <StaticMediaNode node={node} />;
-		case 'page':
-			return <StaticPageNode node={node} />;
-		case 'text':
-			return <StaticTextNode node={node} />;
-		default:
-			return null;
+		switch (node.type) {
+			case 'about':
+				return <StaticAboutNode ref={ref} node={node} state={state} />;
+			case 'link':
+				return <StaticLinkNode ref={ref} node={node} state={state} />;
+			case 'media':
+				return <StaticMediaNode ref={ref} node={node} state={state} />;
+			case 'page':
+				return <StaticPageNode ref={ref} node={node} state={state} />;
+			case 'text':
+				return <StaticTextNode ref={ref} node={node} state={state} />;
+			case 'product':
+				return <StaticProductNode ref={ref} node={node} state={state} />;
+			case 'promised':
+				return <StaticPromisedNode ref={ref} node={node} state={state} />;
+			default:
+				return null;
+		}
 	}
-};
-
-interface TStaticNodeProps {
-	node: TResolvedNode;
-}
+);
+StaticNode.displayName = 'StaticNode';

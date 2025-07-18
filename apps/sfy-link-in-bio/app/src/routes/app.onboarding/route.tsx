@@ -1,8 +1,15 @@
-import { useLoaderData, useNavigate, useSearchParams } from '@remix-run/react';
+import {
+	useLoaderData,
+	useNavigate,
+	useSearchParams,
+	type ShouldRevalidateFunction
+} from '@remix-run/react';
+import { toFlatSite } from '@repo/editor';
 import { useAppBridge } from '@shopify/app-bridge-react';
 import React from 'react';
 import { coreApiClient } from '@/environment';
 import { shopify } from '@/environment/.server';
+import { blankPreset } from '@/features/page-editor/.server';
 import { getSessionTokenFromRequest, redirectWithAuth } from '@/lib/.server';
 import { TLoaderFunction } from '@/types';
 import {
@@ -15,12 +22,13 @@ import {
 } from './components';
 import {
 	createOnboardingContext,
+	TSitePreset,
 	type TOnboardingContext,
 	type TOnboardingStep
 } from './create-onboarding-context';
 
-export default function OnboardingRoute() {
-	const { shop } = useLoaderData<typeof loader>();
+const Page: React.FC = () => {
+	const { shop, presets } = useLoaderData<typeof loader>();
 	const navigate = useNavigate();
 	const [searchParams] = useSearchParams();
 	const shopifyBridge = useAppBridge();
@@ -32,9 +40,10 @@ export default function OnboardingRoute() {
 	const onboardingContext = React.useMemo<TOnboardingContext>(() => {
 		return createOnboardingContext({
 			shopify: shopifyBridge,
-			shopId: shop
+			shopId: shop,
+			presets
 		});
-	}, [shopifyBridge, shop]);
+	}, [shopifyBridge, shop, presets]);
 
 	const [stepType, setStepType] = React.useState<TOnboardingStep['type']>('welcome');
 
@@ -85,7 +94,9 @@ export default function OnboardingRoute() {
 		default:
 			return null;
 	}
-}
+};
+
+export default Page;
 
 export const loader: TLoaderFunction<TLoaderData> = async ({ request }) => {
 	const { session } = await shopify.authenticate.admin(request);
@@ -97,16 +108,28 @@ export const loader: TLoaderFunction<TLoaderData> = async ({ request }) => {
 			Authorization: `Bearer ${sessionToken}`
 		}
 	});
-
 	if (workspaceResult.isOk() && workspaceResult.value.data.onboardingCompletedAt != null) {
 		throw redirectWithAuth(request, '/app');
 	}
 
 	return {
-		shop: session.shop
+		shop: session.shop,
+		presets: [
+			{
+				id: 'blank',
+				label: 'Blank template',
+				content: toFlatSite(blankPreset({ shopId: session.shop }))
+			}
+		]
 	};
+};
+
+// Prevent loader revalidation on URL changes to avoid resetting onboarding state on every step change
+export const shouldRevalidate: ShouldRevalidateFunction = () => {
+	return false;
 };
 
 interface TLoaderData {
 	shop: string;
+	presets: TSitePreset[];
 }

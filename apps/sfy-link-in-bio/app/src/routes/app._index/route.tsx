@@ -23,7 +23,7 @@ import {
 } from '@/components';
 import { appConfig, coreApiClient, logger } from '@/environment';
 import { shopify, shopifyConfig } from '@/environment/.server';
-import { withLoaderResult } from '@/lib';
+import { createShopifyTokenMiddleware, withLoaderResult } from '@/lib';
 import { getSessionTokenFromRequest, redirectWithAuth } from '@/lib/.server';
 import { usePageEditorModal } from '@/routes/app.modal.page-editor.$/PageEditorModal';
 import { TLoaderFunctionWithResult } from '@/types';
@@ -37,6 +37,7 @@ const Page = withLoaderResult<TSuccessLoaderData, TErrorLoaderData>({
 		});
 		const isEditorOpen = useFeatureState(isEditorOpenState);
 		const [isLoadingEditor, setIsLoadingEditor] = React.useState(shouldOpenEditor);
+
 		// =========================================================================
 		// Events
 		// =========================================================================
@@ -164,10 +165,14 @@ const Page = withLoaderResult<TSuccessLoaderData, TErrorLoaderData>({
 									<div className="flex flex-col gap-3">
 										<div className="flex items-center justify-between">
 											<Text as="h2" variant="headingMd">
-												Your Link
+												Your Bio Link
 											</Text>
 											<Badge tone="success">Current</Badge>
 										</div>
+
+										{/* <Text as="p" tone="subdued">
+											Hosted on your Shopify store domain.
+										</Text> */}
 
 										<TextField
 											label=""
@@ -178,6 +183,29 @@ const Page = withLoaderResult<TSuccessLoaderData, TErrorLoaderData>({
 										/>
 									</div>
 								</Card>
+								{/* Your Platform Link Card */}
+								{/* <Card>
+									<div className="flex flex-col gap-3">
+										<div className="flex items-center justify-between">
+											<Text as="h2" variant="headingMd">
+												Your External Link
+											</Text>
+											<Badge tone="success">Current</Badge>
+										</div>
+
+										<Text as="p" tone="subdued">
+											Hosted on an independent domain outside Shopify.
+										</Text>
+
+										<TextField
+											label=""
+											value={platformUrl}
+											readOnly
+											autoComplete="off"
+											connectedRight={<ClipboardButton textToCopy={platformUrl} />}
+										/>
+									</div>
+								</Card> */}
 								<FeedbackCard
 									email={appConfig.support.email}
 									reviewUrl={appConfig.distribution.shopify}
@@ -240,11 +268,16 @@ export const loader: TLoaderFunctionWithResult<TSuccessLoaderData, TErrorLoaderD
 	const url = new URL(request.url);
 	const shouldOpenEditor = url.searchParams.get('openEditor') === 'true';
 
+	if (sessionToken == null) {
+		return ServerErr({
+			code: '#ERR_UNAUTHORIZED',
+			message: 'Unauthorized'
+		});
+	}
+
 	// 1. Check workspace onboarding status
 	const workspaceResult = await coreApiClient.get('/v1/shopify/workspace', {
-		headers: {
-			Authorization: `Bearer ${sessionToken}`
-		}
+		requestMiddlewares: [createShopifyTokenMiddleware(sessionToken)]
 	});
 	if (workspaceResult.isErr()) {
 		logger.error('Failed to fetch workspace', workspaceResult.error);
@@ -263,9 +296,7 @@ export const loader: TLoaderFunctionWithResult<TSuccessLoaderData, TErrorLoaderD
 
 	// 3. Onboarding complete - fetch sites
 	const sitesResult = await coreApiClient.get('/v1/shopify/site', {
-		headers: {
-			Authorization: `Bearer ${sessionToken}`
-		}
+		requestMiddlewares: [createShopifyTokenMiddleware(sessionToken)]
 	});
 	if (sitesResult.isErr()) {
 		return ServerErr({
@@ -299,6 +330,7 @@ export const loader: TLoaderFunctionWithResult<TSuccessLoaderData, TErrorLoaderD
 			displayName: site.displayName,
 			updatedAt: site.updatedAt
 		},
+		platformUrl: `https://saku.so/w/${workspace.handle}/${site.handle}`,
 		shouldOpenEditor
 	});
 };
@@ -317,5 +349,6 @@ interface TSuccessLoaderData {
 		displayName?: string;
 		updatedAt: string;
 	};
+	platformUrl: string;
 	shouldOpenEditor: boolean;
 }

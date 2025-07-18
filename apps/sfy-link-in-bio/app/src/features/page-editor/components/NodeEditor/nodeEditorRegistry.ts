@@ -1,18 +1,26 @@
-import { TNode } from '@repo/editor';
-import { TState } from 'feature-state';
-import { TFlattenedNode, TPageEditor } from '../../lib';
-import { AboutNodeEditor, LinkNodeEditor, MediaNodeEditor, TextNodeEditor } from './editors';
+import { TFlatNode } from '@repo/editor';
+import { TNodeState, TPageEditor } from '../../lib';
+import {
+	AboutNodeEditor,
+	LinkNodeEditor,
+	MediaNodeEditor,
+	PageNodeEditor,
+	ProductNodeEditor,
+	TextNodeEditor
+} from './editors';
 
 export const nodeEditorRegistry = {
 	site: null,
-	page: null,
+	page: PageNodeEditor,
 	about: AboutNodeEditor,
 	link: LinkNodeEditor,
 	media: MediaNodeEditor,
-	text: TextNodeEditor
+	text: TextNodeEditor,
+	product: ProductNodeEditor,
+	promised: null
 } as const;
 
-export interface TNodeEditorComponentProps<GNode extends TNode = TNode> {
-	nodeState: TState<TFlattenedNode<GNode>, []>;
+export interface TNodeEditorComponentProps<GNode extends TFlatNode = TFlatNode> {
+	nodeState: TNodeState<GNode>;
 	editor: TPageEditor;
 }

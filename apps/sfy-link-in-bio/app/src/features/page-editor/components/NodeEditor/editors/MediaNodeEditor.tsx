@@ -8,13 +8,13 @@ import { TNodeEditorComponentProps } from '../nodeEditorRegistry';
 
 export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = (props) => {
 	const { nodeState, editor } = props;
-	const node = useFeatureState(nodeState);
+	const { content } = useFeatureState(nodeState);
 
 	const parentNodeState = React.useMemo(() => editor.getRootNode(), [editor]);
 
 	const [mediaImageError, setImageError] = React.useState<string | null>(null);
 	const mediaImage = React.useMemo(() => {
-		const asset = editor.getImageAsset(node.media?.hash);
+		const asset = editor.getImageAsset(content.media?.hash);
 		if (asset == null || asset.storage.type !== 'url') {
 			return undefined;
 		}
@@ -23,7 +23,7 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 			url: asset.storage.url,
 			fileName: asset.fileName
 		};
-	}, [node.media, editor]);
+	}, [content.media, editor]);
 
 	// =========================================================================
 	// Events
@@ -31,10 +31,8 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 
 	const handleMediaTypeChange = React.useCallback(
 		(value: string) => {
-			nodeState.set((prev) => ({
-				...prev,
-				media: { type: value as 'image', hash: '', altText: undefined }
-			}));
+			nodeState._v.content.media = { type: value as 'image', hash: '' };
+			nodeState._notify();
 		},
 		[nodeState]
 	);
@@ -43,14 +41,12 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 		(value: TImageUploadOnChangeImage) => {
 			const hash = editor.registerImage(value.url, value.fileName);
 			if (hash != null) {
-				nodeState.set((prev) => ({
-					...prev,
-					media: {
-						type: 'image',
-						hash,
-						altText: value.fileName ? `Image: ${value.fileName}` : undefined
-					}
-				}));
+				nodeState._v.content.media = {
+					type: 'image',
+					hash,
+					altText: value.fileName != null ? `Image: ${value.fileName}` : undefined
+				};
+				nodeState._notify();
 			}
 		},
 		[nodeState, editor]
@@ -75,13 +71,13 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 							label="Media type"
 							labelHidden
 							options={[{ label: 'Image', value: 'image' }]}
-							value={node.media?.type ?? 'image'}
+							value={content.media?.type ?? 'image'}
 							onChange={handleMediaTypeChange}
 						/>
 					</div>
 
 					{/* Image Type */}
-					{node.media?.type === 'image' && (
+					{content.media?.type === 'image' && (
 						<div className="space-y-1">
 							<Text as="span" variant="bodySm" tone="subdued">
 								Image
@@ -121,6 +117,8 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 							parentValueMapper={(parent) => parent.style.children?.padding}
 							type="number"
 							autoComplete="off"
+							min={0}
+							max={100}
 						/>
 
 						<TextStyleField
@@ -135,6 +133,8 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 							parentValueMapper={(parent) => parent.style.children?.borderRadius}
 							type="number"
 							autoComplete="off"
+							min={0}
+							max={999}
 						/>
 					</div>
 				</div>

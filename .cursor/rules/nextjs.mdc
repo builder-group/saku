@@ -389,7 +389,7 @@ const $userForm = createForm<TUserForm>({
       defaultValue: ''
     },
     email: {
-      validator: zValidator(z.string().email()),
+      validator: zValidator(z.email()),
       defaultValue: ''
     }
   },

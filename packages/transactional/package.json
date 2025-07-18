@@ -1,0 +1,46 @@
+{
+	"name": "@repo/transactional",
+	"version": "0.0.1",
+	"private": true,
+	"description": "",
+	"keywords": [],
+	"homepage": "https://saku.so/?utm_source=github",
+	"bugs": {
+		"url": "https://github.com/builder-group/saku/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/builder-group/saku.git"
+	},
+	"license": "AGPL-3.0-or-later",
+	"author": "@bennobuilder",
+	"main": "./dist/cjs/index.js",
+	"module": "./dist/esm/index.js",
+	"source": "./src/index.ts",
+	"types": "./dist/types/index.d.ts",
+	"files": [
+		"dist",
+		"README.md"
+	],
+	"scripts": {
+		"build": "shx rm -rf dist && rollup -c rollup.config.js",
+		"build:prod": "export NODE_ENV=production && pnpm build",
+		"clean": "shx rm -rf dist && shx rm -rf .turbo && shx rm -rf node_modules",
+		"email:dev": "email dev --port 3001 --dir ./src/email/templates",
+		"email:export": "email export",
+		"install:clean": "pnpm run clean && pnpm install",
+		"lint": "eslint . --fix",
+		"start:dev": "tsc -w",
+		"test": "echo \"🧪 No tests defined yet.\"",
+		"update:latest": "pnpm update --latest '!react' '!@types/react'"
+	},
+	"dependencies": {
+		"@react-email/components": "^0.3.1"
+	},
+	"devDependencies": {
+		"@react-email/preview-server": "4.2.1",
+		"@types/react": "^18.3.1",
+		"react": "18.3.1",
+		"react-email": "^4.2.1"
+	}
+}

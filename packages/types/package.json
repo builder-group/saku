@@ -4,7 +4,7 @@
 	"private": true,
 	"description": "Shared Typescript types",
 	"keywords": [],
-	"homepage": "https://saku.so/?source=github",
+	"homepage": "https://saku.so/?utm_source=github",
 	"bugs": {
 		"url": "https://github.com/builder-group/saku/issues"
 	},
@@ -48,6 +48,7 @@
 		"openapi:generate:api": "npx openapi-typescript --redocly ./src/api/resources/redocly.yaml",
 		"openapi:generate:github": "npx openapi-typescript --redocly ./src/github/resources/redocly.yaml",
 		"redocly": "npx @redocly/cli",
+		"test": "echo \"🧪 No tests defined yet.\"",
 		"update:latest": "pnpm update --latest"
 	},
 	"devDependencies": {

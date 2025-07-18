@@ -3,18 +3,16 @@ import { coreApiV1 } from '@repo/types/api';
 import type { ShopifyGlobal } from '@shopify/app-bridge-types';
 import { coreApiClient } from '@/environment';
 import type { TError } from '@/types';
+import { createShopifyTokenMiddleware } from './middleware';
 
 export async function listMediaFiles(
 	config: TListMediaFilesConfig
 ): Promise<TResult<TListMediaFilesSuccess, TError>> {
 	const { shopify, ...queryParams } = config;
-	const idToken = await shopify.idToken();
 
 	const result = await coreApiClient.get('/v1/shopify/ugc/files', {
 		queryParams,
-		headers: {
-			Authorization: `Bearer ${idToken}`
-		}
+		requestMiddlewares: [createShopifyTokenMiddleware(shopify)]
 	});
 	if (result.isErr()) {
 		return Err({

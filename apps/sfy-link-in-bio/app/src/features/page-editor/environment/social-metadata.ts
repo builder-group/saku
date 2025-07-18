@@ -72,6 +72,12 @@ export const socialMetadataMap = {
 		label: 'Spotify',
 		placeholder: 'username',
 		baseUrl: 'https://open.spotify.com/user/'
+	},
+	pinterest: {
+		provider: 'pinterest',
+		label: 'Pinterest',
+		placeholder: 'username',
+		baseUrl: 'https://pinterest.com/'
 	}
 } as const satisfies Record<TSocialLink['provider'], TSocialMetadata>;
 

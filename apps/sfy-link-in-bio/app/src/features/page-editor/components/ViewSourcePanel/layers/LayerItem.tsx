@@ -1,15 +1,14 @@
 import { useDndContext } from '@dnd-kit/core';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { TNode } from '@repo/editor';
+import { TFlatNode } from '@repo/editor';
 import { Icon, Text } from '@shopify/polaris';
 import { useCompute } from 'feature-react/state';
-import { TState } from 'feature-state';
 import React from 'react';
 import { DeleteIcon, DragHandleIcon, DuplicateIcon } from '@/components';
 import { cn } from '@/lib';
 import { nodeMetadataMap } from '../../../environment';
-import { TFlattenedNode, TPageEditor } from '../../../lib';
+import { TNodeState, TPageEditor } from '../../../lib';
 
 export const LayerItem: React.FC<TLayerItemProps> = (props) => {
 	const { nodeState, editor } = props;
@@ -57,6 +56,10 @@ export const LayerItem: React.FC<TLayerItemProps> = (props) => {
 	// =========================================================================
 	// UI
 	// =========================================================================
+
+	if (nodeMetadata.internal || nodeMetadata.hidden) {
+		return null;
+	}
 
 	return (
 		<div
@@ -111,5 +114,5 @@ export const LayerItem: React.FC<TLayerItemProps> = (props) => {
 
 interface TLayerItemProps {
 	editor: TPageEditor;
-	nodeState: TState<TFlattenedNode<TNode>, []>;
+	nodeState: TNodeState<TFlatNode>;
 }

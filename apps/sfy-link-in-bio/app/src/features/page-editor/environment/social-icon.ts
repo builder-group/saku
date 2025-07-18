@@ -6,6 +6,7 @@ import {
 	GoogleIcon,
 	InstagramIcon,
 	LinkedInIcon,
+	PinterestIcon,
 	ShopifyIcon,
 	SpotifyIcon,
 	TikTokIcon,
@@ -25,5 +26,6 @@ export const socialIconMap = {
 	discord: DiscordIcon,
 	github: GithubIcon,
 	google: GoogleIcon,
-	spotify: SpotifyIcon
+	spotify: SpotifyIcon,
+	pinterest: PinterestIcon
 };

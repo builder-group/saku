@@ -1,20 +1,26 @@
 import { Err, Ok, shortId, type TResult } from '@blgc/utils';
-import { TSite } from '@repo/editor';
+import { TFlatSite } from '@repo/editor';
 import type { ShopifyGlobal } from '@shopify/app-bridge-types';
 import { coreApiClient } from '@/environment';
-import { blankPreset } from '@/features/page-editor';
-import { createStepr, type TStepr } from '@/lib/ui';
+import { createShopifyTokenMiddleware, createStepr, type TStepr } from '@/lib';
 
 export function createOnboardingContext(
 	config: TCreateOnboardingContextConfig
 ): TOnboardingContext {
-	const { shopify, shopId } = config;
+	const { shopify, shopId, presets } = config;
 
 	return {
 		id: shortId(),
 		shopify,
 		shopId,
 		stepr: createStepr<TOnboardingStep>({ initialStep: { type: 'welcome' } }),
+		presets: presets.reduce(
+			(acc, preset) => {
+				acc[preset.id] = preset;
+				return acc;
+			},
+			{} as Record<string, TSitePreset>
+		),
 
 		continueFromWelcome() {
 			this.stepr.goTo({ type: 'handle' });
@@ -22,7 +28,6 @@ export function createOnboardingContext(
 
 		async continueFromHandle(handle, options = {}) {
 			const { override = false } = options;
-			const idToken = await this.shopify.idToken();
 			const trimmedHandle = handle.trim();
 
 			// Check if the handle is available
@@ -30,9 +35,7 @@ export function createOnboardingContext(
 				queryParams: {
 					path: `/${trimmedHandle}`
 				},
-				headers: {
-					Authorization: `Bearer ${idToken}`
-				}
+				requestMiddlewares: [createShopifyTokenMiddleware(this.shopify)]
 			});
 			if (availabilityResult.isErr()) {
 				return Err({
@@ -80,20 +83,20 @@ export function createOnboardingContext(
 		},
 
 		async continueFromLinkpopUrl(handle) {
-			const idToken = await this.shopify.idToken();
 			const fullUrl = `https://linkpop.com/${handle.trim()}`;
 
 			const result = await coreApiClient.get('/v1/site/parse/external', {
 				queryParams: {
 					url: fullUrl
 				},
-				headers: {
-					Authorization: `Bearer ${idToken}`
-				}
+				requestMiddlewares: [createShopifyTokenMiddleware(this.shopify)]
 			});
 			if (result.isErr()) {
 				// Check if it's a LinkPop parsing error
-				if (result.error.code === '#ERR_LINKPOP_DATA_NOT_FOUND') {
+				if (
+					result.error.code === '#ERR_LINKPOP_DATA_NOT_FOUND' ||
+					result.error.code === '#ERR_EXTERNAL_HTML'
+				) {
 					return Err({
 						message: 'Could not find your LinkPop page. Please check the handle and try again.',
 						isNotFound: true
@@ -114,7 +117,7 @@ export function createOnboardingContext(
 			this.stepr.goTo({
 				type: 'linkpop-preview',
 				url: fullUrl,
-				site: result.value.data.data as unknown as TSite
+				site: result.value.data.content as unknown as TFlatSite
 			});
 
 			return Ok(undefined);
@@ -125,8 +128,6 @@ export function createOnboardingContext(
 			if (currentStep.type !== 'linkpop-preview' || currentStep.site == null) {
 				return Err('Invalid step');
 			}
-
-			const idToken = await this.shopify.idToken();
 
 			// Get the handle and override flag from the handle step
 			const { handle = 'bio', shouldOverrideRedirect = false } =
@@ -142,9 +143,7 @@ export function createOnboardingContext(
 					overrideRedirect: shouldOverrideRedirect
 				},
 				{
-					headers: {
-						Authorization: `Bearer ${idToken}`
-					}
+					requestMiddlewares: [createShopifyTokenMiddleware(this.shopify)]
 				}
 			);
 			if (createResult.isErr()) {
@@ -160,16 +159,10 @@ export function createOnboardingContext(
 				selectedTemplate
 			});
 
-			let preset: TSite;
-			switch (selectedTemplate) {
-				case 'blank':
-					preset = blankPreset;
-					break;
-				default:
-					preset = blankPreset;
+			const preset = this.presets[selectedTemplate];
+			if (preset == null) {
+				return Err('Invalid template');
 			}
-
-			const idToken = await this.shopify.idToken();
 
 			// Get the handle and override flag from the handle step
 			const { handle = 'bio', shouldOverrideRedirect = false } =
@@ -180,14 +173,12 @@ export function createOnboardingContext(
 				{
 					handle,
 					displayName: 'My Bio Page',
-					content: preset as any,
+					content: preset.content as any,
 					createRedirect: true,
 					overrideRedirect: shouldOverrideRedirect
 				},
 				{
-					headers: {
-						Authorization: `Bearer ${idToken}`
-					}
+					requestMiddlewares: [createShopifyTokenMiddleware(this.shopify)]
 				}
 			);
 
@@ -204,11 +195,18 @@ export function createOnboardingContext(
 	};
 }
 
+export interface TCreateOnboardingContextConfig {
+	shopify: ShopifyGlobal;
+	shopId: string;
+	presets: TSitePreset[];
+}
+
 export interface TOnboardingContext {
 	id: string;
 	shopify: ShopifyGlobal;
 	shopId: string;
 	stepr: TStepr<TOnboardingStep>;
+	presets: Record<string, TSitePreset>;
 
 	continueFromWelcome: () => void;
 	continueFromHandle: (
@@ -222,11 +220,6 @@ export interface TOnboardingContext {
 	goBack: () => void;
 }
 
-export interface TCreateOnboardingContextConfig {
-	shopify: ShopifyGlobal;
-	shopId: string;
-}
-
 export type TOnboardingStep =
 	| { type: 'welcome' }
 	| {
@@ -236,7 +229,7 @@ export type TOnboardingStep =
 	  }
 	| { type: 'site-creation-options'; selectedOption?: TSiteCreationOption }
 	| { type: 'linkpop-url'; handle?: string }
-	| { type: 'linkpop-preview'; url?: string; site?: TSite }
+	| { type: 'linkpop-preview'; url?: string; site?: TFlatSite }
 	| { type: 'templates'; selectedTemplate?: TTemplate };
 
 export type TSiteCreationOption = 'create-new' | 'linkpop';
@@ -251,4 +244,10 @@ export interface THandleStepError {
 export interface TLinkpopStepError {
 	message: string;
 	isNotFound: boolean;
+}
+
+export interface TSitePreset {
+	id: string;
+	label: string;
+	content: TFlatSite;
 }

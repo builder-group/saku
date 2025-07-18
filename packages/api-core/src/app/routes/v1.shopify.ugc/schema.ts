@@ -43,10 +43,9 @@ export const CreateUploadTargetsRoute = createRoute({
 					z.object({
 						uploadTarget: z.object({
 							url: z
-								.string()
 								.url()
 								.openapi({ example: 'https://shopify-staged-uploads.storage.googleapis.com/' }),
-							resourceUrl: z.string().url().openapi({
+							resourceUrl: z.url().openapi({
 								example: 'https://cdn.shopify.com/s/files/1/0123/4567/files/image.jpg'
 							}),
 							parameters: z.array(
@@ -57,7 +56,7 @@ export const CreateUploadTargetsRoute = createRoute({
 							)
 						}),
 						uploadId: z.string().openapi({ example: 'ugc_abc123def456' }),
-						expiresAt: z.string().datetime().openapi({ example: '2024-01-15T10:30:00Z' })
+						expiresAt: z.iso.datetime().openapi({ example: '2024-01-15T10:30:00Z' })
 					})
 				)
 			})
@@ -113,7 +112,7 @@ export const SubmitUploadedFilesRoute = createRoute({
 							.array(
 								z.object({
 									uploadId: z.string().openapi({ example: 'ugc_abc123def456' }),
-									resourceUrl: z.string().url().openapi({
+									resourceUrl: z.url().openapi({
 										example: 'https://cdn.shopify.com/s/files/1/0123/4567/files/product-1.jpg'
 									}),
 									filename: z.string().min(1).openapi({ example: 'product-1.jpg' }),
@@ -205,14 +204,14 @@ export const ListMediaFilesRoute = createRoute({
 						.object({
 							id: z.string().openapi({ example: 'gid://shopify/MediaImage/12345678' }),
 							alt: z.string().openapi({ example: 'Product lifestyle image' }),
-							createdAt: z.string().datetime().openapi({ example: '2024-01-15T10:30:00Z' }),
+							createdAt: z.iso.datetime().openapi({ example: '2024-01-15T10:30:00Z' }),
 							previewImage: z
 								.object({
 									id: z.string(),
-									url: z.string().url()
+									url: z.url()
 								})
 								.optional(),
-							url: z.string().url(),
+							url: z.url(),
 							fileName: z.string().openapi({ example: 'product-1.jpg' }),
 							details: z.discriminatedUnion('type', [
 								z.object({

@@ -1,25 +1,26 @@
 import { TTextNode } from '@repo/editor';
 import { useCombinedCompute } from 'feature-react';
 import React from 'react';
-import { resolveTextNode, TNodeState, TPageEditor } from '../../../lib';
+import { EditorSiteResolveContext, resolveTextNode } from '../../../lib';
 import { TResolvedTextNode } from '../../../types';
 import { StaticTextNode } from './static';
+import { TNodeProps } from './types';
 
-export const TextNode = React.forwardRef<HTMLDivElement, TTextNodeProps>((props, ref) => {
+export const TextNode = React.forwardRef<HTMLDivElement, TNodeProps<TTextNode>>((props, ref) => {
 	const { nodeState, editor, ...divProps } = props;
 
 	const node = useCombinedCompute(
 		[editor.getRootNode(), nodeState],
 		([pageNodeValue, nodeValue]): TResolvedTextNode => {
-			return resolveTextNode(nodeValue, pageNodeValue?.style.children);
+			return resolveTextNode(nodeValue, {
+				site: new EditorSiteResolveContext(editor),
+				resolved: {
+					parentStyles: pageNodeValue?.style.children
+				}
+			});
 		}
 	);
 
 	return <StaticTextNode {...divProps} ref={ref} node={node} />;
 });
 TextNode.displayName = 'TextNode';
-
-interface TTextNodeProps extends React.HTMLProps<HTMLDivElement> {
-	nodeState: TNodeState<TTextNode>;
-	editor: TPageEditor;
-}

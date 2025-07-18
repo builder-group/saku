@@ -2,27 +2,31 @@ import React from 'react';
 import { LogoIcon } from '@/components';
 import { TResolvedPageNode } from '../../../../types';
 import { StaticNode } from '../../StaticNode';
+import { TStaticNodeProps } from '../types';
 
-export const StaticPageNode: React.FC<TStaticPageNodeProps> = (props) => {
-	const { node, ...divProps } = props;
+export const StaticPageNode: React.FC<TStaticNodeProps<TResolvedPageNode>> = (props) => {
+	const {
+		node: { children, style },
+		...divProps
+	} = props;
 
 	return (
 		<div
 			{...divProps}
 			className="min-h-screen w-full"
-			style={{ backgroundColor: node.style.backgroundColor }}
+			style={{ backgroundColor: style.backgroundColor }}
 		>
 			<div className="mx-auto w-full max-w-md">
 				<div
 					className="flex w-full flex-col p-6"
 					style={{
-						gap: node.style.children?.spacing,
-						fontFamily: node.style.children?.font?.family,
-						fontSize: node.style.children?.fontSize,
-						color: node.style.children?.textColor
+						gap: style.children?.spacing,
+						fontFamily: style.children?.font?.family,
+						fontSize: style.children?.fontSize,
+						color: style.children?.textColor
 					}}
 				>
-					{node.children.map((childNode) => (
+					{children.map((childNode) => (
 						<StaticNode key={childNode.id} node={childNode} />
 					))}
 
@@ -31,10 +35,8 @@ export const StaticPageNode: React.FC<TStaticPageNodeProps> = (props) => {
 						href="https://saku.so"
 						target="_blank"
 						rel="noopener noreferrer"
-						className="mx-auto mt-12 flex items-center gap-2 pb-6 text-sm no-underline invert-100 hover:opacity-75"
-						style={{
-							color: node.style.backgroundColor
-						}}
+						className="mx-auto mt-12 flex items-center gap-2 pb-6 text-sm no-underline hover:opacity-75"
+						style={{ color: style.watermarkColor }}
 					>
 						<LogoIcon className="h-6 w-6" />
 						<span>Powered by Saku</span>
@@ -44,7 +46,3 @@ export const StaticPageNode: React.FC<TStaticPageNodeProps> = (props) => {
 		</div>
 	);
 };
-
-interface TStaticPageNodeProps extends React.HTMLProps<HTMLDivElement> {
-	node: TResolvedPageNode;
-}

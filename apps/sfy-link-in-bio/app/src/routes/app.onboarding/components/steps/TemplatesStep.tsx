@@ -24,6 +24,14 @@ export const TemplatesStep: React.FC<TTemplatesStepProps> = (props) => {
 	const [isLoading, setIsLoading] = React.useState(false);
 	const [error, setError] = React.useState<string | null>(null);
 
+	const presets = React.useMemo(() => {
+		return Object.values(onboardingContext.presets).map((preset) => ({
+			value: preset.id,
+			label: preset.label,
+			id: preset.id
+		}));
+	}, [onboardingContext.presets]);
+
 	// =========================================================================
 	// Events
 	// =========================================================================
@@ -74,17 +82,7 @@ export const TemplatesStep: React.FC<TTemplatesStepProps> = (props) => {
 			contentClassName="flex flex-col gap-6"
 		>
 			<div className="flex flex-col gap-2">
-				<OptionList
-					onChange={handleChange}
-					options={[
-						{
-							value: 'blank',
-							label: 'Blank template',
-							id: 'blank'
-						}
-					]}
-					selected={selected}
-				/>
+				<OptionList onChange={handleChange} options={presets} selected={selected} />
 
 				<Banner tone="info">
 					More templates are coming soon to help you create beautiful bio pages faster.
