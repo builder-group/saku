@@ -1,16 +1,16 @@
 import { ServerErr, ServerOk } from '@blgc/utils';
 import { TFlatSite } from '@repo/editor';
-import { Spinner, Text } from '@shopify/polaris';
+import { Text } from '@shopify/polaris';
 import { AppProxyProvider } from '@shopify/shopify-app-remix/react';
 import { isStatusCode } from 'feature-fetch';
 import { coreApiClient } from '@/environment';
 import { shopify, shopifyConfig } from '@/environment/.server';
 import { getSiteFontUrls, StaticNodeCanvas, TResolvedSite } from '@/features/page-editor';
 import { hydrateSite, StaticSiteHydrateContext } from '@/features/page-editor/.server';
-import { deferLoader, withDeferredLoader } from '@/lib';
+import { resultLoader, withResultLoader } from '@/lib';
 import styles from '@/styles.css?url';
 
-const Page = withDeferredLoader<TSuccessLoaderData, TErrorLoaderData>({
+const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 	Success: ({ data }) => {
 		const { appUrl, site, fontUrls } = data;
 
@@ -36,22 +36,12 @@ const Page = withDeferredLoader<TSuccessLoaderData, TErrorLoaderData>({
 				</Text>
 			</div>
 		</div>
-	),
-	Loading: () => (
-		<div className="flex min-h-screen items-center justify-center">
-			<div className="flex flex-col items-center gap-2">
-				<Spinner size="small" />
-				<Text as="p" variant="bodyMd" tone="subdued">
-					Loading...
-				</Text>
-			</div>
-		</div>
 	)
 });
 
 export default Page;
 
-export const loader = deferLoader<TSuccessLoaderData, TErrorLoaderData>(async ({ request }) => {
+export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async ({ request }) => {
 	const { session } = await shopify.authenticate.public.appProxy(request);
 
 	const url = new URL(request.url);

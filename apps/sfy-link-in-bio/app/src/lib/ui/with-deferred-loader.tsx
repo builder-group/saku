@@ -30,11 +30,11 @@ export function withDeferredLoader<GSuccess, GError>(
 
 	// eslint-disable-next-line react/display-name
 	return () => {
-		const { promisedResult } = useLoaderData<TDeferredLoaderData<GSuccess, GError>>();
+		const loaderData = useLoaderData<TDeferredLoaderData<GSuccess, GError>>();
 
 		return (
 			<React.Suspense fallback={Loading != null ? <Loading /> : null}>
-				<Await resolve={promisedResult}>
+				<Await resolve={loaderData.next}>
 					{(resolvedResult) => {
 						const result = React.useMemo(() => {
 							return fromServerResult<GSuccess, GError>(resolvedResult as any);
@@ -60,7 +60,10 @@ export interface TWithDeferredLoaderConfig<GSuccess, GError> {
 
 /**
  * Makes a loader function deferred for consistent async handling.
- * Required when using withDeferredLoader for automatic loading states.
+ * Required when using withDeferredLoader.
+ *
+ * Note: deferLoader doesn't work with redirects (throw redirect).
+ * For redirects, create custom loader returning TDeferredLoaderData instead.
  *
  * @example
  * ```tsx
@@ -76,7 +79,7 @@ export function deferLoader<GSuccess, GError>(
 	return async (args) => {
 		return {
 			// Note: Using resolve instead of reject to avoid hydration mismatches (when using errorElement)
-			promisedResult: new Promise<TServerResult<GSuccess, TDeferredError<GError>>>((resolve) => {
+			next: new Promise<TServerResult<GSuccess, TDeferredError<GError>>>((resolve) => {
 				// Timeout to ensure the promise resolves before React Router's 4950ms threshold (which leads to rejected promise)
 				// https://reactrouter.com/how-to/suspense#timeouts
 				const timeoutId = setTimeout(() => {
@@ -102,7 +105,7 @@ export function deferLoader<GSuccess, GError>(
 }
 
 export interface TDeferredLoaderData<GSuccess, GError> {
-	promisedResult: Promise<TServerResult<GSuccess, TDeferredError<GError>>>;
+	next: Promise<TServerResult<GSuccess, TDeferredError<GError>>>;
 }
 
 export type TDeferredError<GError> = GError | TDeferError;

@@ -2,12 +2,12 @@ import { ServerErr, ServerOk } from '@blgc/utils';
 import { useNavigate, useSearchParams, type ShouldRevalidateFunction } from '@remix-run/react';
 import { toFlatSite } from '@repo/editor';
 import { useAppBridge } from '@shopify/app-bridge-react';
-import { Button, ButtonGroup, Spinner, Text } from '@shopify/polaris';
+import { Button, ButtonGroup, Text } from '@shopify/polaris';
 import React from 'react';
 import { appConfig, coreApiClient } from '@/environment';
 import { shopify } from '@/environment/.server';
 import { blankPreset } from '@/features/page-editor/.server';
-import { deferLoader, withDeferredLoader } from '@/lib';
+import { resultLoader, withResultLoader } from '@/lib';
 import { getSessionTokenFromRequest, redirectWithAuth } from '@/lib/.server';
 import {
 	HandleStep,
@@ -24,7 +24,7 @@ import {
 	type TOnboardingStep
 } from './create-onboarding-context';
 
-const Page = withDeferredLoader<TSuccessLoaderData, TErrorLoaderData>({
+const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 	Success: ({ data }) => {
 		const { shop, presets } = data;
 		const navigate = useNavigate();
@@ -117,22 +117,12 @@ const Page = withDeferredLoader<TSuccessLoaderData, TErrorLoaderData>({
 				</ButtonGroup>
 			</div>
 		</div>
-	),
-	Loading: () => (
-		<div className="flex h-screen items-center justify-center">
-			<div className="flex flex-col items-center gap-2">
-				<Spinner size="small" />
-				<Text as="p" variant="bodyMd" tone="subdued">
-					Loading onboarding...
-				</Text>
-			</div>
-		</div>
 	)
 });
 
 export default Page;
 
-export const loader = deferLoader<TSuccessLoaderData, TErrorLoaderData>(async ({ request }) => {
+export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async ({ request }) => {
 	const { session } = await shopify.authenticate.admin(request);
 	const sessionToken = getSessionTokenFromRequest(request);
 
@@ -158,6 +148,7 @@ export const loader = deferLoader<TSuccessLoaderData, TErrorLoaderData>(async ({
 			message: 'Failed to fetch shop overview'
 		});
 	}
+	const shopOverview = shopOverviewResult.value.data;
 
 	return ServerOk({
 		shop: session.shop,
@@ -165,7 +156,22 @@ export const loader = deferLoader<TSuccessLoaderData, TErrorLoaderData>(async ({
 			{
 				id: 'blank',
 				label: 'Blank template',
-				content: toFlatSite(blankPreset({ shopId: session.shop }))
+				content: toFlatSite(
+					blankPreset({
+						shopId: session.shop,
+						shopName: shopOverview.shop.name,
+						colors: {
+							primary: shopOverview.theme.colors.primary,
+							background: shopOverview.theme.colors.background,
+							surface: '#FFFFFF'
+						},
+						fonts: {
+							heading: { family: shopOverview.theme.typography.headingFont?.family },
+							body: { family: shopOverview.theme.typography.bodyFont?.family }
+						},
+						featuredProduct: shopOverview.recommendedProducts?.[0]
+					})
+				)
 			}
 		]
 	});

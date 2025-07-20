@@ -23,11 +23,11 @@ import {
 } from '@/components';
 import { appConfig, coreApiClient, logger } from '@/environment';
 import { shopify, shopifyConfig } from '@/environment/.server';
-import { createShopifyTokenMiddleware, deferLoader, withDeferredLoader } from '@/lib';
+import { createShopifyTokenMiddleware, resultLoader, withResultLoader } from '@/lib';
 import { getSessionTokenFromRequest, redirectWithAuth } from '@/lib/.server';
 import { usePageEditorModal } from '@/routes/app.modal.page-editor.$/PageEditorModal';
 
-const Page = withDeferredLoader<TSuccessLoaderData, TErrorLoaderData>({
+const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 	Success: ({ data }) => {
 		const { site, shouldOpenEditor } = data;
 		const { Modal: EditorModal, isOpenState: isEditorOpenState } = usePageEditorModal({
@@ -244,22 +244,12 @@ const Page = withDeferredLoader<TSuccessLoaderData, TErrorLoaderData>({
 				</ButtonGroup>
 			</div>
 		</div>
-	),
-	Loading: () => (
-		<div className="flex h-screen items-center justify-center">
-			<div className="flex flex-col items-center gap-2">
-				<Spinner size="small" />
-				<Text as="p" variant="bodyMd" tone="subdued">
-					Loading...
-				</Text>
-			</div>
-		</div>
 	)
 });
 
 export default Page;
 
-export const loader = deferLoader<TSuccessLoaderData, TErrorLoaderData>(async ({ request }) => {
+export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async ({ request }) => {
 	const { session } = await shopify.authenticate.admin(request);
 	const sessionToken = getSessionTokenFromRequest(request);
 	const url = new URL(request.url);

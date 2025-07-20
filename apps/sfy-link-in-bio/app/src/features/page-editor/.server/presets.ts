@@ -1,55 +1,138 @@
 import { shortId } from '@blgc/utils';
-import { createId, hexToRgba, inheritStyle, TSite } from '@repo/editor';
-import { createDisplayNameFromShop } from '@/lib';
+import {
+	createId,
+	fontMetadataMap,
+	getFontHash,
+	hexToRgba,
+	inheritStyle,
+	TProductNode,
+	TSite,
+	type TFontAsset,
+	type TFontMetadata,
+	type TImageAsset
+} from '@repo/editor';
 
 export function blankPreset(config: TBlankPresetConfig): TSite {
-	const { shopId } = config;
+	const { shopId, shopName, colors, fonts, featuredProduct } = config;
+
+	const primaryColor = colors?.primary ?? '#000000';
+	const backgroundColor = colors?.background ?? '#FAFAFA';
+	const surfaceColor = colors?.surface ?? '#FFFFFF';
+
+	const assets: (TFontAsset | TImageAsset)[] = [];
+
+	// Add heading font to assets
+	const headingFont = getFontMetadata(fonts?.heading?.family);
+	assets.push({
+		id: createId('asset'),
+		type: 'font',
+		hash: getFontHash(headingFont.font),
+		contentType: 'font/woff2',
+		storage: {
+			type: 'url',
+			url: `https://fonts.googleapis.com/css2?family=${headingFont.googleFont}&display=swap`
+		},
+		font: headingFont.font
+	});
+
+	// Add body font to assets if different from heading
+	const bodyFont = getFontMetadata(fonts?.body?.family);
+	if (bodyFont.font.family !== headingFont.font.family) {
+		assets.push({
+			id: createId('asset'),
+			type: 'font',
+			hash: getFontHash(bodyFont.font),
+			contentType: 'font/woff2',
+			storage: {
+				type: 'url',
+				url: `https://fonts.googleapis.com/css2?family=${bodyFont.googleFont}&display=swap`
+			},
+			font: bodyFont.font
+		});
+	}
+
+	// Add Lora font for creative text elements
+	const loraFont = fontMetadataMap.lora;
+	assets.push({
+		id: createId('asset'),
+		type: 'font',
+		hash: getFontHash(loraFont.font),
+		contentType: 'font/woff2',
+		storage: {
+			type: 'url',
+			url: `https://fonts.googleapis.com/css2?family=${loraFont.googleFont}&display=swap`
+		},
+		font: loraFont.font
+	});
+
+	// Create product node
+	let productNode: TProductNode | null = null;
+	if (featuredProduct != null) {
+		const productImageHashIds: string[] = [];
+		for (const image of featuredProduct.images ?? []) {
+			const productImageHashId = createId('asset');
+			assets.push({
+				id: productImageHashId,
+				type: 'image',
+				hash: productImageHashId,
+				contentType: 'image/png',
+				storage: {
+					type: 'url',
+					url: image.url
+				},
+				altText: image.altText ?? featuredProduct.title
+			});
+			productImageHashIds.push(productImageHashId);
+		}
+
+		productNode = {
+			id: createId('node'),
+			type: 'product',
+			content: {
+				product: {
+					id: featuredProduct.id,
+					title: featuredProduct.title,
+					images: productImageHashIds,
+					options: featuredProduct.options ?? [],
+					variants:
+						featuredProduct.variants?.map((variant) => ({
+							id: variant.id,
+							title: variant.title,
+							price: variant.price,
+							selectedOptions: variant.selectedOptions ?? []
+						})) ?? [],
+					checkoutUrl: `https://${shopId}/products/${featuredProduct.id}`
+				}
+			},
+			style: {
+				padding: inheritStyle(),
+				backgroundColor: inheritStyle(),
+				font: inheritStyle(),
+				fontSize: inheritStyle(),
+				textColor: inheritStyle(),
+				borderRadius: inheritStyle(),
+				shadow: inheritStyle()
+			}
+		};
+	}
+
+	// Add welcome GIF to assets
+	const welcomeAssetHashId = createId('asset');
+	assets.push({
+		id: welcomeAssetHashId,
+		type: 'image',
+		hash: welcomeAssetHashId,
+		contentType: 'image/gif',
+		storage: {
+			type: 'url',
+			url: 'https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExemloNXVzbmtyM3Fremh6b2ZvZXEzeWk4bjdreDYxNDNxamdtcjFhMSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/CjmvTCZf2U3p09Cn0h/giphy.gif'
+		},
+		altText: 'Welcome GIF'
+	});
 
 	return {
 		version: 'v0.0.1',
-		assets: [
-			{
-				id: createId('asset'),
-				type: 'font',
-				hash: 'inter-400-normal',
-				contentType: 'font/woff2',
-				storage: {
-					type: 'url',
-					url: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap'
-				},
-				font: {
-					family: 'Inter',
-					weight: 400,
-					style: 'normal'
-				}
-			},
-			{
-				id: createId('asset'),
-				type: 'font',
-				hash: 'lora-400-normal',
-				contentType: 'font/woff2',
-				storage: {
-					type: 'url',
-					url: 'https://fonts.googleapis.com/css2?family=Lora:wght@400;700&display=swap'
-				},
-				font: {
-					family: 'Lora',
-					weight: 400,
-					style: 'normal'
-				}
-			},
-			{
-				id: createId('asset'),
-				type: 'image',
-				hash: 'welcome-gif',
-				contentType: 'image/gif',
-				storage: {
-					type: 'url',
-					url: 'https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExemloNXVzbmtyM3Fremh6b2ZvZXEzeWk4bjdreDYxNDNxamdtcjFhMSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/CjmvTCZf2U3p09Cn0h/giphy.gif'
-				},
-				altText: 'Welcome GIF'
-			}
-		],
+		assets,
 		root: {
 			type: 'page',
 			id: createId('node'),
@@ -58,7 +141,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					id: createId('node'),
 					type: 'about',
 					content: {
-						name: createDisplayNameFromShop(shopId),
+						name: shopName,
 						bio: 'Welcome to your new page! Add a short description about yourself or your brand.',
 						profilePicture: undefined,
 						socialLinks: [
@@ -87,7 +170,10 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					content: {
 						url: `https://${shopId}`,
 						userMetadata: {
-							title: '🛒 Add a link to your Shopify store'
+							title:
+								productNode != null
+									? '🛒 Add a link to your Shopify store, or showcase your products like below:'
+									: '🛒 Add a link to your Shopify store'
 						}
 					},
 					style: {
@@ -101,6 +187,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 						shadow: inheritStyle()
 					}
 				},
+				...(productNode != null ? [productNode] : []),
 				{
 					id: createId('node'),
 					type: 'text',
@@ -146,7 +233,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					content: {
 						media: {
 							type: 'image',
-							hash: 'welcome-gif',
+							hash: welcomeAssetHashId,
 							altText: 'Welcome GIF'
 						}
 					},
@@ -159,18 +246,14 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 				}
 			],
 			style: {
-				backgroundColor: hexToRgba('#FAFAFA'),
+				backgroundColor: hexToRgba(backgroundColor),
 				children: {
-					backgroundColor: hexToRgba('#FFFFFF'),
+					backgroundColor: hexToRgba(surfaceColor),
 					spacing: 24,
 					padding: 12,
-					font: {
-						family: 'Inter',
-						weight: 400,
-						style: 'normal'
-					},
+					font: bodyFont.font,
 					fontSize: 16,
-					textColor: hexToRgba('#222222'),
+					textColor: hexToRgba(primaryColor),
 					textAlign: 'center',
 					borderRadius: 16,
 					shadow: true
@@ -182,4 +265,39 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 
 interface TBlankPresetConfig {
 	shopId: string;
+	shopName: string;
+	colors?: {
+		primary?: string;
+		background?: string;
+		surface?: string;
+	};
+	fonts?: {
+		heading?: { family?: string };
+		body?: { family?: string };
+	};
+	featuredProduct?: {
+		id: string;
+		title: string;
+		images?: { url: string; altText?: string }[];
+		options?: { name: string; values: string[] }[];
+		variants?: {
+			id: string;
+			title: string;
+			price: { amount: string; currencyCode: string };
+			selectedOptions?: { name: string; value: string }[];
+		}[];
+	};
+}
+
+function getFontMetadata(fontFamily?: string): TFontMetadata {
+	if (fontFamily == null) {
+		return fontMetadataMap.inter;
+	}
+
+	// Try to match font family to available fonts
+	const matchedFont = Object.entries(fontMetadataMap).find(
+		([_, metadata]) => metadata.font.family.toLowerCase() === fontFamily.toLowerCase()
+	);
+
+	return matchedFont ? matchedFont[1] : fontMetadataMap.inter;
 }

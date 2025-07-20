@@ -1,13 +1,13 @@
 import { ServerErr, ServerOk } from '@blgc/utils';
 import { TFlatSite } from '@repo/editor';
-import { Spinner, Text } from '@shopify/polaris';
+import { Text } from '@shopify/polaris';
 import { isStatusCode } from 'feature-fetch';
 import { coreApiClient } from '@/environment';
 import { getSiteFontUrls, StaticNodeCanvas, TResolvedSite } from '@/features/page-editor';
 import { hydrateSite, StaticSiteHydrateContext } from '@/features/page-editor/.server';
-import { deferLoader, withDeferredLoader } from '@/lib';
+import { resultLoader, withResultLoader } from '@/lib';
 
-const Page = withDeferredLoader<TSuccessLoaderData, TErrorLoaderData>({
+const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 	Success: ({ data }) => {
 		const { site, fontUrls } = data;
 
@@ -32,22 +32,12 @@ const Page = withDeferredLoader<TSuccessLoaderData, TErrorLoaderData>({
 				</Text>
 			</div>
 		</div>
-	),
-	Loading: () => (
-		<div className="flex min-h-screen items-center justify-center">
-			<div className="flex flex-col items-center gap-2">
-				<Spinner size="small" />
-				<Text as="p" variant="bodyMd" tone="subdued">
-					Loading...
-				</Text>
-			</div>
-		</div>
 	)
 });
 
 export default Page;
 
-export const loader = deferLoader<TSuccessLoaderData, TErrorLoaderData>(async ({ request }) => {
+export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async ({ request }) => {
 	const url = new URL(request.url);
 	// Extract workspaceHandle and handle from path: /w/{workspaceHandle}/{handle}
 	const pathSegments = url.pathname.split('/').filter(Boolean); // ['w', '{workspaceHandle}', '{handle}']

@@ -1,17 +1,17 @@
 import { ServerErr, ServerOk } from '@blgc/utils';
 import { TFlatSite } from '@repo/editor';
 import { useAppBridge } from '@shopify/app-bridge-react';
-import { Spinner, Text } from '@shopify/polaris';
+import { Text } from '@shopify/polaris';
 import { withGlobalBind } from 'feature-react/state';
 import React from 'react';
 import { coreApiClient } from '@/environment';
 import { shopify, shopifyConfig } from '@/environment/.server';
 import { createPageEditor, Editor } from '@/features/page-editor';
-import { deferLoader, withDeferredLoader } from '@/lib';
+import { resultLoader, withResultLoader } from '@/lib';
 import { TLinksFunction } from '@/types';
 import styles from './styles.css?url';
 
-const Page = withDeferredLoader<TSuccessLoaderData, TErrorLoaderData>({
+const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 	Success: ({ data }) => {
 		const { site, shopId } = data;
 		const shopify = useAppBridge();
@@ -42,22 +42,12 @@ const Page = withDeferredLoader<TSuccessLoaderData, TErrorLoaderData>({
 				</Text>
 			</div>
 		</div>
-	),
-	Loading: () => (
-		<div className="flex min-h-screen w-full items-center justify-center">
-			<div className="flex flex-col items-center gap-2">
-				<Spinner size="small" />
-				<Text as="p" variant="bodyMd" tone="subdued">
-					Loading Editor...
-				</Text>
-			</div>
-		</div>
 	)
 });
 
 export default Page;
 
-export const loader = deferLoader<TSuccessLoaderData, TErrorLoaderData>(async ({ request }) => {
+export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async ({ request }) => {
 	const { session } = await shopify.authenticate.admin(request);
 	const { shop } = session;
 	const url = new URL(request.url);
