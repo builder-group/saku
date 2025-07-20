@@ -46,40 +46,59 @@ export const GetShopOverviewRoute = createRoute({
 						colors: z.object({
 							primary: z
 								.string()
+								.optional()
 								.openapi({ example: '#121212', description: 'Primary brand color' }),
 							secondary: z
 								.string()
+								.optional()
 								.openapi({ example: '#666666', description: 'Secondary brand color' }),
 							background: z
 								.string()
+								.optional()
 								.openapi({ example: '#ffffff', description: 'Background color' }),
-							text: z.string().openapi({ example: '#121212', description: 'Text color' }),
-							button: z.string().openapi({ example: '#121212', description: 'Button color' }),
+							text: z
+								.string()
+								.optional()
+								.openapi({ example: '#121212', description: 'Text color' }),
+							button: z
+								.string()
+								.optional()
+								.openapi({ example: '#121212', description: 'Button color' }),
 							buttonText: z
 								.string()
+								.optional()
 								.openapi({ example: '#ffffff', description: 'Button text color' })
 						}),
 						typography: z.object({
 							headingFont: z
-								.string()
+								.object({
+									family: z.string().optional(),
+									weight: z.number().optional(),
+									style: z.string().optional()
+								})
+								.optional()
 								.openapi({ example: 'Assistant', description: 'Heading font family' }),
 							bodyFont: z
-								.string()
-								.openapi({ example: 'Assistant', description: 'Body font family' }),
-							headingScale: z
-								.number()
-								.openapi({ example: 100, description: 'Heading font scale percentage' }),
-							bodyScale: z
-								.number()
-								.openapi({ example: 100, description: 'Body font scale percentage' })
+								.object({
+									family: z.string().optional(),
+									weight: z.number().optional(),
+									style: z.string().optional()
+								})
+								.optional()
+								.openapi({ example: 'Assistant', description: 'Body font family' })
 						}),
 						layout: z.object({
 							pageWidth: z
 								.number()
+								.optional()
 								.openapi({ example: 1200, description: 'Maximum page width in pixels' }),
-							spacing: z.number().openapi({ example: 0, description: 'Section spacing in pixels' }),
+							spacing: z
+								.number()
+								.optional()
+								.openapi({ example: 0, description: 'Section spacing in pixels' }),
 							borderRadius: z
 								.number()
+								.optional()
 								.openapi({ example: 0, description: 'Border radius in pixels' })
 						})
 					}),

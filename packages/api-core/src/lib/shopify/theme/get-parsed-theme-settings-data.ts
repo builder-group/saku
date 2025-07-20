@@ -49,7 +49,7 @@ export interface TGetParsedThemeSettingsDataSuccess {
 }
 
 export interface TThemeSettingsData {
-	current: Record<string, any>;
+	current?: string;
 	presets?: Record<string, Record<string, any>>;
-	platform_customizations?: Record<string, any>;
+	[key: string]: any;
 }

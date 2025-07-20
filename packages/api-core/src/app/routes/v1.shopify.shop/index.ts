@@ -36,7 +36,7 @@ router.openapi(GetShopOverviewRoute, async (c) => {
 	}
 	const theme = mainThemeResult.value;
 
-	const themeSettingsResult = await getParsedThemeSettingsData(theme.themeId, {
+	const themeSettingsResult = await getParsedThemeSettingsData(theme.id, {
 		shopId,
 		accessToken
 	});
@@ -83,9 +83,9 @@ router.openapi(GetShopOverviewRoute, async (c) => {
 				primaryDomain: shopInfo.primaryDomain
 			},
 			theme: {
-				id: theme.themeId,
-				name: theme.themeName,
-				role: theme.themeRole,
+				id: theme.id,
+				name: theme.name,
+				role: theme.role,
 				colors: extractedThemeData.colors,
 				typography: extractedThemeData.typography,
 				layout: extractedThemeData.layout

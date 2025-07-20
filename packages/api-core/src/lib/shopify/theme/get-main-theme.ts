@@ -20,9 +20,9 @@ export async function getMainTheme(
 	}
 
 	return Ok({
-		themeId: mainTheme.id,
-		themeName: mainTheme.name,
-		themeRole: mainTheme.role
+		id: mainTheme.id,
+		name: mainTheme.name,
+		role: mainTheme.role
 	});
 }
 
@@ -32,7 +32,7 @@ export interface TGetMainThemeConfig {
 }
 
 export interface TGetMainThemeSuccess {
-	themeId: string;
-	themeName: string;
-	themeRole: string;
+	id: string;
+	name: string;
+	role: string;
 }
