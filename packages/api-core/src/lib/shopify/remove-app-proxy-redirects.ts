@@ -1,8 +1,7 @@
 import { Err, Ok, type TResult } from '@blgc/utils';
 import { AppError } from '@repo/hono-utils';
 import { shopifyConfig } from '@/environment';
-import { bulkDeleteUrlRedirectsBySearch } from '@/lib/gql/url-redirect-bulk-delete-by-search';
-import { searchUrlRedirects } from '@/lib/gql/url-redirect-search';
+import { bulkDeleteUrlRedirectsBySearch, searchUrlRedirects } from '../gql';
 
 /**
  * Removes all URL redirects that target the app proxy path.

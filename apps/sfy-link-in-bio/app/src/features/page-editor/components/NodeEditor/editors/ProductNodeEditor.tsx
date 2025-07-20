@@ -14,10 +14,9 @@ import {
 	Text,
 	useIndexResourceState
 } from '@shopify/polaris';
-import { DeleteIcon } from '@shopify/polaris-icons';
 import { useFeatureState } from 'feature-react/state';
 import React from 'react';
-import { AccordionSection } from '@/components';
+import { AccordionSection, DeleteIcon, ProductAddIcon } from '@/components';
 import { capitalizeFirstLetter, isProduct, mutateWithReferenceUpdate } from '@/lib';
 import { ColorStyleField, SelectStyleField, TextStyleField, ToggleStyleField } from '../fields';
 import { TNodeEditorComponentProps } from '../nodeEditorRegistry';
@@ -338,8 +337,8 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 								</Scrollable>
 							</div>
 						) : (
-							<Button onClick={handleSelectProduct} variant="primary">
-								Select
+							<Button onClick={handleSelectProduct} variant="secondary" icon={ProductAddIcon}>
+								Select Product
 							</Button>
 						)}
 

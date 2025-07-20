@@ -3,8 +3,8 @@ import { AppError } from '@repo/hono-utils';
 import { gql, shopifyAdminApiClient, shopifyConfig } from '@/environment';
 
 // https://shopify.dev/docs/api/admin-graphql/latest/queries/files
-export const FILES_LIST = gql(`
-  query filesList(
+export const FILES = gql(`
+  query files(
     $first: Int!, 
     $after: String, 
     $query: String,
@@ -64,10 +64,10 @@ export const FILES_LIST = gql(`
   }
 `);
 
-export async function listFiles(
-	input: TFilesListInput,
-	config: TListFilesConfig
-): Promise<TResult<TFilesListSuccess, AppError>> {
+export async function getFiles(
+	input: TGetFilesInput,
+	config: TGetFilesConfig
+): Promise<TResult<TGetFilesSuccess, AppError>> {
 	const { shopId, accessToken } = config;
 	const { first = 20, after, query, sortKey = 'CREATED_AT', reverse = false } = input;
 
@@ -82,7 +82,7 @@ export async function listFiles(
 					.join(' AND ')
 			: query;
 
-	const result = await shopifyAdminApiClient.query(FILES_LIST, {
+	const result = await shopifyAdminApiClient.query(FILES, {
 		prefixUrl: shopifyConfig.shop.adminApi(shopId),
 		variables: {
 			first,
@@ -174,7 +174,7 @@ export async function listFiles(
 	});
 }
 
-interface TListFilesConfig {
+interface TGetFilesConfig {
 	shopId: string;
 	accessToken: string;
 }
@@ -186,7 +186,7 @@ export interface TFilesListStructuredQuery {
 	fileName?: string;
 }
 
-export interface TFilesListInput {
+export interface TGetFilesInput {
 	first?: number;
 	after?: string;
 	query?: string | TFilesListStructuredQuery;
@@ -194,7 +194,7 @@ export interface TFilesListInput {
 	reverse?: boolean;
 }
 
-export interface TFilesListSuccess {
+export interface TGetFilesSuccess {
 	files: {
 		id: string;
 		alt: string;

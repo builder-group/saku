@@ -3,7 +3,7 @@ import { AppError } from '@repo/hono-utils';
 import { gql, shopifyAdminApiClient, shopifyConfig, VariablesOf } from '@/environment';
 
 // https://shopify.dev/docs/api/admin-graphql/latest/mutations/fileCreate
-export const FILE_CREATE = gql(`
+const FILE_CREATE = gql(`
 	mutation fileCreate($files: [FileCreateInput!]!) {
 		fileCreate(files: $files) {
 			files {

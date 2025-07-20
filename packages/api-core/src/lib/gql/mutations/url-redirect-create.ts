@@ -3,7 +3,7 @@ import { AppError } from '@repo/hono-utils';
 import { gql, shopifyAdminApiClient, shopifyConfig, VariablesOf } from '@/environment';
 
 // https://shopify.dev/docs/api/admin-graphql/latest/mutations/urlRedirectCreate
-export const URL_REDIRECT_CREATE = gql(`
+const URL_REDIRECT_CREATE = gql(`
 	mutation urlRedirectCreate($urlRedirect: UrlRedirectInput!) {
 		urlRedirectCreate(urlRedirect: $urlRedirect) {
 			urlRedirect {

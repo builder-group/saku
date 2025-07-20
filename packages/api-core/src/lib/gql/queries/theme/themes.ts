@@ -3,8 +3,8 @@ import { AppError } from '@repo/hono-utils';
 import { gql, shopifyAdminApiClient, shopifyConfig } from '@/environment';
 
 // https://shopify.dev/docs/api/admin-graphql/latest/queries/themes
-export const CURRENT_THEME = gql(`
-	query currentTheme($first: Int = 10, $roles: [ThemeRole!]) {
+const THEMES = gql(`
+	query themes($first: Int = 10, $roles: [ThemeRole!]) {
 		themes(first: $first, roles: $roles) {
 			edges {
 				node {
@@ -24,7 +24,7 @@ export async function getThemes(
 	const { shopId, accessToken } = config;
 	const { first = 10, roles } = input;
 
-	const result = await shopifyAdminApiClient.query(CURRENT_THEME, {
+	const result = await shopifyAdminApiClient.query(THEMES, {
 		prefixUrl: shopifyConfig.shop.adminApi(shopId),
 		variables: {
 			first,

@@ -1,6 +1,6 @@
 import { Err, Ok, type TResult } from '@blgc/utils';
 import { AppError } from '@repo/hono-utils';
-import { getThemes } from '@/lib/gql/current-theme';
+import { getThemes } from '../../gql';
 
 export async function getMainTheme(
 	config: TGetMainThemeConfig

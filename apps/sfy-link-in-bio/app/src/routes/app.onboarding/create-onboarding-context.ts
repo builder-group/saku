@@ -1,5 +1,6 @@
 import { Err, Ok, shortId, type TResult } from '@blgc/utils';
 import { TFlatSite } from '@repo/editor';
+import { coreApiV1 } from '@repo/types/api';
 import type { ShopifyGlobal } from '@shopify/app-bridge-types';
 import { coreApiClient } from '@/environment';
 import { createShopifyTokenMiddleware, createStepr, type TStepr } from '@/lib';
@@ -65,7 +66,7 @@ export function createOnboardingContext(
 			return Ok(undefined);
 		},
 
-		continueFromSiteCreationOptions(option) {
+		async continueFromSiteCreationOptions(option) {
 			// Store the selection
 			this.stepr.current.set({
 				type: 'site-creation-options',
@@ -73,9 +74,17 @@ export function createOnboardingContext(
 			});
 
 			switch (option) {
-				case 'create-new':
-					this.stepr.goTo({ type: 'templates' });
+				case 'create-new': {
+					const result = await coreApiClient.get('/v1/shopify/shop/overview', {
+						requestMiddlewares: [createShopifyTokenMiddleware(this.shopify)]
+					});
+
+					this.stepr.goTo({
+						type: 'templates',
+						shopOverview: result.isOk() ? result.value.data : undefined
+					});
 					break;
+				}
 				case 'linkpop':
 					this.stepr.goTo({ type: 'linkpop-url' });
 					break;
@@ -213,7 +222,7 @@ export interface TOnboardingContext {
 		handle: string,
 		options?: { override?: boolean }
 	) => Promise<TResult<void, THandleStepError>>;
-	continueFromSiteCreationOptions: (option: TSiteCreationOption) => void;
+	continueFromSiteCreationOptions: (option: TSiteCreationOption) => Promise<void>;
 	continueFromLinkpopUrl: (handle: string) => Promise<TResult<void, TLinkpopStepError>>;
 	continueFromLinkpopPreview: () => Promise<TResult<void, string>>;
 	continueFromTemplates: (selectedTemplate: TTemplate) => Promise<TResult<void, string>>;
@@ -230,7 +239,11 @@ export type TOnboardingStep =
 	| { type: 'site-creation-options'; selectedOption?: TSiteCreationOption }
 	| { type: 'linkpop-url'; handle?: string }
 	| { type: 'linkpop-preview'; url?: string; site?: TFlatSite }
-	| { type: 'templates'; selectedTemplate?: TTemplate };
+	| {
+			type: 'templates';
+			selectedTemplate?: TTemplate;
+			shopOverview?: coreApiV1.components['schemas']['ShopOverviewDto'];
+	  };
 
 export type TSiteCreationOption = 'create-new' | 'linkpop';
 

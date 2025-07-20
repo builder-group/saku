@@ -36,6 +36,7 @@ export {
 	PaintBrushFlatIcon,
 	PlusCircleIcon,
 	PlusIcon,
+	ProductAddIcon,
 	ReplaceIcon,
 	SettingsIcon,
 	ViewIcon

@@ -3,7 +3,7 @@ import { AppError } from '@repo/hono-utils';
 import { gql, shopifyAdminApiClient, shopifyConfig } from '@/environment';
 
 // https://shopify.dev/docs/api/admin-graphql/latest/mutations/urlRedirectDelete
-export const URL_REDIRECT_DELETE = gql(`
+const URL_REDIRECT_DELETE = gql(`
 	mutation urlRedirectDelete($id: ID!) {
 		urlRedirectDelete(id: $id) {
 			deletedUrlRedirectId

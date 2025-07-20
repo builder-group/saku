@@ -580,6 +580,160 @@ export interface components {
                 };
             } | null;
         };
+        ShopOverviewDto: {
+            shop: {
+                /** @example gid://shopify/Shop/123456789 */
+                id: string;
+                /** @example My Awesome Store */
+                name: string;
+                /** @example my-awesome-store.myshopify.com */
+                domain: string;
+                /** @example Premium products for everyone */
+                description?: string;
+                /**
+                 * Format: uri
+                 * @example https://cdn.shopify.com/logo.png
+                 */
+                logo?: string;
+                /** @example USD */
+                currency: string;
+                /** @example US */
+                country: string;
+                /** @example EN */
+                language: string;
+            };
+            theme: {
+                /** @example gid://shopify/Theme/123456789 */
+                id: string;
+                /** @example Dawn */
+                name: string;
+                /** @example MAIN */
+                role: string;
+                colors: {
+                    /**
+                     * @description Primary brand color
+                     * @example #121212
+                     */
+                    primary: string;
+                    /**
+                     * @description Secondary brand color
+                     * @example #666666
+                     */
+                    secondary: string;
+                    /**
+                     * @description Background color
+                     * @example #ffffff
+                     */
+                    background: string;
+                    /**
+                     * @description Text color
+                     * @example #121212
+                     */
+                    text: string;
+                    /**
+                     * @description Button color
+                     * @example #121212
+                     */
+                    button: string;
+                    /**
+                     * @description Button text color
+                     * @example #ffffff
+                     */
+                    buttonText: string;
+                };
+                typography: {
+                    /**
+                     * @description Heading font family
+                     * @example Assistant
+                     */
+                    headingFont: string;
+                    /**
+                     * @description Body font family
+                     * @example Assistant
+                     */
+                    bodyFont: string;
+                    /**
+                     * @description Heading font scale percentage
+                     * @example 100
+                     */
+                    headingScale: number;
+                    /**
+                     * @description Body font scale percentage
+                     * @example 100
+                     */
+                    bodyScale: number;
+                };
+                layout: {
+                    /**
+                     * @description Maximum page width in pixels
+                     * @example 1200
+                     */
+                    pageWidth: number;
+                    /**
+                     * @description Section spacing in pixels
+                     * @example 0
+                     */
+                    spacing: number;
+                    /**
+                     * @description Border radius in pixels
+                     * @example 0
+                     */
+                    borderRadius: number;
+                };
+            };
+            socialLinks: {
+                /**
+                 * @description Social media platform
+                 * @example instagram
+                 */
+                platform: string;
+                /**
+                 * Format: uri
+                 * @example https://instagram.com/shopname
+                 */
+                url: string;
+                /** @example @shopname */
+                username?: string;
+            }[];
+            bestSellingProducts: {
+                /** @example gid://shopify/Product/123456789 */
+                id: string;
+                /** @example Premium T-Shirt */
+                title: string;
+                /** @example premium-t-shirt */
+                handle: string;
+                /**
+                 * Format: uri
+                 * @example https://cdn.shopify.com/image.jpg
+                 */
+                featuredImage?: string;
+                /** @example $29.99 */
+                price: string;
+                priceRange?: {
+                    /** @example $29.99 */
+                    min: string;
+                    /** @example $39.99 */
+                    max: string;
+                };
+            }[];
+            stats: {
+                /**
+                 * @description Total number of products
+                 * @example 150
+                 */
+                totalProducts: number;
+                /**
+                 * @description Total number of collections
+                 * @example 12
+                 */
+                totalCollections: number;
+                /**
+                 * @description Total number of orders
+                 * @example 1250
+                 */
+                totalOrders?: number;
+            };
+        };
         SiteSummaryDto: {
             /**
              * Format: uuid
@@ -1129,160 +1283,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        shop: {
-                            /** @example gid://shopify/Shop/123456789 */
-                            id: string;
-                            /** @example My Awesome Store */
-                            name: string;
-                            /** @example my-awesome-store.myshopify.com */
-                            domain: string;
-                            /** @example Premium products for everyone */
-                            description?: string;
-                            /**
-                             * Format: uri
-                             * @example https://cdn.shopify.com/logo.png
-                             */
-                            logo?: string;
-                            /** @example USD */
-                            currency: string;
-                            /** @example US */
-                            country: string;
-                            /** @example EN */
-                            language: string;
-                        };
-                        theme: {
-                            /** @example gid://shopify/Theme/123456789 */
-                            id: string;
-                            /** @example Dawn */
-                            name: string;
-                            /** @example MAIN */
-                            role: string;
-                            colors: {
-                                /**
-                                 * @description Primary brand color
-                                 * @example #121212
-                                 */
-                                primary: string;
-                                /**
-                                 * @description Secondary brand color
-                                 * @example #666666
-                                 */
-                                secondary: string;
-                                /**
-                                 * @description Background color
-                                 * @example #ffffff
-                                 */
-                                background: string;
-                                /**
-                                 * @description Text color
-                                 * @example #121212
-                                 */
-                                text: string;
-                                /**
-                                 * @description Button color
-                                 * @example #121212
-                                 */
-                                button: string;
-                                /**
-                                 * @description Button text color
-                                 * @example #ffffff
-                                 */
-                                buttonText: string;
-                            };
-                            typography: {
-                                /**
-                                 * @description Heading font family
-                                 * @example Assistant
-                                 */
-                                headingFont: string;
-                                /**
-                                 * @description Body font family
-                                 * @example Assistant
-                                 */
-                                bodyFont: string;
-                                /**
-                                 * @description Heading font scale percentage
-                                 * @example 100
-                                 */
-                                headingScale: number;
-                                /**
-                                 * @description Body font scale percentage
-                                 * @example 100
-                                 */
-                                bodyScale: number;
-                            };
-                            layout: {
-                                /**
-                                 * @description Maximum page width in pixels
-                                 * @example 1200
-                                 */
-                                pageWidth: number;
-                                /**
-                                 * @description Section spacing in pixels
-                                 * @example 0
-                                 */
-                                spacing: number;
-                                /**
-                                 * @description Border radius in pixels
-                                 * @example 0
-                                 */
-                                borderRadius: number;
-                            };
-                        };
-                        socialLinks: {
-                            /**
-                             * @description Social media platform
-                             * @example instagram
-                             */
-                            platform: string;
-                            /**
-                             * Format: uri
-                             * @example https://instagram.com/shopname
-                             */
-                            url: string;
-                            /** @example @shopname */
-                            username?: string;
-                        }[];
-                        bestSellingProducts: {
-                            /** @example gid://shopify/Product/123456789 */
-                            id: string;
-                            /** @example Premium T-Shirt */
-                            title: string;
-                            /** @example premium-t-shirt */
-                            handle: string;
-                            /**
-                             * Format: uri
-                             * @example https://cdn.shopify.com/image.jpg
-                             */
-                            featuredImage?: string;
-                            /** @example $29.99 */
-                            price: string;
-                            priceRange?: {
-                                /** @example $29.99 */
-                                min: string;
-                                /** @example $39.99 */
-                                max: string;
-                            };
-                        }[];
-                        stats: {
-                            /**
-                             * @description Total number of products
-                             * @example 150
-                             */
-                            totalProducts: number;
-                            /**
-                             * @description Total number of collections
-                             * @example 12
-                             */
-                            totalCollections: number;
-                            /**
-                             * @description Total number of orders
-                             * @example 1250
-                             */
-                            totalOrders?: number;
-                        };
-                    };
+                    "application/json": components["schemas"]["ShopOverviewDto"];
                 };
             };
             /** @description Bad request */
@@ -1309,10 +1310,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        /** @example Failed to fetch shop overview */
-                        error: string;
-                    };
+                    "application/json": components["schemas"]["AppErrorDto"];
                 };
             };
         };

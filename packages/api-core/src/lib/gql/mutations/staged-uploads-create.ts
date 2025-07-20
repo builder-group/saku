@@ -3,7 +3,7 @@ import { AppError } from '@repo/hono-utils';
 import { gql, shopifyAdminApiClient, shopifyConfig, VariablesOf } from '@/environment';
 
 // https://shopify.dev/docs/api/admin-graphql/latest/mutations/stagedUploadsCreate
-export const STAGED_UPLOADS_CREATE = gql(`
+const STAGED_UPLOADS_CREATE = gql(`
 	mutation stagedUploadsCreate($uploads: [StagedUploadInput!]!) {
 		stagedUploadsCreate(input: $uploads) {
 			stagedTargets {

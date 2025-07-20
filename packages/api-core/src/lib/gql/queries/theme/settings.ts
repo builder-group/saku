@@ -9,7 +9,7 @@ export const THEME_SETTINGS = gql(`
 			id
 			name
 			role
-			files(filenames: ["config/settings_data.json", "config/settings_schema.json"]) {
+			files(filenames: ["config/settings_data.json"]) {
 				edges {
 					node {
 						filename
@@ -58,16 +58,13 @@ export async function getThemeSettings(
 
 	const files: TGetThemeSettingsSuccess['files'] = {};
 	theme.files?.edges.forEach((edge) => {
-		if (edge.node.body.__typename !== 'OnlineStoreThemeFileBodyText') {
+		if (!('content' in edge.node.body)) {
 			return;
 		}
 
 		switch (edge.node.filename) {
 			case 'config/settings_data.json':
 				files['settings_data.json'] = edge.node.body.content;
-				break;
-			case 'config/settings_schema.json':
-				files['settings_schema.json'] = edge.node.body.content;
 				break;
 		}
 	});
@@ -99,6 +96,5 @@ export interface TGetThemeSettingsSuccess {
 	};
 	files: {
 		'settings_data.json'?: string;
-		'settings_schema.json'?: string;
 	};
 }

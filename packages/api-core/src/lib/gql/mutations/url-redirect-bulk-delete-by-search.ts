@@ -3,7 +3,7 @@ import { AppError } from '@repo/hono-utils';
 import { gql, shopifyAdminApiClient, shopifyConfig } from '@/environment';
 
 // https://shopify.dev/docs/api/admin-graphql/latest/mutations/urlRedirectBulkDeleteBySearch
-export const URL_REDIRECT_BULK_DELETE_BY_SEARCH = gql(`
+const URL_REDIRECT_BULK_DELETE_BY_SEARCH = gql(`
 	mutation urlRedirectBulkDeleteBySearch($search: String!) {
 		urlRedirectBulkDeleteBySearch(search: $search) {
 			job {

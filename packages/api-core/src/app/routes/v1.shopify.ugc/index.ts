@@ -4,8 +4,8 @@ import { pika } from '@/environment';
 import {
 	createFiles,
 	createStagedUploads,
+	getFiles,
 	getShopifyOfflineAccessToken,
-	listFiles,
 	verifyShopifySession
 } from '@/lib';
 import { mapContentTypeToResource } from './lib';
@@ -105,7 +105,7 @@ router.openapi(ListMediaFilesRoute, async (c) => {
 	const accessToken = (await getShopifyOfflineAccessToken(shopId)).unwrap();
 
 	const { files, pageInfo } = (
-		await listFiles(
+		await getFiles(
 			{
 				first,
 				after,

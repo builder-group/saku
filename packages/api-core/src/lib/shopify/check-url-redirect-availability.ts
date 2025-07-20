@@ -1,7 +1,7 @@
 import { Err, Ok, type TResult } from '@blgc/utils';
 import { AppError } from '@repo/hono-utils';
 import { shopifyConfig } from '@/environment';
-import { searchUrlRedirects } from '@/lib/gql';
+import { searchUrlRedirects } from '../gql';
 import { isUrlRedirectPathReserved } from './is-url-redirect-path-reserved';
 
 /**

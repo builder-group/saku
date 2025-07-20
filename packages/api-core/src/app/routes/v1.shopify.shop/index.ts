@@ -1,13 +1,27 @@
 import { AppError } from '@repo/hono-utils';
 import { router } from '@/app/router';
-import { getShopifyOfflineAccessToken, verifyShopifySession } from '@/lib';
-import { getMainTheme } from '@/lib/shopify';
+import { getShopifyOfflineAccessToken, getShopInfo, verifyShopifySession } from '@/lib';
+import { getMainTheme, getParsedThemeSettingsData } from '@/lib/shopify';
+import { extractThemeDataFromSettings } from '@/lib/shopify/theme/extract-theme-data';
 import { GetShopOverviewRoute } from './schema';
 
 router.openapi(GetShopOverviewRoute, async (c) => {
 	const { shopId } = (await verifyShopifySession(c)).unwrap();
 
 	const accessToken = (await getShopifyOfflineAccessToken(shopId)).unwrap();
+
+	// Get shop info
+	const shopInfoResult = await getShopInfo({
+		shopId,
+		accessToken
+	});
+	if (shopInfoResult.isErr()) {
+		throw new AppError('#ERR_SHOP_INFO_FETCH_FAILED', 500, {
+			title: 'Failed to fetch shop info',
+			detail: shopInfoResult.error.message
+		});
+	}
+	const shopInfo = shopInfoResult.value;
 
 	// Get main theme
 	const mainThemeResult = await getMainTheme({
@@ -20,11 +34,22 @@ router.openapi(GetShopOverviewRoute, async (c) => {
 			detail: mainThemeResult.error.message
 		});
 	}
-
 	const theme = mainThemeResult.value;
 
-	// TODO: Extract social links from theme settings or scrape storefront
-	const socialLinks: Array<{ platform: string; url: string; username?: string }> = [];
+	const themeSettingsResult = await getParsedThemeSettingsData(theme.themeId, {
+		shopId,
+		accessToken
+	});
+	if (themeSettingsResult.isErr()) {
+		throw new AppError('#ERR_THEME_SETTINGS_FETCH_FAILED', 500, {
+			title: 'Failed to fetch theme settings',
+			detail: themeSettingsResult.error.message
+		});
+	}
+	const themeSettings = themeSettingsResult.value;
+
+	// Extract theme data from settings
+	const extractedThemeData = extractThemeDataFromSettings(themeSettings.settingsData);
 
 	// TODO: Get best selling products from Shopify API
 	const bestSellingProducts: Array<{
@@ -36,18 +61,6 @@ router.openapi(GetShopOverviewRoute, async (c) => {
 		priceRange?: { min: string; max: string };
 	}> = [];
 
-	// TODO: Get shop info from Shopify API
-	const shopInfo = {
-		id: 'gid://shopify/Shop/placeholder', // TODO: Get from Shopify API
-		name: 'Shop Name', // TODO: Get from Shopify API
-		domain: shopId,
-		description: undefined, // TODO: Get from Shopify API
-		logo: undefined, // TODO: Get from Shopify API
-		currency: 'USD', // TODO: Get from Shopify API
-		country: 'US', // TODO: Get from Shopify API
-		language: 'EN' // TODO: Get from Shopify API
-	};
-
 	// TODO: Get shop stats from Shopify API
 	const stats = {
 		totalProducts: 0, // TODO: Get from Shopify API
@@ -55,43 +68,29 @@ router.openapi(GetShopOverviewRoute, async (c) => {
 		totalOrders: undefined // TODO: Get from Shopify API
 	};
 
-	// Extract theme colors (simplified for now)
-	const colors = {
-		primary: '#121212', // TODO: Extract from settingsData
-		secondary: '#666666',
-		background: '#ffffff',
-		text: '#121212',
-		button: '#121212',
-		buttonText: '#ffffff'
-	};
-
-	// Extract theme typography (simplified for now)
-	const typography = {
-		headingFont: 'Assistant', // TODO: Extract from settingsData
-		bodyFont: 'Assistant',
-		headingScale: 100,
-		bodyScale: 100
-	};
-
-	// Extract theme layout (simplified for now)
-	const layout = {
-		pageWidth: 1200, // TODO: Extract from settingsData
-		spacing: 0,
-		borderRadius: 0
-	};
-
 	return c.json(
 		{
-			shop: shopInfo,
+			shop: {
+				id: shopInfo.id,
+				name: shopInfo.name,
+				domain: shopInfo.domain,
+				description: shopInfo.description,
+				currency: shopInfo.currency,
+				country: shopInfo.country,
+				email: shopInfo.email,
+				contactEmail: shopInfo.contactEmail,
+				timezone: shopInfo.timezone,
+				primaryDomain: shopInfo.primaryDomain
+			},
 			theme: {
 				id: theme.themeId,
 				name: theme.themeName,
 				role: theme.themeRole,
-				colors,
-				typography,
-				layout
+				colors: extractedThemeData.colors,
+				typography: extractedThemeData.typography,
+				layout: extractedThemeData.layout
 			},
-			socialLinks,
+			socialLinks: extractedThemeData.socialLinks,
 			bestSellingProducts,
 			stats
 		},
