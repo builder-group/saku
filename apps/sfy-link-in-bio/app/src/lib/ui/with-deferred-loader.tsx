@@ -1,4 +1,4 @@
-import { fromServerResult, TServerResult } from '@blgc/utils';
+import { fromServerResult, ServerErr, TServerResult } from '@blgc/utils';
 import { Await, useLoaderData } from '@remix-run/react';
 import React from 'react';
 import { TLoaderFunction } from '../../types';
@@ -54,7 +54,7 @@ export function withDeferredLoader<GSuccess, GError>(
 
 export interface TWithDeferredLoaderConfig<GSuccess, GError> {
 	Success: React.ComponentType<{ data: GSuccess }>;
-	Error?: React.ComponentType<{ error: GError }>;
+	Error?: React.ComponentType<{ error: TDeferredError<GError> }>;
 	Loading?: React.ComponentType;
 }
 
@@ -75,11 +75,49 @@ export function deferLoader<GSuccess, GError>(
 ): TLoaderFunction<TDeferredLoaderData<GSuccess, GError>> {
 	return async (args) => {
 		return {
-			promisedResult: loaderFn(args)
+			// Note: Using resolve instead of reject to avoid hydration mismatches (when using errorElement)
+			promisedResult: new Promise<TServerResult<GSuccess, TDeferredError<GError>>>((resolve) => {
+				// Timeout to ensure the promise resolves before React Router's 4950ms threshold (which leads to rejected promise)
+				// https://reactrouter.com/how-to/suspense#timeouts
+				const timeoutId = setTimeout(() => {
+					resolve(
+						ServerErr({ __type: 'defer-error', code: '#ERR_TIMEOUT', message: 'Request timed out' })
+					);
+				}, 4500);
+
+				loaderFn(args)
+					.then((res) => {
+						clearTimeout(timeoutId);
+						resolve(res);
+					})
+					.catch((err) => {
+						clearTimeout(timeoutId);
+						resolve(
+							ServerErr({ __type: 'defer-error', code: '#ERR_SERVER_ERROR', message: err.message })
+						);
+					});
+			})
 		};
 	};
 }
 
 export interface TDeferredLoaderData<GSuccess, GError> {
-	promisedResult: Promise<TServerResult<GSuccess, GError>>;
+	promisedResult: Promise<TServerResult<GSuccess, TDeferredError<GError>>>;
+}
+
+export type TDeferredError<GError> = GError | TDeferError;
+
+export interface TDeferError {
+	readonly __type: 'defer-error';
+	code: `#ERR_${string}`;
+	message: string;
+}
+
+export function isDeferError(error: unknown): error is TDeferError {
+	return (
+		error != null &&
+		typeof error === 'object' &&
+		'__type' in error &&
+		error.__type === 'defer-error'
+	);
 }
