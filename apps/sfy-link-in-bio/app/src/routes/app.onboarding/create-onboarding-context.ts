@@ -1,6 +1,5 @@
 import { Err, Ok, shortId, type TResult } from '@blgc/utils';
 import { TFlatSite } from '@repo/editor';
-import { coreApiV1 } from '@repo/types/api';
 import type { ShopifyGlobal } from '@shopify/app-bridge-types';
 import { coreApiClient } from '@/environment';
 import { createShopifyTokenMiddleware, createStepr, type TStepr } from '@/lib';
@@ -66,7 +65,7 @@ export function createOnboardingContext(
 			return Ok(undefined);
 		},
 
-		async continueFromSiteCreationOptions(option) {
+		continueFromSiteCreationOptions(option) {
 			// Store the selection
 			this.stepr.current.set({
 				type: 'site-creation-options',
@@ -75,19 +74,15 @@ export function createOnboardingContext(
 
 			switch (option) {
 				case 'create-new': {
-					const result = await coreApiClient.get('/v1/shopify/shop/overview', {
-						requestMiddlewares: [createShopifyTokenMiddleware(this.shopify)]
-					});
-
 					this.stepr.goTo({
-						type: 'templates',
-						shopOverview: result.isOk() ? result.value.data : undefined
+						type: 'templates'
 					});
 					break;
 				}
-				case 'linkpop':
+				case 'linkpop': {
 					this.stepr.goTo({ type: 'linkpop-url' });
 					break;
+				}
 			}
 		},
 
@@ -222,7 +217,7 @@ export interface TOnboardingContext {
 		handle: string,
 		options?: { override?: boolean }
 	) => Promise<TResult<void, THandleStepError>>;
-	continueFromSiteCreationOptions: (option: TSiteCreationOption) => Promise<void>;
+	continueFromSiteCreationOptions: (option: TSiteCreationOption) => void;
 	continueFromLinkpopUrl: (handle: string) => Promise<TResult<void, TLinkpopStepError>>;
 	continueFromLinkpopPreview: () => Promise<TResult<void, string>>;
 	continueFromTemplates: (selectedTemplate: TTemplate) => Promise<TResult<void, string>>;
@@ -242,7 +237,6 @@ export type TOnboardingStep =
 	| {
 			type: 'templates';
 			selectedTemplate?: TTemplate;
-			shopOverview?: coreApiV1.components['schemas']['ShopOverviewDto'];
 	  };
 
 export type TSiteCreationOption = 'create-new' | 'linkpop';

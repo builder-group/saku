@@ -7,11 +7,10 @@ import { coreApiClient } from '@/environment';
 import { shopify, shopifyConfig } from '@/environment/.server';
 import { getSiteFontUrls, StaticNodeCanvas, TResolvedSite } from '@/features/page-editor';
 import { hydrateSite, StaticSiteHydrateContext } from '@/features/page-editor/.server';
-import { withLoaderResult } from '@/lib';
+import { deferLoader, withDeferredLoader } from '@/lib';
 import styles from '@/styles.css?url';
-import { TLoaderFunctionWithResult } from '@/types';
 
-const Page = withLoaderResult<TSuccessLoaderData, TErrorLoaderData>({
+const Page = withDeferredLoader<TSuccessLoaderData, TErrorLoaderData>({
 	Success: ({ data }) => {
 		const { appUrl, site, fontUrls } = data;
 
@@ -52,9 +51,7 @@ const Page = withLoaderResult<TSuccessLoaderData, TErrorLoaderData>({
 
 export default Page;
 
-export const loader: TLoaderFunctionWithResult<TSuccessLoaderData, TErrorLoaderData> = async ({
-	request
-}) => {
+export const loader = deferLoader<TSuccessLoaderData, TErrorLoaderData>(async ({ request }) => {
 	const { session } = await shopify.authenticate.public.appProxy(request);
 
 	const url = new URL(request.url);
@@ -103,7 +100,7 @@ export const loader: TLoaderFunctionWithResult<TSuccessLoaderData, TErrorLoaderD
 		site: hydrateSite(new StaticSiteHydrateContext(flatSite, session.shop, handle)),
 		fontUrls: getSiteFontUrls(flatSite)
 	});
-};
+});
 
 interface TErrorLoaderData {
 	code: `#ERR_${string}`;

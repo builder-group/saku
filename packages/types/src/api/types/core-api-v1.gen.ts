@@ -136,8 +136,8 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Get shop overview including theme, social links, and best-selling products
-         * @description Retrieves comprehensive shop overview including theme styling, social media links, and best-selling products for creating default templates
+         * Get shop overview including theme, social links, and recommended products
+         * @description Retrieves comprehensive shop overview including theme styling, social media links, and recommended products for creating default templates
          */
         get: operations["getShopOverview"];
         put?: never;
@@ -590,17 +590,26 @@ export interface components {
                 domain: string;
                 /** @example Premium products for everyone */
                 description?: string;
-                /**
-                 * Format: uri
-                 * @example https://cdn.shopify.com/logo.png
-                 */
-                logo?: string;
                 /** @example USD */
                 currency: string;
                 /** @example US */
-                country: string;
-                /** @example EN */
-                language: string;
+                country?: string;
+                /** @example contact@my-awesome-store.com */
+                email: string;
+                /** @example support@my-awesome-store.com */
+                contactEmail: string;
+                /** @example America/New_York */
+                timezone: string;
+                /** @description Primary custom domain if configured */
+                primaryDomain?: {
+                    /** @example my-awesome-store.com */
+                    host: string;
+                    /**
+                     * Format: uri
+                     * @example https://my-awesome-store.com
+                     */
+                    url: string;
+                };
             };
             theme: {
                 /** @example gid://shopify/Theme/123456789 */
@@ -614,71 +623,69 @@ export interface components {
                      * @description Primary brand color
                      * @example #121212
                      */
-                    primary: string;
+                    primary?: string;
                     /**
                      * @description Secondary brand color
                      * @example #666666
                      */
-                    secondary: string;
+                    secondary?: string;
                     /**
                      * @description Background color
                      * @example #ffffff
                      */
-                    background: string;
+                    background?: string;
                     /**
                      * @description Text color
                      * @example #121212
                      */
-                    text: string;
+                    text?: string;
                     /**
                      * @description Button color
                      * @example #121212
                      */
-                    button: string;
+                    button?: string;
                     /**
                      * @description Button text color
                      * @example #ffffff
                      */
-                    buttonText: string;
+                    buttonText?: string;
                 };
                 typography: {
                     /**
                      * @description Heading font family
                      * @example Assistant
                      */
-                    headingFont: string;
+                    headingFont?: {
+                        family?: string;
+                        weight?: number;
+                        style?: string;
+                    };
                     /**
                      * @description Body font family
                      * @example Assistant
                      */
-                    bodyFont: string;
-                    /**
-                     * @description Heading font scale percentage
-                     * @example 100
-                     */
-                    headingScale: number;
-                    /**
-                     * @description Body font scale percentage
-                     * @example 100
-                     */
-                    bodyScale: number;
+                    bodyFont?: {
+                        family?: string;
+                        weight?: number;
+                        style?: string;
+                    };
                 };
                 layout: {
                     /**
                      * @description Maximum page width in pixels
                      * @example 1200
                      */
-                    pageWidth: number;
+                    pageWidth?: number;
                     /**
                      * @description Section spacing in pixels
                      * @example 0
                      */
-                    spacing: number;
+                    spacing?: number;
                     /**
                      * @description Border radius in pixels
                      * @example 0
                      */
-                    borderRadius: number;
+                    borderRadius?: number;
                 };
             };
             socialLinks: {
@@ -695,44 +702,63 @@ export interface components {
                 /** @example @shopname */
                 username?: string;
             }[];
-            bestSellingProducts: {
+            recommendedProducts: {
                 /** @example gid://shopify/Product/123456789 */
                 id: string;
                 /** @example Premium T-Shirt */
                 title: string;
-                /** @example premium-t-shirt */
-                handle: string;
-                /**
-                 * Format: uri
-                 * @example https://cdn.shopify.com/image.jpg
-                 */
-                featuredImage?: string;
-                /** @example $29.99 */
-                price: string;
-                priceRange?: {
-                    /** @example $29.99 */
-                    min: string;
-                    /** @example $39.99 */
-                    max: string;
-                };
+                /** @description Product images */
+                images: {
+                    /**
+                     * Format: uri
+                     * @example https://cdn.shopify.com/image.jpg
+                     */
+                    url: string;
+                    /** @example Premium T-Shirt product image */
+                    altText?: string;
+                }[];
+                /** @description Product options like size, color, etc. */
+                options: {
+                    /** @example Size */
+                    name: string;
+                    /** @example [
+                     *       "S",
+                     *       "M",
+                     *       "L"
+                     *     ] */
+                    values: string[];
+                }[];
+                /** @description Product variants with pricing */
+                variants: {
+                    /** @example gid://shopify/ProductVariant/123456789 */
+                    id: string;
+                    /** @example Small / Red */
+                    title: string;
+                    price: {
+                        /** @example 29.99 */
+                        amount: string;
+                        /** @example USD */
+                        currencyCode: string;
+                    };
+                    /** @description Variant-specific image */
+                    image?: {
+                        /**
+                         * Format: uri
+                         * @example https://cdn.shopify.com/variant-image.jpg
+                         */
+                        url: string;
+                        /** @example Small Red T-Shirt */
+                        altText?: string;
+                    };
+                    /** @description Selected options for this variant */
+                    selectedOptions: {
+                        /** @example Size */
+                        name: string;
+                        /** @example Small */
+                        value: string;
+                    }[];
+                }[];
             }[];
-            stats: {
-                /**
-                 * @description Total number of products
-                 * @example 150
-                 */
-                totalProducts: number;
-                /**
-                 * @description Total number of collections
-                 * @example 12
-                 */
-                totalCollections: number;
-                /**
-                 * @description Total number of orders
-                 * @example 1250
-                 */
-                totalOrders?: number;
-            };
         };
         SiteSummaryDto: {
             /**

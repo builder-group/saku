@@ -18,7 +18,6 @@ export const SiteCreationOptionsStep: React.FC<TSiteCreationOptionsStepProps> = 
 		[onboardingContext]
 	);
 	const [selected, setSelected] = React.useState<TSiteCreationOption[]>(initialSelection);
-	const [isLoading, setIsLoading] = React.useState(false);
 
 	// =========================================================================
 	// Events
@@ -29,14 +28,13 @@ export const SiteCreationOptionsStep: React.FC<TSiteCreationOptionsStepProps> = 
 		setSelected([option]);
 	}, []);
 
-	const handleContinue = React.useCallback(async () => {
+	const handleContinue = React.useCallback(() => {
 		const option = selected[0];
 		if (option == null) {
 			return;
 		}
 
-		setIsLoading(true);
-		await onboardingContext.continueFromSiteCreationOptions(option);
+		onboardingContext.continueFromSiteCreationOptions(option);
 	}, [onboardingContext, selected]);
 
 	const handleBack = React.useCallback(() => {
@@ -70,18 +68,11 @@ export const SiteCreationOptionsStep: React.FC<TSiteCreationOptionsStepProps> = 
 			/>
 
 			<div className="flex flex-col gap-2">
-				<Button
-					variant="primary"
-					size="large"
-					fullWidth
-					onClick={handleContinue}
-					loading={isLoading}
-					disabled={isLoading}
-				>
+				<Button variant="primary" size="large" fullWidth onClick={handleContinue}>
 					Continue
 				</Button>
 
-				<Button variant="monochromePlain" onClick={handleBack} disabled={isLoading}>
+				<Button variant="monochromePlain" onClick={handleBack}>
 					Go back
 				</Button>
 			</div>

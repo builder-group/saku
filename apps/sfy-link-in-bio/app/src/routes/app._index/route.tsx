@@ -23,12 +23,11 @@ import {
 } from '@/components';
 import { appConfig, coreApiClient, logger } from '@/environment';
 import { shopify, shopifyConfig } from '@/environment/.server';
-import { createShopifyTokenMiddleware, withLoaderResult } from '@/lib';
+import { createShopifyTokenMiddleware, deferLoader, withDeferredLoader } from '@/lib';
 import { getSessionTokenFromRequest, redirectWithAuth } from '@/lib/.server';
 import { usePageEditorModal } from '@/routes/app.modal.page-editor.$/PageEditorModal';
-import { TLoaderFunctionWithResult } from '@/types';
 
-const Page = withLoaderResult<TSuccessLoaderData, TErrorLoaderData>({
+const Page = withDeferredLoader<TSuccessLoaderData, TErrorLoaderData>({
 	Success: ({ data }) => {
 		const { site, shouldOpenEditor } = data;
 		const { Modal: EditorModal, isOpenState: isEditorOpenState } = usePageEditorModal({
@@ -260,9 +259,7 @@ const Page = withLoaderResult<TSuccessLoaderData, TErrorLoaderData>({
 
 export default Page;
 
-export const loader: TLoaderFunctionWithResult<TSuccessLoaderData, TErrorLoaderData> = async ({
-	request
-}) => {
+export const loader = deferLoader<TSuccessLoaderData, TErrorLoaderData>(async ({ request }) => {
 	const { session } = await shopify.authenticate.admin(request);
 	const sessionToken = getSessionTokenFromRequest(request);
 	const url = new URL(request.url);
@@ -333,7 +330,7 @@ export const loader: TLoaderFunctionWithResult<TSuccessLoaderData, TErrorLoaderD
 		platformUrl: `https://saku.so/w/${workspace.handle}/${site.handle}`,
 		shouldOpenEditor
 	});
-};
+});
 
 interface TErrorLoaderData {
 	code: `#ERR_${string}`;

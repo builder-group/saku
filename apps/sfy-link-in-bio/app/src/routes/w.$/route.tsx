@@ -5,10 +5,9 @@ import { isStatusCode } from 'feature-fetch';
 import { coreApiClient } from '@/environment';
 import { getSiteFontUrls, StaticNodeCanvas, TResolvedSite } from '@/features/page-editor';
 import { hydrateSite, StaticSiteHydrateContext } from '@/features/page-editor/.server';
-import { withLoaderResult } from '@/lib';
-import { TLoaderFunctionWithResult } from '@/types';
+import { deferLoader, withDeferredLoader } from '@/lib';
 
-const Page = withLoaderResult<TSuccessLoaderData, TErrorLoaderData>({
+const Page = withDeferredLoader<TSuccessLoaderData, TErrorLoaderData>({
 	Success: ({ data }) => {
 		const { site, fontUrls } = data;
 
@@ -48,23 +47,21 @@ const Page = withLoaderResult<TSuccessLoaderData, TErrorLoaderData>({
 
 export default Page;
 
-export const loader: TLoaderFunctionWithResult<TSuccessLoaderData, TErrorLoaderData> = async ({
-	request
-}) => {
+export const loader = deferLoader<TSuccessLoaderData, TErrorLoaderData>(async ({ request }) => {
 	const url = new URL(request.url);
 	// Extract workspaceHandle and handle from path: /w/{workspaceHandle}/{handle}
 	const pathSegments = url.pathname.split('/').filter(Boolean); // ['w', '{workspaceHandle}', '{handle}']
-	const workspaceHandle = pathSegments[1];
-	const handle = pathSegments[2];
 
-	if (!workspaceHandle) {
+	const workspaceHandle = pathSegments[1];
+	if (workspaceHandle == null) {
 		return ServerErr({
 			code: '#ERR_BAD_REQUEST',
 			message: 'No workspace handle provided in URL'
 		});
 	}
 
-	if (!handle) {
+	const handle = pathSegments[2];
+	if (handle == null) {
 		return ServerErr({
 			code: '#ERR_BAD_REQUEST',
 			message: 'No handle provided in URL'
@@ -99,7 +96,7 @@ export const loader: TLoaderFunctionWithResult<TSuccessLoaderData, TErrorLoaderD
 		),
 		fontUrls: getSiteFontUrls(flatSite)
 	});
-};
+});
 
 interface TErrorLoaderData {
 	code: `#ERR_${string}`;

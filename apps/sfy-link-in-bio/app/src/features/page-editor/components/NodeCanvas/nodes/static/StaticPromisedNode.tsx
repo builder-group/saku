@@ -10,7 +10,6 @@ export const StaticPromisedNode = React.forwardRef<
 >((props, ref) => {
 	const { node } = props;
 
-	// TODO: pass indicator to StaticNode whether its loading or error
 	return (
 		<React.Suspense fallback={<StaticNode ref={ref} node={node.cached} state="loading" />}>
 			<Await

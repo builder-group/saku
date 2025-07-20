@@ -7,11 +7,11 @@ import React from 'react';
 import { coreApiClient } from '@/environment';
 import { shopify, shopifyConfig } from '@/environment/.server';
 import { createPageEditor, Editor } from '@/features/page-editor';
-import { withLoaderResult } from '@/lib';
-import { TLinksFunction, TLoaderFunctionWithResult } from '@/types';
+import { deferLoader, withDeferredLoader } from '@/lib';
+import { TLinksFunction } from '@/types';
 import styles from './styles.css?url';
 
-const Page = withLoaderResult<TSuccessLoaderData, TErrorLoaderData>({
+const Page = withDeferredLoader<TSuccessLoaderData, TErrorLoaderData>({
 	Success: ({ data }) => {
 		const { site, shopId } = data;
 		const shopify = useAppBridge();
@@ -57,9 +57,7 @@ const Page = withLoaderResult<TSuccessLoaderData, TErrorLoaderData>({
 
 export default Page;
 
-export const loader: TLoaderFunctionWithResult<TSuccessLoaderData, TErrorLoaderData> = async ({
-	request
-}) => {
+export const loader = deferLoader<TSuccessLoaderData, TErrorLoaderData>(async ({ request }) => {
 	const { session } = await shopify.authenticate.admin(request);
 	const { shop } = session;
 	const url = new URL(request.url);
@@ -93,7 +91,7 @@ export const loader: TLoaderFunctionWithResult<TSuccessLoaderData, TErrorLoaderD
 		},
 		shopId: shop
 	});
-};
+});
 
 interface TErrorLoaderData {
 	code: `#ERR_${string}`;
