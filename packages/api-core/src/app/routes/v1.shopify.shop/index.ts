@@ -1,6 +1,11 @@
 import { AppError } from '@repo/hono-utils';
 import { router } from '@/app/router';
-import { getShopifyOfflineAccessToken, getShopInfo, verifyShopifySession } from '@/lib';
+import {
+	getRecommendedProducts,
+	getShopifyOfflineAccessToken,
+	getShopInfo,
+	verifyShopifySession
+} from '@/lib';
 import { getMainTheme, getParsedThemeSettingsData } from '@/lib/shopify';
 import { extractThemeDataFromSettings } from '@/lib/shopify/theme/extract-theme-data';
 import { GetShopOverviewRoute } from './schema';
@@ -36,6 +41,7 @@ router.openapi(GetShopOverviewRoute, async (c) => {
 	}
 	const theme = mainThemeResult.value;
 
+	// Get main theme settings
 	const themeSettingsResult = await getParsedThemeSettingsData(theme.id, {
 		shopId,
 		accessToken
@@ -46,27 +52,23 @@ router.openapi(GetShopOverviewRoute, async (c) => {
 			detail: themeSettingsResult.error.message
 		});
 	}
-	const themeSettings = themeSettingsResult.value;
+	const themeSettings = extractThemeDataFromSettings(themeSettingsResult.value.settingsData);
 
-	// Extract theme data from settings
-	const extractedThemeData = extractThemeDataFromSettings(themeSettings.settingsData);
-
-	// TODO: Get best selling products from Shopify API
-	const bestSellingProducts: Array<{
-		id: string;
-		title: string;
-		handle: string;
-		featuredImage?: string;
-		price: string;
-		priceRange?: { min: string; max: string };
-	}> = [];
-
-	// TODO: Get shop stats from Shopify API
-	const stats = {
-		totalProducts: 0, // TODO: Get from Shopify API
-		totalCollections: 0, // TODO: Get from Shopify API
-		totalOrders: undefined // TODO: Get from Shopify API
-	};
+	// Get recommended products
+	const recommendedProductsResult = await getRecommendedProducts(
+		{ first: 3 },
+		{
+			shopId,
+			accessToken
+		}
+	);
+	if (recommendedProductsResult.isErr()) {
+		throw new AppError('#ERR_RECOMMENDED_PRODUCTS_FETCH_FAILED', 500, {
+			title: 'Failed to fetch recommended products',
+			detail: recommendedProductsResult.error.message
+		});
+	}
+	const recommendedProducts = recommendedProductsResult.value;
 
 	return c.json(
 		{
@@ -86,13 +88,12 @@ router.openapi(GetShopOverviewRoute, async (c) => {
 				id: theme.id,
 				name: theme.name,
 				role: theme.role,
-				colors: extractedThemeData.colors,
-				typography: extractedThemeData.typography,
-				layout: extractedThemeData.layout
+				colors: themeSettings.colors,
+				typography: themeSettings.typography,
+				layout: themeSettings.layout
 			},
-			socialLinks: extractedThemeData.socialLinks,
-			bestSellingProducts,
-			stats
+			socialLinks: themeSettings.socialLinks,
+			recommendedProducts: recommendedProducts.products
 		},
 		200
 	);

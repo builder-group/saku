@@ -10,9 +10,9 @@ export const GetShopOverviewRoute = createRoute({
 	method: 'get',
 	path: '/v1/shopify/shop/overview',
 	tags: ['shopify', 'shop'],
-	summary: 'Get shop overview including theme, social links, and best-selling products',
+	summary: 'Get shop overview including theme, social links, and recommended products',
 	description:
-		'Retrieves comprehensive shop overview including theme styling, social media links, and best-selling products for creating default templates',
+		'Retrieves comprehensive shop overview including theme styling, social media links, and recommended products for creating default templates',
 	operationId: 'getShopOverview',
 	responses: {
 		200: JsonSuccessResponse(
@@ -111,36 +111,61 @@ export const GetShopOverviewRoute = createRoute({
 							username: z.string().optional().openapi({ example: '@shopname' })
 						})
 					),
-					bestSellingProducts: z.array(
+					recommendedProducts: z.array(
 						z.object({
 							id: z.string().openapi({ example: 'gid://shopify/Product/123456789' }),
 							title: z.string().openapi({ example: 'Premium T-Shirt' }),
-							handle: z.string().openapi({ example: 'premium-t-shirt' }),
-							featuredImage: z
-								.url()
-								.optional()
-								.openapi({ example: 'https://cdn.shopify.com/image.jpg' }),
-							price: z.string().openapi({ example: '$29.99' }),
-							priceRange: z
-								.object({
-									min: z.string().openapi({ example: '$29.99' }),
-									max: z.string().openapi({ example: '$39.99' })
-								})
-								.optional()
+							images: z
+								.array(
+									z.object({
+										url: z.string().url().openapi({ example: 'https://cdn.shopify.com/image.jpg' }),
+										altText: z
+											.string()
+											.optional()
+											.openapi({ example: 'Premium T-Shirt product image' })
+									})
+								)
+								.openapi({ description: 'Product images' }),
+							options: z
+								.array(
+									z.object({
+										name: z.string().openapi({ example: 'Size' }),
+										values: z.array(z.string()).openapi({ example: ['S', 'M', 'L'] })
+									})
+								)
+								.openapi({ description: 'Product options like size, color, etc.' }),
+							variants: z
+								.array(
+									z.object({
+										id: z.string().openapi({ example: 'gid://shopify/ProductVariant/123456789' }),
+										title: z.string().openapi({ example: 'Small / Red' }),
+										price: z.object({
+											amount: z.string().openapi({ example: '29.99' }),
+											currencyCode: z.string().openapi({ example: 'USD' })
+										}),
+										image: z
+											.object({
+												url: z
+													.string()
+													.url()
+													.openapi({ example: 'https://cdn.shopify.com/variant-image.jpg' }),
+												altText: z.string().optional().openapi({ example: 'Small Red T-Shirt' })
+											})
+											.optional()
+											.openapi({ description: 'Variant-specific image' }),
+										selectedOptions: z
+											.array(
+												z.object({
+													name: z.string().openapi({ example: 'Size' }),
+													value: z.string().openapi({ example: 'Small' })
+												})
+											)
+											.openapi({ description: 'Selected options for this variant' })
+									})
+								)
+								.openapi({ description: 'Product variants with pricing' })
 						})
-					),
-					stats: z.object({
-						totalProducts: z
-							.number()
-							.openapi({ example: 150, description: 'Total number of products' }),
-						totalCollections: z
-							.number()
-							.openapi({ example: 12, description: 'Total number of collections' }),
-						totalOrders: z
-							.number()
-							.optional()
-							.openapi({ example: 1250, description: 'Total number of orders' })
-					})
+					)
 				})
 				.openapi('ShopOverviewDto')
 		),

@@ -8,7 +8,7 @@ embedded = true
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = "write_files,write_online_store_navigation,read_online_store_navigation,read_themes"
+scopes = "write_files,write_online_store_navigation,read_online_store_navigation,read_themes,read_products"
 
 [auth]
 redirect_urls = [
