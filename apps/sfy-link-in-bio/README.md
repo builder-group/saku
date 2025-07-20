@@ -10,9 +10,9 @@
 
 The app requires specific Shopify API access scopes to function properly:
 
-- **`write_files`**: Required to upload and manage media files in the merchant's Files section (for [GenericFile](https://shopify.dev/docs/api/admin-graphql/latest/objects/genericfile))
-- **`write_online_store_navigation`**: Enables creation and modification of URL redirects for bio links (for [UrlRedirect](https://shopify.dev/docs/api/admin-graphql/latest/objects/UrlRedirect))
-- **`read_online_store_navigation`**: Allows reading existing URL redirects to prevent conflicts (for [UrlRedirect](https://shopify.dev/docs/api/admin-graphql/latest/objects/UrlRedirect))
+- **`write_files`**: Required to upload and manage media files in the merchant's files section (for [GenericFile](https://shopify.dev/docs/api/admin-graphql/latest/objects/genericfile))
+- **`write_online_store_navigation`**: Required to create and modify URL redirects for bio links (for [UrlRedirect](https://shopify.dev/docs/api/admin-graphql/latest/objects/UrlRedirect))
+- **`read_online_store_navigation`**: Required to read existing URL redirects and prevent conflicts (for [UrlRedirect](https://shopify.dev/docs/api/admin-graphql/latest/objects/UrlRedirect))
 - **`read_themes`**: Required to access theme settings and styling information for creating link-in-bio pages that match the store's design (for [OnlineStoreTheme](https://shopify.dev/docs/api/admin-graphql/latest/objects/OnlineStoreTheme))
 - **`read_products`**: Required to access product information, variants, and media for creating link-in-bio pages with product recommendations and featured items (for [Product](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product))
 
