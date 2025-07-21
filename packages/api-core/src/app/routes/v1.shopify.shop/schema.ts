@@ -43,6 +43,10 @@ export const GetShopOverviewRoute = createRoute({
 						id: z.string().openapi({ example: 'gid://shopify/Theme/123456789' }),
 						name: z.string().openapi({ example: 'Dawn' }),
 						role: z.string().openapi({ example: 'MAIN' }),
+						logo: z.url().optional().openapi({
+							example: 'https://cdn.shopify.com/logo.png',
+							description: 'Shop logo URL'
+						}),
 						colors: z.object({
 							primary: z
 								.string()

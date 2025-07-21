@@ -618,6 +618,12 @@ export interface components {
                 name: string;
                 /** @example MAIN */
                 role: string;
+                /**
+                 * Format: uri
+                 * @description Shop logo URL
+                 * @example https://cdn.shopify.com/logo.png
+                 */
+                logo?: string;
                 colors: {
                     /**
                      * @description Primary brand color

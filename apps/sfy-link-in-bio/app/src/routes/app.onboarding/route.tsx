@@ -159,7 +159,10 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 				content: toFlatSite(
 					blankPreset({
 						shopId: session.shop,
-						shopName: shopOverview.shop.name,
+						name: shopOverview.shop.name,
+						profilePicture: shopOverview.theme.logo,
+						socialLinks: shopOverview.socialLinks,
+						featuredProduct: shopOverview.recommendedProducts?.[0],
 						colors: {
 							primary: shopOverview.theme.colors.primary,
 							background: shopOverview.theme.colors.background,
@@ -169,7 +172,7 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 							heading: { family: shopOverview.theme.typography.headingFont?.family },
 							body: { family: shopOverview.theme.typography.bodyFont?.family }
 						},
-						featuredProduct: shopOverview.recommendedProducts?.[0]
+						radius: shopOverview.theme.layout.borderRadius
 					})
 				)
 			}

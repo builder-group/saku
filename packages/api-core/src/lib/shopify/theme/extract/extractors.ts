@@ -1,27 +1,56 @@
-import { extractUsername, mapFont, TMapper, toNumber, trim } from './mappers';
-import { keyEquals, keyMatches, TMatcher, valueIsNotEmpty, valueIsValidNumber } from './matchers';
+import { mapFont, TMapper, toNumber, trim } from './mappers';
+import {
+	and,
+	keyEquals,
+	keyMatches,
+	not,
+	TMatcher,
+	valueIsNotEmpty,
+	valueIsValidNumber,
+	valueIsValidUrl
+} from './matchers';
 
 export function extract<T>(
 	obj: Record<string, any>,
-	matchers: TMatcher[],
+	matcher: TMatcher,
 	mappers: TMapper<T>[]
 ): T | undefined {
+	return traverseObject(obj, matcher, mappers);
+}
+
+function traverseObject<T>(
+	obj: Record<string, any>,
+	matcher: TMatcher,
+	mappers: TMapper<T>[],
+	path: string = ''
+): T | undefined {
 	for (const [key, value] of Object.entries(obj)) {
-		if (matchers.every((matcher) => matcher(key, value))) {
+		const fullPath = path.length > 0 ? `${path}.${key}` : key;
+
+		if (matcher(fullPath, value)) {
 			for (const mapper of mappers) {
-				const result = mapper(key, value);
+				const result = mapper(fullPath, value);
 				if (result != null) {
 					return result;
 				}
 			}
 		}
+
+		// Recursively traverse nested objects
+		if (value != null && typeof value === 'object' && !Array.isArray(value)) {
+			const nestedResult = traverseObject(value, matcher, mappers, fullPath);
+			if (nestedResult != null) {
+				return nestedResult;
+			}
+		}
 	}
+
 	return undefined;
 }
 
 export function extractString(obj: Record<string, any>, fieldNames: string[]): string | undefined {
 	for (const fieldName of fieldNames) {
-		const value = extract(obj, [keyEquals(fieldName), valueIsNotEmpty()], [trim()]);
+		const value = extract(obj, and(keyEquals(fieldName), valueIsNotEmpty()), [trim()]);
 		if (value != null) {
 			return value;
 		}
@@ -31,7 +60,7 @@ export function extractString(obj: Record<string, any>, fieldNames: string[]): s
 
 export function extractNumber(obj: Record<string, any>, fieldNames: string[]): number | undefined {
 	for (const fieldName of fieldNames) {
-		const value = extract(obj, [keyEquals(fieldName), valueIsValidNumber()], [toNumber()]);
+		const value = extract(obj, and(keyEquals(fieldName), valueIsValidNumber()), [toNumber()]);
 		if (value != null) {
 			return value;
 		}
@@ -44,7 +73,7 @@ export function extractFont(
 	fieldNames: string[]
 ): { family: string; weight: number; style: string } | undefined {
 	for (const fieldName of fieldNames) {
-		const value = extract(obj, [keyEquals(fieldName), valueIsNotEmpty()], [mapFont()]);
+		const value = extract(obj, and(keyEquals(fieldName), valueIsNotEmpty()), [mapFont()]);
 		if (value != null) {
 			return value;
 		}
@@ -52,38 +81,76 @@ export function extractFont(
 	return undefined;
 }
 
-export function extractSocialLinks(obj: Record<string, any>): TSocialLink[] {
-	const socialPlatforms = [
-		{ pattern: /facebook/i, platform: 'facebook', urlPattern: /facebook\.com/i },
-		{ pattern: /instagram/i, platform: 'instagram', urlPattern: /instagram\.com/i },
-		{ pattern: /youtube/i, platform: 'youtube', urlPattern: /youtube\.com|youtu\.be/i },
-		{ pattern: /tiktok/i, platform: 'tiktok', urlPattern: /tiktok\.com/i },
-		{ pattern: /twitter|x/i, platform: 'x', urlPattern: /twitter\.com|x\.com/i },
-		{ pattern: /snapchat/i, platform: 'snapchat', urlPattern: /snapchat\.com/i },
-		{ pattern: /pinterest/i, platform: 'pinterest', urlPattern: /pinterest\.com/i },
-		{ pattern: /linkedin/i, platform: 'linkedin', urlPattern: /linkedin\.com/i }
-	];
+const SOCIAL_PLATFORMS = [
+	{
+		name: 'facebook',
+		platform: 'facebook',
+		url: (handle: string) => `https://facebook.com/${handle}`
+	},
+	{
+		name: 'instagram',
+		platform: 'instagram',
+		url: (handle: string) => `https://instagram.com/${handle}`
+	},
+	{
+		name: 'youtube',
+		platform: 'youtube',
+		url: (handle: string) => `https://youtube.com/@${handle}`
+	},
+	{ name: 'tiktok', platform: 'tiktok', url: (handle: string) => `https://tiktok.com/@${handle}` },
+	{ name: 'twitter', platform: 'x', url: (handle: string) => `https://twitter.com/${handle}` },
+	{ name: 'x', platform: 'x', url: (handle: string) => `https://twitter.com/${handle}` },
+	{
+		name: 'snapchat',
+		platform: 'snapchat',
+		url: (handle: string) => `https://snapchat.com/add/${handle}`
+	},
+	{
+		name: 'pinterest',
+		platform: 'pinterest',
+		url: (handle: string) => `https://pinterest.com/${handle}`
+	},
+	{
+		name: 'linkedin',
+		platform: 'linkedin',
+		url: (handle: string) => `https://linkedin.com/in/${handle}`
+	}
+] as const;
 
+export function extractSocialLinks(obj: Record<string, any>): TSocialLink[] {
 	const socialLinks: TSocialLink[] = [];
 
-	for (const { pattern, platform, urlPattern } of socialPlatforms) {
-		const url = extract(obj, [keyMatches(pattern), valueIsNotEmpty()], [trim()]);
-		if (url && isValidUrl(url) && urlPattern.test(url)) {
-			const username = extractUsername()('', url);
-			socialLinks.push({ platform, url, username });
+	for (const { name, platform, url } of SOCIAL_PLATFORMS) {
+		// Match platform name not surrounded by letters/numbers, and value is not a URL
+		const pattern = new RegExp(`(?<![a-zA-Z0-9])${name}(?![a-zA-Z0-9])`, 'i');
+
+		const value = extract(
+			obj,
+			and(keyMatches(pattern), valueIsNotEmpty(), not(valueIsValidUrl())),
+			[trim()]
+		);
+		if (value != null) {
+			socialLinks.push({
+				platform,
+				url: url(value),
+				username: value
+			});
 		}
 	}
 
 	return socialLinks;
 }
 
-function isValidUrl(url: string): boolean {
-	try {
-		new URL(url);
-		return true;
-	} catch {
-		return false;
+export function extractUrl(obj: Record<string, any>, fieldNames: string[]): string | undefined {
+	for (const fieldName of fieldNames) {
+		const value = extract(obj, and(keyEquals(fieldName), valueIsNotEmpty(), valueIsValidUrl()), [
+			trim()
+		]);
+		if (value != null) {
+			return value;
+		}
 	}
+	return undefined;
 }
 
 export type TSocialLink = {

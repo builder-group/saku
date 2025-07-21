@@ -2,7 +2,8 @@ import {
 	extractFont,
 	extractNumber,
 	extractSocialLinks,
-	extractString
+	extractString,
+	extractUrl
 } from '@/lib/shopify/theme/extract';
 import type { TThemeSettingsData } from './get-parsed-theme-settings-data';
 
@@ -18,8 +19,19 @@ export function extractThemeDataFromSettings(
 		};
 	}
 
-	const currentPresetName = settingsData.current || 'Default';
-	const preset = settingsData.presets[currentPresetName] || settingsData.presets['Default'];
+	// Handle current field which can be either a string (preset name) or object (customized settings)
+	let preset: Record<string, any> | null = null;
+	if (typeof settingsData.current === 'string') {
+		// Current is a preset name, get the preset
+		preset = settingsData.presets[settingsData.current] ?? settingsData.presets['Default'] ?? null;
+	} else if (settingsData.current != null && typeof settingsData.current === 'object') {
+		// Current is customized settings object
+		preset = settingsData.current;
+	} else {
+		// Fallback to Default preset
+		preset = settingsData.presets['Default'] ?? null;
+	}
+
 	if (preset == null) {
 		return {
 			socialLinks: [],
@@ -31,6 +43,7 @@ export function extractThemeDataFromSettings(
 
 	return {
 		socialLinks: extractSocialLinks(preset),
+		logo: extractUrl(preset, ['logo', 'shop_logo', 'brand_logo', 'logo_image', 'logo_url']),
 		colors: {
 			primary: extractString(preset, [
 				'colors_accent_1',
@@ -119,6 +132,7 @@ export interface TExtractedLayout {
 
 export interface TExtractedThemeData {
 	socialLinks: ReturnType<typeof extractSocialLinks>;
+	logo?: string;
 	colors: TExtractedColors;
 	typography: TExtractedTypography;
 	layout: TExtractedLayout;

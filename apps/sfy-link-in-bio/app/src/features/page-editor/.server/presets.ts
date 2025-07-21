@@ -5,21 +5,40 @@ import {
 	getFontHash,
 	hexToRgba,
 	inheritStyle,
+	TId,
 	TProductNode,
 	TSite,
 	type TFontAsset,
 	type TFontMetadata,
-	type TImageAsset
+	type TImageAsset,
+	type TSocialLink
 } from '@repo/editor';
 
 export function blankPreset(config: TBlankPresetConfig): TSite {
-	const { shopId, shopName, colors, fonts, featuredProduct } = config;
+	const { shopId, name, profilePicture, socialLinks, featuredProduct, colors, fonts, radius } =
+		config;
 
 	const primaryColor = colors?.primary ?? '#000000';
 	const backgroundColor = colors?.background ?? '#FAFAFA';
 	const surfaceColor = colors?.surface ?? '#FFFFFF';
+	const borderRadius = radius ?? 16;
 
 	const assets: (TFontAsset | TImageAsset)[] = [];
+
+	let profilePictureAssetHashId: TId<'asset'> | undefined;
+	if (profilePicture != null) {
+		profilePictureAssetHashId = createId('asset');
+		assets.push({
+			id: profilePictureAssetHashId,
+			type: 'image',
+			hash: profilePictureAssetHashId,
+			contentType: 'image/png',
+			storage: {
+				type: 'url',
+				url: profilePicture
+			}
+		});
+	}
 
 	// Add heading font to assets
 	const headingFont = getFontMetadata(fonts?.heading?.family);
@@ -130,6 +149,22 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 		altText: 'Welcome GIF'
 	});
 
+	// Create social links array with shop link always first
+	const allSocialLinks = [
+		{
+			id: shortId(),
+			provider: 'shopify' as const,
+			handle: shopId.replace('.myshopify.com', ''),
+			url: `https://${shopId}`
+		},
+		...(socialLinks?.map((link) => ({
+			id: shortId(),
+			provider: mapPlatformToProvider(link.platform),
+			handle: link.username ?? link.platform,
+			url: link.url
+		})) ?? [])
+	];
+
 	return {
 		version: 'v0.0.1',
 		assets,
@@ -141,17 +176,10 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					id: createId('node'),
 					type: 'about',
 					content: {
-						name: shopName,
+						name,
 						bio: 'Welcome to your new page! Add a short description about yourself or your brand.',
-						profilePicture: undefined,
-						socialLinks: [
-							{
-								id: shortId(),
-								provider: 'shopify',
-								handle: shopId.replace('.myshopify.com', ''),
-								url: `https://${shopId}`
-							}
-						]
+						profilePicture: profilePictureAssetHashId,
+						socialLinks: allSocialLinks
 					},
 					style: {
 						padding: inheritStyle(),
@@ -170,10 +198,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					content: {
 						url: `https://${shopId}`,
 						userMetadata: {
-							title:
-								productNode != null
-									? '🛒 Add a link to your Shopify store, or showcase your products like below:'
-									: '🛒 Add a link to your Shopify store'
+							title: '🛒 Add a link to your Shopify store'
 						}
 					},
 					style: {
@@ -187,7 +212,6 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 						shadow: inheritStyle()
 					}
 				},
-				...(productNode != null ? [productNode] : []),
 				{
 					id: createId('node'),
 					type: 'text',
@@ -227,6 +251,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 						shadow: inheritStyle()
 					}
 				},
+				...(productNode != null ? [productNode] : []),
 				{
 					id: createId('node'),
 					type: 'media',
@@ -255,7 +280,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					fontSize: 16,
 					textColor: hexToRgba(primaryColor),
 					textAlign: 'center',
-					borderRadius: 16,
+					borderRadius: borderRadius,
 					shadow: true
 				}
 			}
@@ -265,16 +290,13 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 
 interface TBlankPresetConfig {
 	shopId: string;
-	shopName: string;
-	colors?: {
-		primary?: string;
-		background?: string;
-		surface?: string;
-	};
-	fonts?: {
-		heading?: { family?: string };
-		body?: { family?: string };
-	};
+	name: string;
+	profilePicture?: string;
+	socialLinks?: {
+		platform: string;
+		url: string;
+		username?: string;
+	}[];
 	featuredProduct?: {
 		id: string;
 		title: string;
@@ -287,6 +309,16 @@ interface TBlankPresetConfig {
 			selectedOptions?: { name: string; value: string }[];
 		}[];
 	};
+	colors?: {
+		primary?: string;
+		background?: string;
+		surface?: string;
+	};
+	fonts?: {
+		heading?: { family?: string };
+		body?: { family?: string };
+	};
+	radius?: number;
 }
 
 function getFontMetadata(fontFamily?: string): TFontMetadata {
@@ -300,4 +332,19 @@ function getFontMetadata(fontFamily?: string): TFontMetadata {
 	);
 
 	return matchedFont ? matchedFont[1] : fontMetadataMap.inter;
+}
+
+function mapPlatformToProvider(platform: string): TSocialLink['provider'] {
+	const platformMap: Record<string, TSocialLink['provider']> = {
+		instagram: 'instagram',
+		twitter: 'twitter',
+		x: 'twitter',
+		youtube: 'youtube',
+		tiktok: 'tiktok',
+		linkedin: 'linkedin',
+		facebook: 'facebook',
+		pinterest: 'pinterest'
+	};
+
+	return platformMap[platform.toLowerCase()] ?? 'instagram';
 }

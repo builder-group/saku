@@ -1,5 +1,20 @@
 export type TMatcher = (key: string, value: any) => boolean;
 
+export const not =
+	(matcher: TMatcher): TMatcher =>
+	(key, value) =>
+		!matcher(key, value);
+
+export const and =
+	(...matchers: TMatcher[]): TMatcher =>
+	(key, value) =>
+		matchers.every((matcher) => matcher(key, value));
+
+export const or =
+	(...matchers: TMatcher[]): TMatcher =>
+	(key, value) =>
+		matchers.some((matcher) => matcher(key, value));
+
 export const keyContains =
 	(pattern: string): TMatcher =>
 	(key) =>
@@ -25,4 +40,24 @@ export const valueIsValidNumber = (): TMatcher => (_key, value) => {
 		return !isNaN(parsed);
 	}
 	return false;
+};
+
+export const valueIsValidUrl = (): TMatcher => (_key, value) => {
+	if (typeof value !== 'string') return false;
+	try {
+		new URL(value);
+		return true;
+	} catch {
+		return false;
+	}
+};
+
+export const valueIsNotUrl = (): TMatcher => (_key, value) => {
+	if (typeof value !== 'string') return false;
+	try {
+		new URL(value);
+		return false; // It's a valid URL, so return false
+	} catch {
+		return true; // It's not a valid URL, so return true
+	}
 };

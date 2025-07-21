@@ -88,6 +88,7 @@ router.openapi(GetShopOverviewRoute, async (c) => {
 				id: theme.id,
 				name: theme.name,
 				role: theme.role,
+				logo: themeSettings.logo,
 				colors: themeSettings.colors,
 				typography: themeSettings.typography,
 				layout: themeSettings.layout
