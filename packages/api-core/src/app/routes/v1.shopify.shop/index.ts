@@ -52,7 +52,10 @@ router.openapi(GetShopOverviewRoute, async (c) => {
 			detail: themeSettingsResult.error.message
 		});
 	}
-	const themeSettings = extractThemeDataFromSettings(themeSettingsResult.value.settingsData);
+	const themeSettings = await extractThemeDataFromSettings(themeSettingsResult.value.settingsData, {
+		shopId,
+		accessToken
+	});
 
 	// Get recommended products
 	const recommendedProductsResult = await getRecommendedProducts(

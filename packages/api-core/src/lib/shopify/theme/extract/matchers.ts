@@ -61,3 +61,10 @@ export const valueIsNotUrl = (): TMatcher => (_key, value) => {
 		return true; // It's not a valid URL, so return true
 	}
 };
+
+export const valueIsShopifyImageId = (): TMatcher => (_key, value) =>
+	typeof value === 'string' &&
+	// new format: gid://shopify/MediaImage/{id}
+	(value.startsWith('gid://shopify/MediaImage/') ||
+		// legacy format: shopify://shop_images/{filename}
+		value.startsWith('shopify://shop_images/'));

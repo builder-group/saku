@@ -1,15 +1,16 @@
 import {
 	extractFont,
 	extractNumber,
+	extractShopifyImageUrl,
 	extractSocialLinks,
-	extractString,
-	extractUrl
+	extractString
 } from '@/lib/shopify/theme/extract';
 import type { TThemeSettingsData } from './get-parsed-theme-settings-data';
 
-export function extractThemeDataFromSettings(
-	settingsData: TThemeSettingsData | null
-): TExtractedThemeData {
+export async function extractThemeDataFromSettings(
+	settingsData: TThemeSettingsData | null,
+	config: { shopId: string; accessToken: string }
+): Promise<TExtractedThemeData> {
 	if (settingsData?.presets == null) {
 		return {
 			socialLinks: [],
@@ -43,7 +44,11 @@ export function extractThemeDataFromSettings(
 
 	return {
 		socialLinks: extractSocialLinks(preset),
-		logo: extractUrl(preset, ['logo', 'shop_logo', 'brand_logo', 'logo_image', 'logo_url']),
+		logo: await extractShopifyImageUrl(
+			preset,
+			['logo', 'shop_logo', 'brand_logo', 'logo_image'],
+			config
+		),
 		colors: {
 			primary: extractString(preset, [
 				'colors_accent_1',

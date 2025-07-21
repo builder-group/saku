@@ -1,5 +1,15 @@
 export type TMapper<T> = (key: string, value: any) => T;
 
+export const composeMappers =
+	<T>(...mappers: TMapper<T>[]): TMapper<T> =>
+	(key, value) => {
+		let result = value;
+		for (const mapper of mappers) {
+			result = mapper(key, result);
+		}
+		return result;
+	};
+
 export const toString =
 	(): TMapper<string> =>
 	(_, value): string =>

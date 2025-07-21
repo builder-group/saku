@@ -1,3 +1,4 @@
+import { getFileById, searchFileByFilename } from '../../../gql';
 import { mapFont, TMapper, toNumber, trim } from './mappers';
 import {
 	and,
@@ -6,6 +7,7 @@ import {
 	not,
 	TMatcher,
 	valueIsNotEmpty,
+	valueIsShopifyImageId,
 	valueIsValidNumber,
 	valueIsValidUrl
 } from './matchers';
@@ -13,32 +15,30 @@ import {
 export function extract<T>(
 	obj: Record<string, any>,
 	matcher: TMatcher,
-	mappers: TMapper<T>[]
+	mapper: TMapper<T>
 ): T | undefined {
-	return traverseObject(obj, matcher, mappers);
+	return traverseObject(obj, matcher, mapper);
 }
 
 function traverseObject<T>(
 	obj: Record<string, any>,
 	matcher: TMatcher,
-	mappers: TMapper<T>[],
+	mapper: TMapper<T>,
 	path: string = ''
 ): T | undefined {
 	for (const [key, value] of Object.entries(obj)) {
 		const fullPath = path.length > 0 ? `${path}.${key}` : key;
 
 		if (matcher(fullPath, value)) {
-			for (const mapper of mappers) {
-				const result = mapper(fullPath, value);
-				if (result != null) {
-					return result;
-				}
+			const result = mapper(fullPath, value);
+			if (result != null) {
+				return result;
 			}
 		}
 
 		// Recursively traverse nested objects
 		if (value != null && typeof value === 'object' && !Array.isArray(value)) {
-			const nestedResult = traverseObject(value, matcher, mappers, fullPath);
+			const nestedResult = traverseObject(value, matcher, mapper, fullPath);
 			if (nestedResult != null) {
 				return nestedResult;
 			}
@@ -50,7 +50,7 @@ function traverseObject<T>(
 
 export function extractString(obj: Record<string, any>, fieldNames: string[]): string | undefined {
 	for (const fieldName of fieldNames) {
-		const value = extract(obj, and(keyEquals(fieldName), valueIsNotEmpty()), [trim()]);
+		const value = extract(obj, and(keyEquals(fieldName), valueIsNotEmpty()), trim());
 		if (value != null) {
 			return value;
 		}
@@ -60,7 +60,7 @@ export function extractString(obj: Record<string, any>, fieldNames: string[]): s
 
 export function extractNumber(obj: Record<string, any>, fieldNames: string[]): number | undefined {
 	for (const fieldName of fieldNames) {
-		const value = extract(obj, and(keyEquals(fieldName), valueIsValidNumber()), [toNumber()]);
+		const value = extract(obj, and(keyEquals(fieldName), valueIsValidNumber()), toNumber());
 		if (value != null) {
 			return value;
 		}
@@ -73,7 +73,7 @@ export function extractFont(
 	fieldNames: string[]
 ): { family: string; weight: number; style: string } | undefined {
 	for (const fieldName of fieldNames) {
-		const value = extract(obj, and(keyEquals(fieldName), valueIsNotEmpty()), [mapFont()]);
+		const value = extract(obj, and(keyEquals(fieldName), valueIsNotEmpty()), mapFont());
 		if (value != null) {
 			return value;
 		}
@@ -127,7 +127,7 @@ export function extractSocialLinks(obj: Record<string, any>): TSocialLink[] {
 		const value = extract(
 			obj,
 			and(keyMatches(pattern), valueIsNotEmpty(), not(valueIsValidUrl())),
-			[trim()]
+			trim()
 		);
 		if (value != null) {
 			socialLinks.push({
@@ -143,13 +143,50 @@ export function extractSocialLinks(obj: Record<string, any>): TSocialLink[] {
 
 export function extractUrl(obj: Record<string, any>, fieldNames: string[]): string | undefined {
 	for (const fieldName of fieldNames) {
-		const value = extract(obj, and(keyEquals(fieldName), valueIsNotEmpty(), valueIsValidUrl()), [
+		const value = extract(
+			obj,
+			and(keyEquals(fieldName), valueIsNotEmpty(), valueIsValidUrl()),
 			trim()
-		]);
+		);
 		if (value != null) {
 			return value;
 		}
 	}
+	return undefined;
+}
+
+export async function extractShopifyImageUrl(
+	obj: Record<string, any>,
+	fieldNames: string[],
+	config: { shopId: string; accessToken: string }
+): Promise<string | undefined> {
+	for (const fieldName of fieldNames) {
+		const value = extract(
+			obj,
+			and(keyEquals(fieldName), valueIsNotEmpty(), valueIsShopifyImageId()),
+			trim()
+		);
+		if (value == null) {
+			continue;
+		}
+
+		// Handle legacy format: shopify://shop_images/{filename}
+		if (value.startsWith('shopify://shop_images/')) {
+			const filename = value.replace('shopify://shop_images/', '');
+			const result = await searchFileByFilename(filename, config);
+			if (result.isOk()) {
+				return result.value.url;
+			}
+		}
+		// Handle new format: gid://shopify/MediaImage/{id}
+		else if (value.startsWith('gid://shopify/')) {
+			const result = await getFileById(value, config);
+			if (result.isOk()) {
+				return result.value.url;
+			}
+		}
+	}
+
 	return undefined;
 }
 
