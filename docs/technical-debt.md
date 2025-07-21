@@ -1,6 +1,6 @@
 # 😬 Technical Debt
 
-## React 18 & Remix Lock-in
+## React v18 & Vite v6 & Remix Lock-in
 
 Several [Shopify packages require React 18](https://github.com/Shopify/shopify-app-template-remix/issues/955), preventing us from upgrading to React 19 and thus React Router 7. Additionally, some packages like `react-email` use React 19, requiring us to force downgrade them to avoid version conflicts in the monorepo.
 
@@ -28,9 +28,11 @@ Several [Shopify packages require React 18](https://github.com/Shopify/shopify-a
 3. Update "update:latest" scripts
 4. Update React-related dependencies
 
-## Zod-to-OpenAPI & Hono/zod-openapi Beta Version Coupling
+## ✅ RESOLVED: Zod-to-OpenAPI & Hono/zod-openapi Compatibility
 
-We use beta versions of both `@hono/zod-openapi` and `@asteasolutions/zod-to-openapi`. These must always use the same underlying version to avoid TypeScript type complexity and OOM errors during compilation. Mismatched versions can cause type explosion and make the project untypeable.
+> **Resolved:** The compatibility issue between `@hono/zod-openapi` and `@asteasolutions/zod-to-openapi` has been resolved since both packages now support Zod v4.
+
+We use beta versions of both `@hono/zod-openapi` and `@asteasolutions/zod-to-openapi` because they have to use the same underlying Zod major version to avoid TypeScript type complexity and OOM errors during compilation. Mismatched versions could cause type explosion and make the project untypeable.
 
 **Debugging:**
 
