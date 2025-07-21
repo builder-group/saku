@@ -58,7 +58,7 @@ export async function createStagedUploads(
 	}
 
 	const { stagedTargets, userErrors } = stagedUploadsCreate;
-	if (userErrors?.length) {
+	if (userErrors?.length > 0) {
 		return Err(
 			new AppError('#ERR_USER_ERROR', 400, {
 				detail: userErrors.map((error) => error.message).join(', '),

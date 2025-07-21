@@ -12,6 +12,7 @@ const URL_REDIRECT_CREATE = gql(`
 				target
 			}
 			userErrors {
+				code
 				field
 				message
 			}
@@ -50,7 +51,7 @@ export async function createUrlRedirect(
 	}
 
 	const { urlRedirect, userErrors } = urlRedirectCreate;
-	if (userErrors?.length) {
+	if (userErrors?.length > 0) {
 		if (userErrors.some((e) => e.message.includes('Path has already been taken'))) {
 			return Err(
 				new AppError('#ERR_REDIRECT_PATH_TAKEN', 409, {

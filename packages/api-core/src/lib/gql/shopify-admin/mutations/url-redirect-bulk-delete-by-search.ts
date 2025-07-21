@@ -59,7 +59,7 @@ export async function bulkDeleteUrlRedirectsBySearch(
 	}
 
 	const { job, userErrors } = urlRedirectBulkDeleteBySearch;
-	if (userErrors?.length) {
+	if (userErrors?.length > 0) {
 		return Err(
 			new AppError('#ERR_USER_ERROR', 400, {
 				detail: userErrors.map((e) => e.message).join(', '),

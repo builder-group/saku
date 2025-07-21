@@ -13,6 +13,7 @@ const FILE_CREATE = gql(`
 				createdAt
 			}
 			userErrors {
+				code
 				field
 				message
 			}
@@ -51,7 +52,7 @@ export async function createFiles(
 	}
 
 	const { files, userErrors } = fileCreate;
-	if (userErrors?.length) {
+	if (userErrors?.length > 0) {
 		return Err(
 			new AppError('#ERR_USER_ERROR', 400, {
 				detail: userErrors.map((e) => e.message).join(', '),

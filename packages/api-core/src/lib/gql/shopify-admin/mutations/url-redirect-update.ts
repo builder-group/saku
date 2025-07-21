@@ -12,6 +12,7 @@ const URL_REDIRECT_UPDATE = gql(`
 				target
 			}
 			userErrors {
+				code
 				field
 				message
 			}
@@ -56,7 +57,7 @@ export async function updateUrlRedirect(
 	}
 
 	const { urlRedirect, userErrors } = urlRedirectUpdate;
-	if (userErrors?.length) {
+	if (userErrors?.length > 0) {
 		return Err(
 			new AppError('#ERR_USER_ERROR', 400, {
 				detail: userErrors.map((e) => e.message).join(', '),
