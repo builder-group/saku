@@ -130,6 +130,9 @@ importers:
       feature-state:
         specifier: ^0.0.53
         version: 0.0.53
+      gql.tada:
+        specifier: ^1.8.11
+        version: 1.8.11(graphql@16.11.0)(typescript@5.8.3)
       hono:
         specifier: ^4.8.5
         version: 4.8.5
@@ -10754,7 +10757,7 @@ snapshots:
     dependencies:
       '@types/node': 24.0.14
       tapable: 2.2.2
-      webpack: 5.100.2(esbuild@0.25.0)
+      webpack: 5.100.2(esbuild@0.25.6)
     transitivePeerDependencies:
       - '@swc/core'
       - esbuild
@@ -15895,16 +15898,16 @@ snapshots:
       mkdirp: 3.0.1
       yallist: 5.0.0
 
-  terser-webpack-plugin@5.3.14(esbuild@0.25.0)(webpack@5.100.2(esbuild@0.25.6)):
+  terser-webpack-plugin@5.3.14(esbuild@0.25.6)(webpack@5.100.2(esbuild@0.25.0)):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.29
       jest-worker: 27.5.1
       schema-utils: 4.3.2
       serialize-javascript: 6.0.2
       terser: 5.43.1
-      webpack: 5.100.2(esbuild@0.25.0)
+      webpack: 5.100.2(esbuild@0.25.6)
     optionalDependencies:
-      esbuild: 0.25.0
+      esbuild: 0.25.6
 
   terser@5.43.1:
     dependencies:
@@ -16445,7 +16448,7 @@ snapshots:
 
   webpack-sources@3.3.3: {}
 
-  webpack@5.100.2(esbuild@0.25.0):
+  webpack@5.100.2(esbuild@0.25.6):
     dependencies:
       '@types/eslint-scope': 3.7.7
       '@types/estree': 1.0.8
@@ -16469,7 +16472,7 @@ snapshots:
       neo-async: 2.6.2
       schema-utils: 4.3.2
       tapable: 2.2.2
-      terser-webpack-plugin: 5.3.14(esbuild@0.25.0)(webpack@5.100.2(esbuild@0.25.6))
+      terser-webpack-plugin: 5.3.14(esbuild@0.25.6)(webpack@5.100.2(esbuild@0.25.0))
       watchpack: 2.4.4
       webpack-sources: 3.3.3
     transitivePeerDependencies:

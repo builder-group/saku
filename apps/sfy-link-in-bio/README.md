@@ -15,6 +15,7 @@ The app requires specific Shopify API access scopes to function properly:
 - **`read_online_store_navigation`**: Required to read existing URL redirects and prevent conflicts (for [UrlRedirect](https://shopify.dev/docs/api/admin-graphql/latest/objects/UrlRedirect))
 - **`read_themes`**: Required to access theme settings and styling information for creating link-in-bio pages that match the store's design (for [OnlineStoreTheme](https://shopify.dev/docs/api/admin-graphql/latest/objects/OnlineStoreTheme))
 - **`read_products`**: Required to access product information, variants, and media for creating link-in-bio pages with product recommendations and featured items (for [Product](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product))
+- **`unauthenticated_write_checkouts`**: Required to create and manage carts via the Storefront API. This allows the Link In Bio app to create a dedicated cart for visitors, enabling shopping directly from the link in bio page. 
 
 ## 📐 Architecture
 

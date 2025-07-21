@@ -1,6 +1,6 @@
 import { Err, Ok, type TResult } from '@blgc/utils';
 import { AppError } from '@repo/hono-utils';
-import { getFiles } from './files';
+import { getFiles } from './file-files';
 
 export async function searchFileByFilename(
 	filename: string,
