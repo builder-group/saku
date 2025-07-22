@@ -8,14 +8,17 @@
 
 ### [Access Scopes](https://shopify.dev/docs/api/usage/access-scopes)
 
-The app requires specific Shopify API access scopes to function properly:
+The app requires the following Shopify API access scopes to function properly:
 
-- **`write_files`**: Required to upload and manage media files in the merchant's files section (for [GenericFile](https://shopify.dev/docs/api/admin-graphql/latest/objects/genericfile))
-- **`write_online_store_navigation`**: Required to create and modify URL redirects for bio links (for [UrlRedirect](https://shopify.dev/docs/api/admin-graphql/latest/objects/UrlRedirect))
-- **`read_online_store_navigation`**: Required to read existing URL redirects and prevent conflicts (for [UrlRedirect](https://shopify.dev/docs/api/admin-graphql/latest/objects/UrlRedirect))
-- **`read_themes`**: Required to access theme settings and styling information for creating link-in-bio pages that match the store's design (for [OnlineStoreTheme](https://shopify.dev/docs/api/admin-graphql/latest/objects/OnlineStoreTheme))
-- **`read_products`**: Required to access product information, variants, and media for creating link-in-bio pages with product recommendations and featured items (for [Product](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product))
-- **`unauthenticated_write_checkouts`**: Required to create and manage carts via the Storefront API. This allows the Link In Bio app to create a dedicated cart for visitors, enabling shopping directly from the link in bio page. 
+- **`read_files`**: Read media files in the merchant's files section (for [GenericFile](https://shopify.dev/docs/api/admin-graphql/latest/objects/genericfile))
+- **`write_files`**: Upload and manage media files in the merchant's files section (for [GenericFile](https://shopify.dev/docs/api/admin-graphql/latest/objects/genericfile))
+- **`read_online_store_navigation`**: Read existing URL redirects and navigation (for [UrlRedirect](https://shopify.dev/docs/api/admin-graphql/latest/objects/UrlRedirect))
+- **`write_online_store_navigation`**: Create and modify URL redirects for bio links (for [UrlRedirect](https://shopify.dev/docs/api/admin-graphql/latest/objects/UrlRedirect))
+- **`read_products`**: Access product information, variants, and media for creating link-in-bio pages with product recommendations and featured items (for [Product](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product))
+- **`read_themes`**: Access theme settings and styling information for creating link-in-bio pages that match the store's design (for [OnlineStoreTheme](https://shopify.dev/docs/api/admin-graphql/latest/objects/OnlineStoreTheme))
+- **`unauthenticated_read_checkouts`**: Read checkouts via the Storefront API (for [Checkout](https://shopify.dev/docs/api/storefront/latest/objects/checkout))
+- **`unauthenticated_write_checkouts`**: Create and manage carts via the Storefront API, enabling shopping directly from the link in bio page (for [Checkout](https://shopify.dev/docs/api/storefront/latest/objects/checkout))
+- **`unauthenticated_read_metaobjects`**: Read custom data models (metaobjects), such as bundles or app-specific information. (for [Metaobject](https://shopify.dev/docs/api/admin-graphql/latest/objects/metaobject))
 
 ## 📐 Architecture
 
