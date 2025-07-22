@@ -21,7 +21,13 @@ export const LinkpopPreviewStep: React.FC<TLinkpopPreviewStepProps> = (props) =>
 			? resolveSite(new StaticSiteResolveContext(currentStep.site))
 			: null;
 	});
-	const cx = React.useMemo(() => createPageContext(), []);
+	const cx = React.useMemo(
+		() =>
+			createPageContext({
+				siteId: 'preview'
+			}),
+		[]
+	);
 
 	const [isLoading, setIsLoading] = React.useState(false);
 	const [error, setError] = React.useState<string | null>(

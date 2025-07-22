@@ -17,8 +17,15 @@ import styles from '@/styles.css?url';
 
 const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 	Success: ({ data }) => {
-		const { appUrl, site, fontUrls } = data;
-		const cx = React.useMemo(() => createPageContext(), []);
+		const { appUrl, site, fontUrls, storefrontAccessToken } = data;
+		const cx = React.useMemo(
+			() =>
+				createPageContext({
+					siteId: site.id,
+					storefrontAccessToken: storefrontAccessToken
+				}),
+			[site.id, storefrontAccessToken]
+		);
 
 		return (
 			<AppProxyProvider appUrl={appUrl}>
@@ -27,7 +34,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 					<link key={`font-${index}`} rel="stylesheet" href={fontUrl} />
 				))}
 
-				<StaticNodeCanvas cx={cx} nodes={[site.root]} />
+				<StaticNodeCanvas cx={cx} nodes={[site.content.root]} />
 			</AppProxyProvider>
 		);
 	},
@@ -88,13 +95,18 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 			message: result.error.message ?? 'Unknown error occurred'
 		});
 	}
-	const { content, storefrontAccessToken } = result.value.data;
-	const flatSite = content as unknown as TFlatSite;
+	const site = result.value.data;
 
 	return ServerOk({
 		appUrl: shopifyConfig.appUrl,
-		site: hydrateSite(new StaticSiteHydrateContext(flatSite, session.shop, handle)),
-		fontUrls: getSiteFontUrls(flatSite)
+		site: {
+			id: site.id,
+			content: hydrateSite(
+				new StaticSiteHydrateContext(site.content as unknown as TFlatSite, session.shop, handle)
+			)
+		},
+		fontUrls: getSiteFontUrls(site.content as unknown as TFlatSite),
+		storefrontAccessToken: site.storefrontAccessToken
 	});
 });
 
@@ -105,6 +117,10 @@ interface TErrorLoaderData {
 
 interface TSuccessLoaderData {
 	appUrl: string;
-	site: TResolvedSite;
+	site: {
+		id: string;
+		content: TResolvedSite;
+	};
 	fontUrls: string[];
+	storefrontAccessToken: string;
 }

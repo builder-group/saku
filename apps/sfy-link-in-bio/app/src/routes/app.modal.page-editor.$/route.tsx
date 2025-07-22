@@ -4,8 +4,8 @@ import { useAppBridge } from '@shopify/app-bridge-react';
 import { Text } from '@shopify/polaris';
 import { coreApiClient } from '@/environment';
 import { shopify, shopifyConfig } from '@/environment/.server';
-import { Editor, usePageEditor } from '@/features/page-editor';
-import { AppError, resultLoader, withResultLoader } from '@/lib';
+import { createPageEditor, Editor } from '@/features/page-editor';
+import { resultLoader, withResultLoader } from '@/lib';
 import { TLinksFunction } from '@/types';
 import styles from './styles.css?url';
 
@@ -14,47 +14,18 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 		const { site, shopId, storefrontAccessToken } = data;
 		const shopify = useAppBridge();
 
-		const {
-			status: editorStatus,
-			data: editorData,
-			error: editorError
-		} = usePageEditor({
-			site,
-			shopify,
-			shopId,
-			storefrontAccessToken
-		});
-
-		if (editorStatus === 'pending') {
-			return (
-				<div className="flex min-h-screen w-full items-center justify-center">
-					<div className="flex flex-col items-center gap-2 text-center">
-						<Text as="h2" variant="headingLg">
-							Loading Editor...
-						</Text>
-					</div>
-				</div>
-			);
-		}
-
-		if (editorError != null) {
-			return (
-				<div className="flex min-h-screen w-full items-center justify-center">
-					<div className="flex flex-col items-center gap-2 text-center">
-						<Text as="h2" variant="headingLg">
-							Error Loading Editor
-						</Text>
-						<Text as="p" variant="bodyMd" tone="subdued">
-							{(editorError as AppError).code}: {editorError.message}
-						</Text>
-					</div>
-				</div>
-			);
-		}
+		const editor = React.useMemo(() => {
+			return createPageEditor({
+				site,
+				shopify,
+				shopId,
+				storefrontAccessToken
+			});
+		}, [site, shopify, shopId, storefrontAccessToken]);
 
 		return (
 			<div className="flex min-h-screen w-full">
-				<Editor editor={editorData} />
+				<Editor editor={editor} />
 			</div>
 		);
 	},

@@ -1,4 +1,4 @@
-import { deepCopy, Err, Ok, shortId, TResult } from '@blgc/utils';
+import { deepCopy, shortId } from '@blgc/utils';
 import {
 	createId,
 	getFontHash,
@@ -20,24 +20,16 @@ import { FetchError, NetworkError, RequestError } from 'feature-fetch';
 import { createState, TState } from 'feature-state';
 import React from 'react';
 import { appConfig, coreApiClient } from '@/environment';
-import { AppError, createShopifyTokenMiddleware, requestReview } from '@/lib';
+import { createShopifyTokenMiddleware, requestReview } from '@/lib';
 import { TSettingsSectionType, TViewType } from '../environment';
 import { createNodeState, TNodeState } from './create-node-state';
 import { createPageContext, TPageContext } from './create-page-context';
 import { getNodeAssetHashes } from './get-node-asset-hashes';
 
-export async function createPageEditor(
-	config: TCreatePageEditorConfig
-): Promise<TResult<TPageEditor, AppError>> {
+export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 	const { shopify, shopId, site, storefrontAccessToken } = config;
 
-	const pageContextResult = await createPageContext({ siteId: site.id, storefrontAccessToken });
-	if (pageContextResult.isErr()) {
-		return Err(pageContextResult.error);
-	}
-	const pageContext = pageContextResult.value;
-
-	return Ok({
+	return {
 		id: shortId(),
 		site: {
 			id: site.id,
@@ -45,7 +37,7 @@ export async function createPageEditor(
 			version: site.content.version,
 			url: site.url
 		},
-		pageContext,
+		pageContext: createPageContext({ siteId: site.id, storefrontAccessToken }),
 
 		nodeMap: (() => {
 			const parentMap = Object.values(site.content.nodes).reduce(
@@ -604,7 +596,7 @@ export async function createPageEditor(
 				assets: deepCopy(this.assetsMap)
 			} satisfies TFlatSite;
 		}
-	});
+	};
 }
 
 export interface TCreatePageEditorConfig {

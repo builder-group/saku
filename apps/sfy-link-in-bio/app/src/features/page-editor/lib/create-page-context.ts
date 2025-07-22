@@ -1,34 +1,29 @@
-import { Err, Ok, type TResult } from '@blgc/utils';
-import { AppError, createCart } from '@/lib';
+import { withNew } from '@blgc/utils';
+import { createCart } from '@/lib';
 
-export async function createPageContext(
-	config: TCreatePageContextConfig
-): Promise<TResult<TPageContext, AppError>> {
-	const cartResult = await createCart({});
-	if (cartResult.isErr()) {
-		return Err(cartResult.error);
-	}
-	const cart = cartResult.value;
+export function createPageContext(config: TCreatePageContextConfig): TPageContext {
+	const { siteId, storefrontAccessToken } = config;
 
-	return Ok({
-		cartId: cart.id,
-		siteId: config.siteId,
-		storefrontAccessToken: config.storefrontAccessToken
+	return withNew({
+		siteId,
+		storefrontAccessToken,
+		_new(this) {
+			createCart({}).then((cartResult) => {
+				if (cartResult.isOk()) {
+					this.cartId = cartResult.value.id;
+				}
+			});
+		}
 	});
 }
 
 export type TCreatePageContextConfig = {
 	siteId: string;
-	storefrontAccessToken: string;
-};
-
-export type TPageContextError = {
-	code: string;
-	message: string;
+	storefrontAccessToken?: string;
 };
 
 export interface TPageContext {
-	cartId: string;
+	cartId?: string;
 	siteId: string;
-	storefrontAccessToken: string;
+	storefrontAccessToken?: string;
 }

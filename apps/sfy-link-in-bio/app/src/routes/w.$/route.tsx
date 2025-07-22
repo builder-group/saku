@@ -14,8 +14,15 @@ import { resultLoader, withResultLoader } from '@/lib';
 
 const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 	Success: ({ data }) => {
-		const { site, fontUrls } = data;
-		const cx = React.useMemo(() => createPageContext(), []);
+		const { site, fontUrls, storefrontAccessToken } = data;
+		const cx = React.useMemo(
+			() =>
+				createPageContext({
+					siteId: site.id,
+					storefrontAccessToken
+				}),
+			[site.id, storefrontAccessToken]
+		);
 
 		return (
 			<>
@@ -23,7 +30,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 					<link key={`font-${index}`} rel="stylesheet" href={fontUrl} />
 				))}
 
-				<StaticNodeCanvas cx={cx} nodes={[site.root]} />
+				<StaticNodeCanvas cx={cx} nodes={[site.content.root]} />
 			</>
 		);
 	},
@@ -83,14 +90,21 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 			message: result.error.message ?? 'Unknown error occurred'
 		});
 	}
-	const { content, storefrontAccessToken } = result.value.data;
-	const flatSite = content as unknown as TFlatSite;
+	const site = result.value.data;
 
 	return ServerOk({
-		site: hydrateSite(
-			new StaticSiteHydrateContext(flatSite, `${workspaceHandle}.myshopify.com`, handle)
-		),
-		fontUrls: getSiteFontUrls(flatSite)
+		site: {
+			id: site.id,
+			content: hydrateSite(
+				new StaticSiteHydrateContext(
+					site.content as unknown as TFlatSite,
+					`${workspaceHandle}.myshopify.com`,
+					handle
+				)
+			)
+		},
+		fontUrls: getSiteFontUrls(site.content as unknown as TFlatSite),
+		storefrontAccessToken: site.storefrontAccessToken
 	});
 });
 
@@ -100,6 +114,10 @@ interface TErrorLoaderData {
 }
 
 interface TSuccessLoaderData {
-	site: TResolvedSite;
+	site: {
+		id: string;
+		content: TResolvedSite;
+	};
 	fontUrls: string[];
+	storefrontAccessToken: string | undefined;
 }
