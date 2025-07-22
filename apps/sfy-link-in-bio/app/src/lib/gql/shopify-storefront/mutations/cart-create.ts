@@ -1,5 +1,5 @@
 import { Err, Ok, type TResult } from '@blgc/utils';
-import { gql, shopifyStorefrontApiClient } from '@/environment';
+import { gql, shopifyClientConfig, shopifyStorefrontApiClient } from '@/environment';
 import { AppError } from '@/lib';
 
 // https://shopify.dev/docs/api/storefront/latest/mutations/cartCreate
@@ -69,10 +69,17 @@ const CART_CREATE = gql(`
 `);
 
 export async function createCart(
-	input: TCartCreateInput
+	input: TCartCreateInput,
+	config: TCreateCartConfig
 ): Promise<TResult<TCartCreateSuccess, AppError>> {
+	const { shopId, accessToken } = config;
+
 	const result = await shopifyStorefrontApiClient.query(CART_CREATE, {
-		variables: { input }
+		prefixUrl: shopifyClientConfig.shop.storefrontApi(shopId),
+		variables: { input },
+		headers: {
+			'X-Shopify-Storefront-Access-Token': accessToken
+		}
 	});
 	if (result.isErr()) {
 		return Err(
@@ -123,6 +130,11 @@ export async function createCart(
 		}),
 		attributes: cart.attributes
 	});
+}
+
+interface TCreateCartConfig {
+	shopId: string;
+	accessToken: string;
 }
 
 export type TCartCreateInput = {

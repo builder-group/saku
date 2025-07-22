@@ -18,14 +18,15 @@ import styles from '@/styles.css?url';
 
 const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 	Success: ({ data }) => {
-		const { appUrl, site, fontUrls, storefrontAccessToken } = data;
+		const { appUrl, shopId, site, fontUrls, storefrontAccessToken } = data;
 		const cx = React.useMemo(
 			() =>
 				createPageContext({
+					shopId,
 					siteId: site.id,
 					storefrontAccessToken: storefrontAccessToken
 				}),
-			[site.id, storefrontAccessToken]
+			[shopId, site.id, storefrontAccessToken]
 		);
 
 		return (
@@ -100,6 +101,7 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 
 	return ServerOk({
 		appUrl: shopifyConfig.appUrl,
+		shopId: session.shop,
 		site: {
 			id: site.id,
 			content: hydrateSite(
@@ -118,6 +120,7 @@ interface TErrorLoaderData {
 
 interface TSuccessLoaderData {
 	appUrl: string;
+	shopId: string;
 	site: {
 		id: string;
 		content: TResolvedSite;

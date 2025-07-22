@@ -1,5 +1,5 @@
 import { Err, Ok, type TResult } from '@blgc/utils';
-import { gql, shopifyStorefrontApiClient } from '@/environment';
+import { gql, shopifyClientConfig, shopifyStorefrontApiClient } from '@/environment';
 import { AppError } from '@/lib';
 
 // https://shopify.dev/docs/api/storefront/latest/mutations/cartlinesadd
@@ -69,10 +69,17 @@ const CART_LINE_ADD = gql(`
 `);
 
 export async function addCartLines(
-	input: TCartLineAddInput
+	input: TCartLineAddInput,
+	config: TAddCartLinesConfig
 ): Promise<TResult<TCartLineAddSuccess, AppError>> {
+	const { shopId, accessToken } = config;
+
 	const result = await shopifyStorefrontApiClient.query(CART_LINE_ADD, {
-		variables: input
+		variables: input,
+		prefixUrl: shopifyClientConfig.shop.storefrontApi(shopId),
+		headers: {
+			'X-Shopify-Storefront-Access-Token': accessToken
+		}
 	});
 	if (result.isErr()) {
 		return Err(
@@ -127,6 +134,11 @@ export async function addCartLines(
 		}),
 		attributes: cart.attributes
 	});
+}
+
+interface TAddCartLinesConfig {
+	shopId: string;
+	accessToken: string;
 }
 
 export type TCartLineAddInput = {
