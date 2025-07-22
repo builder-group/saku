@@ -1,5 +1,6 @@
 import { Err, Ok, type TResult } from '@blgc/utils';
 import { gql, shopifyStorefrontApiClient } from '@/environment';
+import { AppError } from '@/lib';
 
 // https://shopify.dev/docs/api/storefront/latest/mutations/cartlinesadd
 const CART_LINE_ADD = gql(`
@@ -69,37 +70,35 @@ const CART_LINE_ADD = gql(`
 
 export async function addCartLines(
 	input: TCartLineAddInput
-): Promise<TResult<TCartLineAddSuccess, TCartLineAddError>> {
+): Promise<TResult<TCartLineAddSuccess, AppError>> {
 	const result = await shopifyStorefrontApiClient.query(CART_LINE_ADD, {
 		variables: input
 	});
 	if (result.isErr()) {
-		return Err({
-			code: '#ERR_SHOPIFY_API_ERROR',
-			message: `Shopify API request failed: ${result.error.message}`
-		});
+		return Err(
+			new AppError('#ERR_SHOPIFY_API_ERROR', {
+				detail: `Shopify API request failed: ${result.error.message}`
+			})
+		);
 	}
 
 	const cartLinesAdd = result.value.data?.cartLinesAdd;
 	if (cartLinesAdd == null) {
-		return Err({
-			code: '#ERR_NO_CART_LINES_ADDED',
-			message: 'No cart lines were added to the cart'
-		});
+		return Err(
+			new AppError('#ERR_NO_CART_LINES_ADDED', { detail: 'No cart lines were added to the cart' })
+		);
 	}
 
 	const { cart, userErrors } = cartLinesAdd;
 	if (userErrors?.length > 0) {
-		return Err({
-			code: '#ERR_USER_ERROR',
-			message: userErrors.map((e) => e.message).join(', ')
-		});
+		return Err(
+			new AppError('#ERR_USER_ERROR', { detail: userErrors.map((e) => e.message).join(', ') })
+		);
 	}
 	if (cart == null) {
-		return Err({
-			code: '#ERR_NO_CART_LINES_ADDED',
-			message: 'No cart lines were added to the cart'
-		});
+		return Err(
+			new AppError('#ERR_NO_CART_LINES_ADDED', { detail: 'No cart lines were added to the cart' })
+		);
 	}
 
 	return Ok({

@@ -20,6 +20,6 @@ export const MediaNode = React.forwardRef<HTMLDivElement, TNodeProps<TMediaNode>
 		}
 	);
 
-	return <StaticMediaNode {...divProps} ref={ref} node={node} />;
+	return <StaticMediaNode {...divProps} ref={ref} node={node} cx={editor.pageContext} />;
 });
 MediaNode.displayName = 'MediaNode';

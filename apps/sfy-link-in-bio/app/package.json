@@ -48,6 +48,7 @@
 		"@shopify/polaris-icons": "^9.3.1",
 		"@shopify/shopify-app-remix": "^3.8.3",
 		"@shopify/shopify-app-session-storage-memory": "^4.0.18",
+		"@tanstack/react-query": "^5.83.0",
 		"canvas-confetti": "^1.9.3",
 		"clsx": "^2.1.1",
 		"feature-fetch": "^0.0.49",

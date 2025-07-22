@@ -5,7 +5,12 @@ import { AppProxyProvider } from '@shopify/shopify-app-remix/react';
 import { isStatusCode } from 'feature-fetch';
 import { coreApiClient } from '@/environment';
 import { shopify, shopifyConfig } from '@/environment/.server';
-import { getSiteFontUrls, StaticNodeCanvas, TResolvedSite } from '@/features/page-editor';
+import {
+	createPageContext,
+	getSiteFontUrls,
+	StaticNodeCanvas,
+	TResolvedSite
+} from '@/features/page-editor';
 import { hydrateSite, StaticSiteHydrateContext } from '@/features/page-editor/.server';
 import { resultLoader, withResultLoader } from '@/lib';
 import styles from '@/styles.css?url';
@@ -13,6 +18,7 @@ import styles from '@/styles.css?url';
 const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 	Success: ({ data }) => {
 		const { appUrl, site, fontUrls } = data;
+		const cx = React.useMemo(() => createPageContext(), []);
 
 		return (
 			<AppProxyProvider appUrl={appUrl}>
@@ -21,7 +27,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 					<link key={`font-${index}`} rel="stylesheet" href={fontUrl} />
 				))}
 
-				<StaticNodeCanvas nodes={[site.root]} />
+				<StaticNodeCanvas cx={cx} nodes={[site.root]} />
 			</AppProxyProvider>
 		);
 	},

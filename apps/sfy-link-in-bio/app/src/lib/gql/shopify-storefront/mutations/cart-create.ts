@@ -1,5 +1,6 @@
 import { Err, Ok, type TResult } from '@blgc/utils';
 import { gql, shopifyStorefrontApiClient } from '@/environment';
+import { AppError } from '@/lib';
 
 // https://shopify.dev/docs/api/storefront/latest/mutations/cartCreate
 const CART_CREATE = gql(`
@@ -69,37 +70,31 @@ const CART_CREATE = gql(`
 
 export async function createCart(
 	input: TCartCreateInput
-): Promise<TResult<TCartCreateSuccess, TCartCreateError>> {
+): Promise<TResult<TCartCreateSuccess, AppError>> {
 	const result = await shopifyStorefrontApiClient.query(CART_CREATE, {
 		variables: { input }
 	});
 	if (result.isErr()) {
-		return Err({
-			code: '#ERR_SHOPIFY_API_ERROR',
-			message: `Shopify API request failed: ${result.error.message}`
-		});
+		return Err(
+			new AppError('#ERR_SHOPIFY_API_ERROR', {
+				detail: `Shopify API request failed: ${result.error.message}`
+			})
+		);
 	}
 
 	const cartCreate = result.value.data?.cartCreate;
 	if (cartCreate == null) {
-		return Err({
-			code: '#ERR_NO_CART_CREATED',
-			message: 'No cart was created in Shopify'
-		});
+		return Err(new AppError('#ERR_NO_CART_CREATED', { detail: 'No cart was created in Shopify' }));
 	}
 
 	const { cart, userErrors } = cartCreate;
 	if (userErrors?.length > 0) {
-		return Err({
-			code: '#ERR_USER_ERROR',
-			message: userErrors.map((e) => e.message).join(', ')
-		});
+		return Err(
+			new AppError('#ERR_USER_ERROR', { detail: userErrors.map((e) => e.message).join(', ') })
+		);
 	}
 	if (cart == null) {
-		return Err({
-			code: '#ERR_NO_CART_CREATED',
-			message: 'No cart was created in Shopify'
-		});
+		return Err(new AppError('#ERR_NO_CART_CREATED', { detail: 'No cart was created in Shopify' }));
 	}
 
 	return Ok({

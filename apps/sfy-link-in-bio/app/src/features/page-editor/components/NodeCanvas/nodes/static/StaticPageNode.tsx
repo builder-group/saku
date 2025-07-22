@@ -7,6 +7,7 @@ import { TStaticNodeProps } from '../types';
 export const StaticPageNode: React.FC<TStaticNodeProps<TResolvedPageNode>> = (props) => {
 	const {
 		node: { children, style },
+		cx,
 		...divProps
 	} = props;
 
@@ -27,7 +28,7 @@ export const StaticPageNode: React.FC<TStaticNodeProps<TResolvedPageNode>> = (pr
 					}}
 				>
 					{children.map((childNode) => (
-						<StaticNode key={childNode.id} node={childNode} />
+						<StaticNode key={childNode.id} node={childNode} cx={cx} />
 					))}
 
 					{/* Watermark */}

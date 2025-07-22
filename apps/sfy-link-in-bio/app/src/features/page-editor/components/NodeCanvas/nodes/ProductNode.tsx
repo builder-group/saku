@@ -21,7 +21,7 @@ export const ProductNode = React.forwardRef<HTMLDivElement, TNodeProps<TProductN
 			}
 		);
 
-		return <StaticProductNode {...divProps} ref={ref} node={node} />;
+		return <StaticProductNode {...divProps} ref={ref} node={node} cx={editor.pageContext} />;
 	}
 );
 ProductNode.displayName = 'ProductNode';

@@ -3,13 +3,19 @@ import { TFlatSite } from '@repo/editor';
 import { Text } from '@shopify/polaris';
 import { isStatusCode } from 'feature-fetch';
 import { coreApiClient } from '@/environment';
-import { getSiteFontUrls, StaticNodeCanvas, TResolvedSite } from '@/features/page-editor';
+import {
+	createPageContext,
+	getSiteFontUrls,
+	StaticNodeCanvas,
+	TResolvedSite
+} from '@/features/page-editor';
 import { hydrateSite, StaticSiteHydrateContext } from '@/features/page-editor/.server';
 import { resultLoader, withResultLoader } from '@/lib';
 
 const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 	Success: ({ data }) => {
 		const { site, fontUrls } = data;
+		const cx = React.useMemo(() => createPageContext(), []);
 
 		return (
 			<>
@@ -17,7 +23,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 					<link key={`font-${index}`} rel="stylesheet" href={fontUrl} />
 				))}
 
-				<StaticNodeCanvas nodes={[site.root]} />
+				<StaticNodeCanvas cx={cx} nodes={[site.root]} />
 			</>
 		);
 	},

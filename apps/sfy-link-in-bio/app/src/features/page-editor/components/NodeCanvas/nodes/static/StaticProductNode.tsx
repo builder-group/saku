@@ -11,7 +11,6 @@ export const StaticProductNode = React.forwardRef<
 			content: { product },
 			style
 		},
-		state,
 		...divProps
 	} = props;
 

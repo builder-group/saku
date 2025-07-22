@@ -1,4 +1,4 @@
-import { deepCopy, shortId } from '@blgc/utils';
+import { deepCopy, Err, Ok, shortId, TResult } from '@blgc/utils';
 import {
 	createId,
 	getFontHash,
@@ -20,18 +20,24 @@ import { FetchError, NetworkError, RequestError } from 'feature-fetch';
 import { createState, TState } from 'feature-state';
 import React from 'react';
 import { appConfig, coreApiClient } from '@/environment';
-import { createShopifyTokenMiddleware, requestReview } from '@/lib';
+import { AppError, createShopifyTokenMiddleware, requestReview } from '@/lib';
 import { TSettingsSectionType, TViewType } from '../environment';
 import { createNodeState, TNodeState } from './create-node-state';
+import { createPageContext, TPageContext } from './create-page-context';
 import { getNodeAssetHashes } from './get-node-asset-hashes';
 
-export function createPageEditor(
-	site: TExtendedSite,
+export async function createPageEditor(
 	config: TCreatePageEditorConfig
-): TPageEditor {
-	const { shopify, shopId } = config;
+): Promise<TResult<TPageEditor, AppError>> {
+	const { shopify, shopId, site, storefrontAccessToken } = config;
 
-	return {
+	const pageContextResult = await createPageContext({ siteId: site.id, storefrontAccessToken });
+	if (pageContextResult.isErr()) {
+		return Err(pageContextResult.error);
+	}
+	const pageContext = pageContextResult.value;
+
+	return Ok({
 		id: shortId(),
 		site: {
 			id: site.id,
@@ -39,6 +45,7 @@ export function createPageEditor(
 			version: site.version,
 			url: site.url
 		},
+		pageContext,
 
 		nodeMap: (() => {
 			const parentMap = Object.values(site.nodes).reduce(
@@ -597,22 +604,25 @@ export function createPageEditor(
 				assets: deepCopy(this.assetsMap)
 			} satisfies TFlatSite;
 		}
-	};
+	});
 }
 
 export interface TCreatePageEditorConfig {
 	shopify: ShopifyGlobal;
 	shopId: string;
+	site: TFlatSite & { id: string; handle: string; url: string };
+	storefrontAccessToken: string;
 }
 
 export interface TPageEditor {
 	id: string;
 	site: {
-		id: TExtendedSite['id'];
-		handle: TExtendedSite['handle'];
-		url: TExtendedSite['url'];
-		version: TExtendedSite['version'];
+		id: string;
+		handle: string;
+		url: string;
+		version: TFlatSite['version'];
 	};
+	pageContext: TPageContext;
 
 	rootNodeId: TNodeId;
 	selectedNodeId: TState<TNodeId | null, []>;
@@ -673,10 +683,4 @@ export interface TBoundingRect {
 	top: number;
 	bottom: number;
 	right: number;
-}
-
-export interface TExtendedSite extends TFlatSite {
-	id: string;
-	handle: string;
-	url: string;
 }

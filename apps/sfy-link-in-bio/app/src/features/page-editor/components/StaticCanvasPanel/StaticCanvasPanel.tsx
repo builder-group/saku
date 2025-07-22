@@ -48,7 +48,7 @@ export const StaticCanvasPanel: React.FC<TStaticCanvasPanelProps> = (props) => {
 					onStylesLoaded={() => setStylesLoaded(true)}
 				>
 					<div className={viewMode === 'mobile' ? 'w-[390px]' : 'w-full'}>
-						<StaticNodeCanvas nodes={[rootNode]} />
+						<StaticNodeCanvas cx={editor.pageContext} nodes={[rootNode]} />
 					</div>
 				</ShadowRoot>
 			</div>
