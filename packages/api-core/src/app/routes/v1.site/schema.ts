@@ -48,58 +48,12 @@ export const GetSiteRoute = createRoute({
 	}
 });
 
-export const GetSiteContentRoute = createRoute({
+export const GetSiteByWorkspaceAndHandleRoute = createRoute({
 	method: 'get',
-	path: '/v1/site/{siteId}/content',
+	path: '/v1/site/workspace/{workspaceHandle}/{handle}',
 	tags: ['site'],
-	summary: 'Get site content',
-	operationId: 'getSiteContent',
-	request: {
-		params: z.object({
-			siteId: z.uuid().openapi({
-				example: '123e4567-e89b-12d3',
-				description: 'Site ID'
-			})
-		})
-	},
-	responses: {
-		200: JsonSuccessResponse(SFlatSiteContentDto),
-		404: NotFoundResponse
-	}
-});
-
-export const ParseExternalSiteRoute = createRoute({
-	method: 'get',
-	path: '/v1/site/parse/external',
-	tags: ['site'],
-	summary: 'Parse external link-in-bio URL',
-	operationId: 'parseExternalSite',
-	request: {
-		query: z.object({
-			url: z.url().openapi({
-				example: 'https://linkpop.com/johndoe',
-				description: 'External link-in-bio URL to parse'
-			})
-		})
-	},
-	responses: {
-		200: JsonSuccessResponse(
-			z.object({
-				provider: z.string().openapi({ example: 'linkpop' }),
-				handle: z.string().openapi({ example: 'johndoe' }),
-				content: SFlatSiteContentDto
-			})
-		),
-		400: BadRequestResponse
-	}
-});
-
-export const GetSiteContentByWorkspaceAndHandleRoute = createRoute({
-	method: 'get',
-	path: '/v1/site/workspace/{workspaceHandle}/{handle}/content',
-	tags: ['site'],
-	summary: 'Get site content by workspace handle and site handle',
-	operationId: 'getSiteContentByWorkspaceAndHandle',
+	summary: 'Get site by workspace handle and site handle',
+	operationId: 'getSiteByWorkspaceAndHandle',
 	request: {
 		params: z.object({
 			workspaceHandle: z.string().openapi({
@@ -113,7 +67,13 @@ export const GetSiteContentByWorkspaceAndHandleRoute = createRoute({
 		})
 	},
 	responses: {
-		200: JsonSuccessResponse(SFlatSiteContentDto),
+		200: JsonSuccessResponse(
+			z.object({
+				id: z.uuid(),
+				content: SFlatSiteContentDto,
+				storefrontAccessToken: z.string().optional()
+			})
+		),
 		404: NotFoundResponse
 	}
 });
@@ -146,6 +106,32 @@ export const UpdateSiteNodeRoute = createRoute({
 	responses: {
 		200: JsonSuccessResponse(z.object({ success: z.literal(true) })),
 		404: NotFoundResponse,
+		400: BadRequestResponse
+	}
+});
+
+export const ParseExternalSiteRoute = createRoute({
+	method: 'get',
+	path: '/v1/site/parse/external',
+	tags: ['site'],
+	summary: 'Parse external link-in-bio URL',
+	operationId: 'parseExternalSite',
+	request: {
+		query: z.object({
+			url: z.url().openapi({
+				example: 'https://linkpop.com/johndoe',
+				description: 'External link-in-bio URL to parse'
+			})
+		})
+	},
+	responses: {
+		200: JsonSuccessResponse(
+			z.object({
+				provider: z.string().openapi({ example: 'linkpop' }),
+				handle: z.string().openapi({ example: 'johndoe' }),
+				content: SFlatSiteContentDto
+			})
+		),
 		400: BadRequestResponse
 	}
 });

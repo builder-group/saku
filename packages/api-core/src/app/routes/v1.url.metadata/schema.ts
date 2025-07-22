@@ -79,8 +79,6 @@ export const GetUrlMetadataRoute = createRoute({
 	path: '/v1/url/metadata',
 	tags: ['url'],
 	summary: 'Get metadata from URL',
-	description:
-		'Fetches and extracts metadata from the provided URL including title, description, media URLs and icons',
 	operationId: 'getUrlMetadata',
 	request: {
 		query: z.object({

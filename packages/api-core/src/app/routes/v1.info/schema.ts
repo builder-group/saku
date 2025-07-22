@@ -6,7 +6,6 @@ export const GetInfoRoute = createRoute({
 	path: '/v1/info',
 	tags: ['info'],
 	summary: 'Get API info',
-	description: 'Returns the current info of the API',
 	operationId: 'getInfo',
 	responses: {
 		200: JsonSuccessResponse(

@@ -58,7 +58,7 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 		});
 	}
 
-	const result = await coreApiClient.get('/v1/site/workspace/{workspaceHandle}/{handle}/content', {
+	const result = await coreApiClient.get('/v1/site/workspace/{workspaceHandle}/{handle}', {
 		pathParams: {
 			workspaceHandle,
 			handle
@@ -77,8 +77,8 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 			message: result.error.message ?? 'Unknown error occurred'
 		});
 	}
-
-	const flatSite = result.value.data as unknown as TFlatSite;
+	const { content, storefrontAccessToken } = result.value.data;
+	const flatSite = content as unknown as TFlatSite;
 
 	return ServerOk({
 		site: hydrateSite(

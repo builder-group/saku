@@ -45,7 +45,6 @@ export const CreateSessionRoute = createRoute({
 	path: '/v1/auth/shopify/session',
 	tags: ['auth', 'shopify'],
 	summary: 'Create Shopify session',
-	description: 'Store a new Shopify session from app installation or authentication',
 	operationId: 'createShopifySession',
 	request: {
 		body: {
@@ -70,7 +69,6 @@ export const GetSessionRoute = createRoute({
 	path: '/v1/auth/shopify/session/{sessionId}',
 	tags: ['auth', 'shopify'],
 	summary: 'Get Shopify session by ID',
-	description: 'Retrieve a specific Shopify session by its ID',
 	operationId: 'getShopifySession',
 	request: {
 		params: z.object({
@@ -89,7 +87,6 @@ export const DeleteSessionRoute = createRoute({
 	path: '/v1/auth/shopify/session/{sessionId}',
 	tags: ['auth', 'shopify'],
 	summary: 'Delete Shopify session',
-	description: 'Remove a Shopify session by its ID',
 	operationId: 'deleteShopifySession',
 	request: {
 		params: z.object({
@@ -110,7 +107,6 @@ export const GetSessionByShopRoute = createRoute({
 	path: '/v1/auth/shopify/session/shop/{shopId}',
 	tags: ['auth', 'shopify'],
 	summary: 'Get Shopify session by shop',
-	description: 'Retrieve Shopify sessions for a specific shop domain',
 	operationId: 'getShopifySessionByShop',
 	request: {
 		params: z.object({

@@ -11,7 +11,6 @@ export const CustomersDataRequestWebhookRoute = createRoute({
 	path: '/v1/webhook/shopify/customers/data_request',
 	tags: ['webhooks', 'shopify', 'privacy'],
 	summary: 'Customer data request webhook',
-	description: 'Receives webhook when customers request their data from a store owner',
 	operationId: 'handleCustomerDataRequest',
 	middleware: [captureRawBodyMiddleware] as const,
 	request: {
@@ -53,7 +52,6 @@ export const CustomersRedactWebhookRoute = createRoute({
 	path: '/v1/webhook/shopify/customers/redact',
 	tags: ['webhooks', 'shopify', 'privacy'],
 	summary: 'Customer data redaction webhook',
-	description: 'Receives webhook when store owners request customer data deletion',
 	operationId: 'handleCustomerRedact',
 	middleware: [captureRawBodyMiddleware] as const,
 	request: {
@@ -94,7 +92,6 @@ export const ShopRedactWebhookRoute = createRoute({
 	path: '/v1/webhook/shopify/shop/redact',
 	tags: ['webhooks', 'shopify', 'privacy'],
 	summary: 'Shop data redaction webhook',
-	description: 'Receives webhook 48 hours after a store owner uninstalls the app',
 	operationId: 'handleShopRedact',
 	middleware: [captureRawBodyMiddleware] as const,
 	request: {
@@ -125,7 +122,6 @@ export const AppUninstalledWebhookRoute = createRoute({
 	path: '/v1/webhook/shopify/app/uninstalled',
 	tags: ['webhooks', 'shopify', 'app'],
 	summary: 'App uninstalled webhook',
-	description: 'Receives webhook immediately when a store owner uninstalls the app',
 	operationId: 'handleAppUninstalled',
 	middleware: [captureRawBodyMiddleware] as const,
 	request: {
@@ -164,7 +160,6 @@ export const AppScopesUpdateWebhookRoute = createRoute({
 	path: '/v1/webhook/shopify/app/scopes_update',
 	tags: ['webhooks', 'shopify', 'app'],
 	summary: 'App scopes update webhook',
-	description: 'Receives webhook when app scopes are updated for a store',
 	operationId: 'handleAppScopesUpdate',
 	middleware: [captureRawBodyMiddleware] as const,
 	request: {

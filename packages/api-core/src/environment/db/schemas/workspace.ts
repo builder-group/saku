@@ -54,6 +54,8 @@ export const workspaceMemberTable = pgTable(
 	(table) => [primaryKey({ columns: [table.workspaceId, table.userId] })]
 );
 
+export type TWorkspaceRole = 'owner' | 'admin' | 'member';
+
 /**
  * Provider accounts connected to workspaces (e.g. Shopify stores).
  */
@@ -64,18 +66,18 @@ export const workspaceAccountTable = pgTable(
 			.notNull()
 			.references(() => workspaceTable.id, { onDelete: 'cascade' }),
 
-		// Account type (e.g. oauth for Shopify)
-		accountType: text('account_type').$type<TWorkspaceAccountType>().notNull(),
-
 		// Provider name (e.g. "shopify", "woocommerce")
 		provider: text('provider').$type<TWorkspaceProviderType>().notNull(),
 		// Provider's unique identifier (e.g. shop domain for Shopify)
 		providerAccountId: text('provider_account_id').notNull(),
-		// Raw provider data
+
+		// Account type (e.g. oauth for Shopify)
+		accountType: text('account_type').$type<TWorkspaceAccountType>().notNull(),
+		// Raw account data
 		// Note: Using `jsonb` to keep schema minimal, avoid column bloat, and support flexible future providers.
 		// We likely won't need to query provider-specific fields directly - instead, we can query by provider and extract what's needed.
 		// Tradeoff: Can't select or filter by nested fields at the SQL level.
-		providerData: jsonb('provider_data').$type<TWorkspaceProviderData>(),
+		accountData: jsonb('account_data').$type<TWorkspaceAccountData>(),
 
 		updatedAt: timestamp('updated_at', { mode: 'date' })
 			.notNull()
@@ -87,16 +89,14 @@ export const workspaceAccountTable = pgTable(
 	(table) => [primaryKey({ columns: [table.workspaceId, table.provider, table.providerAccountId] })]
 );
 
-export type TWorkspaceRole = 'owner' | 'admin' | 'member';
-
-export type TWorkspaceAccountType = 'oauth' | 'oidc' | 'otp' | 'webauthn';
+export type TWorkspaceAccountType = 'oauth';
 export type TWorkspaceProviderType = 'shopify';
-export type TWorkspaceProviderData = TShopifyWorkspaceProviderData;
+export type TWorkspaceAccountData = TShopifyWorkspaceAccountData;
 
 /**
- * Shopify Workspace Provider Data
+ * Shopify Workspace Account Data
  */
-interface TShopifyWorkspaceProviderData {
+export interface TShopifyWorkspaceAccountData {
 	// Installer information (person who installed the app)
 	installer?: {
 		shopifyId: string;
@@ -108,4 +108,54 @@ interface TShopifyWorkspaceProviderData {
 		locale: string;
 		isCollaborator: boolean;
 	};
+}
+
+/**
+ * Workspace tokens for various API integrations and services.
+ */
+export const workspaceTokenTable = pgTable(
+	'workspace_token',
+	{
+		workspaceId: text('workspace_id')
+			.notNull()
+			.references(() => workspaceTable.id, { onDelete: 'cascade' }),
+
+		// Provider name (e.g. "shopify")
+		provider: text('provider').$type<TWorkspaceTokenProvider>().notNull(),
+		// Provider's unique token identifier (e.g. Shopify ID for storefront token)
+		providerTokenId: text('provider_token_id').notNull(),
+
+		// Token type (e.g. storefront)
+		tokenType: text('token_type').$type<TWorkspaceTokenType>().notNull(),
+		// Raw token data
+		// Note: Using `jsonb` to keep schema minimal, avoid column bloat, and support flexible future providers.
+		// We likely won't need to query provider-specific fields directly - instead, we can query by provider and extract what's needed.
+		// Tradeoff: Can't select or filter by nested fields at the SQL level.
+		tokenData: jsonb('token_data').$type<TWorkspaceTokenData>(),
+
+		// Token lifecycle
+		lastUsedAt: timestamp('last_used_at', { mode: 'date' }),
+		expiresAt: timestamp('expires_at', { mode: 'date' }),
+
+		updatedAt: timestamp('updated_at', { mode: 'date' })
+			.notNull()
+			.$defaultFn(() => new Date()),
+		createdAt: timestamp('created_at', { mode: 'date' })
+			.notNull()
+			.$defaultFn(() => new Date())
+	},
+	(table) => [primaryKey({ columns: [table.workspaceId, table.provider, table.providerTokenId] })]
+);
+
+export type TWorkspaceTokenType = 'storefront';
+export type TWorkspaceTokenProvider = 'shopify';
+export type TWorkspaceTokenData = TShopifyStorefrontWorkspaceTokenData;
+
+/**
+ * Shopify Storefront Workspace Token Data
+ */
+export interface TShopifyStorefrontWorkspaceTokenData {
+	title: string;
+	accessToken: string;
+	accessScopes: string[];
 }

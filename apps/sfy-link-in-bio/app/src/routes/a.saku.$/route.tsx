@@ -63,7 +63,7 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 		});
 	}
 
-	const result = await coreApiClient.get('/v1/shopify/site/shop/{shop}/{handle}/content', {
+	const result = await coreApiClient.get('/v1/shopify/site/shop/{shop}/{handle}', {
 		pathParams: {
 			shop: session.shop,
 			handle
@@ -82,8 +82,8 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 			message: result.error.message ?? 'Unknown error occurred'
 		});
 	}
-
-	const flatSite = result.value.data as unknown as TFlatSite;
+	const { content, storefrontAccessToken } = result.value.data;
+	const flatSite = content as unknown as TFlatSite;
 
 	return ServerOk({
 		appUrl: shopifyConfig.appUrl,

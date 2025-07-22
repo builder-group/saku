@@ -11,8 +11,6 @@ export const GetShopOverviewRoute = createRoute({
 	path: '/v1/shopify/shop/overview',
 	tags: ['shopify', 'shop'],
 	summary: 'Get shop overview including theme, social links, and recommended products',
-	description:
-		'Retrieves comprehensive shop overview including theme styling, social media links, and recommended products for creating default templates',
 	operationId: 'getShopOverview',
 	responses: {
 		200: JsonSuccessResponse(

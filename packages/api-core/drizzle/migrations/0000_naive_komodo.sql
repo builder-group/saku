@@ -24,13 +24,13 @@ CREATE TABLE "site" (
 --> statement-breakpoint
 CREATE TABLE "user_account" (
 	"user_id" text NOT NULL,
-	"account_type" text NOT NULL,
 	"provider" text NOT NULL,
 	"provider_account_id" text NOT NULL,
-	"provider_data" jsonb,
+	"account_type" text NOT NULL,
+	"account_data" jsonb,
 	"updated_at" timestamp NOT NULL,
 	"created_at" timestamp NOT NULL,
-	CONSTRAINT "user_account_provider_provider_account_id_pk" PRIMARY KEY("provider","provider_account_id")
+	CONSTRAINT "user_account_user_id_provider_provider_account_id_pk" PRIMARY KEY("user_id","provider","provider_account_id")
 );
 --> statement-breakpoint
 CREATE TABLE "user" (
@@ -48,10 +48,10 @@ CREATE TABLE "user" (
 --> statement-breakpoint
 CREATE TABLE "workspace_account" (
 	"workspace_id" text NOT NULL,
-	"account_type" text NOT NULL,
 	"provider" text NOT NULL,
 	"provider_account_id" text NOT NULL,
-	"provider_data" jsonb,
+	"account_type" text NOT NULL,
+	"account_data" jsonb,
 	"updated_at" timestamp NOT NULL,
 	"created_at" timestamp NOT NULL,
 	CONSTRAINT "workspace_account_workspace_id_provider_provider_account_id_pk" PRIMARY KEY("workspace_id","provider","provider_account_id")
@@ -77,8 +77,22 @@ CREATE TABLE "workspace" (
 	CONSTRAINT "workspace_handle_unique" UNIQUE("handle")
 );
 --> statement-breakpoint
+CREATE TABLE "workspace_token" (
+	"workspace_id" text NOT NULL,
+	"provider" text NOT NULL,
+	"provider_token_id" text NOT NULL,
+	"token_type" text NOT NULL,
+	"token_data" jsonb,
+	"last_used_at" timestamp,
+	"expires_at" timestamp,
+	"updated_at" timestamp NOT NULL,
+	"created_at" timestamp NOT NULL,
+	CONSTRAINT "workspace_token_workspace_id_provider_provider_token_id_pk" PRIMARY KEY("workspace_id","provider","provider_token_id")
+);
+--> statement-breakpoint
 ALTER TABLE "site" ADD CONSTRAINT "site_workspace_id_workspace_id_fk" FOREIGN KEY ("workspace_id") REFERENCES "public"."workspace"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "user_account" ADD CONSTRAINT "user_account_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "workspace_account" ADD CONSTRAINT "workspace_account_workspace_id_workspace_id_fk" FOREIGN KEY ("workspace_id") REFERENCES "public"."workspace"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "workspace_member" ADD CONSTRAINT "workspace_member_workspace_id_workspace_id_fk" FOREIGN KEY ("workspace_id") REFERENCES "public"."workspace"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "workspace_member" ADD CONSTRAINT "workspace_member_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE restrict ON UPDATE no action;
+ALTER TABLE "workspace_member" ADD CONSTRAINT "workspace_member_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE restrict ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "workspace_token" ADD CONSTRAINT "workspace_token_workspace_id_workspace_id_fk" FOREIGN KEY ("workspace_id") REFERENCES "public"."workspace"("id") ON DELETE cascade ON UPDATE no action;

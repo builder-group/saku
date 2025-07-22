@@ -14,13 +14,14 @@ import {
 	createShopifyUrlRedirect,
 	deleteUrlRedirect,
 	getShopifyOfflineAccessToken,
+	getStorefrontToken,
 	verifyShopifySession
 } from '@/lib';
 import { TFlatSiteContentDto } from '../v1.site/schema';
 import {
 	CreateShopifySiteRoute,
+	GetShopifySiteByShopAndHandleRoute,
 	GetShopifySitesRoute,
-	GetSiteContentByShopAndHandleRoute,
 	UpdateShopifySiteContentRoute
 } from './schema';
 
@@ -56,6 +57,52 @@ router.openapi(GetShopifySitesRoute, async (c) => {
 			createdAt: site.createdAt.toISOString(),
 			updatedAt: site.updatedAt.toISOString()
 		})),
+		200
+	);
+});
+
+router.openapi(GetShopifySiteByShopAndHandleRoute, async (c) => {
+	const { shop, handle } = c.req.valid('param');
+
+	const accessToken = (await getShopifyOfflineAccessToken(shop)).unwrap();
+
+	// Find site by handle and shop id
+	const [site] = await db
+		.select({
+			id: siteTable.id,
+			workspaceId: siteTable.workspaceId,
+			content: siteTable.content
+		})
+		.from(siteTable)
+		.innerJoin(
+			workspaceAccountTable,
+			and(
+				eq(workspaceAccountTable.workspaceId, siteTable.workspaceId),
+				eq(workspaceAccountTable.provider, 'shopify'),
+				eq(workspaceAccountTable.providerAccountId, shop)
+			)
+		)
+		.where(eq(siteTable.handle, handle))
+		.limit(1);
+	if (site == null) {
+		throw new AppError('#ERR_SITE_NOT_FOUND', 404, {
+			title: 'Site not found',
+			detail: `Site with handle '${handle}' not found for shop '${shop}'`
+		});
+	}
+
+	// Get or create storefront access token for the workspace
+	const storefrontAccessToken = await getStorefrontToken(site.workspaceId, {
+		accessToken,
+		shopId: shop
+	});
+
+	return c.json(
+		{
+			id: site.id,
+			content: site.content as TFlatSiteContentDto,
+			storefrontAccessToken
+		},
 		200
 	);
 });
@@ -258,33 +305,4 @@ router.openapi(UpdateShopifySiteContentRoute, async (c) => {
 		},
 		200
 	);
-});
-
-router.openapi(GetSiteContentByShopAndHandleRoute, async (c) => {
-	const { shop, handle } = c.req.valid('param');
-
-	// Find site by handle in workspace connected to this Shopify shop
-	const [site] = await db
-		.select({
-			content: siteTable.content
-		})
-		.from(siteTable)
-		.innerJoin(
-			workspaceAccountTable,
-			and(
-				eq(workspaceAccountTable.workspaceId, siteTable.workspaceId),
-				eq(workspaceAccountTable.provider, 'shopify'),
-				eq(workspaceAccountTable.providerAccountId, shop)
-			)
-		)
-		.where(eq(siteTable.handle, handle))
-		.limit(1);
-	if (site == null) {
-		throw new AppError('#ERR_SITE_NOT_FOUND', 404, {
-			title: 'Site not found',
-			detail: `Site with handle '${handle}' not found for shop '${shop}'`
-		});
-	}
-
-	return c.json(site.content as TFlatSiteContentDto, 200);
 });

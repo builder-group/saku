@@ -52,11 +52,11 @@ export async function createUrlRedirect(
 
 	const { urlRedirect, userErrors } = urlRedirectCreate;
 	if (userErrors?.length > 0) {
-		if (userErrors.some((e) => e.message.includes('Path has already been taken'))) {
+		if (userErrors.some((e) => e.message.includes('taken'))) {
 			return Err(
 				new AppError('#ERR_REDIRECT_PATH_TAKEN', 409, {
 					title: 'Path already taken',
-					detail: `The path (${input.path}) you are trying to use is already taken. Please try a different path.`
+					detail: `The path (${input.path}) you are trying to use is already taken. Please try a different path. Shopify error: ${userErrors.map((e) => e.message).join(', ')}`
 				})
 			);
 		}
