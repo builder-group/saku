@@ -100,10 +100,13 @@ router.openapi(GetSiteByWorkspaceAndHandleRoute, async (c) => {
 		).unwrap();
 
 		// Get or create storefront access token for the workspace
-		storefrontAccessToken = await getStorefrontToken(workspace.id, {
+		const storefrontTokenResult = await getStorefrontToken(workspace.id, {
 			accessToken,
 			shopId: workspaceAccount.providerAccountId
 		});
+		if (storefrontTokenResult.isOk()) {
+			storefrontAccessToken = storefrontTokenResult.value;
+		}
 	}
 
 	return c.json(

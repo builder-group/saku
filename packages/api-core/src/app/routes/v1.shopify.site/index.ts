@@ -92,10 +92,12 @@ router.openapi(GetShopifySiteByShopAndHandleRoute, async (c) => {
 	}
 
 	// Get or create storefront access token for the workspace
-	const storefrontAccessToken = await getStorefrontToken(site.workspaceId, {
-		accessToken,
-		shopId: shop
-	});
+	const storefrontAccessToken = (
+		await getStorefrontToken(site.workspaceId, {
+			accessToken,
+			shopId: shop
+		})
+	).unwrap();
 
 	return c.json(
 		{

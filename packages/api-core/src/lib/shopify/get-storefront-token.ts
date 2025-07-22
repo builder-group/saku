@@ -1,6 +1,7 @@
+import { Err, Ok, type TResult } from '@blgc/utils';
 import { AppError } from '@repo/hono-utils';
 import { and, eq, sql } from 'drizzle-orm';
-import { db, workspaceTokenTable } from '@/environment';
+import { db, logger, workspaceTokenTable } from '@/environment';
 import { createStorefrontAccessToken } from '@/lib';
 
 /**
@@ -9,7 +10,7 @@ import { createStorefrontAccessToken } from '@/lib';
 export async function getStorefrontToken(
 	workspaceId: string,
 	config: TGetStorefrontTokenConfig
-): Promise<string> {
+): Promise<TResult<string, AppError>> {
 	const { accessToken, shopId, displayName } = config;
 
 	// First, try to find an existing active token
@@ -27,7 +28,7 @@ export async function getStorefrontToken(
 		)
 		.limit(1);
 	if (existingToken != null) {
-		return existingToken.accessToken;
+		return Ok(existingToken.accessToken);
 	}
 
 	// Create a new storefront access token
@@ -41,10 +42,18 @@ export async function getStorefrontToken(
 		}
 	);
 	if (tokenResult.isErr()) {
-		throw new AppError('#ERR_TOKEN_CREATE_FAILED', 500, {
-			title: 'Failed to create storefront token',
-			detail: 'Could not create storefront access token for the workspace'
+		logger.error('Failed to create storefront token', {
+			workspaceId,
+			shopId,
+			displayName,
+			error: tokenResult.error
 		});
+		return Err(
+			new AppError('#ERR_TOKEN_CREATE_FAILED', 500, {
+				title: 'Failed to create storefront token',
+				detail: 'Could not create storefront access token for the workspace'
+			})
+		);
 	}
 
 	// Store the new token in database
@@ -67,13 +76,15 @@ export async function getStorefrontToken(
 			accessToken: sql<string>`${workspaceTokenTable.tokenData}->>'accessToken'`
 		});
 	if (storedToken == null) {
-		throw new AppError('#ERR_TOKEN_STORE_FAILED', 500, {
-			title: 'Failed to store token',
-			detail: 'Could not store storefront access token in database'
-		});
+		return Err(
+			new AppError('#ERR_TOKEN_STORE_FAILED', 500, {
+				title: 'Failed to store token',
+				detail: 'Could not store storefront access token in database'
+			})
+		);
 	}
 
-	return storedToken.accessToken;
+	return Ok(storedToken.accessToken);
 }
 
 export type TGetStorefrontTokenConfig = {
