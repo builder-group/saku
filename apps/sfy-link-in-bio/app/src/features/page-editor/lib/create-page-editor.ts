@@ -42,13 +42,13 @@ export async function createPageEditor(
 		site: {
 			id: site.id,
 			handle: site.handle,
-			version: site.version,
+			version: site.content.version,
 			url: site.url
 		},
 		pageContext,
 
 		nodeMap: (() => {
-			const parentMap = Object.values(site.nodes).reduce(
+			const parentMap = Object.values(site.content.nodes).reduce(
 				(map, node) => {
 					if ('children' in node && node.children) {
 						node.children.forEach((childId) => {
@@ -61,16 +61,16 @@ export async function createPageEditor(
 			);
 
 			return Object.fromEntries(
-				Object.entries(site.nodes).map(([id, node]) => [
+				Object.entries(site.content.nodes).map(([id, node]) => [
 					id,
 					createNodeState(node, parentMap[id as TNodeId])
 				])
 			);
 		})(),
-		rootNodeId: site.rootId,
+		rootNodeId: site.content.rootId,
 		selectedNodeId: createState<TNodeId | null>(null),
 
-		assetsMap: site.assets,
+		assetsMap: site.content.assets,
 
 		activeView: createState('layers' as TViewType),
 		activeSettingsSection: createState<TSettingsSectionType | null>('appearance'),
@@ -610,7 +610,12 @@ export async function createPageEditor(
 export interface TCreatePageEditorConfig {
 	shopify: ShopifyGlobal;
 	shopId: string;
-	site: TFlatSite & { id: string; handle: string; url: string };
+	site: {
+		id: string;
+		handle: string;
+		url: string;
+		content: TFlatSite;
+	};
 	storefrontAccessToken: string;
 }
 

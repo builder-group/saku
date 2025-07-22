@@ -2,32 +2,59 @@ import { ServerErr, ServerOk } from '@blgc/utils';
 import { TFlatSite } from '@repo/editor';
 import { useAppBridge } from '@shopify/app-bridge-react';
 import { Text } from '@shopify/polaris';
-import { withGlobalBind } from 'feature-react/state';
-import React from 'react';
 import { coreApiClient } from '@/environment';
 import { shopify, shopifyConfig } from '@/environment/.server';
-import { createPageEditor, Editor } from '@/features/page-editor';
-import { resultLoader, withResultLoader } from '@/lib';
+import { Editor, usePageEditor } from '@/features/page-editor';
+import { AppError, resultLoader, withResultLoader } from '@/lib';
 import { TLinksFunction } from '@/types';
 import styles from './styles.css?url';
 
 const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 	Success: ({ data }) => {
-		const { site, shopId } = data;
+		const { site, shopId, storefrontAccessToken } = data;
 		const shopify = useAppBridge();
 
-		const editor = React.useMemo(() => {
-			const editor = createPageEditor(
-				{ ...site.content, id: site.id, handle: site.handle, url: site.url },
-				{ shopify, shopId }
+		const {
+			status: editorStatus,
+			data: editorData,
+			error: editorError
+		} = usePageEditor({
+			site,
+			shopify,
+			shopId,
+			storefrontAccessToken
+		});
+
+		if (editorStatus === 'pending') {
+			return (
+				<div className="flex min-h-screen w-full items-center justify-center">
+					<div className="flex flex-col items-center gap-2 text-center">
+						<Text as="h2" variant="headingLg">
+							Loading Editor...
+						</Text>
+					</div>
+				</div>
 			);
-			withGlobalBind(`__editor_${editor.id}`, editor);
-			return editor;
-		}, [site.content, site.id, site.handle, site.url, shopify, shopId]);
+		}
+
+		if (editorError != null) {
+			return (
+				<div className="flex min-h-screen w-full items-center justify-center">
+					<div className="flex flex-col items-center gap-2 text-center">
+						<Text as="h2" variant="headingLg">
+							Error Loading Editor
+						</Text>
+						<Text as="p" variant="bodyMd" tone="subdued">
+							{(editorError as AppError).code}: {editorError.message}
+						</Text>
+					</div>
+				</div>
+			);
+		}
 
 		return (
 			<div className="flex min-h-screen w-full">
-				{editor != null ? <Editor editor={editor} /> : <div>No site</div>}
+				<Editor editor={editorData} />
 			</div>
 		);
 	},
@@ -79,7 +106,8 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 			url: `${shopifyConfig.proxy.url(shop)}/${siteData.handle}`,
 			content: siteData.content as unknown as TFlatSite
 		},
-		shopId: shop
+		shopId: shop,
+		storefrontAccessToken: 'todo'
 	});
 });
 
@@ -96,6 +124,7 @@ interface TSuccessLoaderData {
 		content: TFlatSite;
 	};
 	shopId: string;
+	storefrontAccessToken: string;
 }
 
 export const links: TLinksFunction = () => [{ rel: 'stylesheet', href: styles }];

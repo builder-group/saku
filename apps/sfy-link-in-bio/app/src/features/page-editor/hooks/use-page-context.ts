@@ -4,6 +4,6 @@ import { createPageContext, TCreatePageContextConfig } from '../lib';
 export function usePageContext(config: TCreatePageContextConfig) {
 	return useQuery({
 		queryKey: ['pageContext', config.siteId],
-		queryFn: () => createPageContext(config)
+		queryFn: async () => (await createPageContext(config)).unwrap()
 	});
 }
