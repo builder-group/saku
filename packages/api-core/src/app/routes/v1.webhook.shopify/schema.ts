@@ -133,7 +133,10 @@ export const AppUninstalledWebhookRoute = createRoute({
 						name: z.string().openapi({ example: 'Super Toys' }),
 						email: z.email().openapi({ example: 'super@supertoys.com' }),
 						domain: z.string().nullable().openapi({ example: 'supertoys.com' }),
-						myshopify_domain: z.string().openapi({ example: 'super-toys.myshopify.com' }),
+						myshopify_domain: z
+							.string()
+							.nullable()
+							.openapi({ example: 'super-toys.myshopify.com' }),
 						plan_name: z.string().openapi({ example: 'enterprise' }),
 						plan_display_name: z.string().openapi({ example: 'Shopify Plus' }),
 						country_code: z.string().openapi({ example: 'US' }),

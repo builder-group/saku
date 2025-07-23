@@ -183,6 +183,19 @@ shopify app deploy       # In another terminal - updates webhook URLs
 
 ⚠️ **Note**: Webhook events will be sent to old tunnel URLs until you deploy. [This is a known Shopify CLI limitation.](https://community.shopify.dev/t/webhooks-ulr-not-updated/14731)
 
+### [Webhook Testing](https://shopify.dev/docs/api/shopify-cli/app/app-webhook-trigger)
+
+Test webhooks locally using the Shopify CLI. Replace the placeholder values with your actual configuration:
+
+```bash
+shopify app webhook trigger \
+  --topic app/uninstalled \
+  --address https://your-tunnel.trycloudflare.com/api/v1/webhook/shopify/app/uninstalled \
+  --client-secret YOUR_CLIENT_SECRET \
+  --api-version 2025-07 \
+  --config shopify.app.local.toml
+```
+
 ### How to Create a Sales Channel App
 
 1. Create the app via CLI: `shopify app dev --reset`
