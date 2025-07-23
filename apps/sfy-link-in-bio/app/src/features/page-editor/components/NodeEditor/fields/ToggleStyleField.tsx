@@ -4,7 +4,7 @@ import {
 	resolveStyleReference,
 	TStyleReference
 } from '@repo/editor';
-import { Text } from '@shopify/polaris';
+import { Text, Tooltip } from '@shopify/polaris';
 import { useCompute } from 'feature-react/state';
 import { TState } from 'feature-state';
 import React from 'react';
@@ -69,6 +69,15 @@ export const ToggleStyleField = <GNodeValue, GParentNodeValue>(
 	// UI
 	// =========================================================================
 
+	const InputComponent = (
+		<Knob
+			ariaLabel={ariaLabel || `Toggle ${label}`}
+			selected={selected}
+			onClick={handleToggle}
+			disabled={isValueInherited}
+		/>
+	);
+
 	return (
 		<div className="space-y-1">
 			<div className="flex items-center justify-between">
@@ -90,13 +99,23 @@ export const ToggleStyleField = <GNodeValue, GParentNodeValue>(
 					</button>
 				)}
 			</div>
-			<div className="flex items-center justify-between">
-				<Knob
-					ariaLabel={ariaLabel || `Toggle ${label}`}
-					selected={selected}
-					onClick={handleToggle}
-					disabled={isValueInherited}
-				/>
+			<div className="space-y-1">
+				{isValueInherited ? (
+					<Tooltip
+						content={
+							<span>
+								This toggle is inherited from the parent. Click the unlink icon (
+								<LinkOffIcon className="inline h-3 w-3" />) to set a custom value.
+							</span>
+						}
+						preferredPosition="below"
+						hoverDelay={500}
+					>
+						{InputComponent}
+					</Tooltip>
+				) : (
+					InputComponent
+				)}
 			</div>
 		</div>
 	);
