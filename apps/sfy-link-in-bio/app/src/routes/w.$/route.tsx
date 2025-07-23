@@ -14,14 +14,15 @@ import { resultLoader, withResultLoader } from '@/lib';
 
 const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 	Success: ({ data }) => {
-		const { site, fontUrls, storefrontAccessToken } = data;
+		const { shopId, site, fontUrls, storefrontAccessToken } = data;
 		const cx = React.useMemo(
 			() =>
 				createPageContext({
+					shopId,
 					siteId: site.id,
 					storefrontAccessToken
 				}),
-			[site.id, storefrontAccessToken]
+			[shopId, site.id, storefrontAccessToken]
 		);
 
 		return (
@@ -93,6 +94,7 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 	const site = result.value.data;
 
 	return ServerOk({
+		shopId: `${workspaceHandle}.myshopify.com`,
 		site: {
 			id: site.id,
 			content: hydrateSite(
@@ -114,6 +116,7 @@ interface TErrorLoaderData {
 }
 
 interface TSuccessLoaderData {
+	shopId: string;
 	site: {
 		id: string;
 		content: TResolvedSite;

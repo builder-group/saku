@@ -19,7 +19,7 @@ import { ShopifyGlobal } from '@shopify/app-bridge-react';
 import { FetchError, NetworkError, RequestError } from 'feature-fetch';
 import { createState, TState } from 'feature-state';
 import React from 'react';
-import { appConfig, coreApiClient } from '@/environment';
+import { appConfig, coreApiClient, logger } from '@/environment';
 import { createShopifyTokenMiddleware, requestReview } from '@/lib';
 import { TSettingsSectionType, TViewType } from '../environment';
 import { createNodeState, TNodeState } from './create-node-state';
@@ -28,6 +28,7 @@ import { getNodeAssetHashes } from './get-node-asset-hashes';
 
 export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 	const { shopify, shopId, site, storefrontAccessToken } = config;
+	logger.info('createPageEditor', { config });
 
 	return {
 		id: shortId(),
@@ -37,7 +38,7 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 			version: site.content.version,
 			url: site.url
 		},
-		pageContext: createPageContext({ siteId: site.id, storefrontAccessToken }),
+		pageContext: createPageContext({ shopId, siteId: site.id, storefrontAccessToken }),
 
 		nodeMap: (() => {
 			const parentMap = Object.values(site.content.nodes).reduce(
@@ -105,33 +106,35 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 		addNode(node, parentId, index) {
 			const targetParentId = parentId ?? this.rootNodeId;
 
-			// Update existing node
-			if (this.nodeMap[node.id] != null) {
-				this.nodeMap[node.id]?.set(node);
-			}
-			// Create new node state with ref
-			else {
-				this.nodeMap[node.id] = createNodeState(node);
+			let nodeState = this.nodeMap[node.id];
+			if (nodeState != null) {
+				// Update existing node
+				nodeState.set(node);
+				nodeState.parentId = undefined; // Will be redefined below if (new) parent can have children
+			} else {
+				// Create new node state
+				nodeState = createNodeState(node);
+				this.nodeMap[node.id] = nodeState;
 			}
 
 			// Add the node to parent's children at the specified index
 			const parentState = this.nodeMap[targetParentId];
-			if (parentState != null) {
-				parentState.set((v) => {
-					// Only add if not already in children
-					if ('children' in v && Array.isArray(v.children) && !v.children.includes(node.id)) {
-						const children = [...v.children];
-						if (index != null && index >= 0 && index <= children.length) {
-							// Insert at specified index
-							children.splice(index, 0, node.id);
-						} else {
-							// Append to end if index is not specified or out of bounds
-							children.push(node.id);
-						}
-						return { ...v, children };
+			if (parentState != null && 'children' in parentState._v) {
+				nodeState.parentId = parentState.id;
+
+				if (!parentState._v.children.includes(node.id)) {
+					const children = [...parentState._v.children];
+					if (index != null && index >= 0 && index <= children.length) {
+						// Insert at specified index
+						children.splice(index, 0, node.id);
+					} else {
+						// Append to end if index is not specified or out of bounds
+						children.push(node.id);
 					}
-					return v;
-				});
+
+					parentState._v.children = children;
+					parentState._notify();
+				}
 			}
 
 			return node.id;
@@ -150,13 +153,9 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 			// Remove from parent's children
 			if (node.parentId != null) {
 				const parentState = this.nodeMap[node.parentId];
-				if (parentState != null) {
-					parentState.set((v) => {
-						if ('children' in v && Array.isArray(v.children)) {
-							return { ...v, children: v.children.filter((id) => id !== nodeId) };
-						}
-						return v;
-					});
+				if (parentState != null && 'children' in parentState._v) {
+					parentState._v.children = parentState._v.children.filter((id) => id !== nodeId);
+					parentState._notify();
 				}
 			}
 
