@@ -10,13 +10,7 @@ export const StaticNodeCanvas: React.FC<TCanvasProps> = (props) => {
 		return null;
 	}
 
-	return (
-		<div className="flex w-full flex-col items-center gap-4">
-			{nodes.map((node) => (
-				<StaticNode key={node.id} node={node} cx={cx} />
-			))}
-		</div>
-	);
+	return nodes.map((node) => <StaticNode key={node.id} node={node} cx={cx} />);
 };
 
 interface TCanvasProps {

@@ -29,7 +29,7 @@ export const NodeCanvas: React.FC<TNodeCanvasProps> = (props) => {
 	}
 
 	return (
-		<div ref={editor.canvasRef} className="relative flex w-full flex-col items-center gap-4">
+		<div ref={editor.canvasRef} className="relative h-full w-full">
 			<NodeIndicators editor={editor} />
 			<Node key={rootNodeState.id} nodeState={rootNodeState} editor={editor} />
 		</div>

@@ -20,18 +20,19 @@ export const CanvasPanel: React.FC<TCanvasPanelProps> = (props) => {
 				</div>
 			)}
 
-			<div
-				ref={editor.canvasContainerRef}
-				className="h-[calc(100%-3rem)] w-full overflow-y-auto bg-neutral-50"
+			{/* Use ShadowRoot to fully isolate the static canvas from global styles (e.g., Polaris), ensuring only Tailwind styles apply inside. */}
+			<ShadowRoot
+				links={[{ rel: 'stylesheet', href: tailwindStylesHref }]}
+				onStylesLoaded={() => setStylesLoaded(true)}
+				className="h-full w-full"
 			>
-				{/* Use ShadowRoot to fully isolate the static canvas from global styles (e.g., Polaris), ensuring only Tailwind styles apply inside. */}
-				<ShadowRoot
-					links={[{ rel: 'stylesheet', href: tailwindStylesHref }]}
-					onStylesLoaded={() => setStylesLoaded(true)}
+				<div
+					className="h-[calc(100%-3rem)] w-full overflow-y-auto bg-neutral-50"
+					ref={editor.canvasContainerRef}
 				>
 					<NodeCanvas editor={editor} />
-				</ShadowRoot>
-			</div>
+				</div>
+			</ShadowRoot>
 		</ResizablePanel>
 	);
 };
