@@ -139,10 +139,8 @@ export const TextStyleField = <GNodeValue, GParentNodeValue, GValue>(
 					>
 						<div className="relative">
 							{InputComponent}
-							<div className="pointer-events-none absolute inset-y-0 right-1 flex items-center">
-								<Badge tone="info" size="small">
-									Inherited
-								</Badge>
+							<div className="pointer-events-none absolute inset-y-0 right-0 z-50 flex items-center rounded-r-lg bg-[#F2F2F2] pr-1">
+								<Badge size="small">Inherited</Badge>
 							</div>
 						</div>
 					</Tooltip>
