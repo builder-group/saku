@@ -26,12 +26,11 @@ export function resolveProductNode(
 			title: content.product.title,
 			images: content.product.images.map((asset) => resolveAsset(asset, cx.site)).filter(notEmpty),
 			options: content.product.options,
-			variant,
-			checkoutUrl: content.product.checkoutUrl
+			variant
 		};
 	}
 
-	const resolvedNode: TResolvedProductNode = {
+	return {
 		...rest,
 		content: {
 			product
@@ -46,17 +45,4 @@ export function resolveProductNode(
 			shadow: resolveStyleReference(style.shadow, parentStyles?.shadow)
 		}
 	};
-
-	return resolvedNode;
-
-	// return {
-	// 	type: 'promised',
-	// 	id: node.id,
-	// 	cached: resolvedNode,
-	// 	next: (async () => {
-	// 		await new Promise((resolve) => setTimeout(resolve, 3000));
-	// 		// TODO: Refetch product data
-	// 		return resolvedNode;
-	// 	})()
-	// };
 }

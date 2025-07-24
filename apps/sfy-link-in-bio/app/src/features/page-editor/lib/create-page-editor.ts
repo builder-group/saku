@@ -11,6 +11,8 @@ import {
 	TFont,
 	TFontAsset,
 	TImageAsset,
+	TIntegration,
+	TIntegrationId,
 	TNodeId,
 	toHierarchical,
 	TSite
@@ -27,7 +29,7 @@ import { createPageContext, TPageContext } from './create-page-context';
 import { getNodeAssetHashes } from './get-node-asset-hashes';
 
 export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
-	const { shopify, shopId, site, storefrontAccessToken } = config;
+	const { shopify, site } = config;
 	logger.info('createPageEditor', { config });
 
 	return {
@@ -38,7 +40,10 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 			version: site.content.version,
 			url: site.url
 		},
-		pageContext: createPageContext({ shopId, siteId: site.id, storefrontAccessToken }),
+		pageContext: createPageContext({
+			siteId: site.id,
+			integrations: Object.values(site.content.integrations)
+		}),
 
 		nodeMap: (() => {
 			const parentMap = Object.values(site.content.nodes).reduce(
@@ -64,6 +69,7 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 		selectedNodeId: createState<TNodeId | null>(null),
 
 		assetsMap: site.content.assets,
+		integrationsMap: site.content.integrations,
 
 		activeView: createState('layers' as TViewType),
 		activeSettingsSection: createState<TSettingsSectionType | null>('appearance'),
@@ -71,7 +77,6 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 		isReady: createState(false),
 		isDraggingLayer: createState(false),
 		shopify,
-		shopId,
 		boundingRect: createState<TBoundingRect>({
 			left: 0,
 			top: 0,
@@ -592,7 +597,8 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 					},
 					{} as Record<TNodeId, TFlatNode>
 				),
-				assets: deepCopy(this.assetsMap)
+				assets: deepCopy(this.assetsMap),
+				integrations: deepCopy(this.integrationsMap)
 			} satisfies TFlatSite;
 		}
 	};
@@ -600,14 +606,12 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 
 export interface TCreatePageEditorConfig {
 	shopify: ShopifyGlobal;
-	shopId: string;
 	site: {
 		id: string;
 		handle: string;
 		url: string;
 		content: TFlatSite;
 	};
-	storefrontAccessToken: string;
 }
 
 export interface TPageEditor {
@@ -625,6 +629,7 @@ export interface TPageEditor {
 	nodeMap: Record<TNodeId, TNodeState>;
 
 	assetsMap: Record<TAssetHash, TAsset>;
+	integrationsMap: Record<TIntegrationId, TIntegration>;
 
 	activeView: TState<TViewType, []>;
 	activeSettingsSection: TState<TSettingsSectionType | null, []>;
@@ -632,7 +637,6 @@ export interface TPageEditor {
 	isReady: TState<boolean, []>;
 	isDraggingLayer: TState<boolean, []>;
 	shopify: ShopifyGlobal;
-	shopId: string;
 	boundingRect: TState<TBoundingRect, []>;
 	canvasBoundingRect: TState<TBoundingRect, []>;
 

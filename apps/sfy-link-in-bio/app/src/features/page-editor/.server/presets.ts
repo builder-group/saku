@@ -119,8 +119,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 							title: variant.title,
 							price: variant.price,
 							selectedOptions: variant.selectedOptions ?? []
-						})) ?? [],
-					checkoutUrl: `https://${shopId}/products/${featuredProduct.id}`
+						})) ?? []
 				}
 			},
 			style: {
@@ -168,6 +167,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 	return {
 		version: 'v0.0.1',
 		assets,
+		integrations: [],
 		root: {
 			type: 'page',
 			id: createId('node'),

@@ -70,8 +70,7 @@ export const GetSiteByWorkspaceAndHandleRoute = createRoute({
 		200: JsonSuccessResponse(
 			z.object({
 				id: z.uuid(),
-				content: SFlatSiteContentDto,
-				storefrontAccessToken: z.string().optional()
+				content: SFlatSiteContentDto
 			})
 		),
 		404: NotFoundResponse

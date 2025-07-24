@@ -12,17 +12,15 @@ import styles from './styles.css?url';
 
 const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 	Success: ({ data }) => {
-		const { site, shopId, storefrontAccessToken } = data;
+		const { site } = data;
 		const shopify = useAppBridge();
 
 		const editor = React.useMemo(() => {
 			return createPageEditor({
 				site,
-				shopify,
-				shopId,
-				storefrontAccessToken
+				shopify
 			});
-		}, [site, shopify, shopId, storefrontAccessToken]);
+		}, [site, shopify]);
 
 		return (
 			<div className="flex min-h-screen w-full">
@@ -69,17 +67,16 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 			message: siteResult.error.message ?? 'Unknown error occurred'
 		});
 	}
-	const siteData = siteResult.value.data;
+	const site = siteResult.value.data;
+	const flatSite = site.content as unknown as TFlatSite;
 
 	return ServerOk({
 		site: {
-			id: siteData.id,
-			handle: siteData.handle,
-			url: `${shopifyConfig.proxy.url(shop)}/${siteData.handle}`,
-			content: siteData.content as unknown as TFlatSite
-		},
-		shopId: shop,
-		storefrontAccessToken: 'todo'
+			id: site.id,
+			handle: site.handle,
+			url: `${shopifyConfig.proxy.url(shop)}/${site.handle}`,
+			content: flatSite
+		}
 	});
 });
 
@@ -95,8 +92,6 @@ interface TSuccessLoaderData {
 		url: string;
 		content: TFlatSite;
 	};
-	shopId: string;
-	storefrontAccessToken: string;
 }
 
 export const links: TLinksFunction = () => [{ rel: 'stylesheet', href: styles }];

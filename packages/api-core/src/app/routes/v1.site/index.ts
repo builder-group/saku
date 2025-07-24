@@ -2,8 +2,8 @@ import { toFlatSite } from '@repo/editor';
 import { AppError } from '@repo/hono-utils';
 import { and, eq, sql } from 'drizzle-orm';
 import { router } from '@/app/router';
-import { db, siteTable, workspaceAccountTable, workspaceTable } from '@/environment';
-import { getShopifyOfflineAccessToken, getStorefrontToken, verifyAccessSecret } from '@/lib';
+import { db, siteTable, workspaceTable } from '@/environment';
+import { refreshIntegrations, verifyAccessSecret } from '@/lib';
 import { fetchExternalHtml, parseLinkpopHtml, transformLinkpopToSite } from './lib';
 import {
 	GetSiteByWorkspaceAndHandleRoute,
@@ -79,41 +79,19 @@ router.openapi(GetSiteByWorkspaceAndHandleRoute, async (c) => {
 		});
 	}
 
-	let storefrontAccessToken: string | undefined;
-
-	// Find Shopify storefront access token
-	const [workspaceAccount] = await db
-		.select({
-			providerAccountId: workspaceAccountTable.providerAccountId
+	// Refresh integrations
+	site.content.integrations = (
+		await refreshIntegrations({
+			siteId: site.id,
+			workspaceId: workspace.id,
+			integrations: site.content.integrations
 		})
-		.from(workspaceAccountTable)
-		.where(
-			and(
-				eq(workspaceAccountTable.workspaceId, workspace.id),
-				eq(workspaceAccountTable.provider, 'shopify')
-			)
-		)
-		.limit(1);
-	if (workspaceAccount != null) {
-		const accessToken = (
-			await getShopifyOfflineAccessToken(workspaceAccount.providerAccountId)
-		).unwrap();
-
-		// Get or create storefront access token for the workspace
-		const storefrontTokenResult = await getStorefrontToken(workspace.id, {
-			accessToken,
-			shopId: workspaceAccount.providerAccountId
-		});
-		if (storefrontTokenResult.isOk()) {
-			storefrontAccessToken = storefrontTokenResult.value;
-		}
-	}
+	).integrations;
 
 	return c.json(
 		{
 			id: site.id,
-			content: site.content as TFlatSiteContentDto,
-			storefrontAccessToken
+			content: site.content as TFlatSiteContentDto
 		},
 		200
 	);

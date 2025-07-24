@@ -1,4 +1,4 @@
-import { TFlatSite } from '@repo/editor';
+import { createId, TFlatSite, TShopifyIntegration } from '@repo/editor';
 import { AppError } from '@repo/hono-utils';
 import { and, eq, isNull } from 'drizzle-orm';
 import { router } from '@/app/router';
@@ -15,6 +15,7 @@ import {
 	deleteUrlRedirect,
 	getShopifyOfflineAccessToken,
 	getStorefrontToken,
+	refreshIntegrations,
 	verifyShopifySession
 } from '@/lib';
 import { TFlatSiteContentDto } from '../v1.site/schema';
@@ -64,8 +65,6 @@ router.openapi(GetShopifySitesRoute, async (c) => {
 router.openapi(GetShopifySiteByShopAndHandleRoute, async (c) => {
 	const { shop, handle } = c.req.valid('param');
 
-	const accessToken = (await getShopifyOfflineAccessToken(shop)).unwrap();
-
 	// Find site by handle and shop id
 	const [site] = await db
 		.select({
@@ -91,19 +90,19 @@ router.openapi(GetShopifySiteByShopAndHandleRoute, async (c) => {
 		});
 	}
 
-	// Get or create storefront access token for the workspace
-	const storefrontAccessToken = (
-		await getStorefrontToken(site.workspaceId, {
-			accessToken,
-			shopId: shop
+	// Refresh integrations
+	site.content.integrations = (
+		await refreshIntegrations({
+			siteId: site.id,
+			workspaceId: site.workspaceId,
+			integrations: site.content.integrations
 		})
-	).unwrap();
+	).integrations;
 
 	return c.json(
 		{
 			id: site.id,
-			content: site.content as TFlatSiteContentDto,
-			storefrontAccessToken
+			content: site.content as TFlatSiteContentDto
 		},
 		200
 	);
@@ -181,6 +180,30 @@ router.openapi(CreateShopifySiteRoute, async (c) => {
 			});
 		}
 		redirectId = redirectResult.value.id;
+	}
+
+	// Check if Shopify integration already exists
+	const existingShopifyIntegration = Object.values(content.integrations).find(
+		(integration) => integration.type === 'shopify' && integration.shopId === shopId
+	);
+
+	// Add Shopify integration if it doesn't exist
+	if (existingShopifyIntegration == null) {
+		const storefrontTokenResult = await getStorefrontToken(workspace.id, {
+			accessToken,
+			shopId
+		});
+
+		if (storefrontTokenResult.isOk()) {
+			const integrationId = createId('integration');
+			const shopifyIntegration: TShopifyIntegration = {
+				id: integrationId,
+				type: 'shopify',
+				shopId,
+				storefrontAccessToken: storefrontTokenResult.value
+			};
+			content.integrations[integrationId] = shopifyIntegration;
+		}
 	}
 
 	// Create the site

@@ -52,10 +52,7 @@ export const StaticProductNode = React.forwardRef<
 
 	return (
 		<div {...divProps} ref={ref} className="w-full max-w-md">
-			<a
-				href={product.checkoutUrl}
-				target="_blank"
-				rel="noopener noreferrer"
+			<div
 				className="relative flex w-full items-center gap-3 overflow-hidden bg-white text-inherit no-underline hover:opacity-90"
 				style={{
 					padding: style.padding,
@@ -98,7 +95,7 @@ export const StaticProductNode = React.forwardRef<
 						</p>
 					)}
 				</div>
-			</a>
+			</div>
 		</div>
 	);
 });

@@ -127,6 +127,7 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 	return {
 		version: 'v0.0.1',
 		assets,
+		integrations: [],
 		root: {
 			id: createId('node'),
 			type: 'page',

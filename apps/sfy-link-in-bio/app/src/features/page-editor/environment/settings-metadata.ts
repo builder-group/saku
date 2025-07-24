@@ -2,6 +2,14 @@ export const settingsMetadataMap = {
 	appearance: {
 		type: 'appearance',
 		label: 'Appearance'
+	} satisfies TSettingsMetadata,
+	assets: {
+		type: 'assets',
+		label: 'Assets'
+	} satisfies TSettingsMetadata,
+	integrations: {
+		type: 'integrations',
+		label: 'Integrations'
 	} satisfies TSettingsMetadata
 };
 

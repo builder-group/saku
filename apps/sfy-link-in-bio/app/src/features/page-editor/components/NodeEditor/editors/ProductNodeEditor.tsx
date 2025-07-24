@@ -137,16 +137,6 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 
 		clearSelection();
 
-		let checkoutUrl: string = '';
-		const variant = product.variants[0];
-		if (variant?.id != null) {
-			const numericId =
-				typeof variant.id === 'string' && variant.id.includes('gid://')
-					? variant.id.split('/').pop()
-					: variant.id;
-			checkoutUrl = `https://${editor.shopId}/cart/${numericId}:1`;
-		}
-
 		nodeState._v.content.product = {
 			id: product.id,
 			title: product.title,
@@ -184,8 +174,7 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 								.filter(notEmpty) ?? []
 					};
 				})
-				.filter(notEmpty),
-			checkoutUrl
+				.filter(notEmpty)
 		};
 		nodeState._notify();
 	}, [clearSelection, nodeState, editor]);

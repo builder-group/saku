@@ -1380,7 +1380,6 @@ export interface operations {
                         /** Format: uuid */
                         id: string;
                         content: components["schemas"]["FlatSiteContentDto"];
-                        storefrontAccessToken: string;
                     };
                 };
             };
@@ -1729,7 +1728,6 @@ export interface operations {
                         /** Format: uuid */
                         id: string;
                         content: components["schemas"]["FlatSiteContentDto"];
-                        storefrontAccessToken?: string;
                     };
                 };
             };
@@ -2092,7 +2090,7 @@ export interface operations {
                     /** @example supertoys.com */
                     domain: string | null;
                     /** @example super-toys.myshopify.com */
-                    myshopify_domain: string;
+                    myshopify_domain: string | null;
                     /** @example enterprise */
                     plan_name: string;
                     /** @example Shopify Plus */

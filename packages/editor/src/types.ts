@@ -5,6 +5,7 @@ export interface TSite {
 	version: `v0.0.1`;
 	root: TNode;
 	assets: TAsset[];
+	integrations: TIntegration[];
 }
 
 export interface TFlatSite {
@@ -12,6 +13,7 @@ export interface TFlatSite {
 	rootId: TNodeId;
 	nodes: Record<TNodeId, TFlatNode>;
 	assets: Record<TAssetHash, TAsset>;
+	integrations: Record<TIntegrationId, TIntegration>;
 }
 
 // =========================================================================
@@ -113,8 +115,8 @@ export interface TProductNode extends TBaseNode {
 				image?: TAssetHash;
 				selectedOptions: { name: string; value: string }[];
 			}[];
-			checkoutUrl: string;
 		};
+		integrationId?: TIntegrationId;
 	};
 	style: TLayoutMixin & TBackgroundMixin & TBorderMixin & Omit<TTypographyMixin, 'textAlign'>;
 }
@@ -125,6 +127,8 @@ export interface TProductNode extends TBaseNode {
 
 export type TAssetId = TId<'asset'>;
 export type TAssetHash = string; // SHA-256 hash as hex string
+
+export type TAsset = TFontAsset | TImageAsset;
 
 export interface TBaseAsset {
 	id: TAssetId;
@@ -149,7 +153,24 @@ export interface TImageAsset extends TBaseAsset {
 	altText?: string;
 }
 
-export type TAsset = TFontAsset | TImageAsset;
+// =========================================================================
+// Integration
+// =========================================================================
+
+export type TIntegrationId = TId<'integration'>;
+
+export type TIntegration = TShopifyIntegration;
+
+export interface TBaseIntegration {
+	id: TIntegrationId;
+	type: string;
+}
+
+export interface TShopifyIntegration extends TBaseIntegration {
+	type: 'shopify';
+	shopId: string;
+	storefrontAccessToken: string;
+}
 
 // =========================================================================
 // Mixins

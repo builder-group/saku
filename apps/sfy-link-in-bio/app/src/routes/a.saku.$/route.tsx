@@ -1,5 +1,5 @@
 import { ServerErr, ServerOk } from '@blgc/utils';
-import { TFlatSite } from '@repo/editor';
+import { TFlatSite, TIntegration } from '@repo/editor';
 import { Text } from '@shopify/polaris';
 import { AppProxyProvider } from '@shopify/shopify-app-remix/react';
 import { isStatusCode } from 'feature-fetch';
@@ -18,21 +18,20 @@ import styles from '@/styles.css?url';
 
 const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 	Success: ({ data }) => {
-		const { appUrl, shopId, site, fontUrls, storefrontAccessToken } = data;
+		const { appUrl, site } = data;
 		const cx = React.useMemo(
 			() =>
 				createPageContext({
-					shopId,
 					siteId: site.id,
-					storefrontAccessToken: storefrontAccessToken
+					integrations: site.integrations
 				}),
-			[shopId, site.id, storefrontAccessToken]
+			[site.id, site.integrations]
 		);
 
 		return (
 			<AppProxyProvider appUrl={appUrl}>
 				<link rel="stylesheet" href={`${appUrl}${styles}`} />
-				{fontUrls.map((fontUrl, index) => (
+				{site.fontUrls.map((fontUrl, index) => (
 					<link key={`font-${index}`} rel="stylesheet" href={fontUrl} />
 				))}
 
@@ -98,18 +97,16 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 		});
 	}
 	const site = result.value.data;
+	const flatSite = site.content as unknown as TFlatSite;
 
 	return ServerOk({
 		appUrl: shopifyConfig.appUrl,
-		shopId: session.shop,
 		site: {
 			id: site.id,
-			content: hydrateSite(
-				new StaticSiteHydrateContext(site.content as unknown as TFlatSite, session.shop, handle)
-			)
-		},
-		fontUrls: getSiteFontUrls(site.content as unknown as TFlatSite),
-		storefrontAccessToken: site.storefrontAccessToken
+			content: hydrateSite(new StaticSiteHydrateContext(flatSite, site.id, handle)),
+			integrations: Object.values(flatSite.integrations),
+			fontUrls: getSiteFontUrls(flatSite)
+		}
 	});
 });
 
@@ -120,11 +117,10 @@ interface TErrorLoaderData {
 
 interface TSuccessLoaderData {
 	appUrl: string;
-	shopId: string;
 	site: {
 		id: string;
 		content: TResolvedSite;
+		integrations: TIntegration[];
+		fontUrls: string[];
 	};
-	fontUrls: string[];
-	storefrontAccessToken: string;
 }

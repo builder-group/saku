@@ -35,8 +35,7 @@ export const GetShopifySiteByShopAndHandleRoute = createRoute({
 		200: JsonSuccessResponse(
 			z.object({
 				id: z.uuid(),
-				content: SFlatSiteContentDto,
-				storefrontAccessToken: z.string()
+				content: SFlatSiteContentDto
 			})
 		),
 		404: NotFoundResponse

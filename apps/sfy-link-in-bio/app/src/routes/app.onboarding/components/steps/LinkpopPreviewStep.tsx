@@ -24,10 +24,10 @@ export const LinkpopPreviewStep: React.FC<TLinkpopPreviewStepProps> = (props) =>
 	const cx = React.useMemo(
 		() =>
 			createPageContext({
-				shopId: onboardingContext.shopId,
-				siteId: 'preview'
+				siteId: 'preview',
+				integrations: []
 			}),
-		[onboardingContext.shopId]
+		[]
 	);
 
 	const [isLoading, setIsLoading] = React.useState(false);

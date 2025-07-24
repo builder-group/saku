@@ -1,35 +1,56 @@
 import { withNew } from '@blgc/utils';
+import { TIntegration } from '@repo/editor';
 import { logger } from '@/environment';
+import { createCart } from '../../../lib';
 
 export function createPageContext(config: TCreatePageContextConfig): TPageContext {
-	const { shopId, siteId, storefrontAccessToken } = config;
+	const { siteId, integrations } = config;
 	logger.info('createPageContext', { config });
 
+	// Find first Shopify integration
+	const shopifyIntegration = integrations.find((integration) => integration.type === 'shopify');
+
 	return withNew({
-		shopId,
 		siteId,
-		storefrontAccessToken,
-		_new(this) {
-			if (this.storefrontAccessToken != null) {
-				// createCart({}, { shopId, accessToken: this.storefrontAccessToken }).then((cartResult) => {
-				// 	if (cartResult.isOk()) {
-				// 		this.cartId = cartResult.value.id;
-				// 	}
-				// });
+		integrations: {
+			shopify: shopifyIntegration
+				? {
+						shopId: shopifyIntegration.shopId,
+						storefrontAccessToken: shopifyIntegration.storefrontAccessToken
+					}
+				: undefined
+		},
+		_new(this: TPageContext) {
+			const shopifyIntegration = this.integrations.shopify;
+			if (shopifyIntegration != null) {
+				createCart(
+					{},
+					{
+						shopId: shopifyIntegration.shopId,
+						accessToken: shopifyIntegration.storefrontAccessToken
+					}
+				).then((cartResult) => {
+					if (cartResult.isOk()) {
+						shopifyIntegration.cartId = cartResult.value.id;
+					}
+				});
 			}
 		}
 	});
 }
 
 export type TCreatePageContextConfig = {
-	shopId: string;
 	siteId: string;
-	storefrontAccessToken?: string;
+	integrations: TIntegration[];
 };
 
 export interface TPageContext {
-	cartId?: string;
-	shopId: string;
 	siteId: string;
-	storefrontAccessToken?: string;
+	integrations: {
+		shopify?: {
+			shopId: string;
+			storefrontAccessToken: string;
+			cartId?: string;
+		};
+	};
 }

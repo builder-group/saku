@@ -23,6 +23,7 @@ export function toHierarchical(flatSite: TFlatSite): TSite {
 	return {
 		version: flatSite.version,
 		root: convertNode(flatSite.rootId),
-		assets: Object.values(flatSite.assets)
+		assets: Object.values(flatSite.assets),
+		integrations: Object.values(flatSite.integrations)
 	};
 }
