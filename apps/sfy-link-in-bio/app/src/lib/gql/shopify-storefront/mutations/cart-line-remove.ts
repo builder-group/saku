@@ -2,10 +2,10 @@ import { Err, Ok, type TResult } from '@blgc/utils';
 import { gql, shopifyClientConfig, shopifyStorefrontApiClient } from '@/environment';
 import { AppError } from '@/lib';
 
-// https://shopify.dev/docs/api/storefront/latest/mutations/cartLinesAdd
-const CART_LINE_ADD = gql(`
-	mutation cartLineAdd($cartId: ID!, $lines: [CartLineInput!]!) {
-		cartLinesAdd(cartId: $cartId, lines: $lines) {
+// https://shopify.dev/docs/api/storefront/latest/mutations/cartLinesRemove
+const CART_LINE_REMOVE = gql(`
+	mutation cartLinesRemove($cartId: ID!, $lineIds: [ID!]!) {
+		cartLinesRemove(cartId: $cartId, lineIds: $lineIds) {
 			cart {
 				id
 				checkoutUrl
@@ -68,13 +68,13 @@ const CART_LINE_ADD = gql(`
 	}
 `);
 
-export async function addCartLines(
-	input: TCartLineAddInput,
-	config: TAddCartLinesConfig
-): Promise<TResult<TCartLineAddSuccess, AppError>> {
+export async function removeCartLines(
+	input: TCartLineRemoveInput,
+	config: TRemoveCartLinesConfig
+): Promise<TResult<TCartLineRemoveSuccess, AppError>> {
 	const { shopId, accessToken } = config;
 
-	const result = await shopifyStorefrontApiClient.query(CART_LINE_ADD, {
+	const result = await shopifyStorefrontApiClient.query(CART_LINE_REMOVE, {
 		variables: input,
 		prefixUrl: shopifyClientConfig.shop.storefrontApi(shopId),
 		headers: {
@@ -89,14 +89,16 @@ export async function addCartLines(
 		);
 	}
 
-	const cartLinesAdd = result.value.data?.cartLinesAdd;
-	if (cartLinesAdd == null) {
+	const cartLinesRemove = result.value.data?.cartLinesRemove;
+	if (cartLinesRemove == null) {
 		return Err(
-			new AppError('#ERR_NO_CART_LINES_ADDED', { detail: 'No cart lines were added to the cart' })
+			new AppError('#ERR_NO_CART_LINES_REMOVED', {
+				detail: 'No cart lines were removed from the cart'
+			})
 		);
 	}
 
-	const { cart, userErrors } = cartLinesAdd;
+	const { cart, userErrors } = cartLinesRemove;
 	if (userErrors?.length > 0) {
 		return Err(
 			new AppError('#ERR_USER_ERROR', { detail: userErrors.map((e) => e.message).join(', ') })
@@ -104,7 +106,9 @@ export async function addCartLines(
 	}
 	if (cart == null) {
 		return Err(
-			new AppError('#ERR_NO_CART_LINES_ADDED', { detail: 'No cart lines were added to the cart' })
+			new AppError('#ERR_NO_CART_LINES_REMOVED', {
+				detail: 'No cart lines were removed from the cart'
+			})
 		);
 	}
 
@@ -142,17 +146,17 @@ export async function addCartLines(
 	});
 }
 
-interface TAddCartLinesConfig {
+interface TRemoveCartLinesConfig {
 	shopId: string;
 	accessToken: string;
 }
 
-export interface TCartLineAddInput {
+export interface TCartLineRemoveInput {
 	cartId: string;
-	lines: { merchandiseId: string; quantity: number }[];
+	lineIds: string[];
 }
 
-export interface TCartLineAddSuccess {
+export interface TCartLineRemoveSuccess {
 	id: string;
 	checkoutUrl: string;
 	totalQuantity: number;

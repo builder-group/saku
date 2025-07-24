@@ -115,17 +115,23 @@ export async function createCart(
 				id: node.id,
 				quantity: node.quantity,
 				attributes: node.attributes,
-				merchandise: node.merchandise && {
-					id: node.merchandise.id,
-					title: node.merchandise.title,
-					price: node.merchandise.price,
-					image: node.merchandise.image,
-					product: node.merchandise.product && {
-						id: node.merchandise.product.id,
-						title: node.merchandise.product.title,
-						handle: node.merchandise.product.handle
-					}
-				}
+				merchandise:
+					node.merchandise != null
+						? {
+								id: node.merchandise.id,
+								title: node.merchandise.title,
+								price: node.merchandise.price,
+								image: node.merchandise.image,
+								product:
+									node.merchandise.product != null
+										? {
+												id: node.merchandise.product.id,
+												title: node.merchandise.product.title,
+												handle: node.merchandise.product.handle
+											}
+										: undefined
+							}
+						: null
 			};
 		}),
 		attributes: cart.attributes
@@ -137,15 +143,15 @@ interface TCreateCartConfig {
 	accessToken: string;
 }
 
-export type TCartCreateInput = {
+export interface TCartCreateInput {
 	lines?: { merchandiseId: string; quantity: number }[];
 	attributes?: { key: string; value: string }[];
 	buyerIdentity?: { countryCode?: TCountryCode };
 	note?: string;
 	discountCodes?: string[];
-};
+}
 
-export type TCartCreateSuccess = {
+export interface TCartCreateSuccess {
 	id: string;
 	checkoutUrl: string;
 	totalQuantity: number;
@@ -167,12 +173,7 @@ export type TCartCreateSuccess = {
 		} | null;
 	}[];
 	attributes: { key: string; value: string | null }[];
-};
-
-export type TCartCreateError = {
-	code: string;
-	message: string;
-};
+}
 
 export type TCountryCode =
 	| 'AT'
