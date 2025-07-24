@@ -4,6 +4,8 @@ import React from 'react';
 import { TPageEditor } from '../../../lib';
 import { PageNodeEditor } from '../../NodeEditor';
 import { PanelHeader } from '../../PanelHeader';
+import { AssetsContent } from './AssetsContent';
+import { IntegrationsContent } from './IntegrationsContent';
 import { SettingsContentPlaceholder } from './SettingsContentPlaceholder';
 
 export const SettingsContent: React.FC<TSettingsContentProps> = (props) => {
@@ -25,6 +27,10 @@ export const SettingsContent: React.FC<TSettingsContentProps> = (props) => {
 					</div>
 				</div>
 			);
+		case 'assets':
+			return <AssetsContent editor={editor} />;
+		case 'integrations':
+			return <IntegrationsContent editor={editor} />;
 		default:
 			return <SettingsContentPlaceholder />;
 	}

@@ -20,6 +20,7 @@ export * from './YouTubeIcon';
 
 // Third Party Icons
 export {
+	AppsIcon,
 	ChevronDownIcon,
 	ChevronRightIcon,
 	ClipboardCheckIcon,
@@ -29,6 +30,7 @@ export {
 	DragHandleIcon,
 	DuplicateIcon,
 	ExternalIcon,
+	ImageIcon,
 	LayoutSectionIcon,
 	LiveIcon,
 	MobileIcon,
