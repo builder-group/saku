@@ -4,7 +4,7 @@ import { Text } from '@shopify/polaris';
 import { AppProxyProvider } from '@shopify/shopify-app-remix/react';
 import { isStatusCode } from 'feature-fetch';
 import React from 'react';
-import { coreApiClient } from '@/environment';
+import { coreApiClient, logger } from '@/environment';
 import { shopify, shopifyConfig } from '@/environment/.server';
 import {
 	createPageContext,
@@ -56,7 +56,22 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 export default Page;
 
 export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async ({ request }) => {
-	const { session } = await shopify.authenticate.public.appProxy(request);
+	let shop;
+	try {
+		const result = await shopify.authenticate.public.appProxy(request);
+		shop = result.session?.shop;
+	} catch (error) {
+		logger.error('Failed to authenticate app proxy request', { error });
+	}
+	// TODO: Remove this once we have figured out why the app proxy signature is not correct in Production
+	if (shop == null) {
+		try {
+			const url = new URL(request.url);
+			shop = url.searchParams.get('shop');
+		} catch (error) {
+			logger.error('Failed to get shop from URL', { error });
+		}
+	}
 
 	const url = new URL(request.url);
 	// Extract handle from path: /a/saku/bio -> "bio"
@@ -70,7 +85,7 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 		});
 	}
 
-	if (session?.shop == null) {
+	if (shop == null) {
 		return ServerErr({
 			code: '#ERR_UNAUTHORIZED',
 			message: 'No shop provided in session'
@@ -79,7 +94,7 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 
 	const result = await coreApiClient.get('/v1/shopify/site/shop/{shop}/{handle}', {
 		pathParams: {
-			shop: session.shop,
+			shop,
 			handle
 		}
 	});
