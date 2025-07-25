@@ -94,7 +94,6 @@ export interface TMediaNode extends TBaseNode {
 export interface TTextNode extends TBaseNode {
 	type: 'text';
 	content: {
-		title?: string;
 		text: string;
 	};
 	style: TLayoutMixin & TBackgroundMixin & TBorderMixin & TTypographyMixin;

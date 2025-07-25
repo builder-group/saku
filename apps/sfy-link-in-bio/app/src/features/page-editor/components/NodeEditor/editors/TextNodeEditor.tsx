@@ -29,18 +29,6 @@ export const TextNodeEditor: React.FC<TNodeEditorComponentProps<TTextNode>> = (p
 	// Events
 	// =========================================================================
 
-	const handleTitleChange = React.useCallback(
-		(value: string) => {
-			if (!value.length) {
-				nodeState._v.content.title = undefined;
-			} else {
-				nodeState._v.content.title = value;
-			}
-			nodeState._notify();
-		},
-		[nodeState]
-	);
-
 	const handleTextChange = React.useCallback(
 		(value: string) => {
 			nodeState._v.content.text = value;
@@ -58,22 +46,6 @@ export const TextNodeEditor: React.FC<TNodeEditorComponentProps<TTextNode>> = (p
 			{/* Content Section */}
 			<AccordionSection title="Content" defaultOpen={true}>
 				<div className="space-y-4">
-					{/* Title */}
-					<div className="space-y-1">
-						<Text as="span" variant="bodySm" tone="subdued">
-							Title
-						</Text>
-						<TextField
-							id="title-field"
-							label="Title"
-							labelHidden
-							value={content.title}
-							onChange={handleTitleChange}
-							autoComplete="off"
-							placeholder="Add your title here"
-						/>
-					</div>
-
 					{/* Text */}
 					<div className="space-y-1">
 						<Text as="span" variant="bodySm" tone="subdued">

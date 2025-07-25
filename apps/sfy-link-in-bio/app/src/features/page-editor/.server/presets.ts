@@ -216,8 +216,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					id: createId('node'),
 					type: 'text',
 					content: {
-						title: '📙 Or some text',
-						text: 'with a different font and background color'
+						text: '## 📙 Or some text\nwith a different font and background color'
 					},
 					style: {
 						padding: inheritStyle(),

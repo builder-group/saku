@@ -2,6 +2,7 @@ import { ServerErr, ServerOk } from '@blgc/utils';
 import { TFlatSite, TIntegration } from '@repo/editor';
 import { Text } from '@shopify/polaris';
 import { isStatusCode } from 'feature-fetch';
+import React from 'react';
 import { coreApiClient } from '@/environment';
 import {
 	createPageContext,
