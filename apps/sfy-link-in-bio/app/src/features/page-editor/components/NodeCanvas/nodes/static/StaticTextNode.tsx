@@ -1,5 +1,6 @@
 import { evaluateSync } from '@mdx-js/mdx';
 import React from 'react';
+import { logger } from '@/environment';
 import { TResolvedTextNode } from '../../../../types';
 import { TStaticNodeProps } from '../types';
 
@@ -17,18 +18,23 @@ export const StaticTextNode = React.forwardRef<HTMLDivElement, TStaticNodeProps<
 				return null;
 			}
 
-			const { default: Component } = evaluateSync(content.text, {
-				jsx: React.createElement,
-				jsxs: React.createElement,
-				Fragment: React.Fragment,
-				// Prevents MDX from including debug objects (fileName, lineNumber, columnNumber)
-				// that React tries to render as children,
-				// causing "Objects are not valid as a React child" errors during SSR.
-				// Debug info breaks serialization between server and client.
-				development: false
-			});
+			try {
+				const { default: Component } = evaluateSync(content.text, {
+					jsx: React.createElement,
+					jsxs: React.createElement,
+					Fragment: React.Fragment,
+					// Prevents MDX from including debug objects (fileName, lineNumber, columnNumber)
+					// that React tries to render as children,
+					// causing "Objects are not valid as a React child" errors during SSR.
+					// Debug info breaks serialization between server and client.
+					development: false
+				});
 
-			return Component({ components: mdxComponents });
+				return Component({ components: mdxComponents });
+			} catch (error) {
+				logger.warn('MDX parsing error:', error);
+				return <span>{content.text}</span>;
+			}
 		}, [content.text]);
 
 		return (
