@@ -40,7 +40,7 @@ export const StaticTextNode = React.forwardRef<HTMLDivElement, TStaticNodeProps<
 		return (
 			<div {...divProps} ref={ref} className="w-full max-w-md">
 				<div
-					className="relative overflow-hidden"
+					className="relative flex flex-col justify-center overflow-hidden [&>*:last-child]:m-0"
 					style={{
 						padding: style.padding,
 						backgroundColor: style.backgroundColor,
