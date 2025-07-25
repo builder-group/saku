@@ -1,4 +1,5 @@
 import { Err, Ok, withNew, type TResult } from '@blgc/utils';
+import { createState, TState } from 'feature-state';
 import { logger } from '@/environment';
 import {
 	addCartLines,
@@ -22,13 +23,13 @@ export function createShopifyIntegrationContext(
 	return withNew<TShopifyIntegrationContext>({
 		shopId,
 		storefrontAccessToken,
-		cartId: null,
+		cart: createState<TCart | null>(null),
 
 		_new() {
 			// Auto-create cart on context initialization
 			this.createCart().then((result) => {
 				if (result.isOk()) {
-					this.cartId = result.value.id;
+					this.cart.set(result.value);
 				}
 			});
 		},
@@ -38,8 +39,9 @@ export function createShopifyIntegrationContext(
 				shopId: this.shopId,
 				accessToken: this.storefrontAccessToken
 			});
+
 			if (result.isOk()) {
-				this.cartId = result.value.id;
+				this.cart.set(result.value);
 			}
 
 			return result;
@@ -47,43 +49,56 @@ export function createShopifyIntegrationContext(
 
 		async addToCart(lines) {
 			// Try to create cart if it doesn't exist yet
-			if (this.cartId == null) {
-				const cartResult = await this.createCart({});
+			if (this.cart._v == null) {
+				const cartResult = await this.createCart();
 				if (cartResult.isErr()) {
 					return cartResult;
 				}
+				if (this.cart._v == null) {
+					return Err(new AppError('#ERR_NO_CART_AVAILABLE', { detail: 'No cart available' }));
+				}
 			}
 
-			return addCartLines(
-				{ cartId: this.cartId as string, lines },
+			const result = await addCartLines(
+				{ cartId: this.cart._v.id, lines },
 				{
 					shopId: this.shopId,
 					accessToken: this.storefrontAccessToken
 				}
 			);
+
+			if (result.isOk()) {
+				this.cart.set(result.value);
+			}
+
+			return result;
 		},
 
 		async removeFromCart(lineIds) {
-			if (this.cartId == null) {
+			if (this.cart._v == null) {
 				return Err(new AppError('#ERR_NO_CART_AVAILABLE', { detail: 'No cart available' }));
 			}
 
-			return removeCartLines(
-				{ cartId: this.cartId, lineIds },
+			const result = await removeCartLines(
+				{ cartId: this.cart._v.id, lineIds },
 				{
 					shopId: this.shopId,
 					accessToken: this.storefrontAccessToken
 				}
 			);
+			if (result.isOk()) {
+				this.cart.set(result.value);
+			}
+
+			return result;
 		},
 
 		async checkout() {
-			if (this.cartId == null) {
+			if (this.cart._v == null) {
 				return Err(new AppError('#ERR_NO_CART_AVAILABLE', { detail: 'No cart available' }));
 			}
 
-			// TODO:
-			return Ok({ checkoutUrl: 'todo' });
+			return Ok({ checkoutUrl: this.cart._v.checkoutUrl });
 		}
 	});
 }
@@ -96,7 +111,7 @@ export type TCreateShopifyIntegrationContextConfig = {
 export interface TShopifyIntegrationContext {
 	shopId: string;
 	storefrontAccessToken: string;
-	cartId: string | null;
+	cart: TState<TCart | null, []>;
 
 	createCart(input?: TCartCreateInput): Promise<TResult<TCartCreateSuccess, AppError>>;
 	addToCart(lines: TCartLineAddInput['lines']): Promise<TResult<TCartLineAddSuccess, AppError>>;
@@ -104,4 +119,28 @@ export interface TShopifyIntegrationContext {
 		lineIds: TCartLineRemoveInput['lineIds']
 	): Promise<TResult<TCartLineRemoveSuccess, AppError>>;
 	checkout(): Promise<TResult<{ checkoutUrl: string }, AppError>>;
+}
+
+interface TCart {
+	id: string;
+	checkoutUrl: string;
+	totalQuantity: number;
+	cost: {
+		subtotalAmount: { amount: string; currencyCode: string };
+		totalAmount: { amount: string; currencyCode: string };
+		totalTaxAmount: { amount: string; currencyCode: string } | null;
+	};
+	lines: {
+		id: string;
+		quantity: number;
+		attributes: { key: string; value: string | null }[];
+		merchandise: {
+			id: string;
+			title: string;
+			price: { amount: string; currencyCode: string };
+			image: { url: string; altText: string | null } | null;
+			product?: { id: string; title: string; handle: string };
+		} | null;
+	}[];
+	attributes: { key: string; value: string | null }[];
 }

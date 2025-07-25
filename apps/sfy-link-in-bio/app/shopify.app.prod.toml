@@ -17,7 +17,8 @@ read_products,
 read_themes,
 unauthenticated_read_checkouts,
 unauthenticated_write_checkouts,
-unauthenticated_read_metaobjects
+unauthenticated_read_metaobjects,
+unauthenticated_read_product_listings
 """
 
 [auth]

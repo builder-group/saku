@@ -69,13 +69,13 @@ export interface TResolvedProductNode extends Omit<TProductNode, 'style' | 'cont
 			title: string;
 			images: string[]; // Resolved URL or base64
 			options: { name: string; values: string[] }[];
-			variant?: {
+			variants: {
 				id: string;
 				title: string;
 				price: { amount: string; currencyCode: string };
 				image?: string; // Resolved URL or base64
 				selectedOptions: { name: string; value: string }[];
-			};
+			}[];
 		};
 	};
 	style: TResolveStyle<TProductNode['style']>;

@@ -13,13 +13,13 @@ export function hydrateProductNode(
 		cached: resolveProductNode(node, cx),
 		next: (async () => {
 			const { content, ...rest } = node;
-			await new Promise((resolve) => setTimeout(resolve, 3000));
+			// await new Promise((resolve) => setTimeout(resolve, 3000));
 
 			let product: TProductNode['content']['product'] | undefined;
 			if (content.product != null) {
 				product = {
-					...content.product,
-					title: `${content.product.title} (resolved at ${new Date().toISOString()})`
+					...content.product
+					// title: `${content.product.title} (resolved at ${new Date().toISOString()})`
 				};
 			}
 

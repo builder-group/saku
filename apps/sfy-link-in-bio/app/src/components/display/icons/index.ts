@@ -23,6 +23,7 @@ export {
 	AppsIcon,
 	ChevronDownIcon,
 	ChevronRightIcon,
+	ChevronUpIcon,
 	ClipboardCheckIcon,
 	ClipboardIcon,
 	DeleteIcon,

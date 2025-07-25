@@ -19,6 +19,7 @@ The app requires the following Shopify API access scopes to function properly:
 - **`unauthenticated_read_checkouts`**: Read checkouts via the Storefront API (for [Checkout](https://shopify.dev/docs/api/storefront/latest/objects/checkout))
 - **`unauthenticated_write_checkouts`**: Create and manage carts via the Storefront API, enabling shopping directly from the link in bio page (for [Checkout](https://shopify.dev/docs/api/storefront/latest/objects/checkout))
 - **`unauthenticated_read_metaobjects`**: Read custom data models (metaobjects), such as bundles or app-specific information. (for [Metaobject](https://shopify.dev/docs/api/admin-graphql/latest/objects/metaobject))
+- **`unauthenticated_read_product_listings`**: Read product listings (for [Product](https://shopify.dev/docs/api/storefront/reference/products/product) and [Collection](https://shopify.dev/docs/api/storefront/reference/products/collection))
 
 ## 📐 Architecture
 
