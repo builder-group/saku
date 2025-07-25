@@ -40,19 +40,25 @@ export const StaticTextNode = React.forwardRef<HTMLDivElement, TStaticNodeProps<
 		return (
 			<div {...divProps} ref={ref} className="w-full max-w-md">
 				<div
-					className="relative flex flex-col justify-center overflow-hidden [&>*:last-child]:m-0"
+					className="relative overflow-hidden"
 					style={{
 						padding: style.padding,
 						backgroundColor: style.backgroundColor,
 						borderRadius: style.borderRadius,
-						boxShadow: style.shadow ? '0 4px 6px -1px rgb(0 0 0 / 0.1)' : undefined,
-						fontFamily: style.font?.family,
-						fontSize: style.fontSize,
-						color: style.textColor,
-						textAlign: style.textAlign
+						boxShadow: style.shadow ? '0 4px 6px -1px rgb(0 0 0 / 0.1)' : undefined
 					}}
 				>
-					{mdxContent}
+					<div
+						className="flex min-h-12 w-full flex-col justify-start p-4 [&>*:last-child]:m-0"
+						style={{
+							fontFamily: style.font?.family,
+							fontSize: style.fontSize,
+							color: style.textColor,
+							textAlign: style.textAlign
+						}}
+					>
+						{mdxContent}
+					</div>
 				</div>
 			</div>
 		);
