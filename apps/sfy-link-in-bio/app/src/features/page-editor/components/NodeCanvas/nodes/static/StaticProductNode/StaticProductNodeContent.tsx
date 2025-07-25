@@ -7,7 +7,8 @@ import { TStaticNodeProps } from '../../types';
 export const StaticProductNodeContent: React.FC<TStaticProductNodeContentProps> = (props) => {
 	const { product, style, cx } = props;
 
-	const [isAdding, setIsAdding] = React.useState(false);
+	// const [isAdding, setIsAdding] = React.useState(false);
+	const [isBuying, setIsBuying] = React.useState(false);
 	const [selectedVariantId, setSelectedVariantId] = React.useState<string | null>(null);
 	const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
 
@@ -19,25 +20,47 @@ export const StaticProductNodeContent: React.FC<TStaticProductNodeContentProps> 
 		[product.variants, selectedVariantId]
 	);
 
-	const handleAddToCart = React.useCallback(async () => {
+	// const handleAddToCart = React.useCallback(async () => {
+	// 	if (selectedVariant?.id == null || cx.integrations.shopify == null) {
+	// 		return;
+	// 	}
+
+	// 	setIsAdding(true);
+
+	// 	const result = await cx.integrations.shopify.addToCart([
+	// 		{
+	// 			merchandiseId: selectedVariant.id,
+	// 			quantity: 1
+	// 		}
+	// 	]);
+	// 	if (result.isErr()) {
+	// 		console.error('Failed to add to cart:', result.error);
+	// 	}
+
+	// 	setIsAdding(false);
+	// }, [selectedVariant?.id, cx.integrations.shopify]);
+
+	const handleBuyNow = React.useCallback(async () => {
 		if (selectedVariant?.id == null || cx.integrations.shopify == null) {
 			return;
 		}
 
-		setIsAdding(true);
+		setIsBuying(true);
 
-		const result = await cx.integrations.shopify.addToCart([
+		const result = await cx.integrations.shopify.buyNow([
 			{
 				merchandiseId: selectedVariant.id,
 				quantity: 1
 			}
 		]);
-
 		if (result.isErr()) {
-			console.error('Failed to add to cart:', result.error);
+			console.error('Failed to buy now:', result.error);
+			setIsBuying(false);
+			return;
 		}
 
-		setIsAdding(false);
+		window.open(result.value.checkoutUrl, '_blank', 'noopener');
+		setIsBuying(false);
 	}, [selectedVariant?.id, cx.integrations.shopify]);
 
 	const handleVariantSelect = React.useCallback((variantId: string) => {
@@ -138,7 +161,7 @@ export const StaticProductNodeContent: React.FC<TStaticProductNodeContentProps> 
 				</div>
 
 				{/* Add to Cart Button */}
-				{cx.integrations.shopify != null && selectedVariant != null && (
+				{/* {cx.integrations.shopify != null && selectedVariant != null && (
 					<button
 						onClick={handleAddToCart}
 						disabled={isAdding}
@@ -150,6 +173,22 @@ export const StaticProductNodeContent: React.FC<TStaticProductNodeContentProps> 
 						}}
 					>
 						{isAdding ? <span className="loading loading-spinner loading-xs"></span> : 'Add'}
+					</button>
+				)} */}
+
+				{/* Buy Now Button */}
+				{cx.integrations.shopify != null && selectedVariant != null && (
+					<button
+						onClick={handleBuyNow}
+						disabled={isBuying}
+						className="btn btn-sm ml-3 text-white"
+						style={{
+							backgroundColor: '#000',
+							borderColor: '#000',
+							borderRadius: style.borderRadius
+						}}
+					>
+						{isBuying ? <span className="loading loading-spinner loading-xs"></span> : 'Buy'}
 					</button>
 				)}
 			</div>

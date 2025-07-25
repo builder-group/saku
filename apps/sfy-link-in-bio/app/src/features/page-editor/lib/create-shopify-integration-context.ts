@@ -93,6 +93,22 @@ export function createShopifyIntegrationContext(
 			return result;
 		},
 
+		async buyNow(lines) {
+			// Create a fresh cart with the product (bypasses cached cart)
+			const result = await createCart(
+				{ lines },
+				{
+					shopId: this.shopId,
+					accessToken: this.storefrontAccessToken
+				}
+			);
+			if (result.isErr()) {
+				return result;
+			}
+
+			return Ok({ checkoutUrl: result.value.checkoutUrl });
+		},
+
 		async checkout() {
 			if (this.cart._v == null) {
 				return Err(new AppError('#ERR_NO_CART_AVAILABLE', { detail: 'No cart available' }));
@@ -118,6 +134,7 @@ export interface TShopifyIntegrationContext {
 	removeFromCart(
 		lineIds: TCartLineRemoveInput['lineIds']
 	): Promise<TResult<TCartLineRemoveSuccess, AppError>>;
+	buyNow(lines: TCartLineAddInput['lines']): Promise<TResult<{ checkoutUrl: string }, AppError>>;
 	checkout(): Promise<TResult<{ checkoutUrl: string }, AppError>>;
 }
 
