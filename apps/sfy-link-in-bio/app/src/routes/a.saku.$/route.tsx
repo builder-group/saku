@@ -2,6 +2,7 @@ import { ServerErr, ServerOk } from '@blgc/utils';
 import { TFlatSite, TIntegration } from '@repo/editor';
 import { Text } from '@shopify/polaris';
 import { AppProxyProvider } from '@shopify/shopify-app-remix/react';
+import { boundary } from '@shopify/shopify-app-remix/server';
 import { isStatusCode } from 'feature-fetch';
 import React from 'react';
 import { coreApiClient, logger } from '@/environment';
@@ -15,6 +16,7 @@ import {
 import { hydrateSite, StaticSiteHydrateContext } from '@/features/page-editor/.server';
 import { resultLoader, withResultLoader } from '@/lib';
 import styles from '@/styles.css?url';
+import { THeadersFunction } from '@/types';
 
 const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 	Success: ({ data }) => {
@@ -54,6 +56,10 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 });
 
 export default Page;
+
+export const headers: THeadersFunction = (headersArgs) => {
+	return boundary.headers(headersArgs);
+};
 
 export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async ({ request }) => {
 	let shop;

@@ -2,7 +2,7 @@
 	"extends": "@blgc/config/typescript/react-internal",
 	"compilerOptions": {
 		"baseUrl": ".",
-		"types": ["node"],
+		"types": ["@remix-run/node", "vite/client"],
 		"paths": {
 			"@/*": ["./src/*"]
 		},

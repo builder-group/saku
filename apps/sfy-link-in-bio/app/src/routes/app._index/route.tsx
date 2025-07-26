@@ -11,6 +11,7 @@ import {
 	Text,
 	TextField
 } from '@shopify/polaris';
+import { boundary } from '@shopify/shopify-app-remix/server';
 import { useFeatureState } from 'feature-react';
 import React from 'react';
 import {
@@ -26,6 +27,7 @@ import { shopify, shopifyConfig } from '@/environment/.server';
 import { createShopifyTokenMiddleware, resultLoader, withResultLoader } from '@/lib';
 import { getSessionTokenFromRequest, redirectWithAuth } from '@/lib/.server';
 import { usePageEditorModal } from '@/routes/app.modal.page-editor.$/PageEditorModal';
+import { THeadersFunction } from '@/types';
 
 const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 	Success: ({ data }) => {
@@ -248,6 +250,10 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 });
 
 export default Page;
+
+export const headers: THeadersFunction = (headersArgs) => {
+	return boundary.headers(headersArgs);
+};
 
 export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async ({ request }) => {
 	const { session } = await shopify.authenticate.admin(request);

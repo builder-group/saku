@@ -2,12 +2,13 @@ import { ServerErr, ServerOk } from '@blgc/utils';
 import { TFlatSite } from '@repo/editor';
 import { useAppBridge } from '@shopify/app-bridge-react';
 import { Text } from '@shopify/polaris';
+import { boundary } from '@shopify/shopify-app-remix/server';
 import React from 'react';
 import { coreApiClient } from '@/environment';
 import { shopify, shopifyConfig } from '@/environment/.server';
 import { createPageEditor, Editor } from '@/features/page-editor';
 import { resultLoader, withResultLoader } from '@/lib';
-import { TLinksFunction } from '@/types';
+import { THeadersFunction, TLinksFunction } from '@/types';
 import styles from './styles.css?url';
 
 const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
@@ -43,6 +44,12 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 });
 
 export default Page;
+
+export const links: TLinksFunction = () => [{ rel: 'stylesheet', href: styles }];
+
+export const headers: THeadersFunction = (headersArgs) => {
+	return boundary.headers(headersArgs);
+};
 
 export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async ({ request }) => {
 	const { session } = await shopify.authenticate.admin(request);
@@ -93,5 +100,3 @@ interface TSuccessLoaderData {
 		content: TFlatSite;
 	};
 }
-
-export const links: TLinksFunction = () => [{ rel: 'stylesheet', href: styles }];

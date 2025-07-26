@@ -1,14 +1,16 @@
 import { ServerErr, ServerOk } from '@blgc/utils';
-import { useNavigate, useSearchParams, type ShouldRevalidateFunction } from '@remix-run/react';
+import { ShouldRevalidateFunction, useNavigate, useSearchParams } from '@remix-run/react';
 import { toFlatSite } from '@repo/editor';
 import { useAppBridge } from '@shopify/app-bridge-react';
 import { Button, ButtonGroup, Text } from '@shopify/polaris';
+import { boundary } from '@shopify/shopify-app-remix/server';
 import React from 'react';
 import { appConfig, coreApiClient } from '@/environment';
 import { shopify } from '@/environment/.server';
 import { blankPreset } from '@/features/page-editor/.server';
 import { resultLoader, withResultLoader } from '@/lib';
 import { getSessionTokenFromRequest, redirectWithAuth } from '@/lib/.server';
+import { THeadersFunction } from '@/types';
 import {
 	HandleStep,
 	LinkpopPreviewStep,
@@ -122,6 +124,15 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 
 export default Page;
 
+export const headers: THeadersFunction = (headersArgs) => {
+	return boundary.headers(headersArgs);
+};
+
+// Prevent loader revalidation on URL changes to avoid resetting onboarding state on every step change
+export const shouldRevalidate: ShouldRevalidateFunction = () => {
+	return false;
+};
+
 export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async ({ request }) => {
 	const { session } = await shopify.authenticate.admin(request);
 	const sessionToken = getSessionTokenFromRequest(request);
@@ -179,11 +190,6 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 		]
 	});
 });
-
-// Prevent loader revalidation on URL changes to avoid resetting onboarding state on every step change
-export const shouldRevalidate: ShouldRevalidateFunction = () => {
-	return false;
-};
 
 interface TSuccessLoaderData {
 	shop: string;
