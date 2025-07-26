@@ -1,6 +1,6 @@
 import { fromServerResult, TServerResult } from '@blgc/utils';
-import { useLoaderData } from 'react-router';
 import React from 'react';
+import { useLoaderData } from 'react-router';
 import { TLoaderFunction } from '../../types';
 
 /**

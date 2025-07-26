@@ -1,6 +1,6 @@
 import { fromServerResult } from '@blgc/utils';
-import { useLoaderData } from 'react-router';
 import React from 'react';
+import { useLoaderData } from 'react-router';
 
 export function useLoaderResult<T, E>() {
 	const loaderData = useLoaderData();

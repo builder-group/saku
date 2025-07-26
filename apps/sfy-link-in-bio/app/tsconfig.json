@@ -1,22 +1,20 @@
 {
-  "extends": "@blgc/config/typescript/react-internal",
-  "compilerOptions": {
-    "baseUrl": ".",
-    "types": ["@react-router/node", "vite/client", "@shopify/app-bridge-ui-types"],
-    "rootDirs": ["./src", "./.react-router/types"],
-    "paths": {
-      "@/*": [
-        "./src/*"
-      ]
-    },
-    "plugins": [
-      {
-        "name": "gql.tada/ts-plugin",
-        "schema": "https://shopify.dev/storefront-graphql-direct-proxy/2025-07",
-        "tadaOutputLocation": "./src/environment/gql/shopify-storefront/graphql-env.d.ts"
-      }
-    ]
-  },
-  "include": ["env.d.ts", "**/*.ts", "**/*.tsx", ".react-router/types/**/*"],
-  "exclude": ["node_modules"]
+	"extends": "@blgc/config/typescript/react-internal",
+	"compilerOptions": {
+		"baseUrl": ".",
+		"types": ["@react-router/node", "vite/client", "@shopify/app-bridge-ui-types"],
+		"rootDirs": ["./src", "./.react-router/types"],
+		"paths": {
+			"@/*": ["./src/*"]
+		},
+		"plugins": [
+			{
+				"name": "gql.tada/ts-plugin",
+				"schema": "https://shopify.dev/storefront-graphql-direct-proxy/2025-07",
+				"tadaOutputLocation": "./src/environment/gql/shopify-storefront/graphql-env.d.ts"
+			}
+		]
+	},
+	"include": ["env.d.ts", "**/*.ts", "**/*.tsx", ".react-router/types/**/*"],
+	"exclude": ["node_modules"]
 }

@@ -1,7 +1,7 @@
-import { useNavigate } from 'react-router';
 import { Banner, Button } from '@shopify/polaris';
 import { useCompute } from 'feature-react';
 import React from 'react';
+import { useNavigate } from 'react-router';
 import { ScanEyeIcon, SitePreview } from '@/components';
 import {
 	createPageContext,

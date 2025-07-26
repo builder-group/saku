@@ -1,6 +1,6 @@
-import { Await, useLoaderData } from 'react-router';
 import { Text } from '@shopify/polaris';
 import React from 'react';
+import { Await, useLoaderData } from 'react-router';
 
 // https://reactrouter.com/how-to/suspense
 

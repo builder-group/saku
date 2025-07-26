@@ -1,5 +1,5 @@
-// import mdx from '@mdx-js/rollup';
 import mdx from '@mdx-js/rollup';
+import { reactRouter } from '@react-router/dev/vite';
 import tailwindcss from '@tailwindcss/vite';
 import dotenv from 'dotenv';
 import { defineConfig, type UserConfig } from 'vite';
@@ -74,7 +74,7 @@ export default defineConfig({
 			'feature-react'
 		]
 	},
-	plugins: [tailwindcss(), mdx(), tsconfigPaths()],
+	plugins: [tailwindcss(), mdx(), reactRouter(), tsconfigPaths()],
 	build: {
 		assetsInlineLimit: 0
 	},
@@ -82,6 +82,10 @@ export default defineConfig({
 		include: ['@shopify/app-bridge-react', '@shopify/polaris']
 	}
 }) satisfies UserConfig;
+
+// =========================================================================
+// Helper
+// =========================================================================
 
 // Helper to validate and stringify Vite env vars
 // Note: Can't use NODE_ENV (always 'production' in build) or enforce vars in local dev (no env loading in build command)

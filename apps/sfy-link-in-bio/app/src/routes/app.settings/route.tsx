@@ -1,4 +1,3 @@
-import { useLoaderData } from 'react-router';
 import {
 	Badge,
 	BlockStack,
@@ -14,6 +13,7 @@ import {
 	useBreakpoints
 } from '@shopify/polaris';
 import React from 'react';
+import { useLoaderData } from 'react-router';
 import { ApiHealthBadge } from '@/components';
 import { appConfig } from '@/environment';
 import { TLoaderFunction } from '@/types';

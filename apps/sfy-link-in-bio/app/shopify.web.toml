@@ -1,6 +1,6 @@
 name = "React Router"
 roles = ["frontend", "backend"]
-webhooks_path = "/webhooks/app/uninstalled"
+webhooks_path = "/api/v1/webhook"
 
 [commands]
 predev = ""

@@ -1,8 +1,8 @@
 import {
-    HeadersFunction,
-    LinksFunction,
-    type ActionFunctionArgs,
-    type LoaderFunctionArgs,
+	HeadersFunction,
+	LinksFunction,
+	type ActionFunctionArgs,
+	type LoaderFunctionArgs
 } from 'react-router';
 
 export type TLoaderFunction<GResponse = null> = (args: LoaderFunctionArgs) => Promise<GResponse>;
