@@ -1,9 +1,10 @@
 import { TFlatNode } from '@repo/editor';
-import { TNodeState, TPageEditor } from '../../../lib';
+import { TNodeState, TPageContext, TPageEditor } from '../../../lib';
 import { TResolvedNode } from '../../../types';
 
 export interface TStaticNodeProps<GResolvedNode extends TResolvedNode>
 	extends React.HTMLProps<HTMLDivElement> {
+	cx: TPageContext;
 	node: GResolvedNode;
 	state?: 'loading' | 'error' | 'success';
 }

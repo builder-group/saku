@@ -134,6 +134,29 @@ export const ImageUploadField: React.FC<TImageUploadFieldProps> = (props) => {
 		};
 	}, [onError, shopify, image, onChange]);
 
+	const handleFileUpload = React.useCallback(async () => {
+		// Create a hidden file input
+		const input = document.createElement('input');
+		input.type = 'file';
+		input.accept = 'image/*';
+		input.style.display = 'none';
+
+		input.onchange = async (event) => {
+			const target = event.target as HTMLInputElement;
+			const file = target.files?.[0];
+			if (file == null) {
+				return;
+			}
+
+			// Reuse the same logic as handleDrop
+			await handleDrop([file], [file]);
+		};
+
+		document.body.appendChild(input);
+		input.click();
+		document.body.removeChild(input);
+	}, [handleDrop]);
+
 	const handleRemove = React.useCallback(() => {
 		onChange?.({
 			url: '',
@@ -177,14 +200,22 @@ export const ImageUploadField: React.FC<TImageUploadFieldProps> = (props) => {
 				) : (
 					<>
 						<Text as="span">
-							Drop files to upload or{' '}
+							<button
+								type="button"
+								onClick={handleFileUpload}
+								className="cursor-pointer text-[#005bd3] hover:underline"
+							>
+								Upload
+							</button>{' '}
+							image or{' '}
 							<button
 								type="button"
 								onClick={handleFilePicker}
 								className="cursor-pointer text-[#005bd3] hover:underline"
 							>
 								browse{isFetchingMedia ? '...' : ''}
-							</button>
+							</button>{' '}
+							files
 						</Text>
 						<Text as="span" variant="bodySm" tone="subdued">
 							Accepts .jpg, .png, and .gif

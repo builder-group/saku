@@ -5,7 +5,14 @@
 		"types": ["node"],
 		"paths": {
 			"@/*": ["./src/*"]
-		}
+		},
+		"plugins": [
+			{
+				"name": "gql.tada/ts-plugin",
+				"schema": "https://shopify.dev/storefront-graphql-direct-proxy/2025-07",
+				"tadaOutputLocation": "./src/environment/gql/shopify-storefront/graphql-env.d.ts"
+			}
+		]
 	},
 	"include": ["env.d.ts", "**/*.ts", "**/*.tsx"],
 	"exclude": ["node_modules"]

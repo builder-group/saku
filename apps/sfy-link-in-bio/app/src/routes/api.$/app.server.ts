@@ -11,7 +11,7 @@ import { createApiProxy } from '@/lib/.server';
  * In production: Uses embedded API Core package
  */
 
-export const app =
+export const app: Hono | { request: (request: Request) => Promise<Response> } =
 	appConfig.env === 'development'
 		? { request: createApiProxy({ targetUrl: apiConfig.core.url, stripPrefix: '/api' }) }
 		: createApp(new Hono().basePath('/api'));

@@ -6,8 +6,6 @@ export const GetShopifyWorkspaceRoute = createRoute({
 	path: '/v1/shopify/workspace',
 	tags: ['shopify', 'workspace'],
 	summary: 'Get workspace info',
-	description:
-		'Returns workspace information for the authenticated Shopify shop, including onboarding status.',
 	operationId: 'getShopifyWorkspace',
 	responses: {
 		200: JsonSuccessResponse(

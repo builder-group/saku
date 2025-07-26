@@ -13,6 +13,10 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 	const parentNodeState = React.useMemo(() => editor.getRootNode(), [editor]);
 
 	const [mediaImageError, setImageError] = React.useState<string | null>(null);
+	const [selectedMediaType, setSelectedMediaType] = React.useState<TMediaType>(() => {
+		return content.media?.type ?? 'image';
+	});
+
 	const mediaImage = React.useMemo(() => {
 		const asset = editor.getImageAsset(content.media?.hash);
 		if (asset == null || asset.storage.type !== 'url') {
@@ -31,7 +35,10 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 
 	const handleMediaTypeChange = React.useCallback(
 		(value: string) => {
-			nodeState._v.content.media = { type: value as 'image', hash: '' };
+			setSelectedMediaType(value as TMediaType);
+
+			// Clear existing media when changing type
+			nodeState._v.content.media = undefined;
 			nodeState._notify();
 		},
 		[nodeState]
@@ -71,13 +78,13 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 							label="Media type"
 							labelHidden
 							options={[{ label: 'Image', value: 'image' }]}
-							value={content.media?.type ?? 'image'}
+							value={selectedMediaType}
 							onChange={handleMediaTypeChange}
 						/>
 					</div>
 
-					{/* Image Type */}
-					{content.media?.type === 'image' && (
+					{/* Image */}
+					{selectedMediaType === 'image' && (
 						<div className="space-y-1">
 							<Text as="span" variant="bodySm" tone="subdued">
 								Image
@@ -184,3 +191,5 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 		</>
 	);
 };
+
+type TMediaType = NonNullable<TMediaNode['content']['media']>['type'];

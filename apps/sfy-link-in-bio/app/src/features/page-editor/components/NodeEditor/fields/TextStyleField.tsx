@@ -4,7 +4,7 @@ import {
 	resolveStyleReference,
 	TStyleReference
 } from '@repo/editor';
-import { Text, TextField, TextFieldProps } from '@shopify/polaris';
+import { Badge, Text, TextField, TextFieldProps, Tooltip } from '@shopify/polaris';
 import { useCompute } from 'feature-react/state';
 import { TState } from 'feature-state';
 import React from 'react';
@@ -88,6 +88,18 @@ export const TextStyleField = <GNodeValue, GParentNodeValue, GValue>(
 	// UI
 	// =========================================================================
 
+	const InputComponent = (
+		<TextField
+			{...textFieldProps}
+			label={label}
+			labelHidden
+			value={displayValue}
+			onChange={handleChange}
+			readOnly={isValueInherited}
+			{...(textFieldProps.type === 'number' ? { min, max } : {})}
+		/>
+	);
+
 	return (
 		<div className="space-y-1">
 			<div className="flex items-center justify-between">
@@ -113,15 +125,29 @@ export const TextStyleField = <GNodeValue, GParentNodeValue, GValue>(
 					</button>
 				)}
 			</div>
-			<TextField
-				{...textFieldProps}
-				label={label}
-				labelHidden
-				value={displayValue}
-				onChange={handleChange}
-				readOnly={isValueInherited}
-				{...(textFieldProps.type === 'number' ? { min, max } : {})}
-			/>
+			<div className="relative">
+				{isValueInherited ? (
+					<Tooltip
+						content={
+							<span>
+								This field is inherited from the parent. Click the unlink icon (
+								<LinkOffIcon className="inline h-3 w-3" />) to set a custom value.
+							</span>
+						}
+						preferredPosition="below"
+						hoverDelay={500}
+					>
+						<div className="relative">
+							{InputComponent}
+							<div className="pointer-events-none absolute inset-y-0 right-0 z-50 flex items-center rounded-r-lg bg-[#F2F2F2] pr-1">
+								<Badge size="small">Inherited</Badge>
+							</div>
+						</div>
+					</Tooltip>
+				) : (
+					InputComponent
+				)}
+			</div>
 		</div>
 	);
 };

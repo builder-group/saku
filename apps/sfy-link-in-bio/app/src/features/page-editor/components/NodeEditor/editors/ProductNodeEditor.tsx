@@ -6,14 +6,7 @@ import {
 	resolveStyleReference,
 	TProductNode
 } from '@repo/editor';
-import {
-	Banner,
-	Button,
-	IndexTable,
-	Scrollable,
-	Text,
-	useIndexResourceState
-} from '@shopify/polaris';
+import { Button, IndexTable, Scrollable, Text, useIndexResourceState } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react/state';
 import React from 'react';
 import { AccordionSection, DeleteIcon, ProductAddIcon } from '@/components';
@@ -128,24 +121,20 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 	// =========================================================================
 
 	const handleSelectProduct = React.useCallback(async () => {
-		const results = await editor.shopify.resourcePicker({ type: 'product' });
+		const results = await editor.shopify.resourcePicker({
+			type: 'product',
+			filter: {
+				hidden: false,
+				draft: false,
+				archived: false
+			}
+		});
 		const product = results?.[0];
 		if (!isProduct(product)) {
-			editor.shopify.toast.show('No products selected');
 			return;
 		}
 
 		clearSelection();
-
-		let checkoutUrl: string = '';
-		const variant = product.variants[0];
-		if (variant?.id != null) {
-			const numericId =
-				typeof variant.id === 'string' && variant.id.includes('gid://')
-					? variant.id.split('/').pop()
-					: variant.id;
-			checkoutUrl = `https://${editor.shopId}/cart/${numericId}:1`;
-		}
 
 		nodeState._v.content.product = {
 			id: product.id,
@@ -184,8 +173,7 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 								.filter(notEmpty) ?? []
 					};
 				})
-				.filter(notEmpty),
-			checkoutUrl
+				.filter(notEmpty)
 		};
 		nodeState._notify();
 	}, [clearSelection, nodeState, editor]);
@@ -340,16 +328,6 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 							<Button onClick={handleSelectProduct} variant="secondary" icon={ProductAddIcon}>
 								Select Product
 							</Button>
-						)}
-
-						{/* Warning Banner for multiple variants */}
-						{content.product != null && content.product.variants.length > 1 && (
-							<div className="mt-4">
-								<Banner tone="warning">
-									Multiple variants detected. Only the first variant is currently supported for
-									sale. Support for multiple variants is coming soon.
-								</Banner>
-							</div>
 						)}
 					</div>
 				</div>

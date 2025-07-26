@@ -4,7 +4,7 @@ import {
 	resolveStyleReference,
 	TStyleReference
 } from '@repo/editor';
-import { Select, SelectProps, Text } from '@shopify/polaris';
+import { Badge, Select, SelectProps, Text, Tooltip } from '@shopify/polaris';
 import { useCompute } from 'feature-react/state';
 import { TState } from 'feature-state';
 import React from 'react';
@@ -80,6 +80,17 @@ export const SelectStyleField = <GNodeValue, GParentNodeValue, GValue>(
 	// UI
 	// =========================================================================
 
+	const InputComponent = (
+		<Select
+			{...selectProps}
+			label={label}
+			labelHidden
+			value={displayValue}
+			onChange={handleChange}
+			disabled={isValueInherited || selectProps.disabled}
+		/>
+	);
+
 	return (
 		<div className="space-y-1">
 			<div className="flex items-center justify-between">
@@ -90,8 +101,12 @@ export const SelectStyleField = <GNodeValue, GParentNodeValue, GValue>(
 					<button
 						type="button"
 						onClick={handleToggleInheritance}
-						className="flex items-center justify-center opacity-60 transition-opacity hover:opacity-100"
-						title={isValueInherited ? 'Unlink from parent' : 'Link to parent'}
+						className="flex cursor-pointer items-center justify-center opacity-60 transition-opacity hover:opacity-100"
+						title={
+							isValueInherited
+								? `Unlink from parent (${parentValue})`
+								: `Link to parent (${parentValue})`
+						}
 					>
 						{isValueInherited ? (
 							<LinkOffIcon className="h-3 w-3" />
@@ -101,14 +116,29 @@ export const SelectStyleField = <GNodeValue, GParentNodeValue, GValue>(
 					</button>
 				)}
 			</div>
-			<Select
-				{...selectProps}
-				label={label}
-				labelHidden
-				value={displayValue}
-				onChange={handleChange}
-				disabled={isValueInherited || selectProps.disabled}
-			/>
+			<div className="relative">
+				{isValueInherited ? (
+					<Tooltip
+						content={
+							<span>
+								This field is inherited from the parent. Click the unlink icon (
+								<LinkOffIcon className="inline h-3 w-3" />) to set a custom value.
+							</span>
+						}
+						preferredPosition="below"
+						hoverDelay={500}
+					>
+						<div className="relative">
+							{InputComponent}
+							<div className="pointer-events-none absolute inset-y-0 right-0 z-50 flex items-center rounded-r-lg bg-[#F2F2F2] pr-1">
+								<Badge size="small">Inherited</Badge>
+							</div>
+						</div>
+					</Tooltip>
+				) : (
+					InputComponent
+				)}
+			</div>
 		</div>
 	);
 };

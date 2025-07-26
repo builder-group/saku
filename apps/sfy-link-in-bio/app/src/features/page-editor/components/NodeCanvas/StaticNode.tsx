@@ -13,23 +13,23 @@ import {
 
 export const StaticNode = React.forwardRef<HTMLDivElement, TStaticNodeProps<TResolvedNode>>(
 	(props, ref) => {
-		const { node, state } = props;
+		const { node, state, cx } = props;
 
 		switch (node.type) {
 			case 'about':
-				return <StaticAboutNode ref={ref} node={node} state={state} />;
+				return <StaticAboutNode ref={ref} node={node} state={state} cx={cx} />;
 			case 'link':
-				return <StaticLinkNode ref={ref} node={node} state={state} />;
+				return <StaticLinkNode ref={ref} node={node} state={state} cx={cx} />;
 			case 'media':
-				return <StaticMediaNode ref={ref} node={node} state={state} />;
+				return <StaticMediaNode ref={ref} node={node} state={state} cx={cx} />;
 			case 'page':
-				return <StaticPageNode ref={ref} node={node} state={state} />;
+				return <StaticPageNode ref={ref} node={node} state={state} cx={cx} />;
 			case 'text':
-				return <StaticTextNode ref={ref} node={node} state={state} />;
+				return <StaticTextNode ref={ref} node={node} state={state} cx={cx} />;
 			case 'product':
-				return <StaticProductNode ref={ref} node={node} state={state} />;
+				return <StaticProductNode ref={ref} node={node} state={state} cx={cx} />;
 			case 'promised':
-				return <StaticPromisedNode ref={ref} node={node} state={state} />;
+				return <StaticPromisedNode ref={ref} node={node} state={state} cx={cx} />;
 			default:
 				return null;
 		}

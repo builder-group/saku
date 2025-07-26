@@ -7,10 +7,38 @@ export const GetShopifySitesRoute = createRoute({
 	path: '/v1/shopify/site',
 	tags: ['shopify', 'site'],
 	summary: 'List connected sites',
-	description: 'Returns all sites that are connected to the authenticated Shopify shop.',
 	operationId: 'listShopifySites',
 	responses: {
 		200: JsonSuccessResponse(z.array(SSiteSummaryDto))
+	}
+});
+
+export const GetShopifySiteByShopAndHandleRoute = createRoute({
+	method: 'get',
+	path: '/v1/shopify/site/shop/{shop}/{handle}',
+	tags: ['shopify', 'site'],
+	summary: 'Get site by shop and handle',
+	operationId: 'getShopifySiteByShopAndHandle',
+	request: {
+		params: z.object({
+			shop: z.string().openapi({
+				example: 'my-shop.myshopify.com',
+				description: 'Shop domain'
+			}),
+			handle: z.string().openapi({
+				example: 'bio',
+				description: 'Site handle/slug'
+			})
+		})
+	},
+	responses: {
+		200: JsonSuccessResponse(
+			z.object({
+				id: z.uuid(),
+				content: SFlatSiteContentDto
+			})
+		),
+		404: NotFoundResponse
 	}
 });
 
@@ -19,7 +47,6 @@ export const CreateShopifySiteRoute = createRoute({
 	path: '/v1/shopify/site',
 	tags: ['shopify', 'site'],
 	summary: 'Create new site',
-	description: 'Creates a new site in the workspace connected to the authenticated Shopify shop.',
 	operationId: 'createShopifySite',
 	request: {
 		body: {
@@ -61,7 +88,6 @@ export const UpdateShopifySiteContentRoute = createRoute({
 	path: '/v1/shopify/site/{siteId}/content',
 	tags: ['shopify', 'site'],
 	summary: 'Update site content',
-	description: 'Updates the content of a site connected to the authenticated Shopify shop.',
 	operationId: 'updateShopifySiteContent',
 	request: {
 		params: z.object({
@@ -83,30 +109,6 @@ export const UpdateShopifySiteContentRoute = createRoute({
 	responses: {
 		200: JsonSuccessResponse(SSiteDto),
 		400: BadRequestResponse,
-		404: NotFoundResponse
-	}
-});
-
-export const GetSiteContentByShopAndHandleRoute = createRoute({
-	method: 'get',
-	path: '/v1/shopify/site/shop/{shop}/{handle}/content',
-	tags: ['shopify', 'site'],
-	summary: 'Get site content by shop and handle',
-	operationId: 'getShopifySiteContentByShopAndHandle',
-	request: {
-		params: z.object({
-			shop: z.string().openapi({
-				example: 'my-shop.myshopify.com',
-				description: 'Shop domain'
-			}),
-			handle: z.string().openapi({
-				example: 'bio',
-				description: 'Site handle/slug'
-			})
-		})
-	},
-	responses: {
-		200: JsonSuccessResponse(SFlatSiteContentDto),
 		404: NotFoundResponse
 	}
 });

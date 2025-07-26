@@ -11,7 +11,7 @@ import {
 	TTextNode
 } from '@repo/editor';
 
-export interface TResolvedSite extends Omit<TSite, 'root' | 'assets'> {
+export interface TResolvedSite extends Omit<TSite, 'root' | 'assets' | 'integrations'> {
 	root: TResolvedPageNode;
 }
 
@@ -69,14 +69,13 @@ export interface TResolvedProductNode extends Omit<TProductNode, 'style' | 'cont
 			title: string;
 			images: string[]; // Resolved URL or base64
 			options: { name: string; values: string[] }[];
-			variant?: {
+			variants: {
 				id: string;
 				title: string;
 				price: { amount: string; currencyCode: string };
 				image?: string; // Resolved URL or base64
 				selectedOptions: { name: string; value: string }[];
-			};
-			checkoutUrl: string;
+			}[];
 		};
 	};
 	style: TResolveStyle<TProductNode['style']>;

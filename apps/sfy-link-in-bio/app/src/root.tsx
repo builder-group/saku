@@ -1,7 +1,7 @@
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from '@remix-run/react';
 import React from 'react';
-import { PosthogProvider } from '@/components';
 import { TLinksFunction } from '@/types';
+import { RootProviders } from './providers';
 import styles from './styles.css?url'; // ?url required for Shopify app hot reloading
 
 const Root: React.FC = () => {
@@ -16,11 +16,11 @@ const Root: React.FC = () => {
 				<Links />
 			</head>
 			<body>
-				<PosthogProvider>
+				<RootProviders>
 					<Outlet />
 					<ScrollRestoration />
 					<Scripts />
-				</PosthogProvider>
+				</RootProviders>
 			</body>
 		</html>
 	);

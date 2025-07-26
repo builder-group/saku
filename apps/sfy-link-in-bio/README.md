@@ -8,13 +8,18 @@
 
 ### [Access Scopes](https://shopify.dev/docs/api/usage/access-scopes)
 
-The app requires specific Shopify API access scopes to function properly:
+The app requires the following Shopify API access scopes to function properly:
 
-- **`write_files`**: Required to upload and manage media files in the merchant's files section (for [GenericFile](https://shopify.dev/docs/api/admin-graphql/latest/objects/genericfile))
-- **`write_online_store_navigation`**: Required to create and modify URL redirects for bio links (for [UrlRedirect](https://shopify.dev/docs/api/admin-graphql/latest/objects/UrlRedirect))
-- **`read_online_store_navigation`**: Required to read existing URL redirects and prevent conflicts (for [UrlRedirect](https://shopify.dev/docs/api/admin-graphql/latest/objects/UrlRedirect))
-- **`read_themes`**: Required to access theme settings and styling information for creating link-in-bio pages that match the store's design (for [OnlineStoreTheme](https://shopify.dev/docs/api/admin-graphql/latest/objects/OnlineStoreTheme))
-- **`read_products`**: Required to access product information, variants, and media for creating link-in-bio pages with product recommendations and featured items (for [Product](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product))
+- **`read_files`**: Read media files in the merchant's files section (for [GenericFile](https://shopify.dev/docs/api/admin-graphql/latest/objects/genericfile))
+- **`write_files`**: Upload and manage media files in the merchant's files section (for [GenericFile](https://shopify.dev/docs/api/admin-graphql/latest/objects/genericfile))
+- **`read_online_store_navigation`**: Read existing URL redirects and navigation (for [UrlRedirect](https://shopify.dev/docs/api/admin-graphql/latest/objects/UrlRedirect))
+- **`write_online_store_navigation`**: Create and modify URL redirects for bio links (for [UrlRedirect](https://shopify.dev/docs/api/admin-graphql/latest/objects/UrlRedirect))
+- **`read_products`**: Access product information, variants, and media for creating link-in-bio pages with product recommendations and featured items (for [Product](https://shopify.dev/docs/api/admin-graphql/latest/objects/Product))
+- **`read_themes`**: Access theme settings and styling information for creating link-in-bio pages that match the store's design (for [OnlineStoreTheme](https://shopify.dev/docs/api/admin-graphql/latest/objects/OnlineStoreTheme))
+- **`unauthenticated_read_checkouts`**: Read checkouts via the Storefront API (for [Checkout](https://shopify.dev/docs/api/storefront/latest/objects/checkout))
+- **`unauthenticated_write_checkouts`**: Create and manage carts via the Storefront API, enabling shopping directly from the link in bio page (for [Checkout](https://shopify.dev/docs/api/storefront/latest/objects/checkout))
+- **`unauthenticated_read_metaobjects`**: Read custom data models (metaobjects), such as bundles or app-specific information. (for [Metaobject](https://shopify.dev/docs/api/admin-graphql/latest/objects/metaobject))
+- **`unauthenticated_read_product_listings`**: Read product listings (for [Product](https://shopify.dev/docs/api/storefront/reference/products/product) and [Collection](https://shopify.dev/docs/api/storefront/reference/products/collection))
 
 ## 📐 Architecture
 
@@ -178,6 +183,19 @@ shopify app deploy       # In another terminal - updates webhook URLs
 ```
 
 ⚠️ **Note**: Webhook events will be sent to old tunnel URLs until you deploy. [This is a known Shopify CLI limitation.](https://community.shopify.dev/t/webhooks-ulr-not-updated/14731)
+
+### [Webhook Testing](https://shopify.dev/docs/api/shopify-cli/app/app-webhook-trigger)
+
+Test webhooks locally using the Shopify CLI. Replace the placeholder values with your actual configuration:
+
+```bash
+shopify app webhook trigger \
+  --topic app/uninstalled \
+  --address https://your-tunnel.trycloudflare.com/api/v1/webhook/shopify/app/uninstalled \
+  --client-secret YOUR_CLIENT_SECRET \
+  --api-version 2025-07 \
+  --config shopify.app.local.toml
+```
 
 ### How to Create a Sales Channel App
 

@@ -1,27 +1,41 @@
 import { ServerErr, ServerOk } from '@blgc/utils';
-import { TFlatSite } from '@repo/editor';
+import { TFlatSite, TIntegration } from '@repo/editor';
 import { Text } from '@shopify/polaris';
 import { AppProxyProvider } from '@shopify/shopify-app-remix/react';
 import { isStatusCode } from 'feature-fetch';
-import { coreApiClient } from '@/environment';
+import React from 'react';
+import { coreApiClient, logger } from '@/environment';
 import { shopify, shopifyConfig } from '@/environment/.server';
-import { getSiteFontUrls, StaticNodeCanvas, TResolvedSite } from '@/features/page-editor';
+import {
+	createPageContext,
+	getSiteFontUrls,
+	StaticNodeCanvas,
+	TResolvedSite
+} from '@/features/page-editor';
 import { hydrateSite, StaticSiteHydrateContext } from '@/features/page-editor/.server';
 import { resultLoader, withResultLoader } from '@/lib';
 import styles from '@/styles.css?url';
 
 const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 	Success: ({ data }) => {
-		const { appUrl, site, fontUrls } = data;
+		const { appUrl, site } = data;
+		const cx = React.useMemo(
+			() =>
+				createPageContext({
+					siteId: site.id,
+					integrations: site.integrations
+				}),
+			[site.id, site.integrations]
+		);
 
 		return (
 			<AppProxyProvider appUrl={appUrl}>
 				<link rel="stylesheet" href={`${appUrl}${styles}`} />
-				{fontUrls.map((fontUrl, index) => (
+				{site.fontUrls.map((fontUrl, index) => (
 					<link key={`font-${index}`} rel="stylesheet" href={fontUrl} />
 				))}
 
-				<StaticNodeCanvas nodes={[site.root]} />
+				<StaticNodeCanvas cx={cx} nodes={[site.content.root]} />
 			</AppProxyProvider>
 		);
 	},
@@ -42,7 +56,22 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 export default Page;
 
 export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async ({ request }) => {
-	const { session } = await shopify.authenticate.public.appProxy(request);
+	let shop;
+	try {
+		const result = await shopify.authenticate.public.appProxy(request);
+		shop = result.session?.shop;
+	} catch (error) {
+		logger.error('Failed to authenticate app proxy request', { error });
+	}
+	// TODO: Remove this once we have figured out why the app proxy signature is not correct in Production
+	if (shop == null) {
+		try {
+			const url = new URL(request.url);
+			shop = url.searchParams.get('shop');
+		} catch (error) {
+			logger.error('Failed to get shop from URL', { error });
+		}
+	}
 
 	const url = new URL(request.url);
 	// Extract handle from path: /a/saku/bio -> "bio"
@@ -56,16 +85,16 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 		});
 	}
 
-	if (session?.shop == null) {
+	if (shop == null) {
 		return ServerErr({
 			code: '#ERR_UNAUTHORIZED',
 			message: 'No shop provided in session'
 		});
 	}
 
-	const result = await coreApiClient.get('/v1/shopify/site/shop/{shop}/{handle}/content', {
+	const result = await coreApiClient.get('/v1/shopify/site/shop/{shop}/{handle}', {
 		pathParams: {
-			shop: session.shop,
+			shop,
 			handle
 		}
 	});
@@ -82,13 +111,17 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 			message: result.error.message ?? 'Unknown error occurred'
 		});
 	}
-
-	const flatSite = result.value.data as unknown as TFlatSite;
+	const site = result.value.data;
+	const flatSite = site.content as unknown as TFlatSite;
 
 	return ServerOk({
 		appUrl: shopifyConfig.appUrl,
-		site: hydrateSite(new StaticSiteHydrateContext(flatSite, session.shop, handle)),
-		fontUrls: getSiteFontUrls(flatSite)
+		site: {
+			id: site.id,
+			content: hydrateSite(new StaticSiteHydrateContext(flatSite, site.id, handle)),
+			integrations: Object.values(flatSite.integrations),
+			fontUrls: getSiteFontUrls(flatSite)
+		}
 	});
 });
 
@@ -99,6 +132,10 @@ interface TErrorLoaderData {
 
 interface TSuccessLoaderData {
 	appUrl: string;
-	site: TResolvedSite;
-	fontUrls: string[];
+	site: {
+		id: string;
+		content: TResolvedSite;
+		integrations: TIntegration[];
+		fontUrls: string[];
+	};
 }

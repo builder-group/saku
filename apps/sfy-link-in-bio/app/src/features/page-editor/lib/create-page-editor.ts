@@ -11,6 +11,8 @@ import {
 	TFont,
 	TFontAsset,
 	TImageAsset,
+	TIntegration,
+	TIntegrationId,
 	TNodeId,
 	toHierarchical,
 	TSite
@@ -19,29 +21,32 @@ import { ShopifyGlobal } from '@shopify/app-bridge-react';
 import { FetchError, NetworkError, RequestError } from 'feature-fetch';
 import { createState, TState } from 'feature-state';
 import React from 'react';
-import { appConfig, coreApiClient } from '@/environment';
+import { appConfig, coreApiClient, logger } from '@/environment';
 import { createShopifyTokenMiddleware, requestReview } from '@/lib';
 import { TSettingsSectionType, TViewType } from '../environment';
 import { createNodeState, TNodeState } from './create-node-state';
+import { createPageContext, TPageContext } from './create-page-context';
 import { getNodeAssetHashes } from './get-node-asset-hashes';
 
-export function createPageEditor(
-	site: TExtendedSite,
-	config: TCreatePageEditorConfig
-): TPageEditor {
-	const { shopify, shopId } = config;
+export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
+	const { shopify, site } = config;
+	logger.info('createPageEditor', { config });
 
 	return {
 		id: shortId(),
 		site: {
 			id: site.id,
 			handle: site.handle,
-			version: site.version,
+			version: site.content.version,
 			url: site.url
 		},
+		pageContext: createPageContext({
+			siteId: site.id,
+			integrations: Object.values(site.content.integrations)
+		}),
 
 		nodeMap: (() => {
-			const parentMap = Object.values(site.nodes).reduce(
+			const parentMap = Object.values(site.content.nodes).reduce(
 				(map, node) => {
 					if ('children' in node && node.children) {
 						node.children.forEach((childId) => {
@@ -54,16 +59,17 @@ export function createPageEditor(
 			);
 
 			return Object.fromEntries(
-				Object.entries(site.nodes).map(([id, node]) => [
+				Object.entries(site.content.nodes).map(([id, node]) => [
 					id,
 					createNodeState(node, parentMap[id as TNodeId])
 				])
 			);
 		})(),
-		rootNodeId: site.rootId,
+		rootNodeId: site.content.rootId,
 		selectedNodeId: createState<TNodeId | null>(null),
 
-		assetsMap: site.assets,
+		assetsMap: site.content.assets,
+		integrationsMap: site.content.integrations,
 
 		activeView: createState('layers' as TViewType),
 		activeSettingsSection: createState<TSettingsSectionType | null>('appearance'),
@@ -71,7 +77,6 @@ export function createPageEditor(
 		isReady: createState(false),
 		isDraggingLayer: createState(false),
 		shopify,
-		shopId,
 		boundingRect: createState<TBoundingRect>({
 			left: 0,
 			top: 0,
@@ -106,33 +111,35 @@ export function createPageEditor(
 		addNode(node, parentId, index) {
 			const targetParentId = parentId ?? this.rootNodeId;
 
-			// Update existing node
-			if (this.nodeMap[node.id] != null) {
-				this.nodeMap[node.id]?.set(node);
-			}
-			// Create new node state with ref
-			else {
-				this.nodeMap[node.id] = createNodeState(node);
+			let nodeState = this.nodeMap[node.id];
+			if (nodeState != null) {
+				// Update existing node
+				nodeState.set(node);
+				nodeState.parentId = undefined; // Will be redefined below if (new) parent can have children
+			} else {
+				// Create new node state
+				nodeState = createNodeState(node);
+				this.nodeMap[node.id] = nodeState;
 			}
 
 			// Add the node to parent's children at the specified index
 			const parentState = this.nodeMap[targetParentId];
-			if (parentState != null) {
-				parentState.set((v) => {
-					// Only add if not already in children
-					if ('children' in v && Array.isArray(v.children) && !v.children.includes(node.id)) {
-						const children = [...v.children];
-						if (index != null && index >= 0 && index <= children.length) {
-							// Insert at specified index
-							children.splice(index, 0, node.id);
-						} else {
-							// Append to end if index is not specified or out of bounds
-							children.push(node.id);
-						}
-						return { ...v, children };
+			if (parentState != null && 'children' in parentState._v) {
+				nodeState.parentId = parentState.id;
+
+				if (!parentState._v.children.includes(node.id)) {
+					const children = [...parentState._v.children];
+					if (index != null && index >= 0 && index <= children.length) {
+						// Insert at specified index
+						children.splice(index, 0, node.id);
+					} else {
+						// Append to end if index is not specified or out of bounds
+						children.push(node.id);
 					}
-					return v;
-				});
+
+					parentState._v.children = children;
+					parentState._notify();
+				}
 			}
 
 			return node.id;
@@ -151,13 +158,9 @@ export function createPageEditor(
 			// Remove from parent's children
 			if (node.parentId != null) {
 				const parentState = this.nodeMap[node.parentId];
-				if (parentState != null) {
-					parentState.set((v) => {
-						if ('children' in v && Array.isArray(v.children)) {
-							return { ...v, children: v.children.filter((id) => id !== nodeId) };
-						}
-						return v;
-					});
+				if (parentState != null && 'children' in parentState._v) {
+					parentState._v.children = parentState._v.children.filter((id) => id !== nodeId);
+					parentState._notify();
 				}
 			}
 
@@ -594,7 +597,8 @@ export function createPageEditor(
 					},
 					{} as Record<TNodeId, TFlatNode>
 				),
-				assets: deepCopy(this.assetsMap)
+				assets: deepCopy(this.assetsMap),
+				integrations: deepCopy(this.integrationsMap)
 			} satisfies TFlatSite;
 		}
 	};
@@ -602,23 +606,30 @@ export function createPageEditor(
 
 export interface TCreatePageEditorConfig {
 	shopify: ShopifyGlobal;
-	shopId: string;
+	site: {
+		id: string;
+		handle: string;
+		url: string;
+		content: TFlatSite;
+	};
 }
 
 export interface TPageEditor {
 	id: string;
 	site: {
-		id: TExtendedSite['id'];
-		handle: TExtendedSite['handle'];
-		url: TExtendedSite['url'];
-		version: TExtendedSite['version'];
+		id: string;
+		handle: string;
+		url: string;
+		version: TFlatSite['version'];
 	};
+	pageContext: TPageContext;
 
 	rootNodeId: TNodeId;
 	selectedNodeId: TState<TNodeId | null, []>;
 	nodeMap: Record<TNodeId, TNodeState>;
 
 	assetsMap: Record<TAssetHash, TAsset>;
+	integrationsMap: Record<TIntegrationId, TIntegration>;
 
 	activeView: TState<TViewType, []>;
 	activeSettingsSection: TState<TSettingsSectionType | null, []>;
@@ -626,7 +637,6 @@ export interface TPageEditor {
 	isReady: TState<boolean, []>;
 	isDraggingLayer: TState<boolean, []>;
 	shopify: ShopifyGlobal;
-	shopId: string;
 	boundingRect: TState<TBoundingRect, []>;
 	canvasBoundingRect: TState<TBoundingRect, []>;
 
@@ -673,10 +683,4 @@ export interface TBoundingRect {
 	top: number;
 	bottom: number;
 	right: number;
-}
-
-export interface TExtendedSite extends TFlatSite {
-	id: string;
-	handle: string;
-	url: string;
 }

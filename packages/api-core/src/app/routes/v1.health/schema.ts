@@ -6,7 +6,6 @@ export const CheckHealthRoute = createRoute({
 	path: '/v1/health',
 	tags: ['health'],
 	summary: 'Check API health',
-	description: 'Returns the current health status of the API',
 	operationId: 'checkHealth',
 	responses: {
 		200: JsonSuccessResponse(

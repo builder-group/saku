@@ -3,7 +3,12 @@ import { Banner, Button } from '@shopify/polaris';
 import { useCompute } from 'feature-react';
 import React from 'react';
 import { ScanEyeIcon, SitePreview } from '@/components';
-import { resolveSite, StaticNodeCanvas, StaticSiteResolveContext } from '@/features/page-editor';
+import {
+	createPageContext,
+	resolveSite,
+	StaticNodeCanvas,
+	StaticSiteResolveContext
+} from '@/features/page-editor';
 import type { TOnboardingContext } from '../../create-onboarding-context';
 import { StepLayout } from '../StepLayout';
 
@@ -16,6 +21,14 @@ export const LinkpopPreviewStep: React.FC<TLinkpopPreviewStepProps> = (props) =>
 			? resolveSite(new StaticSiteResolveContext(currentStep.site))
 			: null;
 	});
+	const cx = React.useMemo(
+		() =>
+			createPageContext({
+				siteId: 'preview',
+				integrations: []
+			}),
+		[]
+	);
 
 	const [isLoading, setIsLoading] = React.useState(false);
 	const [error, setError] = React.useState<string | null>(
@@ -62,7 +75,7 @@ export const LinkpopPreviewStep: React.FC<TLinkpopPreviewStepProps> = (props) =>
 				<div className="relative left-1/2 w-[640px] -translate-x-1/2">
 					<SitePreview
 						url="preview"
-						content={<StaticNodeCanvas nodes={[resolvedSite.root]} />}
+						content={<StaticNodeCanvas cx={cx} nodes={[resolvedSite.root]} />}
 						disableUrlClick
 					/>
 				</div>

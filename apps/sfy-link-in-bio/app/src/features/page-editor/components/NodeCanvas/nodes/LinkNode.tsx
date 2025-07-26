@@ -20,6 +20,6 @@ export const LinkNode = React.forwardRef<HTMLDivElement, TNodeProps<TLinkNode>>(
 		}
 	);
 
-	return <StaticLinkNode {...divProps} ref={ref} node={node} />;
+	return <StaticLinkNode {...divProps} ref={ref} node={node} cx={editor.pageContext} />;
 });
 LinkNode.displayName = 'LinkNode';

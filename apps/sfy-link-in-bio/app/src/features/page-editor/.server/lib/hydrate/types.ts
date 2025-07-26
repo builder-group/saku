@@ -1,3 +1,4 @@
+import { TIntegration, TIntegrationId } from '@repo/editor';
 import { TNodeResolveContext, TSiteResolveContext } from '../../../lib';
 
 export interface TNodeHydrateContext extends TNodeResolveContext {
@@ -5,6 +6,7 @@ export interface TNodeHydrateContext extends TNodeResolveContext {
 }
 
 export interface TSiteHydrateContext extends TSiteResolveContext {
-	shopId: string;
+	id: string;
 	handle: string;
+	getIntegration(id: TIntegrationId): TIntegration | null;
 }

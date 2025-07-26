@@ -28,8 +28,8 @@
 	},
 	"devDependencies": {
 		"@blgc/config": "^0.0.35",
-		"@shopify/cli": "^3.82.1",
-		"dotenv": "^17.2.0",
+		"@shopify/cli": "^3.83.0",
+		"dotenv": "^17.2.1",
 		"eslint": "^9.31.0",
 		"prettier": "^3.6.2",
 		"rollup": "^4.45.1",

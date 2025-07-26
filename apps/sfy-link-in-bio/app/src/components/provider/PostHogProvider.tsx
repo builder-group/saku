@@ -23,7 +23,13 @@ export const PosthogProvider: React.FC<TPosthogProviderProps> = (props) => {
 			api_host: posthogConfig.host,
 			defaults: '2025-05-24',
 			person_profiles: 'identified_only',
-			capture_pageview: true // TODO: Figure out whether we want to use the default page view tracking or our own (via usePosthogPageView() hook)
+			capture_pageview: true, // TODO: Figure out whether we want to use the default page view tracking or our own (via usePosthogPageView() hook)
+			session_recording: {
+				maskAllInputs: false,
+				maskInputOptions: {
+					password: true
+				}
+			}
 		});
 
 		// Set global properties that will be sent with all events

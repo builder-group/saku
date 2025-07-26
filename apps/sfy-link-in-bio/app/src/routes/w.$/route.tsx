@@ -1,23 +1,37 @@
 import { ServerErr, ServerOk } from '@blgc/utils';
-import { TFlatSite } from '@repo/editor';
+import { TFlatSite, TIntegration } from '@repo/editor';
 import { Text } from '@shopify/polaris';
 import { isStatusCode } from 'feature-fetch';
+import React from 'react';
 import { coreApiClient } from '@/environment';
-import { getSiteFontUrls, StaticNodeCanvas, TResolvedSite } from '@/features/page-editor';
+import {
+	createPageContext,
+	getSiteFontUrls,
+	StaticNodeCanvas,
+	TResolvedSite
+} from '@/features/page-editor';
 import { hydrateSite, StaticSiteHydrateContext } from '@/features/page-editor/.server';
 import { resultLoader, withResultLoader } from '@/lib';
 
 const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 	Success: ({ data }) => {
-		const { site, fontUrls } = data;
+		const { site } = data;
+		const cx = React.useMemo(
+			() =>
+				createPageContext({
+					siteId: site.id,
+					integrations: site.integrations
+				}),
+			[site.id, site.integrations]
+		);
 
 		return (
 			<>
-				{fontUrls.map((fontUrl, index) => (
+				{site.fontUrls.map((fontUrl, index) => (
 					<link key={`font-${index}`} rel="stylesheet" href={fontUrl} />
 				))}
 
-				<StaticNodeCanvas nodes={[site.root]} />
+				<StaticNodeCanvas cx={cx} nodes={[site.content.root]} />
 			</>
 		);
 	},
@@ -58,7 +72,7 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 		});
 	}
 
-	const result = await coreApiClient.get('/v1/site/workspace/{workspaceHandle}/{handle}/content', {
+	const result = await coreApiClient.get('/v1/site/workspace/{workspaceHandle}/{handle}', {
 		pathParams: {
 			workspaceHandle,
 			handle
@@ -77,14 +91,16 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 			message: result.error.message ?? 'Unknown error occurred'
 		});
 	}
-
-	const flatSite = result.value.data as unknown as TFlatSite;
+	const site = result.value.data;
+	const flatSite = site.content as unknown as TFlatSite;
 
 	return ServerOk({
-		site: hydrateSite(
-			new StaticSiteHydrateContext(flatSite, `${workspaceHandle}.myshopify.com`, handle)
-		),
-		fontUrls: getSiteFontUrls(flatSite)
+		site: {
+			id: site.id,
+			content: hydrateSite(new StaticSiteHydrateContext(flatSite, site.id, handle)),
+			integrations: Object.values(flatSite.integrations),
+			fontUrls: getSiteFontUrls(flatSite)
+		}
 	});
 });
 
@@ -94,6 +110,10 @@ interface TErrorLoaderData {
 }
 
 interface TSuccessLoaderData {
-	site: TResolvedSite;
-	fontUrls: string[];
+	site: {
+		id: string;
+		content: TResolvedSite;
+		integrations: TIntegration[];
+		fontUrls: string[];
+	};
 }

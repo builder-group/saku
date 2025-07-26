@@ -4,6 +4,8 @@ import {
 	TFlatNode,
 	TFlatPageNode,
 	TFlatSite,
+	TIntegration,
+	TIntegrationId,
 	TNode,
 	TNodeId,
 	TSite
@@ -15,10 +17,16 @@ import {
 export function toFlatSite(site: TSite): TFlatSite {
 	const nodes: Record<TNodeId, TFlatNode> = {};
 	const assets: Record<TAssetHash, TAsset> = {};
+	const integrations: Record<TIntegrationId, TIntegration> = {};
 
 	// Convert assets array back to record
 	site.assets.forEach((asset) => {
 		assets[asset.hash] = asset;
+	});
+
+	// Convert integrations array back to record
+	site.integrations.forEach((integration) => {
+		integrations[integration.id] = integration;
 	});
 
 	const convertNode = (node: TNode): TNodeId => {
@@ -40,6 +48,7 @@ export function toFlatSite(site: TSite): TFlatSite {
 		version: site.version,
 		rootId,
 		nodes,
-		assets
+		assets,
+		integrations
 	};
 }

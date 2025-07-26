@@ -14,7 +14,6 @@ export const CreateUploadTargetsRoute = createRoute({
 	path: '/v1/shopify/ugc/files',
 	tags: ['shopify', 'ugc'],
 	summary: 'Create upload targets for files',
-	description: 'Generate signed upload URLs for multiple user-generated content files',
 	operationId: 'createUgcUploadTargets',
 	request: {
 		body: {
@@ -101,7 +100,6 @@ export const SubmitUploadedFilesRoute = createRoute({
 	path: '/v1/shopify/ugc/files/submit',
 	tags: ['shopify', 'ugc'],
 	summary: 'Submit uploaded files to media library',
-	description: 'Process uploaded files and add them to the Shopify media library',
 	operationId: 'submitUgcUploadedFiles',
 	request: {
 		body: {
@@ -150,8 +148,6 @@ export const ListMediaFilesRoute = createRoute({
 	path: '/v1/shopify/ugc/files',
 	tags: ['shopify', 'ugc'],
 	summary: 'List files from media library',
-	description:
-		'Retrieve a paginated list of files from the Shopify media library with optional filtering',
 	operationId: 'listUgcMediaFiles',
 	request: {
 		query: z.object({

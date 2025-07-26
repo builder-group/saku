@@ -21,6 +21,6 @@ export const TextNode = React.forwardRef<HTMLDivElement, TNodeProps<TTextNode>>(
 		}
 	);
 
-	return <StaticTextNode {...divProps} ref={ref} node={node} />;
+	return <StaticTextNode {...divProps} ref={ref} node={node} cx={editor.pageContext} />;
 });
 TextNode.displayName = 'TextNode';

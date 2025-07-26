@@ -1,9 +1,10 @@
-import { TAssetHash } from '@repo/editor';
-import { TSiteResolveContext } from '../types';
+import { TAsset, TAssetHash } from '@repo/editor';
 
 export function resolveAsset(
 	hash: TAssetHash | undefined,
-	cx: TSiteResolveContext
+	cx: {
+		getAsset: (hash: TAssetHash) => TAsset | null;
+	}
 ): string | undefined {
 	if (hash == null) {
 		return undefined;

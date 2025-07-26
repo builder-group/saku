@@ -8,6 +8,10 @@ export const pika = new Pika([
 	{
 		prefix: 'asset',
 		description: 'Assets (images, files, etc.)'
+	},
+	{
+		prefix: 'integration',
+		description: 'Integrations'
 	}
 ]);
 

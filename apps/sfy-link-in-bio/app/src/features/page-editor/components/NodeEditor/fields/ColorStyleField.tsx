@@ -10,7 +10,16 @@ import {
 	TRgba,
 	TStyleReference
 } from '@repo/editor';
-import { ColorPicker, HSBAColor, Popover, Text, TextField, TextFieldProps } from '@shopify/polaris';
+import {
+	Badge,
+	ColorPicker,
+	HSBAColor,
+	Popover,
+	Text,
+	TextField,
+	TextFieldProps,
+	Tooltip
+} from '@shopify/polaris';
 import { useCompute } from 'feature-react/state';
 import { TState } from 'feature-state';
 import React from 'react';
@@ -159,6 +168,45 @@ export const ColorStyleField = <GNodeValue, GParentNodeValue>(
 	// UI
 	// =========================================================================
 
+	const InputComponent = (
+		<Popover
+			active={popoverActive}
+			activator={
+				<div className="relative">
+					<TextField
+						{...textFieldProps}
+						label={label}
+						labelHidden
+						value={inputValue}
+						onChange={handleTextChange}
+						onFocus={handleFocus}
+						readOnly={isValueInherited}
+						prefix={
+							<button
+								type="button"
+								onClick={togglePopoverActive}
+								className={cn(
+									'-ml-1 flex h-5 w-5 items-center justify-center rounded-full border border-gray-200',
+									!isValueInherited ? 'cursor-pointer' : 'cursor-default'
+								)}
+								style={{ backgroundColor: displayValue ?? undefined }}
+							/>
+						}
+						autoComplete="off"
+						error={error}
+					/>
+				</div>
+			}
+			onClose={togglePopoverActive}
+			preferredAlignment="left"
+			autofocusTarget="none"
+		>
+			<div className="p-4" onClick={(e) => e.stopPropagation()}>
+				<ColorPicker onChange={handleColorChange} color={pickerColor} allowAlpha />
+			</div>
+		</Popover>
+	);
+
 	return (
 		<div className="space-y-1">
 			<div className="flex items-center justify-between">
@@ -184,42 +232,29 @@ export const ColorStyleField = <GNodeValue, GParentNodeValue>(
 					</button>
 				)}
 			</div>
-			<Popover
-				active={popoverActive}
-				activator={
-					<div className="relative">
-						<TextField
-							{...textFieldProps}
-							label={label}
-							labelHidden
-							value={inputValue}
-							onChange={handleTextChange}
-							onFocus={handleFocus}
-							readOnly={isValueInherited}
-							prefix={
-								<button
-									type="button"
-									onClick={togglePopoverActive}
-									className={cn(
-										'-ml-1 flex h-5 w-5 items-center justify-center rounded-full border border-gray-200',
-										!isValueInherited ? 'cursor-pointer' : 'cursor-default'
-									)}
-									style={{ backgroundColor: displayValue || undefined }}
-								/>
-							}
-							autoComplete="off"
-							error={error}
-						/>
-					</div>
-				}
-				onClose={togglePopoverActive}
-				preferredAlignment="left"
-				autofocusTarget="none"
-			>
-				<div className="p-4" onClick={(e) => e.stopPropagation()}>
-					<ColorPicker onChange={handleColorChange} color={pickerColor} allowAlpha />
-				</div>
-			</Popover>
+			<div className="relative">
+				{isValueInherited ? (
+					<Tooltip
+						content={
+							<span>
+								This field is inherited from the parent. Click the unlink icon (
+								<LinkOffIcon className="inline h-3 w-3" />) to set a custom value.
+							</span>
+						}
+						preferredPosition="below"
+						hoverDelay={500}
+					>
+						<div className="relative">
+							{InputComponent}
+							<div className="pointer-events-none absolute inset-y-0 right-0 z-50 flex items-center rounded-r-lg bg-[#F2F2F2] pr-1">
+								<Badge size="small">Inherited</Badge>
+							</div>
+						</div>
+					</Tooltip>
+				) : (
+					InputComponent
+				)}
+			</div>
 		</div>
 	);
 };

@@ -1,1 +1,1 @@
-export * from './gql';
+export * from './shopify-admin';

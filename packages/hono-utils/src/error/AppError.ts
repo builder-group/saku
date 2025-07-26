@@ -14,13 +14,18 @@ export class AppError extends Error {
 		const {
 			type = 'about:blank',
 			title = code,
-			detail = options.throwable?.message ?? 'An error occurred.',
+			detail = options.throwable?.message,
 			throwable,
 			instance,
 			errors = []
 		} = options;
 
-		super(`[${code}] ${detail}`);
+		super(
+			`[${status}] [${code}]` +
+				(options.title != null ? ` ${options.title}` : '') +
+				(detail != null ? `${options.title != null ? ': ' : ' '}${detail}` : '')
+		);
+
 		this.code = code;
 		this.status = status;
 		this.throwable = throwable;
@@ -35,8 +40,6 @@ export class AppError extends Error {
 	}
 }
 
-export type TErrorCode = `#ERR_${string}`;
-
 export interface TAppErrorOptions {
 	detail?: string;
 	throwable?: Error;
@@ -45,3 +48,5 @@ export interface TAppErrorOptions {
 	errors?: Record<string, unknown>[];
 	title?: string; // human-readable summary
 }
+
+export type TErrorCode = `#ERR_${string}`;

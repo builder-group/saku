@@ -3,10 +3,10 @@ import { and, eq } from 'drizzle-orm';
 import {
 	db,
 	shopifySessionTable,
-	TEmailOTPUserProviderData,
+	TEmailOTPUserAccountData,
 	TTransaction as TPgTransaction,
 	TShopifySessionData,
-	TWorkspaceProviderData,
+	TWorkspaceAccountData,
 	TWorkspaceRole,
 	userAccountTable,
 	userTable,
@@ -127,10 +127,10 @@ async function upsertUserAndWorkspace(
 			.insert(userAccountTable)
 			.values({
 				userId: user.id,
-				accountType: 'otp',
 				provider: 'email',
 				providerAccountId: associatedUser.email,
-				providerData: {} satisfies TEmailOTPUserProviderData,
+				accountType: 'otp',
+				accountData: {} satisfies TEmailOTPUserAccountData,
 				updatedAt: new Date(),
 				createdAt: new Date()
 			})
@@ -233,10 +233,10 @@ async function upsertUserAndWorkspace(
 		.insert(workspaceAccountTable)
 		.values({
 			workspaceId: workspace.id,
-			accountType: 'oauth',
 			provider: 'shopify',
 			providerAccountId: session.shop,
-			providerData: {
+			accountType: 'oauth',
+			accountData: {
 				installer: {
 					shopifyId: associatedUser.id.toString(),
 					firstName: associatedUser.first_name,
@@ -247,7 +247,7 @@ async function upsertUserAndWorkspace(
 					locale: associatedUser.locale,
 					isCollaborator: associatedUser.collaborator
 				}
-			} satisfies TWorkspaceProviderData,
+			} satisfies TWorkspaceAccountData,
 			updatedAt: new Date(),
 			createdAt: new Date()
 		})

@@ -1,3 +1,4 @@
+export * from './currency-metadata';
 export * from './node-metadata';
 export * from './settings-metadata';
 export * from './social-icon';

@@ -13,10 +13,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /**
-         * Create Shopify session
-         * @description Store a new Shopify session from app installation or authentication
-         */
+        /** Create Shopify session */
         post: operations["createShopifySession"];
         delete?: never;
         options?: never;
@@ -31,17 +28,11 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /**
-         * Get Shopify session by ID
-         * @description Retrieve a specific Shopify session by its ID
-         */
+        /** Get Shopify session by ID */
         get: operations["getShopifySession"];
         put?: never;
         post?: never;
-        /**
-         * Delete Shopify session
-         * @description Remove a Shopify session by its ID
-         */
+        /** Delete Shopify session */
         delete: operations["deleteShopifySession"];
         options?: never;
         head?: never;
@@ -55,10 +46,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /**
-         * Get Shopify session by shop
-         * @description Retrieve Shopify sessions for a specific shop domain
-         */
+        /** Get Shopify session by shop */
         get: operations["getShopifySessionByShop"];
         put?: never;
         post?: never;
@@ -75,10 +63,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /**
-         * Check API health
-         * @description Returns the current health status of the API
-         */
+        /** Check API health */
         get: operations["checkHealth"];
         put?: never;
         post?: never;
@@ -95,10 +80,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /**
-         * Get API info
-         * @description Returns the current info of the API
-         */
+        /** Get API info */
         get: operations["getInfo"];
         put?: never;
         post?: never;
@@ -115,10 +97,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /**
-         * Check URL redirect path availability
-         * @description Checks if a URL path is available for creating a redirect by validating against reserved paths and existing redirects.
-         */
+        /** Check URL redirect path availability */
         get: operations["checkUrlRedirectAvailability"];
         put?: never;
         post?: never;
@@ -135,10 +114,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /**
-         * Get shop overview including theme, social links, and recommended products
-         * @description Retrieves comprehensive shop overview including theme styling, social media links, and recommended products for creating default templates
-         */
+        /** Get shop overview including theme, social links, and recommended products */
         get: operations["getShopOverview"];
         put?: never;
         post?: never;
@@ -155,17 +131,28 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /**
-         * List connected sites
-         * @description Returns all sites that are connected to the authenticated Shopify shop.
-         */
+        /** List connected sites */
         get: operations["listShopifySites"];
         put?: never;
-        /**
-         * Create new site
-         * @description Creates a new site in the workspace connected to the authenticated Shopify shop.
-         */
+        /** Create new site */
         post: operations["createShopifySite"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/shopify/site/shop/{shop}/{handle}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get site by shop and handle */
+        get: operations["getShopifySiteByShopAndHandle"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -180,28 +167,8 @@ export interface paths {
             cookie?: never;
         };
         get?: never;
-        /**
-         * Update site content
-         * @description Updates the content of a site connected to the authenticated Shopify shop.
-         */
+        /** Update site content */
         put: operations["updateShopifySiteContent"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/shopify/site/shop/{shop}/{handle}/content": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get site content by shop and handle */
-        get: operations["getShopifySiteContentByShopAndHandle"];
-        put?: never;
         post?: never;
         delete?: never;
         options?: never;
@@ -216,16 +183,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /**
-         * List files from media library
-         * @description Retrieve a paginated list of files from the Shopify media library with optional filtering
-         */
+        /** List files from media library */
         get: operations["listUgcMediaFiles"];
         put?: never;
-        /**
-         * Create upload targets for files
-         * @description Generate signed upload URLs for multiple user-generated content files
-         */
+        /** Create upload targets for files */
         post: operations["createUgcUploadTargets"];
         delete?: never;
         options?: never;
@@ -242,10 +203,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /**
-         * Submit uploaded files to media library
-         * @description Process uploaded files and add them to the Shopify media library
-         */
+        /** Submit uploaded files to media library */
         post: operations["submitUgcUploadedFiles"];
         delete?: never;
         options?: never;
@@ -260,10 +218,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /**
-         * Get workspace info
-         * @description Returns workspace information for the authenticated Shopify shop, including onboarding status.
-         */
+        /** Get workspace info */
         get: operations["getShopifyWorkspace"];
         put?: never;
         post?: never;
@@ -290,49 +245,15 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/site/{siteId}/content": {
+    "/v1/site/workspace/{workspaceHandle}/{handle}": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** Get site content */
-        get: operations["getSiteContent"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/site/parse/external": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Parse external link-in-bio URL */
-        get: operations["parseExternalSite"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/v1/site/workspace/{workspaceHandle}/{handle}/content": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get site content by workspace handle and site handle */
-        get: operations["getSiteContentByWorkspaceAndHandle"];
+        /** Get site by workspace handle and site handle */
+        get: operations["getSiteByWorkspaceAndHandle"];
         put?: never;
         post?: never;
         delete?: never;
@@ -358,6 +279,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/site/parse/external": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Parse external link-in-bio URL */
+        get: operations["parseExternalSite"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/url/metadata": {
         parameters: {
             query?: never;
@@ -365,10 +303,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /**
-         * Get metadata from URL
-         * @description Fetches and extracts metadata from the provided URL including title, description, media URLs and icons
-         */
+        /** Get metadata from URL */
         get: operations["getUrlMetadata"];
         put?: never;
         post?: never;
@@ -387,10 +322,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /**
-         * Customer data request webhook
-         * @description Receives webhook when customers request their data from a store owner
-         */
+        /** Customer data request webhook */
         post: operations["handleCustomerDataRequest"];
         delete?: never;
         options?: never;
@@ -407,10 +339,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /**
-         * Customer data redaction webhook
-         * @description Receives webhook when store owners request customer data deletion
-         */
+        /** Customer data redaction webhook */
         post: operations["handleCustomerRedact"];
         delete?: never;
         options?: never;
@@ -427,10 +356,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /**
-         * Shop data redaction webhook
-         * @description Receives webhook 48 hours after a store owner uninstalls the app
-         */
+        /** Shop data redaction webhook */
         post: operations["handleShopRedact"];
         delete?: never;
         options?: never;
@@ -447,10 +373,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /**
-         * App uninstalled webhook
-         * @description Receives webhook immediately when a store owner uninstalls the app
-         */
+        /** App uninstalled webhook */
         post: operations["handleAppUninstalled"];
         delete?: never;
         options?: never;
@@ -467,10 +390,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /**
-         * App scopes update webhook
-         * @description Receives webhook when app scopes are updated for a store
-         */
+        /** App scopes update webhook */
         post: operations["handleAppScopesUpdate"];
         delete?: never;
         options?: never;
@@ -556,6 +476,7 @@ export interface components {
                 associated_user_scope?: string;
                 /** @example session_token_hash_string */
                 session?: string;
+                /** @example null */
                 account_number?: number | null;
                 associated_user: {
                     /** @example 987654321 */
@@ -1254,10 +1175,14 @@ export interface operations {
                         isAvailable: boolean;
                         /**
                          * @description Type of conflict if path is not available
+                         * @example null
                          * @enum {string|null}
                          */
                         conflictType: "reserved_path" | "existing_redirect" | null;
-                        /** @description Human-readable explanation of why the path is not available */
+                        /**
+                         * @description Human-readable explanation of why the path is not available
+                         * @example null
+                         */
                         conflictReason: string | null;
                         /** @description List of existing redirects that conflict with the requested path */
                         existingRedirects: {
@@ -1431,6 +1356,44 @@ export interface operations {
             };
         };
     };
+    getShopifySiteByShopAndHandle: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Shop domain */
+                shop: string;
+                /** @description Site handle/slug */
+                handle: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        content: components["schemas"]["FlatSiteContentDto"];
+                    };
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppErrorDto"];
+                };
+            };
+        };
+    };
     updateShopifySiteContent: {
         parameters: {
             query?: never;
@@ -1465,40 +1428,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AppErrorDto"];
-                };
-            };
-            /** @description Resource not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AppErrorDto"];
-                };
-            };
-        };
-    };
-    getShopifySiteContentByShopAndHandle: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description Shop domain */
-                shop: string;
-                /** @description Site handle/slug */
-                handle: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["FlatSiteContentDto"];
                 };
             };
             /** @description Resource not found */
@@ -1775,77 +1704,7 @@ export interface operations {
             };
         };
     };
-    getSiteContent: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description Site ID */
-                siteId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["FlatSiteContentDto"];
-                };
-            };
-            /** @description Resource not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AppErrorDto"];
-                };
-            };
-        };
-    };
-    parseExternalSite: {
-        parameters: {
-            query: {
-                /** @description External link-in-bio URL to parse */
-                url: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @example linkpop */
-                        provider: string;
-                        /** @example johndoe */
-                        handle: string;
-                        content: components["schemas"]["FlatSiteContentDto"];
-                    };
-                };
-            };
-            /** @description Bad request */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AppErrorDto"];
-                };
-            };
-        };
-    };
-    getSiteContentByWorkspaceAndHandle: {
+    getSiteByWorkspaceAndHandle: {
         parameters: {
             query?: never;
             header?: never;
@@ -1865,7 +1724,11 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["FlatSiteContentDto"];
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        content: components["schemas"]["FlatSiteContentDto"];
+                    };
                 };
             };
             /** @description Resource not found */
@@ -1920,6 +1783,44 @@ export interface operations {
             };
             /** @description Resource not found */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppErrorDto"];
+                };
+            };
+        };
+    };
+    parseExternalSite: {
+        parameters: {
+            query: {
+                /** @description External link-in-bio URL to parse */
+                url: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example linkpop */
+                        provider: string;
+                        /** @example johndoe */
+                        handle: string;
+                        content: components["schemas"]["FlatSiteContentDto"];
+                    };
+                };
+            };
+            /** @description Bad request */
+            400: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -2189,7 +2090,7 @@ export interface operations {
                     /** @example supertoys.com */
                     domain: string | null;
                     /** @example super-toys.myshopify.com */
-                    myshopify_domain: string;
+                    myshopify_domain: string | null;
                     /** @example enterprise */
                     plan_name: string;
                     /** @example Shopify Plus */

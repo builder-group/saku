@@ -20,6 +20,6 @@ export const AboutNode = React.forwardRef<HTMLDivElement, TNodeProps<TAboutNode>
 		}
 	);
 
-	return <StaticAboutNode {...divProps} ref={ref} node={node} />;
+	return <StaticAboutNode {...divProps} ref={ref} node={node} cx={editor.pageContext} />;
 });
 AboutNode.displayName = 'AboutNode';

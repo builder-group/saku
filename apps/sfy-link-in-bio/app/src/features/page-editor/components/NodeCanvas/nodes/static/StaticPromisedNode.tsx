@@ -8,16 +8,16 @@ export const StaticPromisedNode = React.forwardRef<
 	HTMLDivElement,
 	TStaticNodeProps<TResolvedPromisedNode<TResolvedNode>>
 >((props, ref) => {
-	const { node } = props;
+	const { node, cx } = props;
 
 	return (
-		<React.Suspense fallback={<StaticNode ref={ref} node={node.cached} state="loading" />}>
+		<React.Suspense fallback={<StaticNode ref={ref} node={node.cached} cx={cx} state="loading" />}>
 			<Await
 				resolve={node.next}
-				errorElement={<StaticNode ref={ref} node={node.cached} state="error" />}
+				errorElement={<StaticNode ref={ref} node={node.cached} cx={cx} state="error" />}
 			>
 				{(resolvedNode) => {
-					return <StaticNode ref={ref} node={resolvedNode} state="success" />;
+					return <StaticNode ref={ref} node={resolvedNode} cx={cx} state="success" />;
 				}}
 			</Await>
 		</React.Suspense>

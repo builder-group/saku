@@ -12,8 +12,8 @@
 		"plugins": [
 			{
 				"name": "gql.tada/ts-plugin",
-				"schema": "https://shopify.dev/admin-graphql-direct-proxy/2025-01",
-				"tadaOutputLocation": "./src/environment/gql/graphql-env.d.ts"
+				"schema": "https://shopify.dev/admin-graphql-direct-proxy/2025-07",
+				"tadaOutputLocation": "./src/environment/gql/shopify-admin/graphql-env.d.ts"
 			}
 		]
 	},

@@ -1,17 +1,25 @@
-import { TAsset, TAssetHash, TFlatNode, TFlatSite, TNodeId } from '@repo/editor';
+import {
+	TAsset,
+	TAssetHash,
+	TFlatNode,
+	TFlatSite,
+	TIntegration,
+	TIntegrationId,
+	TNodeId
+} from '@repo/editor';
 import { TSiteHydrateContext } from './types';
 
 /**
  * Site-based provider - works with static site data
  */
 export class StaticSiteHydrateContext implements TSiteHydrateContext {
-	private readonly site: TFlatSite;
-	public readonly shopId: string;
+	public readonly id: string;
 	public readonly handle: string;
+	private readonly site: TFlatSite;
 
-	constructor(site: TFlatSite, shopId: string, handle: string) {
+	constructor(site: TFlatSite, id: string, handle: string) {
 		this.site = site;
-		this.shopId = shopId;
+		this.id = id;
 		this.handle = handle;
 	}
 
@@ -25,5 +33,9 @@ export class StaticSiteHydrateContext implements TSiteHydrateContext {
 
 	public getSite(): TFlatSite {
 		return this.site;
+	}
+
+	public getIntegration(id: TIntegrationId): TIntegration | null {
+		return this.site.integrations[id] ?? null;
 	}
 }

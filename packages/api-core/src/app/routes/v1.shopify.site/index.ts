@@ -1,4 +1,4 @@
-import { TFlatSite } from '@repo/editor';
+import { createId, TFlatSite, TShopifyIntegration } from '@repo/editor';
 import { AppError } from '@repo/hono-utils';
 import { and, eq, isNull } from 'drizzle-orm';
 import { router } from '@/app/router';
@@ -14,13 +14,15 @@ import {
 	createShopifyUrlRedirect,
 	deleteUrlRedirect,
 	getShopifyOfflineAccessToken,
+	getStorefrontToken,
+	refreshIntegrations,
 	verifyShopifySession
 } from '@/lib';
 import { TFlatSiteContentDto } from '../v1.site/schema';
 import {
 	CreateShopifySiteRoute,
+	GetShopifySiteByShopAndHandleRoute,
 	GetShopifySitesRoute,
-	GetSiteContentByShopAndHandleRoute,
 	UpdateShopifySiteContentRoute
 } from './schema';
 
@@ -56,6 +58,52 @@ router.openapi(GetShopifySitesRoute, async (c) => {
 			createdAt: site.createdAt.toISOString(),
 			updatedAt: site.updatedAt.toISOString()
 		})),
+		200
+	);
+});
+
+router.openapi(GetShopifySiteByShopAndHandleRoute, async (c) => {
+	const { shop, handle } = c.req.valid('param');
+
+	// Find site by handle and shop id
+	const [site] = await db
+		.select({
+			id: siteTable.id,
+			workspaceId: siteTable.workspaceId,
+			content: siteTable.content
+		})
+		.from(siteTable)
+		.innerJoin(
+			workspaceAccountTable,
+			and(
+				eq(workspaceAccountTable.workspaceId, siteTable.workspaceId),
+				eq(workspaceAccountTable.provider, 'shopify'),
+				eq(workspaceAccountTable.providerAccountId, shop)
+			)
+		)
+		.where(eq(siteTable.handle, handle))
+		.limit(1);
+	if (site == null) {
+		throw new AppError('#ERR_SITE_NOT_FOUND', 404, {
+			title: 'Site not found',
+			detail: `Site with handle '${handle}' not found for shop '${shop}'`
+		});
+	}
+
+	// Refresh integrations
+	site.content.integrations = (
+		await refreshIntegrations({
+			siteId: site.id,
+			workspaceId: site.workspaceId,
+			integrations: site.content.integrations
+		})
+	).integrations;
+
+	return c.json(
+		{
+			id: site.id,
+			content: site.content as TFlatSiteContentDto
+		},
 		200
 	);
 });
@@ -132,6 +180,30 @@ router.openapi(CreateShopifySiteRoute, async (c) => {
 			});
 		}
 		redirectId = redirectResult.value.id;
+	}
+
+	// Check if Shopify integration already exists
+	const existingShopifyIntegration = Object.values(content.integrations).find(
+		(integration) => integration.type === 'shopify' && integration.shopId === shopId
+	);
+
+	// Add Shopify integration if it doesn't exist
+	if (existingShopifyIntegration == null) {
+		const storefrontTokenResult = await getStorefrontToken(workspace.id, {
+			accessToken,
+			shopId
+		});
+
+		if (storefrontTokenResult.isOk()) {
+			const integrationId = createId('integration');
+			const shopifyIntegration: TShopifyIntegration = {
+				id: integrationId,
+				type: 'shopify',
+				shopId,
+				storefrontAccessToken: storefrontTokenResult.value
+			};
+			content.integrations[integrationId] = shopifyIntegration;
+		}
 	}
 
 	// Create the site
@@ -258,33 +330,4 @@ router.openapi(UpdateShopifySiteContentRoute, async (c) => {
 		},
 		200
 	);
-});
-
-router.openapi(GetSiteContentByShopAndHandleRoute, async (c) => {
-	const { shop, handle } = c.req.valid('param');
-
-	// Find site by handle in workspace connected to this Shopify shop
-	const [site] = await db
-		.select({
-			content: siteTable.content
-		})
-		.from(siteTable)
-		.innerJoin(
-			workspaceAccountTable,
-			and(
-				eq(workspaceAccountTable.workspaceId, siteTable.workspaceId),
-				eq(workspaceAccountTable.provider, 'shopify'),
-				eq(workspaceAccountTable.providerAccountId, shop)
-			)
-		)
-		.where(eq(siteTable.handle, handle))
-		.limit(1);
-	if (site == null) {
-		throw new AppError('#ERR_SITE_NOT_FOUND', 404, {
-			title: 'Site not found',
-			detail: `Site with handle '${handle}' not found for shop '${shop}'`
-		});
-	}
-
-	return c.json(site.content as TFlatSiteContentDto, 200);
 });

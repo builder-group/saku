@@ -1,4 +1,3 @@
-export * from '../../../../lib/shopify/create-display-name-from-shop';
 export * from './create-handle-from-email';
 export * from './create-shopify-session';
 export * from './delete-shopify-session';

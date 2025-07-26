@@ -39,7 +39,7 @@ export function useSelectedNodeScroll(editor: TPageEditor): void {
 				top: targetScroll,
 				behavior: 'smooth'
 			});
-		}, 10);
+		}, 50);
 	}, [editor]);
 
 	// Scroll when selection changes

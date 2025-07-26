@@ -2,7 +2,6 @@ import { ServerErr, ServerOk } from '@blgc/utils';
 import { TFlatSite } from '@repo/editor';
 import { useAppBridge } from '@shopify/app-bridge-react';
 import { Text } from '@shopify/polaris';
-import { withGlobalBind } from 'feature-react/state';
 import React from 'react';
 import { coreApiClient } from '@/environment';
 import { shopify, shopifyConfig } from '@/environment/.server';
@@ -13,21 +12,19 @@ import styles from './styles.css?url';
 
 const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 	Success: ({ data }) => {
-		const { site, shopId } = data;
+		const { site } = data;
 		const shopify = useAppBridge();
 
 		const editor = React.useMemo(() => {
-			const editor = createPageEditor(
-				{ ...site.content, id: site.id, handle: site.handle, url: site.url },
-				{ shopify, shopId }
-			);
-			withGlobalBind(`__editor_${editor.id}`, editor);
-			return editor;
-		}, [site.content, site.id, site.handle, site.url, shopify, shopId]);
+			return createPageEditor({
+				site,
+				shopify
+			});
+		}, [site, shopify]);
 
 		return (
 			<div className="flex min-h-screen w-full">
-				{editor != null ? <Editor editor={editor} /> : <div>No site</div>}
+				<Editor editor={editor} />
 			</div>
 		);
 	},
@@ -70,16 +67,16 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 			message: siteResult.error.message ?? 'Unknown error occurred'
 		});
 	}
-	const siteData = siteResult.value.data;
+	const site = siteResult.value.data;
+	const flatSite = site.content as unknown as TFlatSite;
 
 	return ServerOk({
 		site: {
-			id: siteData.id,
-			handle: siteData.handle,
-			url: `${shopifyConfig.proxy.url(shop)}/${siteData.handle}`,
-			content: siteData.content as unknown as TFlatSite
-		},
-		shopId: shop
+			id: site.id,
+			handle: site.handle,
+			url: `${shopifyConfig.proxy.url(shop)}/${site.handle}`,
+			content: flatSite
+		}
 	});
 });
 
@@ -95,7 +92,6 @@ interface TSuccessLoaderData {
 		url: string;
 		content: TFlatSite;
 	};
-	shopId: string;
 }
 
 export const links: TLinksFunction = () => [{ rel: 'stylesheet', href: styles }];

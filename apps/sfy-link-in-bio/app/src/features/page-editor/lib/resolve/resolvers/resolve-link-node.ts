@@ -8,7 +8,7 @@ export function resolveLinkNode(node: TLinkNode, cx: TNodeResolveContext): TReso
 	const { content, style, ...rest } = node;
 	const parentStyles = cx.resolved?.parentStyles;
 
-	const resolvedNode: TResolvedLinkNode = {
+	return {
 		...rest,
 		content: {
 			url: content.url,
@@ -32,6 +32,4 @@ export function resolveLinkNode(node: TLinkNode, cx: TNodeResolveContext): TReso
 			shadow: resolveStyleReference(style.shadow, parentStyles?.shadow)
 		}
 	};
-
-	return resolvedNode;
 }

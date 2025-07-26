@@ -6,8 +6,6 @@ export const CheckUrlRedirectAvailabilityRoute = createRoute({
 	path: '/v1/shopify/redirect/availability',
 	tags: ['shopify', 'redirect'],
 	summary: 'Check URL redirect path availability',
-	description:
-		'Checks if a URL path is available for creating a redirect by validating against reserved paths and existing redirects.',
 	operationId: 'checkUrlRedirectAvailability',
 	request: {
 		query: z.object({
