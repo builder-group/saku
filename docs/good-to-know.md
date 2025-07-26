@@ -2,9 +2,9 @@
 
 ## [Monorepo Dependency Bundling](https://github.com/builder-group/saku/issues/12)
 
-When using workspace packages (e.g., `@repo/api-core`) that get bundled into the Remix app, be aware of potential version conflicts with transitive dependencies. Here's what can happen:
+When using workspace packages (e.g., `@repo/api-core`) that get bundled into the React Router app, be aware of potential version conflicts with transitive dependencies. Here's what can happen:
 
-1. **Direct Bundling**: Workspace packages are bundled directly into the Remix app's `server/index.js` rather than being added as dependencies in `node_modules`.
+1. **Direct Bundling**: Workspace packages are bundled directly into the React Router app's `server/index.js` rather than being added as dependencies in `node_modules`.
 
 2. **Version Conflicts**: If a transitive dependency exists with different versions:
    - Workspace package uses version X

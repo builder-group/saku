@@ -1,8 +1,14 @@
 # 😬 Technical Debt
 
-## React v18 & Vite v6 & Remix Lock-in
+## Vite 6 Lock-in
 
-Several [Shopify packages require React 18](https://github.com/Shopify/shopify-app-template-remix/issues/955), preventing us from upgrading to React 19 and thus React Router 7. Additionally, some packages like `react-email` use React 19, requiring us to force downgrade them to avoid version conflicts in the monorepo.
+@mdx-js/rollup
+
+## React 18 Lock-in
+
+- `@shopify/app-bridge-ui-types` uses `^18.3.1`
+
+Several [Shopify packages require React 18](https://github.com/Shopify/shopify-app-template-remix/issues/955), preventing us from upgrading to React 19. Additionally, some packages like `react-email` use React 19, requiring us to force downgrade them to avoid version conflicts in the monorepo.
 
 ### Current State
 
@@ -21,12 +27,9 @@ Several [Shopify packages require React 18](https://github.com/Shopify/shopify-a
 - Blocks access to React 19 features and improvements
 - Forces newer packages to use older React version
 
-### Resolution Path
+## ✅ RESOLVED: Remix Lock-in
 
-1. Monitor Shopify packages for React 19 support (e.g. [#955](https://github.com/Shopify/shopify-app-template-remix/issues/955))
-2. Remove React version overrides from `pnpm-workspace.yaml`
-3. Update "update:latest" scripts
-4. Update React-related dependencies
+> **Resolved:** Successfully migrated to React Router v7 following the [Shopify React Router migration guide](https://github.com/Shopify/shopify-app-template-react-router/wiki/Upgrading-from-Remix).
 
 ## ✅ RESOLVED: Zod-to-OpenAPI & Hono/zod-openapi Compatibility
 

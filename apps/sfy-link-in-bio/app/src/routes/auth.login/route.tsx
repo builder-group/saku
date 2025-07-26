@@ -17,16 +17,15 @@ const Page: React.FC = () => {
 				<Form method="post">
 					<s-section heading="Log in">
 						<s-text-field
-							type="text"
 							name="shop"
 							label="Shop domain"
-							helpText="example.myshopify.com"
+							details="example.myshopify.com"
 							value={shop}
-							onChange={setShop}
-							autoComplete="on"
+							onChange={(e) => setShop(e.currentTarget.value)}
+							autocomplete="on"
 							error={errors.shop}
 						></s-text-field>
-						<s-button submit>Log in</s-button>
+						<s-button type="submit">Log in</s-button>
 					</s-section>
 				</Form>
 			</s-page>

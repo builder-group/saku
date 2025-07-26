@@ -4,7 +4,6 @@ import {
 	shopifyApp as createShopifyApp
 } from '@shopify/shopify-app-react-router/server';
 import { ApiSessionStorage } from '@/lib/.server';
-import '@shopify/shopify-app-remix/adapters/node';
 import { shopifyConfig } from './configs';
 
 const shopifyApp: ReturnType<typeof createShopifyApp> = createShopifyApp({

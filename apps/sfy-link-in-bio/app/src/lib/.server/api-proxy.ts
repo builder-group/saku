@@ -4,7 +4,7 @@ import { logger } from '@/environment';
  * Creates a proxy function that forwards requests to a target API server.
  *
  * @param config - Configuration options
- * @returns Proxy function that can handle Remix requests
+ * @returns Proxy function that can handle React Router requests
  */
 export function createApiProxy(config: TCreateApiProxyConfig) {
 	const { targetUrl, stripPrefix } = config;
