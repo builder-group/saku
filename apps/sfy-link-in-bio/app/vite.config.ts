@@ -1,6 +1,6 @@
 // import mdx from '@mdx-js/rollup';
 import mdx from '@mdx-js/rollup';
-import { vitePlugin as remix } from '@remix-run/dev';
+import { reactRouter } from '@react-router/dev/vite';
 import tailwindcss from '@tailwindcss/vite';
 import dotenv from 'dotenv';
 import { defineConfig, type UserConfig } from 'vite';
@@ -78,7 +78,7 @@ export default defineConfig({
 	plugins: [
 		tailwindcss(),
 		mdx(),
-		remix({
+		reactRouter({
 			ignoredRouteFiles: ['**/.*'],
 			appDirectory: 'src',
 			future: {

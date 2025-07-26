@@ -1,4 +1,4 @@
-import { Link, Outlet, useLoaderData, useRouteError } from '@remix-run/react';
+import { Link, Outlet, useLoaderData, useRouteError } from 'react-router';
 import { NavMenu } from '@shopify/app-bridge-react';
 import polarisStyles from '@shopify/polaris/build/esm/styles.css?url';
 import { AppProvider } from '@shopify/shopify-app-remix/react';

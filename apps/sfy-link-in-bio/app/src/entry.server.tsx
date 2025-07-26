@@ -1,6 +1,7 @@
 import { PassThrough } from 'stream';
-import { createReadableStreamFromReadable, type EntryContext } from '@remix-run/node';
-import { RemixServer } from '@remix-run/react';
+import { createReadableStreamFromReadable } from '@react-router/node';
+import { type EntryContext } from 'react-router';
+import { ServerRouter } from 'react-router';
 import { isbot } from 'isbot';
 import { renderToPipeableStream } from 'react-dom/server';
 import { shopify } from '@/environment/.server';
@@ -11,7 +12,7 @@ export default async function handleRequest(
 	request: Request,
 	responseStatusCode: number,
 	responseHeaders: Headers,
-	remixContext: EntryContext
+	reactRouterContext: EntryContext
 ) {
 	shopify.addDocumentResponseHeaders(request, responseHeaders);
 
@@ -20,7 +21,7 @@ export default async function handleRequest(
 
 	return new Promise((resolve, reject) => {
 		const { pipe, abort } = renderToPipeableStream(
-			<RemixServer context={remixContext} url={request.url} />,
+			<ServerRouter context={reactRouterContext} url={request.url} />,
 			{
 				[callbackName]: () => {
 					const body = new PassThrough();

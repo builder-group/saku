@@ -1,5 +1,5 @@
 import { fromServerResult } from '@blgc/utils';
-import { useLoaderData } from '@remix-run/react';
+import { useLoaderData } from 'react-router';
 import React from 'react';
 
 export function useLoaderResult<T, E>() {

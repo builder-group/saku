@@ -1,9 +1,9 @@
 import {
-	HeadersFunction,
-	LinksFunction,
-	type ActionFunctionArgs,
-	type LoaderFunctionArgs
-} from '@remix-run/node';
+    HeadersFunction,
+    LinksFunction,
+    type ActionFunctionArgs,
+    type LoaderFunctionArgs,
+} from 'react-router';
 
 export type TLoaderFunction<GResponse = null> = (args: LoaderFunctionArgs) => Promise<GResponse>;
 

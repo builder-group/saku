@@ -1,4 +1,4 @@
-import { useNavigate } from '@remix-run/react';
+import { useNavigate } from 'react-router';
 import { Banner, Button, OptionList } from '@shopify/polaris';
 import { useCompute } from 'feature-react';
 import React from 'react';

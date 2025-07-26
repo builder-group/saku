@@ -1,5 +1,5 @@
 import { fromServerResult, ServerErr, TServerResult } from '@blgc/utils';
-import { Await, useLoaderData } from '@remix-run/react';
+import { Await, useLoaderData } from 'react-router';
 import React from 'react';
 import { TLoaderFunction } from '../../types';
 

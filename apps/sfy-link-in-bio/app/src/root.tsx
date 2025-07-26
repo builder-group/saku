@@ -1,4 +1,4 @@
-import { Links, Meta, Outlet, Scripts, ScrollRestoration } from '@remix-run/react';
+import { Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router';
 import React from 'react';
 import { TLinksFunction } from '@/types';
 import { RootProviders } from './providers';

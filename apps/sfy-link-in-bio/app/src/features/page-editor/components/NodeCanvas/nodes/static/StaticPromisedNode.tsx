@@ -1,4 +1,4 @@
-import { Await } from '@remix-run/react';
+import { Await } from 'react-router';
 import React from 'react';
 import { TResolvedNode, TResolvedPromisedNode } from '../../../../types';
 import { StaticNode } from '../../StaticNode';

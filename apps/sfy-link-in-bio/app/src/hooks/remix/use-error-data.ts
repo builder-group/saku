@@ -1,4 +1,4 @@
-import { data, isRouteErrorResponse, useRouteError } from '@remix-run/react';
+import { data, isRouteErrorResponse, useRouteError } from 'react-router';
 import React from 'react';
 
 export function useErrorData<

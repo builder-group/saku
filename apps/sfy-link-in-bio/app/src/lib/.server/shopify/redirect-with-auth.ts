@@ -1,4 +1,4 @@
-import { redirect } from '@remix-run/node';
+import { redirect } from 'react-router';
 
 /**
  * Creates a redirect response that preserves Shopify authentication parameters.
