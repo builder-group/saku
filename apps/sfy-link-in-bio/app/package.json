@@ -15,7 +15,7 @@
 	"author": "@bennobuilder",
 	"type": "module",
 	"scripts": {
-		"build": "pnpm typecheck && remix vite:build",
+		"build": "pnpm typecheck && react-router build",
 		"build:prod": "export NODE_ENV=production && pnpm build",
 		"clean": "shx rm -rf dist && shx rm -rf build && shx rm -rf .turbo && shx rm -rf node_modules",
 		"install:clean": "pnpm run clean && pnpm install",

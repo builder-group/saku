@@ -30,7 +30,7 @@ export function createApiProxy(config: TCreateApiProxyConfig) {
 		if (request.method !== 'GET' && request.method !== 'HEAD' && request.body != null) {
 			fetchOptions.body = request.body;
 			// duplex: 'half' is required by Node.js undici when sending a body
-			fetchOptions.duplex = 'half';
+			(fetchOptions as any).duplex = 'half';
 		}
 
 		try {

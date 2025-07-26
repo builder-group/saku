@@ -24,6 +24,11 @@ const Page: React.FC = () => {
 
 export default Page;
 
+// Shopify needs React Router to catch some thrown responses, so that their headers are included in the response
+export function ErrorBoundary() {
+	return boundary.error(useRouteError());
+}
+
 export const headers: THeadersFunction = (headersArgs) => {
 	return boundary.headers(headersArgs);
 };
@@ -33,8 +38,3 @@ export const loader: TLoaderFunction<{ apiKey: string }> = async ({ request }) =
 
 	return { apiKey: shopifyConfig.apiKey };
 };
-
-// Shopify needs Remix to catch some thrown responses, so that their headers are included in the response.
-export function ErrorBoundary() {
-	return boundary.error(useRouteError());
-}

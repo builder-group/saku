@@ -1,8 +1,8 @@
 import { ServerErr, ServerOk } from '@blgc/utils';
 import { TFlatSite, TIntegration } from '@repo/editor';
 import { Text } from '@shopify/polaris';
+import { AppProxyProvider } from '@shopify/shopify-app-react-router/react';
 import { boundary } from '@shopify/shopify-app-react-router/server';
-import { AppProxyProvider } from '@shopify/shopify-app-remix/react';
 import { isStatusCode } from 'feature-fetch';
 import React from 'react';
 import { coreApiClient, logger } from '@/environment';
