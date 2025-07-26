@@ -1,5 +1,5 @@
 import { TImageAsset } from '@repo/editor';
-import { Badge, Text, Thumbnail } from '@shopify/polaris';
+import { Text, Thumbnail } from '@shopify/polaris';
 import React from 'react';
 import { AccordionSection } from '@/components';
 import { prettifyFileSize } from '@/lib';
@@ -108,7 +108,7 @@ export const AssetsContent: React.FC<TAssetsContentProps> = (props) => {
 										</Text>
 									</div>
 									<div className="ml-4">
-										<Badge tone="info">Font</Badge>
+										<s-badge tone="info">Font</s-badge>
 									</div>
 								</div>
 								{index < fontAssets.length - 1 && <div className="h-px bg-gray-200" />}
@@ -139,7 +139,7 @@ export const AssetsContent: React.FC<TAssetsContentProps> = (props) => {
 										</Text>
 									</div>
 									<div className="ml-4">
-										<Badge tone="success">Image</Badge>
+										<s-badge tone="success">Image</s-badge>
 									</div>
 								</div>
 								{index < imageAssets.length - 1 && <div className="h-px bg-gray-200" />}

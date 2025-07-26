@@ -1,5 +1,16 @@
 # 😬 Technical Debt
 
+## `@shopify/polaris` Lock-in
+
+We still use `@shopify/polaris` components because:
+
+- **Missing Web Components**: Not all Polaris components have been ported to web components yet (e.g. `DropZone`, `IndexTable`, `Popover`, `Tooltip`, ..)
+
+**Migration Strategy:**
+- Use new web components (`<s-button>`, `<s-badge>`, `<s-text>`, etc.) where available
+- Keep Polaris for components that don't have web component equivalents
+- Requires dual provider setup: Shopify App React Router `AppProvider` + Polaris `AppProvider` for i18n (see `ShopifyAppProvider.ts`)
+
 ## Vite 6 Lock-in
 
 @mdx-js/rollup

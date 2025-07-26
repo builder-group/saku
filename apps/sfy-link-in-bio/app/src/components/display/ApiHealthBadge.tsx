@@ -1,4 +1,3 @@
-import { Badge } from '@shopify/polaris';
 import React from 'react';
 import { coreApiClient } from '@/environment';
 
@@ -21,10 +20,10 @@ export const ApiHealthBadge: React.FC = () => {
 
 	switch (healthStatus) {
 		case 'online':
-			return <Badge tone="success">Operational</Badge>;
+			return <s-badge tone="success">Operational</s-badge>;
 		case 'offline':
-			return <Badge tone="critical">Unavailable</Badge>;
+			return <s-badge tone="critical">Unavailable</s-badge>;
 		case 'checking':
-			return <Badge tone="info">Checking</Badge>;
+			return <s-badge tone="info">Checking</s-badge>;
 	}
 };

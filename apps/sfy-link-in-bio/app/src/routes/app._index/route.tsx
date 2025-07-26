@@ -1,14 +1,5 @@
 import { ServerErr, ServerOk } from '@blgc/utils';
-import {
-	Badge,
-	Button,
-	ButtonGroup,
-	Card,
-	Layout,
-	Spinner,
-	Text,
-	TextField
-} from '@shopify/polaris';
+import { Button, ButtonGroup, Card, Layout, Spinner, Text, TextField } from '@shopify/polaris';
 import { boundary } from '@shopify/shopify-app-react-router/server';
 import { useFeatureState } from 'feature-react';
 import React from 'react';
@@ -129,7 +120,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 												<Text as="h3" variant="headingMd">
 													{site.displayName ?? site.handle}
 												</Text>
-												<Badge tone="success">Current</Badge>
+												<s-badge tone="success">Current</s-badge>
 											</div>
 											<Text as="p" variant="bodyMd" tone="subdued">
 												Last Updated:{' '}
@@ -166,7 +157,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 											<Text as="h2" variant="headingMd">
 												Your Bio Link
 											</Text>
-											<Badge tone="success">Current</Badge>
+											<s-badge tone="success">Current</s-badge>
 										</div>
 
 										{/* <Text as="p" tone="subdued">
@@ -189,7 +180,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 											<Text as="h2" variant="headingMd">
 												Your External Link
 											</Text>
-											<Badge tone="success">Current</Badge>
+											<s-badge tone="success">Current</s-badge>
 										</div>
 
 										<Text as="p" tone="subdued">

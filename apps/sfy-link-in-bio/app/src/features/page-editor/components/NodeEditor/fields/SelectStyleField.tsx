@@ -4,7 +4,7 @@ import {
 	resolveStyleReference,
 	TStyleReference
 } from '@repo/editor';
-import { Badge, Select, SelectProps, Text, Tooltip } from '@shopify/polaris';
+import { Select, SelectProps, Text, Tooltip } from '@shopify/polaris';
 import { useCompute } from 'feature-react/state';
 import { TState } from 'feature-state';
 import React from 'react';
@@ -131,7 +131,7 @@ export const SelectStyleField = <GNodeValue, GParentNodeValue, GValue>(
 						<div className="relative">
 							{InputComponent}
 							<div className="pointer-events-none absolute inset-y-0 right-0 z-50 flex items-center rounded-r-lg bg-[#F2F2F2] pr-1">
-								<Badge size="small">Inherited</Badge>
+								<s-badge>Inherited</s-badge>
 							</div>
 						</div>
 					</Tooltip>

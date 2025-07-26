@@ -1,5 +1,4 @@
 import {
-	Badge,
 	BlockStack,
 	Box,
 	Button,
@@ -48,7 +47,7 @@ const SettingsPage: React.FC = () => {
 								<Text variant="bodyMd" as="span" tone="subdued">
 									App Version
 								</Text>
-								<Badge tone="info">{env.version}</Badge>
+								<s-badge tone="info">{env.version}</s-badge>
 							</InlineStack>
 
 							<Divider />
