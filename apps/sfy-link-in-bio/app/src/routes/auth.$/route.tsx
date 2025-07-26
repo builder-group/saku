@@ -1,4 +1,4 @@
-import { boundary } from '@shopify/shopify-app-remix/server';
+import { boundary } from '@shopify/shopify-app-react-router/server';
 import { shopify } from '@/environment/.server';
 import { THeadersFunction, TLoaderFunction } from '@/types';
 

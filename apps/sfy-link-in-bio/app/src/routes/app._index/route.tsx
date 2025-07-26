@@ -11,7 +11,7 @@ import {
 	Text,
 	TextField
 } from '@shopify/polaris';
-import { boundary } from '@shopify/shopify-app-remix/server';
+import { boundary } from '@shopify/shopify-app-react-router/server';
 import { useFeatureState } from 'feature-react';
 import React from 'react';
 import {

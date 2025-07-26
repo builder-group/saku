@@ -2,10 +2,8 @@
   "extends": "@blgc/config/typescript/react-internal",
   "compilerOptions": {
     "baseUrl": ".",
-    "types": [
-      "@react-router/node",
-      "vite/client"
-    ],
+    "types": ["@react-router/node","vite/client"],
+    "rootDirs": ["./src", "./.react-router/types"],
     "paths": {
       "@/*": [
         "./src/*"
@@ -19,12 +17,6 @@
       }
     ]
   },
-  "include": [
-    "env.d.ts",
-    "**/*.ts",
-    "**/*.tsx"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["env.d.ts", "**/*.ts", "**/*.tsx", ".react-router/types/**/*"],
+  "exclude": ["node_modules"]
 }

@@ -1,6 +1,5 @@
 // import mdx from '@mdx-js/rollup';
 import mdx from '@mdx-js/rollup';
-import { reactRouter } from '@react-router/dev/vite';
 import tailwindcss from '@tailwindcss/vite';
 import dotenv from 'dotenv';
 import { defineConfig, type UserConfig } from 'vite';
@@ -75,23 +74,7 @@ export default defineConfig({
 			'feature-react'
 		]
 	},
-	plugins: [
-		tailwindcss(),
-		mdx(),
-		reactRouter({
-			ignoredRouteFiles: ['**/.*'],
-			appDirectory: 'src',
-			future: {
-				v3_fetcherPersist: true,
-				v3_relativeSplatPath: true,
-				v3_throwAbortReason: true,
-				v3_lazyRouteDiscovery: true,
-				v3_singleFetch: true,
-				v3_routeConfig: true
-			}
-		}),
-		tsconfigPaths()
-	],
+	plugins: [tailwindcss(), mdx(), tsconfigPaths()],
 	build: {
 		assetsInlineLimit: 0
 	},

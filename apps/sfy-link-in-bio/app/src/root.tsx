@@ -1,5 +1,5 @@
-import { Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router';
 import React from 'react';
+import { Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router';
 import { TLinksFunction } from '@/types';
 import { RootProviders } from './providers';
 import styles from './styles.css?url'; // ?url required for Shopify app hot reloading

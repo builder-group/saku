@@ -1,17 +1,16 @@
-import { Link, Outlet, useLoaderData, useRouteError } from 'react-router';
 import { NavMenu } from '@shopify/app-bridge-react';
-import polarisStyles from '@shopify/polaris/build/esm/styles.css?url';
-import { AppProvider } from '@shopify/shopify-app-remix/react';
-import { boundary } from '@shopify/shopify-app-remix/server';
+import { AppProvider } from '@shopify/shopify-app-react-router/react';
+import { boundary } from '@shopify/shopify-app-react-router/server';
 import React from 'react';
+import { Link, Outlet, useLoaderData, useRouteError } from 'react-router';
 import { shopify, shopifyConfig } from '@/environment/.server';
-import { THeadersFunction, TLinksFunction, TLoaderFunction } from '@/types';
+import { THeadersFunction, TLoaderFunction } from '@/types';
 
 const Page: React.FC = () => {
 	const { apiKey } = useLoaderData<typeof loader>();
 
 	return (
-		<AppProvider isEmbeddedApp apiKey={apiKey}>
+		<AppProvider embedded apiKey={apiKey}>
 			<NavMenu>
 				<Link to="/app" rel="home">
 					Home
@@ -24,8 +23,6 @@ const Page: React.FC = () => {
 };
 
 export default Page;
-
-export const links: TLinksFunction = () => [{ rel: 'stylesheet', href: polarisStyles }];
 
 export const headers: THeadersFunction = (headersArgs) => {
 	return boundary.headers(headersArgs);

@@ -2,7 +2,7 @@ import { ServerErr, ServerOk } from '@blgc/utils';
 import { TFlatSite } from '@repo/editor';
 import { useAppBridge } from '@shopify/app-bridge-react';
 import { Text } from '@shopify/polaris';
-import { boundary } from '@shopify/shopify-app-remix/server';
+import { boundary } from '@shopify/shopify-app-react-router/server';
 import React from 'react';
 import { coreApiClient } from '@/environment';
 import { shopify, shopifyConfig } from '@/environment/.server';

@@ -1,10 +1,10 @@
 import { ServerErr, ServerOk } from '@blgc/utils';
-import { ShouldRevalidateFunction, useNavigate, useSearchParams } from 'react-router';
 import { toFlatSite } from '@repo/editor';
 import { useAppBridge } from '@shopify/app-bridge-react';
 import { Button, ButtonGroup, Text } from '@shopify/polaris';
-import { boundary } from '@shopify/shopify-app-remix/server';
+import { boundary } from '@shopify/shopify-app-react-router/server';
 import React from 'react';
+import { ShouldRevalidateFunction, useNavigate, useSearchParams } from 'react-router';
 import { appConfig, coreApiClient } from '@/environment';
 import { shopify } from '@/environment/.server';
 import { blankPreset } from '@/features/page-editor/.server';
