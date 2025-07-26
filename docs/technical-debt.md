@@ -11,13 +11,10 @@ We still use `@shopify/polaris` components because:
 - Keep Polaris for components that don't have web component equivalents
 - Requires dual provider setup: Shopify App React Router `AppProvider` + Polaris `AppProvider` for i18n (see `ShopifyAppProvider.ts`)
 
-## Vite 6 Lock-in
-
-@mdx-js/rollup
-
-## React 18 Lock-in
+## React v18 Lock-in
 
 - `@shopify/app-bridge-ui-types` uses `^18.3.1`
+- `@shopify/polaris` uses `^18.2.0`
 
 Several [Shopify packages require React 18](https://github.com/Shopify/shopify-app-template-remix/issues/955), preventing us from upgrading to React 19. Additionally, some packages like `react-email` use React 19, requiring us to force downgrade them to avoid version conflicts in the monorepo.
 
