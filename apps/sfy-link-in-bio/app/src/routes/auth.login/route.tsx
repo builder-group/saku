@@ -1,4 +1,3 @@
-import { Button, Card, FormLayout, Page as PolarisPage, Text, TextField } from '@shopify/polaris';
 import { AppProvider } from '@shopify/shopify-app-react-router/react';
 import React from 'react';
 import { Form, useActionData, useLoaderData } from 'react-router';
@@ -14,28 +13,23 @@ const Page: React.FC = () => {
 
 	return (
 		<AppProvider embedded={false}>
-			<PolarisPage>
-				<Card>
-					<Form method="post">
-						<FormLayout>
-							<Text variant="headingMd" as="h2">
-								Log in
-							</Text>
-							<TextField
-								type="text"
-								name="shop"
-								label="Shop domain"
-								helpText="example.myshopify.com"
-								value={shop}
-								onChange={setShop}
-								autoComplete="on"
-								error={errors.shop}
-							/>
-							<Button submit>Log in</Button>
-						</FormLayout>
-					</Form>
-				</Card>
-			</PolarisPage>
+			<s-page>
+				<Form method="post">
+					<s-section heading="Log in">
+						<s-text-field
+							type="text"
+							name="shop"
+							label="Shop domain"
+							helpText="example.myshopify.com"
+							value={shop}
+							onChange={setShop}
+							autoComplete="on"
+							error={errors.shop}
+						></s-text-field>
+						<s-button submit>Log in</s-button>
+					</s-section>
+				</Form>
+			</s-page>
 		</AppProvider>
 	);
 };

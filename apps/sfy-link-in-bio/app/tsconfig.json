@@ -2,7 +2,7 @@
   "extends": "@blgc/config/typescript/react-internal",
   "compilerOptions": {
     "baseUrl": ".",
-    "types": ["@react-router/node","vite/client"],
+    "types": ["@react-router/node", "vite/client", "@shopify/app-bridge-ui-types"],
     "rootDirs": ["./src", "./.react-router/types"],
     "paths": {
       "@/*": [

@@ -13,7 +13,8 @@ export default [
 			}
 		},
 		rules: {
-			'react/prop-types': 'off'
+			'react/prop-types': 'off',
+			'react/no-unknown-property': ['error', { ignore: ['variant'] }]
 		},
 		ignores: ['build/**', 'dist/**', '.shopify/**', 'node_modules/**']
 	}
