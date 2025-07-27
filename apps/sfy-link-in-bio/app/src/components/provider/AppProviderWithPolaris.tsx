@@ -23,10 +23,10 @@ export const AppProviderWithPolaris: React.FC<TAppProviderWithPolarisProps> = (p
 interface TAppProviderWithPolarisProps {
 	apiKey: string;
 	children: React.ReactNode;
-	i18n: TShopifyAppProviderI18n;
+	i18n: TAppProviderWithPolarisI18n;
 }
 
-export type TShopifyAppProviderI18n = ConstructorParameters<typeof I18n>[0];
+export type TAppProviderWithPolarisI18n = ConstructorParameters<typeof I18n>[0];
 
 const PolarisLink = React.forwardRef<HTMLAnchorElement, LinkLikeComponentProps>((props, ref) => (
 	<Link {...props} to={props.url ?? props['to']} ref={ref} />

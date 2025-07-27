@@ -3,7 +3,7 @@ import polarisTranslations from '@shopify/polaris/locales/en.json';
 import { boundary } from '@shopify/shopify-app-react-router/server';
 import React from 'react';
 import { Link, Outlet, useLoaderData, useRouteError } from 'react-router';
-import { AppProviderWithPolaris, TShopifyAppProviderI18n } from '@/components';
+import { AppProviderWithPolaris, TAppProviderWithPolarisI18n } from '@/components';
 import { shopify, shopifyConfig } from '@/environment/.server';
 import { THeadersFunction, TLoaderFunction } from '@/types';
 
@@ -38,7 +38,7 @@ export const links = () => [{ rel: 'stylesheet', href: polarisStyles }];
 
 export const loader: TLoaderFunction<{
 	apiKey: string;
-	polarisTranslations: TShopifyAppProviderI18n;
+	polarisTranslations: TAppProviderWithPolarisI18n;
 }> = async ({ request }) => {
 	await shopify.authenticate.admin(request);
 

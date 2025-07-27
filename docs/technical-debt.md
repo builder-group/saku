@@ -9,7 +9,7 @@ We still use `@shopify/polaris` components because:
 **Migration Strategy:**
 - Use new web components (`<s-button>`, `<s-badge>`, `<s-text>`, etc.) where available
 - Keep Polaris for components that don't have web component equivalents
-- Requires dual provider setup: Shopify App React Router `AppProvider` + Polaris `AppProvider` for i18n (see `ShopifyAppProvider.ts`)
+- Requires dual provider setup: Shopify App React Router `AppProvider` + Polaris `AppProvider` for i18n (see `AppProviderWithPolaris.ts`)
 
 ## React v18 Lock-in
 
