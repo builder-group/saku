@@ -69,7 +69,7 @@ export default defineConfig({
 			'posthog-js',
 			'posthog-js/react',
 			// Fix: validation-adapters sub-exports (/valibot, /zod) cause SSR module resolution issues
-			// Might be not necessary if we update validation-adapters package.json exports to use nested conditional exports correctly?
+			// Might not be necessary if we update validation-adapters package.json exports to use nested conditional exports correctly?
 			'validation-adapters',
 			'feature-react'
 		]
