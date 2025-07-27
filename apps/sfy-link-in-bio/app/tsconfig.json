@@ -3,7 +3,7 @@
 	"compilerOptions": {
 		"baseUrl": ".",
 		"types": ["@react-router/node", "vite/client", "@shopify/app-bridge-ui-types"],
-		"rootDirs": ["./src", "./.react-router/types"],
+		"rootDirs": [".", "./.react-router/types"],
 		"paths": {
 			"@/*": ["./src/*"]
 		},

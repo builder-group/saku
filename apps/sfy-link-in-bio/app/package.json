@@ -26,7 +26,7 @@
 		"start": "react-router-serve ./build/server/index.js",
 		"start:dev": "shopify app dev -c shopify.app.local.toml",
 		"test": "echo \"🧪 No tests defined yet.\"",
-		"typecheck": "tsc --noEmit",
+		"typecheck": "react-router typegen && tsc --noEmit",
 		"update:latest": "pnpm update --latest '!react' '!react-dom' '!@types/react' '!@types/react-dom'"
 	},
 	"dependencies": {
