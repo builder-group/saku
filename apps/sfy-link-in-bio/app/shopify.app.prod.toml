@@ -1,6 +1,6 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
-client_id = "261eeadf370db94ba2357924d18767bf"
+client_id = "ea99bf002074f933c82c6ae0ac0a83a9"
 name = "Saku Link In Bio"
 handle = "saku-link-in-bio"
 application_url = "https://sfy-link-in-bio-app.saku.so"
