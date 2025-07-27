@@ -1,4 +1,4 @@
-import { ApiVersion } from '@shopify/shopify-app-remix/server';
+import { ApiVersion } from '@shopify/shopify-app-react-router/server';
 import * as v from 'valibot';
 import { validateEnvVar } from 'validatenv';
 import { vValidator } from 'validation-adapters/valibot';

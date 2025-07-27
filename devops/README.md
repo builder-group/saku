@@ -36,12 +36,12 @@ mkdir devops/your-app
 
 ### 2. Create Dockerfile
 
-Research Docker best practices for your specific app type (Node.js API, Remix app, etc.) while keeping monorepo context in mind:
+Research Docker best practices for your specific app type (Node.js API, React Router app, etc.) while keeping monorepo context in mind:
 
-- **Remix apps**: Use Node.js base image, install pnpm, run Remix build
+- **React Router apps**: Use Node.js base image, install pnpm, run React Router build
 - **Node.js APIs**: Use appropriate base image, handle API-specific dependencies
 - **Always use**: `turbo prune @repo/your-app --docker` for workspace management
-- **Reference**: See `devops/sfy-link-in-bio-app/Dockerfile` as Remix example
+- **Reference**: See `devops/sfy-link-in-bio-app/Dockerfile` as React Router example
 
 Update key parts:
 

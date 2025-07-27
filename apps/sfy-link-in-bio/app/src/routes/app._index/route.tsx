@@ -1,16 +1,6 @@
 import { ServerErr, ServerOk } from '@blgc/utils';
-import { TitleBar } from '@shopify/app-bridge-react';
-import {
-	Badge,
-	Button,
-	ButtonGroup,
-	Card,
-	Layout,
-	Page as PolarisPage,
-	Spinner,
-	Text,
-	TextField
-} from '@shopify/polaris';
+import { Button, ButtonGroup, Card, Layout, Spinner, Text, TextField } from '@shopify/polaris';
+import { boundary } from '@shopify/shopify-app-react-router/server';
 import { useFeatureState } from 'feature-react';
 import React from 'react';
 import {
@@ -26,6 +16,7 @@ import { shopify, shopifyConfig } from '@/environment/.server';
 import { createShopifyTokenMiddleware, resultLoader, withResultLoader } from '@/lib';
 import { getSessionTokenFromRequest, redirectWithAuth } from '@/lib/.server';
 import { usePageEditorModal } from '@/routes/app.modal.page-editor.$/PageEditorModal';
+import { THeadersFunction } from '@/types';
 
 const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 	Success: ({ data }) => {
@@ -91,8 +82,8 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 			<>
 				<EditorModal />
 
-				<PolarisPage>
-					<TitleBar title="Saku Link In Bio">
+				<s-page>
+					<ui-title-bar title="Saku Link In Bio">
 						<button variant="primary" onClick={handleCustomizeBio}>
 							Customize
 						</button>
@@ -105,7 +96,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 						>
 							Visit
 						</button>
-					</TitleBar>
+					</ui-title-bar>
 
 					<Layout>
 						<Layout.Section>
@@ -129,7 +120,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 												<Text as="h3" variant="headingMd">
 													{site.displayName ?? site.handle}
 												</Text>
-												<Badge tone="success">Current</Badge>
+												<s-badge tone="success">Current</s-badge>
 											</div>
 											<Text as="p" variant="bodyMd" tone="subdued">
 												Last Updated:{' '}
@@ -166,7 +157,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 											<Text as="h2" variant="headingMd">
 												Your Bio Link
 											</Text>
-											<Badge tone="success">Current</Badge>
+											<s-badge tone="success">Current</s-badge>
 										</div>
 
 										{/* <Text as="p" tone="subdued">
@@ -189,7 +180,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 											<Text as="h2" variant="headingMd">
 												Your External Link
 											</Text>
-											<Badge tone="success">Current</Badge>
+											<s-badge tone="success">Current</s-badge>
 										</div>
 
 										<Text as="p" tone="subdued">
@@ -216,7 +207,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 							</div>
 						</Layout.Section>
 					</Layout>
-				</PolarisPage>
+				</s-page>
 			</>
 		);
 	},
@@ -248,6 +239,10 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 });
 
 export default Page;
+
+export const headers: THeadersFunction = (headersArgs) => {
+	return boundary.headers(headersArgs);
+};
 
 export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async ({ request }) => {
 	const { session } = await shopify.authenticate.admin(request);

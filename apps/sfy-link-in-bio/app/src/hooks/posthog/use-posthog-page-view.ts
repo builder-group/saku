@@ -1,6 +1,6 @@
-import { useLocation } from '@remix-run/react';
 import posthog from 'posthog-js';
 import React from 'react';
+import { useLocation } from 'react-router';
 import { usePosthogDistinctIdSync } from './use-posthog-distinct-id-sync';
 
 export function usePosthogPageView() {

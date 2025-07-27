@@ -23,7 +23,7 @@ The app requires the following Shopify API access scopes to function properly:
 
 ## 📐 Architecture
 
-### Differences to [`shopify-app-template-remix`](https://github.com/Shopify/shopify-app-template-remix) template
+### Differences to [`shopify-app-template-react-router`](https://github.com/Shopify/shopify-app-template-react-router) template
 
 #### 1. **Nested App Structure**
 
@@ -47,7 +47,7 @@ apps/sfy-link-in-bio/
 │   ├── README.md
 │   ├── shopify.app.toml
 │   ├── shopify.web.toml
-│   ├── src/                    # Remix app directory
+│   ├── src/                    # React Router app directory
 │   │   ├── entry.server.tsx
 │   │   ├── globals.d.ts
 │   │   ├── root.tsx
@@ -56,16 +56,14 @@ apps/sfy-link-in-bio/
 │   │   │   │   ├── route.tsx
 │   │   │   │   └── styles.module.css
 │   │   │   ├── app._index.tsx
-│   │   │   ├── app.additional.tsx
 │   │   │   ├── app.tsx
 │   │   │   ├── auth.$.tsx
-│   │   │   ├── auth.login/
-│   │   │   │   ├── error.server.tsx
-│   │   │   │   └── route.tsx
-│   │   │   ├── webhooks.app.scopes_update.tsx
-│   │   │   └── webhooks.app.uninstalled.tsx
+│   │   │   └── auth.login/
+│   │   │       ├── error.server.tsx
+│   │   │       └── route.tsx
 │   │   ├── routes.ts
-│   │   └── shopify.server.ts
+│   │   └── environment
+│   │       └── shopify.server.ts
 │   ├── tsconfig.json
 │   └── vite.config.ts
 └── README.md
@@ -74,7 +72,7 @@ apps/sfy-link-in-bio/
 **Template Structure:**
 
 ```
-├── app/                        # Remix app directory (root level)
+├── app/                        # React Router app directory (root level)
 │   ├── db.server.ts
 │   ├── entry.server.tsx
 │   ├── globals.d.ts
@@ -114,22 +112,28 @@ apps/sfy-link-in-bio/
 └── vite.config.ts
 ```
 
-#### 2. **Remix App Directory Change**
+#### 2. **React Router App Directory Change**
 
-The Remix application code moved from root-level `app/` to `src/` within the Shopify app folder. This required updating the [`appDirectory`](https://remix.run/docs/en/main/file-conventions/remix-config#appdirectory) configuration:
+The React Router application code moved from root-level `app/` to `src/` within the Shopify app folder. This required updating the [`appDirectory`](https://reactrouter.com/api/framework-conventions/react-router.config.ts#appdirectory) configuration in `react-router.config.ts`:
+
+```ts
+import type { Config } from '@react-router/dev/config';
+
+export default {
+	appDirectory: 'src',
+	buildDirectory: 'build'
+} satisfies Config;
+```
+
+and Vite's server filesystem allow list:
 
 ```ts
 export default defineConfig({
-	server: {
-		fs: {
-			allow: ['src', 'node_modules'] // Changed from default 'app'
-		}
-	},
-	plugins: [
-		remix({
-			appDirectory: 'src' // Changed from default 'app'
-		})
-	]
+    server: {
+        fs: {
+            allow: ['src', 'node_modules'] // Changed from default 'app'
+        }
+    }
 }) satisfies UserConfig;
 ```
 
@@ -239,7 +243,7 @@ prefix = "a"        # or "apps", "tools", "community"
 - _Benefits (over admin UI configuration)_: Auto-syncs with latest Cloudflare tunnel URL on every `shopify app dev` restart.
 - _Find your dev stores app proxy URL_: Admin → Settings → Apps and sales channels → [your app] → App proxy section
 
-**3. Create Remix route**:
+**3. Create React Router route**:
 
 For HTML/JSON/Liquid Responses (Flexible)
 
@@ -297,9 +301,8 @@ export const loader = async ({ request }) => {
 Return React component/page:
 
 ```ts
-import { json } from '@remix-run/node';
-import { useLoaderData } from '@remix-run/react';
-import { AppProxyProvider } from '@shopify/shopify-app-remix/react';
+import { useLoaderData } from 'react-router';
+import { AppProxyProvider } from '@shopify/shopify-app-react-router';
 import { authenticate } from '../shopify.server';
 
 export async function loader({ request }) {
@@ -332,14 +335,14 @@ export default function Page() {
 - **No cookies**: Shopify strips `Cookie` and `Set-Cookie` headers for security
 - **Headers stripped**: Many headers removed for security ([full list](https://shopify.dev/docs/apps/build/online-store/display-dynamic-data#disallowed-headers))
 - **Signature verification**: Always verify the `signature` parameter to ensure requests come from Shopify
-- **React routing constraints**: When using `AppProxyProvider`, route files must match proxy URL exactly due to Remix URL rewriting limitations
+- **React routing constraints**: When using `AppProxyProvider`, route files must match proxy URL exactly due to [React Router URL rewriting limitations](https://github.com/Shopify/shopify-app-template-remix/issues/1093)
 - **No Polaris in proxies**: Shopify admin components don't work in app proxy context (public storefront vs admin context mismatch)
 
 #### Resources
 
 - [Display dynamic store data with app proxies](https://shopify.dev/docs/apps/build/online-store/display-dynamic-data)
 - [Shopify App Proxies Explained](https://www.youtube.com/watch?v=ZiugtHDctFk)
-- [AppProxyProvider](https://shopify.dev/docs/api/shopify-app-remix/v3/entrypoints/appproxyprovider)
+- [AppProxyProvider](https://shopify.dev/docs/api/shopify-app-react-router/latest/entrypoints/appproxyprovider)
 - [Client side JavaScript does not work on app proxy pages](https://github.com/Shopify/shopify-app-template-remix/issues/436)
 - [How To Deploy Your Shopify Apps](https://www.youtube.com/watch?v=DKswuVUyKaQ)
 
@@ -404,3 +407,7 @@ When using [`@shopify/shopify-app-session-storage`](https://www.npmjs.com/packag
 
 - [Offline Access Tokens](https://shopify.dev/docs/apps/build/authentication-authorization/access-tokens/offline-access-tokens)
 - [Online Access Tokens](https://shopify.dev/docs/apps/build/authentication-authorization/access-tokens/online-access-tokens)
+
+## 💡 Resources / References
+
+- [Polaris Web Components](https://shopify.dev/docs/api/app-home/polaris-web-components)

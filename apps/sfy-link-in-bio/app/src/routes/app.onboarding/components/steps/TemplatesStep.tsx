@@ -1,7 +1,7 @@
-import { useNavigate } from '@remix-run/react';
 import { Banner, Button, OptionList } from '@shopify/polaris';
 import { useCompute } from 'feature-react';
 import React from 'react';
+import { useNavigate } from 'react-router';
 import { LayoutTemplateIcon } from '@/components';
 import type { TOnboardingContext, TTemplate } from '../../create-onboarding-context';
 import { StepLayout } from '../StepLayout';

@@ -11,7 +11,6 @@ import {
 	TStyleReference
 } from '@repo/editor';
 import {
-	Badge,
 	ColorPicker,
 	HSBAColor,
 	Popover,
@@ -247,7 +246,7 @@ export const ColorStyleField = <GNodeValue, GParentNodeValue>(
 						<div className="relative">
 							{InputComponent}
 							<div className="pointer-events-none absolute inset-y-0 right-0 z-50 flex items-center rounded-r-lg bg-[#F2F2F2] pr-1">
-								<Badge size="small">Inherited</Badge>
+								<s-badge>Inherited</s-badge>
 							</div>
 						</div>
 					</Tooltip>

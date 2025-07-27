@@ -1,10 +1,9 @@
-import { ApiSessionStorage } from '@/lib/.server';
-import '@shopify/shopify-app-remix/adapters/node';
 import {
 	ApiVersion,
 	AppDistribution,
 	shopifyApp as createShopifyApp
-} from '@shopify/shopify-app-remix/server';
+} from '@shopify/shopify-app-react-router/server';
+import { ApiSessionStorage } from '@/lib/.server';
 import { shopifyConfig } from './configs';
 
 const shopifyApp: ReturnType<typeof createShopifyApp> = createShopifyApp({

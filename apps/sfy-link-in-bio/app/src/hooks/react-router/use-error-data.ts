@@ -1,5 +1,5 @@
-import { data, isRouteErrorResponse, useRouteError } from '@remix-run/react';
 import React from 'react';
+import { data, isRouteErrorResponse, useRouteError } from 'react-router';
 
 export function useErrorData<
 	GData extends TErrorData = TErrorData

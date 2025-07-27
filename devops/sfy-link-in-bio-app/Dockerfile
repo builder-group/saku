@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # =============================================================================
-# Multi-stage Docker build for Remix app in Turborepo monorepo
+# Multi-stage Docker build for React Router app in Turborepo monorepo
 # Based on official Turborepo Docker guide:
 # https://turborepo.com/docs/guides/tools/docker
 # =============================================================================
@@ -15,7 +15,7 @@ ARG PNPM_VERSION=10.12.1
 # =============================================================================
 FROM node:${NODE_VERSION}-slim AS base
 
-LABEL fly_launch_runtime="Remix"
+LABEL fly_launch_runtime="React Router"
 
 # Install system dependencies
 RUN apt-get update -qq && \
@@ -103,7 +103,7 @@ RUN apt-get update -qq && \
 
 # Create non-root user
 RUN groupadd --gid 1001 nodejs && \
-    useradd --uid 1001 --gid nodejs --shell /bin/bash --create-home remix
+    useradd --uid 1001 --gid nodejs --shell /bin/bash --create-home react-router
 
 # Set environment variables
 ENV NODE_ENV=production
@@ -111,12 +111,12 @@ ENV HOST=0.0.0.0
 ENV PORT=3000
 
 # Copy built application and runtime files
-COPY --from=builder --chown=remix:nodejs /app/apps/sfy-link-in-bio/app/build ./build
-COPY --from=builder --chown=remix:nodejs /app/apps/sfy-link-in-bio/app/package.json ./package.json
-COPY --from=builder --chown=remix:nodejs /app/apps/sfy-link-in-bio/app/public ./public
-COPY --from=builder --chown=remix:nodejs /app/node_modules ./node_modules
+COPY --from=builder --chown=react-router:nodejs /app/apps/sfy-link-in-bio/app/build ./build
+COPY --from=builder --chown=react-router:nodejs /app/apps/sfy-link-in-bio/app/package.json ./package.json
+COPY --from=builder --chown=react-router:nodejs /app/apps/sfy-link-in-bio/app/public ./public
+COPY --from=builder --chown=react-router:nodejs /app/node_modules ./node_modules
 
-USER remix
+USER react-router
 EXPOSE 3000
 
 CMD ["npm", "run", "start"]

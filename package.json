@@ -24,21 +24,21 @@
 		"lint": "turbo run lint",
 		"start:dev": "turbo run start:dev",
 		"test": "turbo run test",
-		"update:latest": "turbo run update:latest --force && pnpm update --latest '!vite' && pnpm build"
+		"update:latest": "turbo run update:latest --force && pnpm update --latest && pnpm build"
 	},
 	"devDependencies": {
 		"@blgc/config": "^0.0.35",
 		"@shopify/cli": "^3.83.0",
 		"dotenv": "^17.2.1",
-		"eslint": "^9.31.0",
+		"eslint": "^9.32.0",
 		"prettier": "^3.6.2",
-		"rollup": "^4.45.1",
+		"rollup": "^4.45.3",
 		"rollup-presets": "^0.0.21",
 		"shx": "^0.4.0",
 		"tsx": "^4.20.3",
 		"turbo": "^2.5.5",
 		"typescript": "^5.8.3",
-		"vite": "^6.3.5",
+		"vite": "^7.0.6",
 		"vitest": "^3.2.4"
 	},
 	"packageManager": "pnpm@10.12.1",

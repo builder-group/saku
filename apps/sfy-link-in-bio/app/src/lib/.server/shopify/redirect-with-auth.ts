@@ -1,8 +1,8 @@
-import { redirect } from '@remix-run/node';
+import { redirect } from 'react-router';
 
 /**
  * Creates a redirect response that preserves Shopify authentication parameters.
- * Use this instead of Remix's redirect() when redirecting on the server side
+ * Use this instead of React Router's redirect() when redirecting on the server side
  * to maintain the Shopify embedded app context.
  */
 export function redirectWithAuth(request: Request, to: string) {

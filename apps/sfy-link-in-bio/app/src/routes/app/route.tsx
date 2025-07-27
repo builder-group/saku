@@ -1,43 +1,46 @@
-import { Link, Outlet, useLoaderData, useRouteError } from '@remix-run/react';
-import { NavMenu } from '@shopify/app-bridge-react';
 import polarisStyles from '@shopify/polaris/build/esm/styles.css?url';
-import { AppProvider } from '@shopify/shopify-app-remix/react';
-import { boundary } from '@shopify/shopify-app-remix/server';
+import polarisTranslations from '@shopify/polaris/locales/en.json';
+import { boundary } from '@shopify/shopify-app-react-router/server';
 import React from 'react';
+import { Link, Outlet, useLoaderData, useRouteError } from 'react-router';
+import { AppProviderWithPolaris, TAppProviderWithPolarisI18n } from '@/components';
 import { shopify, shopifyConfig } from '@/environment/.server';
-import { THeadersFunction, TLinksFunction, TLoaderFunction } from '@/types';
+import { THeadersFunction, TLoaderFunction } from '@/types';
 
 const Page: React.FC = () => {
-	const { apiKey } = useLoaderData<typeof loader>();
+	const { apiKey, polarisTranslations } = useLoaderData<typeof loader>();
 
 	return (
-		<AppProvider isEmbeddedApp apiKey={apiKey}>
-			<NavMenu>
+		<AppProviderWithPolaris apiKey={apiKey} i18n={polarisTranslations}>
+			<ui-nav-menu>
 				<Link to="/app" rel="home">
 					Home
 				</Link>
 				<Link to="/app/settings">Settings</Link>
-			</NavMenu>
+			</ui-nav-menu>
 			<Outlet />
-		</AppProvider>
+		</AppProviderWithPolaris>
 	);
 };
 
 export default Page;
 
-export const links: TLinksFunction = () => [{ rel: 'stylesheet', href: polarisStyles }];
+// Shopify needs React Router to catch some thrown responses, so that their headers are included in the response
+export function ErrorBoundary() {
+	return boundary.error(useRouteError());
+}
 
 export const headers: THeadersFunction = (headersArgs) => {
 	return boundary.headers(headersArgs);
 };
 
-export const loader: TLoaderFunction<{ apiKey: string }> = async ({ request }) => {
+export const links = () => [{ rel: 'stylesheet', href: polarisStyles }];
+
+export const loader: TLoaderFunction<{
+	apiKey: string;
+	polarisTranslations: TAppProviderWithPolarisI18n;
+}> = async ({ request }) => {
 	await shopify.authenticate.admin(request);
 
-	return { apiKey: shopifyConfig.apiKey };
+	return { apiKey: shopifyConfig.apiKey, polarisTranslations };
 };
-
-// Shopify needs Remix to catch some thrown responses, so that their headers are included in the response.
-export function ErrorBoundary() {
-	return boundary.error(useRouteError());
-}

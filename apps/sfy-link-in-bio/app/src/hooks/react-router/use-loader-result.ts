@@ -1,6 +1,6 @@
 import { fromServerResult } from '@blgc/utils';
-import { useLoaderData } from '@remix-run/react';
 import React from 'react';
+import { useLoaderData } from 'react-router';
 
 export function useLoaderResult<T, E>() {
 	const loaderData = useLoaderData();

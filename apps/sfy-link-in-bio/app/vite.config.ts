@@ -1,7 +1,5 @@
-// import mdx from '@mdx-js/rollup';
 import mdx from '@mdx-js/rollup';
-import { vitePlugin as remix } from '@remix-run/dev';
-import { installGlobals } from '@remix-run/node';
+import { reactRouter } from '@react-router/dev/vite';
 import tailwindcss from '@tailwindcss/vite';
 import dotenv from 'dotenv';
 import { defineConfig, type UserConfig } from 'vite';
@@ -16,8 +14,6 @@ if (process.env['NODE_ENV'] === 'development') {
 		dotenv.config({ path: file });
 	});
 }
-
-installGlobals({ nativeFetch: true });
 
 // Related: https://github.com/remix-run/remix/issues/2835#issuecomment-1144102176
 // Replace the HOST env var with SHOPIFY_APP_URL so that it doesn't break the remix server. The CLI will eventually
@@ -73,28 +69,12 @@ export default defineConfig({
 			'posthog-js',
 			'posthog-js/react',
 			// Fix: validation-adapters sub-exports (/valibot, /zod) cause SSR module resolution issues
-			// Might be not necessary if we update validation-adapters package.json exports to use nested conditional exports correctly?
+			// Might not be necessary if we update validation-adapters package.json exports to use nested conditional exports correctly?
 			'validation-adapters',
 			'feature-react'
 		]
 	},
-	plugins: [
-		tailwindcss(),
-		mdx(),
-		remix({
-			ignoredRouteFiles: ['**/.*'],
-			appDirectory: 'src',
-			future: {
-				v3_fetcherPersist: true,
-				v3_relativeSplatPath: true,
-				v3_throwAbortReason: true,
-				v3_lazyRouteDiscovery: true,
-				v3_singleFetch: true, // TODO: https://github.com/Shopify/shopify-app-template-remix/issues/921
-				v3_routeConfig: true
-			}
-		}),
-		tsconfigPaths()
-	],
+	plugins: [tailwindcss(), mdx(), reactRouter(), tsconfigPaths()],
 	build: {
 		assetsInlineLimit: 0
 	},
@@ -102,6 +82,10 @@ export default defineConfig({
 		include: ['@shopify/app-bridge-react', '@shopify/polaris']
 	}
 }) satisfies UserConfig;
+
+// =========================================================================
+// Helper
+// =========================================================================
 
 // Helper to validate and stringify Vite env vars
 // Note: Can't use NODE_ENV (always 'production' in build) or enforce vars in local dev (no env loading in build command)

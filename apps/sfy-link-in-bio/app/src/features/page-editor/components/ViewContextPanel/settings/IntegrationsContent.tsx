@@ -1,4 +1,4 @@
-import { Badge, Text } from '@shopify/polaris';
+import { Text } from '@shopify/polaris';
 import React from 'react';
 import { AccordionSection, ShopifyIcon } from '@/components';
 import { createDisplayNameFromShop } from '@/lib';
@@ -69,7 +69,7 @@ export const IntegrationsContent: React.FC<TIntegrationsContentProps> = (props) 
 										</Text>
 									</div>
 									<div className="ml-4">
-										<Badge tone="success">Connected</Badge>
+										<s-badge tone="success">Connected</s-badge>
 									</div>
 								</div>
 								{index < shopifyIntegrations.length - 1 && <div className="h-px bg-gray-200" />}

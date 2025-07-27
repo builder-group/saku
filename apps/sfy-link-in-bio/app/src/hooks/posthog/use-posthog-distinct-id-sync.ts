@@ -1,6 +1,6 @@
-import { useLoaderData } from '@remix-run/react';
 import posthog from 'posthog-js';
 import React from 'react';
+import { useLoaderData } from 'react-router';
 
 export function usePosthogDistinctIdSync() {
 	const loaderData = useLoaderData<{ distinctId: string }>();

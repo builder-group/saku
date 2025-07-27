@@ -1,6 +1,5 @@
-import { redirect } from '@remix-run/node';
-import { Form, useLoaderData } from '@remix-run/react';
 import React from 'react';
+import { Form, redirect, useLoaderData } from 'react-router';
 import { shopify } from '@/environment/.server';
 import { TLoaderFunction } from '@/types';
 import styles from './styles.module.css';

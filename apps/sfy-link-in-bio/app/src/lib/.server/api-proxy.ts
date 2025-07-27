@@ -4,7 +4,7 @@ import { logger } from '@/environment';
  * Creates a proxy function that forwards requests to a target API server.
  *
  * @param config - Configuration options
- * @returns Proxy function that can handle Remix requests
+ * @returns Proxy function that can handle React Router requests
  */
 export function createApiProxy(config: TCreateApiProxyConfig) {
 	const { targetUrl, stripPrefix } = config;
@@ -30,7 +30,7 @@ export function createApiProxy(config: TCreateApiProxyConfig) {
 		if (request.method !== 'GET' && request.method !== 'HEAD' && request.body != null) {
 			fetchOptions.body = request.body;
 			// duplex: 'half' is required by Node.js undici when sending a body
-			fetchOptions.duplex = 'half';
+			(fetchOptions as any).duplex = 'half';
 		}
 
 		try {

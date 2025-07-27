@@ -1,6 +1,4 @@
-import { useLoaderData } from '@remix-run/react';
 import {
-	Badge,
 	BlockStack,
 	Box,
 	Button,
@@ -9,11 +7,11 @@ import {
 	InlineGrid,
 	InlineStack,
 	Link,
-	Page as PolarisPage,
 	Text,
 	useBreakpoints
 } from '@shopify/polaris';
 import React from 'react';
+import { useLoaderData } from 'react-router';
 import { ApiHealthBadge } from '@/components';
 import { appConfig } from '@/environment';
 import { TLoaderFunction } from '@/types';
@@ -24,7 +22,8 @@ const SettingsPage: React.FC = () => {
 	const { env } = useLoaderData<typeof loader>();
 
 	return (
-		<PolarisPage title="Settings">
+		<s-page>
+			<ui-title-bar title="Settings"></ui-title-bar>
 			<BlockStack gap={{ xs: '800', sm: '400' }}>
 				{/* App Info Section */}
 				<InlineGrid columns={{ xs: '1fr', md: '2fr 5fr' }} gap="400">
@@ -48,7 +47,7 @@ const SettingsPage: React.FC = () => {
 								<Text variant="bodyMd" as="span" tone="subdued">
 									App Version
 								</Text>
-								<Badge tone="info">{env.version}</Badge>
+								<s-badge tone="info">{env.version}</s-badge>
 							</InlineStack>
 
 							<Divider />
@@ -125,7 +124,7 @@ const SettingsPage: React.FC = () => {
 					</Card>
 				</InlineGrid>
 			</BlockStack>
-		</PolarisPage>
+		</s-page>
 	);
 };
 
