@@ -8,7 +8,7 @@ import { AppProvider } from '@shopify/shopify-app-react-router/react';
 import React from 'react';
 import { Link } from 'react-router';
 
-export const ShopifyAppProvider: React.FC<TShopifyAppProviderProps> = (props) => {
+export const AppProviderWithPolaris: React.FC<TAppProviderWithPolarisProps> = (props) => {
 	const { apiKey, children, i18n } = props;
 
 	return (
@@ -20,7 +20,7 @@ export const ShopifyAppProvider: React.FC<TShopifyAppProviderProps> = (props) =>
 	);
 };
 
-interface TShopifyAppProviderProps {
+interface TAppProviderWithPolarisProps {
 	apiKey: string;
 	children: React.ReactNode;
 	i18n: TShopifyAppProviderI18n;

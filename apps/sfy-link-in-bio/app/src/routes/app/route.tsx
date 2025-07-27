@@ -3,7 +3,7 @@ import polarisTranslations from '@shopify/polaris/locales/en.json';
 import { boundary } from '@shopify/shopify-app-react-router/server';
 import React from 'react';
 import { Link, Outlet, useLoaderData, useRouteError } from 'react-router';
-import { ShopifyAppProvider, TShopifyAppProviderI18n } from '@/components';
+import { AppProviderWithPolaris, TShopifyAppProviderI18n } from '@/components';
 import { shopify, shopifyConfig } from '@/environment/.server';
 import { THeadersFunction, TLoaderFunction } from '@/types';
 
@@ -11,7 +11,7 @@ const Page: React.FC = () => {
 	const { apiKey, polarisTranslations } = useLoaderData<typeof loader>();
 
 	return (
-		<ShopifyAppProvider apiKey={apiKey} i18n={polarisTranslations}>
+		<AppProviderWithPolaris apiKey={apiKey} i18n={polarisTranslations}>
 			<ui-nav-menu>
 				<Link to="/app" rel="home">
 					Home
@@ -19,7 +19,7 @@ const Page: React.FC = () => {
 				<Link to="/app/settings">Settings</Link>
 			</ui-nav-menu>
 			<Outlet />
-		</ShopifyAppProvider>
+		</AppProviderWithPolaris>
 	);
 };
 

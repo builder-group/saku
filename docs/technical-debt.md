@@ -13,10 +13,10 @@ We still use `@shopify/polaris` components because:
 
 ## React v18 Lock-in
 
+Several [Shopify packages require React 18](https://github.com/Shopify/shopify-app-template-remix/issues/955), preventing us from upgrading to React 19. Additionally, some packages like `react-email` use React 19, requiring us to force downgrade them to avoid version conflicts in the monorepo.
+
 - `@shopify/app-bridge-ui-types` uses `^18.3.1`
 - `@shopify/polaris` uses `^18.2.0`
-
-Several [Shopify packages require React 18](https://github.com/Shopify/shopify-app-template-remix/issues/955), preventing us from upgrading to React 19. Additionally, some packages like `react-email` use React 19, requiring us to force downgrade them to avoid version conflicts in the monorepo.
 
 ### Current State
 
