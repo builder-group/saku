@@ -129,11 +129,11 @@ and Vite's server filesystem allow list:
 
 ```ts
 export default defineConfig({
-    server: {
-        fs: {
-            allow: ['src', 'node_modules'] // Changed from default 'app'
-        }
-    }
+	server: {
+		fs: {
+			allow: ['src', 'node_modules'] // Changed from default 'app'
+		}
+	}
 }) satisfies UserConfig;
 ```
 

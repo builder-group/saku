@@ -7,6 +7,7 @@ We still use `@shopify/polaris` components because:
 - **Missing Web Components**: Not all Polaris components have been ported to web components yet (e.g. `DropZone`, `IndexTable`, `Popover`, `Tooltip`, ..)
 
 **Migration Strategy:**
+
 - Use new web components (`<s-button>`, `<s-badge>`, `<s-text>`, etc.) where available
 - Keep Polaris for components that don't have web component equivalents
 - Requires dual provider setup: Shopify App React Router `AppProvider` + Polaris `AppProvider` for i18n (see `AppProviderWithPolaris.ts`)
@@ -34,6 +35,24 @@ Several [Shopify packages require React 18](https://github.com/Shopify/shopify-a
   ```
 - Blocks access to React 19 features and improvements
 - Forces newer packages to use older React version
+
+## Shopify App Proxy Signature Validation
+
+We use a fallback signature recalculation mechanism in production due to inconsistent signature validation between development and production environments. The official Shopify authentication fails reliably in production (likely due to timestamp differences between Shopify servers and hosting infrastructure?), requiring manual signature recalculation as a workaround.
+
+**Current Solution:**
+
+- Implemented in `authenticate-app-proxy.ts`
+- Tries official authentication first, falls back to signature recalculation
+- Tracks authentication method for analytics (`method: 'official' | 'fallback' | 'unverified'`)
+
+**Ideal Resolution:**
+
+- Identify and fix the underlying signature issue
+
+**References:**
+
+- [GitHub Issue #455: Invalid signature with App Proxy for Remix loaders and actions](https://github.com/Shopify/shopify-app-js/issues/455)
 
 ## ✅ RESOLVED: Remix Lock-in
 
