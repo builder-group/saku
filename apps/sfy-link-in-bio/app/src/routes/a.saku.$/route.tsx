@@ -5,7 +5,8 @@ import { AppProxyProvider } from '@shopify/shopify-app-react-router/react';
 import { boundary } from '@shopify/shopify-app-react-router/server';
 import { isStatusCode } from 'feature-fetch';
 import React from 'react';
-import { shopify, shopifyConfig } from '@/.server/environment';
+import { shopifyConfig } from '@/.server/environment/configs';
+import { authenticateAppProxy } from '@/.server/lib';
 import { coreApiClient, logger } from '@/environment';
 import {
 	createPageContext,
@@ -62,39 +63,56 @@ export const headers: THeadersFunction = (headersArgs) => {
 };
 
 export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async ({ request }) => {
-	let shop;
-	try {
-		const result = await shopify.authenticate.public.appProxy(request);
-		shop = result.session?.shop;
-	} catch (error) {
-		logger.error('Failed to authenticate app proxy request', { error });
-	}
-	// TODO: Remove this once we have figured out why the app proxy signature is not correct in Production
-	if (shop == null) {
-		try {
-			const url = new URL(request.url);
-			shop = url.searchParams.get('shop');
-		} catch (error) {
-			logger.error('Failed to get shop from URL', { error });
-		}
+	const authResult = await authenticateAppProxy(request, {
+		enableFallback: true // TODO: Figure out solution without "hacky" fallback
+	});
+
+	logger.info('App proxy authentication', {
+		method: authResult.method,
+		shop:
+			authResult.method === 'unverified'
+				? authResult.shop
+				: authResult.method === 'official' || authResult.method === 'fallback'
+					? authResult.context.session?.shop
+					: null,
+		...(authResult.method === 'unverified' || authResult.method === 'invalid'
+			? { error: authResult.error }
+			: {})
+	});
+
+	let shop: string | null = null;
+	switch (authResult.method) {
+		case 'official':
+		case 'fallback':
+			shop = authResult.context.session?.shop || null;
+			break;
+		case 'unverified':
+			shop = authResult.shop;
+			// Allow unverified requests in production for signature issues
+			break;
+		case 'invalid':
+			return ServerErr({
+				code: '#ERR_BAD_REQUEST',
+				message: 'Invalid app proxy request'
+			});
 	}
 
-	const url = new URL(request.url);
+	if (shop == null) {
+		logger.error('No shop provided in session', authResult);
+		return ServerErr({
+			code: '#ERR_BAD_REQUEST',
+			message: 'Invalid app proxy request'
+		});
+	}
+
 	// Extract handle from path: /a/saku/bio -> "bio"
+	const url = new URL(request.url);
 	const pathSegments = url.pathname.split('/').filter(Boolean);
 	const handle = pathSegments[2]; // ['a', 'saku', 'bio']
-
 	if (handle == null) {
 		return ServerErr({
 			code: '#ERR_BAD_REQUEST',
 			message: 'No handle provided in URL'
-		});
-	}
-
-	if (shop == null) {
-		return ServerErr({
-			code: '#ERR_UNAUTHORIZED',
-			message: 'No shop provided in session'
 		});
 	}
 
