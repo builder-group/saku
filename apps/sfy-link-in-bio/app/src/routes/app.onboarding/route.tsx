@@ -5,11 +5,11 @@ import { Button, ButtonGroup, Text } from '@shopify/polaris';
 import { boundary } from '@shopify/shopify-app-react-router/server';
 import React from 'react';
 import { ShouldRevalidateFunction, useNavigate, useSearchParams } from 'react-router';
+import { shopify } from '@/.server/environment';
+import { getSessionTokenFromRequest, redirectWithAuth } from '@/.server/lib';
 import { appConfig, coreApiClient } from '@/environment';
-import { shopify } from '@/environment/.server';
 import { blankPreset } from '@/features/page-editor/.server';
 import { resultLoader, withResultLoader } from '@/lib';
-import { getSessionTokenFromRequest, redirectWithAuth } from '@/lib/.server';
 import { THeadersFunction } from '@/types';
 import {
 	HandleStep,

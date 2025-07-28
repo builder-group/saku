@@ -1,8 +1,8 @@
 import { type coreApiV1 } from '@repo/types/api';
 import { Session } from '@shopify/shopify-api';
 import { type SessionStorage } from '@shopify/shopify-app-session-storage';
+import { accessSecretMiddleware } from '@/.server/environment';
 import { coreApiClient } from '@/environment';
-import { accessSecretMiddleware } from '@/environment/.server';
 
 // Based on: https://github.com/Shopify/shopify-app-js/blob/main/packages/apps/session-storage/shopify-app-session-storage-prisma/src/prisma.ts
 export class ApiSessionStorage implements SessionStorage {

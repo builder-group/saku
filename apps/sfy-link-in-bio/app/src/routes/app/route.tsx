@@ -3,8 +3,8 @@ import polarisTranslations from '@shopify/polaris/locales/en.json';
 import { boundary } from '@shopify/shopify-app-react-router/server';
 import React from 'react';
 import { Link, Outlet, useLoaderData, useRouteError } from 'react-router';
+import { shopify, shopifyConfig } from '@/.server/environment';
 import { AppProviderWithPolaris, TAppProviderWithPolarisI18n } from '@/components';
-import { shopify, shopifyConfig } from '@/environment/.server';
 import { THeadersFunction, TLoaderFunction } from '@/types';
 
 const Page: React.FC = () => {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Form, redirect, useLoaderData } from 'react-router';
-import { shopify } from '@/environment/.server';
+import { shopify } from '@/.server/environment';
 import { TLoaderFunction } from '@/types';
 import styles from './styles.module.css';
 

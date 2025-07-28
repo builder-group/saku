@@ -1,7 +1,7 @@
 import { AppProvider } from '@shopify/shopify-app-react-router/react';
 import React from 'react';
 import { Form, useActionData, useLoaderData } from 'react-router';
-import { shopify } from '@/environment/.server';
+import { shopify } from '@/.server/environment';
 import { TActionFunction, TLoaderFunction } from '@/types';
 import { loginErrorMessage, TLoginErrorMessage } from './error.server';
 
