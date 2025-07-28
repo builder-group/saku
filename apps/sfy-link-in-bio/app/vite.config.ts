@@ -2,6 +2,7 @@ import mdx from '@mdx-js/rollup';
 import { reactRouter } from '@react-router/dev/vite';
 import tailwindcss from '@tailwindcss/vite';
 import dotenv from 'dotenv';
+import { reactRouterHonoServer } from 'react-router-hono-server/dev';
 import { defineConfig, type UserConfig } from 'vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
@@ -74,7 +75,13 @@ export default defineConfig({
 			'feature-react'
 		]
 	},
-	plugins: [tailwindcss(), mdx(), reactRouter(), tsconfigPaths()],
+	plugins: [
+		tailwindcss(),
+		mdx(),
+		reactRouterHonoServer({ serverEntryPoint: './src/.server/server.ts' }),
+		reactRouter(),
+		tsconfigPaths()
+	],
 	build: {
 		assetsInlineLimit: 0
 	},

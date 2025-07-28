@@ -2,7 +2,7 @@ import { ApiVersion } from '@shopify/shopify-app-react-router/server';
 import * as v from 'valibot';
 import { validateEnvVar } from 'validatenv';
 import { vValidator } from 'validation-adapters/valibot';
-import { appConfig } from '../../configs';
+import { appConfig } from '@/environment';
 
 const appProxyPath = appConfig.env === 'production' ? '/a/saku' : '/a/saku-local';
 

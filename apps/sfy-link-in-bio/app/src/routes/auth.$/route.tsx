@@ -1,5 +1,5 @@
 import { boundary } from '@shopify/shopify-app-react-router/server';
-import { shopify } from '@/environment/.server';
+import { shopify } from '@/.server/environment';
 import { THeadersFunction, TLoaderFunction } from '@/types';
 
 export const loader: TLoaderFunction = async ({ request }) => {

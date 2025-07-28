@@ -3,6 +3,8 @@ import { Button, ButtonGroup, Card, Layout, Spinner, Text, TextField } from '@sh
 import { boundary } from '@shopify/shopify-app-react-router/server';
 import { useFeatureState } from 'feature-react';
 import React from 'react';
+import { shopify, shopifyConfig } from '@/.server/environment';
+import { getSessionTokenFromRequest, redirectWithAuth } from '@/.server/lib';
 import {
 	ClipboardButton,
 	FeedbackCard,
@@ -12,9 +14,7 @@ import {
 	ViewIcon
 } from '@/components';
 import { appConfig, coreApiClient, logger } from '@/environment';
-import { shopify, shopifyConfig } from '@/environment/.server';
 import { createShopifyTokenMiddleware, resultLoader, withResultLoader } from '@/lib';
-import { getSessionTokenFromRequest, redirectWithAuth } from '@/lib/.server';
 import { usePageEditorModal } from '@/routes/app.modal.page-editor.$/PageEditorModal';
 import { THeadersFunction } from '@/types';
 

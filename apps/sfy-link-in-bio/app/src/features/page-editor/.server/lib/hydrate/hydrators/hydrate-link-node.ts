@@ -1,6 +1,6 @@
 import { TLinkNode } from '@repo/editor';
+import { accessSecretMiddleware } from '@/.server/environment';
 import { coreApiClient } from '@/environment';
-import { accessSecretMiddleware } from '@/environment/.server';
 import { resolveLinkNode } from '../../../../lib';
 import { TResolvedLinkNode, TResolvedPromisedNode } from '../../../../types';
 import { TNodeHydrateContext } from '../types';

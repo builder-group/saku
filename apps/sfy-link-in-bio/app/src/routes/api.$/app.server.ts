@@ -1,8 +1,8 @@
 import { createApp } from '@repo/api-core';
 import { Hono } from 'hono';
+import { apiConfig } from '@/.server/environment';
+import { createApiProxy } from '@/.server/lib';
 import { appConfig } from '@/environment';
-import { apiConfig } from '@/environment/.server';
-import { createApiProxy } from '@/lib/.server';
 
 /**
  * Server-only API handler.

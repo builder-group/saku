@@ -1,4 +1,4 @@
-import { createHmacMiddleware } from '@/lib/.server';
+import { createHmacMiddleware } from '@/.server/lib';
 import { apiConfig } from '../configs';
 
 export const accessSecretMiddleware = createHmacMiddleware({

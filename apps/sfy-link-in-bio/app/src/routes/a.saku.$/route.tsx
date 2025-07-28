@@ -5,8 +5,8 @@ import { AppProxyProvider } from '@shopify/shopify-app-react-router/react';
 import { boundary } from '@shopify/shopify-app-react-router/server';
 import { isStatusCode } from 'feature-fetch';
 import React from 'react';
+import { shopify, shopifyConfig } from '@/.server/environment';
 import { coreApiClient, logger } from '@/environment';
-import { shopify, shopifyConfig } from '@/environment/.server';
 import {
 	createPageContext,
 	getSiteFontUrls,
