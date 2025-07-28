@@ -10,8 +10,6 @@ export default await createHonoServer({
 				logger.info(str, rest);
 			})
 		);
-	},
-	configure(app) {
 		app.use(
 			'/assets/*',
 			cors({
