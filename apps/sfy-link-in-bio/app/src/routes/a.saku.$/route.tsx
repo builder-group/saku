@@ -1,4 +1,4 @@
-import { ServerErr, ServerOk } from '@blgc/utils';
+import { fromServerResult, ServerErr, ServerOk } from '@blgc/utils';
 import { TFlatSite, TIntegration } from '@repo/editor';
 import { Text } from '@shopify/polaris';
 import { AppProxyProvider } from '@shopify/shopify-app-react-router/react';
@@ -10,6 +10,7 @@ import { authenticateAppProxy } from '@/.server/lib';
 import { coreApiClient, logger } from '@/environment';
 import {
 	createPageContext,
+	extractSiteMetadata,
 	getSiteFontUrls,
 	StaticNodeCanvas,
 	TResolvedSite
@@ -17,7 +18,7 @@ import {
 import { hydrateSite, StaticSiteHydrateContext } from '@/features/page-editor/.server';
 import { resultLoader, withResultLoader } from '@/lib';
 import styles from '@/styles.css?url';
-import { THeadersFunction } from '@/types';
+import { THeadersFunction, TMetaFunction } from '@/types';
 
 const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 	Success: ({ data }) => {
@@ -60,6 +61,45 @@ export default Page;
 
 export const headers: THeadersFunction = (headersArgs) => {
 	return boundary.headers(headersArgs);
+};
+
+// TODO: Doesn't work in app proxy
+export const meta: TMetaFunction<typeof loader> = ({ data }) => {
+	if (data == null) {
+		return [];
+	}
+
+	const result = fromServerResult<TSuccessLoaderData, TErrorLoaderData>(data);
+	if (result.isErr()) {
+		return [
+			{ title: 'Page Not Found - Saku' },
+			{
+				name: 'description',
+				content: 'The requested page could not be found'
+			}
+		];
+	}
+
+	const loaderData = result.value;
+	const { title: siteTitle, description: siteDescription } = extractSiteMetadata(
+		loaderData.site.content
+	);
+
+	return [
+		{ title: siteTitle },
+		{
+			name: 'description',
+			content: siteDescription
+		},
+		{
+			property: 'og:title',
+			content: siteTitle
+		},
+		{
+			property: 'og:description',
+			content: siteDescription
+		}
+	];
 };
 
 export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async ({ request }) => {
