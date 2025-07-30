@@ -1,5 +1,3 @@
-import * as gqlTada from 'gql.tada';
-
 /* eslint-disable */
 /* prettier-ignore */
 
@@ -435,7 +433,7 @@ export type introspection_types = {
     'CombinedListingChildEdge': { kind: 'OBJECT'; name: 'CombinedListingChildEdge'; fields: { 'cursor': { name: 'cursor'; type: { kind: 'NON_NULL'; name: never; ofType: { kind: 'SCALAR'; name: 'String'; ofType: null; }; } }; 'node': { name: 'node'; type: { kind: 'NON_NULL'; name: never; ofType: { kind: 'OBJECT'; name: 'CombinedListingChild'; ofType: null; }; } }; }; };
     'CombinedListingUpdatePayload': { kind: 'OBJECT'; name: 'CombinedListingUpdatePayload'; fields: { 'product': { name: 'product'; type: { kind: 'OBJECT'; name: 'Product'; ofType: null; } }; 'userErrors': { name: 'userErrors'; type: { kind: 'NON_NULL'; name: never; ofType: { kind: 'LIST'; name: never; ofType: { kind: 'NON_NULL'; name: never; ofType: { kind: 'OBJECT'; name: 'CombinedListingUpdateUserError'; ofType: null; }; }; }; } }; }; };
     'CombinedListingUpdateUserError': { kind: 'OBJECT'; name: 'CombinedListingUpdateUserError'; fields: { 'code': { name: 'code'; type: { kind: 'ENUM'; name: 'CombinedListingUpdateUserErrorCode'; ofType: null; } }; 'field': { name: 'field'; type: { kind: 'LIST'; name: never; ofType: { kind: 'NON_NULL'; name: never; ofType: { kind: 'SCALAR'; name: 'String'; ofType: null; }; }; } }; 'message': { name: 'message'; type: { kind: 'NON_NULL'; name: never; ofType: { kind: 'SCALAR'; name: 'String'; ofType: null; }; } }; }; };
-    'CombinedListingUpdateUserErrorCode': { name: 'CombinedListingUpdateUserErrorCode'; enumValues: 'CANNOT_HAVE_DUPLICATED_PRODUCTS' | 'CANNOT_HAVE_PARENT_AS_CHILD' | 'CANNOT_HAVE_REPEATED_OPTION_VALUES' | 'CANNOT_HAVE_REPEATED_OPTIONS' | 'CANT_ADD_OPTIONS_VALUES_IF_ALREADY_EXISTS' | 'COMBINED_LISTINGS_NOT_ENABLED' | 'EDIT_AND_REMOVE_ON_SAME_PRODUCTS' | 'FAILED_TO_ADD_PRODUCTS' | 'FAILED_TO_REMOVE_PRODUCTS' | 'FAILED_TO_UPDATE_PRODUCTS' | 'LINKED_METAFIELD_CANNOT_BE_CHANGED' | 'LINKED_METAFIELD_VALUE_MISSING' | 'LINKED_METAFIELDS_CANNOT_BE_REPEATED' | 'LINKED_OPTIONS_NOT_SUPPORTED_FOR_SHOP' | 'MISSING_OPTION_VALUES' | 'MUST_HAVE_SELECTED_OPTION_VALUES' | 'OPTION_NAME_CANNOT_BE_BLANK' | 'OPTION_NAME_CONTAINS_INVALID_CHARACTERS' | 'OPTION_NOT_FOUND' | 'OPTIONS_MUST_BE_EQUAL_TO_THE_OTHER_COMPONENTS' | 'OPTION_VALUES_CANNOT_BE_BLANK' | 'OPTION_VALUES_CANNOT_BE_EMPTY' | 'PARENT_PRODUCT_CANNOT_BE_COMBINED_LISTING_CHILD' | 'PARENT_PRODUCT_MUST_BE_A_COMBINED_LISTING' | 'PARENT_PRODUCT_NOT_FOUND' | 'PRODUCT_IS_ALREADY_A_CHILD' | 'PRODUCT_MEMBERSHIP_NOT_FOUND' | 'PRODUCT_NOT_FOUND' | 'TITLE_TOO_LONG' | 'TOO_MANY_VARIANTS' | 'TOO_MANY_PRODUCTS' | 'UNEXPECTED_ERROR'; };
+    'CombinedListingUpdateUserErrorCode': { name: 'CombinedListingUpdateUserErrorCode'; enumValues: 'CANNOT_HAVE_DUPLICATED_PRODUCTS' | 'CANNOT_HAVE_PARENT_AS_CHILD' | 'CANNOT_HAVE_REPEATED_OPTION_VALUES' | 'CANNOT_HAVE_REPEATED_OPTIONS' | 'CANT_ADD_OPTIONS_VALUES_IF_ALREADY_EXISTS' | 'COMBINED_LISTINGS_NOT_ENABLED' | 'EDIT_AND_REMOVE_ON_SAME_PRODUCTS' | 'FAILED_TO_ADD_PRODUCTS' | 'FAILED_TO_REMOVE_PRODUCTS' | 'FAILED_TO_UPDATE_PRODUCTS' | 'LINKED_METAFIELD_CANNOT_BE_CHANGED' | 'LINKED_METAFIELD_VALUE_MISSING' | 'LINKED_METAFIELDS_CANNOT_BE_REPEATED' | 'LINKED_OPTIONS_NOT_SUPPORTED_FOR_SHOP' | 'MISSING_OPTION_VALUES' | 'MUST_HAVE_SELECTED_OPTION_VALUES' | 'OPTION_NAME_CANNOT_BE_BLANK' | 'OPTION_NAME_CONTAINS_INVALID_CHARACTERS' | 'OPTION_NOT_FOUND' | 'OPTIONS_MUST_BE_EQUAL_TO_THE_OTHER_COMPONENTS' | 'OPTION_VALUES_CANNOT_BE_BLANK' | 'OPTION_VALUES_CANNOT_BE_EMPTY' | 'PARENT_PRODUCT_CANNOT_BE_COMBINED_LISTING_CHILD' | 'PARENT_PRODUCT_MUST_BE_A_COMBINED_LISTING' | 'PARENT_PRODUCT_MUST_HAVE_CATEGORY' | 'PARENT_PRODUCT_NOT_FOUND' | 'PRODUCT_IS_ALREADY_A_CHILD' | 'PRODUCT_MEMBERSHIP_NOT_FOUND' | 'PRODUCT_NOT_FOUND' | 'TITLE_TOO_LONG' | 'TOO_MANY_VARIANTS' | 'TOO_MANY_PRODUCTS' | 'UNEXPECTED_ERROR'; };
     'CombinedListingsRole': { name: 'CombinedListingsRole'; enumValues: 'PARENT' | 'CHILD'; };
     'Comment': { kind: 'OBJECT'; name: 'Comment'; fields: { 'article': { name: 'article'; type: { kind: 'OBJECT'; name: 'Article'; ofType: null; } }; 'author': { name: 'author'; type: { kind: 'NON_NULL'; name: never; ofType: { kind: 'OBJECT'; name: 'CommentAuthor'; ofType: null; }; } }; 'body': { name: 'body'; type: { kind: 'NON_NULL'; name: never; ofType: { kind: 'SCALAR'; name: 'String'; ofType: null; }; } }; 'bodyHtml': { name: 'bodyHtml'; type: { kind: 'NON_NULL'; name: never; ofType: { kind: 'SCALAR'; name: 'HTML'; ofType: null; }; } }; 'createdAt': { name: 'createdAt'; type: { kind: 'NON_NULL'; name: never; ofType: { kind: 'SCALAR'; name: 'DateTime'; ofType: null; }; } }; 'events': { name: 'events'; type: { kind: 'NON_NULL'; name: never; ofType: { kind: 'OBJECT'; name: 'EventConnection'; ofType: null; }; } }; 'id': { name: 'id'; type: { kind: 'NON_NULL'; name: never; ofType: { kind: 'SCALAR'; name: 'ID'; ofType: null; }; } }; 'ip': { name: 'ip'; type: { kind: 'SCALAR'; name: 'String'; ofType: null; } }; 'isPublished': { name: 'isPublished'; type: { kind: 'NON_NULL'; name: never; ofType: { kind: 'SCALAR'; name: 'Boolean'; ofType: null; }; } }; 'publishedAt': { name: 'publishedAt'; type: { kind: 'SCALAR'; name: 'DateTime'; ofType: null; } }; 'status': { name: 'status'; type: { kind: 'NON_NULL'; name: never; ofType: { kind: 'ENUM'; name: 'CommentStatus'; ofType: null; }; } }; 'updatedAt': { name: 'updatedAt'; type: { kind: 'SCALAR'; name: 'DateTime'; ofType: null; } }; 'userAgent': { name: 'userAgent'; type: { kind: 'SCALAR'; name: 'String'; ofType: null; } }; }; };
     'CommentApprovePayload': { kind: 'OBJECT'; name: 'CommentApprovePayload'; fields: { 'comment': { name: 'comment'; type: { kind: 'OBJECT'; name: 'Comment'; ofType: null; } }; 'userErrors': { name: 'userErrors'; type: { kind: 'NON_NULL'; name: never; ofType: { kind: 'LIST'; name: never; ofType: { kind: 'NON_NULL'; name: never; ofType: { kind: 'OBJECT'; name: 'CommentApproveUserError'; ofType: null; }; }; }; } }; }; };
@@ -2948,15 +2946,17 @@ export type introspection_types = {
  * instead save to a .ts instead of a .d.ts file.
  */
 export type introspection = {
-	name: never;
-	query: 'QueryRoot';
-	mutation: 'Mutation';
-	subscription: never;
-	types: introspection_types;
+  name: never;
+  query: 'QueryRoot';
+  mutation: 'Mutation';
+  subscription: never;
+  types: introspection_types;
 };
 
+import * as gqlTada from 'gql.tada';
+
 declare module 'gql.tada' {
-	interface setupSchema {
-		introspection: introspection;
-	}
+  interface setupSchema {
+    introspection: introspection
+  }
 }

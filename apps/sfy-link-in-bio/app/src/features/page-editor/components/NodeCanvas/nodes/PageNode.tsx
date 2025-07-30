@@ -3,7 +3,7 @@ import { TFlatPageNode } from '@repo/editor';
 import { useCompute } from 'feature-react';
 import React from 'react';
 import { LogoIcon } from '@/components';
-import { resolvePageNodeWithoutChildren } from '../../../lib';
+import { EditorSiteResolveContext, resolvePageNodeWithoutChildren } from '../../../lib';
 import { Node } from '../Node';
 import { TNodeProps } from './types';
 
@@ -12,7 +12,9 @@ export const PageNode = React.forwardRef<HTMLDivElement, TNodeProps<TFlatPageNod
 		const { nodeState, editor, ...divProps } = props;
 
 		const { style } = useCompute(nodeState, (nodeValue) => {
-			return resolvePageNodeWithoutChildren(nodeValue);
+			return resolvePageNodeWithoutChildren(nodeValue, {
+				site: new EditorSiteResolveContext(editor)
+			});
 		});
 		const childNodes = useCompute(
 			nodeState,

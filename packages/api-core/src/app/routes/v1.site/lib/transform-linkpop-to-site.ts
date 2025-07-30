@@ -132,6 +132,9 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 			id: createId('node'),
 			type: 'page',
 			visible: true,
+			content: {
+				metadata: {}
+			},
 			children,
 			style: {
 				backgroundColor:

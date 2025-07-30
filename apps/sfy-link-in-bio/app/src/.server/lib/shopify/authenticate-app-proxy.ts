@@ -14,7 +14,7 @@ export async function authenticateAppProxy(
 	request: Request,
 	options: TAuthenticateAppProxyOptions = {}
 ): Promise<TAppProxyAuthResult> {
-	const { enableFallback = true } = options;
+	const { enableFallback = false } = options;
 
 	// Try official Shopify authentication first
 	try {
