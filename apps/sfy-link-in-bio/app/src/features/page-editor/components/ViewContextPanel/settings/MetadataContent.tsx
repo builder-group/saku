@@ -39,7 +39,7 @@ export const MetadataContent: React.FC<TMetadataContentProps> = (props) => {
 
 	const handleTitleChange = React.useCallback(
 		(value: string) => {
-			rootNode._v.content.metadata.title = value;
+			rootNode._v.content.metadata.title = value.length > 0 ? value : undefined;
 			rootNode._notify();
 		},
 		[rootNode]
@@ -47,7 +47,7 @@ export const MetadataContent: React.FC<TMetadataContentProps> = (props) => {
 
 	const handleDescriptionChange = React.useCallback(
 		(value: string) => {
-			rootNode._v.content.metadata.description = value;
+			rootNode._v.content.metadata.description = value.length > 0 ? value : undefined;
 			rootNode._notify();
 		},
 		[rootNode]
