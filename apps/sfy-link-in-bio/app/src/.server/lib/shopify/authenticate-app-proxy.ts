@@ -31,7 +31,7 @@ export async function authenticateAppProxy(
 	}
 
 	// Try signature recalculation fallback
-	// (handles timestamp differences between Shopify and hosting servers)
+	// (handles authentication failures in production)
 	// https://github.com/Shopify/shopify-app-js/issues/455
 	// https://github.com/Shopify/shopify-app-js/issues/2374
 	if (enableFallback) {
