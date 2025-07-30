@@ -55,6 +55,12 @@ export const MetadataContent: React.FC<TMetadataContentProps> = (props) => {
 
 	const handleImageChange = React.useCallback(
 		(image: TImageUploadOnChangeImage) => {
+			if (!image.url.length) {
+				rootNode._v.content.metadata.image = undefined;
+				rootNode._notify();
+				return;
+			}
+
 			const hash = editor.registerImage(image.url, image.fileName);
 			if (hash != null) {
 				rootNode._v.content.metadata.image = hash;
