@@ -171,6 +171,9 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 		root: {
 			type: 'page',
 			id: createId('node'),
+			content: {
+				metadata: {}
+			},
 			children: [
 				{
 					id: createId('node'),

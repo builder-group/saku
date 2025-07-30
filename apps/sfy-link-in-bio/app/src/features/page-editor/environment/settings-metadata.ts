@@ -3,6 +3,10 @@ export const settingsMetadataMap = {
 		type: 'appearance',
 		label: 'Appearance'
 	} satisfies TSettingsMetadata,
+	metadata: {
+		type: 'metadata',
+		label: 'Metadata'
+	} satisfies TSettingsMetadata,
 	assets: {
 		type: 'assets',
 		label: 'Assets'

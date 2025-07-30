@@ -39,6 +39,12 @@ export interface TBaseNode {
 
 export interface TPageNode extends TBaseNode {
 	type: 'page';
+	content: {
+		metadata: {
+			title?: string;
+			description?: string;
+		};
+	};
 	children: TNode[];
 	style: {
 		// Page container styles

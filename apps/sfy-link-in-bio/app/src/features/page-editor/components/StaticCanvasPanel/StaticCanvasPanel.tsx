@@ -37,6 +37,12 @@ export const StaticCanvasPanel: React.FC<TStaticCanvasPanelProps> = (props) => {
 				</div>
 			)}
 
+			<div className="absolute bottom-2 left-2 z-20">
+				<s-badge tone="info" icon="info">
+					Production Preview
+				</s-badge>
+			</div>
+
 			{/* Use ShadowRoot to fully isolate the static canvas from global styles (e.g., Polaris), ensuring only Tailwind styles apply inside. */}
 			<ShadowRoot
 				links={[{ rel: 'stylesheet', href: tailwindStylesHref }]}
@@ -46,7 +52,7 @@ export const StaticCanvasPanel: React.FC<TStaticCanvasPanelProps> = (props) => {
 				<div
 					ref={editor.canvasContainerRef}
 					className={cn(
-						'h-[calc(100%-3rem)] w-full overflow-y-auto',
+						'relative h-[calc(100%-3rem)] w-full overflow-y-auto',
 						viewMode === 'mobile' && 'flex justify-center'
 					)}
 					style={{
