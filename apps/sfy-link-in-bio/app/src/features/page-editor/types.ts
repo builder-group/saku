@@ -24,7 +24,10 @@ export type TResolvedNode =
 	| TResolvedProductNode
 	| TResolvedPromisedNode<TResolvedNode>;
 
-export interface TResolvedPageNode extends Omit<TPageNode, 'style' | 'children'> {
+export interface TResolvedPageNode extends Omit<TPageNode, 'style' | 'content' | 'children'> {
+	content: {
+		metadata: Required<TPageNode['content']['metadata']>;
+	};
 	children: TResolvedNode[];
 	style: {
 		backgroundColor: TResolveStyle<TPageNode['style']>['backgroundColor'];

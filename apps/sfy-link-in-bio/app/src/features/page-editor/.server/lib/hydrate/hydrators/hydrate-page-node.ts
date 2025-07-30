@@ -8,7 +8,7 @@ import { hydrateProductNode } from './hydrate-product-node';
 
 export function hydratePageNode(node: TFlatPageNode, cx: TNodeHydrateContext): TResolvedPageNode {
 	return {
-		...resolvePageNodeWithoutChildren(node),
+		...resolvePageNodeWithoutChildren(node, cx),
 		children: node.children
 			.map((childId) => {
 				const childNode = cx.site.getNode(childId);

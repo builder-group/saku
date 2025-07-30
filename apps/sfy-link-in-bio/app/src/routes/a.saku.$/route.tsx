@@ -1,4 +1,4 @@
-import { fromServerResult, ServerErr, ServerOk } from '@blgc/utils';
+import { fromServerResult, ServerErr, ServerOk, unwrapOrNull } from '@blgc/utils';
 import { TFlatSite, TIntegration } from '@repo/editor';
 import { Text } from '@shopify/polaris';
 import { AppProxyProvider } from '@shopify/shopify-app-react-router/react';
@@ -10,8 +10,8 @@ import { authenticateAppProxy } from '@/.server/lib';
 import { coreApiClient, logger } from '@/environment';
 import {
 	createPageContext,
-	extractSiteMetadata,
 	getSiteFontUrls,
+	getSiteMetadata,
 	StaticNodeCanvas,
 	TResolvedSite
 } from '@/features/page-editor';
@@ -70,42 +70,13 @@ export const meta: TMetaFunction<typeof loader> = ({ data }) => {
 		return [];
 	}
 
-	const result = fromServerResult<TSuccessLoaderData, TErrorLoaderData>(data);
-	if (result.isErr()) {
-		return [
-			{ title: 'Page Not Found - Saku' },
-			{
-				name: 'description',
-				content: 'The requested page could not be found'
-			}
-		];
-	}
-
-	const loaderData = result.value;
-	const { title: siteTitle, description: siteDescription } = extractSiteMetadata(
-		loaderData.site.content
-	);
-
-	return [
-		{ title: siteTitle },
-		{
-			name: 'description',
-			content: siteDescription
-		},
-		{
-			property: 'og:title',
-			content: siteTitle
-		},
-		{
-			property: 'og:description',
-			content: siteDescription
-		}
-	];
+	const result = unwrapOrNull(fromServerResult<TSuccessLoaderData, TErrorLoaderData>(data));
+	return getSiteMetadata(result?.site?.content ?? null);
 };
 
 export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async ({ request }) => {
 	const authResult = await authenticateAppProxy(request, {
-		enableFallback: true // TODO: Figure out solution without "hacky" fallback
+		enableFallback: true
 	});
 
 	logger.info('App proxy authentication', {
