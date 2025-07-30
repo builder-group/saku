@@ -9,6 +9,7 @@ import {
 import { TResolvedNode, TResolvedPageNode } from '../../../types';
 import { TNodeResolveContext } from '../types';
 import { resolveAboutNode } from './resolve-about-node';
+import { resolveAsset } from './resolve-asset';
 import { resolveColor } from './resolve-color';
 import { resolveLinkNode } from './resolve-link-node';
 import { resolveMediaNode } from './resolve-media-node';
@@ -93,9 +94,11 @@ function extractPageMetadata(
 ): {
 	title: string;
 	description: string;
+	image?: string;
 } {
 	let title: string | undefined;
 	let description: string | undefined;
+	let image: string | undefined;
 
 	// Use page metadata if available
 	if (node.content.metadata?.title != null) {
@@ -103,6 +106,9 @@ function extractPageMetadata(
 	}
 	if (node.content.metadata?.description != null) {
 		description = node.content.metadata.description;
+	}
+	if (node.content.metadata?.image != null) {
+		image = resolveAsset(node.content.metadata.image, cx.site);
 	}
 
 	// If still undefined, try to extract from about node
@@ -121,7 +127,8 @@ function extractPageMetadata(
 	// Assign defaults if still undefined
 	return {
 		title: title ?? 'Link in Bio - Saku',
-		description: description ?? 'Check out this link in bio page created with Saku'
+		description: description ?? 'Check out this link in bio page created with Saku',
+		image
 	};
 }
 

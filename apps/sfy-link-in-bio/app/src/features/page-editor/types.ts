@@ -26,7 +26,11 @@ export type TResolvedNode =
 
 export interface TResolvedPageNode extends Omit<TPageNode, 'style' | 'content' | 'children'> {
 	content: {
-		metadata: Required<TPageNode['content']['metadata']>;
+		metadata: {
+			title: string;
+			description: string;
+			image?: string;
+		};
 	};
 	children: TResolvedNode[];
 	style: {

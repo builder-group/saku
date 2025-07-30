@@ -22,7 +22,7 @@ export function getNodeAssetHashes(node: TFlatNode): TAssetHash[] {
 		}
 
 		case 'link': {
-			// Favicon asset/s
+			// Favicon assets
 			if (node.content.userMetadata?.favicon != null) {
 				hashes.push(node.content.userMetadata.favicon);
 			}
@@ -46,7 +46,7 @@ export function getNodeAssetHashes(node: TFlatNode): TAssetHash[] {
 		}
 
 		case 'media': {
-			// Media asset (always present)
+			// Media asset
 			if (node.content.media?.hash != null) {
 				hashes.push(node.content.media.hash);
 			}
@@ -54,9 +54,14 @@ export function getNodeAssetHashes(node: TFlatNode): TAssetHash[] {
 		}
 
 		case 'page': {
-			// Default font for children (not inherited, direct value)
+			// Font asset
 			if (node.style?.children?.font != null) {
 				hashes.push(getFontHash(node.style.children.font));
+			}
+
+			// Metadata image asset
+			if (node.content.metadata?.image != null) {
+				hashes.push(node.content.metadata.image);
 			}
 			break;
 		}

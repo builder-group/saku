@@ -52,7 +52,7 @@ export const StaticCanvasPanel: React.FC<TStaticCanvasPanelProps> = (props) => {
 				<div
 					ref={editor.canvasContainerRef}
 					className={cn(
-						'relative h-[calc(100%-3rem)] w-full overflow-y-auto',
+						'h-[calc(100%-3rem)] w-full overflow-y-auto',
 						viewMode === 'mobile' && 'flex justify-center'
 					)}
 					style={{

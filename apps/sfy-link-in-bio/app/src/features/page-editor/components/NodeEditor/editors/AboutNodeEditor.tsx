@@ -167,7 +167,7 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 						/>
 					</div>
 
-					{/* Avatar/Media */}
+					{/* Avatar */}
 					<div className="space-y-1">
 						<Text as="span" variant="bodySm" tone="subdued">
 							Avatar

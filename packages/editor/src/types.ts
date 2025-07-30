@@ -43,6 +43,7 @@ export interface TPageNode extends TBaseNode {
 		metadata: {
 			title?: string;
 			description?: string;
+			image?: TAssetHash;
 		};
 	};
 	children: TNode[];
