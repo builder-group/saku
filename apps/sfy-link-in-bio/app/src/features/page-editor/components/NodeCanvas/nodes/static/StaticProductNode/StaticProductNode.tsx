@@ -1,8 +1,8 @@
 import React from 'react';
 import { TResolvedProductNode } from '../../../../../types';
 import { TStaticNodeProps } from '../../types';
-import { StaticProductNodeContent } from './StaticProductNodeContent';
-import { StaticProductNodeSkeleton } from './StaticProductNodeSkeleton';
+import { Content } from './Content';
+import { Skeleton } from './Skeleton';
 
 export const StaticProductNode = React.forwardRef<
 	HTMLDivElement,
@@ -20,9 +20,9 @@ export const StaticProductNode = React.forwardRef<
 	return (
 		<div ref={ref} {...divProps} className="w-full max-w-md">
 			{product != null ? (
-				<StaticProductNodeContent product={product} style={style} cx={cx} />
+				<Content product={product} style={style} cx={cx} />
 			) : (
-				<StaticProductNodeSkeleton style={style} />
+				<Skeleton style={style} />
 			)}
 		</div>
 	);

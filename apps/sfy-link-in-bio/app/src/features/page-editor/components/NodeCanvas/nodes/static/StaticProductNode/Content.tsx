@@ -4,7 +4,7 @@ import { getCurrencySymbol } from '../../../../../environment';
 import { TResolvedProductNode } from '../../../../../types';
 import { TStaticNodeProps } from '../../types';
 
-export const StaticProductNodeContent: React.FC<TStaticProductNodeContentProps> = (props) => {
+export const Content: React.FC<TContentProps> = (props) => {
 	const { product, style, cx } = props;
 
 	// const [isAdding, setIsAdding] = React.useState(false);
@@ -196,7 +196,7 @@ export const StaticProductNodeContent: React.FC<TStaticProductNodeContentProps> 
 	);
 };
 
-interface TStaticProductNodeContentProps {
+interface TContentProps {
 	product: NonNullable<TResolvedProductNode['content']['product']>;
 	style: TResolvedProductNode['style'];
 	cx: TStaticNodeProps<TResolvedProductNode>['cx'];

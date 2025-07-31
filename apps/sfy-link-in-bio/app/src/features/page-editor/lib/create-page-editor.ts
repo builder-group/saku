@@ -23,7 +23,7 @@ import { createState, TState } from 'feature-state';
 import React from 'react';
 import { appConfig, coreApiClient, logger } from '@/environment';
 import { createShopifyTokenMiddleware, requestReview } from '@/lib';
-import { TSettingsSectionType, TViewType } from '../environment';
+import { nodeMetadataMap, TSettingsSectionType, TViewType } from '../environment';
 import { createNodeState, TNodeState } from './create-node-state';
 import { createPageContext, TPageContext } from './create-page-context';
 import { getNodeAssetHashes } from './get-node-asset-hashes';
@@ -143,6 +143,26 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 			}
 
 			return node.id;
+		},
+
+		createNode(nodeType, parentId, index) {
+			const nodeMetadata = nodeMetadataMap[nodeType];
+			if (nodeMetadata.internal) {
+				return null;
+			}
+
+			const nodeId = this.addNode(
+				{
+					id: createId('node'),
+					type: nodeType,
+					...deepCopy(nodeMetadata.defaultData)
+				} as TFlatNode,
+				parentId,
+				index
+			);
+			this.selectNode(nodeId);
+
+			return nodeId;
 		},
 
 		removeNode(nodeId) {
@@ -649,6 +669,7 @@ export interface TPageEditor {
 
 	getRootNode: () => TNodeState<TFlatPageNode>;
 	addNode: (node: TFlatNode, parentId?: TNodeId, index?: number) => TNodeId;
+	createNode: (nodeType: TFlatNode['type'], parentId?: TNodeId, index?: number) => TNodeId | null;
 	removeNode: (nodeId: TNodeId) => void;
 	swapNodes: (nodeId1: TNodeId, nodeId2: TNodeId) => void;
 	reorderNode: (nodeId: TNodeId, targetNodeId: TNodeId) => void;

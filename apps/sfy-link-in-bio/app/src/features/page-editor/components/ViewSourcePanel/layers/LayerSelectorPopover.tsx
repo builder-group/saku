@@ -1,11 +1,10 @@
 'use client';
 
-import { deepCopy } from '@blgc/utils';
-import { createId, TFlatNode } from '@repo/editor';
+import { TFlatNode } from '@repo/editor';
 import { Icon, Popover, Text } from '@shopify/polaris';
 import React from 'react';
 import { useResizeObserver } from '@/hooks';
-import { nodeMetadata, nodeMetadataMap } from '../../../environment';
+import { nodeMetadata } from '../../../environment';
 import { TPageEditor } from '../../../lib';
 
 export const LayerSelectorPopover: React.FC<TLayerSelectorPopoverProps> = (props) => {
@@ -24,17 +23,10 @@ export const LayerSelectorPopover: React.FC<TLayerSelectorPopoverProps> = (props
 
 	const handleLayerSelect = React.useCallback(
 		(layerType: TFlatNode['type']) => {
-			const nodeMetadata = nodeMetadataMap[layerType];
-			if (nodeMetadata.internal) {
+			const nodeId = editor.createNode(layerType);
+			if (nodeId == null) {
 				return;
 			}
-
-			const nodeId = editor.addNode({
-				id: createId('node'),
-				type: layerType,
-				...deepCopy(nodeMetadata.defaultData)
-			} as TFlatNode);
-			editor.selectNode(nodeId);
 
 			setPopoverActive(false);
 		},

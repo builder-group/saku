@@ -1,6 +1,6 @@
 import { TResolvedProductNode } from '../../../../../types';
 
-export const StaticProductNodeSkeleton: React.FC<TStaticProductNodeSkeletonProps> = (props) => {
+export const Skeleton: React.FC<TSkeletonProps> = (props) => {
 	const { style } = props;
 
 	return (
@@ -9,9 +9,6 @@ export const StaticProductNodeSkeleton: React.FC<TStaticProductNodeSkeletonProps
 			style={{
 				padding: style.padding,
 				backgroundColor: style.backgroundColor,
-				fontFamily: style.font?.family,
-				fontSize: style.fontSize,
-				color: style.textColor,
 				borderRadius: style.borderRadius,
 				boxShadow: style.shadow ? '0 4px 6px -1px rgb(0 0 0 / 0.1)' : undefined
 			}}
@@ -28,6 +25,6 @@ export const StaticProductNodeSkeleton: React.FC<TStaticProductNodeSkeletonProps
 	);
 };
 
-interface TStaticProductNodeSkeletonProps {
+interface TSkeletonProps {
 	style: TResolvedProductNode['style'];
 }
