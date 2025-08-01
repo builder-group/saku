@@ -22,12 +22,18 @@ export function getNodeAssetHashes(node: TFlatNode): TAssetHash[] {
 		}
 
 		case 'link': {
-			// Favicon assets
-			if (node.content.userMetadata?.favicon != null) {
-				hashes.push(node.content.userMetadata.favicon);
-			}
-			if (node.content.fetchedMetadata?.favicon != null) {
-				hashes.push(node.content.fetchedMetadata.favicon);
+			switch (node.content.variant.type) {
+				case 'default': {
+					if (node.content.variant.userFavicon != null) {
+						hashes.push(node.content.variant.userFavicon);
+					}
+					if (node.content.variant.favicon != null) {
+						hashes.push(node.content.variant.favicon);
+					}
+					break;
+				}
+				default:
+				// do nothing
 			}
 
 			// Font asset (if not inherited)

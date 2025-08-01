@@ -38,8 +38,9 @@ export const nodeMetadataMap: TNodeMetadataMap = {
 		defaultData: {
 			content: {
 				url: 'https://www.shopify.com/',
-				userMetadata: {
-					title: 'Add your title here'
+				variant: {
+					type: 'default',
+					userTitle: 'Add your title here'
 				}
 			},
 			style: {

@@ -34,8 +34,8 @@ export function hydrateLinkNode(
 				{
 					content: {
 						...content,
-						fetchedMetadata: {
-							...content.fetchedMetadata,
+						variant: {
+							...content.variant,
 							title: urlMetadata.title,
 							description: urlMetadata.description
 						}

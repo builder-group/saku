@@ -83,9 +83,10 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 					type: 'link',
 					content: {
 						url: link.url,
-						userMetadata: {
-							title: link.title,
-							favicon: faviconHash
+						variant: {
+							type: 'default',
+							userTitle: link.title,
+							userFavicon: faviconHash
 						}
 					},
 					visible: true,

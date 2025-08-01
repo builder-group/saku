@@ -200,8 +200,9 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					type: 'link',
 					content: {
 						url: `https://${shopId}`,
-						userMetadata: {
-							title: '🛒 Add a link to your Shopify store'
+						variant: {
+							type: 'default',
+							userTitle: '🛒 Add a link to your Shopify store'
 						}
 					},
 					style: {

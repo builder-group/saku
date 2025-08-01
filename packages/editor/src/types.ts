@@ -84,8 +84,7 @@ export interface TLinkNode extends TBaseNode {
 	type: 'link';
 	content: {
 		url: string;
-		userMetadata: TLinkMetadata;
-		fetchedMetadata?: TLinkMetadata;
+		variant: TLinkVariant;
 	};
 	style: TLayoutMixin & TBackgroundMixin & TBorderMixin & TTypographyMixin;
 }
@@ -216,25 +215,43 @@ export interface TFont {
 	style?: 'normal' | 'italic';
 }
 
-export type TMedia = TImageMedia; // | TYouTubeMedia;
+export type TLinkVariant = TDefaultLinkVariant | TYouTubeLinkVariant;
+
+export interface TBaseLinkVariant {
+	type: string;
+}
+
+export interface TDefaultLinkVariant extends TBaseLinkVariant {
+	type: 'default';
+	// User overrides (take priority)
+	userTitle?: string;
+	userDescription?: string;
+	userFavicon?: TAssetHash;
+	// Source metadata (fallback)
+	title?: string;
+	description?: string;
+	favicon?: TAssetHash;
+}
+
+export interface TYouTubeLinkVariant extends TBaseLinkVariant {
+	type: 'youtube';
+	// User overrides (take priority)
+	userTitle?: string;
+	userDescription?: string;
+	// Source metadata (fallback)
+	title?: string;
+	description?: string;
+	thumbnail?: TAssetHash;
+	// YouTube-specific data
+	videoId: string;
+}
+
+export type TMedia = TImageMedia;
 
 export interface TImageMedia {
 	type: 'image';
 	hash: TAssetHash;
 	altText?: string;
-}
-
-export interface TYouTubeMedia {
-	type: 'youtube';
-	url: string;
-	videoId: string;
-	thumbnail?: TAssetHash;
-}
-
-export interface TLinkMetadata {
-	title?: string;
-	description?: string;
-	favicon?: TAssetHash;
 }
 
 export type TStyleReference<T> = { type: 'inherit' } | T;
