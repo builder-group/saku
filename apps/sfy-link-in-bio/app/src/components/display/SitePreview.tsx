@@ -10,7 +10,7 @@ export const SitePreview: React.FC<TSitePreviewProps> = (props) => {
 			{...divProps}
 		>
 			{/* Desktop Preview */}
-			<div className="absolute top-0 left-0 w-full max-w-lg">
+			<div className="absolute top-0 left-0 w-[calc(100%-5rem)]">
 				<div className="rounded-xl bg-gray-800 p-2 pb-5 shadow-xl">
 					{/* Browser Chrome */}
 					<div className="flex h-7 items-center rounded-t-lg bg-gray-100 px-2">
@@ -21,12 +21,14 @@ export const SitePreview: React.FC<TSitePreviewProps> = (props) => {
 							<div className="h-2.5 w-2.5 rounded-full bg-green-500" />
 						</div>
 						{/* Address Bar */}
-						<div className="flex h-4 flex-1 items-center justify-center rounded bg-white">
+						<div className="flex h-4 flex-1 items-center justify-center overflow-hidden rounded bg-white">
 							{disableUrlClick ? (
-								<span className="max-w-xs truncate px-2 text-xs text-gray-500">{url}</span>
+								<span className="min-w-0 truncate px-2 text-center text-xs text-gray-500">
+									{url}
+								</span>
 							) : (
 								<a
-									className="max-w-xs truncate px-2 text-xs text-gray-500 hover:underline"
+									className="min-w-0 truncate px-2 text-center text-xs text-gray-500 hover:underline"
 									href={url}
 									target="_blank"
 									rel="noopener noreferrer"
