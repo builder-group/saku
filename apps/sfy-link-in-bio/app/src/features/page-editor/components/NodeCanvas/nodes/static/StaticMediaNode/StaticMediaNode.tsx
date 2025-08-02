@@ -1,7 +1,7 @@
 import React from 'react';
 import { TResolvedMediaNode } from '../../../../../types';
 import { TStaticNodeProps } from '../../types';
-import { Content } from './Content';
+import { ImageContent } from './ImageContent';
 import { Skeleton } from './Skeleton';
 
 export const StaticMediaNode = React.forwardRef<
@@ -19,7 +19,14 @@ export const StaticMediaNode = React.forwardRef<
 
 	return (
 		<div ref={ref} {...divProps} className="w-full max-w-md">
-			{media != null ? <Content media={media} style={style} cx={cx} /> : <Skeleton style={style} />}
+			{(() => {
+				switch (media?.type) {
+					case 'image':
+						return <ImageContent media={media} style={style} cx={cx} />;
+					default:
+						return <Skeleton style={style} />;
+				}
+			})()}
 		</div>
 	);
 });

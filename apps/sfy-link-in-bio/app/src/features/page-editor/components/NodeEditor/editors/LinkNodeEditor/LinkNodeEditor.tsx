@@ -19,12 +19,47 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 
 	const parentNodeState = React.useMemo(() => editor.getRootNode(), [editor]);
 
+	const [selectedVariantType, setSelectedVariantType] = React.useState<TVariantType>(() => {
+		return content.variant.type;
+	});
+
 	const fontOptions = React.useMemo(() => {
 		return fontMetadata.map((font) => ({
 			label: font.name,
 			value: font.font.family
 		}));
 	}, []);
+
+	// =========================================================================
+	// Events
+	// =========================================================================
+
+	const handleVariantTypeChange = React.useCallback(
+		(value: TVariantType) => {
+			setSelectedVariantType(value as TVariantType);
+
+			switch (value) {
+				case 'default':
+					nodeState._v.content.variant = {
+						type: 'default',
+						title: content.variant.title,
+						userTitle: content.variant.userTitle
+					};
+					break;
+				case 'youtube':
+					nodeState._v.content.variant = {
+						type: 'youtube',
+						title: content.variant.title,
+						userTitle: content.variant.userTitle,
+						videoId: ''
+					};
+					break;
+			}
+
+			nodeState._notify();
+		},
+		[nodeState]
+	);
 
 	// =========================================================================
 	// UI
@@ -69,11 +104,8 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 								{ label: 'Default', value: 'default' },
 								{ label: 'YouTube', value: 'youtube' }
 							]}
-							value={content.variant.type}
-							onChange={(value) => {
-								// TODO: Handle variant type change
-								console.log('Variant change:', value);
-							}}
+							value={selectedVariantType}
+							onChange={handleVariantTypeChange}
 						/>
 					</div>
 
@@ -257,3 +289,5 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 		</>
 	);
 };
+
+type TVariantType = NonNullable<TLinkNode['content']['variant']>['type'];

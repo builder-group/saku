@@ -102,13 +102,19 @@ export interface TResolvedImageMedia {
 
 export type TResolvedMedia = TResolvedImageMedia;
 
-export type TResolvedLinkVariant = TResolvedDefaultLinkVariant;
+export type TResolvedLinkVariant = TResolvedDefaultLinkVariant | TResolvedYouTubeLinkVariant;
 
 export interface TResolvedDefaultLinkVariant {
 	type: 'default';
 	title?: string;
 	description?: string;
 	favicon?: string;
+}
+
+export interface TResolvedYouTubeLinkVariant {
+	type: 'youtube';
+	title?: string;
+	// TODO
 }
 
 export type TResolveStyle<T> = {

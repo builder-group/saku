@@ -1,8 +1,8 @@
 import React from 'react';
-import { TResolvedMediaNode } from '../../../../../types';
+import { TResolvedImageMedia, TResolvedMediaNode } from '../../../../../types';
 import { TStaticNodeProps } from '../../types';
 
-export const Content: React.FC<TContentProps> = (props) => {
+export const ImageContent: React.FC<TImageContentProps> = (props) => {
 	const { media, style } = props;
 
 	return (
@@ -26,8 +26,8 @@ export const Content: React.FC<TContentProps> = (props) => {
 	);
 };
 
-interface TContentProps {
-	media: NonNullable<TResolvedMediaNode['content']['media']>;
+interface TImageContentProps {
+	media: TResolvedImageMedia;
 	style: TResolvedMediaNode['style'];
 	cx: TStaticNodeProps<TResolvedMediaNode>['cx'];
 }

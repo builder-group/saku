@@ -237,10 +237,8 @@ export interface TYouTubeLinkVariant extends TBaseLinkVariant {
 	type: 'youtube';
 	// User overrides (take priority)
 	userTitle?: string;
-	userDescription?: string;
 	// Source metadata (fallback)
 	title?: string;
-	description?: string;
 	thumbnail?: TAssetHash;
 	// YouTube-specific data
 	videoId: string;

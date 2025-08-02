@@ -34,8 +34,8 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 	// =========================================================================
 
 	const handleMediaTypeChange = React.useCallback(
-		(value: string) => {
-			setSelectedMediaType(value as TMediaType);
+		(value: TMediaType) => {
+			setSelectedMediaType(value);
 
 			// Clear existing media when changing type
 			nodeState._v.content.media = undefined;

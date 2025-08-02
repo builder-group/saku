@@ -12,19 +12,20 @@ export function resolveLinkNode(node: TLinkNode, cx: TNodeResolveContext): TReso
 	switch (content.variant.type) {
 		case 'default': {
 			variant = {
-				type: 'default' as const,
+				type: 'default',
 				title: content.variant.userTitle ?? content.variant.title,
 				description: content.variant.userDescription ?? content.variant.description,
 				favicon: resolveAsset(content.variant.userFavicon ?? content.variant.favicon, cx.site)
 			};
 			break;
 		}
-		case 'youtube':
-			// TODO:
-			variant = null as any;
+		case 'youtube': {
+			variant = {
+				type: 'youtube',
+				title: content.variant.userTitle ?? content.variant.title
+			};
 			break;
-		default:
-		// do nothing
+		}
 	}
 
 	return {
