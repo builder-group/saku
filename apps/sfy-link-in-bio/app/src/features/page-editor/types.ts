@@ -102,7 +102,11 @@ export interface TResolvedImageMedia {
 
 export type TResolvedMedia = TResolvedImageMedia;
 
-export type TResolvedLinkVariant = TResolvedDefaultLinkVariant | TResolvedYouTubeLinkVariant;
+export type TResolvedLinkVariant =
+	| TResolvedDefaultLinkVariant
+	| TResolvedYouTubeVideoLinkVariant
+	| TResolvedYouTubeChannelLinkVariant
+	| TResolvedYouTubeVideoEmbedLinkVariant;
 
 export interface TResolvedDefaultLinkVariant {
 	type: 'default';
@@ -111,10 +115,21 @@ export interface TResolvedDefaultLinkVariant {
 	favicon?: string;
 }
 
-export interface TResolvedYouTubeLinkVariant {
-	type: 'youtube';
+export interface TResolvedYouTubeVideoLinkVariant {
+	type: 'youtube-video';
 	title?: string;
-	// TODO
+	thumbnail?: string;
+}
+
+export interface TResolvedYouTubeChannelLinkVariant {
+	type: 'youtube-channel';
+	title?: string;
+	avatar?: string;
+}
+
+export interface TResolvedYouTubeVideoEmbedLinkVariant {
+	type: 'youtube-video-embed';
+	videoId: string;
 }
 
 export type TResolveStyle<T> = {

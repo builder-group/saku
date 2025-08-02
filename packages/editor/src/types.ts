@@ -215,7 +215,11 @@ export interface TFont {
 	style?: 'normal' | 'italic';
 }
 
-export type TLinkVariant = TDefaultLinkVariant | TYouTubeLinkVariant;
+export type TLinkVariant =
+	| TDefaultLinkVariant
+	| TYouTubeVideoVariant
+	| TYouTubeChannelVariant
+	| TYouTubeVideoEmbedVariant;
 
 export interface TBaseLinkVariant {
 	type: string;
@@ -233,14 +237,29 @@ export interface TDefaultLinkVariant extends TBaseLinkVariant {
 	favicon?: TAssetHash;
 }
 
-export interface TYouTubeLinkVariant extends TBaseLinkVariant {
-	type: 'youtube';
-	// User overrides (take priority)
+export interface TYouTubeVideoVariant extends TBaseLinkVariant {
+	type: 'youtube-video';
+	videoId: string;
+	// User overrides
 	userTitle?: string;
-	// Source metadata (fallback)
+	// Source metadata
 	title?: string;
 	thumbnail?: TAssetHash;
-	// YouTube-specific data
+}
+
+export interface TYouTubeChannelVariant extends TBaseLinkVariant {
+	type: 'youtube-channel';
+	channelId: string;
+	channelHandle?: string; // @username
+	// User overrides
+	userTitle?: string;
+	// Source metadata
+	title?: string;
+	avatar?: TAssetHash;
+}
+
+export interface TYouTubeVideoEmbedVariant extends TBaseLinkVariant {
+	type: 'youtube-video-embed';
 	videoId: string;
 }
 

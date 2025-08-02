@@ -5,13 +5,16 @@ import {
 	resolveStyleReference,
 	TLinkNode
 } from '@repo/editor';
-import { Select, Text } from '@shopify/polaris';
+import { Select, Text, TextField } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react/state';
 import React from 'react';
 import { AccordionSection } from '@/components';
 import { ColorStyleField, SelectStyleField, TextStyleField, ToggleStyleField } from '../../fields';
 import { TNodeEditorComponentProps } from '../../nodeEditorRegistry';
-import { DefaultLinkVariantEditor } from './DefaultLinkVariantEditor';
+import { DefaultLinkVariant } from './DefaultLinkVariant';
+import { getAvailableVariants } from './environment';
+import { extractYouTubeVideoId } from './lib';
+import { YoutubeVideoEmbedVariant } from './YoutubeVideoEmbedVariant';
 
 export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (props) => {
 	const { nodeState, editor } = props;
@@ -22,7 +25,9 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 	const [selectedVariantType, setSelectedVariantType] = React.useState<TVariantType>(() => {
 		return content.variant.type;
 	});
+	const [isChangingVariant, setIsChangingVariant] = React.useState(false);
 
+	const availableVariants = React.useMemo(() => getAvailableVariants(content.url), [content.url]);
 	const fontOptions = React.useMemo(() => {
 		return fontMetadata.map((font) => ({
 			label: font.name,
@@ -38,25 +43,54 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 		(value: TVariantType) => {
 			setSelectedVariantType(value as TVariantType);
 
+			// Preserve common properties when switching variants
+			const currentTitle = 'title' in content.variant ? content.variant.title : undefined;
+			const currentUserTitle =
+				'userTitle' in content.variant ? content.variant.userTitle : undefined;
+
 			switch (value) {
 				case 'default':
 					nodeState._v.content.variant = {
 						type: 'default',
-						title: content.variant.title,
-						userTitle: content.variant.userTitle
+						title: currentTitle,
+						userTitle: currentUserTitle
 					};
 					break;
-				case 'youtube':
+				case 'youtube-video':
 					nodeState._v.content.variant = {
-						type: 'youtube',
-						title: content.variant.title,
-						userTitle: content.variant.userTitle,
-						videoId: ''
+						type: 'youtube-video',
+						videoId: '',
+						title: currentTitle,
+						userTitle: currentUserTitle
 					};
 					break;
+				case 'youtube-channel':
+					nodeState._v.content.variant = {
+						type: 'youtube-channel',
+						channelId: '',
+						title: currentTitle,
+						userTitle: currentUserTitle
+					};
+					break;
+				case 'youtube-video-embed': {
+					const videoId = extractYouTubeVideoId(content.url) ?? '';
+					nodeState._v.content.variant = {
+						type: 'youtube-video-embed',
+						videoId
+					};
+					break;
+				}
 			}
 
 			nodeState._notify();
+		},
+		[content, nodeState]
+	);
+
+	const handleUrlChange = React.useCallback(
+		(value: string) => {
+			nodeState._v.content.url = value;
+			nodeState._notify({ listenerContext: { source: 'url-change' } });
 		},
 		[nodeState]
 	);
@@ -68,20 +102,35 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 	const renderVariantEditor = React.useCallback((): React.ReactElement | null => {
 		switch (content.variant.type) {
 			case 'default':
-				return <DefaultLinkVariantEditor nodeState={nodeState} editor={editor} />;
-			case 'youtube':
+				return <DefaultLinkVariant nodeState={nodeState} editor={editor} />;
+			case 'youtube-video':
 				return (
 					<div className="space-y-4">
 						<div className="space-y-1">
 							<Text as="span" variant="bodySm" tone="subdued">
-								YouTube Link
+								YouTube Video
 							</Text>
 							<Text as="p" variant="bodyMd" tone="subdued">
-								YouTube editor coming soon...
+								Video card editor coming soon...
 							</Text>
 						</div>
 					</div>
 				);
+			case 'youtube-channel':
+				return (
+					<div className="space-y-4">
+						<div className="space-y-1">
+							<Text as="span" variant="bodySm" tone="subdued">
+								YouTube Channel
+							</Text>
+							<Text as="p" variant="bodyMd" tone="subdued">
+								Channel card editor coming soon...
+							</Text>
+						</div>
+					</div>
+				);
+			case 'youtube-video-embed':
+				return <YoutubeVideoEmbedVariant nodeState={nodeState} editor={editor} />;
 			default:
 				return null;
 		}
@@ -90,27 +139,46 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 	return (
 		<>
 			{/* Content Section */}
-			<AccordionSection title="Content" defaultOpen={true}>
-				<div className="space-y-4">
+			<AccordionSection title="Content" defaultOpen={true} collapsibleClassName="px-0 space-y-3">
+				<div className="space-y-3 px-4">
+					{/* URL */}
 					<div className="space-y-1">
 						<Text as="span" variant="bodySm" tone="subdued">
-							Link type
+							URL
 						</Text>
-						<Select
-							id="link-type-field"
-							label="Link type"
+						<TextField
+							id="url-field"
+							label="URL"
 							labelHidden
-							options={[
-								{ label: 'Default', value: 'default' },
-								{ label: 'YouTube', value: 'youtube' }
-							]}
-							value={selectedVariantType}
-							onChange={handleVariantTypeChange}
+							value={content.url}
+							onChange={handleUrlChange}
+							autoComplete="off"
+							placeholder="https://example.com"
+							type="url"
+							disabled={isChangingVariant}
 						/>
 					</div>
 
-					{renderVariantEditor()}
+					{/* Link variant */}
+					<div className="space-y-1">
+						<Text as="span" variant="bodySm" tone="subdued">
+							Variant
+						</Text>
+						<Select
+							id="link-display-field"
+							label="Link display"
+							labelHidden
+							options={availableVariants}
+							value={selectedVariantType}
+							onChange={handleVariantTypeChange}
+							disabled={availableVariants.length === 1 || isChangingVariant}
+						/>
+					</div>
 				</div>
+
+				<div className="h-px bg-gray-200" />
+
+				{renderVariantEditor()}
 			</AccordionSection>
 
 			{/* Style Section*/}

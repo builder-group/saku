@@ -2,7 +2,7 @@ import React from 'react';
 import { TResolvedLinkNode } from '../../../../../types';
 import { TStaticNodeProps } from '../../types';
 import { DefaultContent } from './DefaultContent';
-import { YouTubeContent } from './YouTubeContent';
+import { YouTubeVideoEmbedContent } from './YouTubeVideoEmbedContent';
 
 export const StaticLinkNode = React.forwardRef<HTMLDivElement, TStaticNodeProps<TResolvedLinkNode>>(
 	(props, ref) => {
@@ -20,10 +20,8 @@ export const StaticLinkNode = React.forwardRef<HTMLDivElement, TStaticNodeProps<
 							return (
 								<DefaultContent url={content.url} variant={content.variant} style={style} cx={cx} />
 							);
-						case 'youtube':
-							return (
-								<YouTubeContent url={content.url} variant={content.variant} style={style} cx={cx} />
-							);
+						case 'youtube-video-embed':
+							return <YouTubeVideoEmbedContent variant={content.variant} style={style} cx={cx} />;
 						default:
 							return null;
 					}

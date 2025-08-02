@@ -8,16 +8,16 @@ import { coreApiClient } from '@/environment';
 import { createShopifyTokenMiddleware } from '@/lib';
 import { TNodeState, TPageEditor } from '../../../../lib';
 
-export const DefaultLinkVariantEditor: React.FC<TDefaultLinkVariantEditorProps> = (props) => {
+export const DefaultLinkVariant: React.FC<TDefaultLinkVariantProps> = (props) => {
 	const { nodeState, editor } = props;
-	const { variant, url } = useCompute(nodeState, (node) => ({
-		variant: node.content.variant as TDefaultLinkVariant,
-		url: node.content.url
+	const { url, variant } = useCompute(nodeState, (node) => ({
+		url: node.content.url,
+		variant: node.content.variant as TDefaultLinkVariant
 	}));
 	const shopify = useAppBridge();
 
-	const [isFetchingUrlMetadata, setIsFetchingUrlMetadata] = React.useState(false);
 	const [faviconImageError, setFaviconImageError] = React.useState<string | null>(null);
+	const [isFetchingUrlMetadata, setIsFetchingUrlMetadata] = React.useState(false);
 
 	const faviconImage = React.useMemo(() => {
 		const asset = editor.getImageAsset(variant.userFavicon ?? variant.favicon);
@@ -64,13 +64,51 @@ export const DefaultLinkVariantEditor: React.FC<TDefaultLinkVariantEditorProps> 
 	// Events
 	// =========================================================================
 
-	const handleUrlChange = React.useCallback(
+	const handleTitleChange = React.useCallback(
 		(value: string) => {
-			nodeState._v.content.url = value;
+			const defaultVariant = nodeState._v.content.variant as TDefaultLinkVariant;
+			defaultVariant.userTitle = value;
 			nodeState._notify();
 		},
 		[nodeState]
 	);
+
+	const handleTitleReset = React.useCallback(() => {
+		const defaultVariant = nodeState._v.content.variant as TDefaultLinkVariant;
+		defaultVariant.userTitle = undefined;
+		nodeState._notify();
+	}, [nodeState]);
+
+	const handleDescriptionChange = React.useCallback(
+		(value: string) => {
+			const defaultVariant = nodeState._v.content.variant as TDefaultLinkVariant;
+			defaultVariant.userDescription = value;
+			nodeState._notify();
+		},
+		[nodeState]
+	);
+
+	const handleDescriptionReset = React.useCallback(() => {
+		const defaultVariant = nodeState._v.content.variant as TDefaultLinkVariant;
+		defaultVariant.userDescription = undefined;
+		nodeState._notify();
+	}, [nodeState]);
+
+	const handleFaviconImageChange = React.useCallback(
+		(image: TImageUploadOnChangeImage) => {
+			const hash = editor.registerImage(image.url, image.fileName ?? 'favicon');
+			const defaultVariant = nodeState._v.content.variant as TDefaultLinkVariant;
+			defaultVariant.userFavicon = hash ?? undefined;
+			nodeState._notify();
+		},
+		[nodeState, editor]
+	);
+
+	const handleFaviconReset = React.useCallback(() => {
+		const defaultVariant = nodeState._v.content.variant as TDefaultLinkVariant;
+		defaultVariant.userFavicon = undefined;
+		nodeState._notify();
+	}, [nodeState]);
 
 	const handleUrlFetch = React.useCallback(async () => {
 		setIsFetchingUrlMetadata(true);
@@ -105,91 +143,24 @@ export const DefaultLinkVariantEditor: React.FC<TDefaultLinkVariantEditorProps> 
 		}
 	}, [editor, url, nodeState, shopify]);
 
-	const handleTitleChange = React.useCallback(
-		(value: string) => {
-			const defaultVariant = nodeState._v.content.variant as TDefaultLinkVariant;
-			if (!value.length) {
-				defaultVariant.userTitle = undefined;
-			} else {
-				defaultVariant.userTitle = value;
-			}
-			nodeState._notify();
-		},
-		[nodeState]
-	);
-
-	const handleTitleReset = React.useCallback(() => {
-		const defaultVariant = nodeState._v.content.variant as TDefaultLinkVariant;
-		defaultVariant.userTitle = undefined;
-		nodeState._notify();
-	}, [nodeState]);
-
-	const handleDescriptionChange = React.useCallback(
-		(value: string) => {
-			const defaultVariant = nodeState._v.content.variant as TDefaultLinkVariant;
-			if (!value.length) {
-				defaultVariant.userDescription = undefined;
-			} else {
-				defaultVariant.userDescription = value;
-			}
-			nodeState._notify();
-		},
-		[nodeState]
-	);
-
-	const handleDescriptionReset = React.useCallback(() => {
-		const defaultVariant = nodeState._v.content.variant as TDefaultLinkVariant;
-		defaultVariant.userDescription = undefined;
-		nodeState._notify();
-	}, [nodeState]);
-
-	const handleFaviconImageChange = React.useCallback(
-		(image: TImageUploadOnChangeImage) => {
-			const hash = editor.registerImage(image.url, image.fileName ?? 'favicon');
-			const defaultVariant = nodeState._v.content.variant as TDefaultLinkVariant;
-			defaultVariant.userFavicon = hash ?? undefined;
-			nodeState._notify();
-		},
-		[nodeState, editor]
-	);
-
-	const handleFaviconReset = React.useCallback(() => {
-		const defaultVariant = nodeState._v.content.variant as TDefaultLinkVariant;
-		defaultVariant.userFavicon = undefined;
-		nodeState._notify();
-	}, [nodeState]);
-
 	// =========================================================================
 	// UI
 	// =========================================================================
 
 	return (
-		<>
-			{/* URL */}
-			<div className="space-y-1">
-				<div className="flex items-center justify-between">
-					<Text as="span" variant="bodySm" tone="subdued">
-						URL
-					</Text>
-					<Button
-						variant="plain"
-						size="micro"
-						onClick={handleUrlFetch}
-						disabled={isFetchingUrlMetadata}
-					>
-						{isFetchingUrlMetadata ? 'Fetching Metadata...' : 'Fetch Metadata'}
-					</Button>
-				</div>
-				<TextField
-					id="url-field"
-					label="URL"
-					labelHidden
-					value={url}
-					onChange={handleUrlChange}
-					autoComplete="off"
-					placeholder="https://example.com"
-					type="url"
-				/>
+		<div className="space-y-3 px-4">
+			<div className="flex items-center justify-between">
+				<Text as="span" variant="headingXs" tone="subdued">
+					Variant
+				</Text>
+				<Button
+					variant="plain"
+					size="micro"
+					onClick={handleUrlFetch}
+					disabled={isFetchingUrlMetadata}
+				>
+					{isFetchingUrlMetadata ? 'Fetching metadata...' : 'Fetch metadata'}
+				</Button>
 			</div>
 
 			{/* Title */}
@@ -259,11 +230,11 @@ export const DefaultLinkVariantEditor: React.FC<TDefaultLinkVariantEditorProps> 
 					<InlineError message={faviconImageError} fieldID="favicon-upload-error" />
 				)}
 			</div>
-		</>
+		</div>
 	);
 };
 
-interface TDefaultLinkVariantEditorProps {
+interface TDefaultLinkVariantProps {
 	nodeState: TNodeState<TLinkNode>;
 	editor: TPageEditor;
 }
