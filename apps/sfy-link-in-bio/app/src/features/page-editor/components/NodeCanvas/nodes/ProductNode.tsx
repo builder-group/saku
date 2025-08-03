@@ -11,7 +11,7 @@ export const ProductNode = React.forwardRef<HTMLDivElement, TNodeProps<TProductN
 
 		const node = useCombinedCompute(
 			[editor.getRootNode(), nodeState],
-			([pageNodeValue, nodeValue]) => {
+			([{ value: pageNodeValue }, { value: nodeValue }]) => {
 				return resolveProductNode(nodeValue, {
 					site: new EditorSiteResolveContext(editor),
 					resolved: {

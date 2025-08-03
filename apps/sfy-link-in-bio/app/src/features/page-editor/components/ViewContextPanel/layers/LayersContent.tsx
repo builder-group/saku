@@ -12,7 +12,7 @@ export const LayersContent: React.FC<TLayersContentProps> = (props) => {
 
 	const selectedNode = useCompute(
 		editor.selectedNodeId,
-		(selectedNodeId) => {
+		({ value: selectedNodeId }) => {
 			if (selectedNodeId == null) {
 				return null;
 			}

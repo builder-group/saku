@@ -10,7 +10,7 @@ export const MediaNode = React.forwardRef<HTMLDivElement, TNodeProps<TMediaNode>
 
 	const node = useCombinedCompute(
 		[editor.getRootNode(), nodeState],
-		([pageNodeValue, nodeValue]) => {
+		([{ value: pageNodeValue }, { value: nodeValue }]) => {
 			return resolveMediaNode(nodeValue, {
 				site: new EditorSiteResolveContext(editor),
 				resolved: {

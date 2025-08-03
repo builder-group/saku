@@ -23,7 +23,7 @@ import { LayerSelectorPopover } from './LayerSelectorPopover';
 
 export const LayersContent: React.FC<TLayersContentProps> = ({ editor }) => {
 	const rootNode = React.useMemo(() => editor.getRootNode(), [editor]);
-	const nodes = useCompute(rootNode, (rootNode) => {
+	const nodes = useCompute(rootNode, ({ value: rootNode }) => {
 		return rootNode.children.map((nodeId) => editor.nodeMap[nodeId]).filter(notEmpty);
 	});
 	const isDragging = useFeatureState(editor.isDraggingLayer);

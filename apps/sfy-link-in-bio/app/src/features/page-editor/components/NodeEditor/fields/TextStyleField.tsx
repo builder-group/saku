@@ -25,8 +25,8 @@ export const TextStyleField = <GNodeValue, GParentNodeValue, GValue>(
 		...textFieldProps
 	} = props;
 
-	const currentValue = useCompute(node, nodeValueMapper);
-	const parentValue = useCompute(parentNode, (parent) =>
+	const currentValue = useCompute(node, ({ value }) => nodeValueMapper(value));
+	const parentValue = useCompute(parentNode, ({ value: parent }) =>
 		parent != null ? parentValueMapper?.(parent) : undefined
 	);
 	const isValueInherited = React.useMemo(() => isInheritedStyle(currentValue), [currentValue]);

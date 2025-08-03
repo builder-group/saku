@@ -10,7 +10,7 @@ export const SiteCreationOptionsStep: React.FC<TSiteCreationOptionsStepProps> = 
 
 	const initialSelection = useCompute(
 		onboardingContext.stepr.current,
-		(currentStep): TSiteCreationOption[] => {
+		({ value: currentStep }): TSiteCreationOption[] => {
 			return currentStep.type === 'site-creation-options' && currentStep.selectedOption
 				? [currentStep.selectedOption]
 				: ['create-new'];

@@ -11,14 +11,14 @@ export const PageNode = React.forwardRef<HTMLDivElement, TNodeProps<TFlatPageNod
 	(props, ref) => {
 		const { nodeState, editor, ...divProps } = props;
 
-		const { style } = useCompute(nodeState, (nodeValue) => {
+		const { style } = useCompute(nodeState, ({ value: nodeValue }) => {
 			return resolvePageNodeWithoutChildren(nodeValue, {
 				site: new EditorSiteResolveContext(editor)
 			});
 		});
 		const childNodes = useCompute(
 			nodeState,
-			(node) => {
+			({ value: node }) => {
 				return node.children.map((nodeId) => editor.nodeMap[nodeId]).filter(notEmpty);
 			},
 			[editor]

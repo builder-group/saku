@@ -10,7 +10,7 @@ export const AboutNode = React.forwardRef<HTMLDivElement, TNodeProps<TAboutNode>
 
 	const node = useCombinedCompute(
 		[editor.getRootNode(), nodeState],
-		([pageNodeValue, nodeValue]) => {
+		([{ value: pageNodeValue }, { value: nodeValue }]) => {
 			return resolveAboutNode(nodeValue, {
 				site: new EditorSiteResolveContext(editor),
 				resolved: {

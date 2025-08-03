@@ -42,8 +42,8 @@ export const ColorStyleField = <GNodeValue, GParentNodeValue>(
 	const [inputValue, setInputValue] = React.useState('');
 	const lastChangeFromText = React.useRef(false);
 
-	const currentValue = useCompute(node, nodeValueMapper);
-	const parentValue = useCompute(parentNode, (parent) =>
+	const currentValue = useCompute(node, ({ value }) => nodeValueMapper(value));
+	const parentValue = useCompute(parentNode, ({ value: parent }) =>
 		parent != null ? parentValueMapper?.(parent) : undefined
 	);
 

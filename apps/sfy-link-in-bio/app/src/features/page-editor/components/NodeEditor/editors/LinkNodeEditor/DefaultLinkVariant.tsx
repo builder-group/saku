@@ -10,7 +10,7 @@ import { TNodeState, TPageEditor } from '../../../../lib';
 
 export const DefaultLinkVariant: React.FC<TDefaultLinkVariantProps> = (props) => {
 	const { nodeState, editor } = props;
-	const { url, variant } = useCompute(nodeState, (node) => ({
+	const { url, variant } = useCompute(nodeState, ({ value: node }) => ({
 		url: node.content.url,
 		variant: node.content.variant as TDefaultLinkVariant
 	}));

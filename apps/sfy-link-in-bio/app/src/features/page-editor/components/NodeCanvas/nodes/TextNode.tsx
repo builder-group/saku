@@ -11,7 +11,7 @@ export const TextNode = React.forwardRef<HTMLDivElement, TNodeProps<TTextNode>>(
 
 	const node = useCombinedCompute(
 		[editor.getRootNode(), nodeState],
-		([pageNodeValue, nodeValue]): TResolvedTextNode => {
+		([{ value: pageNodeValue }, { value: nodeValue }]): TResolvedTextNode => {
 			return resolveTextNode(nodeValue, {
 				site: new EditorSiteResolveContext(editor),
 				resolved: {

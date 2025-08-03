@@ -16,7 +16,8 @@ export const MetadataContent: React.FC<TMetadataContentProps> = (props) => {
 	const { content } = useFeatureState(rootNode);
 	const { content: resolvedContent } = useCompute(
 		rootNode,
-		(node) => resolvePageNodeWithoutChildren(node, { site: new EditorSiteResolveContext(editor) }),
+		({ value: node }) =>
+			resolvePageNodeWithoutChildren(node, { site: new EditorSiteResolveContext(editor) }),
 		[editor]
 	);
 

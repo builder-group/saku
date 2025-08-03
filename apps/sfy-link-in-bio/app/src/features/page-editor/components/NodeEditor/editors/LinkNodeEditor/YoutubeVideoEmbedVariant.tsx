@@ -9,7 +9,7 @@ export const YoutubeVideoEmbedVariant: React.FC<TYoutubeVideoEmbedVariantProps> 
 	const { nodeState } = props;
 	const variant = useCompute(
 		nodeState,
-		(node) => node.content.variant as TYouTubeVideoEmbedVariant
+		({ value: node }) => node.content.variant as TYouTubeVideoEmbedVariant
 	);
 
 	// =========================================================================

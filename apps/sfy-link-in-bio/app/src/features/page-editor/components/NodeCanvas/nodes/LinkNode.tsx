@@ -10,7 +10,7 @@ export const LinkNode = React.forwardRef<HTMLDivElement, TNodeProps<TLinkNode>>(
 
 	const node = useCombinedCompute(
 		[editor.getRootNode(), nodeState],
-		([pageNodeValue, nodeValue]) => {
+		([{ value: pageNodeValue }, { value: nodeValue }]) => {
 			return resolveLinkNode(nodeValue, {
 				site: new EditorSiteResolveContext(editor),
 				resolved: {

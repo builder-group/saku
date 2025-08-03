@@ -33,11 +33,11 @@
 		"update:latest": "pnpm update --latest"
 	},
 	"dependencies": {
-		"@blgc/utils": "^0.0.57",
-		"feature-fetch": "^0.0.49",
-		"xml-tokenizer": "^0.0.40"
+		"@blgc/utils": "^0.0.58",
+		"feature-fetch": "^0.0.50",
+		"xml-tokenizer": "^0.0.41"
 	},
 	"devDependencies": {
-		"@blgc/types": "^0.0.17"
+		"@blgc/types": "^0.0.18"
 	}
 }

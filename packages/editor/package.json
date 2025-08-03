@@ -33,6 +33,6 @@
 		"update:latest": "pnpm update --latest"
 	},
 	"dependencies": {
-		"zod": "4.0.10"
+		"zod": "4.0.14"
 	}
 }

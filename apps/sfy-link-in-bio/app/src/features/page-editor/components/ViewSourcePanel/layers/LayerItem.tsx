@@ -12,11 +12,11 @@ import { TNodeState, TPageEditor } from '../../../lib';
 
 export const LayerItem: React.FC<TLayerItemProps> = (props) => {
 	const { nodeState, editor } = props;
-	const nodeId = useCompute(nodeState, (node) => node.id);
-	const nodeMetadata = useCompute(nodeState, (node) => nodeMetadataMap[node.type]);
+	const nodeId = useCompute(nodeState, ({ value: node }) => node.id);
+	const nodeMetadata = useCompute(nodeState, ({ value: node }) => nodeMetadataMap[node.type]);
 	const isSelected = useCompute(
 		editor.selectedNodeId,
-		(selectedNodeId) => selectedNodeId === nodeId
+		({ value: selectedNodeId }) => selectedNodeId === nodeId
 	);
 
 	// https://docs.dndkit.com/presets/sortable

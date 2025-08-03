@@ -37,13 +37,15 @@ export const NodeIndicator: React.FC<TNodeIndicatorProps> = (props) => {
 	const { nodeState, editor } = props;
 	const nodeId = React.useMemo(() => nodeState.id, [nodeState.id]);
 
-	const isSelected = useCompute(editor.selectedNodeId, (selectedId) => selectedId === nodeId, [
-		nodeId
-	]);
+	const isSelected = useCompute(
+		editor.selectedNodeId,
+		({ value: selectedId }) => selectedId === nodeId,
+		[nodeId]
+	);
 
 	const position = useCombinedCompute(
 		[nodeState.boundingRect, editor.canvasBoundingRect],
-		([boundingRect, canvasRect]) => {
+		([{ value: boundingRect }, { value: canvasRect }]) => {
 			// Skip if node has no dimensions
 			if (boundingRect.right === 0 && boundingRect.bottom === 0) {
 				return null;
