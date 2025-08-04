@@ -4,7 +4,7 @@ import { TFlatNode } from '@repo/editor';
 import { Icon, Popover, Text } from '@shopify/polaris';
 import React from 'react';
 import { useResizeObserver } from '@/hooks';
-import { nodeMetadata } from '../../../environment';
+import { nodeMetadata } from '../../../features/node';
 import { TPageEditor } from '../../../lib';
 
 export const LayerSelectorPopover: React.FC<TLayerSelectorPopoverProps> = (props) => {

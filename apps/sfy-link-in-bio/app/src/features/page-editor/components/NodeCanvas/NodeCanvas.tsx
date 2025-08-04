@@ -1,8 +1,8 @@
 import React from 'react';
 import { useBoundingRectObserver } from '@/hooks';
+import { Node } from '../../features/node';
 import { useSelectedNodeScroll } from '../../hooks';
 import { TPageEditor } from '../../lib';
-import { Node } from './Node';
 import { NodeIndicators } from './NodeIndicators';
 
 export const NodeCanvas: React.FC<TNodeCanvasProps> = (props) => {

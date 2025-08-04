@@ -1,7 +1,7 @@
 import React from 'react';
+import { ResolvedNode } from '../../features/node';
 import { TPageContext } from '../../lib';
 import { TResolvedNode } from '../../types';
-import { StaticNode } from './StaticNode';
 
 export const StaticNodeCanvas: React.FC<TCanvasProps> = (props) => {
 	const { nodes, cx } = props;
@@ -10,7 +10,7 @@ export const StaticNodeCanvas: React.FC<TCanvasProps> = (props) => {
 		return null;
 	}
 
-	return nodes.map((node) => <StaticNode key={node.id} node={node} cx={cx} />);
+	return nodes.map((node) => <ResolvedNode key={node.id} node={node} cx={cx} />);
 };
 
 interface TCanvasProps {

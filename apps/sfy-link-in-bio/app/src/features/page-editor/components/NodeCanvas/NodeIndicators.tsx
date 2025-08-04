@@ -2,8 +2,8 @@ import { TFlatNode } from '@repo/editor';
 import { useCombinedCompute, useCompute, useFeatureState } from 'feature-react';
 import React from 'react';
 import { cn } from '@/lib';
-import { nodeMetadataMap } from '../../environment';
-import { TNodeState, TPageEditor } from '../../lib';
+import { nodeMetadataRegistry, TNodeState } from '../../features/node';
+import { TPageEditor } from '../../lib';
 
 export const NodeIndicators: React.FC<TNodeIndicatorsProps> = (props) => {
 	const { editor } = props;
@@ -19,7 +19,7 @@ export const NodeIndicators: React.FC<TNodeIndicatorsProps> = (props) => {
 				}
 
 				// Skip internal nodes
-				if (nodeMetadataMap[nodeState.type].internal) {
+				if (nodeMetadataRegistry[nodeState.type].internal) {
 					return null;
 				}
 

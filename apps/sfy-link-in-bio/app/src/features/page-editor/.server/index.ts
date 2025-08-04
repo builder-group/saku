@@ -1,2 +1,2 @@
-export * from './lib';
+export * from './hydrate';
 export * from './presets';

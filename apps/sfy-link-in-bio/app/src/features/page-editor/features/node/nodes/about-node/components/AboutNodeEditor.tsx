@@ -1,0 +1,394 @@
+import { shortId } from '@blgc/utils';
+import {
+	fontMetadata,
+	inheritStyle,
+	isInheritedStyle,
+	resolveStyleReference,
+	TAboutNode,
+	TSocialLink
+} from '@repo/editor';
+import { InlineError, Text, TextField } from '@shopify/polaris';
+import { useFeatureState } from 'feature-react/state';
+import React from 'react';
+import { AccordionSection, ImageUploadField, type TImageUploadOnChangeImage } from '@/components';
+import {
+	ColorStyleField,
+	SelectStyleField,
+	TextStyleField,
+	ToggleStyleField
+} from '../../../../../components';
+import { TNodeEditorComponentProps } from '../../../types';
+import { generateSocialUrl, socialMetadataMap, TSocialMetadata } from '../social-metadata';
+
+export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = (props) => {
+	const { nodeState, editor } = props;
+	const { content } = useFeatureState(nodeState);
+
+	const parentNodeState = React.useMemo(() => editor.getRootNode(), [editor]);
+
+	const fontOptions = React.useMemo(() => {
+		return fontMetadata.map((font) => ({
+			label: font.name,
+			value: font.font.family
+		}));
+	}, []);
+
+	const [profilePictureImageError, setProfilePictureImageError] = React.useState<string | null>(
+		null
+	);
+	const profilePictureImage = React.useMemo(() => {
+		const asset = editor.getImageAsset(content.profilePicture);
+		if (asset == null || asset.storage.type !== 'url') {
+			return undefined;
+		}
+
+		return {
+			url: asset.storage.url,
+			fileName: asset.fileName
+		};
+	}, [content.profilePicture, editor]);
+
+	const socialHandles = React.useMemo(() => {
+		const handles: Record<TSocialLink['provider'], string> = Object.keys(socialMetadataMap).reduce(
+			(acc, provider) => {
+				acc[provider as TSocialLink['provider']] = '';
+				return acc;
+			},
+			{} as Record<TSocialLink['provider'], string>
+		);
+
+		content.socialLinks?.forEach((link) => {
+			handles[link.provider] = link.handle;
+		});
+
+		return handles;
+	}, [content.socialLinks]);
+
+	// =========================================================================
+	// Events
+	// =========================================================================
+
+	const handleNameChange = React.useCallback(
+		(value: string) => {
+			nodeState._v.content.name = value;
+			nodeState._notify();
+		},
+		[nodeState]
+	);
+
+	const handleBioChange = React.useCallback(
+		(value: string) => {
+			if (!value.length) {
+				nodeState._v.content.bio = undefined;
+			} else {
+				nodeState._v.content.bio = value;
+			}
+			nodeState._notify();
+		},
+		[nodeState]
+	);
+
+	const handleProfilePictureChange = React.useCallback(
+		(image: TImageUploadOnChangeImage) => {
+			const hash = editor.registerImage(image.url, image.fileName);
+			if (hash != null) {
+				nodeState._v.content.profilePicture = hash;
+				nodeState._notify();
+			}
+		},
+		[nodeState, editor]
+	);
+
+	const handleSocialHandleChange = React.useCallback(
+		(provider: TSocialLink['provider'], handle: string) => {
+			nodeState.set((prev) => {
+				const currentLinks = prev.content.socialLinks ?? [];
+
+				// Remove existing link for this provider
+				const filteredLinks = currentLinks.filter((link) => link.provider !== provider);
+
+				// Add new link if handle is not empty
+				if (handle.trim() !== '') {
+					const newLink: TSocialLink = {
+						id: shortId(),
+						provider,
+						handle: handle.trim(),
+						url: generateSocialUrl(provider, handle.trim())
+					};
+					filteredLinks.push(newLink);
+				}
+
+				return {
+					...prev,
+					content: {
+						...prev.content,
+						socialLinks: filteredLinks
+					}
+				};
+			});
+		},
+		[nodeState]
+	);
+
+	// =========================================================================
+	// UI
+	// =========================================================================
+
+	return (
+		<>
+			{/* Content Section */}
+			<AccordionSection title="Content" defaultOpen={true}>
+				<div className="space-y-4">
+					{/* Name */}
+					<div className="space-y-1">
+						<Text as="span" variant="bodySm" tone="subdued">
+							Name
+						</Text>
+						<TextField
+							id="name-field"
+							label="Name"
+							labelHidden
+							value={content.name}
+							onChange={handleNameChange}
+							autoComplete="off"
+							placeholder="Enter your name"
+						/>
+					</div>
+
+					{/* Bio */}
+					<div className="space-y-1">
+						<Text as="span" variant="bodySm" tone="subdued">
+							Bio
+						</Text>
+						<TextField
+							id="bio-field"
+							label="Bio"
+							labelHidden
+							value={content.bio}
+							onChange={handleBioChange}
+							multiline={4}
+							autoComplete="off"
+							placeholder="Tell us about yourself"
+						/>
+					</div>
+
+					{/* Avatar */}
+					<div className="space-y-1">
+						<Text as="span" variant="bodySm" tone="subdued">
+							Avatar
+						</Text>
+						<ImageUploadField
+							image={profilePictureImage}
+							onChange={handleProfilePictureChange}
+							onError={setProfilePictureImageError}
+						/>
+						{profilePictureImageError != null && (
+							<InlineError
+								message={profilePictureImageError}
+								fieldID="profile-picture-upload-error"
+							/>
+						)}
+					</div>
+				</div>
+			</AccordionSection>
+
+			{/* Socials Section */}
+			<AccordionSection title="Socials" defaultOpen={false}>
+				<div className="space-y-3">
+					{(Object.entries(socialMetadataMap) as [TSocialLink['provider'], TSocialMetadata][]).map(
+						([provider, metadata]) => {
+							return (
+								<div key={provider} className="space-y-1">
+									<Text as="span" variant="bodySm" tone="subdued">
+										{metadata.label}
+									</Text>
+									<TextField
+										id={`social-${provider}-field`}
+										label={metadata.label}
+										labelHidden
+										value={socialHandles[provider]}
+										onChange={(value) => handleSocialHandleChange(provider, value)}
+										autoComplete="off"
+										placeholder={metadata.placeholder}
+									/>
+								</div>
+							);
+						}
+					)}
+				</div>
+			</AccordionSection>
+
+			{/* Style Section */}
+			<AccordionSection title="Style" defaultOpen={true} collapsibleClassName="px-0 space-y-3">
+				{/* Layout */}
+				<div className="space-y-3 px-4">
+					<div>
+						<Text as="span" variant="headingXs" tone="subdued">
+							Layout
+						</Text>
+					</div>
+					<div className="grid grid-cols-2 gap-3">
+						<TextStyleField
+							label="Padding"
+							node={nodeState}
+							parentNode={parentNodeState}
+							nodeValueMapper={(value) => value.style.padding}
+							nodeValueSetter={(node, value) => {
+								node._v.style.padding = value;
+								node._notify();
+							}}
+							parentValueMapper={(parent) => parent.style.children?.padding}
+							type="number"
+							autoComplete="off"
+							min={0}
+							max={100}
+						/>
+
+						<TextStyleField
+							label="Border Radius"
+							node={nodeState}
+							parentNode={parentNodeState}
+							nodeValueMapper={(value) => value.style.borderRadius}
+							nodeValueSetter={(node, value) => {
+								node._v.style.borderRadius = value;
+								node._notify();
+							}}
+							parentValueMapper={(parent) => parent.style.children?.borderRadius}
+							type="number"
+							autoComplete="off"
+							min={0}
+							max={999}
+						/>
+					</div>
+				</div>
+
+				<div className="h-px bg-gray-200" />
+
+				{/* Typography */}
+				<div className="space-y-3 px-4">
+					<div>
+						<Text as="span" variant="headingXs" tone="subdued">
+							Typography
+						</Text>
+					</div>
+					<div className="space-y-3">
+						<div className="grid grid-cols-2 gap-3">
+							<SelectStyleField
+								label="Font Family"
+								node={nodeState}
+								parentNode={parentNodeState}
+								nodeValueMapper={(value) =>
+									isInheritedStyle(value.style.font)
+										? { type: 'inherit' }
+										: resolveStyleReference(value.style.font)?.family
+								}
+								nodeValueSetter={(node, value) => {
+									if (isInheritedStyle(value)) {
+										node._v.style.font = inheritStyle();
+										node._notify();
+									} else if (value != null) {
+										const font = editor.registerFontFamily(value);
+										if (font != null) {
+											node._v.style.font = font;
+											node._notify();
+										}
+									}
+								}}
+								parentValueMapper={(parent) => parent.style.children.font.family}
+								options={fontOptions}
+							/>
+
+							<SelectStyleField
+								label="Text Align"
+								node={nodeState}
+								parentNode={parentNodeState}
+								nodeValueMapper={(value) => value.style.textAlign}
+								nodeValueSetter={(node, value) => {
+									node._v.style.textAlign = value;
+									node._notify();
+								}}
+								parentValueMapper={(parent) => parent.style.children?.textAlign}
+								options={[
+									{ label: 'Left', value: 'left' },
+									{ label: 'Center', value: 'center' },
+									{ label: 'Right', value: 'right' }
+								]}
+							/>
+						</div>
+
+						<div className="grid grid-cols-2 gap-3">
+							<TextStyleField
+								label="Font Size"
+								node={nodeState}
+								parentNode={parentNodeState}
+								nodeValueMapper={(value) => value.style.fontSize}
+								nodeValueSetter={(node, value) => {
+									node._v.style.fontSize = value;
+									node._notify();
+								}}
+								parentValueMapper={(parent) => parent.style.children?.fontSize}
+								type="number"
+								autoComplete="off"
+							/>
+
+							<ColorStyleField
+								label="Text Color"
+								node={nodeState}
+								parentNode={parentNodeState}
+								nodeValueMapper={(value) => value.style.textColor}
+								nodeValueSetter={(node, value) => {
+									node._v.style.textColor = value;
+									node._notify();
+								}}
+								parentValueMapper={(parent) => parent.style.children?.textColor}
+								autoComplete="off"
+							/>
+						</div>
+					</div>
+				</div>
+
+				<div className="h-px bg-gray-200" />
+
+				{/* Background & Effects */}
+				<div className="space-y-3 px-4">
+					<div>
+						<Text as="span" variant="headingXs" tone="subdued">
+							Background & Effects
+						</Text>
+					</div>
+					<div className="space-y-3">
+						<div>
+							<ColorStyleField
+								label="Background Color"
+								node={nodeState}
+								parentNode={parentNodeState}
+								nodeValueMapper={(value) => value.style.backgroundColor}
+								nodeValueSetter={(node, value) => {
+									node._v.style.backgroundColor = value;
+									node._notify();
+								}}
+								parentValueMapper={(parent) => parent.style.children?.backgroundColor}
+								autoComplete="off"
+							/>
+						</div>
+
+						<div>
+							<ToggleStyleField
+								label="Shadow"
+								node={nodeState}
+								parentNode={parentNodeState}
+								nodeValueMapper={(value) => value.style.shadow}
+								nodeValueSetter={(node, value) => {
+									node._v.style.shadow = value;
+									node._notify();
+								}}
+								parentValueMapper={(parent) => parent.style.children?.shadow}
+								ariaLabel="Enable shadow"
+							/>
+						</div>
+					</div>
+				</div>
+			</AccordionSection>
+		</>
+	);
+};

@@ -1,12 +1,4 @@
-import { TAsset, TAssetHash, TFlatNode, TFlatSite, TNodeId, TPageNode } from '@repo/editor';
-
-export interface TNodeResolveContext {
-	site: TSiteResolveContext;
-	parentId?: TNodeId;
-	resolved?: {
-		parentStyles?: TPageNode['style']['children'];
-	};
-}
+import { TAsset, TAssetHash, TFlatNode, TFlatSite, TNodeId } from '@repo/editor';
 
 export interface TSiteResolveContext {
 	getNode(id: TNodeId): TFlatNode | null;

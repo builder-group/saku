@@ -1,7 +1,7 @@
 import { TFlatPageNode } from '@repo/editor';
+import { resolvePageNode } from '../../../features/node';
 import { TResolvedSite } from '../../../types';
 import { TSiteResolveContext } from '../types';
-import { resolvePageNode } from './resolve-page-node';
 
 export function resolveSite(cx: TSiteResolveContext): TResolvedSite {
 	const { rootId, nodes, assets: _, ...rest } = cx.getSite();

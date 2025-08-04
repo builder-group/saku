@@ -1,8 +1,8 @@
 import { Text } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react';
 import React from 'react';
+import { PageNodeEditor } from '../../../features/node';
 import { TPageEditor } from '../../../lib';
-import { PageNodeEditor } from '../../NodeEditor';
 import { PanelHeader } from '../../PanelHeader';
 import { AssetsContent } from './AssetsContent';
 import { IntegrationsContent } from './IntegrationsContent';

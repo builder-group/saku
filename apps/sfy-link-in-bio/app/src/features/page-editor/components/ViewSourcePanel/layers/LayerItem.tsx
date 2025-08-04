@@ -7,13 +7,13 @@ import { useCompute } from 'feature-react/state';
 import React from 'react';
 import { DeleteIcon, DragHandleIcon, DuplicateIcon } from '@/components';
 import { cn } from '@/lib';
-import { nodeMetadataMap } from '../../../environment';
-import { TNodeState, TPageEditor } from '../../../lib';
+import { nodeMetadataRegistry, TNodeState } from '../../../features/node';
+import { TPageEditor } from '../../../lib';
 
 export const LayerItem: React.FC<TLayerItemProps> = (props) => {
 	const { nodeState, editor } = props;
 	const nodeId = useCompute(nodeState, ({ value: node }) => node.id);
-	const nodeMetadata = useCompute(nodeState, ({ value: node }) => nodeMetadataMap[node.type]);
+	const nodeMetadata = useCompute(nodeState, ({ value: node }) => nodeMetadataRegistry[node.type]);
 	const isSelected = useCompute(
 		editor.selectedNodeId,
 		({ value: selectedNodeId }) => selectedNodeId === nodeId

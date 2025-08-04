@@ -1,5 +1,5 @@
 import { TAsset, TAssetHash, TFlatNode, TFlatSite, TNodeId } from '@repo/editor';
-import { TPageEditor } from '../create-page-editor';
+import { TPageEditor } from '../page';
 import { TSiteResolveContext } from './types';
 
 /**
