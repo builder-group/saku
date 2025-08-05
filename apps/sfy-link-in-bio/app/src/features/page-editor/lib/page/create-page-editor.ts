@@ -37,7 +37,8 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 			id: site.id,
 			handle: site.handle,
 			version: site.content.version,
-			url: site.url
+			url: site.url,
+			platformUrl: site.platformUrl
 		},
 		pageContext: createPageContext({
 			siteId: site.id,
@@ -629,6 +630,7 @@ export interface TCreatePageEditorConfig {
 		id: string;
 		handle: string;
 		url: string;
+		platformUrl: string;
 		content: TFlatSite;
 	};
 }
@@ -638,8 +640,9 @@ export interface TPageEditor {
 	site: {
 		id: string;
 		handle: string;
-		url: string;
 		version: TFlatSite['version'];
+		url: string;
+		platformUrl: string;
 	};
 	pageContext: TPageContext;
 

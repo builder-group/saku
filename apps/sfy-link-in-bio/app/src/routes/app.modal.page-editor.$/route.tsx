@@ -7,7 +7,7 @@ import React from 'react';
 import { shopify, shopifyConfig } from '@/.server/environment';
 import { coreApiClient } from '@/environment';
 import { createPageEditor, Editor } from '@/features/page-editor';
-import { resultLoader, withResultLoader } from '@/lib';
+import { createHandleFromShop, resultLoader, withResultLoader } from '@/lib';
 import { THeadersFunction, TLinksFunction } from '@/types';
 import styles from './styles.css?url';
 
@@ -82,6 +82,7 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 			id: site.id,
 			handle: site.handle,
 			url: `${shopifyConfig.proxy.url(shop)}/${site.handle}`,
+			platformUrl: `https://saku.so/w/${createHandleFromShop(shop)}/${site.handle}`,
 			content: flatSite
 		}
 	});
@@ -97,6 +98,7 @@ interface TSuccessLoaderData {
 		id: string;
 		handle: string;
 		url: string;
+		platformUrl: string;
 		content: TFlatSite;
 	};
 }

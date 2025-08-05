@@ -52,7 +52,7 @@ export const StaticCanvasPanelHeader: React.FC<TStaticCanvasPanelHeaderProps> = 
 	}, [cx]);
 
 	const handleViewProductionSite = React.useCallback(() => {
-		window.open(cx.editor.site.url, '_blank');
+		window.open(cx.editor.site.platformUrl, '_blank');
 	}, [cx]);
 
 	// =========================================================================

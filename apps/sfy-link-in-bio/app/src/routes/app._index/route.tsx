@@ -102,7 +102,10 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 						<Layout.Section>
 							{/* Bio Preview Card */}
 							<Card>
-								<SitePreview url={site.url} content={<IframeContent url={site.url} />} />
+								<SitePreview
+									url={site.platformUrl}
+									content={<IframeContent url={site.platformUrl} />}
+								/>
 
 								{/* Theme List Item */}
 								<div className="mt-4 flex items-center justify-between gap-4">
@@ -166,10 +169,10 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 
 										<TextField
 											label=""
-											value={site.url}
+											value={site.platformUrl}
 											readOnly
 											autoComplete="off"
-											connectedRight={<ClipboardButton textToCopy={site.url} />}
+											connectedRight={<ClipboardButton textToCopy={site.platformUrl} />}
 										/>
 									</div>
 								</Card>
@@ -308,11 +311,11 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 			id: site.id,
 			handle: site.handle,
 			url: site.url,
+			platformUrl: `https://saku.so/w/${workspace.handle}/${site.handle}`,
 			proxyUrl: site.proxyUrl,
 			displayName: site.displayName,
 			updatedAt: site.updatedAt
 		},
-		platformUrl: `https://saku.so/w/${workspace.handle}/${site.handle}`,
 		shouldOpenEditor
 	});
 });
@@ -327,10 +330,10 @@ interface TSuccessLoaderData {
 		id: string;
 		handle: string;
 		url: string;
+		platformUrl: string;
 		proxyUrl: string;
 		displayName?: string;
 		updatedAt: string;
 	};
-	platformUrl: string;
 	shouldOpenEditor: boolean;
 }

@@ -13,6 +13,7 @@ import {
 	type TImageAsset,
 	type TSocialLink
 } from '@repo/editor';
+import { createHandleFromShop } from '@/lib';
 
 export function blankPreset(config: TBlankPresetConfig): TSite {
 	const { shopId, name, profilePicture, socialLinks, featuredProduct, colors, fonts, radius } =
@@ -153,7 +154,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 		{
 			id: shortId(),
 			provider: 'shopify' as const,
-			handle: shopId.replace('.myshopify.com', ''),
+			handle: createHandleFromShop(shopId),
 			url: `https://${shopId}`
 		},
 		...(socialLinks?.map((link) => ({
