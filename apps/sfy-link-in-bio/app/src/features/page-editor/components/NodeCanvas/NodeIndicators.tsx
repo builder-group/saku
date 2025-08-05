@@ -2,8 +2,7 @@ import { TFlatNode } from '@repo/editor';
 import { useCombinedCompute, useCompute, useFeatureState } from 'feature-react';
 import React from 'react';
 import { cn } from '@/lib';
-import { nodeMetadataRegistry, TNodeState } from '../../features/node';
-import { TPageEditor } from '../../lib';
+import { nodeMetadataRegistry, TNodeState, TPageEditor } from '../../lib';
 
 export const NodeIndicators: React.FC<TNodeIndicatorsProps> = (props) => {
 	const { editor } = props;

@@ -24,12 +24,7 @@ import React from 'react';
 import { appConfig, coreApiClient, logger } from '@/environment';
 import { createShopifyTokenMiddleware, requestReview } from '@/lib';
 import { TSettingsSectionType, TViewType } from '../../environment';
-import {
-	createNodeState,
-	getNodeAssetHashes,
-	nodeMetadataRegistry,
-	TNodeState
-} from '../../features/node';
+import { createNodeState, getNodeAssetHashes, nodeMetadataRegistry, TNodeState } from '../node';
 import { createPageContext, TPageContext } from './create-page-context';
 
 export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {

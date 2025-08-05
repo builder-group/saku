@@ -1,7 +1,7 @@
 import React from 'react';
-import { ResolvedNode } from '../../features/node';
 import { TPageContext } from '../../lib';
 import { TResolvedNode } from '../../types';
+import { ResolvedNode } from '../ResolvedNode';
 
 export const StaticNodeCanvas: React.FC<TCanvasProps> = (props) => {
 	const { nodes, cx } = props;

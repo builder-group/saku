@@ -1,7 +1,7 @@
 import { TFlatNode } from '@repo/editor';
 import React from 'react';
-import { NodeEditor, TNodeState } from '../../../features/node';
-import { TPageEditor } from '../../../lib';
+import { TNodeState, TPageEditor } from '../../../lib';
+import { NodeEditor } from '../../NodeEditor';
 
 export const LayersContentCustomizeTab: React.FC<TLayersContentCustomizeTabProps> = (props) => {
 	const { nodeState, editor } = props;

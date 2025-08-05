@@ -7,8 +7,7 @@ import { useCompute } from 'feature-react/state';
 import React from 'react';
 import { DeleteIcon, DragHandleIcon, DuplicateIcon } from '@/components';
 import { cn } from '@/lib';
-import { nodeMetadataRegistry, TNodeState } from '../../../features/node';
-import { TPageEditor } from '../../../lib';
+import { nodeMetadataRegistry, TNodeState, TPageEditor } from '../../../lib';
 
 export const LayerItem: React.FC<TLayerItemProps> = (props) => {
 	const { nodeState, editor } = props;

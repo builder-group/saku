@@ -2,8 +2,8 @@ import { InlineError, Text, TextField } from '@shopify/polaris';
 import { useCompute, useFeatureState } from 'feature-react';
 import React from 'react';
 import { ImageUploadField, type TImageUploadOnChangeImage } from '@/components';
-import { resolvePageNodeWithoutChildren } from '../../../features/node';
 import { EditorSiteResolveContext, TPageEditor } from '../../../lib';
+import { resolvePageNodeWithoutChildren } from '../../../nodes';
 import { PanelHeader } from '../../PanelHeader';
 
 export const MetadataContent: React.FC<TMetadataContentProps> = (props) => {

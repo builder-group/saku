@@ -1,8 +1,7 @@
 import { TFlatNode } from '@repo/editor';
 import { Text } from '@shopify/polaris';
 import React from 'react';
-import { TNodeState } from '../../../features/node';
-import { TPageEditor } from '../../../lib';
+import { TNodeState, TPageEditor } from '../../../lib';
 
 export const LayersContentAnalyticsTab: React.FC<TLayersContentAnalyticsTabProps> = (props) => {
 	const { nodeState } = props;

@@ -1,5 +1,5 @@
 import { TFlatPageNode } from '@repo/editor';
-import { resolvePageNode } from '../../../features/node';
+import { resolvePageNode } from '../../../nodes';
 import { TResolvedSite } from '../../../types';
 import { TSiteResolveContext } from '../types';
 

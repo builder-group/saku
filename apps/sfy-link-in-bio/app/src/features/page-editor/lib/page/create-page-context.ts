@@ -1,9 +1,6 @@
 import { TIntegration } from '@repo/editor';
 import { logger } from '@/environment';
-import {
-	createShopifyIntegrationContext,
-	type TShopifyIntegrationContext
-} from '../integration/create-shopify-integration-context';
+import { createShopifyIntegrationContext, type TShopifyIntegrationContext } from '../integration';
 
 export function createPageContext(config: TCreatePageContextConfig): TPageContext {
 	const { siteId, integrations } = config;
