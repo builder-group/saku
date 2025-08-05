@@ -91,7 +91,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 							onClick={() => {
 								// TitleBar buttons in embedded apps can't use <a> tags - browser blocks them
 								// window.open() with noopener,noreferrer bypasses iframe security restrictions
-								window.open(site.url, '_blank', 'noopener,noreferrer');
+								window.open(site.platformUrl, '_blank', 'noopener,noreferrer');
 							}}
 						>
 							Visit
@@ -139,7 +139,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 										<Button
 											icon={ViewIcon}
 											variant="secondary"
-											url={site.url}
+											url={site.platformUrl}
 											target="_blank"
 											accessibilityLabel="Visit your Link In Bio page"
 										/>
