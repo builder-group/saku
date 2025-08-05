@@ -1,7 +1,7 @@
 import { TFlatNode } from '@repo/editor';
 import { IconSource } from '@shopify/polaris';
-import { TPageContext, TPageEditor } from '..';
 import { TResolvedNode } from '../../types';
+import { TPageContext, TPageEditor } from '../page';
 import { TNodeState } from './create-node-state';
 
 export type TNodeMetadata<GType extends TFlatNode['type']> = {
