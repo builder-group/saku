@@ -16,6 +16,7 @@ import {
 	TTextNode
 } from '@repo/editor';
 import { AppError } from '@repo/hono-utils';
+import { extractYouTubeVideoId } from './extract-youtube-video-id';
 import { TLinkPopData } from './parse-linkpop-html';
 
 export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
@@ -77,17 +78,40 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 					faviconHash = faviconAsset.hash;
 				}
 
+				// Determine variant based on __typename
+				let variant: TLinkNode['content']['variant'];
+				switch (link.__typename) {
+					case 'YouTubeVideoLink': {
+						const videoId = extractYouTubeVideoId(link.url);
+						if (videoId != null) {
+							variant = {
+								type: 'youtube-video-embed' as const,
+								videoId
+							};
+						} else {
+							variant = {
+								type: 'default' as const,
+								userTitle: link.title,
+								userFavicon: faviconHash
+							};
+						}
+						break;
+					}
+					default:
+						variant = {
+							type: 'default' as const,
+							userTitle: link.title,
+							userFavicon: faviconHash
+						};
+				}
+
 				// Create link node for links with URLs
 				children.push({
 					id: createId('node'),
 					type: 'link',
 					content: {
 						url: link.url,
-						variant: {
-							type: 'default',
-							userTitle: link.title,
-							userFavicon: faviconHash
-						}
+						variant
 					},
 					visible: true,
 					style: {
