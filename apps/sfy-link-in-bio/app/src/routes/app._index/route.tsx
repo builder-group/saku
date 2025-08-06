@@ -104,7 +104,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 							<Card>
 								<SitePreview
 									url={site.platformUrl}
-									content={<IframeContent url={site.platformUrl} />}
+									content={<IframeContent url={site.platformUrl} disableScroll={true} />}
 								/>
 
 								{/* Theme List Item */}

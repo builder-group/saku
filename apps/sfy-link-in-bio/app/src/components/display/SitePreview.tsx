@@ -87,7 +87,7 @@ interface TSitePreviewProps extends Omit<React.HTMLAttributes<HTMLDivElement>, '
 }
 
 export const IframeContent: React.FC<TIframeContentProps> = (props) => {
-	const { url } = props;
+	const { url, disableScroll = false } = props;
 
 	return (
 		<iframe
@@ -96,10 +96,12 @@ export const IframeContent: React.FC<TIframeContentProps> = (props) => {
 			className="h-full w-full border-0"
 			loading="lazy"
 			allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+			scrolling={disableScroll ? 'no' : 'auto'}
 		/>
 	);
 };
 
 interface TIframeContentProps {
 	url: string;
+	disableScroll?: boolean;
 }
