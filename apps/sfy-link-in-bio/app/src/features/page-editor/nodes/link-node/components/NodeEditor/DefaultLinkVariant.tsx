@@ -4,9 +4,8 @@ import { Button, InlineError, Text, TextField } from '@shopify/polaris';
 import { useCompute } from 'feature-react/state';
 import React from 'react';
 import { ImageUploadField, TImageUploadOnChangeImage } from '@/components';
-import { coreApiClient } from '@/environment';
-import { createShopifyTokenMiddleware } from '@/lib';
 import { TNodeState, TPageEditor } from '../../../../lib';
+import { fetchUrlMetadata } from './lib';
 
 export const DefaultLinkVariant: React.FC<TDefaultLinkVariantProps> = (props) => {
 	const { nodeState, editor } = props;
@@ -113,12 +112,8 @@ export const DefaultLinkVariant: React.FC<TDefaultLinkVariantProps> = (props) =>
 	const handleUrlFetch = React.useCallback(async () => {
 		setIsFetchingUrlMetadata(true);
 		try {
-			const result = await coreApiClient.get('/v1/url/metadata', {
-				queryParams: { url },
-				requestMiddlewares: [createShopifyTokenMiddleware(shopify)]
-			});
-
-			if (result.isErr()) {
+			const metadata = await fetchUrlMetadata(url, shopify);
+			if (metadata == null) {
 				shopify.toast.show('Failed to fetch URL metadata', {
 					duration: 3000,
 					action: 'Retry',
@@ -127,16 +122,15 @@ export const DefaultLinkVariant: React.FC<TDefaultLinkVariantProps> = (props) =>
 				return;
 			}
 
-			const urlMetadata = result.value.data;
-			const faviconHash =
-				urlMetadata.icons?.favicon != null
-					? (editor.registerImage(urlMetadata.icons.favicon, 'favicon') ?? undefined)
-					: undefined;
+			let faviconHash: string | null = null;
+			if (metadata.favicon != null) {
+				faviconHash = editor.registerImage(metadata.favicon, 'favicon');
+			}
 
 			const defaultVariant = nodeState._v.content.variant as TDefaultLinkVariant;
-			defaultVariant.title = urlMetadata.title;
-			defaultVariant.description = urlMetadata.description;
-			defaultVariant.favicon = faviconHash;
+			defaultVariant.title = metadata.title;
+			defaultVariant.description = metadata.description;
+			defaultVariant.favicon = faviconHash ?? undefined;
 			nodeState._notify();
 		} finally {
 			setIsFetchingUrlMetadata(false);

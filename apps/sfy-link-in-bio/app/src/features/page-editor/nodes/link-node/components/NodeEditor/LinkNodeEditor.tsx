@@ -5,6 +5,7 @@ import {
 	resolveStyleReference,
 	TLinkNode
 } from '@repo/editor';
+import { useAppBridge } from '@shopify/app-bridge-react';
 import { Select, Text, TextField } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react/state';
 import React from 'react';
@@ -17,13 +18,14 @@ import {
 } from '../../../../components';
 import { TNodeEditorComponentProps } from '../../../../lib';
 import { DefaultLinkVariant } from './DefaultLinkVariant';
-import { getAvailableVariants } from './environment';
-import { extractYouTubeVideoId } from './lib';
+import { TVariantType } from './environment';
+import { getApplicableVariants, migrateVariant } from './lib';
 import { YoutubeVideoEmbedVariant } from './YoutubeVideoEmbedVariant';
 
 export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (props) => {
 	const { nodeState, editor } = props;
 	const { content } = useFeatureState(nodeState);
+	const shopify = useAppBridge();
 
 	const parentNodeState = React.useMemo(() => editor.getRootNode(), [editor]);
 
@@ -32,7 +34,7 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 	});
 	const [isChangingVariant, setIsChangingVariant] = React.useState(false);
 
-	const availableVariants = React.useMemo(() => getAvailableVariants(content.url), [content.url]);
+	const availableVariants = React.useMemo(() => getApplicableVariants(content.url), [content.url]);
 	const fontOptions = React.useMemo(() => {
 		return fontMetadata.map((font) => ({
 			label: font.name,
@@ -45,51 +47,33 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 	// =========================================================================
 
 	const handleVariantTypeChange = React.useCallback(
-		(value: TVariantType) => {
+		async (value: TVariantType) => {
 			setSelectedVariantType(value as TVariantType);
+			setIsChangingVariant(true);
 
-			// Preserve common properties when switching variants
-			const currentTitle = 'title' in content.variant ? content.variant.title : undefined;
-			const currentUserTitle =
-				'userTitle' in content.variant ? content.variant.userTitle : undefined;
-
-			switch (value) {
-				case 'default':
-					nodeState._v.content.variant = {
-						type: 'default',
-						title: currentTitle,
-						userTitle: currentUserTitle
-					};
-					break;
-				case 'youtube-video':
-					nodeState._v.content.variant = {
-						type: 'youtube-video',
-						videoId: '',
-						title: currentTitle,
-						userTitle: currentUserTitle
-					};
-					break;
-				case 'youtube-channel':
-					nodeState._v.content.variant = {
-						type: 'youtube-channel',
-						channelId: '',
-						title: currentTitle,
-						userTitle: currentUserTitle
-					};
-					break;
-				case 'youtube-video-embed': {
-					const videoId = extractYouTubeVideoId(content.url) ?? '';
-					nodeState._v.content.variant = {
-						type: 'youtube-video-embed',
-						videoId
-					};
-					break;
+			try {
+				const newVariant = await migrateVariant(value, {
+					url: content.url,
+					currentVariant: content.variant,
+					editor,
+					shopify
+				});
+				if (newVariant == null) {
+					shopify.toast.show('Failed to migrate variant', {
+						duration: 3000,
+						action: 'Retry',
+						onAction: () => handleVariantTypeChange(value)
+					});
+					return;
 				}
-			}
 
-			nodeState._notify();
+				nodeState._v.content.variant = newVariant;
+				nodeState._notify();
+			} finally {
+				setIsChangingVariant(false);
+			}
 		},
-		[content, nodeState]
+		[content.url, content.variant, editor, nodeState, shopify]
 	);
 
 	const handleUrlChange = React.useCallback(
@@ -110,7 +94,7 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 				return <DefaultLinkVariant nodeState={nodeState} editor={editor} />;
 			case 'youtube-video':
 				return (
-					<div className="space-y-4">
+					<div className="space-y-4 px-4">
 						<div className="space-y-1">
 							<Text as="span" variant="bodySm" tone="subdued">
 								YouTube Video
@@ -123,7 +107,7 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 				);
 			case 'youtube-channel':
 				return (
-					<div className="space-y-4">
+					<div className="space-y-4 px-4">
 						<div className="space-y-1">
 							<Text as="span" variant="bodySm" tone="subdued">
 								YouTube Channel
@@ -183,7 +167,20 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 
 				<div className="h-px bg-gray-200" />
 
-				{renderVariantEditor()}
+				{isChangingVariant ? (
+					<div className="space-y-4 px-4">
+						<div className="space-y-1">
+							<Text as="span" variant="bodySm" tone="subdued">
+								Loading variant...
+							</Text>
+							<Text as="p" variant="bodyMd" tone="subdued">
+								Please wait while we set up the new variant.
+							</Text>
+						</div>
+					</div>
+				) : (
+					renderVariantEditor()
+				)}
 			</AccordionSection>
 
 			{/* Style Section*/}
@@ -362,5 +359,3 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 		</>
 	);
 };
-
-type TVariantType = NonNullable<TLinkNode['content']['variant']>['type'];
