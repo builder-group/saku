@@ -23,7 +23,9 @@ export function createOnboardingContext(
 		),
 
 		continueFromWelcome() {
-			this.stepr.goTo({ type: 'account-connection' });
+			// Note: Skip explicit account connection since it feels unnecessary and was only required for Shopify Sales Channel compliance
+			// this.stepr.goTo({ type: 'account-connection' });
+			this.stepr.goTo({ type: 'handle' });
 		},
 
 		continueFromAccountConnection() {

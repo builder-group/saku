@@ -91,7 +91,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 							onClick={() => {
 								// TitleBar buttons in embedded apps can't use <a> tags - browser blocks them
 								// window.open() with noopener,noreferrer bypasses iframe security restrictions
-								window.open(site.platformUrl, '_blank', 'noopener,noreferrer');
+								window.open(site.url, '_blank', 'noopener,noreferrer');
 							}}
 						>
 							Visit
@@ -103,7 +103,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 							{/* Bio Preview Card */}
 							<Card>
 								<SitePreview
-									url={site.platformUrl}
+									url={site.url}
 									content={<IframeContent url={site.platformUrl} disableScroll={true} />}
 								/>
 
@@ -139,7 +139,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 										<Button
 											icon={ViewIcon}
 											variant="secondary"
-											url={site.platformUrl}
+											url={site.url}
 											target="_blank"
 											accessibilityLabel="Visit your Link In Bio page"
 										/>
@@ -169,10 +169,10 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 
 										<TextField
 											label=""
-											value={site.platformUrl}
+											value={site.url}
 											readOnly
 											autoComplete="off"
-											connectedRight={<ClipboardButton textToCopy={site.platformUrl} />}
+											connectedRight={<ClipboardButton textToCopy={site.url} />}
 										/>
 									</div>
 								</Card>
