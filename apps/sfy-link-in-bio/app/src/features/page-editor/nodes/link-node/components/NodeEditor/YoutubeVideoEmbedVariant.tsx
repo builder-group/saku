@@ -6,7 +6,7 @@ import { TNodeState, TPageEditor } from '../../../../lib';
 import { extractYouTubeVideoId } from './lib';
 
 export const YoutubeVideoEmbedVariant: React.FC<TYoutubeVideoEmbedVariantProps> = (props) => {
-	const { nodeState, isHydrating = false } = props;
+	const { nodeState, isEnhancing = false } = props;
 	const variant = useCompute(
 		nodeState,
 		({ value: node }) => node.content.variant as TYouTubeVideoEmbedVariant
@@ -63,7 +63,7 @@ export const YoutubeVideoEmbedVariant: React.FC<TYoutubeVideoEmbedVariantProps> 
 		<div className="space-y-3 px-4">
 			<div>
 				<Text as="span" variant="headingXs" tone="subdued">
-					Variant {isHydrating && '(enhancing...)'}
+					Variant {isEnhancing && '(enhancing...)'}
 				</Text>
 			</div>
 
@@ -80,7 +80,7 @@ export const YoutubeVideoEmbedVariant: React.FC<TYoutubeVideoEmbedVariantProps> 
 					onChange={handleVideoIdChange}
 					autoComplete="off"
 					placeholder="dQw4w9WgXcQ"
-					disabled={isHydrating}
+					disabled={isEnhancing}
 				/>
 			</div>
 		</div>
@@ -90,5 +90,5 @@ export const YoutubeVideoEmbedVariant: React.FC<TYoutubeVideoEmbedVariantProps> 
 interface TYoutubeVideoEmbedVariantProps {
 	nodeState: TNodeState<TLinkNode>;
 	editor: TPageEditor;
-	isHydrating?: boolean;
+	isEnhancing?: boolean;
 }

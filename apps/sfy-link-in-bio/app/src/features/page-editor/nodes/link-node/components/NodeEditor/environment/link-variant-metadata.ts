@@ -34,7 +34,7 @@ export const linkVariantMetadataMap = {
 			cx.nodeState._notify();
 			return Ok(undefined);
 		},
-		async hydrateVariant(cx) {
+		async enhanceVariant(cx) {
 			const metadata = await fetchUrlMetadata(cx.url, cx.shopify);
 			if (metadata == null) {
 				return Err(
@@ -51,10 +51,10 @@ export const linkVariantMetadataMap = {
 
 			const variant = cx.nodeState._v.content.variant as TDefaultLinkVariant;
 
-			// Only update empty fields
-			if (!variant.title) variant.title = metadata.title;
-			if (!variant.description) variant.description = metadata.description;
-			if (!variant.favicon && faviconHash) variant.favicon = faviconHash;
+			// Update all fields with new metadata (overwriting existing)
+			variant.title = metadata.title;
+			variant.description = metadata.description;
+			if (faviconHash != null) variant.favicon = faviconHash;
 
 			cx.nodeState._notify();
 			return Ok(undefined);
@@ -88,6 +88,17 @@ export const linkVariantMetadataMap = {
 			};
 			cx.nodeState._notify();
 			return Ok(undefined);
+		},
+		async enhanceVariant(cx) {
+			const videoId = extractYouTubeVideoId(cx.url) ?? '';
+			const variant = cx.nodeState._v.content.variant as TYouTubeVideoVariant;
+
+			if (videoId !== variant.videoId) {
+				variant.videoId = videoId;
+				cx.nodeState._notify();
+			}
+
+			return Ok(undefined);
 		}
 	} satisfies TLinkVariantMetadata<TYouTubeVideoVariant>,
 	'youtube-channel': {
@@ -118,6 +129,19 @@ export const linkVariantMetadataMap = {
 			};
 			cx.nodeState._notify();
 			return Ok(undefined);
+		},
+		async enhanceVariant(cx) {
+			// Extract channel ID from URL if possible
+			const channelId =
+				cx.url.match(/\/channel\/([^\/\?]+)/)?.[1] || cx.url.match(/\/@([^\/\?]+)/)?.[1] || '';
+			const variant = cx.nodeState._v.content.variant as TYouTubeChannelVariant;
+
+			if (channelId !== variant.channelId) {
+				variant.channelId = channelId;
+				cx.nodeState._notify();
+			}
+
+			return Ok(undefined);
 		}
 	} satisfies TLinkVariantMetadata<TYouTubeChannelVariant>,
 	'youtube-video-embed': {
@@ -144,6 +168,17 @@ export const linkVariantMetadataMap = {
 			};
 			cx.nodeState._notify();
 			return Ok(undefined);
+		},
+		async enhanceVariant(cx) {
+			const videoId = extractYouTubeVideoId(cx.url) ?? '';
+			const variant = cx.nodeState._v.content.variant as TYouTubeVideoEmbedVariant;
+
+			if (videoId !== variant.videoId) {
+				variant.videoId = videoId;
+				cx.nodeState._notify();
+			}
+
+			return Ok(undefined);
 		}
 	} satisfies TLinkVariantMetadata<TYouTubeVideoEmbedVariant>
 };
@@ -167,9 +202,9 @@ export interface TLinkVariantMetadata<GVariant extends TLinkVariant = TLinkVaria
 		nodeState: TNodeState<TLinkNode<GVariant>>;
 	}) => Promise<TResult<void, AppError>>;
 	/**
-	 * Optional method to hydrate the variant with additional data after creation
+	 * Optional method to enhance the variant with additional data after creation or url change
 	 */
-	hydrateVariant?: (cx: {
+	enhanceVariant?: (cx: {
 		url: string;
 		editor: TPageEditor;
 		shopify: ShopifyGlobal;

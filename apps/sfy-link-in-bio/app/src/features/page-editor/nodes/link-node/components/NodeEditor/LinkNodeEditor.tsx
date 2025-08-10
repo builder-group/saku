@@ -34,7 +34,7 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 		return content.variant.type;
 	});
 	const [isChangingVariant, setIsChangingVariant] = React.useState(false);
-	const [isHydratingVariant, setIsHydratingVariant] = React.useState(false);
+	const [isEnhancingVariant, setIsEnhancingVariant] = React.useState(false);
 
 	const availableVariants = React.useMemo(() => getApplicableVariants(content.url), [content.url]);
 	const fontOptions = React.useMemo(() => {
@@ -80,24 +80,24 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 					return;
 				}
 
-				// Start background hydration if available
-				if ('hydrateVariant' in targetMetadata && targetMetadata.hydrateVariant != null) {
-					setIsHydratingVariant(true);
+				// Start background enhancement if available
+				if ('enhanceVariant' in targetMetadata && targetMetadata.enhanceVariant != null) {
+					setIsEnhancingVariant(true);
 
 					targetMetadata
-						.hydrateVariant({
+						.enhanceVariant({
 							url: content.url,
 							editor,
 							shopify,
 							nodeState: nodeState as any
 						})
-						.then((hydrateResult) => {
-							if (hydrateResult.isErr()) {
+						.then((enhanceResult) => {
+							if (enhanceResult.isErr()) {
 								shopify.toast.show('Failed to enhance variant data', { duration: 3000 });
 							}
 						})
 						.finally(() => {
-							setIsHydratingVariant(false);
+							setIsEnhancingVariant(false);
 						});
 				}
 			} finally {
@@ -115,6 +115,30 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 		[nodeState]
 	);
 
+	const handleUrlBlur = React.useCallback(async () => {
+		const currentVariantType = content.variant.type;
+		const metadata = linkVariantMetadataMap[currentVariantType];
+		if (metadata?.enhanceVariant == null) {
+			return;
+		}
+
+		metadata
+			.enhanceVariant({
+				url: content.url,
+				editor,
+				shopify,
+				nodeState: nodeState as any
+			})
+			.then((enhanceResult) => {
+				if (enhanceResult.isErr()) {
+					shopify.toast.show('Failed to enhance variant data', { duration: 3000 });
+				}
+			})
+			.finally(() => {
+				setIsEnhancingVariant(false);
+			});
+	}, [content.url, content.variant.type, editor, nodeState, shopify]);
+
 	// =========================================================================
 	// UI
 	// =========================================================================
@@ -126,7 +150,7 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 					<DefaultLinkVariant
 						nodeState={nodeState}
 						editor={editor}
-						isHydrating={isHydratingVariant}
+						isEnhancing={isEnhancingVariant}
 					/>
 				);
 			case 'youtube-video':
@@ -160,13 +184,13 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 					<YoutubeVideoEmbedVariant
 						nodeState={nodeState}
 						editor={editor}
-						isHydrating={isHydratingVariant}
+						isEnhancing={isEnhancingVariant}
 					/>
 				);
 			default:
 				return null;
 		}
-	}, [content.variant.type, editor, nodeState, isHydratingVariant]);
+	}, [content.variant.type, editor, nodeState, isEnhancingVariant]);
 
 	return (
 		<>
@@ -184,6 +208,7 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 							labelHidden
 							value={content.url}
 							onChange={handleUrlChange}
+							onBlur={handleUrlBlur}
 							autoComplete="off"
 							placeholder="https://example.com"
 							type="url"
@@ -194,7 +219,7 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 					{/* Link variant */}
 					<div className="space-y-1">
 						<Text as="span" variant="bodySm" tone="subdued">
-							Variant {isHydratingVariant && '(enhancing...)'}
+							Variant {isEnhancingVariant && '(enhancing...)'}
 						</Text>
 						<Select
 							id="link-display-field"
@@ -203,7 +228,7 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 							options={availableVariants}
 							value={selectedVariantType}
 							onChange={handleVariantTypeChange}
-							disabled={availableVariants.length === 1 || isChangingVariant || isHydratingVariant}
+							disabled={availableVariants.length === 1 || isChangingVariant || isEnhancingVariant}
 						/>
 					</div>
 				</div>
@@ -211,7 +236,7 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 				{!isChangingVariant && (
 					<>
 						<div className="h-px bg-gray-200" />
-						{isHydratingVariant ? (
+						{isEnhancingVariant ? (
 							<PortalPulse
 								isActive={true}
 								className="relative"
