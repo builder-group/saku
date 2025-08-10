@@ -43,7 +43,11 @@ export const loader: TLoaderFunction<{
 }> = async ({ request }) => {
 	const { session } = await shopify.authenticate.admin(request);
 
-	logger.info({ isOnline: session.isOnline, id: session.id });
+	logger.info({
+		isOnline: session.isOnline,
+		id: session.id,
+		mantleApiToken: session.additionalData?.mantleApiToken
+	});
 
 	return { apiKey: shopifyConfig.apiKey, polarisTranslations };
 };

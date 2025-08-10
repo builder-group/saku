@@ -100,6 +100,7 @@ export class ApiSessionStorage implements SessionStorage {
 			scope: session.scope ?? '',
 			expires: session.expires != null ? session.expires.toISOString() : null,
 			accessToken: session.accessToken ?? '',
+			mantleApiToken: session.additionalData?.mantleApiToken ?? null,
 			onlineAccessInfo:
 				session.onlineAccessInfo != null
 					? {
@@ -157,6 +158,13 @@ export class ApiSessionStorage implements SessionStorage {
 			);
 		}
 
-		return Session.fromPropertyArray(sessionParams, true);
+		const session = Session.fromPropertyArray(sessionParams, true);
+
+		// Attach additional data to the session
+		session.additionalData = {
+			mantleApiToken: sessionDto.mantleApiToken
+		};
+
+		return session;
 	}
 }
