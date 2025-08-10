@@ -17,20 +17,20 @@ export function resolveLinkNode(node: TLinkNode, cx: TNodeResolveContext): TReso
 			};
 			break;
 		}
-		case 'youtube-video': {
-			variant = {
-				type: 'youtube-video',
-				title: content.variant.userTitle ?? content.variant.title
-			};
-			break;
-		}
-		case 'youtube-channel': {
-			variant = {
-				type: 'youtube-channel',
-				title: content.variant.userTitle ?? content.variant.title
-			};
-			break;
-		}
+		// case 'youtube-video': {
+		// 	variant = {
+		// 		type: 'youtube-video',
+		// 		title: content.variant.userTitle ?? content.variant.title
+		// 	};
+		// 	break;
+		// }
+		// case 'youtube-channel': {
+		// 	variant = {
+		// 		type: 'youtube-channel',
+		// 		title: content.variant.userTitle ?? content.variant.title
+		// 	};
+		// 	break;
+		// }
 		case 'youtube-video-embed': {
 			variant = {
 				type: 'youtube-video-embed',
