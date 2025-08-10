@@ -2,11 +2,8 @@ import { InlineError, Text, TextField } from '@shopify/polaris';
 import { useCompute, useFeatureState } from 'feature-react';
 import React from 'react';
 import { ImageUploadField, type TImageUploadOnChangeImage } from '@/components';
-import {
-	EditorSiteResolveContext,
-	resolvePageNodeWithoutChildren,
-	TPageEditor
-} from '../../../lib';
+import { EditorSiteResolveContext, TPageEditor } from '../../../lib';
+import { resolvePageNodeWithoutChildren } from '../../../nodes';
 import { PanelHeader } from '../../PanelHeader';
 
 export const MetadataContent: React.FC<TMetadataContentProps> = (props) => {
@@ -16,7 +13,8 @@ export const MetadataContent: React.FC<TMetadataContentProps> = (props) => {
 	const { content } = useFeatureState(rootNode);
 	const { content: resolvedContent } = useCompute(
 		rootNode,
-		(node) => resolvePageNodeWithoutChildren(node, { site: new EditorSiteResolveContext(editor) }),
+		({ value: node }) =>
+			resolvePageNodeWithoutChildren(node, { site: new EditorSiteResolveContext(editor) }),
 		[editor]
 	);
 

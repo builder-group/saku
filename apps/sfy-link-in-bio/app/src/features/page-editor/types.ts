@@ -53,7 +53,7 @@ export interface TResolvedAboutNode extends Omit<TAboutNode, 'style' | 'content'
 export interface TResolvedLinkNode extends Omit<TLinkNode, 'style' | 'content'> {
 	content: {
 		url: TLinkNode['content']['url'];
-		meta: TResolvedLinkMeta;
+		variant: TResolvedLinkVariant;
 	};
 	style: TResolveStyle<TLinkNode['style']>;
 }
@@ -102,10 +102,34 @@ export interface TResolvedImageMedia {
 
 export type TResolvedMedia = TResolvedImageMedia;
 
-export interface TResolvedLinkMeta {
+export type TResolvedLinkVariant =
+	| TResolvedDefaultLinkVariant
+	// | TResolvedYouTubeVideoLinkVariant
+	// | TResolvedYouTubeChannelLinkVariant
+	| TResolvedYouTubeVideoEmbedLinkVariant;
+
+export interface TResolvedDefaultLinkVariant {
+	type: 'default';
 	title?: string;
 	description?: string;
-	favicon?: string; // Resolved URL or base64
+	favicon?: string;
+}
+
+export interface TResolvedYouTubeVideoLinkVariant {
+	type: 'youtube-video';
+	title?: string;
+	thumbnail?: string;
+}
+
+export interface TResolvedYouTubeChannelLinkVariant {
+	type: 'youtube-channel';
+	title?: string;
+	avatar?: string;
+}
+
+export interface TResolvedYouTubeVideoEmbedLinkVariant {
+	type: 'youtube-video-embed';
+	videoId: string;
 }
 
 export type TResolveStyle<T> = {

@@ -1,7 +1,7 @@
 import { TFlatPageNode } from '@repo/editor';
 import { TResolvedSite } from '../../../../types';
+import { hydratePageNode } from '../../../nodes';
 import { TSiteHydrateContext } from '../types';
-import { hydratePageNode } from './hydrate-page-node';
 
 export function hydrateSite(cx: TSiteHydrateContext): TResolvedSite {
 	const { rootId, nodes, assets: _, ...rest } = cx.getSite();

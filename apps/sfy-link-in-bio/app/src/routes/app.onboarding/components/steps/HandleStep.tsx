@@ -9,7 +9,7 @@ import { StepLayout } from '../StepLayout';
 export const HandleStep: React.FC<THandleStepProps> = (props) => {
 	const { onboardingContext } = props;
 
-	const initialHandle = useCompute(onboardingContext.stepr.current, (currentStep) => {
+	const initialHandle = useCompute(onboardingContext.stepr.current, ({ value: currentStep }) => {
 		return currentStep.type === 'handle' && currentStep.handle ? currentStep.handle : 'bio';
 	});
 	const [handle, setHandle] = React.useState(initialHandle);

@@ -8,7 +8,7 @@ import { StepLayout } from '../StepLayout';
 export const LinkpopUrlStep: React.FC<TLinkpopUrlStepProps> = (props) => {
 	const { onboardingContext } = props;
 
-	const initialHandle = useCompute(onboardingContext.stepr.current, (currentStep) => {
+	const initialHandle = useCompute(onboardingContext.stepr.current, ({ value: currentStep }) => {
 		return currentStep.type === 'linkpop-url' && currentStep.handle ? currentStep.handle : '';
 	});
 	const [handle, setHandle] = React.useState(initialHandle);

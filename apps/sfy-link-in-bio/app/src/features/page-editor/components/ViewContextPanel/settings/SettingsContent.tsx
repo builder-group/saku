@@ -2,7 +2,7 @@ import { Text } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react';
 import React from 'react';
 import { TPageEditor } from '../../../lib';
-import { PageNodeEditor } from '../../NodeEditor';
+import { PageNodeEditor } from '../../../nodes';
 import { PanelHeader } from '../../PanelHeader';
 import { AssetsContent } from './AssetsContent';
 import { IntegrationsContent } from './IntegrationsContent';

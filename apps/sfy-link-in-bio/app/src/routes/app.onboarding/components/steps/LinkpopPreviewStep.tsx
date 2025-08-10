@@ -16,7 +16,7 @@ export const LinkpopPreviewStep: React.FC<TLinkpopPreviewStepProps> = (props) =>
 	const { onboardingContext } = props;
 	const navigate = useNavigate();
 
-	const resolvedSite = useCompute(onboardingContext.stepr.current, (currentStep) => {
+	const resolvedSite = useCompute(onboardingContext.stepr.current, ({ value: currentStep }) => {
 		return currentStep.type === 'linkpop-preview' && currentStep.site
 			? resolveSite(new StaticSiteResolveContext(currentStep.site))
 			: null;

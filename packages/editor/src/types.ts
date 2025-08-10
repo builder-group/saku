@@ -80,12 +80,11 @@ export interface TAboutNode extends TBaseNode {
 	style: TLayoutMixin & TBackgroundMixin & TBorderMixin & TTypographyMixin;
 }
 
-export interface TLinkNode extends TBaseNode {
+export interface TLinkNode<GVariant extends TLinkVariant = TLinkVariant> extends TBaseNode {
 	type: 'link';
 	content: {
 		url: string;
-		userMetadata: TLinkMetadata;
-		fetchedMetadata?: TLinkMetadata;
+		variant: GVariant;
 	};
 	style: TLayoutMixin & TBackgroundMixin & TBorderMixin & TTypographyMixin;
 }
@@ -216,25 +215,60 @@ export interface TFont {
 	style?: 'normal' | 'italic';
 }
 
-export type TMedia = TImageMedia; // | TYouTubeMedia;
+export type TLinkVariant =
+	| TDefaultLinkVariant
+	// | TYouTubeVideoVariant
+	// | TYouTubeChannelVariant
+	| TYouTubeVideoEmbedVariant;
+
+export interface TBaseLinkVariant {
+	type: string;
+}
+
+export interface TDefaultLinkVariant extends TBaseLinkVariant {
+	type: 'default';
+	// User overrides (take priority)
+	userTitle?: string;
+	userDescription?: string;
+	userFavicon?: TAssetHash;
+	// Source metadata (fallback)
+	title?: string;
+	description?: string;
+	favicon?: TAssetHash;
+}
+
+export interface TYouTubeVideoVariant extends TBaseLinkVariant {
+	type: 'youtube-video';
+	videoId: string;
+	// User overrides
+	userTitle?: string;
+	// Source metadata
+	title?: string;
+	thumbnail?: TAssetHash;
+}
+
+export interface TYouTubeChannelVariant extends TBaseLinkVariant {
+	type: 'youtube-channel';
+	channelId: string;
+	channelHandle?: string; // @username
+	// User overrides
+	userTitle?: string;
+	// Source metadata
+	title?: string;
+	avatar?: TAssetHash;
+}
+
+export interface TYouTubeVideoEmbedVariant extends TBaseLinkVariant {
+	type: 'youtube-video-embed';
+	videoId: string;
+}
+
+export type TMedia = TImageMedia;
 
 export interface TImageMedia {
 	type: 'image';
 	hash: TAssetHash;
 	altText?: string;
-}
-
-export interface TYouTubeMedia {
-	type: 'youtube';
-	url: string;
-	videoId: string;
-	thumbnail?: TAssetHash;
-}
-
-export interface TLinkMetadata {
-	title?: string;
-	description?: string;
-	favicon?: TAssetHash;
 }
 
 export type TStyleReference<T> = { type: 'inherit' } | T;

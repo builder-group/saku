@@ -1,2 +1,2 @@
-export * from './editors';
+export * from './fields';
 export * from './NodeEditor';

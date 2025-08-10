@@ -23,6 +23,19 @@ export function createOnboardingContext(
 		),
 
 		continueFromWelcome() {
+			// Note: Skip explicit account connection since it feels unnecessary and was only required for Shopify Sales Channel compliance
+			// this.stepr.goTo({ type: 'account-connection' });
+			this.stepr.goTo({ type: 'handle' });
+		},
+
+		continueFromAccountConnection() {
+			this.stepr.current.set({
+				type: 'account-connection'
+			});
+
+			// This is just a UI compliance step for Shopify requirements.
+			// The workspace and workspace account are already created during OAuth.
+
 			this.stepr.goTo({ type: 'handle' });
 		},
 
@@ -213,6 +226,7 @@ export interface TOnboardingContext {
 	presets: Record<string, TSitePreset>;
 
 	continueFromWelcome: () => void;
+	continueFromAccountConnection: () => void;
 	continueFromHandle: (
 		handle: string,
 		options?: { override?: boolean }
@@ -226,6 +240,7 @@ export interface TOnboardingContext {
 
 export type TOnboardingStep =
 	| { type: 'welcome' }
+	| { type: 'account-connection' }
 	| {
 			type: 'handle';
 			handle?: string;

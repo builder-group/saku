@@ -13,7 +13,7 @@ export const ViewNavPanel: React.FC<TViewNavPanelProps> = (props) => {
 
 	// TODO: Figure out better solution
 	// https://github.com/bvaughn/react-resizable-panels/issues/46
-	const sizes = useCompute(editor.boundingRect, (rect) => {
+	const sizes = useCompute(editor.boundingRect, ({ value: rect }) => {
 		const width = rect.right - rect.left;
 		if (width <= 0) {
 			// Note: Return default sizes instead of null to prevent the panel from being hidden on hot reload

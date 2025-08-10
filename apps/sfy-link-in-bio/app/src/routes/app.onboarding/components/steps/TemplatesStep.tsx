@@ -12,7 +12,7 @@ export const TemplatesStep: React.FC<TTemplatesStepProps> = (props) => {
 
 	const initialSelection = useCompute(
 		onboardingContext.stepr.current,
-		(currentStep): TTemplate[] => {
+		({ value: currentStep }): TTemplate[] => {
 			return currentStep.type === 'templates' && currentStep.selectedTemplate
 				? [currentStep.selectedTemplate]
 				: ['blank'];

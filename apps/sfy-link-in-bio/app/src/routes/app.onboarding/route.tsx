@@ -12,6 +12,7 @@ import { blankPreset } from '@/features/page-editor/.server';
 import { resultLoader, withResultLoader } from '@/lib';
 import { THeadersFunction } from '@/types';
 import {
+	AccountConnectionStep,
 	HandleStep,
 	LinkpopPreviewStep,
 	LinkpopUrlStep,
@@ -81,6 +82,8 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 		switch (stepType) {
 			case 'welcome':
 				return <WelcomeStep onboardingContext={onboardingContext} />;
+			case 'account-connection':
+				return <AccountConnectionStep onboardingContext={onboardingContext} />;
 			case 'handle':
 				return <HandleStep onboardingContext={onboardingContext} />;
 			case 'site-creation-options':
