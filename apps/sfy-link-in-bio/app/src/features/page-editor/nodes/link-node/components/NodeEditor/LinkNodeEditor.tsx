@@ -122,6 +122,7 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 			return;
 		}
 
+		setIsEnhancingVariant(true);
 		metadata
 			.enhanceVariant({
 				url: content.url,
@@ -152,32 +153,6 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 						editor={editor}
 						isEnhancing={isEnhancingVariant}
 					/>
-				);
-			case 'youtube-video':
-				return (
-					<div className="space-y-4 px-4">
-						<div className="space-y-1">
-							<Text as="span" variant="bodySm" tone="subdued">
-								YouTube Video
-							</Text>
-							<Text as="p" variant="bodyMd" tone="subdued">
-								Video card editor coming soon...
-							</Text>
-						</div>
-					</div>
-				);
-			case 'youtube-channel':
-				return (
-					<div className="space-y-4 px-4">
-						<div className="space-y-1">
-							<Text as="span" variant="bodySm" tone="subdued">
-								YouTube Channel
-							</Text>
-							<Text as="p" variant="bodyMd" tone="subdued">
-								Channel card editor coming soon...
-							</Text>
-						</div>
-					</div>
 				);
 			case 'youtube-video-embed':
 				return (

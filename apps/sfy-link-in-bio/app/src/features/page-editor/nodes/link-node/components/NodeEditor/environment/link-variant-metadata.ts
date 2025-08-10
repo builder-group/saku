@@ -3,9 +3,7 @@ import {
 	TDefaultLinkVariant,
 	TLinkNode,
 	TLinkVariant,
-	TYouTubeChannelVariant,
-	TYouTubeVideoEmbedVariant,
-	TYouTubeVideoVariant
+	TYouTubeVideoEmbedVariant
 } from '@repo/editor';
 import { ShopifyGlobal } from '@shopify/app-bridge-react';
 import { TResult } from 'feature-fetch';
@@ -60,90 +58,90 @@ export const linkVariantMetadataMap = {
 			return Ok(undefined);
 		}
 	} satisfies TLinkVariantMetadata<TDefaultLinkVariant>,
-	'youtube-video': {
-		type: 'youtube-video',
-		label: 'YouTube Video',
-		isApplicable(url) {
-			if (!url.trim().length) {
-				return false;
-			}
+	// 'youtube-video': {
+	// 	type: 'youtube-video',
+	// 	label: 'YouTube Video',
+	// 	isApplicable(url) {
+	// 		if (!url.trim().length) {
+	// 			return false;
+	// 		}
 
-			return (
-				/^https?:\/\/(www\.)?youtube\.com\/watch\?v=/i.test(url) ||
-				/^https?:\/\/youtu\.be\//i.test(url)
-			);
-		},
-		extractCommonFields(variant) {
-			return {
-				title: variant.title,
-				userTitle: variant.userTitle
-			};
-		},
-		async createVariant(cx) {
-			cx.nodeState._v.content.variant = {
-				type: 'youtube-video',
-				videoId: '',
-				title: cx.common.title,
-				userTitle: cx.common.userTitle
-			};
-			cx.nodeState._notify();
-			return Ok(undefined);
-		},
-		async enhanceVariant(cx) {
-			const videoId = extractYouTubeVideoId(cx.url) ?? '';
-			const variant = cx.nodeState._v.content.variant as TYouTubeVideoVariant;
+	// 		return (
+	// 			/^https?:\/\/(www\.)?youtube\.com\/watch\?v=/i.test(url) ||
+	// 			/^https?:\/\/youtu\.be\//i.test(url)
+	// 		);
+	// 	},
+	// 	extractCommonFields(variant) {
+	// 		return {
+	// 			title: variant.title,
+	// 			userTitle: variant.userTitle
+	// 		};
+	// 	},
+	// 	async createVariant(cx) {
+	// 		cx.nodeState._v.content.variant = {
+	// 			type: 'youtube-video',
+	// 			videoId: '',
+	// 			title: cx.common.title,
+	// 			userTitle: cx.common.userTitle
+	// 		};
+	// 		cx.nodeState._notify();
+	// 		return Ok(undefined);
+	// 	},
+	// 	async enhanceVariant(cx) {
+	// 		const videoId = extractYouTubeVideoId(cx.url) ?? '';
+	// 		const variant = cx.nodeState._v.content.variant as TYouTubeVideoVariant;
 
-			if (videoId !== variant.videoId) {
-				variant.videoId = videoId;
-				cx.nodeState._notify();
-			}
+	// 		if (videoId !== variant.videoId) {
+	// 			variant.videoId = videoId;
+	// 			cx.nodeState._notify();
+	// 		}
 
-			return Ok(undefined);
-		}
-	} satisfies TLinkVariantMetadata<TYouTubeVideoVariant>,
-	'youtube-channel': {
-		type: 'youtube-channel',
-		label: 'YouTube Channel',
-		isApplicable(url) {
-			if (!url.trim().length) {
-				return false;
-			}
+	// 		return Ok(undefined);
+	// 	}
+	// } satisfies TLinkVariantMetadata<TYouTubeVideoVariant>,
+	// 'youtube-channel': {
+	// 	type: 'youtube-channel',
+	// 	label: 'YouTube Channel',
+	// 	isApplicable(url) {
+	// 		if (!url.trim().length) {
+	// 			return false;
+	// 		}
 
-			return (
-				/^https?:\/\/(www\.)?youtube\.com\/channel\//i.test(url) ||
-				/^https?:\/\/(www\.)?youtube\.com\/@/i.test(url)
-			);
-		},
-		extractCommonFields(variant) {
-			return {
-				title: variant.title,
-				userTitle: variant.userTitle
-			};
-		},
-		async createVariant(cx) {
-			cx.nodeState._v.content.variant = {
-				type: 'youtube-channel',
-				channelId: '',
-				title: cx.common.title,
-				userTitle: cx.common.userTitle
-			};
-			cx.nodeState._notify();
-			return Ok(undefined);
-		},
-		async enhanceVariant(cx) {
-			// Extract channel ID from URL if possible
-			const channelId =
-				cx.url.match(/\/channel\/([^\/\?]+)/)?.[1] || cx.url.match(/\/@([^\/\?]+)/)?.[1] || '';
-			const variant = cx.nodeState._v.content.variant as TYouTubeChannelVariant;
+	// 		return (
+	// 			/^https?:\/\/(www\.)?youtube\.com\/channel\//i.test(url) ||
+	// 			/^https?:\/\/(www\.)?youtube\.com\/@/i.test(url)
+	// 		);
+	// 	},
+	// 	extractCommonFields(variant) {
+	// 		return {
+	// 			title: variant.title,
+	// 			userTitle: variant.userTitle
+	// 		};
+	// 	},
+	// 	async createVariant(cx) {
+	// 		cx.nodeState._v.content.variant = {
+	// 			type: 'youtube-channel',
+	// 			channelId: '',
+	// 			title: cx.common.title,
+	// 			userTitle: cx.common.userTitle
+	// 		};
+	// 		cx.nodeState._notify();
+	// 		return Ok(undefined);
+	// 	},
+	// 	async enhanceVariant(cx) {
+	// 		// Extract channel ID from URL if possible
+	// 		const channelId =
+	// 			cx.url.match(/\/channel\/([^\/\?]+)/)?.[1] || cx.url.match(/\/@([^\/\?]+)/)?.[1] || '';
+	// 		const variant = cx.nodeState._v.content.variant as TYouTubeChannelVariant;
 
-			if (channelId !== variant.channelId) {
-				variant.channelId = channelId;
-				cx.nodeState._notify();
-			}
+	// 		if (channelId !== variant.channelId) {
+	// 			variant.channelId = channelId;
+	// 			cx.nodeState._notify();
+	// 		}
 
-			return Ok(undefined);
-		}
-	} satisfies TLinkVariantMetadata<TYouTubeChannelVariant>,
+	// 		return Ok(undefined);
+	// 	}
+	// } satisfies TLinkVariantMetadata<TYouTubeChannelVariant>,
 	'youtube-video-embed': {
 		type: 'youtube-video-embed',
 		label: 'YouTube Video Embed',

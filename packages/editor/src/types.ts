@@ -217,8 +217,8 @@ export interface TFont {
 
 export type TLinkVariant =
 	| TDefaultLinkVariant
-	| TYouTubeVideoVariant
-	| TYouTubeChannelVariant
+	// | TYouTubeVideoVariant
+	// | TYouTubeChannelVariant
 	| TYouTubeVideoEmbedVariant;
 
 export interface TBaseLinkVariant {

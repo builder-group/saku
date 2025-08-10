@@ -104,8 +104,8 @@ export type TResolvedMedia = TResolvedImageMedia;
 
 export type TResolvedLinkVariant =
 	| TResolvedDefaultLinkVariant
-	| TResolvedYouTubeVideoLinkVariant
-	| TResolvedYouTubeChannelLinkVariant
+	// | TResolvedYouTubeVideoLinkVariant
+	// | TResolvedYouTubeChannelLinkVariant
 	| TResolvedYouTubeVideoEmbedLinkVariant;
 
 export interface TResolvedDefaultLinkVariant {
