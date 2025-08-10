@@ -80,11 +80,11 @@ export interface TAboutNode extends TBaseNode {
 	style: TLayoutMixin & TBackgroundMixin & TBorderMixin & TTypographyMixin;
 }
 
-export interface TLinkNode extends TBaseNode {
+export interface TLinkNode<GVariant extends TLinkVariant = TLinkVariant> extends TBaseNode {
 	type: 'link';
 	content: {
 		url: string;
-		variant: TLinkVariant;
+		variant: GVariant;
 	};
 	style: TLayoutMixin & TBackgroundMixin & TBorderMixin & TTypographyMixin;
 }

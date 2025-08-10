@@ -1,12 +1,16 @@
+import { Err, Ok } from '@blgc/utils';
 import {
 	TDefaultLinkVariant,
+	TLinkNode,
 	TLinkVariant,
 	TYouTubeChannelVariant,
 	TYouTubeVideoEmbedVariant,
 	TYouTubeVideoVariant
 } from '@repo/editor';
 import { ShopifyGlobal } from '@shopify/app-bridge-react';
-import { TPageEditor } from '../../../../../lib';
+import { TResult } from 'feature-fetch';
+import { AppError } from '@/lib';
+import { TNodeState, TPageEditor } from '../../../../../lib';
 import { extractYouTubeVideoId, fetchUrlMetadata } from '../lib';
 
 export const linkVariantMetadataMap = {
@@ -14,33 +18,52 @@ export const linkVariantMetadataMap = {
 		type: 'default',
 		label: 'Default',
 		isApplicable: () => true, // Always available
-		createVariant: async (cx) => {
-			const metadata = await fetchUrlMetadata(cx.url, cx.shopify);
-
-			let faviconHash: string | null = null;
-			if (metadata?.favicon != null) {
-				faviconHash = cx.editor.registerImage(metadata.favicon, 'favicon');
-			}
-
-			return {
-				type: 'default',
-				title: metadata?.title ?? cx.common.title,
-				userTitle: cx.common.userTitle,
-				description: metadata?.description ?? cx.common.description,
-				favicon: faviconHash ?? undefined
-			};
-		},
 		extractCommonFields(variant) {
 			return {
 				title: variant.title,
 				userTitle: variant.userTitle
 			};
+		},
+		async createVariant(cx) {
+			cx.nodeState._v.content.variant = {
+				type: 'default',
+				title: cx.common.title,
+				userTitle: cx.common.userTitle,
+				description: cx.common.description
+			};
+			cx.nodeState._notify();
+			return Ok(undefined);
+		},
+		async hydrateVariant(cx) {
+			const metadata = await fetchUrlMetadata(cx.url, cx.shopify);
+			if (metadata == null) {
+				return Err(
+					new AppError('#ERR_FAILED_TO_FETCH_URL_METADATA', {
+						detail: 'Failed to fetch URL metadata'
+					})
+				);
+			}
+
+			let faviconHash: string | null = null;
+			if (metadata.favicon != null) {
+				faviconHash = cx.editor.registerImage(metadata.favicon, 'favicon');
+			}
+
+			const variant = cx.nodeState._v.content.variant as TDefaultLinkVariant;
+
+			// Only update empty fields
+			if (!variant.title) variant.title = metadata.title;
+			if (!variant.description) variant.description = metadata.description;
+			if (!variant.favicon && faviconHash) variant.favicon = faviconHash;
+
+			cx.nodeState._notify();
+			return Ok(undefined);
 		}
 	} satisfies TLinkVariantMetadata<TDefaultLinkVariant>,
 	'youtube-video': {
 		type: 'youtube-video',
 		label: 'YouTube Video',
-		isApplicable: (url) => {
+		isApplicable(url) {
 			if (!url.trim().length) {
 				return false;
 			}
@@ -50,25 +73,27 @@ export const linkVariantMetadataMap = {
 				/^https?:\/\/youtu\.be\//i.test(url)
 			);
 		},
-		createVariant: async (cx) => {
-			return {
-				type: 'youtube-video',
-				videoId: '',
-				title: cx.common.title,
-				userTitle: cx.common.userTitle
-			};
-		},
 		extractCommonFields(variant) {
 			return {
 				title: variant.title,
 				userTitle: variant.userTitle
 			};
+		},
+		async createVariant(cx) {
+			cx.nodeState._v.content.variant = {
+				type: 'youtube-video',
+				videoId: '',
+				title: cx.common.title,
+				userTitle: cx.common.userTitle
+			};
+			cx.nodeState._notify();
+			return Ok(undefined);
 		}
 	} satisfies TLinkVariantMetadata<TYouTubeVideoVariant>,
 	'youtube-channel': {
 		type: 'youtube-channel',
 		label: 'YouTube Channel',
-		isApplicable: (url) => {
+		isApplicable(url) {
 			if (!url.trim().length) {
 				return false;
 			}
@@ -78,25 +103,27 @@ export const linkVariantMetadataMap = {
 				/^https?:\/\/(www\.)?youtube\.com\/@/i.test(url)
 			);
 		},
-		createVariant: async (cx) => {
-			return {
-				type: 'youtube-channel',
-				channelId: '',
-				title: cx.common.title,
-				userTitle: cx.common.userTitle
-			};
-		},
 		extractCommonFields(variant) {
 			return {
 				title: variant.title,
 				userTitle: variant.userTitle
 			};
+		},
+		async createVariant(cx) {
+			cx.nodeState._v.content.variant = {
+				type: 'youtube-channel',
+				channelId: '',
+				title: cx.common.title,
+				userTitle: cx.common.userTitle
+			};
+			cx.nodeState._notify();
+			return Ok(undefined);
 		}
 	} satisfies TLinkVariantMetadata<TYouTubeChannelVariant>,
 	'youtube-video-embed': {
 		type: 'youtube-video-embed',
 		label: 'YouTube Video Embed',
-		isApplicable: (url) => {
+		isApplicable(url) {
 			if (!url.trim().length) {
 				return false;
 			}
@@ -106,15 +133,17 @@ export const linkVariantMetadataMap = {
 				/^https?:\/\/youtu\.be\//i.test(url)
 			);
 		},
-		createVariant: async (cx) => {
+		extractCommonFields() {
+			return {};
+		},
+		async createVariant(cx) {
 			const videoId = extractYouTubeVideoId(cx.url) ?? '';
-			return {
+			cx.nodeState._v.content.variant = {
 				type: 'youtube-video-embed',
 				videoId
 			};
-		},
-		extractCommonFields() {
-			return {};
+			cx.nodeState._notify();
+			return Ok(undefined);
 		}
 	} satisfies TLinkVariantMetadata<TYouTubeVideoEmbedVariant>
 };
@@ -128,18 +157,26 @@ export interface TLinkVariantMetadata<GVariant extends TLinkVariant = TLinkVaria
 	label: string;
 	isApplicable: (url: string) => boolean;
 	/**
-	 * Creates a new variant instance, optionally pre-filled with common data
-	 * Can be async to fetch initial data (e.g., metadata from URL)
+	 * Creates a new variant, modifying the nodeState directly
 	 */
 	createVariant: (cx: {
 		url: string;
 		common: TCommonVariantFields;
 		editor: TPageEditor;
 		shopify: ShopifyGlobal;
-	}) => Promise<GVariant>;
+		nodeState: TNodeState<TLinkNode<GVariant>>;
+	}) => Promise<TResult<void, AppError>>;
+	/**
+	 * Optional method to hydrate the variant with additional data after creation
+	 */
+	hydrateVariant?: (cx: {
+		url: string;
+		editor: TPageEditor;
+		shopify: ShopifyGlobal;
+		nodeState: TNodeState<TLinkNode<GVariant>>;
+	}) => Promise<TResult<void, AppError>>;
 	/**
 	 * Extracts common fields from a variant of this type
-	 * Returns only the fields that this variant type supports
 	 */
 	extractCommonFields: (variant: GVariant) => TCommonVariantFields;
 }

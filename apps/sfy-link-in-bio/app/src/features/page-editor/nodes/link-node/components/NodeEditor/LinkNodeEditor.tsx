@@ -18,8 +18,8 @@ import {
 } from '../../../../components';
 import { TNodeEditorComponentProps } from '../../../../lib';
 import { DefaultLinkVariant } from './DefaultLinkVariant';
-import { TVariantType } from './environment';
-import { getApplicableVariants, migrateVariant } from './lib';
+import { linkVariantMetadataMap, TVariantType } from './environment';
+import { getApplicableVariants } from './lib';
 import { YoutubeVideoEmbedVariant } from './YoutubeVideoEmbedVariant';
 
 export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (props) => {
@@ -33,6 +33,7 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 		return content.variant.type;
 	});
 	const [isChangingVariant, setIsChangingVariant] = React.useState(false);
+	const [isHydratingVariant, setIsHydratingVariant] = React.useState(false);
 
 	const availableVariants = React.useMemo(() => getApplicableVariants(content.url), [content.url]);
 	const fontOptions = React.useMemo(() => {
@@ -49,17 +50,28 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 	const handleVariantTypeChange = React.useCallback(
 		async (value: TVariantType) => {
 			setSelectedVariantType(value as TVariantType);
-			setIsChangingVariant(true);
 
 			try {
-				const newVariant = await migrateVariant(value, {
+				const targetMetadata = linkVariantMetadataMap[value];
+				if (targetMetadata == null) {
+					shopify.toast.show('Unknown variant type', { duration: 3000 });
+					return;
+				}
+
+				// Extract common fields from current variant
+				const commonFields = linkVariantMetadataMap[content.variant.type].extractCommonFields(
+					content.variant as any
+				);
+
+				const variantResult = await targetMetadata.createVariant({
 					url: content.url,
-					currentVariant: content.variant,
+					common: commonFields,
 					editor,
-					shopify
+					shopify,
+					nodeState: nodeState as any
 				});
-				if (newVariant == null) {
-					shopify.toast.show('Failed to migrate variant', {
+				if (variantResult.isErr()) {
+					shopify.toast.show('Failed to create variant', {
 						duration: 3000,
 						action: 'Retry',
 						onAction: () => handleVariantTypeChange(value)
@@ -67,8 +79,26 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 					return;
 				}
 
-				nodeState._v.content.variant = newVariant;
-				nodeState._notify();
+				// Start background hydration if available
+				if ('hydrateVariant' in targetMetadata && targetMetadata.hydrateVariant != null) {
+					setIsHydratingVariant(true);
+
+					targetMetadata
+						.hydrateVariant({
+							url: content.url,
+							editor,
+							shopify,
+							nodeState: nodeState as any
+						})
+						.then((hydrateResult) => {
+							if (hydrateResult.isErr()) {
+								shopify.toast.show('Failed to enhance variant data', { duration: 3000 });
+							}
+						})
+						.finally(() => {
+							setIsHydratingVariant(false);
+						});
+				}
 			} finally {
 				setIsChangingVariant(false);
 			}
@@ -151,7 +181,8 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 					{/* Link variant */}
 					<div className="space-y-1">
 						<Text as="span" variant="bodySm" tone="subdued">
-							Variant
+							Variant{' '}
+							{(isHydratingVariant && '(enhancing...)') || (isChangingVariant && '(changing...)')}
 						</Text>
 						<Select
 							id="link-display-field"
@@ -160,26 +191,16 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 							options={availableVariants}
 							value={selectedVariantType}
 							onChange={handleVariantTypeChange}
-							disabled={availableVariants.length === 1 || isChangingVariant}
+							disabled={availableVariants.length === 1 || isChangingVariant || isHydratingVariant}
 						/>
 					</div>
 				</div>
 
-				<div className="h-px bg-gray-200" />
-
-				{isChangingVariant ? (
-					<div className="space-y-4 px-4">
-						<div className="space-y-1">
-							<Text as="span" variant="bodySm" tone="subdued">
-								Loading variant...
-							</Text>
-							<Text as="p" variant="bodyMd" tone="subdued">
-								Please wait while we set up the new variant.
-							</Text>
-						</div>
-					</div>
-				) : (
-					renderVariantEditor()
+				{!isChangingVariant && (
+					<>
+						<div className="h-px bg-gray-200" />
+						{renderVariantEditor()}
+					</>
 				)}
 			</AccordionSection>
 
