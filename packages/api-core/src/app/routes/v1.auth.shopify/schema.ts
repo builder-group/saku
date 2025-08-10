@@ -15,6 +15,9 @@ const SShopifySessionDto = z
 		scope: z.string().openapi({ example: 'write_products,read_customers' }),
 		expires: z.iso.datetime().nullable().openapi({ example: '2025-06-14T13:39:33.336Z' }),
 		accessToken: z.string().openapi({ example: 'shpat_def456...uvw012' }),
+		mantleApiToken: z.string().nullable().openapi({
+			example: 'mantle_token_123...'
+		}),
 		onlineAccessInfo: z
 			.object({
 				expires_in: z.number().optional().openapi({ example: 86399 }),

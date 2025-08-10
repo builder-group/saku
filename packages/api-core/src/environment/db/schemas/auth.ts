@@ -62,5 +62,7 @@ export interface TShopifySessionData {
 		accountNumber?: number;
 	};
 
+	mantleApiToken?: string;
+
 	[key: string]: unknown;
 }

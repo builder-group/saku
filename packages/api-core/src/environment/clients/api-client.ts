@@ -1,4 +1,6 @@
-import { createFetchClient, withGraphQL } from 'feature-fetch';
+import { createApiFetchClient, createFetchClient, withGraphQL } from 'feature-fetch';
+
+export const fetchClient = createApiFetchClient();
 
 export const shopifyAdminApiClient = withGraphQL(
 	createFetchClient({

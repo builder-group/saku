@@ -6,25 +6,43 @@ import { coreApiClient } from '@/environment';
 
 // Based on: https://github.com/Shopify/shopify-app-js/blob/main/packages/apps/session-storage/shopify-app-session-storage-prisma/src/prisma.ts
 export class ApiSessionStorage implements SessionStorage {
+	private sessionCache = new Map<string, Session>();
+
 	public async storeSession(session: Session): Promise<boolean> {
 		const sessionDto = this.sessionToSessionDto(session);
 		const result = await coreApiClient.post('/v1/auth/shopify/session', sessionDto, {
 			requestMiddlewares: [accessSecretMiddleware]
 		});
-		return result.isOk();
+		if (result.isErr()) {
+			return false;
+		}
+
+		// Invalidate cache for this session ID
+		this.sessionCache.delete(session.id);
+
+		return true;
 	}
 
 	public async loadSession(id: string): Promise<Session | undefined> {
+		// Check cache first
+		const cachedSession = this.sessionCache.get(id);
+		if (cachedSession != null) {
+			return cachedSession;
+		}
+
 		const result = await coreApiClient.get('/v1/auth/shopify/session/{sessionId}', {
 			pathParams: { sessionId: id },
 			requestMiddlewares: [accessSecretMiddleware]
 		});
-
-		if (result.isOk()) {
-			return this.sessionDtoToSession(result.value.data);
+		if (result.isErr()) {
+			return undefined;
 		}
 
-		return undefined;
+		// Cache the session
+		const session = this.sessionDtoToSession(result.value.data);
+		this.sessionCache.set(id, session);
+
+		return session;
 	}
 
 	public async deleteSession(id: string): Promise<boolean> {
@@ -32,13 +50,23 @@ export class ApiSessionStorage implements SessionStorage {
 			pathParams: { sessionId: id },
 			requestMiddlewares: [accessSecretMiddleware]
 		});
+		if (result.isErr()) {
+			return false;
+		}
 
-		return result.isOk();
+		// Invalidate cache for this session ID
+		this.sessionCache.delete(id);
+
+		return true;
 	}
 
 	public async deleteSessions(ids: string[]): Promise<boolean> {
 		const deletePromises = ids.map((id) => this.deleteSession(id));
 		const results = await Promise.all(deletePromises);
+
+		// Invalidate cache for all deleted sessions
+		ids.forEach((id) => this.sessionCache.delete(id));
+
 		return results.every((result) => result);
 	}
 
@@ -47,12 +75,18 @@ export class ApiSessionStorage implements SessionStorage {
 			pathParams: { shopId: shop },
 			requestMiddlewares: [accessSecretMiddleware]
 		});
-
-		if (result.isOk()) {
-			return result.value.data.map((sessionDto) => this.sessionDtoToSession(sessionDto));
+		if (result.isErr()) {
+			return [];
 		}
 
-		return [];
+		const sessions = result.value.data.map((sessionDto) => this.sessionDtoToSession(sessionDto));
+
+		// Cache all sessions from this shop
+		sessions.forEach((session) => {
+			this.sessionCache.set(session.id, session);
+		});
+
+		return sessions;
 	}
 
 	private sessionToSessionDto(

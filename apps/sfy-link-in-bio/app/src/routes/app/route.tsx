@@ -6,6 +6,7 @@ import { Link, Outlet, useLoaderData, useRouteError } from 'react-router';
 import { shopify, shopifyConfig } from '@/.server/environment';
 import { AppProviderWithPolaris, TAppProviderWithPolarisI18n } from '@/components';
 import { THeadersFunction, TLoaderFunction } from '@/types';
+import { logger } from '../../environment';
 
 const Page: React.FC = () => {
 	const { apiKey, polarisTranslations } = useLoaderData<typeof loader>();
@@ -40,7 +41,9 @@ export const loader: TLoaderFunction<{
 	apiKey: string;
 	polarisTranslations: TAppProviderWithPolarisI18n;
 }> = async ({ request }) => {
-	await shopify.authenticate.admin(request);
+	const { session } = await shopify.authenticate.admin(request);
+
+	logger.info({ isOnline: session.isOnline, id: session.id });
 
 	return { apiKey: shopifyConfig.apiKey, polarisTranslations };
 };

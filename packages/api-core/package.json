@@ -38,6 +38,7 @@
 	},
 	"dependencies": {
 		"@blgc/utils": "^0.0.58",
+		"@heymantle/client": "^1.1.59",
 		"@hono/zod-openapi": "1.0.2",
 		"@hono/zod-validator": "^0.7.2",
 		"@repo/editor": "workspace:*",
