@@ -10,6 +10,7 @@ import { Select, Text, TextField } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react/state';
 import React from 'react';
 import { AccordionSection } from '@/components';
+import { PortalPulse } from '@/components/display';
 import {
 	ColorStyleField,
 	SelectStyleField,
@@ -121,7 +122,13 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 	const renderVariantEditor = React.useCallback((): React.ReactElement | null => {
 		switch (content.variant.type) {
 			case 'default':
-				return <DefaultLinkVariant nodeState={nodeState} editor={editor} />;
+				return (
+					<DefaultLinkVariant
+						nodeState={nodeState}
+						editor={editor}
+						isHydrating={isHydratingVariant}
+					/>
+				);
 			case 'youtube-video':
 				return (
 					<div className="space-y-4 px-4">
@@ -149,11 +156,17 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 					</div>
 				);
 			case 'youtube-video-embed':
-				return <YoutubeVideoEmbedVariant nodeState={nodeState} editor={editor} />;
+				return (
+					<YoutubeVideoEmbedVariant
+						nodeState={nodeState}
+						editor={editor}
+						isHydrating={isHydratingVariant}
+					/>
+				);
 			default:
 				return null;
 		}
-	}, [content.variant.type, editor, nodeState]);
+	}, [content.variant.type, editor, nodeState, isHydratingVariant]);
 
 	return (
 		<>
@@ -181,8 +194,7 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 					{/* Link variant */}
 					<div className="space-y-1">
 						<Text as="span" variant="bodySm" tone="subdued">
-							Variant{' '}
-							{(isHydratingVariant && '(enhancing...)') || (isChangingVariant && '(changing...)')}
+							Variant {isHydratingVariant && '(enhancing...)'}
 						</Text>
 						<Select
 							id="link-display-field"
@@ -199,7 +211,17 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 				{!isChangingVariant && (
 					<>
 						<div className="h-px bg-gray-200" />
-						{renderVariantEditor()}
+						{isHydratingVariant ? (
+							<PortalPulse
+								isActive={true}
+								className="relative"
+								pulseClassName="absolute -top-3 -bottom-4 left-0 right-0"
+							>
+								{renderVariantEditor()}
+							</PortalPulse>
+						) : (
+							renderVariantEditor()
+						)}
 					</>
 				)}
 			</AccordionSection>

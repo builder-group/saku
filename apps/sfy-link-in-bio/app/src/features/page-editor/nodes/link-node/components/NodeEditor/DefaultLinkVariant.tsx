@@ -8,7 +8,7 @@ import { TNodeState, TPageEditor } from '../../../../lib';
 import { fetchUrlMetadata } from './lib';
 
 export const DefaultLinkVariant: React.FC<TDefaultLinkVariantProps> = (props) => {
-	const { nodeState, editor } = props;
+	const { nodeState, editor, isHydrating = false } = props;
 	const { url, variant } = useCompute(nodeState, ({ value: node }) => ({
 		url: node.content.url,
 		variant: node.content.variant as TDefaultLinkVariant
@@ -145,13 +145,13 @@ export const DefaultLinkVariant: React.FC<TDefaultLinkVariantProps> = (props) =>
 		<div className="space-y-3 px-4">
 			<div className="flex items-center justify-between">
 				<Text as="span" variant="headingXs" tone="subdued">
-					Variant
+					Variant {isHydrating && '(enhancing...)'}
 				</Text>
 				<Button
 					variant="plain"
 					size="micro"
 					onClick={handleUrlFetch}
-					disabled={isFetchingUrlMetadata}
+					disabled={isFetchingUrlMetadata || isHydrating}
 				>
 					{isFetchingUrlMetadata ? 'Fetching metadata...' : 'Fetch metadata'}
 				</Button>
@@ -231,4 +231,5 @@ export const DefaultLinkVariant: React.FC<TDefaultLinkVariantProps> = (props) =>
 interface TDefaultLinkVariantProps {
 	nodeState: TNodeState<TLinkNode>;
 	editor: TPageEditor;
+	isHydrating?: boolean;
 }
