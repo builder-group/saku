@@ -4,7 +4,7 @@ import { nonEmptyStringMiddleware, urlValidator, validateEnvVar } from 'validate
 import { vValidator } from 'validation-adapters/valibot';
 
 const coreApiUrl = validateEnvVar({
-	envKey: 'VITE_API_CORE_URL',
+	envKey: 'API_CORE_URL',
 	validator: urlValidator,
 	middlewares: [
 		nonEmptyStringMiddleware,
@@ -17,7 +17,7 @@ export const apiConfig = {
 		url: coreApiUrl,
 		hostname: getHostname(coreApiUrl),
 		accessSecret: validateEnvVar({
-			envKey: 'CLIENT_API_CORE_ACCESS_SECRET',
+			envKey: 'API_CORE_ACCESS_SECRET',
 			validator: vValidator(v.string())
 		})
 	}
