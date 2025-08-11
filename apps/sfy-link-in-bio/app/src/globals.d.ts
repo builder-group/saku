@@ -9,3 +9,12 @@ declare module '@shopify/shopify-api' {
 		};
 	}
 }
+
+declare global {
+	interface Window {
+		chatwootSDK?: {
+			run: (config: { websiteToken: string; baseUrl: string }) => void;
+		};
+		chatwootSettings?: Record<string, unknown>;
+	}
+}
