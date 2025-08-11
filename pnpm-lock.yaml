@@ -168,11 +168,11 @@ importers:
         specifier: ^1.1.0
         version: 1.1.0(typescript@5.9.2)
       validatenv:
-        specifier: ^0.0.39
-        version: 0.0.39
+        specifier: ^0.0.40
+        version: 0.0.40
       validation-adapters:
-        specifier: ^0.0.31
-        version: 0.0.31
+        specifier: ^0.0.33
+        version: 0.0.33
       vite-tsconfig-paths:
         specifier: ^5.1.4
         version: 5.1.4(typescript@5.9.2)(vite@7.1.1(@types/node@24.2.1)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.43.1)(tsx@4.20.3)(yaml@2.8.1))
@@ -277,11 +277,11 @@ importers:
         specifier: ^1.1.0
         version: 1.1.0(typescript@5.9.2)
       validatenv:
-        specifier: ^0.0.39
-        version: 0.0.39
+        specifier: ^0.0.40
+        version: 0.0.40
       validation-adapters:
-        specifier: ^0.0.31
-        version: 0.0.31
+        specifier: ^0.0.33
+        version: 0.0.33
       xml-tokenizer:
         specifier: ^0.0.41
         version: 0.0.41
@@ -7000,14 +7000,14 @@ packages:
     resolution: {integrity: sha512-OljLrQ9SQdOUqTaQxqL5dEfZWrXExyyWsozYlAWFawPVNuD83igl7uJD2RTkNMbniIYgt8l81eCJGIdQF7avLQ==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
 
-  validatenv@0.0.39:
-    resolution: {integrity: sha512-kEK2JO+YBbSdLQf3pKMdZ7odeM8tE8RpDnhnLnbt4nLiWC3Suq0AYnu2KR4GtB/PdlW1rpXkIcww+3azKqH1Xg==}
+  validatenv@0.0.40:
+    resolution: {integrity: sha512-pptk3ut5CK0MkdcmOFDMY6ND6koidFa61+Uusump7JW1wSTEjjGysiC+xQfmmspWhKx7eiXlNtpJkE9LjqbVmA==}
 
   validation-adapter@0.0.24:
     resolution: {integrity: sha512-RnTKwFs+9kg1iw5NBkQZFkcLZ+F4Thj8Qww9xlpwM5230DzTPyW6Nf8jQUb2siBU4hQs76rO6ysQDwwm8eBMtQ==}
 
-  validation-adapters@0.0.31:
-    resolution: {integrity: sha512-7LyUEA3kGhgiW4lgD2oeLAtDZFbU3/nbCvfWGGw3L0d1vGMfJe21SAgh+VkFbwgdotmviK8yZ1jXhcTyj/NFaA==}
+  validation-adapters@0.0.33:
+    resolution: {integrity: sha512-ANdefDMq+skXSrilH6mCcSmp7FDRAuiEWlse682moVR/M1Jj2/dWqYqLVK8HGAuKmcn39XVSup+oy/2TVxH3xw==}
 
   vary@1.1.2:
     resolution: {integrity: sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==}
@@ -14393,7 +14393,7 @@ snapshots:
 
   validate-npm-package-name@5.0.1: {}
 
-  validatenv@0.0.39:
+  validatenv@0.0.40:
     dependencies:
       '@blgc/utils': 0.0.58
       validation-adapter: 0.0.24
@@ -14402,7 +14402,7 @@ snapshots:
     dependencies:
       '@blgc/utils': 0.0.58
 
-  validation-adapters@0.0.31:
+  validation-adapters@0.0.33:
     dependencies:
       validation-adapter: 0.0.24
 

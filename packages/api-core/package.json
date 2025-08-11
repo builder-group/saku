@@ -58,8 +58,8 @@
 		"resend": "^6.0.1",
 		"strip-json-comments": "^5.0.3",
 		"valibot": "^1.1.0",
-		"validatenv": "^0.0.39",
-		"validation-adapters": "^0.0.31",
+		"validatenv": "^0.0.40",
+		"validation-adapters": "^0.0.33",
 		"xml-tokenizer": "^0.0.41",
 		"zod": "4.0.17"
 	},
