@@ -6,7 +6,17 @@ import { coreApiClient } from '@/environment';
 
 // Based on: https://github.com/Shopify/shopify-app-js/blob/main/packages/apps/session-storage/shopify-app-session-storage-prisma/src/prisma.ts
 export class ApiSessionStorage implements SessionStorage {
-	private sessionCache = new Map<string, Session>();
+	private sessionCache = new Map<string, TCachedSession>();
+	private readonly config: TApiSessionStorageConfig;
+
+	constructor(options: TApiSessionStorageOptions = {}) {
+		const { ttlMs = 5 * 1000, maxSessions = 100 } = options;
+
+		this.config = {
+			ttlMs,
+			maxSessions
+		};
+	}
 
 	public async storeSession(session: Session): Promise<boolean> {
 		const sessionDto = this.sessionToSessionDto(session);
@@ -25,7 +35,7 @@ export class ApiSessionStorage implements SessionStorage {
 
 	public async loadSession(id: string): Promise<Session | undefined> {
 		// Check cache first
-		const cachedSession = this.sessionCache.get(id);
+		const cachedSession = this.getCachedSession(id);
 		if (cachedSession != null) {
 			return cachedSession;
 		}
@@ -40,7 +50,7 @@ export class ApiSessionStorage implements SessionStorage {
 
 		// Cache the session
 		const session = this.sessionDtoToSession(result.value.data);
-		this.sessionCache.set(id, session);
+		this.cacheSession(id, session);
 
 		return session;
 	}
@@ -83,10 +93,39 @@ export class ApiSessionStorage implements SessionStorage {
 
 		// Cache all sessions from this shop
 		sessions.forEach((session) => {
-			this.sessionCache.set(session.id, session);
+			this.cacheSession(session.id, session);
 		});
 
 		return sessions;
+	}
+
+	private getCachedSession(id: string): Session | null {
+		const cached = this.sessionCache.get(id);
+		if (cached == null) {
+			return null;
+		}
+
+		// Check if cached session is still valid
+		if (Date.now() < cached.expiresAt) {
+			return cached.session;
+		}
+
+		// Remove expired session from cache
+		this.sessionCache.delete(id);
+		return null;
+	}
+
+	private cacheSession(id: string, session: Session): void {
+		// Remove oldest session if we hit the limit
+		if (this.sessionCache.size >= this.config.maxSessions) {
+			const firstKey = this.sessionCache.keys().next().value;
+			if (firstKey != null) {
+				this.sessionCache.delete(firstKey);
+			}
+		}
+
+		const expiresAt = Date.now() + this.config.ttlMs;
+		this.sessionCache.set(id, { session, expiresAt });
 	}
 
 	private sessionToSessionDto(
@@ -167,4 +206,16 @@ export class ApiSessionStorage implements SessionStorage {
 
 		return session;
 	}
+}
+
+interface TApiSessionStorageOptions extends Partial<TApiSessionStorageConfig> {}
+
+interface TApiSessionStorageConfig {
+	ttlMs: number;
+	maxSessions: number;
+}
+
+interface TCachedSession {
+	session: Session;
+	expiresAt: number;
 }
