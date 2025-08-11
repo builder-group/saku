@@ -60,6 +60,7 @@ export const TemplatesStep: React.FC<TTemplatesStepProps> = (props) => {
 			return;
 		}
 
+		onboardingContext.complete();
 		navigate('/app?openEditor=true', {
 			replace: true, // To prevent back navigation
 			state: { fromOnboarding: true }

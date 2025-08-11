@@ -1,6 +1,7 @@
 import { Err, Ok, shortId, type TResult } from '@blgc/utils';
 import { TFlatSite } from '@repo/editor';
 import type { ShopifyGlobal } from '@shopify/app-bridge-types';
+import { Crisp } from 'crisp-sdk-web';
 import { coreApiClient } from '@/environment';
 import { createShopifyTokenMiddleware, createStepr, type TStepr } from '@/lib';
 
@@ -206,6 +207,11 @@ export function createOnboardingContext(
 			return Ok(undefined);
 		},
 
+		complete() {
+			Crisp.session.pushEvent('onboarding_completed');
+			Crisp.message.showText('Can I help?');
+		},
+
 		goBack() {
 			this.stepr.goBack();
 		}
@@ -235,6 +241,7 @@ export interface TOnboardingContext {
 	continueFromLinkpopUrl: (handle: string) => Promise<TResult<void, TLinkpopStepError>>;
 	continueFromLinkpopPreview: () => Promise<TResult<void, string>>;
 	continueFromTemplates: (selectedTemplate: TTemplate) => Promise<TResult<void, string>>;
+	complete: () => void;
 	goBack: () => void;
 }
 
