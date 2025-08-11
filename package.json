@@ -28,9 +28,9 @@
 	},
 	"devDependencies": {
 		"@blgc/config": "^0.0.36",
-		"@shopify/cli": "^3.83.2",
+		"@shopify/cli": "^3.83.3",
 		"dotenv": "^17.2.1",
-		"eslint": "^9.32.0",
+		"eslint": "^9.33.0",
 		"prettier": "^3.6.2",
 		"rollup": "^4.46.2",
 		"rollup-presets": "^0.0.22",
@@ -38,7 +38,7 @@
 		"tsx": "^4.20.3",
 		"turbo": "^2.5.5",
 		"typescript": "^5.9.2",
-		"vite": "^7.0.6",
+		"vite": "^7.1.1",
 		"vitest": "^3.2.4"
 	},
 	"packageManager": "pnpm@10.12.1",
