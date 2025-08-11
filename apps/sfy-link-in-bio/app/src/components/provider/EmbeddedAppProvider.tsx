@@ -8,10 +8,17 @@ import {
 import { AppProvider } from '@shopify/shopify-app-react-router/react';
 import React from 'react';
 import { Link } from 'react-router';
-import { mantleConfig } from '@/environment';
+import { logger, mantleConfig } from '@/environment';
 
 export const EmbeddedAppProvider: React.FC<TEmbeddedAppProviderProps> = (props) => {
 	const { shopifyApiKey, mantleApiToken = '', children, i18n } = props;
+
+	React.useEffect(() => {
+		logger.info('🧥 Initializing Mantle...', {
+			appId: mantleConfig.appId,
+			customerApiToken: mantleApiToken
+		});
+	}, [mantleApiToken]);
 
 	return (
 		<AppProvider embedded apiKey={shopifyApiKey}>
