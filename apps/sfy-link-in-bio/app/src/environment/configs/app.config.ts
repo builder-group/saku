@@ -40,7 +40,7 @@ export const appConfig = {
 		privacy: `https://saku.so/legal/privacy`,
 		terms: `https://saku.so/legal/terms`
 	},
-	flags: {
+	featureFlags: {
 		posthog: env === 'production',
 		chatwoot: env === 'production'
 	}

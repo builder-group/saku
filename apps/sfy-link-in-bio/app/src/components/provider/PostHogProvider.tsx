@@ -7,8 +7,13 @@ export const PosthogProvider: React.FC<TPosthogProviderProps> = (props) => {
 	const { children } = props;
 
 	React.useEffect(() => {
-		if (!appConfig.flags.posthog) {
+		if (!appConfig.featureFlags.posthog) {
 			logger.info('🦔 Skipping PostHog initialization');
+			return;
+		}
+
+		if (posthog.__loaded) {
+			logger.info('🦔 PostHog already initialized, skipping initialization');
 			return;
 		}
 

@@ -5,7 +5,7 @@ export const ChatwootProvider: React.FC<TChatwootProviderProps> = (props) => {
 	const { children, userData } = props;
 
 	React.useEffect(() => {
-		if (!appConfig.flags.chatwoot) {
+		if (!appConfig.featureFlags.chatwoot) {
 			logger.info('💬 Skipping Chatwoot initialization');
 			return;
 		}
