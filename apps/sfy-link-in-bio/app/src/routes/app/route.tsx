@@ -5,12 +5,7 @@ import { boundary } from '@shopify/shopify-app-react-router/server';
 import React from 'react';
 import { Link, Outlet, useLoaderData, useRouteError } from 'react-router';
 import { shopify, shopifyConfig } from '@/.server/environment';
-import {
-	ChatwootProvider,
-	EmbeddedAppProvider,
-	TChatwootUserData,
-	TEmbeddedAppProviderI18n
-} from '@/components';
+import { EmbeddedAppProvider, TChatwootUserData, TEmbeddedAppProviderI18n } from '@/components';
 import { createDisplayNameFromShop } from '@/lib';
 import { THeadersFunction, TLoaderFunction } from '@/types';
 
@@ -21,18 +16,17 @@ const Page: React.FC = () => {
 	return (
 		<EmbeddedAppProvider
 			shopifyApiKey={shopifyApiKey}
-			mantleApiToken={mantleApiToken}
 			i18n={polarisTranslations}
+			mantleApiToken={mantleApiToken}
+			chatwootUserData={chatwootUserData}
 		>
-			<ChatwootProvider userData={chatwootUserData}>
-				<ui-nav-menu>
-					<Link to="/app" rel="home">
-						Home
-					</Link>
-					<Link to="/app/settings">Settings</Link>
-				</ui-nav-menu>
-				<Outlet />
-			</ChatwootProvider>
+			<ui-nav-menu>
+				<Link to="/app" rel="home">
+					Home
+				</Link>
+				<Link to="/app/settings">Settings</Link>
+			</ui-nav-menu>
+			<Outlet />
 		</EmbeddedAppProvider>
 	);
 };

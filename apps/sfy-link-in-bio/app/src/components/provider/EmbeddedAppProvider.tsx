@@ -9,10 +9,10 @@ import { AppProvider } from '@shopify/shopify-app-react-router/react';
 import React from 'react';
 import { Link } from 'react-router';
 import { logger, mantleConfig } from '@/environment';
-import { ChatwootProvider } from './ChatwootProvider';
+import { ChatwootProvider, TChatwootUserData } from './ChatwootProvider';
 
 export const EmbeddedAppProvider: React.FC<TEmbeddedAppProviderProps> = (props) => {
-	const { shopifyApiKey, mantleApiToken = '', children, i18n } = props;
+	const { shopifyApiKey, i18n, mantleApiToken = '', chatwootUserData, children } = props;
 
 	React.useEffect(() => {
 		logger.info('🧥 Initializing Mantle...', {
@@ -22,21 +22,24 @@ export const EmbeddedAppProvider: React.FC<TEmbeddedAppProviderProps> = (props) 
 	}, [mantleApiToken]);
 
 	return (
-		<AppProvider embedded apiKey={shopifyApiKey}>
-			<PolarisAppProvider linkComponent={PolarisLink} i18n={i18n}>
-				<MantleProvider appId={mantleConfig.appId} customerApiToken={mantleApiToken}>
-					<ChatwootProvider>{children}</ChatwootProvider>
-				</MantleProvider>
-			</PolarisAppProvider>
-		</AppProvider>
+		<ChatwootProvider userData={chatwootUserData}>
+			<AppProvider embedded apiKey={shopifyApiKey}>
+				<PolarisAppProvider linkComponent={PolarisLink} i18n={i18n}>
+					<MantleProvider appId={mantleConfig.appId} customerApiToken={mantleApiToken}>
+						{children}
+					</MantleProvider>
+				</PolarisAppProvider>
+			</AppProvider>
+		</ChatwootProvider>
 	);
 };
 
 interface TEmbeddedAppProviderProps {
 	shopifyApiKey: string;
-	mantleApiToken?: string;
-	children: React.ReactNode;
 	i18n: TEmbeddedAppProviderI18n;
+	mantleApiToken?: string;
+	chatwootUserData?: TChatwootUserData;
+	children: React.ReactNode;
 }
 
 export type TEmbeddedAppProviderI18n = ConstructorParameters<typeof I18n>[0];

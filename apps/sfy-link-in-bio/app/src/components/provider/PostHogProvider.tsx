@@ -6,11 +6,9 @@ import { appConfig, logger, posthogConfig } from '@/environment';
 export const PosthogProvider: React.FC<TPosthogProviderProps> = (props) => {
 	const { children } = props;
 
-	const [hydrated, setHydrated] = React.useState(false);
-
 	React.useEffect(() => {
-		if (appConfig.env !== 'production') {
-			logger.info('🦔 Skipping PostHog initialization in non-production environment');
+		if (!appConfig.flags.posthog) {
+			logger.info('🦔 Skipping PostHog initialization');
 			return;
 		}
 
@@ -38,13 +36,7 @@ export const PosthogProvider: React.FC<TPosthogProviderProps> = (props) => {
 			app_name: '@repo/sfy-link-in-bio-app',
 			app_environment: appConfig.env
 		});
-
-		setHydrated(true);
 	}, []);
-
-	if (!hydrated) {
-		return <>{children}</>;
-	}
 
 	return <PHProvider client={posthog}>{children}</PHProvider>;
 };
