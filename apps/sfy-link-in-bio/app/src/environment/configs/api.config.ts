@@ -3,9 +3,9 @@ import { nonEmptyStringMiddleware, urlValidator, validateEnvVar } from 'validate
 
 const coreApiUrl = validateEnvVar(
 	{
-		envKey: 'VITE_CLIENT_API_CORE_URL',
+		envKey: 'VITE_API_CORE_URL',
 		// @ts-expect-error -- https://vite.dev/guide/env-and-mode#env-variables
-		value: import.meta.env.VITE_CLIENT_API_CORE_URL,
+		value: import.meta.env.VITE_API_CORE_URL,
 		validator: urlValidator,
 		middlewares: [
 			nonEmptyStringMiddleware,

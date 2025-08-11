@@ -1,3 +1,4 @@
+import { MantleProvider } from '@heymantle/react';
 import { AppProvider as PolarisAppProvider } from '@shopify/polaris';
 import { I18n } from '@shopify/polaris/build/ts/src/utilities/i18n';
 import {
@@ -7,26 +8,30 @@ import {
 import { AppProvider } from '@shopify/shopify-app-react-router/react';
 import React from 'react';
 import { Link } from 'react-router';
+import { mantleConfig } from '@/environment';
 
-export const AppProviderWithPolaris: React.FC<TAppProviderWithPolarisProps> = (props) => {
-	const { apiKey, children, i18n } = props;
+export const EmbeddedAppProvider: React.FC<TEmbeddedAppProviderProps> = (props) => {
+	const { shopifyApiKey, mantleApiToken = '', children, i18n } = props;
 
 	return (
-		<AppProvider embedded apiKey={apiKey}>
+		<AppProvider embedded apiKey={shopifyApiKey}>
 			<PolarisAppProvider linkComponent={PolarisLink} i18n={i18n}>
-				{children}
+				<MantleProvider appId={mantleConfig.appId} customerApiToken={mantleApiToken}>
+					{children}
+				</MantleProvider>
 			</PolarisAppProvider>
 		</AppProvider>
 	);
 };
 
-interface TAppProviderWithPolarisProps {
-	apiKey: string;
+interface TEmbeddedAppProviderProps {
+	shopifyApiKey: string;
+	mantleApiToken?: string;
 	children: React.ReactNode;
-	i18n: TAppProviderWithPolarisI18n;
+	i18n: TEmbeddedAppProviderI18n;
 }
 
-export type TAppProviderWithPolarisI18n = ConstructorParameters<typeof I18n>[0];
+export type TEmbeddedAppProviderI18n = ConstructorParameters<typeof I18n>[0];
 
 const PolarisLink = React.forwardRef<HTMLAnchorElement, LinkLikeComponentProps>((props, ref) => (
 	<Link {...props} to={props.url ?? props['to']} ref={ref} />

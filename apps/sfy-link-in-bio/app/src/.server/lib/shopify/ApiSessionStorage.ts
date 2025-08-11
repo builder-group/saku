@@ -162,7 +162,7 @@ export class ApiSessionStorage implements SessionStorage {
 
 		// Attach additional data to the session
 		session.additionalData = {
-			mantleApiToken: sessionDto.mantleApiToken
+			mantleApiToken: sessionDto.mantleApiToken ?? undefined
 		};
 
 		return session;

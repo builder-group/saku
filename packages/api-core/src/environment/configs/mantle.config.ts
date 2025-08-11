@@ -7,8 +7,8 @@ export const mantleConfig = {
 		envKey: 'MANTLE_APP_ID',
 		validator: vValidator(v.string())
 	}),
-	appApiKey: validateEnvVar({
-		envKey: 'MANTLE_APP_API_KEY',
+	apiKey: validateEnvVar({
+		envKey: 'MANTLE_API_KEY',
 		validator: vValidator(v.string())
 	})
 };

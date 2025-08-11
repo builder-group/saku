@@ -3,5 +3,5 @@ import { mantleConfig } from '../configs';
 
 export const mantleClient = new MantleClient({
 	appId: mantleConfig.appId,
-	apiKey: mantleConfig.appApiKey
+	apiKey: mantleConfig.apiKey
 });
