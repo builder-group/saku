@@ -4,14 +4,18 @@ import { boundary } from '@shopify/shopify-app-react-router/server';
 import React from 'react';
 import { Link, Outlet, useLoaderData, useRouteError } from 'react-router';
 import { shopify, shopifyConfig } from '@/.server/environment';
-import { AppProviderWithPolaris, TAppProviderWithPolarisI18n } from '@/components';
+import { EmbeddedAppProvider, TEmbeddedAppProviderI18n } from '@/components';
 import { THeadersFunction, TLoaderFunction } from '@/types';
 
 const Page: React.FC = () => {
-	const { apiKey, polarisTranslations } = useLoaderData<typeof loader>();
+	const { shopifyApiKey, mantleApiToken, polarisTranslations } = useLoaderData<typeof loader>();
 
 	return (
-		<AppProviderWithPolaris apiKey={apiKey} i18n={polarisTranslations}>
+		<EmbeddedAppProvider
+			shopifyApiKey={shopifyApiKey}
+			mantleApiToken={mantleApiToken}
+			i18n={polarisTranslations}
+		>
 			<ui-nav-menu>
 				<Link to="/app" rel="home">
 					Home
@@ -19,7 +23,7 @@ const Page: React.FC = () => {
 				<Link to="/app/settings">Settings</Link>
 			</ui-nav-menu>
 			<Outlet />
-		</AppProviderWithPolaris>
+		</EmbeddedAppProvider>
 	);
 };
 
@@ -36,11 +40,18 @@ export const headers: THeadersFunction = (headersArgs) => {
 
 export const links = () => [{ rel: 'stylesheet', href: polarisStyles }];
 
-export const loader: TLoaderFunction<{
-	apiKey: string;
-	polarisTranslations: TAppProviderWithPolarisI18n;
-}> = async ({ request }) => {
-	await shopify.authenticate.admin(request);
+export const loader: TLoaderFunction<TLoaderData> = async ({ request }) => {
+	const { session } = await shopify.authenticate.admin(request);
 
-	return { apiKey: shopifyConfig.apiKey, polarisTranslations };
+	return {
+		shopifyApiKey: shopifyConfig.apiKey,
+		mantleApiToken: session.additionalData?.mantleApiToken,
+		polarisTranslations
+	};
 };
+
+interface TLoaderData {
+	shopifyApiKey: string;
+	mantleApiToken?: string;
+	polarisTranslations: TEmbeddedAppProviderI18n;
+}

@@ -23,6 +23,7 @@ export async function getShopifySession(sessionId: string): Promise<TShopifySess
 		scope: session.scopes,
 		expires: session.expiresAt?.toISOString() ?? null,
 		accessToken: session.accessToken,
+		mantleApiToken: session.sessionData?.mantleApiToken ?? null,
 		onlineAccessInfo:
 			session.sessionData?.onlineAccessInfo != null
 				? {

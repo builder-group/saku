@@ -118,6 +118,19 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 	const handleUrlBlur = React.useCallback(async () => {
 		const currentVariantType = content.variant.type;
 		const metadata = linkVariantMetadataMap[currentVariantType];
+
+		// Check if current variant is still valid for the new URL
+		const availableVariants = getApplicableVariants(content.url);
+		const isCurrentVariantValid = availableVariants.some(
+			(variant) => variant.value === currentVariantType
+		);
+
+		// If current variant is no longer valid, switch to default
+		if (!isCurrentVariantValid && currentVariantType !== 'default') {
+			handleVariantTypeChange('default');
+			return;
+		}
+
 		if (metadata?.enhanceVariant == null) {
 			return;
 		}
@@ -138,7 +151,7 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 			.finally(() => {
 				setIsEnhancingVariant(false);
 			});
-	}, [content.url, content.variant.type, editor, nodeState, shopify]);
+	}, [content.url, content.variant.type, editor, nodeState, shopify, handleVariantTypeChange]);
 
 	// =========================================================================
 	// UI

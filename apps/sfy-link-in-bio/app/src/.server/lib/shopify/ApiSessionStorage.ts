@@ -6,25 +6,53 @@ import { coreApiClient } from '@/environment';
 
 // Based on: https://github.com/Shopify/shopify-app-js/blob/main/packages/apps/session-storage/shopify-app-session-storage-prisma/src/prisma.ts
 export class ApiSessionStorage implements SessionStorage {
+	private sessionCache = new Map<string, TCachedSession>();
+	private readonly config: TApiSessionStorageConfig;
+
+	constructor(options: TApiSessionStorageOptions = {}) {
+		const { ttlMs = 5 * 1000, maxSessions = 100 } = options;
+
+		this.config = {
+			ttlMs,
+			maxSessions
+		};
+	}
+
 	public async storeSession(session: Session): Promise<boolean> {
 		const sessionDto = this.sessionToSessionDto(session);
 		const result = await coreApiClient.post('/v1/auth/shopify/session', sessionDto, {
 			requestMiddlewares: [accessSecretMiddleware]
 		});
-		return result.isOk();
+		if (result.isErr()) {
+			return false;
+		}
+
+		// Invalidate cache for this session ID
+		this.sessionCache.delete(session.id);
+
+		return true;
 	}
 
 	public async loadSession(id: string): Promise<Session | undefined> {
+		// Check cache first
+		const cachedSession = this.getCachedSession(id);
+		if (cachedSession != null) {
+			return cachedSession;
+		}
+
 		const result = await coreApiClient.get('/v1/auth/shopify/session/{sessionId}', {
 			pathParams: { sessionId: id },
 			requestMiddlewares: [accessSecretMiddleware]
 		});
-
-		if (result.isOk()) {
-			return this.sessionDtoToSession(result.value.data);
+		if (result.isErr()) {
+			return undefined;
 		}
 
-		return undefined;
+		// Cache the session
+		const session = this.sessionDtoToSession(result.value.data);
+		this.cacheSession(id, session);
+
+		return session;
 	}
 
 	public async deleteSession(id: string): Promise<boolean> {
@@ -32,13 +60,23 @@ export class ApiSessionStorage implements SessionStorage {
 			pathParams: { sessionId: id },
 			requestMiddlewares: [accessSecretMiddleware]
 		});
+		if (result.isErr()) {
+			return false;
+		}
 
-		return result.isOk();
+		// Invalidate cache for this session ID
+		this.sessionCache.delete(id);
+
+		return true;
 	}
 
 	public async deleteSessions(ids: string[]): Promise<boolean> {
 		const deletePromises = ids.map((id) => this.deleteSession(id));
 		const results = await Promise.all(deletePromises);
+
+		// Invalidate cache for all deleted sessions
+		ids.forEach((id) => this.sessionCache.delete(id));
+
 		return results.every((result) => result);
 	}
 
@@ -47,12 +85,47 @@ export class ApiSessionStorage implements SessionStorage {
 			pathParams: { shopId: shop },
 			requestMiddlewares: [accessSecretMiddleware]
 		});
-
-		if (result.isOk()) {
-			return result.value.data.map((sessionDto) => this.sessionDtoToSession(sessionDto));
+		if (result.isErr()) {
+			return [];
 		}
 
-		return [];
+		const sessions = result.value.data.map((sessionDto) => this.sessionDtoToSession(sessionDto));
+
+		// Cache all sessions from this shop
+		sessions.forEach((session) => {
+			this.cacheSession(session.id, session);
+		});
+
+		return sessions;
+	}
+
+	private getCachedSession(id: string): Session | null {
+		const cached = this.sessionCache.get(id);
+		if (cached == null) {
+			return null;
+		}
+
+		// Check if cached session is still valid
+		if (Date.now() < cached.expiresAt) {
+			return cached.session;
+		}
+
+		// Remove expired session from cache
+		this.sessionCache.delete(id);
+		return null;
+	}
+
+	private cacheSession(id: string, session: Session): void {
+		// Remove oldest session if we hit the limit
+		if (this.sessionCache.size >= this.config.maxSessions) {
+			const firstKey = this.sessionCache.keys().next().value;
+			if (firstKey != null) {
+				this.sessionCache.delete(firstKey);
+			}
+		}
+
+		const expiresAt = Date.now() + this.config.ttlMs;
+		this.sessionCache.set(id, { session, expiresAt });
 	}
 
 	private sessionToSessionDto(
@@ -66,6 +139,7 @@ export class ApiSessionStorage implements SessionStorage {
 			scope: session.scope ?? '',
 			expires: session.expires != null ? session.expires.toISOString() : null,
 			accessToken: session.accessToken ?? '',
+			mantleApiToken: session.additionalData?.mantleApiToken ?? null,
 			onlineAccessInfo:
 				session.onlineAccessInfo != null
 					? {
@@ -123,6 +197,25 @@ export class ApiSessionStorage implements SessionStorage {
 			);
 		}
 
-		return Session.fromPropertyArray(sessionParams, true);
+		const session = Session.fromPropertyArray(sessionParams, true);
+
+		// Attach additional data to the session
+		session.additionalData = {
+			mantleApiToken: sessionDto.mantleApiToken ?? undefined
+		};
+
+		return session;
 	}
+}
+
+interface TApiSessionStorageOptions extends Partial<TApiSessionStorageConfig> {}
+
+interface TApiSessionStorageConfig {
+	ttlMs: number;
+	maxSessions: number;
+}
+
+interface TCachedSession {
+	session: Session;
+	expiresAt: number;
 }

@@ -2,6 +2,7 @@ import { AppError } from '@repo/hono-utils';
 import { and, eq } from 'drizzle-orm';
 import {
 	db,
+	mantleClient,
 	shopifySessionTable,
 	TEmailOTPUserAccountData,
 	TTransaction as TPgTransaction,
@@ -15,6 +16,7 @@ import {
 	workspaceTable
 } from '@/environment';
 import { createDisplayNameFromShop, createHandleFromShop } from '@/lib';
+import { getShopInfo } from '@/lib/gql/shopify-admin/queries';
 import type { TShopifySessionDto } from '../schema';
 import { createHandleFromEmail } from './create-handle-from-email';
 
@@ -34,23 +36,45 @@ export async function createShopifySession(session: TShopifySessionDto): Promise
 
 async function upsertSession(tx: TPgTransaction, session: TShopifySessionDto): Promise<void> {
 	const sessionData: TShopifySessionData = {};
-	if (session.isOnline && session.onlineAccessInfo != null) {
-		sessionData.onlineAccessInfo = {
-			associatedUser: {
-				id: session.onlineAccessInfo.associated_user.id,
-				firstName: session.onlineAccessInfo.associated_user.first_name,
-				lastName: session.onlineAccessInfo.associated_user.last_name,
-				email: session.onlineAccessInfo.associated_user.email,
-				emailVerified: session.onlineAccessInfo.associated_user.email_verified,
-				accountOwner: session.onlineAccessInfo.associated_user.account_owner,
-				locale: session.onlineAccessInfo.associated_user.locale,
-				collaborator: session.onlineAccessInfo.associated_user.collaborator
-			},
-			associatedUserScope: session.onlineAccessInfo.associated_user_scope,
-			expiresIn: session.onlineAccessInfo.expires_in,
-			session: session.onlineAccessInfo.session,
-			accountNumber: session.onlineAccessInfo.account_number ?? undefined
-		};
+
+	if (session.isOnline) {
+		// Store online access info of Shopify user
+		if (session.onlineAccessInfo != null) {
+			sessionData.onlineAccessInfo = {
+				associatedUser: {
+					id: session.onlineAccessInfo.associated_user.id,
+					firstName: session.onlineAccessInfo.associated_user.first_name,
+					lastName: session.onlineAccessInfo.associated_user.last_name,
+					email: session.onlineAccessInfo.associated_user.email,
+					emailVerified: session.onlineAccessInfo.associated_user.email_verified,
+					accountOwner: session.onlineAccessInfo.associated_user.account_owner,
+					locale: session.onlineAccessInfo.associated_user.locale,
+					collaborator: session.onlineAccessInfo.associated_user.collaborator
+				},
+				associatedUserScope: session.onlineAccessInfo.associated_user_scope,
+				expiresIn: session.onlineAccessInfo.expires_in,
+				session: session.onlineAccessInfo.session,
+				accountNumber: session.onlineAccessInfo.account_number ?? undefined
+			};
+		}
+
+		// Create Mantle API key for online sessions only
+		// because Mantle identifies shops based on user context - offline sessions have no user association
+		const shopInfo = await getShopInfo({
+			shopId: session.shop,
+			accessToken: session.accessToken
+		});
+		if (shopInfo.isOk()) {
+			const identifyResponse = await mantleClient.identify({
+				platform: 'shopify',
+				platformId: shopInfo.value.id,
+				myshopifyDomain: session.shop,
+				accessToken: session.accessToken
+			});
+			if ('apiToken' in identifyResponse) {
+				sessionData.mantleApiToken = identifyResponse.apiToken;
+			}
+		}
 	}
 
 	await tx

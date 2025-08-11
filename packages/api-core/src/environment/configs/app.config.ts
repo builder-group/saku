@@ -53,7 +53,7 @@ export const appConfig = {
 	}),
 	client: {
 		appUrl: validateEnvVar({
-			envKey: 'API_CORE_CLIENT_APP_URL',
+			envKey: 'APP_URL',
 			validator: urlValidator,
 			middlewares: [
 				nonEmptyStringMiddleware,

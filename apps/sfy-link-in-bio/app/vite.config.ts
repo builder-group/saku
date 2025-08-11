@@ -61,9 +61,10 @@ export default defineConfig({
 	},
 	define: {
 		['import.meta.env.PACKAGE_VERSION']: defineViteEnv('npm_package_version'),
-		['import.meta.env.VITE_CLIENT_API_CORE_URL']: defineViteEnv('VITE_CLIENT_API_CORE_URL'),
+		['import.meta.env.VITE_API_CORE_URL']: defineViteEnv('VITE_API_CORE_URL'),
 		['import.meta.env.VITE_POSTHOG_KEY']: defineViteEnv('VITE_POSTHOG_KEY'),
-		['import.meta.env.VITE_POSTHOG_HOST']: defineViteEnv('VITE_POSTHOG_HOST')
+		['import.meta.env.VITE_POSTHOG_HOST']: defineViteEnv('VITE_POSTHOG_HOST'),
+		['import.meta.env.VITE_MANTLE_APP_ID']: defineViteEnv('VITE_MANTLE_APP_ID')
 	},
 	ssr: {
 		noExternal: [
