@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import React from 'react';
-import { ChatwootProvider, PosthogProvider } from '@/components';
+import { PosthogProvider } from '@/components';
 
 const queryClient = new QueryClient();
 
@@ -9,9 +9,7 @@ export const RootProviders: React.FC<TRootProvidersProps> = (props) => {
 
 	return (
 		<QueryClientProvider client={queryClient}>
-			<PosthogProvider>
-				<ChatwootProvider>{children}</ChatwootProvider>
-			</PosthogProvider>
+			<PosthogProvider>{children}</PosthogProvider>
 		</QueryClientProvider>
 	);
 };

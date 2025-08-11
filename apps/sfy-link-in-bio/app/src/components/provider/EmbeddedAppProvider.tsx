@@ -9,6 +9,7 @@ import { AppProvider } from '@shopify/shopify-app-react-router/react';
 import React from 'react';
 import { Link } from 'react-router';
 import { logger, mantleConfig } from '@/environment';
+import { ChatwootProvider } from './ChatwootProvider';
 
 export const EmbeddedAppProvider: React.FC<TEmbeddedAppProviderProps> = (props) => {
 	const { shopifyApiKey, mantleApiToken = '', children, i18n } = props;
@@ -24,7 +25,7 @@ export const EmbeddedAppProvider: React.FC<TEmbeddedAppProviderProps> = (props) 
 		<AppProvider embedded apiKey={shopifyApiKey}>
 			<PolarisAppProvider linkComponent={PolarisLink} i18n={i18n}>
 				<MantleProvider appId={mantleConfig.appId} customerApiToken={mantleApiToken}>
-					{children}
+					<ChatwootProvider>{children}</ChatwootProvider>
 				</MantleProvider>
 			</PolarisAppProvider>
 		</AppProvider>

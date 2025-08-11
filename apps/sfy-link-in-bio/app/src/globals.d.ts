@@ -16,5 +16,12 @@ declare global {
 			run: (config: { websiteToken: string; baseUrl: string }) => void;
 		};
 		chatwootSettings?: Record<string, unknown>;
+		$chatwoot?: {
+			setUser: (identifier: string, userData: Record<string, unknown>) => void;
+			setCustomAttributes: (attributes: Record<string, unknown>) => void;
+			toggle: (state?: 'open' | 'close') => void;
+			popoutChatWindow: () => void;
+			toggleBubbleVisibility: (state: 'show' | 'hide') => void;
+		};
 	}
 }
