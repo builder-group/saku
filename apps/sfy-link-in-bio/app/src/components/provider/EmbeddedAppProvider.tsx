@@ -1,4 +1,3 @@
-import { MantleProvider } from '@heymantle/react';
 import { AppProvider as PolarisAppProvider } from '@shopify/polaris';
 import { I18n } from '@shopify/polaris/build/ts/src/utilities/i18n';
 import {
@@ -8,29 +7,20 @@ import {
 import { AppProvider } from '@shopify/shopify-app-react-router/react';
 import React from 'react';
 import { Link } from 'react-router';
-import { logger, mantleConfig } from '@/environment';
-import { ChatwootProvider, TChatwootUserData } from './ChatwootProvider';
+import { CrispProvider } from './CrispProvider';
+import { MantleProvider } from './MantleProvider';
 
 export const EmbeddedAppProvider: React.FC<TEmbeddedAppProviderProps> = (props) => {
-	const { shopifyApiKey, i18n, mantleApiToken = '', chatwootUserData, children } = props;
-
-	React.useEffect(() => {
-		logger.info('🧥 Initializing Mantle...', {
-			appId: mantleConfig.appId,
-			customerApiToken: mantleApiToken
-		});
-	}, [mantleApiToken]);
+	const { shopifyApiKey, i18n, mantleApiToken = '', userContext, children } = props;
 
 	return (
-		<ChatwootProvider userData={chatwootUserData}>
+		<CrispProvider user={userContext}>
 			<AppProvider embedded apiKey={shopifyApiKey}>
 				<PolarisAppProvider linkComponent={PolarisLink} i18n={i18n}>
-					<MantleProvider appId={mantleConfig.appId} customerApiToken={mantleApiToken}>
-						{children}
-					</MantleProvider>
+					<MantleProvider customerApiToken={mantleApiToken}>{children}</MantleProvider>
 				</PolarisAppProvider>
 			</AppProvider>
-		</ChatwootProvider>
+		</CrispProvider>
 	);
 };
 
@@ -38,8 +28,16 @@ interface TEmbeddedAppProviderProps {
 	shopifyApiKey: string;
 	i18n: TEmbeddedAppProviderI18n;
 	mantleApiToken?: string;
-	chatwootUserData?: TChatwootUserData;
 	children: React.ReactNode;
+	userContext: TEmbeddedAppProviderUserContext;
+}
+
+export interface TEmbeddedAppProviderUserContext {
+	identifier: string;
+	email?: string;
+	name?: string;
+	avatarUrl?: string;
+	additionalData?: Record<string, unknown>;
 }
 
 export type TEmbeddedAppProviderI18n = ConstructorParameters<typeof I18n>[0];

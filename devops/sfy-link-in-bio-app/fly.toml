@@ -16,7 +16,7 @@ VITE_API_CORE_URL = 'https://sfy-link-in-bio-app.saku.so/api'
 VITE_POSTHOG_KEY = 'phc_iYM9sMuBXqRqNfOztyvR4Nyg1YOcibB6rVleQpssuhg'
 VITE_POSTHOG_HOST = 'https://us.i.posthog.com'
 VITE_MANTLE_APP_ID = 'f82ef0a0-6589-46d0-8b39-d4b020bcbbca'
-VITE_CHATWOOT_TOKEN = 'e1YrG3UqdAuqVERQzZMmvDse'
+VITE_CRISP_TOKEN = '7aee5709-263b-4455-8556-642ce3d791ef'
 
 [env]
 PORT = '3000'

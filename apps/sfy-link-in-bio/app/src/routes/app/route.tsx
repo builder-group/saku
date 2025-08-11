@@ -5,12 +5,16 @@ import { boundary } from '@shopify/shopify-app-react-router/server';
 import React from 'react';
 import { Link, Outlet, useLoaderData, useRouteError } from 'react-router';
 import { shopify, shopifyConfig } from '@/.server/environment';
-import { EmbeddedAppProvider, TChatwootUserData, TEmbeddedAppProviderI18n } from '@/components';
+import {
+	EmbeddedAppProvider,
+	TEmbeddedAppProviderI18n,
+	TEmbeddedAppProviderUserContext
+} from '@/components';
 import { createDisplayNameFromShop } from '@/lib';
 import { THeadersFunction, TLoaderFunction } from '@/types';
 
 const Page: React.FC = () => {
-	const { shopifyApiKey, mantleApiToken, polarisTranslations, chatwootUserData } =
+	const { shopifyApiKey, mantleApiToken, polarisTranslations, userContext } =
 		useLoaderData<typeof loader>();
 
 	return (
@@ -18,7 +22,7 @@ const Page: React.FC = () => {
 			shopifyApiKey={shopifyApiKey}
 			i18n={polarisTranslations}
 			mantleApiToken={mantleApiToken}
-			chatwootUserData={chatwootUserData}
+			userContext={userContext}
 		>
 			<ui-nav-menu>
 				<Link to="/app" rel="home">
@@ -52,25 +56,17 @@ export const loader: TLoaderFunction<TLoaderData> = async ({ request }) => {
 		shopifyApiKey: shopifyConfig.apiKey,
 		mantleApiToken: session.additionalData?.mantleApiToken,
 		polarisTranslations,
-		chatwootUserData: {
+		userContext: {
 			identifier: user != null ? `user_${user.id}` : `anonymous_${shortId()}`,
-			...(user != null
-				? {
-						email: user.email,
-						name: `${user.first_name} ${user.last_name}`
-					}
-				: {}),
+			email: user?.email,
+			name: user != null ? `${user.first_name} ${user.last_name}` : undefined,
 			companyName: createDisplayNameFromShop(session.shop),
 			additionalData: {
 				shopDomain: session.shop,
 				shopId: session.shop,
-				...(user != null
-					? {
-							userRole: user.account_owner ? 'owner' : 'collaborator',
-							accountOwner: user.account_owner,
-							locale: user.locale
-						}
-					: {}),
+				userRole: user?.account_owner ? 'owner' : 'collaborator',
+				accountOwner: user?.account_owner,
+				locale: user?.locale,
 				plan: 'free'
 			}
 		}
@@ -81,5 +77,5 @@ interface TLoaderData {
 	shopifyApiKey: string;
 	mantleApiToken?: string;
 	polarisTranslations: TEmbeddedAppProviderI18n;
-	chatwootUserData: TChatwootUserData;
+	userContext: TEmbeddedAppProviderUserContext;
 }

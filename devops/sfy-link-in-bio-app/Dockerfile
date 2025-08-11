@@ -59,21 +59,21 @@ ARG VITE_API_CORE_URL
 ARG VITE_POSTHOG_KEY
 ARG VITE_POSTHOG_HOST
 ARG VITE_MANTLE_APP_ID
-ARG VITE_CHATWOOT_TOKEN
+ARG VITE_CRISP_TOKEN
 
 # Validate required build args
 RUN test -n "$VITE_API_CORE_URL" || (echo "VITE_API_CORE_URL build arg is required" && false)
 RUN test -n "$VITE_POSTHOG_KEY" || (echo "VITE_POSTHOG_KEY build arg is required" && false)
 RUN test -n "$VITE_POSTHOG_HOST" || (echo "VITE_POSTHOG_HOST build arg is required" && false)
 RUN test -n "$VITE_MANTLE_APP_ID" || (echo "VITE_MANTLE_APP_ID build arg is required" && false)
-RUN test -n "$VITE_CHATWOOT_TOKEN" || (echo "VITE_CHATWOOT_TOKEN build arg is required" && false)
+RUN test -n "$VITE_CRISP_TOKEN" || (echo "VITE_CRISP_TOKEN build arg is required" && false)
 
 # Set as system environment variables for the build
 ENV VITE_API_CORE_URL=$VITE_API_CORE_URL \
     VITE_POSTHOG_KEY=$VITE_POSTHOG_KEY \
     VITE_POSTHOG_HOST=$VITE_POSTHOG_HOST \
     VITE_MANTLE_APP_ID=$VITE_MANTLE_APP_ID \
-    VITE_CHATWOOT_TOKEN=$VITE_CHATWOOT_TOKEN
+    VITE_CRISP_TOKEN=$VITE_CRISP_TOKEN
 
 WORKDIR /app
 

@@ -42,6 +42,6 @@ export const appConfig = {
 	},
 	featureFlags: {
 		posthog: env === 'production',
-		chatwoot: env === 'production'
+		crisp: env === 'production'
 	}
 };
