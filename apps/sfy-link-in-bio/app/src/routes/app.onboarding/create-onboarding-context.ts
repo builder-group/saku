@@ -24,10 +24,13 @@ export function createOnboardingContext(
 		),
 
 		mount() {
-			// Clear previous chat history for fresh onboarding session
-			Crisp.session.reset();
-			Crisp.session.setData({
-				session_type: 'onboarding'
+			// Once Crisp is loaded, reset the session to start with fresh chat history
+			Crisp.session.onLoaded(() => {
+				Crisp.session.reset();
+				Crisp.session.setData({
+					session_type: 'onboarding'
+				});
+				Crisp.session.offLoaded();
 			});
 		},
 
