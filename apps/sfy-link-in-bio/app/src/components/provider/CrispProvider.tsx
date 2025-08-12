@@ -1,4 +1,4 @@
-import { ChatboxColors, ChatboxPosition, Crisp } from 'crisp-sdk-web';
+import { Crisp } from 'crisp-sdk-web';
 import React from 'react';
 import { appConfig, crispConfig, logger } from '@/environment';
 
@@ -16,7 +16,11 @@ export const CrispProvider: React.FC<TCrispProviderProps> = (props) => {
 			websiteToken: crispConfig.websiteToken
 		});
 
-		Crisp.configure(crispConfig.websiteToken);
+		Crisp.configure(crispConfig.websiteToken, {
+			autoload: true,
+			safeMode: appConfig.env === 'production'
+		});
+
 		if (user != null) {
 			if (user.email != null) {
 				Crisp.user.setEmail(user.email);
@@ -35,9 +39,11 @@ export const CrispProvider: React.FC<TCrispProviderProps> = (props) => {
 			}
 		}
 
-		Crisp.setColorTheme(ChatboxColors.Blue);
-		Crisp.toggleOperatorCount(false);
-		Crisp.setPosition(ChatboxPosition.Right);
+		// NOTE: These methods silently fail in Crisp free plan (widget won't appear)
+		// Available in paid plans only:
+		// - Crisp.setColorTheme(ChatboxColors.Blue);
+		// - Crisp.toggleOperatorCount(false);
+		// - Crisp.setPosition(ChatboxPosition.Right);
 	}, [user]);
 
 	return children;

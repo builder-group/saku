@@ -24,7 +24,7 @@ export function createOnboardingContext(
 		),
 
 		mount() {
-			// Clear previous chat history for this onboarding session
+			// Clear previous chat history for fresh onboarding session
 			Crisp.session.reset();
 			Crisp.session.setData({
 				session_type: 'onboarding'
@@ -33,7 +33,6 @@ export function createOnboardingContext(
 
 		continueFromWelcome() {
 			Crisp.session.pushEvent('onboarding_started');
-
 			Crisp.message.showText(
 				"👋 Let's get your bio page set up in 2 minutes. I'm here if you need help."
 			);
