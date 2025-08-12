@@ -24,6 +24,11 @@ export function createOnboardingContext(
 		),
 
 		continueFromWelcome() {
+			Crisp.session.pushEvent('onboarding_started');
+			Crisp.message.showText(
+				"👋 Let's get your bio page set up to start driving sales from social media. I'm here if you get stuck."
+			);
+
 			// Note: Skip explicit account connection since it feels unnecessary and was only required for Shopify Sales Channel compliance
 			// this.stepr.goTo({ type: 'account-connection' });
 			this.stepr.goTo({ type: 'handle' });
@@ -209,7 +214,62 @@ export function createOnboardingContext(
 
 		complete() {
 			Crisp.session.pushEvent('onboarding_completed');
-			Crisp.message.showText('Can I help?');
+
+			// Show a focused message about driving sales
+			Crisp.message.showText(
+				'🎉 Your bio page is live and ready to convert social media traffic into sales!'
+			);
+
+			// Show a picker focused on business outcomes
+			Crisp.message.showPicker({
+				id: 'post_onboarding_goals',
+				text: "What's your next priority to maximize sales from your bio page?",
+				choices: [
+					{
+						value: 'customize',
+						label: 'Customize design to match my brand',
+						selected: false
+					},
+					{
+						value: 'products',
+						label: 'Add more products & collections',
+						selected: false
+					},
+					{
+						value: 'analytics',
+						label: 'Track clicks, conversions & revenue',
+						selected: false
+					},
+					{
+						value: 'other',
+						label: 'Something else',
+						selected: false
+					}
+				]
+			});
+
+			// Listen for picker interaction and show simple follow-up
+			const messageHandler = (data: any) => {
+				if (
+					data.origin !== 'update' ||
+					data.type !== 'picker' ||
+					data.content.id !== 'post_onboarding_goals'
+				) {
+					return;
+				}
+
+				// Show simple thanks message
+				setTimeout(() => {
+					Crisp.message.showText(
+						'Thanks for sharing! Feel free to reach out if you need help with any of these options.'
+					);
+				}, 1000);
+
+				// Unregister the handler after it's used
+				Crisp.message.offMessageReceived();
+			};
+
+			Crisp.message.onMessageReceived(messageHandler);
 		},
 
 		goBack() {

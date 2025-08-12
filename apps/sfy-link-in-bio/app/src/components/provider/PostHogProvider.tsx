@@ -43,7 +43,11 @@ export const PosthogProvider: React.FC<TPosthogProviderProps> = (props) => {
 		});
 	}, []);
 
-	return <PHProvider client={posthog}>{children}</PHProvider>;
+	return appConfig.featureFlags.posthog ? (
+		<PHProvider client={posthog}>{children}</PHProvider>
+	) : (
+		children
+	);
 };
 
 interface TPosthogProviderProps {

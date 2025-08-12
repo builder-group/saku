@@ -5,6 +5,7 @@ import { appConfig, crispConfig, logger } from '@/environment';
 export const CrispProvider: React.FC<TCrispProviderProps> = (props) => {
 	const { children, user } = props;
 
+	// https://docs.crisp.chat/guides/chatbox-sdks/web-sdk/npm/
 	React.useEffect(() => {
 		if (!appConfig.featureFlags.crisp) {
 			logger.info('💬 Skipping Crisp initialization');
@@ -32,7 +33,7 @@ export const CrispProvider: React.FC<TCrispProviderProps> = (props) => {
 		}
 	}, [user]);
 
-	return <>{children}</>;
+	return children;
 };
 
 interface TCrispProviderProps {
