@@ -10,12 +10,6 @@ export function createOnboardingContext(
 ): TOnboardingContext {
 	const { shopify, shopId, presets } = config;
 
-	// Clear previous chat history for this shop (fresh start)
-	Crisp.session.reset();
-	Crisp.session.setData({
-		session_type: 'onboarding'
-	});
-
 	return {
 		id: shortId(),
 		shopify,
@@ -28,6 +22,14 @@ export function createOnboardingContext(
 			},
 			{} as Record<string, TSitePreset>
 		),
+
+		mount() {
+			// Clear previous chat history for this onboarding session
+			Crisp.session.reset();
+			Crisp.session.setData({
+				session_type: 'onboarding'
+			});
+		},
 
 		continueFromWelcome() {
 			Crisp.session.pushEvent('onboarding_started');
@@ -295,6 +297,7 @@ export interface TOnboardingContext {
 	stepr: TStepr<TOnboardingStep>;
 	presets: Record<string, TSitePreset>;
 
+	mount: () => void;
 	continueFromWelcome: () => void;
 	continueFromAccountConnection: () => void;
 	continueFromHandle: (

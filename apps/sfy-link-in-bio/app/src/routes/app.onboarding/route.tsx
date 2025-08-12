@@ -49,6 +49,10 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 		const [stepType, setStepType] = React.useState<TOnboardingStep['type']>('welcome');
 
 		React.useEffect(() => {
+			onboardingContext.mount();
+		}, [onboardingContext]);
+
+		React.useEffect(() => {
 			if (stepParam != null && onboardingContext.stepr.goToVisited(stepParam)) {
 				setStepType(stepParam);
 				return;
