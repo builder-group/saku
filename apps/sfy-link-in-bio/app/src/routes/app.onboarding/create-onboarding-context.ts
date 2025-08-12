@@ -1,4 +1,4 @@
-import { Err, Ok, shortId, type TResult } from '@blgc/utils';
+import { Err, Ok, shortId, sleep, type TResult } from '@blgc/utils';
 import { TFlatSite } from '@repo/editor';
 import type { ShopifyGlobal } from '@shopify/app-bridge-types';
 import { Crisp } from 'crisp-sdk-web';
@@ -9,6 +9,12 @@ export function createOnboardingContext(
 	config: TCreateOnboardingContextConfig
 ): TOnboardingContext {
 	const { shopify, shopId, presets } = config;
+
+	// Clear previous chat history for this shop (fresh start)
+	Crisp.session.reset();
+	Crisp.session.setData({
+		session_type: 'onboarding'
+	});
 
 	return {
 		id: shortId(),
@@ -25,8 +31,9 @@ export function createOnboardingContext(
 
 		continueFromWelcome() {
 			Crisp.session.pushEvent('onboarding_started');
+
 			Crisp.message.showText(
-				"👋 Let's get your bio page set up to start driving sales from social media. I'm here if you get stuck."
+				"👋 Let's get your bio page set up in 2 minutes. I'm here if you need help."
 			);
 
 			// Note: Skip explicit account connection since it feels unnecessary and was only required for Shopify Sales Channel compliance
@@ -212,32 +219,32 @@ export function createOnboardingContext(
 			return Ok(undefined);
 		},
 
-		complete() {
+		async complete() {
 			Crisp.session.pushEvent('onboarding_completed');
 
-			// Show a focused message about driving sales
-			Crisp.message.showText(
-				'🎉 Your bio page is live and ready to convert social media traffic into sales!'
-			);
+			// Simple completion message
+			Crisp.message.showText('🎉 Your bio page is live!');
 
-			// Show a picker focused on business outcomes
+			await sleep(1000);
+
+			// Quick picker for next steps
 			Crisp.message.showPicker({
 				id: 'post_onboarding_goals',
-				text: "What's your next priority to maximize sales from your bio page?",
+				text: 'What would you like to do next?',
 				choices: [
 					{
 						value: 'customize',
-						label: 'Customize design to match my brand',
+						label: 'Customize design',
 						selected: false
 					},
 					{
 						value: 'products',
-						label: 'Add more products & collections',
+						label: 'Add products',
 						selected: false
 					},
 					{
 						value: 'analytics',
-						label: 'Track clicks, conversions & revenue',
+						label: 'Track performance',
 						selected: false
 					},
 					{
@@ -249,7 +256,7 @@ export function createOnboardingContext(
 			});
 
 			// Listen for picker interaction and show simple follow-up
-			const messageHandler = (data: any) => {
+			const messageHandler = async (data: any) => {
 				if (
 					data.origin !== 'update' ||
 					data.type !== 'picker' ||
@@ -258,12 +265,9 @@ export function createOnboardingContext(
 					return;
 				}
 
-				// Show simple thanks message
-				setTimeout(() => {
-					Crisp.message.showText(
-						'Thanks for sharing! Feel free to reach out if you need help with any of these options.'
-					);
-				}, 1000);
+				await sleep(1000);
+
+				Crisp.message.showText('Got it! Reach out anytime if you need help.');
 
 				// Unregister the handler after it's used
 				Crisp.message.offMessageReceived();
@@ -301,7 +305,7 @@ export interface TOnboardingContext {
 	continueFromLinkpopUrl: (handle: string) => Promise<TResult<void, TLinkpopStepError>>;
 	continueFromLinkpopPreview: () => Promise<TResult<void, string>>;
 	continueFromTemplates: (selectedTemplate: TTemplate) => Promise<TResult<void, string>>;
-	complete: () => void;
+	complete: () => Promise<void>;
 	goBack: () => void;
 }
 

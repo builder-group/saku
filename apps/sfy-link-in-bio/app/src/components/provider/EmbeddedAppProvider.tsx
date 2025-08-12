@@ -36,6 +36,7 @@ export interface TEmbeddedAppProviderUserContext {
 	identifier: string;
 	email?: string;
 	name?: string;
+	companyName?: string;
 	avatarUrl?: string;
 	additionalData?: Record<string, unknown>;
 }

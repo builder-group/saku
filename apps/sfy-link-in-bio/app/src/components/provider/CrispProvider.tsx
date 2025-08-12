@@ -1,4 +1,4 @@
-import { Crisp } from 'crisp-sdk-web';
+import { ChatboxColors, ChatboxPosition, Crisp } from 'crisp-sdk-web';
 import React from 'react';
 import { appConfig, crispConfig, logger } from '@/environment';
 
@@ -24,6 +24,9 @@ export const CrispProvider: React.FC<TCrispProviderProps> = (props) => {
 			if (user.name != null) {
 				Crisp.user.setNickname(user.name);
 			}
+			if (user.companyName != null) {
+				Crisp.user.setCompany(user.companyName, {});
+			}
 			if (user.avatarUrl != null) {
 				Crisp.user.setAvatar(user.avatarUrl);
 			}
@@ -31,6 +34,10 @@ export const CrispProvider: React.FC<TCrispProviderProps> = (props) => {
 				Crisp.session.setData(user.additionalData);
 			}
 		}
+
+		Crisp.setColorTheme(ChatboxColors.Blue);
+		Crisp.toggleOperatorCount(false);
+		Crisp.setPosition(ChatboxPosition.Right);
 	}, [user]);
 
 	return children;
@@ -42,6 +49,7 @@ interface TCrispProviderProps {
 		identifier: string;
 		email?: string;
 		name?: string;
+		companyName?: string;
 		avatarUrl?: string;
 		additionalData?: Record<string, unknown>;
 	};

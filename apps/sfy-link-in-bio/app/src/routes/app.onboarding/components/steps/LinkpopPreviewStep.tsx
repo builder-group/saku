@@ -50,7 +50,7 @@ export const LinkpopPreviewStep: React.FC<TLinkpopPreviewStepProps> = (props) =>
 			return;
 		}
 
-		onboardingContext.complete();
+		await onboardingContext.complete();
 		navigate('/app?openEditor=true', {
 			replace: true, // To prevent back navigation
 			state: { fromOnboarding: true }

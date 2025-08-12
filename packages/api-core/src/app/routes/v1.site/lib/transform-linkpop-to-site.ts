@@ -2,6 +2,7 @@ import { shortId } from '@blgc/utils';
 import {
 	createId,
 	cssRgbaToRgba,
+	fontMetadataMap,
 	getFontHash,
 	getFontMetadataByFamily,
 	hexToRgba,
@@ -15,7 +16,6 @@ import {
 	TSocialLink,
 	TTextNode
 } from '@repo/editor';
-import { AppError } from '@repo/hono-utils';
 import { extractYouTubeVideoId } from './extract-youtube-video-id';
 import { TLinkPopData } from './parse-linkpop-html';
 
@@ -249,12 +249,7 @@ function constructSocialUrl(provider: TSocialLink['provider'], handleOrUrl: stri
 }
 
 function createFontAsset(fontFamily: string): TFontAsset {
-	const fontMetadata = getFontMetadataByFamily(fontFamily);
-	if (fontMetadata == null) {
-		throw new AppError(`#ERR_FONT_METADATA_NOT_FOUND`, 400, {
-			detail: `Font metadata not found for family: ${fontFamily}`
-		});
-	}
+	const fontMetadata = getFontMetadataByFamily(fontFamily) ?? fontMetadataMap.inter;
 
 	return {
 		id: createId('asset'),
