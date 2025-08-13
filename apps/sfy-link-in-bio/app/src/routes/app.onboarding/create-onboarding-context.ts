@@ -226,12 +226,10 @@ export function createOnboardingContext(
 		async complete() {
 			Crisp.session.pushEvent('onboarding_completed');
 
-			// Simple completion message
+			// Sleep while opening the page editor
+			await sleep(3000);
+
 			Crisp.message.showText('🎉 Your bio page is live!');
-
-			await sleep(1000);
-
-			// Quick picker for next steps
 			Crisp.message.showPicker({
 				id: 'post_onboarding_goals',
 				text: 'What would you like to do next?',
@@ -260,7 +258,7 @@ export function createOnboardingContext(
 			});
 
 			// Listen for picker interaction and show simple follow-up
-			const messageHandler = async (data: any) => {
+			Crisp.message.onMessageReceived(async (data: any) => {
 				if (
 					data.origin !== 'update' ||
 					data.type !== 'picker' ||
@@ -275,9 +273,7 @@ export function createOnboardingContext(
 
 				// Unregister the handler after it's used
 				Crisp.message.offMessageReceived();
-			};
-
-			Crisp.message.onMessageReceived(messageHandler);
+			});
 		},
 
 		goBack() {
