@@ -61,7 +61,7 @@ export interface TSolidPaint extends TBasePaint {
 
 export interface TImagePaint extends TBasePaint {
 	type: 'image';
-	imageHash: TAssetHash;
+	hash: TAssetHash;
 	altText?: string;
 }
 

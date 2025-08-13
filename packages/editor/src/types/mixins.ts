@@ -1,4 +1,5 @@
 import { TRgba } from '../lib';
+import { TNode, TNodeId } from '../types';
 import {
 	TAssetHash,
 	TFont,
@@ -15,7 +16,7 @@ export interface TMixin<TKey extends string, TValue> {
 	value: TValue;
 }
 
-export type TMergeMixins<TMixins extends readonly TMixin<any, any>[]> = {
+export type TMergeMixins<TMixins extends TMixin<any, any>[]> = {
 	[K in TMixins[number]['key']]: Extract<TMixins[number], { key: K }>['value'];
 };
 
@@ -24,29 +25,21 @@ export type TMergeMixins<TMixins extends readonly TMixin<any, any>[]> = {
 // =========================================================================
 
 export type TIdMixin = TMixin<'id', string>;
-export type TVisibleMixin = TMixin<'visible', boolean>;
+export type TChildrenMixin = TMixin<'children', TNode[]>;
+export type TFlatChildrenMixin = TMixin<'children', TNodeId[]>;
 
 // =========================================================================
 // Content
 // =========================================================================
 
-export type TProductContentMixin = TMixin<
+export type TPageContentMixin = TMixin<
 	'content',
 	{
-		product?: {
-			id: string;
-			title: string;
-			images: TAssetHash[];
-			options: { name: string; values: string[] }[];
-			variants: {
-				id: string;
-				title: string;
-				price: { amount: string; currencyCode: string };
-				image?: TAssetHash;
-				selectedOptions: { name: string; value: string }[];
-			}[];
+		metadata: {
+			title?: string;
+			description?: string;
+			image?: TAssetHash;
 		};
-		integrationId?: TIntegrationId;
 	}
 >;
 
@@ -68,13 +61,6 @@ export type TLinkContentMixin = TMixin<
 	}
 >;
 
-export type TTextContentMixin = TMixin<
-	'content',
-	{
-		text: string;
-	}
->;
-
 export type TMediaContentMixin = TMixin<
 	'content',
 	{
@@ -82,14 +68,30 @@ export type TMediaContentMixin = TMixin<
 	}
 >;
 
-export type TPageContentMixin = TMixin<
+export type TTextContentMixin = TMixin<
 	'content',
 	{
-		metadata: {
-			title?: string;
-			description?: string;
-			image?: TAssetHash;
+		text: string;
+	}
+>;
+
+export type TProductContentMixin = TMixin<
+	'content',
+	{
+		product?: {
+			id: string;
+			title: string;
+			images: TAssetHash[];
+			options: { name: string; values: string[] }[];
+			variants: {
+				id: string;
+				title: string;
+				price: { amount: string; currencyCode: string };
+				image?: TAssetHash;
+				selectedOptions: { name: string; value: string }[];
+			}[];
 		};
+		integrationId?: TIntegrationId;
 	}
 >;
 
@@ -100,8 +102,7 @@ export type TPageContentMixin = TMixin<
 export type TFillMixin = TMixin<
 	'fill',
 	{
-		fills: TReference<TPaint[]>;
-		fillBlendMode: TReference<string>;
+		fill: TReference<TPaint>;
 	}
 >;
 
@@ -109,25 +110,26 @@ export type TLayoutMixin = TMixin<
 	'layout',
 	{
 		padding: TReference<number>;
-		width: TReference<number | 'auto'>;
-		height: TReference<number | 'auto'>;
-		spacing: TReference<number>;
 	}
 >;
 
 export type TBorderMixin = TMixin<
 	'border',
 	{
-		borderRadius: TReference<number>;
-		strokeWidth: TReference<number>;
-		stroke: TReference<TPaint>;
-		shadow: TReference<{
-			color: TRgba;
-			offsetX: number;
-			offsetY: number;
-			blur: number;
-			spread: number;
-		}>;
+		radius: TReference<number>;
+		width: TReference<number>;
+		color: TReference<TRgba>;
+	}
+>;
+
+export type TShadowMixin = TMixin<
+	'shadow',
+	{
+		color: TReference<TRgba>;
+		offsetX: TReference<number>;
+		offsetY: TReference<number>;
+		blur: TReference<number>;
+		spread: TReference<number>;
 	}
 >;
 
