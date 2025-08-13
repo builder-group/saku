@@ -49,10 +49,10 @@ export interface TPageNode extends TBaseNode {
 	children: TNode[];
 	style: {
 		// Page container styles
-		backgroundColor: TRgba;
+		fill: TPaint;
 		// Child defaults (inherited by children)
 		children: {
-			backgroundColor: TRgba;
+			fill: TPaint;
 			spacing: number;
 			padding: number;
 			font: TFont;
@@ -77,7 +77,7 @@ export interface TAboutNode extends TBaseNode {
 		profilePicture?: TAssetHash;
 		socialLinks: TSocialLink[];
 	};
-	style: TLayoutMixin & TBackgroundMixin & TBorderMixin & TTypographyMixin;
+	style: TLayoutMixin & TFillMixin & TBorderMixin & TTypographyMixin;
 }
 
 export interface TLinkNode<GVariant extends TLinkVariant = TLinkVariant> extends TBaseNode {
@@ -86,7 +86,7 @@ export interface TLinkNode<GVariant extends TLinkVariant = TLinkVariant> extends
 		url: string;
 		variant: GVariant;
 	};
-	style: TLayoutMixin & TBackgroundMixin & TBorderMixin & TTypographyMixin;
+	style: TLayoutMixin & TFillMixin & TBorderMixin & TTypographyMixin;
 }
 
 export interface TMediaNode extends TBaseNode {
@@ -94,7 +94,7 @@ export interface TMediaNode extends TBaseNode {
 	content: {
 		media?: TMedia;
 	};
-	style: TLayoutMixin & TBackgroundMixin & TBorderMixin;
+	style: TLayoutMixin & TFillMixin & TBorderMixin;
 }
 
 export interface TTextNode extends TBaseNode {
@@ -102,7 +102,7 @@ export interface TTextNode extends TBaseNode {
 	content: {
 		text: string;
 	};
-	style: TLayoutMixin & TBackgroundMixin & TBorderMixin & TTypographyMixin;
+	style: TLayoutMixin & TFillMixin & TBorderMixin & TTypographyMixin;
 }
 
 export interface TProductNode extends TBaseNode {
@@ -123,7 +123,28 @@ export interface TProductNode extends TBaseNode {
 		};
 		integrationId?: TIntegrationId;
 	};
-	style: TLayoutMixin & TBackgroundMixin & TBorderMixin & Omit<TTypographyMixin, 'textAlign'>;
+	style: TLayoutMixin & TFillMixin & TBorderMixin & Omit<TTypographyMixin, 'textAlign'>;
+}
+
+// =========================================================================
+// Paint
+// =========================================================================
+
+export type TPaint = TSolidPaint | TImagePaint;
+
+export interface TBasePaint {
+	type: string;
+}
+
+export interface TSolidPaint extends TBasePaint {
+	type: 'solid';
+	color: TRgba;
+}
+
+export interface TImagePaint extends TBasePaint {
+	type: 'image';
+	imageHash: TAssetHash;
+	altText?: string;
 }
 
 // =========================================================================
@@ -185,8 +206,8 @@ export interface TLayoutMixin {
 	padding: TStyleReference<number>;
 }
 
-export interface TBackgroundMixin {
-	backgroundColor: TStyleReference<TRgba>;
+export interface TFillMixin {
+	fill: TStyleReference<TPaint>;
 }
 
 export interface TTypographyMixin {
