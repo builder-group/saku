@@ -1,4 +1,12 @@
-import { TAsset, TFlatNode, TIntegration, TNode } from '../types';
+import {
+	TAsset,
+	TAssetHash,
+	TFlatNode,
+	TIntegration,
+	TIntegrationId,
+	TNode,
+	TNodeId
+} from '../types';
 
 export interface TSite {
 	version: `v0.0.1`;
@@ -9,8 +17,8 @@ export interface TSite {
 
 export interface TFlatSite {
 	version: TSite['version'];
-	rootId: string;
-	nodes: Record<string, TFlatNode>;
-	assets: Record<string, TAsset>;
-	integrations: Record<string, TIntegration>;
+	rootId: TNodeId;
+	nodes: Record<TNodeId, TFlatNode>;
+	assets: Record<TAssetHash, TAsset>;
+	integrations: Record<TIntegrationId, TIntegration>;
 }
