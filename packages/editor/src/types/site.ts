@@ -1,12 +1,5 @@
-import {
-	TAsset,
-	TAssetHash,
-	TFlatNode,
-	TIntegration,
-	TIntegrationId,
-	TNode,
-	TNodeId
-} from '../types';
+import { TFlatNode, TNode, TNodeId } from './node';
+import { TAsset, TAssetHash, TIntegration, TIntegrationId } from './utils';
 
 export interface TSite {
 	version: `v0.0.1`;

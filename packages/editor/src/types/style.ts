@@ -1,6 +1,5 @@
 import { TRgba } from '../lib';
-import { TFont, TPaint } from '../types';
-import { TReference } from './utils';
+import { TFont, TPaint, TReference } from './utils';
 
 export interface TFillStyle {
 	fill: TReference<TPaint>;
