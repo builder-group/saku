@@ -1,21 +1,29 @@
 import { notEmpty } from '@blgc/utils';
-import { resolveReference, TProductNode } from '@repo/editor';
-import { resolveAsset, resolveColor, TNodeResolveContext } from '../../lib';
-import { TResolvedProductNode } from '../../types';
+import { TProductNode } from '@repo/editor';
+import {
+	resolveAppearanceStyleMixin,
+	resolveAsset,
+	resolveFillStyleMixin,
+	resolveLayoutStyleMixin,
+	resolveShadowStyleMixin,
+	resolveStrokeStyleMixin,
+	resolveTypographyStyleMixin,
+	TNodeResolveContext
+} from '../../lib';
+import { TResolvedProduct, TResolvedProductNode } from './types';
 
 export function resolveProductNode(
 	node: TProductNode,
 	cx: TNodeResolveContext
 ): TResolvedProductNode {
-	const { content, style, ...rest } = node;
-	const parentStyles = cx.resolved?.childDefaults;
+	const { content, layout, appearance, typography, fill, stroke, shadow, ...rest } = node;
 
-	let product: TResolvedProductNode['content']['product'] | undefined;
+	let product: TResolvedProduct | undefined;
 	if (content.product != null) {
 		const variants = content.product.variants
 			.map((variant) => ({
 				...variant,
-				image: resolveAsset(variant.image, cx.site)
+				image: variant.image != null ? resolveAsset(variant.image, cx.site) : undefined
 			}))
 			.filter(notEmpty);
 
@@ -33,14 +41,11 @@ export function resolveProductNode(
 		content: {
 			product
 		},
-		style: {
-			padding: resolveReference(style.padding, parentStyles?.padding),
-			backgroundColor: resolveColor(style.backgroundColor, parentStyles?.backgroundColor),
-			font: resolveReference(style.font, parentStyles?.font),
-			fontSize: resolveReference(style.fontSize, parentStyles?.fontSize),
-			textColor: resolveColor(style.textColor, parentStyles?.textColor),
-			borderRadius: resolveReference(style.borderRadius, parentStyles?.borderRadius),
-			shadow: resolveReference(style.shadow, parentStyles?.shadow)
-		}
+		layout: resolveLayoutStyleMixin(layout, cx.childMixins?.layout),
+		appearance: resolveAppearanceStyleMixin(appearance, cx.childMixins?.appearance),
+		typography: resolveTypographyStyleMixin(typography, cx.childMixins?.typography),
+		fill: resolveFillStyleMixin(fill, cx.site, cx.childMixins?.fill),
+		stroke: resolveStrokeStyleMixin(stroke, cx.childMixins?.stroke),
+		shadow: resolveShadowStyleMixin(shadow, cx.childMixins?.shadow)
 	};
 }

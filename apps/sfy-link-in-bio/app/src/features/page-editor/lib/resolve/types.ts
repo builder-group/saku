@@ -3,9 +3,7 @@ import { TAsset, TAssetHash, TFlatNode, TFlatSite, TNodeId, TPageNode } from '@r
 export interface TNodeResolveContext {
 	site: TSiteResolveContext;
 	parentId?: TNodeId;
-	resolved?: {
-		childDefaults?: TPageNode['childDefaults'];
-	};
+	childMixins?: TPageNode['childMixins'];
 }
 
 export interface TSiteResolveContext {

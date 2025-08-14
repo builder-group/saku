@@ -1,15 +1,11 @@
 import { TAsset, TAssetHash } from '@repo/editor';
 
 export function resolveAsset(
-	hash: TAssetHash | undefined,
+	hash: TAssetHash,
 	cx: {
 		getAsset: (hash: TAssetHash) => TAsset | null;
 	}
 ): string | undefined {
-	if (hash == null) {
-		return undefined;
-	}
-
 	const asset = cx.getAsset(hash);
 	if (asset == null) {
 		return undefined;

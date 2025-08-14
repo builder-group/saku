@@ -1,37 +1,27 @@
-import { notEmpty } from '@blgc/utils';
 import {
 	getBestContrastColor,
-	resolveReference,
+	resolveReferenceOrNull,
 	TAboutNode,
-	TFlatNode,
 	TFlatPageNode
 } from '@repo/editor';
-import { resolveAsset, resolveColor, TNodeResolveContext } from '../../lib';
-import { TResolvedNode, TResolvedPageNode } from '../../types';
-import { resolveAboutNode } from '../about-node';
-import { resolveLinkNode } from '../link-node';
-import { resolveMediaNode } from '../media-node';
-import { resolveProductNode } from '../product-node';
-import { resolveTextNode } from '../text-node';
+import {
+	resolveAppearanceStyleMixin,
+	resolveAsset,
+	resolveColor,
+	resolveFillStyleMixin,
+	resolveFlatChildren,
+	resolveLayoutStyleMixin,
+	resolveShadowStyleMixin,
+	resolveStrokeStyleMixin,
+	resolveTypographyStyleMixin,
+	TNodeResolveContext
+} from '../../lib';
+import { TResolvedPageNode } from './types';
 
 export function resolvePageNode(node: TFlatPageNode, cx: TNodeResolveContext): TResolvedPageNode {
 	return {
 		...resolvePageNodeWithoutChildren(node, cx),
-		children: node.children
-			.map((childId) => {
-				const childNode = cx.site.getNode(childId);
-				if (childNode == null) {
-					return null;
-				}
-				return resolvePageNodeChild(childNode, {
-					site: cx.site,
-					parentId: node.id,
-					resolved: {
-						childDefaults: node.style.children
-					}
-				});
-			})
-			.filter(notEmpty)
+		children: resolveFlatChildren(node.children, node, cx)
 	};
 }
 
@@ -39,54 +29,38 @@ export function resolvePageNodeWithoutChildren(
 	node: TFlatPageNode,
 	cx: TNodeResolveContext
 ): Omit<TResolvedPageNode, 'children'> {
-	const { style, ...rest } = node;
+	const { layout, appearance, fill, childMixins: childDefaults, ...rest } = node;
+
+	const resolvedFill = resolveReferenceOrNull(fill);
+	const watermarkColor = resolveColor(
+		getBestContrastColor(
+			resolvedFill?.paint.type === 'solid'
+				? resolvedFill.paint.color
+				: { r: 255, g: 255, b: 255, a: 1 }
+		)
+	);
 
 	return {
 		...rest,
 		content: {
-			metadata: extractPageMetadata(node, cx)
+			metadata: resolvePageMetadata(node, cx)
 		},
-		style: {
-			backgroundColor: resolveColor(style.backgroundColor),
-			watermarkColor: resolveColor(
-				getBestContrastColor(style.backgroundColor ?? { r: 255, g: 255, b: 255, a: 1 })
-			) as string,
-			children: {
-				backgroundColor: resolveColor(style.children.backgroundColor),
-				spacing: resolveReference(style.children.spacing),
-				padding: resolveReference(style.children.padding),
-				font: resolveReference(style.children.font),
-				fontSize: resolveReference(style.children.fontSize),
-				textColor: resolveColor(style.children.textColor),
-				textAlign: resolveReference(style.children.textAlign),
-				borderRadius: resolveReference(style.children.borderRadius),
-				shadow: resolveReference(style.children.shadow)
-			}
-		}
+		layout,
+		appearance: resolveAppearanceStyleMixin(appearance),
+		fill: resolveFillStyleMixin(fill, cx.site),
+		childDefaults: {
+			layout: resolveLayoutStyleMixin(childDefaults.layout),
+			appearance: resolveAppearanceStyleMixin(childDefaults.appearance),
+			typography: resolveTypographyStyleMixin(childDefaults.typography),
+			fill: resolveFillStyleMixin(childDefaults.fill, cx.site),
+			stroke: resolveStrokeStyleMixin(childDefaults.stroke),
+			shadow: resolveShadowStyleMixin(childDefaults.shadow)
+		},
+		watermarkColor
 	};
 }
 
-export function resolvePageNodeChild(
-	node: TFlatNode,
-	cx: TNodeResolveContext
-): TResolvedNode | null {
-	switch (node.type) {
-		case 'about':
-			return resolveAboutNode(node, cx);
-		case 'link':
-			return resolveLinkNode(node, cx);
-		case 'media':
-			return resolveMediaNode(node, cx);
-		case 'text':
-			return resolveTextNode(node, cx);
-		case 'product':
-			return resolveProductNode(node, cx);
-		default:
-			return null;
-	}
-}
-
-function extractPageMetadata(
+function resolvePageMetadata(
 	node: TFlatPageNode,
 	cx: TNodeResolveContext
 ): {

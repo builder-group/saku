@@ -2,11 +2,11 @@ import React from 'react';
 import { Await } from 'react-router';
 import { ResolvedNode } from '../../components';
 import { TResolvedNodeProps } from '../../lib';
-import { TResolvedNode, TResolvedPromisedNode } from '../../types';
+import { TResolvedPromisedNode } from './types';
 
 export const ResolvedPromisedNode = React.forwardRef<
 	HTMLDivElement,
-	TResolvedNodeProps<TResolvedPromisedNode<TResolvedNode>>
+	TResolvedNodeProps<TResolvedPromisedNode>
 >((props, ref) => {
 	const { node, cx } = props;
 

@@ -18,20 +18,24 @@ export function isInherited<T>(
  * Gets the actual value from a style reference, considering inheritance
  * @param value The style reference to resolve
  * @param inheritedValue The value to use if the reference is inherited
- * @returns The resolved value, or undefined if no value is available
+ * @returns The resolved value
  */
-export function resolveReference<T>(
-	value: TReference<T> | undefined,
-	inheritedValue?: T
-): T | undefined {
-	if (value == null) {
-		return undefined;
-	}
-
+export function resolveReference<T>(value: TReference<T>, inheritedValue: T): T {
 	if (isInherited(value)) {
 		return inheritedValue;
 	}
+	return value;
+}
 
+/**
+ * Resolves a reference and returns the value or null if not present
+ * @param value The style reference to resolve
+ * @returns The resolved value or null if inherited/not present
+ */
+export function resolveReferenceOrNull<T>(value: TReference<T> | undefined): T | null {
+	if (value == null || isInherited(value)) {
+		return null;
+	}
 	return value;
 }
 
@@ -55,24 +59,14 @@ export function ref<T>(value: T): TReference<T> {
 /**
  * A reference that can either inherit from parent or hold an actual value.
  * Uses { type: 'inherit' } for type-safe inheritance without ambiguity.
- *
- * The brand makes TReference<T> completely unique and distinct from T,
- * preventing type confusion.
  */
-export type TReference<T> = ({ type: 'inherit' } | T) & { readonly __brand: 'Reference' };
+export type TReference<T> = { type: 'inherit' } | T;
 
 /**
  * Recursively resolves all TReference types in an object, removing inheritance markers.
- * Note: Only null is supported (not undefined) due to TypeScript union type limitations.
  */
-export type TUnreference<T> =
-	// Note: We explicitly handle null first because TypeScript loses it during 'infer U' extraction
-	T extends TReference<null>
-		? null
-		: T extends TReference<infer U>
-			? U extends { type: 'inherit' }
-				? never
-				: U
-			: T extends object
-				? { [K in keyof T]: TUnreference<T[K]> }
-				: T;
+export type TUnreference<T> = T extends { type: 'inherit' }
+	? never // Remove inherit completely
+	: T extends object
+		? { [K in keyof T]: TUnreference<T[K]> }
+		: T;

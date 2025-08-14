@@ -7,7 +7,6 @@ import {
 	getFontMetadataByFamily,
 	hexToRgba,
 	inherit,
-	ref,
 	TAboutNode,
 	TAsset,
 	TAssetHash,
@@ -86,9 +85,9 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 				lineHeight: inherit(),
 				letterSpacing: inherit()
 			},
-			fill: ref(null),
-			stroke: ref(null),
-			shadow: ref(null)
+			fill: null,
+			stroke: null,
+			shadow: null
 		} as TAboutNode;
 		children.push(aboutNode);
 	}
@@ -210,14 +209,14 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 				spacing: 16
 			},
 			appearance: {
-				borderRadius: ref(0),
-				opacity: ref(1),
-				visible: ref(true)
+				borderRadius: 0,
+				opacity: 1,
+				visible: true
 			},
-			fill: ref({
+			fill: {
 				paint: backgroundPaint,
 				opacity: 1
-			}),
+			},
 			childDefaults: {
 				layout: {
 					padding: 8

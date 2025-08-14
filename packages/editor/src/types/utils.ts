@@ -5,7 +5,7 @@ import { TId, TRgba } from '../lib';
 // =========================================================================
 
 export type TAssetId = TId<'asset'>;
-export type TAssetHash = string & { readonly __brand: 'AssetHash' }; // SHA-256 hash as hex string
+export type TAssetHash = string; // & { readonly __brand: 'AssetHash' }; // SHA-256 hash as hex string
 
 export type TAsset = TFontAsset | TImageAsset;
 

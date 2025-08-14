@@ -1,10 +1,17 @@
-import { resolveReference, TMediaNode } from '@repo/editor';
-import { resolveAsset, resolveColor, TNodeResolveContext } from '../../lib';
-import { TResolvedMedia, TResolvedMediaNode } from '../../types';
+import { TMediaNode } from '@repo/editor';
+import {
+	resolveAppearanceStyleMixin,
+	resolveAsset,
+	resolveFillStyleMixin,
+	resolveLayoutStyleMixin,
+	resolveShadowStyleMixin,
+	resolveStrokeStyleMixin,
+	TNodeResolveContext
+} from '../../lib';
+import { TResolvedMedia, TResolvedMediaNode } from './types';
 
 export function resolveMediaNode(node: TMediaNode, cx: TNodeResolveContext): TResolvedMediaNode {
-	const { content, style, ...rest } = node;
-	const parentStyles = cx.resolved?.childDefaults;
+	const { content, layout, appearance, fill, stroke, shadow, ...rest } = node;
 
 	let media: TResolvedMedia | undefined;
 	switch (content.media?.type) {
@@ -27,11 +34,10 @@ export function resolveMediaNode(node: TMediaNode, cx: TNodeResolveContext): TRe
 		content: {
 			media
 		},
-		style: {
-			padding: resolveReference(style.padding, parentStyles?.padding),
-			backgroundColor: resolveColor(style.backgroundColor, parentStyles?.backgroundColor),
-			borderRadius: resolveReference(style.borderRadius, parentStyles?.borderRadius),
-			shadow: resolveReference(style.shadow, parentStyles?.shadow)
-		}
+		layout: resolveLayoutStyleMixin(layout, cx.childMixins?.layout),
+		appearance: resolveAppearanceStyleMixin(appearance, cx.childMixins?.appearance),
+		fill: resolveFillStyleMixin(fill, cx.site, cx.childMixins?.fill),
+		stroke: resolveStrokeStyleMixin(stroke, cx.childMixins?.stroke),
+		shadow: resolveShadowStyleMixin(shadow, cx.childMixins?.shadow)
 	};
 }

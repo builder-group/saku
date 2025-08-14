@@ -10,13 +10,13 @@ import {
 	TSocialLink
 } from './utils';
 
-export interface TMixin<TKey extends string, TValue> {
-	key: TKey;
-	value: TValue;
+export interface TMixin<GKey extends string, GValue> {
+	key: GKey;
+	value: GValue;
 }
 
-export type TMergeMixins<TMixins extends TMixin<any, any>[]> = {
-	[K in TMixins[number]['key']]: Extract<TMixins[number], { key: K }>['value'];
+export type TMergeMixins<GMixins extends TMixin<any, any>[]> = {
+	[K in GMixins[number]['key']]: Extract<GMixins[number], { key: K }>['value'];
 };
 
 export type TReplaceWithMixins<GBase, GMixins extends TMixin<any, any>[]> = Omit<
@@ -56,17 +56,15 @@ export type TPageNodeMixin = TMixin<
 				image?: TAssetHash;
 			};
 		};
-		childDefaults: TUnreference<
-			TMergeMixins<
-				[
-					TLayoutStyleMixin,
-					TAppearanceStyleMixin,
-					TTypographyStyleMixin,
-					TFillStyleMixin,
-					TStrokeStyleMixin,
-					TShadowStyleMixin
-				]
-			>
+		childMixins: TMergeMixins<
+			[
+				TUnreference<TLayoutStyleMixin>,
+				TUnreference<TAppearanceStyleMixin>,
+				TUnreference<TTypographyStyleMixin>,
+				TUnreference<TFillStyleMixin>,
+				TUnreference<TStrokeStyleMixin>,
+				TUnreference<TShadowStyleMixin>
+			]
 		>;
 	}
 >;
