@@ -2,7 +2,7 @@ import {
 	fontMetadata,
 	inheritStyle,
 	isInheritedStyle,
-	resolveStyleReference,
+	resolveReference,
 	TLinkNode
 } from '@repo/editor';
 import { useAppBridge } from '@shopify/app-bridge-react';
@@ -301,7 +301,7 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 								nodeValueMapper={(value) =>
 									isInheritedStyle(value.style.font)
 										? { type: 'inherit' }
-										: resolveStyleReference(value.style.font)?.family
+										: resolveReference(value.style.font)?.family
 								}
 								nodeValueSetter={(node, value) => {
 									if (isInheritedStyle(value)) {

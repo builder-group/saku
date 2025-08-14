@@ -1,14 +1,25 @@
 import {
-	TAboutNode,
+	TAboutNodeMixin,
+	TAppearanceStyleMixin,
+	TAssetHash,
 	TBaseNode,
-	TLinkNode,
-	TMediaNode,
-	TPageNode,
-	TProductNode,
+	TFillStyleMixin,
+	TIdMixin,
+	TLayoutStyleMixin,
+	TLinkNodeMixin,
+	TMediaNodeMixin,
+	TMixin,
+	TPageLayoutStyleMixin,
+	TPageNodeMixin,
+	TProductNodeMixin,
+	TReference,
 	TRgba,
+	TShadowStyleMixin,
 	TSite,
-	TStyleReference,
-	TTextNode
+	TStrokeStyleMixin,
+	TTextNodeMixin,
+	TTypographyStyleMixin,
+	TUnreference
 } from '@repo/editor';
 
 export interface TResolvedSite extends Omit<TSite, 'root' | 'assets' | 'integrations'> {
@@ -24,114 +35,144 @@ export type TResolvedNode =
 	| TResolvedProductNode
 	| TResolvedPromisedNode<TResolvedNode>;
 
-export interface TResolvedPageNode extends Omit<TPageNode, 'style' | 'content' | 'children'> {
-	content: {
-		metadata: {
-			title: string;
-			description: string;
-			image?: string;
-		};
-	};
-	children: TResolvedNode[];
-	style: {
-		backgroundColor: TResolveStyle<TPageNode['style']>['backgroundColor'];
-		watermarkColor: string;
-		children: TResolveStyle<NonNullable<TPageNode['style']['children']>>;
-	};
-}
+// =========================================================================
+// Resolved Nodes
+// =========================================================================
 
-export interface TResolvedAboutNode extends Omit<TAboutNode, 'style' | 'content'> {
-	content: {
-		name: TAboutNode['content']['name'];
-		bio?: TAboutNode['content']['bio'];
-		profilePicture?: string; // Resolved URL or base64
-		socialLinks: TAboutNode['content']['socialLinks'];
-	};
-	style: TResolveStyle<TAboutNode['style']>;
-}
+export type TResolvedPageNode = TBaseNode<
+	TResolvedPageNodeMixin,
+	[
+		TIdMixin,
+		TResolvedChildrenMixin,
+		TPageLayoutStyleMixin,
+		TResolvedAppearanceStyleMixin,
+		TResolvedFillStyleMixin
+	]
+>;
 
-export interface TResolvedLinkNode extends Omit<TLinkNode, 'style' | 'content'> {
-	content: {
-		url: TLinkNode['content']['url'];
-		variant: TResolvedLinkVariant;
-	};
-	style: TResolveStyle<TLinkNode['style']>;
-}
+export type TResolvedAboutNode = TBaseNode<
+	TResolvedAboutNodeMixin,
+	[
+		TIdMixin,
+		TResolvedLayoutStyleMixin,
+		TResolvedAppearanceStyleMixin,
+		TResolvedTypographyStyleMixin,
+		TResolvedFillStyleMixin,
+		TResolvedStrokeStyleMixin,
+		TResolvedShadowStyleMixin
+	]
+>;
 
-export interface TResolvedMediaNode extends Omit<TMediaNode, 'style' | 'content'> {
-	content: {
-		media?: TResolvedMedia;
-	};
-	style: TResolveStyle<TMediaNode['style']>;
-}
+export type TResolvedLinkNode = TBaseNode<
+	TResolvedLinkNodeMixin,
+	[
+		TIdMixin,
+		TResolvedLayoutStyleMixin,
+		TResolvedAppearanceStyleMixin,
+		TResolvedTypographyStyleMixin,
+		TResolvedFillStyleMixin,
+		TResolvedStrokeStyleMixin,
+		TResolvedShadowStyleMixin
+	]
+>;
 
-export interface TResolvedTextNode extends Omit<TTextNode, 'style'> {
-	style: TResolveStyle<TTextNode['style']>;
-}
+export type TResolvedMediaNode = TBaseNode<
+	TResolvedMediaNodeMixin,
+	[
+		TIdMixin,
+		TResolvedLayoutStyleMixin,
+		TResolvedAppearanceStyleMixin,
+		TResolvedFillStyleMixin,
+		TResolvedStrokeStyleMixin,
+		TResolvedShadowStyleMixin
+	]
+>;
 
-export interface TResolvedProductNode extends Omit<TProductNode, 'style' | 'content'> {
-	content: {
-		product?: {
-			id: string;
-			title: string;
-			images: string[]; // Resolved URL or base64
-			options: { name: string; values: string[] }[];
-			variants: {
-				id: string;
-				title: string;
-				price: { amount: string; currencyCode: string };
-				image?: string; // Resolved URL or base64
-				selectedOptions: { name: string; value: string }[];
-			}[];
-		};
-	};
-	style: TResolveStyle<TProductNode['style']>;
-}
+export type TResolvedTextNode = TBaseNode<
+	TResolvedTextNodeMixin,
+	[
+		TIdMixin,
+		TResolvedLayoutStyleMixin,
+		TResolvedAppearanceStyleMixin,
+		TResolvedTypographyStyleMixin,
+		TResolvedFillStyleMixin,
+		TResolvedStrokeStyleMixin,
+		TResolvedShadowStyleMixin
+	]
+>;
 
-export interface TResolvedPromisedNode<GNode extends TResolvedNode> extends TBaseNode {
+export type TResolvedProductNode = TBaseNode<
+	TResolvedProductNodeMixin,
+	[
+		TIdMixin,
+		TResolvedLayoutStyleMixin,
+		TResolvedAppearanceStyleMixin,
+		TResolvedTypographyStyleMixin,
+		TResolvedFillStyleMixin,
+		TResolvedStrokeStyleMixin,
+		TResolvedShadowStyleMixin
+	]
+>;
+
+export interface TResolvedPromisedNode<GNode extends TResolvedNode> {
 	type: 'promised';
 	cached: GNode;
 	next: Promise<GNode>;
 }
 
-export interface TResolvedImageMedia {
-	type: 'image';
-	url: string; // Resolved URL or base64
-	altText?: string;
-}
+// =========================================================================
+// Resolved Node Mixins
+// =========================================================================
 
-export type TResolvedMedia = TResolvedImageMedia;
+export type TResolvedPageNodeMixin = TResolveAll<TPageNodeMixin>;
 
-export type TResolvedLinkVariant =
-	| TResolvedDefaultLinkVariant
-	// | TResolvedYouTubeVideoLinkVariant
-	// | TResolvedYouTubeChannelLinkVariant
-	| TResolvedYouTubeVideoEmbedLinkVariant;
+export type TResolvedAboutNodeMixin = TResolveAll<TAboutNodeMixin>;
 
-export interface TResolvedDefaultLinkVariant {
-	type: 'default';
-	title?: string;
-	description?: string;
-	favicon?: string;
-}
+export type TResolvedLinkNodeMixin = TResolveAll<TLinkNodeMixin>;
 
-export interface TResolvedYouTubeVideoLinkVariant {
-	type: 'youtube-video';
-	title?: string;
-	thumbnail?: string;
-}
+export type TResolvedMediaNodeMixin = TResolveAll<TMediaNodeMixin>;
 
-export interface TResolvedYouTubeChannelLinkVariant {
-	type: 'youtube-channel';
-	title?: string;
-	avatar?: string;
-}
+export type TResolvedTextNodeMixin = TResolveAll<TTextNodeMixin>;
 
-export interface TResolvedYouTubeVideoEmbedLinkVariant {
-	type: 'youtube-video-embed';
-	videoId: string;
-}
+export type TResolvedProductNodeMixin = TResolveAll<TProductNodeMixin>;
 
-export type TResolveStyle<T> = {
-	[K in keyof T]?: T[K] extends TStyleReference<infer U> ? (U extends TRgba ? string : U) : T[K];
-};
+// =========================================================================
+// Resolved Style Mixins
+// =========================================================================
+
+export type TResolvedChildrenMixin = TMixin<'children', TResolvedNode[]>;
+
+export type TResolvedLayoutStyleMixin = TResolveAll<TLayoutStyleMixin>;
+
+export type TResolvedAppearanceStyleMixin = TResolveAll<TAppearanceStyleMixin>;
+
+export type TResolvedTypographyStyleMixin = TResolveAll<TTypographyStyleMixin>;
+
+export type TResolvedFillStyleMixin = TResolveAll<TFillStyleMixin>;
+
+export type TResolvedStrokeStyleMixin = TResolveAll<TStrokeStyleMixin>;
+
+export type TResolvedShadowStyleMixin = TResolveAll<TShadowStyleMixin>;
+
+// =========================================================================
+// Helper
+// =========================================================================
+
+/**
+ * Recursively resolves all TReference types, colors (TRgba to string), and assets (TAsset to string) in an object.
+ * This creates fully resolved types where:
+ * - TReference types are resolved using TUnreference
+ * - Colors become CSS color strings
+ * - Assets become their resolved URLs/strings
+ * - Objects are recursively processed
+ */
+export type TResolveAll<T> =
+	T extends TReference<any>
+		? TUnreference<T>
+		: T extends TRgba
+			? string
+			: T extends TAssetHash
+				? { url: string }
+				: T extends object
+					? { [K in keyof T]: TResolveAll<T[K]> }
+					: T;

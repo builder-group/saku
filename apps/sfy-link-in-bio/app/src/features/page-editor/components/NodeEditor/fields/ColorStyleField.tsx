@@ -4,11 +4,11 @@ import {
 	inheritStyle,
 	isInheritedStyle,
 	isValidHex,
-	resolveStyleReference,
+	resolveReference,
 	rgbaToHex,
 	rgbaToHsba,
-	TRgba,
-	TStyleReference
+	TReference,
+	TRgba
 } from '@repo/editor';
 import {
 	ColorPicker,
@@ -49,7 +49,7 @@ export const ColorStyleField = <GNodeValue, GParentNodeValue>(
 
 	const isValueInherited = React.useMemo(() => isInheritedStyle(currentValue), [currentValue]);
 	const resolvedValue = React.useMemo(
-		() => resolveStyleReference(currentValue, parentValue),
+		() => resolveReference(currentValue, parentValue),
 		[currentValue, parentValue]
 	);
 
@@ -104,7 +104,7 @@ export const ColorStyleField = <GNodeValue, GParentNodeValue>(
 			if (newValue === '') {
 				setInputValue('');
 				handleValueChange(
-					undefined as GParentNodeValue extends never ? TRgba | undefined : TStyleReference<TRgba>,
+					undefined as GParentNodeValue extends never ? TRgba | undefined : TReference<TRgba>,
 					true
 				);
 				return;
@@ -144,9 +144,7 @@ export const ColorStyleField = <GNodeValue, GParentNodeValue>(
 		// Syncing: Set to inherit
 		else {
 			handleValueChange(
-				inheritStyle() as GParentNodeValue extends never
-					? TRgba | undefined
-					: TStyleReference<TRgba>
+				inheritStyle() as GParentNodeValue extends never ? TRgba | undefined : TReference<TRgba>
 			);
 		}
 	}, [handleValueChange, isValueInherited, parentValue]);
@@ -266,10 +264,10 @@ export interface TColorStyleFieldProps<GNodeValue, GParentNodeValue>
 	label: string;
 	node: TState<GNodeValue, []>;
 	parentNode?: TState<GParentNodeValue, []>;
-	nodeValueMapper: (value: GNodeValue) => TStyleReference<TRgba> | undefined;
+	nodeValueMapper: (value: GNodeValue) => TReference<TRgba> | undefined;
 	nodeValueSetter: (
 		node: TState<GNodeValue, []>,
-		value: GParentNodeValue extends never ? TRgba | undefined : TStyleReference<TRgba>
+		value: GParentNodeValue extends never ? TRgba | undefined : TReference<TRgba>
 	) => void;
 	parentValueMapper?: (parent: GParentNodeValue) => TRgba | undefined;
 }

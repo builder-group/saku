@@ -3,7 +3,7 @@ import {
 	fontMetadata,
 	inheritStyle,
 	isInheritedStyle,
-	resolveStyleReference,
+	resolveReference,
 	TAboutNode,
 	TSocialLink
 } from '@repo/editor';
@@ -280,7 +280,7 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 								nodeValueMapper={(value) =>
 									isInheritedStyle(value.style.font)
 										? { type: 'inherit' }
-										: resolveStyleReference(value.style.font)?.family
+										: resolveReference(value.style.font)?.family
 								}
 								nodeValueSetter={(node, value) => {
 									if (isInheritedStyle(value)) {

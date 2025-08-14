@@ -15,7 +15,7 @@ export const ProductNode = React.forwardRef<HTMLDivElement, TNodeProps<TProductN
 				return resolveProductNode(nodeValue, {
 					site: new EditorSiteResolveContext(editor),
 					resolved: {
-						parentStyles: pageNodeValue?.style.children
+						childDefaults: pageNodeValue?.style.children
 					}
 				});
 			}

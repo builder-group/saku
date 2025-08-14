@@ -1,14 +1,14 @@
-import { resolveStyleReference, rgbaToCssRgba, TRgba, TStyleReference } from '@repo/editor';
+import { resolveReference, rgbaToCssRgba, TReference, TRgba } from '@repo/editor';
 
 export function resolveColor(
-	value: TStyleReference<TRgba> | undefined,
+	value: TReference<TRgba> | undefined,
 	fallback?: TRgba
 ): string | undefined {
 	if (value == null) {
 		return undefined;
 	}
 
-	const color = resolveStyleReference(value, fallback);
+	const color = resolveReference(value, fallback);
 	if (color == null) {
 		return undefined;
 	}

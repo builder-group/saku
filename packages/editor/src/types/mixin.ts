@@ -1,4 +1,4 @@
-import { TRgba } from '../lib';
+import { TReference, TRgba, TUnreference } from '../lib';
 import { TNode, TNodeId } from './node';
 import {
 	TAssetHash,
@@ -7,9 +7,7 @@ import {
 	TLinkVariant,
 	TMedia,
 	TPaint,
-	TReference,
-	TSocialLink,
-	TUnreferenceAll
+	TSocialLink
 } from './utils';
 
 export interface TMixin<TKey extends string, TValue> {
@@ -58,7 +56,7 @@ export type TPageNodeMixin = TMixin<
 				image?: TAssetHash;
 			};
 		};
-		childDefaults: TUnreferenceAll<
+		childDefaults: TUnreference<
 			TMergeMixins<
 				[
 					TLayoutStyleMixin,

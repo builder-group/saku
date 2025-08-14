@@ -15,7 +15,7 @@ export const TextNode = React.forwardRef<HTMLDivElement, TNodeProps<TTextNode>>(
 			return resolveTextNode(nodeValue, {
 				site: new EditorSiteResolveContext(editor),
 				resolved: {
-					parentStyles: pageNodeValue?.style.children
+					childDefaults: pageNodeValue?.style.children
 				}
 			});
 		}

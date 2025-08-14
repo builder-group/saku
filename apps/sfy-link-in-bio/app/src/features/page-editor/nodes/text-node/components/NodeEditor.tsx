@@ -2,7 +2,7 @@ import {
 	fontMetadata,
 	inheritStyle,
 	isInheritedStyle,
-	resolveStyleReference,
+	resolveReference,
 	TTextNode
 } from '@repo/editor';
 import { Text, TextField } from '@shopify/polaris';
@@ -132,7 +132,7 @@ export const TextNodeEditor: React.FC<TNodeEditorComponentProps<TTextNode>> = (p
 								nodeValueMapper={(value) =>
 									isInheritedStyle(value.style.font)
 										? { type: 'inherit' }
-										: resolveStyleReference(value.style.font)?.family
+										: resolveReference(value.style.font)?.family
 								}
 								nodeValueSetter={(node, value) => {
 									if (isInheritedStyle(value)) {

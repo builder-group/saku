@@ -1,5 +1,5 @@
 import { notEmpty } from '@blgc/utils';
-import { resolveStyleReference, TProductNode } from '@repo/editor';
+import { resolveReference, TProductNode } from '@repo/editor';
 import { resolveAsset, resolveColor, TNodeResolveContext } from '../../lib';
 import { TResolvedProductNode } from '../../types';
 
@@ -8,7 +8,7 @@ export function resolveProductNode(
 	cx: TNodeResolveContext
 ): TResolvedProductNode {
 	const { content, style, ...rest } = node;
-	const parentStyles = cx.resolved?.parentStyles;
+	const parentStyles = cx.resolved?.childDefaults;
 
 	let product: TResolvedProductNode['content']['product'] | undefined;
 	if (content.product != null) {
@@ -34,13 +34,13 @@ export function resolveProductNode(
 			product
 		},
 		style: {
-			padding: resolveStyleReference(style.padding, parentStyles?.padding),
+			padding: resolveReference(style.padding, parentStyles?.padding),
 			backgroundColor: resolveColor(style.backgroundColor, parentStyles?.backgroundColor),
-			font: resolveStyleReference(style.font, parentStyles?.font),
-			fontSize: resolveStyleReference(style.fontSize, parentStyles?.fontSize),
+			font: resolveReference(style.font, parentStyles?.font),
+			fontSize: resolveReference(style.fontSize, parentStyles?.fontSize),
 			textColor: resolveColor(style.textColor, parentStyles?.textColor),
-			borderRadius: resolveStyleReference(style.borderRadius, parentStyles?.borderRadius),
-			shadow: resolveStyleReference(style.shadow, parentStyles?.shadow)
+			borderRadius: resolveReference(style.borderRadius, parentStyles?.borderRadius),
+			shadow: resolveReference(style.shadow, parentStyles?.shadow)
 		}
 	};
 }

@@ -1,7 +1,7 @@
 import { notEmpty } from '@blgc/utils';
 import {
 	getBestContrastColor,
-	resolveStyleReference,
+	resolveReference,
 	TAboutNode,
 	TFlatNode,
 	TFlatPageNode
@@ -27,7 +27,7 @@ export function resolvePageNode(node: TFlatPageNode, cx: TNodeResolveContext): T
 					site: cx.site,
 					parentId: node.id,
 					resolved: {
-						parentStyles: node.style.children
+						childDefaults: node.style.children
 					}
 				});
 			})
@@ -53,14 +53,14 @@ export function resolvePageNodeWithoutChildren(
 			) as string,
 			children: {
 				backgroundColor: resolveColor(style.children.backgroundColor),
-				spacing: resolveStyleReference(style.children.spacing),
-				padding: resolveStyleReference(style.children.padding),
-				font: resolveStyleReference(style.children.font),
-				fontSize: resolveStyleReference(style.children.fontSize),
+				spacing: resolveReference(style.children.spacing),
+				padding: resolveReference(style.children.padding),
+				font: resolveReference(style.children.font),
+				fontSize: resolveReference(style.children.fontSize),
 				textColor: resolveColor(style.children.textColor),
-				textAlign: resolveStyleReference(style.children.textAlign),
-				borderRadius: resolveStyleReference(style.children.borderRadius),
-				shadow: resolveStyleReference(style.children.shadow)
+				textAlign: resolveReference(style.children.textAlign),
+				borderRadius: resolveReference(style.children.borderRadius),
+				shadow: resolveReference(style.children.shadow)
 			}
 		}
 	};

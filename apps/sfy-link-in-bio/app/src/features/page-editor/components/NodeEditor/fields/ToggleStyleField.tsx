@@ -1,9 +1,4 @@
-import {
-	inheritStyle,
-	isInheritedStyle,
-	resolveStyleReference,
-	TStyleReference
-} from '@repo/editor';
+import { inheritStyle, isInheritedStyle, resolveReference, TReference } from '@repo/editor';
 import { Text, Tooltip } from '@shopify/polaris';
 import { useCompute } from 'feature-react/state';
 import { TState } from 'feature-state';
@@ -29,7 +24,7 @@ export const ToggleStyleField = <GNodeValue, GParentNodeValue>(
 	);
 	const isValueInherited = React.useMemo(() => isInheritedStyle(currentValue), [currentValue]);
 	const selected = React.useMemo(() => {
-		const resolvedValue = resolveStyleReference(currentValue, parentValue);
+		const resolvedValue = resolveReference(currentValue, parentValue);
 		return resolvedValue === true;
 	}, [currentValue, parentValue]);
 
@@ -58,9 +53,7 @@ export const ToggleStyleField = <GNodeValue, GParentNodeValue>(
 		else {
 			nodeValueSetter(
 				node,
-				inheritStyle() as GParentNodeValue extends never
-					? boolean | undefined
-					: TStyleReference<boolean>
+				inheritStyle() as GParentNodeValue extends never ? boolean | undefined : TReference<boolean>
 			);
 		}
 	}, [node, nodeValueSetter, isValueInherited, parentValue]);
@@ -125,10 +118,10 @@ export interface TToggleStyleFieldProps<GNodeValue, GParentNodeValue> {
 	label: string;
 	node: TState<GNodeValue, []>;
 	parentNode?: TState<GParentNodeValue, []>;
-	nodeValueMapper: (value: GNodeValue) => TStyleReference<boolean> | undefined;
+	nodeValueMapper: (value: GNodeValue) => TReference<boolean> | undefined;
 	nodeValueSetter: (
 		node: TState<GNodeValue, []>,
-		value: GParentNodeValue extends never ? boolean | undefined : TStyleReference<boolean>
+		value: GParentNodeValue extends never ? boolean | undefined : TReference<boolean>
 	) => void;
 	parentValueMapper?: (parent: GParentNodeValue) => boolean | undefined;
 	ariaLabel?: string;

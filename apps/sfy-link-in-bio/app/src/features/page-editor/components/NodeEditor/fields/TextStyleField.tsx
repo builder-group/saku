@@ -1,9 +1,4 @@
-import {
-	inheritStyle,
-	isInheritedStyle,
-	resolveStyleReference,
-	TStyleReference
-} from '@repo/editor';
+import { inheritStyle, isInheritedStyle, resolveReference, TReference } from '@repo/editor';
 import { Text, TextField, TextFieldProps, Tooltip } from '@shopify/polaris';
 import { useCompute } from 'feature-react/state';
 import { TState } from 'feature-state';
@@ -31,7 +26,7 @@ export const TextStyleField = <GNodeValue, GParentNodeValue, GValue>(
 	);
 	const isValueInherited = React.useMemo(() => isInheritedStyle(currentValue), [currentValue]);
 	const displayValue = React.useMemo(() => {
-		const resolvedValue = resolveStyleReference(currentValue, parentValue);
+		const resolvedValue = resolveReference(currentValue, parentValue);
 		return resolvedValue != null ? String(resolvedValue) : '';
 	}, [currentValue, parentValue]);
 
@@ -45,7 +40,7 @@ export const TextStyleField = <GNodeValue, GParentNodeValue, GValue>(
 				return;
 			}
 
-			let convertedValue: TStyleReference<GValue> | undefined =
+			let convertedValue: TReference<GValue> | undefined =
 				newValue === '' ? undefined : (newValue as GValue);
 			if (textFieldProps.type === 'number' && newValue !== '') {
 				let num = Number(newValue);
@@ -56,9 +51,7 @@ export const TextStyleField = <GNodeValue, GParentNodeValue, GValue>(
 
 			nodeValueSetter(
 				node,
-				convertedValue as GParentNodeValue extends never
-					? GValue | undefined
-					: TStyleReference<GValue>
+				convertedValue as GParentNodeValue extends never ? GValue | undefined : TReference<GValue>
 			);
 		},
 		[node, nodeValueSetter, textFieldProps.type, isValueInherited, min, max]
@@ -77,9 +70,7 @@ export const TextStyleField = <GNodeValue, GParentNodeValue, GValue>(
 		else {
 			nodeValueSetter(
 				node,
-				inheritStyle() as GParentNodeValue extends never
-					? GValue | undefined
-					: TStyleReference<GValue>
+				inheritStyle() as GParentNodeValue extends never ? GValue | undefined : TReference<GValue>
 			);
 		}
 	}, [node, nodeValueSetter, isValueInherited, parentValue]);
@@ -157,10 +148,10 @@ export interface TTextStyleFieldProps<GNodeValue, GParentNodeValue, GValue>
 	label: string;
 	node: TState<GNodeValue, []>;
 	parentNode?: TState<GParentNodeValue, []>;
-	nodeValueMapper: (value: GNodeValue) => TStyleReference<GValue> | undefined;
+	nodeValueMapper: (value: GNodeValue) => TReference<GValue> | undefined;
 	nodeValueSetter: (
 		node: TState<GNodeValue, []>,
-		value: GParentNodeValue extends never ? GValue | undefined : TStyleReference<GValue>
+		value: GParentNodeValue extends never ? GValue | undefined : TReference<GValue>
 	) => void;
 	parentValueMapper?: (parent: GParentNodeValue) => GValue | undefined;
 	min?: number;

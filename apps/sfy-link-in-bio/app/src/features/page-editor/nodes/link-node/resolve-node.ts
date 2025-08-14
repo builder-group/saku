@@ -1,10 +1,10 @@
-import { resolveStyleReference, TLinkNode } from '@repo/editor';
+import { resolveReference, TLinkNode } from '@repo/editor';
 import { resolveAsset, resolveColor, TNodeResolveContext } from '../../lib';
 import { TResolvedLinkNode, TResolvedLinkVariant } from '../../types';
 
 export function resolveLinkNode(node: TLinkNode, cx: TNodeResolveContext): TResolvedLinkNode {
 	const { content, style, ...rest } = node;
-	const parentStyles = cx.resolved?.parentStyles;
+	const parentStyles = cx.resolved?.childDefaults;
 
 	let variant: TResolvedLinkVariant;
 	switch (content.variant.type) {
@@ -47,14 +47,14 @@ export function resolveLinkNode(node: TLinkNode, cx: TNodeResolveContext): TReso
 			variant
 		},
 		style: {
-			padding: resolveStyleReference(style.padding, parentStyles?.padding),
+			padding: resolveReference(style.padding, parentStyles?.padding),
 			backgroundColor: resolveColor(style.backgroundColor, parentStyles?.backgroundColor),
-			font: resolveStyleReference(style.font, parentStyles?.font),
-			fontSize: resolveStyleReference(style.fontSize, parentStyles?.fontSize),
+			font: resolveReference(style.font, parentStyles?.font),
+			fontSize: resolveReference(style.fontSize, parentStyles?.fontSize),
 			textColor: resolveColor(style.textColor, parentStyles?.textColor),
-			textAlign: resolveStyleReference(style.textAlign, parentStyles?.textAlign),
-			borderRadius: resolveStyleReference(style.borderRadius, parentStyles?.borderRadius),
-			shadow: resolveStyleReference(style.shadow, parentStyles?.shadow)
+			textAlign: resolveReference(style.textAlign, parentStyles?.textAlign),
+			borderRadius: resolveReference(style.borderRadius, parentStyles?.borderRadius),
+			shadow: resolveReference(style.shadow, parentStyles?.shadow)
 		}
 	};
 }

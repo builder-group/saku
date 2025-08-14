@@ -4,7 +4,7 @@ export interface TNodeResolveContext {
 	site: TSiteResolveContext;
 	parentId?: TNodeId;
 	resolved?: {
-		parentStyles?: TPageNode['style']['children'];
+		childDefaults?: TPageNode['childDefaults'];
 	};
 }
 

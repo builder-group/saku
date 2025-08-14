@@ -3,7 +3,7 @@ import {
 	fontMetadata,
 	inheritStyle,
 	isInheritedStyle,
-	resolveStyleReference,
+	resolveReference,
 	TProductNode
 } from '@repo/editor';
 import { Button, IndexTable, Scrollable, Text, useIndexResourceState } from '@shopify/polaris';
@@ -399,7 +399,7 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 							nodeValueMapper={(value) =>
 								isInheritedStyle(value.style.font)
 									? { type: 'inherit' }
-									: resolveStyleReference(value.style.font)?.family
+									: resolveReference(value.style.font)?.family
 							}
 							nodeValueSetter={(node, value) => {
 								if (isInheritedStyle(value)) {

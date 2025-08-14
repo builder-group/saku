@@ -19,7 +19,7 @@ export function hydratePageNode(node: TFlatPageNode, cx: TNodeHydrateContext): T
 					site: cx.site,
 					parentId: node.id,
 					resolved: {
-						parentStyles: node.style.children
+						childDefaults: node.style.children
 					}
 				});
 			})

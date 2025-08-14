@@ -7,8 +7,10 @@ import {
 	getFontMetadataByFamily,
 	hexToRgba,
 	inherit,
+	ref,
 	TAboutNode,
 	TAsset,
+	TAssetHash,
 	TFontAsset,
 	TImageAsset,
 	TLinkNode,
@@ -84,8 +86,9 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 				lineHeight: inherit(),
 				letterSpacing: inherit()
 			},
-			fill: null,
-			shadow: null
+			fill: ref(null),
+			stroke: ref(null),
+			shadow: ref(null)
 		} as TAboutNode;
 		children.push(aboutNode);
 	}
@@ -98,7 +101,7 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 		for (const link of reversedLinks) {
 			if (link.url != null) {
 				// Create favicon asset if link has media
-				let faviconHash: string | undefined;
+				let faviconHash: TAssetHash | undefined;
 				if (link.media?.url != null) {
 					const faviconAsset = createImageAssetFromUrl(link.media.url);
 					assets.push(faviconAsset);
@@ -207,14 +210,14 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 				spacing: 16
 			},
 			appearance: {
-				borderRadius: 0,
-				opacity: 1,
-				visible: true
+				borderRadius: ref(0),
+				opacity: ref(1),
+				visible: ref(true)
 			},
-			fill: {
+			fill: ref({
 				paint: backgroundPaint,
 				opacity: 1
-			},
+			}),
 			childDefaults: {
 				layout: {
 					padding: 8
@@ -345,7 +348,7 @@ function createFontAsset(fontFamily: string): TFontAsset {
 }
 
 function createImageAssetFromUrl(url: string): TImageAsset {
-	const hash = shortId(); // TODO: Re-upload the image to Shopify CDN
+	const hash: TAssetHash = shortId() as TAssetHash; // TODO: Re-upload the image to Shopify CDN
 	const pathname = new URL(url).pathname.toLowerCase();
 
 	let contentType: TImageAsset['contentType'] = 'image/jpeg';

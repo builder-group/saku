@@ -1,9 +1,4 @@
-import {
-	inheritStyle,
-	isInheritedStyle,
-	resolveStyleReference,
-	TStyleReference
-} from '@repo/editor';
+import { inheritStyle, isInheritedStyle, resolveReference, TReference } from '@repo/editor';
 import { Select, SelectProps, Text, Tooltip } from '@shopify/polaris';
 import { useCompute } from 'feature-react/state';
 import { TState } from 'feature-state';
@@ -29,7 +24,7 @@ export const SelectStyleField = <GNodeValue, GParentNodeValue, GValue>(
 	);
 	const isValueInherited = React.useMemo(() => isInheritedStyle(currentValue), [currentValue]);
 	const displayValue = React.useMemo(() => {
-		const resolvedValue = resolveStyleReference(currentValue, parentValue);
+		const resolvedValue = resolveReference(currentValue, parentValue);
 		return resolvedValue != null ? String(resolvedValue) : '';
 	}, [currentValue, parentValue]);
 
@@ -43,14 +38,12 @@ export const SelectStyleField = <GNodeValue, GParentNodeValue, GValue>(
 				return;
 			}
 
-			const convertedValue: TStyleReference<GValue> | undefined =
+			const convertedValue: TReference<GValue> | undefined =
 				newValue === '' ? undefined : (newValue as GValue);
 
 			nodeValueSetter(
 				node,
-				convertedValue as GParentNodeValue extends never
-					? GValue | undefined
-					: TStyleReference<GValue>
+				convertedValue as GParentNodeValue extends never ? GValue | undefined : TReference<GValue>
 			);
 		},
 		[node, nodeValueSetter, isValueInherited]
@@ -69,9 +62,7 @@ export const SelectStyleField = <GNodeValue, GParentNodeValue, GValue>(
 		else {
 			nodeValueSetter(
 				node,
-				inheritStyle() as GParentNodeValue extends never
-					? GValue | undefined
-					: TStyleReference<GValue>
+				inheritStyle() as GParentNodeValue extends never ? GValue | undefined : TReference<GValue>
 			);
 		}
 	}, [node, nodeValueSetter, isValueInherited, parentValue]);
@@ -148,10 +139,10 @@ export interface TSelectStyleFieldProps<GNodeValue, GParentNodeValue, GValue>
 	label: string;
 	node: TState<GNodeValue, []>;
 	parentNode?: TState<GParentNodeValue, []>;
-	nodeValueMapper: (value: GNodeValue) => TStyleReference<GValue> | undefined;
+	nodeValueMapper: (value: GNodeValue) => TReference<GValue> | undefined;
 	nodeValueSetter: (
 		node: TState<GNodeValue, []>,
-		value: GParentNodeValue extends never ? GValue | undefined : TStyleReference<GValue>,
+		value: GParentNodeValue extends never ? GValue | undefined : TReference<GValue>,
 		test?: GParentNodeValue
 	) => void;
 	parentValueMapper?: (parent: GParentNodeValue) => GValue | undefined;
