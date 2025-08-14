@@ -1,17 +1,13 @@
+import { TRgba } from '../lib';
 import { TNode, TNodeId } from './node';
 import {
-	TBorderRadiusStyle,
-	TFillStyle,
-	TLayoutStyle,
-	TShadowStyle,
-	TStrokeStyle,
-	TTypographyStyle
-} from './style';
-import {
 	TAssetHash,
+	TFont,
 	TIntegrationId,
 	TLinkVariant,
 	TMedia,
+	TPaint,
+	TReference,
 	TSocialLink,
 	TUnreferenceAll
 } from './utils';
@@ -32,12 +28,16 @@ export type TReplaceWithMixins<GBase, GMixins extends TMixin<any, any>[]> = Omit
 	TMergeMixins<[...GMixins]>;
 
 // =========================================================================
-// Mixins
+// Common Mixins
 // =========================================================================
 
 export type TIdMixin = TMixin<'id', TNodeId>;
 export type TChildrenMixin = TMixin<'children', TNode[]>;
 export type TFlatChildrenMixin = TMixin<'children', TNodeId[]>;
+
+// =========================================================================
+// Node Mixins
+// =========================================================================
 
 export type TNodeMixin =
 	| TPageNodeMixin
@@ -58,19 +58,18 @@ export type TPageNodeMixin = TMixin<
 				image?: TAssetHash;
 			};
 		};
-		style: {
-			spacing: number;
-		} & TUnreferenceAll<TFillStyle>;
-		childDefaults: {
-			style: TUnreferenceAll<
-				TLayoutStyle &
-					TFillStyle &
-					TTypographyStyle &
-					TBorderRadiusStyle &
-					TStrokeStyle &
-					TShadowStyle
-			>;
-		};
+		childDefaults: TUnreferenceAll<
+			TMergeMixins<
+				[
+					TLayoutStyleMixin,
+					TFillStyleMixin,
+					TTypographyStyleMixin,
+					TAppearanceStyleMixin,
+					TStrokeStyleMixin,
+					TShadowStyleMixin
+				]
+			>
+		>;
 	}
 >;
 
@@ -84,12 +83,6 @@ export type TAboutNodeMixin = TMixin<
 			profilePicture?: TAssetHash;
 			socialLinks: TSocialLink[];
 		};
-		style: TFillStyle &
-			TLayoutStyle &
-			TTypographyStyle &
-			TBorderRadiusStyle &
-			TStrokeStyle &
-			TShadowStyle;
 	}
 >;
 
@@ -101,12 +94,6 @@ export type TLinkNodeMixin = TMixin<
 			url: string;
 			variant: TLinkVariant;
 		};
-		style: TFillStyle &
-			TLayoutStyle &
-			TTypographyStyle &
-			TBorderRadiusStyle &
-			TStrokeStyle &
-			TShadowStyle;
 	}
 >;
 
@@ -117,7 +104,6 @@ export type TMediaNodeMixin = TMixin<
 		content: {
 			media?: TMedia;
 		};
-		style: TFillStyle & TLayoutStyle & TBorderRadiusStyle & TStrokeStyle & TShadowStyle;
 	}
 >;
 
@@ -128,12 +114,6 @@ export type TTextNodeMixin = TMixin<
 		content: {
 			text: string;
 		};
-		style: TFillStyle &
-			TLayoutStyle &
-			TTypographyStyle &
-			TBorderRadiusStyle &
-			TStrokeStyle &
-			TShadowStyle;
 	}
 >;
 
@@ -157,11 +137,73 @@ export type TProductNodeMixin = TMixin<
 			};
 			integrationId?: TIntegrationId;
 		};
-		style: TFillStyle &
-			TLayoutStyle &
-			TTypographyStyle &
-			TBorderRadiusStyle &
-			TStrokeStyle &
-			TShadowStyle;
 	}
+>;
+
+// =========================================================================
+// Style Mixins
+// =========================================================================
+
+export type TLayoutStyleMixin = TMixin<
+	'layout',
+	{
+		padding: TReference<number>;
+		spacing: TReference<number>;
+	}
+>;
+
+export type TAppearanceStyleMixin = TMixin<
+	'appearance',
+	{
+		borderRadius: TReference<number>;
+		opacity: TReference<number>;
+	}
+>;
+
+export type TTypographyStyleMixin = TMixin<
+	'typography',
+	{
+		font: TReference<TFont>;
+		fontSize: TReference<number>;
+		textColor: TReference<TRgba>;
+		textAlign: TReference<'left' | 'center' | 'right'>;
+		lineHeight: TReference<number | 'auto'>;
+		letterSpacing: TReference<number | 'auto'>;
+	}
+>;
+
+export type TFillStyleMixin = TMixin<
+	'fill',
+	TReference<
+		| {
+				paint: TPaint;
+				opacity: number;
+		  }
+		| false
+	>
+>;
+
+export type TStrokeStyleMixin = TMixin<
+	'stroke',
+	TReference<
+		| {
+				width: number;
+				color: TRgba;
+		  }
+		| false
+	>
+>;
+
+export type TShadowStyleMixin = TMixin<
+	'shadow',
+	TReference<
+		| {
+				color: TRgba;
+				offsetX: number;
+				offsetY: number;
+				blur: number;
+				spread: number;
+		  }
+		| false
+	>
 >;

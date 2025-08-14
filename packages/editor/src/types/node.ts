@@ -1,16 +1,21 @@
 import { TId } from '../lib';
 import {
 	TAboutNodeMixin,
+	TAppearanceStyleMixin,
 	TChildrenMixin,
+	TFillStyleMixin,
 	TFlatChildrenMixin,
 	TIdMixin,
+	TLayoutStyleMixin,
 	TLinkNodeMixin,
 	TMediaNodeMixin,
 	TMergeMixins,
 	TMixin,
 	TPageNodeMixin,
 	TProductNodeMixin,
-	TTextNodeMixin
+	TShadowStyleMixin,
+	TTextNodeMixin,
+	TTypographyStyleMixin
 } from './mixin';
 
 export type TNode = TPageNode | TAboutNode | TLinkNode | TMediaNode | TTextNode | TProductNode;
@@ -33,10 +38,65 @@ export type TBaseNode<
 // Nodes
 // =========================================================================
 
-export type TPageNode = TBaseNode<TPageNodeMixin, [TIdMixin, TChildrenMixin]>;
-export type TFlatPageNode = TBaseNode<TPageNodeMixin, [TIdMixin, TFlatChildrenMixin]>;
-export type TAboutNode = TBaseNode<TAboutNodeMixin, [TIdMixin]>;
-export type TLinkNode = TBaseNode<TLinkNodeMixin, [TIdMixin]>;
-export type TMediaNode = TBaseNode<TMediaNodeMixin, [TIdMixin]>;
-export type TTextNode = TBaseNode<TTextNodeMixin, [TIdMixin]>;
-export type TProductNode = TBaseNode<TProductNodeMixin, [TIdMixin]>;
+export type TPageNode = TBaseNode<
+	TPageNodeMixin,
+	[TIdMixin, TChildrenMixin, TLayoutStyleMixin, TAppearanceStyleMixin, TFillStyleMixin]
+>;
+
+export type TFlatPageNode = TBaseNode<
+	TPageNodeMixin,
+	[TIdMixin, TFlatChildrenMixin, TLayoutStyleMixin, TAppearanceStyleMixin, TFillStyleMixin]
+>;
+
+export type TAboutNode = TBaseNode<
+	TAboutNodeMixin,
+	[
+		TIdMixin,
+		TLayoutStyleMixin,
+		TAppearanceStyleMixin,
+		TTypographyStyleMixin,
+		TFillStyleMixin,
+		TShadowStyleMixin
+	]
+>;
+
+export type TLinkNode = TBaseNode<
+	TLinkNodeMixin,
+	[
+		TIdMixin,
+		TLayoutStyleMixin,
+		TAppearanceStyleMixin,
+		TTypographyStyleMixin,
+		TFillStyleMixin,
+		TShadowStyleMixin
+	]
+>;
+
+export type TMediaNode = TBaseNode<
+	TMediaNodeMixin,
+	[TIdMixin, TLayoutStyleMixin, TAppearanceStyleMixin, TFillStyleMixin, TShadowStyleMixin]
+>;
+
+export type TTextNode = TBaseNode<
+	TTextNodeMixin,
+	[
+		TIdMixin,
+		TLayoutStyleMixin,
+		TAppearanceStyleMixin,
+		TTypographyStyleMixin,
+		TFillStyleMixin,
+		TShadowStyleMixin
+	]
+>;
+
+export type TProductNode = TBaseNode<
+	TProductNodeMixin,
+	[
+		TIdMixin,
+		TLayoutStyleMixin,
+		TAppearanceStyleMixin,
+		TTypographyStyleMixin,
+		TFillStyleMixin,
+		TShadowStyleMixin
+	]
+>;
