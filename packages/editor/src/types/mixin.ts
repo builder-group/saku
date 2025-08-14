@@ -62,9 +62,9 @@ export type TPageNodeMixin = TMixin<
 			TMergeMixins<
 				[
 					TLayoutStyleMixin,
-					TFillStyleMixin,
-					TTypographyStyleMixin,
 					TAppearanceStyleMixin,
+					TTypographyStyleMixin,
+					TFillStyleMixin,
 					TStrokeStyleMixin,
 					TShadowStyleMixin
 				]
@@ -148,7 +148,13 @@ export type TLayoutStyleMixin = TMixin<
 	'layout',
 	{
 		padding: TReference<number>;
-		spacing: TReference<number>;
+	}
+>;
+
+export type TPageLayoutStyleMixin = TMixin<
+	'layout',
+	{
+		spacing: number;
 	}
 >;
 
@@ -175,36 +181,27 @@ export type TTypographyStyleMixin = TMixin<
 
 export type TFillStyleMixin = TMixin<
 	'fill',
-	TReference<
-		| {
-				paint: TPaint;
-				opacity: number;
-		  }
-		| false
-	>
+	TReference<{
+		paint: TPaint;
+		opacity: number;
+	} | null>
 >;
 
 export type TStrokeStyleMixin = TMixin<
 	'stroke',
-	TReference<
-		| {
-				width: number;
-				color: TRgba;
-		  }
-		| false
-	>
+	TReference<{
+		width: number;
+		color: TRgba;
+	} | null>
 >;
 
 export type TShadowStyleMixin = TMixin<
 	'shadow',
-	TReference<
-		| {
-				color: TRgba;
-				offsetX: number;
-				offsetY: number;
-				blur: number;
-				spread: number;
-		  }
-		| false
-	>
+	TReference<{
+		color: TRgba;
+		offsetX: number;
+		offsetY: number;
+		blur: number;
+		spread: number;
+	} | null>
 >;

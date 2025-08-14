@@ -156,6 +156,11 @@ export interface TLinkPopData {
 		themeSettings?: {
 			backgroundColor: string;
 			backgroundStyle: string;
+			backgroundImage?: {
+				id: string;
+				signedBlobId: string;
+				url: string;
+			};
 			fontColor: string;
 			primaryFont: string;
 			linkCardShape: string;

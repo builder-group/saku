@@ -11,9 +11,11 @@ import {
 	TMediaNodeMixin,
 	TMergeMixins,
 	TMixin,
+	TPageLayoutStyleMixin,
 	TPageNodeMixin,
 	TProductNodeMixin,
 	TShadowStyleMixin,
+	TStrokeStyleMixin,
 	TTextNodeMixin,
 	TTypographyStyleMixin
 } from './mixin';
@@ -40,12 +42,12 @@ export type TBaseNode<
 
 export type TPageNode = TBaseNode<
 	TPageNodeMixin,
-	[TIdMixin, TChildrenMixin, TLayoutStyleMixin, TAppearanceStyleMixin, TFillStyleMixin]
+	[TIdMixin, TChildrenMixin, TPageLayoutStyleMixin, TAppearanceStyleMixin, TFillStyleMixin]
 >;
 
 export type TFlatPageNode = TBaseNode<
 	TPageNodeMixin,
-	[TIdMixin, TFlatChildrenMixin, TLayoutStyleMixin, TAppearanceStyleMixin, TFillStyleMixin]
+	[TIdMixin, TFlatChildrenMixin, TPageLayoutStyleMixin, TAppearanceStyleMixin, TFillStyleMixin]
 >;
 
 export type TAboutNode = TBaseNode<
@@ -56,6 +58,7 @@ export type TAboutNode = TBaseNode<
 		TAppearanceStyleMixin,
 		TTypographyStyleMixin,
 		TFillStyleMixin,
+		TStrokeStyleMixin,
 		TShadowStyleMixin
 	]
 >;
@@ -68,13 +71,21 @@ export type TLinkNode = TBaseNode<
 		TAppearanceStyleMixin,
 		TTypographyStyleMixin,
 		TFillStyleMixin,
+		TStrokeStyleMixin,
 		TShadowStyleMixin
 	]
 >;
 
 export type TMediaNode = TBaseNode<
 	TMediaNodeMixin,
-	[TIdMixin, TLayoutStyleMixin, TAppearanceStyleMixin, TFillStyleMixin, TShadowStyleMixin]
+	[
+		TIdMixin,
+		TLayoutStyleMixin,
+		TAppearanceStyleMixin,
+		TFillStyleMixin,
+		TStrokeStyleMixin,
+		TShadowStyleMixin
+	]
 >;
 
 export type TTextNode = TBaseNode<
@@ -85,6 +96,7 @@ export type TTextNode = TBaseNode<
 		TAppearanceStyleMixin,
 		TTypographyStyleMixin,
 		TFillStyleMixin,
+		TStrokeStyleMixin,
 		TShadowStyleMixin
 	]
 >;
@@ -97,6 +109,7 @@ export type TProductNode = TBaseNode<
 		TAppearanceStyleMixin,
 		TTypographyStyleMixin,
 		TFillStyleMixin,
+		TStrokeStyleMixin,
 		TShadowStyleMixin
 	]
 >;
