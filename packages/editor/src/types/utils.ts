@@ -1,6 +1,26 @@
 import { TId, TRgba } from '../lib';
 
+/**
+ * A reference that can either inherit from parent or hold an actual value.
+ * Uses { type: 'inherit' } for type-safe inheritance without ambiguity.
+ */
 export type TReference<T> = { type: 'inherit' } | T;
+
+/**
+ * Recursively resolves all TReference types in an object, removing inheritance markers.
+ * Uses `T extends any` to force distributive behavior over union types.
+ */
+export type TUnreferenceAll<T> = T extends { type: 'inherit' }
+	? never
+	: T extends any // Force distribution, then handle each case
+		? T extends { type: 'inherit' }
+			? never
+			: T extends object
+				? T extends (...args: any[]) => any
+					? T // Don't recurse into functions
+					: { [K in keyof T]: TUnreferenceAll<T[K]> }
+				: T
+		: never;
 
 // =========================================================================
 // Asset

@@ -1,6 +1,20 @@
 import { TNode, TNodeId } from './node';
-import { TBorderStyle, TFillStyle, TLayoutStyle, TShadowStyle, TTypographyStyle } from './style';
-import { TAssetHash, TIntegrationId, TLinkVariant, TMedia, TSocialLink } from './utils';
+import {
+	TBorderRadiusStyle,
+	TFillStyle,
+	TLayoutStyle,
+	TShadowStyle,
+	TStrokeStyle,
+	TTypographyStyle
+} from './style';
+import {
+	TAssetHash,
+	TIntegrationId,
+	TLinkVariant,
+	TMedia,
+	TSocialLink,
+	TUnreferenceAll
+} from './utils';
 
 export interface TMixin<TKey extends string, TValue> {
 	key: TKey;
@@ -46,9 +60,16 @@ export type TPageNodeMixin = TMixin<
 		};
 		style: {
 			spacing: number;
-		} & TFillStyle;
+		} & TUnreferenceAll<TFillStyle>;
 		childDefaults: {
-			style: TFillStyle & TLayoutStyle & TTypographyStyle & TBorderStyle & TShadowStyle;
+			style: TUnreferenceAll<
+				TLayoutStyle &
+					TFillStyle &
+					TTypographyStyle &
+					TBorderRadiusStyle &
+					TStrokeStyle &
+					TShadowStyle
+			>;
 		};
 	}
 >;
@@ -63,7 +84,12 @@ export type TAboutNodeMixin = TMixin<
 			profilePicture?: TAssetHash;
 			socialLinks: TSocialLink[];
 		};
-		style: TFillStyle & TLayoutStyle & TTypographyStyle & TBorderStyle & TShadowStyle;
+		style: TFillStyle &
+			TLayoutStyle &
+			TTypographyStyle &
+			TBorderRadiusStyle &
+			TStrokeStyle &
+			TShadowStyle;
 	}
 >;
 
@@ -75,7 +101,12 @@ export type TLinkNodeMixin = TMixin<
 			url: string;
 			variant: TLinkVariant;
 		};
-		style: TFillStyle & TLayoutStyle & TTypographyStyle & TBorderStyle & TShadowStyle;
+		style: TFillStyle &
+			TLayoutStyle &
+			TTypographyStyle &
+			TBorderRadiusStyle &
+			TStrokeStyle &
+			TShadowStyle;
 	}
 >;
 
@@ -86,7 +117,7 @@ export type TMediaNodeMixin = TMixin<
 		content: {
 			media?: TMedia;
 		};
-		style: TFillStyle & TLayoutStyle & TBorderStyle & TShadowStyle;
+		style: TFillStyle & TLayoutStyle & TBorderRadiusStyle & TStrokeStyle & TShadowStyle;
 	}
 >;
 
@@ -97,7 +128,12 @@ export type TTextNodeMixin = TMixin<
 		content: {
 			text: string;
 		};
-		style: TFillStyle & TLayoutStyle & TTypographyStyle & TBorderStyle & TShadowStyle;
+		style: TFillStyle &
+			TLayoutStyle &
+			TTypographyStyle &
+			TBorderRadiusStyle &
+			TStrokeStyle &
+			TShadowStyle;
 	}
 >;
 
@@ -121,6 +157,11 @@ export type TProductNodeMixin = TMixin<
 			};
 			integrationId?: TIntegrationId;
 		};
-		style: TFillStyle & TLayoutStyle & TTypographyStyle & TBorderStyle & TShadowStyle;
+		style: TFillStyle &
+			TLayoutStyle &
+			TTypographyStyle &
+			TBorderRadiusStyle &
+			TStrokeStyle &
+			TShadowStyle;
 	}
 >;
