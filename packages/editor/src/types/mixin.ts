@@ -157,6 +157,7 @@ export type TAppearanceStyleMixin = TMixin<
 	{
 		borderRadius: TReference<number>;
 		opacity: TReference<number>;
+		visible: TReference<boolean>;
 	}
 >;
 
