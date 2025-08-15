@@ -7,10 +7,7 @@ import { extractYouTubeVideoId } from './lib';
 
 export const YoutubeVideoEmbedVariant: React.FC<TYoutubeVideoEmbedVariantProps> = (props) => {
 	const { nodeState, isEnhancing = false } = props;
-	const variant = useCompute(
-		nodeState,
-		({ value: node }) => node.content.variant as TYouTubeVideoEmbedVariant
-	);
+	const variant = useCompute(nodeState, ({ value: node }) => node.content.variant);
 
 	// =========================================================================
 	// Events
@@ -18,7 +15,7 @@ export const YoutubeVideoEmbedVariant: React.FC<TYoutubeVideoEmbedVariantProps> 
 
 	const handleVideoIdChange = React.useCallback(
 		(value: string) => {
-			const embedVariant = nodeState._v.content.variant as TYouTubeVideoEmbedVariant;
+			const embedVariant = nodeState._v.content.variant;
 			embedVariant.videoId = value;
 			nodeState._notify({ listenerContext: { source: 'video-id-change' } });
 		},
@@ -32,7 +29,7 @@ export const YoutubeVideoEmbedVariant: React.FC<TYoutubeVideoEmbedVariantProps> 
 	useListener(
 		nodeState,
 		({ value: node, source }) => {
-			const embedVariant = node.content.variant as TYouTubeVideoEmbedVariant;
+			const embedVariant = node.content.variant;
 
 			// Sync videoId to URL
 			if (source === 'video-id-change') {
@@ -88,7 +85,7 @@ export const YoutubeVideoEmbedVariant: React.FC<TYoutubeVideoEmbedVariantProps> 
 };
 
 interface TYoutubeVideoEmbedVariantProps {
-	nodeState: TNodeState<TLinkNode>;
+	nodeState: TNodeState<TLinkNode<TYouTubeVideoEmbedVariant>>;
 	editor: TPageEditor;
 	isEnhancing?: boolean;
 }

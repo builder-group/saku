@@ -24,6 +24,7 @@ export type TResolvedProductNode = TBaseNode<
 export type TResolvedProductNodeMixin = TMixin<
 	'node',
 	{
+		type: 'product';
 		content: {
 			product?: TResolvedProduct;
 		};

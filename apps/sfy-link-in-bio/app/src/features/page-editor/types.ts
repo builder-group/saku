@@ -20,4 +20,4 @@ export type TResolvedNode =
 	| TResolvedMediaNode
 	| TResolvedTextNode
 	| TResolvedProductNode
-	| TResolvedPromisedNode;
+	| TResolvedPromisedNode<any>;

@@ -19,6 +19,7 @@ import {
 	TTextNodeMixin,
 	TTypographyStyleMixin
 } from './mixin';
+import { TLinkVariant, TMedia } from './utils';
 
 export type TNode = TPageNode | TAboutNode | TLinkNode | TMediaNode | TTextNode | TProductNode;
 export type TFlatNode =
@@ -63,8 +64,8 @@ export type TAboutNode = TBaseNode<
 	]
 >;
 
-export type TLinkNode = TBaseNode<
-	TLinkNodeMixin,
+export type TLinkNode<GVariant extends TLinkVariant = TLinkVariant> = TBaseNode<
+	TLinkNodeMixin<GVariant>,
 	[
 		TIdMixin,
 		TLayoutStyleMixin,
@@ -76,8 +77,8 @@ export type TLinkNode = TBaseNode<
 	]
 >;
 
-export type TMediaNode = TBaseNode<
-	TMediaNodeMixin,
+export type TMediaNode<GMedia extends TMedia = TMedia> = TBaseNode<
+	TMediaNodeMixin<GMedia>,
 	[
 		TIdMixin,
 		TLayoutStyleMixin,

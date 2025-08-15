@@ -1,11 +1,11 @@
-import { TLinkNode } from '@repo/editor';
+import { TDefaultLinkVariant, TLinkNode, TYouTubeVideoEmbedVariant } from '@repo/editor';
 import { useAppBridge } from '@shopify/app-bridge-react';
 import { Select, Text, TextField } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react/state';
 import React from 'react';
 import { AccordionSection } from '@/components';
 import { PortalPulse } from '@/components/display';
-import { TNodeEditorComponentProps } from '../../../../lib';
+import { TNodeEditorComponentProps, TNodeState } from '../../../../lib';
 import {
 	AppearanceStyleMixinEditor,
 	FillStyleMixinEditor,
@@ -150,7 +150,7 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 			case 'default':
 				return (
 					<DefaultLinkVariant
-						nodeState={nodeState}
+						nodeState={nodeState as TNodeState<TLinkNode<TDefaultLinkVariant>>}
 						editor={editor}
 						isEnhancing={isEnhancingVariant}
 					/>
@@ -158,7 +158,7 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 			case 'youtube-video-embed':
 				return (
 					<YoutubeVideoEmbedVariant
-						nodeState={nodeState}
+						nodeState={nodeState as TNodeState<TLinkNode<TYouTubeVideoEmbedVariant>>}
 						editor={editor}
 						isEnhancing={isEnhancingVariant}
 					/>

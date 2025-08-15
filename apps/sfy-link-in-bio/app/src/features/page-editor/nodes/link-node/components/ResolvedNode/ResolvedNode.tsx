@@ -1,6 +1,10 @@
 import React from 'react';
 import { TResolvedNodeProps } from '../../../../lib';
-import { TResolvedLinkNode } from '../../types';
+import {
+	TResolvedDefaultLinkVariant,
+	TResolvedLinkNode,
+	TResolvedYouTubeVideoEmbedLinkVariant
+} from '../../types';
 import { DefaultContent } from './DefaultContent';
 import { YouTubeVideoEmbedContent } from './YouTubeVideoEmbedContent';
 
@@ -17,10 +21,18 @@ export const ResolvedLinkNode = React.forwardRef<
 				switch (content.variant.type) {
 					case 'default':
 						return (
-							<DefaultContent url={content.url} variant={content.variant} node={node} cx={cx} />
+							<DefaultContent
+								node={node as TResolvedLinkNode<TResolvedDefaultLinkVariant>}
+								cx={cx}
+							/>
 						);
 					case 'youtube-video-embed':
-						return <YouTubeVideoEmbedContent variant={content.variant} node={node} cx={cx} />;
+						return (
+							<YouTubeVideoEmbedContent
+								node={node as TResolvedLinkNode<TResolvedYouTubeVideoEmbedLinkVariant>}
+								cx={cx}
+							/>
+						);
 					default:
 						return null;
 				}

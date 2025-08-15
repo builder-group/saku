@@ -1,12 +1,15 @@
 import React from 'react';
 import { TResolvedNodeProps } from '../../../../lib';
-import { TResolvedImageMedia, TResolvedMediaNode } from '../../types';
+import { TResolvedMediaNode } from '../../types';
 
 export const ImageContent: React.FC<TImageContentProps> = (props) => {
 	const {
-		media,
-		node: { layout, appearance, fill, stroke, shadow }
+		node: { content, layout, appearance, fill, stroke, shadow }
 	} = props;
+
+	if (content.media == null) {
+		return null;
+	}
 
 	return (
 		<div
@@ -19,8 +22,8 @@ export const ImageContent: React.FC<TImageContentProps> = (props) => {
 			}}
 		>
 			<img
-				src={media.url}
-				alt={media.altText}
+				src={content.media.url}
+				alt={content.media.altText}
 				className="h-auto w-full object-cover"
 				draggable={false}
 				style={{ borderRadius: appearance?.borderRadius }}
@@ -30,7 +33,6 @@ export const ImageContent: React.FC<TImageContentProps> = (props) => {
 };
 
 interface TImageContentProps {
-	media: TResolvedImageMedia;
 	node: TResolvedMediaNode;
 	cx: TResolvedNodeProps<TResolvedMediaNode>['cx'];
 }

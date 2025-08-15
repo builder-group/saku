@@ -8,29 +8,31 @@ import {
 	TResolvedTypographyStyleMixin
 } from '../../mixins';
 
-export type TResolvedLinkNode = TBaseNode<
-	TResolvedLinkNodeMixin,
-	[
-		TIdMixin,
-		TResolvedLayoutStyleMixin,
-		TResolvedAppearanceStyleMixin,
-		TResolvedTypographyStyleMixin,
-		TResolvedFillStyleMixin,
-		TResolvedStrokeStyleMixin,
-		TResolvedShadowStyleMixin
-	]
->;
+export type TResolvedLinkNode<GVariant extends TResolvedLinkVariant = TResolvedLinkVariant> =
+	TBaseNode<
+		TResolvedLinkNodeMixin<GVariant>,
+		[
+			TIdMixin,
+			TResolvedLayoutStyleMixin,
+			TResolvedAppearanceStyleMixin,
+			TResolvedTypographyStyleMixin,
+			TResolvedFillStyleMixin,
+			TResolvedStrokeStyleMixin,
+			TResolvedShadowStyleMixin
+		]
+	>;
 
-export type TResolvedLinkNodeMixin = TMixin<
-	'node',
-	{
-		type: 'link';
-		content: {
-			url: string;
-			variant: TResolvedLinkVariant;
-		};
-	}
->;
+export type TResolvedLinkNodeMixin<GVariant extends TResolvedLinkVariant = TResolvedLinkVariant> =
+	TMixin<
+		'node',
+		{
+			type: 'link';
+			content: {
+				url: string;
+				variant: GVariant;
+			};
+		}
+	>;
 
 export type TResolvedLinkVariant =
 	| TResolvedDefaultLinkVariant

@@ -4,7 +4,7 @@ import {
 	fontMetadataMap,
 	getFontHash,
 	hexToRgba,
-	inheritStyle,
+	inherit,
 	TId,
 	TProductNode,
 	TSite,
@@ -123,15 +123,25 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 						})) ?? []
 				}
 			},
-			style: {
-				padding: inheritStyle(),
-				backgroundColor: inheritStyle(),
-				font: inheritStyle(),
-				fontSize: inheritStyle(),
-				textColor: inheritStyle(),
-				borderRadius: inheritStyle(),
-				shadow: inheritStyle()
-			}
+			layout: {
+				padding: inherit()
+			},
+			appearance: {
+				borderRadius: inherit(),
+				opacity: inherit(),
+				visible: inherit()
+			},
+			typography: {
+				font: inherit(),
+				fontSize: inherit(),
+				textColor: inherit(),
+				textAlign: inherit(),
+				lineHeight: inherit(),
+				letterSpacing: inherit()
+			},
+			fill: inherit(),
+			stroke: inherit(),
+			shadow: inherit()
 		};
 	}
 
@@ -185,16 +195,25 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 						profilePicture: profilePictureAssetHashId,
 						socialLinks: allSocialLinks
 					},
-					style: {
-						padding: inheritStyle(),
-						backgroundColor: { r: 255, g: 255, b: 255, a: 0 },
-						font: inheritStyle(),
-						fontSize: inheritStyle(),
-						textColor: inheritStyle(),
+					layout: {
+						padding: inherit()
+					},
+					appearance: {
+						borderRadius: 0,
+						opacity: inherit(),
+						visible: inherit()
+					},
+					typography: {
+						font: inherit(),
+						fontSize: inherit(),
+						textColor: inherit(),
 						textAlign: 'center',
-						borderRadius: inheritStyle(),
-						shadow: false
-					}
+						lineHeight: inherit(),
+						letterSpacing: inherit()
+					},
+					fill: null,
+					stroke: null,
+					shadow: null
 				},
 				{
 					id: createId('node'),
@@ -206,16 +225,25 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 							userTitle: '🛒 Add a link to your Shopify store'
 						}
 					},
-					style: {
-						padding: inheritStyle(),
-						backgroundColor: inheritStyle(),
-						font: inheritStyle(),
-						fontSize: inheritStyle(),
-						textColor: inheritStyle(),
-						textAlign: inheritStyle(),
-						borderRadius: inheritStyle(),
-						shadow: inheritStyle()
-					}
+					layout: {
+						padding: inherit()
+					},
+					appearance: {
+						borderRadius: inherit(),
+						opacity: inherit(),
+						visible: inherit()
+					},
+					typography: {
+						font: inherit(),
+						fontSize: inherit(),
+						textColor: inherit(),
+						textAlign: inherit(),
+						lineHeight: inherit(),
+						letterSpacing: inherit()
+					},
+					fill: inherit(),
+					stroke: inherit(),
+					shadow: inherit()
 				},
 				{
 					id: createId('node'),
@@ -223,20 +251,35 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					content: {
 						text: '### 📙 Or some text\nwith a different font and background color'
 					},
-					style: {
-						padding: inheritStyle(),
-						backgroundColor: hexToRgba('#E6EDFF'),
+					layout: {
+						padding: inherit()
+					},
+					appearance: {
+						borderRadius: 0,
+						opacity: inherit(),
+						visible: inherit()
+					},
+					typography: {
 						font: {
 							family: 'Lora',
 							weight: 400,
 							style: 'normal'
 						},
-						fontSize: inheritStyle(),
-						textColor: inheritStyle(),
-						textAlign: inheritStyle(),
-						borderRadius: 0,
-						shadow: inheritStyle()
-					}
+						fontSize: inherit(),
+						textColor: inherit(),
+						textAlign: inherit(),
+						lineHeight: inherit(),
+						letterSpacing: inherit()
+					},
+					fill: {
+						paint: {
+							type: 'solid',
+							color: hexToRgba('#E6EDFF')
+						},
+						opacity: 1
+					},
+					stroke: inherit(),
+					shadow: inherit()
 				},
 				{
 					id: createId('node'),
@@ -244,16 +287,31 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					content: {
 						text: '🔮 Let your imagination flow'
 					},
-					style: {
-						padding: inheritStyle(),
-						backgroundColor: hexToRgba('#FAF5FF'),
-						font: inheritStyle(),
+					layout: {
+						padding: inherit()
+					},
+					appearance: {
+						borderRadius: 999,
+						opacity: inherit(),
+						visible: inherit()
+					},
+					typography: {
+						font: inherit(),
 						fontSize: 24,
 						textColor: hexToRgba('#E879F9'),
-						textAlign: inheritStyle(),
-						borderRadius: 999,
-						shadow: inheritStyle()
-					}
+						textAlign: inherit(),
+						lineHeight: inherit(),
+						letterSpacing: inherit()
+					},
+					fill: {
+						paint: {
+							type: 'solid',
+							color: hexToRgba('#FAF5FF')
+						},
+						opacity: 1
+					},
+					stroke: inherit(),
+					shadow: inherit()
 				},
 				...(productNode != null ? [productNode] : []),
 				{
@@ -266,27 +324,60 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 							altText: 'Welcome GIF'
 						}
 					},
-					style: {
-						padding: 0,
-						backgroundColor: inheritStyle(),
-						borderRadius: inheritStyle(),
-						shadow: inheritStyle()
-					}
+					layout: {
+						padding: 0
+					},
+					appearance: {
+						borderRadius: inherit(),
+						opacity: inherit(),
+						visible: inherit()
+					},
+					fill: inherit(),
+					stroke: inherit(),
+					shadow: inherit()
 				}
 			],
-			style: {
-				backgroundColor: hexToRgba(backgroundColor),
-				children: {
-					backgroundColor: hexToRgba(surfaceColor),
-					spacing: 24,
-					padding: 12,
+			layout: {
+				spacing: 24
+			},
+			appearance: {
+				borderRadius: 0,
+				opacity: 1,
+				visible: true
+			},
+			fill: {
+				paint: {
+					type: 'solid',
+					color: hexToRgba(backgroundColor)
+				},
+				opacity: 1
+			},
+			childMixins: {
+				layout: {
+					padding: 12
+				},
+				appearance: {
+					borderRadius,
+					opacity: 1,
+					visible: true
+				},
+				typography: {
 					font: bodyFont.font,
 					fontSize: 16,
 					textColor: hexToRgba(primaryColor),
 					textAlign: 'center',
-					borderRadius: borderRadius,
-					shadow: true
-				}
+					lineHeight: 1.5,
+					letterSpacing: 0
+				},
+				fill: {
+					paint: {
+						type: 'solid',
+						color: hexToRgba(surfaceColor)
+					},
+					opacity: 1
+				},
+				stroke: null,
+				shadow: null
 			}
 		}
 	};

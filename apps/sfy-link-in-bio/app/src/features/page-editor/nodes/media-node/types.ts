@@ -7,8 +7,8 @@ import {
 	TResolvedStrokeStyleMixin
 } from '../../mixins';
 
-export type TResolvedMediaNode = TBaseNode<
-	TResolvedMediaNodeMixin,
+export type TResolvedMediaNode<GMedia extends TResolvedMedia = TResolvedMedia> = TBaseNode<
+	TResolvedMediaNodeMixin<GMedia>,
 	[
 		TIdMixin,
 		TResolvedLayoutStyleMixin,
@@ -19,9 +19,9 @@ export type TResolvedMediaNode = TBaseNode<
 	]
 >;
 
-export type TResolvedMediaNodeMixin = TMixin<
+export type TResolvedMediaNodeMixin<GMedia extends TResolvedMedia = TResolvedMedia> = TMixin<
 	'node',
-	{ type: 'media'; content: { media?: TResolvedMedia } }
+	{ type: 'media'; content: { media?: GMedia } }
 >;
 
 export type TResolvedMedia = TResolvedImageMedia;

@@ -16,7 +16,7 @@ export const ResolvedMediaNode = React.forwardRef<
 			{(() => {
 				switch (content.media?.type) {
 					case 'image':
-						return <ImageContent media={content.media} node={node} cx={cx} />;
+						return <ImageContent node={node} cx={cx} />;
 					default:
 						return <Skeleton node={node} />;
 				}

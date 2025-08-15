@@ -82,23 +82,23 @@ export type TAboutNodeMixin = TMixin<
 	}
 >;
 
-export type TLinkNodeMixin = TMixin<
+export type TLinkNodeMixin<GVariant extends TLinkVariant = TLinkVariant> = TMixin<
 	'node',
 	{
 		type: 'link';
 		content: {
 			url: string;
-			variant: TLinkVariant;
+			variant: GVariant;
 		};
 	}
 >;
 
-export type TMediaNodeMixin = TMixin<
+export type TMediaNodeMixin<GMedia extends TMedia = TMedia> = TMixin<
 	'node',
 	{
 		type: 'media';
 		content: {
-			media?: TMedia;
+			media?: GMedia;
 		};
 	}
 >;

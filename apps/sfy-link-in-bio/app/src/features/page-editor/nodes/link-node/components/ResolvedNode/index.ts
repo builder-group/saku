@@ -1,1 +1,1 @@
-export * from './StaticLinkNode';
+export * from './ResolvedNode';

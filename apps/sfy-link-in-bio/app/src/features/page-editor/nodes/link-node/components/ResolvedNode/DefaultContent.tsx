@@ -4,9 +4,7 @@ import { TResolvedDefaultLinkVariant, TResolvedLinkNode } from '../../types';
 
 export const DefaultContent: React.FC<TDefaultContentProps> = (props) => {
 	const {
-		url,
-		variant,
-		node: { layout, appearance, typography, fill, stroke, shadow }
+		node: { content, layout, appearance, typography, fill, stroke, shadow }
 	} = props;
 
 	const iconBorderRadius = React.useMemo(() => {
@@ -21,7 +19,7 @@ export const DefaultContent: React.FC<TDefaultContentProps> = (props) => {
 
 	return (
 		<a
-			href={url}
+			href={content.url}
 			target="_blank"
 			rel="noopener noreferrer"
 			className="relative flex w-full cursor-pointer items-center gap-3 overflow-hidden bg-white text-inherit no-underline hover:opacity-90"
@@ -38,7 +36,7 @@ export const DefaultContent: React.FC<TDefaultContentProps> = (props) => {
 		>
 			<div className="flex min-h-12 w-full items-center gap-3">
 				{/* Site Icon */}
-				{variant.favicon != null && (
+				{content.variant.favicon != null && (
 					<div
 						className="h-12 w-12 flex-shrink-0 overflow-hidden bg-gray-100"
 						style={{
@@ -46,8 +44,8 @@ export const DefaultContent: React.FC<TDefaultContentProps> = (props) => {
 						}}
 					>
 						<img
-							src={variant.favicon}
-							alt={variant.title ?? 'Site Icon'}
+							src={content.variant.favicon}
+							alt={content.variant.title ?? 'Site Icon'}
 							className="h-full w-full object-cover"
 							draggable={false}
 						/>
@@ -56,9 +54,11 @@ export const DefaultContent: React.FC<TDefaultContentProps> = (props) => {
 
 				{/* Link Details */}
 				<div className="min-w-0 flex-grow">
-					{variant.title != null && <p className="truncate font-medium">{variant.title}</p>}
-					{variant.description != null && (
-						<p className="truncate text-sm opacity-70">{variant.description}</p>
+					{content.variant.title != null && (
+						<p className="truncate font-medium">{content.variant.title}</p>
+					)}
+					{content.variant.description != null && (
+						<p className="truncate text-sm opacity-70">{content.variant.description}</p>
 					)}
 				</div>
 			</div>
@@ -67,8 +67,6 @@ export const DefaultContent: React.FC<TDefaultContentProps> = (props) => {
 };
 
 interface TDefaultContentProps {
-	url: string;
-	variant: TResolvedDefaultLinkVariant;
-	node: TResolvedLinkNode;
+	node: TResolvedLinkNode<TResolvedDefaultLinkVariant>;
 	cx: TResolvedNodeProps<TResolvedLinkNode>['cx'];
 }
