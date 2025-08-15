@@ -1,28 +1,20 @@
-import {
-	isInherited,
-	resolveReference,
-	TFillStyleMixin,
-	TFlatNode,
-	TMergeMixins,
-	TRgba,
-	TUnreference
-} from '@repo/editor';
+import { TFillStyleMixin, TFlatNode, TMergeMixins, TRgba, TUnreference } from '@repo/editor';
 import { Button, Text } from '@shopify/polaris';
 import React from 'react';
 import { ColorStyleField, TextStyleField } from '../../components';
 import { TNodeState } from '../../lib';
 
-export const FillStyleMixinEditor = <GNode extends TFlatNode, GParentNode extends TFlatNode>(
-	props: TFillStyleMixinEditorProps<GNode, GParentNode>
+export const ChildFillStyleMixinEditor = <GNode extends TFlatNode>(
+	props: TChildFillStyleMixinEditorProps<GNode>
 ) => {
-	const { nodeState, parentNodeState } = props;
+	const { nodeState } = props;
 
-	const resolvedFill = React.useMemo(() => {
-		return resolveReference(nodeState._v.fill, parentNodeState?._v.childMixins?.fill);
-	}, [nodeState, parentNodeState]);
+	const currentFill = React.useMemo(() => {
+		return nodeState._v.childMixins?.fill;
+	}, [nodeState]);
 
 	const handleAddFill = React.useCallback(() => {
-		nodeState._v.fill = {
+		nodeState._v.childMixins.fill = {
 			paint: {
 				type: 'solid',
 				color: { r: 0, g: 0, b: 0, a: 1 }
@@ -33,7 +25,7 @@ export const FillStyleMixinEditor = <GNode extends TFlatNode, GParentNode extend
 	}, [nodeState]);
 
 	const handleRemoveFill = React.useCallback(() => {
-		nodeState._v.fill = null;
+		nodeState._v.childMixins.fill = null;
 		nodeState._notify();
 	}, [nodeState]);
 
@@ -43,7 +35,7 @@ export const FillStyleMixinEditor = <GNode extends TFlatNode, GParentNode extend
 				<Text as="span" variant="headingXs" tone="subdued">
 					Fill
 				</Text>
-				{resolvedFill != null ? (
+				{currentFill != null ? (
 					<Button size="slim" tone="critical" onClick={handleRemoveFill} aria-label="Remove fill">
 						−
 					</Button>
@@ -54,14 +46,14 @@ export const FillStyleMixinEditor = <GNode extends TFlatNode, GParentNode extend
 				)}
 			</div>
 
-			{resolvedFill != null && (
+			{currentFill != null && (
 				<div className="space-y-3">
 					<ColorStyleField
 						label="Color"
 						node={nodeState}
 						nodeValueMapper={(value) => {
-							const fill = value.fill;
-							if (fill != null && !isInherited(fill) && fill.paint.type === 'solid') {
+							const fill = value.childMixins?.fill;
+							if (fill != null && fill.paint.type === 'solid') {
 								return fill.paint.color;
 							}
 							return undefined;
@@ -69,11 +61,10 @@ export const FillStyleMixinEditor = <GNode extends TFlatNode, GParentNode extend
 						nodeValueSetter={(node, value) => {
 							if (
 								value != null &&
-								node._v.fill != null &&
-								!isInherited(node._v.fill) &&
-								node._v.fill.paint.type === 'solid'
+								node._v.childMixins?.fill != null &&
+								node._v.childMixins.fill.paint.type === 'solid'
 							) {
-								node._v.fill.paint.color = value as TRgba;
+								node._v.childMixins.fill.paint.color = value as TRgba;
 								node._notify();
 							}
 						}}
@@ -84,15 +75,15 @@ export const FillStyleMixinEditor = <GNode extends TFlatNode, GParentNode extend
 						label="Opacity"
 						node={nodeState}
 						nodeValueMapper={(value) => {
-							const fill = value.fill;
-							if (fill != null && !isInherited(fill)) {
+							const fill = value.childMixins?.fill;
+							if (fill != null) {
 								return fill.opacity;
 							}
 							return undefined;
 						}}
 						nodeValueSetter={(node, value) => {
-							if (node._v.fill != null && !isInherited(node._v.fill)) {
-								node._v.fill.opacity = value as number;
+							if (node._v.childMixins?.fill != null) {
+								node._v.childMixins.fill.opacity = value as number;
 								node._notify();
 							}
 						}}
@@ -108,11 +99,6 @@ export const FillStyleMixinEditor = <GNode extends TFlatNode, GParentNode extend
 	);
 };
 
-interface TFillStyleMixinEditorProps<GNode extends TFlatNode, GParentNode extends TFlatNode> {
-	nodeState: TNodeState<GNode & TMergeMixins<[TFillStyleMixin]>>;
-	parentNodeState?: TNodeState<
-		GParentNode & {
-			childMixins: TMergeMixins<[TUnreference<TFillStyleMixin>]>;
-		}
-	>;
+interface TChildFillStyleMixinEditorProps<GNode extends TFlatNode> {
+	nodeState: TNodeState<GNode & { childMixins: TMergeMixins<[TUnreference<TFillStyleMixin>]> }>;
 }

@@ -59,26 +59,16 @@ export const TextNodeEditor: React.FC<TNodeEditorComponentProps<TTextNode>> = (p
 
 			{/* Style Section */}
 			<AccordionSection title="Style" defaultOpen={true} collapsibleClassName="px-0 space-y-3">
-				{/* Layout */}
 				<LayoutStyleMixinEditor nodeState={nodeState} parentNodeState={parentNodeState} />
-
 				<div className="h-px bg-gray-200" />
-
-				{/* Appearance */}
 				<AppearanceStyleMixinEditor nodeState={nodeState} parentNodeState={parentNodeState} />
-
 				<div className="h-px bg-gray-200" />
-
-				{/* Typography */}
 				<TypographyStyleMixinEditor
 					nodeState={nodeState}
 					parentNodeState={parentNodeState}
 					editor={editor}
 				/>
-
 				<div className="h-px bg-gray-200" />
-
-				{/* Fill */}
 				<FillStyleMixinEditor nodeState={nodeState} parentNodeState={parentNodeState} />
 			</AccordionSection>
 		</>
