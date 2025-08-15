@@ -1,8 +1,8 @@
 import {
 	hexToRgba,
 	hsbaToRgba,
-	inheritStyle,
-	isInheritedStyle,
+	inherit,
+	isInherited,
 	isValidHex,
 	resolveReference,
 	rgbaToHex,
@@ -47,7 +47,7 @@ export const ColorStyleField = <GNodeValue, GParentNodeValue>(
 		parent != null ? parentValueMapper?.(parent) : undefined
 	);
 
-	const isValueInherited = React.useMemo(() => isInheritedStyle(currentValue), [currentValue]);
+	const isValueInherited = React.useMemo(() => isInherited(currentValue), [currentValue]);
 	const resolvedValue = React.useMemo(
 		() => resolveReference(currentValue, parentValue),
 		[currentValue, parentValue]
@@ -144,7 +144,7 @@ export const ColorStyleField = <GNodeValue, GParentNodeValue>(
 		// Syncing: Set to inherit
 		else {
 			handleValueChange(
-				inheritStyle() as GParentNodeValue extends never ? TRgba | undefined : TReference<TRgba>
+				inherit() as GParentNodeValue extends never ? TRgba | undefined : TReference<TRgba>
 			);
 		}
 	}, [handleValueChange, isValueInherited, parentValue]);

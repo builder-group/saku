@@ -1,4 +1,4 @@
-import { inheritStyle, isInheritedStyle, resolveReference, TReference } from '@repo/editor';
+import { inherit, isInherited, resolveReference, TReference } from '@repo/editor';
 import { Text, Tooltip } from '@shopify/polaris';
 import { useCompute } from 'feature-react/state';
 import { TState } from 'feature-state';
@@ -22,7 +22,7 @@ export const ToggleStyleField = <GNodeValue, GParentNodeValue>(
 	const parentValue = useCompute(parentNode, ({ value: parent }) =>
 		parent != null ? parentValueMapper?.(parent) : undefined
 	);
-	const isValueInherited = React.useMemo(() => isInheritedStyle(currentValue), [currentValue]);
+	const isValueInherited = React.useMemo(() => isInherited(currentValue), [currentValue]);
 	const selected = React.useMemo(() => {
 		const resolvedValue = resolveReference(currentValue, parentValue);
 		return resolvedValue === true;
@@ -53,7 +53,7 @@ export const ToggleStyleField = <GNodeValue, GParentNodeValue>(
 		else {
 			nodeValueSetter(
 				node,
-				inheritStyle() as GParentNodeValue extends never ? boolean | undefined : TReference<boolean>
+				inherit() as GParentNodeValue extends never ? boolean | undefined : TReference<boolean>
 			);
 		}
 	}, [node, nodeValueSetter, isValueInherited, parentValue]);

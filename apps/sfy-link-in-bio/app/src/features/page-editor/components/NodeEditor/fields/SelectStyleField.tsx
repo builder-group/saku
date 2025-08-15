@@ -1,4 +1,4 @@
-import { inheritStyle, isInheritedStyle, resolveReference, TReference } from '@repo/editor';
+import { inherit, isInherited, resolveReference, TReference } from '@repo/editor';
 import { Select, SelectProps, Text, Tooltip } from '@shopify/polaris';
 import { useCompute } from 'feature-react/state';
 import { TState } from 'feature-state';
@@ -22,7 +22,7 @@ export const SelectStyleField = <GNodeValue, GParentNodeValue, GValue>(
 	const parentValue = useCompute(parentNode, ({ value: parent }) =>
 		parent != null ? parentValueMapper?.(parent) : undefined
 	);
-	const isValueInherited = React.useMemo(() => isInheritedStyle(currentValue), [currentValue]);
+	const isValueInherited = React.useMemo(() => isInherited(currentValue), [currentValue]);
 	const displayValue = React.useMemo(() => {
 		const resolvedValue = resolveReference(currentValue, parentValue);
 		return resolvedValue != null ? String(resolvedValue) : '';
@@ -62,7 +62,7 @@ export const SelectStyleField = <GNodeValue, GParentNodeValue, GValue>(
 		else {
 			nodeValueSetter(
 				node,
-				inheritStyle() as GParentNodeValue extends never ? GValue | undefined : TReference<GValue>
+				inherit() as GParentNodeValue extends never ? GValue | undefined : TReference<GValue>
 			);
 		}
 	}, [node, nodeValueSetter, isValueInherited, parentValue]);
