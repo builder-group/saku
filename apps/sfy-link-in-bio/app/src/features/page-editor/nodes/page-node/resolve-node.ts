@@ -1,9 +1,4 @@
-import {
-	getBestContrastColor,
-	resolveReferenceOrNull,
-	TAboutNode,
-	TFlatPageNode
-} from '@repo/editor';
+import { getBestContrastColor, resolveReference, TAboutNode, TFlatPageNode } from '@repo/editor';
 import {
 	resolveAppearanceStyleMixin,
 	resolveAsset,
@@ -31,7 +26,7 @@ export function resolvePageNodeWithoutChildren(
 ): Omit<TResolvedPageNode, 'children'> {
 	const { layout, appearance, fill, childMixins: childDefaults, ...rest } = node;
 
-	const resolvedFill = resolveReferenceOrNull(fill);
+	const resolvedFill = resolveReference(fill);
 	const watermarkColor = resolveColor(
 		getBestContrastColor(
 			resolvedFill?.paint.type === 'solid'

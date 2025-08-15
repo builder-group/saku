@@ -1,8 +1,8 @@
 import { shortId } from '@blgc/utils';
 import {
 	fontMetadata,
-	inheritStyle,
-	isInheritedStyle,
+	inherit,
+	isInherited,
 	resolveReference,
 	TAboutNode,
 	TSocialLink
@@ -11,12 +11,7 @@ import { InlineError, Text, TextField } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react/state';
 import React from 'react';
 import { AccordionSection, ImageUploadField, type TImageUploadOnChangeImage } from '@/components';
-import {
-	ColorStyleField,
-	SelectStyleField,
-	TextStyleField,
-	ToggleStyleField
-} from '../../../components';
+import { ColorStyleField, SelectStyleField, TextStyleField } from '../../../components';
 import { TNodeEditorComponentProps } from '../../../lib';
 import { generateSocialUrl, socialMetadataMap, TSocialMetadata } from '../social-metadata';
 
@@ -232,12 +227,12 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 							label="Padding"
 							node={nodeState}
 							parentNode={parentNodeState}
-							nodeValueMapper={(value) => value.style.padding}
+							nodeValueMapper={(value) => value.layout.padding}
 							nodeValueSetter={(node, value) => {
-								node._v.style.padding = value;
+								node._v.layout.padding = value;
 								node._notify();
 							}}
-							parentValueMapper={(parent) => parent.style.children?.padding}
+							parentValueMapper={(parent) => parent.childMixins?.layout?.padding}
 							type="number"
 							autoComplete="off"
 							min={0}
@@ -248,12 +243,12 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 							label="Border Radius"
 							node={nodeState}
 							parentNode={parentNodeState}
-							nodeValueMapper={(value) => value.style.borderRadius}
+							nodeValueMapper={(value) => value.appearance.borderRadius}
 							nodeValueSetter={(node, value) => {
-								node._v.style.borderRadius = value;
+								node._v.appearance.borderRadius = value;
 								node._notify();
 							}}
-							parentValueMapper={(parent) => parent.style.children?.borderRadius}
+							parentValueMapper={(parent) => parent.childMixins?.appearance?.borderRadius}
 							type="number"
 							autoComplete="off"
 							min={0}
@@ -278,23 +273,23 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 								node={nodeState}
 								parentNode={parentNodeState}
 								nodeValueMapper={(value) =>
-									isInheritedStyle(value.style.font)
+									isInherited(value.typography.font)
 										? { type: 'inherit' }
-										: resolveReference(value.style.font)?.family
+										: resolveReference(value.typography.font)?.family
 								}
 								nodeValueSetter={(node, value) => {
-									if (isInheritedStyle(value)) {
-										node._v.style.font = inheritStyle();
+									if (isInherited(value)) {
+										node._v.typography.font = inherit();
 										node._notify();
 									} else if (value != null) {
 										const font = editor.registerFontFamily(value);
 										if (font != null) {
-											node._v.style.font = font;
+											node._v.typography.font = font;
 											node._notify();
 										}
 									}
 								}}
-								parentValueMapper={(parent) => parent.style.children.font.family}
+								parentValueMapper={(parent) => parent.childMixins?.typography?.font?.family}
 								options={fontOptions}
 							/>
 
@@ -302,12 +297,12 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 								label="Text Align"
 								node={nodeState}
 								parentNode={parentNodeState}
-								nodeValueMapper={(value) => value.style.textAlign}
+								nodeValueMapper={(value) => value.typography.textAlign}
 								nodeValueSetter={(node, value) => {
-									node._v.style.textAlign = value;
+									node._v.typography.textAlign = value;
 									node._notify();
 								}}
-								parentValueMapper={(parent) => parent.style.children?.textAlign}
+								parentValueMapper={(parent) => parent.childMixins?.typography?.textAlign}
 								options={[
 									{ label: 'Left', value: 'left' },
 									{ label: 'Center', value: 'center' },
@@ -321,12 +316,12 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 								label="Font Size"
 								node={nodeState}
 								parentNode={parentNodeState}
-								nodeValueMapper={(value) => value.style.fontSize}
+								nodeValueMapper={(value) => value.typography.fontSize}
 								nodeValueSetter={(node, value) => {
-									node._v.style.fontSize = value;
+									node._v.typography.fontSize = value;
 									node._notify();
 								}}
-								parentValueMapper={(parent) => parent.style.children?.fontSize}
+								parentValueMapper={(parent) => parent.childMixins?.typography?.fontSize}
 								type="number"
 								autoComplete="off"
 							/>
@@ -335,22 +330,22 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 								label="Text Color"
 								node={nodeState}
 								parentNode={parentNodeState}
-								nodeValueMapper={(value) => value.style.textColor}
+								nodeValueMapper={(value) => value.typography.textColor}
 								nodeValueSetter={(node, value) => {
-									node._v.style.textColor = value;
+									node._v.typography.textColor = value;
 									node._notify();
 								}}
-								parentValueMapper={(parent) => parent.style.children?.textColor}
+								parentValueMapper={(parent) => parent.childMixins?.typography?.textColor}
 								autoComplete="off"
 							/>
 						</div>
 					</div>
 				</div>
 
-				<div className="h-px bg-gray-200" />
+				{/* <div className="h-px bg-gray-200" /> */}
 
 				{/* Background & Effects */}
-				<div className="space-y-3 px-4">
+				{/* <div className="space-y-3 px-4">
 					<div>
 						<Text as="span" variant="headingXs" tone="subdued">
 							Background & Effects
@@ -387,7 +382,7 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 							/>
 						</div>
 					</div>
-				</div>
+				</div> */}
 			</AccordionSection>
 		</>
 	);

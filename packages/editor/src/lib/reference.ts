@@ -20,21 +20,14 @@ export function isInherited<T>(
  * @param inheritedValue The value to use if the reference is inherited
  * @returns The resolved value
  */
-export function resolveReference<T>(value: TReference<T>, inheritedValue: T): T {
-	if (isInherited(value)) {
+export function resolveReference<T>(value: TReference<T>, inheritedValue: T): T;
+export function resolveReference<T>(value?: TReference<T>): T | undefined;
+export function resolveReference<T>(value?: TReference<T>, inheritedValue?: T): T | undefined {
+	if (value == null) {
 		return inheritedValue;
 	}
-	return value;
-}
-
-/**
- * Resolves a reference and returns the value or null if not present
- * @param value The style reference to resolve
- * @returns The resolved value or null if inherited/not present
- */
-export function resolveReferenceOrNull<T>(value: TReference<T> | undefined): T | null {
-	if (value == null || isInherited(value)) {
-		return null;
+	if (isInherited(value)) {
+		return inheritedValue;
 	}
 	return value;
 }
