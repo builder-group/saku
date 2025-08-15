@@ -2,7 +2,6 @@ import { TTextNode } from '@repo/editor';
 import { useCombinedCompute } from 'feature-react';
 import React from 'react';
 import { EditorSiteResolveContext, TNodeProps } from '../../../lib';
-import { TResolvedTextNode } from '../../../types';
 import { resolveTextNode } from '../resolve-node';
 import { ResolvedTextNode } from './ResolvedNode';
 
@@ -11,12 +10,10 @@ export const TextNode = React.forwardRef<HTMLDivElement, TNodeProps<TTextNode>>(
 
 	const node = useCombinedCompute(
 		[editor.getRootNode(), nodeState],
-		([{ value: pageNodeValue }, { value: nodeValue }]): TResolvedTextNode => {
+		([{ value: pageNodeValue }, { value: nodeValue }]) => {
 			return resolveTextNode(nodeValue, {
 				site: new EditorSiteResolveContext(editor),
-				resolved: {
-					childDefaults: pageNodeValue?.style.children
-				}
+				childMixins: pageNodeValue?.childMixins
 			});
 		}
 	);

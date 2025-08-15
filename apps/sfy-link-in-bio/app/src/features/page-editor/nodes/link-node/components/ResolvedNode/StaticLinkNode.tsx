@@ -1,6 +1,6 @@
 import React from 'react';
 import { TResolvedNodeProps } from '../../../../lib';
-import { TResolvedLinkNode } from '../../../../types';
+import { TResolvedLinkNode } from '../../types';
 import { DefaultContent } from './DefaultContent';
 import { YouTubeVideoEmbedContent } from './YouTubeVideoEmbedContent';
 
@@ -8,11 +8,8 @@ export const ResolvedLinkNode = React.forwardRef<
 	HTMLDivElement,
 	TResolvedNodeProps<TResolvedLinkNode>
 >((props, ref) => {
-	const {
-		node: { content, style },
-		cx,
-		...divProps
-	} = props;
+	const { node, cx, ...divProps } = props;
+	const { content } = node;
 
 	return (
 		<div {...divProps} ref={ref} className="w-full max-w-md">
@@ -20,10 +17,10 @@ export const ResolvedLinkNode = React.forwardRef<
 				switch (content.variant.type) {
 					case 'default':
 						return (
-							<DefaultContent url={content.url} variant={content.variant} style={style} cx={cx} />
+							<DefaultContent url={content.url} variant={content.variant} node={node} cx={cx} />
 						);
 					case 'youtube-video-embed':
-						return <YouTubeVideoEmbedContent variant={content.variant} style={style} cx={cx} />;
+						return <YouTubeVideoEmbedContent variant={content.variant} node={node} cx={cx} />;
 					default:
 						return null;
 				}

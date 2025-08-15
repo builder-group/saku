@@ -1,6 +1,5 @@
 import { TLinkNode } from '@repo/editor';
-import { resolveLinkNode } from '../../../nodes';
-import { TResolvedLinkNode, TResolvedPromisedNode } from '../../../types';
+import { resolveLinkNode, TResolvedLinkNode, TResolvedPromisedNode } from '../../../nodes';
 import { TNodeHydrateContext } from '../../lib';
 
 export function hydrateLinkNode(

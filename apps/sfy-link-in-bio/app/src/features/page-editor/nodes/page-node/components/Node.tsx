@@ -11,11 +11,14 @@ export const PageNode = React.forwardRef<HTMLDivElement, TNodeProps<TFlatPageNod
 	(props, ref) => {
 		const { nodeState, editor, ...divProps } = props;
 
-		const { style } = useCompute(nodeState, ({ value: nodeValue }) => {
-			return resolvePageNodeWithoutChildren(nodeValue, {
-				site: new EditorSiteResolveContext(editor)
-			});
-		});
+		const { layout, childDefaults, fill, watermarkColor } = useCompute(
+			nodeState,
+			({ value: nodeValue }) => {
+				return resolvePageNodeWithoutChildren(nodeValue, {
+					site: new EditorSiteResolveContext(editor)
+				});
+			}
+		);
 		const childNodes = useCompute(
 			nodeState,
 			({ value: node }) => {
@@ -29,16 +32,16 @@ export const PageNode = React.forwardRef<HTMLDivElement, TNodeProps<TFlatPageNod
 				{...divProps}
 				ref={ref}
 				className="min-h-screen w-full"
-				style={{ backgroundColor: style.backgroundColor }}
+				style={{ backgroundColor: fill?.paint.type === 'solid' ? fill?.paint.color : undefined }}
 			>
 				<div className="mx-auto w-full max-w-md">
 					<div
 						className="flex w-full flex-col p-6"
 						style={{
-							gap: style.children.spacing,
-							fontFamily: style.children.font?.family,
-							fontSize: style.children.fontSize,
-							color: style.children.textColor
+							gap: layout.spacing,
+							fontFamily: childDefaults?.typography?.font?.family,
+							fontSize: childDefaults?.typography?.fontSize,
+							color: childDefaults?.typography?.textColor
 						}}
 					>
 						{childNodes.map((childNodeState) => (
@@ -51,7 +54,7 @@ export const PageNode = React.forwardRef<HTMLDivElement, TNodeProps<TFlatPageNod
 							target="_blank"
 							rel="noopener noreferrer"
 							className="mx-auto mt-12 flex items-center gap-2 pb-6 text-sm no-underline hover:opacity-75"
-							style={{ color: style.watermarkColor }}
+							style={{ color: watermarkColor }}
 						>
 							<LogoIcon className="h-6 w-6" />
 							<span>Powered by Saku</span>

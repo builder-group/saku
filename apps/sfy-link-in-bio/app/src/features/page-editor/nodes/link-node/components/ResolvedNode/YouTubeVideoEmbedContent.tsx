@@ -1,18 +1,21 @@
 import React from 'react';
 import { TResolvedNodeProps } from '../../../../lib';
-import { TResolvedLinkNode, TResolvedYouTubeVideoEmbedLinkVariant } from '../../../../types';
+import { TResolvedLinkNode, TResolvedYouTubeVideoEmbedLinkVariant } from '../../types';
 
 export const YouTubeVideoEmbedContent: React.FC<TYouTubeVideoEmbedContentProps> = (props) => {
-	const { variant, style } = props;
+	const {
+		variant,
+		node: { layout, appearance, typography, fill, stroke, shadow }
+	} = props;
 
 	return (
 		<div
 			className="relative block w-full overflow-hidden bg-white"
 			style={{
-				padding: style.padding,
-				backgroundColor: style.backgroundColor,
-				borderRadius: style.borderRadius,
-				boxShadow: style.shadow ? '0 4px 6px -1px rgb(0 0 0 / 0.1)' : undefined
+				padding: layout?.padding,
+				backgroundColor: fill?.paint.type === 'solid' ? fill?.paint.color : undefined,
+				borderRadius: appearance?.borderRadius,
+				boxShadow: shadow ? '0 4px 6px -1px rgb(0 0 0 / 0.1)' : undefined
 			}}
 		>
 			<div className="relative aspect-[16/9] w-full">
@@ -29,6 +32,6 @@ export const YouTubeVideoEmbedContent: React.FC<TYouTubeVideoEmbedContentProps> 
 
 interface TYouTubeVideoEmbedContentProps {
 	variant: TResolvedYouTubeVideoEmbedLinkVariant;
-	style: TResolvedLinkNode['style'];
+	node: TResolvedLinkNode;
 	cx: TResolvedNodeProps<TResolvedLinkNode>['cx'];
 }

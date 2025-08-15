@@ -1,6 +1,5 @@
 import { TProductNode } from '@repo/editor';
-import { resolveProductNode } from '../../../nodes';
-import { TResolvedProductNode, TResolvedPromisedNode } from '../../../types';
+import { resolveProductNode, TResolvedProductNode, TResolvedPromisedNode } from '../../../nodes';
 import { TNodeHydrateContext } from '../../lib';
 
 export function hydrateProductNode(

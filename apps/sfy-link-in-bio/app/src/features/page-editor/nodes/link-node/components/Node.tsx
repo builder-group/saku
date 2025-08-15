@@ -13,9 +13,7 @@ export const LinkNode = React.forwardRef<HTMLDivElement, TNodeProps<TLinkNode>>(
 		([{ value: pageNodeValue }, { value: nodeValue }]) => {
 			return resolveLinkNode(nodeValue, {
 				site: new EditorSiteResolveContext(editor),
-				resolved: {
-					childDefaults: pageNodeValue?.style.children
-				}
+				childMixins: pageNodeValue?.childMixins
 			});
 		}
 	);

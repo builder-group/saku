@@ -27,7 +27,7 @@ export type TResolvedLinkNodeMixin = TMixin<
 		type: 'link';
 		content: {
 			url: string;
-			variant?: TResolvedLinkVariant;
+			variant: TResolvedLinkVariant;
 		};
 	}
 >;

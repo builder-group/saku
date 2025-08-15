@@ -13,9 +13,7 @@ export const MediaNode = React.forwardRef<HTMLDivElement, TNodeProps<TMediaNode>
 		([{ value: pageNodeValue }, { value: nodeValue }]) => {
 			return resolveMediaNode(nodeValue, {
 				site: new EditorSiteResolveContext(editor),
-				resolved: {
-					childDefaults: pageNodeValue?.style.children
-				}
+				childMixins: pageNodeValue?.childMixins
 			});
 		}
 	);

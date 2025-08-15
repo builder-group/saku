@@ -1,4 +1,5 @@
 import { resolveReference, TFont, TRgba, TTypographyStyleMixin } from '@repo/editor';
+import { resolveColor } from '../../lib';
 import { TResolvedTypographyStyleMixin } from './types';
 
 export function resolveTypographyStyleMixin(
@@ -19,7 +20,7 @@ export function resolveTypographyStyleMixin(
 	return {
 		font: resolveReference(typography.font, parentMixin.font),
 		fontSize: resolveReference(typography.fontSize, parentMixin.fontSize),
-		textColor: resolveReference(typography.textColor, parentMixin.textColor),
+		textColor: resolveColor(resolveReference(typography.textColor, parentMixin.textColor)),
 		textAlign: resolveReference(typography.textAlign, parentMixin.textAlign),
 		lineHeight: resolveReference(typography.lineHeight, parentMixin.lineHeight),
 		letterSpacing: resolveReference(typography.letterSpacing, parentMixin.letterSpacing)
