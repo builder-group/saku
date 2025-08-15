@@ -1,14 +1,13 @@
 import { TAboutNode } from '@repo/editor';
+import { resolveAsset, TNodeResolveContext } from '../../lib';
 import {
 	resolveAppearanceStyleMixin,
-	resolveAsset,
 	resolveFillStyleMixin,
 	resolveLayoutStyleMixin,
 	resolveShadowStyleMixin,
 	resolveStrokeStyleMixin,
-	resolveTypographyStyleMixin,
-	TNodeResolveContext
-} from '../../lib';
+	resolveTypographyStyleMixin
+} from '../../mixins';
 import { TResolvedAboutNode } from './types';
 
 export function resolveAboutNode(node: TAboutNode, cx: TNodeResolveContext): TResolvedAboutNode {

@@ -1,5 +1,6 @@
-import { resolveReference, TMixin, TRgba, TStrokeStyleMixin } from '@repo/editor';
-import { resolveColor } from './resolve-color';
+import { resolveReference, TRgba, TStrokeStyleMixin } from '@repo/editor';
+import { resolveColor } from '../../lib';
+import { TResolvedStrokeStyleMixin } from './types';
 
 export function resolveStrokeStyleMixin(
 	stroke: TStrokeStyleMixin['value'],
@@ -22,12 +23,3 @@ export function resolveStrokeStyleMixin(
 		color: resolveColor(resolvedStroke.color)
 	};
 }
-
-export type TResolvedStrokeStyleMixin = TMixin<
-	'stroke',
-	| {
-			width: number;
-			color: string;
-	  }
-	| undefined
->;

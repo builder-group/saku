@@ -1,4 +1,4 @@
-import { getFontHash, isInheritedStyle, TAboutNode, TAssetHash } from '@repo/editor';
+import { getFontHash, isInherited, TAboutNode, TAssetHash } from '@repo/editor';
 
 /**
  * Extracts asset hashes from an about node
@@ -12,8 +12,8 @@ export function getAboutNodeAssetHashes(node: TAboutNode): TAssetHash[] {
 	}
 
 	// Font asset (if not inherited)
-	if (node.style?.font != null && !isInheritedStyle(node.style.font)) {
-		hashes.push(getFontHash(node.style.font));
+	if (node.typography?.font != null && !isInherited(node.typography.font)) {
+		hashes.push(getFontHash(node.typography.font));
 	}
 
 	return hashes;

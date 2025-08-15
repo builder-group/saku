@@ -1,4 +1,5 @@
-import { resolveReference, TAppearanceStyleMixin, TMixin } from '@repo/editor';
+import { resolveReference, TAppearanceStyleMixin } from '@repo/editor';
+import { TResolvedAppearanceStyleMixin } from './types';
 
 export function resolveAppearanceStyleMixin(
 	appearance: TAppearanceStyleMixin['value'],
@@ -14,13 +15,3 @@ export function resolveAppearanceStyleMixin(
 		visible: resolveReference(appearance.visible, parentMixin?.visible)
 	};
 }
-
-export type TResolvedAppearanceStyleMixin = TMixin<
-	'appearance',
-	| {
-			borderRadius: number;
-			opacity: number;
-			visible: boolean;
-	  }
-	| undefined
->;

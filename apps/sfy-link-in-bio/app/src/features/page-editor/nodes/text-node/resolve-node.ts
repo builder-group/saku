@@ -1,13 +1,13 @@
 import { TTextNode } from '@repo/editor';
+import { TNodeResolveContext } from '../../lib';
 import {
 	resolveAppearanceStyleMixin,
 	resolveFillStyleMixin,
 	resolveLayoutStyleMixin,
 	resolveShadowStyleMixin,
 	resolveStrokeStyleMixin,
-	resolveTypographyStyleMixin,
-	TNodeResolveContext
-} from '../../lib';
+	resolveTypographyStyleMixin
+} from '../../mixins';
 import { TResolvedTextNode } from './types';
 
 export function resolveTextNode(node: TTextNode, cx: TNodeResolveContext): TResolvedTextNode {

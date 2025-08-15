@@ -1,15 +1,14 @@
 import { notEmpty } from '@blgc/utils';
 import { TProductNode } from '@repo/editor';
+import { resolveAsset, TNodeResolveContext } from '../../lib';
 import {
 	resolveAppearanceStyleMixin,
-	resolveAsset,
 	resolveFillStyleMixin,
 	resolveLayoutStyleMixin,
 	resolveShadowStyleMixin,
 	resolveStrokeStyleMixin,
-	resolveTypographyStyleMixin,
-	TNodeResolveContext
-} from '../../lib';
+	resolveTypographyStyleMixin
+} from '../../mixins';
 import { TResolvedProduct, TResolvedProductNode } from './types';
 
 export function resolveProductNode(

@@ -5,7 +5,7 @@ import {
 	TResolvedLayoutStyleMixin,
 	TResolvedShadowStyleMixin,
 	TResolvedStrokeStyleMixin
-} from '../../lib';
+} from '../../mixins';
 
 export type TResolvedMediaNode = TBaseNode<
 	TResolvedMediaNodeMixin,

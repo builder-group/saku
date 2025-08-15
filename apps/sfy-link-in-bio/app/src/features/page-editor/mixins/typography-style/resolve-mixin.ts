@@ -1,4 +1,5 @@
-import { resolveReference, TFont, TMixin, TRgba, TTypographyStyleMixin } from '@repo/editor';
+import { resolveReference, TFont, TRgba, TTypographyStyleMixin } from '@repo/editor';
+import { TResolvedTypographyStyleMixin } from './types';
 
 export function resolveTypographyStyleMixin(
 	typography: TTypographyStyleMixin['value'],
@@ -24,16 +25,3 @@ export function resolveTypographyStyleMixin(
 		letterSpacing: resolveReference(typography.letterSpacing, parentMixin.letterSpacing)
 	};
 }
-
-export type TResolvedTypographyStyleMixin = TMixin<
-	'typography',
-	| {
-			font: TFont;
-			fontSize: number;
-			textColor: TRgba;
-			textAlign: 'left' | 'center' | 'right';
-			lineHeight: number | 'auto';
-			letterSpacing: number | 'auto';
-	  }
-	| undefined
->;

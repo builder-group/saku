@@ -1,14 +1,13 @@
 import { TLinkNode } from '@repo/editor';
+import { resolveAsset, TNodeResolveContext } from '../../lib';
 import {
 	resolveAppearanceStyleMixin,
-	resolveAsset,
 	resolveFillStyleMixin,
 	resolveLayoutStyleMixin,
 	resolveShadowStyleMixin,
 	resolveStrokeStyleMixin,
-	resolveTypographyStyleMixin,
-	TNodeResolveContext
-} from '../../lib';
+	resolveTypographyStyleMixin
+} from '../../mixins';
 import { TResolvedLinkNode, TResolvedLinkVariant } from './types';
 
 export function resolveLinkNode(node: TLinkNode, cx: TNodeResolveContext): TResolvedLinkNode {

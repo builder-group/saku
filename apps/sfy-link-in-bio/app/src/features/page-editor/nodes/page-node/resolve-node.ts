@@ -1,22 +1,20 @@
 import { getBestContrastColor, resolveReference, TAboutNode, TFlatPageNode } from '@repo/editor';
+import { resolveAsset, resolveColor, TNodeResolveContext } from '../../lib';
 import {
 	resolveAppearanceStyleMixin,
-	resolveAsset,
-	resolveColor,
 	resolveFillStyleMixin,
-	resolveFlatChildren,
+	resolveFlatChildrenMixin,
 	resolveLayoutStyleMixin,
 	resolveShadowStyleMixin,
 	resolveStrokeStyleMixin,
-	resolveTypographyStyleMixin,
-	TNodeResolveContext
-} from '../../lib';
+	resolveTypographyStyleMixin
+} from '../../mixins';
 import { TResolvedPageNode } from './types';
 
 export function resolvePageNode(node: TFlatPageNode, cx: TNodeResolveContext): TResolvedPageNode {
 	return {
 		...resolvePageNodeWithoutChildren(node, cx),
-		children: resolveFlatChildren(node.children, node, cx)
+		children: resolveFlatChildrenMixin(node.children, node, cx)
 	};
 }
 

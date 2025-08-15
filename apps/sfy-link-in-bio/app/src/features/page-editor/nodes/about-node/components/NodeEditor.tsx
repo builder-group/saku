@@ -13,6 +13,7 @@ import React from 'react';
 import { AccordionSection, ImageUploadField, type TImageUploadOnChangeImage } from '@/components';
 import { ColorStyleField, SelectStyleField, TextStyleField } from '../../../components';
 import { TNodeEditorComponentProps } from '../../../lib';
+import { LayoutStyleMixinEditor } from '../../../mixins';
 import { generateSocialUrl, socialMetadataMap, TSocialMetadata } from '../social-metadata';
 
 export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = (props) => {
@@ -216,29 +217,18 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 			{/* Style Section */}
 			<AccordionSection title="Style" defaultOpen={true} collapsibleClassName="px-0 space-y-3">
 				{/* Layout */}
+				<LayoutStyleMixinEditor nodeState={nodeState} parentNodeState={parentNodeState} />
+
+				<div className="h-px bg-gray-200" />
+
+				{/* Border Radius */}
 				<div className="space-y-3 px-4">
 					<div>
 						<Text as="span" variant="headingXs" tone="subdued">
-							Layout
+							Appearance
 						</Text>
 					</div>
 					<div className="grid grid-cols-2 gap-3">
-						<TextStyleField
-							label="Padding"
-							node={nodeState}
-							parentNode={parentNodeState}
-							nodeValueMapper={(value) => value.layout.padding}
-							nodeValueSetter={(node, value) => {
-								node._v.layout.padding = value;
-								node._notify();
-							}}
-							parentValueMapper={(parent) => parent.childMixins?.layout?.padding}
-							type="number"
-							autoComplete="off"
-							min={0}
-							max={100}
-						/>
-
 						<TextStyleField
 							label="Border Radius"
 							node={nodeState}

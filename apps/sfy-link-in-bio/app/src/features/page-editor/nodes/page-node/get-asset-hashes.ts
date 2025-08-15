@@ -7,8 +7,8 @@ export function getPageNodeAssetHashes(node: TFlatPageNode): TAssetHash[] {
 	const hashes: TAssetHash[] = [];
 
 	// Font asset
-	if (node.style?.children?.font != null) {
-		hashes.push(getFontHash(node.style.children.font));
+	if (node.childMixins?.typography?.font != null) {
+		hashes.push(getFontHash(node.childMixins.typography.font));
 	}
 
 	// Metadata image asset

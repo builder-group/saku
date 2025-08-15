@@ -6,7 +6,7 @@ import {
 	TResolvedShadowStyleMixin,
 	TResolvedStrokeStyleMixin,
 	TResolvedTypographyStyleMixin
-} from '../../lib';
+} from '../../mixins';
 
 export type TResolvedTextNode = TBaseNode<
 	TResolvedTextNodeMixin,

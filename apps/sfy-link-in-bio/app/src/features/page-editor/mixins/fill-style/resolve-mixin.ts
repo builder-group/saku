@@ -1,12 +1,6 @@
-import {
-	resolveReference,
-	TAsset,
-	TAssetHash,
-	TFillStyleMixin,
-	TMixin,
-	TPaint
-} from '@repo/editor';
-import { resolvePaint, TResolvedPaint } from './resolve-paint';
+import { resolveReference, TAsset, TAssetHash, TFillStyleMixin, TPaint } from '@repo/editor';
+import { resolvePaint } from '../../lib';
+import { TResolvedFillStyleMixin } from './types';
 
 export function resolveFillStyleMixin(
 	fill: TFillStyleMixin['value'],
@@ -37,12 +31,3 @@ export function resolveFillStyleMixin(
 		opacity: resolvedFill.opacity
 	};
 }
-
-export type TResolvedFillStyleMixin = TMixin<
-	'fill',
-	| {
-			paint: TResolvedPaint;
-			opacity: number;
-	  }
-	| undefined
->;

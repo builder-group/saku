@@ -1,4 +1,5 @@
-import { resolveReference, TLayoutStyleMixin, TMixin } from '@repo/editor';
+import { resolveReference, TLayoutStyleMixin } from '@repo/editor';
+import { TResolvedLayoutStyleMixin } from './types';
 
 export function resolveLayoutStyleMixin(
 	layout: TLayoutStyleMixin['value'],
@@ -12,11 +13,3 @@ export function resolveLayoutStyleMixin(
 		padding: resolveReference(layout.padding, parentMixin?.padding)
 	};
 }
-
-export type TResolvedLayoutStyleMixin = TMixin<
-	'layout',
-	| {
-			padding: number;
-	  }
-	| undefined
->;

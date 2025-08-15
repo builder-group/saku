@@ -1,5 +1,6 @@
-import { resolveReference, TMixin, TRgba, TShadowStyleMixin } from '@repo/editor';
-import { resolveColor } from './resolve-color';
+import { resolveReference, TRgba, TShadowStyleMixin } from '@repo/editor';
+import { resolveColor } from '../../lib';
+import { TResolvedShadowStyleMixin } from './types';
 
 export function resolveShadowStyleMixin(
 	shadow: TShadowStyleMixin['value'],
@@ -28,15 +29,3 @@ export function resolveShadowStyleMixin(
 		spread: resolvedShadow.spread
 	};
 }
-
-export type TResolvedShadowStyleMixin = TMixin<
-	'shadow',
-	| {
-			color: string;
-			offsetX: number;
-			offsetY: number;
-			blur: number;
-			spread: number;
-	  }
-	| undefined
->;

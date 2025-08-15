@@ -1,13 +1,12 @@
 import { TMediaNode } from '@repo/editor';
+import { resolveAsset, TNodeResolveContext } from '../../lib';
 import {
 	resolveAppearanceStyleMixin,
-	resolveAsset,
 	resolveFillStyleMixin,
 	resolveLayoutStyleMixin,
 	resolveShadowStyleMixin,
-	resolveStrokeStyleMixin,
-	TNodeResolveContext
-} from '../../lib';
+	resolveStrokeStyleMixin
+} from '../../mixins';
 import { TResolvedMedia, TResolvedMediaNode } from './types';
 
 export function resolveMediaNode(node: TMediaNode, cx: TNodeResolveContext): TResolvedMediaNode {

@@ -1,16 +1,17 @@
 import { notEmpty } from '@blgc/utils';
-import { TFlatChildrenMixin, TFlatNode, TMixin } from '@repo/editor';
+import { TFlatChildrenMixin, TFlatNode } from '@repo/editor';
+import { TNodeResolveContext } from '../../lib';
 import {
 	resolveAboutNode,
 	resolveLinkNode,
 	resolveMediaNode,
 	resolveProductNode,
 	resolveTextNode
-} from '../../../nodes';
-import { TResolvedNode } from '../../../types';
-import { TNodeResolveContext } from '../types';
+} from '../../nodes';
+import { TResolvedNode } from '../../types';
+import { TResolvedChildrenMixin } from './types';
 
-export function resolveFlatChildren(
+export function resolveFlatChildrenMixin(
 	children: TFlatChildrenMixin['value'],
 	parent: TFlatNode,
 	cx: TNodeResolveContext
@@ -46,5 +47,3 @@ export function resolveFlatNode(node: TFlatNode, cx: TNodeResolveContext): TReso
 			return null;
 	}
 }
-
-export type TResolvedChildrenMixin = TMixin<'children', TResolvedNode[]>;
