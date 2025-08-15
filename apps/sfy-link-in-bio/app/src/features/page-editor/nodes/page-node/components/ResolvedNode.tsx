@@ -6,7 +6,7 @@ import { TResolvedPageNode } from '../types';
 
 export const ResolvedPageNode: React.FC<TResolvedNodeProps<TResolvedPageNode>> = (props) => {
 	const {
-		node: { children, childDefaults, layout, appearance, fill, watermarkColor },
+		node: { children, childMixins, layout, appearance, fill, watermarkColor },
 		cx,
 		...divProps
 	} = props;
@@ -24,9 +24,9 @@ export const ResolvedPageNode: React.FC<TResolvedNodeProps<TResolvedPageNode>> =
 					className="flex w-full flex-col p-6"
 					style={{
 						gap: layout?.spacing,
-						fontFamily: childDefaults?.typography?.font?.family,
-						fontSize: childDefaults?.typography?.fontSize,
-						color: childDefaults?.typography?.textColor
+						fontFamily: childMixins.typography?.font.family,
+						fontSize: childMixins.typography?.fontSize,
+						color: childMixins.typography?.textColor
 					}}
 				>
 					{children.map((childNode) => (

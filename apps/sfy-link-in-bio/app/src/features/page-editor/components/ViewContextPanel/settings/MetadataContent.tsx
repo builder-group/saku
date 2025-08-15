@@ -1,3 +1,4 @@
+import { unwrapOrNull } from '@blgc/utils';
 import { InlineError, Text, TextField } from '@shopify/polaris';
 import { useCompute, useFeatureState } from 'feature-react';
 import React from 'react';
@@ -11,10 +12,12 @@ export const MetadataContent: React.FC<TMetadataContentProps> = (props) => {
 
 	const rootNode = React.useMemo(() => editor.getRootNode(), [editor]);
 	const { content } = useFeatureState(rootNode);
-	const { content: resolvedContent } = useCompute(
+	const resolvedPageNode = useCompute(
 		rootNode,
 		({ value: node }) =>
-			resolvePageNodeWithoutChildren(node, { site: new EditorSiteResolveContext(editor) }),
+			unwrapOrNull(
+				resolvePageNodeWithoutChildren(node, { site: new EditorSiteResolveContext(editor) })
+			),
 		[editor]
 	);
 
@@ -93,7 +96,7 @@ export const MetadataContent: React.FC<TMetadataContentProps> = (props) => {
 							value={content.metadata.title}
 							onChange={handleTitleChange}
 							autoComplete="off"
-							placeholder={resolvedContent?.metadata?.title}
+							placeholder={resolvedPageNode?.content.metadata?.title}
 						/>
 					</div>
 
@@ -110,7 +113,7 @@ export const MetadataContent: React.FC<TMetadataContentProps> = (props) => {
 							onChange={handleDescriptionChange}
 							multiline={4}
 							autoComplete="off"
-							placeholder={resolvedContent?.metadata?.description}
+							placeholder={resolvedPageNode?.content.metadata?.description}
 						/>
 					</div>
 

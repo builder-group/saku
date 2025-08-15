@@ -3,9 +3,8 @@ import { TResolvedPaint } from '../../lib';
 
 export type TResolvedFillStyleMixin = TMixin<
 	'fill',
-	| {
-			paint: TResolvedPaint;
-			opacity: number;
-	  }
-	| undefined
+	{
+		paint: TResolvedPaint;
+		opacity: number;
+	}
 >;

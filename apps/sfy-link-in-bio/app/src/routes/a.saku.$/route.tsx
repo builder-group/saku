@@ -150,11 +150,19 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 	const site = result.value.data;
 	const flatSite = site.content as unknown as TFlatSite;
 
+	const hydrateSiteResult = hydrateSite(new StaticSiteHydrateContext(flatSite, site.id, handle));
+	if (hydrateSiteResult.isErr()) {
+		return ServerErr({
+			code: '#ERR_SERVER_ERROR',
+			message: 'Failed to hydrate site'
+		});
+	}
+
 	return ServerOk({
 		appUrl: shopifyConfig.appUrl,
 		site: {
 			id: site.id,
-			content: hydrateSite(new StaticSiteHydrateContext(flatSite, site.id, handle)),
+			content: hydrateSiteResult.value,
 			integrations: Object.values(flatSite.integrations),
 			fontUrls: getSiteFontUrls(flatSite)
 		}

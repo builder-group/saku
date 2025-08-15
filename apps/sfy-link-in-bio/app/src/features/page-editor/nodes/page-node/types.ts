@@ -31,15 +31,17 @@ export type TResolvedPageNodeMixin = TMixin<
 				image?: string;
 			};
 		};
-		childDefaults: TMergeMixins<
-			[
-				TResolvedLayoutStyleMixin,
-				TResolvedAppearanceStyleMixin,
-				TResolvedTypographyStyleMixin,
-				TResolvedFillStyleMixin,
-				TResolvedStrokeStyleMixin,
-				TResolvedShadowStyleMixin
-			]
+		childMixins: Partial<
+			TMergeMixins<
+				[
+					TResolvedLayoutStyleMixin,
+					TResolvedAppearanceStyleMixin,
+					TResolvedTypographyStyleMixin,
+					TResolvedFillStyleMixin,
+					TResolvedStrokeStyleMixin,
+					TResolvedShadowStyleMixin
+				]
+			>
 		>;
 		watermarkColor: string;
 	}

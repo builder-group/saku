@@ -1,4 +1,6 @@
+import { Err, Ok, TResult } from '@blgc/utils';
 import { TLinkNode } from '@repo/editor';
+import { AppError } from '@/lib';
 import { resolveAsset, TNodeResolveContext } from '../../lib';
 import {
 	resolveAppearanceStyleMixin,
@@ -10,14 +12,17 @@ import {
 } from '../../mixins';
 import { TResolvedLinkNode, TResolvedLinkVariant } from './types';
 
-export function resolveLinkNode(node: TLinkNode, cx: TNodeResolveContext): TResolvedLinkNode {
+export function resolveLinkNode(
+	node: TLinkNode,
+	cx: TNodeResolveContext
+): TResult<TResolvedLinkNode, AppError> {
 	const { content, layout, appearance, typography, fill, stroke, shadow, ...rest } = node;
 
-	let variant: TResolvedLinkVariant;
+	let resolvedVariant: TResolvedLinkVariant;
 	switch (content.variant.type) {
 		case 'default': {
 			const favicon = content.variant.userFavicon ?? content.variant.favicon;
-			variant = {
+			resolvedVariant = {
 				type: 'default',
 				title: content.variant.userTitle ?? content.variant.title,
 				description: content.variant.userDescription ?? content.variant.description,
@@ -40,7 +45,7 @@ export function resolveLinkNode(node: TLinkNode, cx: TNodeResolveContext): TReso
 		// 	break;
 		// }
 		case 'youtube-video-embed': {
-			variant = {
+			resolvedVariant = {
 				type: 'youtube-video-embed',
 				videoId: content.variant.videoId
 			};
@@ -48,17 +53,48 @@ export function resolveLinkNode(node: TLinkNode, cx: TNodeResolveContext): TReso
 		}
 	}
 
-	return {
+	const resolveLayoutResult = resolveLayoutStyleMixin(layout, cx.childMixins?.layout);
+	if (resolveLayoutResult.isErr()) {
+		return Err(AppError.wrap(resolveLayoutResult.error, '#ERR_RESOLVE_LAYOUT_STYLE'));
+	}
+	const resolveAppearanceResult = resolveAppearanceStyleMixin(
+		appearance,
+		cx.childMixins?.appearance
+	);
+	if (resolveAppearanceResult.isErr()) {
+		return Err(AppError.wrap(resolveAppearanceResult.error, '#ERR_RESOLVE_APPEARANCE_STYLE'));
+	}
+	const resolveTypographyResult = resolveTypographyStyleMixin(
+		typography,
+		cx.childMixins?.typography
+	);
+	if (resolveTypographyResult.isErr()) {
+		return Err(AppError.wrap(resolveTypographyResult.error, '#ERR_RESOLVE_TYPOGRAPHY_STYLE'));
+	}
+	const resolveFillResult = resolveFillStyleMixin(fill, cx.site, cx.childMixins?.fill);
+	if (resolveFillResult.isErr()) {
+		return Err(AppError.wrap(resolveFillResult.error, '#ERR_RESOLVE_FILL_STYLE'));
+	}
+	const resolveStrokeResult = resolveStrokeStyleMixin(stroke, cx.childMixins?.stroke);
+	if (resolveStrokeResult.isErr()) {
+		return Err(AppError.wrap(resolveStrokeResult.error, '#ERR_RESOLVE_STROKE_STYLE'));
+	}
+	const resolveShadowResult = resolveShadowStyleMixin(shadow, cx.childMixins?.shadow);
+	if (resolveShadowResult.isErr()) {
+		return Err(AppError.wrap(resolveShadowResult.error, '#ERR_RESOLVE_SHADOW_STYLE'));
+	}
+
+	return Ok({
 		...rest,
 		content: {
 			url: content.url,
-			variant
+			variant: resolvedVariant
 		},
-		layout: resolveLayoutStyleMixin(layout, cx.childMixins?.layout),
-		appearance: resolveAppearanceStyleMixin(appearance, cx.childMixins?.appearance),
-		typography: resolveTypographyStyleMixin(typography, cx.childMixins?.typography),
-		fill: resolveFillStyleMixin(fill, cx.site, cx.childMixins?.fill),
-		stroke: resolveStrokeStyleMixin(stroke, cx.childMixins?.stroke),
-		shadow: resolveShadowStyleMixin(shadow, cx.childMixins?.shadow)
-	};
+		layout: resolveLayoutResult.value,
+		appearance: resolveAppearanceResult.value,
+		typography: resolveTypographyResult.value,
+		fill: resolveFillResult.value,
+		stroke: resolveStrokeResult.value,
+		shadow: resolveShadowResult.value
+	});
 }

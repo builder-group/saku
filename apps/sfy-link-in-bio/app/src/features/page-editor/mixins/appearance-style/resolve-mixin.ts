@@ -1,17 +1,28 @@
+import { Err, Ok, TResult } from '@blgc/utils';
 import { resolveReference, TAppearanceStyleMixin } from '@repo/editor';
+import { AppError } from '@/lib';
 import { TResolvedAppearanceStyleMixin } from './types';
 
 export function resolveAppearanceStyleMixin(
 	appearance: TAppearanceStyleMixin['value'],
 	parentMixin?: { borderRadius: number; opacity: number; visible: boolean }
-): TResolvedAppearanceStyleMixin['value'] {
-	if (parentMixin == null) {
-		return undefined;
+): TResult<TResolvedAppearanceStyleMixin['value'], AppError> {
+	const resolvedBorderRadius = resolveReference(appearance.borderRadius, parentMixin?.borderRadius);
+	if (resolvedBorderRadius == null) {
+		return Err(new AppError('#ERR_RESOLVE_BORDER_RADIUS'));
+	}
+	const resolvedOpacity = resolveReference(appearance.opacity, parentMixin?.opacity);
+	if (resolvedOpacity == null) {
+		return Err(new AppError('#ERR_RESOLVE_OPACITY'));
+	}
+	const resolvedVisible = resolveReference(appearance.visible, parentMixin?.visible);
+	if (resolvedVisible == null) {
+		return Err(new AppError('#ERR_RESOLVE_VISIBLE'));
 	}
 
-	return {
-		borderRadius: resolveReference(appearance.borderRadius, parentMixin?.borderRadius),
-		opacity: resolveReference(appearance.opacity, parentMixin?.opacity),
-		visible: resolveReference(appearance.visible, parentMixin?.visible)
-	};
+	return Ok({
+		borderRadius: resolvedBorderRadius,
+		opacity: resolvedOpacity * 100,
+		visible: resolvedVisible
+	});
 }

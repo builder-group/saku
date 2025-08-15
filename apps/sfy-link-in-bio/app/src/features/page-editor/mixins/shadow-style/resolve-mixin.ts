@@ -1,4 +1,6 @@
+import { Err, Ok, TResult } from '@blgc/utils';
 import { resolveReference, TRgba, TShadowStyleMixin } from '@repo/editor';
+import { AppError } from '@/lib';
 import { resolveColor } from '../../lib';
 import { TResolvedShadowStyleMixin } from './types';
 
@@ -11,21 +13,17 @@ export function resolveShadowStyleMixin(
 		blur: number;
 		spread: number;
 	} | null
-): TResolvedShadowStyleMixin['value'] {
-	if (parentMixin == null) {
-		return undefined;
-	}
-
+): TResult<TResolvedShadowStyleMixin['value'], AppError> {
 	const resolvedShadow = resolveReference(shadow, parentMixin);
 	if (resolvedShadow == null) {
-		return undefined;
+		return Err(new AppError('#ERR_RESOLVE_SHADOW'));
 	}
 
-	return {
+	return Ok({
 		color: resolveColor(resolvedShadow.color),
 		offsetX: resolvedShadow.offsetX,
 		offsetY: resolvedShadow.offsetY,
 		blur: resolvedShadow.blur,
 		spread: resolvedShadow.spread
-	};
+	});
 }

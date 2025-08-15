@@ -12,15 +12,20 @@ export const ResolvedAboutNode = React.forwardRef<
 		...divProps
 	} = props;
 
+	if (appearance?.visible === false) {
+		return null;
+	}
+
 	return (
 		<div {...divProps} ref={ref} className="w-full max-w-md">
 			<div
 				className="relative overflow-hidden"
 				style={{
 					padding: layout?.padding,
-					backgroundColor: fill?.paint.type === 'solid' ? fill?.paint.color : undefined,
-					borderRadius: appearance?.borderRadius,
-					boxShadow: shadow ? '0 4px 6px -1px rgb(0 0 0 / 0.1)' : undefined
+					backgroundColor: fill.paint.type === 'solid' ? fill.paint.color : undefined,
+					borderRadius: appearance.borderRadius,
+					boxShadow: shadow ? '0 4px 6px -1px rgb(0 0 0 / 0.1)' : undefined,
+					opacity: appearance.opacity
 				}}
 			>
 				<div className="flex flex-col items-center gap-4">
@@ -44,11 +49,10 @@ export const ResolvedAboutNode = React.forwardRef<
 					<h1
 						className="text-xl font-semibold"
 						style={{
-							fontFamily: typography?.font?.family,
-							fontSize:
-								typeof typography?.fontSize === 'number' ? typography?.fontSize * 1.25 : undefined, // Scale up for title
-							color: typography?.textColor,
-							textAlign: typography?.textAlign
+							fontFamily: typography.font.family,
+							fontSize: typography.fontSize * 1.25, // Scale up for title
+							color: typography.textColor,
+							textAlign: typography.textAlign
 						}}
 					>
 						{content.name}
@@ -59,10 +63,10 @@ export const ResolvedAboutNode = React.forwardRef<
 						<p
 							className="text-center leading-relaxed"
 							style={{
-								fontFamily: typography?.font?.family,
-								fontSize: typography?.fontSize,
-								color: typography?.textColor,
-								textAlign: typography?.textAlign
+								fontFamily: typography.font.family,
+								fontSize: typography.fontSize,
+								color: typography.textColor,
+								textAlign: typography.textAlign
 							}}
 						>
 							{content.bio}
@@ -86,7 +90,7 @@ export const ResolvedAboutNode = React.forwardRef<
 										rel="noopener noreferrer"
 										className="flex h-6 w-6 items-center justify-center hover:opacity-70"
 										style={{
-											color: typography?.textColor
+											color: typography.textColor
 										}}
 										title={`${social.provider}: ${social.handle}`}
 									>

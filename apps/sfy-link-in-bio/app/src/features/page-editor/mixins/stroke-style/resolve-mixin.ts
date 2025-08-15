@@ -1,4 +1,6 @@
+import { Err, Ok, TResult } from '@blgc/utils';
 import { resolveReference, TRgba, TStrokeStyleMixin } from '@repo/editor';
+import { AppError } from '@/lib';
 import { resolveColor } from '../../lib';
 import { TResolvedStrokeStyleMixin } from './types';
 
@@ -8,18 +10,14 @@ export function resolveStrokeStyleMixin(
 		width: number;
 		color: TRgba;
 	} | null
-): TResolvedStrokeStyleMixin['value'] {
-	if (parentMixin == null) {
-		return undefined;
-	}
-
+): TResult<TResolvedStrokeStyleMixin['value'], AppError> {
 	const resolvedStroke = resolveReference(stroke, parentMixin);
 	if (resolvedStroke == null) {
-		return undefined;
+		return Err(new AppError('#ERR_RESOLVE_STROKE'));
 	}
 
-	return {
+	return Ok({
 		width: resolvedStroke.width,
 		color: resolveColor(resolvedStroke.color)
-	};
+	});
 }

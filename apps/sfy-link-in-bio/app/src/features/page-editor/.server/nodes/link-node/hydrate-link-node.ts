@@ -1,15 +1,22 @@
+import { Err, Ok, TResult } from '@blgc/utils';
 import { TLinkNode } from '@repo/editor';
+import { AppError } from '@/lib';
 import { resolveLinkNode, TResolvedLinkNode, TResolvedPromisedNode } from '../../../nodes';
 import { TNodeHydrateContext } from '../../lib';
 
 export function hydrateLinkNode(
 	node: TLinkNode,
 	cx: TNodeHydrateContext
-): TResolvedPromisedNode<TResolvedLinkNode> {
-	return {
+): TResult<TResolvedPromisedNode<TResolvedLinkNode>, AppError> {
+	const resolveLinkNodeResult = resolveLinkNode(node, cx);
+	if (resolveLinkNodeResult.isErr()) {
+		return Err(AppError.wrap(resolveLinkNodeResult.error, '#ERR_RESOLVE_LINK_NODE'));
+	}
+
+	return Ok({
 		type: 'promised',
 		id: node.id,
-		cached: resolveLinkNode(node, cx),
+		cached: resolveLinkNodeResult.value,
 		next: (async () => {
 			const { content, ...rest } = node;
 
@@ -33,7 +40,7 @@ export function hydrateLinkNode(
 					...rest
 				},
 				cx
-			);
+			).unwrap();
 		})()
-	};
+	});
 }

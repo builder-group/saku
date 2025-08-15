@@ -4,6 +4,7 @@ import React from 'react';
 import { ResizablePanel, ShadowRoot } from '@/components';
 import { cn } from '@/lib';
 import tailwindStylesHref from '@/styles.css?url';
+import { logger } from '../../../../environment';
 import { EditorSiteResolveContext, TPageEditor } from '../../lib';
 import { resolvePageNode } from '../../nodes';
 import { StaticNodeCanvas } from '../NodeCanvas';
@@ -13,13 +14,19 @@ import { StaticCanvasPanelHeader } from './StaticCanvasPanelHeader';
 export const StaticCanvasPanel: React.FC<TStaticCanvasPanelProps> = (props) => {
 	const { editor } = props;
 
-	const rootNode = React.useMemo(
-		() =>
-			resolvePageNode(editor.getRootNode()._v, {
-				site: new EditorSiteResolveContext(editor)
-			}),
-		[editor]
-	);
+	const rootNode = React.useMemo(() => {
+		const result = resolvePageNode(editor.getRootNode()._v, {
+			site: new EditorSiteResolveContext(editor)
+		});
+		if (result.isErr()) {
+			editor.shopify.toast.show('Failed to resolve page node');
+			logger.warn('Failed to resolve page node', {
+				error: result.error
+			});
+			return null;
+		}
+		return result.value;
+	}, [editor]);
 	const staticCanvasPanelContext = React.useMemo(
 		() => createStaticCanvasPanelContext(editor),
 		[editor]
@@ -64,7 +71,10 @@ export const StaticCanvasPanel: React.FC<TStaticCanvasPanelProps> = (props) => {
 				>
 					<div className={cn('h-full', viewMode === 'mobile' ? 'w-[390px]' : 'w-full')}>
 						<div className={cn(viewMode === 'mobile' && 'border-r border-l border-black')}>
-							<StaticNodeCanvas cx={editor.pageContext} nodes={[rootNode]} />
+							<StaticNodeCanvas
+								cx={editor.pageContext}
+								nodes={rootNode != null ? [rootNode] : []}
+							/>
 						</div>
 					</div>
 				</div>

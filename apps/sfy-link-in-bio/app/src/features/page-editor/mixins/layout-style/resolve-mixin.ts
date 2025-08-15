@@ -1,15 +1,18 @@
+import { Err, Ok, TResult } from '@blgc/utils';
 import { resolveReference, TLayoutStyleMixin } from '@repo/editor';
+import { AppError } from '@/lib';
 import { TResolvedLayoutStyleMixin } from './types';
 
 export function resolveLayoutStyleMixin(
 	layout: TLayoutStyleMixin['value'],
 	parentMixin?: { padding: number }
-): TResolvedLayoutStyleMixin['value'] {
-	if (parentMixin == null) {
-		return undefined;
+): TResult<TResolvedLayoutStyleMixin['value'], AppError> {
+	const resolvedPadding = resolveReference(layout.padding, parentMixin?.padding);
+	if (resolvedPadding == null) {
+		return Err(new AppError('#ERR_RESOLVE_PADDING'));
 	}
 
-	return {
-		padding: resolveReference(layout.padding, parentMixin?.padding)
-	};
+	return Ok({
+		padding: resolvedPadding
+	});
 }

@@ -1,4 +1,6 @@
+import { Err, Ok, TResult } from '@blgc/utils';
 import { resolveReference, TAsset, TAssetHash, TFillStyleMixin, TPaint } from '@repo/editor';
+import { AppError } from '@/lib';
 import { resolvePaint } from '../../lib';
 import { TResolvedFillStyleMixin } from './types';
 
@@ -11,23 +13,19 @@ export function resolveFillStyleMixin(
 		paint: TPaint;
 		opacity: number;
 	} | null
-): TResolvedFillStyleMixin['value'] {
-	if (parentMixin == null) {
-		return undefined;
-	}
-
+): TResult<TResolvedFillStyleMixin['value'], AppError> {
 	const resolvedFill = resolveReference(fill, parentMixin);
 	if (resolvedFill == null) {
-		return undefined;
+		return Err(new AppError('#ERR_RESOLVE_FILL'));
 	}
 
 	const resolvedPaint = resolvePaint(resolvedFill.paint, context);
 	if (resolvedPaint == null) {
-		return undefined;
+		return Err(new AppError('#ERR_RESOLVE_PAINT'));
 	}
 
-	return {
+	return Ok({
 		paint: resolvedPaint,
 		opacity: resolvedFill.opacity
-	};
+	});
 }

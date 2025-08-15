@@ -1,6 +1,6 @@
 import { TAppearanceStyleMixin, TFlatNode, TMergeMixins, TUnreference } from '@repo/editor';
 import { Text } from '@shopify/polaris';
-import { TextStyleField } from '../../components';
+import { TextStyleField, ToggleStyleField } from '../../components';
 import { TNodeState } from '../../lib';
 
 export const AppearanceStyleMixinEditor = <GNode extends TFlatNode, GParentNode extends TFlatNode>(
@@ -17,6 +17,21 @@ export const AppearanceStyleMixinEditor = <GNode extends TFlatNode, GParentNode 
 			</div>
 			<div className="grid grid-cols-2 gap-3">
 				<TextStyleField
+					label="Opacity"
+					node={nodeState}
+					parentNode={parentNodeState}
+					nodeValueMapper={(value) => value.appearance.opacity}
+					nodeValueSetter={(node, value) => {
+						node._v.appearance.opacity = value;
+						node._notify();
+					}}
+					parentValueMapper={(parent) => parent?.childMixins?.appearance?.opacity}
+					type="number"
+					autoComplete="off"
+					min={0}
+					max={100}
+				/>
+				<TextStyleField
 					label="Border Radius"
 					node={nodeState}
 					parentNode={parentNodeState}
@@ -30,6 +45,19 @@ export const AppearanceStyleMixinEditor = <GNode extends TFlatNode, GParentNode 
 					autoComplete="off"
 					min={0}
 					max={999}
+				/>
+			</div>
+			<div>
+				<ToggleStyleField
+					label="Visible"
+					node={nodeState}
+					parentNode={parentNodeState}
+					nodeValueMapper={(value) => value.appearance.visible}
+					nodeValueSetter={(node, value) => {
+						node._v.appearance.visible = value;
+						node._notify();
+					}}
+					parentValueMapper={(parent) => parent?.childMixins?.appearance?.visible}
 				/>
 			</div>
 		</div>

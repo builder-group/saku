@@ -1,4 +1,6 @@
+import { Err, Ok, TResult, unwrapOrNull } from '@blgc/utils';
 import { getBestContrastColor, resolveReference, TAboutNode, TFlatPageNode } from '@repo/editor';
+import { AppError } from '@/lib';
 import { resolveAsset, resolveColor, TNodeResolveContext } from '../../lib';
 import {
 	resolveAppearanceStyleMixin,
@@ -11,17 +13,25 @@ import {
 } from '../../mixins';
 import { TResolvedPageNode } from './types';
 
-export function resolvePageNode(node: TFlatPageNode, cx: TNodeResolveContext): TResolvedPageNode {
-	return {
-		...resolvePageNodeWithoutChildren(node, cx),
+export function resolvePageNode(
+	node: TFlatPageNode,
+	cx: TNodeResolveContext
+): TResult<TResolvedPageNode, AppError> {
+	const resolvePageNodeWithoutChildrenResult = resolvePageNodeWithoutChildren(node, cx);
+	if (resolvePageNodeWithoutChildrenResult.isErr()) {
+		return Err(AppError.wrap(resolvePageNodeWithoutChildrenResult.error, '#ERR_RESOLVE_PAGE_NODE'));
+	}
+
+	return Ok({
+		...resolvePageNodeWithoutChildrenResult.value,
 		children: resolveFlatChildrenMixin(node.children, node, cx)
-	};
+	});
 }
 
 export function resolvePageNodeWithoutChildren(
 	node: TFlatPageNode,
 	cx: TNodeResolveContext
-): Omit<TResolvedPageNode, 'children'> {
+): TResult<Omit<TResolvedPageNode, 'children'>, AppError> {
 	const { layout, appearance, fill, childMixins: childDefaults, ...rest } = node;
 
 	const resolvedFill = resolveReference(fill);
@@ -33,24 +43,33 @@ export function resolvePageNodeWithoutChildren(
 		)
 	);
 
-	return {
+	const resolveAppearanceResult = resolveAppearanceStyleMixin(appearance);
+	if (resolveAppearanceResult.isErr()) {
+		return Err(AppError.wrap(resolveAppearanceResult.error, '#ERR_RESOLVE_APPEARANCE_STYLE'));
+	}
+	const resolveFillResult = resolveFillStyleMixin(fill, cx.site);
+	if (resolveFillResult.isErr()) {
+		return Err(AppError.wrap(resolveFillResult.error, '#ERR_RESOLVE_FILL_STYLE'));
+	}
+
+	return Ok({
 		...rest,
 		content: {
 			metadata: resolvePageMetadata(node, cx)
 		},
 		layout,
-		appearance: resolveAppearanceStyleMixin(appearance),
-		fill: resolveFillStyleMixin(fill, cx.site),
-		childDefaults: {
-			layout: resolveLayoutStyleMixin(childDefaults.layout),
-			appearance: resolveAppearanceStyleMixin(childDefaults.appearance),
-			typography: resolveTypographyStyleMixin(childDefaults.typography),
-			fill: resolveFillStyleMixin(childDefaults.fill, cx.site),
-			stroke: resolveStrokeStyleMixin(childDefaults.stroke),
-			shadow: resolveShadowStyleMixin(childDefaults.shadow)
+		appearance: resolveAppearanceResult.value,
+		fill: resolveFillResult.value,
+		childMixins: {
+			layout: unwrapOrNull(resolveLayoutStyleMixin(childDefaults.layout)) ?? undefined,
+			appearance: unwrapOrNull(resolveAppearanceStyleMixin(childDefaults.appearance)) ?? undefined,
+			typography: unwrapOrNull(resolveTypographyStyleMixin(childDefaults.typography)) ?? undefined,
+			fill: unwrapOrNull(resolveFillStyleMixin(childDefaults.fill, cx.site)) ?? undefined,
+			stroke: unwrapOrNull(resolveStrokeStyleMixin(childDefaults.stroke)) ?? undefined,
+			shadow: unwrapOrNull(resolveShadowStyleMixin(childDefaults.shadow)) ?? undefined
 		},
 		watermarkColor
-	};
+	});
 }
 
 function resolvePageMetadata(
