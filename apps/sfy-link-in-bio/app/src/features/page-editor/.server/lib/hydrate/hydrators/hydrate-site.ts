@@ -1,5 +1,5 @@
-import { Err, Ok, TResult } from '@blgc/utils';
 import { TFlatPageNode } from '@repo/editor';
+import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
 import { TResolvedSite } from '../../../../types';
 import { hydratePageNode } from '../../../nodes';
@@ -13,7 +13,7 @@ export function hydrateSite(cx: TSiteHydrateContext): TResult<TResolvedSite, App
 		site: cx
 	});
 	if (hydratePageNodeResult.isErr()) {
-		return Err(AppError.wrap(hydratePageNodeResult.error, '#ERR_HYDRATE_PAGE_NODE'));
+		return Err(hydratePageNodeResult.error.wrapWith('#ERR_HYDRATE_PAGE_NODE'));
 	}
 
 	return Ok({

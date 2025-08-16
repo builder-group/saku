@@ -1,5 +1,5 @@
-import { Err, Ok, TResult } from '@blgc/utils';
 import { resolveReference, TLayoutStyleMixin } from '@repo/editor';
+import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
 import { TResolvedLayoutStyleMixin } from './types';
 

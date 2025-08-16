@@ -1,5 +1,5 @@
-import { Err, Ok, TResult } from '@blgc/utils';
 import { TProductNode } from '@repo/editor';
+import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
 import { resolveProductNode, TResolvedProductNode, TResolvedPromisedNode } from '../../../nodes';
 import { TNodeHydrateContext } from '../../lib';
@@ -8,15 +8,18 @@ export function hydrateProductNode(
 	node: TProductNode,
 	cx: TNodeHydrateContext
 ): TResult<TResolvedPromisedNode<TResolvedProductNode>, AppError> {
-	const resolveProductNodeResult = resolveProductNode(node, cx);
-	if (resolveProductNodeResult.isErr()) {
-		return Err(AppError.wrap(resolveProductNodeResult.error, '#ERR_RESOLVE_PRODUCT_NODE'));
+	const [isResolvedProductNodeOk, resolvedProductNodeErr, resolvedProductNode] = resolveProductNode(
+		node,
+		cx
+	);
+	if (!isResolvedProductNodeOk) {
+		return Err(resolvedProductNodeErr.wrapWith('#ERR_RESOLVE_PRODUCT_NODE'));
 	}
 
 	return Ok({
 		type: 'promised',
 		id: node.id,
-		cached: resolveProductNodeResult.value,
+		cached: resolvedProductNode,
 		next: (async () => {
 			const { content, ...rest } = node;
 			// await new Promise((resolve) => setTimeout(resolve, 3000));

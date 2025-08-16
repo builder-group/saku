@@ -1,5 +1,5 @@
-import { Err, Ok, TResult } from '@blgc/utils';
 import { resolveReference, TFont, TRgba, TTypographyStyleMixin } from '@repo/editor';
+import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
 import { resolveColor } from '../../lib';
 import { TResolvedTypographyStyleMixin } from './types';

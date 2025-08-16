@@ -1,5 +1,6 @@
-import { Err, notEmpty, Ok, TResult } from '@blgc/utils';
+import { notEmpty } from '@blgc/utils';
 import { TFlatNode, TFlatPageNode } from '@repo/editor';
+import { Err, Ok, TResult } from 'tuple-result';
 import { logger } from '@/environment';
 import { AppError } from '@/lib';
 import { resolveFlatNode } from '../../../mixins';
@@ -13,13 +14,17 @@ export function hydratePageNode(
 	node: TFlatPageNode,
 	cx: TNodeHydrateContext
 ): TResult<TResolvedPageNode, AppError> {
-	const resolvePageNodeWithoutChildrenResult = resolvePageNodeWithoutChildren(node, cx);
-	if (resolvePageNodeWithoutChildrenResult.isErr()) {
-		return Err(AppError.wrap(resolvePageNodeWithoutChildrenResult.error, '#ERR_RESOLVE_PAGE_NODE'));
+	const [
+		isResolvedPageNodeWithoutChildrenOk,
+		resolvedPageNodeWithoutChildrenErr,
+		resolvedPageNodeWithoutChildren
+	] = resolvePageNodeWithoutChildren(node, cx);
+	if (!isResolvedPageNodeWithoutChildrenOk) {
+		return Err(resolvedPageNodeWithoutChildrenErr.wrapWith('#ERR_RESOLVE_PAGE_NODE'));
 	}
 
 	return Ok({
-		...resolvePageNodeWithoutChildrenResult.value,
+		...resolvedPageNodeWithoutChildren,
 		children: node.children
 			.map((childId) => {
 				const childNode = cx.site.getNode(childId);
@@ -52,21 +57,21 @@ function hydrateFlatNode(
 		case 'link': {
 			const result = hydrateLinkNode(node, cx);
 			if (result.isErr()) {
-				return Err(AppError.wrap(result.error, '#ERR_HYDRATE_LINK_NODE'));
+				return Err(result.error.wrapWith('#ERR_HYDRATE_LINK_NODE'));
 			}
 			return Ok(result.value);
 		}
 		case 'product': {
 			const result = hydrateProductNode(node, cx);
 			if (result.isErr()) {
-				return Err(AppError.wrap(result.error, '#ERR_HYDRATE_PRODUCT_NODE'));
+				return Err(result.error.wrapWith('#ERR_HYDRATE_PRODUCT_NODE'));
 			}
 			return Ok(result.value);
 		}
 		default: {
 			const result = resolveFlatNode(node, cx);
 			if (result.isErr()) {
-				return Err(AppError.wrap(result.error, '#ERR_RESOLVE_FLAT_NODE'));
+				return Err(result.error.wrapWith('#ERR_RESOLVE_FLAT_NODE'));
 			}
 			return Ok(result.value);
 		}

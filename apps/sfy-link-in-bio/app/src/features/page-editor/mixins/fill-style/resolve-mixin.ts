@@ -1,5 +1,5 @@
-import { Err, Ok, TResult } from '@blgc/utils';
 import { resolveReference, TAsset, TAssetHash, TFillStyleMixin, TPaint } from '@repo/editor';
+import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
 import { resolvePaint } from '../../lib';
 import { TResolvedFillStyleMixin } from './types';

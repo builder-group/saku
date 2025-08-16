@@ -1,5 +1,6 @@
-import { Err, notEmpty, Ok, TResult } from '@blgc/utils';
+import { notEmpty } from '@blgc/utils';
 import { TFlatChildrenMixin, TFlatNode } from '@repo/editor';
+import { Err, Ok, TResult } from 'tuple-result';
 import { logger } from '@/environment';
 import { AppError } from '@/lib';
 import { TNodeResolveContext } from '../../lib';
@@ -49,35 +50,35 @@ export function resolveFlatNode(
 		case 'about': {
 			const result = resolveAboutNode(node, cx);
 			if (result.isErr()) {
-				return Err(AppError.wrap(result.error, '#ERR_RESOLVE_ABOUT_NODE'));
+				return Err(result.error.wrapWith('#ERR_RESOLVE_ABOUT_NODE'));
 			}
 			return Ok(result.value);
 		}
 		case 'link': {
 			const result = resolveLinkNode(node, cx);
 			if (result.isErr()) {
-				return Err(AppError.wrap(result.error, '#ERR_RESOLVE_LINK_NODE'));
+				return Err(result.error.wrapWith('#ERR_RESOLVE_LINK_NODE'));
 			}
 			return Ok(result.value);
 		}
 		case 'media': {
 			const result = resolveMediaNode(node, cx);
 			if (result.isErr()) {
-				return Err(AppError.wrap(result.error, '#ERR_RESOLVE_MEDIA_NODE'));
+				return Err(result.error.wrapWith('#ERR_RESOLVE_MEDIA_NODE'));
 			}
 			return Ok(result.value);
 		}
 		case 'text': {
 			const result = resolveTextNode(node, cx);
 			if (result.isErr()) {
-				return Err(AppError.wrap(result.error, '#ERR_RESOLVE_TEXT_NODE'));
+				return Err(result.error.wrapWith('#ERR_RESOLVE_TEXT_NODE'));
 			}
 			return Ok(result.value);
 		}
 		case 'product': {
 			const result = resolveProductNode(node, cx);
 			if (result.isErr()) {
-				return Err(AppError.wrap(result.error, '#ERR_RESOLVE_PRODUCT_NODE'));
+				return Err(result.error.wrapWith('#ERR_RESOLVE_PRODUCT_NODE'));
 			}
 			return Ok(result.value);
 		}

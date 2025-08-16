@@ -1,5 +1,5 @@
-import { Err, Ok, TResult, unwrapOrNull } from '@blgc/utils';
 import { getBestContrastColor, resolveReference, TAboutNode, TFlatPageNode } from '@repo/editor';
+import { Err, Ok, TResult, unwrapOrNull } from 'tuple-result';
 import { AppError } from '@/lib';
 import { resolveAsset, resolveColor, TNodeResolveContext } from '../../lib';
 import {
@@ -17,13 +17,17 @@ export function resolvePageNode(
 	node: TFlatPageNode,
 	cx: TNodeResolveContext
 ): TResult<TResolvedPageNode, AppError> {
-	const resolvePageNodeWithoutChildrenResult = resolvePageNodeWithoutChildren(node, cx);
-	if (resolvePageNodeWithoutChildrenResult.isErr()) {
-		return Err(AppError.wrap(resolvePageNodeWithoutChildrenResult.error, '#ERR_RESOLVE_PAGE_NODE'));
+	const [
+		isResolvedPageNodeWithoutChildrenOk,
+		resolvedPageNodeWithoutChildrenErr,
+		resolvedPageNodeWithoutChildren
+	] = resolvePageNodeWithoutChildren(node, cx);
+	if (!isResolvedPageNodeWithoutChildrenOk) {
+		return Err(resolvedPageNodeWithoutChildrenErr.wrapWith('#ERR_RESOLVE_PAGE_NODE'));
 	}
 
 	return Ok({
-		...resolvePageNodeWithoutChildrenResult.value,
+		...resolvedPageNodeWithoutChildren,
 		children: resolveFlatChildrenMixin(node.children, node, cx)
 	});
 }
@@ -34,22 +38,23 @@ export function resolvePageNodeWithoutChildren(
 ): TResult<Omit<TResolvedPageNode, 'children'>, AppError> {
 	const { layout, appearance, fill, childMixins: childDefaults, ...rest } = node;
 
-	const resolvedFill = resolveReference(fill);
+	const unreferencedFill = resolveReference(fill);
 	const watermarkColor = resolveColor(
 		getBestContrastColor(
-			resolvedFill?.paint.type === 'solid'
-				? resolvedFill.paint.color
+			unreferencedFill?.paint.type === 'solid'
+				? unreferencedFill.paint.color
 				: { r: 255, g: 255, b: 255, a: 1 }
 		)
 	);
 
-	const resolveAppearanceResult = resolveAppearanceStyleMixin(appearance);
-	if (resolveAppearanceResult.isErr()) {
-		return Err(AppError.wrap(resolveAppearanceResult.error, '#ERR_RESOLVE_APPEARANCE_STYLE'));
+	const [isResolvedAppearanceOk, resolvedAppearanceErr, resolvedAppearance] =
+		resolveAppearanceStyleMixin(appearance);
+	if (!isResolvedAppearanceOk) {
+		return Err(resolvedAppearanceErr.wrapWith('#ERR_RESOLVE_APPEARANCE_STYLE'));
 	}
-	const resolveFillResult = resolveFillStyleMixin(fill, cx.site);
-	if (resolveFillResult.isErr()) {
-		return Err(AppError.wrap(resolveFillResult.error, '#ERR_RESOLVE_FILL_STYLE'));
+	const [isResolvedFillOk, resolvedFillErr, resolvedFill] = resolveFillStyleMixin(fill, cx.site);
+	if (!isResolvedFillOk) {
+		return Err(resolvedFillErr.wrapWith('#ERR_RESOLVE_FILL_STYLE'));
 	}
 
 	return Ok({
@@ -58,8 +63,8 @@ export function resolvePageNodeWithoutChildren(
 			metadata: resolvePageMetadata(node, cx)
 		},
 		layout,
-		appearance: resolveAppearanceResult.value,
-		fill: resolveFillResult.value,
+		appearance: resolvedAppearance,
+		fill: resolvedFill,
 		childMixins: {
 			layout: unwrapOrNull(resolveLayoutStyleMixin(childDefaults.layout)) ?? undefined,
 			appearance: unwrapOrNull(resolveAppearanceStyleMixin(childDefaults.appearance)) ?? undefined,

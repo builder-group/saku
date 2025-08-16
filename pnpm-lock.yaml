@@ -167,6 +167,9 @@ importers:
       tailwind-merge:
         specifier: ^3.3.1
         version: 3.3.1
+      tuple-result:
+        specifier: ^0.0.6
+        version: 0.0.6
       valibot:
         specifier: ^1.1.0
         version: 1.1.0(typescript@5.9.2)
@@ -6788,6 +6791,9 @@ packages:
     resolution: {integrity: sha512-qjbnuR9Tr+FJOMBqJCW5ehvIo/buZq7vH7qD7JziU98h6l3qGy0a/yPFjwO+y0/T7GFpNgNAvEcPPVfyT8rrPQ==}
     engines: {node: '>=18.0.0'}
     hasBin: true
+
+  tuple-result@0.0.6:
+    resolution: {integrity: sha512-ceOT1+582iWgqSy0PgTASj6wrkf5G4sVrURuii9dG1RLq8dBL0sms7MAOR5zTpS4h/lob3ivb2muGcQBXEFNmg==}
 
   turbo-darwin-64@2.5.5:
     resolution: {integrity: sha512-RYnTz49u4F5tDD2SUwwtlynABNBAfbyT2uU/brJcyh5k6lDLyNfYKdKmqd3K2ls4AaiALWrFKVSBsiVwhdFNzQ==}
@@ -14190,6 +14196,8 @@ snapshots:
       get-tsconfig: 4.10.1
     optionalDependencies:
       fsevents: 2.3.3
+
+  tuple-result@0.0.6: {}
 
   turbo-darwin-64@2.5.5:
     optional: true

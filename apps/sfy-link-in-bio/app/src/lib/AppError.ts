@@ -24,21 +24,14 @@ export class AppError extends Error {
 		Error.captureStackTrace(this);
 	}
 
-	/**
-	 * Creates a new AppError that wraps a previous error, maintaining the error chain
-	 */
-	static wrap(
-		previousError: AppError,
-		code: TErrorCode,
-		options: Omit<TAppErrorOptions, 'errorStack'> = {}
-	): AppError {
+	public wrapWith(code: TErrorCode, options: Omit<TAppErrorOptions, 'errorStack'> = {}): AppError {
 		return new AppError(code, {
 			...options,
-			errorStack: [previousError, ...previousError.errorStack]
+			errorStack: [this, ...this.errorStack]
 		});
 	}
 
-	toAppErrorDto(): TAppErrorDto {
+	public toAppErrorDto(): TAppErrorDto {
 		return {
 			code: this.code,
 			detail: this.detail,
@@ -50,7 +43,7 @@ export class AppError extends Error {
 		};
 	}
 
-	static fromAppErrorDto(dto: TAppErrorDto): AppError {
+	public static fromAppErrorDto(dto: TAppErrorDto): AppError {
 		return new AppError(dto.code as TErrorCode, {
 			detail: dto.detail,
 			errors: dto.errors,

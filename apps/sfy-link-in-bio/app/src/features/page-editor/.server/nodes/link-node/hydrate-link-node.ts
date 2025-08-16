@@ -1,5 +1,5 @@
-import { Err, Ok, TResult } from '@blgc/utils';
 import { TLinkNode } from '@repo/editor';
+import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
 import { resolveLinkNode, TResolvedLinkNode, TResolvedPromisedNode } from '../../../nodes';
 import { TNodeHydrateContext } from '../../lib';
@@ -8,15 +8,15 @@ export function hydrateLinkNode(
 	node: TLinkNode,
 	cx: TNodeHydrateContext
 ): TResult<TResolvedPromisedNode<TResolvedLinkNode>, AppError> {
-	const resolveLinkNodeResult = resolveLinkNode(node, cx);
-	if (resolveLinkNodeResult.isErr()) {
-		return Err(AppError.wrap(resolveLinkNodeResult.error, '#ERR_RESOLVE_LINK_NODE'));
+	const [isResolvedLinkNodeOk, resolvedLinkNodeErr, resolvedLinkNode] = resolveLinkNode(node, cx);
+	if (!isResolvedLinkNodeOk) {
+		return Err(resolvedLinkNodeErr.wrapWith('#ERR_RESOLVE_LINK_NODE'));
 	}
 
 	return Ok({
 		type: 'promised',
 		id: node.id,
-		cached: resolveLinkNodeResult.value,
+		cached: resolvedLinkNode,
 		next: (async () => {
 			const { content, ...rest } = node;
 
