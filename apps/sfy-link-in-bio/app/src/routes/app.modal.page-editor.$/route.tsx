@@ -1,9 +1,9 @@
-import { ServerErr, ServerOk } from '@blgc/utils';
 import { TFlatSite } from '@repo/editor';
 import { useAppBridge } from '@shopify/app-bridge-react';
 import { Text } from '@shopify/polaris';
 import { boundary } from '@shopify/shopify-app-react-router/server';
 import React from 'react';
+import { Err, Ok } from 'tuple-result';
 import { shopify, shopifyConfig } from '@/.server/environment';
 import { coreApiClient } from '@/environment';
 import { createPageEditor, Editor } from '@/features/page-editor';
@@ -57,10 +57,10 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 	const url = new URL(request.url);
 	const siteId = url.searchParams.get('siteId');
 	if (siteId == null) {
-		return ServerErr({
-			code: '#ERR_BAD_REQUEST',
+		return Err({
+			code: '#ERR_BAD_REQUEST' as const,
 			message: 'No siteId provided in URL'
-		});
+		}).toArray();
 	}
 
 	const siteResult = await coreApiClient.get('/v1/site/{siteId}', {
@@ -69,15 +69,15 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 		}
 	});
 	if (siteResult.isErr()) {
-		return ServerErr({
-			code: '#ERR_SERVER_ERROR',
+		return Err({
+			code: '#ERR_SERVER_ERROR' as const,
 			message: siteResult.error.message ?? 'Unknown error occurred'
-		});
+		}).toArray();
 	}
 	const site = siteResult.value.data;
 	const flatSite = site.content as unknown as TFlatSite;
 
-	return ServerOk({
+	return Ok({
 		site: {
 			id: site.id,
 			handle: site.handle,
@@ -85,7 +85,7 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 			platformUrl: `https://saku.so/w/${createHandleFromShop(shop)}/${site.handle}`,
 			content: flatSite
 		}
-	});
+	}).toArray();
 });
 
 interface TErrorLoaderData {

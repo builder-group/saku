@@ -1,6 +1,6 @@
-import { Err, Ok, TResult } from '@blgc/utils';
 import { UninstallFeedbackEmail } from '@repo/transactional';
 import { CreateEmailResponseSuccess, ErrorResponse } from 'resend';
+import { Err, Ok, type TResult } from 'tuple-result';
 import { appConfig, emailConfig, resend } from '@/environment';
 
 export async function sendUninstallFeedbackEmail(

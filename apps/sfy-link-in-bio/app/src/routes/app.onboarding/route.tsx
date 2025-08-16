@@ -1,10 +1,10 @@
-import { ServerErr, ServerOk } from '@blgc/utils';
 import { toFlatSite } from '@repo/editor';
 import { useAppBridge } from '@shopify/app-bridge-react';
 import { Button, ButtonGroup, Text } from '@shopify/polaris';
 import { boundary } from '@shopify/shopify-app-react-router/server';
 import React from 'react';
 import { ShouldRevalidateFunction, useNavigate, useSearchParams } from 'react-router';
+import { Err, Ok } from 'tuple-result';
 import { shopify } from '@/.server/environment';
 import { getSessionTokenFromRequest, redirectWithAuth } from '@/.server/lib';
 import { appConfig, coreApiClient } from '@/environment';
@@ -161,14 +161,14 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 		}
 	});
 	if (shopOverviewResult.isErr()) {
-		return ServerErr({
-			code: '#ERR_SERVER_ERROR',
+		return Err({
+			code: '#ERR_SERVER_ERROR' as const,
 			message: 'Failed to fetch shop overview'
-		});
+		}).toArray();
 	}
 	const shopOverview = shopOverviewResult.value.data;
 
-	return ServerOk({
+	return Ok({
 		shop: session.shop,
 		presets: [
 			{
@@ -195,7 +195,7 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 				)
 			}
 		]
-	});
+	}).toArray();
 });
 
 interface TSuccessLoaderData {

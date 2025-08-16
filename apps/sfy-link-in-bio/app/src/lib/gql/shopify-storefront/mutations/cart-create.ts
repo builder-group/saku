@@ -1,4 +1,4 @@
-import { Err, Ok, type TResult } from '@blgc/utils';
+import { Err, Ok, type TResult } from 'tuple-result';
 import { gql, shopifyClientConfig, shopifyStorefrontApiClient } from '@/environment';
 import { AppError } from '@/lib';
 

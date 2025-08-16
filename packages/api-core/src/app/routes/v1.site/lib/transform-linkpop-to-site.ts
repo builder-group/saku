@@ -217,7 +217,7 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 				paint: backgroundPaint,
 				opacity: 1
 			},
-			childDefaults: {
+			childMixins: {
 				layout: {
 					padding: 8
 				},

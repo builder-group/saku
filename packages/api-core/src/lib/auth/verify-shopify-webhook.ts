@@ -1,7 +1,7 @@
 import crypto from 'node:crypto';
-import { Err, Ok, type TResult } from '@blgc/utils';
 import { AppError, safeCompare, type TRawRequestBody } from '@repo/hono-utils';
 import type { Context } from 'hono';
+import { Err, Ok, type TResult } from 'tuple-result';
 import { shopifyConfig } from '@/environment';
 
 /**

@@ -1,6 +1,6 @@
-import { Err, Ok, type TResult } from '@blgc/utils';
 import { AppError } from '@repo/hono-utils';
 import { and, eq } from 'drizzle-orm';
+import { Err, Ok, type TResult } from 'tuple-result';
 import { db, shopifySessionTable } from '@/environment/db';
 
 /**

@@ -1,6 +1,6 @@
-import { Err, Ok, type TResult } from '@blgc/utils';
 import { AppError } from '@repo/hono-utils';
 import stripJsonComments from 'strip-json-comments';
+import { Err, Ok, type TResult } from 'tuple-result';
 import { getThemeSettings } from '../../gql';
 
 export async function getParsedThemeSettingsData(

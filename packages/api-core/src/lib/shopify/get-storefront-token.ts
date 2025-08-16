@@ -1,6 +1,6 @@
-import { Err, Ok, type TResult } from '@blgc/utils';
 import { AppError } from '@repo/hono-utils';
 import { and, eq, sql } from 'drizzle-orm';
+import { Err, Ok, type TResult } from 'tuple-result';
 import { db, logger, workspaceTokenTable } from '@/environment';
 import { createStorefrontAccessToken } from '@/lib';
 

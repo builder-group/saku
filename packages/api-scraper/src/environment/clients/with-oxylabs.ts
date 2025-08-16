@@ -1,6 +1,12 @@
 import { TEnforceFeatureConstraint, TFeatureDefinition } from '@blgc/types/features';
-import { Err, Ok } from '@blgc/utils';
-import { buildUrl, TFetchOptions, type TFetchClient, type TFetchResponse } from 'feature-fetch';
+import {
+	buildUrl,
+	Err,
+	Ok,
+	TFetchOptions,
+	type TFetchClient,
+	type TFetchResponse
+} from 'feature-fetch';
 
 export interface TOxylabsFeature {
 	key: 'oxylabs';

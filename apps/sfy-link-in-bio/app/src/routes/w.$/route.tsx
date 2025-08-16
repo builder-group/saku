@@ -1,8 +1,8 @@
-import { fromServerResult, ServerErr, ServerOk, unwrapOrNull } from '@blgc/utils';
 import { TFlatSite, TIntegration } from '@repo/editor';
 import { Text } from '@shopify/polaris';
 import { isStatusCode } from 'feature-fetch';
 import React from 'react';
+import { Err, Ok, unwrapOrNull } from 'tuple-result';
 import { coreApiClient } from '@/environment';
 import {
 	createPageContext,
@@ -58,7 +58,7 @@ export const meta: TMetaFunction<typeof loader> = ({ data }) => {
 		return [];
 	}
 
-	const result = unwrapOrNull(fromServerResult<TSuccessLoaderData, TErrorLoaderData>(data));
+	const result = unwrapOrNull(data);
 	return getSiteMetadata(result?.site?.content ?? null);
 };
 
@@ -69,18 +69,18 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 
 	const workspaceHandle = pathSegments[1];
 	if (workspaceHandle == null) {
-		return ServerErr({
-			code: '#ERR_BAD_REQUEST',
+		return Err({
+			code: '#ERR_BAD_REQUEST' as const,
 			message: 'No workspace handle provided in URL'
-		});
+		}).toArray();
 	}
 
 	const handle = pathSegments[2];
 	if (handle == null) {
-		return ServerErr({
-			code: '#ERR_BAD_REQUEST',
+		return Err({
+			code: '#ERR_BAD_REQUEST' as const,
 			message: 'No handle provided in URL'
-		});
+		}).toArray();
 	}
 
 	const result = await coreApiClient.get('/v1/site/workspace/{workspaceHandle}/{handle}', {
@@ -91,36 +91,36 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 	});
 	if (result.isErr()) {
 		if (isStatusCode(result.error, 404)) {
-			return ServerErr({
-				code: '#ERR_NOT_FOUND',
+			return Err({
+				code: '#ERR_NOT_FOUND' as const,
 				message: 'Site not found'
-			});
+			}).toArray();
 		}
 
-		return ServerErr({
-			code: '#ERR_SERVER_ERROR',
+		return Err({
+			code: '#ERR_SERVER_ERROR' as const,
 			message: result.error.message ?? 'Unknown error occurred'
-		});
+		}).toArray();
 	}
 	const site = result.value.data;
 	const flatSite = site.content as unknown as TFlatSite;
 
 	const hydrateSiteResult = hydrateSite(new StaticSiteHydrateContext(flatSite, site.id, handle));
 	if (hydrateSiteResult.isErr()) {
-		return ServerErr({
-			code: '#ERR_SERVER_ERROR',
+		return Err({
+			code: '#ERR_SERVER_ERROR' as const,
 			message: 'Failed to hydrate site'
-		});
+		}).toArray();
 	}
 
-	return ServerOk({
+	return Ok({
 		site: {
 			id: site.id,
 			content: hydrateSiteResult.value,
 			integrations: Object.values(flatSite.integrations),
 			fontUrls: getSiteFontUrls(flatSite)
 		}
-	});
+	}).toArray();
 });
 
 interface TErrorLoaderData {
