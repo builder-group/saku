@@ -1,7 +1,8 @@
-import { TFillStyleMixin, TFlatNode, TMergeMixins, TRgba, TUnreference } from '@repo/editor';
+import { TFillStyleMixin, TFlatNode, TMergeMixins, TUnreference } from '@repo/editor';
 import { Button, Text } from '@shopify/polaris';
+import { useCompute } from 'feature-react';
 import React from 'react';
-import { ColorStyleField, TextStyleField } from '../../components';
+import { MappedPaintInput, MappedTextInput, MinusIcon, PlusIcon } from '@/components';
 import { TNodeState } from '../../lib';
 
 export const ChildFillStyleMixinEditor = <GNode extends TFlatNode>(
@@ -9,15 +10,19 @@ export const ChildFillStyleMixinEditor = <GNode extends TFlatNode>(
 ) => {
 	const { nodeState } = props;
 
-	const currentFill = React.useMemo(() => {
-		return nodeState._v.childMixins?.fill;
-	}, [nodeState]);
+	const currentFill = useCompute(nodeState, ({ value }) => {
+		return value.childMixins?.fill;
+	});
+
+	// =========================================================================
+	// Events
+	// =========================================================================
 
 	const handleAddFill = React.useCallback(() => {
 		nodeState._v.childMixins.fill = {
 			paint: {
 				type: 'solid',
-				color: { r: 0, g: 0, b: 0, a: 1 }
+				color: { r: 255, g: 255, b: 255, a: 1 }
 			},
 			opacity: 1
 		};
@@ -29,69 +34,58 @@ export const ChildFillStyleMixinEditor = <GNode extends TFlatNode>(
 		nodeState._notify();
 	}, [nodeState]);
 
+	// =========================================================================
+	// UI
+	// =========================================================================
+
 	return (
 		<div className="space-y-3 px-4">
 			<div className="flex items-center justify-between">
 				<Text as="span" variant="headingXs" tone="subdued">
 					Fill
 				</Text>
+
+				{/* Add/Remove fill buttons */}
 				{currentFill != null ? (
-					<Button size="slim" tone="critical" onClick={handleRemoveFill} aria-label="Remove fill">
-						−
-					</Button>
+					<Button icon={MinusIcon} onClick={handleRemoveFill} variant="plain" />
 				) : (
-					<Button size="slim" tone="success" onClick={handleAddFill} aria-label="Add fill">
-						+
-					</Button>
+					<Button icon={PlusIcon} onClick={handleAddFill} variant="plain" />
 				)}
 			</div>
 
 			{currentFill != null && (
-				<div className="space-y-3">
-					<ColorStyleField
-						label="Color"
-						node={nodeState}
-						nodeValueMapper={(value) => {
-							const fill = value.childMixins?.fill;
-							if (fill != null && fill.paint.type === 'solid') {
-								return fill.paint.color;
-							}
-							return undefined;
-						}}
-						nodeValueSetter={(node, value) => {
-							if (
-								value != null &&
-								node._v.childMixins?.fill != null &&
-								node._v.childMixins.fill.paint.type === 'solid'
-							) {
-								node._v.childMixins.fill.paint.color = value as TRgba;
-								node._notify();
-							}
-						}}
+				<div className="grid grid-cols-3 gap-3">
+					<MappedPaintInput
+						label="Paint"
 						autoComplete="off"
+						className="col-span-2"
+						state={nodeState}
+						mapValue={(value) => value.childMixins?.fill?.paint}
+						onValueChange={(value) => {
+							if (value != null && nodeState._v.childMixins?.fill != null) {
+								nodeState._v.childMixins.fill.paint = value;
+								nodeState._notify();
+							}
+						}}
+						disableFieldInheritance
 					/>
-
-					<TextStyleField
+					<MappedTextInput
 						label="Opacity"
-						node={nodeState}
-						nodeValueMapper={(value) => {
-							const fill = value.childMixins?.fill;
-							if (fill != null) {
-								return fill.opacity;
-							}
-							return undefined;
-						}}
-						nodeValueSetter={(node, value) => {
-							if (node._v.childMixins?.fill != null) {
-								node._v.childMixins.fill.opacity = value as number;
-								node._notify();
-							}
-						}}
 						type="number"
 						autoComplete="off"
 						min={0}
 						max={1}
-						step={0.01}
+						step={0.05}
+						className="col-span-1"
+						state={nodeState}
+						mapValue={(value) => value.childMixins?.fill?.opacity}
+						onValueChange={(value) => {
+							if (value != null && nodeState._v.childMixins?.fill != null) {
+								nodeState._v.childMixins.fill.opacity = value;
+								nodeState._notify();
+							}
+						}}
+						disableFieldInheritance
 					/>
 				</div>
 			)}

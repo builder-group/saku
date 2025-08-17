@@ -13,9 +13,15 @@ import { Button, Text } from '@shopify/polaris';
 import { useCombinedCompute, useCompute } from 'feature-react';
 import { createState } from 'feature-state';
 import React from 'react';
-import { MappedTextField, MinusIcon, PlusIcon } from '@/components';
+import {
+	LinkIcon,
+	LinkOffIcon,
+	MappedPaintInput,
+	MappedTextInput,
+	MinusIcon,
+	PlusIcon
+} from '@/components';
 import { useMemoCleanup } from '@/hooks';
-import { PaintStyleField } from '../../components';
 import { TNodeState } from '../../lib';
 
 export const FillStyleMixinEditor = <GNode extends TFlatNode, GParentNode extends TFlatNode>(
@@ -35,7 +41,8 @@ export const FillStyleMixinEditor = <GNode extends TFlatNode, GParentNode extend
 	});
 
 	const opacityState = useMemoCleanup(() => {
-		const state = createState<TReference<number> | undefined>(undefined);
+		const state = createState<TReference<number> | undefined>(undefined, { queue: 'sync' });
+
 		const unsubscribeNodeState = nodeState.subscribe(({ value }) => {
 			if (isInherited(value.fill)) {
 				state.set(inherit());
@@ -43,11 +50,67 @@ export const FillStyleMixinEditor = <GNode extends TFlatNode, GParentNode extend
 				state.set(value.fill?.opacity);
 			}
 		});
-		return [state, unsubscribeNodeState];
+
+		const unsubscribeOpacityState = state.subscribe(({ value }) => {
+			if (
+				value != null &&
+				!isInherited(value) &&
+				nodeState._v.fill != null &&
+				!isInherited(nodeState._v.fill)
+			) {
+				nodeState._v.fill.opacity = value;
+				nodeState._notify();
+			}
+		});
+
+		return [
+			state,
+			() => {
+				unsubscribeNodeState();
+				unsubscribeOpacityState();
+			}
+		];
 	}, [nodeState]);
 
+	const paintState = useMemoCleanup(() => {
+		const state = createState<TReference<TPaint> | undefined>(undefined, { queue: 'sync' });
+
+		const unsubscribeNodeState = nodeState.subscribe(({ value }) => {
+			if (isInherited(value.fill)) {
+				state.set(inherit());
+			} else {
+				state.set(value.fill?.paint);
+			}
+		});
+
+		const unsubscribePaintState = state.subscribe(({ value }) => {
+			if (
+				value != null &&
+				!isInherited(value) &&
+				nodeState._v.fill != null &&
+				!isInherited(nodeState._v.fill)
+			) {
+				nodeState._v.fill.paint = value;
+				nodeState._notify();
+			}
+		});
+
+		return [
+			state,
+			() => {
+				unsubscribeNodeState();
+				unsubscribePaintState();
+			}
+		];
+	}, [nodeState]);
+
+	// =========================================================================
+	// Events
+	// =========================================================================
+
 	const handleAddFill = React.useCallback(() => {
-		nodeState._v.fill = {
+		const parentFill = parentNodeState?._v.childMixins?.fill;
+		nodeState._v.fill = parentFill ?? {
 			paint: {
 				type: 'solid',
 				color: { r: 255, g: 255, b: 255, a: 1 }
@@ -55,19 +118,58 @@ export const FillStyleMixinEditor = <GNode extends TFlatNode, GParentNode extend
 			opacity: 1
 		};
 		nodeState._notify();
-	}, [nodeState]);
+	}, [nodeState, parentNodeState]);
 
 	const handleRemoveFill = React.useCallback(() => {
 		nodeState._v.fill = null;
 		nodeState._notify();
 	}, [nodeState]);
 
+	const handleToggleInheritance = React.useCallback(() => {
+		// Uninherit and copy parent values
+		if (isInheritedFill) {
+			const parentFill = parentNodeState?._v.childMixins?.fill;
+			if (parentFill != null) {
+				nodeState._v.fill = { ...parentFill };
+			}
+		}
+		// Inherit entire mixin
+		else {
+			nodeState._v.fill = inherit();
+		}
+		nodeState._notify();
+	}, [isInheritedFill, parentNodeState, nodeState]);
+
+	// =========================================================================
+	// UI
+	// =========================================================================
+
 	return (
 		<div className="space-y-3 px-4">
 			<div className="flex items-center justify-between">
-				<Text as="span" variant="headingXs" tone="subdued">
-					Fill
-				</Text>
+				<div className="flex items-center gap-2">
+					{/* Mixin-level inheritance button */}
+					{parentNodeState && (
+						<button
+							type="button"
+							onClick={handleToggleInheritance}
+							className="flex cursor-pointer items-center justify-center opacity-60 transition-opacity hover:opacity-100"
+							title={isInheritedFill ? 'Unlink from parent' : 'Link to parent'}
+						>
+							{isInheritedFill ? (
+								<LinkOffIcon className="h-3.5 w-3.5" />
+							) : (
+								<LinkIcon className="h-3.5 w-3.5" />
+							)}
+						</button>
+					)}
+
+					<Text as="span" variant="headingXs" tone="subdued">
+						Fill {isInheritedFill ? '(Inherited)' : ''}
+					</Text>
+				</div>
+
+				{/* Add/Remove fill buttons */}
 				{resolvedFill != null ? (
 					<Button icon={MinusIcon} onClick={handleRemoveFill} variant="plain" />
 				) : (
@@ -77,28 +179,27 @@ export const FillStyleMixinEditor = <GNode extends TFlatNode, GParentNode extend
 
 			{resolvedFill != null && (
 				<div className="grid grid-cols-3 gap-3">
-					<PaintStyleField
-						label="Color"
-						node={nodeState}
-						nodeValueMapper={(value) => {
-							const fill = value.fill;
-							if (fill != null && !isInherited(fill)) {
-								return fill.paint;
-							}
-							return undefined;
-						}}
-						nodeValueSetter={(node, value) => {
-							if (value != null && node._v.fill != null && !isInherited(node._v.fill)) {
-								node._v.fill.paint = value as TPaint;
-								node._notify();
-							}
-						}}
+					<MappedPaintInput
+						label="Paint"
 						autoComplete="off"
 						className="col-span-2"
+						state={paintState}
+						mapValue={(value) => value}
+						onValueChange={(value) => {
+							paintState.set(value);
+						}}
+						parentState={parentNodeState}
+						mapParentValue={(parent) => parent.childMixins?.fill?.paint}
+						disableFieldInheritance
 					/>
-
-					<MappedTextField
+					<MappedTextInput
 						label="Opacity"
+						type="number"
+						autoComplete="off"
+						min={0}
+						max={1}
+						step={0.05}
+						className="col-span-1"
 						state={opacityState}
 						parentState={parentNodeState}
 						mapValue={(value) => value}
@@ -106,19 +207,7 @@ export const FillStyleMixinEditor = <GNode extends TFlatNode, GParentNode extend
 							opacityState.set(value);
 						}}
 						mapParentValue={(parent) => parent.childMixins?.fill?.opacity}
-						onInheritChange={(shouldInherit, parentValue) => {
-							if (shouldInherit) {
-								opacityState.set(inherit());
-							} else {
-								opacityState.set(parentValue ?? 1);
-							}
-						}}
-						type="number"
-						autoComplete="off"
-						min={0}
-						max={1}
-						step={0.01}
-						className="col-span-1"
+						disableFieldInheritance
 					/>
 				</div>
 			)}

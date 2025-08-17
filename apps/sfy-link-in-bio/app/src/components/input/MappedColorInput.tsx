@@ -1,7 +1,6 @@
 import {
 	hexToRgba,
 	hsbaToRgba,
-	inherit,
 	isInherited,
 	isValidHex,
 	resolveReference,
@@ -25,16 +24,18 @@ import React from 'react';
 import { LinkIcon, LinkOffIcon } from '@/components';
 import { cn } from '@/lib';
 
-export const ColorStyleField = <GNodeValue, GParentNodeValue>(
-	props: TColorStyleFieldProps<GNodeValue, GParentNodeValue>
+export const MappedColorInput = <GStateValue, GParentStateValue>(
+	props: TMappedColorInputProps<GStateValue, GParentStateValue>
 ) => {
 	const {
+		state,
+		mapValue,
+		onValueChange,
+		onInheritChange,
+		parentState,
+		mapParentValue,
+		disableFieldInheritance = false,
 		label,
-		node,
-		parentNode,
-		nodeValueMapper,
-		parentValueMapper,
-		nodeValueSetter,
 		className,
 		...textFieldProps
 	} = props;
@@ -43,9 +44,9 @@ export const ColorStyleField = <GNodeValue, GParentNodeValue>(
 	const [inputValue, setInputValue] = React.useState('');
 	const lastChangeFromText = React.useRef(false);
 
-	const currentValue = useCompute(node, ({ value }) => nodeValueMapper(value));
-	const parentValue = useCompute(parentNode, ({ value: parent }) =>
-		parent != null ? parentValueMapper?.(parent) : undefined
+	const currentValue = useCompute(state, ({ value }) => mapValue(value));
+	const parentValue = useCompute(parentState, ({ value: parent }) =>
+		parent != null ? mapParentValue?.(parent) : undefined
 	);
 
 	const isValueInherited = React.useMemo(() => isInherited(currentValue), [currentValue]);
@@ -88,11 +89,11 @@ export const ColorStyleField = <GNodeValue, GParentNodeValue>(
 	// =========================================================================
 
 	const handleValueChange = React.useCallback(
-		(value: Parameters<typeof nodeValueSetter>[1], fromText = false) => {
+		(value: TRgba | undefined, fromText = false) => {
 			lastChangeFromText.current = fromText;
-			nodeValueSetter(node, value);
+			onValueChange(value);
 		},
-		[node, nodeValueSetter]
+		[onValueChange]
 	);
 
 	const handleTextChange = React.useCallback(
@@ -104,10 +105,7 @@ export const ColorStyleField = <GNodeValue, GParentNodeValue>(
 			// Handle empty input
 			if (newValue === '') {
 				setInputValue('');
-				handleValueChange(
-					undefined as GParentNodeValue extends never ? TRgba | undefined : TReference<TRgba>,
-					true
-				);
+				handleValueChange(undefined, true);
 				return;
 			}
 
@@ -134,21 +132,8 @@ export const ColorStyleField = <GNodeValue, GParentNodeValue>(
 	);
 
 	const handleToggleInheritance = React.useCallback(() => {
-		if (parentValue == null) {
-			return;
-		}
-
-		// Unsyncing: Set to parent value or undefined
-		if (isValueInherited) {
-			handleValueChange(parentValue);
-		}
-		// Syncing: Set to inherit
-		else {
-			handleValueChange(
-				inherit() as GParentNodeValue extends never ? TRgba | undefined : TReference<TRgba>
-			);
-		}
-	}, [handleValueChange, isValueInherited, parentValue]);
+		onInheritChange?.(!isValueInherited, parentValue);
+	}, [onInheritChange, isValueInherited, parentValue]);
 
 	const togglePopoverActive = React.useCallback(() => {
 		if (!isValueInherited) {
@@ -175,7 +160,7 @@ export const ColorStyleField = <GNodeValue, GParentNodeValue>(
 						{...textFieldProps}
 						label={label}
 						labelHidden
-						value={inputValue}
+						value={displayValue}
 						onChange={handleTextChange}
 						onFocus={handleFocus}
 						readOnly={isValueInherited}
@@ -187,7 +172,7 @@ export const ColorStyleField = <GNodeValue, GParentNodeValue>(
 									'-ml-1 flex h-5 w-5 items-center justify-center rounded-full border border-gray-200',
 									!isValueInherited ? 'cursor-pointer' : 'cursor-default'
 								)}
-								style={{ backgroundColor: displayValue ?? undefined }}
+								style={{ backgroundColor: rgbaToHex(resolvedValue ?? { r: 0, g: 0, b: 0, a: 1 }) }}
 							/>
 						}
 						autoComplete="off"
@@ -199,7 +184,7 @@ export const ColorStyleField = <GNodeValue, GParentNodeValue>(
 			preferredAlignment="left"
 			autofocusTarget="none"
 		>
-			<div className="p-4" onClick={(e) => e.stopPropagation()}>
+			<div className="max-w-64 p-4" onClick={(e) => e.stopPropagation()}>
 				<ColorPicker onChange={handleColorChange} color={pickerColor} allowAlpha />
 			</div>
 		</Popover>
@@ -211,7 +196,7 @@ export const ColorStyleField = <GNodeValue, GParentNodeValue>(
 				<Text as="span" variant="bodySm" tone="subdued">
 					{label}
 				</Text>
-				{parentValue != null && (
+				{parentValue != null && !disableFieldInheritance && (
 					<button
 						type="button"
 						onClick={handleToggleInheritance}
@@ -257,19 +242,22 @@ export const ColorStyleField = <GNodeValue, GParentNodeValue>(
 	);
 };
 
-export interface TColorStyleFieldProps<GNodeValue, GParentNodeValue>
+export interface TMappedColorInputProps<GStateValue, GParentStateValue>
 	extends Omit<
 		TextFieldProps,
 		'value' | 'onChange' | 'label' | 'labelHidden' | 'prefix' | 'error'
 	> {
+	// Value handling
+	state: TState<GStateValue, any>;
+	mapValue: (stateValue: GStateValue) => TReference<TRgba> | undefined;
+	onValueChange: (value: TRgba | undefined) => void;
+
+	// Parent/inheritance handling
+	parentState?: TState<GParentStateValue, any>;
+	mapParentValue?: (parentStateValue: GParentStateValue) => TRgba | undefined;
+	onInheritChange?: (shouldInherit: boolean, parentValue?: TRgba) => void;
+	disableFieldInheritance?: boolean;
+
 	label: string;
-	node: TState<GNodeValue, []>;
-	parentNode?: TState<GParentNodeValue, []>;
-	nodeValueMapper: (value: GNodeValue) => TReference<TRgba> | undefined;
-	nodeValueSetter: (
-		node: TState<GNodeValue, []>,
-		value: GParentNodeValue extends never ? TRgba | undefined : TReference<TRgba>
-	) => void;
-	parentValueMapper?: (parent: GParentNodeValue) => TRgba | undefined;
 	className?: string;
 }

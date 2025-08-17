@@ -1,6 +1,6 @@
 import { TFlatNode, TLayoutStyleMixin, TMergeMixins, TUnreference } from '@repo/editor';
 import { Text } from '@shopify/polaris';
-import { TextStyleField } from '../../components';
+import { MappedTextInput } from '@/components';
 import { TNodeState } from '../../lib';
 
 export const ChildLayoutStyleMixinEditor = <GNode extends TFlatNode>(
@@ -16,18 +16,22 @@ export const ChildLayoutStyleMixinEditor = <GNode extends TFlatNode>(
 				</Text>
 			</div>
 			<div className="grid grid-cols-2 gap-3">
-				<TextStyleField
+				<MappedTextInput
 					label="Padding"
-					node={nodeState}
-					nodeValueMapper={(value) => value.childMixins?.layout?.padding}
-					nodeValueSetter={(node, value) => {
-						node._v.childMixins.layout.padding = value as number;
-						node._notify();
-					}}
 					type="number"
 					autoComplete="off"
 					min={0}
 					max={100}
+					step={2}
+					state={nodeState}
+					mapValue={(value) => value.childMixins?.layout?.padding}
+					onValueChange={(value) => {
+						if (value != null) {
+							nodeState._v.childMixins.layout.padding = value;
+							nodeState._notify();
+						}
+					}}
+					disableFieldInheritance
 				/>
 			</div>
 		</div>

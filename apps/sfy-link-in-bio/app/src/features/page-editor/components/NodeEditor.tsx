@@ -1,6 +1,6 @@
 import { TFlatNode } from '@repo/editor';
 import React from 'react';
-import { nodeEditorRegistry, TNodeEditorComponentProps, TNodeState, TPageEditor } from '../../lib';
+import { nodeEditorRegistry, TNodeEditorComponentProps, TNodeState, TPageEditor } from '../lib';
 
 export const NodeEditor: React.FC<TNodeEditorProps> = (props) => {
 	const { nodeState, editor } = props;

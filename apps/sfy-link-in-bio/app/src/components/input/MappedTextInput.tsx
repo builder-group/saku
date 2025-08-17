@@ -1,4 +1,4 @@
-import { inherit, isInherited, resolveReference, TReference } from '@repo/editor';
+import { isInherited, resolveReference, TReference } from '@repo/editor';
 import { Text, TextField, TextFieldProps, Tooltip } from '@shopify/polaris';
 import { useCompute } from 'feature-react/state';
 import { TState } from 'feature-state';
@@ -6,26 +6,29 @@ import React from 'react';
 import { LinkIcon, LinkOffIcon } from '@/components';
 import { cn } from '@/lib';
 
-export const TextStyleField = <GNodeValue, GParentNodeValue, GValue>(
-	props: TTextStyleFieldProps<GNodeValue, GParentNodeValue, GValue>
+export const MappedTextInput = <GValue, GStateValue, GParentStateValue>(
+	props: TMappedTextInputProps<GValue, GStateValue, GParentStateValue>
 ) => {
 	const {
+		state,
+		mapValue,
+		onValueChange,
+		onInheritChange,
+		parentState,
+		mapParentValue,
+		disableFieldInheritance = false,
 		label,
-		node,
-		parentNode,
-		nodeValueMapper,
-		parentValueMapper,
-		nodeValueSetter,
 		min,
 		max,
 		className,
 		...textFieldProps
 	} = props;
 
-	const currentValue = useCompute(node, ({ value }) => nodeValueMapper(value));
-	const parentValue = useCompute(parentNode, ({ value: parent }) =>
-		parent != null ? parentValueMapper?.(parent) : undefined
+	const currentValue = useCompute(state, ({ value }) => mapValue(value));
+	const parentValue = useCompute(parentState, ({ value: parent }) =>
+		parent != null ? mapParentValue?.(parent) : undefined
 	);
+
 	const isValueInherited = React.useMemo(() => isInherited(currentValue), [currentValue]);
 	const displayValue = React.useMemo(() => {
 		const resolvedValue = resolveReference(currentValue, parentValue);
@@ -42,40 +45,24 @@ export const TextStyleField = <GNodeValue, GParentNodeValue, GValue>(
 				return;
 			}
 
-			let convertedValue: TReference<GValue> | undefined =
-				newValue === '' ? undefined : (newValue as GValue);
-			if (textFieldProps.type === 'number' && newValue !== '') {
+			let convertedValue: GValue | undefined = newValue as GValue;
+			if (newValue === '') {
+				convertedValue = undefined;
+			} else if (textFieldProps.type === 'number') {
 				let num = Number(newValue);
 				if (typeof min === 'number' && num < min) num = min;
 				if (typeof max === 'number' && num > max) num = max;
 				convertedValue = num as GValue;
 			}
 
-			nodeValueSetter(
-				node,
-				convertedValue as GParentNodeValue extends never ? GValue | undefined : TReference<GValue>
-			);
+			onValueChange(convertedValue);
 		},
-		[node, nodeValueSetter, textFieldProps.type, isValueInherited, min, max]
+		[onValueChange, textFieldProps.type, isValueInherited, min, max]
 	);
 
 	const handleToggleInheritance = React.useCallback(() => {
-		if (parentValue == null) {
-			return;
-		}
-
-		// Unsyncing: Set to parent value or undefined
-		if (isValueInherited) {
-			nodeValueSetter(node, parentValue);
-		}
-		// Syncing: Set to inherit
-		else {
-			nodeValueSetter(
-				node,
-				inherit() as GParentNodeValue extends never ? GValue | undefined : TReference<GValue>
-			);
-		}
-	}, [node, nodeValueSetter, isValueInherited, parentValue]);
+		onInheritChange?.(!isValueInherited, parentValue);
+	}, [onInheritChange, isValueInherited, parentValue]);
 
 	// =========================================================================
 	// UI
@@ -99,7 +86,7 @@ export const TextStyleField = <GNodeValue, GParentNodeValue, GValue>(
 				<Text as="span" variant="bodySm" tone="subdued">
 					{label}
 				</Text>
-				{parentValue != null && (
+				{parentValue != null && !disableFieldInheritance && (
 					<button
 						type="button"
 						onClick={handleToggleInheritance}
@@ -145,17 +132,20 @@ export const TextStyleField = <GNodeValue, GParentNodeValue, GValue>(
 	);
 };
 
-export interface TTextStyleFieldProps<GNodeValue, GParentNodeValue, GValue>
+export interface TMappedTextInputProps<GValue, GStateValue, GParentStateValue>
 	extends Omit<TextFieldProps, 'value' | 'onChange' | 'label' | 'labelHidden'> {
+	// Value handling
+	state: TState<GStateValue, any>;
+	mapValue: (stateValue: GStateValue) => TReference<GValue> | undefined;
+	onValueChange: (value: GValue | undefined) => void;
+
+	// Parent/inheritance handling
+	parentState?: TState<GParentStateValue, any>;
+	mapParentValue?: (parentStateValue: GParentStateValue) => GValue | undefined;
+	onInheritChange?: (shouldInherit: boolean, parentValue?: GValue) => void;
+	disableFieldInheritance?: boolean;
+
 	label: string;
-	node: TState<GNodeValue, []>;
-	parentNode?: TState<GParentNodeValue, []>;
-	nodeValueMapper: (value: GNodeValue) => TReference<GValue> | undefined;
-	nodeValueSetter: (
-		node: TState<GNodeValue, []>,
-		value: GParentNodeValue extends never ? GValue | undefined : TReference<GValue>
-	) => void;
-	parentValueMapper?: (parent: GParentNodeValue) => GValue | undefined;
 	min?: number;
 	max?: number;
 	className?: string;

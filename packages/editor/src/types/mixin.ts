@@ -4,10 +4,13 @@ import {
 	TAssetHash,
 	TFont,
 	TIntegrationId,
+	TLetterSpacing,
+	TLineHeight,
 	TLinkVariant,
 	TMedia,
 	TPaint,
-	TSocialLink
+	TSocialLink,
+	TTextAlign
 } from './utils';
 
 export interface TMixin<GKey extends string, GValue> {
@@ -169,9 +172,9 @@ export type TTypographyStyleMixin = TMixin<
 		font: TReference<TFont>;
 		fontSize: TReference<number>;
 		textColor: TReference<TRgba>;
-		textAlign: TReference<'left' | 'center' | 'right'>;
-		lineHeight: TReference<number | 'auto'>;
-		letterSpacing: TReference<number | 'auto'>;
+		textAlign: TReference<TTextAlign>;
+		lineHeight: TReference<TLineHeight>;
+		letterSpacing: TReference<TLetterSpacing>;
 	}
 >;
 

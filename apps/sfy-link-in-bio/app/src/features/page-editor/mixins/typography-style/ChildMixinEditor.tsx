@@ -2,13 +2,12 @@ import {
 	fontMetadata,
 	TFlatNode,
 	TMergeMixins,
-	TRgba,
 	TTypographyStyleMixin,
 	TUnreference
 } from '@repo/editor';
 import { Text } from '@shopify/polaris';
 import React from 'react';
-import { ColorStyleField, SelectStyleField, TextStyleField } from '../../components';
+import { MappedColorInput, MappedSelectInput, MappedTextInput } from '@/components';
 import { TNodeState, TPageEditor } from '../../lib';
 
 export const ChildTypographyStyleMixinEditor = <GNode extends TFlatNode>(
@@ -32,60 +31,73 @@ export const ChildTypographyStyleMixinEditor = <GNode extends TFlatNode>(
 			</div>
 			<div className="space-y-3">
 				<div className="grid grid-cols-2 gap-3">
-					<SelectStyleField
+					<MappedSelectInput
 						label="Font Family"
-						node={nodeState}
-						nodeValueMapper={(value) => value.childMixins?.typography?.font?.family}
-						nodeValueSetter={(node, value) => {
+						options={fontOptions}
+						state={nodeState}
+						mapValue={(value) => value.childMixins?.typography?.font?.family}
+						onValueChange={(value) => {
 							if (value != null) {
 								const font = editor.registerFontFamily(value as string);
 								if (font != null) {
-									node._v.childMixins.typography.font = font;
-									node._notify();
+									nodeState._v.childMixins.typography.font = font;
+									nodeState._notify();
 								}
 							}
 						}}
-						options={fontOptions}
+						disableFieldInheritance
 					/>
 
-					<SelectStyleField
+					<MappedSelectInput
 						label="Text Align"
-						node={nodeState}
-						nodeValueMapper={(value) => value.childMixins?.typography?.textAlign}
-						nodeValueSetter={(node, value) => {
-							node._v.childMixins.typography.textAlign = value as 'left' | 'center' | 'right';
-							node._notify();
-						}}
 						options={[
 							{ label: 'Left', value: 'left' },
 							{ label: 'Center', value: 'center' },
 							{ label: 'Right', value: 'right' }
 						]}
+						state={nodeState}
+						mapValue={(value) => value.childMixins?.typography?.textAlign}
+						onValueChange={(value) => {
+							if (value != null) {
+								nodeState._v.childMixins.typography.textAlign = value;
+								nodeState._notify();
+							}
+						}}
+						disableFieldInheritance
 					/>
 				</div>
 
 				<div className="grid grid-cols-2 gap-3">
-					<TextStyleField
+					<MappedTextInput
 						label="Font Size"
-						node={nodeState}
-						nodeValueMapper={(value) => value.childMixins?.typography?.fontSize}
-						nodeValueSetter={(node, value) => {
-							node._v.childMixins.typography.fontSize = value as number;
-							node._notify();
-						}}
 						type="number"
 						autoComplete="off"
+						min={8}
+						max={96}
+						step={4}
+						state={nodeState}
+						mapValue={(value) => value.childMixins?.typography?.fontSize}
+						onValueChange={(value) => {
+							if (value != null) {
+								nodeState._v.childMixins.typography.fontSize = value;
+								nodeState._notify();
+							}
+						}}
+						disableFieldInheritance
 					/>
 
-					<ColorStyleField
+					<MappedColorInput
 						label="Text Color"
-						node={nodeState}
-						nodeValueMapper={(value) => value.childMixins?.typography?.textColor}
-						nodeValueSetter={(node, value) => {
-							node._v.childMixins.typography.textColor = value as TRgba;
-							node._notify();
-						}}
 						autoComplete="off"
+						state={nodeState}
+						mapValue={(value) => value.childMixins?.typography?.textColor}
+						onValueChange={(value) => {
+							if (value != null) {
+								nodeState._v.childMixins.typography.textColor = value;
+								nodeState._notify();
+							}
+						}}
+						disableFieldInheritance
 					/>
 				</div>
 			</div>

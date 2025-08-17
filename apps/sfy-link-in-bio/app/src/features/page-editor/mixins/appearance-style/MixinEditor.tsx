@@ -3,11 +3,11 @@ import {
 	TAppearanceStyleMixin,
 	TFlatNode,
 	TMergeMixins,
+	TReference,
 	TUnreference
 } from '@repo/editor';
 import { Text } from '@shopify/polaris';
-import { MappedTextField } from '@/components';
-import { ToggleStyleField } from '../../components';
+import { MappedTextInput, MappedToggleInput } from '@/components';
 import { TNodeState } from '../../lib';
 
 export const AppearanceStyleMixinEditor = <GNode extends TFlatNode, GParentNode extends TFlatNode>(
@@ -23,8 +23,13 @@ export const AppearanceStyleMixinEditor = <GNode extends TFlatNode, GParentNode 
 				</Text>
 			</div>
 			<div className="grid grid-cols-2 gap-3">
-				<MappedTextField
+				<MappedTextInput
 					label="Opacity"
+					type="number"
+					autoComplete="off"
+					min={0}
+					max={1}
+					step={0.05}
 					state={nodeState}
 					parentState={parentNodeState}
 					mapValue={(value) => value.appearance.opacity}
@@ -36,20 +41,21 @@ export const AppearanceStyleMixinEditor = <GNode extends TFlatNode, GParentNode 
 					}}
 					mapParentValue={(parent) => parent.childMixins.appearance.opacity}
 					onInheritChange={(shouldInherit, parentValue) => {
-						if (shouldInherit) {
-							nodeState._v.appearance.opacity = inherit();
-						} else {
-							nodeState._v.appearance.opacity = parentValue ?? 100;
-						}
+						nodeState._v.appearance.opacity = shouldInherit
+							? inherit()
+							: (parentValue as TReference<number>);
+
 						nodeState._notify();
 					}}
+					disableFieldInheritance={parentNodeState == null}
+				/>
+				<MappedTextInput
+					label="Border Radius"
 					type="number"
 					autoComplete="off"
 					min={0}
-					max={100}
-				/>
-				<MappedTextField
-					label="Border Radius"
+					max={999}
+					step={2}
 					state={nodeState}
 					parentState={parentNodeState}
 					mapValue={(value) => value.appearance.borderRadius}
@@ -61,30 +67,34 @@ export const AppearanceStyleMixinEditor = <GNode extends TFlatNode, GParentNode 
 					}}
 					mapParentValue={(parent) => parent.childMixins.appearance.borderRadius}
 					onInheritChange={(shouldInherit, parentValue) => {
-						if (shouldInherit) {
-							nodeState._v.appearance.borderRadius = inherit();
-						} else {
-							nodeState._v.appearance.borderRadius = parentValue ?? 0;
-						}
+						nodeState._v.appearance.borderRadius = shouldInherit
+							? inherit()
+							: (parentValue as TReference<number>);
 						nodeState._notify();
 					}}
-					type="number"
-					autoComplete="off"
-					min={0}
-					max={999}
+					disableFieldInheritance={parentNodeState == null}
 				/>
 			</div>
 			<div>
-				<ToggleStyleField
+				<MappedToggleInput
 					label="Visible"
-					node={nodeState}
-					parentNode={parentNodeState}
-					nodeValueMapper={(value) => value.appearance.visible}
-					nodeValueSetter={(node, value) => {
-						node._v.appearance.visible = value;
-						node._notify();
+					state={nodeState}
+					parentState={parentNodeState}
+					mapValue={(value) => value.appearance.visible}
+					onValueChange={(value) => {
+						if (value != null) {
+							nodeState._v.appearance.visible = value;
+							nodeState._notify();
+						}
 					}}
-					parentValueMapper={(parent) => parent.childMixins.appearance.visible}
+					mapParentValue={(parent) => parent.childMixins.appearance.visible}
+					onInheritChange={(shouldInherit, parentValue) => {
+						nodeState._v.appearance.visible = shouldInherit
+							? inherit()
+							: (parentValue as TReference<boolean>);
+						nodeState._notify();
+					}}
+					disableFieldInheritance={parentNodeState == null}
 				/>
 			</div>
 		</div>

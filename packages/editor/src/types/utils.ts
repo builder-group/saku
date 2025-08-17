@@ -42,6 +42,10 @@ export interface TFont {
 	style?: 'normal' | 'italic';
 }
 
+export type TTextAlign = 'left' | 'center' | 'right';
+export type TLineHeight = number | 'auto';
+export type TLetterSpacing = number | 'auto';
+
 // =========================================================================
 // Paint
 // =========================================================================
