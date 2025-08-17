@@ -237,7 +237,7 @@ export const MappedPaintInput = <GStateValue, GParentStateValue>(
 				// do nothing
 			}
 		},
-		[handleValueChange]
+		[handleValueChange, parentValue]
 	);
 
 	// =========================================================================
