@@ -1,17 +1,21 @@
 import {
+	inherit,
 	isInherited,
 	resolveReference,
 	TFillStyleMixin,
 	TFlatNode,
 	TMergeMixins,
 	TPaint,
+	TReference,
 	TUnreference
 } from '@repo/editor';
 import { Button, Text } from '@shopify/polaris';
-import { useCompute } from 'feature-react';
+import { useCombinedCompute, useCompute } from 'feature-react';
+import { createState } from 'feature-state';
 import React from 'react';
-import { MinusIcon, PlusIcon } from '@/components';
-import { PaintStyleField, TextStyleField } from '../../components';
+import { MappedTextField, MinusIcon, PlusIcon } from '@/components';
+import { useMemoCleanup } from '@/hooks';
+import { PaintStyleField } from '../../components';
 import { TNodeState } from '../../lib';
 
 export const FillStyleMixinEditor = <GNode extends TFlatNode, GParentNode extends TFlatNode>(
@@ -19,9 +23,28 @@ export const FillStyleMixinEditor = <GNode extends TFlatNode, GParentNode extend
 ) => {
 	const { nodeState, parentNodeState } = props;
 
-	const resolvedFill = useCompute(nodeState, ({ value }) => {
-		return resolveReference(value.fill, parentNodeState?._v.childMixins?.fill);
+	const resolvedFill = useCombinedCompute(
+		[nodeState, parentNodeState ?? createState(undefined)],
+		([{ value: nodeValue }, { value: parentValue }]) => {
+			return resolveReference(nodeValue.fill, parentValue?.childMixins?.fill);
+		}
+	);
+
+	const isInheritedFill = useCompute(nodeState, ({ value }) => {
+		return isInherited(value.fill);
 	});
+
+	const opacityState = useMemoCleanup(() => {
+		const state = createState<TReference<number> | undefined>(undefined);
+		const unsubscribeNodeState = nodeState.subscribe(({ value }) => {
+			if (isInherited(value.fill)) {
+				state.set(inherit());
+			} else {
+				state.set(value.fill?.opacity);
+			}
+		});
+		return [state, unsubscribeNodeState];
+	}, [nodeState]);
 
 	const handleAddFill = React.useCallback(() => {
 		nodeState._v.fill = {
@@ -74,21 +97,21 @@ export const FillStyleMixinEditor = <GNode extends TFlatNode, GParentNode extend
 						className="col-span-2"
 					/>
 
-					<TextStyleField
+					<MappedTextField
 						label="Opacity"
-						node={nodeState}
-						nodeValueMapper={(value) => {
-							const fill = value.fill;
-							if (fill != null && !isInherited(fill)) {
-								return fill.opacity;
-							}
-							return undefined;
+						state={opacityState}
+						parentState={parentNodeState}
+						mapValue={(value) => value}
+						onValueChange={(value) => {
+							opacityState.set(value);
 						}}
-						nodeValueSetter={(node, value) => {
-							if (node._v.fill != null && !isInherited(node._v.fill)) {
-								node._v.fill.opacity = value as number;
+						mapParentValue={(parent) => parent.childMixins?.fill?.opacity}
+						onInheritChange={(shouldInherit, parentValue) => {
+							if (shouldInherit) {
+								opacityState.set(inherit());
+							} else {
+								opacityState.set(parentValue ?? 1);
 							}
-							node._notify();
 						}}
 						type="number"
 						autoComplete="off"

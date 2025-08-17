@@ -25,6 +25,7 @@ export const DefaultContent: React.FC<TDefaultContentProps> = (props) => {
 			className="relative flex w-full cursor-pointer items-center gap-3 overflow-hidden bg-white text-inherit no-underline hover:opacity-90"
 			style={{
 				padding: layout?.padding,
+				opacity: appearance.opacity,
 				backgroundColor: fill?.paint.type === 'solid' ? fill?.paint.color : undefined,
 				fontFamily: typography?.font?.family,
 				fontSize: typography?.fontSize,

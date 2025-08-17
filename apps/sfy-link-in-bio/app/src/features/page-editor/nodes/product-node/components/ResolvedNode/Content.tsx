@@ -78,6 +78,7 @@ export const Content: React.FC<TContentProps> = (props) => {
 			className="relative flex w-full items-center gap-3 bg-white"
 			style={{
 				padding: layout?.padding,
+				opacity: appearance.opacity,
 				backgroundColor: fill?.paint.type === 'solid' ? fill?.paint.color : undefined,
 				fontFamily: typography?.font?.family,
 				fontSize: typography?.fontSize,

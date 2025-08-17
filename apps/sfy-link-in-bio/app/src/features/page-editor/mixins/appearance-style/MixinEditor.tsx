@@ -1,6 +1,13 @@
-import { TAppearanceStyleMixin, TFlatNode, TMergeMixins, TUnreference } from '@repo/editor';
+import {
+	inherit,
+	TAppearanceStyleMixin,
+	TFlatNode,
+	TMergeMixins,
+	TUnreference
+} from '@repo/editor';
 import { Text } from '@shopify/polaris';
-import { TextStyleField, ToggleStyleField } from '../../components';
+import { MappedTextField } from '@/components';
+import { ToggleStyleField } from '../../components';
 import { TNodeState } from '../../lib';
 
 export const AppearanceStyleMixinEditor = <GNode extends TFlatNode, GParentNode extends TFlatNode>(
@@ -16,31 +23,51 @@ export const AppearanceStyleMixinEditor = <GNode extends TFlatNode, GParentNode 
 				</Text>
 			</div>
 			<div className="grid grid-cols-2 gap-3">
-				<TextStyleField
+				<MappedTextField
 					label="Opacity"
-					node={nodeState}
-					parentNode={parentNodeState}
-					nodeValueMapper={(value) => value.appearance.opacity}
-					nodeValueSetter={(node, value) => {
-						node._v.appearance.opacity = value;
-						node._notify();
+					state={nodeState}
+					parentState={parentNodeState}
+					mapValue={(value) => value.appearance.opacity}
+					onValueChange={(value) => {
+						if (value != null) {
+							nodeState._v.appearance.opacity = value;
+							nodeState._notify();
+						}
 					}}
-					parentValueMapper={(parent) => parent.childMixins.appearance.opacity}
+					mapParentValue={(parent) => parent.childMixins.appearance.opacity}
+					onInheritChange={(shouldInherit, parentValue) => {
+						if (shouldInherit) {
+							nodeState._v.appearance.opacity = inherit();
+						} else {
+							nodeState._v.appearance.opacity = parentValue ?? 100;
+						}
+						nodeState._notify();
+					}}
 					type="number"
 					autoComplete="off"
 					min={0}
 					max={100}
 				/>
-				<TextStyleField
+				<MappedTextField
 					label="Border Radius"
-					node={nodeState}
-					parentNode={parentNodeState}
-					nodeValueMapper={(value) => value.appearance.borderRadius}
-					nodeValueSetter={(node, value) => {
-						node._v.appearance.borderRadius = value;
-						node._notify();
+					state={nodeState}
+					parentState={parentNodeState}
+					mapValue={(value) => value.appearance.borderRadius}
+					onValueChange={(value) => {
+						if (value != null) {
+							nodeState._v.appearance.borderRadius = value;
+							nodeState._notify();
+						}
 					}}
-					parentValueMapper={(parent) => parent.childMixins.appearance.borderRadius}
+					mapParentValue={(parent) => parent.childMixins.appearance.borderRadius}
+					onInheritChange={(shouldInherit, parentValue) => {
+						if (shouldInherit) {
+							nodeState._v.appearance.borderRadius = inherit();
+						} else {
+							nodeState._v.appearance.borderRadius = parentValue ?? 0;
+						}
+						nodeState._notify();
+					}}
 					type="number"
 					autoComplete="off"
 					min={0}

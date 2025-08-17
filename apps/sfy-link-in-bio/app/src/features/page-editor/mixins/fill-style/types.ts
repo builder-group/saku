@@ -5,6 +5,5 @@ export type TResolvedFillStyleMixin = TMixin<
 	'fill',
 	{
 		paint: TResolvedPaint;
-		opacity: number;
 	} | null
 >;
