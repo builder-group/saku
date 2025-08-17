@@ -25,7 +25,7 @@ export const AppearanceStyleMixinEditor = <GNode extends TFlatNode, GParentNode 
 						node._v.appearance.opacity = value;
 						node._notify();
 					}}
-					parentValueMapper={(parent) => parent?.childMixins?.appearance?.opacity}
+					parentValueMapper={(parent) => parent.childMixins.appearance.opacity}
 					type="number"
 					autoComplete="off"
 					min={0}
@@ -40,7 +40,7 @@ export const AppearanceStyleMixinEditor = <GNode extends TFlatNode, GParentNode 
 						node._v.appearance.borderRadius = value;
 						node._notify();
 					}}
-					parentValueMapper={(parent) => parent?.childMixins?.appearance?.borderRadius}
+					parentValueMapper={(parent) => parent.childMixins.appearance.borderRadius}
 					type="number"
 					autoComplete="off"
 					min={0}
@@ -57,7 +57,7 @@ export const AppearanceStyleMixinEditor = <GNode extends TFlatNode, GParentNode 
 						node._v.appearance.visible = value;
 						node._notify();
 					}}
-					parentValueMapper={(parent) => parent?.childMixins?.appearance?.visible}
+					parentValueMapper={(parent) => parent.childMixins.appearance.visible}
 				/>
 			</div>
 		</div>

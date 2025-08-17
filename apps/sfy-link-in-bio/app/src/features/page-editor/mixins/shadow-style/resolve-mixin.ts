@@ -1,5 +1,5 @@
 import { resolveReference, TRgba, TShadowStyleMixin } from '@repo/editor';
-import { Err, Ok, TResult } from 'tuple-result';
+import { Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
 import { resolveColor } from '../../lib';
 import { TResolvedShadowStyleMixin } from './types';
@@ -16,7 +16,7 @@ export function resolveShadowStyleMixin(
 ): TResult<TResolvedShadowStyleMixin['value'], AppError> {
 	const resolvedShadow = resolveReference(shadow, parentMixin);
 	if (resolvedShadow == null) {
-		return Err(new AppError('#ERR_RESOLVE_SHADOW'));
+		return Ok(null);
 	}
 
 	return Ok({

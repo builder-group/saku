@@ -4,6 +4,7 @@ import { useCompute } from 'feature-react/state';
 import { TState } from 'feature-state';
 import React from 'react';
 import { LinkIcon, LinkOffIcon } from '@/components';
+import { cn } from '@/lib';
 
 export const SelectStyleField = <GNodeValue, GParentNodeValue, GValue>(
 	props: TSelectStyleFieldProps<GNodeValue, GParentNodeValue, GValue>
@@ -15,6 +16,7 @@ export const SelectStyleField = <GNodeValue, GParentNodeValue, GValue>(
 		nodeValueMapper,
 		parentValueMapper,
 		nodeValueSetter,
+		className,
 		...selectProps
 	} = props;
 
@@ -83,7 +85,7 @@ export const SelectStyleField = <GNodeValue, GParentNodeValue, GValue>(
 	);
 
 	return (
-		<div className="space-y-1">
+		<div className={cn('space-y-1', className)}>
 			<div className="flex items-center justify-between">
 				<Text as="span" variant="bodySm" tone="subdued">
 					{label}
@@ -146,4 +148,5 @@ export interface TSelectStyleFieldProps<GNodeValue, GParentNodeValue, GValue>
 		test?: GParentNodeValue
 	) => void;
 	parentValueMapper?: (parent: GParentNodeValue) => GValue | undefined;
+	className?: string;
 }

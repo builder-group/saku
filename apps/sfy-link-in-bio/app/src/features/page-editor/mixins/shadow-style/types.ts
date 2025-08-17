@@ -8,5 +8,5 @@ export type TResolvedShadowStyleMixin = TMixin<
 		offsetY: number;
 		blur: number;
 		spread: number;
-	}
+	} | null
 >;

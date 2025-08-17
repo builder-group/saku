@@ -4,6 +4,7 @@ import { useCompute } from 'feature-react/state';
 import { TState } from 'feature-state';
 import React from 'react';
 import { Knob, LinkIcon, LinkOffIcon } from '@/components';
+import { cn } from '@/lib';
 
 export const ToggleStyleField = <GNodeValue, GParentNodeValue>(
 	props: TToggleStyleFieldProps<GNodeValue, GParentNodeValue>
@@ -15,7 +16,8 @@ export const ToggleStyleField = <GNodeValue, GParentNodeValue>(
 		nodeValueMapper,
 		parentValueMapper,
 		nodeValueSetter,
-		ariaLabel
+		ariaLabel,
+		className
 	} = props;
 
 	const currentValue = useCompute(node, ({ value }) => nodeValueMapper(value));
@@ -72,7 +74,7 @@ export const ToggleStyleField = <GNodeValue, GParentNodeValue>(
 	);
 
 	return (
-		<div className="space-y-1">
+		<div className={cn('space-y-1', className)}>
 			<div className="flex items-center justify-between">
 				<Text as="span" variant="bodySm" tone="subdued">
 					{label}
@@ -125,4 +127,5 @@ export interface TToggleStyleFieldProps<GNodeValue, GParentNodeValue> {
 	) => void;
 	parentValueMapper?: (parent: GParentNodeValue) => boolean | undefined;
 	ariaLabel?: string;
+	className?: string;
 }

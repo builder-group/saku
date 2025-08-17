@@ -5,5 +5,5 @@ export type TResolvedStrokeStyleMixin = TMixin<
 	{
 		width: number;
 		color: string;
-	}
+	} | null
 >;

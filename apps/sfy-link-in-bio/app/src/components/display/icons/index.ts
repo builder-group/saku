@@ -34,6 +34,7 @@ export {
 	ImageIcon,
 	LayoutSectionIcon,
 	LiveIcon,
+	MinusIcon,
 	MobileIcon,
 	PageDownIcon,
 	PaintBrushFlatIcon,

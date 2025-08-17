@@ -22,7 +22,7 @@ export const ResolvedAboutNode = React.forwardRef<
 				className="relative overflow-hidden"
 				style={{
 					padding: layout?.padding,
-					backgroundColor: fill.paint.type === 'solid' ? fill.paint.color : undefined,
+					backgroundColor: fill?.paint.type === 'solid' ? fill.paint.color : undefined,
 					borderRadius: appearance.borderRadius,
 					boxShadow: shadow ? '0 4px 6px -1px rgb(0 0 0 / 0.1)' : undefined,
 					opacity: appearance.opacity

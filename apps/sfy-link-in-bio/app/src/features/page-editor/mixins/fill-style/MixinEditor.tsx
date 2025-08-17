@@ -4,12 +4,14 @@ import {
 	TFillStyleMixin,
 	TFlatNode,
 	TMergeMixins,
-	TRgba,
+	TPaint,
 	TUnreference
 } from '@repo/editor';
 import { Button, Text } from '@shopify/polaris';
+import { useCompute } from 'feature-react';
 import React from 'react';
-import { ColorStyleField, TextStyleField } from '../../components';
+import { MinusIcon, PlusIcon } from '@/components';
+import { PaintStyleField, TextStyleField } from '../../components';
 import { TNodeState } from '../../lib';
 
 export const FillStyleMixinEditor = <GNode extends TFlatNode, GParentNode extends TFlatNode>(
@@ -17,15 +19,15 @@ export const FillStyleMixinEditor = <GNode extends TFlatNode, GParentNode extend
 ) => {
 	const { nodeState, parentNodeState } = props;
 
-	const resolvedFill = React.useMemo(() => {
-		return resolveReference(nodeState._v.fill, parentNodeState?._v.childMixins?.fill);
-	}, [nodeState, parentNodeState]);
+	const resolvedFill = useCompute(nodeState, ({ value }) => {
+		return resolveReference(value.fill, parentNodeState?._v.childMixins?.fill);
+	});
 
 	const handleAddFill = React.useCallback(() => {
 		nodeState._v.fill = {
 			paint: {
 				type: 'solid',
-				color: { r: 0, g: 0, b: 0, a: 1 }
+				color: { r: 255, g: 255, b: 255, a: 1 }
 			},
 			opacity: 1
 		};
@@ -44,40 +46,32 @@ export const FillStyleMixinEditor = <GNode extends TFlatNode, GParentNode extend
 					Fill
 				</Text>
 				{resolvedFill != null ? (
-					<Button size="slim" tone="critical" onClick={handleRemoveFill} aria-label="Remove fill">
-						−
-					</Button>
+					<Button icon={MinusIcon} onClick={handleRemoveFill} variant="plain" />
 				) : (
-					<Button size="slim" tone="success" onClick={handleAddFill} aria-label="Add fill">
-						+
-					</Button>
+					<Button icon={PlusIcon} onClick={handleAddFill} variant="plain" />
 				)}
 			</div>
 
 			{resolvedFill != null && (
-				<div className="space-y-3">
-					<ColorStyleField
+				<div className="grid grid-cols-3 gap-3">
+					<PaintStyleField
 						label="Color"
 						node={nodeState}
 						nodeValueMapper={(value) => {
 							const fill = value.fill;
-							if (fill != null && !isInherited(fill) && fill.paint.type === 'solid') {
-								return fill.paint.color;
+							if (fill != null && !isInherited(fill)) {
+								return fill.paint;
 							}
 							return undefined;
 						}}
 						nodeValueSetter={(node, value) => {
-							if (
-								value != null &&
-								node._v.fill != null &&
-								!isInherited(node._v.fill) &&
-								node._v.fill.paint.type === 'solid'
-							) {
-								node._v.fill.paint.color = value as TRgba;
+							if (value != null && node._v.fill != null && !isInherited(node._v.fill)) {
+								node._v.fill.paint = value as TPaint;
 								node._notify();
 							}
 						}}
 						autoComplete="off"
+						className="col-span-2"
 					/>
 
 					<TextStyleField
@@ -93,14 +87,15 @@ export const FillStyleMixinEditor = <GNode extends TFlatNode, GParentNode extend
 						nodeValueSetter={(node, value) => {
 							if (node._v.fill != null && !isInherited(node._v.fill)) {
 								node._v.fill.opacity = value as number;
-								node._notify();
 							}
+							node._notify();
 						}}
 						type="number"
 						autoComplete="off"
 						min={0}
 						max={1}
 						step={0.01}
+						className="col-span-1"
 					/>
 				</div>
 			)}

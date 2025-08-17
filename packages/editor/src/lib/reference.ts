@@ -23,9 +23,6 @@ export function isInherited<T>(
 export function resolveReference<T>(value: TReference<T>, inheritedValue: T): T;
 export function resolveReference<T>(value?: TReference<T>): T | undefined;
 export function resolveReference<T>(value?: TReference<T>, inheritedValue?: T): T | undefined {
-	if (value == null) {
-		return inheritedValue;
-	}
 	if (isInherited(value)) {
 		return inheritedValue;
 	}

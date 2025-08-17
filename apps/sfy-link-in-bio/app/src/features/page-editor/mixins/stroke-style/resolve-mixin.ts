@@ -1,5 +1,5 @@
 import { resolveReference, TRgba, TStrokeStyleMixin } from '@repo/editor';
-import { Err, Ok, TResult } from 'tuple-result';
+import { Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
 import { resolveColor } from '../../lib';
 import { TResolvedStrokeStyleMixin } from './types';
@@ -13,7 +13,7 @@ export function resolveStrokeStyleMixin(
 ): TResult<TResolvedStrokeStyleMixin['value'], AppError> {
 	const resolvedStroke = resolveReference(stroke, parentMixin);
 	if (resolvedStroke == null) {
-		return Err(new AppError('#ERR_RESOLVE_STROKE'));
+		return Ok(null);
 	}
 
 	return Ok({

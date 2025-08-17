@@ -16,7 +16,7 @@ export function resolveFillStyleMixin(
 ): TResult<TResolvedFillStyleMixin['value'], AppError> {
 	const resolvedFill = resolveReference(fill, parentMixin);
 	if (resolvedFill == null) {
-		return Err(new AppError('#ERR_RESOLVE_FILL'));
+		return Ok(null);
 	}
 
 	const resolvedPaint = resolvePaint(resolvedFill.paint, context);

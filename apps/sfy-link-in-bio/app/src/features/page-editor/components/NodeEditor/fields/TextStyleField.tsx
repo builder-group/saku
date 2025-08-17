@@ -4,6 +4,7 @@ import { useCompute } from 'feature-react/state';
 import { TState } from 'feature-state';
 import React from 'react';
 import { LinkIcon, LinkOffIcon } from '@/components';
+import { cn } from '@/lib';
 
 export const TextStyleField = <GNodeValue, GParentNodeValue, GValue>(
 	props: TTextStyleFieldProps<GNodeValue, GParentNodeValue, GValue>
@@ -17,6 +18,7 @@ export const TextStyleField = <GNodeValue, GParentNodeValue, GValue>(
 		nodeValueSetter,
 		min,
 		max,
+		className,
 		...textFieldProps
 	} = props;
 
@@ -92,7 +94,7 @@ export const TextStyleField = <GNodeValue, GParentNodeValue, GValue>(
 	);
 
 	return (
-		<div className="space-y-1">
+		<div className={cn('space-y-1', className)}>
 			<div className="flex items-center justify-between">
 				<Text as="span" variant="bodySm" tone="subdued">
 					{label}
@@ -156,4 +158,5 @@ export interface TTextStyleFieldProps<GNodeValue, GParentNodeValue, GValue>
 	parentValueMapper?: (parent: GParentNodeValue) => GValue | undefined;
 	min?: number;
 	max?: number;
+	className?: string;
 }
