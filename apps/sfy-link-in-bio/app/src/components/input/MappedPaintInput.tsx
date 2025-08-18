@@ -49,6 +49,12 @@ export const MappedPaintInput = <GStateValue, GParentStateValue>(
 	const [selectedTab, setSelectedTab] = React.useState(0);
 	const lastChangeFromText = React.useRef(false);
 
+	// Cache values for each tab while popover is open
+	const tabValueCache = React.useRef<{
+		solid?: TPaint;
+		image?: TPaint;
+	}>({});
+
 	const currentValue = useCompute(state, ({ value }) => mapValue(value));
 	const parentValue = useCompute(parentState, ({ value: parent }) =>
 		parent != null ? mapParentValue?.(parent) : undefined
@@ -234,7 +240,14 @@ export const MappedPaintInput = <GStateValue, GParentStateValue>(
 
 	const togglePopoverActive = React.useCallback(() => {
 		if (!isValueInherited) {
-			setPopoverActive((active) => !active);
+			setPopoverActive((active) => {
+				const newActive = !active;
+				if (!newActive) {
+					// Clear cache when popover closes
+					tabValueCache.current = {};
+				}
+				return newActive;
+			});
 		}
 	}, [isValueInherited]);
 
@@ -246,30 +259,43 @@ export const MappedPaintInput = <GStateValue, GParentStateValue>(
 
 	const handleTabChange = React.useCallback(
 		(selectedTabIndex: number) => {
+			// Cache current value before switching
+			if (resolvedValue != null) {
+				if (selectedTab === 0) {
+					tabValueCache.current.solid = resolvedValue;
+				} else if (selectedTab === 1) {
+					tabValueCache.current.image = resolvedValue;
+				}
+			}
+
 			setSelectedTab(selectedTabIndex);
 
 			switch (selectedTabIndex) {
 				case 0:
+					// Use cached value if available, otherwise use parent or default
 					handleValueChange(
-						parentValue?.type === 'solid'
-							? parentValue
-							: { type: 'solid', color: { r: 196, g: 196, b: 196, a: 1 } }
+						tabValueCache.current.solid ||
+							(parentValue?.type === 'solid'
+								? parentValue
+								: { type: 'solid', color: { r: 196, g: 196, b: 196, a: 1 } })
 					);
 					break;
 				case 1:
+					// Use cached value if available, otherwise use parent or default
 					handleValueChange(
-						parentValue?.type === 'image'
-							? parentValue
-							: {
-									type: 'image'
-								}
+						tabValueCache.current.image ||
+							(parentValue?.type === 'image'
+								? parentValue
+								: {
+										type: 'image'
+									})
 					);
 					break;
 				default:
 				// do nothing
 			}
 		},
-		[handleValueChange, parentValue]
+		[handleValueChange, parentValue, resolvedValue, selectedTab]
 	);
 
 	// =========================================================================
@@ -314,8 +340,8 @@ export const MappedPaintInput = <GStateValue, GParentStateValue>(
 									)}
 								>
 									<img
-										src={resolvedValue.hash}
-										alt={resolvedValue.altText ?? ''}
+										src={uploadFieldImage?.url}
+										alt={resolvedValue.altText}
 										className="h-full w-full object-cover"
 									/>
 								</button>
