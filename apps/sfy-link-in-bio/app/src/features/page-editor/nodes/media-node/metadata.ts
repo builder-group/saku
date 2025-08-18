@@ -15,7 +15,7 @@ export const mediaNodeMetadata: TNodeMetadata<'media'> = {
 		appearance: {
 			borderRadius: inherit(),
 			opacity: inherit(),
-			visible: inherit()
+			visible: true
 		},
 		fill: inherit(),
 		stroke: inherit(),

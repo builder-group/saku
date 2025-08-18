@@ -43,8 +43,8 @@ export interface TFont {
 }
 
 export type TTextAlign = 'left' | 'center' | 'right';
-export type TLineHeight = number | 'auto';
-export type TLetterSpacing = number | 'auto';
+export type TLineHeight = number | { type: 'auto' };
+export type TLetterSpacing = number;
 
 // =========================================================================
 // Paint

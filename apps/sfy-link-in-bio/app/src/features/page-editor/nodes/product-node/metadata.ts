@@ -15,7 +15,7 @@ export const productNodeMetadata: TNodeMetadata<'product'> = {
 		appearance: {
 			borderRadius: inherit(),
 			opacity: inherit(),
-			visible: inherit()
+			visible: true
 		},
 		typography: {
 			font: inherit(),

@@ -148,7 +148,7 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 					appearance: {
 						borderRadius: inherit(),
 						opacity: inherit(),
-						visible: inherit()
+						visible: true
 					},
 					typography: {
 						font: inherit(),
@@ -176,7 +176,7 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 					appearance: {
 						borderRadius: inherit(),
 						opacity: inherit(),
-						visible: inherit()
+						visible: true
 					},
 					typography: {
 						font: inherit(),
@@ -235,8 +235,8 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 					fontSize: 14,
 					textColor: cssRgbaToRgba(page?.themeSettings?.linkCardFontColor) ?? hexToRgba('#000000'),
 					textAlign: 'center',
-					lineHeight: 'auto',
-					letterSpacing: 'auto'
+					lineHeight: { type: 'auto' },
+					letterSpacing: 0
 				},
 				fill: {
 					paint: {

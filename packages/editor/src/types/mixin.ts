@@ -162,7 +162,7 @@ export type TAppearanceStyleMixin = TMixin<
 	{
 		borderRadius: TReference<number>;
 		opacity: TReference<number>;
-		visible: TReference<boolean>;
+		visible: boolean;
 	}
 >;
 
@@ -182,7 +182,7 @@ export type TFillStyleMixin = TMixin<
 	'fill',
 	TReference<{
 		paint: TPaint;
-		opacity: number;
+		opacity: number; // Note: Only really needed when we support multiple fills - currently same as appearance opacity
 	} | null>
 >;
 

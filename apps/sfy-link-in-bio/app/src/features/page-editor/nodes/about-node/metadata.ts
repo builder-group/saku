@@ -19,7 +19,7 @@ export const aboutNodeMetadata: TNodeMetadata<'about'> = {
 		appearance: {
 			borderRadius: inherit(),
 			opacity: inherit(),
-			visible: inherit()
+			visible: true
 		},
 		typography: {
 			font: inherit(),

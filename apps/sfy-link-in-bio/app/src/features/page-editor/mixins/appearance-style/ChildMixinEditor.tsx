@@ -24,10 +24,10 @@ export const ChildAppearanceStyleMixinEditor = <GNode extends TFlatNode>(
 					max={1}
 					step={0.05}
 					state={nodeState}
-					mapValue={(value) => value.childMixins?.appearance?.opacity}
+					mapValue={(value) => value.childMixins?.appearance?.opacity * 100}
 					onValueChange={(value) => {
 						if (value != null) {
-							nodeState._v.childMixins.appearance.opacity = value;
+							nodeState._v.childMixins.appearance.opacity = value / 100;
 							nodeState._notify();
 						}
 					}}
@@ -39,7 +39,7 @@ export const ChildAppearanceStyleMixinEditor = <GNode extends TFlatNode>(
 					autoComplete="off"
 					min={0}
 					max={999}
-					step={2}
+					step={4}
 					state={nodeState}
 					mapValue={(value) => value.childMixins?.appearance?.borderRadius}
 					onValueChange={(value) => {

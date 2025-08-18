@@ -1,13 +1,15 @@
 import {
 	inherit,
+	isInherited,
 	TAppearanceStyleMixin,
 	TFlatNode,
 	TMergeMixins,
 	TReference,
 	TUnreference
 } from '@repo/editor';
-import { Text } from '@shopify/polaris';
-import { MappedTextInput, MappedToggleInput } from '@/components';
+import { Button, Text } from '@shopify/polaris';
+import React from 'react';
+import { HideIcon, MappedTextInput, ViewIcon } from '@/components';
 import { TNodeState } from '../../lib';
 
 export const AppearanceStyleMixinEditor = <GNode extends TFlatNode, GParentNode extends TFlatNode>(
@@ -15,12 +17,31 @@ export const AppearanceStyleMixinEditor = <GNode extends TFlatNode, GParentNode 
 ) => {
 	const { nodeState, parentNodeState } = props;
 
+	// =========================================================================
+	// Events
+	// =========================================================================
+
+	const handleToggleVisibility = React.useCallback(() => {
+		nodeState._v.appearance.visible = !nodeState._v.appearance.visible;
+		nodeState._notify();
+	}, [nodeState]);
+
+	// =========================================================================
+	// UI
+	// =========================================================================
+
 	return (
 		<div className="space-y-3 px-4">
-			<div>
+			<div className="flex items-center justify-between">
 				<Text as="span" variant="headingXs" tone="subdued">
 					Appearance
 				</Text>
+
+				{nodeState._v.appearance.visible ? (
+					<Button icon={ViewIcon} onClick={handleToggleVisibility} variant="plain" size="micro" />
+				) : (
+					<Button icon={HideIcon} onClick={handleToggleVisibility} variant="plain" size="micro" />
+				)}
 			</div>
 			<div className="grid grid-cols-2 gap-3">
 				<MappedTextInput
@@ -28,18 +49,20 @@ export const AppearanceStyleMixinEditor = <GNode extends TFlatNode, GParentNode 
 					type="number"
 					autoComplete="off"
 					min={0}
-					max={1}
-					step={0.05}
+					max={100}
+					step={5}
 					state={nodeState}
 					parentState={parentNodeState}
-					mapValue={(value) => value.appearance.opacity}
+					mapValue={(value) =>
+						isInherited(value.appearance.opacity) ? inherit() : value.appearance.opacity * 100
+					}
 					onValueChange={(value) => {
 						if (value != null) {
-							nodeState._v.appearance.opacity = value;
+							nodeState._v.appearance.opacity = value / 100;
 							nodeState._notify();
 						}
 					}}
-					mapParentValue={(parent) => parent.childMixins.appearance.opacity}
+					mapParentValue={(parent) => parent.childMixins.appearance.opacity * 100}
 					onInheritChange={(shouldInherit, parentValue) => {
 						nodeState._v.appearance.opacity = shouldInherit
 							? inherit()
@@ -55,7 +78,7 @@ export const AppearanceStyleMixinEditor = <GNode extends TFlatNode, GParentNode 
 					autoComplete="off"
 					min={0}
 					max={999}
-					step={2}
+					step={4}
 					state={nodeState}
 					parentState={parentNodeState}
 					mapValue={(value) => value.appearance.borderRadius}
@@ -70,28 +93,6 @@ export const AppearanceStyleMixinEditor = <GNode extends TFlatNode, GParentNode 
 						nodeState._v.appearance.borderRadius = shouldInherit
 							? inherit()
 							: (parentValue as TReference<number>);
-						nodeState._notify();
-					}}
-					disableFieldInheritance={parentNodeState == null}
-				/>
-			</div>
-			<div>
-				<MappedToggleInput
-					label="Visible"
-					state={nodeState}
-					parentState={parentNodeState}
-					mapValue={(value) => value.appearance.visible}
-					onValueChange={(value) => {
-						if (value != null) {
-							nodeState._v.appearance.visible = value;
-							nodeState._notify();
-						}
-					}}
-					mapParentValue={(parent) => parent.childMixins.appearance.visible}
-					onInheritChange={(shouldInherit, parentValue) => {
-						nodeState._v.appearance.visible = shouldInherit
-							? inherit()
-							: (parentValue as TReference<boolean>);
 						nodeState._notify();
 					}}
 					disableFieldInheritance={parentNodeState == null}

@@ -1,4 +1,4 @@
-import { TFont, TMixin } from '@repo/editor';
+import { TFont, TLetterSpacing, TLineHeight, TMixin, TTextAlign } from '@repo/editor';
 
 export type TResolvedTypographyStyleMixin = TMixin<
 	'typography',
@@ -6,8 +6,8 @@ export type TResolvedTypographyStyleMixin = TMixin<
 		font: TFont;
 		fontSize: number;
 		textColor: string;
-		textAlign: 'left' | 'center' | 'right';
-		lineHeight: number | 'auto';
-		letterSpacing: number | 'auto';
+		textAlign: TTextAlign;
+		lineHeight: TLineHeight;
+		letterSpacing: TLetterSpacing;
 	}
 >;

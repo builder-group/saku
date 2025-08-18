@@ -21,7 +21,7 @@ export const linkNodeMetadata: TNodeMetadata<'link'> = {
 		appearance: {
 			borderRadius: inherit(),
 			opacity: inherit(),
-			visible: inherit()
+			visible: true
 		},
 		typography: {
 			font: inherit(),

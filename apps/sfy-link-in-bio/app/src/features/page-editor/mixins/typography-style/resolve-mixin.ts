@@ -1,4 +1,12 @@
-import { resolveReference, TFont, TRgba, TTypographyStyleMixin } from '@repo/editor';
+import {
+	resolveReference,
+	TFont,
+	TLetterSpacing,
+	TLineHeight,
+	TRgba,
+	TTextAlign,
+	TTypographyStyleMixin
+} from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
 import { resolveColor } from '../../lib';
@@ -10,9 +18,9 @@ export function resolveTypographyStyleMixin(
 		font: TFont;
 		fontSize: number;
 		textColor: TRgba;
-		textAlign: 'left' | 'center' | 'right';
-		lineHeight: number | 'auto';
-		letterSpacing: number | 'auto';
+		textAlign: TTextAlign;
+		lineHeight: TLineHeight;
+		letterSpacing: TLetterSpacing;
 	}
 ): TResult<TResolvedTypographyStyleMixin['value'], AppError> {
 	const resolvedFont = resolveReference(typography.font, parentMixin?.font);

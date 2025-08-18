@@ -2,7 +2,7 @@ import { TFillStyleMixin, TFlatNode, TMergeMixins, TUnreference } from '@repo/ed
 import { Button, Text } from '@shopify/polaris';
 import { useCompute } from 'feature-react';
 import React from 'react';
-import { MappedPaintInput, MappedTextInput, MinusIcon, PlusIcon } from '@/components';
+import { MappedPaintInput, MinusIcon, PlusIcon } from '@/components';
 import { TNodeState } from '../../lib';
 
 export const ChildFillStyleMixinEditor = <GNode extends TFlatNode>(
@@ -54,34 +54,15 @@ export const ChildFillStyleMixinEditor = <GNode extends TFlatNode>(
 			</div>
 
 			{currentFill != null && (
-				<div className="grid grid-cols-3 gap-3">
+				<div>
 					<MappedPaintInput
 						label="Paint"
 						autoComplete="off"
-						className="col-span-2"
 						state={nodeState}
 						mapValue={(value) => value.childMixins?.fill?.paint}
 						onValueChange={(value) => {
 							if (value != null && nodeState._v.childMixins?.fill != null) {
 								nodeState._v.childMixins.fill.paint = value;
-								nodeState._notify();
-							}
-						}}
-						disableFieldInheritance
-					/>
-					<MappedTextInput
-						label="Opacity"
-						type="number"
-						autoComplete="off"
-						min={0}
-						max={1}
-						step={0.05}
-						className="col-span-1"
-						state={nodeState}
-						mapValue={(value) => value.childMixins?.fill?.opacity}
-						onValueChange={(value) => {
-							if (value != null && nodeState._v.childMixins?.fill != null) {
-								nodeState._v.childMixins.fill.opacity = value;
 								nodeState._notify();
 							}
 						}}

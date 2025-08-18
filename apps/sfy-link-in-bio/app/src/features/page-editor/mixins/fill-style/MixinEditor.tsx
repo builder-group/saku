@@ -13,14 +13,7 @@ import { Button, Text } from '@shopify/polaris';
 import { useCombinedCompute, useCompute } from 'feature-react';
 import { createState } from 'feature-state';
 import React from 'react';
-import {
-	LinkIcon,
-	LinkOffIcon,
-	MappedPaintInput,
-	MappedTextInput,
-	MinusIcon,
-	PlusIcon
-} from '@/components';
+import { LinkIcon, LinkOffIcon, MappedPaintInput, MinusIcon, PlusIcon } from '@/components';
 import { useMemoCleanup } from '@/hooks';
 import { TNodeState } from '../../lib';
 
@@ -39,38 +32,6 @@ export const FillStyleMixinEditor = <GNode extends TFlatNode, GParentNode extend
 	const isInheritedFill = useCompute(nodeState, ({ value }) => {
 		return isInherited(value.fill);
 	});
-
-	const opacityState = useMemoCleanup(() => {
-		const state = createState<TReference<number> | undefined>(undefined, { queue: 'sync' });
-
-		const unsubscribeNodeState = nodeState.subscribe(({ value }) => {
-			if (isInherited(value.fill)) {
-				state.set(inherit());
-			} else {
-				state.set(value.fill?.opacity);
-			}
-		});
-
-		const unsubscribeOpacityState = state.subscribe(({ value }) => {
-			if (
-				value != null &&
-				!isInherited(value) &&
-				nodeState._v.fill != null &&
-				!isInherited(nodeState._v.fill)
-			) {
-				nodeState._v.fill.opacity = value;
-				nodeState._notify();
-			}
-		});
-
-		return [
-			state,
-			() => {
-				unsubscribeNodeState();
-				unsubscribeOpacityState();
-			}
-		];
-	}, [nodeState]);
 
 	const paintState = useMemoCleanup(() => {
 		const state = createState<TReference<TPaint> | undefined>(undefined, { queue: 'sync' });
@@ -171,18 +132,17 @@ export const FillStyleMixinEditor = <GNode extends TFlatNode, GParentNode extend
 
 				{/* Add/Remove fill buttons */}
 				{resolvedFill != null ? (
-					<Button icon={MinusIcon} onClick={handleRemoveFill} variant="plain" />
+					<Button icon={MinusIcon} onClick={handleRemoveFill} variant="plain" size="micro" />
 				) : (
-					<Button icon={PlusIcon} onClick={handleAddFill} variant="plain" />
+					<Button icon={PlusIcon} onClick={handleAddFill} variant="plain" size="micro" />
 				)}
 			</div>
 
 			{resolvedFill != null && (
-				<div className="grid grid-cols-3 gap-3">
+				<div>
 					<MappedPaintInput
 						label="Paint"
 						autoComplete="off"
-						className="col-span-2"
 						state={paintState}
 						mapValue={(value) => value}
 						onValueChange={(value) => {
@@ -190,23 +150,6 @@ export const FillStyleMixinEditor = <GNode extends TFlatNode, GParentNode extend
 						}}
 						parentState={parentNodeState}
 						mapParentValue={(parent) => parent.childMixins?.fill?.paint}
-						disableFieldInheritance
-					/>
-					<MappedTextInput
-						label="Opacity"
-						type="number"
-						autoComplete="off"
-						min={0}
-						max={1}
-						step={0.05}
-						className="col-span-1"
-						state={opacityState}
-						parentState={parentNodeState}
-						mapValue={(value) => value}
-						onValueChange={(value) => {
-							opacityState.set(value);
-						}}
-						mapParentValue={(parent) => parent.childMixins?.fill?.opacity}
 						disableFieldInheritance
 					/>
 				</div>

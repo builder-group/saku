@@ -31,6 +31,7 @@ export {
 	DragHandleIcon,
 	DuplicateIcon,
 	ExternalIcon,
+	HideIcon,
 	ImageIcon,
 	LayoutSectionIcon,
 	LiveIcon,

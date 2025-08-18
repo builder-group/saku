@@ -17,7 +17,7 @@ export const textNodeMetadata: TNodeMetadata<'text'> = {
 		appearance: {
 			borderRadius: inherit(),
 			opacity: inherit(),
-			visible: inherit()
+			visible: true
 		},
 		typography: {
 			font: inherit(),

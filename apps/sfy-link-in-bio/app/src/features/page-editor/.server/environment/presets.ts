@@ -129,7 +129,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 			appearance: {
 				borderRadius: inherit(),
 				opacity: inherit(),
-				visible: inherit()
+				visible: true
 			},
 			typography: {
 				font: inherit(),
@@ -201,7 +201,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					appearance: {
 						borderRadius: 0,
 						opacity: inherit(),
-						visible: inherit()
+						visible: true
 					},
 					typography: {
 						font: inherit(),
@@ -231,7 +231,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					appearance: {
 						borderRadius: inherit(),
 						opacity: inherit(),
-						visible: inherit()
+						visible: true
 					},
 					typography: {
 						font: inherit(),
@@ -257,7 +257,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					appearance: {
 						borderRadius: 0,
 						opacity: inherit(),
-						visible: inherit()
+						visible: true
 					},
 					typography: {
 						font: {
@@ -293,7 +293,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					appearance: {
 						borderRadius: 999,
 						opacity: inherit(),
-						visible: inherit()
+						visible: true
 					},
 					typography: {
 						font: inherit(),
@@ -330,7 +330,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					appearance: {
 						borderRadius: inherit(),
 						opacity: inherit(),
-						visible: inherit()
+						visible: true
 					},
 					fill: inherit(),
 					stroke: inherit(),
@@ -366,7 +366,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					fontSize: 16,
 					textColor: hexToRgba(primaryColor),
 					textAlign: 'center',
-					lineHeight: 1.5,
+					lineHeight: { type: 'auto' },
 					letterSpacing: 0
 				},
 				fill: {
