@@ -4,6 +4,6 @@ import { TResolvedPaint } from '../../lib';
 export type TResolvedFillStyleMixin = TMixin<
 	'fill',
 	{
-		paint: TResolvedPaint;
+		paint?: TResolvedPaint;
 	} | null
 >;

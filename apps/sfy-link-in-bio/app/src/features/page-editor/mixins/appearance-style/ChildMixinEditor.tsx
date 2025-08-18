@@ -1,6 +1,6 @@
 import { TAppearanceStyleMixin, TFlatNode, TMergeMixins, TUnreference } from '@repo/editor';
 import { Text } from '@shopify/polaris';
-import { MappedTextInput, MappedToggleInput } from '@/components';
+import { MappedTextInput } from '@/components';
 import { TNodeState } from '../../lib';
 
 export const ChildAppearanceStyleMixinEditor = <GNode extends TFlatNode>(
@@ -45,20 +45,6 @@ export const ChildAppearanceStyleMixinEditor = <GNode extends TFlatNode>(
 					onValueChange={(value) => {
 						if (value != null) {
 							nodeState._v.childMixins.appearance.borderRadius = value;
-							nodeState._notify();
-						}
-					}}
-					disableFieldInheritance
-				/>
-			</div>
-			<div>
-				<MappedToggleInput
-					label="Visible"
-					state={nodeState}
-					mapValue={(value) => value.childMixins?.appearance?.visible}
-					onValueChange={(value) => {
-						if (value != null) {
-							nodeState._v.childMixins.appearance.visible = value;
 							nodeState._notify();
 						}
 					}}

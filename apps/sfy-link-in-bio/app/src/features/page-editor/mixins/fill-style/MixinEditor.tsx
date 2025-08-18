@@ -15,12 +15,12 @@ import { createState } from 'feature-state';
 import React from 'react';
 import { LinkIcon, LinkOffIcon, MappedPaintInput, MinusIcon, PlusIcon } from '@/components';
 import { useMemoCleanup } from '@/hooks';
-import { TNodeState } from '../../lib';
+import { TNodeState, TPageEditor } from '../../lib';
 
 export const FillStyleMixinEditor = <GNode extends TFlatNode, GParentNode extends TFlatNode>(
 	props: TFillStyleMixinEditorProps<GNode, GParentNode>
 ) => {
-	const { nodeState, parentNodeState } = props;
+	const { nodeState, parentNodeState, editor } = props;
 
 	const resolvedFill = useCombinedCompute(
 		[nodeState, parentNodeState ?? createState(undefined)],
@@ -151,6 +151,7 @@ export const FillStyleMixinEditor = <GNode extends TFlatNode, GParentNode extend
 						parentState={parentNodeState}
 						mapParentValue={(parent) => parent.childMixins?.fill?.paint}
 						disableFieldInheritance
+						editor={editor}
 					/>
 				</div>
 			)}
@@ -165,4 +166,5 @@ interface TFillStyleMixinEditorProps<GNode extends TFlatNode, GParentNode extend
 			childMixins: TMergeMixins<[TUnreference<TFillStyleMixin>]>;
 		}
 	>;
+	editor: TPageEditor;
 }

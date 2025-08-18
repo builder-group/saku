@@ -79,7 +79,7 @@ export const Content: React.FC<TContentProps> = (props) => {
 			style={{
 				padding: layout?.padding,
 				opacity: appearance.opacity,
-				backgroundColor: fill?.paint.type === 'solid' ? fill?.paint.color : undefined,
+				backgroundColor: fill?.paint?.type === 'solid' ? fill?.paint.color : undefined,
 				fontFamily: typography?.font?.family,
 				fontSize: typography?.fontSize,
 				color: typography?.textColor,

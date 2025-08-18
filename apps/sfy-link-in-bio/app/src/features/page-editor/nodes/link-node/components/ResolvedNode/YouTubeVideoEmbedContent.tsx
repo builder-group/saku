@@ -13,7 +13,7 @@ export const YouTubeVideoEmbedContent: React.FC<TYouTubeVideoEmbedContentProps> 
 			style={{
 				padding: layout?.padding,
 				opacity: appearance.opacity,
-				backgroundColor: fill?.paint.type === 'solid' ? fill?.paint.color : undefined,
+				backgroundColor: fill?.paint?.type === 'solid' ? fill?.paint.color : undefined,
 				borderRadius: appearance?.borderRadius,
 				boxShadow: shadow ? '0 4px 6px -1px rgb(0 0 0 / 0.1)' : undefined
 			}}

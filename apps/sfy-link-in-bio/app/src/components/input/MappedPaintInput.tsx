@@ -6,6 +6,8 @@ import {
 	resolveReference,
 	rgbaToHex,
 	rgbaToHsba,
+	TAssetHash,
+	TImageAsset,
 	TPaint,
 	TReference
 } from '@repo/editor';
@@ -22,7 +24,7 @@ import {
 import { useCompute } from 'feature-react/state';
 import { TState } from 'feature-state';
 import React from 'react';
-import { ImageUploadField, LinkIcon, LinkOffIcon, TImageUploadOnChangeImage } from '@/components';
+import { ImageUploadField, LinkIcon, LinkOffIcon, TImageUploadEvent } from '@/components';
 import { cn } from '@/lib';
 
 export const MappedPaintInput = <GStateValue, GParentStateValue>(
@@ -36,6 +38,7 @@ export const MappedPaintInput = <GStateValue, GParentStateValue>(
 		parentState,
 		mapParentValue,
 		disableFieldInheritance = false,
+		editor,
 		label,
 		className,
 		...textFieldProps
@@ -109,6 +112,22 @@ export const MappedPaintInput = <GStateValue, GParentStateValue>(
 		};
 	}, [resolvedValue]);
 
+	const uploadFieldImage = React.useMemo(() => {
+		if (resolvedValue?.type !== 'image') {
+			return undefined;
+		}
+
+		const asset = editor.getImageAsset(resolvedValue.hash);
+		if (asset == null || asset.storage.type !== 'url') {
+			return undefined;
+		}
+
+		return {
+			url: asset.storage.url,
+			fileName: asset.fileName
+		};
+	}, [resolvedValue, editor]);
+
 	const error = React.useMemo(() => {
 		if (inputValue === '') {
 			return false;
@@ -181,18 +200,32 @@ export const MappedPaintInput = <GStateValue, GParentStateValue>(
 	);
 
 	const handleImageChange = React.useCallback(
-		(imageData: TImageUploadOnChangeImage) => {
+		(event: TImageUploadEvent) => {
 			if (isValueInherited) {
 				return;
 			}
 
-			handleValueChange({
-				type: 'image',
-				hash: imageData.url,
-				altText: imageData.fileName
-			});
+			switch (event.type) {
+				case 'Changed': {
+					const hash = editor.registerImage(event.url, event.fileName);
+					if (hash != null) {
+						handleValueChange({
+							type: 'image',
+							hash,
+							altText: event.fileName
+						});
+					}
+					break;
+				}
+				case 'Removed': {
+					handleValueChange({
+						type: 'image'
+					});
+					break;
+				}
+			}
 		},
-		[handleValueChange, isValueInherited]
+		[handleValueChange, isValueInherited, editor]
 	);
 
 	const handleToggleInheritance = React.useCallback(() => {
@@ -217,19 +250,18 @@ export const MappedPaintInput = <GStateValue, GParentStateValue>(
 
 			switch (selectedTabIndex) {
 				case 0:
-					handleValueChange({
-						type: 'solid',
-						color: parentValue?.type === 'solid' ? parentValue.color : { r: 0, g: 0, b: 0, a: 1 }
-					});
+					handleValueChange(
+						parentValue?.type === 'solid'
+							? parentValue
+							: { type: 'solid', color: { r: 196, g: 196, b: 196, a: 1 } }
+					);
 					break;
 				case 1:
 					handleValueChange(
 						parentValue?.type === 'image'
 							? parentValue
 							: {
-									type: 'image',
-									hash: '',
-									altText: undefined
+									type: 'image'
 								}
 					);
 					break;
@@ -244,21 +276,9 @@ export const MappedPaintInput = <GStateValue, GParentStateValue>(
 	// UI
 	// =========================================================================
 
-	const ColorTab = <ColorPicker onChange={handleColorChange} color={pickerColor} allowAlpha />;
+	const ColorTab = <ColorPicker color={pickerColor} onChange={handleColorChange} allowAlpha />;
 
-	const ImageTab = (
-		<ImageUploadField
-			image={
-				resolvedValue?.type === 'image'
-					? {
-							url: resolvedValue.hash,
-							fileName: resolvedValue.altText
-						}
-					: undefined
-			}
-			onChange={handleImageChange}
-		/>
-	);
+	const ImageTab = <ImageUploadField image={uploadFieldImage} onChange={handleImageChange} />;
 
 	const InputComponent = (
 		<Popover
@@ -386,6 +406,11 @@ export interface TMappedPaintInputProps<GStateValue, GParentStateValue>
 	mapParentValue?: (parentStateValue: GParentStateValue) => TPaint | undefined;
 	onInheritChange?: (shouldInherit: boolean, parentValue?: TPaint) => void;
 	disableFieldInheritance?: boolean;
+
+	editor: {
+		registerImage: (url: string, fileName?: string) => TAssetHash | null;
+		getImageAsset: (hash: TAssetHash | undefined | null) => TImageAsset | null;
+	};
 
 	label: string;
 	className?: string;

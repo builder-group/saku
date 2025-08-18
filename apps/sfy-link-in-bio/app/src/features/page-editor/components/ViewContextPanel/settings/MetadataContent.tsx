@@ -2,7 +2,7 @@ import { InlineError, Text, TextField } from '@shopify/polaris';
 import { useCompute, useFeatureState } from 'feature-react';
 import React from 'react';
 import { unwrapOrNull } from 'tuple-result';
-import { ImageUploadField, type TImageUploadOnChangeImage } from '@/components';
+import { ImageUploadField, type TImageUploadEvent } from '@/components';
 import { EditorSiteResolveContext, TPageEditor } from '../../../lib';
 import { resolvePageNodeWithoutChildren } from '../../../nodes';
 import { PanelHeader } from '../../PanelHeader';
@@ -55,17 +55,21 @@ export const MetadataContent: React.FC<TMetadataContentProps> = (props) => {
 	);
 
 	const handleImageChange = React.useCallback(
-		(image: TImageUploadOnChangeImage) => {
-			if (!image.url.length) {
-				rootNode._v.content.metadata.image = undefined;
-				rootNode._notify();
-				return;
-			}
-
-			const hash = editor.registerImage(image.url, image.fileName);
-			if (hash != null) {
-				rootNode._v.content.metadata.image = hash;
-				rootNode._notify();
+		(image: TImageUploadEvent) => {
+			switch (image.type) {
+				case 'Changed': {
+					const hash = editor.registerImage(image.url, image.fileName);
+					if (hash != null) {
+						rootNode._v.content.metadata.image = hash;
+						rootNode._notify();
+					}
+					break;
+				}
+				case 'Removed': {
+					rootNode._v.content.metadata.image = undefined;
+					rootNode._notify();
+					break;
+				}
 			}
 		},
 		[rootNode, editor]

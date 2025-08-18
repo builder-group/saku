@@ -3,7 +3,7 @@ import { TAboutNode, TSocialLink } from '@repo/editor';
 import { InlineError, Text, TextField } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react/state';
 import React from 'react';
-import { AccordionSection, ImageUploadField, type TImageUploadOnChangeImage } from '@/components';
+import { AccordionSection, ImageUploadField, type TImageUploadEvent } from '@/components';
 import { TNodeEditorComponentProps } from '../../../lib';
 import {
 	AppearanceStyleMixinEditor,
@@ -75,11 +75,21 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 	);
 
 	const handleProfilePictureChange = React.useCallback(
-		(image: TImageUploadOnChangeImage) => {
-			const hash = editor.registerImage(image.url, image.fileName);
-			if (hash != null) {
-				nodeState._v.content.profilePicture = hash;
-				nodeState._notify();
+		(event: TImageUploadEvent) => {
+			switch (event.type) {
+				case 'Changed': {
+					const hash = editor.registerImage(event.url, event.fileName);
+					if (hash != null) {
+						nodeState._v.content.profilePicture = hash;
+						nodeState._notify();
+					}
+					break;
+				}
+				case 'Removed': {
+					nodeState._v.content.profilePicture = undefined;
+					nodeState._notify();
+					break;
+				}
 			}
 		},
 		[nodeState, editor]
@@ -216,7 +226,11 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 					editor={editor}
 				/>
 				<div className="h-px bg-gray-200" />
-				<FillStyleMixinEditor nodeState={nodeState} parentNodeState={parentNodeState} />
+				<FillStyleMixinEditor
+					nodeState={nodeState}
+					parentNodeState={parentNodeState}
+					editor={editor}
+				/>
 			</AccordionSection>
 		</>
 	);

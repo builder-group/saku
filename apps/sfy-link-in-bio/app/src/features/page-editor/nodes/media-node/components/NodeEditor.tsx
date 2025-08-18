@@ -2,7 +2,7 @@ import { TMediaNode } from '@repo/editor';
 import { InlineError, Select, Text } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react/state';
 import React from 'react';
-import { AccordionSection, ImageUploadField, TImageUploadOnChangeImage } from '@/components';
+import { AccordionSection, ImageUploadField, TImageUploadEvent } from '@/components';
 import { TNodeEditorComponentProps } from '../../../lib';
 import {
 	AppearanceStyleMixinEditor,
@@ -49,15 +49,25 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 	);
 
 	const handleMediaImageChange = React.useCallback(
-		(value: TImageUploadOnChangeImage) => {
-			const hash = editor.registerImage(value.url, value.fileName);
-			if (hash != null) {
-				nodeState._v.content.media = {
-					type: 'image',
-					hash,
-					altText: value.fileName != null ? `Image: ${value.fileName}` : undefined
-				};
-				nodeState._notify();
+		(event: TImageUploadEvent) => {
+			switch (event.type) {
+				case 'Changed': {
+					const hash = editor.registerImage(event.url, event.fileName);
+					if (hash != null) {
+						nodeState._v.content.media = {
+							type: 'image',
+							hash,
+							altText: event.fileName
+						};
+						nodeState._notify();
+					}
+					break;
+				}
+				case 'Removed': {
+					nodeState._v.content.media = undefined;
+					nodeState._notify();
+					break;
+				}
 			}
 		},
 		[nodeState, editor]
@@ -112,7 +122,11 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 				<div className="h-px bg-gray-200" />
 				<AppearanceStyleMixinEditor nodeState={nodeState} parentNodeState={parentNodeState} />
 				<div className="h-px bg-gray-200" />
-				<FillStyleMixinEditor nodeState={nodeState} parentNodeState={parentNodeState} />
+				<FillStyleMixinEditor
+					nodeState={nodeState}
+					parentNodeState={parentNodeState}
+					editor={editor}
+				/>
 			</AccordionSection>
 		</>
 	);

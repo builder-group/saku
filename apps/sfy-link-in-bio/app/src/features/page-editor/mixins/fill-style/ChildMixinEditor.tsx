@@ -3,12 +3,12 @@ import { Button, Text } from '@shopify/polaris';
 import { useCompute } from 'feature-react';
 import React from 'react';
 import { MappedPaintInput, MinusIcon, PlusIcon } from '@/components';
-import { TNodeState } from '../../lib';
+import { TNodeState, TPageEditor } from '../../lib';
 
 export const ChildFillStyleMixinEditor = <GNode extends TFlatNode>(
 	props: TChildFillStyleMixinEditorProps<GNode>
 ) => {
-	const { nodeState } = props;
+	const { nodeState, editor } = props;
 
 	const currentFill = useCompute(nodeState, ({ value }) => {
 		return value.childMixins?.fill;
@@ -67,6 +67,7 @@ export const ChildFillStyleMixinEditor = <GNode extends TFlatNode>(
 							}
 						}}
 						disableFieldInheritance
+						editor={editor}
 					/>
 				</div>
 			)}
@@ -76,4 +77,5 @@ export const ChildFillStyleMixinEditor = <GNode extends TFlatNode>(
 
 interface TChildFillStyleMixinEditorProps<GNode extends TFlatNode> {
 	nodeState: TNodeState<GNode & { childMixins: TMergeMixins<[TUnreference<TFillStyleMixin>]> }>;
+	editor: TPageEditor;
 }

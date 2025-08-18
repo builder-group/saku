@@ -337,7 +337,11 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 					editor={editor}
 				/>
 				<div className="h-px bg-gray-200" />
-				<FillStyleMixinEditor nodeState={nodeState} parentNodeState={parentNodeState} />
+				<FillStyleMixinEditor
+					nodeState={nodeState}
+					parentNodeState={parentNodeState}
+					editor={editor}
+				/>
 			</AccordionSection>
 		</>
 	);

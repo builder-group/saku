@@ -44,7 +44,7 @@ export const PageNode = React.forwardRef<HTMLDivElement, TNodeProps<TFlatPageNod
 				{...divProps}
 				ref={ref}
 				className="min-h-screen w-full"
-				style={{ backgroundColor: fill?.paint.type === 'solid' ? fill?.paint.color : undefined }}
+				style={{ backgroundColor: fill?.paint?.type === 'solid' ? fill?.paint.color : undefined }}
 			>
 				<div className="mx-auto w-full max-w-md">
 					<div

@@ -16,7 +16,7 @@ export const ResolvedPageNode: React.FC<TResolvedNodeProps<TResolvedPageNode>> =
 			{...divProps}
 			className="min-h-screen w-full"
 			style={{
-				backgroundColor: fill?.paint.type === 'solid' ? fill?.paint.color : undefined
+				backgroundColor: fill?.paint?.type === 'solid' ? fill?.paint.color : undefined
 			}}
 		>
 			<div className="mx-auto w-full max-w-md">

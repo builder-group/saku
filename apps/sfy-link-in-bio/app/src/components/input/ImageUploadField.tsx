@@ -39,6 +39,7 @@ export const ImageUploadField: React.FC<TImageUploadFieldProps> = (props) => {
 			const [uploadedFile] = result.value;
 			if (uploadedFile != null) {
 				onChange?.({
+					type: 'Changed',
 					url: uploadedFile.resourceUrl,
 					fileName: file.name
 				});
@@ -119,6 +120,7 @@ export const ImageUploadField: React.FC<TImageUploadFieldProps> = (props) => {
 			const selectedFile = selectedFileIndex != null ? files[selectedFileIndex] : null;
 			if (selectedFile != null) {
 				onChange?.({
+					type: 'Changed',
 					url: selectedFile.url,
 					fileName: selectedFile.fileName,
 					width: selectedFile.details.type === 'image' ? selectedFile.details.width : undefined,
@@ -158,10 +160,7 @@ export const ImageUploadField: React.FC<TImageUploadFieldProps> = (props) => {
 	}, [handleDrop]);
 
 	const handleRemove = React.useCallback(() => {
-		onChange?.({
-			url: '',
-			fileName: undefined
-		});
+		onChange?.({ type: 'Removed' });
 	}, [onChange]);
 
 	// =========================================================================
@@ -257,14 +256,17 @@ export interface TImageUploadFieldProps {
 		fileName?: string;
 		altText?: string;
 	};
-	onChange?: (image: TImageUploadOnChangeImage) => void;
+	onChange?: (event: TImageUploadEvent) => void;
 	onError?: (error: string | null) => void;
 }
 
-export interface TImageUploadOnChangeImage {
-	url: string;
-	fileName?: string;
-	width?: number;
-	height?: number;
-	previewImageUrl?: string;
-}
+export type TImageUploadEvent =
+	| {
+			type: 'Changed';
+			url: string;
+			fileName: string;
+			width?: number;
+			height?: number;
+			previewImageUrl?: string;
+	  }
+	| { type: 'Removed' };

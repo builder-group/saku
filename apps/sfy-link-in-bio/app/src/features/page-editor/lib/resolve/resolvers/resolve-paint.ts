@@ -1,11 +1,11 @@
-import { TAssetHash, TPaint } from '@repo/editor';
+import { TAsset, TAssetHash, TPaint } from '@repo/editor';
 import { resolveAsset } from './resolve-asset';
 import { resolveColor } from './resolve-color';
 
 export function resolvePaint(
 	paint: TPaint,
 	context: {
-		getAsset: (hash: TAssetHash) => import('@repo/editor').TAsset | null;
+		getAsset: (hash: TAssetHash) => TAsset | null;
 	}
 ): TResolvedPaint | undefined {
 	switch (paint.type) {
@@ -19,6 +19,10 @@ export function resolvePaint(
 		}
 
 		case 'image': {
+			if (paint.hash == null) {
+				return undefined;
+			}
+
 			const url = resolveAsset(paint.hash, context);
 			if (url == null) {
 				return undefined;

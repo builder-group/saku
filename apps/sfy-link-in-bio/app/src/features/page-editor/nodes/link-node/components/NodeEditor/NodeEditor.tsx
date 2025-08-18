@@ -239,7 +239,11 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 					editor={editor}
 				/>
 				<div className="h-px bg-gray-200" />
-				<FillStyleMixinEditor nodeState={nodeState} parentNodeState={parentNodeState} />
+				<FillStyleMixinEditor
+					nodeState={nodeState}
+					parentNodeState={parentNodeState}
+					editor={editor}
+				/>
 			</AccordionSection>
 		</>
 	);

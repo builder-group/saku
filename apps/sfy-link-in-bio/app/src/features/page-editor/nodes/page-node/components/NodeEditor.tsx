@@ -29,7 +29,7 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TFlatPageNode>> 
 
 				<AppearanceStyleMixinEditor nodeState={nodeState} />
 				<div className="h-px bg-gray-200" />
-				<FillStyleMixinEditor nodeState={nodeState} />
+				<FillStyleMixinEditor nodeState={nodeState} editor={editor} />
 			</AccordionSection>
 
 			{/* Child Style Section */}
@@ -44,7 +44,7 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TFlatPageNode>> 
 				<div className="h-px bg-gray-200" />
 				<ChildTypographyStyleMixinEditor nodeState={nodeState} editor={editor} />
 				<div className="h-px bg-gray-200" />
-				<ChildFillStyleMixinEditor nodeState={nodeState} />
+				<ChildFillStyleMixinEditor nodeState={nodeState} editor={editor} />
 			</AccordionSection>
 		</>
 	);
