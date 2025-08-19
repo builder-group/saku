@@ -1,3 +1,4 @@
+import { deepCopy } from '@blgc/utils';
 import {
 	inherit,
 	isInherited,
@@ -5,8 +6,6 @@ import {
 	TFillStyleMixin,
 	TFlatNode,
 	TMergeMixins,
-	TPaint,
-	TReference,
 	TUnreference
 } from '@repo/editor';
 import { Button, Text } from '@shopify/polaris';
@@ -14,7 +13,7 @@ import { useCombinedCompute, useCompute } from 'feature-react';
 import { createState } from 'feature-state';
 import React from 'react';
 import { LinkIcon, LinkOffIcon, MappedPaintInput, MinusIcon, PlusIcon } from '@/components';
-import { useMemoCleanup } from '@/hooks';
+import { useMapReferenceToProperty } from '../../hooks';
 import { TNodeState, TPageEditor } from '../../lib';
 
 export const FillStyleMixinEditor = <GNode extends TFlatNode, GParentNode extends TFlatNode>(
@@ -33,37 +32,16 @@ export const FillStyleMixinEditor = <GNode extends TFlatNode, GParentNode extend
 		return isInherited(value.fill);
 	});
 
-	const paintState = useMemoCleanup(() => {
-		const state = createState<TReference<TPaint> | undefined>(undefined, { queue: 'sync' });
-
-		const unsubscribeNodeState = nodeState.subscribe(({ value }) => {
-			if (isInherited(value.fill)) {
-				state.set(inherit());
-			} else {
-				state.set(value.fill?.paint);
-			}
-		});
-
-		const unsubscribePaintState = state.subscribe(({ value }) => {
-			if (
-				value != null &&
-				!isInherited(value) &&
-				nodeState._v.fill != null &&
-				!isInherited(nodeState._v.fill)
-			) {
+	const paintState = useMapReferenceToProperty(nodeState, {
+		topLevelReference: (value) => value.fill,
+		propertyReference: (value) => value?.paint,
+		updateProperty: (value) => {
+			if (nodeState._v.fill != null && !isInherited(nodeState._v.fill)) {
 				nodeState._v.fill.paint = value;
 				nodeState._notify();
 			}
-		});
-
-		return [
-			state,
-			() => {
-				unsubscribeNodeState();
-				unsubscribePaintState();
-			}
-		];
-	}, [nodeState]);
+		}
+	});
 
 	// =========================================================================
 	// Events
@@ -87,17 +65,9 @@ export const FillStyleMixinEditor = <GNode extends TFlatNode, GParentNode extend
 	}, [nodeState]);
 
 	const handleToggleInheritance = React.useCallback(() => {
-		// Uninherit and copy parent values
-		if (isInheritedFill) {
-			const parentFill = parentNodeState?._v.childMixins?.fill;
-			if (parentFill != null) {
-				nodeState._v.fill = { ...parentFill };
-			}
-		}
-		// Inherit entire mixin
-		else {
-			nodeState._v.fill = inherit();
-		}
+		nodeState._v.fill = isInheritedFill
+			? (deepCopy(parentNodeState?._v.childMixins?.fill) ?? null)
+			: inherit();
 		nodeState._notify();
 	}, [isInheritedFill, parentNodeState, nodeState]);
 
@@ -110,7 +80,7 @@ export const FillStyleMixinEditor = <GNode extends TFlatNode, GParentNode extend
 			<div className="flex items-center justify-between">
 				<div className="flex items-center gap-2">
 					{/* Mixin-level inheritance button */}
-					{parentNodeState && (
+					{parentNodeState != null && (
 						<button
 							type="button"
 							onClick={handleToggleInheritance}
@@ -144,11 +114,11 @@ export const FillStyleMixinEditor = <GNode extends TFlatNode, GParentNode extend
 						label="Paint"
 						autoComplete="off"
 						state={paintState}
+						parentState={parentNodeState}
 						mapValue={(value) => value}
 						onValueChange={(value) => {
 							paintState.set(value);
 						}}
-						parentState={parentNodeState}
 						mapParentValue={(parent) => parent.childMixins?.fill?.paint}
 						disableFieldInheritance
 						editor={editor}

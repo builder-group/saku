@@ -9,6 +9,8 @@ import {
 	AppearanceStyleMixinEditor,
 	FillStyleMixinEditor,
 	LayoutStyleMixinEditor,
+	ShadowStyleMixinEditor,
+	StrokeStyleMixinEditor,
 	TypographyStyleMixinEditor
 } from '../../../mixins';
 import { generateSocialUrl, socialMetadataMap, TSocialMetadata } from '../social-metadata';
@@ -231,6 +233,10 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 					parentNodeState={parentNodeState}
 					editor={editor}
 				/>
+				<div className="h-px bg-gray-200" />
+				<StrokeStyleMixinEditor nodeState={nodeState} parentNodeState={parentNodeState} />
+				<div className="h-px bg-gray-200" />
+				<ShadowStyleMixinEditor nodeState={nodeState} parentNodeState={parentNodeState} />
 			</AccordionSection>
 		</>
 	);

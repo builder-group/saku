@@ -6,6 +6,8 @@ import {
 	ChildAppearanceStyleMixinEditor,
 	ChildFillStyleMixinEditor,
 	ChildLayoutStyleMixinEditor,
+	ChildShadowStyleMixinEditor,
+	ChildStrokeStyleMixinEditor,
 	ChildTypographyStyleMixinEditor,
 	FillStyleMixinEditor,
 	PageLayoutStyleMixinEditor
@@ -42,6 +44,10 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TFlatPageNode>> 
 				<ChildTypographyStyleMixinEditor nodeState={nodeState} editor={editor} />
 				<div className="h-px bg-gray-200" />
 				<ChildFillStyleMixinEditor nodeState={nodeState} editor={editor} />
+				<div className="h-px bg-gray-200" />
+				<ChildStrokeStyleMixinEditor nodeState={nodeState} />
+				<div className="h-px bg-gray-200" />
+				<ChildShadowStyleMixinEditor nodeState={nodeState} />
 			</AccordionSection>
 		</>
 	);

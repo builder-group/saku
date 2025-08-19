@@ -7,7 +7,9 @@ import { TNodeEditorComponentProps } from '../../../lib';
 import {
 	AppearanceStyleMixinEditor,
 	FillStyleMixinEditor,
-	LayoutStyleMixinEditor
+	LayoutStyleMixinEditor,
+	ShadowStyleMixinEditor,
+	StrokeStyleMixinEditor
 } from '../../../mixins';
 
 export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = (props) => {
@@ -127,6 +129,10 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 					parentNodeState={parentNodeState}
 					editor={editor}
 				/>
+				<div className="h-px bg-gray-200" />
+				<StrokeStyleMixinEditor nodeState={nodeState} parentNodeState={parentNodeState} />
+				<div className="h-px bg-gray-200" />
+				<ShadowStyleMixinEditor nodeState={nodeState} parentNodeState={parentNodeState} />
 			</AccordionSection>
 		</>
 	);

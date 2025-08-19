@@ -28,8 +28,8 @@ export const LayoutStyleMixinEditor = <GNode extends TFlatNode, GParentNode exte
 					type="number"
 					autoComplete="off"
 					min={0}
-					max={100}
-					step={2}
+					max={96}
+					step={4}
 					state={nodeState}
 					parentState={parentNodeState}
 					mapValue={(value) => value.layout.padding}
