@@ -1,4 +1,4 @@
-import { inheritStyle } from '@repo/editor';
+import { inherit } from '@repo/editor';
 import { LayoutSectionIcon } from '@/components';
 import { TNodeMetadata } from '../../lib';
 
@@ -9,11 +9,16 @@ export const mediaNodeMetadata: TNodeMetadata<'media'> = {
 	internal: false,
 	defaultData: {
 		content: {},
-		style: {
-			padding: inheritStyle(),
-			backgroundColor: inheritStyle(),
-			borderRadius: inheritStyle(),
-			shadow: inheritStyle()
-		}
+		layout: {
+			padding: inherit()
+		},
+		appearance: {
+			borderRadius: inherit(),
+			opacity: inherit(),
+			visible: true
+		},
+		fill: inherit(),
+		stroke: inherit(),
+		shadow: inherit()
 	}
 };

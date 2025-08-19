@@ -2,11 +2,11 @@ import React from 'react';
 import { LogoIcon } from '@/components';
 import { ResolvedNode } from '../../../components';
 import { TResolvedNodeProps } from '../../../lib';
-import { TResolvedPageNode } from '../../../types';
+import { TResolvedPageNode } from '../types';
 
 export const ResolvedPageNode: React.FC<TResolvedNodeProps<TResolvedPageNode>> = (props) => {
 	const {
-		node: { children, style },
+		node: { children, layout, appearance, fill, watermarkColor },
 		cx,
 		...divProps
 	} = props;
@@ -15,16 +15,16 @@ export const ResolvedPageNode: React.FC<TResolvedNodeProps<TResolvedPageNode>> =
 		<div
 			{...divProps}
 			className="min-h-screen w-full"
-			style={{ backgroundColor: style.backgroundColor }}
+			style={{
+				...appearance.styles,
+				...fill?.styles
+			}}
 		>
 			<div className="mx-auto w-full max-w-md">
 				<div
 					className="flex w-full flex-col p-6"
 					style={{
-						gap: style.children?.spacing,
-						fontFamily: style.children?.font?.family,
-						fontSize: style.children?.fontSize,
-						color: style.children?.textColor
+						gap: layout.styles.gap
 					}}
 				>
 					{children.map((childNode) => (
@@ -37,7 +37,7 @@ export const ResolvedPageNode: React.FC<TResolvedNodeProps<TResolvedPageNode>> =
 						target="_blank"
 						rel="noopener noreferrer"
 						className="mx-auto mt-12 flex items-center gap-2 pb-6 text-sm no-underline hover:opacity-75"
-						style={{ color: style.watermarkColor }}
+						style={{ color: watermarkColor }}
 					>
 						<LogoIcon className="h-6 w-6" />
 						<span>Powered by Saku</span>

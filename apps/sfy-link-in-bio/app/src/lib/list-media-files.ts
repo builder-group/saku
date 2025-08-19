@@ -1,6 +1,6 @@
-import { Err, Ok, type TResult } from '@blgc/utils';
 import { coreApiV1 } from '@repo/types/api';
 import type { ShopifyGlobal } from '@shopify/app-bridge-types';
+import { Err, Ok, type TResult } from 'tuple-result';
 import { coreApiClient } from '@/environment';
 import type { TError } from '@/types';
 import { createShopifyTokenMiddleware } from './middleware';

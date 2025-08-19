@@ -2,17 +2,21 @@ import React from 'react';
 import { ChevronDownIcon, ChevronUpIcon } from '@/components';
 import { getCurrencySymbol } from '../../../../environment';
 import { TResolvedNodeProps } from '../../../../lib';
-import { TResolvedProductNode } from '../../../../types';
+import { TResolvedProductNode } from '../../types';
 
 export const Content: React.FC<TContentProps> = (props) => {
-	const { product, style, cx } = props;
+	const {
+		product,
+		node: { layout, appearance, typography, fill, stroke, shadow },
+		cx
+	} = props;
 
 	// const [isAdding, setIsAdding] = React.useState(false);
 	const [isBuying, setIsBuying] = React.useState(false);
 	const [selectedVariantId, setSelectedVariantId] = React.useState<string | null>(null);
 	const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
 
-	const imageUrl = React.useMemo(() => product.images?.[0], [product.images]);
+	const image = React.useMemo(() => product.images?.[0], [product.images]);
 
 	// Get currently selected variant (default to first)
 	const selectedVariant = React.useMemo(
@@ -73,22 +77,20 @@ export const Content: React.FC<TContentProps> = (props) => {
 		<div
 			className="relative flex w-full items-center gap-3 bg-white"
 			style={{
-				padding: style.padding,
-				backgroundColor: style.backgroundColor,
-				fontFamily: style.font?.family,
-				fontSize: style.fontSize,
-				color: style.textColor,
-				borderRadius: style.borderRadius,
-				boxShadow: style.shadow ? '0 4px 6px -1px rgb(0 0 0 / 0.1)' : undefined
+				...layout.styles,
+				...appearance.styles,
+				...fill?.styles,
+				...stroke?.styles,
+				...shadow?.styles
 			}}
 		>
 			{/* Product Image */}
-			{imageUrl != null && (
+			{image != null && (
 				<div
 					className="h-12 w-12 flex-shrink-0 overflow-hidden bg-gray-100"
-					style={{ borderRadius: style.borderRadius }}
+					style={{ borderRadius: appearance.styles.borderRadius }}
 				>
-					<img src={imageUrl} alt={product.title} className="h-full w-full object-cover" />
+					<img src={image.src} alt={product.title} className="h-full w-full object-cover" />
 				</div>
 			)}
 
@@ -103,7 +105,7 @@ export const Content: React.FC<TContentProps> = (props) => {
 						{selectedVariant?.price && (
 							<div
 								className="badge badge-neutral badge-sm"
-								style={{ borderRadius: style.borderRadius }}
+								style={{ borderRadius: appearance.styles.borderRadius }}
 							>
 								{getCurrencySymbol(selectedVariant.price.currencyCode)}
 								{selectedVariant.price.amount}
@@ -117,7 +119,7 @@ export const Content: React.FC<TContentProps> = (props) => {
 									tabIndex={0}
 									role="button"
 									className="badge badge-ghost badge-sm flex cursor-pointer items-center gap-1"
-									style={{ borderRadius: style.borderRadius }}
+									style={{ borderRadius: appearance.styles.borderRadius }}
 									onFocus={() => setIsDropdownOpen(true)}
 									onBlur={() => setIsDropdownOpen(false)}
 								>
@@ -151,7 +153,7 @@ export const Content: React.FC<TContentProps> = (props) => {
 							selectedVariant?.title != null && (
 								<div
 									className="badge badge-ghost badge-sm"
-									style={{ borderRadius: style.borderRadius }}
+									style={{ borderRadius: appearance.styles.borderRadius }}
 								>
 									{selectedVariant.title}
 								</div>
@@ -185,7 +187,7 @@ export const Content: React.FC<TContentProps> = (props) => {
 						style={{
 							backgroundColor: '#000',
 							borderColor: '#000',
-							borderRadius: style.borderRadius
+							borderRadius: appearance.styles.borderRadius
 						}}
 					>
 						{isBuying ? <span className="loading loading-spinner loading-xs"></span> : 'Buy'}
@@ -198,6 +200,6 @@ export const Content: React.FC<TContentProps> = (props) => {
 
 interface TContentProps {
 	product: NonNullable<TResolvedProductNode['content']['product']>;
-	style: TResolvedProductNode['style'];
+	node: TResolvedProductNode;
 	cx: TResolvedNodeProps<TResolvedProductNode>['cx'];
 }

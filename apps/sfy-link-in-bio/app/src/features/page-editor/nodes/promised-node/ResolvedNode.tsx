@@ -2,7 +2,8 @@ import React from 'react';
 import { Await } from 'react-router';
 import { ResolvedNode } from '../../components';
 import { TResolvedNodeProps } from '../../lib';
-import { TResolvedNode, TResolvedPromisedNode } from '../../types';
+import { TResolvedNode } from '../../types';
+import { TResolvedPromisedNode } from './types';
 
 export const ResolvedPromisedNode = React.forwardRef<
 	HTMLDivElement,

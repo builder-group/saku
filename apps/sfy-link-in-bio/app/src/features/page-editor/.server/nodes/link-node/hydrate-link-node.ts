@@ -1,16 +1,22 @@
 import { TLinkNode } from '@repo/editor';
-import { resolveLinkNode } from '../../../nodes';
-import { TResolvedLinkNode, TResolvedPromisedNode } from '../../../types';
+import { Err, Ok, TResult } from 'tuple-result';
+import { AppError } from '@/lib';
+import { resolveLinkNode, TResolvedLinkNode, TResolvedPromisedNode } from '../../../nodes';
 import { TNodeHydrateContext } from '../../lib';
 
 export function hydrateLinkNode(
 	node: TLinkNode,
 	cx: TNodeHydrateContext
-): TResolvedPromisedNode<TResolvedLinkNode> {
-	return {
+): TResult<TResolvedPromisedNode<TResolvedLinkNode>, AppError> {
+	const [isResolvedLinkNodeOk, resolvedLinkNodeErr, resolvedLinkNode] = resolveLinkNode(node, cx);
+	if (!isResolvedLinkNodeOk) {
+		return Err(resolvedLinkNodeErr.wrapWith('#ERR_RESOLVE_LINK_NODE'));
+	}
+
+	return Ok({
 		type: 'promised',
 		id: node.id,
-		cached: resolveLinkNode(node, cx),
+		cached: resolvedLinkNode,
 		next: (async () => {
 			const { content, ...rest } = node;
 
@@ -34,7 +40,7 @@ export function hydrateLinkNode(
 					...rest
 				},
 				cx
-			);
+			).unwrap();
 		})()
-	};
+	});
 }

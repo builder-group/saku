@@ -1,4 +1,3 @@
-import { Err, Ok } from '@blgc/utils';
 import {
 	TDefaultLinkVariant,
 	TLinkNode,
@@ -6,7 +5,7 @@ import {
 	TYouTubeVideoEmbedVariant
 } from '@repo/editor';
 import { ShopifyGlobal } from '@shopify/app-bridge-react';
-import { TResult } from 'feature-fetch';
+import { Err, Ok, type TResult } from 'tuple-result';
 import { AppError } from '@/lib';
 import { TNodeState, TPageEditor } from '../../../../../lib';
 import { extractYouTubeVideoId, fetchUrlMetadata } from '../lib';

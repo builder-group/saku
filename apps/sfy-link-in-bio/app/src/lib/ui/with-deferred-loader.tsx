@@ -1,6 +1,6 @@
-import { fromServerResult, ServerErr, TServerResult } from '@blgc/utils';
 import React from 'react';
 import { Await, useLoaderData } from 'react-router';
+import { Err, TResultArray } from 'tuple-result';
 import { TLoaderFunction } from '../../types';
 
 /**
@@ -35,16 +35,12 @@ export function withDeferredLoader<GSuccess, GError>(
 		return (
 			<React.Suspense fallback={Loading != null ? <Loading /> : null}>
 				<Await resolve={loaderData.next}>
-					{(resolvedResult) => {
-						const result = React.useMemo(() => {
-							return fromServerResult<GSuccess, GError>(resolvedResult as any);
-						}, [resolvedResult]);
-
-						if (result.isErr()) {
-							return Error != null ? <Error error={result.error} /> : null;
+					{([isOk, error, data]) => {
+						if (!isOk) {
+							return Error != null ? <Error error={error} /> : null;
 						}
 
-						return <Success data={result.value} />;
+						return <Success data={data} />;
 					}}
 				</Await>
 			</React.Suspense>
@@ -74,17 +70,21 @@ export interface TWithDeferredLoaderConfig<GSuccess, GError> {
  * ```
  */
 export function deferLoader<GSuccess, GError>(
-	loaderFn: TLoaderFunction<TServerResult<GSuccess, GError>>
+	loaderFn: TLoaderFunction<TResultArray<GSuccess, GError>>
 ): TLoaderFunction<TDeferredLoaderData<GSuccess, GError>> {
 	return async (args) => {
 		return {
 			// Note: Using resolve instead of reject to avoid hydration mismatches (when using errorElement)
-			next: new Promise<TServerResult<GSuccess, TDeferredError<GError>>>((resolve) => {
+			next: new Promise<TResultArray<GSuccess, TDeferredError<GError>>>((resolve) => {
 				// Timeout to ensure the promise resolves before React Router's 4950ms threshold (which leads to rejected promise)
 				// https://reactrouter.com/how-to/suspense#timeouts
 				const timeoutId = setTimeout(() => {
 					resolve(
-						ServerErr({ __type: 'defer-error', code: '#ERR_TIMEOUT', message: 'Request timed out' })
+						Err({
+							__type: 'defer-error' as const,
+							code: '#ERR_TIMEOUT' as const,
+							message: 'Request timed out'
+						}).toArray()
 					);
 				}, 4500);
 
@@ -96,7 +96,11 @@ export function deferLoader<GSuccess, GError>(
 					.catch((err) => {
 						clearTimeout(timeoutId);
 						resolve(
-							ServerErr({ __type: 'defer-error', code: '#ERR_SERVER_ERROR', message: err.message })
+							Err({
+								__type: 'defer-error' as const,
+								code: '#ERR_SERVER_ERROR' as const,
+								message: err.message
+							}).toArray()
 						);
 					});
 			})
@@ -105,7 +109,7 @@ export function deferLoader<GSuccess, GError>(
 }
 
 export interface TDeferredLoaderData<GSuccess, GError> {
-	next: Promise<TServerResult<GSuccess, TDeferredError<GError>>>;
+	next: Promise<TResultArray<GSuccess, TDeferredError<GError>>>;
 }
 
 export type TDeferredError<GError> = GError | TDeferError;

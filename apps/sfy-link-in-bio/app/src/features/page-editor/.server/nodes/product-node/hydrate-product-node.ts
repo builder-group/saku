@@ -1,16 +1,25 @@
 import { TProductNode } from '@repo/editor';
-import { resolveProductNode } from '../../../nodes';
-import { TResolvedProductNode, TResolvedPromisedNode } from '../../../types';
+import { Err, Ok, TResult } from 'tuple-result';
+import { AppError } from '@/lib';
+import { resolveProductNode, TResolvedProductNode, TResolvedPromisedNode } from '../../../nodes';
 import { TNodeHydrateContext } from '../../lib';
 
 export function hydrateProductNode(
 	node: TProductNode,
 	cx: TNodeHydrateContext
-): TResolvedPromisedNode<TResolvedProductNode> {
-	return {
+): TResult<TResolvedPromisedNode<TResolvedProductNode>, AppError> {
+	const [isResolvedProductNodeOk, resolvedProductNodeErr, resolvedProductNode] = resolveProductNode(
+		node,
+		cx
+	);
+	if (!isResolvedProductNodeOk) {
+		return Err(resolvedProductNodeErr.wrapWith('#ERR_RESOLVE_PRODUCT_NODE'));
+	}
+
+	return Ok({
 		type: 'promised',
 		id: node.id,
-		cached: resolveProductNode(node, cx),
+		cached: resolvedProductNode,
 		next: (async () => {
 			const { content, ...rest } = node;
 			// await new Promise((resolve) => setTimeout(resolve, 3000));
@@ -33,7 +42,7 @@ export function hydrateProductNode(
 					...rest
 				},
 				cx
-			);
+			).unwrap();
 		})()
-	};
+	});
 }

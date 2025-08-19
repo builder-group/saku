@@ -1,6 +1,6 @@
-import { fromServerResult, TServerResult } from '@blgc/utils';
 import React from 'react';
 import { useLoaderData } from 'react-router';
+import { fromArray, match, TResultArray } from 'tuple-result';
 import { TLoaderFunction } from '../../types';
 
 /**
@@ -25,18 +25,16 @@ export function withResultLoader<GSuccess, GError>(
 ): React.FC {
 	const { Success, Error } = config;
 
-	// eslint-disable-next-line react/display-name
 	return () => {
-		const loaderData = useLoaderData<TServerResult<GSuccess, GError>>();
+		const loaderData = useLoaderData<TResultArray<GSuccess, GError>>();
 		const result = React.useMemo(() => {
-			return fromServerResult<GSuccess, GError>(loaderData as TServerResult<GSuccess, GError>);
+			return fromArray<GSuccess, GError>(loaderData as TResultArray<GSuccess, GError>);
 		}, [loaderData]);
 
-		if (result.isErr()) {
-			return Error != null ? <Error error={result.error} /> : null;
-		}
-
-		return <Success data={result.value} />;
+		return match(result, {
+			ok: (data) => <Success data={data} />,
+			err: (error) => (Error != null ? <Error error={error} /> : null)
+		});
 	};
 }
 
@@ -46,7 +44,7 @@ export interface TWithResultLoaderConfig<GSuccess, GError> {
 }
 
 export function resultLoader<GSuccess, GError>(
-	loaderFn: TLoaderFunction<TServerResult<GSuccess, GError>>
-): TLoaderFunction<TServerResult<GSuccess, GError>> {
+	loaderFn: TLoaderFunction<TResultArray<GSuccess, GError>>
+): TLoaderFunction<TResultArray<GSuccess, GError>> {
 	return loaderFn;
 }

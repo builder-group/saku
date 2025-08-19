@@ -3,7 +3,7 @@ import { useAppBridge } from '@shopify/app-bridge-react';
 import { Button, InlineError, Text, TextField } from '@shopify/polaris';
 import { useCompute } from 'feature-react/state';
 import React from 'react';
-import { ImageUploadField, TImageUploadOnChangeImage } from '@/components';
+import { ImageUploadField, TImageUploadEvent } from '@/components';
 import { TNodeState, TPageEditor } from '../../../../lib';
 import { fetchUrlMetadata } from './lib';
 
@@ -11,7 +11,7 @@ export const DefaultLinkVariant: React.FC<TDefaultLinkVariantProps> = (props) =>
 	const { nodeState, editor, isEnhancing = false } = props;
 	const { url, variant } = useCompute(nodeState, ({ value: node }) => ({
 		url: node.content.url,
-		variant: node.content.variant as TDefaultLinkVariant
+		variant: node.content.variant
 	}));
 	const shopify = useAppBridge();
 
@@ -65,47 +65,53 @@ export const DefaultLinkVariant: React.FC<TDefaultLinkVariantProps> = (props) =>
 
 	const handleTitleChange = React.useCallback(
 		(value: string) => {
-			const defaultVariant = nodeState._v.content.variant as TDefaultLinkVariant;
-			defaultVariant.userTitle = value;
+			nodeState._v.content.variant.userTitle = value;
 			nodeState._notify();
 		},
 		[nodeState]
 	);
 
 	const handleTitleReset = React.useCallback(() => {
-		const defaultVariant = nodeState._v.content.variant as TDefaultLinkVariant;
-		defaultVariant.userTitle = undefined;
+		nodeState._v.content.variant.userTitle = undefined;
 		nodeState._notify();
 	}, [nodeState]);
 
 	const handleDescriptionChange = React.useCallback(
 		(value: string) => {
-			const defaultVariant = nodeState._v.content.variant as TDefaultLinkVariant;
-			defaultVariant.userDescription = value;
+			nodeState._v.content.variant.userDescription = value;
 			nodeState._notify();
 		},
 		[nodeState]
 	);
 
 	const handleDescriptionReset = React.useCallback(() => {
-		const defaultVariant = nodeState._v.content.variant as TDefaultLinkVariant;
-		defaultVariant.userDescription = undefined;
+		nodeState._v.content.variant.userDescription = undefined;
 		nodeState._notify();
 	}, [nodeState]);
 
 	const handleFaviconImageChange = React.useCallback(
-		(image: TImageUploadOnChangeImage) => {
-			const hash = editor.registerImage(image.url, image.fileName ?? 'favicon');
-			const defaultVariant = nodeState._v.content.variant as TDefaultLinkVariant;
-			defaultVariant.userFavicon = hash ?? undefined;
-			nodeState._notify();
+		(image: TImageUploadEvent) => {
+			switch (image.type) {
+				case 'Changed': {
+					const hash = editor.registerImage(image.url, image.fileName ?? 'favicon');
+					if (hash != null) {
+						nodeState._v.content.variant.userFavicon = hash;
+						nodeState._notify();
+					}
+					break;
+				}
+				case 'Removed': {
+					nodeState._v.content.variant.userFavicon = undefined;
+					nodeState._notify();
+					break;
+				}
+			}
 		},
 		[nodeState, editor]
 	);
 
 	const handleFaviconReset = React.useCallback(() => {
-		const defaultVariant = nodeState._v.content.variant as TDefaultLinkVariant;
-		defaultVariant.userFavicon = undefined;
+		nodeState._v.content.variant.userFavicon = undefined;
 		nodeState._notify();
 	}, [nodeState]);
 
@@ -127,10 +133,9 @@ export const DefaultLinkVariant: React.FC<TDefaultLinkVariantProps> = (props) =>
 				faviconHash = editor.registerImage(metadata.favicon, 'favicon');
 			}
 
-			const defaultVariant = nodeState._v.content.variant as TDefaultLinkVariant;
-			defaultVariant.title = metadata.title;
-			defaultVariant.description = metadata.description;
-			defaultVariant.favicon = faviconHash ?? undefined;
+			nodeState._v.content.variant.title = metadata.title;
+			nodeState._v.content.variant.description = metadata.description;
+			nodeState._v.content.variant.favicon = faviconHash ?? undefined;
 			nodeState._notify();
 		} finally {
 			setIsFetchingUrlMetadata(false);
@@ -229,7 +234,7 @@ export const DefaultLinkVariant: React.FC<TDefaultLinkVariantProps> = (props) =>
 };
 
 interface TDefaultLinkVariantProps {
-	nodeState: TNodeState<TLinkNode>;
+	nodeState: TNodeState<TLinkNode<TDefaultLinkVariant>>;
 	editor: TPageEditor;
 	isEnhancing?: boolean;
 }

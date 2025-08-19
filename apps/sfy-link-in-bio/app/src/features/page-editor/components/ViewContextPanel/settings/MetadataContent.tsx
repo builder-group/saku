@@ -1,7 +1,8 @@
 import { InlineError, Text, TextField } from '@shopify/polaris';
 import { useCompute, useFeatureState } from 'feature-react';
 import React from 'react';
-import { ImageUploadField, type TImageUploadOnChangeImage } from '@/components';
+import { unwrapOrNull } from 'tuple-result';
+import { ImageUploadField, type TImageUploadEvent } from '@/components';
 import { EditorSiteResolveContext, TPageEditor } from '../../../lib';
 import { resolvePageNodeWithoutChildren } from '../../../nodes';
 import { PanelHeader } from '../../PanelHeader';
@@ -11,10 +12,12 @@ export const MetadataContent: React.FC<TMetadataContentProps> = (props) => {
 
 	const rootNode = React.useMemo(() => editor.getRootNode(), [editor]);
 	const { content } = useFeatureState(rootNode);
-	const { content: resolvedContent } = useCompute(
+	const resolvedPageNode = useCompute(
 		rootNode,
 		({ value: node }) =>
-			resolvePageNodeWithoutChildren(node, { site: new EditorSiteResolveContext(editor) }),
+			unwrapOrNull(
+				resolvePageNodeWithoutChildren(node, { site: new EditorSiteResolveContext(editor) })
+			),
 		[editor]
 	);
 
@@ -52,17 +55,21 @@ export const MetadataContent: React.FC<TMetadataContentProps> = (props) => {
 	);
 
 	const handleImageChange = React.useCallback(
-		(image: TImageUploadOnChangeImage) => {
-			if (!image.url.length) {
-				rootNode._v.content.metadata.image = undefined;
-				rootNode._notify();
-				return;
-			}
-
-			const hash = editor.registerImage(image.url, image.fileName);
-			if (hash != null) {
-				rootNode._v.content.metadata.image = hash;
-				rootNode._notify();
+		(image: TImageUploadEvent) => {
+			switch (image.type) {
+				case 'Changed': {
+					const hash = editor.registerImage(image.url, image.fileName);
+					if (hash != null) {
+						rootNode._v.content.metadata.image = hash;
+						rootNode._notify();
+					}
+					break;
+				}
+				case 'Removed': {
+					rootNode._v.content.metadata.image = undefined;
+					rootNode._notify();
+					break;
+				}
 			}
 		},
 		[rootNode, editor]
@@ -93,7 +100,7 @@ export const MetadataContent: React.FC<TMetadataContentProps> = (props) => {
 							value={content.metadata.title}
 							onChange={handleTitleChange}
 							autoComplete="off"
-							placeholder={resolvedContent?.metadata?.title}
+							placeholder={resolvedPageNode?.content.metadata?.title}
 						/>
 					</div>
 
@@ -110,7 +117,7 @@ export const MetadataContent: React.FC<TMetadataContentProps> = (props) => {
 							onChange={handleDescriptionChange}
 							multiline={4}
 							autoComplete="off"
-							placeholder={resolvedContent?.metadata?.description}
+							placeholder={resolvedPageNode?.content.metadata?.description}
 						/>
 					</div>
 

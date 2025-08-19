@@ -6,12 +6,14 @@ import {
 	getFontHash,
 	getFontMetadataByFamily,
 	hexToRgba,
-	inheritStyle,
+	inherit,
 	TAboutNode,
 	TAsset,
+	TAssetHash,
 	TFontAsset,
 	TImageAsset,
 	TLinkNode,
+	TPaint,
 	TSite,
 	TSocialLink,
 	TTextNode
@@ -28,6 +30,25 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 	const primaryFont = page?.themeSettings?.primaryFont ?? 'Inter';
 	const fontAsset = createFontAsset(primaryFont);
 	assets.push(fontAsset);
+
+	// Handle background image if present
+	let backgroundPaint: TPaint;
+	if (
+		page?.themeSettings?.backgroundStyle === 'image' &&
+		page?.themeSettings?.backgroundImage?.url != null
+	) {
+		const backgroundImageAsset = createImageAssetFromUrl(page.themeSettings.backgroundImage.url);
+		assets.push(backgroundImageAsset);
+		backgroundPaint = {
+			type: 'image',
+			hash: backgroundImageAsset.hash
+		};
+	} else {
+		backgroundPaint = {
+			type: 'solid',
+			color: cssRgbaToRgba(page?.themeSettings?.backgroundColor) ?? hexToRgba('#FFFFFF')
+		};
+	}
 
 	// Create about node if we have profile data
 	if (page?.title != null || page?.bio != null) {
@@ -48,18 +69,26 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 				profilePicture: profilePictureHash,
 				socialLinks: transformSocialLinks(page.socialMediaAccounts ?? [])
 			},
-			visible: true,
-			style: {
-				padding: inheritStyle(),
-				backgroundColor: { r: 1, g: 1, b: 1, a: 0 }, // Transparent
-				font: inheritStyle(),
+			layout: {
+				padding: inherit()
+			},
+			appearance: {
+				borderRadius: 0,
+				opacity: inherit(),
+				visible: inherit()
+			},
+			typography: {
+				font: inherit(),
 				fontSize: 16,
 				textColor: cssRgbaToRgba(page?.themeSettings?.fontColor) ?? hexToRgba('#000000'),
-				textAlign: inheritStyle(),
-				borderRadius: 0,
-				shadow: false
-			}
-		};
+				textAlign: inherit(),
+				lineHeight: inherit(),
+				letterSpacing: inherit()
+			},
+			fill: null,
+			stroke: null,
+			shadow: null
+		} as TAboutNode;
 		children.push(aboutNode);
 	}
 
@@ -71,7 +100,7 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 		for (const link of reversedLinks) {
 			if (link.url != null) {
 				// Create favicon asset if link has media
-				let faviconHash: string | undefined;
+				let faviconHash: TAssetHash | undefined;
 				if (link.media?.url != null) {
 					const faviconAsset = createImageAssetFromUrl(link.media.url);
 					assets.push(faviconAsset);
@@ -113,17 +142,25 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 						url: link.url,
 						variant
 					},
-					visible: true,
-					style: {
-						padding: inheritStyle(),
-						backgroundColor: inheritStyle(),
-						font: inheritStyle(),
-						fontSize: inheritStyle(),
-						textColor: inheritStyle(),
-						textAlign: inheritStyle(),
-						borderRadius: inheritStyle(),
-						shadow: inheritStyle()
-					}
+					layout: {
+						padding: inherit()
+					},
+					appearance: {
+						borderRadius: inherit(),
+						opacity: inherit(),
+						visible: true
+					},
+					typography: {
+						font: inherit(),
+						fontSize: inherit(),
+						textColor: inherit(),
+						textAlign: inherit(),
+						lineHeight: inherit(),
+						letterSpacing: inherit()
+					},
+					fill: inherit(),
+					stroke: inherit(),
+					shadow: inherit()
 				} satisfies TLinkNode);
 			} else {
 				// Create text node for links without URLs
@@ -133,17 +170,25 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 					content: {
 						text: link.title
 					},
-					visible: true,
-					style: {
-						padding: inheritStyle(),
-						backgroundColor: inheritStyle(),
-						font: inheritStyle(),
-						fontSize: inheritStyle(),
-						textColor: inheritStyle(),
-						textAlign: inheritStyle(),
-						borderRadius: inheritStyle(),
-						shadow: inheritStyle()
-					}
+					layout: {
+						padding: inherit()
+					},
+					appearance: {
+						borderRadius: inherit(),
+						opacity: inherit(),
+						visible: true
+					},
+					typography: {
+						font: inherit(),
+						fontSize: inherit(),
+						textColor: inherit(),
+						textAlign: inherit(),
+						lineHeight: inherit(),
+						letterSpacing: inherit()
+					},
+					fill: inherit(),
+					stroke: inherit(),
+					shadow: inherit()
 				} satisfies TTextNode);
 			}
 		}
@@ -156,19 +201,32 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 		root: {
 			id: createId('node'),
 			type: 'page',
-			visible: true,
 			content: {
 				metadata: {}
 			},
 			children,
-			style: {
-				backgroundColor:
-					cssRgbaToRgba(page?.themeSettings?.backgroundColor) ?? hexToRgba('#FFFFFF'),
-				children: {
-					backgroundColor:
-						cssRgbaToRgba(page?.themeSettings?.linkCardColor) ?? hexToRgba('#FFFFFF'),
-					spacing: 16,
-					padding: 8,
+			layout: {
+				spacing: 16
+			},
+			appearance: {
+				borderRadius: 0,
+				opacity: 1,
+				visible: true
+			},
+			fill: {
+				paint: backgroundPaint,
+				opacity: 1
+			},
+			childMixins: {
+				layout: {
+					padding: 8
+				},
+				appearance: {
+					borderRadius: getBorderRadiusFromShape(page?.themeSettings?.linkCardShape),
+					opacity: 1,
+					visible: true
+				},
+				typography: {
 					font: {
 						family: primaryFont,
 						weight: 400,
@@ -177,8 +235,23 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 					fontSize: 14,
 					textColor: cssRgbaToRgba(page?.themeSettings?.linkCardFontColor) ?? hexToRgba('#000000'),
 					textAlign: 'center',
-					borderRadius: getBorderRadiusFromShape(page?.themeSettings?.linkCardShape),
-					shadow: true
+					lineHeight: { type: 'auto' },
+					letterSpacing: 0
+				},
+				fill: {
+					paint: {
+						type: 'solid',
+						color: cssRgbaToRgba(page?.themeSettings?.linkCardColor) ?? hexToRgba('#FFFFFF')
+					},
+					opacity: 1
+				},
+				stroke: null,
+				shadow: {
+					color: { r: 0, g: 0, b: 0, a: 0.1 },
+					offsetX: 0,
+					offsetY: 2,
+					blur: 4,
+					spread: 0
 				}
 			}
 		}
@@ -274,7 +347,7 @@ function createFontAsset(fontFamily: string): TFontAsset {
 }
 
 function createImageAssetFromUrl(url: string): TImageAsset {
-	const hash = shortId(); // TODO: Re-upload the image to Shopify CDN
+	const hash: TAssetHash = shortId() as TAssetHash; // TODO: Re-upload the image to Shopify CDN
 	const pathname = new URL(url).pathname.toLowerCase();
 
 	let contentType: TImageAsset['contentType'] = 'image/jpeg';

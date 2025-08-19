@@ -3,6 +3,7 @@ import { TFlatPageNode } from '@repo/editor';
 import { useCompute } from 'feature-react';
 import React from 'react';
 import { LogoIcon } from '@/components';
+import { logger } from '@/environment';
 import { Node } from '../../../components';
 import { EditorSiteResolveContext, TNodeProps } from '../../../lib';
 import { resolvePageNodeWithoutChildren } from '../resolve-node';
@@ -11,10 +12,18 @@ export const PageNode = React.forwardRef<HTMLDivElement, TNodeProps<TFlatPageNod
 	(props, ref) => {
 		const { nodeState, editor, ...divProps } = props;
 
-		const { style } = useCompute(nodeState, ({ value: nodeValue }) => {
-			return resolvePageNodeWithoutChildren(nodeValue, {
+		const node = useCompute(nodeState, ({ value: nodeValue }) => {
+			const result = resolvePageNodeWithoutChildren(nodeValue, {
 				site: new EditorSiteResolveContext(editor)
 			});
+			if (result.isErr()) {
+				editor.shopify.toast.show('Failed to resolve page node');
+				logger.warn('Failed to resolve page node', {
+					error: result.error
+				});
+				return null;
+			}
+			return result.value;
 		});
 		const childNodes = useCompute(
 			nodeState,
@@ -24,21 +33,27 @@ export const PageNode = React.forwardRef<HTMLDivElement, TNodeProps<TFlatPageNod
 			[editor]
 		);
 
+		if (node == null) {
+			return null;
+		}
+
+		const { layout, appearance, fill, watermarkColor } = node;
+
 		return (
 			<div
 				{...divProps}
 				ref={ref}
 				className="min-h-screen w-full"
-				style={{ backgroundColor: style.backgroundColor }}
+				style={{
+					...appearance.styles,
+					...fill?.styles
+				}}
 			>
 				<div className="mx-auto w-full max-w-md">
 					<div
 						className="flex w-full flex-col p-6"
 						style={{
-							gap: style.children.spacing,
-							fontFamily: style.children.font?.family,
-							fontSize: style.children.fontSize,
-							color: style.children.textColor
+							gap: layout.styles.gap
 						}}
 					>
 						{childNodes.map((childNodeState) => (
@@ -51,7 +66,7 @@ export const PageNode = React.forwardRef<HTMLDivElement, TNodeProps<TFlatPageNod
 							target="_blank"
 							rel="noopener noreferrer"
 							className="mx-auto mt-12 flex items-center gap-2 pb-6 text-sm no-underline hover:opacity-75"
-							style={{ color: style.watermarkColor }}
+							style={{ color: watermarkColor }}
 						>
 							<LogoIcon className="h-6 w-6" />
 							<span>Powered by Saku</span>

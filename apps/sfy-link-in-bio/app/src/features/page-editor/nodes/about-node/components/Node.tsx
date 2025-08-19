@@ -11,14 +11,21 @@ export const AboutNode = React.forwardRef<HTMLDivElement, TNodeProps<TAboutNode>
 	const node = useCombinedCompute(
 		[editor.getRootNode(), nodeState],
 		([{ value: pageNodeValue }, { value: nodeValue }]) => {
-			return resolveAboutNode(nodeValue, {
+			const result = resolveAboutNode(nodeValue, {
 				site: new EditorSiteResolveContext(editor),
-				resolved: {
-					parentStyles: pageNodeValue?.style.children
-				}
+				childMixins: pageNodeValue?.childMixins
 			});
+			if (result.isErr()) {
+				editor.shopify.toast.show('Failed to resolve about node');
+				return null;
+			}
+			return result.value;
 		}
 	);
+
+	if (node == null) {
+		return null;
+	}
 
 	return <ResolvedAboutNode {...divProps} ref={ref} node={node} cx={editor.pageContext} />;
 });

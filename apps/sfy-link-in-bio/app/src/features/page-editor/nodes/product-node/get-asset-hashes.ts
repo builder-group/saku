@@ -1,5 +1,5 @@
 import { notEmpty } from '@blgc/utils';
-import { TAssetHash, TProductNode } from '@repo/editor';
+import { getFontHash, isInherited, TAssetHash, TProductNode } from '@repo/editor';
 
 /**
  * Extracts asset hashes from a product node
@@ -15,6 +15,21 @@ export function getProductNodeAssetHashes(node: TProductNode): TAssetHash[] {
 	// Product variant images
 	if (node.content.product?.variants != null) {
 		hashes.push(...node.content.product.variants.map((variant) => variant.image).filter(notEmpty));
+	}
+
+	// Font asset (if not inherited)
+	if (node.typography?.font != null && !isInherited(node.typography.font)) {
+		hashes.push(getFontHash(node.typography.font));
+	}
+
+	// Fill asset (if not inherited)
+	if (
+		node.fill != null &&
+		!isInherited(node.fill) &&
+		node.fill.paint.type === 'image' &&
+		node.fill.paint.hash != null
+	) {
+		hashes.push(node.fill.paint.hash);
 	}
 
 	return hashes;

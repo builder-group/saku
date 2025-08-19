@@ -2,14 +2,14 @@ import { evaluateSync } from '@mdx-js/mdx';
 import React from 'react';
 import { logger } from '@/environment';
 import { TResolvedNodeProps } from '../../../lib';
-import { TResolvedTextNode } from '../../../types';
+import { TResolvedTextNode } from '../types';
 
 export const ResolvedTextNode = React.forwardRef<
 	HTMLDivElement,
 	TResolvedNodeProps<TResolvedTextNode>
 >((props, ref) => {
 	const {
-		node: { content, style },
+		node: { content, layout, appearance, typography, fill, stroke, shadow },
 		...divProps
 	} = props;
 
@@ -44,19 +44,17 @@ export const ResolvedTextNode = React.forwardRef<
 			<div
 				className="relative overflow-hidden"
 				style={{
-					padding: style.padding,
-					backgroundColor: style.backgroundColor,
-					borderRadius: style.borderRadius,
-					boxShadow: style.shadow ? '0 4px 6px -1px rgb(0 0 0 / 0.1)' : undefined
+					...layout.styles,
+					...appearance.styles,
+					...fill?.styles,
+					...stroke?.styles,
+					...shadow?.styles
 				}}
 			>
 				<div
 					className="flex min-h-12 w-full flex-col justify-start p-4"
 					style={{
-						fontFamily: style.font?.family,
-						fontSize: style.fontSize,
-						color: style.textColor,
-						textAlign: style.textAlign
+						...typography.styles
 					}}
 				>
 					{mdxContent}

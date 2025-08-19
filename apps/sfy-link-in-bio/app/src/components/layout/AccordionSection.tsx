@@ -54,7 +54,7 @@ export const AccordionSection: React.FC<AccordionSectionProps> = (props) => {
 				</span>
 			</div>
 			<Collapsible open={isOpen} id={`accordion-section-${title.replace(/\s+/g, '-')}`}>
-				<div className={cn('border-b border-neutral-200 px-4 py-4', collapsibleClassName)}>
+				<div className={cn('border-b border-neutral-200 px-4 py-3', collapsibleClassName)}>
 					{children}
 				</div>
 			</Collapsible>

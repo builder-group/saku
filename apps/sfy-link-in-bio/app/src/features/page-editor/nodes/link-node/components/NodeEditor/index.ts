@@ -1,1 +1,1 @@
-export * from './LinkNodeEditor';
+export * from './NodeEditor';

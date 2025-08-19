@@ -1,33 +1,39 @@
 import React from 'react';
 import { TResolvedNodeProps } from '../../../../lib';
-import { TResolvedImageMedia, TResolvedMediaNode } from '../../../../types';
+import { TResolvedMediaNode } from '../../types';
 
 export const ImageContent: React.FC<TImageContentProps> = (props) => {
-	const { media, style } = props;
+	const {
+		node: { content, layout, appearance, fill, stroke, shadow }
+	} = props;
+
+	if (content.media == null) {
+		return null;
+	}
 
 	return (
 		<div
 			className="relative overflow-hidden"
 			style={{
-				padding: style.padding,
-				backgroundColor: style.backgroundColor,
-				borderRadius: style.borderRadius,
-				boxShadow: style.shadow ? '0 4px 6px -1px rgb(0 0 0 / 0.1)' : undefined
+				...layout.styles,
+				...appearance.styles,
+				...fill?.styles,
+				...stroke?.styles,
+				...shadow?.styles
 			}}
 		>
 			<img
-				src={media.url}
-				alt={media.altText}
+				src={content.media.src}
+				alt={content.media.altText}
 				className="h-auto w-full object-cover"
 				draggable={false}
-				style={{ borderRadius: style.borderRadius }}
+				style={{ borderRadius: appearance?.borderRadius }}
 			/>
 		</div>
 	);
 };
 
 interface TImageContentProps {
-	media: TResolvedImageMedia;
-	style: TResolvedMediaNode['style'];
+	node: TResolvedMediaNode;
 	cx: TResolvedNodeProps<TResolvedMediaNode>['cx'];
 }

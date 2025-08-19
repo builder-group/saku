@@ -2,7 +2,7 @@ import { TFlatNode } from '@repo/editor';
 import { useCombinedCompute, useCompute, useFeatureState } from 'feature-react';
 import React from 'react';
 import { cn } from '@/lib';
-import { nodeMetadataRegistry, TNodeState, TPageEditor } from '../../lib';
+import { isNodeVisible, nodeMetadataRegistry, TNodeState, TPageEditor } from '../../lib';
 
 export const NodeIndicators: React.FC<TNodeIndicatorsProps> = (props) => {
 	const { editor } = props;
@@ -42,6 +42,10 @@ export const NodeIndicator: React.FC<TNodeIndicatorProps> = (props) => {
 		[nodeId]
 	);
 
+	const isVisible = useCompute(nodeState, ({ value }) => {
+		return isNodeVisible(value);
+	});
+
 	const position = useCombinedCompute(
 		[nodeState.boundingRect, editor.canvasBoundingRect],
 		([{ value: boundingRect }, { value: canvasRect }]) => {
@@ -57,7 +61,7 @@ export const NodeIndicator: React.FC<TNodeIndicatorProps> = (props) => {
 		}
 	);
 
-	if (position == null) {
+	if (!isVisible || position == null) {
 		return null;
 	}
 

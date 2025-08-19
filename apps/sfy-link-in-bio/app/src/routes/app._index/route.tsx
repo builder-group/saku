@@ -1,8 +1,8 @@
-import { ServerErr, ServerOk } from '@blgc/utils';
 import { Button, ButtonGroup, Card, Layout, Spinner, Text, TextField } from '@shopify/polaris';
 import { boundary } from '@shopify/shopify-app-react-router/server';
 import { useFeatureState } from 'feature-react';
 import React from 'react';
+import { Err, Ok } from 'tuple-result';
 import { shopify, shopifyConfig } from '@/.server/environment';
 import { getSessionTokenFromRequest, redirectWithAuth } from '@/.server/lib';
 import {
@@ -254,10 +254,10 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 	const shouldOpenEditor = url.searchParams.get('openEditor') === 'true';
 
 	if (sessionToken == null) {
-		return ServerErr({
-			code: '#ERR_UNAUTHORIZED',
+		return Err({
+			code: '#ERR_UNAUTHORIZED' as const,
 			message: 'Unauthorized'
-		});
+		}).toArray();
 	}
 
 	// 1. Check workspace onboarding status
@@ -266,10 +266,10 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 	});
 	if (workspaceResult.isErr()) {
 		logger.error('Failed to fetch workspace', workspaceResult.error);
-		return ServerErr({
-			code: '#ERR_SERVER_ERROR',
+		return Err({
+			code: '#ERR_SERVER_ERROR' as const,
 			message: 'Failed to fetch workspace data'
-		});
+		}).toArray();
 	}
 
 	const workspace = workspaceResult.value.data;
@@ -284,10 +284,10 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 		requestMiddlewares: [createShopifyTokenMiddleware(sessionToken)]
 	});
 	if (sitesResult.isErr()) {
-		return ServerErr({
-			code: '#ERR_SERVER_ERROR',
+		return Err({
+			code: '#ERR_SERVER_ERROR' as const,
 			message: 'Failed to fetch site data'
-		});
+		}).toArray();
 	}
 
 	const site =
@@ -300,13 +300,13 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 			updatedAt: site.updatedAt
 		}))[0] ?? null;
 	if (site == null) {
-		return ServerErr({
-			code: '#ERR_NOT_FOUND',
+		return Err({
+			code: '#ERR_NOT_FOUND' as const,
 			message: 'No site found'
-		});
+		}).toArray();
 	}
 
-	return ServerOk({
+	return Ok({
 		site: {
 			id: site.id,
 			handle: site.handle,
@@ -317,7 +317,7 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 			updatedAt: site.updatedAt
 		},
 		shouldOpenEditor
-	});
+	}).toArray();
 });
 
 interface TErrorLoaderData {

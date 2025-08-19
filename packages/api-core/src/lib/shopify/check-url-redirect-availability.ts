@@ -1,5 +1,5 @@
-import { Err, Ok, type TResult } from '@blgc/utils';
 import { AppError } from '@repo/hono-utils';
+import { Err, Ok, type TResult } from 'tuple-result';
 import { shopifyConfig } from '@/environment';
 import { searchUrlRedirects } from '../gql';
 import { isUrlRedirectPathReserved } from './is-url-redirect-path-reserved';

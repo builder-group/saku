@@ -1,14 +1,14 @@
 import React from 'react';
 import { TResolvedNodeProps } from '../../../lib/node/types';
-import { TResolvedAboutNode } from '../../../types';
 import { socialIconMap } from '../social-icon';
+import { TResolvedAboutNode } from '../types';
 
 export const ResolvedAboutNode = React.forwardRef<
 	HTMLDivElement,
 	TResolvedNodeProps<TResolvedAboutNode>
 >((props, ref) => {
 	const {
-		node: { content, style },
+		node: { content, layout, appearance, typography, fill, stroke, shadow },
 		...divProps
 	} = props;
 
@@ -17,10 +17,11 @@ export const ResolvedAboutNode = React.forwardRef<
 			<div
 				className="relative overflow-hidden"
 				style={{
-					padding: style.padding,
-					backgroundColor: style.backgroundColor,
-					borderRadius: style.borderRadius,
-					boxShadow: style.shadow ? '0 4px 6px -1px rgb(0 0 0 / 0.1)' : undefined
+					...layout.styles,
+					...appearance.styles,
+					...fill?.styles,
+					...stroke?.styles,
+					...shadow?.styles
 				}}
 			>
 				<div className="flex flex-col items-center gap-4">
@@ -28,7 +29,7 @@ export const ResolvedAboutNode = React.forwardRef<
 					{content.profilePicture != null ? (
 						<div className="h-20 w-20 overflow-hidden rounded-full">
 							<img
-								src={content.profilePicture}
+								src={content.profilePicture.src}
 								alt={content.name}
 								className="h-full w-full object-cover"
 								draggable={false}
@@ -44,10 +45,8 @@ export const ResolvedAboutNode = React.forwardRef<
 					<h1
 						className="text-xl font-semibold"
 						style={{
-							fontFamily: style.font?.family,
-							fontSize: typeof style.fontSize === 'number' ? style.fontSize * 1.25 : undefined, // Scale up for title
-							color: style.textColor,
-							textAlign: style.textAlign
+							...typography.styles,
+							fontSize: typography.fontSize * 1.25 // Scale up for title
 						}}
 					>
 						{content.name}
@@ -58,10 +57,7 @@ export const ResolvedAboutNode = React.forwardRef<
 						<p
 							className="text-center leading-relaxed"
 							style={{
-								fontFamily: style.font?.family,
-								fontSize: style.fontSize,
-								color: style.textColor,
-								textAlign: style.textAlign
+								...typography.styles
 							}}
 						>
 							{content.bio}
@@ -85,7 +81,7 @@ export const ResolvedAboutNode = React.forwardRef<
 										rel="noopener noreferrer"
 										className="flex h-6 w-6 items-center justify-center hover:opacity-70"
 										style={{
-											color: style.textColor
+											color: typography.textColor
 										}}
 										title={`${social.provider}: ${social.handle}`}
 									>

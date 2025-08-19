@@ -1,6 +1,6 @@
 import React from 'react';
 import { TResolvedNodeProps } from '../../../../lib';
-import { TResolvedProductNode } from '../../../../types';
+import { TResolvedProductNode } from '../../types';
 import { Content } from './Content';
 import { Skeleton } from './Skeleton';
 
@@ -8,21 +8,15 @@ export const ResolvedProductNode = React.forwardRef<
 	HTMLDivElement,
 	TResolvedNodeProps<TResolvedProductNode>
 >((props, ref) => {
-	const {
-		node: {
-			content: { product },
-			style
-		},
-		cx,
-		...divProps
-	} = props;
+	const { node, cx, ...divProps } = props;
+	const { content } = node;
 
 	return (
 		<div ref={ref} {...divProps} className="w-full max-w-md">
-			{product != null ? (
-				<Content product={product} style={style} cx={cx} />
+			{content.product != null ? (
+				<Content product={content.product} node={node} cx={cx} />
 			) : (
-				<Skeleton style={style} />
+				<Skeleton node={node} />
 			)}
 		</div>
 	);

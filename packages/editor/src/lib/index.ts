@@ -3,7 +3,7 @@ export * from './font-metadata';
 export * from './get-font-hash';
 export * from './id';
 export * from './pika';
-export * from './style';
+export * from './reference';
 export * from './to-flat-site';
 export * from './to-hierarchical-site';
 export * from './validate-site-structure';

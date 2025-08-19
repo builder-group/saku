@@ -2,6 +2,7 @@ import { Banner, Button } from '@shopify/polaris';
 import { useCompute } from 'feature-react';
 import React from 'react';
 import { useNavigate } from 'react-router';
+import { unwrapOrNull } from 'tuple-result';
 import { ScanEyeIcon, SitePreview } from '@/components';
 import {
 	createPageContext,
@@ -18,7 +19,7 @@ export const LinkpopPreviewStep: React.FC<TLinkpopPreviewStepProps> = (props) =>
 
 	const resolvedSite = useCompute(onboardingContext.stepr.current, ({ value: currentStep }) => {
 		return currentStep.type === 'linkpop-preview' && currentStep.site
-			? resolveSite(new StaticSiteResolveContext(currentStep.site))
+			? unwrapOrNull(resolveSite(new StaticSiteResolveContext(currentStep.site)))
 			: null;
 	});
 	const cx = React.useMemo(

@@ -1,17 +1,7 @@
-import { resolveStyleReference, rgbaToCssRgba, TRgba, TStyleReference } from '@repo/editor';
+import { rgbaToCssRgba, TRgba } from '@repo/editor';
 
-export function resolveColor(
-	value: TStyleReference<TRgba> | undefined,
-	fallback?: TRgba
-): string | undefined {
-	if (value == null) {
-		return undefined;
-	}
-
-	const color = resolveStyleReference(value, fallback);
-	if (color == null) {
-		return undefined;
-	}
-
+export function resolveColor(color: TRgba): TResolvedColor {
 	return rgbaToCssRgba(color);
 }
+
+export type TResolvedColor = string;
