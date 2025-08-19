@@ -12,7 +12,7 @@ export const linkNodeMetadata: TNodeMetadata<'link'> = {
 			url: 'https://www.shopify.com/',
 			variant: {
 				type: 'default',
-				userTitle: 'Add your title here'
+				title: 'Add your title here'
 			}
 		},
 		layout: {

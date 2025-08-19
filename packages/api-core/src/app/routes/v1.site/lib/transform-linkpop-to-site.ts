@@ -50,6 +50,8 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 		};
 	}
 
+	const borderRadius = getBorderRadiusFromShape(page?.themeSettings?.linkCardShape);
+
 	// Create about node if we have profile data
 	if (page?.title != null || page?.bio != null) {
 		// Create image asset for profile picture if it exists
@@ -109,6 +111,15 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 
 				// Determine variant based on __typename
 				let variant: TLinkNode['content']['variant'];
+				let layout: TLinkNode['layout'] = {
+					padding: inherit()
+				};
+				let appearance: TLinkNode['appearance'] = {
+					borderRadius: inherit(),
+					opacity: inherit(),
+					visible: true
+				};
+
 				switch (link.__typename) {
 					case 'YouTubeVideoLink': {
 						const videoId = extractYouTubeVideoId(link.url);
@@ -116,6 +127,14 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 							variant = {
 								type: 'youtube-video-embed' as const,
 								videoId
+							};
+							layout = {
+								padding: 0
+							};
+							appearance = {
+								borderRadius: Math.min(borderRadius, 40),
+								opacity: inherit(),
+								visible: true
 							};
 						} else {
 							variant = {
@@ -142,14 +161,8 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 						url: link.url,
 						variant
 					},
-					layout: {
-						padding: inherit()
-					},
-					appearance: {
-						borderRadius: inherit(),
-						opacity: inherit(),
-						visible: true
-					},
+					layout,
+					appearance,
 					typography: {
 						font: inherit(),
 						fontSize: inherit(),
@@ -222,7 +235,7 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 					padding: 8
 				},
 				appearance: {
-					borderRadius: getBorderRadiusFromShape(page?.themeSettings?.linkCardShape),
+					borderRadius,
 					opacity: 1,
 					visible: true
 				},
@@ -385,7 +398,7 @@ function getBorderRadiusFromShape(shape: string | null | undefined): number {
 		case 'rounded_small':
 			return 4;
 		case 'rounded_large':
-			return 9999; // Very large radius for pill shape
+			return 999; // Very large radius for pill shape
 		default:
 			return 8; // Default fallback
 	}
