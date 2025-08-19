@@ -1,7 +1,8 @@
 import { TFlatNode } from '@repo/editor';
+import { useCompute } from 'feature-react';
 import React from 'react';
 import { useBoundingRectObserver } from '@/hooks';
-import { nodeRegistry, TNodeProps } from '../lib';
+import { isNodeVisible, nodeRegistry, TNodeProps } from '../lib';
 
 export const Node: React.FC<TNodeProps<TFlatNode>> = (props) => {
 	const { nodeState, editor } = props;
@@ -15,11 +16,16 @@ export const Node: React.FC<TNodeProps<TFlatNode>> = (props) => {
 		[nodeState]
 	);
 
+	const isVisible = useCompute(nodeState, ({ value }) => {
+		return isNodeVisible(value);
+	});
+
 	const NodeComponent = React.useMemo(
 		() => nodeRegistry[nodeState.type] as React.ComponentType<TNodeProps<TFlatNode>>,
 		[nodeState.type]
 	);
-	if (NodeComponent == null) {
+
+	if (!isVisible) {
 		return null;
 	}
 

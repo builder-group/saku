@@ -12,10 +12,6 @@ export const ResolvedAboutNode = React.forwardRef<
 		...divProps
 	} = props;
 
-	if (appearance?.visible === false) {
-		return null;
-	}
-
 	return (
 		<div {...divProps} ref={ref} className="w-full max-w-md">
 			<div

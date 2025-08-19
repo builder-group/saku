@@ -7,6 +7,7 @@ import {
 	resolveFillStyleMixin,
 	resolveFlatChildrenMixin,
 	resolveLayoutStyleMixin,
+	resolvePageLayoutStyleMixin,
 	resolveShadowStyleMixin,
 	resolveStrokeStyleMixin,
 	resolveTypographyStyleMixin
@@ -47,6 +48,7 @@ export function resolvePageNodeWithoutChildren(
 		)
 	);
 
+	const resolvedPageLayout = resolvePageLayoutStyleMixin(layout);
 	const [isResolvedAppearanceOk, resolvedAppearanceErr, resolvedAppearance] =
 		resolveAppearanceStyleMixin(appearance);
 	if (!isResolvedAppearanceOk) {
@@ -62,7 +64,7 @@ export function resolvePageNodeWithoutChildren(
 		content: {
 			metadata: resolvePageMetadata(node, cx)
 		},
-		layout,
+		layout: resolvedPageLayout,
 		appearance: resolvedAppearance,
 		fill: resolvedFill,
 		childMixins: {

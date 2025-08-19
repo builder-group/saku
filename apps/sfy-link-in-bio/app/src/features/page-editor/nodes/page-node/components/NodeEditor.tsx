@@ -3,12 +3,12 @@ import React from 'react';
 import { AccordionSection } from '@/components';
 import { TNodeEditorComponentProps } from '../../../lib';
 import {
-	AppearanceStyleMixinEditor,
 	ChildAppearanceStyleMixinEditor,
 	ChildFillStyleMixinEditor,
 	ChildLayoutStyleMixinEditor,
 	ChildTypographyStyleMixinEditor,
-	FillStyleMixinEditor
+	FillStyleMixinEditor,
+	PageLayoutStyleMixinEditor
 } from '../../../mixins';
 
 export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TFlatPageNode>> = (props) => {
@@ -22,13 +22,10 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TFlatPageNode>> 
 		<>
 			{/* Style Section */}
 			<AccordionSection title="Style" defaultOpen={true} collapsibleClassName="px-0 space-y-3">
-				{/* Layout */}
-				{/* <LayoutStyleMixinEditor nodeState={nodeState} parentNodeState={parentNodeState} />
-
-				<div className="h-px bg-gray-200" /> */}
-
-				<AppearanceStyleMixinEditor nodeState={nodeState} />
+				<PageLayoutStyleMixinEditor nodeState={nodeState} />
 				<div className="h-px bg-gray-200" />
+				{/* <AppearanceStyleMixinEditor nodeState={nodeState} />
+				<div className="h-px bg-gray-200" /> */}
 				<FillStyleMixinEditor nodeState={nodeState} editor={editor} />
 			</AccordionSection>
 
