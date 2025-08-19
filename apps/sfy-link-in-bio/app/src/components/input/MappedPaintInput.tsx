@@ -44,9 +44,20 @@ export const MappedPaintInput = <GStateValue, GParentStateValue>(
 		...textFieldProps
 	} = props;
 
+	const currentValue = useCompute(state, ({ value }) => mapValue(value));
+	const parentValue = useCompute(parentState, ({ value: parent }) =>
+		parent != null ? mapParentValue?.(parent) : undefined
+	);
+	const resolvedValue = React.useMemo(
+		() => resolveReference(currentValue, parentValue),
+		[currentValue, parentValue]
+	);
+
+	const isValueInherited = React.useMemo(() => isInherited(currentValue), [currentValue]);
+
 	const [popoverActive, setPopoverActive] = React.useState(false);
 	const [inputValue, setInputValue] = React.useState('');
-	const [selectedTab, setSelectedTab] = React.useState(0);
+	const [selectedTab, setSelectedTab] = React.useState(resolvedValue?.type === 'image' ? 1 : 0);
 	const lastChangeFromText = React.useRef(false);
 
 	// Cache values for each tab while popover is open
@@ -54,17 +65,6 @@ export const MappedPaintInput = <GStateValue, GParentStateValue>(
 		solid?: TPaint;
 		image?: TPaint;
 	}>({});
-
-	const currentValue = useCompute(state, ({ value }) => mapValue(value));
-	const parentValue = useCompute(parentState, ({ value: parent }) =>
-		parent != null ? mapParentValue?.(parent) : undefined
-	);
-
-	const isValueInherited = React.useMemo(() => isInherited(currentValue), [currentValue]);
-	const resolvedValue = React.useMemo(
-		() => resolveReference(currentValue, parentValue),
-		[currentValue, parentValue]
-	);
 
 	const tabs = React.useMemo(
 		() => [

@@ -20,16 +20,28 @@ export function resolveFillStyleMixin(
 	}
 
 	const resolvedPaint = resolvePaint(resolvedFill.paint, context);
+
 	const styles: {
 		backgroundColor?: string;
 		backgroundImage?: string;
+		backgroundSize?: string;
+		backgroundPosition?: string;
+		backgroundRepeat?: string;
 	} = {};
 	switch (resolvedPaint.type) {
-		case 'solid':
+		case 'solid': {
 			styles.backgroundColor = resolvedPaint.color;
 			break;
-		case 'image':
-			styles.backgroundImage = `url(${resolvedPaint.src})`;
+		}
+		case 'image': {
+			if (resolvedPaint.src != null) {
+				styles.backgroundImage = `url(${resolvedPaint.src})`;
+				styles.backgroundSize = 'cover';
+				styles.backgroundPosition = 'center top';
+				styles.backgroundRepeat = 'no-repeat';
+			}
+			break;
+		}
 	}
 
 	return Ok({

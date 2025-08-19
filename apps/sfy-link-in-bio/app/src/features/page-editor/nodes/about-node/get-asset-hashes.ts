@@ -16,5 +16,15 @@ export function getAboutNodeAssetHashes(node: TAboutNode): TAssetHash[] {
 		hashes.push(getFontHash(node.typography.font));
 	}
 
+	// Fill asset (if not inherited)
+	if (
+		node.fill != null &&
+		!isInherited(node.fill) &&
+		node.fill.paint.type === 'image' &&
+		node.fill.paint.hash != null
+	) {
+		hashes.push(node.fill.paint.hash);
+	}
+
 	return hashes;
 }

@@ -9,6 +9,9 @@ export type TResolvedFillStyleMixin = TMixin<
 		styles: {
 			backgroundColor?: React.CSSProperties['backgroundColor'];
 			backgroundImage?: React.CSSProperties['backgroundImage'];
+			backgroundSize?: React.CSSProperties['backgroundSize'];
+			backgroundPosition?: React.CSSProperties['backgroundPosition'];
+			backgroundRepeat?: React.CSSProperties['backgroundRepeat'];
 		};
 	} | null
 >;
