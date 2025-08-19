@@ -9,10 +9,11 @@ export const Skeleton: React.FC<TSkeletonProps> = (props) => {
 		<div
 			className="relative flex w-full items-center gap-3 bg-white"
 			style={{
-				padding: layout?.padding,
-				backgroundColor: fill?.paint?.type === 'solid' ? fill?.paint.color : undefined,
-				borderRadius: appearance?.borderRadius,
-				boxShadow: shadow ? '0 4px 6px -1px rgb(0 0 0 / 0.1)' : undefined
+				...layout.styles,
+				...appearance.styles,
+				...fill?.styles,
+				...stroke?.styles,
+				...shadow?.styles
 			}}
 		>
 			<div

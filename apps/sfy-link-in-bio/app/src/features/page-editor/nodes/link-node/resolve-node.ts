@@ -47,7 +47,7 @@ export function resolveLinkNode(
 		case 'youtube-video-embed': {
 			resolvedVariant = {
 				type: 'youtube-video-embed',
-				videoId: content.variant.videoId
+				embedUrl: `https://www.youtube.com/embed/${content.variant.videoId}`
 			};
 			break;
 		}

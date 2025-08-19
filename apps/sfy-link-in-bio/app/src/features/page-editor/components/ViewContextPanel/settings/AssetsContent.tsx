@@ -17,7 +17,7 @@ export const AssetsContent: React.FC<TAssetsContentProps> = (props) => {
 			contentType: string;
 			fileName: string;
 			displayFileSize?: string;
-			url?: string;
+			src?: string;
 		}[] = [];
 
 		const imageAssets: {
@@ -27,11 +27,11 @@ export const AssetsContent: React.FC<TAssetsContentProps> = (props) => {
 			dimensions: TImageAsset['dimensions'];
 			altText: string;
 			displayFileSize?: string;
-			url?: string;
+			src?: string;
 		}[] = [];
 
 		for (const asset of Object.values(editor.assetsMap)) {
-			const url =
+			const resolvedAsset =
 				resolveAsset(asset.hash, {
 					getAsset: (hash) => editor.assetsMap[hash] ?? null
 				}) ?? undefined;
@@ -47,7 +47,7 @@ export const AssetsContent: React.FC<TAssetsContentProps> = (props) => {
 						contentType: asset.contentType,
 						fileName,
 						displayFileSize,
-						url
+						src: resolvedAsset?.src
 					});
 					break;
 				}
@@ -59,7 +59,7 @@ export const AssetsContent: React.FC<TAssetsContentProps> = (props) => {
 						dimensions: asset.dimensions,
 						altText: asset.altText ?? fileName ?? 'Image',
 						displayFileSize,
-						url
+						src: resolvedAsset?.src
 					});
 					break;
 				}
@@ -93,7 +93,7 @@ export const AssetsContent: React.FC<TAssetsContentProps> = (props) => {
 								<div className="flex items-center gap-2 px-2">
 									<div
 										className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-blue-50"
-										style={asset.url != null ? { fontFamily: asset.fontFamily } : undefined}
+										style={{ fontFamily: asset.fontFamily }}
 									>
 										<Text as="span" variant="bodyMd" tone="subdued">
 											T
@@ -127,7 +127,7 @@ export const AssetsContent: React.FC<TAssetsContentProps> = (props) => {
 						{imageAssets.map((asset, index) => (
 							<React.Fragment key={asset.id}>
 								<div className="flex items-center gap-2 px-2">
-									<Thumbnail source={asset.url ?? ''} alt={asset.altText} size="small" />
+									<Thumbnail source={asset.src ?? ''} alt={asset.altText} size="small" />
 									<div className="flex min-w-0 flex-1 flex-col">
 										<Text as="span" variant="bodyMd" fontWeight="medium" truncate>
 											{asset.fileName}

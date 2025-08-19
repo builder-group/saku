@@ -11,16 +11,16 @@ export const YouTubeVideoEmbedContent: React.FC<TYouTubeVideoEmbedContentProps> 
 		<div
 			className="relative block w-full overflow-hidden bg-white"
 			style={{
-				padding: layout?.padding,
-				opacity: appearance.opacity,
-				backgroundColor: fill?.paint?.type === 'solid' ? fill?.paint.color : undefined,
-				borderRadius: appearance?.borderRadius,
-				boxShadow: shadow ? '0 4px 6px -1px rgb(0 0 0 / 0.1)' : undefined
+				...layout.styles,
+				...appearance.styles,
+				...fill?.styles,
+				...stroke?.styles,
+				...shadow?.styles
 			}}
 		>
 			<div className="relative aspect-[16/9] w-full">
 				<iframe
-					src={`https://www.youtube.com/embed/${content.variant.videoId}`}
+					src={content.variant.embedUrl}
 					className="absolute inset-0 h-full w-full"
 					allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
 					allowFullScreen

@@ -44,20 +44,17 @@ export const ResolvedTextNode = React.forwardRef<
 			<div
 				className="relative overflow-hidden"
 				style={{
-					padding: layout?.padding,
-					opacity: appearance.opacity,
-					backgroundColor: fill?.paint?.type === 'solid' ? fill?.paint.color : undefined,
-					borderRadius: appearance?.borderRadius,
-					boxShadow: shadow ? '0 4px 6px -1px rgb(0 0 0 / 0.1)' : undefined
+					...layout.styles,
+					...appearance.styles,
+					...fill?.styles,
+					...stroke?.styles,
+					...shadow?.styles
 				}}
 			>
 				<div
 					className="flex min-h-12 w-full flex-col justify-start p-4"
 					style={{
-						fontFamily: typography?.font?.family,
-						fontSize: typography?.fontSize,
-						color: typography?.textColor,
-						textAlign: typography?.textAlign
+						...typography.styles
 					}}
 				>
 					{mdxContent}

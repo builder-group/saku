@@ -5,19 +5,27 @@ export function resolveAsset(
 	cx: {
 		getAsset: (hash: TAssetHash) => TAsset | null;
 	}
-): string | undefined {
+): TResolvedAsset | undefined {
 	const asset = cx.getAsset(hash);
 	if (asset == null) {
 		return undefined;
 	}
 
 	if (asset.storage.type === 'url') {
-		return asset.storage.url;
+		return {
+			src: asset.storage.url
+		};
 	}
 
 	if (asset.storage.type === 'embedded') {
-		return asset.storage.data; // base64
+		return {
+			src: `data:${asset.contentType};base64,${asset.storage.data}`
+		};
 	}
 
 	return undefined;
+}
+
+export interface TResolvedAsset {
+	src: string;
 }

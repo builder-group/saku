@@ -37,23 +37,23 @@ export const PageNode = React.forwardRef<HTMLDivElement, TNodeProps<TFlatPageNod
 			return null;
 		}
 
-		const { layout, fill, watermarkColor, childMixins } = node;
+		const { layout, appearance, fill, watermarkColor } = node;
 
 		return (
 			<div
 				{...divProps}
 				ref={ref}
 				className="min-h-screen w-full"
-				style={{ backgroundColor: fill?.paint?.type === 'solid' ? fill?.paint.color : undefined }}
+				style={{
+					...appearance.styles,
+					...fill?.styles
+				}}
 			>
 				<div className="mx-auto w-full max-w-md">
 					<div
 						className="flex w-full flex-col p-6"
 						style={{
-							gap: layout.spacing,
-							fontFamily: childMixins.typography?.font.family,
-							fontSize: childMixins.typography?.fontSize,
-							color: childMixins.typography?.textColor
+							gap: layout.styles.gap
 						}}
 					>
 						{childNodes.map((childNodeState) => (

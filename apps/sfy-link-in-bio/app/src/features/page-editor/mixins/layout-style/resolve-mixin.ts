@@ -13,6 +13,9 @@ export function resolveLayoutStyleMixin(
 	}
 
 	return Ok({
-		padding: resolvedPadding
+		padding: resolvedPadding,
+		styles: {
+			padding: `${resolvedPadding}px`
+		}
 	});
 }

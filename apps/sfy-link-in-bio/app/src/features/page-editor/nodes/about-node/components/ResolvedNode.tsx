@@ -17,11 +17,11 @@ export const ResolvedAboutNode = React.forwardRef<
 			<div
 				className="relative overflow-hidden"
 				style={{
-					padding: layout?.padding,
-					opacity: appearance.opacity,
-					backgroundColor: fill?.paint?.type === 'solid' ? fill.paint.color : undefined,
-					borderRadius: appearance.borderRadius,
-					boxShadow: shadow ? '0 4px 6px -1px rgb(0 0 0 / 0.1)' : undefined
+					...layout.styles,
+					...appearance.styles,
+					...fill?.styles,
+					...stroke?.styles,
+					...shadow?.styles
 				}}
 			>
 				<div className="flex flex-col items-center gap-4">
@@ -29,7 +29,7 @@ export const ResolvedAboutNode = React.forwardRef<
 					{content.profilePicture != null ? (
 						<div className="h-20 w-20 overflow-hidden rounded-full">
 							<img
-								src={content.profilePicture}
+								src={content.profilePicture.src}
 								alt={content.name}
 								className="h-full w-full object-cover"
 								draggable={false}
@@ -45,10 +45,8 @@ export const ResolvedAboutNode = React.forwardRef<
 					<h1
 						className="text-xl font-semibold"
 						style={{
-							fontFamily: typography.font.family,
-							fontSize: typography.fontSize * 1.25, // Scale up for title
-							color: typography.textColor,
-							textAlign: typography.textAlign
+							...typography.styles,
+							fontSize: typography.fontSize * 1.25 // Scale up for title
 						}}
 					>
 						{content.name}
@@ -59,10 +57,7 @@ export const ResolvedAboutNode = React.forwardRef<
 						<p
 							className="text-center leading-relaxed"
 							style={{
-								fontFamily: typography.font.family,
-								fontSize: typography.fontSize,
-								color: typography.textColor,
-								textAlign: typography.textAlign
+								...typography.styles
 							}}
 						>
 							{content.bio}

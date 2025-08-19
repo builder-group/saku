@@ -20,11 +20,11 @@ export function resolveMediaNode(
 	let resolvedMedia: TResolvedMedia | undefined;
 	switch (content.media?.type) {
 		case 'image': {
-			const assetUrl = resolveAsset(content.media.hash, cx.site);
-			if (assetUrl != null) {
+			const resolvedAsset = resolveAsset(content.media.hash, cx.site);
+			if (resolvedAsset != null) {
 				resolvedMedia = {
 					...content.media,
-					url: assetUrl
+					src: resolvedAsset.src
 				};
 			}
 			break;

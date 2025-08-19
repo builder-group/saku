@@ -22,7 +22,12 @@ export function resolveAppearanceStyleMixin(
 
 	return Ok({
 		borderRadius: resolvedBorderRadius,
-		opacity: resolvedOpacity * 100,
-		visible: resolvedVisible
+		opacity: resolvedOpacity,
+		visible: resolvedVisible,
+		styles: {
+			borderRadius: `${resolvedBorderRadius}px`,
+			opacity: resolvedOpacity * 100,
+			visibility: resolvedVisible ? 'visible' : 'hidden'
+		}
 	});
 }

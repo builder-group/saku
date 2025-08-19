@@ -4,6 +4,11 @@ import { TResolvedPaint } from '../../lib';
 export type TResolvedFillStyleMixin = TMixin<
 	'fill',
 	{
-		paint?: TResolvedPaint;
+		paint: TResolvedPaint;
+		// Computed CSS styles
+		styles: {
+			backgroundColor?: React.CSSProperties['backgroundColor'];
+			backgroundImage?: React.CSSProperties['backgroundImage'];
+		};
 	} | null
 >;

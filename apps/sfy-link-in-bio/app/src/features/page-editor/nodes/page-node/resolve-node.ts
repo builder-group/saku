@@ -99,7 +99,7 @@ function resolvePageMetadata(
 		description = node.content.metadata.description;
 	}
 	if (node.content.metadata?.image != null) {
-		image = resolveAsset(node.content.metadata.image, cx.site);
+		image = resolveAsset(node.content.metadata.image, cx.site)?.src;
 	}
 
 	// If still undefined, try to extract from about node

@@ -24,15 +24,12 @@ export const DefaultContent: React.FC<TDefaultContentProps> = (props) => {
 			rel="noopener noreferrer"
 			className="relative flex w-full cursor-pointer items-center gap-3 overflow-hidden bg-white text-inherit no-underline hover:opacity-90"
 			style={{
-				padding: layout?.padding,
-				opacity: appearance.opacity,
-				backgroundColor: fill?.paint?.type === 'solid' ? fill?.paint.color : undefined,
-				fontFamily: typography?.font?.family,
-				fontSize: typography?.fontSize,
-				color: typography?.textColor,
-				textAlign: typography?.textAlign,
-				borderRadius: appearance?.borderRadius,
-				boxShadow: shadow ? '0 4px 6px -1px rgb(0 0 0 / 0.1)' : undefined
+				...layout.styles,
+				...appearance.styles,
+				...typography.styles,
+				...fill?.styles,
+				...stroke?.styles,
+				...shadow?.styles
 			}}
 		>
 			<div className="flex min-h-12 w-full items-center gap-3">
@@ -45,7 +42,7 @@ export const DefaultContent: React.FC<TDefaultContentProps> = (props) => {
 						}}
 					>
 						<img
-							src={content.variant.favicon}
+							src={content.variant.favicon.src}
 							alt={content.variant.title ?? 'Site Icon'}
 							className="h-full w-full object-cover"
 							draggable={false}

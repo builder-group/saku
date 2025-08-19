@@ -28,6 +28,6 @@ export type TResolvedMedia = TResolvedImageMedia;
 
 export interface TResolvedImageMedia {
 	type: 'image';
-	url: string; // Resolved URL or base64
+	src: string;
 	altText?: string;
 }

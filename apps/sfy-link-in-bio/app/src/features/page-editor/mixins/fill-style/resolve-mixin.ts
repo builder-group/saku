@@ -19,7 +19,21 @@ export function resolveFillStyleMixin(
 		return Ok(null);
 	}
 
+	const resolvedPaint = resolvePaint(resolvedFill.paint, context);
+	const styles: {
+		backgroundColor?: string;
+		backgroundImage?: string;
+	} = {};
+	switch (resolvedPaint.type) {
+		case 'solid':
+			styles.backgroundColor = resolvedPaint.color;
+			break;
+		case 'image':
+			styles.backgroundImage = `url(${resolvedPaint.src})`;
+	}
+
 	return Ok({
-		paint: resolvePaint(resolvedFill.paint, context)
+		paint: resolvedPaint,
+		styles
 	});
 }

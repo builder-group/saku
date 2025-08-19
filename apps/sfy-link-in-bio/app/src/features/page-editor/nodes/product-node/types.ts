@@ -1,4 +1,5 @@
 import { TBaseNode, TIdMixin, TMixin } from '@repo/editor';
+import { TResolvedAsset } from '../../lib';
 import {
 	TResolvedAppearanceStyleMixin,
 	TResolvedFillStyleMixin,
@@ -34,13 +35,13 @@ export type TResolvedProductNodeMixin = TMixin<
 export interface TResolvedProduct {
 	id: string;
 	title: string;
-	images: string[]; // Resolved URL or base64
+	images: TResolvedAsset[];
 	options: { name: string; values: string[] }[];
 	variants: {
 		id: string;
 		title: string;
 		price: { amount: string; currencyCode: string };
-		image?: string; // Resolved URL or base64
+		image?: TResolvedAsset;
 		selectedOptions: { name: string; value: string }[];
 	}[];
 }

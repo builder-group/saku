@@ -15,15 +15,15 @@ export const ImageContent: React.FC<TImageContentProps> = (props) => {
 		<div
 			className="relative overflow-hidden"
 			style={{
-				padding: layout?.padding,
-				opacity: appearance.opacity,
-				backgroundColor: fill?.paint?.type === 'solid' ? fill?.paint.color : undefined,
-				borderRadius: appearance?.borderRadius,
-				boxShadow: shadow ? '0 4px 6px -1px rgb(0 0 0 / 0.1)' : undefined
+				...layout.styles,
+				...appearance.styles,
+				...fill?.styles,
+				...stroke?.styles,
+				...shadow?.styles
 			}}
 		>
 			<img
-				src={content.media.url}
+				src={content.media.src}
 				alt={content.media.altText}
 				className="h-auto w-full object-cover"
 				draggable={false}

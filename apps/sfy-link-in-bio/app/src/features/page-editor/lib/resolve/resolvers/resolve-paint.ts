@@ -1,13 +1,13 @@
 import { TAsset, TAssetHash, TPaint } from '@repo/editor';
 import { resolveAsset } from './resolve-asset';
-import { resolveColor } from './resolve-color';
+import { resolveColor, TResolvedColor } from './resolve-color';
 
 export function resolvePaint(
 	paint: TPaint,
-	context: {
+	cx: {
 		getAsset: (hash: TAssetHash) => TAsset | null;
 	}
-): TResolvedPaint | undefined {
+): TResolvedPaint {
 	switch (paint.type) {
 		case 'solid': {
 			const color = resolveColor(paint.color);
@@ -20,23 +20,26 @@ export function resolvePaint(
 
 		case 'image': {
 			if (paint.hash == null) {
-				return undefined;
+				return {
+					type: 'image',
+					altText: paint.altText
+				};
 			}
 
-			const url = resolveAsset(paint.hash, context);
-			if (url == null) {
-				return undefined;
+			const resolvedAsset = resolveAsset(paint.hash, cx);
+			if (resolvedAsset == null) {
+				return {
+					type: 'image',
+					altText: paint.altText
+				};
 			}
 
 			return {
 				type: 'image',
-				url,
+				src: resolvedAsset.src,
 				altText: paint.altText
 			} satisfies TResolvedImagePaint;
 		}
-
-		default:
-			return undefined;
 	}
 }
 
@@ -44,11 +47,11 @@ export type TResolvedPaint = TResolvedSolidPaint | TResolvedImagePaint;
 
 export interface TResolvedSolidPaint {
 	type: 'solid';
-	color: string; // Resolved from TRgba
+	color: TResolvedColor;
 }
 
 export interface TResolvedImagePaint {
 	type: 'image';
-	url: string; // Resolved from TAssetHash
+	src?: string;
 	altText?: string;
 }

@@ -19,11 +19,16 @@ export function resolveShadowStyleMixin(
 		return Ok(null);
 	}
 
+	const resolvedColor = resolveColor(resolvedShadow.color);
+
 	return Ok({
-		color: resolveColor(resolvedShadow.color),
+		color: resolvedColor,
 		offsetX: resolvedShadow.offsetX,
 		offsetY: resolvedShadow.offsetY,
 		blur: resolvedShadow.blur,
-		spread: resolvedShadow.spread
+		spread: resolvedShadow.spread,
+		styles: {
+			boxShadow: `${resolvedShadow.offsetX}px ${resolvedShadow.offsetY}px ${resolvedShadow.blur}px ${resolvedShadow.spread}px ${resolvedColor}`
+		}
 	});
 }

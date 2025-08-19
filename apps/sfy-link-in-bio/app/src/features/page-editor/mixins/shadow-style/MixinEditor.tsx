@@ -97,11 +97,11 @@ export const ShadowStyleMixinEditor = <GNode extends TFlatNode, GParentNode exte
 	const handleAddShadow = React.useCallback(() => {
 		const parentShadow = parentNodeState?._v.childMixins?.shadow;
 		nodeState._v.shadow = parentShadow ?? {
-			color: { r: 0, g: 0, b: 0, a: 0.3 },
+			color: { r: 0, g: 0, b: 0, a: 0.1 },
 			offsetX: 0,
-			offsetY: 2,
-			blur: 4,
-			spread: 0
+			offsetY: 4,
+			blur: 6,
+			spread: -1
 		};
 		nodeState._notify();
 	}, [nodeState, parentNodeState]);

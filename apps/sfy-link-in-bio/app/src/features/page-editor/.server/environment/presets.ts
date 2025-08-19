@@ -376,8 +376,17 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					},
 					opacity: 1
 				},
-				stroke: null,
-				shadow: null
+				stroke: {
+					color: { r: 0, g: 0, b: 0, a: 0.1 },
+					width: 1
+				},
+				shadow: {
+					color: { r: 0, g: 0, b: 0, a: 0.1 },
+					offsetX: 0,
+					offsetY: 4,
+					blur: 6,
+					spread: -1
+				}
 			}
 		}
 	};

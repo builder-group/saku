@@ -1,4 +1,5 @@
 import { TBaseNode, TIdMixin, TMixin, TSocialLink } from '@repo/editor';
+import { TResolvedAsset } from '../../lib';
 import {
 	TResolvedAppearanceStyleMixin,
 	TResolvedFillStyleMixin,
@@ -28,7 +29,7 @@ export type TResolvedAboutNodeMixin = TMixin<
 		content: {
 			name: string;
 			bio?: string;
-			profilePicture?: string;
+			profilePicture?: TResolvedAsset;
 			socialLinks: TSocialLink[];
 		};
 	}

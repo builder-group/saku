@@ -31,10 +31,11 @@ export function resolveTypographyStyleMixin(
 	if (resolvedFontSize == null) {
 		return Err(new AppError('#ERR_RESOLVE_FONT_SIZE'));
 	}
-	const resolvedTextColor = resolveReference(typography.textColor, parentMixin?.textColor);
-	if (resolvedTextColor == null) {
+	const unreferencedTextColor = resolveReference(typography.textColor, parentMixin?.textColor);
+	if (unreferencedTextColor == null) {
 		return Err(new AppError('#ERR_RESOLVE_TEXT_COLOR'));
 	}
+	const resolvedTextColor = resolveColor(unreferencedTextColor);
 	const resolvedTextAlign = resolveReference(typography.textAlign, parentMixin?.textAlign);
 	if (resolvedTextAlign == null) {
 		return Err(new AppError('#ERR_RESOLVE_TEXT_ALIGN'));
@@ -54,9 +55,17 @@ export function resolveTypographyStyleMixin(
 	return Ok({
 		font: resolvedFont,
 		fontSize: resolvedFontSize,
-		textColor: resolveColor(resolvedTextColor),
+		textColor: resolvedTextColor,
 		textAlign: resolvedTextAlign,
 		lineHeight: resolvedLineHeight,
-		letterSpacing: resolvedLetterSpacing
+		letterSpacing: resolvedLetterSpacing,
+		styles: {
+			fontFamily: resolvedFont.family,
+			fontSize: `${resolvedFontSize}px`,
+			color: resolvedTextColor,
+			textAlign: resolvedTextAlign,
+			lineHeight: typeof resolvedLineHeight === 'number' ? resolvedLineHeight : 'auto',
+			letterSpacing: `${resolvedLetterSpacing}px`
+		}
 	});
 }

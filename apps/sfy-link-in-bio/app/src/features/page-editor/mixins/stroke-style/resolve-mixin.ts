@@ -16,8 +16,13 @@ export function resolveStrokeStyleMixin(
 		return Ok(null);
 	}
 
+	const resolvedColor = resolveColor(resolvedStroke.color);
+
 	return Ok({
 		width: resolvedStroke.width,
-		color: resolveColor(resolvedStroke.color)
+		color: resolvedColor,
+		styles: {
+			border: `${resolvedStroke.width}px solid ${resolvedColor}`
+		}
 	});
 }

@@ -1,4 +1,5 @@
 import { TBaseNode, TIdMixin, TMixin } from '@repo/editor';
+import { TResolvedAsset } from '../../lib';
 import {
 	TResolvedAppearanceStyleMixin,
 	TResolvedFillStyleMixin,
@@ -44,22 +45,22 @@ export interface TResolvedDefaultLinkVariant {
 	type: 'default';
 	title?: string;
 	description?: string;
-	favicon?: string;
+	favicon?: TResolvedAsset;
 }
 
 export interface TResolvedYouTubeVideoLinkVariant {
 	type: 'youtube-video';
 	title?: string;
-	thumbnail?: string;
+	thumbnail?: TResolvedAsset;
 }
 
 export interface TResolvedYouTubeChannelLinkVariant {
 	type: 'youtube-channel';
 	title?: string;
-	avatar?: string;
+	avatar?: TResolvedAsset;
 }
 
 export interface TResolvedYouTubeVideoEmbedLinkVariant {
 	type: 'youtube-video-embed';
-	videoId: string;
+	embedUrl: string;
 }
