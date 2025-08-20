@@ -124,6 +124,45 @@ const Page: React.FC = () => {
 						</s-box>
 					</s-stack>
 				</s-section>
+
+				{/* Legal & Compliance */}
+				<s-section heading="Legal & Compliance">
+					<s-stack gap="none" border="base" borderRadius="base" overflow="hidden">
+						<s-clickable
+							padding="small-100"
+							href={appConfig.legal.privacy}
+							target="_blank"
+							accessibilityLabel="View privacy policy in new tab"
+						>
+							<s-grid gridTemplateColumns="1fr auto" alignItems="center" gap="base">
+								<s-box>
+									<s-heading>Privacy Policy</s-heading>
+									<s-paragraph color="subdued">
+										How we collect, use, and protect your data
+									</s-paragraph>
+								</s-box>
+								<s-icon type="arrow-up-right"></s-icon>
+							</s-grid>
+						</s-clickable>
+						<s-box paddingInline="small-100">
+							<s-divider></s-divider>
+						</s-box>
+						<s-clickable
+							padding="small-100"
+							href={appConfig.legal.terms}
+							target="_blank"
+							accessibilityLabel="View terms of service in new tab"
+						>
+							<s-grid gridTemplateColumns="1fr auto" alignItems="center" gap="base">
+								<s-box>
+									<s-heading>Terms of Service</s-heading>
+									<s-paragraph color="subdued">Terms and conditions for using Saku</s-paragraph>
+								</s-box>
+								<s-icon type="arrow-up-right"></s-icon>
+							</s-grid>
+						</s-clickable>
+					</s-stack>
+				</s-section>
 			</s-page>
 		</form>
 	);

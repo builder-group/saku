@@ -37,8 +37,8 @@ export const appConfig = {
 		email: 'support@saku.so'
 	},
 	legal: {
-		privacy: `https://saku.so/legal/privacy`,
-		terms: `https://saku.so/legal/terms`
+		privacy: `https://sfy-link-in-bio-app.saku.so/legal/privacy-policy`,
+		terms: `https://sfy-link-in-bio-app.saku.so/legal/terms-of-service`
 	},
 	featureFlags: {
 		posthog: env === 'production',
