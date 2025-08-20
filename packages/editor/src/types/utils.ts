@@ -82,7 +82,7 @@ export interface TDefaultLinkVariant extends TBaseLinkVariant {
 	// User overrides (take priority)
 	userTitle?: string;
 	userDescription?: string;
-	userFavicon?: TAssetHash;
+	userFavicon?: TAssetHash | null;
 	// Source metadata (fallback)
 	title?: string;
 	description?: string;

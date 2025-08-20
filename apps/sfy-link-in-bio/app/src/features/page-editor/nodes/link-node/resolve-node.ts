@@ -21,7 +21,10 @@ export function resolveLinkNode(
 	let resolvedVariant: TResolvedLinkVariant;
 	switch (content.variant.type) {
 		case 'default': {
-			const favicon = content.variant.userFavicon ?? content.variant.favicon;
+			const favicon =
+				content.variant.userFavicon !== undefined
+					? content.variant.userFavicon
+					: content.variant.favicon;
 			resolvedVariant = {
 				type: 'default',
 				title: content.variant.userTitle ?? content.variant.title,

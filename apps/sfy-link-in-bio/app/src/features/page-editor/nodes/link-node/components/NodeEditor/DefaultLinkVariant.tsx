@@ -19,7 +19,9 @@ export const DefaultLinkVariant: React.FC<TDefaultLinkVariantProps> = (props) =>
 	const [isFetchingUrlMetadata, setIsFetchingUrlMetadata] = React.useState(false);
 
 	const faviconImage = React.useMemo(() => {
-		const asset = editor.getImageAsset(variant.userFavicon ?? variant.favicon);
+		const asset = editor.getImageAsset(
+			variant.userFavicon === undefined ? variant.favicon : variant.userFavicon
+		);
 		if (asset == null || asset.storage.type !== 'url') {
 			return undefined;
 		}
@@ -53,8 +55,8 @@ export const DefaultLinkVariant: React.FC<TDefaultLinkVariantProps> = (props) =>
 
 	const canResetFavicon = React.useMemo(
 		() =>
-			variant.favicon != null &&
-			variant.userFavicon != null &&
+			variant.favicon !== undefined &&
+			variant.userFavicon !== undefined &&
 			variant.userFavicon !== variant.favicon,
 		[variant.userFavicon, variant.favicon]
 	);
@@ -101,7 +103,7 @@ export const DefaultLinkVariant: React.FC<TDefaultLinkVariantProps> = (props) =>
 					break;
 				}
 				case 'Removed': {
-					nodeState._v.content.variant.userFavicon = undefined;
+					nodeState._v.content.variant.userFavicon = null;
 					nodeState._notify();
 					break;
 				}
