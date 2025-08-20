@@ -9,10 +9,12 @@ import {
 	TUnreference
 } from '@repo/editor';
 import { Button, Text } from '@shopify/polaris';
+import { ArrowRightIcon } from '@shopify/polaris-icons';
 import { useCombinedCompute, useCompute } from 'feature-react';
 import { createState } from 'feature-state';
 import React from 'react';
 import {
+	Badge,
 	LinkIcon,
 	LinkOffIcon,
 	MappedColorInput,
@@ -21,12 +23,12 @@ import {
 	PlusIcon
 } from '@/components';
 import { useMapReferenceToProperty } from '../../hooks';
-import { TNodeState } from '../../lib';
+import { TNodeState, TPageEditor } from '../../lib';
 
 export const StrokeStyleMixinEditor = <GNode extends TFlatNode, GParentNode extends TFlatNode>(
 	props: TStrokeStyleMixinEditorProps<GNode, GParentNode>
 ) => {
-	const { nodeState, parentNodeState } = props;
+	const { nodeState, parentNodeState, editor } = props;
 
 	const resolvedStroke = useCombinedCompute(
 		[nodeState, parentNodeState ?? createState(undefined)],
@@ -109,9 +111,23 @@ export const StrokeStyleMixinEditor = <GNode extends TFlatNode, GParentNode exte
 						</button>
 					)}
 
-					<Text as="span" variant="headingXs" tone="subdued">
-						Stroke {isInheritedStroke ? '(Inherited)' : ''}
-					</Text>
+					<div className="flex items-center gap-2">
+						<Text as="span" variant="headingXs" tone="subdued">
+							Stroke
+						</Text>
+						{isInheritedStroke && (
+							<Badge asChild>
+								<button
+									type="button"
+									onClick={() => editor.switchView('settings')}
+									className="group pointer-events-auto cursor-pointer"
+								>
+									Inherited
+									<ArrowRightIcon className="hidden h-3 w-3 group-hover:block" />
+								</button>
+							</Badge>
+						)}
+					</div>
 				</div>
 
 				{/* Add/Remove stroke buttons */}
@@ -134,6 +150,9 @@ export const StrokeStyleMixinEditor = <GNode extends TFlatNode, GParentNode exte
 							colorState.set(value);
 						}}
 						mapParentValue={(parent) => parent.childMixins?.stroke?.color}
+						onInheritedBadgeClick={() => {
+							editor.switchView('settings');
+						}}
 						disableFieldInheritance
 					/>
 					<MappedTextInput
@@ -150,6 +169,9 @@ export const StrokeStyleMixinEditor = <GNode extends TFlatNode, GParentNode exte
 							widthState.set(value);
 						}}
 						mapParentValue={(parent) => parent.childMixins?.stroke?.width}
+						onInheritedBadgeClick={() => {
+							editor.switchView('settings');
+						}}
 						disableFieldInheritance
 					/>
 				</div>
@@ -165,4 +187,5 @@ interface TStrokeStyleMixinEditorProps<GNode extends TFlatNode, GParentNode exte
 			childMixins: TMergeMixins<[TUnreference<TStrokeStyleMixin>]>;
 		}
 	>;
+	editor: TPageEditor;
 }

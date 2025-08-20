@@ -120,9 +120,17 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 
 			{/* Style Section */}
 			<AccordionSection title="Style" defaultOpen={true} collapsibleClassName="px-0 space-y-3">
-				<LayoutStyleMixinEditor nodeState={nodeState} parentNodeState={parentNodeState} />
+				<LayoutStyleMixinEditor
+					nodeState={nodeState}
+					parentNodeState={parentNodeState}
+					editor={editor}
+				/>
 				<div className="h-px bg-gray-200" />
-				<AppearanceStyleMixinEditor nodeState={nodeState} parentNodeState={parentNodeState} />
+				<AppearanceStyleMixinEditor
+					nodeState={nodeState}
+					parentNodeState={parentNodeState}
+					editor={editor}
+				/>
 				<div className="h-px bg-gray-200" />
 				<FillStyleMixinEditor
 					nodeState={nodeState}
@@ -130,9 +138,17 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 					editor={editor}
 				/>
 				<div className="h-px bg-gray-200" />
-				<StrokeStyleMixinEditor nodeState={nodeState} parentNodeState={parentNodeState} />
+				<StrokeStyleMixinEditor
+					nodeState={nodeState}
+					parentNodeState={parentNodeState}
+					editor={editor}
+				/>
 				<div className="h-px bg-gray-200" />
-				<ShadowStyleMixinEditor nodeState={nodeState} parentNodeState={parentNodeState} />
+				<ShadowStyleMixinEditor
+					nodeState={nodeState}
+					parentNodeState={parentNodeState}
+					editor={editor}
+				/>
 			</AccordionSection>
 		</>
 	);

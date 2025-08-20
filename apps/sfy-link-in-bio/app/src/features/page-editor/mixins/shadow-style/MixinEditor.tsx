@@ -9,10 +9,12 @@ import {
 	TUnreference
 } from '@repo/editor';
 import { Button, Text } from '@shopify/polaris';
+import { ArrowRightIcon } from '@shopify/polaris-icons';
 import { useCombinedCompute, useCompute } from 'feature-react';
 import { createState } from 'feature-state';
 import React from 'react';
 import {
+	Badge,
 	LinkIcon,
 	LinkOffIcon,
 	MappedColorInput,
@@ -21,12 +23,12 @@ import {
 	PlusIcon
 } from '@/components';
 import { useMapReferenceToProperty } from '../../hooks';
-import { TNodeState } from '../../lib';
+import { TNodeState, TPageEditor } from '../../lib';
 
 export const ShadowStyleMixinEditor = <GNode extends TFlatNode, GParentNode extends TFlatNode>(
 	props: TShadowStyleMixinEditorProps<GNode, GParentNode>
 ) => {
-	const { nodeState, parentNodeState } = props;
+	const { nodeState, parentNodeState, editor } = props;
 
 	const resolvedShadow = useCombinedCompute(
 		[nodeState, parentNodeState ?? createState(undefined)],
@@ -142,9 +144,23 @@ export const ShadowStyleMixinEditor = <GNode extends TFlatNode, GParentNode exte
 						</button>
 					)}
 
-					<Text as="span" variant="headingXs" tone="subdued">
-						Shadow {isInheritedShadow ? '(Inherited)' : ''}
-					</Text>
+					<div className="flex items-center gap-2">
+						<Text as="span" variant="headingXs" tone="subdued">
+							Shadow
+						</Text>
+						{isInheritedShadow && (
+							<Badge asChild>
+								<button
+									type="button"
+									onClick={() => editor.switchView('settings')}
+									className="group pointer-events-auto cursor-pointer"
+								>
+									Inherited
+									<ArrowRightIcon className="hidden h-3 w-3 group-hover:block" />
+								</button>
+							</Badge>
+						)}
+					</div>
 				</div>
 
 				{/* Add/Remove shadow buttons */}
@@ -167,6 +183,9 @@ export const ShadowStyleMixinEditor = <GNode extends TFlatNode, GParentNode exte
 							colorState.set(value);
 						}}
 						mapParentValue={(parent) => parent.childMixins?.shadow?.color}
+						onInheritedBadgeClick={() => {
+							editor.switchView('settings');
+						}}
 						disableFieldInheritance
 					/>
 					<div className="grid grid-cols-2 gap-3">
@@ -184,6 +203,9 @@ export const ShadowStyleMixinEditor = <GNode extends TFlatNode, GParentNode exte
 								blurState.set(value);
 							}}
 							mapParentValue={(parent) => parent.childMixins?.shadow?.blur}
+							onInheritedBadgeClick={() => {
+								editor.switchView('settings');
+							}}
 							disableFieldInheritance
 						/>
 						<MappedTextInput
@@ -200,6 +222,9 @@ export const ShadowStyleMixinEditor = <GNode extends TFlatNode, GParentNode exte
 								spreadState.set(value);
 							}}
 							mapParentValue={(parent) => parent.childMixins?.shadow?.spread}
+							onInheritedBadgeClick={() => {
+								editor.switchView('settings');
+							}}
 							disableFieldInheritance
 						/>
 					</div>
@@ -218,6 +243,9 @@ export const ShadowStyleMixinEditor = <GNode extends TFlatNode, GParentNode exte
 								offsetXState.set(value);
 							}}
 							mapParentValue={(parent) => parent.childMixins?.shadow?.offsetX}
+							onInheritedBadgeClick={() => {
+								editor.switchView('settings');
+							}}
 							disableFieldInheritance
 						/>
 						<MappedTextInput
@@ -234,6 +262,9 @@ export const ShadowStyleMixinEditor = <GNode extends TFlatNode, GParentNode exte
 								offsetYState.set(value);
 							}}
 							mapParentValue={(parent) => parent.childMixins?.shadow?.offsetY}
+							onInheritedBadgeClick={() => {
+								editor.switchView('settings');
+							}}
 							disableFieldInheritance
 						/>
 					</div>
@@ -250,4 +281,5 @@ interface TShadowStyleMixinEditorProps<GNode extends TFlatNode, GParentNode exte
 			childMixins: TMergeMixins<[TUnreference<TShadowStyleMixin>]>;
 		}
 	>;
+	editor: TPageEditor;
 }

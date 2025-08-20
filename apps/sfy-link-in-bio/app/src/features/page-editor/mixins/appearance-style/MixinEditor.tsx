@@ -10,12 +10,12 @@ import {
 import { Button, Text } from '@shopify/polaris';
 import React from 'react';
 import { HideIcon, MappedTextInput, ViewIcon } from '@/components';
-import { TNodeState } from '../../lib';
+import { TNodeState, TPageEditor } from '../../lib';
 
 export const AppearanceStyleMixinEditor = <GNode extends TFlatNode, GParentNode extends TFlatNode>(
 	props: TAppearanceStyleMixinEditorProps<GNode, GParentNode>
 ) => {
-	const { nodeState, parentNodeState } = props;
+	const { nodeState, parentNodeState, editor } = props;
 
 	// =========================================================================
 	// Events
@@ -70,6 +70,9 @@ export const AppearanceStyleMixinEditor = <GNode extends TFlatNode, GParentNode 
 
 						nodeState._notify();
 					}}
+					onInheritedBadgeClick={() => {
+						editor.switchView('settings');
+					}}
 					disableFieldInheritance={parentNodeState == null}
 				/>
 				<MappedTextInput
@@ -95,6 +98,9 @@ export const AppearanceStyleMixinEditor = <GNode extends TFlatNode, GParentNode 
 							: (parentValue as TReference<number>);
 						nodeState._notify();
 					}}
+					onInheritedBadgeClick={() => {
+						editor.switchView('settings');
+					}}
 					disableFieldInheritance={parentNodeState == null}
 				/>
 			</div>
@@ -109,4 +115,5 @@ interface TAppearanceStyleMixinEditorProps<GNode extends TFlatNode, GParentNode 
 			childMixins: TMergeMixins<[TUnreference<TAppearanceStyleMixin>]>;
 		}
 	>;
+	editor: TPageEditor;
 }

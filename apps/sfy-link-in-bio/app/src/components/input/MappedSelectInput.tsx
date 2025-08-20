@@ -1,9 +1,10 @@
 import { isInherited, resolveReference, TReference } from '@repo/editor';
 import { Select, SelectProps, Text, Tooltip } from '@shopify/polaris';
+import { ArrowRightIcon } from '@shopify/polaris-icons';
 import { useCompute } from 'feature-react/state';
 import { TState } from 'feature-state';
 import React from 'react';
-import { LinkIcon, LinkOffIcon } from '@/components';
+import { Badge, LinkIcon, LinkOffIcon } from '@/components';
 import { cn } from '@/lib';
 
 export const MappedSelectInput = <GValue, GStateValue, GParentStateValue>(
@@ -14,6 +15,7 @@ export const MappedSelectInput = <GValue, GStateValue, GParentStateValue>(
 		mapValue,
 		onValueChange,
 		onInheritChange,
+		onInheritedBadgeClick,
 		parentState,
 		mapParentValue,
 		disableFieldInheritance = false,
@@ -108,7 +110,20 @@ export const MappedSelectInput = <GValue, GStateValue, GParentStateValue>(
 						<div className="relative">
 							{InputComponent}
 							<div className="pointer-events-none absolute inset-y-0 right-0 z-50 flex items-center rounded-r-lg bg-[#F2F2F2] pr-1">
-								<s-badge>Inherited</s-badge>
+								{onInheritedBadgeClick != null ? (
+									<Badge asChild>
+										<button
+											type="button"
+											onClick={onInheritedBadgeClick}
+											className="group pointer-events-auto cursor-pointer"
+										>
+											Inherited
+											<ArrowRightIcon className="hidden h-3 w-3 group-hover:block" />
+										</button>
+									</Badge>
+								) : (
+									<Badge>Inherited</Badge>
+								)}
 							</div>
 						</div>
 					</Tooltip>
@@ -131,6 +146,7 @@ export interface TMappedSelectInputProps<GValue, GStateValue, GParentStateValue>
 	parentState?: TState<GParentStateValue, any>;
 	mapParentValue?: (parentStateValue: GParentStateValue) => GValue | undefined;
 	onInheritChange?: (shouldInherit: boolean, parentValue?: GValue) => void;
+	onInheritedBadgeClick?: () => void;
 	disableFieldInheritance?: boolean;
 
 	label: string;

@@ -69,6 +69,9 @@ export const TypographyStyleMixinEditor = <GNode extends TFlatNode, GParentNode 
 								}
 							}
 						}}
+						onInheritedBadgeClick={() => {
+							editor.switchView('settings');
+						}}
 					/>
 
 					<MappedSelectInput
@@ -93,6 +96,9 @@ export const TypographyStyleMixinEditor = <GNode extends TFlatNode, GParentNode 
 								? inherit()
 								: (parentValue as TReference<TTextAlign>);
 							nodeState._notify();
+						}}
+						onInheritedBadgeClick={() => {
+							editor.switchView('settings');
 						}}
 					/>
 				</div>
@@ -121,6 +127,9 @@ export const TypographyStyleMixinEditor = <GNode extends TFlatNode, GParentNode 
 								: (parentValue as TReference<number>);
 							nodeState._notify();
 						}}
+						onInheritedBadgeClick={() => {
+							editor.switchView('settings');
+						}}
 					/>
 
 					<MappedColorInput
@@ -141,6 +150,9 @@ export const TypographyStyleMixinEditor = <GNode extends TFlatNode, GParentNode 
 								? inherit()
 								: (parentValue as TReference<TRgba>);
 							nodeState._notify();
+						}}
+						onInheritedBadgeClick={() => {
+							editor.switchView('settings');
 						}}
 					/>
 				</div>

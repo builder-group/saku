@@ -8,12 +8,12 @@ import {
 } from '@repo/editor';
 import { Text } from '@shopify/polaris';
 import { MappedTextInput } from '@/components';
-import { TNodeState } from '../../lib';
+import { TNodeState, TPageEditor } from '../../lib';
 
 export const LayoutStyleMixinEditor = <GNode extends TFlatNode, GParentNode extends TFlatNode>(
 	props: TLayoutStyleMixinEditorProps<GNode, GParentNode>
 ) => {
-	const { nodeState, parentNodeState } = props;
+	const { nodeState, parentNodeState, editor } = props;
 
 	return (
 		<div className="space-y-3 px-4">
@@ -46,6 +46,9 @@ export const LayoutStyleMixinEditor = <GNode extends TFlatNode, GParentNode exte
 							: (parentValue as TReference<number>);
 						nodeState._notify();
 					}}
+					onInheritedBadgeClick={() => {
+						editor.switchView('settings');
+					}}
 				/>
 			</div>
 		</div>
@@ -59,4 +62,5 @@ interface TLayoutStyleMixinEditorProps<GNode extends TFlatNode, GParentNode exte
 			childMixins: TMergeMixins<[TUnreference<TLayoutStyleMixin>]>;
 		}
 	>;
+	editor: TPageEditor;
 }

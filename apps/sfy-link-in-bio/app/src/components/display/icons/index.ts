@@ -21,6 +21,7 @@ export * from './YouTubeIcon';
 // Third Party Icons
 export {
 	AppsIcon,
+	ArrowRightIcon,
 	ChevronDownIcon,
 	ChevronRightIcon,
 	ChevronUpIcon,

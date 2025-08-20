@@ -9,10 +9,11 @@ import {
 	TUnreference
 } from '@repo/editor';
 import { Button, Text } from '@shopify/polaris';
+import { ArrowRightIcon } from '@shopify/polaris-icons';
 import { useCombinedCompute, useCompute } from 'feature-react';
 import { createState } from 'feature-state';
 import React from 'react';
-import { LinkIcon, LinkOffIcon, MappedPaintInput, MinusIcon, PlusIcon } from '@/components';
+import { Badge, LinkIcon, LinkOffIcon, MappedPaintInput, MinusIcon, PlusIcon } from '@/components';
 import { useMapReferenceToProperty } from '../../hooks';
 import { TNodeState, TPageEditor } from '../../lib';
 
@@ -95,9 +96,23 @@ export const FillStyleMixinEditor = <GNode extends TFlatNode, GParentNode extend
 						</button>
 					)}
 
-					<Text as="span" variant="headingXs" tone="subdued">
-						Fill {isInheritedFill ? '(Inherited)' : ''}
-					</Text>
+					<div className="flex items-center gap-2">
+						<Text as="span" variant="headingXs" tone="subdued">
+							Fill
+						</Text>
+						{isInheritedFill && (
+							<Badge asChild>
+								<button
+									type="button"
+									onClick={() => editor.switchView('settings')}
+									className="group pointer-events-auto cursor-pointer"
+								>
+									Inherited
+									<ArrowRightIcon className="hidden h-3 w-3 group-hover:block" />
+								</button>
+							</Badge>
+						)}
+					</div>
 				</div>
 
 				{/* Add/Remove fill buttons */}
@@ -120,6 +135,9 @@ export const FillStyleMixinEditor = <GNode extends TFlatNode, GParentNode extend
 							paintState.set(value);
 						}}
 						mapParentValue={(parent) => parent.childMixins?.fill?.paint}
+						onInheritedBadgeClick={() => {
+							editor.switchView('settings');
+						}}
 						disableFieldInheritance
 						editor={editor}
 					/>
