@@ -232,17 +232,16 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 			// do nothing
 		}
 
+		console.log(mantlePlan);
+
 		return {
 			id: mantlePlan.id,
 			name: mantlePlan.name,
 			description,
-			price:
-				mantlePlan.presentmentAmount === 0
-					? 'Free'
-					: new Intl.NumberFormat('en-US', {
-							style: 'currency',
-							currency: mantlePlan.currencyCode || 'USD'
-						}).format(mantlePlan.presentmentAmount),
+			price: new Intl.NumberFormat('en-US', {
+				style: 'currency',
+				currency: (mantlePlan.presentmentCurrencyCode as unknown as string) || 'USD'
+			}).format(mantlePlan.presentmentAmount),
 			features,
 			isPopular: planName === 'awesome',
 			isCurrentPlan,
