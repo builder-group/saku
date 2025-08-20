@@ -2,13 +2,9 @@ import React from 'react';
 import styles from './Knob.module.css';
 
 // https://www.polariscomponents.com/components/knob
-export const Knob: React.FC<TKnobProps> = ({
-	ariaLabel,
-	selected,
-	onClick,
-	disabled,
-	...props
-}) => {
+export const Knob: React.FC<TKnobProps> = (props) => {
+	const { ariaLabel, selected, disabled, ...buttonProps } = props;
+
 	return (
 		<button
 			className={`${styles['track']} ${selected ? styles['track_on'] : ''} ${disabled ? styles['track_disabled'] : ''}`}
@@ -16,9 +12,8 @@ export const Knob: React.FC<TKnobProps> = ({
 			role="switch"
 			type="button"
 			aria-checked={selected}
-			onClick={onClick}
 			disabled={disabled}
-			{...props}
+			{...buttonProps}
 		>
 			<div className={`${styles['knob']} ${selected ? styles['knob_on'] : ''}`}></div>
 		</button>

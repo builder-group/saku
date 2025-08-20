@@ -22,6 +22,7 @@ export * from './YouTubeIcon';
 export {
 	AppsIcon,
 	ArrowRightIcon,
+	CheckIcon,
 	ChevronDownIcon,
 	ChevronRightIcon,
 	ChevronUpIcon,
@@ -45,7 +46,8 @@ export {
 	ProductAddIcon,
 	ReplaceIcon,
 	SettingsIcon,
-	ViewIcon
+	ViewIcon,
+	XIcon
 } from '@shopify/polaris-icons'; // https://polaris-react.shopify.com/icons
 export {
 	LayoutListIcon,

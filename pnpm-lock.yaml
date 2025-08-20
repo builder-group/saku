@@ -68,6 +68,9 @@ importers:
       '@dnd-kit/sortable':
         specifier: ^10.0.0
         version: 10.0.0(@dnd-kit/core@6.3.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
+      '@heymantle/client':
+        specifier: ^1.1.59
+        version: 1.1.59
       '@heymantle/polaris':
         specifier: ^13.0.1
         version: 13.0.1(@shopify/polaris@13.9.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@types/react@18.3.1)(react@18.3.1)
