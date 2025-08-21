@@ -5,7 +5,16 @@ import { Crisp } from '@/lib/crisp/Crisp';
 const CrispContext = React.createContext<Crisp | null>(null);
 
 export const CrispProvider: React.FC<TCrispProviderProps> = (props) => {
-	const { children, user } = props;
+	const {
+		children,
+		user: {
+			identifier: userIdentifier,
+			email: userEmail,
+			name: userName,
+			companyName: userCompanyName,
+			avatarUrl: userAvatarUrl
+		}
+	} = props;
 	const [crispInstance, setCrispInstance] = React.useState<Crisp | null>(null);
 
 	// Initialize Crisp
@@ -33,16 +42,16 @@ export const CrispProvider: React.FC<TCrispProviderProps> = (props) => {
 		logger.info('💬 Initialized Crisp', { crisp });
 
 		// Configure user data if available
-		if (user != null) {
+		if (userIdentifier != null) {
 			crisp.configureUser({
-				email: user.email,
-				nickname: user.name,
-				company: user.companyName
+				email: userEmail,
+				nickname: userName,
+				company: userCompanyName
 					? {
-							name: user.companyName
+							name: userCompanyName
 						}
 					: undefined,
-				avatar: user.avatarUrl
+				avatar: userAvatarUrl
 			});
 		}
 
@@ -97,7 +106,7 @@ export const CrispProvider: React.FC<TCrispProviderProps> = (props) => {
 			unsubscribeDebugListeners?.();
 			unsubscribeAutoResponse();
 		};
-	}, [user]);
+	}, [userIdentifier, userEmail, userName, userCompanyName, userAvatarUrl]);
 
 	if (crispInstance == null) {
 		return children;

@@ -47,7 +47,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 				presets,
 				crisp: crisp ?? undefined
 			});
-		}, [shopifyBridge, shop, presets]);
+		}, [shopifyBridge, shop, presets, crisp]);
 
 		const [stepType, setStepType] = React.useState<TOnboardingStep['type']>('welcome');
 
