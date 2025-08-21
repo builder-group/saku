@@ -24,11 +24,12 @@ export function createOnboardingContext(
 		),
 
 		mount() {
+			crisp?.resetSession();
 			crisp?.startThread(`onboarding_${this.id}`);
 		},
 
 		continueFromWelcome() {
-			crisp?.sendMessageAsUser(
+			crisp?.showMessageAsOperator(
 				'text',
 				"👋 Let's get your bio page set up in 2 minutes. I'm here if you need help."
 			);
@@ -251,7 +252,7 @@ export function createOnboardingContext(
 					return;
 				}
 				await sleep(1000);
-				crisp?.sendMessageAsUser('text', 'Got it! Reach out anytime if you need help.');
+				crisp?.showMessageAsOperator('text', 'Got it! Reach out anytime if you need help.');
 				unsubscribe?.();
 			});
 		},
