@@ -218,6 +218,7 @@ export function createOnboardingContext(
 		},
 
 		async complete() {
+			await sleep(3000);
 			crisp?.showMessageAsOperator('text', '🎉 Your bio page is live!');
 			crisp?.showMessageAsOperator('picker', {
 				id: 'post_onboarding_goals',

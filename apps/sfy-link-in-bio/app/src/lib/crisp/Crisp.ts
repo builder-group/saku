@@ -3,6 +3,10 @@ import { crispConfig, logger } from '../../environment';
 import { AppError } from '../AppError';
 
 // https://github.com/crisp-im/crisp-sdk-web
+// Note: Custom wrapper instead of official SDK due to:
+// - Limited support for multiple event listeners
+// - Missing method to check if support members are online
+// - Need for better TypeScript integration and type safety
 export class Crisp {
 	private static _injected = false;
 
@@ -12,7 +16,9 @@ export class Crisp {
 	private _chatOpenedListeners: TChatEventListener[] = [];
 	private _chatClosedListeners: TChatEventListener[] = [];
 
-	private constructor() {}
+	private constructor() {
+		// Private constructor - only accessible through create
+	}
 
 	public static create(config: TCrispConfig): TResult<Crisp, AppError> {
 		if (typeof window === 'undefined') {
@@ -25,8 +31,6 @@ export class Crisp {
 		}
 
 		const crisp = new Crisp();
-
-		// Configure Crisp
 		crisp.configure(config);
 
 		// Inject Crisp if not already injected
@@ -36,6 +40,12 @@ export class Crisp {
 				return Err(injectResult.error);
 			}
 		}
+
+		// Call onReady callback after 1s
+		// because Crisp needs time to initialize the $crisp singleton
+		setTimeout(() => {
+			config.onReady?.(crisp);
+		}, 1000);
 
 		return Ok(crisp);
 	}
@@ -174,6 +184,14 @@ export class Crisp {
 
 	public resetSession(reload?: boolean): void {
 		window.$crisp.push(['do', 'session:reset', [reload]]);
+	}
+
+	public setSessionData(key: string, value: string | boolean | number): void {
+		window.$crisp.push(['set', 'session:data', [[[key, value]]]]);
+	}
+
+	public getSessionData<T extends string | boolean | number>(key: string): T {
+		return window.$crisp.get('session:data', key);
 	}
 
 	// Send message as user (visitor) - appears in the conversation
@@ -443,6 +461,7 @@ interface TCrispConfig {
 	cookieDomain?: string;
 	cookieExpire?: number;
 	safeMode?: boolean;
+	onReady?: (crisp: Crisp) => void;
 }
 
 interface TUserData {
