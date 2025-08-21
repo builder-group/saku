@@ -41,11 +41,16 @@ export class Crisp {
 			}
 		}
 
-		// Call onReady callback after 1s
+		// Poll every 500ms to check if Crisp is ready
 		// because Crisp needs time to initialize the $crisp singleton
-		setTimeout(() => {
-			config.onReady?.(crisp);
-		}, 1000);
+		const checkReady = () => {
+			if (crisp.isInjected()) {
+				config.onReady?.(crisp);
+			} else {
+				setTimeout(checkReady, 500);
+			}
+		};
+		checkReady();
 
 		return Ok(crisp);
 	}
