@@ -22,6 +22,7 @@ export * from './YouTubeIcon';
 export {
 	AppsIcon,
 	ArrowRightIcon,
+	ChatIcon,
 	CheckIcon,
 	ChevronDownIcon,
 	ChevronRightIcon,
@@ -44,6 +45,7 @@ export {
 	PlusCircleIcon,
 	PlusIcon,
 	ProductAddIcon,
+	QuestionCircleIcon,
 	ReplaceIcon,
 	SettingsIcon,
 	ViewIcon,

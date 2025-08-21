@@ -11,5 +11,6 @@ export const crispConfig = {
 			validator: vValidator(v.string())
 		},
 		{}
-	)
+	),
+	clientUrl: 'https://client.crisp.chat/l.js'
 };

@@ -1,17 +1,21 @@
-import { Crisp } from 'crisp-sdk-web';
+import { shortId } from '@blgc/utils';
 import React from 'react';
+import { useCrisp } from '@/components';
 import { appConfig } from '@/environment';
 
 // https://shopify.dev/docs/api/app-home/patterns/settings
 const Page: React.FC = () => {
+	const crisp = useCrisp();
+
 	const handleResetSettings = React.useCallback(() => {
 		// TODO: Implement reset settings functionality
 		console.log('Reset settings clicked');
 	}, []);
 
 	const handleStartChat = React.useCallback(() => {
-		Crisp.chat.open();
-	}, []);
+		crisp?.openChat();
+		crisp?.startThread(`app-settings_${shortId()}`);
+	}, [crisp]);
 
 	return (
 		<form data-save-bar>

@@ -8,8 +8,8 @@ import { getSessionTokenFromRequest, redirectWithAuth } from '@/.server/lib';
 import {
 	ClipboardButton,
 	FeedbackCard,
-	GetInTouchCard,
 	IframeContent,
+	QuickHelpCard,
 	SitePreview,
 	ViewIcon
 } from '@/components';
@@ -203,10 +203,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 									email={appConfig.support.email}
 									reviewUrl={appConfig.distribution.shopify}
 								/>
-								<GetInTouchCard
-									email={appConfig.support.email}
-									discordUrl={appConfig.social.discord}
-								/>
+								<QuickHelpCard />
 							</div>
 						</Layout.Section>
 					</Layout>
