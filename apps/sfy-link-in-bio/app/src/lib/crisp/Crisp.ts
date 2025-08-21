@@ -117,7 +117,7 @@ export class Crisp {
 	}
 
 	public isInjected(): boolean {
-		return Crisp._injected || (window.$crisp != null && typeof window.$crisp.is === 'function');
+		return Crisp._injected && window.$crisp != null && typeof window.$crisp.is === 'function';
 	}
 
 	public configureUser(userData: TUserData): void {
@@ -195,8 +195,13 @@ export class Crisp {
 		window.$crisp.push(['set', 'session:data', [[[key, value]]]]);
 	}
 
-	public getSessionData<T extends string | boolean | number>(key: string): T {
-		return window.$crisp.get('session:data', key);
+	public getSessionData<T extends string | boolean | number>(key: string): T | null {
+		try {
+			return window.$crisp.get('session:data', key);
+		} catch (error) {
+			logger.warn('Error getting session data:', error);
+			return null;
+		}
 	}
 
 	// Send message as user (visitor) - appears in the conversation

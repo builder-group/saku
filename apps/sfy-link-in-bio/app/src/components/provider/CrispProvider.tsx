@@ -34,20 +34,12 @@ export const CrispProvider: React.FC<TCrispProviderProps> = (props) => {
 			websiteId: crispConfig.websiteToken,
 			safeMode: appConfig.env === 'production',
 			onReady: (crisp) => {
-				crisp.configureUser({
-					email: userEmail,
-					nickname: userName,
-					company: userCompanyName
-						? {
-								name: userCompanyName
-							}
-						: undefined,
-					avatar: userAvatarUrl
-				});
+				logger.info('💬 Initialized Crisp', { crisp });
 
 				// Set up auto-response when no operator is online
 				// Check if we already set up callbacks to prevent duplicates across iframes
 				// because Shopify modals create iframes, so we have two Crisp instances in the same browser tab
+				// TODO: Doesn't work
 				const hasSetUpCallbacks = crisp.getSessionData<boolean>('hasSetUpCallbacks');
 				if (hasSetUpCallbacks) {
 					return;
@@ -109,8 +101,18 @@ export const CrispProvider: React.FC<TCrispProviderProps> = (props) => {
 			return;
 		}
 
+		crisp.configureUser({
+			email: userEmail,
+			nickname: userName,
+			company: userCompanyName
+				? {
+						name: userCompanyName
+					}
+				: undefined,
+			avatar: userAvatarUrl
+		});
+
 		setCrispInstance(crisp);
-		logger.info('💬 Initialized Crisp', { crisp });
 
 		return () => {
 			if (unsubscribeCallbacks.length > 0) {
