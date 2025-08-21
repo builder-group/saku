@@ -29,6 +29,7 @@ const Page: React.FC = () => {
 					Home
 				</Link>
 				<Link to="/app/settings">Settings</Link>
+				<Link to="/app/help">Help & Resources</Link>
 			</ui-nav-menu>
 			<Outlet />
 		</EmbeddedAppProvider>

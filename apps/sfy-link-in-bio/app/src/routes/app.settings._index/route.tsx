@@ -18,8 +18,8 @@ const Page: React.FC = () => {
 			<s-page inlineSize="small">
 				<ui-title-bar title="Settings"></ui-title-bar>
 
-				{/* App Management */}
-				<s-section heading="App Management">
+				{/* Account */}
+				<s-section heading="Account">
 					<s-stack gap="none" border="base" borderRadius="base" overflow="hidden">
 						<s-clickable
 							padding="small-100"
@@ -36,30 +36,13 @@ const Page: React.FC = () => {
 								<s-icon type="chevron-right"></s-icon>
 							</s-grid>
 						</s-clickable>
-						<s-box paddingInline="small-100">
-							<s-divider></s-divider>
-						</s-box>
-						<s-clickable
-							padding="small-100"
-							href="/app/settings/system"
-							accessibilityLabel="View system information and app status"
-						>
-							<s-grid gridTemplateColumns="1fr auto" alignItems="center" gap="base">
-								<s-box>
-									<s-heading>System Information</s-heading>
-									<s-paragraph color="subdued">
-										App version, API status, and system details
-									</s-paragraph>
-								</s-box>
-								<s-icon type="chevron-right"></s-icon>
-							</s-grid>
-						</s-clickable>
 					</s-stack>
 				</s-section>
 
-				{/* Get Help */}
-				<s-section heading="Get Help">
+				{/* Help & Resources */}
+				<s-section heading="Help & Resources">
 					<s-stack gap="none" border="base" borderRadius="base" overflow="hidden">
+						{/* Quick Chat */}
 						<s-box padding="small-100">
 							<s-grid gridTemplateColumns="1fr auto" alignItems="center" gap="base">
 								<s-box>
@@ -74,6 +57,7 @@ const Page: React.FC = () => {
 						<s-box paddingInline="small-100">
 							<s-divider></s-divider>
 						</s-box>
+						{/* Discord Community */}
 						<s-box padding="small-100">
 							<s-grid gridTemplateColumns="1fr auto" alignItems="center" gap="base">
 								<s-box>
@@ -88,21 +72,22 @@ const Page: React.FC = () => {
 						<s-box paddingInline="small-100">
 							<s-divider></s-divider>
 						</s-box>
-						<s-box padding="small-100">
+						{/* Full Help Page */}
+						<s-clickable
+							padding="small-100"
+							href="/app/help?from=settings"
+							accessibilityLabel="View comprehensive help, documentation and system information"
+						>
 							<s-grid gridTemplateColumns="1fr auto" alignItems="center" gap="base">
 								<s-box>
-									<s-heading>Email Support</s-heading>
-									<s-paragraph color="subdued">{appConfig.support.email}</s-paragraph>
+									<s-heading>Help & Resources</s-heading>
+									<s-paragraph color="subdued">
+										Get help, view docs, legal documents, system status, and more
+									</s-paragraph>
 								</s-box>
-								<s-button
-									variant="secondary"
-									href={`mailto:${appConfig.support.email}`}
-									target="_blank"
-								>
-									Contact
-								</s-button>
+								<s-icon type="chevron-right"></s-icon>
 							</s-grid>
-						</s-box>
+						</s-clickable>
 					</s-stack>
 				</s-section>
 
@@ -122,45 +107,6 @@ const Page: React.FC = () => {
 								</s-button>
 							</s-grid>
 						</s-box>
-					</s-stack>
-				</s-section>
-
-				{/* Legal & Compliance */}
-				<s-section heading="Legal & Compliance">
-					<s-stack gap="none" border="base" borderRadius="base" overflow="hidden">
-						<s-clickable
-							padding="small-100"
-							href={appConfig.legal.privacy}
-							target="_blank"
-							accessibilityLabel="View privacy policy in new tab"
-						>
-							<s-grid gridTemplateColumns="1fr auto" alignItems="center" gap="base">
-								<s-box>
-									<s-heading>Privacy Policy</s-heading>
-									<s-paragraph color="subdued">
-										How we collect, use, and protect your data
-									</s-paragraph>
-								</s-box>
-								<s-icon type="arrow-up-right"></s-icon>
-							</s-grid>
-						</s-clickable>
-						<s-box paddingInline="small-100">
-							<s-divider></s-divider>
-						</s-box>
-						<s-clickable
-							padding="small-100"
-							href={appConfig.legal.terms}
-							target="_blank"
-							accessibilityLabel="View terms of service in new tab"
-						>
-							<s-grid gridTemplateColumns="1fr auto" alignItems="center" gap="base">
-								<s-box>
-									<s-heading>Terms of Service</s-heading>
-									<s-paragraph color="subdued">Terms and conditions for using Saku</s-paragraph>
-								</s-box>
-								<s-icon type="arrow-up-right"></s-icon>
-							</s-grid>
-						</s-clickable>
 					</s-stack>
 				</s-section>
 			</s-page>
