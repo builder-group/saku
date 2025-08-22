@@ -5,7 +5,6 @@ import {
 	resolveReference,
 	TFlatNode,
 	TMergeMixins,
-	TReference,
 	TRgba,
 	TTextAlign,
 	TTypographyStyleMixin,
@@ -94,7 +93,7 @@ export const TypographyStyleMixinEditor = <GNode extends TFlatNode, GParentNode 
 						onInheritChange={(shouldInherit, parentValue) => {
 							nodeState._v.typography.textAlign = shouldInherit
 								? inherit()
-								: (parentValue as TReference<TTextAlign>);
+								: (parentValue as TTextAlign);
 							nodeState._notify();
 						}}
 						onNavigateToParent={() => {
@@ -124,7 +123,7 @@ export const TypographyStyleMixinEditor = <GNode extends TFlatNode, GParentNode 
 						onInheritChange={(shouldInherit, parentValue) => {
 							nodeState._v.typography.fontSize = shouldInherit
 								? inherit()
-								: (parentValue as TReference<number>);
+								: (parentValue as number);
 							nodeState._notify();
 						}}
 						onNavigateToParent={() => {
@@ -148,7 +147,7 @@ export const TypographyStyleMixinEditor = <GNode extends TFlatNode, GParentNode 
 						onInheritChange={(shouldInherit, parentValue) => {
 							nodeState._v.typography.textColor = shouldInherit
 								? inherit()
-								: (parentValue as TReference<TRgba>);
+								: (parentValue as TRgba);
 							nodeState._notify();
 						}}
 						onNavigateToParent={() => {

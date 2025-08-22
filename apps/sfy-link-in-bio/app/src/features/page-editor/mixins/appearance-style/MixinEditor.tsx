@@ -4,7 +4,6 @@ import {
 	TAppearanceStyleMixin,
 	TFlatNode,
 	TMergeMixins,
-	TReference,
 	TUnreference
 } from '@repo/editor';
 import { Button, Text } from '@shopify/polaris';
@@ -66,8 +65,7 @@ export const AppearanceStyleMixinEditor = <GNode extends TFlatNode, GParentNode 
 					onInheritChange={(shouldInherit, parentValue) => {
 						nodeState._v.appearance.opacity = shouldInherit
 							? inherit()
-							: (parentValue as TReference<number>);
-
+							: (parentValue as number) / 100;
 						nodeState._notify();
 					}}
 					onNavigateToParent={() => {
@@ -95,7 +93,7 @@ export const AppearanceStyleMixinEditor = <GNode extends TFlatNode, GParentNode 
 					onInheritChange={(shouldInherit, parentValue) => {
 						nodeState._v.appearance.borderRadius = shouldInherit
 							? inherit()
-							: (parentValue as TReference<number>);
+							: (parentValue as number);
 						nodeState._notify();
 					}}
 					onNavigateToParent={() => {

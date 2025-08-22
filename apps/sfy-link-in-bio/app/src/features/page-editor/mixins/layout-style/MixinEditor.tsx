@@ -1,11 +1,4 @@
-import {
-	inherit,
-	TFlatNode,
-	TLayoutStyleMixin,
-	TMergeMixins,
-	TReference,
-	TUnreference
-} from '@repo/editor';
+import { inherit, TFlatNode, TLayoutStyleMixin, TMergeMixins, TUnreference } from '@repo/editor';
 import { Text } from '@shopify/polaris';
 import { MappedTextInput } from '@/components';
 import { TNodeState, TPageEditor } from '../../lib';
@@ -41,9 +34,7 @@ export const LayoutStyleMixinEditor = <GNode extends TFlatNode, GParentNode exte
 					}}
 					mapParentValue={(parent) => parent.childMixins?.layout?.padding}
 					onInheritChange={(shouldInherit, parentValue) => {
-						nodeState._v.layout.padding = shouldInherit
-							? inherit()
-							: (parentValue as TReference<number>);
+						nodeState._v.layout.padding = shouldInherit ? inherit() : (parentValue as number);
 						nodeState._notify();
 					}}
 					onNavigateToParent={() => {
