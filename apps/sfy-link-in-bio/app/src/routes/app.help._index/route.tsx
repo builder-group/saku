@@ -1,16 +1,18 @@
-import { Crisp } from 'crisp-sdk-web';
+import { shortId } from '@blgc/utils';
 import React from 'react';
 import { useSearchParams } from 'react-router';
-import { AccordionSection } from '@/components';
+import { AccordionSection, useCrisp } from '@/components';
 import { appConfig } from '@/environment';
 
 const Page: React.FC = () => {
 	const [searchParams] = useSearchParams();
 	const fromSettings = React.useMemo(() => searchParams.get('from') === 'settings', [searchParams]);
+	const crisp = useCrisp();
 
 	const handleStartChat = React.useCallback(() => {
-		Crisp.chat.open();
-	}, []);
+		crisp?.openChat();
+		crisp?.startThread(`app-help_${shortId()}`);
+	}, [crisp]);
 
 	return (
 		<s-page inlineSize="small">

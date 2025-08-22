@@ -1,6 +1,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import React from 'react';
 import { PosthogProvider } from '@/components';
+import { appConfig } from '@/environment';
 
 const queryClient = new QueryClient();
 
@@ -9,7 +10,7 @@ export const RootProviders: React.FC<TRootProvidersProps> = (props) => {
 
 	return (
 		<QueryClientProvider client={queryClient}>
-			<PosthogProvider>{children}</PosthogProvider>
+			<PosthogProvider disabled={!appConfig.featureFlags.posthog}>{children}</PosthogProvider>
 		</QueryClientProvider>
 	);
 };

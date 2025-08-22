@@ -1,2 +1,2 @@
 export * from './FeedbackCard';
-export * from './GetInTouchCard';
+export * from './QuickHelpCard';

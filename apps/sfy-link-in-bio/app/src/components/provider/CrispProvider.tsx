@@ -1,13 +1,27 @@
-import { Crisp } from 'crisp-sdk-web';
 import React from 'react';
 import { appConfig, crispConfig, logger } from '@/environment';
+import { Crisp } from '@/lib/crisp/Crisp';
+
+const CrispContext = React.createContext<Crisp | null>(null);
 
 export const CrispProvider: React.FC<TCrispProviderProps> = (props) => {
-	const { children, user } = props;
+	const {
+		children,
+		user: {
+			identifier: userIdentifier,
+			email: userEmail,
+			name: userName,
+			companyName: userCompanyName,
+			avatarUrl: userAvatarUrl
+		},
+		disabled = false,
+		disabledCallbacks = false
+	} = props;
+	const [crispInstance, setCrispInstance] = React.useState<Crisp | null>(null);
 
-	// https://docs.crisp.chat/guides/chatbox-sdks/web-sdk/npm/
+	// Initialize Crisp
 	React.useEffect(() => {
-		if (!appConfig.featureFlags.crisp) {
+		if (disabled) {
 			logger.info('💬 Skipping Crisp initialization');
 			return;
 		}
@@ -16,37 +30,106 @@ export const CrispProvider: React.FC<TCrispProviderProps> = (props) => {
 			websiteToken: crispConfig.websiteToken
 		});
 
-		Crisp.configure(crispConfig.websiteToken, {
-			autoload: true,
-			safeMode: appConfig.env === 'production'
-		});
+		const unsubscribeCallbacks: (() => void)[] = [];
 
-		if (user != null) {
-			if (user.email != null) {
-				Crisp.user.setEmail(user.email);
+		const [isCrispOk, crispError, crisp] = Crisp.create({
+			websiteId: crispConfig.websiteToken,
+			safeMode: appConfig.env === 'production',
+			onReady: (crisp) => {
+				logger.info('💬 Initialized Crisp', { crisp, disabledCallbacks });
+
+				// Set up debug listeners only in non-production environments
+				if (!disabledCallbacks && appConfig.env !== 'production') {
+					unsubscribeCallbacks.push(
+						crisp.onMessageReceived((message) => {
+							logger.info('💬 Message received', {
+								message
+							});
+						}),
+						crisp.onMessageSent((message) => {
+							logger.info('💬 Message sent', { message, isSupportOnline: crisp.isSupportOnline() });
+						}),
+						crisp.onChatOpened(() => {
+							logger.info('💬 Chat opened');
+						}),
+						crisp.onChatClosed(() => {
+							logger.info('💬 Chat closed');
+						}),
+						crisp.onWebsiteAvailabilityChanged((isAvailable) => {
+							logger.info('💬 Availability changed', { isAvailable });
+						})
+					);
+				}
+
+				// Set up auto-response when no operator is online
+				if (!disabledCallbacks && appConfig.featureFlags.crispAutoResponse) {
+					unsubscribeCallbacks.push(
+						crisp.onMessageSent((message) => {
+							if (!message.is_me || crisp.isSupportOnline()) {
+								return;
+							}
+
+							// Check when we last sent the offline message to not spam the user
+							const lastOfflineMessage = crisp.getSessionData<number>('lastOfflineMessageTime');
+							const now = Date.now();
+							const fiveMinutes = 5 * 60 * 1000; // 5 minutes in milliseconds
+							if (lastOfflineMessage != null && now - lastOfflineMessage < fiveMinutes) {
+								return; // Too soon to send another offline message
+							}
+
+							// Store the current time when we send the offline message
+							crisp.setSessionData('lastOfflineMessageTime', now);
+
+							setTimeout(() => {
+								crisp.showMessageAsOperator(
+									'text',
+									`Thanks for your message! Our team is currently offline, but we'll get back to you as soon as possible. You can also reach us via email at ${appConfig.support.email}.`
+								);
+							}, 1000);
+						})
+					);
+				}
 			}
-			if (user.name != null) {
-				Crisp.user.setNickname(user.name);
-			}
-			if (user.companyName != null) {
-				Crisp.user.setCompany(user.companyName, {});
-			}
-			if (user.avatarUrl != null) {
-				Crisp.user.setAvatar(user.avatarUrl);
-			}
-			if (user.additionalData != null) {
-				Crisp.session.setData(user.additionalData);
-			}
+		});
+		if (!isCrispOk) {
+			logger.error('💬 Failed to create Crisp instance:', crispError);
+			return;
 		}
 
-		// NOTE: These methods silently fail in Crisp free plan (widget won't appear)
-		// Available in paid plans only:
-		// - Crisp.setColorTheme(ChatboxColors.Blue);
-		// - Crisp.toggleOperatorCount(false);
-		// - Crisp.setPosition(ChatboxPosition.Right);
-	}, [user]);
+		crisp.configureUser({
+			email: userEmail,
+			nickname: userName,
+			company: userCompanyName
+				? {
+						name: userCompanyName
+					}
+				: undefined,
+			avatar: userAvatarUrl
+		});
 
-	return children;
+		setCrispInstance(crisp);
+
+		return () => {
+			if (unsubscribeCallbacks.length > 0) {
+				unsubscribeCallbacks.forEach((unsubscribe) => unsubscribe());
+				crisp.setSessionData('hasSetUpCallbacks', false);
+			}
+		};
+	}, [
+		userIdentifier,
+		userEmail,
+		userName,
+		userCompanyName,
+		userAvatarUrl,
+		disabled,
+		disabledCallbacks
+	]);
+
+	if (crispInstance == null) {
+		return children;
+	}
+
+	return <CrispContext.Provider value={crispInstance}>{children}</CrispContext.Provider>;
 };
 
 interface TCrispProviderProps {
@@ -59,4 +142,10 @@ interface TCrispProviderProps {
 		avatarUrl?: string;
 		additionalData?: Record<string, unknown>;
 	};
+	disabled?: boolean;
+	disabledCallbacks?: boolean;
+}
+
+export function useCrisp(): Crisp | null {
+	return React.useContext(CrispContext);
 }

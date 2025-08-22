@@ -1,15 +1,14 @@
 import { shortId, sleep } from '@blgc/utils';
 import { TFlatSite } from '@repo/editor';
 import type { ShopifyGlobal } from '@shopify/app-bridge-types';
-import { Crisp } from 'crisp-sdk-web';
 import { Err, Ok, TResult } from 'tuple-result';
 import { coreApiClient } from '@/environment';
-import { createShopifyTokenMiddleware, createStepr, type TStepr } from '@/lib';
+import { createShopifyTokenMiddleware, createStepr, Crisp, type TStepr } from '@/lib';
 
 export function createOnboardingContext(
 	config: TCreateOnboardingContextConfig
 ): TOnboardingContext {
-	const { shopify, shopId, presets } = config;
+	const { shopify, shopId, presets, crisp } = config;
 
 	return {
 		id: shortId(),
@@ -25,19 +24,13 @@ export function createOnboardingContext(
 		),
 
 		mount() {
-			// Once Crisp is loaded, reset the session to start with fresh chat history
-			Crisp.session.onLoaded(() => {
-				Crisp.session.reset();
-				Crisp.session.setData({
-					session_type: 'onboarding'
-				});
-				Crisp.session.offLoaded();
-			});
+			crisp?.resetSession();
+			crisp?.startThread(`onboarding_${this.id}`);
 		},
 
 		continueFromWelcome() {
-			Crisp.session.pushEvent('onboarding_started');
-			Crisp.message.showText(
+			crisp?.showMessageAsOperator(
+				'text',
 				"👋 Let's get your bio page set up in 2 minutes. I'm here if you need help."
 			);
 
@@ -225,13 +218,9 @@ export function createOnboardingContext(
 		},
 
 		async complete() {
-			Crisp.session.pushEvent('onboarding_completed');
-
-			// Sleep while opening the page editor
 			await sleep(3000);
-
-			Crisp.message.showText('🎉 Your bio page is live!');
-			Crisp.message.showPicker({
+			crisp?.showMessageAsOperator('text', '🎉 Your bio page is live!');
+			crisp?.showMessageAsOperator('picker', {
 				id: 'post_onboarding_goals',
 				text: 'What would you like to do next?',
 				choices: [
@@ -259,21 +248,13 @@ export function createOnboardingContext(
 			});
 
 			// Listen for picker interaction and show simple follow-up
-			Crisp.message.onMessageReceived(async (data: any) => {
-				if (
-					data.origin !== 'update' ||
-					data.type !== 'picker' ||
-					data.content.id !== 'post_onboarding_goals'
-				) {
+			const unsubscribe = crisp?.onMessageReceived(async (data) => {
+				if (data.origin !== 'update' || data.type !== 'picker') {
 					return;
 				}
-
 				await sleep(1000);
-
-				Crisp.message.showText('Got it! Reach out anytime if you need help.');
-
-				// Unregister the handler after it's used
-				Crisp.message.offMessageReceived();
+				crisp?.showMessageAsOperator('text', 'Got it! Reach out anytime if you need help.');
+				unsubscribe?.();
 			});
 		},
 
@@ -287,6 +268,7 @@ export interface TCreateOnboardingContextConfig {
 	shopify: ShopifyGlobal;
 	shopId: string;
 	presets: TSitePreset[];
+	crisp?: Crisp;
 }
 
 export interface TOnboardingContext {

@@ -4,10 +4,10 @@ import React from 'react';
 import { appConfig, logger, posthogConfig } from '@/environment';
 
 export const PosthogProvider: React.FC<TPosthogProviderProps> = (props) => {
-	const { children } = props;
+	const { children, disabled = false } = props;
 
 	React.useEffect(() => {
-		if (!appConfig.featureFlags.posthog) {
+		if (disabled) {
 			logger.info('🦔 Skipping PostHog initialization');
 			return;
 		}
@@ -41,15 +41,16 @@ export const PosthogProvider: React.FC<TPosthogProviderProps> = (props) => {
 			app_name: '@repo/sfy-link-in-bio-app',
 			app_environment: appConfig.env
 		});
-	}, []);
+	}, [disabled]);
 
-	return appConfig.featureFlags.posthog ? (
-		<PHProvider client={posthog}>{children}</PHProvider>
-	) : (
-		children
-	);
+	if (disabled) {
+		return children;
+	}
+
+	return <PHProvider client={posthog}>{children}</PHProvider>;
 };
 
 interface TPosthogProviderProps {
 	children: React.ReactNode;
+	disabled?: boolean;
 }

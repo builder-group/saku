@@ -11,13 +11,28 @@ import { CrispProvider } from './CrispProvider';
 import { MantleProvider } from './MantleProvider';
 
 export const EmbeddedAppProvider: React.FC<TEmbeddedAppProviderProps> = (props) => {
-	const { shopifyApiKey, i18n, mantleApiToken = '', userContext, children } = props;
+	const {
+		shopifyApiKey,
+		i18n,
+		mantleApiToken = '',
+		userContext,
+		children,
+		disabledCrisp,
+		disabledCrispCallbacks,
+		disabledMantle
+	} = props;
 
 	return (
-		<CrispProvider user={userContext}>
+		<CrispProvider
+			user={userContext}
+			disabled={disabledCrisp}
+			disabledCallbacks={disabledCrispCallbacks}
+		>
 			<AppProvider embedded apiKey={shopifyApiKey}>
 				<PolarisAppProvider linkComponent={PolarisLink} i18n={i18n}>
-					<MantleProvider customerApiToken={mantleApiToken}>{children}</MantleProvider>
+					<MantleProvider customerApiToken={mantleApiToken} disabled={disabledMantle}>
+						{children}
+					</MantleProvider>
 				</PolarisAppProvider>
 			</AppProvider>
 		</CrispProvider>
@@ -30,6 +45,9 @@ interface TEmbeddedAppProviderProps {
 	mantleApiToken?: string;
 	children: React.ReactNode;
 	userContext: TEmbeddedAppProviderUserContext;
+	disabledCrisp?: boolean;
+	disabledCrispCallbacks?: boolean;
+	disabledMantle?: boolean;
 }
 
 export interface TEmbeddedAppProviderUserContext {

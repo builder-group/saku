@@ -1,11 +1,15 @@
+import { shortId } from '@blgc/utils';
 import { useAppBridge } from '@shopify/app-bridge-react';
 import { BlockStack, Button, Card, InlineStack, Text } from '@shopify/polaris';
 import React from 'react';
 import { requestReview } from '@/lib';
+import { ChatIcon } from '../../display';
+import { useCrisp } from '../../provider';
 
 export const FeedbackCard: React.FC<TFeedbackCardProps> = (props) => {
 	const { email, reviewUrl } = props;
 	const shopify = useAppBridge();
+	const crisp = useCrisp();
 
 	const [feedbackState, setFeedbackState] = React.useState<TFeedbackState>('initial');
 	const improveRequestUrl = React.useMemo(() => {
@@ -22,6 +26,15 @@ export const FeedbackCard: React.FC<TFeedbackCardProps> = (props) => {
 	const handleNegativeFeedback = React.useCallback(() => {
 		setFeedbackState('negative');
 	}, []);
+
+	const handleStartChat = React.useCallback(() => {
+		crisp?.openChat();
+		crisp?.startThread(`feedback-card_${shortId()}`);
+		crisp?.showMessageAsOperator(
+			'text',
+			"Hi! I'd love to help you with your experience. What went wrong?"
+		);
+	}, [crisp]);
 
 	switch (feedbackState) {
 		case 'positive':
@@ -47,16 +60,24 @@ export const FeedbackCard: React.FC<TFeedbackCardProps> = (props) => {
 				<Card>
 					<BlockStack gap="300">
 						<Text as="h2" variant="headingMd">
-							Please let us know how we can improve
+							Let's fix this together
 						</Text>
 						<Text as="p" variant="bodyMd" tone="subdued">
-							We're sorry to hear that you had a bad experience. Let us fix it!
+							We're sorry you had a bad experience. Let's chat and get this resolved right away!
 						</Text>
-						<InlineStack gap="200">
-							<Button variant="primary" url={improveRequestUrl} target="_blank">
-								Let us know how we can improve
+						<BlockStack gap="200">
+							<Button
+								variant="primary"
+								icon={ChatIcon}
+								onClick={handleStartChat}
+								disabled={crisp == null}
+							>
+								Start Chat & Get Help
 							</Button>
-						</InlineStack>
+							<Button variant="secondary" url={improveRequestUrl} target="_blank">
+								Send Email Feedback
+							</Button>
+						</BlockStack>
 					</BlockStack>
 				</Card>
 			);

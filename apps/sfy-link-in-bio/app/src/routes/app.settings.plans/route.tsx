@@ -1,17 +1,18 @@
+import { shortId } from '@blgc/utils';
 import { Plan } from '@heymantle/client';
 import { useMantle } from '@heymantle/react';
-import { Crisp } from 'crisp-sdk-web';
 import React from 'react';
 import { Err, Ok } from 'tuple-result';
 import { shopify } from '@/.server/environment';
-import { AccordionSection, PricingCard } from '@/components';
+import { AccordionSection, PricingCard, useCrisp } from '@/components';
 import { appConfig } from '@/environment';
 import { getMantleClient, isMantleError, resultLoader, withResultLoader } from '@/lib';
 
 const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 	Success: ({ data }) => {
-		const { client } = useMantle();
 		const { plans } = data;
+		const { client } = useMantle();
+		const crisp = useCrisp();
 
 		const handleSelectPlan = React.useCallback(
 			async ({ plan, discount }: TPlanSelection): Promise<void> => {
@@ -29,8 +30,9 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 		);
 
 		const handleStartChat = React.useCallback(() => {
-			Crisp.chat.open();
-		}, []);
+			crisp?.openChat();
+			crisp?.startThread(`app-settings-plans_${shortId()}`);
+		}, [crisp]);
 
 		return (
 			<s-page inlineSize="small">

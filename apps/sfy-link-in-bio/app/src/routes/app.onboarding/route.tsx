@@ -7,6 +7,7 @@ import { ShouldRevalidateFunction, useNavigate, useSearchParams } from 'react-ro
 import { Err, Ok } from 'tuple-result';
 import { shopify } from '@/.server/environment';
 import { getSessionTokenFromRequest, redirectWithAuth } from '@/.server/lib';
+import { useCrisp } from '@/components';
 import { appConfig, coreApiClient } from '@/environment';
 import { blankPreset } from '@/features/page-editor/.server';
 import { resultLoader, withResultLoader } from '@/lib';
@@ -37,14 +38,16 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 			() => searchParams.get('step') as TOnboardingStep['type'] | null,
 			[searchParams]
 		);
+		const crisp = useCrisp();
 
 		const onboardingContext = React.useMemo<TOnboardingContext>(() => {
 			return createOnboardingContext({
 				shopify: shopifyBridge,
 				shopId: shop,
-				presets
+				presets,
+				crisp: crisp ?? undefined
 			});
-		}, [shopifyBridge, shop, presets]);
+		}, [shopifyBridge, shop, presets, crisp]);
 
 		const [stepType, setStepType] = React.useState<TOnboardingStep['type']>('welcome');
 
