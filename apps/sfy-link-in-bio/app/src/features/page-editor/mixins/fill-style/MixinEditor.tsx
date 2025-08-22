@@ -130,7 +130,10 @@ export const FillStyleMixinEditor = <GNode extends TFlatNode, GParentNode extend
 							paintState.set(value);
 						}}
 						mapParentValue={(parent) => parent.childMixins?.fill?.paint}
-						onInheritedBadgeClick={() => {
+						onInheritChange={() => {
+							handleToggleInheritance();
+						}}
+						onNavigateToParent={() => {
 							editor.switchView('settings');
 						}}
 						disableFieldInheritance

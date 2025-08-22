@@ -13,7 +13,7 @@ import { ColorPicker, HSBAColor, Popover, Text, TextField, TextFieldProps } from
 import { useCompute } from 'feature-react/state';
 import { TState } from 'feature-state';
 import React from 'react';
-import { InheritedButton, LinkIcon, LinkOffIcon } from '@/components';
+import { InheritanceActionOverlay, LinkIcon, LinkOffIcon } from '@/components';
 import { cn } from '@/lib';
 
 export const MappedColorInput = <GStateValue, GParentStateValue>(
@@ -24,7 +24,7 @@ export const MappedColorInput = <GStateValue, GParentStateValue>(
 		mapValue,
 		onValueChange,
 		onInheritChange,
-		onInheritedBadgeClick,
+		onNavigateToParent,
 		parentState,
 		mapParentValue,
 		disableFieldInheritance = false,
@@ -208,16 +208,14 @@ export const MappedColorInput = <GStateValue, GParentStateValue>(
 					</button>
 				)}
 			</div>
-			<div className="relative">
-				{isValueInherited ? (
-					<>
-						{InputComponent}
-						<div className="pointer-events-none absolute inset-y-0 right-0 z-50 flex items-center rounded-r-lg bg-[#F2F2F2] pr-1">
-							<InheritedButton onClick={onInheritedBadgeClick} />
-						</div>
-					</>
-				) : (
-					InputComponent
+			<div className="group relative">
+				{InputComponent}
+				{isValueInherited && (
+					<InheritanceActionOverlay
+						variant={'full-overlay'}
+						onUnlink={handleToggleInheritance}
+						onNavigateToParent={onNavigateToParent}
+					/>
 				)}
 			</div>
 		</div>
@@ -238,7 +236,7 @@ export interface TMappedColorInputProps<GStateValue, GParentStateValue>
 	parentState?: TState<GParentStateValue, any>;
 	mapParentValue?: (parentStateValue: GParentStateValue) => TRgba | undefined;
 	onInheritChange?: (shouldInherit: boolean, parentValue?: TRgba) => void;
-	onInheritedBadgeClick?: () => void;
+	onNavigateToParent?: () => void;
 	disableFieldInheritance?: boolean;
 
 	label: string;

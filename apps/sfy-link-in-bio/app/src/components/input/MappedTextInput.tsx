@@ -14,7 +14,7 @@ export const MappedTextInput = <GValue, GStateValue, GParentStateValue>(
 		mapValue,
 		onValueChange,
 		onInheritChange,
-		onInheritedBadgeClick,
+		onNavigateToParent,
 		parentState,
 		mapParentValue,
 		disableFieldInheritance = false,
@@ -112,7 +112,7 @@ export const MappedTextInput = <GValue, GStateValue, GParentStateValue>(
 					<InheritanceActionOverlay
 						variant={'full-overlay'}
 						onUnlink={handleToggleInheritance}
-						onNavigateToParent={onInheritedBadgeClick}
+						onNavigateToParent={onNavigateToParent}
 					/>
 				)}
 			</div>
@@ -131,7 +131,7 @@ export interface TMappedTextInputProps<GValue, GStateValue, GParentStateValue>
 	parentState?: TState<GParentStateValue, any>;
 	mapParentValue?: (parentStateValue: GParentStateValue) => GValue | undefined;
 	onInheritChange?: (shouldInherit: boolean, parentValue?: GValue) => void;
-	onInheritedBadgeClick?: () => void;
+	onNavigateToParent?: () => void;
 	disableFieldInheritance?: boolean;
 
 	label: string;

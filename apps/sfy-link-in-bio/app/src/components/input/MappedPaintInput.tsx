@@ -25,7 +25,7 @@ import { TState } from 'feature-state';
 import React from 'react';
 import {
 	ImageUploadField,
-	InheritedButton,
+	InheritanceActionOverlay,
 	LinkIcon,
 	LinkOffIcon,
 	TImageUploadEvent
@@ -40,7 +40,7 @@ export const MappedPaintInput = <GStateValue, GParentStateValue>(
 		mapValue,
 		onValueChange,
 		onInheritChange,
-		onInheritedBadgeClick,
+		onNavigateToParent,
 		parentState,
 		mapParentValue,
 		disableFieldInheritance = false,
@@ -396,16 +396,14 @@ export const MappedPaintInput = <GStateValue, GParentStateValue>(
 					</button>
 				)}
 			</div>
-			<div className="relative">
-				{isValueInherited ? (
-					<>
-						{InputComponent}
-						<div className="pointer-events-none absolute inset-y-0 right-0 z-50 flex items-center rounded-r-lg bg-[#F2F2F2] pr-1">
-							<InheritedButton onClick={onInheritedBadgeClick} />
-						</div>
-					</>
-				) : (
-					InputComponent
+			<div className="group relative">
+				{InputComponent}
+				{isValueInherited && (
+					<InheritanceActionOverlay
+						variant={'full-overlay'}
+						onUnlink={handleToggleInheritance}
+						onNavigateToParent={onNavigateToParent}
+					/>
 				)}
 			</div>
 		</div>
@@ -426,7 +424,7 @@ export interface TMappedPaintInputProps<GStateValue, GParentStateValue>
 	parentState?: TState<GParentStateValue, any>;
 	mapParentValue?: (parentStateValue: GParentStateValue) => TPaint | undefined;
 	onInheritChange?: (shouldInherit: boolean, parentValue?: TPaint) => void;
-	onInheritedBadgeClick?: () => void;
+	onNavigateToParent?: () => void;
 	disableFieldInheritance?: boolean;
 
 	editor: {

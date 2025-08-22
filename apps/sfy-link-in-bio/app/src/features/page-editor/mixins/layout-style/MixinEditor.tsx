@@ -46,7 +46,7 @@ export const LayoutStyleMixinEditor = <GNode extends TFlatNode, GParentNode exte
 							: (parentValue as TReference<number>);
 						nodeState._notify();
 					}}
-					onInheritedBadgeClick={() => {
+					onNavigateToParent={() => {
 						editor.switchView('settings');
 					}}
 				/>

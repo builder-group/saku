@@ -70,7 +70,7 @@ export const AppearanceStyleMixinEditor = <GNode extends TFlatNode, GParentNode 
 
 						nodeState._notify();
 					}}
-					onInheritedBadgeClick={() => {
+					onNavigateToParent={() => {
 						editor.switchView('settings');
 					}}
 					disableFieldInheritance={parentNodeState == null}
@@ -98,7 +98,7 @@ export const AppearanceStyleMixinEditor = <GNode extends TFlatNode, GParentNode 
 							: (parentValue as TReference<number>);
 						nodeState._notify();
 					}}
-					onInheritedBadgeClick={() => {
+					onNavigateToParent={() => {
 						editor.switchView('settings');
 					}}
 					disableFieldInheritance={parentNodeState == null}

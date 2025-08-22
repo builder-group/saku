@@ -171,7 +171,10 @@ export const ShadowStyleMixinEditor = <GNode extends TFlatNode, GParentNode exte
 							colorState.set(value);
 						}}
 						mapParentValue={(parent) => parent.childMixins?.shadow?.color}
-						onInheritedBadgeClick={() => {
+						onInheritChange={() => {
+							handleToggleInheritance();
+						}}
+						onNavigateToParent={() => {
 							editor.switchView('settings');
 						}}
 						disableFieldInheritance
@@ -191,7 +194,10 @@ export const ShadowStyleMixinEditor = <GNode extends TFlatNode, GParentNode exte
 								blurState.set(value);
 							}}
 							mapParentValue={(parent) => parent.childMixins?.shadow?.blur}
-							onInheritedBadgeClick={() => {
+							onInheritChange={() => {
+								handleToggleInheritance();
+							}}
+							onNavigateToParent={() => {
 								editor.switchView('settings');
 							}}
 							disableFieldInheritance
@@ -210,7 +216,10 @@ export const ShadowStyleMixinEditor = <GNode extends TFlatNode, GParentNode exte
 								spreadState.set(value);
 							}}
 							mapParentValue={(parent) => parent.childMixins?.shadow?.spread}
-							onInheritedBadgeClick={() => {
+							onInheritChange={() => {
+								handleToggleInheritance();
+							}}
+							onNavigateToParent={() => {
 								editor.switchView('settings');
 							}}
 							disableFieldInheritance
@@ -231,7 +240,10 @@ export const ShadowStyleMixinEditor = <GNode extends TFlatNode, GParentNode exte
 								offsetXState.set(value);
 							}}
 							mapParentValue={(parent) => parent.childMixins?.shadow?.offsetX}
-							onInheritedBadgeClick={() => {
+							onInheritChange={() => {
+								handleToggleInheritance();
+							}}
+							onNavigateToParent={() => {
 								editor.switchView('settings');
 							}}
 							disableFieldInheritance
@@ -250,7 +262,10 @@ export const ShadowStyleMixinEditor = <GNode extends TFlatNode, GParentNode exte
 								offsetYState.set(value);
 							}}
 							mapParentValue={(parent) => parent.childMixins?.shadow?.offsetY}
-							onInheritedBadgeClick={() => {
+							onInheritChange={() => {
+								handleToggleInheritance();
+							}}
+							onNavigateToParent={() => {
 								editor.switchView('settings');
 							}}
 							disableFieldInheritance

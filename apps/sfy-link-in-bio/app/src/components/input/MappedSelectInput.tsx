@@ -3,7 +3,7 @@ import { Select, SelectProps, Text } from '@shopify/polaris';
 import { useCompute } from 'feature-react/state';
 import { TState } from 'feature-state';
 import React from 'react';
-import { InheritedButton, LinkIcon, LinkOffIcon } from '@/components';
+import { InheritanceActionOverlay, LinkIcon, LinkOffIcon } from '@/components';
 import { cn } from '@/lib';
 
 export const MappedSelectInput = <GValue, GStateValue, GParentStateValue>(
@@ -14,7 +14,7 @@ export const MappedSelectInput = <GValue, GStateValue, GParentStateValue>(
 		mapValue,
 		onValueChange,
 		onInheritChange,
-		onInheritedBadgeClick,
+		onNavigateToParent,
 		parentState,
 		mapParentValue,
 		disableFieldInheritance = false,
@@ -94,16 +94,14 @@ export const MappedSelectInput = <GValue, GStateValue, GParentStateValue>(
 					</button>
 				)}
 			</div>
-			<div className="relative">
-				{isValueInherited ? (
-					<>
-						{InputComponent}
-						<div className="pointer-events-none absolute inset-y-0 right-0 z-50 flex items-center rounded-r-lg bg-[#F2F2F2] pr-1">
-							<InheritedButton onClick={onInheritedBadgeClick} />
-						</div>
-					</>
-				) : (
-					InputComponent
+			<div className="group relative">
+				{InputComponent}
+				{isValueInherited && (
+					<InheritanceActionOverlay
+						variant={'full-overlay'}
+						onUnlink={handleToggleInheritance}
+						onNavigateToParent={onNavigateToParent}
+					/>
 				)}
 			</div>
 		</div>
@@ -121,7 +119,7 @@ export interface TMappedSelectInputProps<GValue, GStateValue, GParentStateValue>
 	parentState?: TState<GParentStateValue, any>;
 	mapParentValue?: (parentStateValue: GParentStateValue) => GValue | undefined;
 	onInheritChange?: (shouldInherit: boolean, parentValue?: GValue) => void;
-	onInheritedBadgeClick?: () => void;
+	onNavigateToParent?: () => void;
 	disableFieldInheritance?: boolean;
 
 	label: string;

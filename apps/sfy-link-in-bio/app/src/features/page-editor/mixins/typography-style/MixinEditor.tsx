@@ -69,7 +69,7 @@ export const TypographyStyleMixinEditor = <GNode extends TFlatNode, GParentNode 
 								}
 							}
 						}}
-						onInheritedBadgeClick={() => {
+						onNavigateToParent={() => {
 							editor.switchView('settings');
 						}}
 					/>
@@ -97,7 +97,7 @@ export const TypographyStyleMixinEditor = <GNode extends TFlatNode, GParentNode 
 								: (parentValue as TReference<TTextAlign>);
 							nodeState._notify();
 						}}
-						onInheritedBadgeClick={() => {
+						onNavigateToParent={() => {
 							editor.switchView('settings');
 						}}
 					/>
@@ -127,7 +127,7 @@ export const TypographyStyleMixinEditor = <GNode extends TFlatNode, GParentNode 
 								: (parentValue as TReference<number>);
 							nodeState._notify();
 						}}
-						onInheritedBadgeClick={() => {
+						onNavigateToParent={() => {
 							editor.switchView('settings');
 						}}
 					/>
@@ -151,7 +151,7 @@ export const TypographyStyleMixinEditor = <GNode extends TFlatNode, GParentNode 
 								: (parentValue as TReference<TRgba>);
 							nodeState._notify();
 						}}
-						onInheritedBadgeClick={() => {
+						onNavigateToParent={() => {
 							editor.switchView('settings');
 						}}
 					/>

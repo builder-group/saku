@@ -138,7 +138,10 @@ export const StrokeStyleMixinEditor = <GNode extends TFlatNode, GParentNode exte
 							colorState.set(value);
 						}}
 						mapParentValue={(parent) => parent.childMixins?.stroke?.color}
-						onInheritedBadgeClick={() => {
+						onInheritChange={() => {
+							handleToggleInheritance();
+						}}
+						onNavigateToParent={() => {
 							editor.switchView('settings');
 						}}
 						disableFieldInheritance
@@ -157,7 +160,10 @@ export const StrokeStyleMixinEditor = <GNode extends TFlatNode, GParentNode exte
 							widthState.set(value);
 						}}
 						mapParentValue={(parent) => parent.childMixins?.stroke?.width}
-						onInheritedBadgeClick={() => {
+						onInheritChange={() => {
+							handleToggleInheritance();
+						}}
+						onNavigateToParent={() => {
 							editor.switchView('settings');
 						}}
 						disableFieldInheritance
