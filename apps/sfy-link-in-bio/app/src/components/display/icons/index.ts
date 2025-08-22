@@ -21,7 +21,7 @@ export * from './YouTubeIcon';
 // Third Party Icons
 export {
 	AppsIcon,
-	ArrowRightIcon,
+	// ArrowRightIcon,
 	ChatIcon,
 	CheckIcon,
 	ChevronDownIcon,
@@ -52,6 +52,7 @@ export {
 	XIcon
 } from '@shopify/polaris-icons'; // https://polaris-react.shopify.com/icons
 export {
+	ArrowRightIcon,
 	LayoutListIcon,
 	LayoutTemplateIcon,
 	Link2Icon as LinkIcon,
