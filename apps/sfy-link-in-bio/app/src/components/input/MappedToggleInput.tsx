@@ -1,7 +1,7 @@
 import { isInherited, resolveReference, TReference } from '@repo/editor';
 import { Text, Tooltip } from '@shopify/polaris';
-import { useCompute } from 'feature-react/state';
-import { TState } from 'feature-state';
+import { useCombinedCompute } from 'feature-react/state';
+import { createState, TState } from 'feature-state';
 import React from 'react';
 import { Knob, LinkIcon, LinkOffIcon } from '@/components';
 import { cn } from '@/lib';
@@ -22,15 +22,21 @@ export const MappedToggleInput = <GStateValue, GParentStateValue>(
 		className
 	} = props;
 
-	const currentValue = useCompute(state, ({ value }) => mapValue(value));
-	const parentValue = useCompute(parentState, ({ value: parent }) =>
-		parent != null ? mapParentValue?.(parent) : undefined
+	const { parentValue, currentValue, displayValue, isValueInherited } = useCombinedCompute(
+		[state, parentState ?? createState(undefined)],
+		([current, parent]) => {
+			const currentValue = mapValue(current.value);
+			const parentValue = parent.value != null ? mapParentValue?.(parent.value) : undefined;
+			const resolvedValue = resolveReference(currentValue, parentValue);
+			return {
+				currentValue,
+				parentValue,
+				resolvedValue,
+				displayValue: resolvedValue === true,
+				isValueInherited: isInherited(currentValue)
+			};
+		}
 	);
-	const isValueInherited = React.useMemo(() => isInherited(currentValue), [currentValue]);
-	const selected = React.useMemo(() => {
-		const resolvedValue = resolveReference(currentValue, parentValue);
-		return resolvedValue === true;
-	}, [currentValue, parentValue]);
 
 	// =========================================================================
 	// Events
@@ -55,7 +61,7 @@ export const MappedToggleInput = <GStateValue, GParentStateValue>(
 	const InputComponent = (
 		<Knob
 			ariaLabel={ariaLabel || `Toggle ${label}`}
-			selected={selected}
+			selected={displayValue}
 			onClick={handleToggle}
 			disabled={isValueInherited}
 		/>

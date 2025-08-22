@@ -10,8 +10,8 @@ import {
 	TRgba
 } from '@repo/editor';
 import { ColorPicker, HSBAColor, Popover, Text, TextField, TextFieldProps } from '@shopify/polaris';
-import { useCompute } from 'feature-react/state';
-import { TState } from 'feature-state';
+import { useCombinedCompute } from 'feature-react/state';
+import { createState, TState } from 'feature-state';
 import React from 'react';
 import { InheritanceActionOverlay, LinkIcon, LinkOffIcon } from '@/components';
 import { cn } from '@/lib';
@@ -34,27 +34,23 @@ export const MappedColorInput = <GStateValue, GParentStateValue>(
 	} = props;
 
 	const [popoverActive, setPopoverActive] = React.useState(false);
-	const [inputValue, setInputValue] = React.useState('');
+
+	const [displayValue, setDisplayValue] = React.useState('');
 	const lastChangeFromText = React.useRef(false);
-
-	const currentValue = useCompute(state, ({ value }) => mapValue(value));
-	const parentValue = useCompute(parentState, ({ value: parent }) =>
-		parent != null ? mapParentValue?.(parent) : undefined
-	);
-
-	const isValueInherited = React.useMemo(() => isInherited(currentValue), [currentValue]);
-	const resolvedValue = React.useMemo(
-		() => resolveReference(currentValue, parentValue),
-		[currentValue, parentValue]
-	);
-
-	const displayValue = React.useMemo(() => {
-		const hex = resolvedValue != null ? rgbaToHex(resolvedValue) : '';
-		if (!lastChangeFromText.current) {
-			setInputValue(hex);
+	const { parentValue, resolvedValue, isValueInherited, error } = useCombinedCompute(
+		[state, parentState ?? createState(undefined)],
+		([current, parent]) => {
+			const currentValue = mapValue(current.value);
+			const parentValue = parent.value != null ? mapParentValue?.(parent.value) : undefined;
+			return {
+				currentValue,
+				parentValue,
+				resolvedValue: resolveReference(currentValue, parentValue),
+				isValueInherited: isInherited(currentValue),
+				error: displayValue !== '' && displayValue !== 'Image' && !isValidHex(displayValue)
+			};
 		}
-		return hex;
-	}, [resolvedValue]);
+	);
 
 	const pickerColor = React.useMemo(() => {
 		if (resolvedValue == null) {
@@ -69,13 +65,6 @@ export const MappedColorInput = <GStateValue, GParentStateValue>(
 			alpha: hsba.alpha
 		};
 	}, [resolvedValue]);
-
-	const error = React.useMemo(() => {
-		if (inputValue === '') {
-			return false;
-		}
-		return !isValidHex(inputValue);
-	}, [inputValue]);
 
 	// =========================================================================
 	// Events
@@ -95,20 +84,20 @@ export const MappedColorInput = <GStateValue, GParentStateValue>(
 				return;
 			}
 
-			// Handle empty input
 			if (newValue === '') {
-				setInputValue('');
+				setDisplayValue('');
 				handleValueChange(undefined, true);
 				return;
 			}
 
 			// Always enforce # prefix for non-empty values
 			const normalizedValue = newValue.startsWith('#') ? newValue : `#${newValue}`;
-			setInputValue(normalizedValue);
-
 			if (isValidHex(normalizedValue)) {
 				handleValueChange(hexToRgba(normalizedValue), true);
+			} else {
+				handleValueChange(undefined, true);
 			}
+			setDisplayValue(normalizedValue);
 		},
 		[handleValueChange, isValueInherited]
 	);
@@ -119,7 +108,7 @@ export const MappedColorInput = <GStateValue, GParentStateValue>(
 				return;
 			}
 
-			handleValueChange(hsbaToRgba(hsba));
+			handleValueChange(hsbaToRgba(hsba), false);
 		},
 		[handleValueChange, isValueInherited]
 	);
@@ -139,6 +128,17 @@ export const MappedColorInput = <GStateValue, GParentStateValue>(
 			setPopoverActive(true);
 		}
 	}, [isValueInherited]);
+
+	// =========================================================================
+	// Effects
+	// =========================================================================
+
+	React.useEffect(() => {
+		if (!lastChangeFromText.current && resolvedValue != null) {
+			setDisplayValue(rgbaToHex(resolvedValue));
+		}
+		lastChangeFromText.current = false;
+	}, [resolvedValue]);
 
 	// =========================================================================
 	// UI

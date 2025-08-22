@@ -26,7 +26,7 @@ export function resolveAppearanceStyleMixin(
 		visible: resolvedVisible,
 		styles: {
 			borderRadius: `${resolvedBorderRadius}px`,
-			opacity: resolvedOpacity * 100,
+			opacity: `${resolvedOpacity * 100}%`,
 			visibility: resolvedVisible ? 'visible' : 'hidden'
 		}
 	});

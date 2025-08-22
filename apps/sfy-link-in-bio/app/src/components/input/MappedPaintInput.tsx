@@ -20,8 +20,8 @@ import {
 	TextField,
 	TextFieldProps
 } from '@shopify/polaris';
-import { useCompute } from 'feature-react/state';
-import { TState } from 'feature-state';
+import { useCombinedCompute } from 'feature-react/state';
+import { createState, TState } from 'feature-state';
 import React from 'react';
 import {
 	ImageUploadField,
@@ -50,28 +50,8 @@ export const MappedPaintInput = <GStateValue, GParentStateValue>(
 		...textFieldProps
 	} = props;
 
-	const currentValue = useCompute(state, ({ value }) => mapValue(value));
-	const parentValue = useCompute(parentState, ({ value: parent }) =>
-		parent != null ? mapParentValue?.(parent) : undefined
-	);
-	const resolvedValue = React.useMemo(
-		() => resolveReference(currentValue, parentValue),
-		[currentValue, parentValue]
-	);
-
-	const isValueInherited = React.useMemo(() => isInherited(currentValue), [currentValue]);
-
 	const [popoverActive, setPopoverActive] = React.useState(false);
-	const [inputValue, setInputValue] = React.useState('');
-	const [selectedTab, setSelectedTab] = React.useState(resolvedValue?.type === 'image' ? 1 : 0);
-	const lastChangeFromText = React.useRef(false);
-
-	// Cache values for each tab while popover is open
-	const tabValueCache = React.useRef<{
-		solid?: TPaint;
-		image?: TPaint;
-	}>({});
-
+	const [selectedTab, setSelectedTab] = React.useState(0);
 	const tabs = React.useMemo(
 		() => [
 			{
@@ -89,26 +69,29 @@ export const MappedPaintInput = <GStateValue, GParentStateValue>(
 		],
 		[]
 	);
+	const tabValueCache = React.useRef<{
+		solid?: TPaint;
+		image?: TPaint;
+	}>({});
 
-	const { displayValue, isReadOnly } = React.useMemo(() => {
-		let displayValue = '';
-		let isReadOnly = false;
-		switch (resolvedValue?.type) {
-			case 'solid':
-				displayValue = rgbaToHex(resolvedValue.color);
-				break;
-			case 'image':
-				displayValue = 'Image';
-				isReadOnly = true;
-				break;
-			default:
-			// do nothing
+	const [displayValue, setDisplayValue] = React.useState('');
+	const lastChangeFromText = React.useRef(false);
+	const { parentValue, resolvedValue, isValueInherited, isReadOnly, error } = useCombinedCompute(
+		[state, parentState ?? createState(undefined)],
+		([current, parent]) => {
+			const currentValue = mapValue(current.value);
+			const parentValue = parent.value != null ? mapParentValue?.(parent.value) : undefined;
+			const resolvedValue = resolveReference(currentValue, parentValue);
+			return {
+				currentValue,
+				parentValue,
+				resolvedValue,
+				isValueInherited: isInherited(currentValue),
+				isReadOnly: resolvedValue?.type === 'image',
+				error: displayValue !== '' && displayValue !== 'Image' && !isValidHex(displayValue)
+			};
 		}
-		if (!lastChangeFromText.current) {
-			setInputValue(displayValue);
-		}
-		return { displayValue, isReadOnly };
-	}, [resolvedValue]);
+	);
 
 	const pickerColor = React.useMemo(() => {
 		if (resolvedValue?.type !== 'solid') {
@@ -140,21 +123,6 @@ export const MappedPaintInput = <GStateValue, GParentStateValue>(
 		};
 	}, [resolvedValue, editor]);
 
-	const error = React.useMemo(() => {
-		if (inputValue === '') {
-			return false;
-		}
-
-		switch (resolvedValue?.type) {
-			case 'solid':
-				return !isValidHex(inputValue);
-			case 'image':
-				return false;
-			default:
-				return false;
-		}
-	}, [inputValue, resolvedValue?.type]);
-
 	// =========================================================================
 	// Events
 	// =========================================================================
@@ -173,17 +141,14 @@ export const MappedPaintInput = <GStateValue, GParentStateValue>(
 				return;
 			}
 
-			// Handle empty input
 			if (newValue === '') {
-				setInputValue('');
+				setDisplayValue('');
 				handleValueChange(undefined, true);
 				return;
 			}
 
 			// Always enforce # prefix for non-empty values
 			const normalizedValue = newValue.startsWith('#') ? newValue : `#${newValue}`;
-			setInputValue(normalizedValue);
-
 			if (isValidHex(normalizedValue)) {
 				handleValueChange(
 					{
@@ -192,7 +157,10 @@ export const MappedPaintInput = <GStateValue, GParentStateValue>(
 					},
 					true
 				);
+			} else {
+				handleValueChange(undefined, true);
 			}
+			setDisplayValue(normalizedValue);
 		},
 		[handleValueChange, isValueInherited]
 	);
@@ -203,10 +171,13 @@ export const MappedPaintInput = <GStateValue, GParentStateValue>(
 				return;
 			}
 
-			handleValueChange({
-				type: 'solid',
-				color: hsbaToRgba(hsba)
-			});
+			handleValueChange(
+				{
+					type: 'solid',
+					color: hsbaToRgba(hsba)
+				},
+				false
+			);
 		},
 		[handleValueChange, isValueInherited]
 	);
@@ -221,18 +192,24 @@ export const MappedPaintInput = <GStateValue, GParentStateValue>(
 				case 'Changed': {
 					const hash = editor.registerImage(event.url, event.fileName);
 					if (hash != null) {
-						handleValueChange({
-							type: 'image',
-							hash,
-							altText: event.fileName
-						});
+						handleValueChange(
+							{
+								type: 'image',
+								hash,
+								altText: event.fileName
+							},
+							false
+						);
 					}
 					break;
 				}
 				case 'Removed': {
-					handleValueChange({
-						type: 'image'
-					});
+					handleValueChange(
+						{
+							type: 'image'
+						},
+						false
+					);
 					break;
 				}
 			}
@@ -276,25 +253,26 @@ export const MappedPaintInput = <GStateValue, GParentStateValue>(
 
 			setSelectedTab(selectedTabIndex);
 
+			// Apply cached value if available, otherwise use parent or default
 			switch (selectedTabIndex) {
 				case 0:
-					// Use cached value if available, otherwise use parent or default
 					handleValueChange(
 						tabValueCache.current.solid ||
 							(parentValue?.type === 'solid'
 								? parentValue
-								: { type: 'solid', color: { r: 196, g: 196, b: 196, a: 1 } })
+								: { type: 'solid', color: { r: 196, g: 196, b: 196, a: 1 } }),
+						false
 					);
 					break;
 				case 1:
-					// Use cached value if available, otherwise use parent or default
 					handleValueChange(
 						tabValueCache.current.image ||
 							(parentValue?.type === 'image'
 								? parentValue
 								: {
 										type: 'image'
-									})
+									}),
+						false
 					);
 					break;
 				default:
@@ -303,6 +281,28 @@ export const MappedPaintInput = <GStateValue, GParentStateValue>(
 		},
 		[handleValueChange, parentValue, resolvedValue, selectedTab]
 	);
+
+	// =========================================================================
+	// Effects
+	// =========================================================================
+
+	React.useEffect(() => {
+		if (!lastChangeFromText.current && resolvedValue != null) {
+			switch (resolvedValue.type) {
+				case 'solid':
+					setDisplayValue(rgbaToHex(resolvedValue.color));
+					break;
+				case 'image':
+					setDisplayValue('Image');
+					break;
+				default:
+				// do nothing
+			}
+		}
+		lastChangeFromText.current = false;
+
+		setSelectedTab(resolvedValue?.type === 'image' ? 1 : 0);
+	}, [resolvedValue]);
 
 	// =========================================================================
 	// UI

@@ -1,7 +1,7 @@
 import { isInherited, resolveReference, TReference } from '@repo/editor';
 import { Select, SelectProps, Text } from '@shopify/polaris';
-import { useCompute } from 'feature-react/state';
-import { TState } from 'feature-state';
+import { useCombinedCompute } from 'feature-react/state';
+import { createState, TState } from 'feature-state';
 import React from 'react';
 import { InheritanceActionOverlay, LinkIcon, LinkOffIcon } from '@/components';
 import { cn } from '@/lib';
@@ -23,15 +23,21 @@ export const MappedSelectInput = <GValue, GStateValue, GParentStateValue>(
 		...selectProps
 	} = props;
 
-	const currentValue = useCompute(state, ({ value }) => mapValue(value));
-	const parentValue = useCompute(parentState, ({ value: parent }) =>
-		parent != null ? mapParentValue?.(parent) : undefined
+	const { parentValue, displayValue, isValueInherited } = useCombinedCompute(
+		[state, parentState ?? createState(undefined)],
+		([current, parent]) => {
+			const currentValue = mapValue(current.value);
+			const parentValue = parent.value != null ? mapParentValue?.(parent.value) : undefined;
+			const resolvedValue = resolveReference(currentValue, parentValue);
+			return {
+				currentValue,
+				parentValue,
+				resolvedValue,
+				displayValue: String(resolvedValue),
+				isValueInherited: isInherited(currentValue)
+			};
+		}
 	);
-	const isValueInherited = React.useMemo(() => isInherited(currentValue), [currentValue]);
-	const displayValue = React.useMemo(() => {
-		const resolvedValue = resolveReference(currentValue, parentValue);
-		return resolvedValue != null ? String(resolvedValue) : '';
-	}, [currentValue, parentValue]);
 
 	// =========================================================================
 	// Events
@@ -43,9 +49,12 @@ export const MappedSelectInput = <GValue, GStateValue, GParentStateValue>(
 				return;
 			}
 
-			const convertedValue: GValue | undefined = newValue === '' ? undefined : (newValue as GValue);
+			if (newValue === '') {
+				onValueChange(undefined);
+				return;
+			}
 
-			onValueChange(convertedValue);
+			onValueChange(newValue as GValue);
 		},
 		[onValueChange, isValueInherited]
 	);

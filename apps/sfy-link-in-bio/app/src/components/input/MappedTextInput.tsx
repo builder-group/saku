@@ -1,7 +1,7 @@
 import { isInherited, resolveReference, TReference } from '@repo/editor';
 import { Text, TextField, TextFieldProps } from '@shopify/polaris';
-import { useCompute } from 'feature-react/state';
-import { TState } from 'feature-state';
+import { useCombinedCompute } from 'feature-react/state';
+import { createState, TState } from 'feature-state';
 import React from 'react';
 import { InheritanceActionOverlay, LinkIcon, LinkOffIcon } from '@/components';
 import { cn } from '@/lib';
@@ -25,16 +25,20 @@ export const MappedTextInput = <GValue, GStateValue, GParentStateValue>(
 		...textFieldProps
 	} = props;
 
-	const currentValue = useCompute(state, ({ value }) => mapValue(value));
-	const parentValue = useCompute(parentState, ({ value: parent }) =>
-		parent != null ? mapParentValue?.(parent) : undefined
+	const [displayValue, setDisplayValue] = React.useState<string>('');
+	const { parentValue, resolvedValue, isValueInherited } = useCombinedCompute(
+		[state, parentState ?? createState(undefined)],
+		([current, parent]) => {
+			const currentValue = mapValue(current.value);
+			const parentValue = parent.value != null ? mapParentValue?.(parent.value) : undefined;
+			return {
+				currentValue,
+				parentValue,
+				resolvedValue: resolveReference(currentValue, parentValue),
+				isValueInherited: isInherited(currentValue)
+			};
+		}
 	);
-
-	const isValueInherited = React.useMemo(() => isInherited(currentValue), [currentValue]);
-	const displayValue = React.useMemo(() => {
-		const resolvedValue = resolveReference(currentValue, parentValue);
-		return resolvedValue != null ? String(resolvedValue) : '';
-	}, [currentValue, parentValue]);
 
 	// =========================================================================
 	// Events
@@ -46,24 +50,47 @@ export const MappedTextInput = <GValue, GStateValue, GParentStateValue>(
 				return;
 			}
 
-			let convertedValue: GValue | undefined = newValue as GValue;
 			if (newValue === '') {
-				convertedValue = undefined;
-			} else if (textFieldProps.type === 'number') {
-				let num = Number(newValue);
-				if (typeof min === 'number' && num < min) num = min;
-				if (typeof max === 'number' && num > max) num = max;
-				convertedValue = num as GValue;
+				setDisplayValue('');
+				onValueChange(undefined);
+				return;
 			}
 
-			onValueChange(convertedValue);
+			if (textFieldProps.type === 'number') {
+				const num = Number(newValue);
+				if (!isNaN(num)) {
+					let clampedNum = num;
+					if (typeof min === 'number' && clampedNum < min) clampedNum = min;
+					if (typeof max === 'number' && clampedNum > max) clampedNum = max;
+					setDisplayValue(String(clampedNum));
+					onValueChange(clampedNum as GValue);
+					return;
+				}
+
+				setDisplayValue('');
+				onValueChange(undefined);
+				return;
+			}
+
+			setDisplayValue(newValue);
+			onValueChange(newValue as GValue);
 		},
-		[onValueChange, textFieldProps.type, isValueInherited, min, max]
+		[isValueInherited, textFieldProps.type, onValueChange, min, max]
 	);
 
 	const handleToggleInheritance = React.useCallback(() => {
 		onInheritChange?.(!isValueInherited, parentValue);
 	}, [onInheritChange, isValueInherited, parentValue]);
+
+	// =========================================================================
+	// Effects
+	// =========================================================================
+
+	React.useEffect(() => {
+		if (resolvedValue != null) {
+			setDisplayValue(String(resolvedValue));
+		}
+	}, [resolvedValue]);
 
 	// =========================================================================
 	// UI
