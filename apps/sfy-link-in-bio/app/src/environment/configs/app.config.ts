@@ -31,7 +31,7 @@ export const appConfig = {
 		discord: 'https://discord.com/invite/w4xE3bSjhQ'
 	},
 	distribution: {
-		shopify: 'https://apps.shopify.com/saku-link-in-bio'
+		shopify: 'https://apps.shopify.com/saku-bio-link'
 	},
 	support: {
 		email: 'support@saku.so'
