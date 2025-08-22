@@ -13,8 +13,12 @@ export const ResolvedTextNode = React.forwardRef<
 		...divProps
 	} = props;
 
-	// Use evaluateSync for SSR
-	// because async (e.g. with React Query) wouldn't render on server
+	const mdxComponents = React.useMemo(
+		() => createMdxComponents(typography.fontSize),
+		[typography.fontSize]
+	);
+
+	// Use evaluateSync for SSR because async (e.g. with React Query) wouldn't render on server
 	const mdxContent = React.useMemo(() => {
 		if (content.text.trim() === '') {
 			return null;
@@ -37,7 +41,7 @@ export const ResolvedTextNode = React.forwardRef<
 			logger.warn('MDX parsing error:', error);
 			return <span>{content.text}</span>;
 		}
-	}, [content.text]);
+	}, [content.text, mdxComponents]);
 
 	return (
 		<div {...divProps} ref={ref} className="w-full max-w-md">
@@ -65,17 +69,49 @@ export const ResolvedTextNode = React.forwardRef<
 });
 ResolvedTextNode.displayName = 'ResolvedTextNode';
 
-const mdxComponents: Record<string, React.ComponentType<any>> = {
-	h1: (props) => <h1 className="mt-6 mb-4 text-3xl font-bold first:mt-0 last:mb-0" {...props} />,
+const createMdxComponents = (baseFontSize: number): Record<string, React.ComponentType<any>> => ({
+	h1: (props) => (
+		<h1
+			className="mt-6 mb-4 font-bold first:mt-0 last:mb-0"
+			style={{ fontSize: baseFontSize * 1.875 }}
+			{...props}
+		/>
+	),
 	h2: (props) => (
-		<h2 className="mt-5 mb-3 text-2xl font-semibold first:mt-0 last:mb-0" {...props} />
+		<h2
+			className="mt-5 mb-3 font-semibold first:mt-0 last:mb-0"
+			style={{ fontSize: baseFontSize * 1.5 }}
+			{...props}
+		/>
 	),
-	h3: (props) => <h3 className="mt-4 mb-2 text-xl font-semibold first:mt-0 last:mb-0" {...props} />,
-	h4: (props) => <h4 className="mt-3 mb-2 text-lg font-semibold first:mt-0 last:mb-0" {...props} />,
+	h3: (props) => (
+		<h3
+			className="mt-4 mb-2 font-semibold first:mt-0 last:mb-0"
+			style={{ fontSize: baseFontSize * 1.25 }}
+			{...props}
+		/>
+	),
+	h4: (props) => (
+		<h4
+			className="mt-3 mb-2 font-semibold first:mt-0 last:mb-0"
+			style={{ fontSize: baseFontSize * 1.125 }}
+			{...props}
+		/>
+	),
 	h5: (props) => (
-		<h5 className="mt-2 mb-1 text-base font-semibold first:mt-0 last:mb-0" {...props} />
+		<h5
+			className="mt-2 mb-1 font-semibold first:mt-0 last:mb-0"
+			style={{ fontSize: baseFontSize }}
+			{...props}
+		/>
 	),
-	h6: (props) => <h6 className="mt-2 mb-1 text-sm font-semibold first:mt-0 last:mb-0" {...props} />,
+	h6: (props) => (
+		<h6
+			className="mt-2 mb-1 font-semibold first:mt-0 last:mb-0"
+			style={{ fontSize: baseFontSize * 0.875 }}
+			{...props}
+		/>
+	),
 	p: (props) => <p className="mb-2 first:mt-0 last:mb-0" {...props} />,
 	ul: (props) => <ul className="mb-2 list-disc pl-6 first:mt-0 last:mb-0" {...props} />,
 	ol: (props) => <ol className="mb-2 list-decimal pl-6 first:mt-0 last:mb-0" {...props} />,
@@ -99,4 +135,4 @@ const mdxComponents: Record<string, React.ComponentType<any>> = {
 	),
 	em: (props) => <em className="italic" {...props} />,
 	strong: (props) => <strong className="font-bold" {...props} />
-};
+});

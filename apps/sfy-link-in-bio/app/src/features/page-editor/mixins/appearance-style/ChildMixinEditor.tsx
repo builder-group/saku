@@ -21,8 +21,8 @@ export const ChildAppearanceStyleMixinEditor = <GNode extends TFlatNode>(
 					type="number"
 					autoComplete="off"
 					min={0}
-					max={1}
-					step={0.05}
+					max={100}
+					step={5}
 					state={nodeState}
 					mapValue={(value) => value.childMixins?.appearance?.opacity * 100}
 					onValueChange={(value) => {
