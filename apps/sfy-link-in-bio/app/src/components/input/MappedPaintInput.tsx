@@ -18,14 +18,18 @@ import {
 	Tabs,
 	Text,
 	TextField,
-	TextFieldProps,
-	Tooltip
+	TextFieldProps
 } from '@shopify/polaris';
-import { ArrowRightIcon } from '@shopify/polaris-icons';
 import { useCompute } from 'feature-react/state';
 import { TState } from 'feature-state';
 import React from 'react';
-import { Badge, ImageUploadField, LinkIcon, LinkOffIcon, TImageUploadEvent } from '@/components';
+import {
+	ImageUploadField,
+	InheritedButton,
+	LinkIcon,
+	LinkOffIcon,
+	TImageUploadEvent
+} from '@/components';
 import { cn } from '@/lib';
 
 export const MappedPaintInput = <GStateValue, GParentStateValue>(
@@ -394,36 +398,12 @@ export const MappedPaintInput = <GStateValue, GParentStateValue>(
 			</div>
 			<div className="relative">
 				{isValueInherited ? (
-					<Tooltip
-						content={
-							<span>
-								This field is inherited from the parent. Click the unlink icon (
-								<LinkOffIcon className="inline h-3 w-3" />) to set a custom value.
-							</span>
-						}
-						preferredPosition="below"
-						hoverDelay={500}
-					>
-						<div className="relative">
-							{InputComponent}
-							<div className="pointer-events-none absolute inset-y-0 right-0 z-50 flex items-center rounded-r-lg bg-[#F2F2F2] pr-1">
-								{onInheritedBadgeClick != null ? (
-									<Badge asChild>
-										<button
-											type="button"
-											onClick={onInheritedBadgeClick}
-											className="group pointer-events-auto cursor-pointer"
-										>
-											Inherited
-											<ArrowRightIcon className="hidden h-3 w-3 group-hover:block" />
-										</button>
-									</Badge>
-								) : (
-									<Badge>Inherited</Badge>
-								)}
-							</div>
+					<>
+						{InputComponent}
+						<div className="pointer-events-none absolute inset-y-0 right-0 z-50 flex items-center rounded-r-lg bg-[#F2F2F2] pr-1">
+							<InheritedButton onClick={onInheritedBadgeClick} />
 						</div>
-					</Tooltip>
+					</>
 				) : (
 					InputComponent
 				)}

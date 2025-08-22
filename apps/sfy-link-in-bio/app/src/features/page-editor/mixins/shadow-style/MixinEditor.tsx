@@ -9,12 +9,11 @@ import {
 	TUnreference
 } from '@repo/editor';
 import { Button, Text } from '@shopify/polaris';
-import { ArrowRightIcon } from '@shopify/polaris-icons';
 import { useCombinedCompute, useCompute } from 'feature-react';
 import { createState } from 'feature-state';
 import React from 'react';
 import {
-	Badge,
+	InheritedButton,
 	LinkIcon,
 	LinkOffIcon,
 	MappedColorInput,
@@ -148,18 +147,7 @@ export const ShadowStyleMixinEditor = <GNode extends TFlatNode, GParentNode exte
 						<Text as="span" variant="headingXs" tone="subdued">
 							Shadow
 						</Text>
-						{isInheritedShadow && (
-							<Badge asChild>
-								<button
-									type="button"
-									onClick={() => editor.switchView('settings')}
-									className="group pointer-events-auto cursor-pointer"
-								>
-									Inherited
-									<ArrowRightIcon className="hidden h-3 w-3 group-hover:block" />
-								</button>
-							</Badge>
-						)}
+						{isInheritedShadow && <InheritedButton onClick={() => editor.switchView('settings')} />}
 					</div>
 				</div>
 
