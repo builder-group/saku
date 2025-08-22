@@ -43,6 +43,7 @@ export const appConfig = {
 	featureFlags: {
 		posthog: env === 'production',
 		crisp: true,
+		crispAutoResponse: true,
 		mantle: true
 	}
 };

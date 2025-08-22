@@ -41,16 +41,11 @@ export class Crisp {
 			}
 		}
 
-		// Poll every 500ms to check if Crisp is ready
-		// because Crisp needs time to initialize the $crisp singleton
-		const checkReady = () => {
-			if (crisp.isInjected()) {
+		if (config.onReady != null) {
+			window.CRISP_READY_TRIGGER = () => {
 				config.onReady?.(crisp);
-			} else {
-				setTimeout(checkReady, 500);
-			}
-		};
-		checkReady();
+			};
+		}
 
 		return Ok(crisp);
 	}
@@ -117,7 +112,12 @@ export class Crisp {
 	}
 
 	public isInjected(): boolean {
-		return Crisp._injected && window.$crisp != null && typeof window.$crisp.is === 'function';
+		return (
+			Crisp._injected &&
+			window.$crisp != null &&
+			typeof window.$crisp.is === 'function' &&
+			typeof window.$crisp.get === 'function'
+		);
 	}
 
 	public configureUser(userData: TUserData): void {
@@ -167,6 +167,10 @@ export class Crisp {
 	}
 
 	public isSupportOnline(): boolean {
+		if (!this.isInjected()) {
+			return false;
+		}
+
 		return window.$crisp.is('website:available');
 	}
 
@@ -195,9 +199,21 @@ export class Crisp {
 		window.$crisp.push(['set', 'session:data', [[[key, value]]]]);
 	}
 
-	public getSessionData<T extends string | boolean | number>(key: string): T | null {
+	public getSessionData<T extends string | boolean | number>(key: string): T | null;
+	public getSessionData<T extends Record<string, unknown>>(): T | null;
+	public getSessionData<T extends string | boolean | number | Record<string, unknown>>(
+		key?: string
+	): T | null {
+		if (!this.isInjected()) {
+			return null;
+		}
+
 		try {
-			return window.$crisp.get('session:data', key);
+			if (key != null) {
+				return window.$crisp.get('session:data', key) as T;
+			} else {
+				return window.$crisp.get('session:data') as T;
+			}
 		} catch (error) {
 			logger.warn('Error getting session data:', error);
 			return null;
@@ -471,6 +487,7 @@ interface TCrispConfig {
 	cookieDomain?: string;
 	cookieExpire?: number;
 	safeMode?: boolean;
+	// https://docs.crisp.chat/guides/chatbox-sdks/web-sdk/dollar-crisp/#use-crisp-before-it-is-ready
 	onReady?: (crisp: Crisp) => void;
 }
 
@@ -512,6 +529,7 @@ declare global {
 	};
 	var CRISP_COOKIE_DOMAIN: string;
 	var CRISP_COOKIE_EXPIRE: number;
+	var CRISP_READY_TRIGGER: () => void;
 }
 
 // https://docs.crisp.chat/guides/chatbox-sdks/web-sdk/dollar-crisp/

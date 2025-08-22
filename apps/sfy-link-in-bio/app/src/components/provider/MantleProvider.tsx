@@ -1,12 +1,12 @@
 import { MantleProvider as MantleProviderComponent } from '@heymantle/react';
 import React from 'react';
-import { appConfig, logger, mantleConfig } from '@/environment';
+import { logger, mantleConfig } from '@/environment';
 
 export const MantleProvider: React.FC<TMantleProviderProps> = (props) => {
-	const { children, customerApiToken } = props;
+	const { children, customerApiToken, disabled = false } = props;
 
 	React.useEffect(() => {
-		if (!appConfig.featureFlags.mantle) {
+		if (disabled) {
 			logger.info('🧥 Skipping Mantle initialization');
 			return;
 		}
@@ -15,18 +15,21 @@ export const MantleProvider: React.FC<TMantleProviderProps> = (props) => {
 			appId: mantleConfig.appId,
 			customerApiToken
 		});
-	}, [customerApiToken]);
+	}, [customerApiToken, disabled]);
 
-	return appConfig.featureFlags.mantle ? (
+	if (disabled) {
+		return children;
+	}
+
+	return (
 		<MantleProviderComponent appId={mantleConfig.appId} customerApiToken={customerApiToken}>
 			{children}
 		</MantleProviderComponent>
-	) : (
-		children
 	);
 };
 
 interface TMantleProviderProps {
 	children: React.ReactNode;
 	customerApiToken: string;
+	disabled?: boolean;
 }

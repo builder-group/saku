@@ -13,13 +13,15 @@ export const CrispProvider: React.FC<TCrispProviderProps> = (props) => {
 			name: userName,
 			companyName: userCompanyName,
 			avatarUrl: userAvatarUrl
-		}
+		},
+		disabled = false,
+		disabledCallbacks = false
 	} = props;
 	const [crispInstance, setCrispInstance] = React.useState<Crisp | null>(null);
 
 	// Initialize Crisp
 	React.useEffect(() => {
-		if (!appConfig.featureFlags.crisp) {
+		if (disabled) {
 			logger.info('💬 Skipping Crisp initialization');
 			return;
 		}
@@ -34,27 +36,18 @@ export const CrispProvider: React.FC<TCrispProviderProps> = (props) => {
 			websiteId: crispConfig.websiteToken,
 			safeMode: appConfig.env === 'production',
 			onReady: (crisp) => {
-				logger.info('💬 Initialized Crisp', { crisp });
-
-				// Set up auto-response when no operator is online
-				// Check if we already set up callbacks to prevent duplicates across iframes
-				// because Shopify modals create iframes, so we have two Crisp instances in the same browser tab
-				// TODO: Doesn't work
-				const hasSetUpCallbacks = crisp.getSessionData<boolean>('hasSetUpCallbacks');
-				if (hasSetUpCallbacks) {
-					return;
-				}
-
-				crisp.setSessionData('hasSetUpCallbacks', true);
+				logger.info('💬 Initialized Crisp', { crisp, disabledCallbacks });
 
 				// Set up debug listeners only in non-production environments
-				if (appConfig.env !== 'production') {
+				if (!disabledCallbacks && appConfig.env !== 'production') {
 					unsubscribeCallbacks.push(
 						crisp.onMessageReceived((message) => {
-							logger.info('💬 Message received', { message });
+							logger.info('💬 Message received', {
+								message
+							});
 						}),
 						crisp.onMessageSent((message) => {
-							logger.info('💬 Message sent', { message });
+							logger.info('💬 Message sent', { message, isSupportOnline: crisp.isSupportOnline() });
 						}),
 						crisp.onChatOpened(() => {
 							logger.info('💬 Chat opened');
@@ -69,31 +62,33 @@ export const CrispProvider: React.FC<TCrispProviderProps> = (props) => {
 				}
 
 				// Set up auto-response when no operator is online
-				unsubscribeCallbacks.push(
-					crisp.onMessageSent((message) => {
-						if (!message.is_me || crisp.isSupportOnline()) {
-							return;
-						}
+				if (!disabledCallbacks && appConfig.featureFlags.crispAutoResponse) {
+					unsubscribeCallbacks.push(
+						crisp.onMessageSent((message) => {
+							if (!message.is_me || crisp.isSupportOnline()) {
+								return;
+							}
 
-						// Check when we last sent the offline message to not spam the user
-						const lastOfflineMessage = crisp.getSessionData<number>('lastOfflineMessageTime');
-						const now = Date.now();
-						const fiveMinutes = 5 * 60 * 1000; // 5 minutes in milliseconds
-						if (lastOfflineMessage != null && now - lastOfflineMessage < fiveMinutes) {
-							return; // Too soon to send another offline message
-						}
+							// Check when we last sent the offline message to not spam the user
+							const lastOfflineMessage = crisp.getSessionData<number>('lastOfflineMessageTime');
+							const now = Date.now();
+							const fiveMinutes = 5 * 60 * 1000; // 5 minutes in milliseconds
+							if (lastOfflineMessage != null && now - lastOfflineMessage < fiveMinutes) {
+								return; // Too soon to send another offline message
+							}
 
-						// Store the current time when we send the offline message
-						crisp.setSessionData('lastOfflineMessageTime', now);
+							// Store the current time when we send the offline message
+							crisp.setSessionData('lastOfflineMessageTime', now);
 
-						setTimeout(() => {
-							crisp.showMessageAsOperator(
-								'text',
-								`Thanks for your message! Our team is currently offline, but we'll get back to you as soon as possible. You can also reach us via email at ${appConfig.support.email}.`
-							);
-						}, 1000);
-					})
-				);
+							setTimeout(() => {
+								crisp.showMessageAsOperator(
+									'text',
+									`Thanks for your message! Our team is currently offline, but we'll get back to you as soon as possible. You can also reach us via email at ${appConfig.support.email}.`
+								);
+							}, 1000);
+						})
+					);
+				}
 			}
 		});
 		if (!isCrispOk) {
@@ -120,7 +115,15 @@ export const CrispProvider: React.FC<TCrispProviderProps> = (props) => {
 				crisp.setSessionData('hasSetUpCallbacks', false);
 			}
 		};
-	}, [userIdentifier, userEmail, userName, userCompanyName, userAvatarUrl]);
+	}, [
+		userIdentifier,
+		userEmail,
+		userName,
+		userCompanyName,
+		userAvatarUrl,
+		disabled,
+		disabledCallbacks
+	]);
 
 	if (crispInstance == null) {
 		return children;
@@ -139,6 +142,8 @@ interface TCrispProviderProps {
 		avatarUrl?: string;
 		additionalData?: Record<string, unknown>;
 	};
+	disabled?: boolean;
+	disabledCallbacks?: boolean;
 }
 
 export function useCrisp(): Crisp | null {
