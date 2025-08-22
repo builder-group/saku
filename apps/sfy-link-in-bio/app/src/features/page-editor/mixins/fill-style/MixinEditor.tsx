@@ -13,7 +13,8 @@ import { useCombinedCompute, useCompute } from 'feature-react';
 import { createState } from 'feature-state';
 import React from 'react';
 import {
-	InheritedButton,
+	Badge,
+	InheritanceActionOverlay,
 	LinkIcon,
 	LinkOffIcon,
 	MappedPaintInput,
@@ -106,7 +107,16 @@ export const FillStyleMixinEditor = <GNode extends TFlatNode, GParentNode extend
 						<Text as="span" variant="headingXs" tone="subdued">
 							Fill
 						</Text>
-						{isInheritedFill && <InheritedButton onClick={() => editor.switchView('settings')} />}
+						{isInheritedFill && (
+							<Badge className="group relative hover:w-32">
+								Inherited
+								<InheritanceActionOverlay
+									variant={'full-overlay'}
+									onUnlink={handleToggleInheritance}
+									onNavigateToParent={() => editor.switchView('settings')}
+								/>
+							</Badge>
+						)}
 					</div>
 				</div>
 

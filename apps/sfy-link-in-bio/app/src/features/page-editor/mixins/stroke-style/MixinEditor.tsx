@@ -13,7 +13,8 @@ import { useCombinedCompute, useCompute } from 'feature-react';
 import { createState } from 'feature-state';
 import React from 'react';
 import {
-	InheritedButton,
+	Badge,
+	InheritanceActionOverlay,
 	LinkIcon,
 	LinkOffIcon,
 	MappedColorInput,
@@ -114,7 +115,16 @@ export const StrokeStyleMixinEditor = <GNode extends TFlatNode, GParentNode exte
 						<Text as="span" variant="headingXs" tone="subdued">
 							Stroke
 						</Text>
-						{isInheritedStroke && <InheritedButton onClick={() => editor.switchView('settings')} />}
+						{isInheritedStroke && (
+							<Badge className="group relative hover:w-32">
+								Inherited
+								<InheritanceActionOverlay
+									variant={'full-overlay'}
+									onUnlink={handleToggleInheritance}
+									onNavigateToParent={() => editor.switchView('settings')}
+								/>
+							</Badge>
+						)}
 					</div>
 				</div>
 

@@ -1,7 +1,6 @@
 export * from './ClipboardButton';
 export * from './ImageUploadField';
 export * from './InheritanceActionOverlay';
-export * from './InheritedButton';
 export * from './Knob';
 export * from './MappedColorInput';
 export * from './MappedPaintInput';
