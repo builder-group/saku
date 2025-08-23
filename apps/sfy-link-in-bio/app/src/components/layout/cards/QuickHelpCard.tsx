@@ -23,7 +23,7 @@ export const QuickHelpCard: React.FC<TQuickHelpCardProps> = (props) => {
 		<Card>
 			<BlockStack gap="300">
 				<Text as="h2" variant="headingMd">
-					Need Help?
+					Need help?
 				</Text>
 				<BlockStack gap="200">
 					<Button

@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChevronDownIcon, ChevronUpIcon } from '@/components';
+import { ChevronDownIcon } from '@/components';
 import { getCurrencySymbol } from '../../../../environment';
 import { TResolvedNodeProps } from '../../../../lib';
 import { TResolvedProductNode } from '../../types';
@@ -13,16 +13,32 @@ export const Content: React.FC<TContentProps> = (props) => {
 
 	// const [isAdding, setIsAdding] = React.useState(false);
 	const [isBuying, setIsBuying] = React.useState(false);
-	const [selectedVariantId, setSelectedVariantId] = React.useState<string | null>(null);
-	const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
+	const [selectedOptions, setSelectedOptions] = React.useState<Record<string, string>>(() => {
+		if (!product.variants?.[0]) {
+			return {};
+		}
+
+		const initialOptions: Record<string, string> = {};
+		product.variants[0].selectedOptions.forEach((option) => {
+			initialOptions[option.name] = option.value;
+		});
+		return initialOptions;
+	});
 
 	const image = React.useMemo(() => product.images?.[0], [product.images]);
 
-	// Get currently selected variant (default to first)
-	const selectedVariant = React.useMemo(
-		() => product.variants?.find((v) => v.id === selectedVariantId) || product.variants?.[0],
-		[product.variants, selectedVariantId]
-	);
+	const selectedVariant = React.useMemo(() => {
+		if (!product.variants?.length) {
+			return null;
+		}
+
+		// Find variant that matches selected options
+		return (
+			product.variants.find((variant) =>
+				variant.selectedOptions.every((option) => selectedOptions[option.name] === option.value)
+			) || product.variants[0]
+		);
+	}, [product.variants, selectedOptions]);
 
 	// const handleAddToCart = React.useCallback(async () => {
 	// 	if (selectedVariant?.id == null || cx.integrations.shopify == null) {
@@ -67,8 +83,11 @@ export const Content: React.FC<TContentProps> = (props) => {
 		setIsBuying(false);
 	}, [selectedVariant?.id, cx.integrations.shopify]);
 
-	const handleVariantSelect = React.useCallback((variantId: string) => {
-		setSelectedVariantId(variantId);
+	const handleOptionSelect = React.useCallback((optionName: string, optionValue: string) => {
+		setSelectedOptions((prev) => ({
+			...prev,
+			[optionName]: optionValue
+		}));
 		// Blur to close dropdown
 		(document.activeElement as HTMLElement)?.blur();
 	}, []);
@@ -79,6 +98,7 @@ export const Content: React.FC<TContentProps> = (props) => {
 			style={{
 				...layout.styles,
 				...appearance.styles,
+				...typography.styles,
 				...fill?.styles,
 				...stroke?.styles,
 				...shadow?.styles
@@ -99,8 +119,8 @@ export const Content: React.FC<TContentProps> = (props) => {
 				<div className="flex min-w-0 flex-col justify-center gap-1">
 					<p className="truncate font-medium">{product.title}</p>
 
-					{/* Price and Variant Badges */}
-					<div className="flex items-center gap-2">
+					{/* Price and Option Badges */}
+					<div className="flex flex-wrap items-center gap-2">
 						{/* Price Badge */}
 						{selectedVariant?.price && (
 							<div
@@ -112,53 +132,41 @@ export const Content: React.FC<TContentProps> = (props) => {
 							</div>
 						)}
 
-						{/* Variant Badge/Dropdown */}
-						{product.variants?.length > 1 ? (
-							<div className="dropdown">
-								<div
-									tabIndex={0}
-									role="button"
-									className="badge badge-ghost badge-sm flex cursor-pointer items-center gap-1"
-									style={{ borderRadius: appearance.styles.borderRadius }}
-									onFocus={() => setIsDropdownOpen(true)}
-									onBlur={() => setIsDropdownOpen(false)}
-								>
-									<span>{selectedVariant?.title || 'Select variant'}</span>
-									{isDropdownOpen ? (
-										<ChevronUpIcon className="h-3 w-3" />
-									) : (
-										<ChevronDownIcon className="h-3 w-3" />
-									)}
+						{/* Option Dropdowns */}
+						{product.options?.map((option) => {
+							const currentValue = selectedOptions[option.name];
+							const placeholderText = React.useMemo(
+								() =>
+									`Pick ${option.name.slice(0, 1).toUpperCase()}${option.name.toLowerCase().slice(1)}`,
+								[option.name]
+							);
+
+							return (
+								<div key={option.name} className="relative">
+									<select
+										value={currentValue}
+										onChange={(e) => handleOptionSelect(option.name, e.target.value)}
+										className="select absolute inset-0 h-full w-full cursor-pointer opacity-0"
+									>
+										<option disabled value="">
+											{placeholderText}
+										</option>
+										{option.values.map((value) => (
+											<option key={value} value={value}>
+												{value}
+											</option>
+										))}
+									</select>
+									<div
+										className="badge badge-ghost badge-sm pointer-events-none flex max-w-24 cursor-pointer items-center gap-1"
+										style={{ borderRadius: appearance.styles.borderRadius }}
+									>
+										<span className="truncate">{currentValue || placeholderText}</span>
+										<ChevronDownIcon className="h-3 w-3 flex-shrink-0" />
+									</div>
 								</div>
-								<ul
-									tabIndex={0}
-									className="dropdown-content menu bg-base-100 rounded-box z-10 w-52 p-2 shadow"
-								>
-									{product.variants.map((variant) => (
-										<li key={variant.id}>
-											<a
-												onClick={(e) => {
-													e.preventDefault();
-													handleVariantSelect(variant.id);
-												}}
-												className={selectedVariant?.id === variant.id ? 'active' : ''}
-											>
-												{variant.title}
-											</a>
-										</li>
-									))}
-								</ul>
-							</div>
-						) : (
-							selectedVariant?.title != null && (
-								<div
-									className="badge badge-ghost badge-sm"
-									style={{ borderRadius: appearance.styles.borderRadius }}
-								>
-									{selectedVariant.title}
-								</div>
-							)
-						)}
+							);
+						})}
 					</div>
 				</div>
 

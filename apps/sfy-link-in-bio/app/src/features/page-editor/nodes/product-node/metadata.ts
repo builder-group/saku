@@ -21,7 +21,7 @@ export const productNodeMetadata: TNodeMetadata<'product'> = {
 			font: inherit(),
 			fontSize: inherit(),
 			textColor: inherit(),
-			textAlign: inherit(),
+			textAlign: 'left',
 			lineHeight: inherit(),
 			letterSpacing: inherit()
 		},
