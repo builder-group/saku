@@ -3,6 +3,7 @@ import { ChevronDownIcon } from '@/components';
 import { getCurrencySymbol } from '../../../../environment';
 import { TResolvedNodeProps } from '../../../../lib';
 import { TResolvedProductNode } from '../../types';
+import { useProductModal } from './ProductModal';
 
 export const Content: React.FC<TContentProps> = (props) => {
 	const {
@@ -10,6 +11,11 @@ export const Content: React.FC<TContentProps> = (props) => {
 		node: { layout, appearance, typography, fill, stroke, shadow },
 		cx
 	} = props;
+
+	const { Modal: ProductModal, showModal: showProductModal } = useProductModal({
+		product,
+		cx
+	});
 
 	// const [isAdding, setIsAdding] = React.useState(false);
 	const [isBuying, setIsBuying] = React.useState(false);
@@ -39,6 +45,10 @@ export const Content: React.FC<TContentProps> = (props) => {
 			) || product.variants[0]
 		);
 	}, [product.variants, selectedOptions]);
+
+	// =========================================================================
+	// Events
+	// =========================================================================
 
 	// const handleAddToCart = React.useCallback(async () => {
 	// 	if (selectedVariant?.id == null || cx.integrations.shopify == null) {
@@ -92,86 +102,99 @@ export const Content: React.FC<TContentProps> = (props) => {
 		(document.activeElement as HTMLElement)?.blur();
 	}, []);
 
+	const handleProductClick = React.useCallback(() => {
+		showProductModal();
+	}, [showProductModal]);
+
+	// =========================================================================
+	// UI
+	// =========================================================================
+
 	return (
-		<div
-			className="relative flex w-full items-center gap-3 bg-white"
-			style={{
-				...layout.styles,
-				...appearance.styles,
-				...typography.styles,
-				...fill?.styles,
-				...stroke?.styles,
-				...shadow?.styles
-			}}
-		>
-			{/* Product Image */}
-			{image != null && (
-				<div
-					className="h-12 w-12 flex-shrink-0 overflow-hidden bg-gray-100"
-					style={{ borderRadius: appearance.styles.borderRadius }}
-				>
-					<img src={image.src} alt={product.title} className="h-full w-full object-cover" />
-				</div>
-			)}
-
-			{/* Product Details */}
-			<div className="flex min-w-0 flex-grow items-center justify-between">
-				<div className="flex min-w-0 flex-col justify-center gap-1">
-					<p className="truncate font-medium">{product.title}</p>
-
-					{/* Price and Option Badges */}
-					<div className="flex flex-wrap items-center gap-2">
-						{/* Price Badge */}
-						{selectedVariant?.price && (
-							<div
-								className="badge badge-neutral badge-sm"
-								style={{ borderRadius: appearance.styles.borderRadius }}
-							>
-								{getCurrencySymbol(selectedVariant.price.currencyCode)}
-								{selectedVariant.price.amount}
-							</div>
-						)}
-
-						{/* Option Dropdowns */}
-						{product.options?.map((option) => {
-							const currentValue = selectedOptions[option.name];
-							const placeholderText = React.useMemo(
-								() =>
-									`Pick ${option.name.slice(0, 1).toUpperCase()}${option.name.toLowerCase().slice(1)}`,
-								[option.name]
-							);
-
-							return (
-								<div key={option.name} className="relative">
-									<select
-										value={currentValue}
-										onChange={(e) => handleOptionSelect(option.name, e.target.value)}
-										className="select absolute inset-0 h-full w-full cursor-pointer opacity-0"
-									>
-										<option disabled value="">
-											{placeholderText}
-										</option>
-										{option.values.map((value) => (
-											<option key={value} value={value}>
-												{value}
-											</option>
-										))}
-									</select>
-									<div
-										className="badge badge-ghost badge-sm pointer-events-none flex max-w-24 cursor-pointer items-center gap-1"
-										style={{ borderRadius: appearance.styles.borderRadius }}
-									>
-										<span className="truncate">{currentValue || placeholderText}</span>
-										<ChevronDownIcon className="h-3 w-3 flex-shrink-0" />
-									</div>
-								</div>
-							);
-						})}
+		<>
+			<div
+				onClick={handleProductClick}
+				className="relative flex w-full items-center gap-3 bg-white"
+				style={{
+					...layout.styles,
+					...appearance.styles,
+					...typography.styles,
+					...fill?.styles,
+					...stroke?.styles,
+					...shadow?.styles
+				}}
+			>
+				{/* Product Image */}
+				{image != null && (
+					<div
+						className="h-12 w-12 flex-shrink-0 overflow-hidden bg-gray-100"
+						style={{ borderRadius: appearance.styles.borderRadius }}
+					>
+						<img src={image.src} alt={product.title} className="h-full w-full object-cover" />
 					</div>
-				</div>
+				)}
 
-				{/* Add to Cart Button */}
-				{/* {cx.integrations.shopify != null && selectedVariant != null && (
+				{/* Product Details */}
+				<div className="flex min-w-0 flex-grow items-center justify-between">
+					<div className="flex min-w-0 flex-col justify-center gap-1">
+						<p className="truncate font-medium">{product.title}</p>
+
+						{/* Price and Option Badges */}
+						<div className="flex flex-wrap items-center gap-2">
+							{/* Price Badge */}
+							{selectedVariant?.price && (
+								<div
+									className="badge badge-neutral badge-sm"
+									style={{ borderRadius: appearance.styles.borderRadius }}
+								>
+									{getCurrencySymbol(selectedVariant.price.currencyCode)}
+									{selectedVariant.price.amount}
+								</div>
+							)}
+
+							{/* Option Dropdowns */}
+							{product.options?.map((option) => {
+								const currentValue = React.useMemo(
+									() => selectedOptions[option.name],
+									[selectedOptions, option.name]
+								);
+								const placeholderText = React.useMemo(
+									() =>
+										`Pick ${option.name.slice(0, 1).toUpperCase()}${option.name.toLowerCase().slice(1)}`,
+									[option.name]
+								);
+
+								return (
+									<div key={option.name} className="relative" onClick={(e) => e.stopPropagation()}>
+										<select
+											value={currentValue}
+											onChange={(e) => handleOptionSelect(option.name, e.target.value)}
+											className="select absolute inset-0 h-full w-full cursor-pointer opacity-0"
+										>
+											<option disabled value="">
+												{placeholderText}
+											</option>
+											{option.values.map((value) => (
+												<option key={value} value={value}>
+													{value}
+												</option>
+											))}
+										</select>
+										<div
+											className="badge badge-ghost badge-sm pointer-events-none flex max-w-24 cursor-pointer items-center gap-1"
+											style={{ borderRadius: appearance.styles.borderRadius }}
+										>
+											<span className="truncate">{currentValue || placeholderText}</span>
+											<ChevronDownIcon className="h-3 w-3 flex-shrink-0" />
+										</div>
+									</div>
+								);
+							})}
+						</div>
+					</div>
+
+					{/* Add to Cart Button */}
+					{/* {cx.integrations.shopify != null && selectedVariant != null && (
 					<button
 						onClick={handleAddToCart}
 						disabled={isAdding}
@@ -186,23 +209,29 @@ export const Content: React.FC<TContentProps> = (props) => {
 					</button>
 				)} */}
 
-				{/* Buy Now Button */}
-				{cx.integrations.shopify != null && selectedVariant != null && (
-					<button
-						onClick={handleBuyNow}
-						disabled={isBuying}
-						className="btn btn-sm ml-3 text-white"
-						style={{
-							backgroundColor: '#000',
-							borderColor: '#000',
-							borderRadius: appearance.styles.borderRadius
-						}}
-					>
-						{isBuying ? <span className="loading loading-spinner loading-xs"></span> : 'Buy'}
-					</button>
-				)}
+					{/* Buy Now Button */}
+					{cx.integrations.shopify != null && selectedVariant != null && (
+						<button
+							onClick={(e) => {
+								e.stopPropagation();
+								handleBuyNow();
+							}}
+							disabled={isBuying}
+							className="btn btn-sm ml-3 text-white"
+							style={{
+								backgroundColor: '#000',
+								borderColor: '#000',
+								borderRadius: appearance.styles.borderRadius
+							}}
+						>
+							{isBuying ? <span className="loading loading-spinner loading-xs"></span> : 'Buy'}
+						</button>
+					)}
+				</div>
 			</div>
-		</div>
+
+			<ProductModal />
+		</>
 	);
 };
 
