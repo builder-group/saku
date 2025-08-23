@@ -107,6 +107,22 @@ export interface TImageMedia {
 }
 
 // =========================================================================
+// Content
+// =========================================================================
+
+export type TContent = TTextContent | THtmlContent;
+
+export interface TTextContent {
+	type: 'text';
+	value: string;
+}
+
+export interface THtmlContent {
+	type: 'html';
+	value: string;
+}
+
+// =========================================================================
 // Social Links
 // =========================================================================
 

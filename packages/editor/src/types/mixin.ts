@@ -2,6 +2,7 @@ import { TReference, TRgba, TUnreference } from '../lib';
 import { TNode, TNodeId } from './node';
 import {
 	TAssetHash,
+	TContent,
 	TFont,
 	TIntegrationId,
 	TLetterSpacing,
@@ -124,6 +125,7 @@ export type TProductNodeMixin = TMixin<
 			product?: {
 				id: string;
 				title: string;
+				description?: TContent;
 				images: TAssetHash[];
 				options: { name: string; values: string[] }[];
 				variants: {
@@ -142,6 +144,44 @@ export type TProductNodeMixin = TMixin<
 // =========================================================================
 // Style Mixins
 // =========================================================================
+
+export type TCardStyleMixin = TMixin<
+	'card',
+	{
+		layout: TLayoutStyleMixin['value'];
+		appearance: TAppearanceStyleMixin['value'];
+		fill: TFillStyleMixin['value'];
+		stroke: TStrokeStyleMixin['value'];
+		shadow: TShadowStyleMixin['value'];
+	}
+>;
+
+export type TPageStyleMixin = TMixin<
+	'page',
+	{
+		layout: TPageLayoutStyleMixin['value'];
+		fill: TFillStyleMixin['value'];
+	}
+>;
+
+export type TCTAStyleMixin = TMixin<
+	'cta',
+	{
+		layout: TLayoutStyleMixin['value'];
+		appearance: TAppearanceStyleMixin['value'];
+		typography: TTypographyStyleMixin['value'];
+		fill: TFillStyleMixin['value'];
+		stroke: TStrokeStyleMixin['value'];
+		shadow: TShadowStyleMixin['value'];
+	}
+>;
+
+export type TTextStyleMixin = TMixin<
+	'text',
+	{
+		typography: TTypographyStyleMixin['value'];
+	}
+>;
 
 export type TLayoutStyleMixin = TMixin<
 	'layout',

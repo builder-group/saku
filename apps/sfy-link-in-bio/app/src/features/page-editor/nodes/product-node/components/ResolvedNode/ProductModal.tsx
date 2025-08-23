@@ -131,14 +131,17 @@ export const ProductModal: React.FC<TProductModalProps> = (props) => {
 						)}
 
 						{/* Description */}
-						<div className="prose prose-sm">
-							<p className="text-gray-700">
-								{/* Add description here when available in product type */}
-								{'description' in product && typeof product.description === 'string'
-									? product.description
-									: 'Product description would appear here.'}
-							</p>
-						</div>
+						{product.description?.type === 'html' && (
+							<div
+								className="prose prose-sm text-gray-700"
+								dangerouslySetInnerHTML={{ __html: product.description.value }}
+							/>
+						)}
+						{product.description?.type === 'text' && (
+							<div className="prose prose-sm text-gray-700">
+								<p className="text-gray-700">{product.description.value}</p>
+							</div>
+						)}
 
 						{/* Product Options */}
 						{product.options?.map((option) => {

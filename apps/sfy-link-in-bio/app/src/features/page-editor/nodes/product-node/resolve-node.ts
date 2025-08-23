@@ -31,6 +31,7 @@ export function resolveProductNode(
 		resolvedProduct = {
 			id: content.product.id,
 			title: content.product.title,
+			description: content.product.description,
 			images: content.product.images.map((asset) => resolveAsset(asset, cx.site)).filter(notEmpty),
 			options: content.product.options,
 			variants

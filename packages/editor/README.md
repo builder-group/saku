@@ -53,3 +53,31 @@ type TProductNode = TNode<'product', [
   TLayoutMixin          // layout: { padding: number; width: number | 'auto' }
 ]>;
 ```
+
+### Why composite mixins (CardMixin, CTAMixin) instead of composing from low-level mixins?
+
+- **Prevents style conflicts**: Complex nodes need multiple styled elements (card, text, CTA) - flat mixins create naming conflicts
+- **Data-level grouping**: Composite mixins group related styling data, not nested components - still ECS compliant
+- **Helper functions friendly**: `resolveLayout(node.card.layout)` works with grouped data without violating ECS systems
+- **Cohesive UI patterns**: Cards and CTAs are complete styling units that belong together conceptually
+- **Editor clarity**: Clean sections ("Card Style", "CTA Style") vs confusing `cardFill`/`ctaFill`/`textFill` properties
+
+#### When to use composite vs low-level mixins?
+
+```typescript
+// Simple elements: Use low-level mixins
+type TRectangleNode = TNode<'rectangle', [
+  TIdMixin,
+  TLayoutMixin,        // Direct low-level mixin
+  TAppearanceMixin,    // Direct low-level mixin
+  TFillMixin           // Direct low-level mixin
+]>;
+
+// Complex UI patterns: Use composite mixins  
+type TProductNode = TNode<'product', [
+  TIdMixin,
+  TCardMixin,          // Composite: { layout, appearance, fill, stroke, shadow }
+  TTextMixin,          // Composite: { typography, fill }
+  TCtaMixin            // Composite: { layout, appearance, typography, fill, stroke, shadow }
+]>;
+```

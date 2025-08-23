@@ -133,6 +133,7 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 		nodeState._v.content.product = {
 			id: product.id,
 			title: product.title,
+			description: { type: 'html', value: product.descriptionHtml },
 			images: product.images
 				.map((image) => editor.registerImage(image.originalSrc))
 				.filter(notEmpty),

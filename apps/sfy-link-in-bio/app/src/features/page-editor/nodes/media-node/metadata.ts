@@ -10,7 +10,7 @@ export const mediaNodeMetadata: TNodeMetadata<'media'> = {
 	defaultData: {
 		content: {},
 		layout: {
-			padding: inherit()
+			padding: 0
 		},
 		appearance: {
 			borderRadius: inherit(),
