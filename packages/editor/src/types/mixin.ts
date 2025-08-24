@@ -159,12 +159,14 @@ export type TCardStyleMixin = TMixin<
 export type TPageStyleMixin = TMixin<
 	'page',
 	{
-		layout: TPageLayoutStyleMixin['value'];
+		layout: {
+			spacing: number;
+		};
 		fill: TFillStyleMixin['value'];
 	}
 >;
 
-export type TCTAStyleMixin = TMixin<
+export type TCtaStyleMixin = TMixin<
 	'cta',
 	{
 		layout: TLayoutStyleMixin['value'];
@@ -179,6 +181,7 @@ export type TCTAStyleMixin = TMixin<
 export type TTextStyleMixin = TMixin<
 	'text',
 	{
+		appearance: TAppearanceStyleMixin['value'];
 		typography: TTypographyStyleMixin['value'];
 	}
 >;
@@ -187,13 +190,6 @@ export type TLayoutStyleMixin = TMixin<
 	'layout',
 	{
 		padding: TReference<number>;
-	}
->;
-
-export type TPageLayoutStyleMixin = TMixin<
-	'layout',
-	{
-		spacing: number;
 	}
 >;
 

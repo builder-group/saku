@@ -1,23 +1,20 @@
 import { TId } from '../lib';
 import {
 	TAboutNodeMixin,
-	TAppearanceStyleMixin,
+	TCardStyleMixin,
 	TChildrenMixin,
-	TFillStyleMixin,
+	TCtaStyleMixin,
 	TFlatChildrenMixin,
 	TIdMixin,
-	TLayoutStyleMixin,
 	TLinkNodeMixin,
 	TMediaNodeMixin,
 	TMergeMixins,
 	TMixin,
-	TPageLayoutStyleMixin,
 	TPageNodeMixin,
+	TPageStyleMixin,
 	TProductNodeMixin,
-	TShadowStyleMixin,
-	TStrokeStyleMixin,
 	TTextNodeMixin,
-	TTypographyStyleMixin
+	TTextStyleMixin
 } from './mixin';
 import { TLinkVariant, TMedia } from './utils';
 
@@ -41,76 +38,28 @@ export type TBaseNode<
 // Nodes
 // =========================================================================
 
-export type TPageNode = TBaseNode<
-	TPageNodeMixin,
-	[TIdMixin, TChildrenMixin, TPageLayoutStyleMixin, TAppearanceStyleMixin, TFillStyleMixin]
->;
+export type TPageNode = TBaseNode<TPageNodeMixin, [TIdMixin, TChildrenMixin, TPageStyleMixin]>;
 
 export type TFlatPageNode = TBaseNode<
 	TPageNodeMixin,
-	[TIdMixin, TFlatChildrenMixin, TPageLayoutStyleMixin, TAppearanceStyleMixin, TFillStyleMixin]
+	[TIdMixin, TFlatChildrenMixin, TPageStyleMixin]
 >;
 
-export type TAboutNode = TBaseNode<
-	TAboutNodeMixin,
-	[
-		TIdMixin,
-		TLayoutStyleMixin,
-		TAppearanceStyleMixin,
-		TTypographyStyleMixin,
-		TFillStyleMixin,
-		TStrokeStyleMixin,
-		TShadowStyleMixin
-	]
->;
+export type TAboutNode = TBaseNode<TAboutNodeMixin, [TIdMixin, TCardStyleMixin, TTextStyleMixin]>;
 
 export type TLinkNode<GVariant extends TLinkVariant = TLinkVariant> = TBaseNode<
 	TLinkNodeMixin<GVariant>,
-	[
-		TIdMixin,
-		TLayoutStyleMixin,
-		TAppearanceStyleMixin,
-		TTypographyStyleMixin,
-		TFillStyleMixin,
-		TStrokeStyleMixin,
-		TShadowStyleMixin
-	]
+	[TIdMixin, TCardStyleMixin, TTextStyleMixin]
 >;
 
 export type TMediaNode<GMedia extends TMedia = TMedia> = TBaseNode<
 	TMediaNodeMixin<GMedia>,
-	[
-		TIdMixin,
-		TLayoutStyleMixin,
-		TAppearanceStyleMixin,
-		TFillStyleMixin,
-		TStrokeStyleMixin,
-		TShadowStyleMixin
-	]
+	[TIdMixin, TCardStyleMixin]
 >;
 
-export type TTextNode = TBaseNode<
-	TTextNodeMixin,
-	[
-		TIdMixin,
-		TLayoutStyleMixin,
-		TAppearanceStyleMixin,
-		TTypographyStyleMixin,
-		TFillStyleMixin,
-		TStrokeStyleMixin,
-		TShadowStyleMixin
-	]
->;
+export type TTextNode = TBaseNode<TTextNodeMixin, [TIdMixin, TCardStyleMixin, TTextStyleMixin]>;
 
 export type TProductNode = TBaseNode<
 	TProductNodeMixin,
-	[
-		TIdMixin,
-		TLayoutStyleMixin,
-		TAppearanceStyleMixin,
-		TTypographyStyleMixin,
-		TFillStyleMixin,
-		TStrokeStyleMixin,
-		TShadowStyleMixin
-	]
+	[TIdMixin, TCardStyleMixin, TTextStyleMixin, TCtaStyleMixin]
 >;

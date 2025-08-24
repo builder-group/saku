@@ -5,7 +5,7 @@ import { TResolvedAppearanceStyleMixin } from './types';
 
 export function resolveAppearanceStyleMixin(
 	appearance: TAppearanceStyleMixin['value'],
-	parentMixin?: { borderRadius: number; opacity: number; visible: boolean }
+	parentMixin?: TResolveAppearanceStyleMixinParentMixin
 ): TResult<TResolvedAppearanceStyleMixin['value'], AppError> {
 	const resolvedBorderRadius = resolveReference(appearance.borderRadius, parentMixin?.borderRadius);
 	if (resolvedBorderRadius == null) {
@@ -30,4 +30,10 @@ export function resolveAppearanceStyleMixin(
 			visibility: resolvedVisible ? 'visible' : 'hidden'
 		}
 	});
+}
+
+export interface TResolveAppearanceStyleMixinParentMixin {
+	borderRadius: number;
+	opacity: number;
+	visible: boolean;
 }

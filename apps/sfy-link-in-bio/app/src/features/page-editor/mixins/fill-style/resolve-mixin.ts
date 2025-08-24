@@ -9,10 +9,7 @@ export function resolveFillStyleMixin(
 	context: {
 		getAsset: (hash: TAssetHash) => TAsset | null;
 	},
-	parentMixin?: {
-		paint: TPaint;
-		opacity: number;
-	} | null
+	parentMixin?: TResolveFillStyleMixinParentMixin
 ): TResult<TResolvedFillStyleMixin['value'], AppError> {
 	const resolvedFill = resolveReference(fill, parentMixin);
 	if (resolvedFill == null) {
@@ -49,3 +46,8 @@ export function resolveFillStyleMixin(
 		styles
 	});
 }
+
+export type TResolveFillStyleMixinParentMixin = {
+	paint: TPaint;
+	opacity: number;
+} | null;

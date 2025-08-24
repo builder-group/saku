@@ -110,10 +110,15 @@ export interface TImageMedia {
 // Content
 // =========================================================================
 
-export type TContent = TTextContent | THtmlContent;
+export type TContent = TTextContent | TMarkdownContent | THtmlContent;
 
 export interface TTextContent {
 	type: 'text';
+	value: string;
+}
+
+export interface TMarkdownContent {
+	type: 'markdown';
 	value: string;
 }
 

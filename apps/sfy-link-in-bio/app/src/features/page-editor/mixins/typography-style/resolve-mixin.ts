@@ -14,14 +14,7 @@ import { TResolvedTypographyStyleMixin } from './types';
 
 export function resolveTypographyStyleMixin(
 	typography: TTypographyStyleMixin['value'],
-	parentMixin?: {
-		font: TFont;
-		fontSize: number;
-		textColor: TRgba;
-		textAlign: TTextAlign;
-		lineHeight: TLineHeight;
-		letterSpacing: TLetterSpacing;
-	}
+	parentMixin?: TResolveTypographyStyleMixinParentMixin
 ): TResult<TResolvedTypographyStyleMixin['value'], AppError> {
 	const resolvedFont = resolveReference(typography.font, parentMixin?.font);
 	if (resolvedFont == null) {
@@ -68,4 +61,13 @@ export function resolveTypographyStyleMixin(
 			letterSpacing: `${resolvedLetterSpacing}px`
 		}
 	});
+}
+
+export interface TResolveTypographyStyleMixinParentMixin {
+	font: TFont;
+	fontSize: number;
+	textColor: TRgba;
+	textAlign: TTextAlign;
+	lineHeight: TLineHeight;
+	letterSpacing: TLetterSpacing;
 }

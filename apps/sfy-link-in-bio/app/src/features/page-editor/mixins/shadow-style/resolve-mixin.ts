@@ -6,13 +6,7 @@ import { TResolvedShadowStyleMixin } from './types';
 
 export function resolveShadowStyleMixin(
 	shadow: TShadowStyleMixin['value'],
-	parentMixin?: {
-		color: TRgba;
-		offsetX: number;
-		offsetY: number;
-		blur: number;
-		spread: number;
-	} | null
+	parentMixin?: TResolveShadowStyleMixinParentMixin
 ): TResult<TResolvedShadowStyleMixin['value'], AppError> {
 	const resolvedShadow = resolveReference(shadow, parentMixin);
 	if (resolvedShadow == null) {
@@ -32,3 +26,11 @@ export function resolveShadowStyleMixin(
 		}
 	});
 }
+
+export type TResolveShadowStyleMixinParentMixin = {
+	color: TRgba;
+	offsetX: number;
+	offsetY: number;
+	blur: number;
+	spread: number;
+} | null;

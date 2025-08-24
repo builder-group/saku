@@ -5,7 +5,7 @@ import { TResolvedLayoutStyleMixin } from './types';
 
 export function resolveLayoutStyleMixin(
 	layout: TLayoutStyleMixin['value'],
-	parentMixin?: { padding: number }
+	parentMixin?: TResolveLayoutStyleMixinParentMixin
 ): TResult<TResolvedLayoutStyleMixin['value'], AppError> {
 	const resolvedPadding = resolveReference(layout.padding, parentMixin?.padding);
 	if (resolvedPadding == null) {
@@ -18,4 +18,8 @@ export function resolveLayoutStyleMixin(
 			padding: `${resolvedPadding}px`
 		}
 	});
+}
+
+export interface TResolveLayoutStyleMixinParentMixin {
+	padding: number;
 }

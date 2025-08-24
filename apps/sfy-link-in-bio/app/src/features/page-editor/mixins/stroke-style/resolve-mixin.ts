@@ -6,10 +6,7 @@ import { TResolvedStrokeStyleMixin } from './types';
 
 export function resolveStrokeStyleMixin(
 	stroke: TStrokeStyleMixin['value'],
-	parentMixin?: {
-		width: number;
-		color: TRgba;
-	} | null
+	parentMixin?: TResolveStrokeStyleMixinParentMixin
 ): TResult<TResolvedStrokeStyleMixin['value'], AppError> {
 	const resolvedStroke = resolveReference(stroke, parentMixin);
 	if (resolvedStroke == null) {
@@ -26,3 +23,8 @@ export function resolveStrokeStyleMixin(
 		}
 	});
 }
+
+export type TResolveStrokeStyleMixinParentMixin = {
+	width: number;
+	color: TRgba;
+} | null;
