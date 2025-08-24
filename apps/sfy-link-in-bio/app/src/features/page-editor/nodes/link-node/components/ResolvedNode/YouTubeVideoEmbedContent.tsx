@@ -4,14 +4,14 @@ import { TResolvedLinkNode, TResolvedYouTubeVideoEmbedLinkVariant } from '../../
 
 export const YouTubeVideoEmbedContent: React.FC<TYouTubeVideoEmbedContentProps> = (props) => {
 	const {
-		node: { content, layout, appearance, typography, fill, stroke, shadow }
+		node: { content, autoLayout, appearance, fill, stroke, shadow }
 	} = props;
 
 	return (
 		<div
 			className="relative block w-full overflow-hidden bg-white"
 			style={{
-				...layout.styles,
+				...autoLayout.styles,
 				...appearance.styles,
 				...fill?.styles,
 				...stroke?.styles,

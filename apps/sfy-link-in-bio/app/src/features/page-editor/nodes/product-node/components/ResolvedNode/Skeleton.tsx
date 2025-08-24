@@ -3,14 +3,14 @@ import { TResolvedProductNode } from '../../types';
 
 export const Skeleton: React.FC<TSkeletonProps> = (props) => {
 	const {
-		node: { layout, appearance, fill, stroke, shadow }
+		node: { autoLayout, appearance, fill, stroke, shadow }
 	} = props;
 
 	return (
 		<div
 			className="relative flex w-full items-center gap-3 bg-white"
 			style={{
-				...layout.styles,
+				...autoLayout.styles,
 				...appearance.styles,
 				...fill?.styles,
 				...stroke?.styles,

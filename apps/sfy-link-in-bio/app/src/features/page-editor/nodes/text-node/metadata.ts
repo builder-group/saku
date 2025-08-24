@@ -11,24 +11,35 @@ export const textNodeMetadata: TNodeMetadata<'text'> = {
 		content: {
 			text: 'Add your text here'
 		},
-		layout: {
-			padding: inherit()
+		autoLayout: {
+			horizontalPadding: inherit(),
+			verticalPadding: inherit(),
+			verticalGap: inherit()
 		},
 		appearance: {
-			borderRadius: inherit(),
+			visible: true,
 			opacity: inherit(),
-			visible: true
-		},
-		typography: {
-			font: inherit(),
-			fontSize: inherit(),
-			textColor: inherit(),
-			textAlign: inherit(),
-			lineHeight: inherit(),
-			letterSpacing: inherit()
+			borderRadius: inherit()
 		},
 		fill: inherit(),
 		stroke: inherit(),
-		shadow: inherit()
+		shadow: inherit(),
+		text: {
+			appearance: {
+				visible: true,
+				opacity: inherit()
+			},
+			typography: {
+				font: inherit(),
+				fontSize: inherit(),
+				textAlignHorizontal: inherit(),
+				textAlignVertical: inherit(),
+				lineHeight: inherit(),
+				letterSpacing: inherit()
+			},
+			fill: inherit(),
+			stroke: inherit(),
+			shadow: inherit()
+		}
 	}
 };

@@ -12,8 +12,8 @@ export function getAboutNodeAssetHashes(node: TAboutNode): TAssetHash[] {
 	}
 
 	// Font asset (if not inherited)
-	if (node.typography?.font != null && !isInherited(node.typography.font)) {
-		hashes.push(getFontHash(node.typography.font));
+	if (node.text?.typography?.font != null && !isInherited(node.text.typography.font)) {
+		hashes.push(getFontHash(node.text.typography.font));
 	}
 
 	// Fill asset (if not inherited)

@@ -428,7 +428,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 				}
 			],
 			autoLayout: {
-				horizontalPadding: 12,
+				horizontalPadding: 24,
 				verticalPadding: 48,
 				verticalGap: 24
 			},

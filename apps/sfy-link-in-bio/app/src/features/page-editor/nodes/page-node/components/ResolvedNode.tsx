@@ -6,7 +6,7 @@ import { TResolvedPageNode } from '../types';
 
 export const ResolvedPageNode: React.FC<TResolvedNodeProps<TResolvedPageNode>> = (props) => {
 	const {
-		node: { children, layout, appearance, fill, watermarkColor },
+		node: { children, autoLayout, appearance, fill, watermarkColor },
 		cx,
 		...divProps
 	} = props;
@@ -22,9 +22,9 @@ export const ResolvedPageNode: React.FC<TResolvedNodeProps<TResolvedPageNode>> =
 		>
 			<div className="mx-auto w-full max-w-md">
 				<div
-					className="flex w-full flex-col p-6"
+					className="flex w-full flex-col"
 					style={{
-						gap: layout.styles.gap
+						...autoLayout.styles
 					}}
 				>
 					{children.map((childNode) => (

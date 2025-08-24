@@ -13,5 +13,10 @@ export type TResolvedTextStyleMixin = TMixin<
 		fill: TResolvedFillStyleMixin['value'];
 		stroke: TResolvedStrokeStyleMixin['value'];
 		shadow: TResolvedShadowStyleMixin['value'];
+		styles: {
+			color?: string;
+			WebkitTextStroke?: string;
+			extShadow?: string;
+		};
 	}
 >;

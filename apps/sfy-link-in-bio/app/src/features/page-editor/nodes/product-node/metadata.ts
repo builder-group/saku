@@ -9,24 +9,61 @@ export const productNodeMetadata: TNodeMetadata<'product'> = {
 	internal: false,
 	defaultData: {
 		content: {},
-		layout: {
-			padding: inherit()
+		autoLayout: {
+			horizontalPadding: inherit(),
+			verticalPadding: inherit(),
+			verticalGap: inherit()
 		},
 		appearance: {
-			borderRadius: inherit(),
+			visible: true,
 			opacity: inherit(),
-			visible: true
-		},
-		typography: {
-			font: inherit(),
-			fontSize: inherit(),
-			textColor: inherit(),
-			textAlign: 'left',
-			lineHeight: inherit(),
-			letterSpacing: inherit()
+			borderRadius: inherit()
 		},
 		fill: inherit(),
 		stroke: inherit(),
-		shadow: inherit()
+		shadow: inherit(),
+		text: {
+			appearance: {
+				visible: true,
+				opacity: inherit()
+			},
+			typography: {
+				font: inherit(),
+				fontSize: inherit(),
+				textAlignHorizontal: 'start',
+				textAlignVertical: inherit(),
+				lineHeight: inherit(),
+				letterSpacing: inherit()
+			},
+			fill: inherit(),
+			stroke: inherit(),
+			shadow: inherit()
+		},
+		cta: {
+			appearance: {
+				visible: true,
+				opacity: inherit()
+			},
+			fill: inherit(),
+			stroke: inherit(),
+			shadow: inherit(),
+			text: {
+				appearance: {
+					visible: true,
+					opacity: inherit()
+				},
+				typography: {
+					font: inherit(),
+					fontSize: inherit(),
+					textAlignHorizontal: inherit(),
+					textAlignVertical: inherit(),
+					lineHeight: inherit(),
+					letterSpacing: inherit()
+				},
+				fill: inherit(),
+				stroke: inherit(),
+				shadow: inherit()
+			}
+		}
 	}
 };

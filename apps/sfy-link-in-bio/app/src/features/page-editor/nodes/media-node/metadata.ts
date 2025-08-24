@@ -9,13 +9,15 @@ export const mediaNodeMetadata: TNodeMetadata<'media'> = {
 	internal: false,
 	defaultData: {
 		content: {},
-		layout: {
-			padding: 0
+		autoLayout: {
+			horizontalPadding: inherit(),
+			verticalPadding: inherit(),
+			verticalGap: inherit()
 		},
 		appearance: {
-			borderRadius: inherit(),
+			visible: true,
 			opacity: inherit(),
-			visible: true
+			borderRadius: inherit()
 		},
 		fill: inherit(),
 		stroke: inherit(),

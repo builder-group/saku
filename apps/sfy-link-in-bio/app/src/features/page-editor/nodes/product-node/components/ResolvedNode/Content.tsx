@@ -8,7 +8,7 @@ import { useProductModal } from './ProductModal';
 export const Content: React.FC<TContentProps> = (props) => {
 	const {
 		product,
-		node: { layout, appearance, typography, fill, stroke, shadow },
+		node: { autoLayout, appearance, fill, stroke, shadow, text },
 		cx
 	} = props;
 
@@ -116,9 +116,8 @@ export const Content: React.FC<TContentProps> = (props) => {
 				onClick={handleProductClick}
 				className="relative flex w-full items-center gap-3 bg-white"
 				style={{
-					...layout.styles,
+					...autoLayout.styles,
 					...appearance.styles,
-					...typography.styles,
 					...fill?.styles,
 					...stroke?.styles,
 					...shadow?.styles
@@ -137,7 +136,9 @@ export const Content: React.FC<TContentProps> = (props) => {
 				{/* Product Details */}
 				<div className="flex min-w-0 flex-grow items-center justify-between">
 					<div className="flex min-w-0 flex-col justify-center gap-1">
-						<p className="truncate font-medium">{product.title}</p>
+						<p className="truncate font-medium" style={text.styles}>
+							{product.title}
+						</p>
 
 						{/* Price and Option Badges */}
 						<div className="flex flex-wrap items-center gap-2">

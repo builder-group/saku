@@ -18,36 +18,48 @@ export function resolveCtaStyleMixin(
 	},
 	parentMixin?: TResolveCtaStyleMixinParentMixin
 ): TResult<TResolvedCtaStyleMixin['value'], AppError> {
-	const [isAppearanceOk, appearanceErr, appearance] = resolveAppearanceStyleMixin(
-		cta.appearance,
-		parentMixin?.appearance
+	const [isResolvedAppearanceOk, resolvedAppearanceErr, resolvedAppearance] =
+		resolveAppearanceStyleMixin(cta.appearance, parentMixin?.appearance);
+	if (!isResolvedAppearanceOk) {
+		return Err(resolvedAppearanceErr.wrapWith('#ERR_RESOLVE_APPEARANCE_STYLE'));
+	}
+	const [isResolvedFillOk, resolvedFillErr, resolvedFill] = resolveFillStyleMixin(
+		cta.fill,
+		context,
+		parentMixin?.fill
 	);
-	if (!isAppearanceOk) {
-		return Err(appearanceErr.wrapWith('#ERR_RESOLVE_APPEARANCE_STYLE'));
+	if (!isResolvedFillOk) {
+		return Err(resolvedFillErr.wrapWith('#ERR_RESOLVE_FILL_STYLE'));
 	}
-	const [isFillOk, fillErr, fill] = resolveFillStyleMixin(cta.fill, context, parentMixin?.fill);
-	if (!isFillOk) {
-		return Err(fillErr.wrapWith('#ERR_RESOLVE_FILL_STYLE'));
+	const [isResolvedStrokeOk, resolvedStrokeErr, resolvedStroke] = resolveStrokeStyleMixin(
+		cta.stroke,
+		parentMixin?.stroke
+	);
+	if (!isResolvedStrokeOk) {
+		return Err(resolvedStrokeErr.wrapWith('#ERR_RESOLVE_STROKE_STYLE'));
 	}
-	const [isStrokeOk, strokeErr, stroke] = resolveStrokeStyleMixin(cta.stroke, parentMixin?.stroke);
-	if (!isStrokeOk) {
-		return Err(strokeErr.wrapWith('#ERR_RESOLVE_STROKE_STYLE'));
+	const [isResolvedShadowOk, resolvedShadowErr, resolvedShadow] = resolveShadowStyleMixin(
+		cta.shadow,
+		parentMixin?.shadow
+	);
+	if (!isResolvedShadowOk) {
+		return Err(resolvedShadowErr.wrapWith('#ERR_RESOLVE_SHADOW_STYLE'));
 	}
-	const [isShadowOk, shadowErr, shadow] = resolveShadowStyleMixin(cta.shadow, parentMixin?.shadow);
-	if (!isShadowOk) {
-		return Err(shadowErr.wrapWith('#ERR_RESOLVE_SHADOW_STYLE'));
-	}
-	const [isTextOk, textErr, text] = resolveTextStyleMixin(cta.text, context, parentMixin?.text);
-	if (!isTextOk) {
-		return Err(textErr.wrapWith('#ERR_RESOLVE_TEXT_STYLE'));
+	const [isResolvedTextOk, resolvedTextErr, resolvedText] = resolveTextStyleMixin(
+		cta.text,
+		context,
+		parentMixin?.text
+	);
+	if (!isResolvedTextOk) {
+		return Err(resolvedTextErr.wrapWith('#ERR_RESOLVE_TEXT_STYLE'));
 	}
 
 	return Ok({
-		appearance,
-		fill,
-		stroke,
-		shadow,
-		text
+		appearance: resolvedAppearance,
+		fill: resolvedFill,
+		stroke: resolvedStroke,
+		shadow: resolvedShadow,
+		text: resolvedText
 	});
 }
 

@@ -13,24 +13,35 @@ export const aboutNodeMetadata: TNodeMetadata<'about'> = {
 			bio: 'Tell us about yourself',
 			socialLinks: []
 		},
-		layout: {
-			padding: inherit()
+		autoLayout: {
+			horizontalPadding: inherit(),
+			verticalPadding: inherit(),
+			verticalGap: inherit()
 		},
 		appearance: {
-			borderRadius: inherit(),
+			visible: true,
 			opacity: inherit(),
-			visible: true
-		},
-		typography: {
-			font: inherit(),
-			fontSize: inherit(),
-			textColor: inherit(),
-			textAlign: inherit(),
-			lineHeight: inherit(),
-			letterSpacing: inherit()
+			borderRadius: inherit()
 		},
 		fill: inherit(),
 		stroke: inherit(),
-		shadow: inherit()
+		shadow: inherit(),
+		text: {
+			appearance: {
+				visible: true,
+				opacity: inherit()
+			},
+			typography: {
+				font: inherit(),
+				fontSize: inherit(),
+				textAlignHorizontal: 'center',
+				textAlignVertical: 'center',
+				lineHeight: inherit(),
+				letterSpacing: inherit()
+			},
+			fill: inherit(),
+			stroke: inherit(),
+			shadow: inherit()
+		}
 	}
 };

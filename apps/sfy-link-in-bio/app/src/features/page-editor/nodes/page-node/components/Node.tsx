@@ -37,7 +37,7 @@ export const PageNode = React.forwardRef<HTMLDivElement, TNodeProps<TFlatPageNod
 			return null;
 		}
 
-		const { layout, appearance, fill, watermarkColor } = node;
+		const { autoLayout, appearance, fill, watermarkColor } = node;
 
 		return (
 			<div
@@ -51,9 +51,9 @@ export const PageNode = React.forwardRef<HTMLDivElement, TNodeProps<TFlatPageNod
 			>
 				<div className="mx-auto w-full max-w-md">
 					<div
-						className="flex w-full flex-col p-6"
+						className="flex w-full flex-col"
 						style={{
-							gap: layout.styles.gap
+							...autoLayout.styles
 						}}
 					>
 						{childNodes.map((childNodeState) => (

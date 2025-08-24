@@ -21,39 +21,56 @@ export function resolveTextStyleMixin(
 	},
 	parentMixin?: TResolveTextStyleMixinParentMixin
 ): TResult<TResolvedTextStyleMixin['value'], AppError> {
-	const [isAppearanceOk, appearanceErr, appearance] = resolveAppearanceStyleMixin(
-		text.appearance,
-		parentMixin?.appearance
+	const [isResolvedAppearanceOk, resolvedAppearanceErr, resolvedAppearance] =
+		resolveAppearanceStyleMixin(text.appearance, parentMixin?.appearance);
+	if (!isResolvedAppearanceOk) {
+		return Err(resolvedAppearanceErr.wrapWith('#ERR_RESOLVE_APPEARANCE_STYLE'));
+	}
+	const [isResolvedTypographyOk, resolvedTypographyErr, resolvedTypography] =
+		resolveTypographyStyleMixin(text.typography, parentMixin?.typography);
+	if (!isResolvedTypographyOk) {
+		return Err(resolvedTypographyErr.wrapWith('#ERR_RESOLVE_TYPOGRAPHY_STYLE'));
+	}
+	const [isResolvedFillOk, resolvedFillErr, resolvedFill] = resolveFillStyleMixin(
+		text.fill,
+		context,
+		parentMixin?.fill
 	);
-	if (!isAppearanceOk) {
-		return Err(appearanceErr.wrapWith('#ERR_RESOLVE_APPEARANCE_STYLE'));
+	if (!isResolvedFillOk) {
+		return Err(resolvedFillErr.wrapWith('#ERR_RESOLVE_FILL_STYLE'));
 	}
-	const [isTypographyOk, typographyErr, typography] = resolveTypographyStyleMixin(
-		text.typography,
-		parentMixin?.typography
+	const [isResolvedStrokeOk, resolvedStrokeErr, resolvedStroke] = resolveStrokeStyleMixin(
+		text.stroke,
+		parentMixin?.stroke
 	);
-	if (!isTypographyOk) {
-		return Err(typographyErr.wrapWith('#ERR_RESOLVE_TYPOGRAPHY_STYLE'));
+	if (!isResolvedStrokeOk) {
+		return Err(resolvedStrokeErr.wrapWith('#ERR_RESOLVE_STROKE_STYLE'));
 	}
-	const [isFillOk, fillErr, fill] = resolveFillStyleMixin(text.fill, context, parentMixin?.fill);
-	if (!isFillOk) {
-		return Err(fillErr.wrapWith('#ERR_RESOLVE_FILL_STYLE'));
-	}
-	const [isStrokeOk, strokeErr, stroke] = resolveStrokeStyleMixin(text.stroke, parentMixin?.stroke);
-	if (!isStrokeOk) {
-		return Err(strokeErr.wrapWith('#ERR_RESOLVE_STROKE_STYLE'));
-	}
-	const [isShadowOk, shadowErr, shadow] = resolveShadowStyleMixin(text.shadow, parentMixin?.shadow);
-	if (!isShadowOk) {
-		return Err(shadowErr.wrapWith('#ERR_RESOLVE_SHADOW_STYLE'));
+	const [isResolvedShadowOk, resolvedShadowErr, resolvedShadow] = resolveShadowStyleMixin(
+		text.shadow,
+		parentMixin?.shadow
+	);
+	if (!isResolvedShadowOk) {
+		return Err(resolvedShadowErr.wrapWith('#ERR_RESOLVE_SHADOW_STYLE'));
 	}
 
 	return Ok({
-		appearance,
-		typography,
-		fill,
-		stroke,
-		shadow
+		appearance: resolvedAppearance,
+		typography: resolvedTypography,
+		fill: resolvedFill,
+		stroke: resolvedStroke,
+		shadow: resolvedShadow,
+		styles: {
+			visibility: resolvedAppearance.visible ? 'visible' : 'hidden',
+			opacity: `${resolvedAppearance.opacity * 100}%`,
+			color: resolvedFill?.paint.type === 'solid' ? resolvedFill?.paint.color : undefined,
+			WebkitTextStroke: resolvedStroke?.width
+				? `${resolvedStroke.width}px ${resolvedStroke.color}`
+				: undefined,
+			textShadow: resolvedShadow?.offsetX
+				? `${resolvedShadow.offsetX}px ${resolvedShadow.offsetY}px ${resolvedShadow.blur}px ${resolvedShadow.color}`
+				: undefined
+		}
 	});
 }
 

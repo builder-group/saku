@@ -8,7 +8,7 @@ export const ResolvedAboutNode = React.forwardRef<
 	TResolvedNodeProps<TResolvedAboutNode>
 >((props, ref) => {
 	const {
-		node: { content, layout, appearance, typography, fill, stroke, shadow },
+		node: { content, autoLayout, appearance, fill, stroke, shadow, text },
 		...divProps
 	} = props;
 
@@ -17,7 +17,7 @@ export const ResolvedAboutNode = React.forwardRef<
 			<div
 				className="relative overflow-hidden"
 				style={{
-					...layout.styles,
+					...autoLayout.styles,
 					...appearance.styles,
 					...fill?.styles,
 					...stroke?.styles,
@@ -43,10 +43,10 @@ export const ResolvedAboutNode = React.forwardRef<
 
 					{/* Name */}
 					<h1
-						className="text-xl font-semibold"
+						className="font-semibold"
 						style={{
-							...typography.styles,
-							fontSize: typography.fontSize * 1.25 // Scale up for title
+							...text.styles,
+							fontSize: text.typography.fontSize * 1.25 // Scale up for title
 						}}
 					>
 						{content.name}
@@ -54,12 +54,7 @@ export const ResolvedAboutNode = React.forwardRef<
 
 					{/* Bio */}
 					{content.bio != null && (
-						<p
-							className="text-center leading-relaxed"
-							style={{
-								...typography.styles
-							}}
-						>
+						<p className="leading-relaxed" style={text.styles}>
 							{content.bio}
 						</p>
 					)}
@@ -81,7 +76,7 @@ export const ResolvedAboutNode = React.forwardRef<
 										rel="noopener noreferrer"
 										className="flex h-6 w-6 items-center justify-center hover:opacity-70"
 										style={{
-											color: typography.textColor
+											color: text.styles.color
 										}}
 										title={`${social.provider}: ${social.handle}`}
 									>

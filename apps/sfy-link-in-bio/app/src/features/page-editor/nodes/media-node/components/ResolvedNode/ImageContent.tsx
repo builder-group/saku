@@ -4,7 +4,7 @@ import { TResolvedMediaNode } from '../../types';
 
 export const ImageContent: React.FC<TImageContentProps> = (props) => {
 	const {
-		node: { content, layout, appearance, fill, stroke, shadow }
+		node: { content, autoLayout, appearance, fill, stroke, shadow }
 	} = props;
 
 	if (content.media == null) {
@@ -15,7 +15,7 @@ export const ImageContent: React.FC<TImageContentProps> = (props) => {
 		<div
 			className="relative overflow-hidden"
 			style={{
-				...layout.styles,
+				...autoLayout.styles,
 				...appearance.styles,
 				...fill?.styles,
 				...stroke?.styles,

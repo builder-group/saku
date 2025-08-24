@@ -71,32 +71,40 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 				profilePicture: profilePictureHash,
 				socialLinks: transformSocialLinks(page.socialMediaAccounts ?? [])
 			},
-			card: {
-				layout: {
-					padding: inherit()
-				},
-				appearance: {
-					visible: inherit(),
-					opacity: inherit(),
-					borderRadius: 0
-				},
-				fill: null,
-				stroke: null,
-				shadow: null
+			autoLayout: {
+				horizontalPadding: inherit(),
+				verticalPadding: inherit(),
+				verticalGap: inherit()
 			},
+			appearance: {
+				visible: inherit(),
+				opacity: inherit(),
+				borderRadius: 0
+			},
+			fill: null,
+			stroke: null,
+			shadow: null,
 			text: {
 				appearance: {
-					visible: inherit(),
+					visible: true,
 					opacity: inherit()
 				},
 				typography: {
 					font: inherit(),
 					fontSize: 16,
-					textColor: cssRgbaToRgba(page?.themeSettings?.fontColor) ?? hexToRgba('#000000'),
-					textAlign: inherit(),
+					textAlignHorizontal: 'center',
+					textAlignVertical: 'center',
 					lineHeight: inherit(),
 					letterSpacing: inherit()
-				}
+				},
+				fill: {
+					paint: {
+						type: 'solid',
+						color: cssRgbaToRgba(page?.themeSettings?.fontColor) ?? hexToRgba('#000000')
+					}
+				},
+				stroke: null,
+				shadow: null
 			}
 		} as TAboutNode;
 		children.push(aboutNode);
@@ -119,10 +127,13 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 
 				// Determine variant based on __typename
 				let variant: TLinkNode['content']['variant'];
-				let cardLayout: TLinkNode['card']['layout'] = {
-					padding: inherit()
+				let autoLayout: TLinkNode['autoLayout'] = {
+					horizontalPadding: inherit(),
+					verticalPadding: inherit(),
+					horizontalGap: inherit(),
+					verticalGap: inherit()
 				};
-				let cardAppearance: TLinkNode['card']['appearance'] = {
+				let appearance: TLinkNode['appearance'] = {
 					visible: true,
 					opacity: inherit(),
 					borderRadius: inherit()
@@ -136,10 +147,13 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 								type: 'youtube-video-embed' as const,
 								videoId
 							};
-							cardLayout = {
-								padding: 0
+							autoLayout = {
+								horizontalPadding: 0,
+								verticalPadding: 0,
+								horizontalGap: 0,
+								verticalGap: 0
 							};
-							cardAppearance = {
+							appearance = {
 								visible: true,
 								opacity: inherit(),
 								borderRadius: Math.min(borderRadius, 40)
@@ -169,14 +183,11 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 						url: link.url,
 						variant
 					},
-					card: {
-						layout: cardLayout,
-						appearance: cardAppearance,
-
-						fill: inherit(),
-						stroke: inherit(),
-						shadow: inherit()
-					},
+					autoLayout,
+					appearance,
+					fill: inherit(),
+					stroke: inherit(),
+					shadow: inherit(),
 					text: {
 						appearance: {
 							visible: true,
@@ -185,11 +196,14 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 						typography: {
 							font: inherit(),
 							fontSize: inherit(),
-							textColor: inherit(),
-							textAlign: inherit(),
+							textAlignHorizontal: inherit(),
+							textAlignVertical: inherit(),
 							lineHeight: inherit(),
 							letterSpacing: inherit()
-						}
+						},
+						fill: inherit(),
+						stroke: inherit(),
+						shadow: inherit()
 					}
 				} satisfies TLinkNode);
 			} else {
@@ -200,20 +214,18 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 					content: {
 						text: link.title
 					},
-					card: {
-						layout: {
-							padding: inherit()
-						},
-						appearance: {
-							visible: true,
-							opacity: inherit(),
-							borderRadius: inherit()
-						},
-
-						fill: inherit(),
-						stroke: inherit(),
-						shadow: inherit()
+					autoLayout: {
+						horizontalPadding: inherit(),
+						verticalPadding: inherit()
 					},
+					appearance: {
+						visible: true,
+						opacity: inherit(),
+						borderRadius: inherit()
+					},
+					fill: inherit(),
+					stroke: inherit(),
+					shadow: inherit(),
 					text: {
 						appearance: {
 							visible: true,
@@ -222,11 +234,14 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 						typography: {
 							font: inherit(),
 							fontSize: inherit(),
-							textColor: inherit(),
-							textAlign: inherit(),
+							textAlignHorizontal: inherit(),
+							textAlignVertical: inherit(),
 							lineHeight: inherit(),
 							letterSpacing: inherit()
-						}
+						},
+						fill: inherit(),
+						stroke: inherit(),
+						shadow: inherit()
 					}
 				} satisfies TTextNode);
 			}
@@ -244,45 +259,46 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 				metadata: {}
 			},
 			children,
-			page: {
-				layout: {
-					spacing: 16
+			autoLayout: {
+				horizontalPadding: 24,
+				verticalPadding: 48,
+				verticalGap: 24
+			},
+			appearance: {
+				visible: true,
+				opacity: 1,
+				borderRadius: 0
+			},
+			fill: {
+				paint: backgroundPaint,
+				opacity: 1
+			},
+			childMixins: {
+				autoLayout: {
+					horizontalPadding: 12,
+					verticalPadding: 12,
+					horizontalGap: 12,
+					verticalGap: 12
 				},
 				appearance: {
 					visible: true,
 					opacity: 1,
-					borderRadius: 0
+					borderRadius
 				},
 				fill: {
-					paint: backgroundPaint,
+					paint: {
+						type: 'solid',
+						color: cssRgbaToRgba(page?.themeSettings?.linkCardColor) ?? hexToRgba('#FFFFFF')
+					},
 					opacity: 1
-				}
-			},
-			childMixins: {
-				card: {
-					layout: {
-						padding: 8
-					},
-					appearance: {
-						visible: true,
-						opacity: 1,
-						borderRadius
-					},
-					fill: {
-						paint: {
-							type: 'solid',
-							color: cssRgbaToRgba(page?.themeSettings?.linkCardColor) ?? hexToRgba('#FFFFFF')
-						},
-						opacity: 1
-					},
-					stroke: null,
-					shadow: {
-						color: { r: 0, g: 0, b: 0, a: 0.1 },
-						offsetX: 0,
-						offsetY: 2,
-						blur: 4,
-						spread: 0
-					}
+				},
+				stroke: null,
+				shadow: {
+					color: { r: 0, g: 0, b: 0, a: 0.1 },
+					offsetX: 0,
+					offsetY: 2,
+					blur: 4,
+					spread: 0
 				},
 				text: {
 					appearance: {
@@ -296,30 +312,26 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 							style: 'normal'
 						},
 						fontSize: 14,
-						textColor:
-							cssRgbaToRgba(page?.themeSettings?.linkCardFontColor) ?? hexToRgba('#000000'),
-						textAlign: 'center',
+						textAlignHorizontal: 'center',
+						textAlignVertical: 'center',
 						lineHeight: { type: 'auto' },
-						letterSpacing: 0
-					}
+						letterSpacing: { type: 'auto' }
+					},
+					fill: {
+						paint: {
+							type: 'solid',
+							color: cssRgbaToRgba(page?.themeSettings?.linkCardFontColor) ?? hexToRgba('#000000')
+						},
+						opacity: 1
+					},
+					stroke: null,
+					shadow: null
 				},
 				cta: {
 					appearance: {
 						visible: true,
 						opacity: 1,
 						borderRadius: borderRadius * 0.5
-					},
-					typography: {
-						font: {
-							family: primaryFont,
-							weight: 400,
-							style: 'normal'
-						},
-						fontSize: 14,
-						textColor: cssRgbaToRgba(page?.themeSettings?.linkCardColor) ?? hexToRgba('#000000'),
-						textAlign: 'center',
-						lineHeight: { type: 'auto' },
-						letterSpacing: 0
 					},
 					fill: {
 						paint: {
@@ -329,7 +341,34 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 						opacity: 1
 					},
 					stroke: null,
-					shadow: null
+					shadow: null,
+					text: {
+						appearance: {
+							visible: true,
+							opacity: 1
+						},
+						typography: {
+							font: {
+								family: primaryFont,
+								weight: 400,
+								style: 'normal'
+							},
+							fontSize: 14,
+							textAlignHorizontal: 'center',
+							textAlignVertical: 'center',
+							lineHeight: { type: 'auto' },
+							letterSpacing: { type: 'auto' }
+						},
+						fill: {
+							paint: {
+								type: 'solid',
+								color: cssRgbaToRgba(page?.themeSettings?.linkCardColor) ?? hexToRgba('#000000')
+							},
+							opacity: 1
+						},
+						stroke: null,
+						shadow: null
+					}
 				}
 			}
 		}
