@@ -217,7 +217,7 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 			</AccordionSection>
 
 			{/* Card Style Section */}
-			<AccordionSection title="Card Style" defaultOpen={true} collapsibleClassName="px-0 space-y-3">
+			<AccordionSection title="Card Style" collapsibleClassName="px-0 space-y-3">
 				<AutoLayoutStyleMixinEditor
 					state={nodeState}
 					parentState={parentNodeState}
@@ -238,7 +238,7 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 			</AccordionSection>
 
 			{/* Text Style Section */}
-			<AccordionSection title="Text Style" defaultOpen={true} collapsibleClassName="px-0 space-y-3">
+			<AccordionSection title="Text Style" collapsibleClassName="px-0 space-y-3">
 				<TextStyleMixinEditor state={nodeState} parentState={parentNodeState} editor={editor} />
 			</AccordionSection>
 		</>

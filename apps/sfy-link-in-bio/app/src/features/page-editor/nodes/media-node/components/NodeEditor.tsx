@@ -119,7 +119,7 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 			</AccordionSection>
 
 			{/* Card Style Section */}
-			<AccordionSection title="Card Style" defaultOpen={true} collapsibleClassName="px-0 space-y-3">
+			<AccordionSection title="Card Style" collapsibleClassName="px-0 space-y-3">
 				<AutoLayoutStyleMixinEditor
 					state={nodeState}
 					parentState={parentNodeState}

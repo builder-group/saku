@@ -25,7 +25,7 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TFlatPageNode>> 
 	return (
 		<>
 			{/* Page Style Section */}
-			<AccordionSection title="Page Style" defaultOpen={true} collapsibleClassName="px-0 space-y-3">
+			<AccordionSection title="Page Style" collapsibleClassName="px-0 space-y-3">
 				<AutoLayoutStyleMixinEditor state={nodeState} editor={editor} />
 				<div className="h-px bg-gray-200" />
 				<AppearanceStyleMixinEditor state={nodeState} editor={editor} />
@@ -35,7 +35,7 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TFlatPageNode>> 
 			</AccordionSection>
 
 			{/* Child Card Style Section */}
-			<AccordionSection title="Card Style" defaultOpen={true} collapsibleClassName="px-0 space-y-3">
+			<AccordionSection title="Card Style" collapsibleClassName="px-0 space-y-3">
 				<ChildAutoLayoutStyleMixinEditor state={nodeState} />
 				<div className="h-px bg-gray-200" />
 				<ChildAppearanceStyleMixinEditor state={nodeState} />
@@ -48,12 +48,12 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TFlatPageNode>> 
 			</AccordionSection>
 
 			{/* Child Text Style Section */}
-			<AccordionSection title="Text Style" defaultOpen={true} collapsibleClassName="px-0 space-y-3">
+			<AccordionSection title="Text Style" collapsibleClassName="px-0 space-y-3">
 				<ChildTextStyleMixinEditor state={nodeState} editor={editor} />
 			</AccordionSection>
 
 			{/* Child CTA Style Section */}
-			<AccordionSection title="CTA Style" defaultOpen={true} collapsibleClassName="px-0 space-y-3">
+			<AccordionSection title="CTA Style" collapsibleClassName="px-0 space-y-3">
 				<ChildCtaStyleMixinEditor state={nodeState} editor={editor} />
 			</AccordionSection>
 		</>

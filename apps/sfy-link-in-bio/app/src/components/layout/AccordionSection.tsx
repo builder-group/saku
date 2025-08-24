@@ -9,7 +9,7 @@ export const AccordionSection: React.FC<AccordionSectionProps> = (props) => {
 		children,
 		onToggle,
 		open: controlledIsOpen,
-		defaultOpen = true,
+		defaultOpen = false,
 		className,
 		collapsibleClassName,
 		...divProps

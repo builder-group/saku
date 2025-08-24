@@ -14,51 +14,23 @@ export const ChildCtaStyleMixinEditor = <GValue extends Record<string, any>>(
 ) => {
 	const { state, editor } = props;
 
-	const appearanceState = useMapState(state, {
-		get: (parent) => ({ childMixins: { appearance: parent.childMixins.cta.appearance } }),
+	const flatState = useMapState(state, {
+		get: (parent) => ({ childMixins: parent.childMixins.cta }),
 		set: (parent, child, notifyOptions) => {
-			parent._v.childMixins.cta.appearance = child.childMixins.appearance;
-			parent._notify(notifyOptions);
-		}
-	});
-	const fillState = useMapState(state, {
-		get: (parent) => ({ childMixins: { fill: parent.childMixins.cta.fill } }),
-		set: (parent, child, notifyOptions) => {
-			parent._v.childMixins.cta.fill = child.childMixins.fill;
-			parent._notify(notifyOptions);
-		}
-	});
-	const strokeState = useMapState(state, {
-		get: (parent) => ({ childMixins: { stroke: parent.childMixins.cta.stroke } }),
-		set: (parent, child, notifyOptions) => {
-			parent._v.childMixins.cta.stroke = child.childMixins.stroke;
-			parent._notify(notifyOptions);
-		}
-	});
-	const shadowState = useMapState(state, {
-		get: (parent) => ({ childMixins: { shadow: parent.childMixins.cta.shadow } }),
-		set: (parent, child, notifyOptions) => {
-			parent._v.childMixins.cta.shadow = child.childMixins.shadow;
-			parent._notify(notifyOptions);
-		}
-	});
-	const textState = useMapState(state, {
-		get: (parent) => ({ childMixins: { text: parent.childMixins.cta.text } }),
-		set: (parent, child, notifyOptions) => {
-			parent._v.childMixins.cta.text = child.childMixins.text;
+			parent._v.childMixins.cta = child.childMixins;
 			parent._notify(notifyOptions);
 		}
 	});
 
 	return (
 		<>
-			<ChildAppearanceStyleMixinEditor state={appearanceState} />
+			<ChildAppearanceStyleMixinEditor state={flatState} />
 			<div className="h-px bg-gray-200" />
-			<ChildFillStyleMixinEditor state={fillState} editor={editor} />
+			<ChildFillStyleMixinEditor state={flatState} editor={editor} />
 			<div className="h-px bg-gray-200" />
-			<ChildStrokeStyleMixinEditor state={strokeState} />
+			<ChildStrokeStyleMixinEditor state={flatState} />
 			<div className="h-px bg-gray-200" />
-			<ChildShadowStyleMixinEditor state={shadowState} />
+			<ChildShadowStyleMixinEditor state={flatState} />
 			<div className="h-px bg-gray-200" />
 			<div>
 				<Text as="span" variant="headingXl" tone="subdued">
@@ -66,7 +38,7 @@ export const ChildCtaStyleMixinEditor = <GValue extends Record<string, any>>(
 				</Text>
 			</div>
 			<div className="h-px bg-gray-200" />
-			<ChildTextStyleMixinEditor state={textState} editor={editor} />
+			<ChildTextStyleMixinEditor state={flatState} editor={editor} />
 		</>
 	);
 };
