@@ -61,7 +61,15 @@ export type TPageNodeMixin = TMixin<
 			};
 		};
 		childMixins: TMergeMixins<
-			[TUnreference<TCardStyleMixin>, TUnreference<TTextStyleMixin>, TUnreference<TCtaStyleMixin>]
+			[
+				TUnreference<TAutoLayoutStyleMixin>,
+				TUnreference<TAppearanceStyleMixin>,
+				TUnreference<TFillStyleMixin>,
+				TUnreference<TStrokeStyleMixin>,
+				TUnreference<TShadowStyleMixin>,
+				TUnreference<TTextStyleMixin>,
+				TUnreference<TCtaStyleMixin>
+			]
 		>;
 	}
 >;
@@ -138,51 +146,22 @@ export type TProductNodeMixin = TMixin<
 // Style Mixins
 // =========================================================================
 
-export type TCardStyleMixin = TMixin<
-	'card',
-	{
-		layout: TLayoutStyleMixin['value'];
-		appearance: TAppearanceStyleMixin['value'];
-		fill: TFillStyleMixin['value'];
-		stroke: TStrokeStyleMixin['value'];
-		shadow: TShadowStyleMixin['value'];
-	}
->;
+// export type TAutoLayoutStyleMixin = TMixin<
+// 	'layout',
+// 	{
+// 		width: number;
+// 		height: number;
+// 		clipContent?: boolean;
+// 	}
+// >;
 
-export type TPageStyleMixin = TMixin<
-	'page',
+export type TAutoLayoutStyleMixin = TMixin<
+	'autoLayout',
 	{
-		layout: {
-			spacing: number;
-		};
-		appearance: TAppearanceStyleMixin['value'];
-		fill: TFillStyleMixin['value'];
-	}
->;
-
-export type TCtaStyleMixin = TMixin<
-	'cta',
-	{
-		appearance: TAppearanceStyleMixin['value'];
-		typography: TTypographyStyleMixin['value'];
-		fill: TFillStyleMixin['value'];
-		stroke: TStrokeStyleMixin['value'];
-		shadow: TShadowStyleMixin['value'];
-	}
->;
-
-export type TTextStyleMixin = TMixin<
-	'text',
-	{
-		appearance: TAppearanceStyleMixin['value'];
-		typography: TTypographyStyleMixin['value'];
-	}
->;
-
-export type TLayoutStyleMixin = TMixin<
-	'layout',
-	{
-		padding: TReference<number>;
+		horizontalPadding?: TReference<number>;
+		verticalPadding?: TReference<number>;
+		horizontalGap?: TReference<number>;
+		verticalGap?: TReference<number>;
 	}
 >;
 
@@ -200,8 +179,8 @@ export type TTypographyStyleMixin = TMixin<
 	{
 		font: TReference<TFont>;
 		fontSize: TReference<number>;
-		textColor: TReference<TRgba>;
-		textAlign: TReference<TTextAlign>;
+		textAlignHorizontal: TReference<TTextAlign>;
+		textAlignVertical: TReference<TTextAlign>;
 		lineHeight: TReference<TLineHeight>;
 		letterSpacing: TReference<TLetterSpacing>;
 	}
@@ -232,4 +211,26 @@ export type TShadowStyleMixin = TMixin<
 		blur: number;
 		spread: number;
 	} | null>
+>;
+
+export type TCtaStyleMixin = TMixin<
+	'cta',
+	{
+		appearance: TAppearanceStyleMixin['value'];
+		fill: TFillStyleMixin['value'];
+		stroke: TStrokeStyleMixin['value'];
+		shadow: TShadowStyleMixin['value'];
+		text: TTextStyleMixin['value'];
+	}
+>;
+
+export type TTextStyleMixin = TMixin<
+	'text',
+	{
+		appearance: TAppearanceStyleMixin['value'];
+		typography: TTypographyStyleMixin['value'];
+		fill: TFillStyleMixin['value'];
+		stroke: TStrokeStyleMixin['value'];
+		shadow: TShadowStyleMixin['value'];
+	}
 >;

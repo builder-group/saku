@@ -8,10 +8,7 @@ import {
 import { resolveFillStyleMixin, TResolveFillStyleMixinParentMixin } from '../fill-style';
 import { resolveShadowStyleMixin, TResolveShadowStyleMixinParentMixin } from '../shadow-style';
 import { resolveStrokeStyleMixin, TResolveStrokeStyleMixinParentMixin } from '../stroke-style';
-import {
-	resolveTypographyStyleMixin,
-	TResolveTypographyStyleMixinParentMixin
-} from '../typography-style';
+import { resolveTextStyleMixin, TResolveTextStyleMixinParentMixin } from '../text-style';
 import { TResolvedCtaStyleMixin } from './types';
 
 export function resolveCtaStyleMixin(
@@ -28,13 +25,6 @@ export function resolveCtaStyleMixin(
 	if (!isAppearanceOk) {
 		return Err(appearanceErr.wrapWith('#ERR_RESOLVE_APPEARANCE_STYLE'));
 	}
-	const [isTypographyOk, typographyErr, typography] = resolveTypographyStyleMixin(
-		cta.typography,
-		parentMixin?.typography
-	);
-	if (!isTypographyOk) {
-		return Err(typographyErr.wrapWith('#ERR_RESOLVE_TYPOGRAPHY_STYLE'));
-	}
 	const [isFillOk, fillErr, fill] = resolveFillStyleMixin(cta.fill, context, parentMixin?.fill);
 	if (!isFillOk) {
 		return Err(fillErr.wrapWith('#ERR_RESOLVE_FILL_STYLE'));
@@ -47,20 +37,24 @@ export function resolveCtaStyleMixin(
 	if (!isShadowOk) {
 		return Err(shadowErr.wrapWith('#ERR_RESOLVE_SHADOW_STYLE'));
 	}
+	const [isTextOk, textErr, text] = resolveTextStyleMixin(cta.text, context, parentMixin?.text);
+	if (!isTextOk) {
+		return Err(textErr.wrapWith('#ERR_RESOLVE_TEXT_STYLE'));
+	}
 
 	return Ok({
 		appearance,
-		typography,
 		fill,
 		stroke,
-		shadow
+		shadow,
+		text
 	});
 }
 
 export interface TResolveCtaStyleMixinParentMixin {
 	appearance: TResolveAppearanceStyleMixinParentMixin;
-	typography: TResolveTypographyStyleMixinParentMixin;
 	fill: TResolveFillStyleMixinParentMixin;
 	stroke: TResolveStrokeStyleMixinParentMixin;
 	shadow: TResolveShadowStyleMixinParentMixin;
+	text: TResolveTextStyleMixinParentMixin;
 }

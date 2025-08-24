@@ -2,7 +2,7 @@ import { fontMetadata, TMergeMixins, TTypographyStyleMixin, TUnreference } from 
 import { Text } from '@shopify/polaris';
 import { TState } from 'feature-state';
 import React from 'react';
-import { MappedColorInput, MappedSelectInput, MappedTextInput } from '@/components';
+import { MappedSelectInput, MappedTextInput } from '@/components';
 import { TPageEditor } from '../../lib';
 
 export const ChildTypographyStyleMixinEditor = <GValue extends Record<string, any>>(
@@ -42,27 +42,6 @@ export const ChildTypographyStyleMixinEditor = <GValue extends Record<string, an
 						}}
 						disableFieldInheritance
 					/>
-
-					<MappedSelectInput
-						label="Text Align"
-						options={[
-							{ label: 'Left', value: 'left' },
-							{ label: 'Center', value: 'center' },
-							{ label: 'Right', value: 'right' }
-						]}
-						state={state}
-						mapValue={(value) => value.childMixins?.typography?.textAlign}
-						onValueChange={(value) => {
-							if (value != null) {
-								state._v.childMixins.typography.textAlign = value;
-								state._notify();
-							}
-						}}
-						disableFieldInheritance
-					/>
-				</div>
-
-				<div className="grid grid-cols-2 gap-3">
 					<MappedTextInput
 						label="Font Size"
 						type="number"
@@ -80,15 +59,38 @@ export const ChildTypographyStyleMixinEditor = <GValue extends Record<string, an
 						}}
 						disableFieldInheritance
 					/>
+				</div>
 
-					<MappedColorInput
-						label="Text Color"
-						autoComplete="off"
+				<div className="grid grid-cols-2 gap-3">
+					<MappedSelectInput
+						label="Horizontal Text Align"
+						options={[
+							{ label: 'Start', value: 'start' },
+							{ label: 'Center', value: 'center' },
+							{ label: 'End', value: 'end' }
+						]}
 						state={state}
-						mapValue={(value) => value.childMixins?.typography?.textColor}
+						mapValue={(value) => value.childMixins?.typography?.textAlignHorizontal}
 						onValueChange={(value) => {
 							if (value != null) {
-								state._v.childMixins.typography.textColor = value;
+								state._v.childMixins.typography.textAlignHorizontal = value;
+								state._notify();
+							}
+						}}
+						disableFieldInheritance
+					/>
+					<MappedSelectInput
+						label="Vertical Text Align"
+						options={[
+							{ label: 'Start', value: 'start' },
+							{ label: 'Center', value: 'center' },
+							{ label: 'End', value: 'end' }
+						]}
+						state={state}
+						mapValue={(value) => value.childMixins?.typography?.textAlignVertical}
+						onValueChange={(value) => {
+							if (value != null) {
+								state._v.childMixins.typography.textAlignVertical = value;
 								state._notify();
 							}
 						}}

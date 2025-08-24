@@ -54,35 +54,41 @@ type TProductNode = TNode<'product', [
 ]>;
 ```
 
-### Why composite mixins (CardMixin, CTAMixin) instead of flat atomic mixins?
+### Why mixed approach (flat core + abstracted specialized) instead of all flat or all abstracted?
 
-- **Prevents style conflicts**: Complex nodes need multiple styled elements (card, text, CTA) - flat mixins would create key collisions
-- **Semantic grouping**: UI elements like "card" and "CTA" are meaningful design concepts that belong together
-- **Helper functions reusable**: `resolveFillMixin(node.card.fill)` works with existing atomic resolvers
-- **ECS component overhead**: With SoA ECS, flat approach would require separate components (`CardFill`, `CtaFill`, `TextFill`) since entities can't have the same component multiple times. Composite mixins avoid this proliferation.
+- **Core properties are universal**: Every node needs `visible`, `fill`, `stroke`, `shadow` - no conflicts at this level
+- **Abstraction only when needed**: `TTextStyleMixin` and `TCtaStyleMixin` have specialized properties that could clash with core properties
+- **Prevents style conflicts**: Complex nodes need multiple styled elements (text, CTA) - flat mixins would create key collisions
+- **Semantic grouping**: UI elements like "text" and "CTA" are meaningful design concepts that belong together
+- **ECS component overhead**: With SoA ECS, flat approach would require separate components (`TextFill`, `CtaFill`, ..) since entities can't have the same component multiple times
 
-#### When to use composite vs atomic mixins?
+#### When to use flat vs abstracted mixins?
 
 ```typescript
-// Single styled element: Use atomic mixins
-type TRectangleNode = TNode<'text', [
+// Simple node: Use flat core properties
+type TRectangleNode = TNode<'rectangle', [
   TIdMixin,
-  TAppearanceMixin,    // Direct atomic mixin  
-  TFillMixin,          // Direct atomic mixin
-  TStrokeMixin,        // Direct atomic mixin
-  TShadowMixin         // Direct atomic mixin
+  TAppearanceStyleMixin,    // visible, opacity, borderRadius
+  TFillStyleMixin,          // fill paint and opacity
+  TStrokeStyleMixin,        // stroke width and color
+  TShadowStyleMixin         // shadow properties
 ]>;
 
-// Multiple styled elements: Use composite mixins to prevent conflicts
+// Complex node: Mix flat core + abstracted specialized
 type TProductNode = TNode<'product', [
   TIdMixin,
-  TProductContentMixin,   // content: { product: TProduct }
-  TCardMixin,             // Composite: { layout, appearance, fill, stroke, shadow }
-  TTextMixin,             // Composite: { typography, appearance }  
-  TCtaMixin               // Composite: { layout, appearance, typography, fill, stroke, shadow }
+  // Core properties (flat - no conflicts)
+  TAppearanceStyleMixin,    // visible, opacity, borderRadius
+  TFillStyleMixin,          // fill paint and opacity
+  TStrokeStyleMixin,        // stroke width and color
+  TShadowStyleMixin,        // shadow properties
+  TAutoLayoutStyleMixin,        // basic padding/width
+  // Specialized properties (abstracted to avoid conflicts)
+  TTextStyleMixin,          // typography: { font, fontSize, textColor }
+  TCtaStyleMixin            // CTA-specific styling
 ]>;
 
-// In ECS: Each composite becomes a single component array
-// components.Card[entityId] = { layout, appearance, fill, stroke, shadow }
-// components.Cta[entityId] = { layout, appearance, typography, fill, stroke, shadow }
+// In ECS: Core properties become separate components, specialized become composite
+// components.Appearance[entityId] = { visible, opacity, borderRadius }
+// components.Text[entityId] = { typography: { font, fontSize, textColor } }
 ```

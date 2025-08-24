@@ -4,11 +4,11 @@ import { AppError } from '@/lib';
 import { resolveAsset, TNodeResolveContext } from '../../lib';
 import {
 	resolveAppearanceStyleMixin,
+	resolveAutoLayoutStyleMixin,
 	resolveFillStyleMixin,
-	resolveLayoutStyleMixin,
 	resolveShadowStyleMixin,
 	resolveStrokeStyleMixin,
-	resolveTypographyStyleMixin
+	resolveTextStyleMixin
 } from '../../mixins';
 import { TResolvedLinkNode, TResolvedLinkVariant } from './types';
 
@@ -16,7 +16,7 @@ export function resolveLinkNode(
 	node: TLinkNode,
 	cx: TNodeResolveContext
 ): TResult<TResolvedLinkNode, AppError> {
-	const { content, layout, appearance, typography, fill, stroke, shadow, ...rest } = node;
+	const { content, autoLayout, appearance, fill, stroke, shadow, text, ...rest } = node;
 
 	let resolvedVariant: TResolvedLinkVariant;
 	switch (content.variant.type) {
@@ -56,22 +56,15 @@ export function resolveLinkNode(
 		}
 	}
 
-	const [isResolvedLayoutOk, resolvedLayoutErr, resolvedLayout] = resolveLayoutStyleMixin(
-		layout,
-		cx.childMixins?.layout
-	);
-	if (!isResolvedLayoutOk) {
-		return Err(resolvedLayoutErr.wrapWith('#ERR_RESOLVE_LAYOUT_STYLE'));
+	const [isResolvedAutoLayoutOk, resolvedAutoLayoutErr, resolvedAutoLayout] =
+		resolveAutoLayoutStyleMixin(autoLayout, cx.childMixins?.autoLayout);
+	if (!isResolvedAutoLayoutOk) {
+		return Err(resolvedAutoLayoutErr.wrapWith('#ERR_RESOLVE_AUTO_LAYOUT_STYLE'));
 	}
 	const [isResolvedAppearanceOk, resolvedAppearanceErr, resolvedAppearance] =
 		resolveAppearanceStyleMixin(appearance, cx.childMixins?.appearance);
 	if (!isResolvedAppearanceOk) {
 		return Err(resolvedAppearanceErr.wrapWith('#ERR_RESOLVE_APPEARANCE_STYLE'));
-	}
-	const [isResolvedTypographyOk, resolvedTypographyErr, resolvedTypography] =
-		resolveTypographyStyleMixin(typography, cx.childMixins?.typography);
-	if (!isResolvedTypographyOk) {
-		return Err(resolvedTypographyErr.wrapWith('#ERR_RESOLVE_TYPOGRAPHY_STYLE'));
 	}
 	const [isResolvedFillOk, resolvedFillErr, resolvedFill] = resolveFillStyleMixin(
 		fill,
@@ -95,6 +88,14 @@ export function resolveLinkNode(
 	if (!isResolvedShadowOk) {
 		return Err(resolvedShadowErr.wrapWith('#ERR_RESOLVE_SHADOW_STYLE'));
 	}
+	const [isResolvedTextOk, resolvedTextErr, resolvedText] = resolveTextStyleMixin(
+		text,
+		cx.site,
+		cx.childMixins?.text
+	);
+	if (!isResolvedTextOk) {
+		return Err(resolvedTextErr.wrapWith('#ERR_RESOLVE_TEXT_STYLE'));
+	}
 
 	return Ok({
 		...rest,
@@ -102,11 +103,11 @@ export function resolveLinkNode(
 			url: content.url,
 			variant: resolvedVariant
 		},
-		layout: resolvedLayout,
+		autoLayout: resolvedAutoLayout,
 		appearance: resolvedAppearance,
-		typography: resolvedTypography,
 		fill: resolvedFill,
 		stroke: resolvedStroke,
-		shadow: resolvedShadow
+		shadow: resolvedShadow,
+		text: resolvedText
 	});
 }

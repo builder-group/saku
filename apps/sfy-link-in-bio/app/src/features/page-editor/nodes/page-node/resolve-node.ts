@@ -4,13 +4,13 @@ import { AppError } from '@/lib';
 import { resolveAsset, resolveColor, TNodeResolveContext } from '../../lib';
 import {
 	resolveAppearanceStyleMixin,
+	resolveAutoLayoutStyleMixin,
+	resolveCtaStyleMixin,
 	resolveFillStyleMixin,
 	resolveFlatChildrenMixin,
-	resolveLayoutStyleMixin,
-	resolvePageLayoutStyleMixin,
 	resolveShadowStyleMixin,
 	resolveStrokeStyleMixin,
-	resolveTypographyStyleMixin
+	resolveTextStyleMixin
 } from '../../mixins';
 import { TResolvedPageNode } from './types';
 
@@ -37,7 +37,7 @@ export function resolvePageNodeWithoutChildren(
 	node: TFlatPageNode,
 	cx: TNodeResolveContext
 ): TResult<Omit<TResolvedPageNode, 'children'>, AppError> {
-	const { layout, appearance, fill, childMixins: childDefaults, ...rest } = node;
+	const { autoLayout, appearance, fill, childMixins: childDefaults, ...rest } = node;
 
 	const unreferencedFill = resolveReference(fill);
 	const watermarkColor = resolveColor(
@@ -48,7 +48,11 @@ export function resolvePageNodeWithoutChildren(
 		)
 	);
 
-	const resolvedPageLayout = resolvePageLayoutStyleMixin(layout);
+	const [isResolvedAutoLayoutOk, resolvedAutoLayoutErr, resolvedAutoLayout] =
+		resolveAutoLayoutStyleMixin(autoLayout);
+	if (!isResolvedAutoLayoutOk) {
+		return Err(resolvedAutoLayoutErr.wrapWith('#ERR_RESOLVE_AUTO_LAYOUT_STYLE'));
+	}
 	const [isResolvedAppearanceOk, resolvedAppearanceErr, resolvedAppearance] =
 		resolveAppearanceStyleMixin(appearance);
 	if (!isResolvedAppearanceOk) {
@@ -64,16 +68,17 @@ export function resolvePageNodeWithoutChildren(
 		content: {
 			metadata: resolvePageMetadata(node, cx)
 		},
-		layout: resolvedPageLayout,
+		autoLayout: resolvedAutoLayout,
 		appearance: resolvedAppearance,
 		fill: resolvedFill,
 		childMixins: {
-			layout: unwrapOrNull(resolveLayoutStyleMixin(childDefaults.layout)) ?? undefined,
+			autoLayout: unwrapOrNull(resolveAutoLayoutStyleMixin(childDefaults.autoLayout)) ?? undefined,
 			appearance: unwrapOrNull(resolveAppearanceStyleMixin(childDefaults.appearance)) ?? undefined,
-			typography: unwrapOrNull(resolveTypographyStyleMixin(childDefaults.typography)) ?? undefined,
 			fill: unwrapOrNull(resolveFillStyleMixin(childDefaults.fill, cx.site)) ?? undefined,
 			stroke: unwrapOrNull(resolveStrokeStyleMixin(childDefaults.stroke)) ?? undefined,
-			shadow: unwrapOrNull(resolveShadowStyleMixin(childDefaults.shadow)) ?? undefined
+			shadow: unwrapOrNull(resolveShadowStyleMixin(childDefaults.shadow)) ?? undefined,
+			text: unwrapOrNull(resolveTextStyleMixin(childDefaults.text, cx.site)) ?? undefined,
+			cta: unwrapOrNull(resolveCtaStyleMixin(childDefaults.cta, cx.site)) ?? undefined
 		},
 		watermarkColor
 	});

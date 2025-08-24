@@ -123,51 +123,64 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 						})) ?? []
 				}
 			},
-			card: {
-				layout: {
-					padding: inherit()
-				},
-				appearance: {
-					borderRadius: inherit(),
-					opacity: inherit(),
-					visible: true
-				},
-				fill: inherit(),
-				stroke: inherit(),
-				shadow: inherit()
+			autoLayout: {
+				horizontalPadding: inherit(),
+				verticalPadding: inherit(),
+				horizontalGap: inherit(),
+				verticalGap: inherit()
 			},
+			appearance: {
+				visible: true,
+				opacity: inherit(),
+				borderRadius: inherit()
+			},
+			fill: inherit(),
+			stroke: inherit(),
+			shadow: inherit(),
 			text: {
 				appearance: {
-					borderRadius: inherit(),
+					visible: true,
 					opacity: inherit(),
-					visible: true
+					borderRadius: inherit()
 				},
 				typography: {
 					font: inherit(),
 					fontSize: inherit(),
-					textColor: inherit(),
-					textAlign: inherit(),
+					textAlignHorizontal: inherit(),
+					textAlignVertical: inherit(),
 					lineHeight: inherit(),
 					letterSpacing: inherit()
-				}
+				},
+				fill: inherit(),
+				stroke: inherit(),
+				shadow: inherit()
 			},
 			cta: {
 				appearance: {
-					borderRadius: inherit(),
+					visible: true,
 					opacity: inherit(),
-					visible: true
-				},
-				typography: {
-					font: inherit(),
-					fontSize: inherit(),
-					textColor: inherit(),
-					textAlign: inherit(),
-					lineHeight: inherit(),
-					letterSpacing: inherit()
+					borderRadius: inherit()
 				},
 				fill: inherit(),
 				stroke: inherit(),
-				shadow: inherit()
+				shadow: inherit(),
+				text: {
+					appearance: {
+						visible: true,
+						opacity: inherit()
+					},
+					typography: {
+						font: inherit(),
+						fontSize: inherit(),
+						textAlignHorizontal: inherit(),
+						textAlignVertical: inherit(),
+						lineHeight: inherit(),
+						letterSpacing: inherit()
+					},
+					fill: inherit(),
+					stroke: inherit(),
+					shadow: inherit()
+				}
 			}
 		};
 	}
@@ -222,19 +235,19 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 						profilePicture: profilePictureAssetHashId,
 						socialLinks: allSocialLinks
 					},
-					card: {
-						layout: {
-							padding: inherit()
-						},
-						appearance: {
-							visible: true,
-							opacity: inherit(),
-							borderRadius: 0
-						},
-						fill: null,
-						stroke: null,
-						shadow: null
+					autoLayout: {
+						horizontalPadding: inherit(),
+						verticalPadding: inherit(),
+						verticalGap: inherit()
 					},
+					appearance: {
+						visible: true,
+						opacity: inherit(),
+						borderRadius: 0
+					},
+					fill: null,
+					stroke: null,
+					shadow: null,
 					text: {
 						appearance: {
 							visible: true,
@@ -243,11 +256,14 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 						typography: {
 							font: inherit(),
 							fontSize: inherit(),
-							textColor: inherit(),
-							textAlign: 'center',
+							textAlignHorizontal: 'center',
+							textAlignVertical: 'center',
 							lineHeight: inherit(),
 							letterSpacing: inherit()
-						}
+						},
+						fill: inherit(),
+						stroke: inherit(),
+						shadow: inherit()
 					}
 				},
 				{
@@ -260,19 +276,20 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 							userTitle: '🛒 Add a link to your Shopify store'
 						}
 					},
-					card: {
-						layout: {
-							padding: inherit()
-						},
-						appearance: {
-							visible: true,
-							opacity: inherit(),
-							borderRadius: inherit()
-						},
-						fill: inherit(),
-						stroke: inherit(),
-						shadow: inherit()
+					autoLayout: {
+						horizontalPadding: inherit(),
+						verticalPadding: inherit(),
+						horizontalGap: inherit(),
+						verticalGap: inherit()
 					},
+					appearance: {
+						visible: true,
+						opacity: inherit(),
+						borderRadius: inherit()
+					},
+					fill: inherit(),
+					stroke: inherit(),
+					shadow: inherit(),
 					text: {
 						appearance: {
 							visible: true,
@@ -281,11 +298,14 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 						typography: {
 							font: inherit(),
 							fontSize: inherit(),
-							textColor: inherit(),
-							textAlign: inherit(),
+							textAlignHorizontal: inherit(),
+							textAlignVertical: inherit(),
 							lineHeight: inherit(),
 							letterSpacing: inherit()
-						}
+						},
+						fill: inherit(),
+						stroke: inherit(),
+						shadow: inherit()
 					}
 				},
 				{
@@ -294,25 +314,24 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					content: {
 						text: '### 📙 Or some text\nwith a different font and background color'
 					},
-					card: {
-						layout: {
-							padding: inherit()
-						},
-						appearance: {
-							visible: true,
-							opacity: inherit(),
-							borderRadius: 0
-						},
-						fill: {
-							paint: {
-								type: 'solid',
-								color: hexToRgba('#E6EDFF')
-							},
-							opacity: 1
-						},
-						stroke: inherit(),
-						shadow: inherit()
+					autoLayout: {
+						horizontalPadding: inherit(),
+						verticalPadding: inherit()
 					},
+					appearance: {
+						visible: true,
+						opacity: inherit(),
+						borderRadius: 0
+					},
+					fill: {
+						paint: {
+							type: 'solid',
+							color: hexToRgba('#E6EDFF')
+						},
+						opacity: 1
+					},
+					stroke: inherit(),
+					shadow: inherit(),
 					text: {
 						appearance: {
 							visible: true,
@@ -325,11 +344,14 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 								style: 'normal'
 							},
 							fontSize: inherit(),
-							textColor: inherit(),
-							textAlign: inherit(),
+							textAlignHorizontal: inherit(),
+							textAlignVertical: inherit(),
 							lineHeight: inherit(),
 							letterSpacing: inherit()
-						}
+						},
+						fill: inherit(),
+						stroke: inherit(),
+						shadow: inherit()
 					}
 				},
 				{
@@ -338,26 +360,24 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					content: {
 						text: '🔮 Let your imagination flow'
 					},
-					card: {
-						layout: {
-							padding: inherit()
-						},
-						appearance: {
-							visible: true,
-							opacity: inherit(),
-							borderRadius: 999
-						},
-
-						fill: {
-							paint: {
-								type: 'solid',
-								color: hexToRgba('#FAF5FF')
-							},
-							opacity: 1
-						},
-						stroke: inherit(),
-						shadow: inherit()
+					autoLayout: {
+						horizontalPadding: inherit(),
+						verticalPadding: inherit()
 					},
+					appearance: {
+						visible: true,
+						opacity: inherit(),
+						borderRadius: 999
+					},
+					fill: {
+						paint: {
+							type: 'solid',
+							color: hexToRgba('#FAF5FF')
+						},
+						opacity: 1
+					},
+					stroke: inherit(),
+					shadow: inherit(),
 					text: {
 						appearance: {
 							visible: true,
@@ -366,11 +386,20 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 						typography: {
 							font: inherit(),
 							fontSize: 24,
-							textColor: hexToRgba('#E879F9'),
-							textAlign: inherit(),
+							textAlignHorizontal: inherit(),
+							textAlignVertical: inherit(),
 							lineHeight: inherit(),
 							letterSpacing: inherit()
-						}
+						},
+						fill: {
+							paint: {
+								type: 'solid',
+								color: hexToRgba('#E879F9')
+							},
+							opacity: 1
+						},
+						stroke: inherit(),
+						shadow: inherit()
 					}
 				},
 				...(productNode != null ? [productNode] : []),
@@ -384,95 +413,78 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 							altText: 'Welcome GIF'
 						}
 					},
-					card: {
-						layout: {
-							padding: 0
-						},
-						appearance: {
-							visible: true,
-							opacity: inherit(),
-							borderRadius: inherit()
-						},
-						fill: inherit(),
-						stroke: inherit(),
-						shadow: inherit()
-					}
+					autoLayout: {
+						horizontalPadding: 0,
+						verticalPadding: 0
+					},
+					appearance: {
+						visible: true,
+						opacity: inherit(),
+						borderRadius: inherit()
+					},
+					fill: inherit(),
+					stroke: inherit(),
+					shadow: inherit()
 				}
 			],
-			page: {
-				layout: {
-					spacing: 24
+			autoLayout: {
+				horizontalPadding: 12,
+				verticalPadding: 48,
+				verticalGap: 24
+			},
+			appearance: {
+				visible: true,
+				opacity: 1
+			},
+			fill: {
+				paint: {
+					type: 'solid',
+					color: hexToRgba(backgroundColor)
+				},
+				opacity: 1
+			},
+			childMixins: {
+				autoLayout: {
+					horizontalPadding: 12,
+					verticalPadding: 12,
+					horizontalGap: 12,
+					verticalGap: 12
 				},
 				appearance: {
 					visible: true,
 					opacity: 1,
-					borderRadius: 0
+					borderRadius
 				},
 				fill: {
 					paint: {
 						type: 'solid',
-						color: hexToRgba(backgroundColor)
+						color: hexToRgba(surfaceColor)
 					},
 					opacity: 1
-				}
-			},
-			childMixins: {
-				card: {
-					layout: {
-						padding: 12
-					},
-					appearance: {
-						visible: true,
-						opacity: 1,
-						borderRadius
-					},
-					fill: {
-						paint: {
-							type: 'solid',
-							color: hexToRgba(surfaceColor)
-						},
-						opacity: 1
-					},
-					stroke: {
-						color: { r: 0, g: 0, b: 0, a: 0.1 },
-						width: 1
-					},
-					shadow: {
-						color: { r: 0, g: 0, b: 0, a: 0.1 },
-						offsetX: 0,
-						offsetY: 4,
-						blur: 6,
-						spread: -1
-					}
+				},
+				stroke: {
+					color: { r: 0, g: 0, b: 0, a: 0.1 },
+					width: 1
+				},
+				shadow: {
+					color: { r: 0, g: 0, b: 0, a: 0.1 },
+					offsetX: 0,
+					offsetY: 4,
+					blur: 6,
+					spread: -1
 				},
 				text: {
 					appearance: {
 						visible: true,
-						opacity: 1,
-						borderRadius
+						opacity: 1
 					},
 					typography: {
 						font: bodyFont.font,
 						fontSize: 16,
-						textColor: hexToRgba(primaryColor),
-						textAlign: 'center',
+						textAlignHorizontal: 'center',
+						textAlignVertical: 'center',
 						lineHeight: { type: 'auto' },
-						letterSpacing: 0
-					}
-				},
-				cta: {
-					appearance: {
-						visible: true,
-						opacity: 1,
-						borderRadius
-					},
-					typography: {
-						font: bodyFont.font,
-						fontSize: 16,
-						textColor: hexToRgba(surfaceColor),
-						textAlign: 'center',
-						lineHeight: { type: 'auto' },
-						letterSpacing: 0
+						letterSpacing: { type: 'auto' }
 					},
 					fill: {
 						paint: {
@@ -483,6 +495,45 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					},
 					stroke: null,
 					shadow: null
+				},
+				cta: {
+					appearance: {
+						visible: true,
+						opacity: 1,
+						borderRadius
+					},
+					fill: {
+						paint: {
+							type: 'solid',
+							color: hexToRgba(primaryColor)
+						},
+						opacity: 1
+					},
+					stroke: null,
+					shadow: null,
+					text: {
+						appearance: {
+							visible: true,
+							opacity: 1
+						},
+						typography: {
+							font: bodyFont.font,
+							fontSize: 16,
+							textAlignHorizontal: 'center',
+							textAlignVertical: 'center',
+							lineHeight: { type: 'auto' },
+							letterSpacing: { type: 'auto' }
+						},
+						fill: {
+							paint: {
+								type: 'solid',
+								color: hexToRgba(surfaceColor)
+							},
+							opacity: 1
+						},
+						stroke: null,
+						shadow: null
+					}
 				}
 			}
 		}

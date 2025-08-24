@@ -3,6 +3,9 @@ import { TState } from 'feature-state';
 import { useMapState } from '@/hooks';
 import { TPageEditor } from '../../lib';
 import { ChildAppearanceStyleMixinEditor } from '../appearance-style';
+import { ChildFillStyleMixinEditor } from '../fill-style';
+import { ChildShadowStyleMixinEditor } from '../shadow-style';
+import { ChildStrokeStyleMixinEditor } from '../stroke-style';
 import { ChildTypographyStyleMixinEditor } from '../typography-style';
 
 export const ChildTextStyleMixinEditor = <GValue extends Record<string, any>>(
@@ -24,12 +27,39 @@ export const ChildTextStyleMixinEditor = <GValue extends Record<string, any>>(
 			parent._notify();
 		}
 	});
+	const fillState = useMapState(state, {
+		get: (parent) => ({ childMixins: { fill: parent.childMixins.text.fill } }),
+		set: (parent, child) => {
+			parent._v.childMixins.text.fill = child.childMixins.fill;
+			parent._notify();
+		}
+	});
+	const strokeState = useMapState(state, {
+		get: (parent) => ({ childMixins: { stroke: parent.childMixins.text.stroke } }),
+		set: (parent, child) => {
+			parent._v.childMixins.text.stroke = child.childMixins.stroke;
+			parent._notify();
+		}
+	});
+	const shadowState = useMapState(state, {
+		get: (parent) => ({ childMixins: { shadow: parent.childMixins.text.shadow } }),
+		set: (parent, child) => {
+			parent._v.childMixins.text.shadow = child.childMixins.shadow;
+			parent._notify();
+		}
+	});
 
 	return (
 		<>
 			<ChildAppearanceStyleMixinEditor state={appearanceState} />
 			<div className="h-px bg-gray-200" />
 			<ChildTypographyStyleMixinEditor state={typographyState} editor={editor} />
+			<div className="h-px bg-gray-200" />
+			<ChildFillStyleMixinEditor state={fillState} editor={editor} allowedPaintTypes={['solid']} />
+			<div className="h-px bg-gray-200" />
+			<ChildStrokeStyleMixinEditor state={strokeState} />
+			<div className="h-px bg-gray-200" />
+			<ChildShadowStyleMixinEditor state={shadowState} />
 		</>
 	);
 };

@@ -2,23 +2,23 @@ import { TBaseNode, TIdMixin, TMixin, TSocialLink } from '@repo/editor';
 import { TResolvedAsset } from '../../lib';
 import {
 	TResolvedAppearanceStyleMixin,
+	TResolvedAutoLayoutStyleMixin,
 	TResolvedFillStyleMixin,
-	TResolvedLayoutStyleMixin,
 	TResolvedShadowStyleMixin,
 	TResolvedStrokeStyleMixin,
-	TResolvedTypographyStyleMixin
+	TResolvedTextStyleMixin
 } from '../../mixins';
 
 export type TResolvedAboutNode = TBaseNode<
 	TResolvedAboutNodeMixin,
 	[
 		TIdMixin,
-		TResolvedLayoutStyleMixin,
+		TResolvedAutoLayoutStyleMixin,
 		TResolvedAppearanceStyleMixin,
-		TResolvedTypographyStyleMixin,
 		TResolvedFillStyleMixin,
 		TResolvedStrokeStyleMixin,
-		TResolvedShadowStyleMixin
+		TResolvedShadowStyleMixin,
+		TResolvedTextStyleMixin
 	]
 >;
 

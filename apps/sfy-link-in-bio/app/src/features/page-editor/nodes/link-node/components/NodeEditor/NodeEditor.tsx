@@ -6,7 +6,14 @@ import React from 'react';
 import { AccordionSection } from '@/components';
 import { PortalPulse } from '@/components/display';
 import { TNodeEditorComponentProps, TNodeState } from '../../../../lib';
-import { CardStyleMixinEditor, TextStyleMixinEditor } from '../../../../mixins';
+import {
+	AppearanceStyleMixinEditor,
+	AutoLayoutStyleMixinEditor,
+	FillStyleMixinEditor,
+	ShadowStyleMixinEditor,
+	StrokeStyleMixinEditor,
+	TextStyleMixinEditor
+} from '../../../../mixins';
 import { DefaultLinkVariant } from './DefaultLinkVariant';
 import { linkVariantMetadataMap, TVariantType } from './environment';
 import { getApplicableVariants } from './lib';
@@ -224,7 +231,23 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 
 			{/* Card Style Section */}
 			<AccordionSection title="Card Style" defaultOpen={true} collapsibleClassName="px-0 space-y-3">
-				<CardStyleMixinEditor state={nodeState} parentState={parentNodeState} editor={editor} />
+				<AutoLayoutStyleMixinEditor
+					state={nodeState}
+					parentState={parentNodeState}
+					editor={editor}
+				/>
+				<div className="h-px bg-gray-200" />
+				<AppearanceStyleMixinEditor
+					state={nodeState}
+					parentState={parentNodeState}
+					editor={editor}
+				/>
+				<div className="h-px bg-gray-200" />
+				<FillStyleMixinEditor state={nodeState} parentState={parentNodeState} editor={editor} />
+				<div className="h-px bg-gray-200" />
+				<StrokeStyleMixinEditor state={nodeState} parentState={parentNodeState} editor={editor} />
+				<div className="h-px bg-gray-200" />
+				<ShadowStyleMixinEditor state={nodeState} parentState={parentNodeState} editor={editor} />
 			</AccordionSection>
 
 			{/* Text Style Section */}

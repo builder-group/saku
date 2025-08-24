@@ -6,7 +6,15 @@ import React from 'react';
 import { AccordionSection, DeleteIcon, ProductAddIcon } from '@/components';
 import { capitalizeFirstLetter, isProduct, mutateWithReferenceUpdate } from '@/lib';
 import { TNodeEditorComponentProps } from '../../../lib';
-import { CardStyleMixinEditor, CtaStyleMixinEditor, TextStyleMixinEditor } from '../../../mixins';
+import {
+	AppearanceStyleMixinEditor,
+	AutoLayoutStyleMixinEditor,
+	CtaStyleMixinEditor,
+	FillStyleMixinEditor,
+	ShadowStyleMixinEditor,
+	StrokeStyleMixinEditor,
+	TextStyleMixinEditor
+} from '../../../mixins';
 
 export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>> = (props) => {
 	const { nodeState, editor } = props;
@@ -323,7 +331,23 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 
 			{/* Card Style Section */}
 			<AccordionSection title="Card Style" defaultOpen={true} collapsibleClassName="px-0 space-y-3">
-				<CardStyleMixinEditor state={nodeState} parentState={parentNodeState} editor={editor} />
+				<AutoLayoutStyleMixinEditor
+					state={nodeState}
+					parentState={parentNodeState}
+					editor={editor}
+				/>
+				<div className="h-px bg-gray-200" />
+				<AppearanceStyleMixinEditor
+					state={nodeState}
+					parentState={parentNodeState}
+					editor={editor}
+				/>
+				<div className="h-px bg-gray-200" />
+				<FillStyleMixinEditor state={nodeState} parentState={parentNodeState} editor={editor} />
+				<div className="h-px bg-gray-200" />
+				<StrokeStyleMixinEditor state={nodeState} parentState={parentNodeState} editor={editor} />
+				<div className="h-px bg-gray-200" />
+				<ShadowStyleMixinEditor state={nodeState} parentState={parentNodeState} editor={editor} />
 			</AccordionSection>
 
 			{/* Text Style Section */}

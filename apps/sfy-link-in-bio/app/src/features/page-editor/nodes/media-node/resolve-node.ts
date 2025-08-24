@@ -4,8 +4,8 @@ import { AppError } from '@/lib';
 import { resolveAsset, TNodeResolveContext } from '../../lib';
 import {
 	resolveAppearanceStyleMixin,
+	resolveAutoLayoutStyleMixin,
 	resolveFillStyleMixin,
-	resolveLayoutStyleMixin,
 	resolveShadowStyleMixin,
 	resolveStrokeStyleMixin
 } from '../../mixins';
@@ -15,7 +15,7 @@ export function resolveMediaNode(
 	node: TMediaNode,
 	cx: TNodeResolveContext
 ): TResult<TResolvedMediaNode, AppError> {
-	const { content, layout, appearance, fill, stroke, shadow, ...rest } = node;
+	const { content, autoLayout, appearance, fill, stroke, shadow, ...rest } = node;
 
 	let resolvedMedia: TResolvedMedia | undefined;
 	switch (content.media?.type) {
@@ -33,12 +33,10 @@ export function resolveMediaNode(
 		// do nothing
 	}
 
-	const [isResolvedLayoutOk, resolvedLayoutErr, resolvedLayout] = resolveLayoutStyleMixin(
-		layout,
-		cx.childMixins?.layout
-	);
-	if (!isResolvedLayoutOk) {
-		return Err(resolvedLayoutErr.wrapWith('#ERR_RESOLVE_LAYOUT_STYLE'));
+	const [isResolvedAutoLayoutOk, resolvedAutoLayoutErr, resolvedAutoLayout] =
+		resolveAutoLayoutStyleMixin(autoLayout, cx.childMixins?.autoLayout);
+	if (!isResolvedAutoLayoutOk) {
+		return Err(resolvedAutoLayoutErr.wrapWith('#ERR_RESOLVE_AUTO_LAYOUT_STYLE'));
 	}
 	const [isResolvedAppearanceOk, resolvedAppearanceErr, resolvedAppearance] =
 		resolveAppearanceStyleMixin(appearance, cx.childMixins?.appearance);
@@ -73,7 +71,7 @@ export function resolveMediaNode(
 		content: {
 			media: resolvedMedia
 		},
-		layout: resolvedLayout,
+		autoLayout: resolvedAutoLayout,
 		appearance: resolvedAppearance,
 		fill: resolvedFill,
 		stroke: resolvedStroke,

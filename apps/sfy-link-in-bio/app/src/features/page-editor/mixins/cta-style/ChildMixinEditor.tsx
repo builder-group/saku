@@ -1,4 +1,5 @@
 import { TCtaStyleMixin, TMergeMixins, TUnreference } from '@repo/editor';
+import { Text } from '@shopify/polaris';
 import { TState } from 'feature-state';
 import { useMapState } from '@/hooks';
 import { TPageEditor } from '../../lib';
@@ -6,7 +7,7 @@ import { ChildAppearanceStyleMixinEditor } from '../appearance-style';
 import { ChildFillStyleMixinEditor } from '../fill-style';
 import { ChildShadowStyleMixinEditor } from '../shadow-style';
 import { ChildStrokeStyleMixinEditor } from '../stroke-style';
-import { ChildTypographyStyleMixinEditor } from '../typography-style';
+import { ChildTextStyleMixinEditor } from '../text-style';
 
 export const ChildCtaStyleMixinEditor = <GValue extends Record<string, any>>(
 	props: TChildCtaStyleMixinEditorProps<GValue>
@@ -17,13 +18,6 @@ export const ChildCtaStyleMixinEditor = <GValue extends Record<string, any>>(
 		get: (parent) => ({ childMixins: { appearance: parent.childMixins.cta.appearance } }),
 		set: (parent, child) => {
 			parent._v.childMixins.cta.appearance = child.childMixins.appearance;
-			parent._notify();
-		}
-	});
-	const typographyState = useMapState(state, {
-		get: (parent) => ({ childMixins: { typography: parent.childMixins.cta.typography } }),
-		set: (parent, child) => {
-			parent._v.childMixins.cta.typography = child.childMixins.typography;
 			parent._notify();
 		}
 	});
@@ -48,18 +42,31 @@ export const ChildCtaStyleMixinEditor = <GValue extends Record<string, any>>(
 			parent._notify();
 		}
 	});
+	const textState = useMapState(state, {
+		get: (parent) => ({ childMixins: { text: parent.childMixins.cta.text } }),
+		set: (parent, child) => {
+			parent._v.childMixins.cta.text = child.childMixins.text;
+			parent._notify();
+		}
+	});
 
 	return (
 		<>
 			<ChildAppearanceStyleMixinEditor state={appearanceState} />
-			<div className="h-px bg-gray-200" />
-			<ChildTypographyStyleMixinEditor state={typographyState} editor={editor} />
 			<div className="h-px bg-gray-200" />
 			<ChildFillStyleMixinEditor state={fillState} editor={editor} />
 			<div className="h-px bg-gray-200" />
 			<ChildStrokeStyleMixinEditor state={strokeState} />
 			<div className="h-px bg-gray-200" />
 			<ChildShadowStyleMixinEditor state={shadowState} />
+			<div className="h-px bg-gray-200" />
+			<div>
+				<Text as="span" variant="headingXl" tone="subdued">
+					Text
+				</Text>
+			</div>
+			<div className="h-px bg-gray-200" />
+			<ChildTextStyleMixinEditor state={textState} editor={editor} />
 		</>
 	);
 };

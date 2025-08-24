@@ -1,4 +1,5 @@
 import { TCtaStyleMixin, TMergeMixins, TUnreference } from '@repo/editor';
+import { Text } from '@shopify/polaris';
 import { TState } from 'feature-state';
 import { useMapState } from '@/hooks';
 import { TPageEditor } from '../../lib';
@@ -6,7 +7,7 @@ import { AppearanceStyleMixinEditor } from '../appearance-style';
 import { FillStyleMixinEditor } from '../fill-style';
 import { ShadowStyleMixinEditor } from '../shadow-style';
 import { StrokeStyleMixinEditor } from '../stroke-style';
-import { TypographyStyleMixinEditor } from '../typography-style';
+import { TextStyleMixinEditor } from '../text-style';
 
 export const CtaStyleMixinEditor = <
 	GValue extends Record<string, any>,
@@ -20,13 +21,6 @@ export const CtaStyleMixinEditor = <
 		get: (parent) => ({ appearance: parent.cta.appearance }),
 		set: (parent, child) => {
 			parent._v.cta.appearance = child.appearance;
-			parent._notify();
-		}
-	});
-	const typographyState = useMapState(state, {
-		get: (parent) => ({ typography: parent.cta.typography }),
-		set: (parent, child) => {
-			parent._v.cta.typography = child.typography;
 			parent._notify();
 		}
 	});
@@ -51,18 +45,18 @@ export const CtaStyleMixinEditor = <
 			parent._notify();
 		}
 	});
+	const textState = useMapState(state, {
+		get: (parent) => ({ text: parent.cta.text }),
+		set: (parent, child) => {
+			parent._v.cta.text = child.text;
+			parent._notify();
+		}
+	});
 
 	const parentAppearanceState = useMapState(parentState, {
 		get: (parent) => ({ childMixins: { appearance: parent.childMixins.cta.appearance } }),
 		set: (parent, child) => {
 			parent._v.childMixins.cta.appearance = child.childMixins.appearance;
-			parent._notify();
-		}
-	});
-	const parentTypographyState = useMapState(parentState, {
-		get: (parent) => ({ childMixins: { typography: parent.childMixins.cta.typography } }),
-		set: (parent, child) => {
-			parent._v.childMixins.cta.typography = child.childMixins.typography;
 			parent._notify();
 		}
 	});
@@ -87,6 +81,13 @@ export const CtaStyleMixinEditor = <
 			parent._notify();
 		}
 	});
+	const parentTextState = useMapState(parentState, {
+		get: (parent) => ({ childMixins: { text: parent.childMixins.cta.text } }),
+		set: (parent, child) => {
+			parent._v.childMixins.cta.text = child.childMixins.text;
+			parent._notify();
+		}
+	});
 
 	return (
 		<>
@@ -96,17 +97,19 @@ export const CtaStyleMixinEditor = <
 				editor={editor}
 			/>
 			<div className="h-px bg-gray-200" />
-			<TypographyStyleMixinEditor
-				state={typographyState}
-				parentState={parentTypographyState}
-				editor={editor}
-			/>
-			<div className="h-px bg-gray-200" />
 			<FillStyleMixinEditor state={fillState} parentState={parentFillState} editor={editor} />
 			<div className="h-px bg-gray-200" />
 			<StrokeStyleMixinEditor state={strokeState} parentState={parentStrokeState} editor={editor} />
 			<div className="h-px bg-gray-200" />
 			<ShadowStyleMixinEditor state={shadowState} parentState={parentShadowState} editor={editor} />
+			<div className="h-px bg-gray-200" />
+			<div>
+				<Text as="span" variant="headingXl" tone="subdued">
+					Text
+				</Text>
+			</div>
+			<div className="h-px bg-gray-200" />
+			<TextStyleMixinEditor state={textState} parentState={parentTextState} editor={editor} />
 		</>
 	);
 };

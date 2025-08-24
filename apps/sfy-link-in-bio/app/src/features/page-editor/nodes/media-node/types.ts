@@ -1,8 +1,8 @@
 import { TBaseNode, TIdMixin, TMixin } from '@repo/editor';
 import {
 	TResolvedAppearanceStyleMixin,
+	TResolvedAutoLayoutStyleMixin,
 	TResolvedFillStyleMixin,
-	TResolvedLayoutStyleMixin,
 	TResolvedShadowStyleMixin,
 	TResolvedStrokeStyleMixin
 } from '../../mixins';
@@ -11,7 +11,7 @@ export type TResolvedMediaNode<GMedia extends TResolvedMedia = TResolvedMedia> =
 	TResolvedMediaNodeMixin<GMedia>,
 	[
 		TIdMixin,
-		TResolvedLayoutStyleMixin,
+		TResolvedAutoLayoutStyleMixin,
 		TResolvedAppearanceStyleMixin,
 		TResolvedFillStyleMixin,
 		TResolvedStrokeStyleMixin,

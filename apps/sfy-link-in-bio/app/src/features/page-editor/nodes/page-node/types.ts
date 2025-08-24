@@ -1,13 +1,13 @@
 import { TBaseNode, TIdMixin, TMergeMixins, TMixin } from '@repo/editor';
 import {
 	TResolvedAppearanceStyleMixin,
+	TResolvedAutoLayoutStyleMixin,
 	TResolvedChildrenMixin,
+	TResolvedCtaStyleMixin,
 	TResolvedFillStyleMixin,
-	TResolvedLayoutStyleMixin,
-	TResolvedPageLayoutStyleMixin,
 	TResolvedShadowStyleMixin,
 	TResolvedStrokeStyleMixin,
-	TResolvedTypographyStyleMixin
+	TResolvedTextStyleMixin
 } from '../../mixins';
 
 export type TResolvedPageNode = TBaseNode<
@@ -15,7 +15,7 @@ export type TResolvedPageNode = TBaseNode<
 	[
 		TIdMixin,
 		TResolvedChildrenMixin,
-		TResolvedPageLayoutStyleMixin,
+		TResolvedAutoLayoutStyleMixin,
 		TResolvedAppearanceStyleMixin,
 		TResolvedFillStyleMixin
 	]
@@ -35,12 +35,13 @@ export type TResolvedPageNodeMixin = TMixin<
 		childMixins: Partial<
 			TMergeMixins<
 				[
-					TResolvedLayoutStyleMixin,
+					TResolvedAutoLayoutStyleMixin,
 					TResolvedAppearanceStyleMixin,
-					TResolvedTypographyStyleMixin,
 					TResolvedFillStyleMixin,
 					TResolvedStrokeStyleMixin,
-					TResolvedShadowStyleMixin
+					TResolvedShadowStyleMixin,
+					TResolvedTextStyleMixin,
+					TResolvedCtaStyleMixin
 				]
 			>
 		>;

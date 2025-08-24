@@ -18,7 +18,8 @@ import {
 	LinkOffIcon,
 	MappedPaintInput,
 	MinusIcon,
-	PlusIcon
+	PlusIcon,
+	TPaintType
 } from '@/components';
 import { useMapStateReference } from '../../hooks';
 import { TPageEditor } from '../../lib';
@@ -29,7 +30,7 @@ export const FillStyleMixinEditor = <
 >(
 	props: TFillStyleMixinEditorProps<GValue, GParentValue>
 ) => {
-	const { state, parentState, editor } = props;
+	const { state, parentState, editor, allowedPaintTypes } = props;
 
 	const resolvedFill = useCombinedCompute(
 		[state, parentState ?? createState(undefined)],
@@ -150,6 +151,7 @@ export const FillStyleMixinEditor = <
 						}}
 						disableFieldInheritance
 						editor={editor}
+						allowedPaintTypes={allowedPaintTypes}
 					/>
 				</div>
 			)}
@@ -169,4 +171,5 @@ interface TFillStyleMixinEditorProps<
 		any
 	>;
 	editor: TPageEditor;
+	allowedPaintTypes?: TPaintType[];
 }

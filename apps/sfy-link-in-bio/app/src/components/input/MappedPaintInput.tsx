@@ -45,34 +45,44 @@ export const MappedPaintInput = <GStateValue, GParentStateValue>(
 		mapParentValue,
 		disableFieldInheritance = false,
 		editor,
+		allowedPaintTypes = ['solid', 'image'],
 		label,
 		className,
 		...textFieldProps
 	} = props;
 
 	const [popoverActive, setPopoverActive] = React.useState(false);
-	const [selectedTab, setSelectedTab] = React.useState(0);
-	const tabs = React.useMemo(
-		() => [
-			{
+	const [selectedTabIndex, setSelectedTabIndex] = React.useState(0);
+	const tabs = React.useMemo(() => {
+		const availableTabs = [];
+
+		if (allowedPaintTypes.includes('solid')) {
+			availableTabs.push({
 				id: 'solid',
 				content: 'Color',
 				accessibilityLabel: 'Solid color paint',
 				panelID: 'solid-panel'
-			},
-			{
+			});
+		}
+
+		if (allowedPaintTypes.includes('image')) {
+			availableTabs.push({
 				id: 'image',
 				content: 'Image',
 				accessibilityLabel: 'Image paint',
 				panelID: 'image-panel'
-			}
-		],
-		[]
-	);
+			});
+		}
+
+		return availableTabs;
+	}, [allowedPaintTypes]);
 	const tabValueCache = React.useRef<{
 		solid?: TPaint;
 		image?: TPaint;
 	}>({});
+	const currentTabId = React.useMemo(() => {
+		return tabs[selectedTabIndex]?.id;
+	}, [selectedTabIndex, tabs]);
 
 	const [displayValue, setDisplayValue] = React.useState('');
 	const lastChangeFromText = React.useRef(false);
@@ -241,21 +251,26 @@ export const MappedPaintInput = <GStateValue, GParentStateValue>(
 	}, [isValueInherited]);
 
 	const handleTabChange = React.useCallback(
-		(selectedTabIndex: number) => {
+		(newSelectedTabIndex: number) => {
 			// Cache current value before switching
 			if (resolvedValue != null) {
-				if (selectedTab === 0) {
-					tabValueCache.current.solid = resolvedValue;
-				} else if (selectedTab === 1) {
-					tabValueCache.current.image = resolvedValue;
+				switch (tabs[selectedTabIndex]?.id) {
+					case 'solid':
+						tabValueCache.current.solid = resolvedValue;
+						break;
+					case 'image':
+						tabValueCache.current.image = resolvedValue;
+						break;
+					default:
+					// do nothing
 				}
 			}
 
-			setSelectedTab(selectedTabIndex);
+			setSelectedTabIndex(newSelectedTabIndex);
 
 			// Apply cached value if available, otherwise use parent or default
-			switch (selectedTabIndex) {
-				case 0:
+			switch (tabs[newSelectedTabIndex]?.id) {
+				case 'solid':
 					handleValueChange(
 						tabValueCache.current.solid ||
 							(parentValue?.type === 'solid'
@@ -264,7 +279,7 @@ export const MappedPaintInput = <GStateValue, GParentStateValue>(
 						false
 					);
 					break;
-				case 1:
+				case 'image':
 					handleValueChange(
 						tabValueCache.current.image ||
 							(parentValue?.type === 'image'
@@ -279,7 +294,7 @@ export const MappedPaintInput = <GStateValue, GParentStateValue>(
 				// do nothing
 			}
 		},
-		[handleValueChange, parentValue, resolvedValue, selectedTab]
+		[handleValueChange, parentValue, resolvedValue, selectedTabIndex, tabs]
 	);
 
 	// =========================================================================
@@ -301,8 +316,15 @@ export const MappedPaintInput = <GStateValue, GParentStateValue>(
 		}
 		lastChangeFromText.current = false;
 
-		setSelectedTab(resolvedValue?.type === 'image' ? 1 : 0);
-	}, [resolvedValue]);
+		// Find the correct tab index based on the resolved value type
+		const targetTabIndex = tabs.findIndex((tab) => tab.id === resolvedValue?.type);
+		if (targetTabIndex !== -1) {
+			setSelectedTabIndex(targetTabIndex);
+		} else if (tabs.length > 0) {
+			// Fallback to first available tab if current type is not allowed
+			setSelectedTabIndex(0);
+		}
+	}, [resolvedValue, tabs]);
 
 	// =========================================================================
 	// UI
@@ -363,14 +385,20 @@ export const MappedPaintInput = <GStateValue, GParentStateValue>(
 			autofocusTarget="none"
 		>
 			<div className="max-w-72 px-4 pb-4" onClick={(e) => e.stopPropagation()}>
-				<Tabs
-					tabs={tabs}
-					selected={selectedTab}
-					onSelect={handleTabChange}
-					disabled={isValueInherited}
-				>
-					{selectedTab === 0 ? ColorTab : selectedTab === 1 ? ImageTab : null}
-				</Tabs>
+				{tabs.length > 1 ? (
+					<Tabs
+						tabs={tabs}
+						selected={selectedTabIndex}
+						onSelect={handleTabChange}
+						disabled={isValueInherited}
+					>
+						{currentTabId === 'solid' ? ColorTab : currentTabId === 'image' ? ImageTab : null}
+					</Tabs>
+				) : (
+					<div className="pt-4">
+						{currentTabId === 'solid' ? ColorTab : currentTabId === 'image' ? ImageTab : null}
+					</div>
+				)}
 			</div>
 		</Popover>
 	);
@@ -431,7 +459,10 @@ export interface TMappedPaintInputProps<GStateValue, GParentStateValue>
 		registerImage: (url: string, fileName?: string) => TAssetHash | null;
 		getImageAsset: (hash: TAssetHash | undefined | null) => TImageAsset | null;
 	};
+	allowedPaintTypes?: TPaintType[];
 
 	label: string;
 	className?: string;
 }
+
+export type TPaintType = 'solid' | 'image';

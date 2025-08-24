@@ -3,6 +3,9 @@ import { TState } from 'feature-state';
 import { useMapState } from '@/hooks';
 import { TPageEditor } from '../../lib';
 import { AppearanceStyleMixinEditor } from '../appearance-style';
+import { FillStyleMixinEditor } from '../fill-style';
+import { ShadowStyleMixinEditor } from '../shadow-style';
+import { StrokeStyleMixinEditor } from '../stroke-style';
 import { TypographyStyleMixinEditor } from '../typography-style';
 
 export const TextStyleMixinEditor = <
@@ -27,6 +30,27 @@ export const TextStyleMixinEditor = <
 			parent._notify();
 		}
 	});
+	const fillState = useMapState(state, {
+		get: (parent) => ({ fill: parent.text.fill }),
+		set: (parent, child) => {
+			parent._v.text.fill = child.fill;
+			parent._notify();
+		}
+	});
+	const strokeState = useMapState(state, {
+		get: (parent) => ({ stroke: parent.text.stroke }),
+		set: (parent, child) => {
+			parent._v.text.stroke = child.stroke;
+			parent._notify();
+		}
+	});
+	const shadowState = useMapState(state, {
+		get: (parent) => ({ shadow: parent.text.shadow }),
+		set: (parent, child) => {
+			parent._v.text.shadow = child.shadow;
+			parent._notify();
+		}
+	});
 
 	const parentAppearanceState = useMapState(parentState, {
 		get: (parent) => ({ childMixins: { appearance: parent.childMixins.text.appearance } }),
@@ -39,6 +63,27 @@ export const TextStyleMixinEditor = <
 		get: (parent) => ({ childMixins: { typography: parent.childMixins.text.typography } }),
 		set: (parent, child) => {
 			parent._v.childMixins.text.typography = child.childMixins.typography;
+			parent._notify();
+		}
+	});
+	const parentFillState = useMapState(parentState, {
+		get: (parent) => ({ childMixins: { fill: parent.childMixins.text.fill } }),
+		set: (parent, child) => {
+			parent._v.childMixins.text.fill = child.childMixins.fill;
+			parent._notify();
+		}
+	});
+	const parentStrokeState = useMapState(parentState, {
+		get: (parent) => ({ childMixins: { stroke: parent.childMixins.text.stroke } }),
+		set: (parent, child) => {
+			parent._v.childMixins.text.stroke = child.childMixins.stroke;
+			parent._notify();
+		}
+	});
+	const parentShadowState = useMapState(parentState, {
+		get: (parent) => ({ childMixins: { shadow: parent.childMixins.text.shadow } }),
+		set: (parent, child) => {
+			parent._v.childMixins.text.shadow = child.childMixins.shadow;
 			parent._notify();
 		}
 	});
@@ -56,6 +101,17 @@ export const TextStyleMixinEditor = <
 				parentState={parentTypographyState}
 				editor={editor}
 			/>
+			<div className="h-px bg-gray-200" />
+			<FillStyleMixinEditor
+				state={fillState}
+				parentState={parentFillState}
+				editor={editor}
+				allowedPaintTypes={['solid']}
+			/>
+			<div className="h-px bg-gray-200" />
+			<StrokeStyleMixinEditor state={strokeState} parentState={parentStrokeState} editor={editor} />
+			<div className="h-px bg-gray-200" />
+			<ShadowStyleMixinEditor state={shadowState} parentState={parentShadowState} editor={editor} />
 		</>
 	);
 };

@@ -3,13 +3,11 @@ import {
 	TFont,
 	TLetterSpacing,
 	TLineHeight,
-	TRgba,
 	TTextAlign,
 	TTypographyStyleMixin
 } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
-import { resolveColor } from '../../lib';
 import { TResolvedTypographyStyleMixin } from './types';
 
 export function resolveTypographyStyleMixin(
@@ -24,14 +22,19 @@ export function resolveTypographyStyleMixin(
 	if (resolvedFontSize == null) {
 		return Err(new AppError('#ERR_RESOLVE_FONT_SIZE'));
 	}
-	const unreferencedTextColor = resolveReference(typography.textColor, parentMixin?.textColor);
-	if (unreferencedTextColor == null) {
-		return Err(new AppError('#ERR_RESOLVE_TEXT_COLOR'));
+	const resolvedTextAlignHorizontal = resolveReference(
+		typography.textAlignHorizontal,
+		parentMixin?.textAlignHorizontal
+	);
+	if (resolvedTextAlignHorizontal == null) {
+		return Err(new AppError('#ERR_RESOLVE_TEXT_ALIGN_HORIZONTAL'));
 	}
-	const resolvedTextColor = resolveColor(unreferencedTextColor);
-	const resolvedTextAlign = resolveReference(typography.textAlign, parentMixin?.textAlign);
-	if (resolvedTextAlign == null) {
-		return Err(new AppError('#ERR_RESOLVE_TEXT_ALIGN'));
+	const resolvedTextAlignVertical = resolveReference(
+		typography.textAlignVertical,
+		parentMixin?.textAlignVertical
+	);
+	if (resolvedTextAlignVertical == null) {
+		return Err(new AppError('#ERR_RESOLVE_TEXT_ALIGN_VERTICAL'));
 	}
 	const resolvedLineHeight = resolveReference(typography.lineHeight, parentMixin?.lineHeight);
 	if (resolvedLineHeight == null) {
@@ -48,17 +51,17 @@ export function resolveTypographyStyleMixin(
 	return Ok({
 		font: resolvedFont,
 		fontSize: resolvedFontSize,
-		textColor: resolvedTextColor,
-		textAlign: resolvedTextAlign,
+		textAlignHorizontal: resolvedTextAlignHorizontal,
+		textAlignVertical: resolvedTextAlignVertical,
 		lineHeight: resolvedLineHeight,
 		letterSpacing: resolvedLetterSpacing,
 		styles: {
 			fontFamily: resolvedFont.family,
 			fontSize: `${resolvedFontSize}px`,
-			color: resolvedTextColor,
-			textAlign: resolvedTextAlign,
-			lineHeight: typeof resolvedLineHeight === 'number' ? resolvedLineHeight : 'auto',
-			letterSpacing: `${resolvedLetterSpacing}px`
+			textAlignHorizontal: resolvedTextAlignHorizontal,
+			textAlignVertical: resolvedTextAlignVertical,
+			lineHeight: resolveLineHeight(resolvedLineHeight),
+			letterSpacing: resolveLetterSpacing(resolvedLetterSpacing)
 		}
 	});
 }
@@ -66,8 +69,30 @@ export function resolveTypographyStyleMixin(
 export interface TResolveTypographyStyleMixinParentMixin {
 	font: TFont;
 	fontSize: number;
-	textColor: TRgba;
-	textAlign: TTextAlign;
+	textAlignHorizontal: TTextAlign;
+	textAlignVertical: TTextAlign;
 	lineHeight: TLineHeight;
 	letterSpacing: TLetterSpacing;
+}
+
+function resolveLineHeight(lineHeight: TLineHeight): React.CSSProperties['lineHeight'] {
+	switch (lineHeight.type) {
+		case 'percent':
+			return `${lineHeight.value}%`;
+		case 'pixel':
+			return `${lineHeight.value}px`;
+		case 'auto':
+			return 'normal';
+	}
+}
+
+function resolveLetterSpacing(letterSpacing: TLetterSpacing): React.CSSProperties['letterSpacing'] {
+	switch (letterSpacing.type) {
+		case 'percent':
+			return `${letterSpacing.value}%`;
+		case 'pixel':
+			return `${letterSpacing.value}px`;
+		case 'auto':
+			return 'normal';
+	}
 }

@@ -3,13 +3,13 @@ import { Button, Text } from '@shopify/polaris';
 import { useCompute } from 'feature-react';
 import { TState } from 'feature-state';
 import React from 'react';
-import { MappedPaintInput, MinusIcon, PlusIcon } from '@/components';
+import { MappedPaintInput, MinusIcon, PlusIcon, TPaintType } from '@/components';
 import { TPageEditor } from '../../lib';
 
 export const ChildFillStyleMixinEditor = <GValue extends Record<string, any>>(
 	props: TChildFillStyleMixinEditorProps<GValue>
 ) => {
-	const { state, editor } = props;
+	const { state, editor, allowedPaintTypes } = props;
 
 	const currentFill = useCompute(state, ({ value }) => {
 		return value.childMixins?.fill;
@@ -69,6 +69,7 @@ export const ChildFillStyleMixinEditor = <GValue extends Record<string, any>>(
 						}}
 						disableFieldInheritance
 						editor={editor}
+						allowedPaintTypes={allowedPaintTypes}
 					/>
 				</div>
 			)}
@@ -79,4 +80,5 @@ export const ChildFillStyleMixinEditor = <GValue extends Record<string, any>>(
 interface TChildFillStyleMixinEditorProps<GValue extends Record<string, any>> {
 	state: TState<GValue & { childMixins: TMergeMixins<[TUnreference<TFillStyleMixin>]> }, any>;
 	editor: TPageEditor;
+	allowedPaintTypes?: TPaintType[];
 }

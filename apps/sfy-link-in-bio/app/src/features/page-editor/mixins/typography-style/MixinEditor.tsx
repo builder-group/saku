@@ -4,7 +4,6 @@ import {
 	isInherited,
 	resolveReference,
 	TMergeMixins,
-	TRgba,
 	TTextAlign,
 	TTypographyStyleMixin,
 	TUnreference
@@ -12,7 +11,7 @@ import {
 import { Text } from '@shopify/polaris';
 import { TState } from 'feature-state';
 import React from 'react';
-import { MappedColorInput, MappedSelectInput, MappedTextInput } from '@/components';
+import { MappedSelectInput, MappedTextInput } from '@/components';
 import { TPageEditor } from '../../lib';
 
 export const TypographyStyleMixinEditor = <
@@ -75,37 +74,6 @@ export const TypographyStyleMixinEditor = <
 							editor.switchView('settings');
 						}}
 					/>
-
-					<MappedSelectInput
-						label="Text Align"
-						options={[
-							{ label: 'Left', value: 'left' },
-							{ label: 'Center', value: 'center' },
-							{ label: 'Right', value: 'right' }
-						]}
-						state={state}
-						parentState={parentState}
-						mapValue={(value) => value.typography.textAlign}
-						onValueChange={(value) => {
-							if (value != null) {
-								state._v.typography.textAlign = value;
-								state._notify();
-							}
-						}}
-						mapParentValue={(parent) => parent.childMixins?.typography?.textAlign}
-						onInheritChange={(shouldInherit, parentValue) => {
-							state._v.typography.textAlign = shouldInherit
-								? inherit()
-								: (parentValue as TTextAlign);
-							state._notify();
-						}}
-						onNavigateToParent={() => {
-							editor.switchView('settings');
-						}}
-					/>
-				</div>
-
-				<div className="grid grid-cols-2 gap-3">
 					<MappedTextInput
 						label="Font Size"
 						type="number"
@@ -131,22 +99,57 @@ export const TypographyStyleMixinEditor = <
 							editor.switchView('settings');
 						}}
 					/>
+				</div>
 
-					<MappedColorInput
-						label="Text Color"
-						autoComplete="off"
+				<div className="grid grid-cols-2 gap-3">
+					<MappedSelectInput
+						label="Horizontal Text Align"
+						options={[
+							{ label: 'Start', value: 'start' },
+							{ label: 'Center', value: 'center' },
+							{ label: 'End', value: 'end' }
+						]}
 						state={state}
 						parentState={parentState}
-						mapValue={(value) => value.typography.textColor}
+						mapValue={(value) => value.typography.textAlignHorizontal}
 						onValueChange={(value) => {
 							if (value != null) {
-								state._v.typography.textColor = value;
+								state._v.typography.textAlignHorizontal = value;
 								state._notify();
 							}
 						}}
-						mapParentValue={(parent) => parent.childMixins?.typography?.textColor}
+						mapParentValue={(parent) => parent.childMixins?.typography?.textAlignHorizontal}
 						onInheritChange={(shouldInherit, parentValue) => {
-							state._v.typography.textColor = shouldInherit ? inherit() : (parentValue as TRgba);
+							state._v.typography.textAlignHorizontal = shouldInherit
+								? inherit()
+								: (parentValue as TTextAlign);
+							state._notify();
+						}}
+						onNavigateToParent={() => {
+							editor.switchView('settings');
+						}}
+					/>
+					<MappedSelectInput
+						label="Vertical Text Align"
+						options={[
+							{ label: 'Start', value: 'start' },
+							{ label: 'Center', value: 'center' },
+							{ label: 'End', value: 'end' }
+						]}
+						state={state}
+						parentState={parentState}
+						mapValue={(value) => value.typography.textAlignVertical}
+						onValueChange={(value) => {
+							if (value != null) {
+								state._v.typography.textAlignVertical = value;
+								state._notify();
+							}
+						}}
+						mapParentValue={(parent) => parent.childMixins?.typography?.textAlignVertical}
+						onInheritChange={(shouldInherit, parentValue) => {
+							state._v.typography.textAlignVertical = shouldInherit
+								? inherit()
+								: (parentValue as TTextAlign);
 							state._notify();
 						}}
 						onNavigateToParent={() => {
