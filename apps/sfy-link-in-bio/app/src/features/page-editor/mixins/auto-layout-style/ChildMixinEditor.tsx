@@ -32,92 +32,90 @@ export const ChildAutoLayoutStyleMixinEditor = <GValue extends Record<string, an
 					Layout
 				</Text>
 			</div>
-			{hasHorizontalPadding ||
-				(hasVerticalPadding && (
-					<div className="grid grid-cols-2 gap-3">
-						{hasHorizontalPadding && (
-							<MappedTextInput
-								label="Horizontal Padding"
-								type="number"
-								autoComplete="off"
-								min={0}
-								max={96}
-								step={4}
-								state={state}
-								mapValue={(value) => value.childMixins?.autoLayout?.horizontalPadding}
-								onValueChange={(value) => {
-									if (value != null) {
-										state._v.childMixins.autoLayout.horizontalPadding = value;
-										state._notify();
-									}
-								}}
-								disableFieldInheritance
-							/>
-						)}
-						{hasVerticalPadding && (
-							<MappedTextInput
-								label="Vertical Padding"
-								type="number"
-								autoComplete="off"
-								min={0}
-								max={96}
-								step={4}
-								state={state}
-								mapValue={(value) => value.childMixins?.autoLayout?.verticalPadding}
-								onValueChange={(value) => {
-									if (value != null) {
-										state._v.childMixins.autoLayout.verticalPadding = value;
-										state._notify();
-									}
-								}}
-								disableFieldInheritance
-							/>
-						)}
-					</div>
-				))}
-			{hasHorizontalGap ||
-				(hasVerticalGap && (
-					<div className="grid grid-cols-2 gap-3">
-						{hasHorizontalGap && (
-							<MappedTextInput
-								label="Horizontal Gap"
-								type="number"
-								autoComplete="off"
-								min={0}
-								max={96}
-								step={4}
-								state={state}
-								mapValue={(value) => value.childMixins?.autoLayout?.horizontalGap}
-								onValueChange={(value) => {
-									if (value != null) {
-										state._v.childMixins.autoLayout.horizontalGap = value;
-										state._notify();
-									}
-								}}
-								disableFieldInheritance
-							/>
-						)}
-						{hasVerticalGap && (
-							<MappedTextInput
-								label="Vertical Gap"
-								type="number"
-								autoComplete="off"
-								min={0}
-								max={96}
-								step={4}
-								state={state}
-								mapValue={(value) => value.childMixins?.autoLayout?.verticalGap}
-								onValueChange={(value) => {
-									if (value != null) {
-										state._v.childMixins.autoLayout.verticalGap = value;
-										state._notify();
-									}
-								}}
-								disableFieldInheritance
-							/>
-						)}
-					</div>
-				))}
+			{(hasHorizontalPadding != null || hasVerticalPadding != null) && (
+				<div className="grid grid-cols-2 gap-3">
+					{hasHorizontalPadding != null && (
+						<MappedTextInput
+							label="Horizontal Padding"
+							type="number"
+							autoComplete="off"
+							min={0}
+							max={96}
+							step={4}
+							state={state}
+							mapValue={(value) => value.childMixins?.autoLayout?.horizontalPadding}
+							onValueChange={(value) => {
+								if (value != null) {
+									state._v.childMixins.autoLayout.horizontalPadding = value;
+									state._notify();
+								}
+							}}
+							disableFieldInheritance
+						/>
+					)}
+					{hasVerticalPadding != null && (
+						<MappedTextInput
+							label="Vertical Padding"
+							type="number"
+							autoComplete="off"
+							min={0}
+							max={96}
+							step={4}
+							state={state}
+							mapValue={(value) => value.childMixins?.autoLayout?.verticalPadding}
+							onValueChange={(value) => {
+								if (value != null) {
+									state._v.childMixins.autoLayout.verticalPadding = value;
+									state._notify();
+								}
+							}}
+							disableFieldInheritance
+						/>
+					)}
+				</div>
+			)}
+			{(hasHorizontalGap != null || hasVerticalGap != null) && (
+				<div className="grid grid-cols-2 gap-3">
+					{hasHorizontalGap != null && (
+						<MappedTextInput
+							label="Horizontal Gap"
+							type="number"
+							autoComplete="off"
+							min={0}
+							max={96}
+							step={4}
+							state={state}
+							mapValue={(value) => value.childMixins?.autoLayout?.horizontalGap}
+							onValueChange={(value) => {
+								if (value != null) {
+									state._v.childMixins.autoLayout.horizontalGap = value;
+									state._notify();
+								}
+							}}
+							disableFieldInheritance
+						/>
+					)}
+					{hasVerticalGap != null && (
+						<MappedTextInput
+							label="Vertical Gap"
+							type="number"
+							autoComplete="off"
+							min={0}
+							max={96}
+							step={4}
+							state={state}
+							mapValue={(value) => value.childMixins?.autoLayout?.verticalGap}
+							onValueChange={(value) => {
+								if (value != null) {
+									state._v.childMixins.autoLayout.verticalGap = value;
+									state._notify();
+								}
+							}}
+							disableFieldInheritance
+						/>
+					)}
+				</div>
+			)}
 		</div>
 	);
 };

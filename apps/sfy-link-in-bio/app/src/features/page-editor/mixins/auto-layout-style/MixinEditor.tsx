@@ -36,132 +36,130 @@ export const AutoLayoutStyleMixinEditor = <
 					Layout
 				</Text>
 			</div>
-			{hasHorizontalPadding ||
-				(hasVerticalPadding && (
-					<div className="grid grid-cols-2 gap-3">
-						{hasHorizontalPadding && (
-							<MappedTextInput
-								label="Horizontal Padding"
-								type="number"
-								autoComplete="off"
-								min={0}
-								max={96}
-								step={4}
-								state={state}
-								parentState={parentState}
-								mapValue={(value) => value.autoLayout.horizontalPadding}
-								onValueChange={(value) => {
-									if (value != null) {
-										state._v.autoLayout.horizontalPadding = value;
-										state._notify();
-									}
-								}}
-								mapParentValue={(parent) => parent.childMixins?.autoLayout?.horizontalPadding}
-								onInheritChange={(shouldInherit, parentValue) => {
-									state._v.autoLayout.horizontalPadding = shouldInherit
-										? inherit()
-										: (parentValue as number);
+			{(hasHorizontalPadding != null || hasVerticalPadding != null) && (
+				<div className="grid grid-cols-2 gap-3">
+					{hasHorizontalPadding && (
+						<MappedTextInput
+							label="Horizontal Padding"
+							type="number"
+							autoComplete="off"
+							min={0}
+							max={96}
+							step={4}
+							state={state}
+							parentState={parentState}
+							mapValue={(value) => value.autoLayout.horizontalPadding}
+							onValueChange={(value) => {
+								if (value != null) {
+									state._v.autoLayout.horizontalPadding = value;
 									state._notify();
-								}}
-								onNavigateToParent={() => {
-									editor.switchView('settings');
-								}}
-							/>
-						)}
-						{hasVerticalPadding && (
-							<MappedTextInput
-								label="Vertical Padding"
-								type="number"
-								autoComplete="off"
-								min={0}
-								max={96}
-								step={4}
-								state={state}
-								parentState={parentState}
-								mapValue={(value) => value.autoLayout.verticalPadding}
-								onValueChange={(value) => {
-									if (value != null) {
-										state._v.autoLayout.verticalPadding = value;
-										state._notify();
-									}
-								}}
-								mapParentValue={(parent) => parent.childMixins?.autoLayout?.verticalPadding}
-								onInheritChange={(shouldInherit, parentValue) => {
-									state._v.autoLayout.verticalPadding = shouldInherit
-										? inherit()
-										: (parentValue as number);
+								}
+							}}
+							mapParentValue={(parent) => parent.childMixins?.autoLayout?.horizontalPadding}
+							onInheritChange={(shouldInherit, parentValue) => {
+								state._v.autoLayout.horizontalPadding = shouldInherit
+									? inherit()
+									: (parentValue as number);
+								state._notify();
+							}}
+							onNavigateToParent={() => {
+								editor.switchView('settings');
+							}}
+						/>
+					)}
+					{hasVerticalPadding && (
+						<MappedTextInput
+							label="Vertical Padding"
+							type="number"
+							autoComplete="off"
+							min={0}
+							max={96}
+							step={4}
+							state={state}
+							parentState={parentState}
+							mapValue={(value) => value.autoLayout.verticalPadding}
+							onValueChange={(value) => {
+								if (value != null) {
+									state._v.autoLayout.verticalPadding = value;
 									state._notify();
-								}}
-								onNavigateToParent={() => {
-									editor.switchView('settings');
-								}}
-							/>
-						)}
-					</div>
-				))}
-			{hasHorizontalGap ||
-				(hasVerticalGap && (
-					<div className="grid grid-cols-2 gap-3">
-						{hasHorizontalGap && (
-							<MappedTextInput
-								label="Horizontal Gap"
-								type="number"
-								autoComplete="off"
-								min={0}
-								max={96}
-								step={4}
-								state={state}
-								parentState={parentState}
-								mapValue={(value) => value.autoLayout.horizontalGap}
-								onValueChange={(value) => {
-									if (value != null) {
-										state._v.autoLayout.horizontalGap = value;
-										state._notify();
-									}
-								}}
-								mapParentValue={(parent) => parent.childMixins?.autoLayout?.horizontalGap}
-								onInheritChange={(shouldInherit, parentValue) => {
-									state._v.autoLayout.horizontalGap = shouldInherit
-										? inherit()
-										: (parentValue as number);
+								}
+							}}
+							mapParentValue={(parent) => parent.childMixins?.autoLayout?.verticalPadding}
+							onInheritChange={(shouldInherit, parentValue) => {
+								state._v.autoLayout.verticalPadding = shouldInherit
+									? inherit()
+									: (parentValue as number);
+								state._notify();
+							}}
+							onNavigateToParent={() => {
+								editor.switchView('settings');
+							}}
+						/>
+					)}
+				</div>
+			)}
+			{(hasHorizontalGap != null || hasVerticalGap != null) && (
+				<div className="grid grid-cols-2 gap-3">
+					{hasHorizontalGap != null && (
+						<MappedTextInput
+							label="Horizontal Gap"
+							type="number"
+							autoComplete="off"
+							min={0}
+							max={96}
+							step={4}
+							state={state}
+							parentState={parentState}
+							mapValue={(value) => value.autoLayout.horizontalGap}
+							onValueChange={(value) => {
+								if (value != null) {
+									state._v.autoLayout.horizontalGap = value;
 									state._notify();
-								}}
-								onNavigateToParent={() => {
-									editor.switchView('settings');
-								}}
-							/>
-						)}
-						{hasVerticalGap && (
-							<MappedTextInput
-								label="Vertical Gap"
-								type="number"
-								autoComplete="off"
-								min={0}
-								max={96}
-								step={4}
-								state={state}
-								parentState={parentState}
-								mapValue={(value) => value.autoLayout.verticalGap}
-								onValueChange={(value) => {
-									if (value != null) {
-										state._v.autoLayout.verticalGap = value;
-										state._notify();
-									}
-								}}
-								mapParentValue={(parent) => parent.childMixins?.autoLayout?.verticalGap}
-								onInheritChange={(shouldInherit, parentValue) => {
-									state._v.autoLayout.verticalGap = shouldInherit
-										? inherit()
-										: (parentValue as number);
+								}
+							}}
+							mapParentValue={(parent) => parent.childMixins?.autoLayout?.horizontalGap}
+							onInheritChange={(shouldInherit, parentValue) => {
+								state._v.autoLayout.horizontalGap = shouldInherit
+									? inherit()
+									: (parentValue as number);
+								state._notify();
+							}}
+							onNavigateToParent={() => {
+								editor.switchView('settings');
+							}}
+						/>
+					)}
+					{hasVerticalGap != null && (
+						<MappedTextInput
+							label="Vertical Gap"
+							type="number"
+							autoComplete="off"
+							min={0}
+							max={96}
+							step={4}
+							state={state}
+							parentState={parentState}
+							mapValue={(value) => value.autoLayout.verticalGap}
+							onValueChange={(value) => {
+								if (value != null) {
+									state._v.autoLayout.verticalGap = value;
 									state._notify();
-								}}
-								onNavigateToParent={() => {
-									editor.switchView('settings');
-								}}
-							/>
-						)}
-					</div>
-				))}
+								}
+							}}
+							mapParentValue={(parent) => parent.childMixins?.autoLayout?.verticalGap}
+							onInheritChange={(shouldInherit, parentValue) => {
+								state._v.autoLayout.verticalGap = shouldInherit
+									? inherit()
+									: (parentValue as number);
+								state._notify();
+							}}
+							onNavigateToParent={() => {
+								editor.switchView('settings');
+							}}
+						/>
+					)}
+				</div>
+			)}
 		</div>
 	);
 };
