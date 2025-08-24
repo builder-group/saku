@@ -24,8 +24,8 @@ export function resolveAutoLayoutStyleMixin(
 		horizontalGap: resolvedHorizontalGap,
 		verticalGap: resolvedVerticalGap,
 		styles: {
-			padding: `${resolvedHorizontalPadding ?? 0}px ${resolvedVerticalPadding ?? 0}px`,
-			gap: `${resolvedHorizontalGap ?? 0}px ${resolvedVerticalGap ?? 0}px`
+			padding: `${resolvedVerticalPadding ?? 0}px ${resolvedHorizontalPadding ?? 0}px`,
+			gap: `${resolvedVerticalGap ?? 0}px ${resolvedHorizontalGap ?? 0}px`
 		}
 	});
 }
