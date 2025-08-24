@@ -15,37 +15,37 @@ export const ChildTextStyleMixinEditor = <GValue extends Record<string, any>>(
 
 	const appearanceState = useMapState(state, {
 		get: (parent) => ({ childMixins: { appearance: parent.childMixins.text.appearance } }),
-		set: (parent, child) => {
+		set: (parent, child, notifyOptions) => {
 			parent._v.childMixins.text.appearance = child.childMixins.appearance;
-			parent._notify();
+			parent._notify(notifyOptions);
 		}
 	});
 	const typographyState = useMapState(state, {
 		get: (parent) => ({ childMixins: { typography: parent.childMixins.text.typography } }),
-		set: (parent, child) => {
+		set: (parent, child, notifyOptions) => {
 			parent._v.childMixins.text.typography = child.childMixins.typography;
-			parent._notify();
+			parent._notify(notifyOptions);
 		}
 	});
 	const fillState = useMapState(state, {
 		get: (parent) => ({ childMixins: { fill: parent.childMixins.text.fill } }),
-		set: (parent, child) => {
+		set: (parent, child, notifyOptions) => {
 			parent._v.childMixins.text.fill = child.childMixins.fill;
-			parent._notify();
+			parent._notify(notifyOptions);
 		}
 	});
 	const strokeState = useMapState(state, {
 		get: (parent) => ({ childMixins: { stroke: parent.childMixins.text.stroke } }),
-		set: (parent, child) => {
+		set: (parent, child, notifyOptions) => {
 			parent._v.childMixins.text.stroke = child.childMixins.stroke;
-			parent._notify();
+			parent._notify(notifyOptions);
 		}
 	});
 	const shadowState = useMapState(state, {
 		get: (parent) => ({ childMixins: { shadow: parent.childMixins.text.shadow } }),
-		set: (parent, child) => {
+		set: (parent, child, notifyOptions) => {
 			parent._v.childMixins.text.shadow = child.childMixins.shadow;
-			parent._notify();
+			parent._notify(notifyOptions);
 		}
 	});
 

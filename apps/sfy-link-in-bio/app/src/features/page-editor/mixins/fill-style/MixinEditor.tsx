@@ -46,10 +46,10 @@ export const FillStyleMixinEditor = <
 	const paintState = useMapStateReference(state, {
 		getTopLevelReference: (value) => value.fill,
 		getPropertyReference: (value) => value?.paint,
-		setProperty: (value) => {
+		setProperty: (value, notifyOptions) => {
 			if (state._v.fill != null && !isInherited(state._v.fill)) {
 				state._v.fill.paint = value;
-				state._notify();
+				state._notify(notifyOptions);
 			}
 		}
 	});

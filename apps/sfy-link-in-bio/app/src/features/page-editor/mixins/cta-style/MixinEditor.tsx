@@ -19,73 +19,73 @@ export const CtaStyleMixinEditor = <
 
 	const appearanceState = useMapState(state, {
 		get: (parent) => ({ appearance: parent.cta.appearance }),
-		set: (parent, child) => {
+		set: (parent, child, notifyOptions) => {
 			parent._v.cta.appearance = child.appearance;
-			parent._notify();
+			parent._notify(notifyOptions);
 		}
 	});
 	const fillState = useMapState(state, {
 		get: (parent) => ({ fill: parent.cta.fill }),
-		set: (parent, child) => {
+		set: (parent, child, notifyOptions) => {
 			parent._v.cta.fill = child.fill;
-			parent._notify();
+			parent._notify(notifyOptions);
 		}
 	});
 	const strokeState = useMapState(state, {
 		get: (parent) => ({ stroke: parent.cta.stroke }),
-		set: (parent, child) => {
+		set: (parent, child, notifyOptions) => {
 			parent._v.cta.stroke = child.stroke;
-			parent._notify();
+			parent._notify(notifyOptions);
 		}
 	});
 	const shadowState = useMapState(state, {
 		get: (parent) => ({ shadow: parent.cta.shadow }),
-		set: (parent, child) => {
+		set: (parent, child, notifyOptions) => {
 			parent._v.cta.shadow = child.shadow;
-			parent._notify();
+			parent._notify(notifyOptions);
 		}
 	});
 	const textState = useMapState(state, {
 		get: (parent) => ({ text: parent.cta.text }),
-		set: (parent, child) => {
+		set: (parent, child, notifyOptions) => {
 			parent._v.cta.text = child.text;
-			parent._notify();
+			parent._notify(notifyOptions);
 		}
 	});
 
 	const parentAppearanceState = useMapState(parentState, {
 		get: (parent) => ({ childMixins: { appearance: parent.childMixins.cta.appearance } }),
-		set: (parent, child) => {
+		set: (parent, child, notifyOptions) => {
 			parent._v.childMixins.cta.appearance = child.childMixins.appearance;
-			parent._notify();
+			parent._notify(notifyOptions);
 		}
 	});
 	const parentFillState = useMapState(parentState, {
 		get: (parent) => ({ childMixins: { fill: parent.childMixins.cta.fill } }),
-		set: (parent, child) => {
+		set: (parent, child, notifyOptions) => {
 			parent._v.childMixins.cta.fill = child.childMixins.fill;
-			parent._notify();
+			parent._notify(notifyOptions);
 		}
 	});
 	const parentStrokeState = useMapState(parentState, {
 		get: (parent) => ({ childMixins: { stroke: parent.childMixins.cta.stroke } }),
-		set: (parent, child) => {
+		set: (parent, child, notifyOptions) => {
 			parent._v.childMixins.cta.stroke = child.childMixins.stroke;
-			parent._notify();
+			parent._notify(notifyOptions);
 		}
 	});
 	const parentShadowState = useMapState(parentState, {
 		get: (parent) => ({ childMixins: { shadow: parent.childMixins.cta.shadow } }),
-		set: (parent, child) => {
+		set: (parent, child, notifyOptions) => {
 			parent._v.childMixins.cta.shadow = child.childMixins.shadow;
-			parent._notify();
+			parent._notify(notifyOptions);
 		}
 	});
 	const parentTextState = useMapState(parentState, {
 		get: (parent) => ({ childMixins: { text: parent.childMixins.cta.text } }),
-		set: (parent, child) => {
+		set: (parent, child, notifyOptions) => {
 			parent._v.childMixins.cta.text = child.childMixins.text;
-			parent._notify();
+			parent._notify(notifyOptions);
 		}
 	});
 

@@ -1,4 +1,4 @@
-import { createState, TCreateStateOptions, TState } from 'feature-state';
+import { createState, TCreateStateOptions, TState, TStateNotifyOptions } from 'feature-state';
 import { useMemoCleanup } from './react-router';
 
 export function useMapState<GParentValue, GChildValue>(
@@ -29,13 +29,21 @@ export function mapState<GParentValue, GChildValue>(
 	const childState = createState(get(parentState._v), { queue });
 
 	// Keep child in sync with parent
-	const unsubscribeParentState = parentState.listen(({ value }) => {
-		childState.set(get(value));
+	const unsubscribeParentState = parentState.listen(({ value, source }) => {
+		if (source === 'mapState:child') {
+			return;
+		}
+
+		childState.set(get(value), { listenerContext: { source: 'mapState:parent' } });
 	});
 
 	// Keep parent in sync with child
-	const unsubscribeChildState = childState.listen(({ value }) => {
-		set(parentState, value);
+	const unsubscribeChildState = childState.listen(({ value, source }) => {
+		if (source === 'mapState:parent') {
+			return;
+		}
+
+		set(parentState, value, { listenerContext: { source: 'mapState:child' } });
 	});
 
 	return [
@@ -49,5 +57,9 @@ export function mapState<GParentValue, GChildValue>(
 
 interface TMapStateConfig<GParentValue, GChildValue> extends TCreateStateOptions {
 	get: (parent: GParentValue) => GChildValue;
-	set: (parent: TState<GParentValue, any>, child: GChildValue) => void;
+	set: (
+		parent: TState<GParentValue, any>,
+		child: GChildValue,
+		notifyOptions?: TStateNotifyOptions<GParentValue>
+	) => void;
 }

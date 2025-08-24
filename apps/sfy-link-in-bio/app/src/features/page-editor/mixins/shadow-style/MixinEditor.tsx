@@ -46,50 +46,50 @@ export const ShadowStyleMixinEditor = <
 	const colorState = useMapStateReference(state, {
 		getTopLevelReference: (value) => value.shadow,
 		getPropertyReference: (value) => value?.color,
-		setProperty: (value) => {
+		setProperty: (value, notifyOptions) => {
 			if (state._v.shadow != null && !isInherited(state._v.shadow)) {
 				state._v.shadow.color = value;
-				state._notify();
+				state._notify(notifyOptions);
 			}
 		}
 	});
 	const blurState = useMapStateReference(state, {
 		getTopLevelReference: (value) => value.shadow,
 		getPropertyReference: (value) => value?.blur,
-		setProperty: (value) => {
+		setProperty: (value, notifyOptions) => {
 			if (state._v.shadow != null && !isInherited(state._v.shadow)) {
 				state._v.shadow.blur = value;
-				state._notify();
+				state._notify(notifyOptions);
 			}
 		}
 	});
 	const spreadState = useMapStateReference(state, {
 		getTopLevelReference: (value) => value.shadow,
 		getPropertyReference: (value) => value?.spread,
-		setProperty: (value) => {
+		setProperty: (value, notifyOptions) => {
 			if (state._v.shadow != null && !isInherited(state._v.shadow)) {
 				state._v.shadow.spread = value;
-				state._notify();
+				state._notify(notifyOptions);
 			}
 		}
 	});
 	const offsetXState = useMapStateReference(state, {
 		getTopLevelReference: (value) => value.shadow,
 		getPropertyReference: (value) => value?.offsetX,
-		setProperty: (value) => {
+		setProperty: (value, notifyOptions) => {
 			if (state._v.shadow != null && !isInherited(state._v.shadow)) {
 				state._v.shadow.offsetX = value;
-				state._notify();
+				state._notify(notifyOptions);
 			}
 		}
 	});
 	const offsetYState = useMapStateReference(state, {
 		getTopLevelReference: (value) => value.shadow,
 		getPropertyReference: (value) => value?.offsetY,
-		setProperty: (value) => {
+		setProperty: (value, notifyOptions) => {
 			if (state._v.shadow != null && !isInherited(state._v.shadow)) {
 				state._v.shadow.offsetY = value;
-				state._notify();
+				state._notify(notifyOptions);
 			}
 		}
 	});

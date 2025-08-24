@@ -46,20 +46,20 @@ export const StrokeStyleMixinEditor = <
 	const colorState = useMapStateReference(state, {
 		getTopLevelReference: (value) => value.stroke,
 		getPropertyReference: (value) => value?.color,
-		setProperty: (value) => {
+		setProperty: (value, notifyOptions) => {
 			if (state._v.stroke != null && !isInherited(state._v.stroke)) {
 				state._v.stroke.color = value;
-				state._notify();
+				state._notify(notifyOptions);
 			}
 		}
 	});
 	const widthState = useMapStateReference(state, {
 		getTopLevelReference: (value) => value.stroke,
 		getPropertyReference: (value) => value?.width,
-		setProperty: (value) => {
+		setProperty: (value, notifyOptions) => {
 			if (state._v.stroke != null && !isInherited(state._v.stroke)) {
 				state._v.stroke.width = value;
-				state._notify();
+				state._notify(notifyOptions);
 			}
 		}
 	});

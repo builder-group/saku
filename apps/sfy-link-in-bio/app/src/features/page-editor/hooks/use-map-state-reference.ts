@@ -1,5 +1,5 @@
 import { inherit, isInherited, TReference, TUnreference } from '@repo/editor';
-import { createState, TState } from 'feature-state';
+import { createState, TState, TStateNotifyOptions } from 'feature-state';
 import { useMemoCleanup } from '@/hooks';
 
 export function useMapStateReference<
@@ -30,19 +30,29 @@ export function mapStateReference<
 	const childState = createState<TReference<GValue> | undefined>(undefined, { queue: 'sync' });
 
 	// Keep child in sync with parent - handle inheritance
-	const unsubscribeParentState = parentState.subscribe(({ value }) => {
+	const unsubscribeParentState = parentState.subscribe(({ value, source }) => {
+		if (source === 'mapStateReference:child') {
+			return;
+		}
+
 		const reference = getTopLevelReference(value);
 		if (isInherited(reference)) {
-			childState.set(inherit());
+			childState.set(inherit(), { listenerContext: { source: 'mapStateReference:parent' } });
 		} else {
-			childState.set(getPropertyReference(reference as TUnreference<GReference>));
+			childState.set(getPropertyReference(reference as TUnreference<GReference>), {
+				listenerContext: { source: 'mapStateReference:parent' }
+			});
 		}
 	});
 
 	// Keep parent in sync with child
-	const unsubscribeChildState = childState.subscribe(({ value }) => {
+	const unsubscribeChildState = childState.subscribe(({ value, source }) => {
+		if (source === 'mapStateReference:parent') {
+			return;
+		}
+
 		if (value != null && !isInherited(value)) {
-			setProperty(value);
+			setProperty(value, { listenerContext: { source: 'mapStateReference:parent' } });
 		}
 	});
 
@@ -65,5 +75,5 @@ interface TMapStateReferenceConfig<
 	/** Gets the property reference from the unwrapped top-level reference */
 	getPropertyReference: (value: TUnreference<GReference>) => TReference<GValue> | undefined;
 	/** Sets the property value to keep it in sync with the state */
-	setProperty: (value: GValue) => void;
+	setProperty: (value: GValue, notifyOptions?: TStateNotifyOptions<GParentValue>) => void;
 }
