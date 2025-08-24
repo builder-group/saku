@@ -32,9 +32,9 @@ export const ChildAutoLayoutStyleMixinEditor = <GValue extends Record<string, an
 					Layout
 				</Text>
 			</div>
-			{(hasHorizontalPadding != null || hasVerticalPadding != null) && (
+			{(hasHorizontalPadding || hasVerticalPadding) && (
 				<div className="grid grid-cols-2 gap-3">
-					{hasHorizontalPadding != null && (
+					{hasHorizontalPadding && (
 						<MappedTextInput
 							label="Horizontal Padding"
 							type="number"
@@ -53,7 +53,7 @@ export const ChildAutoLayoutStyleMixinEditor = <GValue extends Record<string, an
 							disableFieldInheritance
 						/>
 					)}
-					{hasVerticalPadding != null && (
+					{hasVerticalPadding && (
 						<MappedTextInput
 							label="Vertical Padding"
 							type="number"
@@ -74,9 +74,9 @@ export const ChildAutoLayoutStyleMixinEditor = <GValue extends Record<string, an
 					)}
 				</div>
 			)}
-			{(hasHorizontalGap != null || hasVerticalGap != null) && (
+			{(hasHorizontalGap || hasVerticalGap) && (
 				<div className="grid grid-cols-2 gap-3">
-					{hasHorizontalGap != null && (
+					{hasHorizontalGap && (
 						<MappedTextInput
 							label="Horizontal Gap"
 							type="number"
@@ -95,7 +95,7 @@ export const ChildAutoLayoutStyleMixinEditor = <GValue extends Record<string, an
 							disableFieldInheritance
 						/>
 					)}
-					{hasVerticalGap != null && (
+					{hasVerticalGap && (
 						<MappedTextInput
 							label="Vertical Gap"
 							type="number"

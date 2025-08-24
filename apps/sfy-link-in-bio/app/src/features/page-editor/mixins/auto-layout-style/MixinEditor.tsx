@@ -36,7 +36,7 @@ export const AutoLayoutStyleMixinEditor = <
 					Layout
 				</Text>
 			</div>
-			{(hasHorizontalPadding != null || hasVerticalPadding != null) && (
+			{(hasHorizontalPadding || hasVerticalPadding) && (
 				<div className="grid grid-cols-2 gap-3">
 					{hasHorizontalPadding && (
 						<MappedTextInput
@@ -98,9 +98,9 @@ export const AutoLayoutStyleMixinEditor = <
 					)}
 				</div>
 			)}
-			{(hasHorizontalGap != null || hasVerticalGap != null) && (
+			{(hasHorizontalGap || hasVerticalGap) && (
 				<div className="grid grid-cols-2 gap-3">
-					{hasHorizontalGap != null && (
+					{hasHorizontalGap && (
 						<MappedTextInput
 							label="Horizontal Gap"
 							type="number"
@@ -129,7 +129,7 @@ export const AutoLayoutStyleMixinEditor = <
 							}}
 						/>
 					)}
-					{hasVerticalGap != null && (
+					{hasVerticalGap && (
 						<MappedTextInput
 							label="Vertical Gap"
 							type="number"
