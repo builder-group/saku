@@ -1,12 +1,12 @@
-import { TFlatNode, TLayoutStyleMixin, TMergeMixins, TUnreference } from '@repo/editor';
+import { TLayoutStyleMixin, TMergeMixins, TUnreference } from '@repo/editor';
 import { Text } from '@shopify/polaris';
+import { TState } from 'feature-state';
 import { MappedTextInput } from '@/components';
-import { TNodeState } from '../../lib';
 
-export const ChildLayoutStyleMixinEditor = <GNode extends TFlatNode>(
-	props: TChildLayoutStyleMixinEditorProps<GNode>
+export const ChildLayoutStyleMixinEditor = <GValue extends Record<string, any>>(
+	props: TChildLayoutStyleMixinEditorProps<GValue>
 ) => {
-	const { nodeState } = props;
+	const { state } = props;
 
 	return (
 		<div className="space-y-3 px-4">
@@ -23,12 +23,12 @@ export const ChildLayoutStyleMixinEditor = <GNode extends TFlatNode>(
 					min={0}
 					max={100}
 					step={2}
-					state={nodeState}
+					state={state}
 					mapValue={(value) => value.childMixins?.layout?.padding}
 					onValueChange={(value) => {
 						if (value != null) {
-							nodeState._v.childMixins.layout.padding = value;
-							nodeState._notify();
+							state._v.childMixins.layout.padding = value;
+							state._notify();
 						}
 					}}
 					disableFieldInheritance
@@ -38,6 +38,6 @@ export const ChildLayoutStyleMixinEditor = <GNode extends TFlatNode>(
 	);
 };
 
-interface TChildLayoutStyleMixinEditorProps<GNode extends TFlatNode> {
-	nodeState: TNodeState<GNode & { childMixins: TMergeMixins<[TUnreference<TLayoutStyleMixin>]> }>;
+interface TChildLayoutStyleMixinEditorProps<GValue extends Record<string, any>> {
+	state: TState<GValue & { childMixins: TMergeMixins<[TUnreference<TLayoutStyleMixin>]> }, any>;
 }

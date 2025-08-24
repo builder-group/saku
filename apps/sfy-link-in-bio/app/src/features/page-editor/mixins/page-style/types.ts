@@ -1,4 +1,5 @@
 import { TMixin } from '@repo/editor';
+import { TResolvedAppearanceStyleMixin } from '../appearance-style';
 import { TResolvedFillStyleMixin } from '../fill-style';
 
 export type TResolvedPageStyleMixin = TMixin<
@@ -11,6 +12,7 @@ export type TResolvedPageStyleMixin = TMixin<
 				gap: React.CSSProperties['gap'];
 			};
 		};
+		appearance: TResolvedAppearanceStyleMixin['value'];
 		fill: TResolvedFillStyleMixin['value'];
 	}
 >;

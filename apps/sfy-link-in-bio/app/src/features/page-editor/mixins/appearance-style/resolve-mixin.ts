@@ -8,9 +8,6 @@ export function resolveAppearanceStyleMixin(
 	parentMixin?: TResolveAppearanceStyleMixinParentMixin
 ): TResult<TResolvedAppearanceStyleMixin['value'], AppError> {
 	const resolvedBorderRadius = resolveReference(appearance.borderRadius, parentMixin?.borderRadius);
-	if (resolvedBorderRadius == null) {
-		return Err(new AppError('#ERR_RESOLVE_BORDER_RADIUS'));
-	}
 	const resolvedOpacity = resolveReference(appearance.opacity, parentMixin?.opacity);
 	if (resolvedOpacity == null) {
 		return Err(new AppError('#ERR_RESOLVE_OPACITY'));
@@ -21,19 +18,19 @@ export function resolveAppearanceStyleMixin(
 	}
 
 	return Ok({
-		borderRadius: resolvedBorderRadius,
-		opacity: resolvedOpacity,
 		visible: resolvedVisible,
+		opacity: resolvedOpacity,
+		borderRadius: resolvedBorderRadius,
 		styles: {
-			borderRadius: `${resolvedBorderRadius}px`,
+			visibility: resolvedVisible ? 'visible' : 'hidden',
 			opacity: `${resolvedOpacity * 100}%`,
-			visibility: resolvedVisible ? 'visible' : 'hidden'
+			borderRadius: resolvedBorderRadius ? `${resolvedBorderRadius}px` : undefined
 		}
 	});
 }
 
 export interface TResolveAppearanceStyleMixinParentMixin {
-	borderRadius: number;
-	opacity: number;
 	visible: boolean;
+	opacity: number;
+	borderRadius?: number;
 }

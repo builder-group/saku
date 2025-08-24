@@ -54,30 +54,35 @@ type TProductNode = TNode<'product', [
 ]>;
 ```
 
-### Why composite mixins (CardMixin, CTAMixin) instead of composing from low-level mixins?
+### Why composite mixins (CardMixin, CTAMixin) instead of flat atomic mixins?
 
-- **Prevents style conflicts**: Complex nodes need multiple styled elements (card, text, CTA) - flat mixins create naming conflicts
-- **Data-level grouping**: Composite mixins group related styling data, not nested components - still ECS compliant
-- **Helper functions friendly**: `resolveLayout(node.card.layout)` works with grouped data without violating ECS systems
-- **Cohesive UI patterns**: Cards and CTAs are complete styling units that belong together conceptually
-- **Editor clarity**: Clean sections ("Card Style", "CTA Style") vs confusing `cardFill`/`ctaFill`/`textFill` properties
+- **Prevents style conflicts**: Complex nodes need multiple styled elements (card, text, CTA) - flat mixins would create key collisions
+- **Semantic grouping**: UI elements like "card" and "CTA" are meaningful design concepts that belong together
+- **Helper functions reusable**: `resolveFillMixin(node.card.fill)` works with existing atomic resolvers
+- **ECS component overhead**: With SoA ECS, flat approach would require separate components (`CardFill`, `CtaFill`, `TextFill`) since entities can't have the same component multiple times. Composite mixins avoid this proliferation.
 
-#### When to use composite vs low-level mixins?
+#### When to use composite vs atomic mixins?
 
 ```typescript
-// Simple elements: Use low-level mixins
-type TRectangleNode = TNode<'rectangle', [
+// Single styled element: Use atomic mixins
+type TRectangleNode = TNode<'text', [
   TIdMixin,
-  TLayoutMixin,        // Direct low-level mixin
-  TAppearanceMixin,    // Direct low-level mixin
-  TFillMixin           // Direct low-level mixin
+  TAppearanceMixin,    // Direct atomic mixin  
+  TFillMixin,          // Direct atomic mixin
+  TStrokeMixin,        // Direct atomic mixin
+  TShadowMixin         // Direct atomic mixin
 ]>;
 
-// Complex UI patterns: Use composite mixins  
+// Multiple styled elements: Use composite mixins to prevent conflicts
 type TProductNode = TNode<'product', [
   TIdMixin,
-  TCardMixin,          // Composite: { layout, appearance, fill, stroke, shadow }
-  TTextMixin,          // Composite: { typography, fill }
-  TCtaMixin            // Composite: { layout, appearance, typography, fill, stroke, shadow }
+  TProductContentMixin,   // content: { product: TProduct }
+  TCardMixin,             // Composite: { layout, appearance, fill, stroke, shadow }
+  TTextMixin,             // Composite: { typography, appearance }  
+  TCtaMixin               // Composite: { layout, appearance, typography, fill, stroke, shadow }
 ]>;
+
+// In ECS: Each composite becomes a single component array
+// components.Card[entityId] = { layout, appearance, fill, stroke, shadow }
+// components.Cta[entityId] = { layout, appearance, typography, fill, stroke, shadow }
 ```

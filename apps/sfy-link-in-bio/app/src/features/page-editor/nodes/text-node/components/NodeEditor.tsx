@@ -4,14 +4,7 @@ import { useFeatureState } from 'feature-react/state';
 import React from 'react';
 import { AccordionSection } from '@/components';
 import { TNodeEditorComponentProps } from '../../../lib';
-import {
-	AppearanceStyleMixinEditor,
-	FillStyleMixinEditor,
-	LayoutStyleMixinEditor,
-	ShadowStyleMixinEditor,
-	StrokeStyleMixinEditor,
-	TypographyStyleMixinEditor
-} from '../../../mixins';
+import { CardStyleMixinEditor, TextStyleMixinEditor } from '../../../mixins';
 
 export const TextNodeEditor: React.FC<TNodeEditorComponentProps<TTextNode>> = (props) => {
 	const { nodeState, editor } = props;
@@ -59,43 +52,14 @@ export const TextNodeEditor: React.FC<TNodeEditorComponentProps<TTextNode>> = (p
 				</div>
 			</AccordionSection>
 
-			{/* Style Section */}
-			<AccordionSection title="Style" defaultOpen={true} collapsibleClassName="px-0 space-y-3">
-				<LayoutStyleMixinEditor
-					nodeState={nodeState}
-					parentNodeState={parentNodeState}
-					editor={editor}
-				/>
-				<div className="h-px bg-gray-200" />
-				<AppearanceStyleMixinEditor
-					nodeState={nodeState}
-					parentNodeState={parentNodeState}
-					editor={editor}
-				/>
-				<div className="h-px bg-gray-200" />
-				<TypographyStyleMixinEditor
-					nodeState={nodeState}
-					parentNodeState={parentNodeState}
-					editor={editor}
-				/>
-				<div className="h-px bg-gray-200" />
-				<FillStyleMixinEditor
-					nodeState={nodeState}
-					parentNodeState={parentNodeState}
-					editor={editor}
-				/>
-				<div className="h-px bg-gray-200" />
-				<StrokeStyleMixinEditor
-					nodeState={nodeState}
-					parentNodeState={parentNodeState}
-					editor={editor}
-				/>
-				<div className="h-px bg-gray-200" />
-				<ShadowStyleMixinEditor
-					nodeState={nodeState}
-					parentNodeState={parentNodeState}
-					editor={editor}
-				/>
+			{/* Card Style Section */}
+			<AccordionSection title="Card Style" defaultOpen={true} collapsibleClassName="px-0 space-y-3">
+				<CardStyleMixinEditor state={nodeState} parentState={parentNodeState} editor={editor} />
+			</AccordionSection>
+
+			{/* Text Style Section */}
+			<AccordionSection title="Text Style" defaultOpen={true} collapsibleClassName="px-0 space-y-3">
+				<TextStyleMixinEditor state={nodeState} parentState={parentNodeState} editor={editor} />
 			</AccordionSection>
 		</>
 	);

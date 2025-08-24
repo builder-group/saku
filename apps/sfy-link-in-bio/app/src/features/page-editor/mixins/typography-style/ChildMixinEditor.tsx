@@ -1,19 +1,14 @@
-import {
-	fontMetadata,
-	TFlatNode,
-	TMergeMixins,
-	TTypographyStyleMixin,
-	TUnreference
-} from '@repo/editor';
+import { fontMetadata, TMergeMixins, TTypographyStyleMixin, TUnreference } from '@repo/editor';
 import { Text } from '@shopify/polaris';
+import { TState } from 'feature-state';
 import React from 'react';
 import { MappedColorInput, MappedSelectInput, MappedTextInput } from '@/components';
-import { TNodeState, TPageEditor } from '../../lib';
+import { TPageEditor } from '../../lib';
 
-export const ChildTypographyStyleMixinEditor = <GNode extends TFlatNode>(
-	props: TChildTypographyStyleMixinEditorProps<GNode>
+export const ChildTypographyStyleMixinEditor = <GValue extends Record<string, any>>(
+	props: TChildTypographyStyleMixinEditorProps<GValue>
 ) => {
-	const { nodeState, editor } = props;
+	const { state, editor } = props;
 
 	const fontOptions = React.useMemo(() => {
 		return fontMetadata.map((font) => ({
@@ -34,14 +29,14 @@ export const ChildTypographyStyleMixinEditor = <GNode extends TFlatNode>(
 					<MappedSelectInput
 						label="Font Family"
 						options={fontOptions}
-						state={nodeState}
+						state={state}
 						mapValue={(value) => value.childMixins?.typography?.font?.family}
 						onValueChange={(value) => {
 							if (value != null) {
 								const font = editor.registerFontFamily(value as string);
 								if (font != null) {
-									nodeState._v.childMixins.typography.font = font;
-									nodeState._notify();
+									state._v.childMixins.typography.font = font;
+									state._notify();
 								}
 							}
 						}}
@@ -55,12 +50,12 @@ export const ChildTypographyStyleMixinEditor = <GNode extends TFlatNode>(
 							{ label: 'Center', value: 'center' },
 							{ label: 'Right', value: 'right' }
 						]}
-						state={nodeState}
+						state={state}
 						mapValue={(value) => value.childMixins?.typography?.textAlign}
 						onValueChange={(value) => {
 							if (value != null) {
-								nodeState._v.childMixins.typography.textAlign = value;
-								nodeState._notify();
+								state._v.childMixins.typography.textAlign = value;
+								state._notify();
 							}
 						}}
 						disableFieldInheritance
@@ -75,12 +70,12 @@ export const ChildTypographyStyleMixinEditor = <GNode extends TFlatNode>(
 						min={8}
 						max={96}
 						step={4}
-						state={nodeState}
+						state={state}
 						mapValue={(value) => value.childMixins?.typography?.fontSize}
 						onValueChange={(value) => {
 							if (value != null) {
-								nodeState._v.childMixins.typography.fontSize = value;
-								nodeState._notify();
+								state._v.childMixins.typography.fontSize = value;
+								state._notify();
 							}
 						}}
 						disableFieldInheritance
@@ -89,12 +84,12 @@ export const ChildTypographyStyleMixinEditor = <GNode extends TFlatNode>(
 					<MappedColorInput
 						label="Text Color"
 						autoComplete="off"
-						state={nodeState}
+						state={state}
 						mapValue={(value) => value.childMixins?.typography?.textColor}
 						onValueChange={(value) => {
 							if (value != null) {
-								nodeState._v.childMixins.typography.textColor = value;
-								nodeState._notify();
+								state._v.childMixins.typography.textColor = value;
+								state._notify();
 							}
 						}}
 						disableFieldInheritance
@@ -105,9 +100,7 @@ export const ChildTypographyStyleMixinEditor = <GNode extends TFlatNode>(
 	);
 };
 
-interface TChildTypographyStyleMixinEditorProps<GNode extends TFlatNode> {
-	nodeState: TNodeState<
-		GNode & { childMixins: TMergeMixins<[TUnreference<TTypographyStyleMixin>]> }
-	>;
+interface TChildTypographyStyleMixinEditorProps<GValue extends Record<string, any>> {
+	state: TState<GValue & { childMixins: TMergeMixins<[TUnreference<TTypographyStyleMixin>]> }, any>;
 	editor: TPageEditor;
 }

@@ -3,14 +3,13 @@ import {
 	inherit,
 	isInherited,
 	resolveReference,
-	TFlatNode,
 	TMergeMixins,
 	TStrokeStyleMixin,
 	TUnreference
 } from '@repo/editor';
 import { Button, Text } from '@shopify/polaris';
 import { useCombinedCompute, useCompute } from 'feature-react';
-import { createState } from 'feature-state';
+import { createState, TState } from 'feature-state';
 import React from 'react';
 import {
 	Badge,
@@ -22,42 +21,45 @@ import {
 	MinusIcon,
 	PlusIcon
 } from '@/components';
-import { useMapReferenceToProperty } from '../../hooks';
-import { TNodeState, TPageEditor } from '../../lib';
+import { useMapStateReference } from '../../hooks';
+import { TPageEditor } from '../../lib';
 
-export const StrokeStyleMixinEditor = <GNode extends TFlatNode, GParentNode extends TFlatNode>(
-	props: TStrokeStyleMixinEditorProps<GNode, GParentNode>
+export const StrokeStyleMixinEditor = <
+	GValue extends Record<string, any>,
+	GParentValue extends Record<string, any>
+>(
+	props: TStrokeStyleMixinEditorProps<GValue, GParentValue>
 ) => {
-	const { nodeState, parentNodeState, editor } = props;
+	const { state, parentState, editor } = props;
 
 	const resolvedStroke = useCombinedCompute(
-		[nodeState, parentNodeState ?? createState(undefined)],
-		([{ value: nodeValue }, { value: parentValue }]) => {
-			return resolveReference(nodeValue.stroke, parentValue?.childMixins?.stroke);
+		[state, parentState ?? createState(undefined)],
+		([{ value }, { value: parentValue }]) => {
+			return resolveReference(value.stroke, parentValue?.childMixins?.stroke);
 		}
 	);
 
-	const isInheritedStroke = useCompute(nodeState, ({ value }) => {
+	const isInheritedStroke = useCompute(state, ({ value }) => {
 		return isInherited(value.stroke);
 	});
 
-	const colorState = useMapReferenceToProperty(nodeState, {
-		topLevelReference: (value) => value.stroke,
-		propertyReference: (value) => value?.color,
-		updateProperty: (value) => {
-			if (nodeState._v.stroke != null && !isInherited(nodeState._v.stroke)) {
-				nodeState._v.stroke.color = value;
-				nodeState._notify();
+	const colorState = useMapStateReference(state, {
+		getTopLevelReference: (value) => value.stroke,
+		getPropertyReference: (value) => value?.color,
+		setProperty: (value) => {
+			if (state._v.stroke != null && !isInherited(state._v.stroke)) {
+				state._v.stroke.color = value;
+				state._notify();
 			}
 		}
 	});
-	const widthState = useMapReferenceToProperty(nodeState, {
-		topLevelReference: (value) => value.stroke,
-		propertyReference: (value) => value?.width,
-		updateProperty: (value) => {
-			if (nodeState._v.stroke != null && !isInherited(nodeState._v.stroke)) {
-				nodeState._v.stroke.width = value;
-				nodeState._notify();
+	const widthState = useMapStateReference(state, {
+		getTopLevelReference: (value) => value.stroke,
+		getPropertyReference: (value) => value?.width,
+		setProperty: (value) => {
+			if (state._v.stroke != null && !isInherited(state._v.stroke)) {
+				state._v.stroke.width = value;
+				state._notify();
 			}
 		}
 	});
@@ -67,25 +69,25 @@ export const StrokeStyleMixinEditor = <GNode extends TFlatNode, GParentNode exte
 	// =========================================================================
 
 	const handleAddStroke = React.useCallback(() => {
-		const parentStroke = parentNodeState?._v.childMixins?.stroke;
-		nodeState._v.stroke = parentStroke ?? {
+		const parentStroke = parentState?._v.childMixins?.stroke;
+		state._v.stroke = parentStroke ?? {
 			color: { r: 0, g: 0, b: 0, a: 1 },
 			width: 1
 		};
-		nodeState._notify();
-	}, [nodeState, parentNodeState]);
+		state._notify();
+	}, [state, parentState]);
 
 	const handleRemoveStroke = React.useCallback(() => {
-		nodeState._v.stroke = null;
-		nodeState._notify();
-	}, [nodeState]);
+		state._v.stroke = null;
+		state._notify();
+	}, [state]);
 
 	const handleToggleInheritance = React.useCallback(() => {
-		nodeState._v.stroke = isInheritedStroke
-			? (deepCopy(parentNodeState?._v.childMixins?.stroke) ?? null)
+		state._v.stroke = isInheritedStroke
+			? (deepCopy(parentState?._v.childMixins?.stroke) ?? null)
 			: inherit();
-		nodeState._notify();
-	}, [isInheritedStroke, parentNodeState, nodeState]);
+		state._notify();
+	}, [isInheritedStroke, parentState, state]);
 
 	// =========================================================================
 	// UI
@@ -96,7 +98,7 @@ export const StrokeStyleMixinEditor = <GNode extends TFlatNode, GParentNode exte
 			<div className="flex items-center justify-between">
 				<div className="flex items-center gap-2">
 					{/* Mixin-level inheritance button */}
-					{parentNodeState != null && (
+					{parentState != null && (
 						<button
 							type="button"
 							onClick={handleToggleInheritance}
@@ -142,7 +144,7 @@ export const StrokeStyleMixinEditor = <GNode extends TFlatNode, GParentNode exte
 						label="Color"
 						autoComplete="off"
 						state={colorState}
-						parentState={parentNodeState}
+						parentState={parentState}
 						mapValue={(value) => value}
 						onValueChange={(value) => {
 							colorState.set(value);
@@ -164,7 +166,7 @@ export const StrokeStyleMixinEditor = <GNode extends TFlatNode, GParentNode exte
 						max={20}
 						step={1}
 						state={widthState}
-						parentState={parentNodeState}
+						parentState={parentState}
 						mapValue={(value) => value}
 						onValueChange={(value) => {
 							widthState.set(value);
@@ -184,12 +186,16 @@ export const StrokeStyleMixinEditor = <GNode extends TFlatNode, GParentNode exte
 	);
 };
 
-interface TStrokeStyleMixinEditorProps<GNode extends TFlatNode, GParentNode extends TFlatNode> {
-	nodeState: TNodeState<GNode & TMergeMixins<[TStrokeStyleMixin]>>;
-	parentNodeState?: TNodeState<
-		GParentNode & {
+interface TStrokeStyleMixinEditorProps<
+	GValue extends Record<string, any>,
+	GParentValue extends Record<string, any>
+> {
+	state: TState<GValue & TMergeMixins<[TStrokeStyleMixin]>, any>;
+	parentState?: TState<
+		GParentValue & {
 			childMixins: TMergeMixins<[TUnreference<TStrokeStyleMixin>]>;
-		}
+		},
+		any
 	>;
 	editor: TPageEditor;
 }

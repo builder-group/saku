@@ -2,28 +2,34 @@ import {
 	inherit,
 	isInherited,
 	TAppearanceStyleMixin,
-	TFlatNode,
 	TMergeMixins,
 	TUnreference
 } from '@repo/editor';
 import { Button, Text } from '@shopify/polaris';
+import { useCompute } from 'feature-react';
+import { TState } from 'feature-state';
 import React from 'react';
 import { HideIcon, MappedTextInput, ViewIcon } from '@/components';
-import { TNodeState, TPageEditor } from '../../lib';
+import { TPageEditor } from '../../lib';
 
-export const AppearanceStyleMixinEditor = <GNode extends TFlatNode, GParentNode extends TFlatNode>(
-	props: TAppearanceStyleMixinEditorProps<GNode, GParentNode>
+export const AppearanceStyleMixinEditor = <
+	GValue extends Record<string, any>,
+	GParentValue extends Record<string, any>
+>(
+	props: TAppearanceStyleMixinEditorProps<GValue, GParentValue>
 ) => {
-	const { nodeState, parentNodeState, editor } = props;
+	const { state, parentState, editor } = props;
+
+	const hasBorderRadius = useCompute(state, ({ value }) => value.appearance.borderRadius != null);
 
 	// =========================================================================
 	// Events
 	// =========================================================================
 
 	const handleToggleVisibility = React.useCallback(() => {
-		nodeState._v.appearance.visible = !nodeState._v.appearance.visible;
-		nodeState._notify();
-	}, [nodeState]);
+		state._v.appearance.visible = !state._v.appearance.visible;
+		state._notify();
+	}, [state]);
 
 	// =========================================================================
 	// UI
@@ -36,7 +42,7 @@ export const AppearanceStyleMixinEditor = <GNode extends TFlatNode, GParentNode 
 					Appearance
 				</Text>
 
-				{nodeState._v.appearance.visible ? (
+				{state._v.appearance.visible ? (
 					<Button icon={ViewIcon} onClick={handleToggleVisibility} variant="plain" size="micro" />
 				) : (
 					<Button icon={HideIcon} onClick={handleToggleVisibility} variant="plain" size="micro" />
@@ -50,68 +56,72 @@ export const AppearanceStyleMixinEditor = <GNode extends TFlatNode, GParentNode 
 					min={0}
 					max={100}
 					step={5}
-					state={nodeState}
-					parentState={parentNodeState}
+					state={state}
+					parentState={parentState}
 					mapValue={(value) =>
 						isInherited(value.appearance.opacity) ? inherit() : value.appearance.opacity * 100
 					}
 					onValueChange={(value) => {
 						if (value != null) {
-							nodeState._v.appearance.opacity = value / 100;
-							nodeState._notify();
+							state._v.appearance.opacity = value / 100;
+							state._notify();
 						}
 					}}
 					mapParentValue={(parent) => parent.childMixins.appearance.opacity * 100}
 					onInheritChange={(shouldInherit, parentValue) => {
-						nodeState._v.appearance.opacity = shouldInherit
-							? inherit()
-							: (parentValue as number) / 100;
-						nodeState._notify();
+						state._v.appearance.opacity = shouldInherit ? inherit() : (parentValue as number) / 100;
+						state._notify();
 					}}
 					onNavigateToParent={() => {
 						editor.switchView('settings');
 					}}
-					disableFieldInheritance={parentNodeState == null}
+					disableFieldInheritance={parentState == null}
 				/>
-				<MappedTextInput
-					label="Border Radius"
-					type="number"
-					autoComplete="off"
-					min={0}
-					max={999}
-					step={4}
-					state={nodeState}
-					parentState={parentNodeState}
-					mapValue={(value) => value.appearance.borderRadius}
-					onValueChange={(value) => {
-						if (value != null) {
-							nodeState._v.appearance.borderRadius = value;
-							nodeState._notify();
-						}
-					}}
-					mapParentValue={(parent) => parent.childMixins.appearance.borderRadius}
-					onInheritChange={(shouldInherit, parentValue) => {
-						nodeState._v.appearance.borderRadius = shouldInherit
-							? inherit()
-							: (parentValue as number);
-						nodeState._notify();
-					}}
-					onNavigateToParent={() => {
-						editor.switchView('settings');
-					}}
-					disableFieldInheritance={parentNodeState == null}
-				/>
+				{hasBorderRadius && (
+					<MappedTextInput
+						label="Border Radius"
+						type="number"
+						autoComplete="off"
+						min={0}
+						max={999}
+						step={4}
+						state={state}
+						parentState={parentState}
+						mapValue={(value) => value.appearance.borderRadius}
+						onValueChange={(value) => {
+							if (value != null) {
+								state._v.appearance.borderRadius = value;
+								state._notify();
+							}
+						}}
+						mapParentValue={(parent) => parent.childMixins.appearance.borderRadius}
+						onInheritChange={(shouldInherit, parentValue) => {
+							state._v.appearance.borderRadius = shouldInherit
+								? inherit()
+								: (parentValue as number);
+							state._notify();
+						}}
+						onNavigateToParent={() => {
+							editor.switchView('settings');
+						}}
+						disableFieldInheritance={parentState == null}
+					/>
+				)}
 			</div>
 		</div>
 	);
 };
 
-interface TAppearanceStyleMixinEditorProps<GNode extends TFlatNode, GParentNode extends TFlatNode> {
-	nodeState: TNodeState<GNode & TMergeMixins<[TAppearanceStyleMixin]>>;
-	parentNodeState?: TNodeState<
-		GParentNode & {
+interface TAppearanceStyleMixinEditorProps<
+	GValue extends Record<string, any>,
+	GParentValue extends Record<string, any>
+> {
+	state: TState<GValue & TMergeMixins<[TAppearanceStyleMixin]>, any>;
+	parentState?: TState<
+		GParentValue & {
 			childMixins: TMergeMixins<[TUnreference<TAppearanceStyleMixin>]>;
-		}
+		},
+		any
 	>;
 	editor: TPageEditor;
 }

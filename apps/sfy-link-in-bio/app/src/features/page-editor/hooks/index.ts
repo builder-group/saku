@@ -1,2 +1,2 @@
-export * from './use-map-reference-to-property';
+export * from './use-map-state-reference';
 export * from './use-selected-node-scroll';

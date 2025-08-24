@@ -1,16 +1,16 @@
-import { TFlatNode, TMergeMixins, TShadowStyleMixin, TUnreference } from '@repo/editor';
+import { TMergeMixins, TShadowStyleMixin, TUnreference } from '@repo/editor';
 import { Button, Text } from '@shopify/polaris';
 import { useCompute } from 'feature-react';
+import { TState } from 'feature-state';
 import React from 'react';
 import { MappedColorInput, MappedTextInput, MinusIcon, PlusIcon } from '@/components';
-import { TNodeState } from '../../lib';
 
-export const ChildShadowStyleMixinEditor = <GNode extends TFlatNode>(
-	props: TChildShadowStyleMixinEditorProps<GNode>
+export const ChildShadowStyleMixinEditor = <GValue extends Record<string, any>>(
+	props: TChildShadowStyleMixinEditorProps<GValue>
 ) => {
-	const { nodeState } = props;
+	const { state } = props;
 
-	const currentShadow = useCompute(nodeState, ({ value }) => {
+	const currentShadow = useCompute(state, ({ value }) => {
 		return value.childMixins?.shadow;
 	});
 
@@ -19,20 +19,20 @@ export const ChildShadowStyleMixinEditor = <GNode extends TFlatNode>(
 	// =========================================================================
 
 	const handleAddShadow = React.useCallback(() => {
-		nodeState._v.childMixins.shadow = {
+		state._v.childMixins.shadow = {
 			color: { r: 0, g: 0, b: 0, a: 0.3 },
 			offsetX: 0,
 			offsetY: 2,
 			blur: 4,
 			spread: 0
 		};
-		nodeState._notify();
-	}, [nodeState]);
+		state._notify();
+	}, [state]);
 
 	const handleRemoveShadow = React.useCallback(() => {
-		nodeState._v.childMixins.shadow = null;
-		nodeState._notify();
-	}, [nodeState]);
+		state._v.childMixins.shadow = null;
+		state._notify();
+	}, [state]);
 
 	// =========================================================================
 	// UI
@@ -58,12 +58,12 @@ export const ChildShadowStyleMixinEditor = <GNode extends TFlatNode>(
 					<MappedColorInput
 						label="Color"
 						autoComplete="off"
-						state={nodeState}
+						state={state}
 						mapValue={(value) => value.childMixins?.shadow?.color}
 						onValueChange={(value) => {
-							if (value != null && nodeState._v.childMixins?.shadow != null) {
-								nodeState._v.childMixins.shadow.color = value;
-								nodeState._notify();
+							if (value != null && state._v.childMixins?.shadow != null) {
+								state._v.childMixins.shadow.color = value;
+								state._notify();
 							}
 						}}
 						disableFieldInheritance
@@ -77,12 +77,12 @@ export const ChildShadowStyleMixinEditor = <GNode extends TFlatNode>(
 							min={0}
 							max={96}
 							step={4}
-							state={nodeState}
+							state={state}
 							mapValue={(value) => value.childMixins?.shadow?.blur}
 							onValueChange={(value) => {
-								if (value != null && nodeState._v.childMixins?.shadow != null) {
-									nodeState._v.childMixins.shadow.blur = value;
-									nodeState._notify();
+								if (value != null && state._v.childMixins?.shadow != null) {
+									state._v.childMixins.shadow.blur = value;
+									state._notify();
 								}
 							}}
 							disableFieldInheritance
@@ -94,12 +94,12 @@ export const ChildShadowStyleMixinEditor = <GNode extends TFlatNode>(
 							min={-48}
 							max={48}
 							step={4}
-							state={nodeState}
+							state={state}
 							mapValue={(value) => value.childMixins?.shadow?.spread}
 							onValueChange={(value) => {
-								if (value != null && nodeState._v.childMixins?.shadow != null) {
-									nodeState._v.childMixins.shadow.spread = value;
-									nodeState._notify();
+								if (value != null && state._v.childMixins?.shadow != null) {
+									state._v.childMixins.shadow.spread = value;
+									state._notify();
 								}
 							}}
 							disableFieldInheritance
@@ -114,12 +114,12 @@ export const ChildShadowStyleMixinEditor = <GNode extends TFlatNode>(
 							min={-96}
 							max={96}
 							step={4}
-							state={nodeState}
+							state={state}
 							mapValue={(value) => value.childMixins?.shadow?.offsetX}
 							onValueChange={(value) => {
-								if (value != null && nodeState._v.childMixins?.shadow != null) {
-									nodeState._v.childMixins.shadow.offsetX = value;
-									nodeState._notify();
+								if (value != null && state._v.childMixins?.shadow != null) {
+									state._v.childMixins.shadow.offsetX = value;
+									state._notify();
 								}
 							}}
 							disableFieldInheritance
@@ -131,12 +131,12 @@ export const ChildShadowStyleMixinEditor = <GNode extends TFlatNode>(
 							min={-96}
 							max={96}
 							step={4}
-							state={nodeState}
+							state={state}
 							mapValue={(value) => value.childMixins?.shadow?.offsetY}
 							onValueChange={(value) => {
-								if (value != null && nodeState._v.childMixins?.shadow != null) {
-									nodeState._v.childMixins.shadow.offsetY = value;
-									nodeState._notify();
+								if (value != null && state._v.childMixins?.shadow != null) {
+									state._v.childMixins.shadow.offsetY = value;
+									state._notify();
 								}
 							}}
 							disableFieldInheritance
@@ -148,6 +148,6 @@ export const ChildShadowStyleMixinEditor = <GNode extends TFlatNode>(
 	);
 };
 
-interface TChildShadowStyleMixinEditorProps<GNode extends TFlatNode> {
-	nodeState: TNodeState<GNode & { childMixins: TMergeMixins<[TUnreference<TShadowStyleMixin>]> }>;
+interface TChildShadowStyleMixinEditorProps<GValue extends Record<string, any>> {
+	state: TState<GValue & { childMixins: TMergeMixins<[TUnreference<TShadowStyleMixin>]> }, any>;
 }

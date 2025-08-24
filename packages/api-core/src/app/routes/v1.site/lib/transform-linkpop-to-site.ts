@@ -71,25 +71,33 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 				profilePicture: profilePictureHash,
 				socialLinks: transformSocialLinks(page.socialMediaAccounts ?? [])
 			},
-			layout: {
-				padding: inherit()
+			card: {
+				layout: {
+					padding: inherit()
+				},
+				appearance: {
+					visible: inherit(),
+					opacity: inherit(),
+					borderRadius: 0
+				},
+				fill: null,
+				stroke: null,
+				shadow: null
 			},
-			appearance: {
-				borderRadius: 0,
-				opacity: inherit(),
-				visible: inherit()
-			},
-			typography: {
-				font: inherit(),
-				fontSize: 16,
-				textColor: cssRgbaToRgba(page?.themeSettings?.fontColor) ?? hexToRgba('#000000'),
-				textAlign: inherit(),
-				lineHeight: inherit(),
-				letterSpacing: inherit()
-			},
-			fill: null,
-			stroke: null,
-			shadow: null
+			text: {
+				appearance: {
+					visible: inherit(),
+					opacity: inherit()
+				},
+				typography: {
+					font: inherit(),
+					fontSize: 16,
+					textColor: cssRgbaToRgba(page?.themeSettings?.fontColor) ?? hexToRgba('#000000'),
+					textAlign: inherit(),
+					lineHeight: inherit(),
+					letterSpacing: inherit()
+				}
+			}
 		} as TAboutNode;
 		children.push(aboutNode);
 	}
@@ -111,13 +119,13 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 
 				// Determine variant based on __typename
 				let variant: TLinkNode['content']['variant'];
-				let layout: TLinkNode['layout'] = {
+				let cardLayout: TLinkNode['card']['layout'] = {
 					padding: inherit()
 				};
-				let appearance: TLinkNode['appearance'] = {
-					borderRadius: inherit(),
+				let cardAppearance: TLinkNode['card']['appearance'] = {
+					visible: true,
 					opacity: inherit(),
-					visible: true
+					borderRadius: inherit()
 				};
 
 				switch (link.__typename) {
@@ -128,13 +136,13 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 								type: 'youtube-video-embed' as const,
 								videoId
 							};
-							layout = {
+							cardLayout = {
 								padding: 0
 							};
-							appearance = {
-								borderRadius: Math.min(borderRadius, 40),
+							cardAppearance = {
+								visible: true,
 								opacity: inherit(),
-								visible: true
+								borderRadius: Math.min(borderRadius, 40)
 							};
 						} else {
 							variant = {
@@ -161,19 +169,28 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 						url: link.url,
 						variant
 					},
-					layout,
-					appearance,
-					typography: {
-						font: inherit(),
-						fontSize: inherit(),
-						textColor: inherit(),
-						textAlign: inherit(),
-						lineHeight: inherit(),
-						letterSpacing: inherit()
+					card: {
+						layout: cardLayout,
+						appearance: cardAppearance,
+
+						fill: inherit(),
+						stroke: inherit(),
+						shadow: inherit()
 					},
-					fill: inherit(),
-					stroke: inherit(),
-					shadow: inherit()
+					text: {
+						appearance: {
+							visible: true,
+							opacity: inherit()
+						},
+						typography: {
+							font: inherit(),
+							fontSize: inherit(),
+							textColor: inherit(),
+							textAlign: inherit(),
+							lineHeight: inherit(),
+							letterSpacing: inherit()
+						}
+					}
 				} satisfies TLinkNode);
 			} else {
 				// Create text node for links without URLs
@@ -183,25 +200,34 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 					content: {
 						text: link.title
 					},
-					layout: {
-						padding: inherit()
+					card: {
+						layout: {
+							padding: inherit()
+						},
+						appearance: {
+							visible: true,
+							opacity: inherit(),
+							borderRadius: inherit()
+						},
+
+						fill: inherit(),
+						stroke: inherit(),
+						shadow: inherit()
 					},
-					appearance: {
-						borderRadius: inherit(),
-						opacity: inherit(),
-						visible: true
-					},
-					typography: {
-						font: inherit(),
-						fontSize: inherit(),
-						textColor: inherit(),
-						textAlign: inherit(),
-						lineHeight: inherit(),
-						letterSpacing: inherit()
-					},
-					fill: inherit(),
-					stroke: inherit(),
-					shadow: inherit()
+					text: {
+						appearance: {
+							visible: true,
+							opacity: inherit()
+						},
+						typography: {
+							font: inherit(),
+							fontSize: inherit(),
+							textColor: inherit(),
+							textAlign: inherit(),
+							lineHeight: inherit(),
+							letterSpacing: inherit()
+						}
+					}
 				} satisfies TTextNode);
 			}
 		}
@@ -218,53 +244,92 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 				metadata: {}
 			},
 			children,
-			layout: {
-				spacing: 16
-			},
-			appearance: {
-				borderRadius: 0,
-				opacity: 1,
-				visible: true
-			},
-			fill: {
-				paint: backgroundPaint,
-				opacity: 1
-			},
-			childMixins: {
+			page: {
 				layout: {
-					padding: 8
+					spacing: 16
 				},
 				appearance: {
-					borderRadius,
+					visible: true,
 					opacity: 1,
-					visible: true
-				},
-				typography: {
-					font: {
-						family: primaryFont,
-						weight: 400,
-						style: 'normal'
-					},
-					fontSize: 14,
-					textColor: cssRgbaToRgba(page?.themeSettings?.linkCardFontColor) ?? hexToRgba('#000000'),
-					textAlign: 'center',
-					lineHeight: { type: 'auto' },
-					letterSpacing: 0
+					borderRadius: 0
 				},
 				fill: {
-					paint: {
-						type: 'solid',
-						color: cssRgbaToRgba(page?.themeSettings?.linkCardColor) ?? hexToRgba('#FFFFFF')
-					},
+					paint: backgroundPaint,
 					opacity: 1
+				}
+			},
+			childMixins: {
+				card: {
+					layout: {
+						padding: 8
+					},
+					appearance: {
+						visible: true,
+						opacity: 1,
+						borderRadius
+					},
+					fill: {
+						paint: {
+							type: 'solid',
+							color: cssRgbaToRgba(page?.themeSettings?.linkCardColor) ?? hexToRgba('#FFFFFF')
+						},
+						opacity: 1
+					},
+					stroke: null,
+					shadow: {
+						color: { r: 0, g: 0, b: 0, a: 0.1 },
+						offsetX: 0,
+						offsetY: 2,
+						blur: 4,
+						spread: 0
+					}
 				},
-				stroke: null,
-				shadow: {
-					color: { r: 0, g: 0, b: 0, a: 0.1 },
-					offsetX: 0,
-					offsetY: 2,
-					blur: 4,
-					spread: 0
+				text: {
+					appearance: {
+						visible: true,
+						opacity: 1
+					},
+					typography: {
+						font: {
+							family: primaryFont,
+							weight: 400,
+							style: 'normal'
+						},
+						fontSize: 14,
+						textColor:
+							cssRgbaToRgba(page?.themeSettings?.linkCardFontColor) ?? hexToRgba('#000000'),
+						textAlign: 'center',
+						lineHeight: { type: 'auto' },
+						letterSpacing: 0
+					}
+				},
+				cta: {
+					appearance: {
+						visible: true,
+						opacity: 1,
+						borderRadius: borderRadius * 0.5
+					},
+					typography: {
+						font: {
+							family: primaryFont,
+							weight: 400,
+							style: 'normal'
+						},
+						fontSize: 14,
+						textColor: cssRgbaToRgba(page?.themeSettings?.linkCardColor) ?? hexToRgba('#000000'),
+						textAlign: 'center',
+						lineHeight: { type: 'auto' },
+						letterSpacing: 0
+					},
+					fill: {
+						paint: {
+							type: 'solid',
+							color: cssRgbaToRgba(page?.themeSettings?.linkCardFontColor) ?? hexToRgba('#FFFFFF')
+						},
+						opacity: 1
+					},
+					stroke: null,
+					shadow: null
 				}
 			}
 		}

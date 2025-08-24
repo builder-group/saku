@@ -3,14 +3,13 @@ import {
 	inherit,
 	isInherited,
 	resolveReference,
-	TFlatNode,
 	TMergeMixins,
 	TShadowStyleMixin,
 	TUnreference
 } from '@repo/editor';
 import { Button, Text } from '@shopify/polaris';
 import { useCombinedCompute, useCompute } from 'feature-react';
-import { createState } from 'feature-state';
+import { createState, TState } from 'feature-state';
 import React from 'react';
 import {
 	Badge,
@@ -22,72 +21,75 @@ import {
 	MinusIcon,
 	PlusIcon
 } from '@/components';
-import { useMapReferenceToProperty } from '../../hooks';
-import { TNodeState, TPageEditor } from '../../lib';
+import { useMapStateReference } from '../../hooks';
+import { TPageEditor } from '../../lib';
 
-export const ShadowStyleMixinEditor = <GNode extends TFlatNode, GParentNode extends TFlatNode>(
-	props: TShadowStyleMixinEditorProps<GNode, GParentNode>
+export const ShadowStyleMixinEditor = <
+	GValue extends Record<string, any>,
+	GParentValue extends Record<string, any>
+>(
+	props: TShadowStyleMixinEditorProps<GValue, GParentValue>
 ) => {
-	const { nodeState, parentNodeState, editor } = props;
+	const { state, parentState, editor } = props;
 
 	const resolvedShadow = useCombinedCompute(
-		[nodeState, parentNodeState ?? createState(undefined)],
-		([{ value: nodeValue }, { value: parentValue }]) => {
-			return resolveReference(nodeValue.shadow, parentValue?.childMixins?.shadow);
+		[state, parentState ?? createState(undefined)],
+		([{ value }, { value: parentValue }]) => {
+			return resolveReference(value.shadow, parentValue?.childMixins?.shadow);
 		}
 	);
 
-	const isInheritedShadow = useCompute(nodeState, ({ value }) => {
+	const isInheritedShadow = useCompute(state, ({ value }) => {
 		return isInherited(value.shadow);
 	});
 
-	const colorState = useMapReferenceToProperty(nodeState, {
-		topLevelReference: (value) => value.shadow,
-		propertyReference: (value) => value?.color,
-		updateProperty: (value) => {
-			if (nodeState._v.shadow != null && !isInherited(nodeState._v.shadow)) {
-				nodeState._v.shadow.color = value;
-				nodeState._notify();
+	const colorState = useMapStateReference(state, {
+		getTopLevelReference: (value) => value.shadow,
+		getPropertyReference: (value) => value?.color,
+		setProperty: (value) => {
+			if (state._v.shadow != null && !isInherited(state._v.shadow)) {
+				state._v.shadow.color = value;
+				state._notify();
 			}
 		}
 	});
-	const blurState = useMapReferenceToProperty(nodeState, {
-		topLevelReference: (value) => value.shadow,
-		propertyReference: (value) => value?.blur,
-		updateProperty: (value) => {
-			if (nodeState._v.shadow != null && !isInherited(nodeState._v.shadow)) {
-				nodeState._v.shadow.blur = value;
-				nodeState._notify();
+	const blurState = useMapStateReference(state, {
+		getTopLevelReference: (value) => value.shadow,
+		getPropertyReference: (value) => value?.blur,
+		setProperty: (value) => {
+			if (state._v.shadow != null && !isInherited(state._v.shadow)) {
+				state._v.shadow.blur = value;
+				state._notify();
 			}
 		}
 	});
-	const spreadState = useMapReferenceToProperty(nodeState, {
-		topLevelReference: (value) => value.shadow,
-		propertyReference: (value) => value?.spread,
-		updateProperty: (value) => {
-			if (nodeState._v.shadow != null && !isInherited(nodeState._v.shadow)) {
-				nodeState._v.shadow.spread = value;
-				nodeState._notify();
+	const spreadState = useMapStateReference(state, {
+		getTopLevelReference: (value) => value.shadow,
+		getPropertyReference: (value) => value?.spread,
+		setProperty: (value) => {
+			if (state._v.shadow != null && !isInherited(state._v.shadow)) {
+				state._v.shadow.spread = value;
+				state._notify();
 			}
 		}
 	});
-	const offsetXState = useMapReferenceToProperty(nodeState, {
-		topLevelReference: (value) => value.shadow,
-		propertyReference: (value) => value?.offsetX,
-		updateProperty: (value) => {
-			if (nodeState._v.shadow != null && !isInherited(nodeState._v.shadow)) {
-				nodeState._v.shadow.offsetX = value;
-				nodeState._notify();
+	const offsetXState = useMapStateReference(state, {
+		getTopLevelReference: (value) => value.shadow,
+		getPropertyReference: (value) => value?.offsetX,
+		setProperty: (value) => {
+			if (state._v.shadow != null && !isInherited(state._v.shadow)) {
+				state._v.shadow.offsetX = value;
+				state._notify();
 			}
 		}
 	});
-	const offsetYState = useMapReferenceToProperty(nodeState, {
-		topLevelReference: (value) => value.shadow,
-		propertyReference: (value) => value?.offsetY,
-		updateProperty: (value) => {
-			if (nodeState._v.shadow != null && !isInherited(nodeState._v.shadow)) {
-				nodeState._v.shadow.offsetY = value;
-				nodeState._notify();
+	const offsetYState = useMapStateReference(state, {
+		getTopLevelReference: (value) => value.shadow,
+		getPropertyReference: (value) => value?.offsetY,
+		setProperty: (value) => {
+			if (state._v.shadow != null && !isInherited(state._v.shadow)) {
+				state._v.shadow.offsetY = value;
+				state._notify();
 			}
 		}
 	});
@@ -97,28 +99,28 @@ export const ShadowStyleMixinEditor = <GNode extends TFlatNode, GParentNode exte
 	// =========================================================================
 
 	const handleAddShadow = React.useCallback(() => {
-		const parentShadow = parentNodeState?._v.childMixins?.shadow;
-		nodeState._v.shadow = parentShadow ?? {
+		const parentShadow = parentState?._v.childMixins?.shadow;
+		state._v.shadow = parentShadow ?? {
 			color: { r: 0, g: 0, b: 0, a: 0.1 },
 			offsetX: 0,
 			offsetY: 4,
 			blur: 6,
 			spread: -1
 		};
-		nodeState._notify();
-	}, [nodeState, parentNodeState]);
+		state._notify();
+	}, [state, parentState]);
 
 	const handleRemoveShadow = React.useCallback(() => {
-		nodeState._v.shadow = null;
-		nodeState._notify();
-	}, [nodeState]);
+		state._v.shadow = null;
+		state._notify();
+	}, [state]);
 
 	const handleToggleInheritance = React.useCallback(() => {
-		nodeState._v.shadow = isInheritedShadow
-			? (deepCopy(parentNodeState?._v.childMixins?.shadow) ?? null)
+		state._v.shadow = isInheritedShadow
+			? (deepCopy(parentState?._v.childMixins?.shadow) ?? null)
 			: inherit();
-		nodeState._notify();
-	}, [isInheritedShadow, parentNodeState, nodeState]);
+		state._notify();
+	}, [isInheritedShadow, parentState, state]);
 
 	// =========================================================================
 	// UI
@@ -129,7 +131,7 @@ export const ShadowStyleMixinEditor = <GNode extends TFlatNode, GParentNode exte
 			<div className="flex items-center justify-between">
 				<div className="flex items-center gap-2">
 					{/* Mixin-level inheritance button */}
-					{parentNodeState != null && (
+					{parentState != null && (
 						<button
 							type="button"
 							onClick={handleToggleInheritance}
@@ -175,7 +177,7 @@ export const ShadowStyleMixinEditor = <GNode extends TFlatNode, GParentNode exte
 						label="Color"
 						autoComplete="off"
 						state={colorState}
-						parentState={parentNodeState}
+						parentState={parentState}
 						mapValue={(value) => value}
 						onValueChange={(value) => {
 							colorState.set(value);
@@ -198,7 +200,7 @@ export const ShadowStyleMixinEditor = <GNode extends TFlatNode, GParentNode exte
 							max={96}
 							step={4}
 							state={blurState}
-							parentState={parentNodeState}
+							parentState={parentState}
 							mapValue={(value) => value}
 							onValueChange={(value) => {
 								blurState.set(value);
@@ -220,7 +222,7 @@ export const ShadowStyleMixinEditor = <GNode extends TFlatNode, GParentNode exte
 							max={48}
 							step={4}
 							state={spreadState}
-							parentState={parentNodeState}
+							parentState={parentState}
 							mapValue={(value) => value}
 							onValueChange={(value) => {
 								spreadState.set(value);
@@ -244,7 +246,7 @@ export const ShadowStyleMixinEditor = <GNode extends TFlatNode, GParentNode exte
 							max={96}
 							step={4}
 							state={offsetXState}
-							parentState={parentNodeState}
+							parentState={parentState}
 							mapValue={(value) => value}
 							onValueChange={(value) => {
 								offsetXState.set(value);
@@ -266,7 +268,7 @@ export const ShadowStyleMixinEditor = <GNode extends TFlatNode, GParentNode exte
 							max={96}
 							step={4}
 							state={offsetYState}
-							parentState={parentNodeState}
+							parentState={parentState}
 							mapValue={(value) => value}
 							onValueChange={(value) => {
 								offsetYState.set(value);
@@ -287,12 +289,16 @@ export const ShadowStyleMixinEditor = <GNode extends TFlatNode, GParentNode exte
 	);
 };
 
-interface TShadowStyleMixinEditorProps<GNode extends TFlatNode, GParentNode extends TFlatNode> {
-	nodeState: TNodeState<GNode & TMergeMixins<[TShadowStyleMixin]>>;
-	parentNodeState?: TNodeState<
-		GParentNode & {
+interface TShadowStyleMixinEditorProps<
+	GValue extends Record<string, any>,
+	GParentValue extends Record<string, any>
+> {
+	state: TState<GValue & TMergeMixins<[TShadowStyleMixin]>, any>;
+	parentState?: TState<
+		GParentValue & {
 			childMixins: TMergeMixins<[TUnreference<TShadowStyleMixin>]>;
-		}
+		},
+		any
 	>;
 	editor: TPageEditor;
 }

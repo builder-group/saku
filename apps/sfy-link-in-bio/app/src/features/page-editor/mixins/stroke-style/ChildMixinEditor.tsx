@@ -1,16 +1,16 @@
-import { TFlatNode, TMergeMixins, TStrokeStyleMixin, TUnreference } from '@repo/editor';
+import { TMergeMixins, TStrokeStyleMixin, TUnreference } from '@repo/editor';
 import { Button, Text } from '@shopify/polaris';
 import { useCompute } from 'feature-react';
+import { TState } from 'feature-state';
 import React from 'react';
 import { MappedColorInput, MappedTextInput, MinusIcon, PlusIcon } from '@/components';
-import { TNodeState } from '../../lib';
 
-export const ChildStrokeStyleMixinEditor = <GNode extends TFlatNode>(
-	props: TChildStrokeStyleMixinEditorProps<GNode>
+export const ChildStrokeStyleMixinEditor = <GValue extends Record<string, any>>(
+	props: TChildStrokeStyleMixinEditorProps<GValue>
 ) => {
-	const { nodeState } = props;
+	const { state: state } = props;
 
-	const currentStroke = useCompute(nodeState, ({ value }) => {
+	const currentStroke = useCompute(state, ({ value }) => {
 		return value.childMixins?.stroke;
 	});
 
@@ -19,17 +19,17 @@ export const ChildStrokeStyleMixinEditor = <GNode extends TFlatNode>(
 	// =========================================================================
 
 	const handleAddStroke = React.useCallback(() => {
-		nodeState._v.childMixins.stroke = {
+		state._v.childMixins.stroke = {
 			color: { r: 0, g: 0, b: 0, a: 1 },
 			width: 1
 		};
-		nodeState._notify();
-	}, [nodeState]);
+		state._notify();
+	}, [state]);
 
 	const handleRemoveStroke = React.useCallback(() => {
-		nodeState._v.childMixins.stroke = null;
-		nodeState._notify();
-	}, [nodeState]);
+		state._v.childMixins.stroke = null;
+		state._notify();
+	}, [state]);
 
 	// =========================================================================
 	// UI
@@ -55,12 +55,12 @@ export const ChildStrokeStyleMixinEditor = <GNode extends TFlatNode>(
 					<MappedColorInput
 						label="Color"
 						autoComplete="off"
-						state={nodeState}
+						state={state}
 						mapValue={(value) => value.childMixins?.stroke?.color}
 						onValueChange={(value) => {
-							if (value != null && nodeState._v.childMixins?.stroke != null) {
-								nodeState._v.childMixins.stroke.color = value;
-								nodeState._notify();
+							if (value != null && state._v.childMixins?.stroke != null) {
+								state._v.childMixins.stroke.color = value;
+								state._notify();
 							}
 						}}
 						disableFieldInheritance
@@ -72,12 +72,12 @@ export const ChildStrokeStyleMixinEditor = <GNode extends TFlatNode>(
 						min={0}
 						max={20}
 						step={1}
-						state={nodeState}
+						state={state}
 						mapValue={(value) => value.childMixins?.stroke?.width}
 						onValueChange={(value) => {
-							if (value != null && nodeState._v.childMixins?.stroke != null) {
-								nodeState._v.childMixins.stroke.width = value;
-								nodeState._notify();
+							if (value != null && state._v.childMixins?.stroke != null) {
+								state._v.childMixins.stroke.width = value;
+								state._notify();
 							}
 						}}
 						disableFieldInheritance
@@ -88,6 +88,6 @@ export const ChildStrokeStyleMixinEditor = <GNode extends TFlatNode>(
 	);
 };
 
-interface TChildStrokeStyleMixinEditorProps<GNode extends TFlatNode> {
-	nodeState: TNodeState<GNode & { childMixins: TMergeMixins<[TUnreference<TStrokeStyleMixin>]> }>;
+interface TChildStrokeStyleMixinEditorProps<GValue extends Record<string, any>> {
+	state: TState<GValue & { childMixins: TMergeMixins<[TUnreference<TStrokeStyleMixin>]> }, any>;
 }

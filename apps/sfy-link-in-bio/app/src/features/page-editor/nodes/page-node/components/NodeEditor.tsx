@@ -3,14 +3,10 @@ import React from 'react';
 import { AccordionSection } from '@/components';
 import { TNodeEditorComponentProps } from '../../../lib';
 import {
-	ChildAppearanceStyleMixinEditor,
-	ChildFillStyleMixinEditor,
-	ChildLayoutStyleMixinEditor,
-	ChildShadowStyleMixinEditor,
-	ChildStrokeStyleMixinEditor,
-	ChildTypographyStyleMixinEditor,
-	FillStyleMixinEditor,
-	PageLayoutStyleMixinEditor
+	ChildCardStyleMixinEditor,
+	ChildCtaStyleMixinEditor,
+	ChildTextStyleMixinEditor,
+	PageStyleMixinEditor
 } from '../../../mixins';
 
 export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TFlatPageNode>> = (props) => {
@@ -22,28 +18,24 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TFlatPageNode>> 
 
 	return (
 		<>
-			{/* Style Section */}
+			{/* Page Style Section */}
 			<AccordionSection title="Page Style" defaultOpen={true} collapsibleClassName="px-0 space-y-3">
-				<PageLayoutStyleMixinEditor nodeState={nodeState} />
-				<div className="h-px bg-gray-200" />
-				{/* <AppearanceStyleMixinEditor nodeState={nodeState} />
-				<div className="h-px bg-gray-200" /> */}
-				<FillStyleMixinEditor nodeState={nodeState} editor={editor} />
+				<PageStyleMixinEditor state={nodeState} editor={editor} />
 			</AccordionSection>
 
-			{/* Card Style Section */}
+			{/* Child Card Style Section */}
 			<AccordionSection title="Card Style" defaultOpen={true} collapsibleClassName="px-0 space-y-3">
-				<ChildLayoutStyleMixinEditor nodeState={nodeState} />
-				<div className="h-px bg-gray-200" />
-				<ChildAppearanceStyleMixinEditor nodeState={nodeState} />
-				<div className="h-px bg-gray-200" />
-				<ChildTypographyStyleMixinEditor nodeState={nodeState} editor={editor} />
-				<div className="h-px bg-gray-200" />
-				<ChildFillStyleMixinEditor nodeState={nodeState} editor={editor} />
-				<div className="h-px bg-gray-200" />
-				<ChildStrokeStyleMixinEditor nodeState={nodeState} />
-				<div className="h-px bg-gray-200" />
-				<ChildShadowStyleMixinEditor nodeState={nodeState} />
+				<ChildCardStyleMixinEditor state={nodeState} editor={editor} />
+			</AccordionSection>
+
+			{/* Child Text Style Section */}
+			<AccordionSection title="Text Style" defaultOpen={true} collapsibleClassName="px-0 space-y-3">
+				<ChildTextStyleMixinEditor state={nodeState} editor={editor} />
+			</AccordionSection>
+
+			{/* Child CTA Style Section */}
+			<AccordionSection title="CTA Style" defaultOpen={true} collapsibleClassName="px-0 space-y-3">
+				<ChildCtaStyleMixinEditor state={nodeState} editor={editor} />
 			</AccordionSection>
 		</>
 	);

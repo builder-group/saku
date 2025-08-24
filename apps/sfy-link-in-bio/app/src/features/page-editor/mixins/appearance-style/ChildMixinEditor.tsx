@@ -1,12 +1,18 @@
-import { TAppearanceStyleMixin, TFlatNode, TMergeMixins, TUnreference } from '@repo/editor';
+import { TAppearanceStyleMixin, TMergeMixins, TUnreference } from '@repo/editor';
 import { Text } from '@shopify/polaris';
+import { useCompute } from 'feature-react';
+import { TState } from 'feature-state';
 import { MappedTextInput } from '@/components';
-import { TNodeState } from '../../lib';
 
-export const ChildAppearanceStyleMixinEditor = <GNode extends TFlatNode>(
-	props: TChildAppearanceStyleMixinEditorProps<GNode>
+export const ChildAppearanceStyleMixinEditor = <GValue extends Record<string, any>>(
+	props: TChildAppearanceStyleMixinEditorProps<GValue>
 ) => {
-	const { nodeState } = props;
+	const { state } = props;
+
+	const hasBorderRadius = useCompute(
+		state,
+		({ value }) => value.childMixins.appearance.borderRadius != null
+	);
 
 	return (
 		<div className="space-y-3 px-4">
@@ -23,40 +29,40 @@ export const ChildAppearanceStyleMixinEditor = <GNode extends TFlatNode>(
 					min={0}
 					max={100}
 					step={5}
-					state={nodeState}
+					state={state}
 					mapValue={(value) => value.childMixins?.appearance?.opacity * 100}
 					onValueChange={(value) => {
 						if (value != null) {
-							nodeState._v.childMixins.appearance.opacity = value / 100;
-							nodeState._notify();
+							state._v.childMixins.appearance.opacity = value / 100;
+							state._notify();
 						}
 					}}
 					disableFieldInheritance
 				/>
-				<MappedTextInput
-					label="Border Radius"
-					type="number"
-					autoComplete="off"
-					min={0}
-					max={999}
-					step={4}
-					state={nodeState}
-					mapValue={(value) => value.childMixins?.appearance?.borderRadius}
-					onValueChange={(value) => {
-						if (value != null) {
-							nodeState._v.childMixins.appearance.borderRadius = value;
-							nodeState._notify();
-						}
-					}}
-					disableFieldInheritance
-				/>
+				{hasBorderRadius && (
+					<MappedTextInput
+						label="Border Radius"
+						type="number"
+						autoComplete="off"
+						min={0}
+						max={999}
+						step={4}
+						state={state}
+						mapValue={(value) => value.childMixins?.appearance?.borderRadius}
+						onValueChange={(value) => {
+							if (value != null) {
+								state._v.childMixins.appearance.borderRadius = value;
+								state._notify();
+							}
+						}}
+						disableFieldInheritance
+					/>
+				)}
 			</div>
 		</div>
 	);
 };
 
-interface TChildAppearanceStyleMixinEditorProps<GNode extends TFlatNode> {
-	nodeState: TNodeState<
-		GNode & { childMixins: TMergeMixins<[TUnreference<TAppearanceStyleMixin>]> }
-	>;
+interface TChildAppearanceStyleMixinEditorProps<GValue extends Record<string, any>> {
+	state: TState<GValue & { childMixins: TMergeMixins<[TUnreference<TAppearanceStyleMixin>]> }, any>;
 }

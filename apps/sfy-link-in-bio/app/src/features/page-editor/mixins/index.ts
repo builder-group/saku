@@ -1,5 +1,6 @@
 export * from './appearance-style';
 export * from './card-style';
+export * from './cta-style';
 export * from './fill-style';
 export * from './flat-children';
 export * from './layout-style';

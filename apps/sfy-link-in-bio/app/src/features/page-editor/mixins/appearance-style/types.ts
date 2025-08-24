@@ -3,14 +3,14 @@ import { TMixin } from '@repo/editor';
 export type TResolvedAppearanceStyleMixin = TMixin<
 	'appearance',
 	{
-		borderRadius: number;
-		opacity: number;
 		visible: boolean;
+		opacity: number;
+		borderRadius?: number;
 		// Computed CSS styles
 		styles: {
-			borderRadius: React.CSSProperties['borderRadius'];
-			opacity: React.CSSProperties['opacity'];
 			visibility: React.CSSProperties['visibility'];
+			opacity: React.CSSProperties['opacity'];
+			borderRadius?: React.CSSProperties['borderRadius'];
 		};
 	}
 >;

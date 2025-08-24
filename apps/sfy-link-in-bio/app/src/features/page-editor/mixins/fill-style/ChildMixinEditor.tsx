@@ -1,16 +1,17 @@
-import { TFillStyleMixin, TFlatNode, TMergeMixins, TUnreference } from '@repo/editor';
+import { TFillStyleMixin, TMergeMixins, TUnreference } from '@repo/editor';
 import { Button, Text } from '@shopify/polaris';
 import { useCompute } from 'feature-react';
+import { TState } from 'feature-state';
 import React from 'react';
 import { MappedPaintInput, MinusIcon, PlusIcon } from '@/components';
-import { TNodeState, TPageEditor } from '../../lib';
+import { TPageEditor } from '../../lib';
 
-export const ChildFillStyleMixinEditor = <GNode extends TFlatNode>(
-	props: TChildFillStyleMixinEditorProps<GNode>
+export const ChildFillStyleMixinEditor = <GValue extends Record<string, any>>(
+	props: TChildFillStyleMixinEditorProps<GValue>
 ) => {
-	const { nodeState, editor } = props;
+	const { state, editor } = props;
 
-	const currentFill = useCompute(nodeState, ({ value }) => {
+	const currentFill = useCompute(state, ({ value }) => {
 		return value.childMixins?.fill;
 	});
 
@@ -19,20 +20,20 @@ export const ChildFillStyleMixinEditor = <GNode extends TFlatNode>(
 	// =========================================================================
 
 	const handleAddFill = React.useCallback(() => {
-		nodeState._v.childMixins.fill = {
+		state._v.childMixins.fill = {
 			paint: {
 				type: 'solid',
 				color: { r: 255, g: 255, b: 255, a: 1 }
 			},
 			opacity: 1
 		};
-		nodeState._notify();
-	}, [nodeState]);
+		state._notify();
+	}, [state]);
 
 	const handleRemoveFill = React.useCallback(() => {
-		nodeState._v.childMixins.fill = null;
-		nodeState._notify();
-	}, [nodeState]);
+		state._v.childMixins.fill = null;
+		state._notify();
+	}, [state]);
 
 	// =========================================================================
 	// UI
@@ -58,12 +59,12 @@ export const ChildFillStyleMixinEditor = <GNode extends TFlatNode>(
 					<MappedPaintInput
 						label="Paint"
 						autoComplete="off"
-						state={nodeState}
+						state={state}
 						mapValue={(value) => value.childMixins?.fill?.paint}
 						onValueChange={(value) => {
-							if (value != null && nodeState._v.childMixins?.fill != null) {
-								nodeState._v.childMixins.fill.paint = value;
-								nodeState._notify();
+							if (value != null && state._v.childMixins?.fill != null) {
+								state._v.childMixins.fill.paint = value;
+								state._notify();
 							}
 						}}
 						disableFieldInheritance
@@ -75,7 +76,7 @@ export const ChildFillStyleMixinEditor = <GNode extends TFlatNode>(
 	);
 };
 
-interface TChildFillStyleMixinEditorProps<GNode extends TFlatNode> {
-	nodeState: TNodeState<GNode & { childMixins: TMergeMixins<[TUnreference<TFillStyleMixin>]> }>;
+interface TChildFillStyleMixinEditorProps<GValue extends Record<string, any>> {
+	state: TState<GValue & { childMixins: TMergeMixins<[TUnreference<TFillStyleMixin>]> }, any>;
 	editor: TPageEditor;
 }

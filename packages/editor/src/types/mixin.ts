@@ -61,14 +61,7 @@ export type TPageNodeMixin = TMixin<
 			};
 		};
 		childMixins: TMergeMixins<
-			[
-				TUnreference<TLayoutStyleMixin>,
-				TUnreference<TAppearanceStyleMixin>,
-				TUnreference<TTypographyStyleMixin>,
-				TUnreference<TFillStyleMixin>,
-				TUnreference<TStrokeStyleMixin>,
-				TUnreference<TShadowStyleMixin>
-			]
+			[TUnreference<TCardStyleMixin>, TUnreference<TTextStyleMixin>, TUnreference<TCtaStyleMixin>]
 		>;
 	}
 >;
@@ -162,6 +155,7 @@ export type TPageStyleMixin = TMixin<
 		layout: {
 			spacing: number;
 		};
+		appearance: TAppearanceStyleMixin['value'];
 		fill: TFillStyleMixin['value'];
 	}
 >;
@@ -169,7 +163,6 @@ export type TPageStyleMixin = TMixin<
 export type TCtaStyleMixin = TMixin<
 	'cta',
 	{
-		layout: TLayoutStyleMixin['value'];
 		appearance: TAppearanceStyleMixin['value'];
 		typography: TTypographyStyleMixin['value'];
 		fill: TFillStyleMixin['value'];
@@ -196,9 +189,9 @@ export type TLayoutStyleMixin = TMixin<
 export type TAppearanceStyleMixin = TMixin<
 	'appearance',
 	{
-		borderRadius: TReference<number>;
-		opacity: TReference<number>;
 		visible: boolean;
+		opacity: TReference<number>;
+		borderRadius?: TReference<number>;
 	}
 >;
 

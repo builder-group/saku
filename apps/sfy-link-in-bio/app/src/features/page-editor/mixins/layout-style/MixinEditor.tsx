@@ -1,12 +1,16 @@
-import { inherit, TFlatNode, TLayoutStyleMixin, TMergeMixins, TUnreference } from '@repo/editor';
+import { inherit, TLayoutStyleMixin, TMergeMixins, TUnreference } from '@repo/editor';
 import { Text } from '@shopify/polaris';
+import { TState } from 'feature-state';
 import { MappedTextInput } from '@/components';
-import { TNodeState, TPageEditor } from '../../lib';
+import { TPageEditor } from '../../lib';
 
-export const LayoutStyleMixinEditor = <GNode extends TFlatNode, GParentNode extends TFlatNode>(
-	props: TLayoutStyleMixinEditorProps<GNode, GParentNode>
+export const LayoutStyleMixinEditor = <
+	GValue extends Record<string, any>,
+	GParentValue extends Record<string, any>
+>(
+	props: TLayoutStyleMixinEditorProps<GValue, GParentValue>
 ) => {
-	const { nodeState, parentNodeState, editor } = props;
+	const { state, parentState, editor } = props;
 
 	return (
 		<div className="space-y-3 px-4">
@@ -23,19 +27,19 @@ export const LayoutStyleMixinEditor = <GNode extends TFlatNode, GParentNode exte
 					min={0}
 					max={96}
 					step={4}
-					state={nodeState}
-					parentState={parentNodeState}
+					state={state}
+					parentState={parentState}
 					mapValue={(value) => value.layout.padding}
 					onValueChange={(value) => {
 						if (value != null) {
-							nodeState._v.layout.padding = value;
-							nodeState._notify();
+							state._v.layout.padding = value;
+							state._notify();
 						}
 					}}
 					mapParentValue={(parent) => parent.childMixins?.layout?.padding}
 					onInheritChange={(shouldInherit, parentValue) => {
-						nodeState._v.layout.padding = shouldInherit ? inherit() : (parentValue as number);
-						nodeState._notify();
+						state._v.layout.padding = shouldInherit ? inherit() : (parentValue as number);
+						state._notify();
 					}}
 					onNavigateToParent={() => {
 						editor.switchView('settings');
@@ -46,12 +50,16 @@ export const LayoutStyleMixinEditor = <GNode extends TFlatNode, GParentNode exte
 	);
 };
 
-interface TLayoutStyleMixinEditorProps<GNode extends TFlatNode, GParentNode extends TFlatNode> {
-	nodeState: TNodeState<GNode & TMergeMixins<[TLayoutStyleMixin]>>;
-	parentNodeState?: TNodeState<
-		GParentNode & {
+interface TLayoutStyleMixinEditorProps<
+	GValue extends Record<string, any>,
+	GParentValue extends Record<string, any>
+> {
+	state: TState<GValue & TMergeMixins<[TLayoutStyleMixin]>, any>;
+	parentState?: TState<
+		GParentValue & {
 			childMixins: TMergeMixins<[TUnreference<TLayoutStyleMixin>]>;
-		}
+		},
+		any
 	>;
 	editor: TPageEditor;
 }

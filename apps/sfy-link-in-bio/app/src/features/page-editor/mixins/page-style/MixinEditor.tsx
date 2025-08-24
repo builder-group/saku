@@ -1,19 +1,26 @@
-import { TFlatNode, TMergeMixins, TPageStyleMixin } from '@repo/editor';
+import { TMergeMixins, TPageStyleMixin } from '@repo/editor';
 import { Text } from '@shopify/polaris';
+import { TState } from 'feature-state';
 import { MappedTextInput } from '@/components';
-import { TNodeState } from '../../lib';
+import { useMapState } from '@/hooks';
+import { TPageEditor } from '../../lib';
 import { FillStyleMixinEditor } from '../fill-style';
 
-export const PageLayoutStyleMixinEditor = <GNode extends TFlatNode>(
-	props: TPageLayoutStyleMixinEditorProps<GNode>
+export const PageStyleMixinEditor = <GValue extends Record<string, any>>(
+	props: TPageStyleMixinEditorProps<GValue>
 ) => {
-	const { nodeState } = props;
+	const { state, editor } = props;
 
-	// TODO: would need to map state to resuse e.g. fill style mixin editor
+	const fillState = useMapState(state, {
+		get: (parent) => ({ fill: parent.page.fill }),
+		set: (parent, child) => {
+			parent._v.page.fill = child.fill;
+			parent._notify();
+		}
+	});
+
 	return (
 		<>
-			<FillStyleMixinEditor nodeState={nodeState} editor={editor} />
-
 			<div className="space-y-3 px-4">
 				<div>
 					<Text as="span" variant="headingXs" tone="subdued">
@@ -28,22 +35,25 @@ export const PageLayoutStyleMixinEditor = <GNode extends TFlatNode>(
 						min={0}
 						max={96}
 						step={4}
-						state={nodeState}
+						state={state}
 						mapValue={(value) => value.page.layout.spacing}
 						onValueChange={(value) => {
 							if (value != null) {
-								nodeState._v.page.layout.spacing = value;
-								nodeState._notify();
+								state._v.page.layout.spacing = value;
+								state._notify();
 							}
 						}}
 						disableFieldInheritance
 					/>
 				</div>
 			</div>
+			<div className="h-px bg-gray-200" />
+			<FillStyleMixinEditor state={fillState} editor={editor} />
 		</>
 	);
 };
 
-interface TPageLayoutStyleMixinEditorProps<GNode extends TFlatNode> {
-	nodeState: TNodeState<GNode & TMergeMixins<[TPageStyleMixin]>>;
+interface TPageStyleMixinEditorProps<GValue extends Record<string, any>> {
+	state: TState<GValue & TMergeMixins<[TPageStyleMixin]>, any>;
+	editor: TPageEditor;
 }

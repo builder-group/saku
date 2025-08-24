@@ -4,13 +4,12 @@ import {
 	isInherited,
 	resolveReference,
 	TFillStyleMixin,
-	TFlatNode,
 	TMergeMixins,
 	TUnreference
 } from '@repo/editor';
 import { Button, Text } from '@shopify/polaris';
 import { useCombinedCompute, useCompute } from 'feature-react';
-import { createState } from 'feature-state';
+import { createState, TState } from 'feature-state';
 import React from 'react';
 import {
 	Badge,
@@ -21,32 +20,35 @@ import {
 	MinusIcon,
 	PlusIcon
 } from '@/components';
-import { useMapReferenceToProperty } from '../../hooks';
-import { TNodeState, TPageEditor } from '../../lib';
+import { useMapStateReference } from '../../hooks';
+import { TPageEditor } from '../../lib';
 
-export const FillStyleMixinEditor = <GNode extends TFlatNode, GParentNode extends TFlatNode>(
-	props: TFillStyleMixinEditorProps<GNode, GParentNode>
+export const FillStyleMixinEditor = <
+	GValue extends Record<string, any>,
+	GParentValue extends Record<string, any>
+>(
+	props: TFillStyleMixinEditorProps<GValue, GParentValue>
 ) => {
-	const { nodeState, parentNodeState, editor } = props;
+	const { state, parentState, editor } = props;
 
 	const resolvedFill = useCombinedCompute(
-		[nodeState, parentNodeState ?? createState(undefined)],
-		([{ value: nodeValue }, { value: parentValue }]) => {
-			return resolveReference(nodeValue.fill, parentValue?.childMixins?.fill);
+		[state, parentState ?? createState(undefined)],
+		([{ value }, { value: parentValue }]) => {
+			return resolveReference(value.fill, parentValue?.childMixins?.fill);
 		}
 	);
 
-	const isInheritedFill = useCompute(nodeState, ({ value }) => {
+	const isInheritedFill = useCompute(state, ({ value }) => {
 		return isInherited(value.fill);
 	});
 
-	const paintState = useMapReferenceToProperty(nodeState, {
-		topLevelReference: (value) => value.fill,
-		propertyReference: (value) => value?.paint,
-		updateProperty: (value) => {
-			if (nodeState._v.fill != null && !isInherited(nodeState._v.fill)) {
-				nodeState._v.fill.paint = value;
-				nodeState._notify();
+	const paintState = useMapStateReference(state, {
+		getTopLevelReference: (value) => value.fill,
+		getPropertyReference: (value) => value?.paint,
+		setProperty: (value) => {
+			if (state._v.fill != null && !isInherited(state._v.fill)) {
+				state._v.fill.paint = value;
+				state._notify();
 			}
 		}
 	});
@@ -56,28 +58,28 @@ export const FillStyleMixinEditor = <GNode extends TFlatNode, GParentNode extend
 	// =========================================================================
 
 	const handleAddFill = React.useCallback(() => {
-		const parentFill = parentNodeState?._v.childMixins?.fill;
-		nodeState._v.fill = parentFill ?? {
+		const parentFill = parentState?._v.childMixins?.fill;
+		state._v.fill = parentFill ?? {
 			paint: {
 				type: 'solid',
 				color: { r: 255, g: 255, b: 255, a: 1 }
 			},
 			opacity: 1
 		};
-		nodeState._notify();
-	}, [nodeState, parentNodeState]);
+		state._notify();
+	}, [state, parentState]);
 
 	const handleRemoveFill = React.useCallback(() => {
-		nodeState._v.fill = null;
-		nodeState._notify();
-	}, [nodeState]);
+		state._v.fill = null;
+		state._notify();
+	}, [state]);
 
 	const handleToggleInheritance = React.useCallback(() => {
-		nodeState._v.fill = isInheritedFill
-			? (deepCopy(parentNodeState?._v.childMixins?.fill) ?? null)
+		state._v.fill = isInheritedFill
+			? (deepCopy(parentState?._v.childMixins?.fill) ?? null)
 			: inherit();
-		nodeState._notify();
-	}, [isInheritedFill, parentNodeState, nodeState]);
+		state._notify();
+	}, [isInheritedFill, parentState, state]);
 
 	// =========================================================================
 	// UI
@@ -88,7 +90,7 @@ export const FillStyleMixinEditor = <GNode extends TFlatNode, GParentNode extend
 			<div className="flex items-center justify-between">
 				<div className="flex items-center gap-2">
 					{/* Mixin-level inheritance button */}
-					{parentNodeState != null && (
+					{parentState != null && (
 						<button
 							type="button"
 							onClick={handleToggleInheritance}
@@ -134,7 +136,7 @@ export const FillStyleMixinEditor = <GNode extends TFlatNode, GParentNode extend
 						label="Paint"
 						autoComplete="off"
 						state={paintState}
-						parentState={parentNodeState}
+						parentState={parentState}
 						mapValue={(value) => value}
 						onValueChange={(value) => {
 							paintState.set(value);
@@ -155,12 +157,16 @@ export const FillStyleMixinEditor = <GNode extends TFlatNode, GParentNode extend
 	);
 };
 
-interface TFillStyleMixinEditorProps<GNode extends TFlatNode, GParentNode extends TFlatNode> {
-	nodeState: TNodeState<GNode & TMergeMixins<[TFillStyleMixin]>>;
-	parentNodeState?: TNodeState<
-		GParentNode & {
+interface TFillStyleMixinEditorProps<
+	GValue extends Record<string, any>,
+	GParentValue extends Record<string, any>
+> {
+	state: TState<GValue & TMergeMixins<[TFillStyleMixin]>, any>;
+	parentState?: TState<
+		GParentValue & {
 			childMixins: TMergeMixins<[TUnreference<TFillStyleMixin>]>;
-		}
+		},
+		any
 	>;
 	editor: TPageEditor;
 }

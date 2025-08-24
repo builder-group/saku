@@ -57,7 +57,7 @@
 		"feature-fetch": "^0.0.51",
 		"feature-logger": "^0.0.44",
 		"feature-react": "^0.0.57",
-		"feature-state": "^0.0.59",
+		"feature-state": "^0.0.60",
 		"gql.tada": "^1.8.13",
 		"hono": "^4.9.2",
 		"isbot": "^5.1.29",
