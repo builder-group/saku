@@ -122,7 +122,16 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 				hidden: false,
 				draft: false,
 				archived: false
-			}
+			},
+			selectionIds:
+				content.product != null
+					? [
+							{
+								id: content.product.id,
+								variants: content.product.variants.map((variant) => ({ id: variant.id }))
+							}
+						]
+					: undefined
 		});
 		const product = results?.[0];
 		if (!isProduct(product)) {
@@ -172,7 +181,7 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 				.filter(notEmpty)
 		};
 		nodeState._notify();
-	}, [clearSelection, nodeState, editor]);
+	}, [editor, content.product, clearSelection, nodeState]);
 
 	// =========================================================================
 	// UI
@@ -196,19 +205,33 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 						</div>
 
 						{content.product != null ? (
-							<div className="rounded-md border border-neutral-200 bg-white">
+							<div className="overflow-hidden rounded-md border border-neutral-200 bg-white">
 								<Scrollable
 									// Note: Using style because "Scrollable" doesn't consider Tailwind classes
 									style={{ maxHeight: 256 }}
 								>
 									<div className="h-full w-full overflow-hidden">
+										<style>
+											{`
+												.Polaris-IndexTable__TableRow.Polaris-IndexTable__TableRow--subheader,
+												.Polaris-IndexTable__TableRow.Polaris-IndexTable__TableRow--subheader .Polaris-IndexTable__TableCell:first-child,
+												.Polaris-IndexTable__TableRow.Polaris-IndexTable__TableRow--subheader .Polaris-IndexTable__TableCell--first,
+												.Polaris-IndexTable__TableRow.Polaris-IndexTable__TableRow--subheader .Polaris-IndexTable__TableCell--first + .Polaris-IndexTable__TableCell,
+												.Polaris-IndexTable__TableRow.Polaris-IndexTable__TableRow--subheader .Polaris-IndexTable__TableCell:last-child {
+													border-top: 0 !important;
+													border-bottom: 0 !important;
+													border: 0 !important;
+												}
+											`}
+										</style>
 										<IndexTable
 											resourceName={resourceName}
 											itemCount={variantRows.length}
 											selectedItemsCount={allResourcesSelected ? 'All' : selectedResources.length}
 											onSelectionChange={handleSelectionChange}
-											headings={[{ title: '' }]}
+											headings={[{ title: '', hidden: true }]}
 											bulkActions={bulkActions}
+											condensed // Condensed because non condensed has buggy sticky table header
 										>
 											{/* Product subheader at position 0 */}
 											<IndexTable.Row
