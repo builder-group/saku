@@ -72,7 +72,7 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 		integrationsMap: site.content.integrations,
 
 		activeView: createState('layers' as TViewType),
-		activeSettingsSection: createState<TSettingsSectionType | null>('appearance'),
+		activeSettingsSection: createState<TSettingsSectionType | null>('design'),
 
 		isReady: createState(false),
 		isDraggingLayer: createState(false),
@@ -97,7 +97,7 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 		switchView(view) {
 			this.activeView.set(view);
 			this.unselectNode();
-			this.switchSettingsSection('appearance');
+			this.switchSettingsSection('design');
 		},
 
 		switchSettingsSection(section) {

@@ -1,7 +1,7 @@
 export const settingsMetadataMap = {
-	appearance: {
-		type: 'appearance',
-		label: 'Appearance'
+	design: {
+		type: 'design',
+		label: 'Design'
 	} satisfies TSettingsMetadata,
 	metadata: {
 		type: 'metadata',

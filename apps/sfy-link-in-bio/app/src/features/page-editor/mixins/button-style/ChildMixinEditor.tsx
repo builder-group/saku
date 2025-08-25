@@ -1,7 +1,7 @@
 import { TButtonStyleMixin, TMergeMixins, TUnreference } from '@repo/editor';
+import { Text } from '@shopify/polaris';
 import { TState } from 'feature-state';
 import { useMapState } from '@/hooks';
-import { AccordionSection } from '../../../../components';
 import { TPageEditor } from '../../lib';
 import { ChildAppearanceStyleMixinEditor } from '../appearance-style';
 import { ChildFillStyleMixinEditor } from '../fill-style';
@@ -31,10 +31,12 @@ export const ChildButtonStyleMixinEditor = <GValue extends Record<string, any>>(
 			<ChildStrokeStyleMixinEditor state={flatState} />
 			<div className="h-px bg-neutral-200" />
 			<ChildShadowStyleMixinEditor state={flatState} />
-			<div className="h-px bg-neutral-200" />
-			<AccordionSection title="Text" defaultOpen collapsibleClassName="px-0 space-y-3">
-				<ChildTextStyleMixinEditor state={flatState} editor={editor} />
-			</AccordionSection>
+			<div className="border-t border-b border-neutral-200 bg-neutral-50 px-4 py-1">
+				<Text as="span" variant="headingXs">
+					Text
+				</Text>
+			</div>
+			<ChildTextStyleMixinEditor state={flatState} editor={editor} />
 		</>
 	);
 };

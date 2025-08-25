@@ -39,7 +39,7 @@ export const productNodeMetadata: TNodeMetadata<'product'> = {
 			stroke: inherit(),
 			shadow: inherit()
 		},
-		cta: {
+		button: {
 			appearance: {
 				visible: true,
 				opacity: inherit()
