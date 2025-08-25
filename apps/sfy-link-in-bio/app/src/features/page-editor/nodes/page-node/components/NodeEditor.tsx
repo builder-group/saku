@@ -31,7 +31,6 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TFlatPageNode>> 
 				<AppearanceStyleMixinEditor state={nodeState} editor={editor} />
 				<div className="h-px bg-neutral-200" />
 				<FillStyleMixinEditor state={nodeState} editor={editor} />
-				<div className="h-px bg-neutral-200" />
 			</AccordionSection>
 
 			{/* Card Section */}
