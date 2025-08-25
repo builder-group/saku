@@ -92,3 +92,35 @@ type TProductNode = TNode<'product', [
 // components.Appearance[entityId] = { visible, opacity, borderRadius }
 // components.Text[entityId] = { typography: { font, fontSize, textColor } }
 ```
+
+### What are tokens?
+
+- **Design tokens for mixins**: Named presets for mixins (e.g., `text`, `button`, `fill`, `appearance`) stored at the site level (e.g., `tokens.text.default`).
+- **How nodes use tokens**: A mixin is EITHER a token ref (mixin-level) OR a value object. In value mode, individual properties may use token refs for granular overrides. Its not possible to mix a mixin-level token ref with property values.
+- **Why tokens**: Global consistency, simple theming/templates, and no schema churn. Local overrides remain possible when needed.
+
+Example usage:
+
+```typescript
+// Site-level tokens (simplified)
+tokens: {
+  text: { default: { /* TTextStyle */ } },
+  button: { default: { /* TButtonStyle */ },ctaPrimary: { /* TButtonStyle */ }, ctaSecondary: { /* TButtonStyle */ } },
+  fill: { default: { /* TFillStyle */ } },
+  appearance: { default: { visible: true, opacity: 1 } }
+}
+
+// Node references
+// 1) Ref mode (mixin-level)
+text: { type: 'token', ref: 'default' }
+button: { type: 'token', ref: 'ctaPrimary' }
+fill: { type: 'token', ref: 'default' }
+
+// 2) Value mode with property-level token ref (no mixin-level ref here)
+text: {
+  typography: { fontSize: { type: 'token', ref: 'displayLg' } },
+  fill: { type: 'token', ref: 'default' },
+  stroke: null,
+  shadow: null
+}
+```
