@@ -1,7 +1,7 @@
-import { TCtaStyleMixin, TMergeMixins, TUnreference } from '@repo/editor';
-import { Text } from '@shopify/polaris';
+import { TButtonStyleMixin, TMergeMixins, TUnreference } from '@repo/editor';
 import { TState } from 'feature-state';
 import { useMapState } from '@/hooks';
+import { AccordionSection } from '../../../../components';
 import { TPageEditor } from '../../lib';
 import { ChildAppearanceStyleMixinEditor } from '../appearance-style';
 import { ChildFillStyleMixinEditor } from '../fill-style';
@@ -32,18 +32,14 @@ export const ChildCtaStyleMixinEditor = <GValue extends Record<string, any>>(
 			<div className="h-px bg-gray-200" />
 			<ChildShadowStyleMixinEditor state={flatState} />
 			<div className="h-px bg-gray-200" />
-			<div>
-				<Text as="span" variant="headingXl" tone="subdued">
-					Text
-				</Text>
-			</div>
-			<div className="h-px bg-gray-200" />
-			<ChildTextStyleMixinEditor state={flatState} editor={editor} />
+			<AccordionSection title="Text" defaultOpen collapsibleClassName="px-0 space-y-3">
+				<ChildTextStyleMixinEditor state={flatState} editor={editor} />
+			</AccordionSection>
 		</>
 	);
 };
 
 interface TChildCtaStyleMixinEditorProps<GValue extends Record<string, any>> {
-	state: TState<GValue & { childMixins: TMergeMixins<[TUnreference<TCtaStyleMixin>]> }, any>;
+	state: TState<GValue & { childMixins: TMergeMixins<[TUnreference<TButtonStyleMixin>]> }, any>;
 	editor: TPageEditor;
 }

@@ -30,7 +30,7 @@ export const ShadowStyleMixinEditor = <
 >(
 	props: TShadowStyleMixinEditorProps<GValue, GParentValue>
 ) => {
-	const { state, parentState, editor } = props;
+	const { state, parentState, editor, disabledSpread = false } = props;
 
 	const resolvedShadow = useCombinedCompute(
 		[state, parentState ?? createState(undefined)],
@@ -105,10 +105,10 @@ export const ShadowStyleMixinEditor = <
 			offsetX: 0,
 			offsetY: 4,
 			blur: 6,
-			spread: -1
+			spread: disabledSpread ? 0 : -1
 		};
 		state._notify();
-	}, [state, parentState]);
+	}, [state, parentState, disabledSpread]);
 
 	const handleRemoveShadow = React.useCallback(() => {
 		state._v.shadow = null;
@@ -235,6 +235,7 @@ export const ShadowStyleMixinEditor = <
 								editor.switchView('settings');
 							}}
 							disableFieldInheritance
+							disabled={disabledSpread}
 						/>
 					</div>
 					<div className="grid grid-cols-2 gap-3">
@@ -301,4 +302,5 @@ interface TShadowStyleMixinEditorProps<
 		any
 	>;
 	editor: TPageEditor;
+	disabledSpread?: boolean;
 }

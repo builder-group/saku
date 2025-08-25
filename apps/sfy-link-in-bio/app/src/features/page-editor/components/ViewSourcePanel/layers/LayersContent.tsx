@@ -14,7 +14,7 @@ import { TNodeId } from '@repo/editor';
 import { Button, Icon, Text } from '@shopify/polaris';
 import { useCompute, useFeatureState } from 'feature-react/state';
 import React from 'react';
-import { PlusCircleIcon, PlusIcon } from '@/components';
+import { PlusCircleIcon, PlusIcon, StampIcon } from '@/components';
 import { cn } from '@/lib';
 import { TPageEditor } from '../../../lib';
 import { PanelHeader } from '../../PanelHeader';
@@ -94,6 +94,13 @@ export const LayersContent: React.FC<TLayersContentProps> = ({ editor }) => {
 							{nodes.map((nodeState) => (
 								<LayerItem key={nodeState._v.id} nodeState={nodeState} editor={editor} />
 							))}
+							{/* Watermark item */}
+							<div className="flex h-8 w-full items-center gap-2 rounded-lg px-2 opacity-60">
+								<StampIcon className="h-5 w-5" />
+								<Text as="p" variant="bodyMd">
+									Watermark
+								</Text>
+							</div>
 						</div>
 					</SortableContext>
 				</DndContext>

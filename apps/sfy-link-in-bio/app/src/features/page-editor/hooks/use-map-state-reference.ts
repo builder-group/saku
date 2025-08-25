@@ -1,5 +1,5 @@
 import { inherit, isInherited, TReference, TUnreference } from '@repo/editor';
-import { createState, TState, TStateNotifyOptions } from 'feature-state';
+import { createState, TCreateStateOptions, TState, TStateNotifyOptions } from 'feature-state';
 import { useMemoCleanup } from '@/hooks';
 
 export function useMapStateReference<
@@ -25,9 +25,9 @@ export function mapStateReference<
 	parentState: TState<GParentValue, any>,
 	config: TMapStateReferenceConfig<GValue, GParentValue, GReference>
 ): [TState<TReference<GValue> | undefined, any>, () => void] {
-	const { getTopLevelReference, getPropertyReference, setProperty } = config;
+	const { getTopLevelReference, getPropertyReference, setProperty, ...stateOptions } = config;
 
-	const childState = createState<TReference<GValue> | undefined>(undefined, { queue: 'sync' });
+	const childState = createState<TReference<GValue> | undefined>(undefined, stateOptions);
 
 	// Keep child in sync with parent - handle inheritance
 	const unsubscribeParentState = parentState.subscribe(({ value, source }) => {
@@ -46,7 +46,7 @@ export function mapStateReference<
 	});
 
 	// Keep parent in sync with child
-	const unsubscribeChildState = childState.subscribe(({ value, source }) => {
+	const unsubscribeChildState = childState.listen(({ value, source }) => {
 		if (source === 'mapStateReference:parent') {
 			return;
 		}
@@ -69,7 +69,7 @@ interface TMapStateReferenceConfig<
 	GValue,
 	GParentValue extends Record<string, any>,
 	GReference extends TReference<any>
-> {
+> extends TCreateStateOptions {
 	/** Gets the top-level reference from the parent value */
 	getTopLevelReference: (value: GParentValue) => GReference;
 	/** Gets the property reference from the unwrapped top-level reference */

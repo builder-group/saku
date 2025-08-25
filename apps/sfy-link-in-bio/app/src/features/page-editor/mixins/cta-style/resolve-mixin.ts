@@ -1,4 +1,4 @@
-import { TAsset, TAssetHash, TCtaStyleMixin } from '@repo/editor';
+import { TAsset, TAssetHash, TButtonStyleMixin } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
 import {
@@ -12,7 +12,7 @@ import { resolveTextStyleMixin, TResolveTextStyleMixinParentMixin } from '../tex
 import { TResolvedCtaStyleMixin } from './types';
 
 export function resolveCtaStyleMixin(
-	cta: TCtaStyleMixin['value'],
+	cta: TButtonStyleMixin['value'],
 	context: {
 		getAsset: (hash: TAssetHash) => TAsset | null;
 	},

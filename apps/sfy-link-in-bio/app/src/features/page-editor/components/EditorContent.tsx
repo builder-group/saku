@@ -26,7 +26,6 @@ export const EditorContent: React.FC<TEditorContentProps> = (props) => {
 
 	switch (activeView) {
 		case 'layers':
-		case 'settings':
 			return (
 				<ResizablePanelGroup direction="horizontal" className="flex-1">
 					<ViewNavPanel editor={editor} />
@@ -38,6 +37,19 @@ export const EditorContent: React.FC<TEditorContentProps> = (props) => {
 					<ViewContextPanel editor={editor} />
 				</ResizablePanelGroup>
 			);
+		case 'settings':
+			return (
+				<ResizablePanelGroup direction="horizontal" className="flex-1">
+					<ViewNavPanel editor={editor} />
+					<ResizableHandle className="w-px bg-neutral-200" />
+					<ViewSourcePanel editor={editor} />
+					<ResizableHandle className="w-px bg-neutral-200" />
+					<ViewContextPanel editor={editor} />
+					<ResizableHandle className="w-px bg-neutral-200" />
+					<CanvasPanel editor={editor} />
+				</ResizablePanelGroup>
+			);
+
 		case 'preview':
 			return (
 				<ResizablePanelGroup direction="horizontal" className="flex-1">

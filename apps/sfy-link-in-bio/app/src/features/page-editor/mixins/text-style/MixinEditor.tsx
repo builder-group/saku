@@ -46,7 +46,12 @@ export const TextStyleMixinEditor = <
 			<div className="h-px bg-gray-200" />
 			<StrokeStyleMixinEditor state={flatState} parentState={flatParentState} editor={editor} />
 			<div className="h-px bg-gray-200" />
-			<ShadowStyleMixinEditor state={flatState} parentState={flatParentState} editor={editor} />
+			<ShadowStyleMixinEditor
+				state={flatState}
+				parentState={flatParentState}
+				editor={editor}
+				disabledSpread
+			/>
 		</>
 	);
 };

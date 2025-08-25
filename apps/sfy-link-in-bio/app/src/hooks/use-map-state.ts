@@ -24,9 +24,9 @@ export function mapState<GParentValue, GChildValue>(
 	parentState: TState<GParentValue, any>,
 	config: TMapStateConfig<GParentValue, GChildValue>
 ): [TState<GChildValue, any>, () => void] {
-	const { get, set, queue = 'sync' } = config;
+	const { get, set, ...stateOptions } = config;
 
-	const childState = createState(get(parentState._v), { queue });
+	const childState = createState(get(parentState._v), stateOptions);
 
 	// Keep child in sync with parent
 	const unsubscribeParentState = parentState.listen(({ value, source }) => {

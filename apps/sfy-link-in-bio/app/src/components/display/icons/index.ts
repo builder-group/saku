@@ -57,5 +57,6 @@ export {
 	LayoutTemplateIcon,
 	Link2Icon as LinkIcon,
 	Link2OffIcon as LinkOffIcon,
-	ScanEyeIcon
+	ScanEyeIcon,
+	StampIcon
 } from 'lucide-react'; // https://lucide.dev/icons/

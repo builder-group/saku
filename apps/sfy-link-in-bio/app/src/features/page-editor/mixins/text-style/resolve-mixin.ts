@@ -67,9 +67,10 @@ export function resolveTextStyleMixin(
 			WebkitTextStroke: resolvedStroke?.width
 				? `${resolvedStroke.width}px ${resolvedStroke.color}`
 				: undefined,
-			textShadow: resolvedShadow?.offsetX
-				? `${resolvedShadow.offsetX}px ${resolvedShadow.offsetY}px ${resolvedShadow.blur}px ${resolvedShadow.color}`
-				: undefined
+			textShadow:
+				resolvedShadow != null
+					? `${resolvedShadow.offsetX}px ${resolvedShadow.offsetY}px ${resolvedShadow.blur}px ${resolvedShadow.color}`
+					: undefined
 		}
 	});
 }

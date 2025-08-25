@@ -1,4 +1,4 @@
-import { TCtaStyleMixin, TMergeMixins, TUnreference } from '@repo/editor';
+import { TButtonStyleMixin, TMergeMixins, TUnreference } from '@repo/editor';
 import { Text } from '@shopify/polaris';
 import { TState } from 'feature-state';
 import { useMapState } from '@/hooks';
@@ -57,10 +57,10 @@ interface TCtaStyleMixinEditorProps<
 	GValue extends Record<string, any>,
 	GParentValue extends Record<string, any>
 > {
-	state: TState<GValue & TMergeMixins<[TCtaStyleMixin]>, any>;
+	state: TState<GValue & TMergeMixins<[TButtonStyleMixin]>, any>;
 	parentState?: TState<
 		GParentValue & {
-			childMixins: TMergeMixins<[TUnreference<TCtaStyleMixin>]>;
+			childMixins: TMergeMixins<[TUnreference<TButtonStyleMixin>]>;
 		},
 		any
 	>;
