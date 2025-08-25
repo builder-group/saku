@@ -39,7 +39,8 @@ export const LayersContent: React.FC<TLayersContentProps> = (props) => {
 					<Tabs tabs={layersContentTabs} selected={selectedTabIndex} onSelect={handleTabChange} />
 				</div>
 			</PanelHeader>
-			<div className="flex-1 overflow-auto">
+			{/* 96px bottom padding is to avoid blocking content with Live Chat overlay */}
+			<div className="flex-1 overflow-auto pb-24">
 				{selectedTabIndex === 0 && (
 					<LayersContentCustomizeTab nodeState={selectedNode} editor={editor} />
 				)}

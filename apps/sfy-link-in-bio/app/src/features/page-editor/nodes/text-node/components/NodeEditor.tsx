@@ -87,7 +87,7 @@ export const TextNodeEditor: React.FC<TNodeEditorComponentProps<TTextNode>> = (p
 				</AccordionSection>
 				<AccordionSection
 					title="Text"
-					collapsibleClassName="px-0 space-y-3"
+					collapsibleClassName="px-0 space-y-3 border-b-0"
 					size="tight"
 					defaultOpen={true}
 				>
