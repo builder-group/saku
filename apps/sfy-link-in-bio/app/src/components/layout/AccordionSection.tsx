@@ -80,7 +80,7 @@ const accordionVariants = cva(
 		variants: {
 			size: {
 				default: 'px-4 py-3',
-				tight: 'px-4 py-1'
+				tight: 'px-4 py-1.5'
 			}
 		},
 		defaultVariants: {

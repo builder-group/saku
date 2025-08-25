@@ -68,7 +68,7 @@ export type TPageNodeMixin = TMixin<
 				TUnreference<TStrokeStyleMixin>,
 				TUnreference<TShadowStyleMixin>,
 				TUnreference<TTextStyleMixin>,
-				TUnreference<TCtaStyleMixin>
+				TUnreference<TButtonStyleMixin>
 			]
 		>;
 	}
@@ -213,17 +213,6 @@ export type TShadowStyleMixin = TMixin<
 	} | null>
 >;
 
-export type TCtaStyleMixin = TMixin<
-	'cta',
-	{
-		appearance: TAppearanceStyleMixin['value'];
-		fill: TFillStyleMixin['value'];
-		stroke: TStrokeStyleMixin['value'];
-		shadow: TShadowStyleMixin['value'];
-		text: TTextStyleMixin['value'];
-	}
->;
-
 export type TTextStyleMixin = TMixin<
 	'text',
 	{
@@ -232,5 +221,16 @@ export type TTextStyleMixin = TMixin<
 		fill: TFillStyleMixin['value'];
 		stroke: TStrokeStyleMixin['value'];
 		shadow: TShadowStyleMixin['value'];
+	}
+>;
+
+export type TButtonStyleMixin = TMixin<
+	'button',
+	{
+		appearance: TAppearanceStyleMixin['value'];
+		fill: TFillStyleMixin['value'];
+		stroke: TStrokeStyleMixin['value'];
+		shadow: TShadowStyleMixin['value'];
+		text: TTextStyleMixin['value'];
 	}
 >;

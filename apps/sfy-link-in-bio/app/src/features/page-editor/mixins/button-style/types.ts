@@ -5,8 +5,8 @@ import { TResolvedShadowStyleMixin } from '../shadow-style';
 import { TResolvedStrokeStyleMixin } from '../stroke-style';
 import { TResolvedTextStyleMixin } from '../text-style';
 
-export type TResolvedCtaStyleMixin = TMixin<
-	'cta',
+export type TResolvedButtonStyleMixin = TMixin<
+	'button',
 	{
 		appearance: TResolvedAppearanceStyleMixin['value'];
 		fill: TResolvedFillStyleMixin['value'];

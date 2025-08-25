@@ -3,8 +3,8 @@ import {
 	TAboutNodeMixin,
 	TAppearanceStyleMixin,
 	TAutoLayoutStyleMixin,
+	TButtonStyleMixin,
 	TChildrenMixin,
-	TCtaStyleMixin,
 	TFillStyleMixin,
 	TFlatChildrenMixin,
 	TIdMixin,
@@ -112,6 +112,6 @@ export type TProductNode = TBaseNode<
 		TStrokeStyleMixin,
 		TShadowStyleMixin,
 		TTextStyleMixin,
-		TCtaStyleMixin
+		TButtonStyleMixin
 	]
 >;

@@ -1,6 +1,6 @@
 export * from './appearance-style';
 export * from './auto-layout-style';
-export * from './cta-style';
+export * from './button-style';
 export * from './fill-style';
 export * from './flat-children';
 export * from './shadow-style';

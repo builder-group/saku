@@ -155,15 +155,8 @@ export const Content: React.FC<TContentProps> = (props) => {
 
 							{/* Option Dropdowns */}
 							{product.options?.map((option) => {
-								const currentValue = React.useMemo(
-									() => selectedOptions[option.name],
-									[selectedOptions, option.name]
-								);
-								const placeholderText = React.useMemo(
-									() =>
-										`Pick ${option.name.slice(0, 1).toUpperCase()}${option.name.toLowerCase().slice(1)}`,
-									[option.name]
-								);
+								const currentValue = selectedOptions[option.name];
+								const placeholderText = `Pick ${option.name.slice(0, 1).toUpperCase()}${option.name.toLowerCase().slice(1)}`;
 
 								return (
 									<div key={option.name} className="relative" onClick={(e) => e.stopPropagation()}>

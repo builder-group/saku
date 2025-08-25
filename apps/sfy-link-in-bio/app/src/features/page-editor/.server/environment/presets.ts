@@ -155,7 +155,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 				stroke: inherit(),
 				shadow: inherit()
 			},
-			cta: {
+			button: {
 				appearance: {
 					visible: true,
 					opacity: inherit(),
@@ -496,7 +496,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					stroke: null,
 					shadow: null
 				},
-				cta: {
+				button: {
 					appearance: {
 						visible: true,
 						opacity: 1,

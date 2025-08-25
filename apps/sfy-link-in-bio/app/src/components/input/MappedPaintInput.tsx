@@ -353,7 +353,7 @@ export const MappedPaintInput = <GStateValue, GParentStateValue>(
 									type="button"
 									onClick={togglePopoverActive}
 									className={cn(
-										'-ml-1 flex h-5 w-5 items-center justify-center rounded-full border border-gray-200',
+										'-ml-1 flex h-5 w-5 items-center justify-center rounded-full border border-neutral-200',
 										!isValueInherited ? 'cursor-pointer' : 'cursor-default'
 									)}
 									style={{ backgroundColor: rgbaToHex(resolvedValue.color) }}
@@ -363,7 +363,7 @@ export const MappedPaintInput = <GStateValue, GParentStateValue>(
 									type="button"
 									onClick={togglePopoverActive}
 									className={cn(
-										'-ml-1 flex h-5 w-5 items-center justify-center overflow-hidden rounded border border-gray-200',
+										'-ml-1 flex h-5 w-5 items-center justify-center overflow-hidden rounded border border-neutral-200',
 										!isValueInherited ? 'cursor-pointer' : 'cursor-default'
 									)}
 								>

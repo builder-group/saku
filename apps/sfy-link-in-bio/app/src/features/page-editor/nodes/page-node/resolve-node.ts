@@ -5,7 +5,7 @@ import { resolveAsset, resolveColor, TNodeResolveContext } from '../../lib';
 import {
 	resolveAppearanceStyleMixin,
 	resolveAutoLayoutStyleMixin,
-	resolveCtaStyleMixin,
+	resolveButtonStyleMixin,
 	resolveFillStyleMixin,
 	resolveFlatChildrenMixin,
 	resolveShadowStyleMixin,
@@ -78,7 +78,7 @@ export function resolvePageNodeWithoutChildren(
 			stroke: unwrapOrNull(resolveStrokeStyleMixin(childDefaults.stroke)) ?? undefined,
 			shadow: unwrapOrNull(resolveShadowStyleMixin(childDefaults.shadow)) ?? undefined,
 			text: unwrapOrNull(resolveTextStyleMixin(childDefaults.text, cx.site)) ?? undefined,
-			cta: unwrapOrNull(resolveCtaStyleMixin(childDefaults.cta, cx.site)) ?? undefined
+			button: unwrapOrNull(resolveButtonStyleMixin(childDefaults.button, cx.site)) ?? undefined
 		},
 		watermarkColor
 	});

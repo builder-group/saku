@@ -118,7 +118,7 @@ const createMdxComponents = (baseFontSize: number): Record<string, React.Compone
 			{...props}
 		/>
 	),
-	hr: (props) => <hr className="my-6 border-gray-200 first:mt-0 last:mb-0" {...props} />,
+	hr: (props) => <hr className="my-6 border-neutral-200 first:mt-0 last:mb-0" {...props} />,
 	code: (props) => (
 		<code className="rounded bg-gray-100 px-1 py-0.5 font-mono text-sm" {...props} />
 	),

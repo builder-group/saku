@@ -327,7 +327,7 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 					stroke: null,
 					shadow: null
 				},
-				cta: {
+				button: {
 					appearance: {
 						visible: true,
 						opacity: 1,

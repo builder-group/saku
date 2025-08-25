@@ -36,7 +36,7 @@ export const ResolvedAboutNode = React.forwardRef<
 							/>
 						</div>
 					) : (
-						<div className="flex h-20 w-20 items-center justify-center rounded-full bg-gray-200 text-gray-500">
+						<div className="flex h-20 w-20 items-center justify-center rounded-full bg-neutral-200 text-gray-500">
 							{content.name.charAt(0).toUpperCase()}
 						</div>
 					)}

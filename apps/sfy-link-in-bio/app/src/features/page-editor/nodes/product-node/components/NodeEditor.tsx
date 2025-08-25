@@ -9,7 +9,7 @@ import { TNodeEditorComponentProps } from '../../../lib';
 import {
 	AppearanceStyleMixinEditor,
 	AutoLayoutStyleMixinEditor,
-	CtaStyleMixinEditor,
+	ButtonStyleMixinEditor,
 	FillStyleMixinEditor,
 	ShadowStyleMixinEditor,
 	StrokeStyleMixinEditor,
@@ -196,7 +196,7 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 						</div>
 
 						{content.product != null ? (
-							<div className="rounded-md border border-gray-200 bg-white">
+							<div className="rounded-md border border-neutral-200 bg-white">
 								<Scrollable
 									// Note: Using style because "Scrollable" doesn't consider Tailwind classes
 									style={{ maxHeight: 256 }}
@@ -329,35 +329,49 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 				</div>
 			</AccordionSection>
 
-			{/* Card Style Section */}
-			<AccordionSection title="Card Style" collapsibleClassName="px-0 space-y-3">
-				<AutoLayoutStyleMixinEditor
-					state={nodeState}
-					parentState={parentNodeState}
-					editor={editor}
-				/>
-				<div className="h-px bg-gray-200" />
-				<AppearanceStyleMixinEditor
-					state={nodeState}
-					parentState={parentNodeState}
-					editor={editor}
-				/>
-				<div className="h-px bg-gray-200" />
-				<FillStyleMixinEditor state={nodeState} parentState={parentNodeState} editor={editor} />
-				<div className="h-px bg-gray-200" />
-				<StrokeStyleMixinEditor state={nodeState} parentState={parentNodeState} editor={editor} />
-				<div className="h-px bg-gray-200" />
-				<ShadowStyleMixinEditor state={nodeState} parentState={parentNodeState} editor={editor} />
-			</AccordionSection>
+			{/* Design Section */}
+			<AccordionSection title="Design" collapsibleClassName="p-0 border-b-0">
+				<AccordionSection
+					title="Card"
+					collapsibleClassName="px-0 space-y-3"
+					size="tight"
+					defaultOpen={true}
+				>
+					<AutoLayoutStyleMixinEditor
+						state={nodeState}
+						parentState={parentNodeState}
+						editor={editor}
+					/>
+					<div className="h-px bg-neutral-200" />
+					<AppearanceStyleMixinEditor
+						state={nodeState}
+						parentState={parentNodeState}
+						editor={editor}
+					/>
+					<div className="h-px bg-neutral-200" />
+					<FillStyleMixinEditor state={nodeState} parentState={parentNodeState} editor={editor} />
+					<div className="h-px bg-neutral-200" />
+					<StrokeStyleMixinEditor state={nodeState} parentState={parentNodeState} editor={editor} />
+					<div className="h-px bg-neutral-200" />
+					<ShadowStyleMixinEditor state={nodeState} parentState={parentNodeState} editor={editor} />
+				</AccordionSection>
 
-			{/* Text Style Section */}
-			<AccordionSection title="Text Style" collapsibleClassName="px-0 space-y-3">
-				<TextStyleMixinEditor state={nodeState} parentState={parentNodeState} editor={editor} />
-			</AccordionSection>
-
-			{/* CTA Style Section */}
-			<AccordionSection title="CTA Style" collapsibleClassName="px-0 space-y-3">
-				<CtaStyleMixinEditor state={nodeState} parentState={parentNodeState} editor={editor} />
+				<AccordionSection
+					title="Text"
+					collapsibleClassName="px-0 space-y-3"
+					size="tight"
+					defaultOpen={true}
+				>
+					<TextStyleMixinEditor state={nodeState} parentState={parentNodeState} editor={editor} />
+				</AccordionSection>
+				<AccordionSection
+					title="Button"
+					collapsibleClassName="px-0 space-y-3"
+					size="tight"
+					defaultOpen={true}
+				>
+					<ButtonStyleMixinEditor state={nodeState} parentState={parentNodeState} editor={editor} />
+				</AccordionSection>
 			</AccordionSection>
 		</>
 	);

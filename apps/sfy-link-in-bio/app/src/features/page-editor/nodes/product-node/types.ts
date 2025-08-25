@@ -3,7 +3,7 @@ import { TResolvedAsset } from '../../lib';
 import {
 	TResolvedAppearanceStyleMixin,
 	TResolvedAutoLayoutStyleMixin,
-	TResolvedCtaStyleMixin,
+	TResolvedButtonStyleMixin,
 	TResolvedFillStyleMixin,
 	TResolvedShadowStyleMixin,
 	TResolvedStrokeStyleMixin,
@@ -20,7 +20,7 @@ export type TResolvedProductNode = TBaseNode<
 		TResolvedStrokeStyleMixin,
 		TResolvedShadowStyleMixin,
 		TResolvedTextStyleMixin,
-		TResolvedCtaStyleMixin
+		TResolvedButtonStyleMixin
 	]
 >;
 

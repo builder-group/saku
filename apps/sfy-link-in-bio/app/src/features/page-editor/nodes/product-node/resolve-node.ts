@@ -6,7 +6,7 @@ import { resolveAsset, TNodeResolveContext } from '../../lib';
 import {
 	resolveAppearanceStyleMixin,
 	resolveAutoLayoutStyleMixin,
-	resolveCtaStyleMixin,
+	resolveButtonStyleMixin,
 	resolveFillStyleMixin,
 	resolveShadowStyleMixin,
 	resolveStrokeStyleMixin,
@@ -18,7 +18,7 @@ export function resolveProductNode(
 	node: TProductNode,
 	cx: TNodeResolveContext
 ): TResult<TResolvedProductNode, AppError> {
-	const { content, autoLayout, appearance, fill, stroke, shadow, text, cta, ...rest } = node;
+	const { content, autoLayout, appearance, fill, stroke, shadow, text, button, ...rest } = node;
 
 	let resolvedProduct: TResolvedProduct | undefined;
 	if (content.product != null) {
@@ -79,13 +79,13 @@ export function resolveProductNode(
 	if (!isResolvedTextOk) {
 		return Err(resolvedTextErr.wrapWith('#ERR_RESOLVE_TEXT_STYLE'));
 	}
-	const [isResolvedCtaOk, resolvedCtaErr, resolvedCta] = resolveCtaStyleMixin(
-		cta,
+	const [isResolvedButtonOk, resolvedButtonErr, resolvedButton] = resolveButtonStyleMixin(
+		button,
 		cx.site,
-		cx.childMixins?.cta
+		cx.childMixins?.button
 	);
-	if (!isResolvedCtaOk) {
-		return Err(resolvedCtaErr.wrapWith('#ERR_RESOLVE_CTA_STYLE'));
+	if (!isResolvedButtonOk) {
+		return Err(resolvedButtonErr.wrapWith('#ERR_RESOLVE_BUTTON_STYLE'));
 	}
 
 	return Ok({
@@ -99,6 +99,6 @@ export function resolveProductNode(
 		stroke: resolvedStroke,
 		shadow: resolvedShadow,
 		text: resolvedText,
-		cta: resolvedCta
+		button: resolvedButton
 	});
 }

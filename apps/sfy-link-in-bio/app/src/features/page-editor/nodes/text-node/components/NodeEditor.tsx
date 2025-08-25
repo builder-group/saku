@@ -60,7 +60,7 @@ export const TextNodeEditor: React.FC<TNodeEditorComponentProps<TTextNode>> = (p
 			</AccordionSection>
 
 			{/* Design Section */}
-			<AccordionSection title="Design" collapsibleClassName="p-0">
+			<AccordionSection title="Design" collapsibleClassName="p-0 border-b-0">
 				<AccordionSection
 					title="Card"
 					collapsibleClassName="px-0 space-y-3"
@@ -72,22 +72,22 @@ export const TextNodeEditor: React.FC<TNodeEditorComponentProps<TTextNode>> = (p
 						parentState={parentNodeState}
 						editor={editor}
 					/>
-					<div className="h-px bg-gray-200" />
+					<div className="h-px bg-neutral-200" />
 					<AppearanceStyleMixinEditor
 						state={nodeState}
 						parentState={parentNodeState}
 						editor={editor}
 					/>
-					<div className="h-px bg-gray-200" />
+					<div className="h-px bg-neutral-200" />
 					<FillStyleMixinEditor state={nodeState} parentState={parentNodeState} editor={editor} />
-					<div className="h-px bg-gray-200" />
+					<div className="h-px bg-neutral-200" />
 					<StrokeStyleMixinEditor state={nodeState} parentState={parentNodeState} editor={editor} />
-					<div className="h-px bg-gray-200" />
+					<div className="h-px bg-neutral-200" />
 					<ShadowStyleMixinEditor state={nodeState} parentState={parentNodeState} editor={editor} />
 				</AccordionSection>
 				<AccordionSection
 					title="Text"
-					collapsibleClassName="px-0 space-y-3 border-b-0"
+					collapsibleClassName="px-0 space-y-3"
 					size="tight"
 					defaultOpen={true}
 				>

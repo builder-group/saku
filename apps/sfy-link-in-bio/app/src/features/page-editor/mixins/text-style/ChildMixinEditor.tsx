@@ -24,13 +24,13 @@ export const ChildTextStyleMixinEditor = <GValue extends Record<string, any>>(
 	return (
 		<>
 			<ChildAppearanceStyleMixinEditor state={flatState} />
-			<div className="h-px bg-gray-200" />
+			<div className="h-px bg-neutral-200" />
 			<ChildTypographyStyleMixinEditor state={flatState} editor={editor} />
-			<div className="h-px bg-gray-200" />
+			<div className="h-px bg-neutral-200" />
 			<ChildFillStyleMixinEditor state={flatState} editor={editor} allowedPaintTypes={['solid']} />
-			<div className="h-px bg-gray-200" />
+			<div className="h-px bg-neutral-200" />
 			<ChildStrokeStyleMixinEditor state={flatState} />
-			<div className="h-px bg-gray-200" />
+			<div className="h-px bg-neutral-200" />
 			<ChildShadowStyleMixinEditor state={flatState} />
 		</>
 	);

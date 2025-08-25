@@ -125,17 +125,17 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 					parentState={parentNodeState}
 					editor={editor}
 				/>
-				<div className="h-px bg-gray-200" />
+				<div className="h-px bg-neutral-200" />
 				<AppearanceStyleMixinEditor
 					state={nodeState}
 					parentState={parentNodeState}
 					editor={editor}
 				/>
-				<div className="h-px bg-gray-200" />
+				<div className="h-px bg-neutral-200" />
 				<FillStyleMixinEditor state={nodeState} parentState={parentNodeState} editor={editor} />
-				<div className="h-px bg-gray-200" />
+				<div className="h-px bg-neutral-200" />
 				<StrokeStyleMixinEditor state={nodeState} parentState={parentNodeState} editor={editor} />
-				<div className="h-px bg-gray-200" />
+				<div className="h-px bg-neutral-200" />
 				<ShadowStyleMixinEditor state={nodeState} parentState={parentNodeState} editor={editor} />
 			</AccordionSection>
 		</>

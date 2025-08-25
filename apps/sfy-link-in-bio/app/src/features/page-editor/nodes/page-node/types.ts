@@ -2,8 +2,8 @@ import { TBaseNode, TIdMixin, TMergeMixins, TMixin } from '@repo/editor';
 import {
 	TResolvedAppearanceStyleMixin,
 	TResolvedAutoLayoutStyleMixin,
+	TResolvedButtonStyleMixin,
 	TResolvedChildrenMixin,
-	TResolvedCtaStyleMixin,
 	TResolvedFillStyleMixin,
 	TResolvedShadowStyleMixin,
 	TResolvedStrokeStyleMixin,
@@ -41,7 +41,7 @@ export type TResolvedPageNodeMixin = TMixin<
 					TResolvedStrokeStyleMixin,
 					TResolvedShadowStyleMixin,
 					TResolvedTextStyleMixin,
-					TResolvedCtaStyleMixin
+					TResolvedButtonStyleMixin
 				]
 			>
 		>;

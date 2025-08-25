@@ -34,18 +34,18 @@ export const TextStyleMixinEditor = <
 	return (
 		<>
 			<AppearanceStyleMixinEditor state={flatState} parentState={flatParentState} editor={editor} />
-			<div className="h-px bg-gray-200" />
+			<div className="h-px bg-neutral-200" />
 			<TypographyStyleMixinEditor state={flatState} parentState={flatParentState} editor={editor} />
-			<div className="h-px bg-gray-200" />
+			<div className="h-px bg-neutral-200" />
 			<FillStyleMixinEditor
 				state={flatState}
 				parentState={flatParentState}
 				editor={editor}
 				allowedPaintTypes={['solid']}
 			/>
-			<div className="h-px bg-gray-200" />
+			<div className="h-px bg-neutral-200" />
 			<StrokeStyleMixinEditor state={flatState} parentState={flatParentState} editor={editor} />
-			<div className="h-px bg-gray-200" />
+			<div className="h-px bg-neutral-200" />
 			<ShadowStyleMixinEditor
 				state={flatState}
 				parentState={flatParentState}

@@ -9,25 +9,25 @@ import { ShadowStyleMixinEditor } from '../shadow-style';
 import { StrokeStyleMixinEditor } from '../stroke-style';
 import { TextStyleMixinEditor } from '../text-style';
 
-export const CtaStyleMixinEditor = <
+export const ButtonStyleMixinEditor = <
 	GValue extends Record<string, any>,
 	GParentValue extends Record<string, any>
 >(
-	props: TCtaStyleMixinEditorProps<GValue, GParentValue>
+	props: TButtonStyleMixinEditorProps<GValue, GParentValue>
 ) => {
 	const { state, parentState, editor } = props;
 
 	const flatState = useMapState(state, {
-		get: (parent) => parent.cta,
+		get: (parent) => parent.button,
 		set: (parent, child, notifyOptions) => {
-			parent._v.cta = child;
+			parent._v.button = child;
 			parent._notify(notifyOptions);
 		}
 	});
 	const flatParentState = useMapState(parentState, {
-		get: (parent) => ({ childMixins: parent.childMixins.cta }),
+		get: (parent) => ({ childMixins: parent.childMixins.button }),
 		set: (parent, child, notifyOptions) => {
-			parent._v.childMixins.cta = child.childMixins;
+			parent._v.childMixins.button = child.childMixins;
 			parent._notify(notifyOptions);
 		}
 	});
@@ -35,25 +35,23 @@ export const CtaStyleMixinEditor = <
 	return (
 		<>
 			<AppearanceStyleMixinEditor state={flatState} parentState={flatParentState} editor={editor} />
-			<div className="h-px bg-gray-200" />
+			<div className="h-px bg-neutral-200" />
 			<FillStyleMixinEditor state={flatState} parentState={flatParentState} editor={editor} />
-			<div className="h-px bg-gray-200" />
+			<div className="h-px bg-neutral-200" />
 			<StrokeStyleMixinEditor state={flatState} parentState={flatParentState} editor={editor} />
-			<div className="h-px bg-gray-200" />
+			<div className="h-px bg-neutral-200" />
 			<ShadowStyleMixinEditor state={flatState} parentState={flatParentState} editor={editor} />
-			<div className="h-px bg-gray-200" />
-			<div>
-				<Text as="span" variant="headingXl" tone="subdued">
+			<div className="border-t border-b border-neutral-200 bg-neutral-50 px-4 py-1">
+				<Text as="span" variant="headingXs">
 					Text
 				</Text>
 			</div>
-			<div className="h-px bg-gray-200" />
 			<TextStyleMixinEditor state={flatState} parentState={flatParentState} editor={editor} />
 		</>
 	);
 };
 
-interface TCtaStyleMixinEditorProps<
+interface TButtonStyleMixinEditorProps<
 	GValue extends Record<string, any>,
 	GParentValue extends Record<string, any>
 > {
