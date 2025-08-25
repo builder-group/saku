@@ -30,15 +30,20 @@ export function toFlatSite(site: TSite): TFlatSite {
 	});
 
 	const convertNode = (node: TNode): TNodeId => {
-		if (node.type === 'page') {
-			const childIds = node.children.map(convertNode);
-			nodes[node.id] = {
-				...node,
-				children: childIds
-			} as TFlatPageNode;
-		} else {
-			nodes[node.id] = node as TFlatNode;
+		switch (node.type) {
+			case 'page': {
+				const childIds = node.children.map(convertNode);
+				nodes[node.id] = {
+					...node,
+					children: childIds
+				} as TFlatPageNode;
+				break;
+			}
+			default: {
+				nodes[node.id] = node as TFlatNode;
+			}
 		}
+
 		return node.id;
 	};
 
@@ -49,6 +54,7 @@ export function toFlatSite(site: TSite): TFlatSite {
 		rootId,
 		nodes,
 		assets,
-		integrations
+		integrations,
+		tokens: site.tokens
 	};
 }
