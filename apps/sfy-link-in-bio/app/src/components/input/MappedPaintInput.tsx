@@ -386,14 +386,18 @@ export const MappedPaintInput = <GStateValue, GParentStateValue>(
 		>
 			<div className="max-w-72 px-4 pb-4" onClick={(e) => e.stopPropagation()}>
 				{tabs.length > 1 ? (
-					<Tabs
-						tabs={tabs}
-						selected={selectedTabIndex}
-						onSelect={handleTabChange}
-						disabled={isValueInherited}
-					>
+					<>
+						{/* Offset 8px Tab padding which can't be removed */}
+						<div className="-ml-2">
+							<Tabs
+								tabs={tabs}
+								selected={selectedTabIndex}
+								onSelect={handleTabChange}
+								disabled={isValueInherited}
+							/>
+						</div>
 						{currentTabId === 'solid' ? ColorTab : currentTabId === 'image' ? ImageTab : null}
-					</Tabs>
+					</>
 				) : (
 					<div className="pt-4">
 						{currentTabId === 'solid' ? ColorTab : currentTabId === 'image' ? ImageTab : null}
