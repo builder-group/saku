@@ -80,6 +80,8 @@ export const AppearanceStyleMixinEditor = <GValue extends Record<string, any>>(
 					state={opacityState}
 					tokenSet={editor.tokensMap.appearance}
 					mapToTokenValue={(tokenRef, tokenMap) => tokenMap?.[tokenRef]?.opacity}
+					mapToDisplay={(value) => Math.round(value * 100)}
+					mapToInternal={(displayValue) => displayValue / 100}
 					onNavigateToToken={() => {
 						editor.switchView('settings');
 					}}

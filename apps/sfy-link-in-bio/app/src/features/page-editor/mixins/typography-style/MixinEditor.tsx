@@ -2,16 +2,20 @@ import {
 	fontMetadata,
 	inherit,
 	isInherited,
+	isTokenRef,
 	resolveReference,
 	TMergeMixins,
+	TRef,
 	TTextAlign,
 	TTypographyStyleMixin,
-	TUnreference
+	TUnreference,
+	uninherit
 } from '@repo/editor';
 import { Text } from '@shopify/polaris';
 import { TState } from 'feature-state';
 import React from 'react';
 import { MappedSelectInput, MappedTextInput } from '@/components';
+import { useMapState } from '@/hooks';
 import { TPageEditor } from '../../lib';
 
 export const TypographyStyleMixinEditor = <
@@ -28,6 +32,32 @@ export const TypographyStyleMixinEditor = <
 			value: font.font.family
 		}));
 	}, []);
+
+	const fontFamilyState = useMapState(state, {
+		map(baseValue): TRef<string> {
+			if (isTokenRef(baseValue.typography)) {
+				return baseValue.typography;
+			}
+			if (isTokenRef(baseValue.typography.font)) {
+				return baseValue.typography.font;
+			}
+			return uninherit(baseValue.typography.font).family;
+		},
+		sync(baseState, mappedValue, notifyOptions) {
+			if (!isTokenRef(baseState._v.typography)) {
+				if (isTokenRef(mappedValue)) {
+					baseState._v.typography.font = mappedValue;
+					baseState._notify(notifyOptions);
+				} else {
+					const font = editor.registerFontFamily(mappedValue as string);
+					if (font != null) {
+						baseState._v.typography.font = font;
+						state._notify();
+					}
+				}
+			}
+		}
+	});
 
 	// const fontSizeState = useMapState(state, {
 	// 	map(baseValue) {

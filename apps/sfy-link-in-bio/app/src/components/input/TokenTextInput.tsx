@@ -23,6 +23,8 @@ export const TokenTextInput = <
 		min,
 		max,
 		className,
+		mapToDisplay,
+		mapToInternal,
 		...textFieldProps
 	} = props;
 
@@ -30,8 +32,15 @@ export const TokenTextInput = <
 	const value = useFeatureState(state);
 	const resolvedValue = useCombinedCompute(
 		[state, tokenSet ?? createState(undefined)],
-		([{ value: stateValue }, { value: tokenMapValue }]) =>
-			isTokenRef(stateValue) ? mapToTokenValue(stateValue.ref, tokenMapValue) : stateValue
+		([{ value: stateValue }, { value: tokenMapValue }]) => {
+			const rawValue = isTokenRef(stateValue)
+				? mapToTokenValue(stateValue.ref, tokenMapValue)
+				: stateValue;
+			if (rawValue == null) {
+				return undefined;
+			}
+			return mapToDisplay != null ? mapToDisplay(rawValue as GValue) : rawValue;
+		}
 	);
 	const isLinked = useCompute(state, ({ value }) => isTokenRef(value));
 
@@ -57,7 +66,9 @@ export const TokenTextInput = <
 					if (typeof min === 'number' && clampedNum < min) clampedNum = min;
 					if (typeof max === 'number' && clampedNum > max) clampedNum = max;
 					setDisplayValue(String(clampedNum));
-					state.set(clampedNum as GRefValue);
+					state.set(
+						(mapToInternal != null ? mapToInternal(clampedNum as GValue) : clampedNum) as GRefValue
+					);
 					return;
 				}
 
@@ -66,9 +77,11 @@ export const TokenTextInput = <
 			}
 
 			setDisplayValue(newValue);
-			state.set(newValue as GRefValue);
+			state.set(
+				(mapToInternal != null ? mapToInternal(newValue as GValue) : newValue) as GRefValue
+			);
 		},
-		[isLinked, textFieldProps.type, state, min, max]
+		[isLinked, textFieldProps.type, state, min, max, mapToInternal]
 	);
 
 	const handleToggleTokenLink = React.useCallback(() => {
@@ -145,6 +158,8 @@ export interface TTokenTextInputProps<
 	GTokenSet extends TTokenSet
 > extends Omit<TextFieldProps, 'value' | 'onChange' | 'label' | 'labelHidden'> {
 	state: TState<GRefValue, any>;
+	mapToDisplay?: (value: GValue) => GValue;
+	mapToInternal?: (displayValue: GValue) => GValue;
 
 	tokenSet?: TState<GTokenSet, any>;
 	mapToTokenValue: (tokenRef: string, tokenSet?: GTokenSet) => GValue | undefined;
