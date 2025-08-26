@@ -6,6 +6,7 @@ import {
 	hexToRgba,
 	inherit,
 	TId,
+	tokenRef,
 	TProductNode,
 	TSite,
 	type TFontAsset,
@@ -131,8 +132,8 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 			},
 			appearance: {
 				visible: true,
-				opacity: inherit(),
-				borderRadius: inherit()
+				opacity: tokenRef(),
+				borderRadius: tokenRef()
 			},
 			fill: inherit(),
 			stroke: inherit(),
@@ -140,8 +141,8 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 			text: {
 				appearance: {
 					visible: true,
-					opacity: inherit(),
-					borderRadius: inherit()
+					opacity: tokenRef(),
+					borderRadius: tokenRef()
 				},
 				typography: {
 					font: inherit(),
@@ -158,8 +159,8 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 			button: {
 				appearance: {
 					visible: true,
-					opacity: inherit(),
-					borderRadius: inherit()
+					opacity: tokenRef(),
+					borderRadius: tokenRef()
 				},
 				fill: inherit(),
 				stroke: inherit(),
@@ -167,7 +168,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 				text: {
 					appearance: {
 						visible: true,
-						opacity: inherit()
+						opacity: tokenRef()
 					},
 					typography: {
 						font: inherit(),
@@ -242,7 +243,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					},
 					appearance: {
 						visible: true,
-						opacity: inherit(),
+						opacity: tokenRef(),
 						borderRadius: 0
 					},
 					fill: null,
@@ -251,7 +252,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					text: {
 						appearance: {
 							visible: true,
-							opacity: inherit()
+							opacity: tokenRef()
 						},
 						typography: {
 							font: inherit(),
@@ -284,8 +285,8 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					},
 					appearance: {
 						visible: true,
-						opacity: inherit(),
-						borderRadius: inherit()
+						opacity: tokenRef(),
+						borderRadius: tokenRef()
 					},
 					fill: inherit(),
 					stroke: inherit(),
@@ -293,7 +294,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					text: {
 						appearance: {
 							visible: true,
-							opacity: inherit()
+							opacity: tokenRef()
 						},
 						typography: {
 							font: inherit(),
@@ -320,7 +321,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					},
 					appearance: {
 						visible: true,
-						opacity: inherit(),
+						opacity: tokenRef(),
 						borderRadius: 0
 					},
 					fill: {
@@ -335,7 +336,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					text: {
 						appearance: {
 							visible: true,
-							opacity: inherit()
+							opacity: tokenRef()
 						},
 						typography: {
 							font: {
@@ -366,7 +367,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					},
 					appearance: {
 						visible: true,
-						opacity: inherit(),
+						opacity: tokenRef(),
 						borderRadius: 999
 					},
 					fill: {
@@ -381,7 +382,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					text: {
 						appearance: {
 							visible: true,
-							opacity: inherit()
+							opacity: tokenRef()
 						},
 						typography: {
 							font: inherit(),
@@ -419,8 +420,8 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					},
 					appearance: {
 						visible: true,
-						opacity: inherit(),
-						borderRadius: inherit()
+						opacity: tokenRef(),
+						borderRadius: tokenRef()
 					},
 					fill: inherit(),
 					stroke: inherit(),

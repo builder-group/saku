@@ -662,7 +662,7 @@ export interface TPageEditor {
 
 	assetsMap: Record<TAssetHash, TAsset>;
 	integrationsMap: Record<TIntegrationId, TIntegration>;
-	tokensMap: TTokenStateMapFromToken<TToken>;
+	tokensMap: TTokenStateGroupMap;
 
 	activeView: TState<TViewType, []>;
 	activeSettingsSection: TState<TSettingsSectionType | null, []>;
@@ -719,6 +719,6 @@ export interface TBoundingRect {
 	right: number;
 }
 
-export type TTokenStateMapFromToken<GToken extends TToken> = {
+export type TTokenStateGroupMap<GToken extends TToken = TToken> = {
 	[K in GToken['type']]?: TState<Record<string, Extract<GToken, { type: K }>['value']>, []>;
 };

@@ -5,7 +5,6 @@ export * from './id';
 export * from './inherit-ref';
 export * from './is-token-ref';
 export * from './pika';
-export * from './resolve-ref';
 export * from './to-flat-site';
 export * from './to-hierarchical-site';
 export * from './token-ref';

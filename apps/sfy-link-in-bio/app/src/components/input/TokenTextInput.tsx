@@ -1,19 +1,22 @@
-import { isTokenRef, TRef } from '@repo/editor';
+import { isTokenRef, tokenRef, TRef } from '@repo/editor';
 import { Text, TextField, TextFieldProps } from '@shopify/polaris';
 import { useCombinedCompute, useCompute, useFeatureState } from 'feature-react/state';
-import { TState } from 'feature-state';
+import { createState, TState } from 'feature-state';
 import React from 'react';
 import { InheritanceActionOverlay, LinkIcon, LinkOffIcon } from '@/components';
 import { cn } from '@/lib';
 
-export const TokenTextInput = <GValue extends string | number, GTokenValue>(
-	props: TTokenTextInputProps<GValue, GTokenValue>
+export const TokenTextInput = <
+	GValue extends string | number,
+	GRefValue extends TRef<GValue> | undefined,
+	GTokenSet extends Record<string, any>
+>(
+	props: TTokenTextInputProps<GValue, GRefValue, GTokenSet>
 ) => {
 	const {
 		state,
-		tokenMap,
-		mapTokenValue,
-		onTokenLinkChange,
+		tokenSet,
+		mapToTokenValue,
 		onNavigateToToken,
 		disableTokenLink = false,
 		label,
@@ -26,9 +29,9 @@ export const TokenTextInput = <GValue extends string | number, GTokenValue>(
 	const [displayValue, setDisplayValue] = React.useState<string>('');
 	const value = useFeatureState(state);
 	const resolvedValue = useCombinedCompute(
-		[state, tokenMap],
+		[state, tokenSet ?? createState(undefined)],
 		([{ value: stateValue }, { value: tokenMapValue }]) =>
-			isTokenRef(stateValue) ? mapTokenValue(tokenMapValue, stateValue.ref) : stateValue
+			isTokenRef(stateValue) ? mapToTokenValue(stateValue.ref, tokenMapValue) : stateValue
 	);
 	const isLinked = useCompute(state, ({ value }) => isTokenRef(value));
 
@@ -54,7 +57,7 @@ export const TokenTextInput = <GValue extends string | number, GTokenValue>(
 					if (typeof min === 'number' && clampedNum < min) clampedNum = min;
 					if (typeof max === 'number' && clampedNum > max) clampedNum = max;
 					setDisplayValue(String(clampedNum));
-					state.set(clampedNum as GValue);
+					state.set(clampedNum as GRefValue);
 					return;
 				}
 
@@ -63,18 +66,21 @@ export const TokenTextInput = <GValue extends string | number, GTokenValue>(
 			}
 
 			setDisplayValue(newValue);
-			state.set(newValue as GValue);
+			state.set(newValue as GRefValue);
 		},
 		[isLinked, textFieldProps.type, state, min, max]
 	);
 
 	const handleToggleTokenLink = React.useCallback(() => {
-		if (isLinked && isTokenRef(value)) {
-			onTokenLinkChange?.(false, value.ref);
+		if (isLinked) {
+			const tokenValue = isTokenRef(value) ? tokenSet?._v?.[value.ref]?.value : undefined;
+			if (tokenValue != null) {
+				state.set(tokenValue);
+			}
 		} else {
-			onTokenLinkChange?.(true, 'default');
+			state.set(tokenRef('default') as GRefValue);
 		}
-	}, [isLinked, value, onTokenLinkChange]);
+	}, [isLinked, value, tokenSet?._v, state]);
 
 	// =========================================================================
 	// Effects
@@ -133,13 +139,15 @@ export const TokenTextInput = <GValue extends string | number, GTokenValue>(
 	);
 };
 
-export interface TTokenTextInputProps<GValue extends string | number, GTokenMap>
-	extends Omit<TextFieldProps, 'value' | 'onChange' | 'label' | 'labelHidden'> {
-	state: TState<TRef<GValue>, any>;
+export interface TTokenTextInputProps<
+	GValue extends string | number,
+	GRefValue extends TRef<GValue> | undefined,
+	GTokenSet extends Record<string, any>
+> extends Omit<TextFieldProps, 'value' | 'onChange' | 'label' | 'labelHidden'> {
+	state: TState<GRefValue, any>;
 
-	tokenMap: TState<GTokenMap, any>;
-	mapTokenValue: (tokenMap: GTokenMap, tokenRef: string) => GValue | undefined;
-	onTokenLinkChange?: (shouldLinkToToken: boolean, tokenRef: string) => void;
+	tokenSet?: TState<GTokenSet, any>;
+	mapToTokenValue: (tokenRef: string, tokenSet?: GTokenSet) => GValue | undefined;
 	onNavigateToToken?: () => void;
 	disableTokenLink?: boolean;
 

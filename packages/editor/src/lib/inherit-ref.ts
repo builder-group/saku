@@ -1,6 +1,6 @@
 // TODO: Remove once migrated to token references
 
-import { TRef } from '../types';
+import { TRef, TUninherit } from '../types';
 import { isTokenRef } from './is-token-ref';
 
 /**
@@ -50,4 +50,11 @@ export function createReference<T>(value: T | 'inherit'): TRef<T> {
  */
 export function ref<T>(value: T): TRef<T> {
 	return value as TRef<T>;
+}
+
+export function uninherit<T>(value: T): TUninherit<T> {
+	if (isInherited(value)) {
+		throw new Error('Cannot uninherit a value that is an inherit ref');
+	}
+	return value as TUninherit<T>;
 }

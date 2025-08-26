@@ -20,12 +20,14 @@ export type TToken =
 	| TShadowStyleToken
 	| TTextStyleToken
 	| TButtonStyleToken;
-
-export type TTokenMap = TTokenMapFromToken<TToken>;
 export type TTokenType = TToken['type'];
 
-export type TTokenMapFromToken<GToken extends TToken> = {
-	[K in GToken['type']]?: Record<string, Extract<GToken, { type: K }>['value']>;
+export type TTokenGroupMap<GToken extends TToken = TToken> = {
+	[K in GToken['type']]?: TTokenSet<Extract<GToken, { type: K }>>;
+};
+
+export type TTokenSet<GToken extends TToken = TToken> = {
+	[key: string]: GToken['value'];
 };
 
 export type TBaseToken<GMixin extends TBaseMixin<any, any>> = {

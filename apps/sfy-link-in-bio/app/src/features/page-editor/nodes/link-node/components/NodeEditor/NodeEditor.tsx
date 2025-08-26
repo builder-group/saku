@@ -243,11 +243,7 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 						editor={editor}
 					/>
 					<div className="h-px bg-neutral-200" />
-					<AppearanceStyleMixinEditor
-						state={nodeState}
-						parentState={parentNodeState}
-						editor={editor}
-					/>
+					<AppearanceStyleMixinEditor state={nodeState} editor={editor} />
 					<div className="h-px bg-neutral-200" />
 					<FillStyleMixinEditor state={nodeState} parentState={parentNodeState} editor={editor} />
 					<div className="h-px bg-neutral-200" />

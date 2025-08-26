@@ -1,22 +1,29 @@
 import { resolveReference, TAutoLayoutStyleMixin } from '@repo/editor';
 import { Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
+import { TNodeResolveContext } from '../../lib';
 import { TResolvedAutoLayoutStyleMixin } from './types';
 
 export function resolveAutoLayoutStyleMixin(
 	layout: TAutoLayoutStyleMixin['value'],
-	parentMixin?: TResolveAutoLayoutStyleMixinParentMixin
+	cx: TNodeResolveContext
 ): TResult<TResolvedAutoLayoutStyleMixin['value'], AppError> {
 	const resolvedHorizontalPadding = resolveReference(
 		layout.horizontalPadding,
-		parentMixin?.horizontalPadding
+		cx.childMixins?.autoLayout.horizontalPadding
 	);
 	const resolvedVerticalPadding = resolveReference(
 		layout.verticalPadding,
-		parentMixin?.verticalPadding
+		cx.childMixins?.autoLayout.verticalPadding
 	);
-	const resolvedHorizontalGap = resolveReference(layout.horizontalGap, parentMixin?.horizontalGap);
-	const resolvedVerticalGap = resolveReference(layout.verticalGap, parentMixin?.verticalGap);
+	const resolvedHorizontalGap = resolveReference(
+		layout.horizontalGap,
+		cx.childMixins?.autoLayout.horizontalGap
+	);
+	const resolvedVerticalGap = resolveReference(
+		layout.verticalGap,
+		cx.childMixins?.autoLayout.verticalGap
+	);
 
 	return Ok({
 		horizontalPadding: resolvedHorizontalPadding,

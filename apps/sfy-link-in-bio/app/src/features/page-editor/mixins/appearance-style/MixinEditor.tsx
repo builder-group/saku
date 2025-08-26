@@ -1,26 +1,47 @@
-import {
-	inherit,
-	isInherited,
-	TAppearanceStyleMixin,
-	TMergeMixins,
-	TUnreference
-} from '@repo/editor';
+import { isTokenRef, TAppearanceStyleMixin, TMergeMixins } from '@repo/editor';
 import { Button, Text } from '@shopify/polaris';
 import { useCompute } from 'feature-react';
 import { TState } from 'feature-state';
 import React from 'react';
-import { HideIcon, MappedTextInput, ViewIcon } from '@/components';
+import { HideIcon, TokenTextInput, ViewIcon } from '@/components';
+import { useMapState } from '@/hooks';
 import { TPageEditor } from '../../lib';
 
-export const AppearanceStyleMixinEditor = <
-	GValue extends Record<string, any>,
-	GParentValue extends Record<string, any>
->(
-	props: TAppearanceStyleMixinEditorProps<GValue, GParentValue>
+export const AppearanceStyleMixinEditor = <GValue extends Record<string, any>>(
+	props: TAppearanceStyleMixinEditorProps<GValue>
 ) => {
-	const { state, parentState, editor } = props;
+	const { state, editor } = props;
 
 	const hasBorderRadius = useCompute(state, ({ value }) => value.appearance.borderRadius != null);
+
+	const opacityState = useMapState(state, {
+		map(baseValue) {
+			if (isTokenRef(baseValue.appearance)) {
+				return baseValue.appearance;
+			}
+			return baseValue.appearance.opacity;
+		},
+		sync(baseState, mappedValue, notifyOptions) {
+			if (!isTokenRef(baseState._v.appearance)) {
+				baseState._v.appearance.opacity = mappedValue;
+				baseState._notify(notifyOptions);
+			}
+		}
+	});
+	const borderRadiusState = useMapState(state, {
+		map(baseValue) {
+			if (isTokenRef(baseValue.appearance)) {
+				return baseValue.appearance;
+			}
+			return baseValue.appearance.borderRadius;
+		},
+		sync(baseState, mappedValue, notifyOptions) {
+			if (!isTokenRef(baseState._v.appearance)) {
+				baseState._v.appearance.borderRadius = mappedValue;
+				baseState._notify(notifyOptions);
+			}
+		}
+	});
 
 	// =========================================================================
 	// Events
@@ -49,64 +70,34 @@ export const AppearanceStyleMixinEditor = <
 				)}
 			</div>
 			<div className="grid grid-cols-2 gap-3">
-				<MappedTextInput
+				<TokenTextInput
 					label="Opacity"
 					type="number"
 					autoComplete="off"
 					min={0}
 					max={100}
 					step={5}
-					state={state}
-					parentState={parentState}
-					mapValue={(value) =>
-						isInherited(value.appearance.opacity)
-							? inherit()
-							: (value.appearance.opacity as number) * 100
-					}
-					onValueChange={(value) => {
-						if (value != null) {
-							state._v.appearance.opacity = value / 100;
-							state._notify();
-						}
-					}}
-					mapParentValue={(parent) => parent.childMixins.appearance.opacity * 100}
-					onInheritChange={(shouldInherit, parentValue) => {
-						state._v.appearance.opacity = shouldInherit ? inherit() : (parentValue as number) / 100;
-						state._notify();
-					}}
-					onNavigateToParent={() => {
+					state={opacityState}
+					tokenSet={editor.tokensMap.appearance}
+					mapToTokenValue={(tokenRef, tokenMap) => tokenMap?.[tokenRef]?.opacity}
+					onNavigateToToken={() => {
 						editor.switchView('settings');
 					}}
-					disableFieldInheritance={parentState == null}
 				/>
 				{hasBorderRadius && (
-					<MappedTextInput
+					<TokenTextInput
 						label="Border Radius"
 						type="number"
 						autoComplete="off"
 						min={0}
 						max={999}
 						step={4}
-						state={state}
-						parentState={parentState}
-						mapValue={(value) => value.appearance.borderRadius}
-						onValueChange={(value) => {
-							if (value != null) {
-								state._v.appearance.borderRadius = value;
-								state._notify();
-							}
-						}}
-						mapParentValue={(parent) => parent.childMixins.appearance.borderRadius}
-						onInheritChange={(shouldInherit, parentValue) => {
-							state._v.appearance.borderRadius = shouldInherit
-								? inherit()
-								: (parentValue as number);
-							state._notify();
-						}}
-						onNavigateToParent={() => {
+						state={borderRadiusState}
+						tokenSet={editor.tokensMap.appearance}
+						mapToTokenValue={(tokenRef, tokenMap) => tokenMap?.[tokenRef]?.borderRadius}
+						onNavigateToToken={() => {
 							editor.switchView('settings');
 						}}
-						disableFieldInheritance={parentState == null}
 					/>
 				)}
 			</div>
@@ -114,16 +105,7 @@ export const AppearanceStyleMixinEditor = <
 	);
 };
 
-interface TAppearanceStyleMixinEditorProps<
-	GValue extends Record<string, any>,
-	GParentValue extends Record<string, any>
-> {
+interface TAppearanceStyleMixinEditorProps<GValue extends Record<string, any>> {
 	state: TState<GValue & TMergeMixins<[TAppearanceStyleMixin]>, any>;
-	parentState?: TState<
-		GParentValue & {
-			childMixins: TMergeMixins<[TUnreference<TAppearanceStyleMixin>]>;
-		},
-		any
-	>;
 	editor: TPageEditor;
 }

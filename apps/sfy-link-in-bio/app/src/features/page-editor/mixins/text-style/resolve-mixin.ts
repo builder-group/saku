@@ -1,6 +1,7 @@
-import { TAsset, TAssetHash, TTextStyleMixin } from '@repo/editor';
+import { TTextStyleMixin } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
+import { TNodeResolveContext } from '../../lib';
 import {
 	resolveAppearanceStyleMixin,
 	TResolveAppearanceStyleMixinParentMixin
@@ -16,39 +17,32 @@ import { TResolvedTextStyleMixin } from './types';
 
 export function resolveTextStyleMixin(
 	text: TTextStyleMixin['value'],
-	context: {
-		getAsset: (hash: TAssetHash) => TAsset | null;
-	},
-	parentMixin?: TResolveTextStyleMixinParentMixin
+	cx: TNodeResolveContext
 ): TResult<TResolvedTextStyleMixin['value'], AppError> {
 	const [isResolvedAppearanceOk, resolvedAppearanceErr, resolvedAppearance] =
-		resolveAppearanceStyleMixin(text.appearance, parentMixin?.appearance);
+		resolveAppearanceStyleMixin(text.appearance, cx);
 	if (!isResolvedAppearanceOk) {
 		return Err(resolvedAppearanceErr.wrapWith('#ERR_RESOLVE_APPEARANCE_STYLE'));
 	}
 	const [isResolvedTypographyOk, resolvedTypographyErr, resolvedTypography] =
-		resolveTypographyStyleMixin(text.typography, parentMixin?.typography);
+		resolveTypographyStyleMixin(text.typography, cx);
 	if (!isResolvedTypographyOk) {
 		return Err(resolvedTypographyErr.wrapWith('#ERR_RESOLVE_TYPOGRAPHY_STYLE'));
 	}
-	const [isResolvedFillOk, resolvedFillErr, resolvedFill] = resolveFillStyleMixin(
-		text.fill,
-		context,
-		parentMixin?.fill
-	);
+	const [isResolvedFillOk, resolvedFillErr, resolvedFill] = resolveFillStyleMixin(text.fill, cx);
 	if (!isResolvedFillOk) {
 		return Err(resolvedFillErr.wrapWith('#ERR_RESOLVE_FILL_STYLE'));
 	}
 	const [isResolvedStrokeOk, resolvedStrokeErr, resolvedStroke] = resolveStrokeStyleMixin(
 		text.stroke,
-		parentMixin?.stroke
+		cx
 	);
 	if (!isResolvedStrokeOk) {
 		return Err(resolvedStrokeErr.wrapWith('#ERR_RESOLVE_STROKE_STYLE'));
 	}
 	const [isResolvedShadowOk, resolvedShadowErr, resolvedShadow] = resolveShadowStyleMixin(
 		text.shadow,
-		parentMixin?.shadow
+		cx
 	);
 	if (!isResolvedShadowOk) {
 		return Err(resolvedShadowErr.wrapWith('#ERR_RESOLVE_SHADOW_STYLE'));

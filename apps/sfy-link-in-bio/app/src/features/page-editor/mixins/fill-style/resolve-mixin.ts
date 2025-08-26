@@ -1,22 +1,19 @@
-import { resolveReference, TAsset, TAssetHash, TFillStyleMixin, TPaint } from '@repo/editor';
+import { resolveReference, TFillStyleMixin, TPaint } from '@repo/editor';
 import { Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
-import { resolvePaint } from '../../lib';
+import { resolvePaint, TNodeResolveContext } from '../../lib';
 import { TResolvedFillStyleMixin } from './types';
 
 export function resolveFillStyleMixin(
 	fill: TFillStyleMixin['value'],
-	context: {
-		getAsset: (hash: TAssetHash) => TAsset | null;
-	},
-	parentMixin?: TResolveFillStyleMixinParentMixin
+	cx: TNodeResolveContext
 ): TResult<TResolvedFillStyleMixin['value'], AppError> {
-	const resolvedFill = resolveReference(fill, parentMixin);
+	const resolvedFill = resolveReference(fill, cx.childMixins?.fill);
 	if (resolvedFill == null) {
 		return Ok(null);
 	}
 
-	const resolvedPaint = resolvePaint(resolvedFill.paint, context);
+	const resolvedPaint = resolvePaint(resolvedFill.paint, cx.site);
 
 	const styles: {
 		backgroundColor?: string;

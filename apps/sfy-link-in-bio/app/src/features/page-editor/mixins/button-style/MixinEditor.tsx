@@ -34,7 +34,7 @@ export const ButtonStyleMixinEditor = <
 
 	return (
 		<>
-			<AppearanceStyleMixinEditor state={flatState} parentState={flatParentState} editor={editor} />
+			<AppearanceStyleMixinEditor state={flatState} editor={editor} />
 			<div className="h-px bg-neutral-200" />
 			<FillStyleMixinEditor state={flatState} parentState={flatParentState} editor={editor} />
 			<div className="h-px bg-neutral-200" />

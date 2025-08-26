@@ -10,3 +10,6 @@ export type TUnreference<T> = T extends { type: 'token' }
 		: T extends object
 			? { [K in keyof T]: TUnreference<T[K]> }
 			: T;
+
+// TODO: Remove once migrated to token references
+export type TUninherit<T> = T extends { type: 'inherit' } ? never : T;

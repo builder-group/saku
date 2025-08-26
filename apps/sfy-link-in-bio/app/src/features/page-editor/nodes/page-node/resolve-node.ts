@@ -49,16 +49,16 @@ export function resolvePageNodeWithoutChildren(
 	);
 
 	const [isResolvedAutoLayoutOk, resolvedAutoLayoutErr, resolvedAutoLayout] =
-		resolveAutoLayoutStyleMixin(autoLayout);
+		resolveAutoLayoutStyleMixin(autoLayout, cx);
 	if (!isResolvedAutoLayoutOk) {
 		return Err(resolvedAutoLayoutErr.wrapWith('#ERR_RESOLVE_AUTO_LAYOUT_STYLE'));
 	}
 	const [isResolvedAppearanceOk, resolvedAppearanceErr, resolvedAppearance] =
-		resolveAppearanceStyleMixin(appearance);
+		resolveAppearanceStyleMixin(appearance, cx);
 	if (!isResolvedAppearanceOk) {
 		return Err(resolvedAppearanceErr.wrapWith('#ERR_RESOLVE_APPEARANCE_STYLE'));
 	}
-	const [isResolvedFillOk, resolvedFillErr, resolvedFill] = resolveFillStyleMixin(fill, cx.site);
+	const [isResolvedFillOk, resolvedFillErr, resolvedFill] = resolveFillStyleMixin(fill, cx);
 	if (!isResolvedFillOk) {
 		return Err(resolvedFillErr.wrapWith('#ERR_RESOLVE_FILL_STYLE'));
 	}
@@ -72,13 +72,15 @@ export function resolvePageNodeWithoutChildren(
 		appearance: resolvedAppearance,
 		fill: resolvedFill,
 		childMixins: {
-			autoLayout: unwrapOrNull(resolveAutoLayoutStyleMixin(childDefaults.autoLayout)) ?? undefined,
-			appearance: unwrapOrNull(resolveAppearanceStyleMixin(childDefaults.appearance)) ?? undefined,
-			fill: unwrapOrNull(resolveFillStyleMixin(childDefaults.fill, cx.site)) ?? undefined,
-			stroke: unwrapOrNull(resolveStrokeStyleMixin(childDefaults.stroke)) ?? undefined,
-			shadow: unwrapOrNull(resolveShadowStyleMixin(childDefaults.shadow)) ?? undefined,
-			text: unwrapOrNull(resolveTextStyleMixin(childDefaults.text, cx.site)) ?? undefined,
-			button: unwrapOrNull(resolveButtonStyleMixin(childDefaults.button, cx.site)) ?? undefined
+			autoLayout:
+				unwrapOrNull(resolveAutoLayoutStyleMixin(childDefaults.autoLayout, cx)) ?? undefined,
+			appearance:
+				unwrapOrNull(resolveAppearanceStyleMixin(childDefaults.appearance, cx)) ?? undefined,
+			fill: unwrapOrNull(resolveFillStyleMixin(childDefaults.fill, cx)) ?? undefined,
+			stroke: unwrapOrNull(resolveStrokeStyleMixin(childDefaults.stroke, cx)) ?? undefined,
+			shadow: unwrapOrNull(resolveShadowStyleMixin(childDefaults.shadow, cx)) ?? undefined,
+			text: unwrapOrNull(resolveTextStyleMixin(childDefaults.text, cx)) ?? undefined,
+			button: unwrapOrNull(resolveButtonStyleMixin(childDefaults.button, cx)) ?? undefined
 		},
 		watermarkColor
 	});

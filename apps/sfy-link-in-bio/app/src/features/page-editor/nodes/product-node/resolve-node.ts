@@ -40,49 +40,40 @@ export function resolveProductNode(
 	}
 
 	const [isResolvedAutoLayoutOk, resolvedAutoLayoutErr, resolvedAutoLayout] =
-		resolveAutoLayoutStyleMixin(autoLayout, cx.childMixins?.autoLayout);
+		resolveAutoLayoutStyleMixin(autoLayout, cx);
 	if (!isResolvedAutoLayoutOk) {
 		return Err(resolvedAutoLayoutErr.wrapWith('#ERR_RESOLVE_AUTO_LAYOUT_STYLE'));
 	}
 	const [isResolvedAppearanceOk, resolvedAppearanceErr, resolvedAppearance] =
-		resolveAppearanceStyleMixin(appearance, cx.childMixins?.appearance);
+		resolveAppearanceStyleMixin(appearance, cx);
 	if (!isResolvedAppearanceOk) {
 		return Err(resolvedAppearanceErr.wrapWith('#ERR_RESOLVE_APPEARANCE_STYLE'));
 	}
-	const [isResolvedFillOk, resolvedFillErr, resolvedFill] = resolveFillStyleMixin(
-		fill,
-		cx.site,
-		cx.childMixins?.fill
-	);
+	const [isResolvedFillOk, resolvedFillErr, resolvedFill] = resolveFillStyleMixin(fill, cx);
 	if (!isResolvedFillOk) {
 		return Err(resolvedFillErr.wrapWith('#ERR_RESOLVE_FILL_STYLE'));
 	}
 	const [isResolvedStrokeOk, resolvedStrokeErr, resolvedStroke] = resolveStrokeStyleMixin(
 		stroke,
-		cx.childMixins?.stroke
+		cx
 	);
 	if (!isResolvedStrokeOk) {
 		return Err(resolvedStrokeErr.wrapWith('#ERR_RESOLVE_STROKE_STYLE'));
 	}
 	const [isResolvedShadowOk, resolvedShadowErr, resolvedShadow] = resolveShadowStyleMixin(
 		shadow,
-		cx.childMixins?.shadow
+		cx
 	);
 	if (!isResolvedShadowOk) {
 		return Err(resolvedShadowErr.wrapWith('#ERR_RESOLVE_SHADOW_STYLE'));
 	}
-	const [isResolvedTextOk, resolvedTextErr, resolvedText] = resolveTextStyleMixin(
-		text,
-		cx.site,
-		cx.childMixins?.text
-	);
+	const [isResolvedTextOk, resolvedTextErr, resolvedText] = resolveTextStyleMixin(text, cx);
 	if (!isResolvedTextOk) {
 		return Err(resolvedTextErr.wrapWith('#ERR_RESOLVE_TEXT_STYLE'));
 	}
 	const [isResolvedButtonOk, resolvedButtonErr, resolvedButton] = resolveButtonStyleMixin(
 		button,
-		cx.site,
-		cx.childMixins?.button
+		cx
 	);
 	if (!isResolvedButtonOk) {
 		return Err(resolvedButtonErr.wrapWith('#ERR_RESOLVE_BUTTON_STYLE'));

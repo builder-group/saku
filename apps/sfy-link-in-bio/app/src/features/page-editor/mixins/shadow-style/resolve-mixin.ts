@@ -1,14 +1,14 @@
 import { resolveReference, TRgba, TShadowStyleMixin } from '@repo/editor';
 import { Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
-import { resolveColor } from '../../lib';
+import { resolveColor, TNodeResolveContext } from '../../lib';
 import { TResolvedShadowStyleMixin } from './types';
 
 export function resolveShadowStyleMixin(
 	shadow: TShadowStyleMixin['value'],
-	parentMixin?: TResolveShadowStyleMixinParentMixin
+	cx: TNodeResolveContext
 ): TResult<TResolvedShadowStyleMixin['value'], AppError> {
-	const resolvedShadow = resolveReference(shadow, parentMixin);
+	const resolvedShadow = resolveReference(shadow, cx.childMixins?.shadow);
 	if (resolvedShadow == null) {
 		return Ok(null);
 	}

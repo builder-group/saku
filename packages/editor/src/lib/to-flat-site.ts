@@ -9,29 +9,27 @@ import {
 	TNode,
 	TNodeId,
 	TSite,
-	TTokenMap
+	TTokenGroupMap
 } from '../types';
 
 /**
  * Convert hierarchical site structure to flat structure
  */
 export function toFlatSite(site: TSite): TFlatSite {
-	const nodes: Record<TNodeId, TFlatNode> = {};
-	const assets: Record<TAssetHash, TAsset> = {};
-	const integrations: Record<TIntegrationId, TIntegration> = {};
-	const tokens: TTokenMap = {};
-
 	// Convert assets array to record
+	const assets: Record<TAssetHash, TAsset> = {};
 	site.assets.forEach((asset) => {
 		assets[asset.hash] = asset;
 	});
 
 	// Convert integrations array to record
+	const integrations: Record<TIntegrationId, TIntegration> = {};
 	site.integrations.forEach((integration) => {
 		integrations[integration.id] = integration;
 	});
 
 	// Convert tokens array to record
+	const tokens: TTokenGroupMap = {};
 	site.tokens.forEach((token) => {
 		const tokenType = token.type;
 		if (tokens[tokenType] == null) {
@@ -40,6 +38,8 @@ export function toFlatSite(site: TSite): TFlatSite {
 		tokens[tokenType][token.key] = token.value;
 	});
 
+	// Convert nodes to flat structure
+	const nodes: Record<TNodeId, TFlatNode> = {};
 	const convertNode = (node: TNode): TNodeId => {
 		switch (node.type) {
 			case 'page': {
@@ -57,7 +57,6 @@ export function toFlatSite(site: TSite): TFlatSite {
 
 		return node.id;
 	};
-
 	const rootId = convertNode(site.root);
 
 	return {

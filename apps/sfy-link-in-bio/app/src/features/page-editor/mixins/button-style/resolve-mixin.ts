@@ -1,6 +1,7 @@
-import { TAsset, TAssetHash, TButtonStyleMixin } from '@repo/editor';
+import { TButtonStyleMixin } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
+import { TNodeResolveContext } from '../../lib';
 import {
 	resolveAppearanceStyleMixin,
 	TResolveAppearanceStyleMixinParentMixin
@@ -13,43 +14,32 @@ import { TResolvedButtonStyleMixin } from './types';
 
 export function resolveButtonStyleMixin(
 	button: TButtonStyleMixin['value'],
-	context: {
-		getAsset: (hash: TAssetHash) => TAsset | null;
-	},
-	parentMixin?: TResolveCtaStyleMixinParentMixin
+	cx: TNodeResolveContext
 ): TResult<TResolvedButtonStyleMixin['value'], AppError> {
 	const [isResolvedAppearanceOk, resolvedAppearanceErr, resolvedAppearance] =
-		resolveAppearanceStyleMixin(button.appearance, parentMixin?.appearance);
+		resolveAppearanceStyleMixin(button.appearance, cx);
 	if (!isResolvedAppearanceOk) {
 		return Err(resolvedAppearanceErr.wrapWith('#ERR_RESOLVE_APPEARANCE_STYLE'));
 	}
-	const [isResolvedFillOk, resolvedFillErr, resolvedFill] = resolveFillStyleMixin(
-		button.fill,
-		context,
-		parentMixin?.fill
-	);
+	const [isResolvedFillOk, resolvedFillErr, resolvedFill] = resolveFillStyleMixin(button.fill, cx);
 	if (!isResolvedFillOk) {
 		return Err(resolvedFillErr.wrapWith('#ERR_RESOLVE_FILL_STYLE'));
 	}
 	const [isResolvedStrokeOk, resolvedStrokeErr, resolvedStroke] = resolveStrokeStyleMixin(
 		button.stroke,
-		parentMixin?.stroke
+		cx
 	);
 	if (!isResolvedStrokeOk) {
 		return Err(resolvedStrokeErr.wrapWith('#ERR_RESOLVE_STROKE_STYLE'));
 	}
 	const [isResolvedShadowOk, resolvedShadowErr, resolvedShadow] = resolveShadowStyleMixin(
 		button.shadow,
-		parentMixin?.shadow
+		cx
 	);
 	if (!isResolvedShadowOk) {
 		return Err(resolvedShadowErr.wrapWith('#ERR_RESOLVE_SHADOW_STYLE'));
 	}
-	const [isResolvedTextOk, resolvedTextErr, resolvedText] = resolveTextStyleMixin(
-		button.text,
-		context,
-		parentMixin?.text
-	);
+	const [isResolvedTextOk, resolvedTextErr, resolvedText] = resolveTextStyleMixin(button.text, cx);
 	if (!isResolvedTextOk) {
 		return Err(resolvedTextErr.wrapWith('#ERR_RESOLVE_TEXT_STYLE'));
 	}

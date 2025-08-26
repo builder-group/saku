@@ -5,7 +5,8 @@ import {
 	TFlatSite,
 	TIntegration,
 	TIntegrationId,
-	TNodeId
+	TNodeId,
+	TTokenGroupMap
 } from '@repo/editor';
 import { TSiteHydrateContext } from './types';
 
@@ -37,5 +38,11 @@ export class StaticSiteHydrateContext implements TSiteHydrateContext {
 
 	public getIntegration(id: TIntegrationId): TIntegration | null {
 		return this.site.integrations[id] ?? null;
+	}
+
+	public getTokenSet<GType extends keyof TTokenGroupMap>(
+		type: GType
+	): TTokenGroupMap[GType] | null {
+		return this.site.tokens[type] || null;
 	}
 }
