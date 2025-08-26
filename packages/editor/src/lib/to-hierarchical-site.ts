@@ -1,4 +1,4 @@
-import { TFlatSite, TNode, TNodeId, TPageNode, TSite } from '../types';
+import { TFlatSite, TNode, TNodeId, TPageNode, TSite, TTokenType } from '../types';
 
 /**
  * Convert flat site structure to hierarchical structure
@@ -25,6 +25,12 @@ export function toHierarchical(flatSite: TFlatSite): TSite {
 		root: convertNode(flatSite.rootId),
 		assets: Object.values(flatSite.assets),
 		integrations: Object.values(flatSite.integrations),
-		tokens: flatSite.tokens
+		tokens: Object.entries(flatSite.tokens).flatMap(([tokenType, tokenMap]) =>
+			Object.entries(tokenMap).map(([key, value]) => ({
+				type: tokenType as TTokenType,
+				key,
+				value
+			}))
+		)
 	};
 }

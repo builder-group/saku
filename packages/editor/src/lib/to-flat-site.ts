@@ -8,7 +8,8 @@ import {
 	TIntegrationId,
 	TNode,
 	TNodeId,
-	TSite
+	TSite,
+	TTokenMap
 } from '../types';
 
 /**
@@ -18,15 +19,25 @@ export function toFlatSite(site: TSite): TFlatSite {
 	const nodes: Record<TNodeId, TFlatNode> = {};
 	const assets: Record<TAssetHash, TAsset> = {};
 	const integrations: Record<TIntegrationId, TIntegration> = {};
+	const tokens: TTokenMap = {};
 
-	// Convert assets array back to record
+	// Convert assets array to record
 	site.assets.forEach((asset) => {
 		assets[asset.hash] = asset;
 	});
 
-	// Convert integrations array back to record
+	// Convert integrations array to record
 	site.integrations.forEach((integration) => {
 		integrations[integration.id] = integration;
+	});
+
+	// Convert tokens array to record
+	site.tokens.forEach((token) => {
+		const tokenType = token.type;
+		if (tokens[tokenType] == null) {
+			tokens[tokenType] = {};
+		}
+		tokens[tokenType][token.key] = token.value;
 	});
 
 	const convertNode = (node: TNode): TNodeId => {
@@ -55,6 +66,6 @@ export function toFlatSite(site: TSite): TFlatSite {
 		nodes,
 		assets,
 		integrations,
-		tokens: site.tokens
+		tokens
 	};
 }

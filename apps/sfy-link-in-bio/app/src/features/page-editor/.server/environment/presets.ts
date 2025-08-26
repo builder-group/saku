@@ -381,24 +381,30 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 				opacity: 1
 			}
 		},
-		tokens: {
-			autoLayout: {
-				default: {
+		tokens: [
+			{
+				type: 'autoLayout',
+				key: 'default',
+				value: {
 					horizontalPadding: 12,
 					verticalPadding: 12,
 					horizontalGap: 12,
 					verticalGap: 12
 				}
 			},
-			appearance: {
-				default: {
+			{
+				type: 'appearance',
+				key: 'default',
+				value: {
 					visible: true,
 					opacity: 1,
 					borderRadius
 				}
 			},
-			typography: {
-				default: {
+			{
+				type: 'typography',
+				key: 'default',
+				value: {
 					font: bodyFont.font,
 					fontSize: 16,
 					textAlignHorizontal: 'center',
@@ -407,8 +413,10 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					letterSpacing: { type: 'auto' }
 				}
 			},
-			fill: {
-				default: {
+			{
+				type: 'fill',
+				key: 'default',
+				value: {
 					paint: {
 						type: 'solid',
 						color: hexToRgba(surfaceColor)
@@ -416,14 +424,18 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					opacity: 1
 				}
 			},
-			stroke: {
-				default: {
+			{
+				type: 'stroke',
+				key: 'default',
+				value: {
 					color: { r: 0, g: 0, b: 0, a: 0.1 },
 					width: 1
 				}
 			},
-			shadow: {
-				default: {
+			{
+				type: 'shadow',
+				key: 'default',
+				value: {
 					color: { r: 0, g: 0, b: 0, a: 0.1 },
 					offsetX: 0,
 					offsetY: 4,
@@ -431,8 +443,10 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					spread: -1
 				}
 			},
-			text: {
-				default: {
+			{
+				type: 'text',
+				key: 'default',
+				value: {
 					appearance: {
 						visible: true,
 						opacity: 1
@@ -456,8 +470,10 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					shadow: null
 				}
 			},
-			button: {
-				default: {
+			{
+				type: 'button',
+				key: 'default',
+				value: {
 					appearance: {
 						visible: true,
 						opacity: 1,
@@ -497,7 +513,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					}
 				}
 			}
-		}
+		]
 	};
 }
 
