@@ -29,6 +29,28 @@ export const TypographyStyleMixinEditor = <
 		}));
 	}, []);
 
+	// const fontSizeState = useMapState(state, {
+	// 	map(baseValue) {
+	// 		if (isTokenRef(baseValue.typography)) {
+	// 			return baseValue.typography;
+	// 		}
+	// 		return baseValue.typography.fontSize;
+	// 	},
+	// 	sync(baseState, mappedValue, notifyOptions) {
+	// 		if (!isTokenRef(baseState._v.typography)) {
+	// 			baseState._v.typography.fontSize = mappedValue;
+	// 			baseState._notify(notifyOptions);
+	// 		}
+	// 	}
+	// });
+	// const fontSizeToken = useMapState(editor.tokensMap.typography, {
+	// 	map(baseValue) {
+	// 		return Object.fromEntries(
+	// 			Object.entries(baseValue).map(([key, value]) => [key, value.fontSize])
+	// 		);
+	// 	}
+	// });
+
 	return (
 		<div className="space-y-3 px-4">
 			<div>
