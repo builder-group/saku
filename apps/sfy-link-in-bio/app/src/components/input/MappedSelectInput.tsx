@@ -1,4 +1,4 @@
-import { isInherited, resolveReference, TReference } from '@repo/editor';
+import { isInherited, resolveReference, TRef } from '@repo/editor';
 import { Select, SelectProps, Text } from '@shopify/polaris';
 import { useCombinedCompute } from 'feature-react/state';
 import { createState, TState } from 'feature-state';
@@ -121,7 +121,7 @@ export interface TMappedSelectInputProps<GValue, GStateValue, GParentStateValue>
 	extends Omit<SelectProps, 'value' | 'onChange' | 'label' | 'labelHidden'> {
 	// Value handling
 	state: TState<GStateValue, any>;
-	mapValue: (stateValue: GStateValue) => TReference<GValue> | undefined;
+	mapValue: (stateValue: GStateValue) => TRef<GValue> | undefined;
 	onValueChange: (value: GValue | undefined) => void;
 
 	// Parent/inheritance handling

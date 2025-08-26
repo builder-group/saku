@@ -1,4 +1,4 @@
-import { TMixin } from '@repo/editor';
+import { TBaseMixin } from '@repo/editor';
 import { TResolvedNode } from '../../types';
 
-export type TResolvedChildrenMixin = TMixin<'children', TResolvedNode[]>;
+export type TResolvedChildrenMixin = TBaseMixin<'children', TResolvedNode[]>;

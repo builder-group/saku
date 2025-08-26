@@ -1,4 +1,4 @@
-import { TBaseNode, TIdMixin, TMergeMixins, TMixin } from '@repo/editor';
+import { TBaseMixin, TBaseNode, TIdMixin, TMergeMixins } from '@repo/editor';
 import {
 	TResolvedAppearanceStyleMixin,
 	TResolvedAutoLayoutStyleMixin,
@@ -21,7 +21,7 @@ export type TResolvedPageNode = TBaseNode<
 	]
 >;
 
-export type TResolvedPageNodeMixin = TMixin<
+export type TResolvedPageNodeMixin = TBaseMixin<
 	'node',
 	{
 		type: 'page';

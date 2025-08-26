@@ -1,6 +1,6 @@
 import { TRgba } from '../lib';
 import { TNode, TNodeId } from './node';
-import { TRef } from './ref';
+import { TRef, TUnreference } from './ref';
 import {
 	TAssetHash,
 	TContent,
@@ -61,6 +61,18 @@ export type TPageNodeMixin = TBaseMixin<
 				image?: TAssetHash;
 			};
 		};
+		// TODO: Remove once migrated to token references
+		childMixins: TMergeMixins<
+			[
+				TUnreference<TAutoLayoutStyleMixin>,
+				TUnreference<TAppearanceStyleMixin>,
+				TUnreference<TFillStyleMixin>,
+				TUnreference<TStrokeStyleMixin>,
+				TUnreference<TShadowStyleMixin>,
+				TUnreference<TTextStyleMixin>,
+				TUnreference<TButtonStyleMixin>
+			]
+		>;
 	}
 >;
 
@@ -136,7 +148,7 @@ export type TProductNodeMixin = TBaseMixin<
 // Style Mixins
 // =========================================================================
 
-// export type TAutoLayoutStyleMixin = TMixin<
+// export type TAutoLayoutStyleMixin = TBaseMixin<
 // 	'layout',
 // 	{
 // 		width: number;
@@ -166,14 +178,15 @@ export type TAppearanceStyleMixin = TBaseMixin<
 
 export type TTypographyStyleMixin = TBaseMixin<
 	'typography',
-	TRef<{
+	// TODO: Add back top level TRef once migrated to token references
+	{
 		font: TRef<TFont>;
 		fontSize: TRef<number>;
 		textAlignHorizontal: TRef<TTextAlign>;
 		textAlignVertical: TRef<TTextAlign>;
 		lineHeight: TRef<TLineHeight>;
 		letterSpacing: TRef<TLetterSpacing>;
-	}>
+	}
 >;
 
 export type TFillStyleMixin = TBaseMixin<
@@ -205,24 +218,26 @@ export type TShadowStyleMixin = TBaseMixin<
 
 export type TTextStyleMixin = TBaseMixin<
 	'text',
-	TRef<{
+	// TODO: Add back top level TRef once migrated to token references
+	{
 		appearance: TAppearanceStyleMixin['value'];
 		typography: TTypographyStyleMixin['value'];
 		fill: TFillStyleMixin['value'];
 		stroke: TStrokeStyleMixin['value'];
 		shadow: TShadowStyleMixin['value'];
-	}>
+	}
 >;
 
 export type TButtonStyleMixin = TBaseMixin<
 	'button',
-	TRef<{
+	// TODO: Add back top level TRef once migrated to token references
+	{
 		appearance: TAppearanceStyleMixin['value'];
 		fill: TFillStyleMixin['value'];
 		stroke: TStrokeStyleMixin['value'];
 		shadow: TShadowStyleMixin['value'];
 		text: TTextStyleMixin['value'];
-	}>
+	}
 >;
 export type TPrimaryButtonStyleMixin = TBaseMixin<'primaryButton', TButtonStyleMixin['value']>;
 export type TSecondaryButtonStyleMixin = TBaseMixin<'secondaryButton', TButtonStyleMixin['value']>;

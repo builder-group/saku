@@ -4,6 +4,7 @@ import {
 	isInherited,
 	resolveReference,
 	TMergeMixins,
+	TRgba,
 	TStrokeStyleMixin,
 	TUnreference
 } from '@repo/editor';
@@ -48,7 +49,11 @@ export const StrokeStyleMixinEditor = <
 		getPropertyReference: (value) => value?.color,
 		setProperty: (value, notifyOptions) => {
 			if (state._v.stroke != null && !isInherited(state._v.stroke)) {
-				state._v.stroke.color = value;
+				(
+					state._v.stroke as {
+						color: TRgba;
+					}
+				).color = value;
 				state._notify(notifyOptions);
 			}
 		}
@@ -58,7 +63,11 @@ export const StrokeStyleMixinEditor = <
 		getPropertyReference: (value) => value?.width,
 		setProperty: (value, notifyOptions) => {
 			if (state._v.stroke != null && !isInherited(state._v.stroke)) {
-				state._v.stroke.width = value;
+				(
+					state._v.stroke as {
+						width: number;
+					}
+				).width = value;
 				state._notify(notifyOptions);
 			}
 		}

@@ -1,6 +1,6 @@
-import { TMixin } from '@repo/editor';
+import { TBaseMixin } from '@repo/editor';
 
-export type TResolvedAutoLayoutStyleMixin = TMixin<
+export type TResolvedAutoLayoutStyleMixin = TBaseMixin<
 	'autoLayout',
 	{
 		horizontalPadding?: number;

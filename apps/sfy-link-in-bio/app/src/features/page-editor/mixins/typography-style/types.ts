@@ -1,6 +1,6 @@
-import { TFont, TLetterSpacing, TLineHeight, TMixin, TTextAlign } from '@repo/editor';
+import { TBaseMixin, TFont, TLetterSpacing, TLineHeight, TTextAlign } from '@repo/editor';
 
-export type TResolvedTypographyStyleMixin = TMixin<
+export type TResolvedTypographyStyleMixin = TBaseMixin<
 	'typography',
 	{
 		font: TFont;

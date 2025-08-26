@@ -1,4 +1,5 @@
 import { TRef, TTokenType } from '../types';
+import { isInherited } from './inherit-ref';
 import { isTokenRef } from './is-token-ref';
 
 export function resolveRef<GValue, GTokenType extends TTokenType>(
@@ -8,6 +9,10 @@ export function resolveRef<GValue, GTokenType extends TTokenType>(
 ): GValue | undefined {
 	if (isTokenRef(value)) {
 		return tokens?.[type][value.ref] as GValue;
+	}
+	if (isInherited(value)) {
+		// TODO: Remove once migrated to token references
+		throw new Error('Inherited references cannot be resolved');
 	}
 	return value;
 }

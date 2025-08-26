@@ -4,6 +4,7 @@ import {
 	isInherited,
 	resolveReference,
 	TMergeMixins,
+	TRgba,
 	TShadowStyleMixin,
 	TUnreference
 } from '@repo/editor';
@@ -48,7 +49,11 @@ export const ShadowStyleMixinEditor = <
 		getPropertyReference: (value) => value?.color,
 		setProperty: (value, notifyOptions) => {
 			if (state._v.shadow != null && !isInherited(state._v.shadow)) {
-				state._v.shadow.color = value;
+				(
+					state._v.shadow as {
+						color: TRgba;
+					}
+				).color = value;
 				state._notify(notifyOptions);
 			}
 		}
@@ -58,7 +63,11 @@ export const ShadowStyleMixinEditor = <
 		getPropertyReference: (value) => value?.blur,
 		setProperty: (value, notifyOptions) => {
 			if (state._v.shadow != null && !isInherited(state._v.shadow)) {
-				state._v.shadow.blur = value;
+				(
+					state._v.shadow as {
+						blur: number;
+					}
+				).blur = value;
 				state._notify(notifyOptions);
 			}
 		}
@@ -68,7 +77,11 @@ export const ShadowStyleMixinEditor = <
 		getPropertyReference: (value) => value?.spread,
 		setProperty: (value, notifyOptions) => {
 			if (state._v.shadow != null && !isInherited(state._v.shadow)) {
-				state._v.shadow.spread = value;
+				(
+					state._v.shadow as {
+						spread: number;
+					}
+				).spread = value;
 				state._notify(notifyOptions);
 			}
 		}
@@ -78,7 +91,11 @@ export const ShadowStyleMixinEditor = <
 		getPropertyReference: (value) => value?.offsetX,
 		setProperty: (value, notifyOptions) => {
 			if (state._v.shadow != null && !isInherited(state._v.shadow)) {
-				state._v.shadow.offsetX = value;
+				(
+					state._v.shadow as {
+						offsetX: number;
+					}
+				).offsetX = value;
 				state._notify(notifyOptions);
 			}
 		}
@@ -88,7 +105,11 @@ export const ShadowStyleMixinEditor = <
 		getPropertyReference: (value) => value?.offsetY,
 		setProperty: (value, notifyOptions) => {
 			if (state._v.shadow != null && !isInherited(state._v.shadow)) {
-				state._v.shadow.offsetY = value;
+				(
+					state._v.shadow as {
+						offsetY: number;
+					}
+				).offsetY = value;
 				state._notify(notifyOptions);
 			}
 		}

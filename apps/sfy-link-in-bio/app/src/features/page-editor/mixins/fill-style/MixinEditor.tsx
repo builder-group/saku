@@ -5,6 +5,7 @@ import {
 	resolveReference,
 	TFillStyleMixin,
 	TMergeMixins,
+	TPaint,
 	TUnreference
 } from '@repo/editor';
 import { Button, Text } from '@shopify/polaris';
@@ -48,7 +49,11 @@ export const FillStyleMixinEditor = <
 		getPropertyReference: (value) => value?.paint,
 		setProperty: (value, notifyOptions) => {
 			if (state._v.fill != null && !isInherited(state._v.fill)) {
-				state._v.fill.paint = value;
+				(
+					state._v.fill as {
+						paint: TPaint;
+					}
+				).paint = value;
 				state._notify(notifyOptions);
 			}
 		}

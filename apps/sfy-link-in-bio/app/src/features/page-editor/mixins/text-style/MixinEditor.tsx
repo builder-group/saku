@@ -17,15 +17,15 @@ export const TextStyleMixinEditor = <
 	const { state, parentState, editor } = props;
 
 	const flatState = useMapState(state, {
-		get: (parent) => parent.text,
-		set: (parent, child, notifyOptions) => {
+		map: (parent) => parent.text,
+		sync: (parent, child, notifyOptions) => {
 			parent._v.text = child;
 			parent._notify(notifyOptions);
 		}
 	});
 	const flatParentState = useMapState(parentState, {
-		get: (parent) => ({ childMixins: parent.childMixins.text }),
-		set: (parent, child, notifyOptions) => {
+		map: (parent) => ({ childMixins: parent.childMixins.text }),
+		sync: (parent, child, notifyOptions) => {
 			parent._v.childMixins.text = child.childMixins;
 			parent._notify(notifyOptions);
 		}

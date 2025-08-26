@@ -1,4 +1,4 @@
-import { TBaseNode, TContent, TIdMixin, TMixin } from '@repo/editor';
+import { TBaseMixin, TBaseNode, TContent, TIdMixin } from '@repo/editor';
 import { TResolvedAsset } from '../../lib';
 import {
 	TResolvedAppearanceStyleMixin,
@@ -24,7 +24,7 @@ export type TResolvedProductNode = TBaseNode<
 	]
 >;
 
-export type TResolvedProductNodeMixin = TMixin<
+export type TResolvedProductNodeMixin = TBaseMixin<
 	'node',
 	{
 		type: 'product';

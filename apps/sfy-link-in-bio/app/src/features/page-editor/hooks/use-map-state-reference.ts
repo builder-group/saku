@@ -1,11 +1,11 @@
-import { inherit, isInherited, TReference, TUnreference } from '@repo/editor';
+import { inherit, isInherited, TRef, TUnreference } from '@repo/editor';
 import { createState, TCreateStateOptions, TState, TStateNotifyOptions } from 'feature-state';
 import { useMemoCleanup } from '@/hooks';
 
 export function useMapStateReference<
 	GValue,
 	GParentValue extends Record<string, any>,
-	GReference extends TReference<any>
+	GReference extends TRef<any>
 >(
 	parentState: TState<GParentValue, any>,
 	config: TMapStateReferenceConfig<GValue, GParentValue, GReference>
@@ -20,14 +20,14 @@ export function useMapStateReference<
 export function mapStateReference<
 	GValue,
 	GParentValue extends Record<string, any>,
-	GReference extends TReference<any>
+	GReference extends TRef<any>
 >(
 	parentState: TState<GParentValue, any>,
 	config: TMapStateReferenceConfig<GValue, GParentValue, GReference>
-): [TState<TReference<GValue> | undefined, any>, () => void] {
+): [TState<TRef<GValue> | undefined, any>, () => void] {
 	const { getTopLevelReference, getPropertyReference, setProperty, ...stateOptions } = config;
 
-	const childState = createState<TReference<GValue> | undefined>(undefined, stateOptions);
+	const childState = createState<TRef<GValue> | undefined>(undefined, stateOptions);
 
 	// Keep child in sync with parent - handle inheritance
 	const unsubscribeParentState = parentState.subscribe(({ value, source }) => {
@@ -52,7 +52,7 @@ export function mapStateReference<
 		}
 
 		if (value != null && !isInherited(value)) {
-			setProperty(value, { listenerContext: { source: 'mapStateReference:parent' } });
+			setProperty(value as GValue, { listenerContext: { source: 'mapStateReference:parent' } });
 		}
 	});
 
@@ -68,12 +68,12 @@ export function mapStateReference<
 interface TMapStateReferenceConfig<
 	GValue,
 	GParentValue extends Record<string, any>,
-	GReference extends TReference<any>
+	GReference extends TRef<any>
 > extends TCreateStateOptions {
 	/** Gets the top-level reference from the parent value */
 	getTopLevelReference: (value: GParentValue) => GReference;
 	/** Gets the property reference from the unwrapped top-level reference */
-	getPropertyReference: (value: TUnreference<GReference>) => TReference<GValue> | undefined;
+	getPropertyReference: (value: TUnreference<GReference>) => TRef<GValue> | undefined;
 	/** Sets the property value to keep it in sync with the state */
 	setProperty: (value: GValue, notifyOptions?: TStateNotifyOptions<GParentValue>) => void;
 }

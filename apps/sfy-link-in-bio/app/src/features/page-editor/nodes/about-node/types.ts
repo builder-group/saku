@@ -1,4 +1,4 @@
-import { TBaseNode, TIdMixin, TMixin, TSocialLink } from '@repo/editor';
+import { TBaseMixin, TBaseNode, TIdMixin, TSocialLink } from '@repo/editor';
 import { TResolvedAsset } from '../../lib';
 import {
 	TResolvedAppearanceStyleMixin,
@@ -22,7 +22,7 @@ export type TResolvedAboutNode = TBaseNode<
 	]
 >;
 
-export type TResolvedAboutNodeMixin = TMixin<
+export type TResolvedAboutNodeMixin = TBaseMixin<
 	'node',
 	{
 		type: 'about';

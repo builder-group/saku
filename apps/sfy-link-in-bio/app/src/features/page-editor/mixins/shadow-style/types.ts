@@ -1,7 +1,7 @@
-import { TMixin } from '@repo/editor';
+import { TBaseMixin } from '@repo/editor';
 import { TResolvedColor } from '../../lib';
 
-export type TResolvedShadowStyleMixin = TMixin<
+export type TResolvedShadowStyleMixin = TBaseMixin<
 	'shadow',
 	{
 		color: TResolvedColor;

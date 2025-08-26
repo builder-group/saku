@@ -41,8 +41,8 @@
 
 ```typescript
 // Each mixin has a unique key and value
-type TFillMixin = TMixin<'fill', { fills: TPaint[]; blendMode: string }>;
-type TLayoutMixin = TMixin<'layout', { padding: number; width: number | 'auto' }>;
+type TFillMixin = TBaseMixin<'fill', { fills: TPaint[]; blendMode: string }>;
+type TLayoutMixin = TBaseMixin<'layout', { padding: number; width: number | 'auto' }>;
 
 // Nodes compose mixins for their specific needs
 type TProductNode = TNode<'product', [

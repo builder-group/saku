@@ -9,7 +9,7 @@ import {
 	TAssetHash,
 	TImageAsset,
 	TPaint,
-	TReference
+	TRef
 } from '@repo/editor';
 import {
 	ColorPicker,
@@ -449,7 +449,7 @@ export interface TMappedPaintInputProps<GStateValue, GParentStateValue>
 	> {
 	// Value handling
 	state: TState<GStateValue, any>;
-	mapValue: (stateValue: GStateValue) => TReference<TPaint> | undefined;
+	mapValue: (stateValue: GStateValue) => TRef<TPaint> | undefined;
 	onValueChange: (value: TPaint | undefined) => void;
 
 	// Parent/inheritance handling

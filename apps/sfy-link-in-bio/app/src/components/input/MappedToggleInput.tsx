@@ -1,4 +1,4 @@
-import { isInherited, resolveReference, TReference } from '@repo/editor';
+import { isInherited, resolveReference, TRef } from '@repo/editor';
 import { Text, Tooltip } from '@shopify/polaris';
 import { useCombinedCompute } from 'feature-react/state';
 import { createState, TState } from 'feature-state';
@@ -113,7 +113,7 @@ export const MappedToggleInput = <GStateValue, GParentStateValue>(
 export interface TMappedToggleInputProps<GStateValue, GParentStateValue> {
 	// Value handling
 	state: TState<GStateValue, any>;
-	mapValue: (stateValue: GStateValue) => TReference<boolean> | undefined;
+	mapValue: (stateValue: GStateValue) => TRef<boolean> | undefined;
 	onValueChange: (value: boolean | undefined) => void;
 
 	// Parent/inheritance handling

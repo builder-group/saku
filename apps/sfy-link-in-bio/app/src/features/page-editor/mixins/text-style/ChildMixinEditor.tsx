@@ -14,8 +14,8 @@ export const ChildTextStyleMixinEditor = <GValue extends Record<string, any>>(
 	const { state, editor } = props;
 
 	const flatState = useMapState(state, {
-		get: (parent) => ({ childMixins: parent.childMixins.text }),
-		set: (parent, child, notifyOptions) => {
+		map: (parent) => ({ childMixins: parent.childMixins.text }),
+		sync: (parent, child, notifyOptions) => {
 			parent._v.childMixins.text = child.childMixins;
 			parent._notify(notifyOptions);
 		}

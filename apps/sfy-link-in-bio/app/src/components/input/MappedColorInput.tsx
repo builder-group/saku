@@ -6,7 +6,7 @@ import {
 	resolveReference,
 	rgbaToHex,
 	rgbaToHsba,
-	TReference,
+	TRef,
 	TRgba
 } from '@repo/editor';
 import { ColorPicker, HSBAColor, Popover, Text, TextField, TextFieldProps } from '@shopify/polaris';
@@ -229,7 +229,7 @@ export interface TMappedColorInputProps<GStateValue, GParentStateValue>
 	> {
 	// Value handling
 	state: TState<GStateValue, any>;
-	mapValue: (stateValue: GStateValue) => TReference<TRgba> | undefined;
+	mapValue: (stateValue: GStateValue) => TRef<TRgba> | undefined;
 	onValueChange: (value: TRgba | undefined) => void;
 
 	// Parent/inheritance handling

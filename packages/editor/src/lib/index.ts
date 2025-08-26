@@ -2,6 +2,7 @@ export * from './color';
 export * from './font-metadata';
 export * from './get-font-hash';
 export * from './id';
+export * from './inherit-ref';
 export * from './is-token-ref';
 export * from './pika';
 export * from './resolve-ref';

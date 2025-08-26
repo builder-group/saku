@@ -1,4 +1,4 @@
-import { isInherited, TAssetHash, TMediaNode } from '@repo/editor';
+import { isInherited, TAssetHash, TImagePaint, TMediaNode, TPaint } from '@repo/editor';
 
 /**
  * Extracts asset hashes from a media node
@@ -15,10 +15,10 @@ export function getMediaNodeAssetHashes(node: TMediaNode): TAssetHash[] {
 	if (
 		node.fill != null &&
 		!isInherited(node.fill) &&
-		node.fill.paint.type === 'image' &&
-		node.fill.paint.hash != null
+		(node.fill as { paint: TPaint }).paint.type === 'image' &&
+		(node.fill as { paint: TImagePaint }).paint.hash != null
 	) {
-		hashes.push(node.fill.paint.hash);
+		hashes.push((node.fill as { paint: TImagePaint }).paint.hash as TAssetHash);
 	}
 
 	return hashes;

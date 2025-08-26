@@ -59,7 +59,9 @@ export const AppearanceStyleMixinEditor = <
 					state={state}
 					parentState={parentState}
 					mapValue={(value) =>
-						isInherited(value.appearance.opacity) ? inherit() : value.appearance.opacity * 100
+						isInherited(value.appearance.opacity)
+							? inherit()
+							: (value.appearance.opacity as number) * 100
 					}
 					onValueChange={(value) => {
 						if (value != null) {

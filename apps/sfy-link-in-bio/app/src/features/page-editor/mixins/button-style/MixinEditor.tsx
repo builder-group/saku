@@ -18,15 +18,15 @@ export const ButtonStyleMixinEditor = <
 	const { state, parentState, editor } = props;
 
 	const flatState = useMapState(state, {
-		get: (parent) => parent.button,
-		set: (parent, child, notifyOptions) => {
+		map: (parent) => parent.button,
+		sync: (parent, child, notifyOptions) => {
 			parent._v.button = child;
 			parent._notify(notifyOptions);
 		}
 	});
 	const flatParentState = useMapState(parentState, {
-		get: (parent) => ({ childMixins: parent.childMixins.button }),
-		set: (parent, child, notifyOptions) => {
+		map: (parent) => ({ childMixins: parent.childMixins.button }),
+		sync: (parent, child, notifyOptions) => {
 			parent._v.childMixins.button = child.childMixins;
 			parent._notify(notifyOptions);
 		}

@@ -1,4 +1,4 @@
-import { TBaseNode, TIdMixin, TMixin } from '@repo/editor';
+import { TBaseMixin, TBaseNode, TIdMixin } from '@repo/editor';
 import {
 	TResolvedAppearanceStyleMixin,
 	TResolvedAutoLayoutStyleMixin,
@@ -19,7 +19,7 @@ export type TResolvedMediaNode<GMedia extends TResolvedMedia = TResolvedMedia> =
 	]
 >;
 
-export type TResolvedMediaNodeMixin<GMedia extends TResolvedMedia = TResolvedMedia> = TMixin<
+export type TResolvedMediaNodeMixin<GMedia extends TResolvedMedia = TResolvedMedia> = TBaseMixin<
 	'node',
 	{ type: 'media'; content: { media?: GMedia } }
 >;

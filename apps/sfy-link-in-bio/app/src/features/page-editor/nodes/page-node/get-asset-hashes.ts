@@ -1,4 +1,11 @@
-import { getFontHash, isInherited, TAssetHash, TFlatPageNode } from '@repo/editor';
+import {
+	getFontHash,
+	isInherited,
+	TAssetHash,
+	TFlatPageNode,
+	TImagePaint,
+	TPaint
+} from '@repo/editor';
 
 /**
  * Extracts asset hashes from a page node
@@ -20,10 +27,10 @@ export function getPageNodeAssetHashes(node: TFlatPageNode): TAssetHash[] {
 	if (
 		node.fill != null &&
 		!isInherited(node.fill) &&
-		node.fill.paint.type === 'image' &&
-		node.fill.paint.hash != null
+		(node.fill as { paint: TPaint }).paint.type === 'image' &&
+		(node.fill as { paint: TImagePaint }).paint.hash != null
 	) {
-		hashes.push(node.fill.paint.hash);
+		hashes.push((node.fill as { paint: TImagePaint }).paint.hash as TAssetHash);
 	}
 
 	return hashes;
