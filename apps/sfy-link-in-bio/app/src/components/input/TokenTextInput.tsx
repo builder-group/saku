@@ -1,4 +1,4 @@
-import { isTokenRef, tokenRef, TRef } from '@repo/editor';
+import { isTokenRef, tokenRef, TRef, TTokenSet } from '@repo/editor';
 import { Text, TextField, TextFieldProps } from '@shopify/polaris';
 import { useCombinedCompute, useCompute, useFeatureState } from 'feature-react/state';
 import { createState, TState } from 'feature-state';
@@ -9,7 +9,7 @@ import { cn } from '@/lib';
 export const TokenTextInput = <
 	GValue extends string | number,
 	GRefValue extends TRef<GValue> | undefined,
-	GTokenSet extends Record<string, any>
+	GTokenSet extends TTokenSet
 >(
 	props: TTokenTextInputProps<GValue, GRefValue, GTokenSet>
 ) => {
@@ -73,14 +73,14 @@ export const TokenTextInput = <
 
 	const handleToggleTokenLink = React.useCallback(() => {
 		if (isLinked) {
-			const tokenValue = isTokenRef(value) ? tokenSet?._v?.[value.ref]?.value : undefined;
+			const tokenValue = isTokenRef(value) ? mapToTokenValue(value.ref, tokenSet?._v) : undefined;
 			if (tokenValue != null) {
-				state.set(tokenValue);
+				state.set(tokenValue as GRefValue);
 			}
 		} else {
 			state.set(tokenRef('default') as GRefValue);
 		}
-	}, [isLinked, value, tokenSet?._v, state]);
+	}, [isLinked, value, mapToTokenValue, tokenSet, state]);
 
 	// =========================================================================
 	// Effects
@@ -142,7 +142,7 @@ export const TokenTextInput = <
 export interface TTokenTextInputProps<
 	GValue extends string | number,
 	GRefValue extends TRef<GValue> | undefined,
-	GTokenSet extends Record<string, any>
+	GTokenSet extends TTokenSet
 > extends Omit<TextFieldProps, 'value' | 'onChange' | 'label' | 'labelHidden'> {
 	state: TState<GRefValue, any>;
 

@@ -720,5 +720,7 @@ export interface TBoundingRect {
 }
 
 export type TTokenStateGroupMap<GToken extends TToken = TToken> = {
-	[K in GToken['type']]?: TState<Record<string, Extract<GToken, { type: K }>['value']>, []>;
+	[K in GToken['type']]?: TStateTokenSet<Extract<GToken, { type: K }>>;
 };
+
+export type TStateTokenSet<GToken extends TToken> = TState<Record<string, GToken['value']>, []>;
