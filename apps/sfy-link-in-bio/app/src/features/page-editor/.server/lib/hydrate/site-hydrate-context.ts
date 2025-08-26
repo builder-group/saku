@@ -40,9 +40,9 @@ export class StaticSiteHydrateContext implements TSiteHydrateContext {
 		return this.site.integrations[id] ?? null;
 	}
 
-	public getTokenSet<GType extends keyof TTokenGroupMap>(
-		type: GType
-	): TTokenGroupMap[GType] | null {
-		return this.site.tokens[type] || null;
+	public getTokenSet<GGroupKey extends keyof TTokenGroupMap>(
+		groupKey: GGroupKey
+	): TTokenGroupMap[GGroupKey] | null {
+		return this.site.tokens[groupKey] || null;
 	}
 }

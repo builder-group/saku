@@ -16,14 +16,14 @@ export class StaticSiteResolveContext implements TSiteResolveContext {
 		return this.site.assets[hash] || null;
 	}
 
-	public getSite(): TFlatSite {
-		return this.site;
+	public getTokenSet<GGroupKey extends keyof TTokenGroupMap>(
+		groupKey: GGroupKey
+	): TTokenGroupMap[GGroupKey] | null {
+		return this.site.tokens[groupKey] || null;
 	}
 
-	public getTokenSet<GType extends keyof TTokenGroupMap>(
-		type: GType
-	): TTokenGroupMap[GType] | null {
-		return this.site.tokens[type] || null;
+	public getSite(): TFlatSite {
+		return this.site;
 	}
 }
 
@@ -35,27 +35,29 @@ export class EditorSiteResolveContext implements TSiteResolveContext {
 	}
 
 	public getNode(id: TNodeId): TFlatNode | null {
-		return this.editor.nodeMap[id]?.get() || null;
+		return this.editor.nodeMap[id]?._v || null;
 	}
 
 	public getAsset(hash: TAssetHash): TAsset | null {
 		return this.editor.assetsMap[hash] || null;
 	}
 
-	public getSite(): TFlatSite {
-		return this.editor.toFlatSite();
+	public getTokenSet<GGroupKey extends keyof TTokenGroupMap>(
+		groupKey: GGroupKey
+	): TTokenGroupMap[GGroupKey] | null {
+		return this.editor.tokensMap[groupKey]?._v as TTokenGroupMap[GGroupKey] | null;
 	}
 
-	public getTokenSet<GType extends keyof TTokenGroupMap>(
-		type: GType
-	): TTokenGroupMap[GType] | null {
-		return this.editor.tokensMap[type] || null;
+	public getSite(): TFlatSite {
+		return this.editor.toFlatSite();
 	}
 }
 
 export interface TSiteResolveContext {
 	getNode(id: TNodeId): TFlatNode | null;
 	getAsset(hash: TAssetHash): TAsset | null;
+	getTokenSet<GGroupKey extends keyof TTokenGroupMap>(
+		groupKey: GGroupKey
+	): TTokenGroupMap[GGroupKey] | null;
 	getSite(): TFlatSite;
-	getTokenSet<GType extends keyof TTokenGroupMap>(type: GType): TTokenGroupMap[GType] | null;
 }
