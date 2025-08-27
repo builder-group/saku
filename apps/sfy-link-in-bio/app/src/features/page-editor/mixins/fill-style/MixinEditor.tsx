@@ -1,12 +1,5 @@
 import { deepCopy } from '@blgc/utils';
-import {
-	isInherited,
-	isTokenRef,
-	TFillStyleMixin,
-	TFillStyleToken,
-	tokenRef,
-	TTokenSet
-} from '@repo/editor';
+import { isTokenRef, TFillStyleMixin, TFillStyleToken, tokenRef, TTokenSet } from '@repo/editor';
 import { Button, Text } from '@shopify/polaris';
 import { useCompute } from 'feature-react';
 import { TState } from 'feature-state';
@@ -43,21 +36,11 @@ export const FillStyleMixinEditor = <
 			if (isTokenRef(fill)) {
 				return fill;
 			}
-			// TODO: Remove once migrated to token references
-			if (isInherited(fill)) {
-				throw new Error('Fill style mixin is inherited');
-			}
 			return fill?.paint;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
 			const fill = mapValue(baseState._v);
-			if (
-				fill != null &&
-				!isTokenRef(fill) &&
-				!isInherited(fill) &&
-				mappedValue != null &&
-				!isTokenRef(mappedValue)
-			) {
+			if (fill != null && !isTokenRef(fill) && mappedValue != null && !isTokenRef(mappedValue)) {
 				fill.paint = mappedValue;
 				baseState._notify(notifyOptions);
 			}

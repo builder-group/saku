@@ -33,8 +33,7 @@ export function hydratePageNode(
 				}
 				const result = hydrateFlatNode(childNode, {
 					site: cx.site,
-					parentId: node.id,
-					childMixins: node.childMixins
+					parentId: node.id
 				});
 				if (result.isErr()) {
 					logger.warn('Failed to resolve flat node', {

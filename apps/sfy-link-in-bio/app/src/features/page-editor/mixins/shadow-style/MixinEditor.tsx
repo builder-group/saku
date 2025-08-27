@@ -1,6 +1,5 @@
 import { deepCopy } from '@blgc/utils';
 import {
-	isInherited,
 	isTokenRef,
 	tokenRef,
 	TShadowStyleMixin,
@@ -43,10 +42,6 @@ export const ShadowStyleMixinEditor = <
 			if (isTokenRef(shadow)) {
 				return shadow;
 			}
-			// TODO: Remove once migrated to token references
-			if (isInherited(shadow)) {
-				throw new Error('Shadow style mixin is inherited');
-			}
 			return shadow?.color;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
@@ -54,7 +49,6 @@ export const ShadowStyleMixinEditor = <
 			if (
 				shadow != null &&
 				!isTokenRef(shadow) &&
-				!isInherited(shadow) &&
 				mappedValue != null &&
 				!isTokenRef(mappedValue)
 			) {
@@ -69,10 +63,6 @@ export const ShadowStyleMixinEditor = <
 			if (isTokenRef(shadow)) {
 				return shadow;
 			}
-			// TODO: Remove once migrated to token references
-			if (isInherited(shadow)) {
-				throw new Error('Shadow style mixin is inherited');
-			}
 			return shadow?.blur;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
@@ -80,7 +70,6 @@ export const ShadowStyleMixinEditor = <
 			if (
 				shadow != null &&
 				!isTokenRef(shadow) &&
-				!isInherited(shadow) &&
 				mappedValue != null &&
 				!isTokenRef(mappedValue)
 			) {
@@ -95,10 +84,6 @@ export const ShadowStyleMixinEditor = <
 			if (isTokenRef(shadow)) {
 				return shadow;
 			}
-			// TODO: Remove once migrated to token references
-			if (isInherited(shadow)) {
-				throw new Error('Shadow style mixin is inherited');
-			}
 			return shadow?.spread;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
@@ -106,7 +91,6 @@ export const ShadowStyleMixinEditor = <
 			if (
 				shadow != null &&
 				!isTokenRef(shadow) &&
-				!isInherited(shadow) &&
 				mappedValue != null &&
 				!isTokenRef(mappedValue)
 			) {
@@ -121,10 +105,6 @@ export const ShadowStyleMixinEditor = <
 			if (isTokenRef(shadow)) {
 				return shadow;
 			}
-			// TODO: Remove once migrated to token references
-			if (isInherited(shadow)) {
-				throw new Error('Shadow style mixin is inherited');
-			}
 			return shadow?.offsetX;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
@@ -132,7 +112,6 @@ export const ShadowStyleMixinEditor = <
 			if (
 				shadow != null &&
 				!isTokenRef(shadow) &&
-				!isInherited(shadow) &&
 				mappedValue != null &&
 				!isTokenRef(mappedValue)
 			) {
@@ -147,10 +126,6 @@ export const ShadowStyleMixinEditor = <
 			if (isTokenRef(shadow)) {
 				return shadow;
 			}
-			// TODO: Remove once migrated to token references
-			if (isInherited(shadow)) {
-				throw new Error('Shadow style mixin is inherited');
-			}
 			return shadow?.offsetY;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
@@ -158,7 +133,6 @@ export const ShadowStyleMixinEditor = <
 			if (
 				shadow != null &&
 				!isTokenRef(shadow) &&
-				!isInherited(shadow) &&
 				mappedValue != null &&
 				!isTokenRef(mappedValue)
 			) {

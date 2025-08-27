@@ -1,12 +1,10 @@
 import {
 	fontMetadata,
-	isInherited,
 	isTokenRef,
 	TRef,
 	TTokenSet,
 	TTypographyStyleMixin,
-	TTypographyStyleToken,
-	uninherit
+	TTypographyStyleToken
 } from '@repo/editor';
 import { Text } from '@shopify/polaris';
 import { TState } from 'feature-state';
@@ -43,18 +41,14 @@ export const TypographyStyleMixinEditor = <
 			if (isTokenRef(typography)) {
 				return typography;
 			}
-			// TODO: Remove once migrated to token references
-			if (isInherited(typography)) {
-				throw new Error('Typography style mixin is inherited');
-			}
 			if (isTokenRef(typography.font)) {
 				return typography.font;
 			}
-			return uninherit(typography.font).family;
+			return typography.font.family;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
 			const typography = mapValue(baseState._v);
-			if (!isTokenRef(typography) && !isInherited(typography)) {
+			if (!isTokenRef(typography)) {
 				if (isTokenRef(mappedValue)) {
 					typography.font = mappedValue;
 					baseState._notify(notifyOptions);
@@ -74,15 +68,11 @@ export const TypographyStyleMixinEditor = <
 			if (isTokenRef(typography)) {
 				return typography;
 			}
-			// TODO: Remove once migrated to token references
-			if (isInherited(typography)) {
-				throw new Error('Typography style mixin is inherited');
-			}
 			return typography.fontSize;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
 			const typography = mapValue(baseState._v);
-			if (!isTokenRef(typography) && !isInherited(typography)) {
+			if (!isTokenRef(typography)) {
 				typography.fontSize = mappedValue;
 				baseState._notify(notifyOptions);
 			}
@@ -94,15 +84,11 @@ export const TypographyStyleMixinEditor = <
 			if (isTokenRef(typography)) {
 				return typography;
 			}
-			// TODO: Remove once migrated to token references
-			if (isInherited(typography)) {
-				throw new Error('Typography style mixin is inherited');
-			}
 			return typography.textAlignHorizontal;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
 			const typography = mapValue(baseState._v);
-			if (!isTokenRef(typography) && !isInherited(typography)) {
+			if (!isTokenRef(typography)) {
 				typography.textAlignHorizontal = mappedValue;
 				baseState._notify(notifyOptions);
 			}
@@ -114,15 +100,11 @@ export const TypographyStyleMixinEditor = <
 			if (isTokenRef(typography)) {
 				return typography;
 			}
-			// TODO: Remove once migrated to token references
-			if (isInherited(typography)) {
-				throw new Error('Typography style mixin is inherited');
-			}
 			return typography.textAlignVertical;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
 			const typography = mapValue(baseState._v);
-			if (!isTokenRef(typography) && !isInherited(typography)) {
+			if (!isTokenRef(typography)) {
 				typography.textAlignVertical = mappedValue;
 				baseState._notify(notifyOptions);
 			}

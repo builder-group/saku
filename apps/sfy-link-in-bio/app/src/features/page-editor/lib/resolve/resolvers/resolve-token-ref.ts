@@ -1,4 +1,4 @@
-import { isTokenRef, TRef, TUnreference, uninherit } from '@repo/editor';
+import { isTokenRef, TRef, TUnreference } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
 
@@ -23,7 +23,7 @@ export function resolveTokenRef<GValue>(
 		return Ok(sourceToken);
 	}
 
-	return Ok(uninherit(sourceValue));
+	return Ok(sourceValue);
 }
 
 export function resolveNestedTokenRef<
@@ -59,5 +59,5 @@ export function resolveNestedTokenRef<
 		return Ok(propertyToken[propertyKey]);
 	}
 
-	return Ok(uninherit(propertyValue));
+	return Ok(propertyValue);
 }

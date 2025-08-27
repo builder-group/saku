@@ -27,8 +27,7 @@ export function resolveFlatChildrenMixin(
 			}
 			const result = resolveFlatNode(childNode, {
 				site: cx.site,
-				parentId: parent.id,
-				childMixins: 'childMixins' in parent ? parent.childMixins : undefined
+				parentId: parent.id
 			});
 			if (result.isErr()) {
 				logger.warn('Failed to resolve flat node', {

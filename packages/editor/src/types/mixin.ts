@@ -1,6 +1,6 @@
 import { TRgba } from '../lib';
 import { TNode, TNodeId } from './node';
-import { TRef, TUnreference } from './ref';
+import { TRef } from './ref';
 import {
 	TAssetHash,
 	TContent,
@@ -61,18 +61,6 @@ export type TPageNodeMixin = TBaseMixin<
 				image?: TAssetHash;
 			};
 		};
-		// TODO: Remove once migrated to token references
-		childMixins: TMergeMixins<
-			[
-				TUnreference<TAutoLayoutStyleMixin>,
-				TUnreference<TAppearanceStyleMixin>,
-				TUnreference<TFillStyleMixin>,
-				TUnreference<TStrokeStyleMixin>,
-				TUnreference<TShadowStyleMixin>,
-				TUnreference<TTextStyleMixin>,
-				TUnreference<TButtonStyleMixin>
-			]
-		>;
 	}
 >;
 
@@ -178,14 +166,14 @@ export type TAppearanceStyleMixin = TBaseMixin<
 
 export type TTypographyStyleMixin = TBaseMixin<
 	'typography',
-	TRef<{
+	{
 		font: TRef<TFont>;
 		fontSize: TRef<number>;
 		textAlignHorizontal: TRef<TTextAlign>;
 		textAlignVertical: TRef<TTextAlign>;
 		lineHeight: TRef<TLineHeight>;
 		letterSpacing: TRef<TLetterSpacing>;
-	}>
+	}
 >;
 
 export type TFillStyleMixin = TBaseMixin<
@@ -217,7 +205,6 @@ export type TShadowStyleMixin = TBaseMixin<
 
 export type TTextStyleMixin = TBaseMixin<
 	'text',
-	// TODO: Add back top level TRef once migrated to token references
 	{
 		appearance: TAppearanceStyleMixin['value'];
 		typography: TTypographyStyleMixin['value'];
@@ -229,7 +216,6 @@ export type TTextStyleMixin = TBaseMixin<
 
 export type TButtonStyleMixin = TBaseMixin<
 	'button',
-	// TODO: Add back top level TRef once migrated to token references
 	{
 		appearance: TAppearanceStyleMixin['value'];
 		fill: TFillStyleMixin['value'];

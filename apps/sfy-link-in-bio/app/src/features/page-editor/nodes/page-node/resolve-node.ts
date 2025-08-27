@@ -1,16 +1,12 @@
-import { getBestContrastColor, resolveReference, TAboutNode, TFlatPageNode } from '@repo/editor';
-import { Err, Ok, TResult, unwrapOrNull } from 'tuple-result';
+import { TAboutNode, TFlatPageNode } from '@repo/editor';
+import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
-import { resolveAsset, resolveColor, TNodeResolveContext } from '../../lib';
+import { resolveAsset, TNodeResolveContext } from '../../lib';
 import {
 	resolveAppearanceStyleMixin,
 	resolveAutoLayoutStyleMixin,
-	resolveButtonStyleMixin,
 	resolveFillStyleMixin,
-	resolveFlatChildrenMixin,
-	resolveShadowStyleMixin,
-	resolveStrokeStyleMixin,
-	resolveTextStyleMixin
+	resolveFlatChildrenMixin
 } from '../../mixins';
 import { TResolvedPageNode } from './types';
 
@@ -37,16 +33,7 @@ export function resolvePageNodeWithoutChildren(
 	node: TFlatPageNode,
 	cx: TNodeResolveContext
 ): TResult<Omit<TResolvedPageNode, 'children'>, AppError> {
-	const { autoLayout, appearance, fill, childMixins: childDefaults, ...rest } = node;
-
-	const unreferencedFill = resolveReference(fill);
-	const watermarkColor = resolveColor(
-		getBestContrastColor(
-			unreferencedFill?.paint.type === 'solid'
-				? unreferencedFill.paint.color
-				: { r: 255, g: 255, b: 255, a: 1 }
-		)
-	);
+	const { autoLayout, appearance, fill, ...rest } = node;
 
 	const [isResolvedAutoLayoutOk, resolvedAutoLayoutErr, resolvedAutoLayout] =
 		resolveAutoLayoutStyleMixin(autoLayout, cx);
@@ -70,19 +57,7 @@ export function resolvePageNodeWithoutChildren(
 		},
 		autoLayout: resolvedAutoLayout,
 		appearance: resolvedAppearance,
-		fill: resolvedFill,
-		childMixins: {
-			autoLayout:
-				unwrapOrNull(resolveAutoLayoutStyleMixin(childDefaults.autoLayout, cx)) ?? undefined,
-			appearance:
-				unwrapOrNull(resolveAppearanceStyleMixin(childDefaults.appearance, cx)) ?? undefined,
-			fill: unwrapOrNull(resolveFillStyleMixin(childDefaults.fill, cx)) ?? undefined,
-			stroke: unwrapOrNull(resolveStrokeStyleMixin(childDefaults.stroke, cx)) ?? undefined,
-			shadow: unwrapOrNull(resolveShadowStyleMixin(childDefaults.shadow, cx)) ?? undefined,
-			text: unwrapOrNull(resolveTextStyleMixin(childDefaults.text, cx)) ?? undefined,
-			button: unwrapOrNull(resolveButtonStyleMixin(childDefaults.button, cx)) ?? undefined
-		},
-		watermarkColor
+		fill: resolvedFill
 	});
 }
 

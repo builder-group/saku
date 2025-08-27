@@ -4,7 +4,6 @@ import {
 	fontMetadataMap,
 	getFontHash,
 	hexToRgba,
-	inherit,
 	TId,
 	tokenRef,
 	TProductNode,
@@ -135,19 +134,26 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 				opacity: tokenRef(),
 				borderRadius: tokenRef()
 			},
-			fill: inherit(),
+			fill: tokenRef(),
 			stroke: tokenRef(),
-			shadow: inherit(),
+			shadow: tokenRef(),
 			text: {
 				appearance: {
 					visible: true,
 					opacity: tokenRef(),
 					borderRadius: tokenRef()
 				},
-				typography: tokenRef(),
-				fill: inherit(),
+				typography: {
+					font: tokenRef(),
+					fontSize: tokenRef(),
+					textAlignHorizontal: tokenRef(),
+					textAlignVertical: tokenRef(),
+					lineHeight: tokenRef(),
+					letterSpacing: tokenRef()
+				},
+				fill: tokenRef(),
 				stroke: tokenRef(),
-				shadow: inherit()
+				shadow: tokenRef()
 			},
 			button: {
 				appearance: {
@@ -155,18 +161,25 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					opacity: tokenRef(),
 					borderRadius: tokenRef()
 				},
-				fill: inherit(),
+				fill: tokenRef(),
 				stroke: tokenRef(),
-				shadow: inherit(),
+				shadow: tokenRef(),
 				text: {
 					appearance: {
 						visible: true,
 						opacity: tokenRef()
 					},
-					typography: tokenRef(),
-					fill: inherit(),
+					typography: {
+						font: tokenRef(),
+						fontSize: tokenRef(),
+						textAlignHorizontal: tokenRef(),
+						textAlignVertical: tokenRef(),
+						lineHeight: tokenRef(),
+						letterSpacing: tokenRef()
+					},
+					fill: tokenRef(),
 					stroke: tokenRef(),
-					shadow: inherit()
+					shadow: tokenRef()
 				}
 			}
 		};
@@ -248,9 +261,9 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 							lineHeight: tokenRef(),
 							letterSpacing: tokenRef()
 						},
-						fill: inherit(),
+						fill: tokenRef(),
 						stroke: tokenRef(),
-						shadow: inherit()
+						shadow: tokenRef()
 					}
 				},
 				{
@@ -274,18 +287,25 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 						opacity: tokenRef(),
 						borderRadius: tokenRef()
 					},
-					fill: inherit(),
+					fill: tokenRef(),
 					stroke: tokenRef(),
-					shadow: inherit(),
+					shadow: tokenRef(),
 					text: {
 						appearance: {
 							visible: true,
 							opacity: tokenRef()
 						},
-						typography: tokenRef(),
-						fill: inherit(),
+						typography: {
+							font: tokenRef(),
+							fontSize: tokenRef(),
+							textAlignHorizontal: tokenRef(),
+							textAlignVertical: tokenRef(),
+							lineHeight: tokenRef(),
+							letterSpacing: tokenRef()
+						},
+						fill: tokenRef(),
 						stroke: tokenRef(),
-						shadow: inherit()
+						shadow: tokenRef()
 					}
 				},
 				{
@@ -311,7 +331,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 						opacity: 1
 					},
 					stroke: tokenRef(),
-					shadow: inherit(),
+					shadow: tokenRef(),
 					text: {
 						appearance: {
 							visible: true,
@@ -329,9 +349,9 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 							lineHeight: tokenRef(),
 							letterSpacing: tokenRef()
 						},
-						fill: inherit(),
+						fill: tokenRef(),
 						stroke: tokenRef(),
-						shadow: inherit()
+						shadow: tokenRef()
 					}
 				},
 				{
@@ -357,7 +377,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 						opacity: 1
 					},
 					stroke: tokenRef(),
-					shadow: inherit(),
+					shadow: tokenRef(),
 					text: {
 						appearance: {
 							visible: true,
@@ -379,7 +399,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 							opacity: 1
 						},
 						stroke: tokenRef(),
-						shadow: inherit()
+						shadow: tokenRef()
 					}
 				},
 				...(productNode != null ? [productNode] : []),
@@ -402,9 +422,9 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 						opacity: tokenRef(),
 						borderRadius: tokenRef()
 					},
-					fill: inherit(),
+					fill: tokenRef(),
 					stroke: tokenRef(),
-					shadow: inherit()
+					shadow: tokenRef()
 				}
 			],
 			autoLayout: {
@@ -422,99 +442,6 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					color: hexToRgba(backgroundColor)
 				},
 				opacity: 1
-			},
-			childMixins: {
-				autoLayout: {
-					horizontalPadding: 12,
-					verticalPadding: 12,
-					horizontalGap: 12,
-					verticalGap: 12
-				},
-				appearance: {
-					visible: true,
-					opacity: 1,
-					borderRadius
-				},
-				fill: {
-					paint: {
-						type: 'solid',
-						color: hexToRgba(surfaceColor)
-					},
-					opacity: 1
-				},
-				stroke: {
-					color: { r: 0, g: 0, b: 0, a: 0.1 },
-					width: 1
-				},
-				shadow: {
-					color: { r: 0, g: 0, b: 0, a: 0.1 },
-					offsetX: 0,
-					offsetY: 4,
-					blur: 6,
-					spread: -1
-				},
-				text: {
-					appearance: {
-						visible: true,
-						opacity: 1
-					},
-					typography: {
-						font: bodyFont.font,
-						fontSize: 16,
-						textAlignHorizontal: 'center',
-						textAlignVertical: 'center',
-						lineHeight: { type: 'auto' },
-						letterSpacing: { type: 'auto' }
-					},
-					fill: {
-						paint: {
-							type: 'solid',
-							color: hexToRgba(primaryColor)
-						},
-						opacity: 1
-					},
-					stroke: null,
-					shadow: null
-				},
-				button: {
-					appearance: {
-						visible: true,
-						opacity: 1,
-						borderRadius
-					},
-					fill: {
-						paint: {
-							type: 'solid',
-							color: hexToRgba(primaryColor)
-						},
-						opacity: 1
-					},
-					stroke: null,
-					shadow: null,
-					text: {
-						appearance: {
-							visible: true,
-							opacity: 1
-						},
-						typography: {
-							font: bodyFont.font,
-							fontSize: 16,
-							textAlignHorizontal: 'center',
-							textAlignVertical: 'center',
-							lineHeight: { type: 'auto' },
-							letterSpacing: { type: 'auto' }
-						},
-						fill: {
-							paint: {
-								type: 'solid',
-								color: hexToRgba(surfaceColor)
-							},
-							opacity: 1
-						},
-						stroke: null,
-						shadow: null
-					}
-				}
 			}
 		},
 		tokens: [

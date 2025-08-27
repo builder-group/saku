@@ -1,13 +1,9 @@
-import { TBaseMixin, TBaseNode, TIdMixin, TMergeMixins } from '@repo/editor';
+import { TBaseMixin, TBaseNode, TIdMixin } from '@repo/editor';
 import {
 	TResolvedAppearanceStyleMixin,
 	TResolvedAutoLayoutStyleMixin,
-	TResolvedButtonStyleMixin,
 	TResolvedChildrenMixin,
-	TResolvedFillStyleMixin,
-	TResolvedShadowStyleMixin,
-	TResolvedStrokeStyleMixin,
-	TResolvedTextStyleMixin
+	TResolvedFillStyleMixin
 } from '../../mixins';
 
 export type TResolvedPageNode = TBaseNode<
@@ -32,19 +28,5 @@ export type TResolvedPageNodeMixin = TBaseMixin<
 				image?: string;
 			};
 		};
-		childMixins: Partial<
-			TMergeMixins<
-				[
-					TResolvedAutoLayoutStyleMixin,
-					TResolvedAppearanceStyleMixin,
-					TResolvedFillStyleMixin,
-					TResolvedStrokeStyleMixin,
-					TResolvedShadowStyleMixin,
-					TResolvedTextStyleMixin,
-					TResolvedButtonStyleMixin
-				]
-			>
-		>;
-		watermarkColor: string;
 	}
 >;

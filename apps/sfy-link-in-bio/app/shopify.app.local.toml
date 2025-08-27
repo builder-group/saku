@@ -3,7 +3,7 @@
 client_id = "4c9dc129e68b889d9a351e14d8e36a02"
 name = "Saku Link In Bio (Local)"
 handle = "saku-link-in-bio-local"
-application_url = "https://magnificent-fire-desperate-alot.trycloudflare.com"
+application_url = "https://trace-huntington-corners-pty.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -22,7 +22,7 @@ unauthenticated_read_product_listings
 """
 
 [auth]
-redirect_urls = ["https://magnificent-fire-desperate-alot.trycloudflare.com/auth/callback", "https://magnificent-fire-desperate-alot.trycloudflare.com/auth/shopify/callback", "https://magnificent-fire-desperate-alot.trycloudflare.com/api/auth/callback"]
+redirect_urls = ["https://trace-huntington-corners-pty.trycloudflare.com/auth/callback", "https://trace-huntington-corners-pty.trycloudflare.com/auth/shopify/callback", "https://trace-huntington-corners-pty.trycloudflare.com/api/auth/callback"]
 
 [webhooks]
 api_version = "2025-07"
@@ -48,7 +48,7 @@ compliance_topics = ["shop/redact"]
 uri = "/api/v1/webhook/shopify/shop/redact"
 
 [app_proxy]
-url = "https://magnificent-fire-desperate-alot.trycloudflare.com/a/saku-local"
+url = "https://trace-huntington-corners-pty.trycloudflare.com/a/saku-local"
 subpath = "saku-local"
 prefix = "a"
 

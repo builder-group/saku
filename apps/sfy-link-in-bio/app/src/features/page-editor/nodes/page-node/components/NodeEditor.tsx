@@ -1,22 +1,32 @@
 import { TFlatPageNode } from '@repo/editor';
 import React from 'react';
 import { AccordionSection } from '@/components';
+import { useMapState } from '@/hooks';
 import { TNodeEditorComponentProps } from '../../../lib';
 import {
 	AppearanceStyleMixinEditor,
 	AutoLayoutStyleMixinEditor,
-	ChildAppearanceStyleMixinEditor,
-	ChildAutoLayoutStyleMixinEditor,
-	ChildButtonStyleMixinEditor,
-	ChildFillStyleMixinEditor,
-	ChildShadowStyleMixinEditor,
-	ChildStrokeStyleMixinEditor,
-	ChildTextStyleMixinEditor,
 	FillStyleMixinEditor
 } from '../../../mixins';
 
 export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TFlatPageNode>> = (props) => {
 	const { nodeState, editor } = props;
+
+	// TODO: Figure out how to resuse mixins editors
+	const defaultAppearanceToken = useMapState(editor.tokensMap.appearance, {
+		map: (token) =>
+			token['default'] ?? {
+				visible: true,
+				opacity: 1,
+				borderRadius: 0
+			},
+		sync: (token, value, notifyOptions) => {
+			if (value != null && 'default' in token._v) {
+				token._v['default'] = value;
+				token._notify(notifyOptions);
+			}
+		}
+	});
 
 	// =========================================================================
 	// UI
@@ -56,7 +66,7 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TFlatPageNode>> 
 
 			{/* Card Section */}
 			<AccordionSection title="Card" collapsibleClassName="px-0 space-y-3">
-				<ChildAutoLayoutStyleMixinEditor state={nodeState} />
+				{/* <ChildAutoLayoutStyleMixinEditor state={nodeState} />
 				<div className="h-px bg-neutral-200" />
 				<ChildAppearanceStyleMixinEditor state={nodeState} />
 				<div className="h-px bg-neutral-200" />
@@ -64,17 +74,17 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TFlatPageNode>> 
 				<div className="h-px bg-neutral-200" />
 				<ChildStrokeStyleMixinEditor state={nodeState} />
 				<div className="h-px bg-neutral-200" />
-				<ChildShadowStyleMixinEditor state={nodeState} />
+				<ChildShadowStyleMixinEditor state={nodeState} /> */}
 			</AccordionSection>
 
 			{/* Text Section */}
 			<AccordionSection title="Text" collapsibleClassName="px-0 space-y-3">
-				<ChildTextStyleMixinEditor state={nodeState} editor={editor} />
+				{/* <ChildTextStyleMixinEditor state={nodeState} editor={editor} /> */}
 			</AccordionSection>
 
 			{/* CTA Section */}
 			<AccordionSection title="Button" collapsibleClassName="px-0 space-y-3">
-				<ChildButtonStyleMixinEditor state={nodeState} editor={editor} />
+				{/* <ChildButtonStyleMixinEditor state={nodeState} editor={editor} /> */}
 			</AccordionSection>
 		</>
 	);

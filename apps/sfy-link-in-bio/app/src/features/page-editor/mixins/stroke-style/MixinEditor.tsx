@@ -1,6 +1,5 @@
 import { deepCopy } from '@blgc/utils';
 import {
-	isInherited,
 	isTokenRef,
 	tokenRef,
 	TStrokeStyleMixin,
@@ -43,10 +42,6 @@ export const StrokeStyleMixinEditor = <
 			if (isTokenRef(stroke)) {
 				return stroke;
 			}
-			// TODO: Remove once migrated to token references
-			if (isInherited(stroke)) {
-				throw new Error('Stroke style mixin is inherited');
-			}
 			return stroke?.color;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
@@ -54,7 +49,6 @@ export const StrokeStyleMixinEditor = <
 			if (
 				stroke != null &&
 				!isTokenRef(stroke) &&
-				!isInherited(stroke) &&
 				mappedValue != null &&
 				!isTokenRef(mappedValue)
 			) {
@@ -69,10 +63,6 @@ export const StrokeStyleMixinEditor = <
 			if (isTokenRef(stroke)) {
 				return stroke;
 			}
-			// TODO: Remove once migrated to token references
-			if (isInherited(stroke)) {
-				throw new Error('Stroke style mixin is inherited');
-			}
 			return stroke?.width;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
@@ -80,7 +70,6 @@ export const StrokeStyleMixinEditor = <
 			if (
 				stroke != null &&
 				!isTokenRef(stroke) &&
-				!isInherited(stroke) &&
 				mappedValue != null &&
 				!isTokenRef(mappedValue)
 			) {

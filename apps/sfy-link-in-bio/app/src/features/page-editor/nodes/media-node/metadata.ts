@@ -1,4 +1,4 @@
-import { inherit } from '@repo/editor';
+import { tokenRef } from '@repo/editor';
 import { LayoutSectionIcon } from '@/components';
 import { TNodeMetadata } from '../../lib';
 
@@ -10,17 +10,17 @@ export const mediaNodeMetadata: TNodeMetadata<'media'> = {
 	defaultData: {
 		content: {},
 		autoLayout: {
-			horizontalPadding: inherit(),
-			verticalPadding: inherit(),
-			verticalGap: inherit()
+			horizontalPadding: tokenRef(),
+			verticalPadding: tokenRef(),
+			verticalGap: tokenRef()
 		},
 		appearance: {
 			visible: true,
-			opacity: inherit(),
-			borderRadius: inherit()
+			opacity: tokenRef(),
+			borderRadius: tokenRef()
 		},
-		fill: inherit(),
-		stroke: inherit(),
-		shadow: inherit()
+		fill: tokenRef(),
+		stroke: tokenRef(),
+		shadow: tokenRef()
 	}
 };

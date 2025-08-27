@@ -1,7 +1,6 @@
 import { TMediaNode } from '@repo/editor';
-import { useCombinedCompute } from 'feature-react';
+import { useCompute } from 'feature-react';
 import React from 'react';
-import { logger } from '@/environment';
 import { EditorSiteResolveContext, TNodeProps } from '../../../lib';
 import { resolveMediaNode } from '../resolve-node';
 import { ResolvedMediaNode } from './ResolvedNode';
@@ -9,23 +8,16 @@ import { ResolvedMediaNode } from './ResolvedNode';
 export const MediaNode = React.forwardRef<HTMLDivElement, TNodeProps<TMediaNode>>((props, ref) => {
 	const { nodeState, editor, ...divProps } = props;
 
-	const node = useCombinedCompute(
-		[editor.getRootNode(), nodeState],
-		([{ value: pageNodeValue }, { value: nodeValue }]) => {
-			const result = resolveMediaNode(nodeValue, {
-				site: new EditorSiteResolveContext(editor),
-				childMixins: pageNodeValue?.childMixins
-			});
-			if (result.isErr()) {
-				editor.shopify.toast.show('Failed to resolve media node');
-				logger.warn('Failed to resolve media node', {
-					error: result.error
-				});
-				return null;
-			}
-			return result.value;
+	const node = useCompute(nodeState, ({ value }) => {
+		const result = resolveMediaNode(value, {
+			site: new EditorSiteResolveContext(editor)
+		});
+		if (result.isErr()) {
+			editor.shopify.toast.show('Failed to resolve media node');
+			return null;
 		}
-	);
+		return result.value;
+	});
 
 	if (node == null) {
 		return null;

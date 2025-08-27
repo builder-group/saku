@@ -17,6 +17,6 @@
 			}
 		]
 	},
-	"include": ["env.d.ts", "**/*.ts", "**/*.tsx", ".react-router/types/**/*"],
+	"include": ["env.d.ts", "**/*.ts", "**/*.tsx", ".react-router/types/**/*", "../../../__deprecated/MappedPaintInput.tsx", "../../../__deprecated/MappedToggleInput.tsx", "../../../__deprecated/MappedColorInput.tsx", "../../../__deprecated/MappedSelectInput.tsx", "../../../__deprecated/MappedTextInput.tsx"],
 	"exclude": ["node_modules"]
 }
