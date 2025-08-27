@@ -33,7 +33,17 @@ export const StrokeStyleMixinEditor = <
 	const { state, mapValue, applyValue, tokenSet, mapToken, editor } = props;
 
 	const isLinked = useCompute(state, ({ value }) => isTokenRef(mapValue(value)), [mapValue]);
-	const isSet = useCompute(state, ({ value }) => mapValue(value) != null, [mapValue]);
+	const isSet = useCompute(
+		state,
+		({ value }) => {
+			const stroke = mapValue(value);
+			if (isTokenRef(stroke)) {
+				return mapToken(tokenSet?._v?.[stroke.ref] as GTokenSet['value']) != null;
+			}
+			return stroke != null;
+		},
+		[mapValue]
+	);
 
 	const colorState = useMapState(state, {
 		map(baseValue) {
