@@ -460,7 +460,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 				key: 'default',
 				value: {
 					visible: true,
-					opacity: 0.98, // TODO: Set to 1
+					opacity: 1,
 					borderRadius
 				}
 			},
@@ -512,11 +512,11 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 				value: {
 					appearance: {
 						visible: true,
-						opacity: 0.87 // TODO: Set to 1
+						opacity: 1
 					},
 					typography: {
 						font: bodyFont.font,
-						fontSize: 24, // TODO: Set to 16
+						fontSize: 16,
 						textAlignHorizontal: 'center',
 						textAlignVertical: 'center',
 						lineHeight: { type: 'auto' },
