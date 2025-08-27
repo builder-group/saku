@@ -144,14 +144,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					opacity: tokenRef(),
 					borderRadius: tokenRef()
 				},
-				typography: {
-					font: inherit(),
-					fontSize: inherit(),
-					textAlignHorizontal: inherit(),
-					textAlignVertical: inherit(),
-					lineHeight: inherit(),
-					letterSpacing: inherit()
-				},
+				typography: tokenRef(),
 				fill: inherit(),
 				stroke: inherit(),
 				shadow: inherit()
@@ -170,14 +163,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 						visible: true,
 						opacity: tokenRef()
 					},
-					typography: {
-						font: inherit(),
-						fontSize: inherit(),
-						textAlignHorizontal: inherit(),
-						textAlignVertical: inherit(),
-						lineHeight: inherit(),
-						letterSpacing: inherit()
-					},
+					typography: tokenRef(),
 					fill: inherit(),
 					stroke: inherit(),
 					shadow: inherit()
@@ -255,12 +241,12 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 							opacity: tokenRef()
 						},
 						typography: {
-							font: inherit(),
-							fontSize: inherit(),
+							font: tokenRef(),
+							fontSize: tokenRef(),
 							textAlignHorizontal: 'center',
 							textAlignVertical: 'center',
-							lineHeight: inherit(),
-							letterSpacing: inherit()
+							lineHeight: tokenRef(),
+							letterSpacing: tokenRef()
 						},
 						fill: inherit(),
 						stroke: inherit(),
@@ -296,14 +282,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 							visible: true,
 							opacity: tokenRef()
 						},
-						typography: {
-							font: inherit(),
-							fontSize: inherit(),
-							textAlignHorizontal: inherit(),
-							textAlignVertical: inherit(),
-							lineHeight: inherit(),
-							letterSpacing: inherit()
-						},
+						typography: tokenRef(),
 						fill: inherit(),
 						stroke: inherit(),
 						shadow: inherit()
@@ -344,11 +323,11 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 								weight: 400,
 								style: 'normal'
 							},
-							fontSize: inherit(),
-							textAlignHorizontal: inherit(),
-							textAlignVertical: inherit(),
-							lineHeight: inherit(),
-							letterSpacing: inherit()
+							fontSize: tokenRef(),
+							textAlignHorizontal: tokenRef(),
+							textAlignVertical: tokenRef(),
+							lineHeight: tokenRef(),
+							letterSpacing: tokenRef()
 						},
 						fill: inherit(),
 						stroke: inherit(),
@@ -385,12 +364,12 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 							opacity: tokenRef()
 						},
 						typography: {
-							font: inherit(),
+							font: tokenRef(),
 							fontSize: 24,
-							textAlignHorizontal: inherit(),
-							textAlignVertical: inherit(),
-							lineHeight: inherit(),
-							letterSpacing: inherit()
+							textAlignHorizontal: tokenRef(),
+							textAlignVertical: tokenRef(),
+							lineHeight: tokenRef(),
+							letterSpacing: tokenRef()
 						},
 						fill: {
 							paint: {

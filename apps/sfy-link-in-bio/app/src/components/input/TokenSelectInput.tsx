@@ -1,17 +1,17 @@
 import { isTokenRef, tokenRef, TRef, TTokenSet } from '@repo/editor';
-import { Text, TextField, TextFieldProps } from '@shopify/polaris';
+import { Select, SelectProps, Text } from '@shopify/polaris';
 import { useCombinedCompute, useCompute, useFeatureState } from 'feature-react/state';
 import { createState, TState } from 'feature-state';
 import React from 'react';
 import { InheritanceActionOverlay, LinkIcon, LinkOffIcon } from '@/components';
 import { cn } from '@/lib';
 
-export const TokenTextInput = <
-	GValue extends string | number,
+export const TokenSelectInput = <
+	GValue extends string,
 	GRefValue extends TRef<GValue> | undefined,
 	GTokenSet extends TTokenSet
 >(
-	props: TTokenTextInputProps<GValue, GRefValue, GTokenSet>
+	props: TTokenSelectInputProps<GValue, GRefValue, GTokenSet>
 ) => {
 	const {
 		state,
@@ -22,12 +22,9 @@ export const TokenTextInput = <
 		onNavigateToToken,
 		disabledTokenLink = false,
 		label,
-		min,
-		max,
-		readOnly,
-		type,
+		disabled,
 		className,
-		...textProps
+		...selectProps
 	} = props;
 
 	const [displayValue, setDisplayValue] = React.useState<string>('');
@@ -61,29 +58,12 @@ export const TokenTextInput = <
 				return;
 			}
 
-			if (type === 'number') {
-				const num = Number(newValue);
-				if (isNaN(num)) {
-					setDisplayValue('');
-					return;
-				}
-
-				let clampedNum = num;
-				if (typeof min === 'number' && clampedNum < min) clampedNum = min;
-				if (typeof max === 'number' && clampedNum > max) clampedNum = max;
-				setDisplayValue(String(clampedNum));
-				state.set(
-					(mapToInternal != null ? mapToInternal(clampedNum as GValue) : clampedNum) as GRefValue
-				);
-				return;
-			}
-
 			setDisplayValue(newValue);
 			state.set(
 				(mapToInternal != null ? mapToInternal(newValue as GValue) : newValue) as GRefValue
 			);
 		},
-		[isLinked, type, state, min, max, mapToInternal]
+		[isLinked, state, mapToInternal]
 	);
 
 	const handleToggleTokenLink = React.useCallback(() => {
@@ -112,15 +92,13 @@ export const TokenTextInput = <
 	// =========================================================================
 
 	const InputComponent = (
-		<TextField
-			{...textProps}
-			type={type}
+		<Select
+			{...selectProps}
 			label={label}
 			labelHidden
 			value={displayValue}
 			onChange={handleChange}
-			readOnly={isLinked || readOnly}
-			{...(type === 'number' ? { min, max } : {})}
+			disabled={isLinked || disabled}
 		/>
 	);
 
@@ -155,11 +133,11 @@ export const TokenTextInput = <
 	);
 };
 
-export interface TTokenTextInputProps<
-	GValue extends string | number,
+export interface TTokenSelectInputProps<
+	GValue extends string,
 	GRefValue extends TRef<GValue> | undefined,
 	GTokenSet extends TTokenSet
-> extends Omit<TextFieldProps, 'value' | 'onChange' | 'label' | 'labelHidden'> {
+> extends Omit<SelectProps, 'value' | 'onChange' | 'label' | 'labelHidden'> {
 	state: TState<GRefValue, any>;
 	mapToDisplay?: (value: GValue) => GValue;
 	mapToInternal?: (displayValue: GValue) => GValue;

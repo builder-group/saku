@@ -35,7 +35,7 @@ export const TextStyleMixinEditor = <
 		<>
 			<AppearanceStyleMixinEditor state={flatState} editor={editor} />
 			<div className="h-px bg-neutral-200" />
-			<TypographyStyleMixinEditor state={flatState} parentState={flatParentState} editor={editor} />
+			<TypographyStyleMixinEditor state={flatState} editor={editor} />
 			<div className="h-px bg-neutral-200" />
 			<FillStyleMixinEditor
 				state={flatState}

@@ -1,16 +1,21 @@
-import { isTokenRef, TAppearanceStyleMixin, TMergeMixins } from '@repo/editor';
+import {
+	isTokenRef,
+	TAppearanceStyleMixin,
+	TAppearanceStyleToken,
+	TMergeMixins
+} from '@repo/editor';
 import { Button, Text } from '@shopify/polaris';
 import { useCompute } from 'feature-react';
 import { TState } from 'feature-state';
 import React from 'react';
 import { HideIcon, TokenTextInput, ViewIcon } from '@/components';
 import { useMapState } from '@/hooks';
-import { TPageEditor } from '../../lib';
+import { TPageEditor, TStateTokenSet } from '../../lib';
 
 export const AppearanceStyleMixinEditor = <GValue extends Record<string, any>>(
 	props: TAppearanceStyleMixinEditorProps<GValue>
 ) => {
-	const { state, editor } = props;
+	const { state, editor, tokenSet = editor.tokensMap.appearance } = props;
 
 	const hasBorderRadius = useCompute(state, ({ value }) => value.appearance.borderRadius != null);
 
@@ -52,6 +57,10 @@ export const AppearanceStyleMixinEditor = <GValue extends Record<string, any>>(
 		state._notify();
 	}, [state]);
 
+	const handleNavigateToToken = React.useCallback(() => {
+		editor.switchView('settings');
+	}, [editor]);
+
 	// =========================================================================
 	// UI
 	// =========================================================================
@@ -78,13 +87,11 @@ export const AppearanceStyleMixinEditor = <GValue extends Record<string, any>>(
 					max={100}
 					step={5}
 					state={opacityState}
-					tokenSet={editor.tokensMap.appearance}
-					mapToTokenValue={(tokenRef, tokenMap) => tokenMap?.[tokenRef]?.opacity}
+					tokenSet={tokenSet}
+					mapToTokenValue={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.opacity}
 					mapToDisplay={(value) => Math.round(value * 100)}
 					mapToInternal={(displayValue) => displayValue / 100}
-					onNavigateToToken={() => {
-						editor.switchView('settings');
-					}}
+					onNavigateToToken={handleNavigateToToken}
 				/>
 				{hasBorderRadius && (
 					<TokenTextInput
@@ -95,11 +102,9 @@ export const AppearanceStyleMixinEditor = <GValue extends Record<string, any>>(
 						max={999}
 						step={4}
 						state={borderRadiusState}
-						tokenSet={editor.tokensMap.appearance}
-						mapToTokenValue={(tokenRef, tokenMap) => tokenMap?.[tokenRef]?.borderRadius}
-						onNavigateToToken={() => {
-							editor.switchView('settings');
-						}}
+						tokenSet={tokenSet}
+						mapToTokenValue={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.borderRadius}
+						onNavigateToToken={handleNavigateToToken}
 					/>
 				)}
 			</div>
@@ -109,5 +114,6 @@ export const AppearanceStyleMixinEditor = <GValue extends Record<string, any>>(
 
 interface TAppearanceStyleMixinEditorProps<GValue extends Record<string, any>> {
 	state: TState<GValue & TMergeMixins<[TAppearanceStyleMixin]>, any>;
+	tokenSet?: TStateTokenSet<TAppearanceStyleToken>;
 	editor: TPageEditor;
 }

@@ -7,4 +7,5 @@ export * from './MappedPaintInput';
 export * from './MappedSelectInput';
 export * from './MappedTextInput';
 export * from './MappedToggleInput';
+export * from './TokenSelectInput';
 export * from './TokenTextInput';

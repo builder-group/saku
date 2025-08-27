@@ -178,15 +178,14 @@ export type TAppearanceStyleMixin = TBaseMixin<
 
 export type TTypographyStyleMixin = TBaseMixin<
 	'typography',
-	// TODO: Add back top level TRef once migrated to token references
-	{
+	TRef<{
 		font: TRef<TFont>;
 		fontSize: TRef<number>;
 		textAlignHorizontal: TRef<TTextAlign>;
 		textAlignVertical: TRef<TTextAlign>;
 		lineHeight: TRef<TLineHeight>;
 		letterSpacing: TRef<TLetterSpacing>;
-	}
+	}>
 >;
 
 export type TFillStyleMixin = TBaseMixin<
