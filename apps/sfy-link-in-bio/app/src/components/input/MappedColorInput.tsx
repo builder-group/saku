@@ -13,7 +13,8 @@ import { ColorPicker, HSBAColor, Popover, Text, TextField, TextFieldProps } from
 import { useCombinedCompute } from 'feature-react/state';
 import { createState, TState } from 'feature-state';
 import React from 'react';
-import { InheritanceActionOverlay, LinkIcon, LinkOffIcon } from '@/components';
+import { LinkIcon, LinkOffIcon } from '@/components';
+import { TokenActionOverlay } from '@/features/page-editor';
 import { cn } from '@/lib';
 
 export const MappedColorInput = <GStateValue, GParentStateValue>(
@@ -211,10 +212,10 @@ export const MappedColorInput = <GStateValue, GParentStateValue>(
 			<div className="group relative">
 				{InputComponent}
 				{isValueInherited && (
-					<InheritanceActionOverlay
+					<TokenActionOverlay
 						variant={'full-overlay'}
 						onUnlink={handleToggleInheritance}
-						onNavigateToParent={onNavigateToParent}
+						onNavigateToToken={onNavigateToParent}
 					/>
 				)}
 			</div>

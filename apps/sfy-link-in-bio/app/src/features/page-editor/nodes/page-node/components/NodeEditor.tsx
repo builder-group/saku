@@ -42,7 +42,16 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TFlatPageNode>> 
 					editor={editor}
 				/>
 				<div className="h-px bg-neutral-200" />
-				<FillStyleMixinEditor state={nodeState} editor={editor} />
+				<FillStyleMixinEditor
+					state={nodeState}
+					mapValue={(value) => value.fill}
+					applyValue={(state, value) => {
+						state._v.fill = value;
+					}}
+					tokenSet={editor.tokensMap.fill}
+					mapToken={(token) => token}
+					editor={editor}
+				/>
 			</AccordionSection>
 
 			{/* Card Section */}
