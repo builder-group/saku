@@ -1,116 +1,169 @@
 import { deepCopy } from '@blgc/utils';
 import {
-	inherit,
 	isInherited,
-	resolveReference,
-	TMergeMixins,
-	TRgba,
+	isTokenRef,
+	tokenRef,
 	TShadowStyleMixin,
-	TUnreference
+	TShadowStyleToken,
+	TTokenSet
 } from '@repo/editor';
 import { Button, Text } from '@shopify/polaris';
-import { useCombinedCompute, useCompute } from 'feature-react';
-import { createState, TState } from 'feature-state';
+import { useCompute } from 'feature-react';
+import { TState } from 'feature-state';
 import React from 'react';
-import {
-	Badge,
-	InheritanceActionOverlay,
-	LinkIcon,
-	LinkOffIcon,
-	MappedColorInput,
-	MappedTextInput,
-	MinusIcon,
-	PlusIcon
-} from '@/components';
-import { useMapStateReference } from '../../hooks';
+import { Badge, LinkIcon, LinkOffIcon, MinusIcon, PlusIcon } from '@/components';
+import { useMapState } from '@/hooks';
+import { TokenActionOverlay, TokenColorInput, TokenTextInput } from '../../components';
 import { TPageEditor } from '../../lib';
 
 export const ShadowStyleMixinEditor = <
 	GValue extends Record<string, any>,
-	GParentValue extends Record<string, any>
+	GTokenSet extends TTokenSet
 >(
-	props: TShadowStyleMixinEditorProps<GValue, GParentValue>
+	props: TShadowStyleMixinEditorProps<GValue, GTokenSet>
 ) => {
-	const { state, parentState, editor, disabledSpread = false } = props;
+	const { state, mapValue, applyValue, tokenSet, mapToken, editor, disabledSpread = false } = props;
 
-	const resolvedShadow = useCombinedCompute(
-		[state, parentState ?? createState(undefined)],
-		([{ value }, { value: parentValue }]) => {
-			return resolveReference(value.shadow, parentValue?.childMixins?.shadow);
-		}
+	const isLinked = useCompute(state, ({ value }) => isTokenRef(mapValue(value)), [mapValue]);
+	const isSet = useCompute(
+		state,
+		({ value }) => {
+			const shadow = mapValue(value);
+			if (isTokenRef(shadow)) {
+				return mapToken(tokenSet?._v?.[shadow.ref] as GTokenSet['value']) != null;
+			}
+			return shadow != null;
+		},
+		[mapValue]
 	);
 
-	const isInheritedShadow = useCompute(state, ({ value }) => {
-		return isInherited(value.shadow);
-	});
-
-	const colorState = useMapStateReference(state, {
-		getTopLevelReference: (value) => value.shadow,
-		getPropertyReference: (value) => value?.color,
-		setProperty: (value, notifyOptions) => {
-			if (state._v.shadow != null && !isInherited(state._v.shadow)) {
-				(
-					state._v.shadow as {
-						color: TRgba;
-					}
-				).color = value;
-				state._notify(notifyOptions);
+	const colorState = useMapState(state, {
+		map(baseValue) {
+			const shadow = mapValue(baseValue);
+			if (isTokenRef(shadow)) {
+				return shadow;
+			}
+			// TODO: Remove once migrated to token references
+			if (isInherited(shadow)) {
+				throw new Error('Shadow style mixin is inherited');
+			}
+			return shadow?.color;
+		},
+		sync(baseState, mappedValue, notifyOptions) {
+			const shadow = mapValue(baseState._v);
+			if (
+				shadow != null &&
+				!isTokenRef(shadow) &&
+				!isInherited(shadow) &&
+				mappedValue != null &&
+				!isTokenRef(mappedValue)
+			) {
+				shadow.color = mappedValue;
+				baseState._notify(notifyOptions);
 			}
 		}
 	});
-	const blurState = useMapStateReference(state, {
-		getTopLevelReference: (value) => value.shadow,
-		getPropertyReference: (value) => value?.blur,
-		setProperty: (value, notifyOptions) => {
-			if (state._v.shadow != null && !isInherited(state._v.shadow)) {
-				(
-					state._v.shadow as {
-						blur: number;
-					}
-				).blur = value;
-				state._notify(notifyOptions);
+	const blurState = useMapState(state, {
+		map(baseValue) {
+			const shadow = mapValue(baseValue);
+			if (isTokenRef(shadow)) {
+				return shadow;
+			}
+			// TODO: Remove once migrated to token references
+			if (isInherited(shadow)) {
+				throw new Error('Shadow style mixin is inherited');
+			}
+			return shadow?.blur;
+		},
+		sync(baseState, mappedValue, notifyOptions) {
+			const shadow = mapValue(baseState._v);
+			if (
+				shadow != null &&
+				!isTokenRef(shadow) &&
+				!isInherited(shadow) &&
+				mappedValue != null &&
+				!isTokenRef(mappedValue)
+			) {
+				shadow.blur = mappedValue;
+				baseState._notify(notifyOptions);
 			}
 		}
 	});
-	const spreadState = useMapStateReference(state, {
-		getTopLevelReference: (value) => value.shadow,
-		getPropertyReference: (value) => value?.spread,
-		setProperty: (value, notifyOptions) => {
-			if (state._v.shadow != null && !isInherited(state._v.shadow)) {
-				(
-					state._v.shadow as {
-						spread: number;
-					}
-				).spread = value;
-				state._notify(notifyOptions);
+	const spreadState = useMapState(state, {
+		map(baseValue) {
+			const shadow = mapValue(baseValue);
+			if (isTokenRef(shadow)) {
+				return shadow;
+			}
+			// TODO: Remove once migrated to token references
+			if (isInherited(shadow)) {
+				throw new Error('Shadow style mixin is inherited');
+			}
+			return shadow?.spread;
+		},
+		sync(baseState, mappedValue, notifyOptions) {
+			const shadow = mapValue(baseState._v);
+			if (
+				shadow != null &&
+				!isTokenRef(shadow) &&
+				!isInherited(shadow) &&
+				mappedValue != null &&
+				!isTokenRef(mappedValue)
+			) {
+				shadow.spread = mappedValue;
+				baseState._notify(notifyOptions);
 			}
 		}
 	});
-	const offsetXState = useMapStateReference(state, {
-		getTopLevelReference: (value) => value.shadow,
-		getPropertyReference: (value) => value?.offsetX,
-		setProperty: (value, notifyOptions) => {
-			if (state._v.shadow != null && !isInherited(state._v.shadow)) {
-				(
-					state._v.shadow as {
-						offsetX: number;
-					}
-				).offsetX = value;
-				state._notify(notifyOptions);
+	const offsetXState = useMapState(state, {
+		map(baseValue) {
+			const shadow = mapValue(baseValue);
+			if (isTokenRef(shadow)) {
+				return shadow;
+			}
+			// TODO: Remove once migrated to token references
+			if (isInherited(shadow)) {
+				throw new Error('Shadow style mixin is inherited');
+			}
+			return shadow?.offsetX;
+		},
+		sync(baseState, mappedValue, notifyOptions) {
+			const shadow = mapValue(baseState._v);
+			if (
+				shadow != null &&
+				!isTokenRef(shadow) &&
+				!isInherited(shadow) &&
+				mappedValue != null &&
+				!isTokenRef(mappedValue)
+			) {
+				shadow.offsetX = mappedValue;
+				baseState._notify(notifyOptions);
 			}
 		}
 	});
-	const offsetYState = useMapStateReference(state, {
-		getTopLevelReference: (value) => value.shadow,
-		getPropertyReference: (value) => value?.offsetY,
-		setProperty: (value, notifyOptions) => {
-			if (state._v.shadow != null && !isInherited(state._v.shadow)) {
-				(
-					state._v.shadow as {
-						offsetY: number;
-					}
-				).offsetY = value;
-				state._notify(notifyOptions);
+	const offsetYState = useMapState(state, {
+		map(baseValue) {
+			const shadow = mapValue(baseValue);
+			if (isTokenRef(shadow)) {
+				return shadow;
+			}
+			// TODO: Remove once migrated to token references
+			if (isInherited(shadow)) {
+				throw new Error('Shadow style mixin is inherited');
+			}
+			return shadow?.offsetY;
+		},
+		sync(baseState, mappedValue, notifyOptions) {
+			const shadow = mapValue(baseState._v);
+			if (
+				shadow != null &&
+				!isTokenRef(shadow) &&
+				!isInherited(shadow) &&
+				mappedValue != null &&
+				!isTokenRef(mappedValue)
+			) {
+				shadow.offsetY = mappedValue;
+				baseState._notify(notifyOptions);
 			}
 		}
 	});
@@ -120,28 +173,44 @@ export const ShadowStyleMixinEditor = <
 	// =========================================================================
 
 	const handleAddShadow = React.useCallback(() => {
-		const parentShadow = parentState?._v.childMixins?.shadow;
-		state._v.shadow = parentShadow ?? {
-			color: { r: 0, g: 0, b: 0, a: 0.1 },
-			offsetX: 0,
-			offsetY: 4,
-			blur: 6,
-			spread: disabledSpread ? 0 : -1
-		};
+		const tokenValue = mapToken(tokenSet?._v?.['default'] as GTokenSet['value']);
+		applyValue(
+			state,
+			tokenValue ?? {
+				color: { r: 0, g: 0, b: 0, a: 0.1 },
+				offsetX: 0,
+				offsetY: 4,
+				blur: 6,
+				spread: disabledSpread ? 0 : -1
+			}
+		);
 		state._notify();
-	}, [state, parentState, disabledSpread]);
+	}, [mapToken, tokenSet, applyValue, state, disabledSpread]);
 
 	const handleRemoveShadow = React.useCallback(() => {
-		state._v.shadow = null;
+		applyValue(state, null);
 		state._notify();
-	}, [state]);
+	}, [state, applyValue]);
 
-	const handleToggleInheritance = React.useCallback(() => {
-		state._v.shadow = isInheritedShadow
-			? (deepCopy(parentState?._v.childMixins?.shadow) ?? null)
-			: inherit();
-		state._notify();
-	}, [isInheritedShadow, parentState, state]);
+	const handleToggleTokenLink = React.useCallback(() => {
+		if (isLinked) {
+			const shadow = mapValue(state._v);
+			const tokenValue = isTokenRef(shadow)
+				? mapToken(tokenSet?._v?.[shadow.ref] as GTokenSet['value'])
+				: undefined;
+			if (tokenValue !== undefined) {
+				applyValue(state, deepCopy(tokenValue));
+				state._notify();
+			}
+		} else {
+			applyValue(state, tokenRef('default'));
+			state._notify();
+		}
+	}, [isLinked, mapValue, state, mapToken, tokenSet, applyValue]);
+
+	const handleNavigateToToken = React.useCallback(() => {
+		editor.switchView('settings');
+	}, [editor]);
 
 	// =========================================================================
 	// UI
@@ -152,32 +221,30 @@ export const ShadowStyleMixinEditor = <
 			<div className="flex items-center justify-between">
 				<div className="flex items-center gap-2">
 					{/* Mixin-level inheritance button */}
-					{parentState != null && (
-						<button
-							type="button"
-							onClick={handleToggleInheritance}
-							className="flex cursor-pointer items-center justify-center opacity-60 transition-opacity hover:opacity-100"
-							title={isInheritedShadow ? 'Unlink from parent' : 'Link to parent'}
-						>
-							{isInheritedShadow ? (
-								<LinkOffIcon className="h-3.5 w-3.5" />
-							) : (
-								<LinkIcon className="h-3.5 w-3.5" />
-							)}
-						</button>
-					)}
+					<button
+						type="button"
+						onClick={handleToggleTokenLink}
+						className="flex cursor-pointer items-center justify-center opacity-60 transition-opacity hover:opacity-100"
+						title={isLinked ? 'Unlink' : 'Link'}
+					>
+						{isLinked ? (
+							<LinkOffIcon className="h-3.5 w-3.5" />
+						) : (
+							<LinkIcon className="h-3.5 w-3.5" />
+						)}
+					</button>
 
 					<div className="flex items-center gap-2">
 						<Text as="span" variant="headingXs" tone="subdued">
 							Shadow
 						</Text>
-						{isInheritedShadow && (
+						{isLinked && (
 							<Badge className="group relative hover:w-32">
-								Inherited
-								<InheritanceActionOverlay
+								Linked
+								<TokenActionOverlay
 									variant={'full-overlay'}
-									onUnlink={handleToggleInheritance}
-									onNavigateToParent={() => editor.switchView('settings')}
+									onUnlink={handleToggleTokenLink}
+									onNavigateToToken={handleNavigateToToken}
 								/>
 							</Badge>
 						)}
@@ -185,35 +252,30 @@ export const ShadowStyleMixinEditor = <
 				</div>
 
 				{/* Add/Remove shadow buttons */}
-				{resolvedShadow != null ? (
+				{isSet ? (
 					<Button icon={MinusIcon} onClick={handleRemoveShadow} variant="plain" size="micro" />
 				) : (
 					<Button icon={PlusIcon} onClick={handleAddShadow} variant="plain" size="micro" />
 				)}
 			</div>
 
-			{resolvedShadow != null && (
+			{isSet && (
 				<div className="space-y-3">
-					<MappedColorInput
+					<TokenColorInput
 						label="Color"
-						autoComplete="off"
 						state={colorState}
-						parentState={parentState}
-						mapValue={(value) => value}
-						onValueChange={(value) => {
-							colorState.set(value);
+						tokenSet={tokenSet}
+						mapToTokenValue={(tokenRef, tokenSet) =>
+							mapToken(tokenSet?.[tokenRef] as GTokenSet['value'])?.color
+						}
+						onLinkChange={() => {
+							handleToggleTokenLink();
+							return { preventDefault: true };
 						}}
-						mapParentValue={(parent) => parent.childMixins?.shadow?.color}
-						onInheritChange={() => {
-							handleToggleInheritance();
-						}}
-						onNavigateToParent={() => {
-							editor.switchView('settings');
-						}}
-						disableFieldInheritance
+						onNavigateToToken={handleNavigateToToken}
 					/>
 					<div className="grid grid-cols-2 gap-3">
-						<MappedTextInput
+						<TokenTextInput
 							label="Blur"
 							type="number"
 							autoComplete="off"
@@ -221,21 +283,19 @@ export const ShadowStyleMixinEditor = <
 							max={96}
 							step={4}
 							state={blurState}
-							parentState={parentState}
-							mapValue={(value) => value}
-							onValueChange={(value) => {
-								blurState.set(value);
+							tokenSet={tokenSet}
+							mapToTokenValue={(tokenRef, tokenSet) =>
+								mapToken(tokenSet?.[tokenRef] as GTokenSet['value'])?.blur
+							}
+							mapToDisplay={(value) => value}
+							mapToInternal={(displayValue) => displayValue}
+							onLinkChange={() => {
+								handleToggleTokenLink();
+								return { preventDefault: true };
 							}}
-							mapParentValue={(parent) => parent.childMixins?.shadow?.blur}
-							onInheritChange={() => {
-								handleToggleInheritance();
-							}}
-							onNavigateToParent={() => {
-								editor.switchView('settings');
-							}}
-							disableFieldInheritance
+							onNavigateToToken={handleNavigateToToken}
 						/>
-						<MappedTextInput
+						<TokenTextInput
 							label="Spread"
 							type="number"
 							autoComplete="off"
@@ -243,24 +303,22 @@ export const ShadowStyleMixinEditor = <
 							max={48}
 							step={4}
 							state={spreadState}
-							parentState={parentState}
-							mapValue={(value) => value}
-							onValueChange={(value) => {
-								spreadState.set(value);
+							tokenSet={tokenSet}
+							mapToTokenValue={(tokenRef, tokenSet) =>
+								mapToken(tokenSet?.[tokenRef] as GTokenSet['value'])?.spread
+							}
+							mapToDisplay={(value) => value}
+							mapToInternal={(displayValue) => displayValue}
+							onLinkChange={() => {
+								handleToggleTokenLink();
+								return { preventDefault: true };
 							}}
-							mapParentValue={(parent) => parent.childMixins?.shadow?.spread}
-							onInheritChange={() => {
-								handleToggleInheritance();
-							}}
-							onNavigateToParent={() => {
-								editor.switchView('settings');
-							}}
-							disableFieldInheritance
+							onNavigateToToken={handleNavigateToToken}
 							disabled={disabledSpread}
 						/>
 					</div>
 					<div className="grid grid-cols-2 gap-3">
-						<MappedTextInput
+						<TokenTextInput
 							label="Offset X"
 							type="number"
 							autoComplete="off"
@@ -268,21 +326,19 @@ export const ShadowStyleMixinEditor = <
 							max={96}
 							step={4}
 							state={offsetXState}
-							parentState={parentState}
-							mapValue={(value) => value}
-							onValueChange={(value) => {
-								offsetXState.set(value);
+							tokenSet={tokenSet}
+							mapToTokenValue={(tokenRef, tokenSet) =>
+								mapToken(tokenSet?.[tokenRef] as GTokenSet['value'])?.offsetX
+							}
+							mapToDisplay={(value) => value}
+							mapToInternal={(displayValue) => displayValue}
+							onLinkChange={() => {
+								handleToggleTokenLink();
+								return { preventDefault: true };
 							}}
-							mapParentValue={(parent) => parent.childMixins?.shadow?.offsetX}
-							onInheritChange={() => {
-								handleToggleInheritance();
-							}}
-							onNavigateToParent={() => {
-								editor.switchView('settings');
-							}}
-							disableFieldInheritance
+							onNavigateToToken={handleNavigateToToken}
 						/>
-						<MappedTextInput
+						<TokenTextInput
 							label="Offset Y"
 							type="number"
 							autoComplete="off"
@@ -290,19 +346,17 @@ export const ShadowStyleMixinEditor = <
 							max={96}
 							step={4}
 							state={offsetYState}
-							parentState={parentState}
-							mapValue={(value) => value}
-							onValueChange={(value) => {
-								offsetYState.set(value);
+							tokenSet={tokenSet}
+							mapToTokenValue={(tokenRef, tokenSet) =>
+								mapToken(tokenSet?.[tokenRef] as GTokenSet['value'])?.offsetY
+							}
+							mapToDisplay={(value) => value}
+							mapToInternal={(displayValue) => displayValue}
+							onLinkChange={() => {
+								handleToggleTokenLink();
+								return { preventDefault: true };
 							}}
-							mapParentValue={(parent) => parent.childMixins?.shadow?.offsetY}
-							onInheritChange={() => {
-								handleToggleInheritance();
-							}}
-							onNavigateToParent={() => {
-								editor.switchView('settings');
-							}}
-							disableFieldInheritance
+							onNavigateToToken={handleNavigateToToken}
 						/>
 					</div>
 				</div>
@@ -313,15 +367,13 @@ export const ShadowStyleMixinEditor = <
 
 interface TShadowStyleMixinEditorProps<
 	GValue extends Record<string, any>,
-	GParentValue extends Record<string, any>
+	GTokenSet extends TTokenSet
 > {
-	state: TState<GValue & TMergeMixins<[TShadowStyleMixin]>, any>;
-	parentState?: TState<
-		GParentValue & {
-			childMixins: TMergeMixins<[TUnreference<TShadowStyleMixin>]>;
-		},
-		any
-	>;
+	state: TState<GValue, any>;
+	mapValue: (value: GValue) => TShadowStyleMixin['value'];
+	applyValue: (state: TState<GValue, any>, value: TShadowStyleMixin['value']) => void;
+	tokenSet?: TState<GTokenSet, any>;
+	mapToken: (token?: GTokenSet['value']) => TShadowStyleToken['value'] | undefined;
 	editor: TPageEditor;
 	disabledSpread?: boolean;
 }

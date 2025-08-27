@@ -1,6 +1,5 @@
-import { TMergeMixins, TTextStyleMixin, TUnreference } from '@repo/editor';
+import { TMergeMixins, TTextStyleMixin } from '@repo/editor';
 import { TState } from 'feature-state';
-import { useMapState } from '@/hooks';
 import { TPageEditor } from '../../lib';
 import { AppearanceStyleMixinEditor } from '../appearance-style';
 import { FillStyleMixinEditor } from '../fill-style';
@@ -8,28 +7,10 @@ import { ShadowStyleMixinEditor } from '../shadow-style';
 import { StrokeStyleMixinEditor } from '../stroke-style';
 import { TypographyStyleMixinEditor } from '../typography-style';
 
-export const TextStyleMixinEditor = <
-	GValue extends Record<string, any>,
-	GParentValue extends Record<string, any>
->(
-	props: TTextStyleMixinEditorProps<GValue, GParentValue>
+export const TextStyleMixinEditor = <GValue extends Record<string, any>>(
+	props: TTextStyleMixinEditorProps<GValue>
 ) => {
-	const { state, parentState, editor } = props;
-
-	const flatState = useMapState(state, {
-		map: (parent) => parent.text,
-		sync: (parent, child, notifyOptions) => {
-			parent._v.text = child;
-			parent._notify(notifyOptions);
-		}
-	});
-	const flatParentState = useMapState(parentState, {
-		map: (parent) => ({ childMixins: parent.childMixins.text }),
-		sync: (parent, child, notifyOptions) => {
-			parent._v.childMixins.text = child.childMixins;
-			parent._notify(notifyOptions);
-		}
-	});
+	const { state, editor } = props;
 
 	return (
 		<>
@@ -50,8 +31,13 @@ export const TextStyleMixinEditor = <
 			/>
 			<div className="h-px bg-neutral-200" />
 			<FillStyleMixinEditor
-				state={flatState}
-				parentState={flatParentState}
+				state={state}
+				mapValue={(value) => value.text.fill}
+				applyValue={(state, value) => {
+					state._v.text.fill = value;
+				}}
+				tokenSet={editor.tokensMap.text}
+				mapToken={(token) => token?.fill}
 				editor={editor}
 				allowedPaintTypes={['solid']}
 			/>
@@ -68,8 +54,13 @@ export const TextStyleMixinEditor = <
 			/>
 			<div className="h-px bg-neutral-200" />
 			<ShadowStyleMixinEditor
-				state={flatState}
-				parentState={flatParentState}
+				state={state}
+				mapValue={(value) => value.text.shadow}
+				applyValue={(state, value) => {
+					state._v.text.shadow = value;
+				}}
+				tokenSet={editor.tokensMap.text}
+				mapToken={(token) => token?.shadow}
 				editor={editor}
 				disabledSpread
 			/>
@@ -77,16 +68,7 @@ export const TextStyleMixinEditor = <
 	);
 };
 
-interface TTextStyleMixinEditorProps<
-	GValue extends Record<string, any>,
-	GParentValue extends Record<string, any>
-> {
+interface TTextStyleMixinEditorProps<GValue extends Record<string, any>> {
 	state: TState<GValue & TMergeMixins<[TTextStyleMixin]>, any>;
-	parentState?: TState<
-		GParentValue & {
-			childMixins: TMergeMixins<[TUnreference<TTextStyleMixin>]>;
-		},
-		any
-	>;
 	editor: TPageEditor;
 }

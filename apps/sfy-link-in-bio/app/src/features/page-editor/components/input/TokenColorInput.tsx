@@ -14,8 +14,9 @@ import { ColorPicker, HSBAColor, Popover, Text, TextField, TextFieldProps } from
 import { useCombinedCompute, useCompute } from 'feature-react/state';
 import { createState, TState } from 'feature-state';
 import React from 'react';
-import { InheritanceActionOverlay, LinkIcon, LinkOffIcon } from '@/components';
+import { LinkIcon, LinkOffIcon } from '@/components';
 import { cn } from '@/lib';
+import { TokenActionOverlay } from './TokenActionOverlay';
 
 export const TokenColorInput = <
 	GValue extends TRgba,
@@ -32,11 +33,12 @@ export const TokenColorInput = <
 		onNavigateToToken,
 		disabledTokenLink = false,
 		label,
+		readOnly,
 		className,
 		...textFieldProps
 	} = props;
 
-	const [popoverActive, setPopoverActive] = React.useState(false);
+	const [isPopoverActive, setIsPopoverActive] = React.useState(false);
 
 	const [displayValue, setDisplayValue] = React.useState('');
 	const lastChangeFromText = React.useRef(false);
@@ -47,7 +49,7 @@ export const TokenColorInput = <
 				? mapToTokenValue(stateValue.ref, tokenMapValue)
 				: (stateValue as GValue);
 		},
-		[],
+		[mapToTokenValue],
 		{
 			isEqual(a, b) {
 				return a?.r === b?.r && a?.g === b?.g && a?.b === b?.b && a?.a === b?.a;
@@ -135,17 +137,17 @@ export const TokenColorInput = <
 		} else {
 			state.set(tokenRef('default') as GRefValue);
 		}
-	}, [onLinkChange, isLinked, state, mapToTokenValue, tokenSet?._v]);
+	}, [onLinkChange, isLinked, state, mapToTokenValue, tokenSet]);
 
 	const togglePopoverActive = React.useCallback(() => {
 		if (!isLinked) {
-			setPopoverActive((active) => !active);
+			setIsPopoverActive((active) => !active);
 		}
 	}, [isLinked]);
 
 	const handleFocus = React.useCallback(() => {
 		if (!isLinked) {
-			setPopoverActive(true);
+			setIsPopoverActive(true);
 		}
 	}, [isLinked]);
 
@@ -166,7 +168,7 @@ export const TokenColorInput = <
 
 	const InputComponent = (
 		<Popover
-			active={popoverActive}
+			active={isPopoverActive}
 			activator={
 				<div className="relative">
 					<TextField
@@ -176,14 +178,14 @@ export const TokenColorInput = <
 						value={displayValue}
 						onChange={handleTextChange}
 						onFocus={handleFocus}
-						readOnly={isLinked}
+						readOnly={isLinked || readOnly}
 						prefix={
 							<button
 								type="button"
 								onClick={togglePopoverActive}
 								className={cn(
 									'-ml-1 flex h-5 w-5 items-center justify-center rounded-full border border-neutral-200',
-									!isLinked ? 'cursor-pointer' : 'cursor-default'
+									isLinked ? 'cursor-default' : 'cursor-pointer'
 								)}
 								style={{ backgroundColor: rgbaToHex(resolvedValue ?? { r: 0, g: 0, b: 0, a: 1 }) }}
 							/>
@@ -223,10 +225,10 @@ export const TokenColorInput = <
 			<div className="group relative">
 				{InputComponent}
 				{isLinked && !disabledTokenLink && (
-					<InheritanceActionOverlay
+					<TokenActionOverlay
 						variant={'full-overlay'}
 						onUnlink={handleToggleTokenLink}
-						onNavigateToParent={onNavigateToToken}
+						onNavigateToToken={onNavigateToToken}
 					/>
 				)}
 			</div>
@@ -240,7 +242,7 @@ export interface TTokenColorInputProps<
 	GTokenSet extends TTokenSet
 > extends Omit<
 		TextFieldProps,
-		'value' | 'onChange' | 'label' | 'labelHidden' | 'prefix' | 'error'
+		'label' | 'labelHidden' | 'value' | 'onChange' | 'onFocus' | 'prefix' | 'autoComplete' | 'error'
 	> {
 	state: TState<GRefValue, any>;
 

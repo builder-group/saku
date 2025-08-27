@@ -3,8 +3,9 @@ import { Select, SelectProps, Text } from '@shopify/polaris';
 import { useCombinedCompute, useCompute } from 'feature-react/state';
 import { createState, TState } from 'feature-state';
 import React from 'react';
-import { InheritanceActionOverlay, LinkIcon, LinkOffIcon } from '@/components';
+import { LinkIcon, LinkOffIcon } from '@/components';
 import { cn } from '@/lib';
+import { TokenActionOverlay } from './TokenActionOverlay';
 
 export const TokenSelectInput = <
 	GValue extends string,
@@ -33,7 +34,8 @@ export const TokenSelectInput = <
 			return isTokenRef(stateValue)
 				? mapToTokenValue(stateValue.ref, tokenMapValue)
 				: (stateValue as GValue);
-		}
+		},
+		[mapToTokenValue]
 	);
 	const isLinked = useCompute(state, ({ value }) => isTokenRef(value));
 
@@ -74,7 +76,7 @@ export const TokenSelectInput = <
 		} else {
 			state.set(tokenRef('default') as GRefValue);
 		}
-	}, [onLinkChange, isLinked, state, mapToTokenValue, tokenSet?._v]);
+	}, [onLinkChange, isLinked, state, mapToTokenValue, tokenSet]);
 
 	// =========================================================================
 	// Effects
@@ -121,10 +123,10 @@ export const TokenSelectInput = <
 			<div className="group relative">
 				{InputComponent}
 				{isLinked && !disabledTokenLink && (
-					<InheritanceActionOverlay
+					<TokenActionOverlay
 						variant={'full-overlay'}
 						onUnlink={handleToggleTokenLink}
-						onNavigateToParent={onNavigateToToken}
+						onNavigateToToken={onNavigateToToken}
 					/>
 				)}
 			</div>
@@ -136,7 +138,7 @@ export interface TTokenSelectInputProps<
 	GValue extends string,
 	GRefValue extends TRef<GValue> | undefined,
 	GTokenSet extends TTokenSet
-> extends Omit<SelectProps, 'value' | 'onChange' | 'label' | 'labelHidden'> {
+> extends Omit<SelectProps, 'label' | 'labelHidden' | 'value' | 'onChange'> {
 	state: TState<GRefValue, any>;
 
 	tokenSet?: TState<GTokenSet, any>;

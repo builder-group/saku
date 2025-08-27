@@ -11,8 +11,8 @@ import {
 import { Text } from '@shopify/polaris';
 import { TState } from 'feature-state';
 import React from 'react';
-import { TokenSelectInput, TokenTextInput } from '@/components';
 import { useMapState } from '@/hooks';
+import { TokenSelectInput, TokenTextInput } from '../../components';
 import { TPageEditor } from '../../lib';
 
 export const TypographyStyleMixinEditor = <

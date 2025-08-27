@@ -11,17 +11,9 @@ import { Button, Text } from '@shopify/polaris';
 import { useCompute } from 'feature-react';
 import { TState } from 'feature-state';
 import React from 'react';
-import {
-	Badge,
-	InheritanceActionOverlay,
-	LinkIcon,
-	LinkOffIcon,
-	MinusIcon,
-	PlusIcon,
-	TokenColorInput,
-	TokenTextInput
-} from '@/components';
+import { Badge, LinkIcon, LinkOffIcon, MinusIcon, PlusIcon } from '@/components';
 import { useMapState } from '@/hooks';
+import { TokenActionOverlay, TokenColorInput, TokenTextInput } from '../../components';
 import { TPageEditor } from '../../lib';
 
 export const StrokeStyleMixinEditor = <
@@ -133,7 +125,7 @@ export const StrokeStyleMixinEditor = <
 			applyValue(state, tokenRef('default'));
 			state._notify();
 		}
-	}, [isLinked, mapValue, state, mapToken, tokenSet?._v, applyValue]);
+	}, [isLinked, mapValue, state, mapToken, tokenSet, applyValue]);
 
 	const handleNavigateToToken = React.useCallback(() => {
 		editor.switchView('settings');
@@ -167,11 +159,11 @@ export const StrokeStyleMixinEditor = <
 						</Text>
 						{isLinked && (
 							<Badge className="group relative hover:w-32">
-								Inherited
-								<InheritanceActionOverlay
+								Linked
+								<TokenActionOverlay
 									variant={'full-overlay'}
 									onUnlink={handleToggleTokenLink}
-									onNavigateToParent={() => editor.switchView('settings')}
+									onNavigateToToken={handleNavigateToToken}
 								/>
 							</Badge>
 						)}
@@ -190,7 +182,6 @@ export const StrokeStyleMixinEditor = <
 				<div className="grid grid-cols-2 gap-3">
 					<TokenColorInput
 						label="Color"
-						autoComplete="off"
 						state={colorState}
 						tokenSet={tokenSet}
 						mapToTokenValue={(tokenRef, tokenSet) =>

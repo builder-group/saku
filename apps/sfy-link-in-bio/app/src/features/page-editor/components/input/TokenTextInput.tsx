@@ -3,8 +3,9 @@ import { Text, TextField, TextFieldProps } from '@shopify/polaris';
 import { useCombinedCompute, useCompute } from 'feature-react/state';
 import { createState, TState } from 'feature-state';
 import React from 'react';
-import { InheritanceActionOverlay, LinkIcon, LinkOffIcon } from '@/components';
+import { LinkIcon, LinkOffIcon } from '@/components';
 import { cn } from '@/lib';
+import { TokenActionOverlay } from './TokenActionOverlay';
 
 export const TokenTextInput = <
 	GValue extends string | number,
@@ -42,7 +43,8 @@ export const TokenTextInput = <
 				return undefined;
 			}
 			return mapToDisplay != null ? mapToDisplay(rawValue) : rawValue;
-		}
+		},
+		[mapToDisplay, mapToTokenValue]
 	);
 	const isLinked = useCompute(state, ({ value }) => isTokenRef(value));
 
@@ -109,7 +111,7 @@ export const TokenTextInput = <
 		} else {
 			state.set(tokenRef('default') as GRefValue);
 		}
-	}, [onLinkChange, isLinked, state, mapToTokenValue, tokenSet?._v]);
+	}, [onLinkChange, isLinked, state, mapToTokenValue, tokenSet]);
 
 	// =========================================================================
 	// Effects
@@ -158,10 +160,10 @@ export const TokenTextInput = <
 			<div className="group relative">
 				{InputComponent}
 				{isLinked && !disabledTokenLink && (
-					<InheritanceActionOverlay
+					<TokenActionOverlay
 						variant={'full-overlay'}
 						onUnlink={handleToggleTokenLink}
-						onNavigateToParent={onNavigateToToken}
+						onNavigateToToken={onNavigateToToken}
 					/>
 				)}
 			</div>
@@ -173,7 +175,7 @@ export interface TTokenTextInputProps<
 	GValue extends string | number,
 	GRefValue extends TRef<GValue> | undefined,
 	GTokenSet extends TTokenSet
-> extends Omit<TextFieldProps, 'value' | 'onChange' | 'label' | 'labelHidden'> {
+> extends Omit<TextFieldProps, 'label' | 'labelHidden' | 'value' | 'onChange'> {
 	state: TState<GRefValue, any>;
 	mapToDisplay?: (value: GValue) => GValue;
 	mapToInternal?: (displayValue: GValue) => GValue;

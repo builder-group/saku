@@ -3,7 +3,7 @@ import { Button, Text } from '@shopify/polaris';
 import { useCompute } from 'feature-react';
 import { TState } from 'feature-state';
 import React from 'react';
-import { MappedPaintInput, MinusIcon, PlusIcon, TPaintType } from '@/components';
+import { MappedPaintInput, MinusIcon, PlusIcon, TTokenPaintInputPaintType } from '@/components';
 import { TPageEditor } from '../../lib';
 
 export const ChildFillStyleMixinEditor = <GValue extends Record<string, any>>(
@@ -80,5 +80,5 @@ export const ChildFillStyleMixinEditor = <GValue extends Record<string, any>>(
 interface TChildFillStyleMixinEditorProps<GValue extends Record<string, any>> {
 	state: TState<GValue & { childMixins: TMergeMixins<[TUnreference<TFillStyleMixin>]> }, any>;
 	editor: TPageEditor;
-	allowedPaintTypes?: TPaintType[];
+	allowedPaintTypes?: TTokenPaintInputPaintType[];
 }

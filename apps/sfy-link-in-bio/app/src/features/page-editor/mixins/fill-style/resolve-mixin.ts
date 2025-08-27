@@ -1,14 +1,21 @@
-import { resolveReference, TFillStyleMixin, TPaint } from '@repo/editor';
-import { Ok, TResult } from 'tuple-result';
+import { TFillStyleMixin, TPaint } from '@repo/editor';
+import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
-import { resolvePaint, TNodeResolveContext } from '../../lib';
+import { resolvePaint, resolveTokenRef, TNodeResolveContext } from '../../lib';
 import { TResolvedFillStyleMixin } from './types';
 
 export function resolveFillStyleMixin(
 	fill: TFillStyleMixin['value'],
 	cx: TNodeResolveContext
 ): TResult<TResolvedFillStyleMixin['value'], AppError> {
-	const resolvedFill = resolveReference(fill, cx.childMixins?.fill);
+	const [isResolvedFillOk, resolvedFillErr, resolvedFill] = resolveTokenRef(
+		fill,
+		cx.site.getTokenSet('fill')
+	);
+	if (!isResolvedFillOk) {
+		return Err(resolvedFillErr.wrapWith('#ERR_RESOLVE_FILL'));
+	}
+
 	if (resolvedFill == null) {
 		return Ok(null);
 	}

@@ -1,8 +1,8 @@
 import React from 'react';
 import { ArrowRightIcon, Badge, LinkOffIcon } from '@/components';
 
-export const InheritanceActionOverlay: React.FC<TProps> = (props) => {
-	const { variant = 'badge', onUnlink, onNavigateToParent } = props;
+export const TokenActionOverlay: React.FC<TTokenActionOverlayProps> = (props) => {
+	const { variant = 'badge', onUnlink, onNavigateToToken } = props;
 
 	switch (variant) {
 		case 'full-overlay':
@@ -19,7 +19,7 @@ export const InheritanceActionOverlay: React.FC<TProps> = (props) => {
 					<div className="w-px bg-neutral-300" />
 					<button
 						type="button"
-						onClick={onNavigateToParent}
+						onClick={onNavigateToToken}
 						className="flex flex-1 cursor-pointer items-center justify-center gap-1 bg-blue-100 text-xs text-blue-700 transition-colors hover:bg-blue-200"
 					>
 						Parent
@@ -43,7 +43,7 @@ export const InheritanceActionOverlay: React.FC<TProps> = (props) => {
 							<div className="w-px bg-gray-300" />
 							<button
 								type="button"
-								onClick={onNavigateToParent}
+								onClick={onNavigateToToken}
 								className="flex cursor-pointer items-center gap-1 bg-blue-100 px-2 py-1 text-xs text-blue-700 transition-colors hover:bg-blue-200"
 							>
 								Parent
@@ -69,7 +69,7 @@ export const InheritanceActionOverlay: React.FC<TProps> = (props) => {
 					<Badge asChild variant="info">
 						<button
 							type="button"
-							onClick={onNavigateToParent}
+							onClick={onNavigateToToken}
 							className="cursor-pointer transition-colors hover:bg-[rgba(145,208,255,1)] hover:text-[rgba(0,33,51,1)]"
 						>
 							Parent
@@ -83,8 +83,8 @@ export const InheritanceActionOverlay: React.FC<TProps> = (props) => {
 	}
 };
 
-interface TProps {
+interface TTokenActionOverlayProps {
 	variant?: 'badge' | 'separate-badges' | 'full-overlay';
 	onUnlink?: () => void;
-	onNavigateToParent?: () => void;
+	onNavigateToToken?: () => void;
 }

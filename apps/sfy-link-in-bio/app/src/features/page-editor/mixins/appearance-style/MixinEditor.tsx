@@ -3,8 +3,9 @@ import { Button, Text } from '@shopify/polaris';
 import { useCompute } from 'feature-react';
 import { TState } from 'feature-state';
 import React from 'react';
-import { HideIcon, TokenTextInput, ViewIcon } from '@/components';
+import { HideIcon, ViewIcon } from '@/components';
 import { useMapState } from '@/hooks';
+import { TokenTextInput } from '../../components';
 import { TPageEditor } from '../../lib';
 
 export const AppearanceStyleMixinEditor = <

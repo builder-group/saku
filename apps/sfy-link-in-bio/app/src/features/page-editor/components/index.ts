@@ -1,6 +1,7 @@
 export * from './CanvasPanel';
 export * from './Editor';
 export * from './EditorContent';
+export * from './input';
 export * from './Node';
 export * from './NodeCanvas';
 export * from './NodeEditor';
