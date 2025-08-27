@@ -26,7 +26,13 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TFlatPageNode>> 
 		<>
 			{/* Page Section */}
 			<AccordionSection title="Page" collapsibleClassName="px-0 space-y-3">
-				<AutoLayoutStyleMixinEditor state={nodeState} editor={editor} />
+				<AutoLayoutStyleMixinEditor
+					state={nodeState}
+					mapValue={(value) => value.autoLayout}
+					tokenSet={editor.tokensMap.autoLayout}
+					mapToken={(token) => token}
+					editor={editor}
+				/>
 				<div className="h-px bg-neutral-200" />
 				<AppearanceStyleMixinEditor
 					state={nodeState}

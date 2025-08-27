@@ -125,10 +125,10 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 				}
 			},
 			autoLayout: {
-				horizontalPadding: inherit(),
-				verticalPadding: inherit(),
-				horizontalGap: inherit(),
-				verticalGap: inherit()
+				horizontalPadding: tokenRef(),
+				verticalPadding: tokenRef(),
+				horizontalGap: tokenRef(),
+				verticalGap: tokenRef()
 			},
 			appearance: {
 				visible: true,
@@ -223,9 +223,9 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 						socialLinks: allSocialLinks
 					},
 					autoLayout: {
-						horizontalPadding: inherit(),
-						verticalPadding: inherit(),
-						verticalGap: inherit()
+						horizontalPadding: tokenRef(),
+						verticalPadding: tokenRef(),
+						verticalGap: tokenRef()
 					},
 					appearance: {
 						visible: true,
@@ -264,10 +264,10 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 						}
 					},
 					autoLayout: {
-						horizontalPadding: inherit(),
-						verticalPadding: inherit(),
-						horizontalGap: inherit(),
-						verticalGap: inherit()
+						horizontalPadding: tokenRef(),
+						verticalPadding: tokenRef(),
+						horizontalGap: tokenRef(),
+						verticalGap: tokenRef()
 					},
 					appearance: {
 						visible: true,
@@ -295,8 +295,8 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 						text: '### 📙 Or some text\nwith a different font and background color'
 					},
 					autoLayout: {
-						horizontalPadding: inherit(),
-						verticalPadding: inherit()
+						horizontalPadding: tokenRef(),
+						verticalPadding: tokenRef()
 					},
 					appearance: {
 						visible: true,
@@ -341,8 +341,8 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 						text: '🔮 Let your imagination flow'
 					},
 					autoLayout: {
-						horizontalPadding: inherit(),
-						verticalPadding: inherit()
+						horizontalPadding: tokenRef(),
+						verticalPadding: tokenRef()
 					},
 					appearance: {
 						visible: true,

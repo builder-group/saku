@@ -69,7 +69,9 @@ export const TextNodeEditor: React.FC<TNodeEditorComponentProps<TTextNode>> = (p
 				>
 					<AutoLayoutStyleMixinEditor
 						state={nodeState}
-						parentState={parentNodeState}
+						mapValue={(value) => value.autoLayout}
+						tokenSet={editor.tokensMap.autoLayout}
+						mapToken={(token) => token}
 						editor={editor}
 					/>
 					<div className="h-px bg-neutral-200" />
