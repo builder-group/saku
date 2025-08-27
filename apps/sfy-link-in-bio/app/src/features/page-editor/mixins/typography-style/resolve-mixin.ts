@@ -1,5 +1,4 @@
 import {
-	resolveReference,
 	TFont,
 	TLetterSpacing,
 	TLineHeight,
@@ -8,51 +7,56 @@ import {
 } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
-import { TNodeResolveContext } from '../../lib';
+import { resolveNestedTokenRef, TNodeResolveContext } from '../../lib';
 import { TResolvedTypographyStyleMixin } from './types';
 
 export function resolveTypographyStyleMixin(
 	typography: TTypographyStyleMixin['value'],
 	cx: TNodeResolveContext
 ): TResult<TResolvedTypographyStyleMixin['value'], AppError> {
-	const resolvedFont = resolveReference(typography.font, cx.childMixins?.text.typography.font);
-	if (resolvedFont == null) {
-		return Err(new AppError('#ERR_RESOLVE_FONT'));
-	}
-	const resolvedFontSize = resolveReference(
-		typography.fontSize,
-		cx.childMixins?.text.typography.fontSize
+	const typographyTokenSet = cx.site.getTokenSet('typography');
+
+	const [isResolvedFontOk, resolvedFontErr, resolvedFont] = resolveNestedTokenRef(
+		'font',
+		typography,
+		typographyTokenSet
 	);
-	if (resolvedFontSize == null) {
-		return Err(new AppError('#ERR_RESOLVE_FONT_SIZE'));
+	if (!isResolvedFontOk) {
+		return Err(resolvedFontErr.wrapWith('#ERR_RESOLVE_FONT'));
 	}
-	const resolvedTextAlignHorizontal = resolveReference(
-		typography.textAlignHorizontal,
-		cx.childMixins?.text.typography.textAlignHorizontal
+	const [isResolvedFontSizeOk, resolvedFontSizeErr, resolvedFontSize] = resolveNestedTokenRef(
+		'fontSize',
+		typography,
+		typographyTokenSet
 	);
-	if (resolvedTextAlignHorizontal == null) {
-		return Err(new AppError('#ERR_RESOLVE_TEXT_ALIGN_HORIZONTAL'));
+	if (!isResolvedFontSizeOk) {
+		return Err(resolvedFontSizeErr.wrapWith('#ERR_RESOLVE_FONT_SIZE'));
 	}
-	const resolvedTextAlignVertical = resolveReference(
-		typography.textAlignVertical,
-		cx.childMixins?.text.typography.textAlignVertical
-	);
-	if (resolvedTextAlignVertical == null) {
-		return Err(new AppError('#ERR_RESOLVE_TEXT_ALIGN_VERTICAL'));
+	const [
+		isResolvedTextAlignHorizontalOk,
+		resolvedTextAlignHorizontalErr,
+		resolvedTextAlignHorizontal
+	] = resolveNestedTokenRef('textAlignHorizontal', typography, typographyTokenSet);
+	if (!isResolvedTextAlignHorizontalOk) {
+		return Err(resolvedTextAlignHorizontalErr.wrapWith('#ERR_RESOLVE_TEXT_ALIGN_HORIZONTAL'));
 	}
-	const resolvedLineHeight = resolveReference(
-		typography.lineHeight,
-		cx.childMixins?.text.typography.lineHeight
-	);
-	if (resolvedLineHeight == null) {
-		return Err(new AppError('#ERR_RESOLVE_LINE_HEIGHT'));
+	const [isResolvedTextAlignVerticalOk, resolvedTextAlignVerticalErr, resolvedTextAlignVertical] =
+		resolveNestedTokenRef('textAlignVertical', typography, typographyTokenSet);
+	if (!isResolvedTextAlignVerticalOk) {
+		return Err(resolvedTextAlignVerticalErr.wrapWith('#ERR_RESOLVE_TEXT_ALIGN_VERTICAL'));
 	}
-	const resolvedLetterSpacing = resolveReference(
-		typography.letterSpacing,
-		cx.childMixins?.text.typography.letterSpacing
+	const [isResolvedLineHeightOk, resolvedLineHeightErr, resolvedLineHeight] = resolveNestedTokenRef(
+		'lineHeight',
+		typography,
+		typographyTokenSet
 	);
-	if (resolvedLetterSpacing == null) {
-		return Err(new AppError('#ERR_RESOLVE_LETTER_SPACING'));
+	if (!isResolvedLineHeightOk) {
+		return Err(resolvedLineHeightErr.wrapWith('#ERR_RESOLVE_LINE_HEIGHT'));
+	}
+	const [isResolvedLetterSpacingOk, resolvedLetterSpacingErr, resolvedLetterSpacing] =
+		resolveNestedTokenRef('letterSpacing', typography, typographyTokenSet);
+	if (!isResolvedLetterSpacingOk) {
+		return Err(resolvedLetterSpacingErr.wrapWith('#ERR_RESOLVE_LETTER_SPACING'));
 	}
 
 	return Ok({

@@ -366,7 +366,13 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 						editor={editor}
 					/>
 					<div className="h-px bg-neutral-200" />
-					<AppearanceStyleMixinEditor state={nodeState} editor={editor} />
+					<AppearanceStyleMixinEditor
+						state={nodeState}
+						mapValue={(value) => value.appearance}
+						tokenSet={editor.tokensMap.appearance}
+						mapToken={(token) => token}
+						editor={editor}
+					/>
 					<div className="h-px bg-neutral-200" />
 					<FillStyleMixinEditor state={nodeState} parentState={parentNodeState} editor={editor} />
 					<div className="h-px bg-neutral-200" />

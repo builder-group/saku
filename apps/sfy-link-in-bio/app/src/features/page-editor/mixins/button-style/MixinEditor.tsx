@@ -34,7 +34,13 @@ export const ButtonStyleMixinEditor = <
 
 	return (
 		<>
-			<AppearanceStyleMixinEditor state={flatState} editor={editor} />
+			<AppearanceStyleMixinEditor
+				state={state}
+				mapValue={(value) => value.button.appearance}
+				tokenSet={editor.tokensMap.button}
+				mapToken={(token) => token?.appearance}
+				editor={editor}
+			/>
 			<div className="h-px bg-neutral-200" />
 			<FillStyleMixinEditor state={flatState} parentState={flatParentState} editor={editor} />
 			<div className="h-px bg-neutral-200" />

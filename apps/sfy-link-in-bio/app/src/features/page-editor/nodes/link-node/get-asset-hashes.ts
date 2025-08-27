@@ -1,8 +1,8 @@
 import {
 	getFontHash,
 	isInherited,
+	isTokenRef,
 	TAssetHash,
-	TFont,
 	TImagePaint,
 	TLinkNode,
 	TPaint
@@ -29,8 +29,13 @@ export function getLinkNodeAssetHashes(node: TLinkNode): TAssetHash[] {
 	}
 
 	// Font asset (if not inherited)
-	if (node.text?.typography?.font != null && !isInherited(node.text.typography.font)) {
-		hashes.push(getFontHash(node.text.typography.font as TFont));
+	if (
+		!isTokenRef(node.text.typography) &&
+		!isInherited(node.text.typography) &&
+		!isTokenRef(node.text.typography.font) &&
+		!isInherited(node.text.typography.font)
+	) {
+		hashes.push(getFontHash(node.text.typography.font));
 	}
 
 	// Fill asset (if not inherited)

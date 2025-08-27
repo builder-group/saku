@@ -8,25 +8,25 @@ export function resolveAppearanceStyleMixin(
 	appearance: TAppearanceStyleMixin['value'],
 	cx: TNodeResolveContext
 ): TResult<TResolvedAppearanceStyleMixin['value'], AppError> {
+	const appearanceTokenSet = cx.site.getTokenSet('appearance');
+
 	const [isResolvedBorderRadiusOk, resolvedBorderRadiusErr, resolvedBorderRadius] =
-		resolveNestedTokenRef('borderRadius', appearance, cx.site.getTokenSet('appearance'));
+		resolveNestedTokenRef('borderRadius', appearance, appearanceTokenSet);
 	if (!isResolvedBorderRadiusOk) {
 		return Err(resolvedBorderRadiusErr.wrapWith('#ERR_RESOLVE_BORDER_RADIUS'));
 	}
-
 	const [isResolvedVisibleOk, resolvedVisibleErr, resolvedVisible] = resolveNestedTokenRef(
 		'visible',
 		appearance,
-		cx.site.getTokenSet('appearance')
+		appearanceTokenSet
 	);
 	if (!isResolvedVisibleOk) {
 		return Err(resolvedVisibleErr.wrapWith('#ERR_RESOLVE_VISIBLE'));
 	}
-
 	const [isResolvedOpacityOk, resolvedOpacityErr, resolvedOpacity] = resolveNestedTokenRef(
 		'opacity',
 		appearance,
-		cx.site.getTokenSet('appearance')
+		appearanceTokenSet
 	);
 	if (!isResolvedOpacityOk) {
 		return Err(resolvedOpacityErr.wrapWith('#ERR_RESOLVE_OPACITY'));

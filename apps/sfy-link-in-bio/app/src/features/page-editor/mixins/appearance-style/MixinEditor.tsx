@@ -1,48 +1,51 @@
-import {
-	isTokenRef,
-	TAppearanceStyleMixin,
-	TAppearanceStyleToken,
-	TMergeMixins
-} from '@repo/editor';
+import { isTokenRef, TAppearanceStyleMixin, TAppearanceStyleToken, TTokenSet } from '@repo/editor';
 import { Button, Text } from '@shopify/polaris';
 import { useCompute } from 'feature-react';
 import { TState } from 'feature-state';
 import React from 'react';
 import { HideIcon, TokenTextInput, ViewIcon } from '@/components';
 import { useMapState } from '@/hooks';
-import { TPageEditor, TStateTokenSet } from '../../lib';
+import { TPageEditor } from '../../lib';
 
-export const AppearanceStyleMixinEditor = <GValue extends Record<string, any>>(
-	props: TAppearanceStyleMixinEditorProps<GValue>
+export const AppearanceStyleMixinEditor = <
+	GValue extends Record<string, any>,
+	GTokenSet extends TTokenSet
+>(
+	props: TAppearanceStyleMixinEditorProps<GValue, GTokenSet>
 ) => {
-	const { state, editor, tokenSet = editor.tokensMap.appearance } = props;
+	const { state, mapValue, tokenSet, mapToken, editor } = props;
 
-	const hasBorderRadius = useCompute(state, ({ value }) => value.appearance.borderRadius != null);
+	const hasBorderRadius = useCompute(state, ({ value }) => mapValue(value).borderRadius != null);
+	const isVisible = useCompute(state, ({ value }) => mapValue(value).visible);
 
 	const opacityState = useMapState(state, {
 		map(baseValue) {
-			if (isTokenRef(baseValue.appearance)) {
-				return baseValue.appearance;
+			const appearance = mapValue(baseValue);
+			if (isTokenRef(appearance)) {
+				return appearance;
 			}
-			return baseValue.appearance.opacity;
+			return appearance.opacity;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
-			if (!isTokenRef(baseState._v.appearance)) {
-				baseState._v.appearance.opacity = mappedValue;
+			const appearance = mapValue(baseState._v);
+			if (!isTokenRef(appearance)) {
+				appearance.opacity = mappedValue;
 				baseState._notify(notifyOptions);
 			}
 		}
 	});
 	const borderRadiusState = useMapState(state, {
 		map(baseValue) {
-			if (isTokenRef(baseValue.appearance)) {
-				return baseValue.appearance;
+			const appearance = mapValue(baseValue);
+			if (isTokenRef(appearance)) {
+				return appearance;
 			}
-			return baseValue.appearance.borderRadius;
+			return appearance.borderRadius;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
-			if (!isTokenRef(baseState._v.appearance)) {
-				baseState._v.appearance.borderRadius = mappedValue;
+			const appearance = mapValue(baseState._v);
+			if (!isTokenRef(appearance)) {
+				appearance.borderRadius = mappedValue;
 				baseState._notify(notifyOptions);
 			}
 		}
@@ -53,9 +56,10 @@ export const AppearanceStyleMixinEditor = <GValue extends Record<string, any>>(
 	// =========================================================================
 
 	const handleToggleVisibility = React.useCallback(() => {
-		state._v.appearance.visible = !state._v.appearance.visible;
+		const appearance = mapValue(state._v);
+		appearance.visible = !appearance.visible;
 		state._notify();
-	}, [state]);
+	}, [state, mapValue]);
 
 	const handleNavigateToToken = React.useCallback(() => {
 		editor.switchView('settings');
@@ -72,7 +76,7 @@ export const AppearanceStyleMixinEditor = <GValue extends Record<string, any>>(
 					Appearance
 				</Text>
 
-				{state._v.appearance.visible ? (
+				{isVisible ? (
 					<Button icon={ViewIcon} onClick={handleToggleVisibility} variant="plain" size="micro" />
 				) : (
 					<Button icon={HideIcon} onClick={handleToggleVisibility} variant="plain" size="micro" />
@@ -88,7 +92,9 @@ export const AppearanceStyleMixinEditor = <GValue extends Record<string, any>>(
 					step={5}
 					state={opacityState}
 					tokenSet={tokenSet}
-					mapToTokenValue={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.opacity}
+					mapToTokenValue={(tokenRef, tokenSet) =>
+						mapToken(tokenSet?.[tokenRef] as GTokenSet['value'])?.opacity
+					}
 					mapToDisplay={(value) => Math.round(value * 100)}
 					mapToInternal={(displayValue) => displayValue / 100}
 					onNavigateToToken={handleNavigateToToken}
@@ -103,7 +109,9 @@ export const AppearanceStyleMixinEditor = <GValue extends Record<string, any>>(
 						step={4}
 						state={borderRadiusState}
 						tokenSet={tokenSet}
-						mapToTokenValue={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.borderRadius}
+						mapToTokenValue={(tokenRef, tokenSet) =>
+							mapToken(tokenSet?.[tokenRef] as GTokenSet['value'])?.borderRadius
+						}
 						onNavigateToToken={handleNavigateToToken}
 					/>
 				)}
@@ -112,8 +120,13 @@ export const AppearanceStyleMixinEditor = <GValue extends Record<string, any>>(
 	);
 };
 
-interface TAppearanceStyleMixinEditorProps<GValue extends Record<string, any>> {
-	state: TState<GValue & TMergeMixins<[TAppearanceStyleMixin]>, any>;
-	tokenSet?: TStateTokenSet<TAppearanceStyleToken>;
+interface TAppearanceStyleMixinEditorProps<
+	GValue extends Record<string, any>,
+	GTokenSet extends TTokenSet
+> {
+	state: TState<GValue, any>;
+	mapValue: (value: GValue) => TAppearanceStyleMixin['value'];
+	tokenSet?: TState<GTokenSet, any>;
+	mapToken: (token?: GTokenSet['value']) => TAppearanceStyleToken['value'] | undefined;
 	editor: TPageEditor;
 }

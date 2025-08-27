@@ -2,8 +2,8 @@ import {
 	fontMetadata,
 	isInherited,
 	isTokenRef,
-	TMergeMixins,
 	TRef,
+	TTokenSet,
 	TTypographyStyleMixin,
 	TTypographyStyleToken,
 	uninherit
@@ -13,12 +13,15 @@ import { TState } from 'feature-state';
 import React from 'react';
 import { TokenSelectInput, TokenTextInput } from '@/components';
 import { useMapState } from '@/hooks';
-import { TPageEditor, TStateTokenSet } from '../../lib';
+import { TPageEditor } from '../../lib';
 
-export const TypographyStyleMixinEditor = <GValue extends Record<string, any>>(
-	props: TTypographyStyleMixinEditorProps<GValue>
+export const TypographyStyleMixinEditor = <
+	GValue extends Record<string, any>,
+	GTokenSet extends TTokenSet
+>(
+	props: TTypographyStyleMixinEditorProps<GValue, GTokenSet>
 ) => {
-	const { state, editor, tokenSet = editor.tokensMap.typography } = props;
+	const { state, mapValue, tokenSet, mapToken, editor } = props;
 
 	const fontOptions = React.useMemo(() => {
 		return fontMetadata.map((font) => ({
@@ -36,28 +39,30 @@ export const TypographyStyleMixinEditor = <GValue extends Record<string, any>>(
 
 	const fontFamilyState = useMapState(state, {
 		map(baseValue): TRef<string> {
-			if (isTokenRef(baseValue.typography)) {
-				return baseValue.typography;
+			const typography = mapValue(baseValue);
+			if (isTokenRef(typography)) {
+				return typography;
 			}
 			// TODO: Remove once migrated to token references
-			if (isInherited(baseValue.typography)) {
+			if (isInherited(typography)) {
 				throw new Error('Typography style mixin is inherited');
 			}
-			if (isTokenRef(baseValue.typography.font)) {
-				return baseValue.typography.font;
+			if (isTokenRef(typography.font)) {
+				return typography.font;
 			}
-			return uninherit(baseValue.typography.font).family;
+			return uninherit(typography.font).family;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
-			if (!isTokenRef(baseState._v.typography) && !isInherited(baseState._v.typography)) {
+			const typography = mapValue(baseState._v);
+			if (!isTokenRef(typography) && !isInherited(typography)) {
 				if (isTokenRef(mappedValue)) {
-					baseState._v.typography.font = mappedValue;
+					typography.font = mappedValue;
 					baseState._notify(notifyOptions);
 				} else {
 					const font = editor.registerFontFamily(mappedValue as string);
 					if (font != null) {
-						baseState._v.typography.font = font;
-						state._notify();
+						typography.font = font;
+						baseState._notify(notifyOptions);
 					}
 				}
 			}
@@ -65,54 +70,60 @@ export const TypographyStyleMixinEditor = <GValue extends Record<string, any>>(
 	});
 	const fontSizeState = useMapState(state, {
 		map(baseValue) {
-			if (isTokenRef(baseValue.typography)) {
-				return baseValue.typography;
+			const typography = mapValue(baseValue);
+			if (isTokenRef(typography)) {
+				return typography;
 			}
 			// TODO: Remove once migrated to token references
-			if (isInherited(baseValue.typography)) {
+			if (isInherited(typography)) {
 				throw new Error('Typography style mixin is inherited');
 			}
-			return baseValue.typography.fontSize;
+			return typography.fontSize;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
-			if (!isTokenRef(baseState._v.typography) && !isInherited(baseState._v.typography)) {
-				baseState._v.typography.fontSize = mappedValue;
+			const typography = mapValue(baseState._v);
+			if (!isTokenRef(typography) && !isInherited(typography)) {
+				typography.fontSize = mappedValue;
 				baseState._notify(notifyOptions);
 			}
 		}
 	});
 	const textAlignHorizontalState = useMapState(state, {
 		map(baseValue) {
-			if (isTokenRef(baseValue.typography)) {
-				return baseValue.typography;
+			const typography = mapValue(baseValue);
+			if (isTokenRef(typography)) {
+				return typography;
 			}
 			// TODO: Remove once migrated to token references
-			if (isInherited(baseValue.typography)) {
+			if (isInherited(typography)) {
 				throw new Error('Typography style mixin is inherited');
 			}
-			return baseValue.typography.textAlignHorizontal;
+			return typography.textAlignHorizontal;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
-			if (!isTokenRef(baseState._v.typography) && !isInherited(baseState._v.typography)) {
-				baseState._v.typography.textAlignHorizontal = mappedValue;
+			const typography = mapValue(baseState._v);
+			if (!isTokenRef(typography) && !isInherited(typography)) {
+				typography.textAlignHorizontal = mappedValue;
 				baseState._notify(notifyOptions);
 			}
 		}
 	});
 	const textAlignVerticalState = useMapState(state, {
 		map(baseValue) {
-			if (isTokenRef(baseValue.typography)) {
-				return baseValue.typography;
+			const typography = mapValue(baseValue);
+			if (isTokenRef(typography)) {
+				return typography;
 			}
 			// TODO: Remove once migrated to token references
-			if (isInherited(baseValue.typography)) {
+			if (isInherited(typography)) {
 				throw new Error('Typography style mixin is inherited');
 			}
-			return baseValue.typography.textAlignVertical;
+			return typography.textAlignVertical;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
-			if (!isTokenRef(baseState._v.typography) && !isInherited(baseState._v.typography)) {
-				baseState._v.typography.textAlignVertical = mappedValue;
+			const typography = mapValue(baseState._v);
+			if (!isTokenRef(typography) && !isInherited(typography)) {
+				typography.textAlignVertical = mappedValue;
 				baseState._notify(notifyOptions);
 			}
 		}
@@ -144,7 +155,9 @@ export const TypographyStyleMixinEditor = <GValue extends Record<string, any>>(
 						options={fontOptions}
 						state={fontFamilyState}
 						tokenSet={tokenSet}
-						mapToTokenValue={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.font?.family}
+						mapToTokenValue={(tokenRef, tokenSet) =>
+							mapToken(tokenSet?.[tokenRef] as GTokenSet['value'])?.font.family
+						}
 						onNavigateToToken={handleNavigateToToken}
 					/>
 					<TokenTextInput
@@ -156,7 +169,9 @@ export const TypographyStyleMixinEditor = <GValue extends Record<string, any>>(
 						step={4}
 						state={fontSizeState}
 						tokenSet={tokenSet}
-						mapToTokenValue={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.fontSize}
+						mapToTokenValue={(tokenRef, tokenSet) =>
+							mapToken(tokenSet?.[tokenRef] as GTokenSet['value'])?.fontSize
+						}
 						onNavigateToToken={handleNavigateToToken}
 					/>
 				</div>
@@ -166,7 +181,9 @@ export const TypographyStyleMixinEditor = <GValue extends Record<string, any>>(
 						options={textAlignOptions}
 						state={textAlignHorizontalState}
 						tokenSet={tokenSet}
-						mapToTokenValue={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.textAlignHorizontal}
+						mapToTokenValue={(tokenRef, tokenSet) =>
+							mapToken(tokenSet?.[tokenRef] as GTokenSet['value'])?.textAlignHorizontal
+						}
 						onNavigateToToken={handleNavigateToToken}
 					/>
 					<TokenSelectInput
@@ -174,7 +191,9 @@ export const TypographyStyleMixinEditor = <GValue extends Record<string, any>>(
 						options={textAlignOptions}
 						state={textAlignVerticalState}
 						tokenSet={tokenSet}
-						mapToTokenValue={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.textAlignVertical}
+						mapToTokenValue={(tokenRef, tokenSet) =>
+							mapToken(tokenSet?.[tokenRef] as GTokenSet['value'])?.textAlignVertical
+						}
 						onNavigateToToken={handleNavigateToToken}
 					/>
 				</div>
@@ -183,8 +202,13 @@ export const TypographyStyleMixinEditor = <GValue extends Record<string, any>>(
 	);
 };
 
-interface TTypographyStyleMixinEditorProps<GValue extends Record<string, any>> {
-	state: TState<GValue & TMergeMixins<[TTypographyStyleMixin]>, any>;
-	tokenSet?: TStateTokenSet<TTypographyStyleToken>;
+interface TTypographyStyleMixinEditorProps<
+	GValue extends Record<string, any>,
+	GTokenSet extends TTokenSet
+> {
+	state: TState<GValue, any>;
+	mapValue: (value: GValue) => TTypographyStyleMixin['value'];
+	tokenSet?: TState<GTokenSet, any>;
+	mapToken: (token?: GTokenSet['value']) => TTypographyStyleToken['value'] | undefined;
 	editor: TPageEditor;
 }

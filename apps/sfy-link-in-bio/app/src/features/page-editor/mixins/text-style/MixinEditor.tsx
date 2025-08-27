@@ -33,9 +33,21 @@ export const TextStyleMixinEditor = <
 
 	return (
 		<>
-			<AppearanceStyleMixinEditor state={flatState} editor={editor} />
+			<AppearanceStyleMixinEditor
+				state={state}
+				mapValue={(value) => value.text.appearance}
+				tokenSet={editor.tokensMap.text}
+				mapToken={(token) => token?.appearance}
+				editor={editor}
+			/>
 			<div className="h-px bg-neutral-200" />
-			<TypographyStyleMixinEditor state={flatState} editor={editor} />
+			<TypographyStyleMixinEditor
+				state={state}
+				mapValue={(value) => value.text.typography}
+				tokenSet={editor.tokensMap.text}
+				mapToken={(token) => token?.typography}
+				editor={editor}
+			/>
 			<div className="h-px bg-neutral-200" />
 			<FillStyleMixinEditor
 				state={flatState}

@@ -723,4 +723,7 @@ export type TTokenStateGroupMap<GToken extends TToken = TToken> = {
 	[K in GToken['type']]?: TStateTokenSet<Extract<GToken, { type: K }>>;
 };
 
-export type TStateTokenSet<GToken extends TToken> = TState<Record<string, GToken['value']>, []>;
+export type TStateTokenSet<GToken extends TToken = TToken> = TState<
+	Record<string, GToken['value']>,
+	[]
+>;
