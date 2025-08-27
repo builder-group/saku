@@ -1,6 +1,6 @@
 import { isTokenRef, tokenRef, TRef, TTokenSet } from '@repo/editor';
 import { Select, SelectProps, Text } from '@shopify/polaris';
-import { useCombinedCompute, useCompute, useFeatureState } from 'feature-react/state';
+import { useCombinedCompute, useCompute } from 'feature-react/state';
 import { createState, TState } from 'feature-state';
 import React from 'react';
 import { InheritanceActionOverlay, LinkIcon, LinkOffIcon } from '@/components';
@@ -15,10 +15,9 @@ export const TokenSelectInput = <
 ) => {
 	const {
 		state,
-		mapToDisplay,
-		mapToInternal,
 		tokenSet,
 		mapToTokenValue,
+		onLinkChange,
 		onNavigateToToken,
 		disabledTokenLink = false,
 		label,
@@ -28,17 +27,12 @@ export const TokenSelectInput = <
 	} = props;
 
 	const [displayValue, setDisplayValue] = React.useState<string>('');
-	const value = useFeatureState(state);
 	const resolvedValue = useCombinedCompute(
 		[state, tokenSet ?? createState(undefined)],
 		([{ value: stateValue }, { value: tokenMapValue }]) => {
-			const rawValue = isTokenRef(stateValue)
+			return isTokenRef(stateValue)
 				? mapToTokenValue(stateValue.ref, tokenMapValue)
-				: stateValue;
-			if (rawValue == null) {
-				return undefined;
-			}
-			return mapToDisplay != null ? mapToDisplay(rawValue as GValue) : rawValue;
+				: (stateValue as GValue);
 		}
 	);
 	const isLinked = useCompute(state, ({ value }) => isTokenRef(value));
@@ -59,23 +53,28 @@ export const TokenSelectInput = <
 			}
 
 			setDisplayValue(newValue);
-			state.set(
-				(mapToInternal != null ? mapToInternal(newValue as GValue) : newValue) as GRefValue
-			);
+			state.set(newValue as GRefValue);
 		},
-		[isLinked, state, mapToInternal]
+		[isLinked, state]
 	);
 
 	const handleToggleTokenLink = React.useCallback(() => {
+		const { preventDefault } = onLinkChange?.(isLinked) ?? {};
+		if (preventDefault) {
+			return;
+		}
+
 		if (isLinked) {
-			const tokenValue = isTokenRef(value) ? mapToTokenValue(value.ref, tokenSet?._v) : undefined;
+			const tokenValue = isTokenRef(state._v)
+				? mapToTokenValue(state._v.ref, tokenSet?._v)
+				: undefined;
 			if (tokenValue != null) {
 				state.set(tokenValue as GRefValue);
 			}
 		} else {
 			state.set(tokenRef('default') as GRefValue);
 		}
-	}, [isLinked, value, mapToTokenValue, tokenSet, state]);
+	}, [onLinkChange, isLinked, state, mapToTokenValue, tokenSet?._v]);
 
 	// =========================================================================
 	// Effects
@@ -121,7 +120,7 @@ export const TokenSelectInput = <
 			</div>
 			<div className="group relative">
 				{InputComponent}
-				{isLinked && (
+				{isLinked && !disabledTokenLink && (
 					<InheritanceActionOverlay
 						variant={'full-overlay'}
 						onUnlink={handleToggleTokenLink}
@@ -139,11 +138,10 @@ export interface TTokenSelectInputProps<
 	GTokenSet extends TTokenSet
 > extends Omit<SelectProps, 'value' | 'onChange' | 'label' | 'labelHidden'> {
 	state: TState<GRefValue, any>;
-	mapToDisplay?: (value: GValue) => GValue;
-	mapToInternal?: (displayValue: GValue) => GValue;
 
 	tokenSet?: TState<GTokenSet, any>;
 	mapToTokenValue: (tokenRef: string, tokenSet?: GTokenSet) => GValue | undefined;
+	onLinkChange?: (isLinked: boolean) => { preventDefault: boolean } | void;
 	onNavigateToToken?: () => void;
 	disabledTokenLink?: boolean;
 

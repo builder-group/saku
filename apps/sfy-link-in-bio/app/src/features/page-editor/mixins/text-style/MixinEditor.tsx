@@ -56,7 +56,16 @@ export const TextStyleMixinEditor = <
 				allowedPaintTypes={['solid']}
 			/>
 			<div className="h-px bg-neutral-200" />
-			<StrokeStyleMixinEditor state={flatState} parentState={flatParentState} editor={editor} />
+			<StrokeStyleMixinEditor
+				state={state}
+				mapValue={(value) => value.text.stroke}
+				applyValue={(state, value) => {
+					state._v.text.stroke = value;
+				}}
+				tokenSet={editor.tokensMap.text}
+				mapToken={(token) => token?.stroke}
+				editor={editor}
+			/>
 			<div className="h-px bg-neutral-200" />
 			<ShadowStyleMixinEditor
 				state={flatState}

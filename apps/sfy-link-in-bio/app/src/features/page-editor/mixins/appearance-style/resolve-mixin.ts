@@ -11,22 +11,22 @@ export function resolveAppearanceStyleMixin(
 	const appearanceTokenSet = cx.site.getTokenSet('appearance');
 
 	const [isResolvedBorderRadiusOk, resolvedBorderRadiusErr, resolvedBorderRadius] =
-		resolveNestedTokenRef('borderRadius', appearance, appearanceTokenSet);
+		resolveNestedTokenRef(appearance, appearanceTokenSet, 'borderRadius');
 	if (!isResolvedBorderRadiusOk) {
 		return Err(resolvedBorderRadiusErr.wrapWith('#ERR_RESOLVE_BORDER_RADIUS'));
 	}
 	const [isResolvedVisibleOk, resolvedVisibleErr, resolvedVisible] = resolveNestedTokenRef(
-		'visible',
 		appearance,
-		appearanceTokenSet
+		appearanceTokenSet,
+		'visible'
 	);
 	if (!isResolvedVisibleOk) {
 		return Err(resolvedVisibleErr.wrapWith('#ERR_RESOLVE_VISIBLE'));
 	}
 	const [isResolvedOpacityOk, resolvedOpacityErr, resolvedOpacity] = resolveNestedTokenRef(
-		'opacity',
 		appearance,
-		appearanceTokenSet
+		appearanceTokenSet,
+		'opacity'
 	);
 	if (!isResolvedOpacityOk) {
 		return Err(resolvedOpacityErr.wrapWith('#ERR_RESOLVE_OPACITY'));

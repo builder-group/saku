@@ -15,8 +15,10 @@ export const AppearanceStyleMixinEditor = <
 ) => {
 	const { state, mapValue, tokenSet, mapToken, editor } = props;
 
-	const hasBorderRadius = useCompute(state, ({ value }) => mapValue(value).borderRadius != null);
-	const isVisible = useCompute(state, ({ value }) => mapValue(value).visible);
+	const hasBorderRadius = useCompute(state, ({ value }) => mapValue(value).borderRadius != null, [
+		mapValue
+	]);
+	const isVisible = useCompute(state, ({ value }) => mapValue(value).visible, [mapValue]);
 
 	const opacityState = useMapState(state, {
 		map(baseValue) {

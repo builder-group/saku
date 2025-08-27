@@ -136,7 +136,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 				borderRadius: tokenRef()
 			},
 			fill: inherit(),
-			stroke: inherit(),
+			stroke: tokenRef(),
 			shadow: inherit(),
 			text: {
 				appearance: {
@@ -146,7 +146,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 				},
 				typography: tokenRef(),
 				fill: inherit(),
-				stroke: inherit(),
+				stroke: tokenRef(),
 				shadow: inherit()
 			},
 			button: {
@@ -156,7 +156,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					borderRadius: tokenRef()
 				},
 				fill: inherit(),
-				stroke: inherit(),
+				stroke: tokenRef(),
 				shadow: inherit(),
 				text: {
 					appearance: {
@@ -165,7 +165,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					},
 					typography: tokenRef(),
 					fill: inherit(),
-					stroke: inherit(),
+					stroke: tokenRef(),
 					shadow: inherit()
 				}
 			}
@@ -249,7 +249,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 							letterSpacing: tokenRef()
 						},
 						fill: inherit(),
-						stroke: inherit(),
+						stroke: tokenRef(),
 						shadow: inherit()
 					}
 				},
@@ -275,7 +275,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 						borderRadius: tokenRef()
 					},
 					fill: inherit(),
-					stroke: inherit(),
+					stroke: tokenRef(),
 					shadow: inherit(),
 					text: {
 						appearance: {
@@ -284,7 +284,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 						},
 						typography: tokenRef(),
 						fill: inherit(),
-						stroke: inherit(),
+						stroke: tokenRef(),
 						shadow: inherit()
 					}
 				},
@@ -310,7 +310,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 						},
 						opacity: 1
 					},
-					stroke: inherit(),
+					stroke: tokenRef(),
 					shadow: inherit(),
 					text: {
 						appearance: {
@@ -330,7 +330,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 							letterSpacing: tokenRef()
 						},
 						fill: inherit(),
-						stroke: inherit(),
+						stroke: tokenRef(),
 						shadow: inherit()
 					}
 				},
@@ -356,7 +356,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 						},
 						opacity: 1
 					},
-					stroke: inherit(),
+					stroke: tokenRef(),
 					shadow: inherit(),
 					text: {
 						appearance: {
@@ -378,7 +378,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 							},
 							opacity: 1
 						},
-						stroke: inherit(),
+						stroke: tokenRef(),
 						shadow: inherit()
 					}
 				},
@@ -403,7 +403,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 						borderRadius: tokenRef()
 					},
 					fill: inherit(),
-					stroke: inherit(),
+					stroke: tokenRef(),
 					shadow: inherit()
 				}
 			],

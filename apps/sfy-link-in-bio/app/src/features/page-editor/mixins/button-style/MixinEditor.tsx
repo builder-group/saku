@@ -44,7 +44,16 @@ export const ButtonStyleMixinEditor = <
 			<div className="h-px bg-neutral-200" />
 			<FillStyleMixinEditor state={flatState} parentState={flatParentState} editor={editor} />
 			<div className="h-px bg-neutral-200" />
-			<StrokeStyleMixinEditor state={flatState} parentState={flatParentState} editor={editor} />
+			<StrokeStyleMixinEditor
+				state={state}
+				mapValue={(value) => value.button.stroke}
+				applyValue={(state, value) => {
+					state._v.button.stroke = value;
+				}}
+				tokenSet={editor.tokensMap.button}
+				mapToken={(token) => token?.stroke}
+				editor={editor}
+			/>
 			<div className="h-px bg-neutral-200" />
 			<ShadowStyleMixinEditor state={flatState} parentState={flatParentState} editor={editor} />
 			<div className="border-t border-b border-neutral-200 bg-neutral-50 px-4 py-1">

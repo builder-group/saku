@@ -11,22 +11,22 @@ export function resolveAutoLayoutStyleMixin(
 	const autoLayoutTokenSet = cx.site.getTokenSet('autoLayout');
 
 	const [isResolvedHorizontalPaddingOk, resolvedHorizontalPaddingErr, resolvedHorizontalPadding] =
-		resolveNestedTokenRef('horizontalPadding', layout, autoLayoutTokenSet);
+		resolveNestedTokenRef(layout, autoLayoutTokenSet, 'horizontalPadding');
 	if (!isResolvedHorizontalPaddingOk) {
 		return Err(resolvedHorizontalPaddingErr.wrapWith('#ERR_RESOLVE_HORIZONTAL_PADDING'));
 	}
 	const [isResolvedVerticalPaddingOk, resolvedVerticalPaddingErr, resolvedVerticalPadding] =
-		resolveNestedTokenRef('verticalPadding', layout, autoLayoutTokenSet);
+		resolveNestedTokenRef(layout, autoLayoutTokenSet, 'verticalPadding');
 	if (!isResolvedVerticalPaddingOk) {
 		return Err(resolvedVerticalPaddingErr.wrapWith('#ERR_RESOLVE_VERTICAL_PADDING'));
 	}
 	const [isResolvedHorizontalGapOk, resolvedHorizontalGapErr, resolvedHorizontalGap] =
-		resolveNestedTokenRef('horizontalGap', layout, autoLayoutTokenSet);
+		resolveNestedTokenRef(layout, autoLayoutTokenSet, 'horizontalGap');
 	if (!isResolvedHorizontalGapOk) {
 		return Err(resolvedHorizontalGapErr.wrapWith('#ERR_RESOLVE_HORIZONTAL_GAP'));
 	}
 	const [isResolvedVerticalGapOk, resolvedVerticalGapErr, resolvedVerticalGap] =
-		resolveNestedTokenRef('verticalGap', layout, autoLayoutTokenSet);
+		resolveNestedTokenRef(layout, autoLayoutTokenSet, 'verticalGap');
 	if (!isResolvedVerticalGapOk) {
 		return Err(resolvedVerticalGapErr.wrapWith('#ERR_RESOLVE_VERTICAL_GAP'));
 	}

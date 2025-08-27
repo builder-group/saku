@@ -1,64 +1,90 @@
-import { isTokenRef, tokenRef, TRef, TTokenSet } from '@repo/editor';
-import { Text, TextField, TextFieldProps } from '@shopify/polaris';
+import {
+	hexToRgba,
+	hsbaToRgba,
+	isTokenRef,
+	isValidHex,
+	rgbaToHex,
+	rgbaToHsba,
+	tokenRef,
+	TRef,
+	TRgba,
+	TTokenSet
+} from '@repo/editor';
+import { ColorPicker, HSBAColor, Popover, Text, TextField, TextFieldProps } from '@shopify/polaris';
 import { useCombinedCompute, useCompute } from 'feature-react/state';
 import { createState, TState } from 'feature-state';
 import React from 'react';
 import { InheritanceActionOverlay, LinkIcon, LinkOffIcon } from '@/components';
 import { cn } from '@/lib';
 
-export const TokenTextInput = <
-	GValue extends string | number,
+export const TokenColorInput = <
+	GValue extends TRgba,
 	GRefValue extends TRef<GValue> | undefined,
 	GTokenSet extends TTokenSet
 >(
-	props: TTokenTextInputProps<GValue, GRefValue, GTokenSet>
+	props: TTokenColorInputProps<GValue, GRefValue, GTokenSet>
 ) => {
 	const {
 		state,
-		mapToDisplay,
-		mapToInternal,
 		tokenSet,
 		mapToTokenValue,
-		onNavigateToToken,
 		onLinkChange,
+		onNavigateToToken,
 		disabledTokenLink = false,
 		label,
-		min,
-		max,
-		readOnly,
-		type,
 		className,
-		...textProps
+		...textFieldProps
 	} = props;
 
-	const [displayValue, setDisplayValue] = React.useState<string>('');
+	const [popoverActive, setPopoverActive] = React.useState(false);
+
+	const [displayValue, setDisplayValue] = React.useState('');
+	const lastChangeFromText = React.useRef(false);
 	const resolvedValue = useCombinedCompute(
 		[state, tokenSet ?? createState(undefined)],
 		([{ value: stateValue }, { value: tokenMapValue }]) => {
-			const rawValue = isTokenRef(stateValue)
+			return isTokenRef(stateValue)
 				? mapToTokenValue(stateValue.ref, tokenMapValue)
 				: (stateValue as GValue);
-			if (rawValue == null) {
-				return undefined;
+		},
+		[],
+		{
+			isEqual(a, b) {
+				return a?.r === b?.r && a?.g === b?.g && a?.b === b?.b && a?.a === b?.a;
 			}
-			return mapToDisplay != null ? mapToDisplay(rawValue) : rawValue;
 		}
 	);
 	const isLinked = useCompute(state, ({ value }) => isTokenRef(value));
+	const isError = React.useMemo(() => {
+		return displayValue !== '' && !isValidHex(displayValue);
+	}, [displayValue]);
+
+	const pickerColor = React.useMemo(() => {
+		if (resolvedValue == null) {
+			return { hue: 0, saturation: 0, brightness: 1, alpha: 1 };
+		}
+
+		const hsba = rgbaToHsba(resolvedValue);
+		return {
+			hue: hsba.hue,
+			saturation: hsba.saturation,
+			brightness: hsba.brightness,
+			alpha: hsba.alpha
+		};
+	}, [resolvedValue]);
 
 	// =========================================================================
 	// Events
 	// =========================================================================
 
 	const handleValueChange = React.useCallback(
-		(value: GRefValue) => {
-			if (isTokenRef(value)) {
+		(value: GRefValue, fromText = false) => {
+			lastChangeFromText.current = fromText;
+			if (value != null) {
 				state.set(value);
-			} else {
-				state.set((mapToInternal != null ? mapToInternal(value as GValue) : value) as GRefValue);
 			}
 		},
-		[mapToInternal, state]
+		[state]
 	);
 
 	const handleTextChange = React.useCallback(
@@ -72,25 +98,25 @@ export const TokenTextInput = <
 				return;
 			}
 
-			if (type === 'number') {
-				const num = Number(newValue);
-				if (isNaN(num)) {
-					setDisplayValue('');
-					return;
-				}
+			// Always enforce # prefix for non-empty values
+			const normalizedValue = newValue.startsWith('#') ? newValue : `#${newValue}`;
+			if (isValidHex(normalizedValue)) {
+				handleValueChange(hexToRgba(normalizedValue) as GRefValue, true);
+			}
+			setDisplayValue(normalizedValue);
+		},
+		[handleValueChange, isLinked]
+	);
 
-				let clampedNum = num;
-				if (typeof min === 'number' && clampedNum < min) clampedNum = min;
-				if (typeof max === 'number' && clampedNum > max) clampedNum = max;
-				setDisplayValue(String(clampedNum));
-				handleValueChange(clampedNum as GRefValue);
+	const handleColorChange = React.useCallback(
+		(hsba: HSBAColor) => {
+			if (isLinked) {
 				return;
 			}
 
-			setDisplayValue(newValue);
-			handleValueChange(newValue as GRefValue);
+			handleValueChange(hsbaToRgba(hsba) as GRefValue, false);
 		},
-		[isLinked, type, handleValueChange, min, max]
+		[handleValueChange, isLinked]
 	);
 
 	const handleToggleTokenLink = React.useCallback(() => {
@@ -111,14 +137,27 @@ export const TokenTextInput = <
 		}
 	}, [onLinkChange, isLinked, state, mapToTokenValue, tokenSet?._v]);
 
+	const togglePopoverActive = React.useCallback(() => {
+		if (!isLinked) {
+			setPopoverActive((active) => !active);
+		}
+	}, [isLinked]);
+
+	const handleFocus = React.useCallback(() => {
+		if (!isLinked) {
+			setPopoverActive(true);
+		}
+	}, [isLinked]);
+
 	// =========================================================================
 	// Effects
 	// =========================================================================
 
 	React.useEffect(() => {
-		if (resolvedValue != null) {
-			setDisplayValue(String(resolvedValue));
+		if (!lastChangeFromText.current && resolvedValue != null) {
+			setDisplayValue(rgbaToHex(resolvedValue));
 		}
+		lastChangeFromText.current = false;
 	}, [resolvedValue]);
 
 	// =========================================================================
@@ -126,16 +165,42 @@ export const TokenTextInput = <
 	// =========================================================================
 
 	const InputComponent = (
-		<TextField
-			{...textProps}
-			type={type}
-			label={label}
-			labelHidden
-			value={displayValue}
-			onChange={handleTextChange}
-			readOnly={isLinked || readOnly}
-			{...(type === 'number' ? { min, max } : {})}
-		/>
+		<Popover
+			active={popoverActive}
+			activator={
+				<div className="relative">
+					<TextField
+						{...textFieldProps}
+						label={label}
+						labelHidden
+						value={displayValue}
+						onChange={handleTextChange}
+						onFocus={handleFocus}
+						readOnly={isLinked}
+						prefix={
+							<button
+								type="button"
+								onClick={togglePopoverActive}
+								className={cn(
+									'-ml-1 flex h-5 w-5 items-center justify-center rounded-full border border-neutral-200',
+									!isLinked ? 'cursor-pointer' : 'cursor-default'
+								)}
+								style={{ backgroundColor: rgbaToHex(resolvedValue ?? { r: 0, g: 0, b: 0, a: 1 }) }}
+							/>
+						}
+						autoComplete="off"
+						error={isError}
+					/>
+				</div>
+			}
+			onClose={togglePopoverActive}
+			preferredAlignment="left"
+			autofocusTarget="none"
+		>
+			<div className="max-w-64 p-4" onClick={(e) => e.stopPropagation()}>
+				<ColorPicker onChange={handleColorChange} color={pickerColor} allowAlpha />
+			</div>
+		</Popover>
 	);
 
 	return (
@@ -169,14 +234,15 @@ export const TokenTextInput = <
 	);
 };
 
-export interface TTokenTextInputProps<
-	GValue extends string | number,
+export interface TTokenColorInputProps<
+	GValue extends TRgba,
 	GRefValue extends TRef<GValue> | undefined,
 	GTokenSet extends TTokenSet
-> extends Omit<TextFieldProps, 'value' | 'onChange' | 'label' | 'labelHidden'> {
+> extends Omit<
+		TextFieldProps,
+		'value' | 'onChange' | 'label' | 'labelHidden' | 'prefix' | 'error'
+	> {
 	state: TState<GRefValue, any>;
-	mapToDisplay?: (value: GValue) => GValue;
-	mapToInternal?: (displayValue: GValue) => GValue;
 
 	tokenSet?: TState<GTokenSet, any>;
 	mapToTokenValue: (tokenRef: string, tokenSet?: GTokenSet) => GValue | undefined;

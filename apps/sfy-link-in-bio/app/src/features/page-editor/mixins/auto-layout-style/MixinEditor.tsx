@@ -2,8 +2,9 @@ import { isTokenRef, TAutoLayoutStyleMixin, TAutoLayoutStyleToken, TTokenSet } f
 import { Text } from '@shopify/polaris';
 import { useCompute } from 'feature-react';
 import { TState } from 'feature-state';
+import React from 'react';
 import { TokenTextInput } from '@/components';
-import { useMapState } from '../../../../hooks';
+import { useMapState } from '@/hooks';
 import { TPageEditor } from '../../lib';
 
 export const AutoLayoutStyleMixinEditor = <
@@ -16,14 +17,20 @@ export const AutoLayoutStyleMixinEditor = <
 
 	const hasHorizontalPadding = useCompute(
 		state,
-		({ value }) => mapValue(value).horizontalPadding != null
+		({ value }) => mapValue(value).horizontalPadding != null,
+		[mapValue]
 	);
 	const hasVerticalPadding = useCompute(
 		state,
-		({ value }) => mapValue(value).verticalPadding != null
+		({ value }) => mapValue(value).verticalPadding != null,
+		[mapValue]
 	);
-	const hasHorizontalGap = useCompute(state, ({ value }) => mapValue(value).horizontalGap != null);
-	const hasVerticalGap = useCompute(state, ({ value }) => mapValue(value).verticalGap != null);
+	const hasHorizontalGap = useCompute(state, ({ value }) => mapValue(value).horizontalGap != null, [
+		mapValue
+	]);
+	const hasVerticalGap = useCompute(state, ({ value }) => mapValue(value).verticalGap != null, [
+		mapValue
+	]);
 
 	const horizontalPaddingState = useMapState(state, {
 		map(baseValue) {

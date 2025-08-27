@@ -85,7 +85,16 @@ export const TextNodeEditor: React.FC<TNodeEditorComponentProps<TTextNode>> = (p
 					<div className="h-px bg-neutral-200" />
 					<FillStyleMixinEditor state={nodeState} parentState={parentNodeState} editor={editor} />
 					<div className="h-px bg-neutral-200" />
-					<StrokeStyleMixinEditor state={nodeState} parentState={parentNodeState} editor={editor} />
+					<StrokeStyleMixinEditor
+						state={nodeState}
+						mapValue={(value) => value.stroke}
+						applyValue={(state, value) => {
+							state._v.stroke = value;
+						}}
+						tokenSet={editor.tokensMap.stroke}
+						mapToken={(token) => token}
+						editor={editor}
+					/>
 					<div className="h-px bg-neutral-200" />
 					<ShadowStyleMixinEditor state={nodeState} parentState={parentNodeState} editor={editor} />
 				</AccordionSection>

@@ -17,17 +17,17 @@ export function resolveTypographyStyleMixin(
 	const typographyTokenSet = cx.site.getTokenSet('typography');
 
 	const [isResolvedFontOk, resolvedFontErr, resolvedFont] = resolveNestedTokenRef(
-		'font',
 		typography,
-		typographyTokenSet
+		typographyTokenSet,
+		'font'
 	);
 	if (!isResolvedFontOk) {
 		return Err(resolvedFontErr.wrapWith('#ERR_RESOLVE_FONT'));
 	}
 	const [isResolvedFontSizeOk, resolvedFontSizeErr, resolvedFontSize] = resolveNestedTokenRef(
-		'fontSize',
 		typography,
-		typographyTokenSet
+		typographyTokenSet,
+		'fontSize'
 	);
 	if (!isResolvedFontSizeOk) {
 		return Err(resolvedFontSizeErr.wrapWith('#ERR_RESOLVE_FONT_SIZE'));
@@ -36,25 +36,25 @@ export function resolveTypographyStyleMixin(
 		isResolvedTextAlignHorizontalOk,
 		resolvedTextAlignHorizontalErr,
 		resolvedTextAlignHorizontal
-	] = resolveNestedTokenRef('textAlignHorizontal', typography, typographyTokenSet);
+	] = resolveNestedTokenRef(typography, typographyTokenSet, 'textAlignHorizontal');
 	if (!isResolvedTextAlignHorizontalOk) {
 		return Err(resolvedTextAlignHorizontalErr.wrapWith('#ERR_RESOLVE_TEXT_ALIGN_HORIZONTAL'));
 	}
 	const [isResolvedTextAlignVerticalOk, resolvedTextAlignVerticalErr, resolvedTextAlignVertical] =
-		resolveNestedTokenRef('textAlignVertical', typography, typographyTokenSet);
+		resolveNestedTokenRef(typography, typographyTokenSet, 'textAlignVertical');
 	if (!isResolvedTextAlignVerticalOk) {
 		return Err(resolvedTextAlignVerticalErr.wrapWith('#ERR_RESOLVE_TEXT_ALIGN_VERTICAL'));
 	}
 	const [isResolvedLineHeightOk, resolvedLineHeightErr, resolvedLineHeight] = resolveNestedTokenRef(
-		'lineHeight',
 		typography,
-		typographyTokenSet
+		typographyTokenSet,
+		'lineHeight'
 	);
 	if (!isResolvedLineHeightOk) {
 		return Err(resolvedLineHeightErr.wrapWith('#ERR_RESOLVE_LINE_HEIGHT'));
 	}
 	const [isResolvedLetterSpacingOk, resolvedLetterSpacingErr, resolvedLetterSpacing] =
-		resolveNestedTokenRef('letterSpacing', typography, typographyTokenSet);
+		resolveNestedTokenRef(typography, typographyTokenSet, 'letterSpacing');
 	if (!isResolvedLetterSpacingOk) {
 		return Err(resolvedLetterSpacingErr.wrapWith('#ERR_RESOLVE_LETTER_SPACING'));
 	}

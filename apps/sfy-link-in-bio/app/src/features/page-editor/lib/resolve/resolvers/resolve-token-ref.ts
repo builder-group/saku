@@ -2,20 +2,15 @@ import { isTokenRef, TRef, TUnreference, uninherit } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
 
-export function resolveNestedTokenRef<
-	GValue extends Record<string, TRef<any>>,
-	GPropertyKey extends keyof GValue
->(
-	propertyKey: GPropertyKey,
-	sourceValue: GValue | TRef<GValue>,
+export function resolveTokenRef<GValue>(
+	sourceValue: TRef<GValue>,
 	tokenSet: Record<string, GValue> | undefined | null
-): TResult<TUnreference<GValue[GPropertyKey]>, AppError> {
+): TResult<GValue, AppError> {
 	if (tokenSet == null) {
 		return Err(new AppError('#ERR_TOKEN_MAP_NOT_FOUND'));
 	}
 
 	// Resolve sourceValue if it's a token ref
-	let resolvedValue: GValue;
 	if (isTokenRef(sourceValue)) {
 		const sourceToken = tokenSet[sourceValue.ref];
 		if (sourceToken == null) {
@@ -25,9 +20,28 @@ export function resolveNestedTokenRef<
 				})
 			);
 		}
-		resolvedValue = sourceToken;
-	} else {
-		resolvedValue = uninherit(sourceValue);
+		return Ok(sourceToken);
+	}
+
+	return Ok(uninherit(sourceValue));
+}
+
+export function resolveNestedTokenRef<
+	GValue extends Record<string, TRef<any>>,
+	GPropertyKey extends keyof GValue
+>(
+	sourceValue: TRef<GValue>,
+	tokenSet: Record<string, GValue> | undefined | null,
+	propertyKey: GPropertyKey
+): TResult<TUnreference<GValue[GPropertyKey]>, AppError> {
+	if (tokenSet == null) {
+		return Err(new AppError('#ERR_TOKEN_MAP_NOT_FOUND'));
+	}
+
+	// Resolve sourceValue if it's a token ref
+	const [isResolvedOk, resolvedErr, resolvedValue] = resolveTokenRef(sourceValue, tokenSet);
+	if (!isResolvedOk) {
+		return Err(resolvedErr);
 	}
 
 	// Resolve propertyValue if it's a token ref
