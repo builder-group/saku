@@ -19,8 +19,6 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 	const { nodeState, editor } = props;
 	const { content } = useFeatureState(nodeState);
 
-	const parentNodeState = React.useMemo(() => editor.getRootNode(), [editor]);
-
 	const [profilePictureImageError, setProfilePictureImageError] = React.useState<string | null>(
 		null
 	);
@@ -240,7 +238,16 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 						editor={editor}
 					/>
 					<div className="h-px bg-neutral-200" />
-					<FillStyleMixinEditor state={nodeState} parentState={parentNodeState} editor={editor} />
+					<FillStyleMixinEditor
+						state={nodeState}
+						mapValue={(value) => value.fill}
+						applyValue={(state, value) => {
+							state._v.fill = value;
+						}}
+						tokenSet={editor.tokensMap.fill}
+						mapToken={(token) => token}
+						editor={editor}
+					/>
 					<div className="h-px bg-neutral-200" />
 					<StrokeStyleMixinEditor
 						state={nodeState}
@@ -253,7 +260,16 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 						editor={editor}
 					/>
 					<div className="h-px bg-neutral-200" />
-					<ShadowStyleMixinEditor state={nodeState} parentState={parentNodeState} editor={editor} />
+					<ShadowStyleMixinEditor
+						state={nodeState}
+						mapValue={(value) => value.shadow}
+						applyValue={(state, value) => {
+							state._v.shadow = value;
+						}}
+						tokenSet={editor.tokensMap.shadow}
+						mapToken={(token) => token}
+						editor={editor}
+					/>
 				</AccordionSection>
 				<AccordionSection
 					title="Text"
@@ -261,7 +277,13 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 					size="tight"
 					defaultOpen={true}
 				>
-					<TextStyleMixinEditor state={nodeState} parentState={parentNodeState} editor={editor} />
+					<TextStyleMixinEditor
+						state={nodeState}
+						mapValue={(value) => value.text}
+						tokenSet={editor.tokensMap.text}
+						mapToken={(token) => token}
+						editor={editor}
+					/>
 				</AccordionSection>
 			</AccordionSection>
 		</>

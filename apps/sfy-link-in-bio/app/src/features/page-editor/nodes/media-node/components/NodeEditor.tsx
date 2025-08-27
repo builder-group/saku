@@ -16,8 +16,6 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 	const { nodeState, editor } = props;
 	const { content } = useFeatureState(nodeState);
 
-	const parentNodeState = React.useMemo(() => editor.getRootNode(), [editor]);
-
 	const [mediaImageError, setImageError] = React.useState<string | null>(null);
 	const [selectedMediaType, setSelectedMediaType] = React.useState<TMediaType>(() => {
 		return content.media?.type ?? 'image';
@@ -142,7 +140,16 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 						editor={editor}
 					/>
 					<div className="h-px bg-neutral-200" />
-					<FillStyleMixinEditor state={nodeState} parentState={parentNodeState} editor={editor} />
+					<FillStyleMixinEditor
+						state={nodeState}
+						mapValue={(value) => value.fill}
+						applyValue={(state, value) => {
+							state._v.fill = value;
+						}}
+						tokenSet={editor.tokensMap.fill}
+						mapToken={(token) => token}
+						editor={editor}
+					/>
 					<div className="h-px bg-neutral-200" />
 					<StrokeStyleMixinEditor
 						state={nodeState}
@@ -155,7 +162,16 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 						editor={editor}
 					/>
 					<div className="h-px bg-neutral-200" />
-					<ShadowStyleMixinEditor state={nodeState} parentState={parentNodeState} editor={editor} />
+					<ShadowStyleMixinEditor
+						state={nodeState}
+						mapValue={(value) => value.shadow}
+						applyValue={(state, value) => {
+							state._v.shadow = value;
+						}}
+						tokenSet={editor.tokensMap.shadow}
+						mapToken={(token) => token}
+						editor={editor}
+					/>
 				</AccordionSection>
 			</AccordionSection>
 		</>

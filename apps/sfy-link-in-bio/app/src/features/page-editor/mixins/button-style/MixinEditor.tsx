@@ -1,4 +1,4 @@
-import { TButtonStyleMixin, TMergeMixins } from '@repo/editor';
+import { TButtonStyleMixin, TButtonStyleToken, TTokenSet } from '@repo/editor';
 import { Text } from '@shopify/polaris';
 import { TState } from 'feature-state';
 import { TPageEditor } from '../../lib';
@@ -8,51 +8,54 @@ import { ShadowStyleMixinEditor } from '../shadow-style';
 import { StrokeStyleMixinEditor } from '../stroke-style';
 import { TextStyleMixinEditor } from '../text-style';
 
-export const ButtonStyleMixinEditor = <GValue extends Record<string, any>>(
-	props: TButtonStyleMixinEditorProps<GValue>
+export const ButtonStyleMixinEditor = <
+	GValue extends Record<string, any>,
+	GTokenSet extends TTokenSet
+>(
+	props: TButtonStyleMixinEditorProps<GValue, GTokenSet>
 ) => {
-	const { state, editor } = props;
+	const { state, mapValue, tokenSet, mapToken, editor } = props;
 
 	return (
 		<>
 			<AppearanceStyleMixinEditor
 				state={state}
-				mapValue={(value) => value.button.appearance}
-				tokenSet={editor.tokensMap.button}
-				mapToken={(token) => token?.appearance}
+				mapValue={(value) => mapValue(value).appearance}
+				tokenSet={tokenSet}
+				mapToken={(token) => mapToken(token)?.appearance}
 				editor={editor}
 			/>
 			<div className="h-px bg-neutral-200" />
 			<FillStyleMixinEditor
 				state={state}
-				mapValue={(value) => value.button.fill}
+				mapValue={(value) => mapValue(value).fill}
 				applyValue={(state, value) => {
-					state._v.button.fill = value;
+					mapValue(state._v).fill = value;
 				}}
-				tokenSet={editor.tokensMap.button}
-				mapToken={(token) => token?.fill}
+				tokenSet={tokenSet}
+				mapToken={(token) => mapToken(token)?.fill}
 				editor={editor}
 			/>
 			<div className="h-px bg-neutral-200" />
 			<StrokeStyleMixinEditor
 				state={state}
-				mapValue={(value) => value.button.stroke}
+				mapValue={(value) => mapValue(value).stroke}
 				applyValue={(state, value) => {
-					state._v.button.stroke = value;
+					mapValue(state._v).stroke = value;
 				}}
-				tokenSet={editor.tokensMap.button}
-				mapToken={(token) => token?.stroke}
+				tokenSet={tokenSet}
+				mapToken={(token) => mapToken(token)?.stroke}
 				editor={editor}
 			/>
 			<div className="h-px bg-neutral-200" />
 			<ShadowStyleMixinEditor
 				state={state}
-				mapValue={(value) => value.button.shadow}
+				mapValue={(value) => mapValue(value).shadow}
 				applyValue={(state, value) => {
-					state._v.button.shadow = value;
+					mapValue(state._v).shadow = value;
 				}}
-				tokenSet={editor.tokensMap.button}
-				mapToken={(token) => token?.shadow}
+				tokenSet={tokenSet}
+				mapToken={(token) => mapToken(token)?.shadow}
 				editor={editor}
 				disabledSpread
 			/>
@@ -61,12 +64,24 @@ export const ButtonStyleMixinEditor = <GValue extends Record<string, any>>(
 					Text
 				</Text>
 			</div>
-			<TextStyleMixinEditor state={state} editor={editor} />
+			<TextStyleMixinEditor
+				state={state}
+				mapValue={(value) => mapValue(value).text}
+				tokenSet={tokenSet}
+				mapToken={(token) => mapToken(token)?.text}
+				editor={editor}
+			/>
 		</>
 	);
 };
 
-interface TButtonStyleMixinEditorProps<GValue extends Record<string, any>> {
-	state: TState<GValue & TMergeMixins<[TButtonStyleMixin]>, any>;
+interface TButtonStyleMixinEditorProps<
+	GValue extends Record<string, any>,
+	GTokenSet extends TTokenSet
+> {
+	state: TState<GValue, any>;
+	mapValue: (value: GValue) => TButtonStyleMixin['value'];
+	tokenSet?: TState<GTokenSet, any>;
+	mapToken: (token?: GTokenSet['value']) => TButtonStyleToken['value'] | undefined;
 	editor: TPageEditor;
 }

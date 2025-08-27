@@ -1,4 +1,4 @@
-import { TMergeMixins, TTextStyleMixin } from '@repo/editor';
+import { TTextStyleMixin, TTextStyleToken, TTokenSet } from '@repo/editor';
 import { TState } from 'feature-state';
 import { TPageEditor } from '../../lib';
 import { AppearanceStyleMixinEditor } from '../appearance-style';
@@ -7,60 +7,63 @@ import { ShadowStyleMixinEditor } from '../shadow-style';
 import { StrokeStyleMixinEditor } from '../stroke-style';
 import { TypographyStyleMixinEditor } from '../typography-style';
 
-export const TextStyleMixinEditor = <GValue extends Record<string, any>>(
-	props: TTextStyleMixinEditorProps<GValue>
+export const TextStyleMixinEditor = <
+	GValue extends Record<string, any>,
+	GTokenSet extends TTokenSet
+>(
+	props: TTextStyleMixinEditorProps<GValue, GTokenSet>
 ) => {
-	const { state, editor } = props;
+	const { state, mapValue, tokenSet, mapToken, editor } = props;
 
 	return (
 		<>
 			<AppearanceStyleMixinEditor
 				state={state}
-				mapValue={(value) => value.text.appearance}
-				tokenSet={editor.tokensMap.text}
-				mapToken={(token) => token?.appearance}
+				mapValue={(value) => mapValue(value).appearance}
+				tokenSet={tokenSet}
+				mapToken={(token) => mapToken(token)?.appearance}
 				editor={editor}
 			/>
 			<div className="h-px bg-neutral-200" />
 			<TypographyStyleMixinEditor
 				state={state}
-				mapValue={(value) => value.text.typography}
-				tokenSet={editor.tokensMap.text}
-				mapToken={(token) => token?.typography}
+				mapValue={(value) => mapValue(value).typography}
+				tokenSet={tokenSet}
+				mapToken={(token) => mapToken(token)?.typography}
 				editor={editor}
 			/>
 			<div className="h-px bg-neutral-200" />
 			<FillStyleMixinEditor
 				state={state}
-				mapValue={(value) => value.text.fill}
+				mapValue={(value) => mapValue(value).fill}
 				applyValue={(state, value) => {
-					state._v.text.fill = value;
+					mapValue(state._v).fill = value;
 				}}
-				tokenSet={editor.tokensMap.text}
-				mapToken={(token) => token?.fill}
+				tokenSet={tokenSet}
+				mapToken={(token) => mapToken(token)?.fill}
 				editor={editor}
 				allowedPaintTypes={['solid']}
 			/>
 			<div className="h-px bg-neutral-200" />
 			<StrokeStyleMixinEditor
 				state={state}
-				mapValue={(value) => value.text.stroke}
+				mapValue={(value) => mapValue(value).stroke}
 				applyValue={(state, value) => {
-					state._v.text.stroke = value;
+					mapValue(state._v).stroke = value;
 				}}
-				tokenSet={editor.tokensMap.text}
-				mapToken={(token) => token?.stroke}
+				tokenSet={tokenSet}
+				mapToken={(token) => mapToken(token)?.stroke}
 				editor={editor}
 			/>
 			<div className="h-px bg-neutral-200" />
 			<ShadowStyleMixinEditor
 				state={state}
-				mapValue={(value) => value.text.shadow}
+				mapValue={(value) => mapValue(value).shadow}
 				applyValue={(state, value) => {
-					state._v.text.shadow = value;
+					mapValue(state._v).shadow = value;
 				}}
-				tokenSet={editor.tokensMap.text}
-				mapToken={(token) => token?.shadow}
+				tokenSet={tokenSet}
+				mapToken={(token) => mapToken(token)?.shadow}
 				editor={editor}
 				disabledSpread
 			/>
@@ -68,7 +71,13 @@ export const TextStyleMixinEditor = <GValue extends Record<string, any>>(
 	);
 };
 
-interface TTextStyleMixinEditorProps<GValue extends Record<string, any>> {
-	state: TState<GValue & TMergeMixins<[TTextStyleMixin]>, any>;
+interface TTextStyleMixinEditorProps<
+	GValue extends Record<string, any>,
+	GTokenSet extends TTokenSet
+> {
+	state: TState<GValue, any>;
+	mapValue: (value: GValue) => TTextStyleMixin['value'];
+	tokenSet?: TState<GTokenSet, any>;
+	mapToken: (token?: GTokenSet['value']) => TTextStyleToken['value'] | undefined;
 	editor: TPageEditor;
 }
