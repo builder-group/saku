@@ -147,7 +147,7 @@ export const TypographyStyleMixinEditor = <
 						autoComplete="off"
 						min={0}
 						max={96}
-						step={4}
+						step={2}
 						state={fontSizeState}
 						tokenSet={tokenSet}
 						mapToTokenValue={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.fontSize}

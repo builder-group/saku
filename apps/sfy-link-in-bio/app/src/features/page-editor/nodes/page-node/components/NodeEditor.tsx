@@ -2,10 +2,12 @@ import {
 	isTokenRef,
 	TAppearanceStyleToken,
 	TAutoLayoutStyleToken,
+	TButtonStyleToken,
 	TFillStyleToken,
 	TFlatPageNode,
 	TShadowStyleToken,
-	TStrokeStyleToken
+	TStrokeStyleToken,
+	TTextStyleToken
 } from '@repo/editor';
 import React from 'react';
 import { AccordionSection } from '@/components';
@@ -14,9 +16,11 @@ import { TNodeEditorComponentProps } from '../../../lib';
 import {
 	AppearanceStyleMixinEditor,
 	AutoLayoutStyleMixinEditor,
+	ButtonStyleMixinEditor,
 	FillStyleMixinEditor,
 	ShadowStyleMixinEditor,
-	StrokeStyleMixinEditor
+	StrokeStyleMixinEditor,
+	TextStyleMixinEditor
 } from '../../../mixins';
 
 export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TFlatPageNode>> = (props) => {
@@ -88,6 +92,76 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TFlatPageNode>> 
 						blur: 6,
 						spread: -1
 					} satisfies TShadowStyleToken['value']),
+		sync: (token, value, notifyOptions) => {
+			token._v['default'] = value;
+			token._notify(notifyOptions);
+		}
+	});
+	const defaultTextToken = useMapState(editor.tokensMap.text, {
+		map: (token) =>
+			token['default'] !== undefined
+				? token['default']
+				: ({
+						appearance: { visible: true, opacity: 1, borderRadius: 0 },
+						typography: {
+							font: { family: 'Inter', weight: 400, style: 'normal' },
+							fontSize: 16,
+							textAlignHorizontal: 'center',
+							textAlignVertical: 'center',
+							lineHeight: { type: 'auto' },
+							letterSpacing: { type: 'auto' }
+						},
+						fill: {
+							paint: {
+								type: 'solid',
+								color: { r: 0, g: 0, b: 0, a: 1 }
+							},
+							opacity: 1
+						},
+						stroke: null,
+						shadow: null
+					} satisfies TTextStyleToken['value']),
+		sync: (token, value, notifyOptions) => {
+			token._v['default'] = value;
+			token._notify(notifyOptions);
+		}
+	});
+	const defaultButtonToken = useMapState(editor.tokensMap.button, {
+		map: (token) =>
+			token['default'] !== undefined
+				? token['default']
+				: ({
+						appearance: { visible: true, opacity: 1, borderRadius: 0 },
+						fill: {
+							paint: {
+								type: 'solid',
+								color: { r: 0, g: 0, b: 0, a: 1 }
+							},
+							opacity: 1
+						},
+						stroke: null,
+						shadow: null,
+						text: {
+							appearance: { visible: true, opacity: 1, borderRadius: 0 },
+							typography: {
+								font: { family: 'Inter', weight: 400, style: 'normal' },
+								fontSize: 16,
+								textAlignHorizontal: 'center',
+								textAlignVertical: 'center',
+								lineHeight: { type: 'auto' },
+								letterSpacing: { type: 'auto' }
+							},
+							fill: {
+								paint: {
+									type: 'solid',
+									color: { r: 255, g: 255, b: 255, a: 1 }
+								},
+								opacity: 1
+							},
+							stroke: null,
+							shadow: null
+						}
+					} satisfies TButtonStyleToken['value']),
 		sync: (token, value, notifyOptions) => {
 			token._v['default'] = value;
 			token._notify(notifyOptions);
@@ -200,14 +274,28 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TFlatPageNode>> 
 			</AccordionSection>
 
 			{/* Text Section */}
-			<AccordionSection title="Text" collapsibleClassName="px-0 space-y-3">
-				{/* <ChildTextStyleMixinEditor state={nodeState} editor={editor} /> */}
-			</AccordionSection>
+			{defaultTextToken && (
+				<AccordionSection title="Text" collapsibleClassName="px-0 space-y-3">
+					<TextStyleMixinEditor
+						state={defaultTextToken}
+						mapValue={(value) => value}
+						disabledTokenLink
+						editor={editor}
+					/>
+				</AccordionSection>
+			)}
 
 			{/* CTA Section */}
-			<AccordionSection title="Button" collapsibleClassName="px-0 space-y-3">
-				{/* <ChildButtonStyleMixinEditor state={nodeState} editor={editor} /> */}
-			</AccordionSection>
+			{defaultButtonToken && (
+				<AccordionSection title="Button" collapsibleClassName="px-0 space-y-3">
+					<ButtonStyleMixinEditor
+						state={defaultButtonToken}
+						mapValue={(value) => value}
+						disabledTokenLink
+						editor={editor}
+					/>
+				</AccordionSection>
+			)}
 		</>
 	);
 };
