@@ -1,4 +1,4 @@
-import { TAssetHash, TImagePaint, TMediaNode, TPaint } from '@repo/editor';
+import { isTokenRef, TAssetHash, TMediaNode } from '@repo/editor';
 
 /**
  * Extracts asset hashes from a media node
@@ -11,13 +11,9 @@ export function getMediaNodeAssetHashes(node: TMediaNode): TAssetHash[] {
 		hashes.push(node.content.media.hash);
 	}
 
-	// Fill asset (if not inherited)
-	if (
-		node.fill != null &&
-		(node.fill as { paint: TPaint }).paint.type === 'image' &&
-		(node.fill as { paint: TImagePaint }).paint.hash != null
-	) {
-		hashes.push((node.fill as { paint: TImagePaint }).paint.hash as TAssetHash);
+	// Fill asset (if not linked)
+	if (!isTokenRef(node.fill) && node.fill?.paint.type === 'image' && node.fill.paint.hash != null) {
+		hashes.push(node.fill.paint.hash);
 	}
 
 	return hashes;
