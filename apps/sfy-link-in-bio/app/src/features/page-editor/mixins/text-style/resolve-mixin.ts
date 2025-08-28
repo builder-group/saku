@@ -70,8 +70,8 @@ export function resolveTextStyleMixin<GTokenSet extends TTokenSet>(
 		stroke: resolvedStroke,
 		shadow: resolvedShadow,
 		styles: {
-			visibility: resolvedAppearance.visible ? 'visible' : 'hidden',
-			opacity: `${resolvedAppearance.opacity * 100}%`,
+			...resolvedAppearance.styles,
+			...resolvedTypography.styles,
 			color: resolvedFill?.paint.type === 'solid' ? resolvedFill?.paint.color : undefined,
 			WebkitTextStroke: resolvedStroke?.width
 				? `${resolvedStroke.width}px ${resolvedStroke.color}`

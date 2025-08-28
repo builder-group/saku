@@ -164,7 +164,7 @@ export const TypographyStyleMixinEditor = <
 						}
 						onNavigateToToken={handleNavigateToToken}
 					/>
-					<TokenSelectInput
+					{/* <TokenSelectInput
 						label="Vertical Text Align"
 						options={textAlignOptions}
 						state={textAlignVerticalState}
@@ -173,7 +173,7 @@ export const TypographyStyleMixinEditor = <
 							mapToToken(tokenRef, tokenSet)?.textAlignVertical
 						}
 						onNavigateToToken={handleNavigateToToken}
-					/>
+					/> */}
 				</div>
 			</div>
 		</div>

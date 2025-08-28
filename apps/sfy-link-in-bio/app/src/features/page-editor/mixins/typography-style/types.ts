@@ -13,8 +13,7 @@ export type TResolvedTypographyStyleMixin = TBaseMixin<
 		styles: {
 			fontFamily: React.CSSProperties['fontFamily'];
 			fontSize: React.CSSProperties['fontSize'];
-			textAlignHorizontal: React.CSSProperties['textAlign'];
-			textAlignVertical: React.CSSProperties['textAlign'];
+			textAlign: React.CSSProperties['textAlign'];
 			lineHeight: React.CSSProperties['lineHeight'];
 			letterSpacing: React.CSSProperties['letterSpacing'];
 		};

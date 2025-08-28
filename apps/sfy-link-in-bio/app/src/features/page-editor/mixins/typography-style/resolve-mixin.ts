@@ -72,8 +72,7 @@ export function resolveTypographyStyleMixin<GTokenSet extends TTokenSet>(
 		styles: {
 			fontFamily: resolvedFont.family,
 			fontSize: `${resolvedFontSize}px`,
-			textAlignHorizontal: resolvedTextAlignHorizontal,
-			textAlignVertical: resolvedTextAlignVertical,
+			textAlign: resolvedTextAlignHorizontal,
 			lineHeight: resolveLineHeight(resolvedLineHeight),
 			letterSpacing: resolveLetterSpacing(resolvedLetterSpacing)
 		}
