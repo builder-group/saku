@@ -1,6 +1,7 @@
 import { TProductNode } from '@repo/editor';
 import { useCompute } from 'feature-react';
 import React from 'react';
+import { logger } from '@/environment';
 import { EditorSiteResolveContext, TNodeProps } from '../../../lib';
 import { resolveProductNode } from '../resolve-node';
 import { ResolvedProductNode } from './ResolvedNode';
@@ -14,6 +15,9 @@ export const ProductNode = React.forwardRef<HTMLDivElement, TNodeProps<TProductN
 				site: new EditorSiteResolveContext(editor)
 			});
 			if (result.isErr()) {
+				logger.warn('Failed to resolve product node', {
+					error: result.error
+				});
 				editor.shopify.toast.show('Failed to resolve product node');
 				return null;
 			}

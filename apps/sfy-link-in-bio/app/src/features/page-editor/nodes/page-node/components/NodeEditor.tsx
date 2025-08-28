@@ -38,17 +38,17 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TFlatPageNode>> 
 			<AccordionSection title="Page" collapsibleClassName="px-0 space-y-3">
 				<AutoLayoutStyleMixinEditor
 					state={nodeState}
-					mapValue={(value) => value.autoLayout}
+					mapValue={(value) => value['autoLayout']}
 					tokenSet={editor.tokensMap.autoLayout}
-					mapToken={(token) => token}
+					mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]}
 					editor={editor}
 				/>
 				<div className="h-px bg-neutral-200" />
 				<AppearanceStyleMixinEditor
 					state={nodeState}
-					mapValue={(value) => value.appearance}
+					mapValue={(value) => value['appearance']}
 					tokenSet={editor.tokensMap.appearance}
-					mapToken={(token) => token}
+					mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]}
 					editor={editor}
 				/>
 				<div className="h-px bg-neutral-200" />
@@ -59,7 +59,7 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TFlatPageNode>> 
 						state._v.fill = value;
 					}}
 					tokenSet={editor.tokensMap.fill}
-					mapToken={(token) => token}
+					mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]}
 					editor={editor}
 				/>
 			</AccordionSection>

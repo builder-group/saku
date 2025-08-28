@@ -14,7 +14,7 @@ export const ButtonStyleMixinEditor = <
 >(
 	props: TButtonStyleMixinEditorProps<GValue, GTokenSet>
 ) => {
-	const { state, mapValue, tokenSet, mapToken, editor } = props;
+	const { state, mapValue, tokenSet, mapToToken, editor } = props;
 
 	return (
 		<>
@@ -22,7 +22,7 @@ export const ButtonStyleMixinEditor = <
 				state={state}
 				mapValue={(value) => mapValue(value).appearance}
 				tokenSet={tokenSet}
-				mapToken={(token) => mapToken(token)?.appearance}
+				mapToToken={(tokenRef, tokenSet) => mapToToken(tokenRef, tokenSet)?.appearance}
 				editor={editor}
 			/>
 			<div className="h-px bg-neutral-200" />
@@ -33,7 +33,7 @@ export const ButtonStyleMixinEditor = <
 					mapValue(state._v).fill = value;
 				}}
 				tokenSet={tokenSet}
-				mapToken={(token) => mapToken(token)?.fill}
+				mapToToken={(tokenRef, tokenSet) => mapToToken(tokenRef, tokenSet)?.fill}
 				editor={editor}
 			/>
 			<div className="h-px bg-neutral-200" />
@@ -44,7 +44,7 @@ export const ButtonStyleMixinEditor = <
 					mapValue(state._v).stroke = value;
 				}}
 				tokenSet={tokenSet}
-				mapToken={(token) => mapToken(token)?.stroke}
+				mapToToken={(tokenRef, tokenSet) => mapToToken(tokenRef, tokenSet)?.stroke}
 				editor={editor}
 			/>
 			<div className="h-px bg-neutral-200" />
@@ -55,7 +55,7 @@ export const ButtonStyleMixinEditor = <
 					mapValue(state._v).shadow = value;
 				}}
 				tokenSet={tokenSet}
-				mapToken={(token) => mapToken(token)?.shadow}
+				mapToToken={(tokenRef, tokenSet) => mapToToken(tokenRef, tokenSet)?.shadow}
 				editor={editor}
 				disabledSpread
 			/>
@@ -68,7 +68,7 @@ export const ButtonStyleMixinEditor = <
 				state={state}
 				mapValue={(value) => mapValue(value).text}
 				tokenSet={tokenSet}
-				mapToken={(token) => mapToken(token)?.text}
+				mapToToken={(tokenRef, tokenSet) => mapToToken(tokenRef, tokenSet)?.text}
 				editor={editor}
 			/>
 		</>
@@ -82,6 +82,6 @@ interface TButtonStyleMixinEditorProps<
 	state: TState<GValue, any>;
 	mapValue: (value: GValue) => TButtonStyleMixin['value'];
 	tokenSet?: TState<GTokenSet, any>;
-	mapToken: (token?: GTokenSet['value']) => TButtonStyleToken['value'] | undefined;
+	mapToToken: (ref: string, tokenSet?: GTokenSet) => TButtonStyleToken['value'] | undefined;
 	editor: TPageEditor;
 }

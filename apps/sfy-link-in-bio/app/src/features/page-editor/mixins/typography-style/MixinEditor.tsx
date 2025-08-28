@@ -19,7 +19,7 @@ export const TypographyStyleMixinEditor = <
 >(
 	props: TTypographyStyleMixinEditorProps<GValue, GTokenSet>
 ) => {
-	const { state, mapValue, tokenSet, mapToken, editor } = props;
+	const { state, mapValue, tokenSet, mapToToken, editor } = props;
 
 	const fontOptions = React.useMemo(() => {
 		return fontMetadata.map((font) => ({
@@ -137,9 +137,7 @@ export const TypographyStyleMixinEditor = <
 						options={fontOptions}
 						state={fontFamilyState}
 						tokenSet={tokenSet}
-						mapToTokenValue={(tokenRef, tokenSet) =>
-							mapToken(tokenSet?.[tokenRef] as GTokenSet['value'])?.font.family
-						}
+						mapToTokenValue={(tokenRef, tokenSet) => mapToToken(tokenRef, tokenSet)?.font?.family}
 						onNavigateToToken={handleNavigateToToken}
 					/>
 					<TokenTextInput
@@ -151,9 +149,7 @@ export const TypographyStyleMixinEditor = <
 						step={4}
 						state={fontSizeState}
 						tokenSet={tokenSet}
-						mapToTokenValue={(tokenRef, tokenSet) =>
-							mapToken(tokenSet?.[tokenRef] as GTokenSet['value'])?.fontSize
-						}
+						mapToTokenValue={(tokenRef, tokenSet) => mapToToken(tokenRef, tokenSet)?.fontSize}
 						onNavigateToToken={handleNavigateToToken}
 					/>
 				</div>
@@ -164,7 +160,7 @@ export const TypographyStyleMixinEditor = <
 						state={textAlignHorizontalState}
 						tokenSet={tokenSet}
 						mapToTokenValue={(tokenRef, tokenSet) =>
-							mapToken(tokenSet?.[tokenRef] as GTokenSet['value'])?.textAlignHorizontal
+							mapToToken(tokenRef, tokenSet)?.textAlignHorizontal
 						}
 						onNavigateToToken={handleNavigateToToken}
 					/>
@@ -174,7 +170,7 @@ export const TypographyStyleMixinEditor = <
 						state={textAlignVerticalState}
 						tokenSet={tokenSet}
 						mapToTokenValue={(tokenRef, tokenSet) =>
-							mapToken(tokenSet?.[tokenRef] as GTokenSet['value'])?.textAlignVertical
+							mapToToken(tokenRef, tokenSet)?.textAlignVertical
 						}
 						onNavigateToToken={handleNavigateToToken}
 					/>
@@ -191,6 +187,6 @@ interface TTypographyStyleMixinEditorProps<
 	state: TState<GValue, any>;
 	mapValue: (value: GValue) => TTypographyStyleMixin['value'];
 	tokenSet?: TState<GTokenSet, any>;
-	mapToken: (token?: GTokenSet['value']) => TTypographyStyleToken['value'] | undefined;
+	mapToToken: (ref: string, tokenSet?: GTokenSet) => TTypographyStyleToken['value'] | undefined;
 	editor: TPageEditor;
 }

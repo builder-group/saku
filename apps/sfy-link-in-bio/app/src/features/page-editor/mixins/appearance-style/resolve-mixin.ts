@@ -1,23 +1,22 @@
-import { TAppearanceStyleMixin } from '@repo/editor';
+import { TAppearanceStyleMixin, TAppearanceStyleToken, TTokenSet } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
-import { resolveNestedTokenRef, TNodeResolveContext } from '../../lib';
+import { resolveNestedTokenRef, TMixinResolveContext } from '../../lib';
 import { TResolvedAppearanceStyleMixin } from './types';
 
-export function resolveAppearanceStyleMixin(
+export function resolveAppearanceStyleMixin<GTokenSet extends TTokenSet>(
 	appearance: TAppearanceStyleMixin['value'],
-	cx: TNodeResolveContext
+	cx: TMixinResolveContext<TAppearanceStyleToken['value'], GTokenSet>
 ): TResult<TResolvedAppearanceStyleMixin['value'], AppError> {
-	const appearanceTokenSet = cx.site.getTokenSet('appearance');
-
 	const [isResolvedBorderRadiusOk, resolvedBorderRadiusErr, resolvedBorderRadius] =
-		resolveNestedTokenRef(appearance, appearanceTokenSet, 'borderRadius');
+		resolveNestedTokenRef(appearance, cx.tokenSet, cx.mapToToken, 'borderRadius');
 	if (!isResolvedBorderRadiusOk) {
 		return Err(resolvedBorderRadiusErr.wrapWith('#ERR_RESOLVE_BORDER_RADIUS'));
 	}
 	const [isResolvedVisibleOk, resolvedVisibleErr, resolvedVisible] = resolveNestedTokenRef(
 		appearance,
-		appearanceTokenSet,
+		cx.tokenSet,
+		cx.mapToToken,
 		'visible'
 	);
 	if (!isResolvedVisibleOk) {
@@ -25,7 +24,8 @@ export function resolveAppearanceStyleMixin(
 	}
 	const [isResolvedOpacityOk, resolvedOpacityErr, resolvedOpacity] = resolveNestedTokenRef(
 		appearance,
-		appearanceTokenSet,
+		cx.tokenSet,
+		cx.mapToToken,
 		'opacity'
 	);
 	if (!isResolvedOpacityOk) {

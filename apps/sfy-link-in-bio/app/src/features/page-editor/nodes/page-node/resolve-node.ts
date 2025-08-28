@@ -36,16 +36,28 @@ export function resolvePageNodeWithoutChildren(
 	const { autoLayout, appearance, fill, ...rest } = node;
 
 	const [isResolvedAutoLayoutOk, resolvedAutoLayoutErr, resolvedAutoLayout] =
-		resolveAutoLayoutStyleMixin(autoLayout, cx);
+		resolveAutoLayoutStyleMixin(autoLayout, {
+			node: cx,
+			tokenSet: cx.site.getTokenSet('autoLayout'),
+			mapToToken: (ref, tokenSet) => tokenSet?.[ref]
+		});
 	if (!isResolvedAutoLayoutOk) {
 		return Err(resolvedAutoLayoutErr.wrapWith('#ERR_RESOLVE_AUTO_LAYOUT_STYLE'));
 	}
 	const [isResolvedAppearanceOk, resolvedAppearanceErr, resolvedAppearance] =
-		resolveAppearanceStyleMixin(appearance, cx);
+		resolveAppearanceStyleMixin(appearance, {
+			node: cx,
+			tokenSet: cx.site.getTokenSet('appearance'),
+			mapToToken: (ref, tokenSet) => tokenSet?.[ref]
+		});
 	if (!isResolvedAppearanceOk) {
 		return Err(resolvedAppearanceErr.wrapWith('#ERR_RESOLVE_APPEARANCE_STYLE'));
 	}
-	const [isResolvedFillOk, resolvedFillErr, resolvedFill] = resolveFillStyleMixin(fill, cx);
+	const [isResolvedFillOk, resolvedFillErr, resolvedFill] = resolveFillStyleMixin(fill, {
+		node: cx,
+		tokenSet: cx.site.getTokenSet('fill'),
+		mapToToken: (ref, tokenSet) => tokenSet?.[ref]
+	});
 	if (!isResolvedFillOk) {
 		return Err(resolvedFillErr.wrapWith('#ERR_RESOLVE_FILL_STYLE'));
 	}

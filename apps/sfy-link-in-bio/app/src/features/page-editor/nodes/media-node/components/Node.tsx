@@ -1,6 +1,7 @@
 import { TMediaNode } from '@repo/editor';
 import { useCompute } from 'feature-react';
 import React from 'react';
+import { logger } from '@/environment';
 import { EditorSiteResolveContext, TNodeProps } from '../../../lib';
 import { resolveMediaNode } from '../resolve-node';
 import { ResolvedMediaNode } from './ResolvedNode';
@@ -13,6 +14,9 @@ export const MediaNode = React.forwardRef<HTMLDivElement, TNodeProps<TMediaNode>
 			site: new EditorSiteResolveContext(editor)
 		});
 		if (result.isErr()) {
+			logger.warn('Failed to resolve media node', {
+				error: result.error
+			});
 			editor.shopify.toast.show('Failed to resolve media node');
 			return null;
 		}

@@ -15,7 +15,7 @@ export const FillStyleMixinEditor = <
 >(
 	props: TFillStyleMixinEditorProps<GValue, GTokenSet>
 ) => {
-	const { state, mapValue, applyValue, tokenSet, mapToken, editor, allowedPaintTypes } = props;
+	const { state, mapValue, applyValue, tokenSet, mapToToken, editor, allowedPaintTypes } = props;
 
 	const isLinked = useCompute(state, ({ value }) => isTokenRef(mapValue(value)), [mapValue]);
 	const isSet = useCompute(
@@ -23,7 +23,7 @@ export const FillStyleMixinEditor = <
 		({ value }) => {
 			const fill = mapValue(value);
 			if (isTokenRef(fill)) {
-				return mapToken(tokenSet?._v?.[fill.ref] as GTokenSet['value']) != null;
+				return mapToToken(fill.ref, tokenSet?._v) != null;
 			}
 			return fill != null;
 		},
@@ -52,7 +52,7 @@ export const FillStyleMixinEditor = <
 	// =========================================================================
 
 	const handleAddFill = React.useCallback(() => {
-		const tokenValue = mapToken(tokenSet?._v?.['default'] as GTokenSet['value']);
+		const tokenValue = mapToToken('default', tokenSet?._v);
 		applyValue(
 			state,
 			tokenValue ?? {
@@ -64,7 +64,7 @@ export const FillStyleMixinEditor = <
 			}
 		);
 		state._notify();
-	}, [mapToken, tokenSet, applyValue, state]);
+	}, [mapToToken, tokenSet, applyValue, state]);
 
 	const handleRemoveFill = React.useCallback(() => {
 		applyValue(state, null);
@@ -74,9 +74,7 @@ export const FillStyleMixinEditor = <
 	const handleToggleTokenLink = React.useCallback(() => {
 		if (isLinked) {
 			const fill = mapValue(state._v);
-			const tokenValue = isTokenRef(fill)
-				? mapToken(tokenSet?._v?.[fill.ref] as GTokenSet['value'])
-				: undefined;
+			const tokenValue = isTokenRef(fill) ? mapToToken(fill.ref, tokenSet?._v) : undefined;
 			if (tokenValue !== undefined) {
 				applyValue(state, deepCopy(tokenValue));
 				state._notify();
@@ -85,7 +83,7 @@ export const FillStyleMixinEditor = <
 			applyValue(state, tokenRef('default'));
 			state._notify();
 		}
-	}, [isLinked, mapValue, state, mapToken, tokenSet, applyValue]);
+	}, [isLinked, mapValue, state, mapToToken, tokenSet, applyValue]);
 
 	const handleNavigateToToken = React.useCallback(() => {
 		editor.switchView('settings');
@@ -139,23 +137,19 @@ export const FillStyleMixinEditor = <
 			</div>
 
 			{isSet && (
-				<div>
-					<TokenPaintInput
-						label="Paint"
-						state={paintState}
-						tokenSet={tokenSet}
-						mapToTokenValue={(tokenRef, tokenSet) =>
-							mapToken(tokenSet?.[tokenRef] as GTokenSet['value'])?.paint
-						}
-						onLinkChange={() => {
-							handleToggleTokenLink();
-							return { preventDefault: true };
-						}}
-						onNavigateToToken={handleNavigateToToken}
-						editor={editor}
-						allowedPaintTypes={allowedPaintTypes}
-					/>
-				</div>
+				<TokenPaintInput
+					label="Paint"
+					state={paintState}
+					tokenSet={tokenSet}
+					mapToTokenValue={(tokenRef, tokenSet) => mapToToken(tokenRef, tokenSet)?.paint}
+					onLinkChange={() => {
+						handleToggleTokenLink();
+						return { preventDefault: true };
+					}}
+					onNavigateToToken={handleNavigateToToken}
+					editor={editor}
+					allowedPaintTypes={allowedPaintTypes}
+				/>
 			)}
 		</div>
 	);
@@ -169,7 +163,7 @@ interface TFillStyleMixinEditorProps<
 	mapValue: (value: GValue) => TFillStyleMixin['value'];
 	applyValue: (state: TState<GValue, any>, value: TFillStyleMixin['value']) => void;
 	tokenSet?: TState<GTokenSet, any>;
-	mapToken: (token?: GTokenSet['value']) => TFillStyleToken['value'] | undefined;
+	mapToToken: (ref: string, tokenSet?: GTokenSet) => TFillStyleToken['value'] | undefined;
 	editor: TPageEditor;
 	allowedPaintTypes?: TTokenPaintInputPaintType[];
 }

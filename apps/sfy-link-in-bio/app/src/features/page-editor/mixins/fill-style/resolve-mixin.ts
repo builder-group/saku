@@ -1,16 +1,17 @@
-import { TFillStyleMixin, TPaint } from '@repo/editor';
+import { TFillStyleMixin, TFillStyleToken, TPaint, TTokenSet } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
-import { resolvePaint, resolveTokenRef, TNodeResolveContext } from '../../lib';
+import { resolvePaint, resolveTokenRef, TMixinResolveContext } from '../../lib';
 import { TResolvedFillStyleMixin } from './types';
 
-export function resolveFillStyleMixin(
+export function resolveFillStyleMixin<GTokenSet extends TTokenSet>(
 	fill: TFillStyleMixin['value'],
-	cx: TNodeResolveContext
+	cx: TMixinResolveContext<TFillStyleToken['value'], GTokenSet>
 ): TResult<TResolvedFillStyleMixin['value'], AppError> {
 	const [isResolvedFillOk, resolvedFillErr, resolvedFill] = resolveTokenRef(
 		fill,
-		cx.site.getTokenSet('fill')
+		cx.tokenSet,
+		cx.mapToToken
 	);
 	if (!isResolvedFillOk) {
 		return Err(resolvedFillErr.wrapWith('#ERR_RESOLVE_FILL'));
@@ -20,7 +21,7 @@ export function resolveFillStyleMixin(
 		return Ok(null);
 	}
 
-	const resolvedPaint = resolvePaint(resolvedFill.paint, cx.site);
+	const resolvedPaint = resolvePaint(resolvedFill.paint, cx.node.site);
 
 	const styles: {
 		backgroundColor?: string;

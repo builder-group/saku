@@ -1,32 +1,30 @@
-import { TAutoLayoutStyleMixin } from '@repo/editor';
+import { TAutoLayoutStyleMixin, TAutoLayoutStyleToken, TTokenSet } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
-import { resolveNestedTokenRef, TNodeResolveContext } from '../../lib';
+import { resolveNestedTokenRef, TMixinResolveContext } from '../../lib';
 import { TResolvedAutoLayoutStyleMixin } from './types';
 
-export function resolveAutoLayoutStyleMixin(
+export function resolveAutoLayoutStyleMixin<GTokenSet extends TTokenSet>(
 	layout: TAutoLayoutStyleMixin['value'],
-	cx: TNodeResolveContext
+	cx: TMixinResolveContext<TAutoLayoutStyleToken['value'], GTokenSet>
 ): TResult<TResolvedAutoLayoutStyleMixin['value'], AppError> {
-	const autoLayoutTokenSet = cx.site.getTokenSet('autoLayout');
-
 	const [isResolvedHorizontalPaddingOk, resolvedHorizontalPaddingErr, resolvedHorizontalPadding] =
-		resolveNestedTokenRef(layout, autoLayoutTokenSet, 'horizontalPadding');
+		resolveNestedTokenRef(layout, cx.tokenSet, cx.mapToToken, 'horizontalPadding');
 	if (!isResolvedHorizontalPaddingOk) {
 		return Err(resolvedHorizontalPaddingErr.wrapWith('#ERR_RESOLVE_HORIZONTAL_PADDING'));
 	}
 	const [isResolvedVerticalPaddingOk, resolvedVerticalPaddingErr, resolvedVerticalPadding] =
-		resolveNestedTokenRef(layout, autoLayoutTokenSet, 'verticalPadding');
+		resolveNestedTokenRef(layout, cx.tokenSet, cx.mapToToken, 'verticalPadding');
 	if (!isResolvedVerticalPaddingOk) {
 		return Err(resolvedVerticalPaddingErr.wrapWith('#ERR_RESOLVE_VERTICAL_PADDING'));
 	}
 	const [isResolvedHorizontalGapOk, resolvedHorizontalGapErr, resolvedHorizontalGap] =
-		resolveNestedTokenRef(layout, autoLayoutTokenSet, 'horizontalGap');
+		resolveNestedTokenRef(layout, cx.tokenSet, cx.mapToToken, 'horizontalGap');
 	if (!isResolvedHorizontalGapOk) {
 		return Err(resolvedHorizontalGapErr.wrapWith('#ERR_RESOLVE_HORIZONTAL_GAP'));
 	}
 	const [isResolvedVerticalGapOk, resolvedVerticalGapErr, resolvedVerticalGap] =
-		resolveNestedTokenRef(layout, autoLayoutTokenSet, 'verticalGap');
+		resolveNestedTokenRef(layout, cx.tokenSet, cx.mapToToken, 'verticalGap');
 	if (!isResolvedVerticalGapOk) {
 		return Err(resolvedVerticalGapErr.wrapWith('#ERR_RESOLVE_VERTICAL_GAP'));
 	}

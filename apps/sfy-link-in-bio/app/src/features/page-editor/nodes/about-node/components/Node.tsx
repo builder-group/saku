@@ -1,6 +1,7 @@
 import { TAboutNode } from '@repo/editor';
 import { useCompute } from 'feature-react';
 import React from 'react';
+import { logger } from '@/environment';
 import { EditorSiteResolveContext, TNodeProps } from '../../../lib';
 import { resolveAboutNode } from '../resolve-node';
 import { ResolvedAboutNode } from './ResolvedNode';
@@ -13,6 +14,9 @@ export const AboutNode = React.forwardRef<HTMLDivElement, TNodeProps<TAboutNode>
 			site: new EditorSiteResolveContext(editor)
 		});
 		if (result.isErr()) {
+			logger.warn('Failed to resolve about node', {
+				error: result.error
+			});
 			editor.shopify.toast.show('Failed to resolve about node');
 			return null;
 		}

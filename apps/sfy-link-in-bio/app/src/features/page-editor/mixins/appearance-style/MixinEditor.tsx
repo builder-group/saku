@@ -14,7 +14,7 @@ export const AppearanceStyleMixinEditor = <
 >(
 	props: TAppearanceStyleMixinEditorProps<GValue, GTokenSet>
 ) => {
-	const { state, mapValue, tokenSet, mapToken, editor } = props;
+	const { state, mapValue, tokenSet, mapToToken, editor } = props;
 
 	const hasBorderRadius = useCompute(state, ({ value }) => mapValue(value).borderRadius != null, [
 		mapValue
@@ -95,9 +95,7 @@ export const AppearanceStyleMixinEditor = <
 					step={5}
 					state={opacityState}
 					tokenSet={tokenSet}
-					mapToTokenValue={(tokenRef, tokenSet) =>
-						mapToken(tokenSet?.[tokenRef] as GTokenSet['value'])?.opacity
-					}
+					mapToTokenValue={(tokenRef, tokenSet) => mapToToken(tokenRef, tokenSet)?.opacity}
 					mapToDisplay={(value) => Math.round(value * 100)}
 					mapToInternal={(displayValue) => displayValue / 100}
 					onNavigateToToken={handleNavigateToToken}
@@ -112,9 +110,7 @@ export const AppearanceStyleMixinEditor = <
 						step={4}
 						state={borderRadiusState}
 						tokenSet={tokenSet}
-						mapToTokenValue={(tokenRef, tokenSet) =>
-							mapToken(tokenSet?.[tokenRef] as GTokenSet['value'])?.borderRadius
-						}
+						mapToTokenValue={(tokenRef, tokenSet) => mapToToken(tokenRef, tokenSet)?.borderRadius}
 						onNavigateToToken={handleNavigateToToken}
 					/>
 				)}
@@ -130,6 +126,6 @@ interface TAppearanceStyleMixinEditorProps<
 	state: TState<GValue, any>;
 	mapValue: (value: GValue) => TAppearanceStyleMixin['value'];
 	tokenSet?: TState<GTokenSet, any>;
-	mapToken: (token?: GTokenSet['value']) => TAppearanceStyleToken['value'] | undefined;
+	mapToToken: (ref: string, tokenSet?: GTokenSet) => TAppearanceStyleToken['value'] | undefined;
 	editor: TPageEditor;
 }

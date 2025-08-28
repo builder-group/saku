@@ -3,22 +3,23 @@ import {
 	TLetterSpacing,
 	TLineHeight,
 	TTextAlign,
-	TTypographyStyleMixin
+	TTokenSet,
+	TTypographyStyleMixin,
+	TTypographyStyleToken
 } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
-import { resolveNestedTokenRef, TNodeResolveContext } from '../../lib';
+import { resolveNestedTokenRef, TMixinResolveContext } from '../../lib';
 import { TResolvedTypographyStyleMixin } from './types';
 
-export function resolveTypographyStyleMixin(
+export function resolveTypographyStyleMixin<GTokenSet extends TTokenSet>(
 	typography: TTypographyStyleMixin['value'],
-	cx: TNodeResolveContext
+	cx: TMixinResolveContext<TTypographyStyleToken['value'], GTokenSet>
 ): TResult<TResolvedTypographyStyleMixin['value'], AppError> {
-	const typographyTokenSet = cx.site.getTokenSet('typography');
-
 	const [isResolvedFontOk, resolvedFontErr, resolvedFont] = resolveNestedTokenRef(
 		typography,
-		typographyTokenSet,
+		cx.tokenSet,
+		cx.mapToToken,
 		'font'
 	);
 	if (!isResolvedFontOk) {
@@ -26,7 +27,8 @@ export function resolveTypographyStyleMixin(
 	}
 	const [isResolvedFontSizeOk, resolvedFontSizeErr, resolvedFontSize] = resolveNestedTokenRef(
 		typography,
-		typographyTokenSet,
+		cx.tokenSet,
+		cx.mapToToken,
 		'fontSize'
 	);
 	if (!isResolvedFontSizeOk) {
@@ -36,25 +38,26 @@ export function resolveTypographyStyleMixin(
 		isResolvedTextAlignHorizontalOk,
 		resolvedTextAlignHorizontalErr,
 		resolvedTextAlignHorizontal
-	] = resolveNestedTokenRef(typography, typographyTokenSet, 'textAlignHorizontal');
+	] = resolveNestedTokenRef(typography, cx.tokenSet, cx.mapToToken, 'textAlignHorizontal');
 	if (!isResolvedTextAlignHorizontalOk) {
 		return Err(resolvedTextAlignHorizontalErr.wrapWith('#ERR_RESOLVE_TEXT_ALIGN_HORIZONTAL'));
 	}
 	const [isResolvedTextAlignVerticalOk, resolvedTextAlignVerticalErr, resolvedTextAlignVertical] =
-		resolveNestedTokenRef(typography, typographyTokenSet, 'textAlignVertical');
+		resolveNestedTokenRef(typography, cx.tokenSet, cx.mapToToken, 'textAlignVertical');
 	if (!isResolvedTextAlignVerticalOk) {
 		return Err(resolvedTextAlignVerticalErr.wrapWith('#ERR_RESOLVE_TEXT_ALIGN_VERTICAL'));
 	}
 	const [isResolvedLineHeightOk, resolvedLineHeightErr, resolvedLineHeight] = resolveNestedTokenRef(
 		typography,
-		typographyTokenSet,
+		cx.tokenSet,
+		cx.mapToToken,
 		'lineHeight'
 	);
 	if (!isResolvedLineHeightOk) {
 		return Err(resolvedLineHeightErr.wrapWith('#ERR_RESOLVE_LINE_HEIGHT'));
 	}
 	const [isResolvedLetterSpacingOk, resolvedLetterSpacingErr, resolvedLetterSpacing] =
-		resolveNestedTokenRef(typography, typographyTokenSet, 'letterSpacing');
+		resolveNestedTokenRef(typography, cx.tokenSet, cx.mapToToken, 'letterSpacing');
 	if (!isResolvedLetterSpacingOk) {
 		return Err(resolvedLetterSpacingErr.wrapWith('#ERR_RESOLVE_LETTER_SPACING'));
 	}

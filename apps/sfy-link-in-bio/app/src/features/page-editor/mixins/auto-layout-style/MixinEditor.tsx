@@ -13,7 +13,7 @@ export const AutoLayoutStyleMixinEditor = <
 >(
 	props: TAutoLayoutStyleMixinEditorProps<GValue, GTokenSet>
 ) => {
-	const { state, mapValue, tokenSet, mapToken, editor } = props;
+	const { state, mapValue, tokenSet, mapToToken, editor } = props;
 
 	const hasHorizontalPadding = useCompute(
 		state,
@@ -133,7 +133,7 @@ export const AutoLayoutStyleMixinEditor = <
 							state={horizontalPaddingState}
 							tokenSet={tokenSet}
 							mapToTokenValue={(tokenRef, tokenSet) =>
-								mapToken(tokenSet?.[tokenRef] as GTokenSet['value'])?.horizontalPadding
+								mapToToken(tokenRef, tokenSet)?.horizontalPadding
 							}
 							onNavigateToToken={handleNavigateToToken}
 						/>
@@ -149,7 +149,7 @@ export const AutoLayoutStyleMixinEditor = <
 							state={verticalPaddingState}
 							tokenSet={tokenSet}
 							mapToTokenValue={(tokenRef, tokenSet) =>
-								mapToken(tokenSet?.[tokenRef] as GTokenSet['value'])?.verticalPadding
+								mapToToken(tokenRef, tokenSet)?.verticalPadding
 							}
 							onNavigateToToken={handleNavigateToToken}
 						/>
@@ -169,7 +169,7 @@ export const AutoLayoutStyleMixinEditor = <
 							state={horizontalGapState}
 							tokenSet={tokenSet}
 							mapToTokenValue={(tokenRef, tokenSet) =>
-								mapToken(tokenSet?.[tokenRef] as GTokenSet['value'])?.horizontalGap
+								mapToToken(tokenRef, tokenSet)?.horizontalGap
 							}
 							onNavigateToToken={handleNavigateToToken}
 						/>
@@ -184,9 +184,7 @@ export const AutoLayoutStyleMixinEditor = <
 							step={4}
 							state={verticalGapState}
 							tokenSet={tokenSet}
-							mapToTokenValue={(tokenRef, tokenSet) =>
-								mapToken(tokenSet?.[tokenRef] as GTokenSet['value'])?.verticalGap
-							}
+							mapToTokenValue={(tokenRef, tokenSet) => mapToToken(tokenRef, tokenSet)?.verticalGap}
 							onNavigateToToken={handleNavigateToToken}
 						/>
 					)}
@@ -203,6 +201,6 @@ interface TAutoLayoutStyleMixinEditorProps<
 	state: TState<GValue, any>;
 	mapValue: (value: GValue) => TAutoLayoutStyleMixin['value'];
 	tokenSet?: TState<GTokenSet, any>;
-	mapToken: (token?: GTokenSet['value']) => TAutoLayoutStyleToken['value'] | undefined;
+	mapToToken: (ref: string, tokenSet?: GTokenSet) => TAutoLayoutStyleToken['value'] | undefined;
 	editor: TPageEditor;
 }

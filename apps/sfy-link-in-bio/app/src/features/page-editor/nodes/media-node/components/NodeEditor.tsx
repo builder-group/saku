@@ -128,7 +128,7 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 						state={nodeState}
 						mapValue={(value) => value.autoLayout}
 						tokenSet={editor.tokensMap.autoLayout}
-						mapToken={(token) => token}
+						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]}
 						editor={editor}
 					/>
 					<div className="h-px bg-neutral-200" />
@@ -136,7 +136,7 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 						state={nodeState}
 						mapValue={(value) => value.appearance}
 						tokenSet={editor.tokensMap.appearance}
-						mapToken={(token) => token}
+						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]}
 						editor={editor}
 					/>
 					<div className="h-px bg-neutral-200" />
@@ -147,7 +147,7 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 							state._v.fill = value;
 						}}
 						tokenSet={editor.tokensMap.fill}
-						mapToken={(token) => token}
+						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]}
 						editor={editor}
 					/>
 					<div className="h-px bg-neutral-200" />
@@ -158,7 +158,7 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 							state._v.stroke = value;
 						}}
 						tokenSet={editor.tokensMap.stroke}
-						mapToken={(token) => token}
+						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]}
 						editor={editor}
 					/>
 					<div className="h-px bg-neutral-200" />
@@ -169,7 +169,7 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 							state._v.shadow = value;
 						}}
 						tokenSet={editor.tokensMap.shadow}
-						mapToken={(token) => token}
+						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]}
 						editor={editor}
 					/>
 				</AccordionSection>

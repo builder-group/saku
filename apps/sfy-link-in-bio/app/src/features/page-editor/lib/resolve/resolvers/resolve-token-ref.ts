@@ -1,10 +1,11 @@
-import { isTokenRef, TRef, TUnreference } from '@repo/editor';
+import { isTokenRef, TRef, TTokenSet, TUnreference } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
 
-export function resolveTokenRef<GValue>(
+export function resolveTokenRef<GValue, GTokenSet extends TTokenSet>(
 	sourceValue: TRef<GValue>,
-	tokenSet: Record<string, GValue> | undefined | null
+	tokenSet: GTokenSet | undefined | null,
+	mapToToken: (ref: string, tokenSet?: GTokenSet) => GValue | undefined
 ): TResult<GValue, AppError> {
 	if (tokenSet == null) {
 		return Err(new AppError('#ERR_TOKEN_MAP_NOT_FOUND'));
@@ -12,8 +13,8 @@ export function resolveTokenRef<GValue>(
 
 	// Resolve sourceValue if it's a token ref
 	if (isTokenRef(sourceValue)) {
-		const sourceToken = tokenSet[sourceValue.ref];
-		if (sourceToken == null) {
+		const sourceToken = mapToToken(sourceValue.ref, tokenSet);
+		if (sourceToken === undefined) {
 			return Err(
 				new AppError('#ERR_TOKEN_NOT_FOUND', {
 					detail: `Source token not found: ${sourceValue.ref}`
@@ -28,10 +29,12 @@ export function resolveTokenRef<GValue>(
 
 export function resolveNestedTokenRef<
 	GValue extends Record<string, TRef<any>>,
-	GPropertyKey extends keyof GValue
+	GPropertyKey extends keyof GValue,
+	GTokenSet extends TTokenSet
 >(
 	sourceValue: TRef<GValue>,
-	tokenSet: Record<string, GValue> | undefined | null,
+	tokenSet: GTokenSet | undefined | null,
+	mapToToken: (ref: string, tokenSet?: GTokenSet) => GValue | undefined,
 	propertyKey: GPropertyKey
 ): TResult<TUnreference<GValue[GPropertyKey]>, AppError> {
 	if (tokenSet == null) {
@@ -39,7 +42,11 @@ export function resolveNestedTokenRef<
 	}
 
 	// Resolve sourceValue if it's a token ref
-	const [isResolvedOk, resolvedErr, resolvedValue] = resolveTokenRef(sourceValue, tokenSet);
+	const [isResolvedOk, resolvedErr, resolvedValue] = resolveTokenRef(
+		sourceValue,
+		tokenSet,
+		mapToToken
+	);
 	if (!isResolvedOk) {
 		return Err(resolvedErr);
 	}
@@ -47,8 +54,8 @@ export function resolveNestedTokenRef<
 	// Resolve propertyValue if it's a token ref
 	const propertyValue: TRef<GValue[GPropertyKey]> = resolvedValue[propertyKey];
 	if (isTokenRef(propertyValue)) {
-		const propertyToken = tokenSet[propertyValue.ref];
-		if (propertyToken == null) {
+		const propertyToken = mapToToken(propertyValue.ref, tokenSet);
+		if (propertyToken === undefined) {
 			return Err(
 				new AppError('#ERR_TOKEN_NOT_FOUND', {
 					detail: `Property token not found: ${propertyValue.ref}`

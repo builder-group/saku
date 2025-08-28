@@ -21,7 +21,15 @@ export const ShadowStyleMixinEditor = <
 >(
 	props: TShadowStyleMixinEditorProps<GValue, GTokenSet>
 ) => {
-	const { state, mapValue, applyValue, tokenSet, mapToken, editor, disabledSpread = false } = props;
+	const {
+		state,
+		mapValue,
+		applyValue,
+		tokenSet,
+		mapToToken,
+		editor,
+		disabledSpread = false
+	} = props;
 
 	const isLinked = useCompute(state, ({ value }) => isTokenRef(mapValue(value)), [mapValue]);
 	const isSet = useCompute(
@@ -29,7 +37,7 @@ export const ShadowStyleMixinEditor = <
 		({ value }) => {
 			const shadow = mapValue(value);
 			if (isTokenRef(shadow)) {
-				return mapToken(tokenSet?._v?.[shadow.ref] as GTokenSet['value']) != null;
+				return mapToToken(shadow.ref, tokenSet?._v) != null;
 			}
 			return shadow != null;
 		},
@@ -147,7 +155,7 @@ export const ShadowStyleMixinEditor = <
 	// =========================================================================
 
 	const handleAddShadow = React.useCallback(() => {
-		const tokenValue = mapToken(tokenSet?._v?.['default'] as GTokenSet['value']);
+		const tokenValue = mapToToken('default', tokenSet?._v);
 		applyValue(
 			state,
 			tokenValue ?? {
@@ -159,7 +167,7 @@ export const ShadowStyleMixinEditor = <
 			}
 		);
 		state._notify();
-	}, [mapToken, tokenSet, applyValue, state, disabledSpread]);
+	}, [mapToToken, tokenSet, applyValue, state, disabledSpread]);
 
 	const handleRemoveShadow = React.useCallback(() => {
 		applyValue(state, null);
@@ -169,9 +177,7 @@ export const ShadowStyleMixinEditor = <
 	const handleToggleTokenLink = React.useCallback(() => {
 		if (isLinked) {
 			const shadow = mapValue(state._v);
-			const tokenValue = isTokenRef(shadow)
-				? mapToken(tokenSet?._v?.[shadow.ref] as GTokenSet['value'])
-				: undefined;
+			const tokenValue = isTokenRef(shadow) ? mapToToken(shadow.ref, tokenSet?._v) : undefined;
 			if (tokenValue !== undefined) {
 				applyValue(state, deepCopy(tokenValue));
 				state._notify();
@@ -180,7 +186,7 @@ export const ShadowStyleMixinEditor = <
 			applyValue(state, tokenRef('default'));
 			state._notify();
 		}
-	}, [isLinked, mapValue, state, mapToken, tokenSet, applyValue]);
+	}, [isLinked, mapValue, state, mapToToken, tokenSet, applyValue]);
 
 	const handleNavigateToToken = React.useCallback(() => {
 		editor.switchView('settings');
@@ -239,9 +245,7 @@ export const ShadowStyleMixinEditor = <
 						label="Color"
 						state={colorState}
 						tokenSet={tokenSet}
-						mapToTokenValue={(tokenRef, tokenSet) =>
-							mapToken(tokenSet?.[tokenRef] as GTokenSet['value'])?.color
-						}
+						mapToTokenValue={(tokenRef, tokenSet) => mapToToken(tokenRef, tokenSet)?.color}
 						onLinkChange={() => {
 							handleToggleTokenLink();
 							return { preventDefault: true };
@@ -258,9 +262,7 @@ export const ShadowStyleMixinEditor = <
 							step={4}
 							state={blurState}
 							tokenSet={tokenSet}
-							mapToTokenValue={(tokenRef, tokenSet) =>
-								mapToken(tokenSet?.[tokenRef] as GTokenSet['value'])?.blur
-							}
+							mapToTokenValue={(tokenRef, tokenSet) => mapToToken(tokenRef, tokenSet)?.blur}
 							mapToDisplay={(value) => value}
 							mapToInternal={(displayValue) => displayValue}
 							onLinkChange={() => {
@@ -278,9 +280,7 @@ export const ShadowStyleMixinEditor = <
 							step={4}
 							state={spreadState}
 							tokenSet={tokenSet}
-							mapToTokenValue={(tokenRef, tokenSet) =>
-								mapToken(tokenSet?.[tokenRef] as GTokenSet['value'])?.spread
-							}
+							mapToTokenValue={(tokenRef, tokenSet) => mapToToken(tokenRef, tokenSet)?.spread}
 							mapToDisplay={(value) => value}
 							mapToInternal={(displayValue) => displayValue}
 							onLinkChange={() => {
@@ -301,9 +301,7 @@ export const ShadowStyleMixinEditor = <
 							step={4}
 							state={offsetXState}
 							tokenSet={tokenSet}
-							mapToTokenValue={(tokenRef, tokenSet) =>
-								mapToken(tokenSet?.[tokenRef] as GTokenSet['value'])?.offsetX
-							}
+							mapToTokenValue={(tokenRef, tokenSet) => mapToToken(tokenRef, tokenSet)?.offsetX}
 							mapToDisplay={(value) => value}
 							mapToInternal={(displayValue) => displayValue}
 							onLinkChange={() => {
@@ -321,9 +319,7 @@ export const ShadowStyleMixinEditor = <
 							step={4}
 							state={offsetYState}
 							tokenSet={tokenSet}
-							mapToTokenValue={(tokenRef, tokenSet) =>
-								mapToken(tokenSet?.[tokenRef] as GTokenSet['value'])?.offsetY
-							}
+							mapToTokenValue={(tokenRef, tokenSet) => mapToToken(tokenRef, tokenSet)?.offsetY}
 							mapToDisplay={(value) => value}
 							mapToInternal={(displayValue) => displayValue}
 							onLinkChange={() => {
@@ -347,7 +343,7 @@ interface TShadowStyleMixinEditorProps<
 	mapValue: (value: GValue) => TShadowStyleMixin['value'];
 	applyValue: (state: TState<GValue, any>, value: TShadowStyleMixin['value']) => void;
 	tokenSet?: TState<GTokenSet, any>;
-	mapToken: (token?: GTokenSet['value']) => TShadowStyleToken['value'] | undefined;
+	mapToToken: (ref: string, tokenSet?: GTokenSet) => TShadowStyleToken['value'] | undefined;
 	editor: TPageEditor;
 	disabledSpread?: boolean;
 }

@@ -1,6 +1,7 @@
 import { TLinkNode } from '@repo/editor';
 import { useCompute } from 'feature-react';
 import React from 'react';
+import { logger } from '@/environment';
 import { EditorSiteResolveContext, TNodeProps } from '../../../lib';
 import { resolveLinkNode } from '../resolve-node';
 import { ResolvedLinkNode } from './ResolvedNode';
@@ -13,6 +14,9 @@ export const LinkNode = React.forwardRef<HTMLDivElement, TNodeProps<TLinkNode>>(
 			site: new EditorSiteResolveContext(editor)
 		});
 		if (result.isErr()) {
+			logger.warn('Failed to resolve link node', {
+				error: result.error
+			});
 			editor.shopify.toast.show('Failed to resolve link node');
 			return null;
 		}

@@ -17,10 +17,10 @@ export const PageNode = React.forwardRef<HTMLDivElement, TNodeProps<TFlatPageNod
 				site: new EditorSiteResolveContext(editor)
 			});
 			if (result.isErr()) {
-				editor.shopify.toast.show('Failed to resolve page node');
 				logger.warn('Failed to resolve page node', {
 					error: result.error
 				});
+				editor.shopify.toast.show('Failed to resolve page node');
 				return null;
 			}
 			return result.value;
