@@ -1,7 +1,8 @@
 import { TTextNode } from '@repo/editor';
-import { useCompute } from 'feature-react';
+import { useCombinedCompute } from 'feature-react';
 import React from 'react';
 import { logger } from '@/environment';
+import { useTokenSetNotifier } from '../../../hooks';
 import { EditorSiteResolveContext, TNodeProps } from '../../../lib';
 import { resolveTextNode } from '../resolve-node';
 import { ResolvedTextNode } from './ResolvedNode';
@@ -9,7 +10,16 @@ import { ResolvedTextNode } from './ResolvedNode';
 export const TextNode = React.forwardRef<HTMLDivElement, TNodeProps<TTextNode>>((props, ref) => {
 	const { nodeState, editor, ...divProps } = props;
 
-	const node = useCompute(nodeState, ({ value }) => {
+	const tokenSetNotifier = useTokenSetNotifier(editor, [
+		'autoLayout',
+		'appearance',
+		'fill',
+		'stroke',
+		'shadow',
+		'text'
+	]);
+
+	const node = useCombinedCompute([nodeState, tokenSetNotifier], ([{ value }]) => {
 		const result = resolveTextNode(value, {
 			site: new EditorSiteResolveContext(editor)
 		});

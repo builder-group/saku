@@ -1,10 +1,11 @@
 import { notEmpty } from '@blgc/utils';
 import { TFlatPageNode } from '@repo/editor';
-import { useCompute } from 'feature-react';
+import { useCombinedCompute, useCompute } from 'feature-react';
 import React from 'react';
 import { LogoIcon } from '@/components';
 import { logger } from '@/environment';
 import { Node } from '../../../components';
+import { useTokenSetNotifier } from '../../../hooks';
 import { EditorSiteResolveContext, TNodeProps } from '../../../lib';
 import { resolvePageNodeWithoutChildren } from '../resolve-node';
 
@@ -12,7 +13,9 @@ export const PageNode = React.forwardRef<HTMLDivElement, TNodeProps<TFlatPageNod
 	(props, ref) => {
 		const { nodeState, editor, ...divProps } = props;
 
-		const node = useCompute(nodeState, ({ value: nodeValue }) => {
+		const tokenSetNotifier = useTokenSetNotifier(editor, ['autoLayout', 'appearance', 'fill']);
+
+		const node = useCombinedCompute([nodeState, tokenSetNotifier], ([{ value: nodeValue }]) => {
 			const result = resolvePageNodeWithoutChildren(nodeValue, {
 				site: new EditorSiteResolveContext(editor)
 			});
