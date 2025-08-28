@@ -1,5 +1,6 @@
-import { TReference, TRgba, TUnreference } from '../lib';
+import { TRgba } from '../lib';
 import { TNode, TNodeId } from './node';
+import { TRef } from './ref';
 import {
 	TAssetHash,
 	TContent,
@@ -14,16 +15,16 @@ import {
 	TTextAlign
 } from './utils';
 
-export interface TMixin<GKey extends string, GValue> {
+export interface TBaseMixin<GKey extends string, GValue> {
 	key: GKey;
 	value: GValue;
 }
 
-export type TMergeMixins<GMixins extends TMixin<any, any>[]> = {
+export type TMergeMixins<GMixins extends TBaseMixin<any, any>[]> = {
 	[K in GMixins[number]['key']]: Extract<GMixins[number], { key: K }>['value'];
 };
 
-export type TReplaceWithMixins<GBase, GMixins extends TMixin<any, any>[]> = Omit<
+export type TReplaceWithMixins<GBase, GMixins extends TBaseMixin<any, any>[]> = Omit<
 	GBase,
 	GMixins[number]['key']
 > &
@@ -33,9 +34,9 @@ export type TReplaceWithMixins<GBase, GMixins extends TMixin<any, any>[]> = Omit
 // Common Mixins
 // =========================================================================
 
-export type TIdMixin = TMixin<'id', TNodeId>;
-export type TChildrenMixin = TMixin<'children', TNode[]>;
-export type TFlatChildrenMixin = TMixin<'children', TNodeId[]>;
+export type TIdMixin = TBaseMixin<'id', TNodeId>;
+export type TChildrenMixin = TBaseMixin<'children', TNode[]>;
+export type TFlatChildrenMixin = TBaseMixin<'children', TNodeId[]>;
 
 // =========================================================================
 // Node Mixins
@@ -49,7 +50,7 @@ export type TNodeMixin =
 	| TTextNodeMixin
 	| TProductNodeMixin;
 
-export type TPageNodeMixin = TMixin<
+export type TPageNodeMixin = TBaseMixin<
 	'node',
 	{
 		type: 'page';
@@ -60,21 +61,10 @@ export type TPageNodeMixin = TMixin<
 				image?: TAssetHash;
 			};
 		};
-		childMixins: TMergeMixins<
-			[
-				TUnreference<TAutoLayoutStyleMixin>,
-				TUnreference<TAppearanceStyleMixin>,
-				TUnreference<TFillStyleMixin>,
-				TUnreference<TStrokeStyleMixin>,
-				TUnreference<TShadowStyleMixin>,
-				TUnreference<TTextStyleMixin>,
-				TUnreference<TButtonStyleMixin>
-			]
-		>;
 	}
 >;
 
-export type TAboutNodeMixin = TMixin<
+export type TAboutNodeMixin = TBaseMixin<
 	'node',
 	{
 		type: 'about';
@@ -87,7 +77,7 @@ export type TAboutNodeMixin = TMixin<
 	}
 >;
 
-export type TLinkNodeMixin<GVariant extends TLinkVariant = TLinkVariant> = TMixin<
+export type TLinkNodeMixin<GVariant extends TLinkVariant = TLinkVariant> = TBaseMixin<
 	'node',
 	{
 		type: 'link';
@@ -98,7 +88,7 @@ export type TLinkNodeMixin<GVariant extends TLinkVariant = TLinkVariant> = TMixi
 	}
 >;
 
-export type TMediaNodeMixin<GMedia extends TMedia = TMedia> = TMixin<
+export type TMediaNodeMixin<GMedia extends TMedia = TMedia> = TBaseMixin<
 	'node',
 	{
 		type: 'media';
@@ -108,7 +98,7 @@ export type TMediaNodeMixin<GMedia extends TMedia = TMedia> = TMixin<
 	}
 >;
 
-export type TTextNodeMixin = TMixin<
+export type TTextNodeMixin = TBaseMixin<
 	'node',
 	{
 		type: 'text';
@@ -118,7 +108,7 @@ export type TTextNodeMixin = TMixin<
 	}
 >;
 
-export type TProductNodeMixin = TMixin<
+export type TProductNodeMixin = TBaseMixin<
 	'node',
 	{
 		type: 'product';
@@ -146,7 +136,7 @@ export type TProductNodeMixin = TMixin<
 // Style Mixins
 // =========================================================================
 
-// export type TAutoLayoutStyleMixin = TMixin<
+// export type TAutoLayoutStyleMixin = TBaseMixin<
 // 	'layout',
 // 	{
 // 		width: number;
@@ -155,56 +145,56 @@ export type TProductNodeMixin = TMixin<
 // 	}
 // >;
 
-export type TAutoLayoutStyleMixin = TMixin<
+export type TAutoLayoutStyleMixin = TBaseMixin<
 	'autoLayout',
 	{
-		horizontalPadding?: TReference<number>;
-		verticalPadding?: TReference<number>;
-		horizontalGap?: TReference<number>;
-		verticalGap?: TReference<number>;
+		horizontalPadding?: TRef<number>;
+		verticalPadding?: TRef<number>;
+		horizontalGap?: TRef<number>;
+		verticalGap?: TRef<number>;
 	}
 >;
 
-export type TAppearanceStyleMixin = TMixin<
+export type TAppearanceStyleMixin = TBaseMixin<
 	'appearance',
 	{
 		visible: boolean;
-		opacity: TReference<number>;
-		borderRadius?: TReference<number>;
+		opacity: TRef<number>;
+		borderRadius?: TRef<number>;
 	}
 >;
 
-export type TTypographyStyleMixin = TMixin<
+export type TTypographyStyleMixin = TBaseMixin<
 	'typography',
 	{
-		font: TReference<TFont>;
-		fontSize: TReference<number>;
-		textAlignHorizontal: TReference<TTextAlign>;
-		textAlignVertical: TReference<TTextAlign>;
-		lineHeight: TReference<TLineHeight>;
-		letterSpacing: TReference<TLetterSpacing>;
+		font: TRef<TFont>;
+		fontSize: TRef<number>;
+		textAlignHorizontal: TRef<TTextAlign>;
+		textAlignVertical: TRef<TTextAlign>;
+		lineHeight: TRef<TLineHeight>;
+		letterSpacing: TRef<TLetterSpacing>;
 	}
 >;
 
-export type TFillStyleMixin = TMixin<
+export type TFillStyleMixin = TBaseMixin<
 	'fill',
-	TReference<{
+	TRef<{
 		paint: TPaint;
 		opacity: number; // Note: Only really needed when we support multiple fills - currently same as appearance opacity
 	} | null>
 >;
 
-export type TStrokeStyleMixin = TMixin<
+export type TStrokeStyleMixin = TBaseMixin<
 	'stroke',
-	TReference<{
+	TRef<{
 		width: number;
 		color: TRgba;
 	} | null>
 >;
 
-export type TShadowStyleMixin = TMixin<
+export type TShadowStyleMixin = TBaseMixin<
 	'shadow',
-	TReference<{
+	TRef<{
 		color: TRgba;
 		offsetX: number;
 		offsetY: number;
@@ -213,7 +203,7 @@ export type TShadowStyleMixin = TMixin<
 	} | null>
 >;
 
-export type TTextStyleMixin = TMixin<
+export type TTextStyleMixin = TBaseMixin<
 	'text',
 	{
 		appearance: TAppearanceStyleMixin['value'];
@@ -224,7 +214,7 @@ export type TTextStyleMixin = TMixin<
 	}
 >;
 
-export type TButtonStyleMixin = TMixin<
+export type TButtonStyleMixin = TBaseMixin<
 	'button',
 	{
 		appearance: TAppearanceStyleMixin['value'];
@@ -234,3 +224,5 @@ export type TButtonStyleMixin = TMixin<
 		text: TTextStyleMixin['value'];
 	}
 >;
+export type TPrimaryButtonStyleMixin = TBaseMixin<'primaryButton', TButtonStyleMixin['value']>;
+export type TSecondaryButtonStyleMixin = TBaseMixin<'secondaryButton', TButtonStyleMixin['value']>;

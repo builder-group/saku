@@ -2,6 +2,7 @@ import { TTextNode } from '@repo/editor';
 import { useCombinedCompute } from 'feature-react';
 import React from 'react';
 import { logger } from '@/environment';
+import { useTokenSetNotifier } from '../../../hooks';
 import { EditorSiteResolveContext, TNodeProps } from '../../../lib';
 import { resolveTextNode } from '../resolve-node';
 import { ResolvedTextNode } from './ResolvedNode';
@@ -9,23 +10,28 @@ import { ResolvedTextNode } from './ResolvedNode';
 export const TextNode = React.forwardRef<HTMLDivElement, TNodeProps<TTextNode>>((props, ref) => {
 	const { nodeState, editor, ...divProps } = props;
 
-	const node = useCombinedCompute(
-		[editor.getRootNode(), nodeState],
-		([{ value: pageNodeValue }, { value: nodeValue }]) => {
-			const result = resolveTextNode(nodeValue, {
-				site: new EditorSiteResolveContext(editor),
-				childMixins: pageNodeValue?.childMixins
+	const tokenSetNotifier = useTokenSetNotifier(editor, [
+		'autoLayout',
+		'appearance',
+		'fill',
+		'stroke',
+		'shadow',
+		'text'
+	]);
+
+	const node = useCombinedCompute([nodeState, tokenSetNotifier], ([{ value }]) => {
+		const result = resolveTextNode(value, {
+			site: new EditorSiteResolveContext(editor)
+		});
+		if (result.isErr()) {
+			logger.warn('Failed to resolve text node', {
+				error: result.error
 			});
-			if (result.isErr()) {
-				editor.shopify.toast.show('Failed to resolve text node');
-				logger.warn('Failed to resolve text node', {
-					error: result.error
-				});
-				return null;
-			}
-			return result.value;
+			editor.shopify.toast.show('Failed to resolve text node');
+			return null;
 		}
-	);
+		return result.value;
+	});
 
 	if (node == null) {
 		return null;

@@ -1,65 +1,68 @@
 import { createState, TCreateStateOptions, TState, TStateNotifyOptions } from 'feature-state';
 import { useMemoCleanup } from './react-router';
 
-export function useMapState<GParentValue, GChildValue>(
-	parentState: TState<GParentValue, any>,
-	config: TMapStateConfig<GParentValue, GChildValue>
-): TState<GChildValue, any>;
-export function useMapState<GParentValue, GChildValue>(
-	parentState: TState<GParentValue, any> | undefined | null,
-	config: TMapStateConfig<GParentValue, GChildValue>
-): TState<GChildValue, any> | undefined;
-export function useMapState<GParentValue, GChildValue>(
-	parentState: TState<GParentValue, any> | undefined | null,
-	config: TMapStateConfig<GParentValue, GChildValue>
-): TState<GChildValue, any> | undefined {
+export function useMapState<GBaseValue, GMappedValue>(
+	baseState: TState<GBaseValue, any>,
+	config: TMapStateConfig<GBaseValue, GMappedValue>
+): TState<GMappedValue, any>;
+export function useMapState<GBaseValue, GMappedValue>(
+	baseState: TState<GBaseValue, any> | undefined | null,
+	config: TMapStateConfig<GBaseValue, GMappedValue>
+): TState<GMappedValue, any> | undefined;
+export function useMapState<GBaseValue, GMappedValue>(
+	baseState: TState<GBaseValue, any> | undefined | null,
+	config: TMapStateConfig<GBaseValue, GMappedValue>
+): TState<GMappedValue, any> | undefined {
 	return useMemoCleanup(
-		() => (parentState != null ? mapState(parentState, config) : [undefined, () => {}]),
+		() => (baseState != null ? mapState(baseState, config) : [undefined, () => {}]),
 		// Note: No callbacks in deps because config object redefined on every render, callback refs change and would cause memo re-runs
-		[parentState]
-	) as TState<GChildValue, any> | undefined;
+		[baseState]
+	) as TState<GMappedValue, any> | undefined;
 }
 
-export function mapState<GParentValue, GChildValue>(
-	parentState: TState<GParentValue, any>,
-	config: TMapStateConfig<GParentValue, GChildValue>
-): [TState<GChildValue, any>, () => void] {
-	const { get, set, ...stateOptions } = config;
+export function mapState<GBaseValue, GMappedValue>(
+	baseState: TState<GBaseValue, any>,
+	config: TMapStateConfig<GBaseValue, GMappedValue>
+): [TState<GMappedValue, any>, () => void] {
+	const { map, sync, ...stateOptions } = config;
 
-	const childState = createState(get(parentState._v), stateOptions);
+	const mappedState = createState(map(baseState._v), stateOptions);
 
-	// Keep child in sync with parent
-	const unsubscribeParentState = parentState.listen(({ value, source }) => {
-		if (source === 'mapState:child') {
+	// Keep mapped in sync with base
+	const unsubscribeBaseState = baseState.listen(({ value, source }) => {
+		if (source === 'mapState:mapped') {
 			return;
 		}
 
-		childState.set(get(value), { listenerContext: { source: 'mapState:parent' } });
+		mappedState.set(map(value), { listenerContext: { source: 'mapState:base' } });
 	});
 
-	// Keep parent in sync with child
-	const unsubscribeChildState = childState.listen(({ value, source }) => {
-		if (source === 'mapState:parent') {
-			return;
-		}
+	// Keep base in sync with mapped
+	let unsubscribeMappedState: (() => void) | undefined;
+	if (sync != null) {
+		unsubscribeMappedState = mappedState.listen(({ value, source }) => {
+			if (source === 'mapState:base') {
+				return;
+			}
 
-		set(parentState, value, { listenerContext: { source: 'mapState:child' } });
-	});
+			sync(baseState, value, { listenerContext: { source: 'mapState:mapped' } });
+		});
+	}
 
 	return [
-		childState,
+		mappedState,
 		() => {
-			unsubscribeParentState();
-			unsubscribeChildState();
+			unsubscribeBaseState();
+			unsubscribeMappedState?.();
 		}
 	];
 }
 
-interface TMapStateConfig<GParentValue, GChildValue> extends TCreateStateOptions {
-	get: (parent: GParentValue) => GChildValue;
-	set: (
-		parent: TState<GParentValue, any>,
-		child: GChildValue,
-		notifyOptions?: TStateNotifyOptions<GParentValue>
+interface TMapStateConfig<GBaseValue, GMappedValue> extends TCreateStateOptions {
+	map: (baseValue: GBaseValue) => GMappedValue;
+	sync?: (
+		baseState: TState<GBaseValue, any>,
+		mappedValue: GMappedValue,
+		notifyOptions?: TStateNotifyOptions<GBaseValue>
 	) => void;
 }

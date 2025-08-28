@@ -20,7 +20,7 @@ export const Knob: React.FC<TKnobProps> = (props) => {
 	);
 };
 
-interface TKnobProps extends Omit<React.ComponentProps<'button'>, 'onClick'> {
+export interface TKnobProps extends Omit<React.ComponentProps<'button'>, 'onClick'> {
 	ariaLabel: string;
 	selected: boolean;
 	onClick: () => void;

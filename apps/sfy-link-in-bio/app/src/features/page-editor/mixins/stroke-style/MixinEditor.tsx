@@ -1,65 +1,88 @@
 import { deepCopy } from '@blgc/utils';
 import {
-	inherit,
-	isInherited,
-	resolveReference,
-	TMergeMixins,
+	isTokenRef,
+	tokenRef,
 	TStrokeStyleMixin,
-	TUnreference
+	TStrokeStyleToken,
+	TTokenSet
 } from '@repo/editor';
 import { Button, Text } from '@shopify/polaris';
-import { useCombinedCompute, useCompute } from 'feature-react';
-import { createState, TState } from 'feature-state';
+import { useCompute } from 'feature-react';
+import { TState } from 'feature-state';
 import React from 'react';
-import {
-	Badge,
-	InheritanceActionOverlay,
-	LinkIcon,
-	LinkOffIcon,
-	MappedColorInput,
-	MappedTextInput,
-	MinusIcon,
-	PlusIcon
-} from '@/components';
-import { useMapStateReference } from '../../hooks';
+import { Badge, LinkIcon, LinkOffIcon, MinusIcon, PlusIcon } from '@/components';
+import { useMapState } from '@/hooks';
+import { TokenActionOverlay, TokenColorInput, TokenTextInput } from '../../components';
 import { TPageEditor } from '../../lib';
 
 export const StrokeStyleMixinEditor = <
-	GValue extends Record<string, any>,
-	GParentValue extends Record<string, any>
+	GValue extends Record<string, any> | null,
+	GTokenSet extends TTokenSet
 >(
-	props: TStrokeStyleMixinEditorProps<GValue, GParentValue>
+	props: TStrokeStyleMixinEditorProps<GValue, GTokenSet>
 ) => {
-	const { state, parentState, editor } = props;
+	const {
+		state,
+		mapValue,
+		applyValue,
+		tokenSet,
+		mapToToken,
+		disabledTokenLink = false,
+		editor
+	} = props;
 
-	const resolvedStroke = useCombinedCompute(
-		[state, parentState ?? createState(undefined)],
-		([{ value }, { value: parentValue }]) => {
-			return resolveReference(value.stroke, parentValue?.childMixins?.stroke);
-		}
+	const isLinked = useCompute(state, ({ value }) => isTokenRef(mapValue(value)), [mapValue]);
+	const isSet = useCompute(
+		state,
+		({ value }) => {
+			const stroke = mapValue(value);
+			if (isTokenRef(stroke)) {
+				return mapToToken?.(stroke.ref, tokenSet?._v) != null;
+			}
+			return stroke != null;
+		},
+		[mapValue]
 	);
 
-	const isInheritedStroke = useCompute(state, ({ value }) => {
-		return isInherited(value.stroke);
-	});
-
-	const colorState = useMapStateReference(state, {
-		getTopLevelReference: (value) => value.stroke,
-		getPropertyReference: (value) => value?.color,
-		setProperty: (value, notifyOptions) => {
-			if (state._v.stroke != null && !isInherited(state._v.stroke)) {
-				state._v.stroke.color = value;
-				state._notify(notifyOptions);
+	const colorState = useMapState(state, {
+		map(baseValue) {
+			const stroke = mapValue(baseValue);
+			if (isTokenRef(stroke)) {
+				return stroke;
+			}
+			return stroke?.color;
+		},
+		sync(baseState, mappedValue, notifyOptions) {
+			const stroke = mapValue(baseState._v);
+			if (
+				stroke != null &&
+				!isTokenRef(stroke) &&
+				mappedValue != null &&
+				!isTokenRef(mappedValue)
+			) {
+				stroke.color = mappedValue;
+				baseState._notify(notifyOptions);
 			}
 		}
 	});
-	const widthState = useMapStateReference(state, {
-		getTopLevelReference: (value) => value.stroke,
-		getPropertyReference: (value) => value?.width,
-		setProperty: (value, notifyOptions) => {
-			if (state._v.stroke != null && !isInherited(state._v.stroke)) {
-				state._v.stroke.width = value;
-				state._notify(notifyOptions);
+	const widthState = useMapState(state, {
+		map(baseValue) {
+			const stroke = mapValue(baseValue);
+			if (isTokenRef(stroke)) {
+				return stroke;
+			}
+			return stroke?.width;
+		},
+		sync(baseState, mappedValue, notifyOptions) {
+			const stroke = mapValue(baseState._v);
+			if (
+				stroke != null &&
+				!isTokenRef(stroke) &&
+				mappedValue != null &&
+				!isTokenRef(mappedValue)
+			) {
+				stroke.width = mappedValue;
+				baseState._notify(notifyOptions);
 			}
 		}
 	});
@@ -69,25 +92,39 @@ export const StrokeStyleMixinEditor = <
 	// =========================================================================
 
 	const handleAddStroke = React.useCallback(() => {
-		const parentStroke = parentState?._v.childMixins?.stroke;
-		state._v.stroke = parentStroke ?? {
-			color: { r: 0, g: 0, b: 0, a: 1 },
-			width: 1
-		};
+		const tokenValue = mapToToken?.('default', tokenSet?._v);
+		applyValue(
+			state,
+			tokenValue ?? {
+				color: { r: 0, g: 0, b: 0, a: 1 },
+				width: 1
+			}
+		);
 		state._notify();
-	}, [state, parentState]);
+	}, [mapToToken, tokenSet, state, applyValue]);
 
 	const handleRemoveStroke = React.useCallback(() => {
-		state._v.stroke = null;
+		applyValue(state, null);
 		state._notify();
-	}, [state]);
+	}, [state, applyValue]);
 
-	const handleToggleInheritance = React.useCallback(() => {
-		state._v.stroke = isInheritedStroke
-			? (deepCopy(parentState?._v.childMixins?.stroke) ?? null)
-			: inherit();
-		state._notify();
-	}, [isInheritedStroke, parentState, state]);
+	const handleToggleTokenLink = React.useCallback(() => {
+		if (isLinked) {
+			const stroke = mapValue(state._v);
+			const tokenValue = isTokenRef(stroke) ? mapToToken?.(stroke.ref, tokenSet?._v) : undefined;
+			if (tokenValue !== undefined) {
+				applyValue(state, deepCopy(tokenValue));
+				state._notify();
+			}
+		} else {
+			applyValue(state, tokenRef('default'));
+			state._notify();
+		}
+	}, [isLinked, mapValue, state, mapToToken, tokenSet, applyValue]);
+
+	const handleNavigateToToken = React.useCallback(() => {
+		editor.switchView('settings');
+	}, [editor]);
 
 	// =========================================================================
 	// UI
@@ -98,14 +135,14 @@ export const StrokeStyleMixinEditor = <
 			<div className="flex items-center justify-between">
 				<div className="flex items-center gap-2">
 					{/* Mixin-level inheritance button */}
-					{parentState != null && (
+					{!disabledTokenLink && (
 						<button
 							type="button"
-							onClick={handleToggleInheritance}
+							onClick={handleToggleTokenLink}
 							className="flex cursor-pointer items-center justify-center opacity-60 transition-opacity hover:opacity-100"
-							title={isInheritedStroke ? 'Unlink from parent' : 'Link to parent'}
+							title={isLinked ? 'Unlink' : 'Link'}
 						>
-							{isInheritedStroke ? (
+							{isLinked ? (
 								<LinkOffIcon className="h-3.5 w-3.5" />
 							) : (
 								<LinkIcon className="h-3.5 w-3.5" />
@@ -117,13 +154,13 @@ export const StrokeStyleMixinEditor = <
 						<Text as="span" variant="headingXs" tone="subdued">
 							Stroke
 						</Text>
-						{isInheritedStroke && (
+						{isLinked && (
 							<Badge className="group relative hover:w-32">
-								Inherited
-								<InheritanceActionOverlay
+								Linked
+								<TokenActionOverlay
 									variant={'full-overlay'}
-									onUnlink={handleToggleInheritance}
-									onNavigateToParent={() => editor.switchView('settings')}
+									onUnlink={handleToggleTokenLink}
+									onNavigateToToken={handleNavigateToToken}
 								/>
 							</Badge>
 						)}
@@ -131,34 +168,28 @@ export const StrokeStyleMixinEditor = <
 				</div>
 
 				{/* Add/Remove stroke buttons */}
-				{resolvedStroke != null ? (
+				{isSet ? (
 					<Button icon={MinusIcon} onClick={handleRemoveStroke} variant="plain" size="micro" />
 				) : (
 					<Button icon={PlusIcon} onClick={handleAddStroke} variant="plain" size="micro" />
 				)}
 			</div>
 
-			{resolvedStroke != null && (
+			{isSet && (
 				<div className="grid grid-cols-2 gap-3">
-					<MappedColorInput
+					<TokenColorInput
 						label="Color"
-						autoComplete="off"
 						state={colorState}
-						parentState={parentState}
-						mapValue={(value) => value}
-						onValueChange={(value) => {
-							colorState.set(value);
+						tokenSet={tokenSet}
+						mapToTokenValue={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.color}
+						onLinkChange={() => {
+							handleToggleTokenLink();
+							return { preventDefault: true };
 						}}
-						mapParentValue={(parent) => parent.childMixins?.stroke?.color}
-						onInheritChange={() => {
-							handleToggleInheritance();
-						}}
-						onNavigateToParent={() => {
-							editor.switchView('settings');
-						}}
-						disableFieldInheritance
+						onNavigateToToken={handleNavigateToToken}
+						disabledTokenLink={disabledTokenLink}
 					/>
-					<MappedTextInput
+					<TokenTextInput
 						label="Width"
 						type="number"
 						autoComplete="off"
@@ -166,19 +197,16 @@ export const StrokeStyleMixinEditor = <
 						max={20}
 						step={1}
 						state={widthState}
-						parentState={parentState}
-						mapValue={(value) => value}
-						onValueChange={(value) => {
-							widthState.set(value);
+						tokenSet={tokenSet}
+						mapToTokenValue={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.width}
+						mapToDisplay={(value) => value}
+						mapToInternal={(displayValue) => displayValue}
+						onLinkChange={() => {
+							handleToggleTokenLink();
+							return { preventDefault: true };
 						}}
-						mapParentValue={(parent) => parent.childMixins?.stroke?.width}
-						onInheritChange={() => {
-							handleToggleInheritance();
-						}}
-						onNavigateToParent={() => {
-							editor.switchView('settings');
-						}}
-						disableFieldInheritance
+						onNavigateToToken={handleNavigateToToken}
+						disabledTokenLink={disabledTokenLink}
 					/>
 				</div>
 			)}
@@ -187,15 +215,14 @@ export const StrokeStyleMixinEditor = <
 };
 
 interface TStrokeStyleMixinEditorProps<
-	GValue extends Record<string, any>,
-	GParentValue extends Record<string, any>
+	GValue extends Record<string, any> | null,
+	GTokenSet extends TTokenSet
 > {
-	state: TState<GValue & TMergeMixins<[TStrokeStyleMixin]>, any>;
-	parentState?: TState<
-		GParentValue & {
-			childMixins: TMergeMixins<[TUnreference<TStrokeStyleMixin>]>;
-		},
-		any
-	>;
+	state: TState<GValue, any>;
+	mapValue: (value: GValue) => TStrokeStyleMixin['value'];
+	applyValue: (state: TState<GValue, any>, value: TStrokeStyleMixin['value']) => void;
+	tokenSet?: TState<GTokenSet, any>;
+	mapToToken?: (ref: string, tokenSet?: GTokenSet) => TStrokeStyleToken['value'] | undefined;
+	disabledTokenLink?: boolean;
 	editor: TPageEditor;
 }

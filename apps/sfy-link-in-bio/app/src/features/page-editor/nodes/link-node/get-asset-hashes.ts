@@ -1,4 +1,4 @@
-import { getFontHash, isInherited, TAssetHash, TLinkNode } from '@repo/editor';
+import { getFontHash, isTokenRef, TAssetHash, TLinkNode } from '@repo/editor';
 
 /**
  * Extracts asset hashes from a link node
@@ -6,6 +6,7 @@ import { getFontHash, isInherited, TAssetHash, TLinkNode } from '@repo/editor';
 export function getLinkNodeAssetHashes(node: TLinkNode): TAssetHash[] {
 	const hashes: TAssetHash[] = [];
 
+	// Favicon asset
 	switch (node.content.variant.type) {
 		case 'default': {
 			if (node.content.variant.userFavicon != null) {
@@ -20,18 +21,13 @@ export function getLinkNodeAssetHashes(node: TLinkNode): TAssetHash[] {
 		// do nothing
 	}
 
-	// Font asset (if not inherited)
-	if (node.text?.typography?.font != null && !isInherited(node.text.typography.font)) {
+	// Font asset (if not linked)
+	if (!isTokenRef(node.text.typography) && !isTokenRef(node.text.typography.font)) {
 		hashes.push(getFontHash(node.text.typography.font));
 	}
 
-	// Fill asset (if not inherited)
-	if (
-		node.fill != null &&
-		!isInherited(node.fill) &&
-		node.fill.paint.type === 'image' &&
-		node.fill.paint.hash != null
-	) {
+	// Fill asset (if not linked)
+	if (!isTokenRef(node.fill) && node.fill?.paint.type === 'image' && node.fill.paint.hash != null) {
 		hashes.push(node.fill.paint.hash);
 	}
 

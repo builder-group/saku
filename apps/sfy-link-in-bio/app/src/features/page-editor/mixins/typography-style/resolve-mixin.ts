@@ -1,51 +1,65 @@
 import {
-	resolveReference,
 	TFont,
 	TLetterSpacing,
 	TLineHeight,
 	TTextAlign,
-	TTypographyStyleMixin
+	TTokenSet,
+	TTypographyStyleMixin,
+	TTypographyStyleToken
 } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
+import { resolveNestedTokenRef, TMixinResolveContext } from '../../lib';
 import { TResolvedTypographyStyleMixin } from './types';
 
-export function resolveTypographyStyleMixin(
+export function resolveTypographyStyleMixin<GTokenSet extends TTokenSet>(
 	typography: TTypographyStyleMixin['value'],
-	parentMixin?: TResolveTypographyStyleMixinParentMixin
+	cx: TMixinResolveContext<TTypographyStyleToken['value'], GTokenSet>
 ): TResult<TResolvedTypographyStyleMixin['value'], AppError> {
-	const resolvedFont = resolveReference(typography.font, parentMixin?.font);
-	if (resolvedFont == null) {
-		return Err(new AppError('#ERR_RESOLVE_FONT'));
-	}
-	const resolvedFontSize = resolveReference(typography.fontSize, parentMixin?.fontSize);
-	if (resolvedFontSize == null) {
-		return Err(new AppError('#ERR_RESOLVE_FONT_SIZE'));
-	}
-	const resolvedTextAlignHorizontal = resolveReference(
-		typography.textAlignHorizontal,
-		parentMixin?.textAlignHorizontal
+	const [isResolvedFontOk, resolvedFontErr, resolvedFont] = resolveNestedTokenRef(
+		typography,
+		cx.tokenSet,
+		cx.mapToToken,
+		'font'
 	);
-	if (resolvedTextAlignHorizontal == null) {
-		return Err(new AppError('#ERR_RESOLVE_TEXT_ALIGN_HORIZONTAL'));
+	if (!isResolvedFontOk) {
+		return Err(resolvedFontErr.wrapWith('#ERR_RESOLVE_FONT'));
 	}
-	const resolvedTextAlignVertical = resolveReference(
-		typography.textAlignVertical,
-		parentMixin?.textAlignVertical
+	const [isResolvedFontSizeOk, resolvedFontSizeErr, resolvedFontSize] = resolveNestedTokenRef(
+		typography,
+		cx.tokenSet,
+		cx.mapToToken,
+		'fontSize'
 	);
-	if (resolvedTextAlignVertical == null) {
-		return Err(new AppError('#ERR_RESOLVE_TEXT_ALIGN_VERTICAL'));
+	if (!isResolvedFontSizeOk) {
+		return Err(resolvedFontSizeErr.wrapWith('#ERR_RESOLVE_FONT_SIZE'));
 	}
-	const resolvedLineHeight = resolveReference(typography.lineHeight, parentMixin?.lineHeight);
-	if (resolvedLineHeight == null) {
-		return Err(new AppError('#ERR_RESOLVE_LINE_HEIGHT'));
+	const [
+		isResolvedTextAlignHorizontalOk,
+		resolvedTextAlignHorizontalErr,
+		resolvedTextAlignHorizontal
+	] = resolveNestedTokenRef(typography, cx.tokenSet, cx.mapToToken, 'textAlignHorizontal');
+	if (!isResolvedTextAlignHorizontalOk) {
+		return Err(resolvedTextAlignHorizontalErr.wrapWith('#ERR_RESOLVE_TEXT_ALIGN_HORIZONTAL'));
 	}
-	const resolvedLetterSpacing = resolveReference(
-		typography.letterSpacing,
-		parentMixin?.letterSpacing
+	const [isResolvedTextAlignVerticalOk, resolvedTextAlignVerticalErr, resolvedTextAlignVertical] =
+		resolveNestedTokenRef(typography, cx.tokenSet, cx.mapToToken, 'textAlignVertical');
+	if (!isResolvedTextAlignVerticalOk) {
+		return Err(resolvedTextAlignVerticalErr.wrapWith('#ERR_RESOLVE_TEXT_ALIGN_VERTICAL'));
+	}
+	const [isResolvedLineHeightOk, resolvedLineHeightErr, resolvedLineHeight] = resolveNestedTokenRef(
+		typography,
+		cx.tokenSet,
+		cx.mapToToken,
+		'lineHeight'
 	);
-	if (resolvedLetterSpacing == null) {
-		return Err(new AppError('#ERR_RESOLVE_LETTER_SPACING'));
+	if (!isResolvedLineHeightOk) {
+		return Err(resolvedLineHeightErr.wrapWith('#ERR_RESOLVE_LINE_HEIGHT'));
+	}
+	const [isResolvedLetterSpacingOk, resolvedLetterSpacingErr, resolvedLetterSpacing] =
+		resolveNestedTokenRef(typography, cx.tokenSet, cx.mapToToken, 'letterSpacing');
+	if (!isResolvedLetterSpacingOk) {
+		return Err(resolvedLetterSpacingErr.wrapWith('#ERR_RESOLVE_LETTER_SPACING'));
 	}
 
 	return Ok({
@@ -58,8 +72,7 @@ export function resolveTypographyStyleMixin(
 		styles: {
 			fontFamily: resolvedFont.family,
 			fontSize: `${resolvedFontSize}px`,
-			textAlignHorizontal: resolvedTextAlignHorizontal,
-			textAlignVertical: resolvedTextAlignVertical,
+			textAlign: resolvedTextAlignHorizontal,
 			lineHeight: resolveLineHeight(resolvedLineHeight),
 			letterSpacing: resolveLetterSpacing(resolvedLetterSpacing)
 		}

@@ -4,8 +4,8 @@ import {
 	fontMetadataMap,
 	getFontHash,
 	hexToRgba,
-	inherit,
 	TId,
+	tokenRef,
 	TProductNode,
 	TSite,
 	type TFontAsset,
@@ -124,62 +124,62 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 				}
 			},
 			autoLayout: {
-				horizontalPadding: inherit(),
-				verticalPadding: inherit(),
-				horizontalGap: inherit(),
-				verticalGap: inherit()
+				horizontalPadding: tokenRef(),
+				verticalPadding: tokenRef(),
+				horizontalGap: tokenRef(),
+				verticalGap: tokenRef()
 			},
 			appearance: {
 				visible: true,
-				opacity: inherit(),
-				borderRadius: inherit()
+				opacity: tokenRef(),
+				borderRadius: tokenRef()
 			},
-			fill: inherit(),
-			stroke: inherit(),
-			shadow: inherit(),
+			fill: tokenRef(),
+			stroke: tokenRef(),
+			shadow: tokenRef(),
 			text: {
 				appearance: {
 					visible: true,
-					opacity: inherit(),
-					borderRadius: inherit()
+					opacity: tokenRef(),
+					borderRadius: tokenRef()
 				},
 				typography: {
-					font: inherit(),
-					fontSize: inherit(),
-					textAlignHorizontal: inherit(),
-					textAlignVertical: inherit(),
-					lineHeight: inherit(),
-					letterSpacing: inherit()
+					font: tokenRef(),
+					fontSize: tokenRef(),
+					textAlignHorizontal: 'start',
+					textAlignVertical: tokenRef(),
+					lineHeight: tokenRef(),
+					letterSpacing: tokenRef()
 				},
-				fill: inherit(),
-				stroke: inherit(),
-				shadow: inherit()
+				fill: tokenRef(),
+				stroke: tokenRef(),
+				shadow: tokenRef()
 			},
 			button: {
 				appearance: {
 					visible: true,
-					opacity: inherit(),
-					borderRadius: inherit()
+					opacity: tokenRef(),
+					borderRadius: tokenRef()
 				},
-				fill: inherit(),
-				stroke: inherit(),
-				shadow: inherit(),
+				fill: tokenRef(),
+				stroke: tokenRef(),
+				shadow: tokenRef(),
 				text: {
 					appearance: {
 						visible: true,
-						opacity: inherit()
+						opacity: tokenRef()
 					},
 					typography: {
-						font: inherit(),
-						fontSize: inherit(),
-						textAlignHorizontal: inherit(),
-						textAlignVertical: inherit(),
-						lineHeight: inherit(),
-						letterSpacing: inherit()
+						font: tokenRef(),
+						fontSize: tokenRef(),
+						textAlignHorizontal: tokenRef(),
+						textAlignVertical: tokenRef(),
+						lineHeight: tokenRef(),
+						letterSpacing: tokenRef()
 					},
-					fill: inherit(),
-					stroke: inherit(),
-					shadow: inherit()
+					fill: tokenRef(),
+					stroke: tokenRef(),
+					shadow: tokenRef()
 				}
 			}
 		};
@@ -236,13 +236,13 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 						socialLinks: allSocialLinks
 					},
 					autoLayout: {
-						horizontalPadding: inherit(),
-						verticalPadding: inherit(),
-						verticalGap: inherit()
+						horizontalPadding: tokenRef(),
+						verticalPadding: tokenRef(),
+						verticalGap: tokenRef()
 					},
 					appearance: {
 						visible: true,
-						opacity: inherit(),
+						opacity: tokenRef(),
 						borderRadius: 0
 					},
 					fill: null,
@@ -251,19 +251,19 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					text: {
 						appearance: {
 							visible: true,
-							opacity: inherit()
+							opacity: tokenRef()
 						},
 						typography: {
-							font: inherit(),
-							fontSize: inherit(),
+							font: tokenRef(),
+							fontSize: tokenRef(),
 							textAlignHorizontal: 'center',
-							textAlignVertical: 'center',
-							lineHeight: inherit(),
-							letterSpacing: inherit()
+							textAlignVertical: tokenRef(),
+							lineHeight: tokenRef(),
+							letterSpacing: tokenRef()
 						},
-						fill: inherit(),
-						stroke: inherit(),
-						shadow: inherit()
+						fill: tokenRef(),
+						stroke: tokenRef(),
+						shadow: tokenRef()
 					}
 				},
 				{
@@ -277,35 +277,35 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 						}
 					},
 					autoLayout: {
-						horizontalPadding: inherit(),
-						verticalPadding: inherit(),
-						horizontalGap: inherit(),
-						verticalGap: inherit()
+						horizontalPadding: tokenRef(),
+						verticalPadding: tokenRef(),
+						horizontalGap: tokenRef(),
+						verticalGap: tokenRef()
 					},
 					appearance: {
 						visible: true,
-						opacity: inherit(),
-						borderRadius: inherit()
+						opacity: tokenRef(),
+						borderRadius: tokenRef()
 					},
-					fill: inherit(),
-					stroke: inherit(),
-					shadow: inherit(),
+					fill: tokenRef(),
+					stroke: tokenRef(),
+					shadow: tokenRef(),
 					text: {
 						appearance: {
 							visible: true,
-							opacity: inherit()
+							opacity: tokenRef()
 						},
 						typography: {
-							font: inherit(),
-							fontSize: inherit(),
-							textAlignHorizontal: inherit(),
-							textAlignVertical: inherit(),
-							lineHeight: inherit(),
-							letterSpacing: inherit()
+							font: tokenRef(),
+							fontSize: tokenRef(),
+							textAlignHorizontal: tokenRef(),
+							textAlignVertical: tokenRef(),
+							lineHeight: tokenRef(),
+							letterSpacing: tokenRef()
 						},
-						fill: inherit(),
-						stroke: inherit(),
-						shadow: inherit()
+						fill: tokenRef(),
+						stroke: tokenRef(),
+						shadow: tokenRef()
 					}
 				},
 				{
@@ -315,12 +315,12 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 						text: '### 📙 Or some text\nwith a different font and background color'
 					},
 					autoLayout: {
-						horizontalPadding: inherit(),
-						verticalPadding: inherit()
+						horizontalPadding: tokenRef(),
+						verticalPadding: tokenRef()
 					},
 					appearance: {
 						visible: true,
-						opacity: inherit(),
+						opacity: tokenRef(),
 						borderRadius: 0
 					},
 					fill: {
@@ -330,12 +330,12 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 						},
 						opacity: 1
 					},
-					stroke: inherit(),
-					shadow: inherit(),
+					stroke: tokenRef(),
+					shadow: tokenRef(),
 					text: {
 						appearance: {
 							visible: true,
-							opacity: inherit()
+							opacity: tokenRef()
 						},
 						typography: {
 							font: {
@@ -343,15 +343,15 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 								weight: 400,
 								style: 'normal'
 							},
-							fontSize: inherit(),
-							textAlignHorizontal: inherit(),
-							textAlignVertical: inherit(),
-							lineHeight: inherit(),
-							letterSpacing: inherit()
+							fontSize: tokenRef(),
+							textAlignHorizontal: tokenRef(),
+							textAlignVertical: tokenRef(),
+							lineHeight: tokenRef(),
+							letterSpacing: tokenRef()
 						},
-						fill: inherit(),
-						stroke: inherit(),
-						shadow: inherit()
+						fill: tokenRef(),
+						stroke: tokenRef(),
+						shadow: tokenRef()
 					}
 				},
 				{
@@ -361,12 +361,12 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 						text: '🔮 Let your imagination flow'
 					},
 					autoLayout: {
-						horizontalPadding: inherit(),
-						verticalPadding: inherit()
+						horizontalPadding: tokenRef(),
+						verticalPadding: tokenRef()
 					},
 					appearance: {
 						visible: true,
-						opacity: inherit(),
+						opacity: tokenRef(),
 						borderRadius: 999
 					},
 					fill: {
@@ -376,20 +376,20 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 						},
 						opacity: 1
 					},
-					stroke: inherit(),
-					shadow: inherit(),
+					stroke: tokenRef(),
+					shadow: tokenRef(),
 					text: {
 						appearance: {
 							visible: true,
-							opacity: inherit()
+							opacity: tokenRef()
 						},
 						typography: {
-							font: inherit(),
-							fontSize: 24,
-							textAlignHorizontal: inherit(),
-							textAlignVertical: inherit(),
-							lineHeight: inherit(),
-							letterSpacing: inherit()
+							font: tokenRef(),
+							fontSize: 16,
+							textAlignHorizontal: tokenRef(),
+							textAlignVertical: tokenRef(),
+							lineHeight: tokenRef(),
+							letterSpacing: tokenRef()
 						},
 						fill: {
 							paint: {
@@ -398,8 +398,8 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 							},
 							opacity: 1
 						},
-						stroke: inherit(),
-						shadow: inherit()
+						stroke: tokenRef(),
+						shadow: tokenRef()
 					}
 				},
 				...(productNode != null ? [productNode] : []),
@@ -419,12 +419,12 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					},
 					appearance: {
 						visible: true,
-						opacity: inherit(),
-						borderRadius: inherit()
+						opacity: tokenRef(),
+						borderRadius: tokenRef()
 					},
-					fill: inherit(),
-					stroke: inherit(),
-					shadow: inherit()
+					fill: tokenRef(),
+					stroke: tokenRef(),
+					shadow: tokenRef()
 				}
 			],
 			autoLayout: {
@@ -442,38 +442,74 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					color: hexToRgba(backgroundColor)
 				},
 				opacity: 1
-			},
-			childMixins: {
-				autoLayout: {
+			}
+		},
+		tokens: [
+			{
+				type: 'autoLayout',
+				key: 'default',
+				value: {
 					horizontalPadding: 12,
 					verticalPadding: 12,
 					horizontalGap: 12,
 					verticalGap: 12
-				},
-				appearance: {
+				}
+			},
+			{
+				type: 'appearance',
+				key: 'default',
+				value: {
 					visible: true,
 					opacity: 1,
 					borderRadius
-				},
-				fill: {
+				}
+			},
+			{
+				type: 'typography',
+				key: 'default',
+				value: {
+					font: bodyFont.font,
+					fontSize: 16,
+					textAlignHorizontal: 'center',
+					textAlignVertical: 'center',
+					lineHeight: { type: 'auto' },
+					letterSpacing: { type: 'auto' }
+				}
+			},
+			{
+				type: 'fill',
+				key: 'default',
+				value: {
 					paint: {
 						type: 'solid',
 						color: hexToRgba(surfaceColor)
 					},
 					opacity: 1
-				},
-				stroke: {
+				}
+			},
+			{
+				type: 'stroke',
+				key: 'default',
+				value: {
 					color: { r: 0, g: 0, b: 0, a: 0.1 },
 					width: 1
-				},
-				shadow: {
+				}
+			},
+			{
+				type: 'shadow',
+				key: 'default',
+				value: {
 					color: { r: 0, g: 0, b: 0, a: 0.1 },
 					offsetX: 0,
 					offsetY: 4,
 					blur: 6,
 					spread: -1
-				},
-				text: {
+				}
+			},
+			{
+				type: 'text',
+				key: 'default',
+				value: {
 					appearance: {
 						visible: true,
 						opacity: 1
@@ -495,8 +531,12 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					},
 					stroke: null,
 					shadow: null
-				},
-				button: {
+				}
+			},
+			{
+				type: 'button',
+				key: 'default',
+				value: {
 					appearance: {
 						visible: true,
 						opacity: 1,
@@ -536,7 +576,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					}
 				}
 			}
-		}
+		]
 	};
 }
 

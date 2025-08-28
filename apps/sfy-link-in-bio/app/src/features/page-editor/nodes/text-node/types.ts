@@ -1,4 +1,4 @@
-import { TBaseNode, TIdMixin, TMixin } from '@repo/editor';
+import { TBaseMixin, TBaseNode, TIdMixin } from '@repo/editor';
 import {
 	TResolvedAppearanceStyleMixin,
 	TResolvedAutoLayoutStyleMixin,
@@ -21,7 +21,7 @@ export type TResolvedTextNode = TBaseNode<
 	]
 >;
 
-export type TResolvedTextNodeMixin = TMixin<
+export type TResolvedTextNodeMixin = TBaseMixin<
 	'node',
 	{
 		type: 'text';

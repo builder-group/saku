@@ -1,5 +1,6 @@
 import React from 'react';
 import { ChevronDownIcon } from '@/components';
+import { logger } from '@/environment';
 import { getCurrencySymbol } from '../../../../environment';
 import { TResolvedNodeProps } from '../../../../lib';
 import { TResolvedProductNode } from '../../types';
@@ -84,7 +85,9 @@ export const Content: React.FC<TContentProps> = (props) => {
 			}
 		]);
 		if (result.isErr()) {
-			console.error('Failed to buy now:', result.error);
+			logger.warn('Failed to buy now:', {
+				error: result.error
+			});
 			setIsBuying(false);
 			return;
 		}

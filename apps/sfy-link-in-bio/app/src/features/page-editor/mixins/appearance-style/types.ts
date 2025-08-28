@@ -1,6 +1,6 @@
-import { TMixin } from '@repo/editor';
+import { TBaseMixin } from '@repo/editor';
 
-export type TResolvedAppearanceStyleMixin = TMixin<
+export type TResolvedAppearanceStyleMixin = TBaseMixin<
 	'appearance',
 	{
 		visible: boolean;

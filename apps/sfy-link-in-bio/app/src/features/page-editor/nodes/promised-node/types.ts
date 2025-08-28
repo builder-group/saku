@@ -1,4 +1,4 @@
-import { TBaseNode, TIdMixin, TMixin } from '@repo/editor';
+import { TBaseMixin, TBaseNode, TIdMixin } from '@repo/editor';
 import { TResolvedNode } from '../../types';
 
 export type TResolvedPromisedNode<GNode extends TResolvedNode> = TBaseNode<
@@ -6,7 +6,7 @@ export type TResolvedPromisedNode<GNode extends TResolvedNode> = TBaseNode<
 	[TIdMixin]
 >;
 
-export type TResolvedPromisedNodeMixin<GNode extends TResolvedNode> = TMixin<
+export type TResolvedPromisedNodeMixin<GNode extends TResolvedNode> = TBaseMixin<
 	'node',
 	{
 		type: 'promised';

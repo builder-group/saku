@@ -1,15 +1,14 @@
 import {
 	hexToRgba,
 	hsbaToRgba,
-	isInherited,
+	isTokenRef,
 	isValidHex,
-	resolveReference,
 	rgbaToHex,
 	rgbaToHsba,
-	TAssetHash,
-	TImageAsset,
+	tokenRef,
 	TPaint,
-	TReference
+	TRef,
+	TTokenSet
 } from '@repo/editor';
 import {
 	ColorPicker,
@@ -20,38 +19,37 @@ import {
 	TextField,
 	TextFieldProps
 } from '@shopify/polaris';
-import { useCombinedCompute } from 'feature-react/state';
+import { useCombinedCompute, useCompute } from 'feature-react/state';
 import { createState, TState } from 'feature-state';
 import React from 'react';
-import {
-	ImageUploadField,
-	InheritanceActionOverlay,
-	LinkIcon,
-	LinkOffIcon,
-	TImageUploadEvent
-} from '@/components';
+import { ImageUploadField, LinkIcon, LinkOffIcon, TImageUploadEvent } from '@/components';
+import { TPageEditor } from '@/features/page-editor';
 import { cn } from '@/lib';
+import { TokenActionOverlay } from './TokenActionOverlay';
 
-export const MappedPaintInput = <GStateValue, GParentStateValue>(
-	props: TMappedPaintInputProps<GStateValue, GParentStateValue>
+export const TokenPaintInput = <
+	GValue extends TPaint,
+	GRefValue extends TRef<GValue> | undefined,
+	GTokenSet extends TTokenSet
+>(
+	props: TTokenPaintInputProps<GValue, GRefValue, GTokenSet>
 ) => {
 	const {
 		state,
-		mapValue,
-		onValueChange,
-		onInheritChange,
-		onNavigateToParent,
-		parentState,
-		mapParentValue,
-		disableFieldInheritance = false,
+		tokenSet,
+		mapToTokenValue,
+		onLinkChange,
+		onNavigateToToken,
+		disabledTokenLink = false,
 		editor,
 		allowedPaintTypes = ['solid', 'image'],
 		label,
+		readOnly,
 		className,
 		...textFieldProps
 	} = props;
 
-	const [popoverActive, setPopoverActive] = React.useState(false);
+	const [isPopoverActive, setIsPopoverActive] = React.useState(false);
 	const [selectedTabIndex, setSelectedTabIndex] = React.useState(0);
 	const tabs = React.useMemo(() => {
 		const availableTabs = [];
@@ -86,22 +84,22 @@ export const MappedPaintInput = <GStateValue, GParentStateValue>(
 
 	const [displayValue, setDisplayValue] = React.useState('');
 	const lastChangeFromText = React.useRef(false);
-	const { parentValue, resolvedValue, isValueInherited, isReadOnly, error } = useCombinedCompute(
-		[state, parentState ?? createState(undefined)],
-		([current, parent]) => {
-			const currentValue = mapValue(current.value);
-			const parentValue = parent.value != null ? mapParentValue?.(parent.value) : undefined;
-			const resolvedValue = resolveReference(currentValue, parentValue);
-			return {
-				currentValue,
-				parentValue,
-				resolvedValue,
-				isValueInherited: isInherited(currentValue),
-				isReadOnly: resolvedValue?.type === 'image',
-				error: displayValue !== '' && displayValue !== 'Image' && !isValidHex(displayValue)
-			};
-		}
+	const resolvedValue = useCombinedCompute(
+		[state, tokenSet ?? createState(undefined)],
+		([{ value: stateValue }, { value: tokenMapValue }]) => {
+			return isTokenRef(stateValue)
+				? mapToTokenValue(stateValue.ref, tokenMapValue)
+				: (stateValue as GValue);
+		},
+		[mapToTokenValue]
 	);
+	const isLinked = useCompute(state, ({ value }) => isTokenRef(value));
+	const isError = React.useMemo(() => {
+		return displayValue !== '' && displayValue !== 'Image' && !isValidHex(displayValue);
+	}, [displayValue]);
+	const isReadOnly = React.useMemo(() => {
+		return resolvedValue?.type === 'image';
+	}, [resolvedValue]);
 
 	const pickerColor = React.useMemo(() => {
 		if (resolvedValue?.type !== 'solid') {
@@ -138,22 +136,23 @@ export const MappedPaintInput = <GStateValue, GParentStateValue>(
 	// =========================================================================
 
 	const handleValueChange = React.useCallback(
-		(value: TPaint | undefined, fromText = false) => {
+		(value: GRefValue, fromText = false) => {
 			lastChangeFromText.current = fromText;
-			onValueChange(value);
+			if (value != null) {
+				state.set(value);
+			}
 		},
-		[onValueChange]
+		[state]
 	);
 
 	const handleTextChange = React.useCallback(
 		(newValue: string) => {
-			if (isValueInherited) {
+			if (isLinked) {
 				return;
 			}
 
 			if (newValue === '') {
 				setDisplayValue('');
-				handleValueChange(undefined, true);
 				return;
 			}
 
@@ -164,20 +163,18 @@ export const MappedPaintInput = <GStateValue, GParentStateValue>(
 					{
 						type: 'solid',
 						color: hexToRgba(normalizedValue)
-					},
+					} as GRefValue,
 					true
 				);
-			} else {
-				handleValueChange(undefined, true);
 			}
 			setDisplayValue(normalizedValue);
 		},
-		[handleValueChange, isValueInherited]
+		[handleValueChange, isLinked]
 	);
 
 	const handleColorChange = React.useCallback(
 		(hsba: HSBAColor) => {
-			if (isValueInherited) {
+			if (isLinked) {
 				return;
 			}
 
@@ -185,16 +182,16 @@ export const MappedPaintInput = <GStateValue, GParentStateValue>(
 				{
 					type: 'solid',
 					color: hsbaToRgba(hsba)
-				},
+				} as GRefValue,
 				false
 			);
 		},
-		[handleValueChange, isValueInherited]
+		[handleValueChange, isLinked]
 	);
 
 	const handleImageChange = React.useCallback(
 		(event: TImageUploadEvent) => {
-			if (isValueInherited) {
+			if (isLinked) {
 				return;
 			}
 
@@ -207,7 +204,7 @@ export const MappedPaintInput = <GStateValue, GParentStateValue>(
 								type: 'image',
 								hash,
 								altText: event.fileName
-							},
+							} as GRefValue,
 							false
 						);
 					}
@@ -217,23 +214,37 @@ export const MappedPaintInput = <GStateValue, GParentStateValue>(
 					handleValueChange(
 						{
 							type: 'image'
-						},
+						} as GRefValue,
 						false
 					);
 					break;
 				}
 			}
 		},
-		[handleValueChange, isValueInherited, editor]
+		[handleValueChange, isLinked, editor]
 	);
 
-	const handleToggleInheritance = React.useCallback(() => {
-		onInheritChange?.(!isValueInherited, parentValue);
-	}, [onInheritChange, isValueInherited, parentValue]);
+	const handleToggleTokenLink = React.useCallback(() => {
+		const { preventDefault } = onLinkChange?.(isLinked) ?? {};
+		if (preventDefault) {
+			return;
+		}
+
+		if (isLinked) {
+			const tokenValue = isTokenRef(state._v)
+				? mapToTokenValue(state._v.ref, tokenSet?._v)
+				: undefined;
+			if (tokenValue != null) {
+				state.set(tokenValue as GRefValue);
+			}
+		} else {
+			state.set(tokenRef('default') as GRefValue);
+		}
+	}, [onLinkChange, isLinked, state, mapToTokenValue, tokenSet]);
 
 	const togglePopoverActive = React.useCallback(() => {
-		if (!isValueInherited) {
-			setPopoverActive((active) => {
+		if (!isLinked) {
+			setIsPopoverActive((active) => {
 				const newActive = !active;
 				if (!newActive) {
 					// Clear cache when popover closes
@@ -242,13 +253,13 @@ export const MappedPaintInput = <GStateValue, GParentStateValue>(
 				return newActive;
 			});
 		}
-	}, [isValueInherited]);
+	}, [isLinked]);
 
 	const handleFocus = React.useCallback(() => {
-		if (!isValueInherited) {
-			setPopoverActive(true);
+		if (!isLinked) {
+			setIsPopoverActive(true);
 		}
-	}, [isValueInherited]);
+	}, [isLinked]);
 
 	const handleTabChange = React.useCallback(
 		(newSelectedTabIndex: number) => {
@@ -268,25 +279,26 @@ export const MappedPaintInput = <GStateValue, GParentStateValue>(
 
 			setSelectedTabIndex(newSelectedTabIndex);
 
-			// Apply cached value if available, otherwise use parent or default
+			// Apply cached value if available, otherwise use token value or default
+			const tokenValue = mapToTokenValue('default', tokenSet?._v);
 			switch (tabs[newSelectedTabIndex]?.id) {
 				case 'solid':
 					handleValueChange(
-						tabValueCache.current.solid ||
-							(parentValue?.type === 'solid'
-								? parentValue
-								: { type: 'solid', color: { r: 196, g: 196, b: 196, a: 1 } }),
+						(tabValueCache.current.solid ||
+							(tokenValue?.type === 'solid'
+								? tokenValue
+								: { type: 'solid', color: { r: 196, g: 196, b: 196, a: 1 } })) as GRefValue,
 						false
 					);
 					break;
 				case 'image':
 					handleValueChange(
-						tabValueCache.current.image ||
-							(parentValue?.type === 'image'
-								? parentValue
+						(tabValueCache.current.image ||
+							(tokenValue?.type === 'image'
+								? tokenValue
 								: {
 										type: 'image'
-									}),
+									})) as GRefValue,
 						false
 					);
 					break;
@@ -294,7 +306,7 @@ export const MappedPaintInput = <GStateValue, GParentStateValue>(
 				// do nothing
 			}
 		},
-		[handleValueChange, parentValue, resolvedValue, selectedTabIndex, tabs]
+		[handleValueChange, mapToTokenValue, resolvedValue, selectedTabIndex, tabs, tokenSet]
 	);
 
 	// =========================================================================
@@ -331,12 +343,11 @@ export const MappedPaintInput = <GStateValue, GParentStateValue>(
 	// =========================================================================
 
 	const ColorTab = <ColorPicker color={pickerColor} onChange={handleColorChange} allowAlpha />;
-
 	const ImageTab = <ImageUploadField image={uploadFieldImage} onChange={handleImageChange} />;
 
 	const InputComponent = (
 		<Popover
-			active={popoverActive}
+			active={isPopoverActive}
 			activator={
 				<div className="relative">
 					<TextField
@@ -346,7 +357,7 @@ export const MappedPaintInput = <GStateValue, GParentStateValue>(
 						value={displayValue}
 						onChange={handleTextChange}
 						onFocus={handleFocus}
-						readOnly={isValueInherited || isReadOnly}
+						readOnly={isLinked || isReadOnly || readOnly}
 						prefix={
 							resolvedValue?.type === 'solid' ? (
 								<button
@@ -354,7 +365,7 @@ export const MappedPaintInput = <GStateValue, GParentStateValue>(
 									onClick={togglePopoverActive}
 									className={cn(
 										'-ml-1 flex h-5 w-5 items-center justify-center rounded-full border border-neutral-200',
-										!isValueInherited ? 'cursor-pointer' : 'cursor-default'
+										isLinked ? 'cursor-default' : 'cursor-pointer'
 									)}
 									style={{ backgroundColor: rgbaToHex(resolvedValue.color) }}
 								/>
@@ -364,7 +375,7 @@ export const MappedPaintInput = <GStateValue, GParentStateValue>(
 									onClick={togglePopoverActive}
 									className={cn(
 										'-ml-1 flex h-5 w-5 items-center justify-center overflow-hidden rounded border border-neutral-200',
-										!isValueInherited ? 'cursor-pointer' : 'cursor-default'
+										isLinked ? 'cursor-default' : 'cursor-pointer'
 									)}
 								>
 									<img
@@ -376,7 +387,7 @@ export const MappedPaintInput = <GStateValue, GParentStateValue>(
 							) : null
 						}
 						autoComplete="off"
-						error={error}
+						error={isError}
 					/>
 				</div>
 			}
@@ -393,7 +404,7 @@ export const MappedPaintInput = <GStateValue, GParentStateValue>(
 								tabs={tabs}
 								selected={selectedTabIndex}
 								onSelect={handleTabChange}
-								disabled={isValueInherited}
+								disabled={isLinked}
 							/>
 						</div>
 						{currentTabId === 'solid' ? ColorTab : currentTabId === 'image' ? ImageTab : null}
@@ -413,28 +424,24 @@ export const MappedPaintInput = <GStateValue, GParentStateValue>(
 				<Text as="span" variant="bodySm" tone="subdued">
 					{label}
 				</Text>
-				{parentValue != null && !disableFieldInheritance && (
+				{!disabledTokenLink && (
 					<button
 						type="button"
-						onClick={handleToggleInheritance}
+						onClick={handleToggleTokenLink}
 						className="flex cursor-pointer items-center justify-center opacity-60 transition-opacity hover:opacity-100"
-						title={isValueInherited ? `Unlink from parent` : `Link to parent`}
+						title={isLinked ? `Unlink` : `Link`}
 					>
-						{isValueInherited ? (
-							<LinkOffIcon className="h-3 w-3" />
-						) : (
-							<LinkIcon className="h-3 w-3" />
-						)}
+						{isLinked ? <LinkOffIcon className="h-3 w-3" /> : <LinkIcon className="h-3 w-3" />}
 					</button>
 				)}
 			</div>
 			<div className="group relative">
 				{InputComponent}
-				{isValueInherited && (
-					<InheritanceActionOverlay
+				{isLinked && !disabledTokenLink && (
+					<TokenActionOverlay
 						variant={'full-overlay'}
-						onUnlink={handleToggleInheritance}
-						onNavigateToParent={onNavigateToParent}
+						onUnlink={handleToggleTokenLink}
+						onNavigateToToken={onNavigateToToken}
 					/>
 				)}
 			</div>
@@ -442,31 +449,27 @@ export const MappedPaintInput = <GStateValue, GParentStateValue>(
 	);
 };
 
-export interface TMappedPaintInputProps<GStateValue, GParentStateValue>
-	extends Omit<
+export interface TTokenPaintInputProps<
+	GValue extends TPaint,
+	GRefValue extends TRef<GValue> | undefined,
+	GTokenSet extends TTokenSet
+> extends Omit<
 		TextFieldProps,
-		'value' | 'onChange' | 'label' | 'labelHidden' | 'prefix' | 'error'
+		'label' | 'labelHidden' | 'value' | 'onChange' | 'onFocus' | 'prefix' | 'autoComplete' | 'error'
 	> {
-	// Value handling
-	state: TState<GStateValue, any>;
-	mapValue: (stateValue: GStateValue) => TReference<TPaint> | undefined;
-	onValueChange: (value: TPaint | undefined) => void;
+	state: TState<GRefValue, any>;
 
-	// Parent/inheritance handling
-	parentState?: TState<GParentStateValue, any>;
-	mapParentValue?: (parentStateValue: GParentStateValue) => TPaint | undefined;
-	onInheritChange?: (shouldInherit: boolean, parentValue?: TPaint) => void;
-	onNavigateToParent?: () => void;
-	disableFieldInheritance?: boolean;
+	tokenSet?: TState<GTokenSet, any>;
+	mapToTokenValue: (tokenRef: string, tokenSet?: GTokenSet) => GValue | undefined;
+	onLinkChange?: (isLinked: boolean) => { preventDefault: boolean } | void;
+	onNavigateToToken?: () => void;
+	disabledTokenLink?: boolean;
 
-	editor: {
-		registerImage: (url: string, fileName?: string) => TAssetHash | null;
-		getImageAsset: (hash: TAssetHash | undefined | null) => TImageAsset | null;
-	};
-	allowedPaintTypes?: TPaintType[];
+	editor: TPageEditor;
+	allowedPaintTypes?: TTokenPaintInputPaintType[];
 
 	label: string;
 	className?: string;
 }
 
-export type TPaintType = 'solid' | 'image';
+export type TTokenPaintInputPaintType = 'solid' | 'image';

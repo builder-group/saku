@@ -9,7 +9,7 @@ import {
 	TResolvedTextNode
 } from './nodes';
 
-export interface TResolvedSite extends Omit<TSite, 'root' | 'assets' | 'integrations'> {
+export interface TResolvedSite extends Omit<TSite, 'root' | 'assets' | 'integrations' | 'tokens'> {
 	root: TResolvedPageNode;
 }
 

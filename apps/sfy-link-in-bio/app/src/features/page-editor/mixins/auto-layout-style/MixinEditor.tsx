@@ -1,29 +1,113 @@
-import { inherit, TAutoLayoutStyleMixin, TMergeMixins, TUnreference } from '@repo/editor';
+import { isTokenRef, TAutoLayoutStyleMixin, TAutoLayoutStyleToken, TTokenSet } from '@repo/editor';
 import { Text } from '@shopify/polaris';
 import { useCompute } from 'feature-react';
 import { TState } from 'feature-state';
-import { MappedTextInput } from '@/components';
+import React from 'react';
+import { useMapState } from '@/hooks';
+import { TokenTextInput } from '../../components';
 import { TPageEditor } from '../../lib';
 
 export const AutoLayoutStyleMixinEditor = <
 	GValue extends Record<string, any>,
-	GParentValue extends Record<string, any>
+	GTokenSet extends TTokenSet
 >(
-	props: TAutoLayoutStyleMixinEditorProps<GValue, GParentValue>
+	props: TAutoLayoutStyleMixinEditorProps<GValue, GTokenSet>
 ) => {
-	const { state, parentState, editor } = props;
+	const { state, mapValue, tokenSet, mapToToken, disabledTokenLink = false, editor } = props;
 
-	const { hasHorizontalPadding, hasVerticalPadding, hasHorizontalGap, hasVerticalGap } = useCompute(
+	const hasHorizontalPadding = useCompute(
 		state,
-		({ value }) => {
-			return {
-				hasHorizontalPadding: value.autoLayout.horizontalPadding != null,
-				hasVerticalPadding: value.autoLayout.verticalPadding != null,
-				hasHorizontalGap: value.autoLayout.horizontalGap != null,
-				hasVerticalGap: value.autoLayout.verticalGap != null
-			};
-		}
+		({ value }) => mapValue(value).horizontalPadding != null,
+		[mapValue]
 	);
+	const hasVerticalPadding = useCompute(
+		state,
+		({ value }) => mapValue(value).verticalPadding != null,
+		[mapValue]
+	);
+	const hasHorizontalGap = useCompute(state, ({ value }) => mapValue(value).horizontalGap != null, [
+		mapValue
+	]);
+	const hasVerticalGap = useCompute(state, ({ value }) => mapValue(value).verticalGap != null, [
+		mapValue
+	]);
+
+	const horizontalPaddingState = useMapState(state, {
+		map(baseValue) {
+			const autoLayout = mapValue(baseValue);
+			if (isTokenRef(autoLayout)) {
+				return autoLayout;
+			}
+			return autoLayout.horizontalPadding;
+		},
+		sync(baseState, mappedValue, notifyOptions) {
+			const autoLayout = mapValue(baseState._v);
+			if (!isTokenRef(autoLayout)) {
+				autoLayout.horizontalPadding = mappedValue;
+				baseState._notify(notifyOptions);
+			}
+		}
+	});
+	const verticalPaddingState = useMapState(state, {
+		map(baseValue) {
+			const autoLayout = mapValue(baseValue);
+			if (isTokenRef(autoLayout)) {
+				return autoLayout;
+			}
+			return autoLayout.verticalPadding;
+		},
+		sync(baseState, mappedValue, notifyOptions) {
+			const autoLayout = mapValue(baseState._v);
+			if (!isTokenRef(autoLayout)) {
+				autoLayout.verticalPadding = mappedValue;
+				baseState._notify(notifyOptions);
+			}
+		}
+	});
+	const horizontalGapState = useMapState(state, {
+		map(baseValue) {
+			const autoLayout = mapValue(baseValue);
+			if (isTokenRef(autoLayout)) {
+				return autoLayout;
+			}
+			return autoLayout.horizontalGap;
+		},
+		sync(baseState, mappedValue, notifyOptions) {
+			const autoLayout = mapValue(baseState._v);
+			if (!isTokenRef(autoLayout)) {
+				autoLayout.horizontalGap = mappedValue;
+				baseState._notify(notifyOptions);
+			}
+		}
+	});
+	const verticalGapState = useMapState(state, {
+		map(baseValue) {
+			const autoLayout = mapValue(baseValue);
+			if (isTokenRef(autoLayout)) {
+				return autoLayout;
+			}
+			return autoLayout.verticalGap;
+		},
+		sync(baseState, mappedValue, notifyOptions) {
+			const autoLayout = mapValue(baseState._v);
+			if (!isTokenRef(autoLayout)) {
+				autoLayout.verticalGap = mappedValue;
+				baseState._notify(notifyOptions);
+			}
+		}
+	});
+
+	// =========================================================================
+	// Events
+	// =========================================================================
+
+	const handleNavigateToToken = React.useCallback(() => {
+		editor.switchView('settings');
+	}, [editor]);
+
+	// =========================================================================
+	// UI
+	// =========================================================================
 
 	if (!hasHorizontalPadding && !hasVerticalPadding && !hasHorizontalGap && !hasVerticalGap) {
 		return null;
@@ -39,61 +123,37 @@ export const AutoLayoutStyleMixinEditor = <
 			{(hasHorizontalPadding || hasVerticalPadding) && (
 				<div className="grid grid-cols-2 gap-3">
 					{hasHorizontalPadding && (
-						<MappedTextInput
+						<TokenTextInput
 							label="Padding (Horizontal)"
 							type="number"
 							autoComplete="off"
 							min={0}
 							max={96}
 							step={4}
-							state={state}
-							parentState={parentState}
-							mapValue={(value) => value.autoLayout.horizontalPadding}
-							onValueChange={(value) => {
-								if (value != null) {
-									state._v.autoLayout.horizontalPadding = value;
-									state._notify();
-								}
-							}}
-							mapParentValue={(parent) => parent.childMixins?.autoLayout?.horizontalPadding}
-							onInheritChange={(shouldInherit, parentValue) => {
-								state._v.autoLayout.horizontalPadding = shouldInherit
-									? inherit()
-									: (parentValue as number);
-								state._notify();
-							}}
-							onNavigateToParent={() => {
-								editor.switchView('settings');
-							}}
+							state={horizontalPaddingState}
+							tokenSet={tokenSet}
+							mapToTokenValue={(tokenRef, tokenSet) =>
+								mapToToken?.(tokenRef, tokenSet)?.horizontalPadding
+							}
+							onNavigateToToken={handleNavigateToToken}
+							disabledTokenLink={disabledTokenLink}
 						/>
 					)}
 					{hasVerticalPadding && (
-						<MappedTextInput
+						<TokenTextInput
 							label="Padding (Vertical)"
 							type="number"
 							autoComplete="off"
 							min={0}
 							max={96}
 							step={4}
-							state={state}
-							parentState={parentState}
-							mapValue={(value) => value.autoLayout.verticalPadding}
-							onValueChange={(value) => {
-								if (value != null) {
-									state._v.autoLayout.verticalPadding = value;
-									state._notify();
-								}
-							}}
-							mapParentValue={(parent) => parent.childMixins?.autoLayout?.verticalPadding}
-							onInheritChange={(shouldInherit, parentValue) => {
-								state._v.autoLayout.verticalPadding = shouldInherit
-									? inherit()
-									: (parentValue as number);
-								state._notify();
-							}}
-							onNavigateToParent={() => {
-								editor.switchView('settings');
-							}}
+							state={verticalPaddingState}
+							tokenSet={tokenSet}
+							mapToTokenValue={(tokenRef, tokenSet) =>
+								mapToToken?.(tokenRef, tokenSet)?.verticalPadding
+							}
+							onNavigateToToken={handleNavigateToToken}
+							disabledTokenLink={disabledTokenLink}
 						/>
 					)}
 				</div>
@@ -101,61 +161,37 @@ export const AutoLayoutStyleMixinEditor = <
 			{(hasHorizontalGap || hasVerticalGap) && (
 				<div className="grid grid-cols-2 gap-3">
 					{hasHorizontalGap && (
-						<MappedTextInput
+						<TokenTextInput
 							label="Gap (Horizontal)"
 							type="number"
 							autoComplete="off"
 							min={0}
 							max={96}
 							step={4}
-							state={state}
-							parentState={parentState}
-							mapValue={(value) => value.autoLayout.horizontalGap}
-							onValueChange={(value) => {
-								if (value != null) {
-									state._v.autoLayout.horizontalGap = value;
-									state._notify();
-								}
-							}}
-							mapParentValue={(parent) => parent.childMixins?.autoLayout?.horizontalGap}
-							onInheritChange={(shouldInherit, parentValue) => {
-								state._v.autoLayout.horizontalGap = shouldInherit
-									? inherit()
-									: (parentValue as number);
-								state._notify();
-							}}
-							onNavigateToParent={() => {
-								editor.switchView('settings');
-							}}
+							state={horizontalGapState}
+							tokenSet={tokenSet}
+							mapToTokenValue={(tokenRef, tokenSet) =>
+								mapToToken?.(tokenRef, tokenSet)?.horizontalGap
+							}
+							onNavigateToToken={handleNavigateToToken}
+							disabledTokenLink={disabledTokenLink}
 						/>
 					)}
 					{hasVerticalGap && (
-						<MappedTextInput
+						<TokenTextInput
 							label="Gap (Vertical)"
 							type="number"
 							autoComplete="off"
 							min={0}
 							max={96}
 							step={4}
-							state={state}
-							parentState={parentState}
-							mapValue={(value) => value.autoLayout.verticalGap}
-							onValueChange={(value) => {
-								if (value != null) {
-									state._v.autoLayout.verticalGap = value;
-									state._notify();
-								}
-							}}
-							mapParentValue={(parent) => parent.childMixins?.autoLayout?.verticalGap}
-							onInheritChange={(shouldInherit, parentValue) => {
-								state._v.autoLayout.verticalGap = shouldInherit
-									? inherit()
-									: (parentValue as number);
-								state._notify();
-							}}
-							onNavigateToParent={() => {
-								editor.switchView('settings');
-							}}
+							state={verticalGapState}
+							tokenSet={tokenSet}
+							mapToTokenValue={(tokenRef, tokenSet) =>
+								mapToToken?.(tokenRef, tokenSet)?.verticalGap
+							}
+							onNavigateToToken={handleNavigateToToken}
+							disabledTokenLink={disabledTokenLink}
 						/>
 					)}
 				</div>
@@ -166,14 +202,12 @@ export const AutoLayoutStyleMixinEditor = <
 
 interface TAutoLayoutStyleMixinEditorProps<
 	GValue extends Record<string, any>,
-	GParentValue extends Record<string, any>
+	GTokenSet extends TTokenSet
 > {
-	state: TState<GValue & TMergeMixins<[TAutoLayoutStyleMixin]>, any>;
-	parentState?: TState<
-		GParentValue & {
-			childMixins: TMergeMixins<[TUnreference<TAutoLayoutStyleMixin>]>;
-		},
-		any
-	>;
+	state: TState<GValue, any>;
+	mapValue: (value: GValue) => TAutoLayoutStyleMixin['value'];
+	tokenSet?: TState<GTokenSet, any>;
+	mapToToken?: (ref: string, tokenSet?: GTokenSet) => TAutoLayoutStyleToken['value'] | undefined;
+	disabledTokenLink?: boolean;
 	editor: TPageEditor;
 }

@@ -2,6 +2,7 @@ import { TProductNode } from '@repo/editor';
 import { useCombinedCompute } from 'feature-react';
 import React from 'react';
 import { logger } from '@/environment';
+import { useTokenSetNotifier } from '../../../hooks';
 import { EditorSiteResolveContext, TNodeProps } from '../../../lib';
 import { resolveProductNode } from '../resolve-node';
 import { ResolvedProductNode } from './ResolvedNode';
@@ -10,23 +11,29 @@ export const ProductNode = React.forwardRef<HTMLDivElement, TNodeProps<TProductN
 	(props, ref) => {
 		const { nodeState, editor, ...divProps } = props;
 
-		const node = useCombinedCompute(
-			[editor.getRootNode(), nodeState],
-			([{ value: pageNodeValue }, { value: nodeValue }]) => {
-				const result = resolveProductNode(nodeValue, {
-					site: new EditorSiteResolveContext(editor),
-					childMixins: pageNodeValue?.childMixins
+		const tokenSetNotifier = useTokenSetNotifier(editor, [
+			'autoLayout',
+			'appearance',
+			'fill',
+			'stroke',
+			'shadow',
+			'text',
+			'button'
+		]);
+
+		const node = useCombinedCompute([nodeState, tokenSetNotifier], ([{ value }]) => {
+			const result = resolveProductNode(value, {
+				site: new EditorSiteResolveContext(editor)
+			});
+			if (result.isErr()) {
+				logger.warn('Failed to resolve product node', {
+					error: result.error
 				});
-				if (result.isErr()) {
-					editor.shopify.toast.show('Failed to resolve product node');
-					logger.warn('Failed to resolve product node', {
-						error: result.error
-					});
-					return null;
-				}
-				return result.value;
+				editor.shopify.toast.show('Failed to resolve product node');
+				return null;
 			}
-		);
+			return result.value;
+		});
 
 		if (node == null) {
 			return null;

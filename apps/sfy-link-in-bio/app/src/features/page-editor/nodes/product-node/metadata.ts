@@ -1,4 +1,4 @@
-import { inherit } from '@repo/editor';
+import { tokenRef } from '@repo/editor';
 import { LayoutSectionIcon } from '@/components';
 import { TNodeMetadata } from '../../lib';
 
@@ -10,59 +10,59 @@ export const productNodeMetadata: TNodeMetadata<'product'> = {
 	defaultData: {
 		content: {},
 		autoLayout: {
-			horizontalPadding: inherit(),
-			verticalPadding: inherit(),
-			verticalGap: inherit()
+			horizontalPadding: tokenRef(),
+			verticalPadding: tokenRef(),
+			verticalGap: tokenRef()
 		},
 		appearance: {
 			visible: true,
-			opacity: inherit(),
-			borderRadius: inherit()
+			opacity: tokenRef(),
+			borderRadius: tokenRef()
 		},
-		fill: inherit(),
-		stroke: inherit(),
-		shadow: inherit(),
+		fill: tokenRef(),
+		stroke: tokenRef(),
+		shadow: tokenRef(),
 		text: {
 			appearance: {
 				visible: true,
-				opacity: inherit()
+				opacity: tokenRef()
 			},
 			typography: {
-				font: inherit(),
-				fontSize: inherit(),
+				font: tokenRef(),
+				fontSize: tokenRef(),
 				textAlignHorizontal: 'start',
-				textAlignVertical: inherit(),
-				lineHeight: inherit(),
-				letterSpacing: inherit()
+				textAlignVertical: tokenRef(),
+				lineHeight: tokenRef(),
+				letterSpacing: tokenRef()
 			},
-			fill: inherit(),
-			stroke: inherit(),
-			shadow: inherit()
+			fill: tokenRef(),
+			stroke: tokenRef(),
+			shadow: tokenRef()
 		},
 		button: {
 			appearance: {
 				visible: true,
-				opacity: inherit()
+				opacity: tokenRef()
 			},
-			fill: inherit(),
-			stroke: inherit(),
-			shadow: inherit(),
+			fill: tokenRef(),
+			stroke: tokenRef(),
+			shadow: tokenRef(),
 			text: {
 				appearance: {
 					visible: true,
-					opacity: inherit()
+					opacity: tokenRef()
 				},
 				typography: {
-					font: inherit(),
-					fontSize: inherit(),
-					textAlignHorizontal: inherit(),
-					textAlignVertical: inherit(),
-					lineHeight: inherit(),
-					letterSpacing: inherit()
+					font: tokenRef(),
+					fontSize: tokenRef(),
+					textAlignHorizontal: tokenRef(),
+					textAlignVertical: tokenRef(),
+					lineHeight: tokenRef(),
+					letterSpacing: tokenRef()
 				},
-				fill: inherit(),
-				stroke: inherit(),
-				shadow: inherit()
+				fill: tokenRef(),
+				stroke: tokenRef(),
+				shadow: tokenRef()
 			}
 		}
 	}

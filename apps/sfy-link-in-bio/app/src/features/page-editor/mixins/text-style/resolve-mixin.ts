@@ -1,6 +1,7 @@
-import { TAsset, TAssetHash, TTextStyleMixin } from '@repo/editor';
+import { TTextStyleMixin, TTextStyleToken, TTokenSet } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
+import { TMixinResolveContext } from '../../lib';
 import {
 	resolveAppearanceStyleMixin,
 	TResolveAppearanceStyleMixinParentMixin
@@ -14,41 +15,49 @@ import {
 } from '../typography-style';
 import { TResolvedTextStyleMixin } from './types';
 
-export function resolveTextStyleMixin(
+export function resolveTextStyleMixin<GTokenSet extends TTokenSet>(
 	text: TTextStyleMixin['value'],
-	context: {
-		getAsset: (hash: TAssetHash) => TAsset | null;
-	},
-	parentMixin?: TResolveTextStyleMixinParentMixin
+	cx: TMixinResolveContext<TTextStyleToken['value'], GTokenSet>
 ): TResult<TResolvedTextStyleMixin['value'], AppError> {
 	const [isResolvedAppearanceOk, resolvedAppearanceErr, resolvedAppearance] =
-		resolveAppearanceStyleMixin(text.appearance, parentMixin?.appearance);
+		resolveAppearanceStyleMixin(text.appearance, {
+			...cx,
+			mapToToken: (ref, tokenSet) => cx.mapToToken(ref, tokenSet)?.appearance
+		});
 	if (!isResolvedAppearanceOk) {
 		return Err(resolvedAppearanceErr.wrapWith('#ERR_RESOLVE_APPEARANCE_STYLE'));
 	}
 	const [isResolvedTypographyOk, resolvedTypographyErr, resolvedTypography] =
-		resolveTypographyStyleMixin(text.typography, parentMixin?.typography);
+		resolveTypographyStyleMixin(text.typography, {
+			...cx,
+			mapToToken: (ref, tokenSet) => cx.mapToToken(ref, tokenSet)?.typography
+		});
 	if (!isResolvedTypographyOk) {
 		return Err(resolvedTypographyErr.wrapWith('#ERR_RESOLVE_TYPOGRAPHY_STYLE'));
 	}
-	const [isResolvedFillOk, resolvedFillErr, resolvedFill] = resolveFillStyleMixin(
-		text.fill,
-		context,
-		parentMixin?.fill
-	);
+	const [isResolvedFillOk, resolvedFillErr, resolvedFill] = resolveFillStyleMixin(text.fill, {
+		...cx,
+		mapToToken: (ref, tokenSet) => cx.mapToToken(ref, tokenSet)?.fill
+	});
 	if (!isResolvedFillOk) {
 		return Err(resolvedFillErr.wrapWith('#ERR_RESOLVE_FILL_STYLE'));
 	}
 	const [isResolvedStrokeOk, resolvedStrokeErr, resolvedStroke] = resolveStrokeStyleMixin(
 		text.stroke,
-		parentMixin?.stroke
+		{
+			...cx,
+			mapToToken: (ref, tokenSet) => cx.mapToToken(ref, tokenSet)?.stroke
+		}
 	);
 	if (!isResolvedStrokeOk) {
 		return Err(resolvedStrokeErr.wrapWith('#ERR_RESOLVE_STROKE_STYLE'));
 	}
 	const [isResolvedShadowOk, resolvedShadowErr, resolvedShadow] = resolveShadowStyleMixin(
 		text.shadow,
-		parentMixin?.shadow
+		{
+			...cx,
+			mapToToken: (ref, tokenSet) => cx.mapToToken(ref, tokenSet)?.shadow
+		}
 	);
 	if (!isResolvedShadowOk) {
 		return Err(resolvedShadowErr.wrapWith('#ERR_RESOLVE_SHADOW_STYLE'));
@@ -61,8 +70,8 @@ export function resolveTextStyleMixin(
 		stroke: resolvedStroke,
 		shadow: resolvedShadow,
 		styles: {
-			visibility: resolvedAppearance.visible ? 'visible' : 'hidden',
-			opacity: `${resolvedAppearance.opacity * 100}%`,
+			...resolvedAppearance.styles,
+			...resolvedTypography.styles,
 			color: resolvedFill?.paint.type === 'solid' ? resolvedFill?.paint.color : undefined,
 			WebkitTextStroke: resolvedStroke?.width
 				? `${resolvedStroke.width}px ${resolvedStroke.color}`

@@ -6,13 +6,13 @@ import {
 	getFontHash,
 	getFontMetadataByFamily,
 	hexToRgba,
-	inherit,
 	TAboutNode,
 	TAsset,
 	TAssetHash,
 	TFontAsset,
 	TImageAsset,
 	TLinkNode,
+	tokenRef,
 	TPaint,
 	TSite,
 	TSocialLink,
@@ -72,13 +72,13 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 				socialLinks: transformSocialLinks(page.socialMediaAccounts ?? [])
 			},
 			autoLayout: {
-				horizontalPadding: inherit(),
-				verticalPadding: inherit(),
-				verticalGap: inherit()
+				horizontalPadding: tokenRef(),
+				verticalPadding: tokenRef(),
+				verticalGap: tokenRef()
 			},
 			appearance: {
-				visible: inherit(),
-				opacity: inherit(),
+				visible: true,
+				opacity: tokenRef(),
 				borderRadius: 0
 			},
 			fill: null,
@@ -87,15 +87,15 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 			text: {
 				appearance: {
 					visible: true,
-					opacity: inherit()
+					opacity: tokenRef()
 				},
 				typography: {
-					font: inherit(),
+					font: tokenRef(),
 					fontSize: 16,
 					textAlignHorizontal: 'center',
 					textAlignVertical: 'center',
-					lineHeight: inherit(),
-					letterSpacing: inherit()
+					lineHeight: tokenRef(),
+					letterSpacing: tokenRef()
 				},
 				fill: {
 					paint: {
@@ -128,15 +128,15 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 				// Determine variant based on __typename
 				let variant: TLinkNode['content']['variant'];
 				let autoLayout: TLinkNode['autoLayout'] = {
-					horizontalPadding: inherit(),
-					verticalPadding: inherit(),
-					horizontalGap: inherit(),
-					verticalGap: inherit()
+					horizontalPadding: tokenRef(),
+					verticalPadding: tokenRef(),
+					horizontalGap: tokenRef(),
+					verticalGap: tokenRef()
 				};
 				let appearance: TLinkNode['appearance'] = {
 					visible: true,
-					opacity: inherit(),
-					borderRadius: inherit()
+					opacity: tokenRef(),
+					borderRadius: tokenRef()
 				};
 
 				switch (link.__typename) {
@@ -155,7 +155,7 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 							};
 							appearance = {
 								visible: true,
-								opacity: inherit(),
+								opacity: tokenRef(),
 								borderRadius: Math.min(borderRadius, 40)
 							};
 						} else {
@@ -185,25 +185,25 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 					},
 					autoLayout,
 					appearance,
-					fill: inherit(),
-					stroke: inherit(),
-					shadow: inherit(),
+					fill: tokenRef(),
+					stroke: tokenRef(),
+					shadow: tokenRef(),
 					text: {
 						appearance: {
 							visible: true,
-							opacity: inherit()
+							opacity: tokenRef()
 						},
 						typography: {
-							font: inherit(),
-							fontSize: inherit(),
-							textAlignHorizontal: inherit(),
-							textAlignVertical: inherit(),
-							lineHeight: inherit(),
-							letterSpacing: inherit()
+							font: tokenRef(),
+							fontSize: tokenRef(),
+							textAlignHorizontal: tokenRef(),
+							textAlignVertical: tokenRef(),
+							lineHeight: tokenRef(),
+							letterSpacing: tokenRef()
 						},
-						fill: inherit(),
-						stroke: inherit(),
-						shadow: inherit()
+						fill: tokenRef(),
+						stroke: tokenRef(),
+						shadow: tokenRef()
 					}
 				} satisfies TLinkNode);
 			} else {
@@ -215,33 +215,33 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 						text: link.title
 					},
 					autoLayout: {
-						horizontalPadding: inherit(),
-						verticalPadding: inherit()
+						horizontalPadding: tokenRef(),
+						verticalPadding: tokenRef()
 					},
 					appearance: {
 						visible: true,
-						opacity: inherit(),
-						borderRadius: inherit()
+						opacity: tokenRef(),
+						borderRadius: tokenRef()
 					},
-					fill: inherit(),
-					stroke: inherit(),
-					shadow: inherit(),
+					fill: tokenRef(),
+					stroke: tokenRef(),
+					shadow: tokenRef(),
 					text: {
 						appearance: {
 							visible: true,
-							opacity: inherit()
+							opacity: tokenRef()
 						},
 						typography: {
-							font: inherit(),
-							fontSize: inherit(),
-							textAlignHorizontal: inherit(),
-							textAlignVertical: inherit(),
-							lineHeight: inherit(),
-							letterSpacing: inherit()
+							font: tokenRef(),
+							fontSize: tokenRef(),
+							textAlignHorizontal: tokenRef(),
+							textAlignVertical: tokenRef(),
+							lineHeight: tokenRef(),
+							letterSpacing: tokenRef()
 						},
-						fill: inherit(),
-						stroke: inherit(),
-						shadow: inherit()
+						fill: tokenRef(),
+						stroke: tokenRef(),
+						shadow: tokenRef()
 					}
 				} satisfies TTextNode);
 			}
@@ -272,35 +272,59 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 			fill: {
 				paint: backgroundPaint,
 				opacity: 1
-			},
-			childMixins: {
-				autoLayout: {
+			}
+		},
+		tokens: [
+			{
+				type: 'autoLayout',
+				key: 'default',
+				value: {
 					horizontalPadding: 12,
 					verticalPadding: 12,
 					horizontalGap: 12,
 					verticalGap: 12
-				},
-				appearance: {
+				}
+			},
+			{
+				type: 'appearance',
+				key: 'default',
+				value: {
 					visible: true,
 					opacity: 1,
 					borderRadius
-				},
-				fill: {
+				}
+			},
+			{
+				type: 'fill',
+				key: 'default',
+				value: {
 					paint: {
 						type: 'solid',
 						color: cssRgbaToRgba(page?.themeSettings?.linkCardColor) ?? hexToRgba('#FFFFFF')
 					},
 					opacity: 1
-				},
-				stroke: null,
-				shadow: {
+				}
+			},
+			{
+				type: 'stroke',
+				key: 'default',
+				value: null
+			},
+			{
+				type: 'shadow',
+				key: 'default',
+				value: {
 					color: { r: 0, g: 0, b: 0, a: 0.1 },
 					offsetX: 0,
 					offsetY: 2,
 					blur: 4,
 					spread: 0
-				},
-				text: {
+				}
+			},
+			{
+				type: 'text',
+				key: 'default',
+				value: {
 					appearance: {
 						visible: true,
 						opacity: 1
@@ -311,7 +335,7 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 							weight: 400,
 							style: 'normal'
 						},
-						fontSize: 14,
+						fontSize: 16,
 						textAlignHorizontal: 'center',
 						textAlignVertical: 'center',
 						lineHeight: { type: 'auto' },
@@ -326,8 +350,12 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 					},
 					stroke: null,
 					shadow: null
-				},
-				button: {
+				}
+			},
+			{
+				type: 'button',
+				key: 'default',
+				value: {
 					appearance: {
 						visible: true,
 						opacity: 1,
@@ -353,7 +381,7 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 								weight: 400,
 								style: 'normal'
 							},
-							fontSize: 14,
+							fontSize: 16,
 							textAlignHorizontal: 'center',
 							textAlignVertical: 'center',
 							lineHeight: { type: 'auto' },
@@ -371,7 +399,7 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 					}
 				}
 			}
-		}
+		]
 	};
 }
 

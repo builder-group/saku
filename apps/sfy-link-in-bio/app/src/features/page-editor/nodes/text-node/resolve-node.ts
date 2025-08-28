@@ -19,42 +19,52 @@ export function resolveTextNode(
 	const { autoLayout, appearance, fill, stroke, shadow, text, ...rest } = node;
 
 	const [isResolvedAutoLayoutOk, resolvedAutoLayoutErr, resolvedAutoLayout] =
-		resolveAutoLayoutStyleMixin(autoLayout, cx.childMixins?.autoLayout);
+		resolveAutoLayoutStyleMixin(autoLayout, {
+			node: cx,
+			tokenSet: cx.site.getTokenSet('autoLayout'),
+			mapToToken: (ref, tokenSet) => tokenSet?.[ref]
+		});
 	if (!isResolvedAutoLayoutOk) {
 		return Err(resolvedAutoLayoutErr.wrapWith('#ERR_RESOLVE_AUTO_LAYOUT_STYLE'));
 	}
 	const [isResolvedAppearanceOk, resolvedAppearanceErr, resolvedAppearance] =
-		resolveAppearanceStyleMixin(appearance, cx.childMixins?.appearance);
+		resolveAppearanceStyleMixin(appearance, {
+			node: cx,
+			tokenSet: cx.site.getTokenSet('appearance'),
+			mapToToken: (ref, tokenSet) => tokenSet?.[ref]
+		});
 	if (!isResolvedAppearanceOk) {
 		return Err(resolvedAppearanceErr.wrapWith('#ERR_RESOLVE_APPEARANCE_STYLE'));
 	}
-	const [isResolvedFillOk, resolvedFillErr, resolvedFill] = resolveFillStyleMixin(
-		fill,
-		cx.site,
-		cx.childMixins?.fill
-	);
+	const [isResolvedFillOk, resolvedFillErr, resolvedFill] = resolveFillStyleMixin(fill, {
+		node: cx,
+		tokenSet: cx.site.getTokenSet('fill'),
+		mapToToken: (ref, tokenSet) => tokenSet?.[ref]
+	});
 	if (!isResolvedFillOk) {
 		return Err(resolvedFillErr.wrapWith('#ERR_RESOLVE_FILL_STYLE'));
 	}
-	const [isResolvedStrokeOk, resolvedStrokeErr, resolvedStroke] = resolveStrokeStyleMixin(
-		stroke,
-		cx.childMixins?.stroke
-	);
+	const [isResolvedStrokeOk, resolvedStrokeErr, resolvedStroke] = resolveStrokeStyleMixin(stroke, {
+		node: cx,
+		tokenSet: cx.site.getTokenSet('stroke'),
+		mapToToken: (ref, tokenSet) => tokenSet?.[ref]
+	});
 	if (!isResolvedStrokeOk) {
 		return Err(resolvedStrokeErr.wrapWith('#ERR_RESOLVE_STROKE_STYLE'));
 	}
-	const [isResolvedShadowOk, resolvedShadowErr, resolvedShadow] = resolveShadowStyleMixin(
-		shadow,
-		cx.childMixins?.shadow
-	);
+	const [isResolvedShadowOk, resolvedShadowErr, resolvedShadow] = resolveShadowStyleMixin(shadow, {
+		node: cx,
+		tokenSet: cx.site.getTokenSet('shadow'),
+		mapToToken: (ref, tokenSet) => tokenSet?.[ref]
+	});
 	if (!isResolvedShadowOk) {
 		return Err(resolvedShadowErr.wrapWith('#ERR_RESOLVE_SHADOW_STYLE'));
 	}
-	const [isResolvedTextOk, resolvedTextErr, resolvedText] = resolveTextStyleMixin(
-		text,
-		cx.site,
-		cx.childMixins?.text
-	);
+	const [isResolvedTextOk, resolvedTextErr, resolvedText] = resolveTextStyleMixin(text, {
+		node: cx,
+		tokenSet: cx.site.getTokenSet('text'),
+		mapToToken: (ref, tokenSet) => tokenSet?.[ref]
+	});
 	if (!isResolvedTextOk) {
 		return Err(resolvedTextErr.wrapWith('#ERR_RESOLVE_TEXT_STYLE'));
 	}

@@ -1,6 +1,6 @@
-import { TFont, TLetterSpacing, TLineHeight, TMixin, TTextAlign } from '@repo/editor';
+import { TBaseMixin, TFont, TLetterSpacing, TLineHeight, TTextAlign } from '@repo/editor';
 
-export type TResolvedTypographyStyleMixin = TMixin<
+export type TResolvedTypographyStyleMixin = TBaseMixin<
 	'typography',
 	{
 		font: TFont;
@@ -13,8 +13,7 @@ export type TResolvedTypographyStyleMixin = TMixin<
 		styles: {
 			fontFamily: React.CSSProperties['fontFamily'];
 			fontSize: React.CSSProperties['fontSize'];
-			textAlignHorizontal: React.CSSProperties['textAlign'];
-			textAlignVertical: React.CSSProperties['textAlign'];
+			textAlign: React.CSSProperties['textAlign'];
 			lineHeight: React.CSSProperties['lineHeight'];
 			letterSpacing: React.CSSProperties['letterSpacing'];
 		};

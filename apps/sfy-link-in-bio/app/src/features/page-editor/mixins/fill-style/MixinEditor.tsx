@@ -1,55 +1,57 @@
 import { deepCopy } from '@blgc/utils';
-import {
-	inherit,
-	isInherited,
-	resolveReference,
-	TFillStyleMixin,
-	TMergeMixins,
-	TUnreference
-} from '@repo/editor';
+import { isTokenRef, TFillStyleMixin, TFillStyleToken, tokenRef, TTokenSet } from '@repo/editor';
 import { Button, Text } from '@shopify/polaris';
-import { useCombinedCompute, useCompute } from 'feature-react';
-import { createState, TState } from 'feature-state';
+import { useCompute } from 'feature-react';
+import { TState } from 'feature-state';
 import React from 'react';
-import {
-	Badge,
-	InheritanceActionOverlay,
-	LinkIcon,
-	LinkOffIcon,
-	MappedPaintInput,
-	MinusIcon,
-	PlusIcon,
-	TPaintType
-} from '@/components';
-import { useMapStateReference } from '../../hooks';
+import { Badge, LinkIcon, LinkOffIcon, MinusIcon, PlusIcon } from '@/components';
+import { useMapState } from '@/hooks';
+import { TokenActionOverlay, TokenPaintInput, TTokenPaintInputPaintType } from '../../components';
 import { TPageEditor } from '../../lib';
 
 export const FillStyleMixinEditor = <
-	GValue extends Record<string, any>,
-	GParentValue extends Record<string, any>
+	GValue extends Record<string, any> | null,
+	GTokenSet extends TTokenSet
 >(
-	props: TFillStyleMixinEditorProps<GValue, GParentValue>
+	props: TFillStyleMixinEditorProps<GValue, GTokenSet>
 ) => {
-	const { state, parentState, editor, allowedPaintTypes } = props;
+	const {
+		state,
+		mapValue,
+		applyValue,
+		tokenSet,
+		mapToToken,
+		disabledTokenLink = false,
+		editor,
+		allowedPaintTypes
+	} = props;
 
-	const resolvedFill = useCombinedCompute(
-		[state, parentState ?? createState(undefined)],
-		([{ value }, { value: parentValue }]) => {
-			return resolveReference(value.fill, parentValue?.childMixins?.fill);
-		}
+	const isLinked = useCompute(state, ({ value }) => isTokenRef(mapValue(value)), [mapValue]);
+	const isSet = useCompute(
+		state,
+		({ value }) => {
+			const fill = mapValue(value);
+			if (isTokenRef(fill)) {
+				return mapToToken?.(fill.ref, tokenSet?._v) != null;
+			}
+			return fill != null;
+		},
+		[mapValue]
 	);
 
-	const isInheritedFill = useCompute(state, ({ value }) => {
-		return isInherited(value.fill);
-	});
-
-	const paintState = useMapStateReference(state, {
-		getTopLevelReference: (value) => value.fill,
-		getPropertyReference: (value) => value?.paint,
-		setProperty: (value, notifyOptions) => {
-			if (state._v.fill != null && !isInherited(state._v.fill)) {
-				state._v.fill.paint = value;
-				state._notify(notifyOptions);
+	const paintState = useMapState(state, {
+		map(baseValue) {
+			const fill = mapValue(baseValue);
+			if (isTokenRef(fill)) {
+				return fill;
+			}
+			return fill?.paint;
+		},
+		sync(baseState, mappedValue, notifyOptions) {
+			const fill = mapValue(baseState._v);
+			if (fill != null && !isTokenRef(fill) && mappedValue != null && !isTokenRef(mappedValue)) {
+				fill.paint = mappedValue;
+				baseState._notify(notifyOptions);
 			}
 		}
 	});
@@ -59,28 +61,42 @@ export const FillStyleMixinEditor = <
 	// =========================================================================
 
 	const handleAddFill = React.useCallback(() => {
-		const parentFill = parentState?._v.childMixins?.fill;
-		state._v.fill = parentFill ?? {
-			paint: {
-				type: 'solid',
-				color: { r: 255, g: 255, b: 255, a: 1 }
-			},
-			opacity: 1
-		};
+		const tokenValue = mapToToken?.('default', tokenSet?._v);
+		applyValue(
+			state,
+			tokenValue ?? {
+				paint: {
+					type: 'solid',
+					color: { r: 255, g: 255, b: 255, a: 1 }
+				},
+				opacity: 1
+			}
+		);
 		state._notify();
-	}, [state, parentState]);
+	}, [mapToToken, tokenSet, applyValue, state]);
 
 	const handleRemoveFill = React.useCallback(() => {
-		state._v.fill = null;
+		applyValue(state, null);
 		state._notify();
-	}, [state]);
+	}, [applyValue, state]);
 
-	const handleToggleInheritance = React.useCallback(() => {
-		state._v.fill = isInheritedFill
-			? (deepCopy(parentState?._v.childMixins?.fill) ?? null)
-			: inherit();
-		state._notify();
-	}, [isInheritedFill, parentState, state]);
+	const handleToggleTokenLink = React.useCallback(() => {
+		if (isLinked) {
+			const fill = mapValue(state._v);
+			const tokenValue = isTokenRef(fill) ? mapToToken?.(fill.ref, tokenSet?._v) : undefined;
+			if (tokenValue !== undefined) {
+				applyValue(state, deepCopy(tokenValue));
+				state._notify();
+			}
+		} else {
+			applyValue(state, tokenRef('default'));
+			state._notify();
+		}
+	}, [isLinked, mapValue, state, mapToToken, tokenSet, applyValue]);
+
+	const handleNavigateToToken = React.useCallback(() => {
+		editor.switchView('settings');
+	}, [editor]);
 
 	// =========================================================================
 	// UI
@@ -91,14 +107,14 @@ export const FillStyleMixinEditor = <
 			<div className="flex items-center justify-between">
 				<div className="flex items-center gap-2">
 					{/* Mixin-level inheritance button */}
-					{parentState != null && (
+					{!disabledTokenLink && (
 						<button
 							type="button"
-							onClick={handleToggleInheritance}
+							onClick={handleToggleTokenLink}
 							className="flex cursor-pointer items-center justify-center opacity-60 transition-opacity hover:opacity-100"
-							title={isInheritedFill ? 'Unlink from parent' : 'Link to parent'}
+							title={isLinked ? 'Unlink' : 'Link'}
 						>
-							{isInheritedFill ? (
+							{isLinked ? (
 								<LinkOffIcon className="h-3.5 w-3.5" />
 							) : (
 								<LinkIcon className="h-3.5 w-3.5" />
@@ -110,13 +126,13 @@ export const FillStyleMixinEditor = <
 						<Text as="span" variant="headingXs" tone="subdued">
 							Fill
 						</Text>
-						{isInheritedFill && (
+						{isLinked && (
 							<Badge className="group relative hover:w-32">
-								Inherited
-								<InheritanceActionOverlay
+								Linked
+								<TokenActionOverlay
 									variant={'full-overlay'}
-									onUnlink={handleToggleInheritance}
-									onNavigateToParent={() => editor.switchView('settings')}
+									onUnlink={handleToggleTokenLink}
+									onNavigateToToken={handleNavigateToToken}
 								/>
 							</Badge>
 						)}
@@ -124,52 +140,43 @@ export const FillStyleMixinEditor = <
 				</div>
 
 				{/* Add/Remove fill buttons */}
-				{resolvedFill != null ? (
+				{isSet ? (
 					<Button icon={MinusIcon} onClick={handleRemoveFill} variant="plain" size="micro" />
 				) : (
 					<Button icon={PlusIcon} onClick={handleAddFill} variant="plain" size="micro" />
 				)}
 			</div>
 
-			{resolvedFill != null && (
-				<div>
-					<MappedPaintInput
-						label="Paint"
-						autoComplete="off"
-						state={paintState}
-						parentState={parentState}
-						mapValue={(value) => value}
-						onValueChange={(value) => {
-							paintState.set(value);
-						}}
-						mapParentValue={(parent) => parent.childMixins?.fill?.paint}
-						onInheritChange={() => {
-							handleToggleInheritance();
-						}}
-						onNavigateToParent={() => {
-							editor.switchView('settings');
-						}}
-						disableFieldInheritance
-						editor={editor}
-						allowedPaintTypes={allowedPaintTypes}
-					/>
-				</div>
+			{isSet && (
+				<TokenPaintInput
+					label="Paint"
+					state={paintState}
+					tokenSet={tokenSet}
+					mapToTokenValue={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.paint}
+					onLinkChange={() => {
+						handleToggleTokenLink();
+						return { preventDefault: true };
+					}}
+					onNavigateToToken={handleNavigateToToken}
+					disabledTokenLink={disabledTokenLink}
+					editor={editor}
+					allowedPaintTypes={allowedPaintTypes}
+				/>
 			)}
 		</div>
 	);
 };
 
 interface TFillStyleMixinEditorProps<
-	GValue extends Record<string, any>,
-	GParentValue extends Record<string, any>
+	GValue extends Record<string, any> | null,
+	GTokenSet extends TTokenSet
 > {
-	state: TState<GValue & TMergeMixins<[TFillStyleMixin]>, any>;
-	parentState?: TState<
-		GParentValue & {
-			childMixins: TMergeMixins<[TUnreference<TFillStyleMixin>]>;
-		},
-		any
-	>;
+	state: TState<GValue, any>;
+	mapValue: (value: GValue) => TFillStyleMixin['value'];
+	applyValue: (state: TState<GValue, any>, value: TFillStyleMixin['value']) => void;
+	tokenSet?: TState<GTokenSet, any>;
+	mapToToken?: (ref: string, tokenSet?: GTokenSet) => TFillStyleToken['value'] | undefined;
+	disabledTokenLink?: boolean;
 	editor: TPageEditor;
-	allowedPaintTypes?: TPaintType[];
+	allowedPaintTypes?: TTokenPaintInputPaintType[];
 }

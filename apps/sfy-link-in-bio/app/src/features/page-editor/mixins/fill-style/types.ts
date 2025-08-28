@@ -1,7 +1,7 @@
-import { TMixin } from '@repo/editor';
+import { TBaseMixin } from '@repo/editor';
 import { TResolvedPaint } from '../../lib';
 
-export type TResolvedFillStyleMixin = TMixin<
+export type TResolvedFillStyleMixin = TBaseMixin<
 	'fill',
 	{
 		paint: TResolvedPaint;

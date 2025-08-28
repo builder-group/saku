@@ -1,4 +1,4 @@
-import { TBaseNode, TIdMixin, TMixin } from '@repo/editor';
+import { TBaseMixin, TBaseNode, TIdMixin } from '@repo/editor';
 import { TResolvedAsset } from '../../lib';
 import {
 	TResolvedAppearanceStyleMixin,
@@ -24,7 +24,7 @@ export type TResolvedLinkNode<GVariant extends TResolvedLinkVariant = TResolvedL
 	>;
 
 export type TResolvedLinkNodeMixin<GVariant extends TResolvedLinkVariant = TResolvedLinkVariant> =
-	TMixin<
+	TBaseMixin<
 		'node',
 		{
 			type: 'link';

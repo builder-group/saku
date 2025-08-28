@@ -3,6 +3,7 @@ import {
 	TAboutNodeMixin,
 	TAppearanceStyleMixin,
 	TAutoLayoutStyleMixin,
+	TBaseMixin,
 	TButtonStyleMixin,
 	TChildrenMixin,
 	TFillStyleMixin,
@@ -11,7 +12,6 @@ import {
 	TLinkNodeMixin,
 	TMediaNodeMixin,
 	TMergeMixins,
-	TMixin,
 	TPageNodeMixin,
 	TProductNodeMixin,
 	TShadowStyleMixin,
@@ -33,8 +33,8 @@ export type TFlatNode =
 export type TNodeId = TId<'node'>;
 
 export type TBaseNode<
-	GNodeMixin extends TMixin<'node', any>,
-	GOtherMixins extends TMixin<any, any>[]
+	GNodeMixin extends TBaseMixin<'node', any>,
+	GOtherMixins extends TBaseMixin<any, any>[]
 > = GNodeMixin['value'] & TMergeMixins<GOtherMixins>;
 
 // =========================================================================

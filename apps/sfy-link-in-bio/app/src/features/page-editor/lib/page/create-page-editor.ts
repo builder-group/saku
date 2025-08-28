@@ -15,7 +15,8 @@ import {
 	TIntegrationId,
 	TNodeId,
 	toHierarchical,
-	TSite
+	TSite,
+	TToken
 } from '@repo/editor';
 import { ShopifyGlobal } from '@shopify/app-bridge-react';
 import { FetchError, NetworkError, RequestError } from 'feature-fetch';
@@ -70,6 +71,12 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 
 		assetsMap: site.content.assets,
 		integrationsMap: site.content.integrations,
+		tokensMap: Object.fromEntries(
+			Object.entries(site.content.tokens).map(([tokenType, tokenRecord]) => [
+				tokenType,
+				createState(tokenRecord)
+			])
+		),
 
 		activeView: createState('layers' as TViewType),
 		activeSettingsSection: createState<TSettingsSectionType | null>('design'),
@@ -618,7 +625,10 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 					{} as Record<TNodeId, TFlatNode>
 				),
 				assets: deepCopy(this.assetsMap),
-				integrations: deepCopy(this.integrationsMap)
+				integrations: deepCopy(this.integrationsMap),
+				tokens: Object.fromEntries(
+					Object.entries(this.tokensMap).map(([type, state]) => [type, state._v])
+				)
 			} satisfies TFlatSite;
 		}
 	};
@@ -652,6 +662,7 @@ export interface TPageEditor {
 
 	assetsMap: Record<TAssetHash, TAsset>;
 	integrationsMap: Record<TIntegrationId, TIntegration>;
+	tokensMap: TTokenStateGroupMap;
 
 	activeView: TState<TViewType, []>;
 	activeSettingsSection: TState<TSettingsSectionType | null, []>;
@@ -707,3 +718,12 @@ export interface TBoundingRect {
 	bottom: number;
 	right: number;
 }
+
+export type TTokenStateGroupMap<GToken extends TToken = TToken> = {
+	[K in GToken['type']]?: TStateTokenSet<Extract<GToken, { type: K }>>;
+};
+
+export type TStateTokenSet<GToken extends TToken = TToken> = TState<
+	Record<string, GToken['value']>,
+	[]
+>;

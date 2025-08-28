@@ -1,56 +1,65 @@
 import {
 	hexToRgba,
 	hsbaToRgba,
-	isInherited,
+	isTokenRef,
 	isValidHex,
-	resolveReference,
 	rgbaToHex,
 	rgbaToHsba,
-	TReference,
-	TRgba
+	tokenRef,
+	TRef,
+	TRgba,
+	TTokenSet
 } from '@repo/editor';
 import { ColorPicker, HSBAColor, Popover, Text, TextField, TextFieldProps } from '@shopify/polaris';
-import { useCombinedCompute } from 'feature-react/state';
+import { useCombinedCompute, useCompute } from 'feature-react/state';
 import { createState, TState } from 'feature-state';
 import React from 'react';
-import { InheritanceActionOverlay, LinkIcon, LinkOffIcon } from '@/components';
+import { LinkIcon, LinkOffIcon } from '@/components';
 import { cn } from '@/lib';
+import { TokenActionOverlay } from './TokenActionOverlay';
 
-export const MappedColorInput = <GStateValue, GParentStateValue>(
-	props: TMappedColorInputProps<GStateValue, GParentStateValue>
+export const TokenColorInput = <
+	GValue extends TRgba,
+	GRefValue extends TRef<GValue> | undefined,
+	GTokenSet extends TTokenSet
+>(
+	props: TTokenColorInputProps<GValue, GRefValue, GTokenSet>
 ) => {
 	const {
 		state,
-		mapValue,
-		onValueChange,
-		onInheritChange,
-		onNavigateToParent,
-		parentState,
-		mapParentValue,
-		disableFieldInheritance = false,
+		tokenSet,
+		mapToTokenValue,
+		onLinkChange,
+		onNavigateToToken,
+		disabledTokenLink = false,
 		label,
+		readOnly,
 		className,
 		...textFieldProps
 	} = props;
 
-	const [popoverActive, setPopoverActive] = React.useState(false);
+	const [isPopoverActive, setIsPopoverActive] = React.useState(false);
 
 	const [displayValue, setDisplayValue] = React.useState('');
 	const lastChangeFromText = React.useRef(false);
-	const { parentValue, resolvedValue, isValueInherited, error } = useCombinedCompute(
-		[state, parentState ?? createState(undefined)],
-		([current, parent]) => {
-			const currentValue = mapValue(current.value);
-			const parentValue = parent.value != null ? mapParentValue?.(parent.value) : undefined;
-			return {
-				currentValue,
-				parentValue,
-				resolvedValue: resolveReference(currentValue, parentValue),
-				isValueInherited: isInherited(currentValue),
-				error: displayValue !== '' && displayValue !== 'Image' && !isValidHex(displayValue)
-			};
+	const resolvedValue = useCombinedCompute(
+		[state, tokenSet ?? createState(undefined)],
+		([{ value: stateValue }, { value: tokenMapValue }]) => {
+			return isTokenRef(stateValue)
+				? mapToTokenValue(stateValue.ref, tokenMapValue)
+				: (stateValue as GValue);
+		},
+		[mapToTokenValue],
+		{
+			isEqual(a, b) {
+				return a?.r === b?.r && a?.g === b?.g && a?.b === b?.b && a?.a === b?.a;
+			}
 		}
 	);
+	const isLinked = useCompute(state, ({ value }) => isTokenRef(value));
+	const isError = React.useMemo(() => {
+		return displayValue !== '' && !isValidHex(displayValue);
+	}, [displayValue]);
 
 	const pickerColor = React.useMemo(() => {
 		if (resolvedValue == null) {
@@ -71,63 +80,76 @@ export const MappedColorInput = <GStateValue, GParentStateValue>(
 	// =========================================================================
 
 	const handleValueChange = React.useCallback(
-		(value: TRgba | undefined, fromText = false) => {
+		(value: GRefValue, fromText = false) => {
 			lastChangeFromText.current = fromText;
-			onValueChange(value);
+			if (value != null) {
+				state.set(value);
+			}
 		},
-		[onValueChange]
+		[state]
 	);
 
 	const handleTextChange = React.useCallback(
 		(newValue: string) => {
-			if (isValueInherited) {
+			if (isLinked) {
 				return;
 			}
 
 			if (newValue === '') {
 				setDisplayValue('');
-				handleValueChange(undefined, true);
 				return;
 			}
 
 			// Always enforce # prefix for non-empty values
 			const normalizedValue = newValue.startsWith('#') ? newValue : `#${newValue}`;
 			if (isValidHex(normalizedValue)) {
-				handleValueChange(hexToRgba(normalizedValue), true);
-			} else {
-				handleValueChange(undefined, true);
+				handleValueChange(hexToRgba(normalizedValue) as GRefValue, true);
 			}
 			setDisplayValue(normalizedValue);
 		},
-		[handleValueChange, isValueInherited]
+		[handleValueChange, isLinked]
 	);
 
 	const handleColorChange = React.useCallback(
 		(hsba: HSBAColor) => {
-			if (isValueInherited) {
+			if (isLinked) {
 				return;
 			}
 
-			handleValueChange(hsbaToRgba(hsba), false);
+			handleValueChange(hsbaToRgba(hsba) as GRefValue, false);
 		},
-		[handleValueChange, isValueInherited]
+		[handleValueChange, isLinked]
 	);
 
-	const handleToggleInheritance = React.useCallback(() => {
-		onInheritChange?.(!isValueInherited, parentValue);
-	}, [onInheritChange, isValueInherited, parentValue]);
+	const handleToggleTokenLink = React.useCallback(() => {
+		const { preventDefault } = onLinkChange?.(isLinked) ?? {};
+		if (preventDefault) {
+			return;
+		}
+
+		if (isLinked) {
+			const tokenValue = isTokenRef(state._v)
+				? mapToTokenValue(state._v.ref, tokenSet?._v)
+				: undefined;
+			if (tokenValue != null) {
+				state.set(tokenValue as GRefValue);
+			}
+		} else {
+			state.set(tokenRef('default') as GRefValue);
+		}
+	}, [onLinkChange, isLinked, state, mapToTokenValue, tokenSet]);
 
 	const togglePopoverActive = React.useCallback(() => {
-		if (!isValueInherited) {
-			setPopoverActive((active) => !active);
+		if (!isLinked) {
+			setIsPopoverActive((active) => !active);
 		}
-	}, [isValueInherited]);
+	}, [isLinked]);
 
 	const handleFocus = React.useCallback(() => {
-		if (!isValueInherited) {
-			setPopoverActive(true);
+		if (!isLinked) {
+			setIsPopoverActive(true);
 		}
-	}, [isValueInherited]);
+	}, [isLinked]);
 
 	// =========================================================================
 	// Effects
@@ -146,7 +168,7 @@ export const MappedColorInput = <GStateValue, GParentStateValue>(
 
 	const InputComponent = (
 		<Popover
-			active={popoverActive}
+			active={isPopoverActive}
 			activator={
 				<div className="relative">
 					<TextField
@@ -156,20 +178,20 @@ export const MappedColorInput = <GStateValue, GParentStateValue>(
 						value={displayValue}
 						onChange={handleTextChange}
 						onFocus={handleFocus}
-						readOnly={isValueInherited}
+						readOnly={isLinked || readOnly}
 						prefix={
 							<button
 								type="button"
 								onClick={togglePopoverActive}
 								className={cn(
 									'-ml-1 flex h-5 w-5 items-center justify-center rounded-full border border-neutral-200',
-									!isValueInherited ? 'cursor-pointer' : 'cursor-default'
+									isLinked ? 'cursor-default' : 'cursor-pointer'
 								)}
 								style={{ backgroundColor: rgbaToHex(resolvedValue ?? { r: 0, g: 0, b: 0, a: 1 }) }}
 							/>
 						}
 						autoComplete="off"
-						error={error}
+						error={isError}
 					/>
 				</div>
 			}
@@ -189,32 +211,24 @@ export const MappedColorInput = <GStateValue, GParentStateValue>(
 				<Text as="span" variant="bodySm" tone="subdued">
 					{label}
 				</Text>
-				{parentValue != null && !disableFieldInheritance && (
+				{!disabledTokenLink && (
 					<button
 						type="button"
-						onClick={handleToggleInheritance}
+						onClick={handleToggleTokenLink}
 						className="flex cursor-pointer items-center justify-center opacity-60 transition-opacity hover:opacity-100"
-						title={
-							isValueInherited
-								? `Unlink from parent (${rgbaToHex(parentValue)})`
-								: `Link to parent (${rgbaToHex(parentValue)})`
-						}
+						title={isLinked ? `Unlink` : `Link`}
 					>
-						{isValueInherited ? (
-							<LinkOffIcon className="h-3 w-3" />
-						) : (
-							<LinkIcon className="h-3 w-3" />
-						)}
+						{isLinked ? <LinkOffIcon className="h-3 w-3" /> : <LinkIcon className="h-3 w-3" />}
 					</button>
 				)}
 			</div>
 			<div className="group relative">
 				{InputComponent}
-				{isValueInherited && (
-					<InheritanceActionOverlay
+				{isLinked && !disabledTokenLink && (
+					<TokenActionOverlay
 						variant={'full-overlay'}
-						onUnlink={handleToggleInheritance}
-						onNavigateToParent={onNavigateToParent}
+						onUnlink={handleToggleTokenLink}
+						onNavigateToToken={onNavigateToToken}
 					/>
 				)}
 			</div>
@@ -222,22 +236,21 @@ export const MappedColorInput = <GStateValue, GParentStateValue>(
 	);
 };
 
-export interface TMappedColorInputProps<GStateValue, GParentStateValue>
-	extends Omit<
+export interface TTokenColorInputProps<
+	GValue extends TRgba,
+	GRefValue extends TRef<GValue> | undefined,
+	GTokenSet extends TTokenSet
+> extends Omit<
 		TextFieldProps,
-		'value' | 'onChange' | 'label' | 'labelHidden' | 'prefix' | 'error'
+		'label' | 'labelHidden' | 'value' | 'onChange' | 'onFocus' | 'prefix' | 'autoComplete' | 'error'
 	> {
-	// Value handling
-	state: TState<GStateValue, any>;
-	mapValue: (stateValue: GStateValue) => TReference<TRgba> | undefined;
-	onValueChange: (value: TRgba | undefined) => void;
+	state: TState<GRefValue, any>;
 
-	// Parent/inheritance handling
-	parentState?: TState<GParentStateValue, any>;
-	mapParentValue?: (parentStateValue: GParentStateValue) => TRgba | undefined;
-	onInheritChange?: (shouldInherit: boolean, parentValue?: TRgba) => void;
-	onNavigateToParent?: () => void;
-	disableFieldInheritance?: boolean;
+	tokenSet?: TState<GTokenSet, any>;
+	mapToTokenValue: (tokenRef: string, tokenSet?: GTokenSet) => GValue | undefined;
+	onLinkChange?: (isLinked: boolean) => { preventDefault: boolean } | void;
+	onNavigateToToken?: () => void;
+	disabledTokenLink?: boolean;
 
 	label: string;
 	className?: string;
