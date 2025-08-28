@@ -13,7 +13,7 @@ export const TextStyleMixinEditor = <
 >(
 	props: TTextStyleMixinEditorProps<GValue, GTokenSet>
 ) => {
-	const { state, mapValue, tokenSet, mapToToken, editor } = props;
+	const { state, mapValue, tokenSet, mapToToken, disabledTokenLink = false, editor } = props;
 
 	return (
 		<>
@@ -21,7 +21,8 @@ export const TextStyleMixinEditor = <
 				state={state}
 				mapValue={(value) => mapValue(value).appearance}
 				tokenSet={tokenSet}
-				mapToToken={(tokenRef, tokenSet) => mapToToken(tokenRef, tokenSet)?.appearance}
+				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.appearance}
+				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 			/>
 			<div className="h-px bg-neutral-200" />
@@ -29,7 +30,8 @@ export const TextStyleMixinEditor = <
 				state={state}
 				mapValue={(value) => mapValue(value).typography}
 				tokenSet={tokenSet}
-				mapToToken={(tokenRef, tokenSet) => mapToToken(tokenRef, tokenSet)?.typography}
+				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.typography}
+				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 			/>
 			<div className="h-px bg-neutral-200" />
@@ -40,7 +42,8 @@ export const TextStyleMixinEditor = <
 					mapValue(state._v).fill = value;
 				}}
 				tokenSet={tokenSet}
-				mapToToken={(tokenRef, tokenSet) => mapToToken(tokenRef, tokenSet)?.fill}
+				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.fill}
+				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 				allowedPaintTypes={['solid']}
 			/>
@@ -52,7 +55,8 @@ export const TextStyleMixinEditor = <
 					mapValue(state._v).stroke = value;
 				}}
 				tokenSet={tokenSet}
-				mapToToken={(tokenRef, tokenSet) => mapToToken(tokenRef, tokenSet)?.stroke}
+				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.stroke}
+				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 			/>
 			<div className="h-px bg-neutral-200" />
@@ -63,9 +67,10 @@ export const TextStyleMixinEditor = <
 					mapValue(state._v).shadow = value;
 				}}
 				tokenSet={tokenSet}
-				mapToToken={(tokenRef, tokenSet) => mapToToken(tokenRef, tokenSet)?.shadow}
+				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.shadow}
+				disabledTokenLink={disabledTokenLink}
 				editor={editor}
-				disabledSpread
+				disabledSpread // HTML text doesn't support shadow spread
 			/>
 		</>
 	);
@@ -78,6 +83,7 @@ interface TTextStyleMixinEditorProps<
 	state: TState<GValue, any>;
 	mapValue: (value: GValue) => TTextStyleMixin['value'];
 	tokenSet?: TState<GTokenSet, any>;
-	mapToToken: (ref: string, tokenSet?: GTokenSet) => TTextStyleToken['value'] | undefined;
+	mapToToken?: (ref: string, tokenSet?: GTokenSet) => TTextStyleToken['value'] | undefined;
+	disabledTokenLink?: boolean;
 	editor: TPageEditor;
 }

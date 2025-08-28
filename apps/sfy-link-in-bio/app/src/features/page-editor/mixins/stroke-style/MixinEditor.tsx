@@ -16,12 +16,20 @@ import { TokenActionOverlay, TokenColorInput, TokenTextInput } from '../../compo
 import { TPageEditor } from '../../lib';
 
 export const StrokeStyleMixinEditor = <
-	GValue extends Record<string, any>,
+	GValue extends Record<string, any> | null,
 	GTokenSet extends TTokenSet
 >(
 	props: TStrokeStyleMixinEditorProps<GValue, GTokenSet>
 ) => {
-	const { state, mapValue, applyValue, tokenSet, mapToToken, editor } = props;
+	const {
+		state,
+		mapValue,
+		applyValue,
+		tokenSet,
+		mapToToken,
+		disabledTokenLink = false,
+		editor
+	} = props;
 
 	const isLinked = useCompute(state, ({ value }) => isTokenRef(mapValue(value)), [mapValue]);
 	const isSet = useCompute(
@@ -29,7 +37,7 @@ export const StrokeStyleMixinEditor = <
 		({ value }) => {
 			const stroke = mapValue(value);
 			if (isTokenRef(stroke)) {
-				return mapToToken(stroke.ref, tokenSet?._v) != null;
+				return mapToToken?.(stroke.ref, tokenSet?._v) != null;
 			}
 			return stroke != null;
 		},
@@ -84,7 +92,7 @@ export const StrokeStyleMixinEditor = <
 	// =========================================================================
 
 	const handleAddStroke = React.useCallback(() => {
-		const tokenValue = mapToToken('default', tokenSet?._v);
+		const tokenValue = mapToToken?.('default', tokenSet?._v);
 		applyValue(
 			state,
 			tokenValue ?? {
@@ -103,7 +111,7 @@ export const StrokeStyleMixinEditor = <
 	const handleToggleTokenLink = React.useCallback(() => {
 		if (isLinked) {
 			const stroke = mapValue(state._v);
-			const tokenValue = isTokenRef(stroke) ? mapToToken(stroke.ref, tokenSet?._v) : undefined;
+			const tokenValue = isTokenRef(stroke) ? mapToToken?.(stroke.ref, tokenSet?._v) : undefined;
 			if (tokenValue !== undefined) {
 				applyValue(state, deepCopy(tokenValue));
 				state._notify();
@@ -127,18 +135,20 @@ export const StrokeStyleMixinEditor = <
 			<div className="flex items-center justify-between">
 				<div className="flex items-center gap-2">
 					{/* Mixin-level inheritance button */}
-					<button
-						type="button"
-						onClick={handleToggleTokenLink}
-						className="flex cursor-pointer items-center justify-center opacity-60 transition-opacity hover:opacity-100"
-						title={isLinked ? 'Unlink' : 'Link'}
-					>
-						{isLinked ? (
-							<LinkOffIcon className="h-3.5 w-3.5" />
-						) : (
-							<LinkIcon className="h-3.5 w-3.5" />
-						)}
-					</button>
+					{!disabledTokenLink && (
+						<button
+							type="button"
+							onClick={handleToggleTokenLink}
+							className="flex cursor-pointer items-center justify-center opacity-60 transition-opacity hover:opacity-100"
+							title={isLinked ? 'Unlink' : 'Link'}
+						>
+							{isLinked ? (
+								<LinkOffIcon className="h-3.5 w-3.5" />
+							) : (
+								<LinkIcon className="h-3.5 w-3.5" />
+							)}
+						</button>
+					)}
 
 					<div className="flex items-center gap-2">
 						<Text as="span" variant="headingXs" tone="subdued">
@@ -171,12 +181,13 @@ export const StrokeStyleMixinEditor = <
 						label="Color"
 						state={colorState}
 						tokenSet={tokenSet}
-						mapToTokenValue={(tokenRef, tokenSet) => mapToToken(tokenRef, tokenSet)?.color}
+						mapToTokenValue={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.color}
 						onLinkChange={() => {
 							handleToggleTokenLink();
 							return { preventDefault: true };
 						}}
 						onNavigateToToken={handleNavigateToToken}
+						disabledTokenLink={disabledTokenLink}
 					/>
 					<TokenTextInput
 						label="Width"
@@ -187,7 +198,7 @@ export const StrokeStyleMixinEditor = <
 						step={1}
 						state={widthState}
 						tokenSet={tokenSet}
-						mapToTokenValue={(tokenRef, tokenSet) => mapToToken(tokenRef, tokenSet)?.width}
+						mapToTokenValue={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.width}
 						mapToDisplay={(value) => value}
 						mapToInternal={(displayValue) => displayValue}
 						onLinkChange={() => {
@@ -195,6 +206,7 @@ export const StrokeStyleMixinEditor = <
 							return { preventDefault: true };
 						}}
 						onNavigateToToken={handleNavigateToToken}
+						disabledTokenLink={disabledTokenLink}
 					/>
 				</div>
 			)}
@@ -203,13 +215,14 @@ export const StrokeStyleMixinEditor = <
 };
 
 interface TStrokeStyleMixinEditorProps<
-	GValue extends Record<string, any>,
+	GValue extends Record<string, any> | null,
 	GTokenSet extends TTokenSet
 > {
 	state: TState<GValue, any>;
 	mapValue: (value: GValue) => TStrokeStyleMixin['value'];
 	applyValue: (state: TState<GValue, any>, value: TStrokeStyleMixin['value']) => void;
 	tokenSet?: TState<GTokenSet, any>;
-	mapToToken: (ref: string, tokenSet?: GTokenSet) => TStrokeStyleToken['value'] | undefined;
+	mapToToken?: (ref: string, tokenSet?: GTokenSet) => TStrokeStyleToken['value'] | undefined;
+	disabledTokenLink?: boolean;
 	editor: TPageEditor;
 }

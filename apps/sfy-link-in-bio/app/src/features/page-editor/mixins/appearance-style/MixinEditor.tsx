@@ -14,7 +14,15 @@ export const AppearanceStyleMixinEditor = <
 >(
 	props: TAppearanceStyleMixinEditorProps<GValue, GTokenSet>
 ) => {
-	const { state, mapValue, tokenSet, mapToToken, editor } = props;
+	const {
+		state,
+		mapValue,
+		tokenSet,
+		mapToToken,
+		disabledTokenLink = false,
+		disabledVisibilityToggle = false,
+		editor
+	} = props;
 
 	const hasBorderRadius = useCompute(state, ({ value }) => mapValue(value).borderRadius != null, [
 		mapValue
@@ -79,11 +87,12 @@ export const AppearanceStyleMixinEditor = <
 					Appearance
 				</Text>
 
-				{isVisible ? (
-					<Button icon={ViewIcon} onClick={handleToggleVisibility} variant="plain" size="micro" />
-				) : (
-					<Button icon={HideIcon} onClick={handleToggleVisibility} variant="plain" size="micro" />
-				)}
+				{!disabledVisibilityToggle &&
+					(isVisible ? (
+						<Button icon={ViewIcon} onClick={handleToggleVisibility} variant="plain" size="micro" />
+					) : (
+						<Button icon={HideIcon} onClick={handleToggleVisibility} variant="plain" size="micro" />
+					))}
 			</div>
 			<div className="grid grid-cols-2 gap-3">
 				<TokenTextInput
@@ -95,10 +104,11 @@ export const AppearanceStyleMixinEditor = <
 					step={5}
 					state={opacityState}
 					tokenSet={tokenSet}
-					mapToTokenValue={(tokenRef, tokenSet) => mapToToken(tokenRef, tokenSet)?.opacity}
+					mapToTokenValue={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.opacity}
 					mapToDisplay={(value) => Math.round(value * 100)}
 					mapToInternal={(displayValue) => displayValue / 100}
 					onNavigateToToken={handleNavigateToToken}
+					disabledTokenLink={disabledTokenLink}
 				/>
 				{hasBorderRadius && (
 					<TokenTextInput
@@ -110,8 +120,9 @@ export const AppearanceStyleMixinEditor = <
 						step={4}
 						state={borderRadiusState}
 						tokenSet={tokenSet}
-						mapToTokenValue={(tokenRef, tokenSet) => mapToToken(tokenRef, tokenSet)?.borderRadius}
+						mapToTokenValue={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.borderRadius}
 						onNavigateToToken={handleNavigateToToken}
+						disabledTokenLink={disabledTokenLink}
 					/>
 				)}
 			</div>
@@ -126,6 +137,8 @@ interface TAppearanceStyleMixinEditorProps<
 	state: TState<GValue, any>;
 	mapValue: (value: GValue) => TAppearanceStyleMixin['value'];
 	tokenSet?: TState<GTokenSet, any>;
-	mapToToken: (ref: string, tokenSet?: GTokenSet) => TAppearanceStyleToken['value'] | undefined;
+	mapToToken?: (ref: string, tokenSet?: GTokenSet) => TAppearanceStyleToken['value'] | undefined;
+	disabledTokenLink?: boolean;
+	disabledVisibilityToggle?: boolean;
 	editor: TPageEditor;
 }

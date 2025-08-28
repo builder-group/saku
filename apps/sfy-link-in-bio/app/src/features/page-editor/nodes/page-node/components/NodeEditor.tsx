@@ -1,4 +1,12 @@
-import { TFlatPageNode } from '@repo/editor';
+import {
+	isTokenRef,
+	TAppearanceStyleToken,
+	TAutoLayoutStyleToken,
+	TFillStyleToken,
+	TFlatPageNode,
+	TShadowStyleToken,
+	TStrokeStyleToken
+} from '@repo/editor';
 import React from 'react';
 import { AccordionSection } from '@/components';
 import { useMapState } from '@/hooks';
@@ -6,25 +14,83 @@ import { TNodeEditorComponentProps } from '../../../lib';
 import {
 	AppearanceStyleMixinEditor,
 	AutoLayoutStyleMixinEditor,
-	FillStyleMixinEditor
+	FillStyleMixinEditor,
+	ShadowStyleMixinEditor,
+	StrokeStyleMixinEditor
 } from '../../../mixins';
 
 export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TFlatPageNode>> = (props) => {
 	const { nodeState, editor } = props;
 
-	// TODO: Figure out how to resuse mixins editors
 	const defaultAppearanceToken = useMapState(editor.tokensMap.appearance, {
 		map: (token) =>
-			token['default'] ?? {
-				visible: true,
-				opacity: 1,
-				borderRadius: 0
-			},
+			token['default'] !== undefined
+				? token['default']
+				: ({
+						visible: true,
+						opacity: 1,
+						borderRadius: 0
+					} satisfies TAppearanceStyleToken['value']),
 		sync: (token, value, notifyOptions) => {
-			if (value != null && 'default' in token._v) {
-				token._v['default'] = value;
-				token._notify(notifyOptions);
-			}
+			token._v['default'] = value;
+			token._notify(notifyOptions);
+		}
+	});
+	const defaultAutoLayoutToken = useMapState(editor.tokensMap.autoLayout, {
+		map: (token) =>
+			token['default'] !== undefined
+				? token['default']
+				: ({
+						horizontalPadding: 0,
+						verticalPadding: 0,
+						horizontalGap: 0,
+						verticalGap: 0
+					} satisfies TAutoLayoutStyleToken['value']),
+		sync: (token, value, notifyOptions) => {
+			token._v['default'] = value;
+			token._notify(notifyOptions);
+		}
+	});
+	const defaultFillToken = useMapState(editor.tokensMap.fill, {
+		map: (token) =>
+			token['default'] !== undefined
+				? token['default']
+				: ({
+						paint: {
+							type: 'solid',
+							color: { r: 0, g: 0, b: 0, a: 1 }
+						},
+						opacity: 1
+					} satisfies TFillStyleToken['value']),
+		sync: (token, value, notifyOptions) => {
+			token._v['default'] = value;
+			token._notify(notifyOptions);
+		}
+	});
+	const defaultStrokeToken = useMapState(editor.tokensMap.stroke, {
+		map: (token) =>
+			token['default'] !== undefined
+				? token['default']
+				: ({ color: { r: 0, g: 0, b: 0, a: 0.1 }, width: 1 } satisfies TStrokeStyleToken['value']),
+		sync: (token, value, notifyOptions) => {
+			token._v['default'] = value;
+			token._notify(notifyOptions);
+		}
+	});
+	const defaultShadowToken = useMapState(editor.tokensMap.shadow, {
+		map: (token) =>
+			token['default'] !== undefined
+				? token['default']
+				: ({
+						color: { r: 0, g: 0, b: 0, a: 0.1 },
+						offsetX: 0,
+						offsetY: 4,
+						blur: 6,
+						spread: -1
+					} satisfies TShadowStyleToken['value']),
+		sync: (token, value, notifyOptions) => {
+			token._v['default'] = value;
+			token._notify(notifyOptions);
 		}
 	});
 
@@ -38,17 +104,15 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TFlatPageNode>> 
 			<AccordionSection title="Page" collapsibleClassName="px-0 space-y-3">
 				<AutoLayoutStyleMixinEditor
 					state={nodeState}
-					mapValue={(value) => value['autoLayout']}
-					tokenSet={editor.tokensMap.autoLayout}
-					mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]}
+					mapValue={(value) => value.autoLayout}
+					disabledTokenLink
 					editor={editor}
 				/>
 				<div className="h-px bg-neutral-200" />
 				<AppearanceStyleMixinEditor
 					state={nodeState}
-					mapValue={(value) => value['appearance']}
-					tokenSet={editor.tokensMap.appearance}
-					mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]}
+					mapValue={(value) => value.appearance}
+					disabledTokenLink
 					editor={editor}
 				/>
 				<div className="h-px bg-neutral-200" />
@@ -58,23 +122,81 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TFlatPageNode>> 
 					applyValue={(state, value) => {
 						state._v.fill = value;
 					}}
-					tokenSet={editor.tokensMap.fill}
-					mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]}
+					disabledTokenLink
 					editor={editor}
 				/>
 			</AccordionSection>
 
 			{/* Card Section */}
 			<AccordionSection title="Card" collapsibleClassName="px-0 space-y-3">
-				{/* <ChildAutoLayoutStyleMixinEditor state={nodeState} />
-				<div className="h-px bg-neutral-200" />
-				<ChildAppearanceStyleMixinEditor state={nodeState} />
-				<div className="h-px bg-neutral-200" />
-				<ChildFillStyleMixinEditor state={nodeState} editor={editor} />
-				<div className="h-px bg-neutral-200" />
-				<ChildStrokeStyleMixinEditor state={nodeState} />
-				<div className="h-px bg-neutral-200" />
-				<ChildShadowStyleMixinEditor state={nodeState} /> */}
+				{defaultAutoLayoutToken && (
+					<AutoLayoutStyleMixinEditor
+						state={defaultAutoLayoutToken}
+						mapValue={(value) => value}
+						disabledTokenLink
+						editor={editor}
+					/>
+				)}
+				{defaultAppearanceToken && (
+					<>
+						<div className="h-px bg-neutral-200" />
+						<AppearanceStyleMixinEditor
+							state={defaultAppearanceToken}
+							mapValue={(value) => value}
+							disabledTokenLink
+							disabledVisibilityToggle
+							editor={editor}
+						/>
+					</>
+				)}
+				{defaultFillToken && (
+					<>
+						<div className="h-px bg-neutral-200" />
+						<FillStyleMixinEditor
+							state={defaultFillToken}
+							mapValue={(value) => value}
+							applyValue={(state, value) => {
+								if (!isTokenRef(value)) {
+									state._v = value;
+								}
+							}}
+							disabledTokenLink
+							editor={editor}
+						/>
+					</>
+				)}
+				{defaultStrokeToken && (
+					<>
+						<div className="h-px bg-neutral-200" />
+						<StrokeStyleMixinEditor
+							state={defaultStrokeToken}
+							mapValue={(value) => value}
+							applyValue={(state, value) => {
+								if (!isTokenRef(value)) {
+									state._v = value;
+								}
+							}}
+							disabledTokenLink
+							editor={editor}
+						/>
+					</>
+				)}
+				{defaultShadowToken && (
+					<>
+						<div className="h-px bg-neutral-200" />
+						<ShadowStyleMixinEditor
+							state={defaultShadowToken}
+							mapValue={(value) => value}
+							applyValue={(state, value) => {
+								if (!isTokenRef(value)) {
+									state._v = value;
+								}
+							}}
+							disabledTokenLink
+							editor={editor}
+						/>
+					</>
+				)}
 			</AccordionSection>
 
 			{/* Text Section */}

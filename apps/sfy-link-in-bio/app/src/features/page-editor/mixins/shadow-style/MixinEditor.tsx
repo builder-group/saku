@@ -16,7 +16,7 @@ import { TokenActionOverlay, TokenColorInput, TokenTextInput } from '../../compo
 import { TPageEditor } from '../../lib';
 
 export const ShadowStyleMixinEditor = <
-	GValue extends Record<string, any>,
+	GValue extends Record<string, any> | null,
 	GTokenSet extends TTokenSet
 >(
 	props: TShadowStyleMixinEditorProps<GValue, GTokenSet>
@@ -27,6 +27,7 @@ export const ShadowStyleMixinEditor = <
 		applyValue,
 		tokenSet,
 		mapToToken,
+		disabledTokenLink = false,
 		editor,
 		disabledSpread = false
 	} = props;
@@ -37,7 +38,7 @@ export const ShadowStyleMixinEditor = <
 		({ value }) => {
 			const shadow = mapValue(value);
 			if (isTokenRef(shadow)) {
-				return mapToToken(shadow.ref, tokenSet?._v) != null;
+				return mapToToken?.(shadow.ref, tokenSet?._v) != null;
 			}
 			return shadow != null;
 		},
@@ -155,7 +156,7 @@ export const ShadowStyleMixinEditor = <
 	// =========================================================================
 
 	const handleAddShadow = React.useCallback(() => {
-		const tokenValue = mapToToken('default', tokenSet?._v);
+		const tokenValue = mapToToken?.('default', tokenSet?._v);
 		applyValue(
 			state,
 			tokenValue ?? {
@@ -177,7 +178,7 @@ export const ShadowStyleMixinEditor = <
 	const handleToggleTokenLink = React.useCallback(() => {
 		if (isLinked) {
 			const shadow = mapValue(state._v);
-			const tokenValue = isTokenRef(shadow) ? mapToToken(shadow.ref, tokenSet?._v) : undefined;
+			const tokenValue = isTokenRef(shadow) ? mapToToken?.(shadow.ref, tokenSet?._v) : undefined;
 			if (tokenValue !== undefined) {
 				applyValue(state, deepCopy(tokenValue));
 				state._notify();
@@ -201,18 +202,20 @@ export const ShadowStyleMixinEditor = <
 			<div className="flex items-center justify-between">
 				<div className="flex items-center gap-2">
 					{/* Mixin-level inheritance button */}
-					<button
-						type="button"
-						onClick={handleToggleTokenLink}
-						className="flex cursor-pointer items-center justify-center opacity-60 transition-opacity hover:opacity-100"
-						title={isLinked ? 'Unlink' : 'Link'}
-					>
-						{isLinked ? (
-							<LinkOffIcon className="h-3.5 w-3.5" />
-						) : (
-							<LinkIcon className="h-3.5 w-3.5" />
-						)}
-					</button>
+					{!disabledTokenLink && (
+						<button
+							type="button"
+							onClick={handleToggleTokenLink}
+							className="flex cursor-pointer items-center justify-center opacity-60 transition-opacity hover:opacity-100"
+							title={isLinked ? 'Unlink' : 'Link'}
+						>
+							{isLinked ? (
+								<LinkOffIcon className="h-3.5 w-3.5" />
+							) : (
+								<LinkIcon className="h-3.5 w-3.5" />
+							)}
+						</button>
+					)}
 
 					<div className="flex items-center gap-2">
 						<Text as="span" variant="headingXs" tone="subdued">
@@ -245,12 +248,13 @@ export const ShadowStyleMixinEditor = <
 						label="Color"
 						state={colorState}
 						tokenSet={tokenSet}
-						mapToTokenValue={(tokenRef, tokenSet) => mapToToken(tokenRef, tokenSet)?.color}
+						mapToTokenValue={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.color}
 						onLinkChange={() => {
 							handleToggleTokenLink();
 							return { preventDefault: true };
 						}}
 						onNavigateToToken={handleNavigateToToken}
+						disabledTokenLink={disabledTokenLink}
 					/>
 					<div className="grid grid-cols-2 gap-3">
 						<TokenTextInput
@@ -262,7 +266,7 @@ export const ShadowStyleMixinEditor = <
 							step={4}
 							state={blurState}
 							tokenSet={tokenSet}
-							mapToTokenValue={(tokenRef, tokenSet) => mapToToken(tokenRef, tokenSet)?.blur}
+							mapToTokenValue={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.blur}
 							mapToDisplay={(value) => value}
 							mapToInternal={(displayValue) => displayValue}
 							onLinkChange={() => {
@@ -270,6 +274,7 @@ export const ShadowStyleMixinEditor = <
 								return { preventDefault: true };
 							}}
 							onNavigateToToken={handleNavigateToToken}
+							disabledTokenLink={disabledTokenLink}
 						/>
 						<TokenTextInput
 							label="Spread"
@@ -280,7 +285,7 @@ export const ShadowStyleMixinEditor = <
 							step={4}
 							state={spreadState}
 							tokenSet={tokenSet}
-							mapToTokenValue={(tokenRef, tokenSet) => mapToToken(tokenRef, tokenSet)?.spread}
+							mapToTokenValue={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.spread}
 							mapToDisplay={(value) => value}
 							mapToInternal={(displayValue) => displayValue}
 							onLinkChange={() => {
@@ -288,6 +293,7 @@ export const ShadowStyleMixinEditor = <
 								return { preventDefault: true };
 							}}
 							onNavigateToToken={handleNavigateToToken}
+							disabledTokenLink={disabledTokenLink}
 							disabled={disabledSpread}
 						/>
 					</div>
@@ -301,7 +307,7 @@ export const ShadowStyleMixinEditor = <
 							step={4}
 							state={offsetXState}
 							tokenSet={tokenSet}
-							mapToTokenValue={(tokenRef, tokenSet) => mapToToken(tokenRef, tokenSet)?.offsetX}
+							mapToTokenValue={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.offsetX}
 							mapToDisplay={(value) => value}
 							mapToInternal={(displayValue) => displayValue}
 							onLinkChange={() => {
@@ -309,6 +315,7 @@ export const ShadowStyleMixinEditor = <
 								return { preventDefault: true };
 							}}
 							onNavigateToToken={handleNavigateToToken}
+							disabledTokenLink={disabledTokenLink}
 						/>
 						<TokenTextInput
 							label="Offset Y"
@@ -319,7 +326,7 @@ export const ShadowStyleMixinEditor = <
 							step={4}
 							state={offsetYState}
 							tokenSet={tokenSet}
-							mapToTokenValue={(tokenRef, tokenSet) => mapToToken(tokenRef, tokenSet)?.offsetY}
+							mapToTokenValue={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.offsetY}
 							mapToDisplay={(value) => value}
 							mapToInternal={(displayValue) => displayValue}
 							onLinkChange={() => {
@@ -327,6 +334,7 @@ export const ShadowStyleMixinEditor = <
 								return { preventDefault: true };
 							}}
 							onNavigateToToken={handleNavigateToToken}
+							disabledTokenLink={disabledTokenLink}
 						/>
 					</div>
 				</div>
@@ -336,14 +344,15 @@ export const ShadowStyleMixinEditor = <
 };
 
 interface TShadowStyleMixinEditorProps<
-	GValue extends Record<string, any>,
+	GValue extends Record<string, any> | null,
 	GTokenSet extends TTokenSet
 > {
 	state: TState<GValue, any>;
 	mapValue: (value: GValue) => TShadowStyleMixin['value'];
 	applyValue: (state: TState<GValue, any>, value: TShadowStyleMixin['value']) => void;
 	tokenSet?: TState<GTokenSet, any>;
-	mapToToken: (ref: string, tokenSet?: GTokenSet) => TShadowStyleToken['value'] | undefined;
+	mapToToken?: (ref: string, tokenSet?: GTokenSet) => TShadowStyleToken['value'] | undefined;
+	disabledTokenLink?: boolean;
 	editor: TPageEditor;
 	disabledSpread?: boolean;
 }

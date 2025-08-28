@@ -10,12 +10,21 @@ import { TokenActionOverlay, TokenPaintInput, TTokenPaintInputPaintType } from '
 import { TPageEditor } from '../../lib';
 
 export const FillStyleMixinEditor = <
-	GValue extends Record<string, any>,
+	GValue extends Record<string, any> | null,
 	GTokenSet extends TTokenSet
 >(
 	props: TFillStyleMixinEditorProps<GValue, GTokenSet>
 ) => {
-	const { state, mapValue, applyValue, tokenSet, mapToToken, editor, allowedPaintTypes } = props;
+	const {
+		state,
+		mapValue,
+		applyValue,
+		tokenSet,
+		mapToToken,
+		disabledTokenLink = false,
+		editor,
+		allowedPaintTypes
+	} = props;
 
 	const isLinked = useCompute(state, ({ value }) => isTokenRef(mapValue(value)), [mapValue]);
 	const isSet = useCompute(
@@ -23,7 +32,7 @@ export const FillStyleMixinEditor = <
 		({ value }) => {
 			const fill = mapValue(value);
 			if (isTokenRef(fill)) {
-				return mapToToken(fill.ref, tokenSet?._v) != null;
+				return mapToToken?.(fill.ref, tokenSet?._v) != null;
 			}
 			return fill != null;
 		},
@@ -52,7 +61,7 @@ export const FillStyleMixinEditor = <
 	// =========================================================================
 
 	const handleAddFill = React.useCallback(() => {
-		const tokenValue = mapToToken('default', tokenSet?._v);
+		const tokenValue = mapToToken?.('default', tokenSet?._v);
 		applyValue(
 			state,
 			tokenValue ?? {
@@ -74,7 +83,7 @@ export const FillStyleMixinEditor = <
 	const handleToggleTokenLink = React.useCallback(() => {
 		if (isLinked) {
 			const fill = mapValue(state._v);
-			const tokenValue = isTokenRef(fill) ? mapToToken(fill.ref, tokenSet?._v) : undefined;
+			const tokenValue = isTokenRef(fill) ? mapToToken?.(fill.ref, tokenSet?._v) : undefined;
 			if (tokenValue !== undefined) {
 				applyValue(state, deepCopy(tokenValue));
 				state._notify();
@@ -98,18 +107,20 @@ export const FillStyleMixinEditor = <
 			<div className="flex items-center justify-between">
 				<div className="flex items-center gap-2">
 					{/* Mixin-level inheritance button */}
-					<button
-						type="button"
-						onClick={handleToggleTokenLink}
-						className="flex cursor-pointer items-center justify-center opacity-60 transition-opacity hover:opacity-100"
-						title={isLinked ? 'Unlink' : 'Link'}
-					>
-						{isLinked ? (
-							<LinkOffIcon className="h-3.5 w-3.5" />
-						) : (
-							<LinkIcon className="h-3.5 w-3.5" />
-						)}
-					</button>
+					{!disabledTokenLink && (
+						<button
+							type="button"
+							onClick={handleToggleTokenLink}
+							className="flex cursor-pointer items-center justify-center opacity-60 transition-opacity hover:opacity-100"
+							title={isLinked ? 'Unlink' : 'Link'}
+						>
+							{isLinked ? (
+								<LinkOffIcon className="h-3.5 w-3.5" />
+							) : (
+								<LinkIcon className="h-3.5 w-3.5" />
+							)}
+						</button>
+					)}
 
 					<div className="flex items-center gap-2">
 						<Text as="span" variant="headingXs" tone="subdued">
@@ -141,12 +152,13 @@ export const FillStyleMixinEditor = <
 					label="Paint"
 					state={paintState}
 					tokenSet={tokenSet}
-					mapToTokenValue={(tokenRef, tokenSet) => mapToToken(tokenRef, tokenSet)?.paint}
+					mapToTokenValue={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.paint}
 					onLinkChange={() => {
 						handleToggleTokenLink();
 						return { preventDefault: true };
 					}}
 					onNavigateToToken={handleNavigateToToken}
+					disabledTokenLink={disabledTokenLink}
 					editor={editor}
 					allowedPaintTypes={allowedPaintTypes}
 				/>
@@ -156,14 +168,15 @@ export const FillStyleMixinEditor = <
 };
 
 interface TFillStyleMixinEditorProps<
-	GValue extends Record<string, any>,
+	GValue extends Record<string, any> | null,
 	GTokenSet extends TTokenSet
 > {
 	state: TState<GValue, any>;
 	mapValue: (value: GValue) => TFillStyleMixin['value'];
 	applyValue: (state: TState<GValue, any>, value: TFillStyleMixin['value']) => void;
 	tokenSet?: TState<GTokenSet, any>;
-	mapToToken: (ref: string, tokenSet?: GTokenSet) => TFillStyleToken['value'] | undefined;
+	mapToToken?: (ref: string, tokenSet?: GTokenSet) => TFillStyleToken['value'] | undefined;
+	disabledTokenLink?: boolean;
 	editor: TPageEditor;
 	allowedPaintTypes?: TTokenPaintInputPaintType[];
 }

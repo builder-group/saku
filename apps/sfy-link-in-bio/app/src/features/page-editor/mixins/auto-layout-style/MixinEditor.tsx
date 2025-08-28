@@ -13,7 +13,7 @@ export const AutoLayoutStyleMixinEditor = <
 >(
 	props: TAutoLayoutStyleMixinEditorProps<GValue, GTokenSet>
 ) => {
-	const { state, mapValue, tokenSet, mapToToken, editor } = props;
+	const { state, mapValue, tokenSet, mapToToken, disabledTokenLink = false, editor } = props;
 
 	const hasHorizontalPadding = useCompute(
 		state,
@@ -133,9 +133,10 @@ export const AutoLayoutStyleMixinEditor = <
 							state={horizontalPaddingState}
 							tokenSet={tokenSet}
 							mapToTokenValue={(tokenRef, tokenSet) =>
-								mapToToken(tokenRef, tokenSet)?.horizontalPadding
+								mapToToken?.(tokenRef, tokenSet)?.horizontalPadding
 							}
 							onNavigateToToken={handleNavigateToToken}
+							disabledTokenLink={disabledTokenLink}
 						/>
 					)}
 					{hasVerticalPadding && (
@@ -149,9 +150,10 @@ export const AutoLayoutStyleMixinEditor = <
 							state={verticalPaddingState}
 							tokenSet={tokenSet}
 							mapToTokenValue={(tokenRef, tokenSet) =>
-								mapToToken(tokenRef, tokenSet)?.verticalPadding
+								mapToToken?.(tokenRef, tokenSet)?.verticalPadding
 							}
 							onNavigateToToken={handleNavigateToToken}
+							disabledTokenLink={disabledTokenLink}
 						/>
 					)}
 				</div>
@@ -169,9 +171,10 @@ export const AutoLayoutStyleMixinEditor = <
 							state={horizontalGapState}
 							tokenSet={tokenSet}
 							mapToTokenValue={(tokenRef, tokenSet) =>
-								mapToToken(tokenRef, tokenSet)?.horizontalGap
+								mapToToken?.(tokenRef, tokenSet)?.horizontalGap
 							}
 							onNavigateToToken={handleNavigateToToken}
+							disabledTokenLink={disabledTokenLink}
 						/>
 					)}
 					{hasVerticalGap && (
@@ -184,8 +187,11 @@ export const AutoLayoutStyleMixinEditor = <
 							step={4}
 							state={verticalGapState}
 							tokenSet={tokenSet}
-							mapToTokenValue={(tokenRef, tokenSet) => mapToToken(tokenRef, tokenSet)?.verticalGap}
+							mapToTokenValue={(tokenRef, tokenSet) =>
+								mapToToken?.(tokenRef, tokenSet)?.verticalGap
+							}
 							onNavigateToToken={handleNavigateToToken}
+							disabledTokenLink={disabledTokenLink}
 						/>
 					)}
 				</div>
@@ -201,6 +207,7 @@ interface TAutoLayoutStyleMixinEditorProps<
 	state: TState<GValue, any>;
 	mapValue: (value: GValue) => TAutoLayoutStyleMixin['value'];
 	tokenSet?: TState<GTokenSet, any>;
-	mapToToken: (ref: string, tokenSet?: GTokenSet) => TAutoLayoutStyleToken['value'] | undefined;
+	mapToToken?: (ref: string, tokenSet?: GTokenSet) => TAutoLayoutStyleToken['value'] | undefined;
+	disabledTokenLink?: boolean;
 	editor: TPageEditor;
 }
