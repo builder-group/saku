@@ -1,4 +1,9 @@
-import { isTokenRef, TAppearanceStyleMixin, TAppearanceStyleToken, TTokenSet } from '@repo/editor';
+import {
+	isTokenRef,
+	TAppearanceStyleMixin,
+	TAppearanceStyleToken,
+	TMixinTokenSet
+} from '@repo/editor';
 import { Button, Text } from '@shopify/polaris';
 import { useCompute } from 'feature-react';
 import { TState } from 'feature-state';
@@ -10,7 +15,7 @@ import { TPageEditor } from '../../lib';
 
 export const AppearanceStyleMixinEditor = <
 	GValue extends Record<string, any>,
-	GTokenSet extends TTokenSet
+	GTokenSet extends TMixinTokenSet
 >(
 	props: TAppearanceStyleMixinEditorProps<GValue, GTokenSet>
 ) => {
@@ -132,7 +137,7 @@ export const AppearanceStyleMixinEditor = <
 
 interface TAppearanceStyleMixinEditorProps<
 	GValue extends Record<string, any>,
-	GTokenSet extends TTokenSet
+	GTokenSet extends TMixinTokenSet
 > {
 	state: TState<GValue, any>;
 	mapValue: (value: GValue) => TAppearanceStyleMixin['value'];

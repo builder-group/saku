@@ -9,6 +9,7 @@ import { shopify } from '@/.server/environment';
 import { getSessionTokenFromRequest, redirectWithAuth } from '@/.server/lib';
 import { useCrisp } from '@/components';
 import { appConfig, coreApiClient } from '@/environment';
+import { styleTemplates, TStyleTemplate } from '@/features/page-editor';
 import { blankPreset } from '@/features/page-editor/.server';
 import { resultLoader, withResultLoader } from '@/lib';
 import { THeadersFunction } from '@/types';
@@ -184,16 +185,17 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 						profilePicture: shopOverview.theme.logo,
 						socialLinks: shopOverview.socialLinks,
 						featuredProduct: shopOverview.recommendedProducts?.[0],
-						colors: {
-							primary: shopOverview.theme.colors.primary,
-							background: shopOverview.theme.colors.background,
-							surface: '#FFFFFF'
-						},
-						fonts: {
-							heading: { family: shopOverview.theme.typography.headingFont?.family },
-							body: { family: shopOverview.theme.typography.bodyFont?.family }
-						},
-						radius: shopOverview.theme.layout.borderRadius
+						styleTemplate: styleTemplates[0] as TStyleTemplate
+						// colors: {
+						// 	primary: shopOverview.theme.colors.primary,
+						// 	background: shopOverview.theme.colors.background,
+						// 	surface: '#FFFFFF'
+						// },
+						// fonts: {
+						// 	heading: { family: shopOverview.theme.typography.headingFont?.family },
+						// 	body: { family: shopOverview.theme.typography.bodyFont?.family }
+						// },
+						// radius: shopOverview.theme.layout.borderRadius
 					})
 				)
 			}

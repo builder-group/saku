@@ -1,11 +1,36 @@
-import { TAsset, TAssetHash, TFlatNode, TFlatSite, TNodeId, TTokenGroupMap } from '@repo/editor';
+import {
+	TAsset,
+	TAssetHash,
+	TFlatNode,
+	TFlatSite,
+	TMixinTokenGroupMap,
+	TNodeId
+} from '@repo/editor';
 import { TPageEditor } from '../page';
 
 export class StaticSiteResolveContext implements TSiteResolveContext {
 	private readonly site: TFlatSite;
+	private readonly mixinTokenGroupMap: TMixinTokenGroupMap;
 
 	constructor(site: TFlatSite) {
 		this.site = site;
+		this.mixinTokenGroupMap = this.createMixinTokenGroupMap();
+	}
+
+	private createMixinTokenGroupMap(): TMixinTokenGroupMap {
+		const groups: TMixinTokenGroupMap = {};
+
+		Object.values(this.site.tokens).forEach((token) => {
+			if (token.type === 'mixin') {
+				const mixinKey = token.mixinKey;
+				if (groups[mixinKey] == null) {
+					groups[mixinKey] = {};
+				}
+				groups[mixinKey][token.key] = token;
+			}
+		});
+
+		return groups;
 	}
 
 	public getNode(id: TNodeId): TFlatNode | null {
@@ -16,10 +41,10 @@ export class StaticSiteResolveContext implements TSiteResolveContext {
 		return this.site.assets[hash] || null;
 	}
 
-	public getTokenSet<GGroupKey extends keyof TTokenGroupMap>(
+	public getTokenSet<GGroupKey extends keyof TMixinTokenGroupMap>(
 		groupKey: GGroupKey
-	): TTokenGroupMap[GGroupKey] | null {
-		return this.site.tokens[groupKey] || null;
+	): TMixinTokenGroupMap[GGroupKey] | null {
+		return this.mixinTokenGroupMap[groupKey] || null;
 	}
 
 	public getSite(): TFlatSite {
@@ -42,10 +67,12 @@ export class EditorSiteResolveContext implements TSiteResolveContext {
 		return this.editor.assetsMap[hash] || null;
 	}
 
-	public getTokenSet<GGroupKey extends keyof TTokenGroupMap>(
+	public getTokenSet<GGroupKey extends keyof TMixinTokenGroupMap>(
 		groupKey: GGroupKey
-	): TTokenGroupMap[GGroupKey] | null {
-		return this.editor.tokensMap[groupKey]?._v as TTokenGroupMap[GGroupKey] | null;
+	): TMixinTokenGroupMap[GGroupKey] | null {
+		return (this.editor.mixinTokenMap[groupKey]?._v || null) as
+			| TMixinTokenGroupMap[GGroupKey]
+			| null;
 	}
 
 	public getSite(): TFlatSite {
@@ -56,8 +83,8 @@ export class EditorSiteResolveContext implements TSiteResolveContext {
 export interface TSiteResolveContext {
 	getNode(id: TNodeId): TFlatNode | null;
 	getAsset(hash: TAssetHash): TAsset | null;
-	getTokenSet<GGroupKey extends keyof TTokenGroupMap>(
+	getTokenSet<GGroupKey extends keyof TMixinTokenGroupMap>(
 		groupKey: GGroupKey
-	): TTokenGroupMap[GGroupKey] | null;
+	): TMixinTokenGroupMap[GGroupKey] | null;
 	getSite(): TFlatSite;
 }

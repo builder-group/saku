@@ -43,7 +43,7 @@ export function resolveProductNode(
 		resolveAutoLayoutStyleMixin(autoLayout, {
 			node: cx,
 			tokenSet: cx.site.getTokenSet('autoLayout'),
-			mapToToken: (ref, tokenSet) => tokenSet?.[ref]
+			mapToToken: (ref, tokenSet) => tokenSet?.[ref]?.value
 		});
 	if (!isResolvedAutoLayoutOk) {
 		return Err(resolvedAutoLayoutErr.wrapWith('#ERR_RESOLVE_AUTO_LAYOUT_STYLE'));
@@ -52,7 +52,7 @@ export function resolveProductNode(
 		resolveAppearanceStyleMixin(appearance, {
 			node: cx,
 			tokenSet: cx.site.getTokenSet('appearance'),
-			mapToToken: (ref, tokenSet) => tokenSet?.[ref]
+			mapToToken: (ref, tokenSet) => tokenSet?.[ref]?.value
 		});
 	if (!isResolvedAppearanceOk) {
 		return Err(resolvedAppearanceErr.wrapWith('#ERR_RESOLVE_APPEARANCE_STYLE'));
@@ -60,7 +60,7 @@ export function resolveProductNode(
 	const [isResolvedFillOk, resolvedFillErr, resolvedFill] = resolveFillStyleMixin(fill, {
 		node: cx,
 		tokenSet: cx.site.getTokenSet('fill'),
-		mapToToken: (ref, tokenSet) => tokenSet?.[ref]
+		mapToToken: (ref, tokenSet) => tokenSet?.[ref]?.value
 	});
 	if (!isResolvedFillOk) {
 		return Err(resolvedFillErr.wrapWith('#ERR_RESOLVE_FILL_STYLE'));
@@ -68,7 +68,7 @@ export function resolveProductNode(
 	const [isResolvedStrokeOk, resolvedStrokeErr, resolvedStroke] = resolveStrokeStyleMixin(stroke, {
 		node: cx,
 		tokenSet: cx.site.getTokenSet('stroke'),
-		mapToToken: (ref, tokenSet) => tokenSet?.[ref]
+		mapToToken: (ref, tokenSet) => tokenSet?.[ref]?.value
 	});
 	if (!isResolvedStrokeOk) {
 		return Err(resolvedStrokeErr.wrapWith('#ERR_RESOLVE_STROKE_STYLE'));
@@ -76,7 +76,7 @@ export function resolveProductNode(
 	const [isResolvedShadowOk, resolvedShadowErr, resolvedShadow] = resolveShadowStyleMixin(shadow, {
 		node: cx,
 		tokenSet: cx.site.getTokenSet('shadow'),
-		mapToToken: (ref, tokenSet) => tokenSet?.[ref]
+		mapToToken: (ref, tokenSet) => tokenSet?.[ref]?.value
 	});
 	if (!isResolvedShadowOk) {
 		return Err(resolvedShadowErr.wrapWith('#ERR_RESOLVE_SHADOW_STYLE'));
@@ -84,7 +84,7 @@ export function resolveProductNode(
 	const [isResolvedTextOk, resolvedTextErr, resolvedText] = resolveTextStyleMixin(text, {
 		node: cx,
 		tokenSet: cx.site.getTokenSet('text'),
-		mapToToken: (ref, tokenSet) => tokenSet?.[ref]
+		mapToToken: (ref, tokenSet) => tokenSet?.[ref]?.value
 	});
 	if (!isResolvedTextOk) {
 		return Err(resolvedTextErr.wrapWith('#ERR_RESOLVE_TEXT_STYLE'));
@@ -92,7 +92,7 @@ export function resolveProductNode(
 	const [isResolvedButtonOk, resolvedButtonErr, resolvedButton] = resolveButtonStyleMixin(button, {
 		node: cx,
 		tokenSet: cx.site.getTokenSet('button'),
-		mapToToken: (ref, tokenSet) => tokenSet?.[ref]
+		mapToToken: (ref, tokenSet) => tokenSet?.[ref]?.value
 	});
 	if (!isResolvedButtonOk) {
 		return Err(resolvedButtonErr.wrapWith('#ERR_RESOLVE_BUTTON_STYLE'));

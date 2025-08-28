@@ -13,16 +13,14 @@ import {
 	type TImageAsset,
 	type TSocialLink
 } from '@repo/editor';
+import { createTokensFromStyleTemplate, type TStyleTemplate } from '@/features/page-editor';
 import { createHandleFromShop } from '@/lib';
 
 export function blankPreset(config: TBlankPresetConfig): TSite {
-	const { shopId, name, profilePicture, socialLinks, featuredProduct, colors, fonts, radius } =
-		config;
+	const { shopId, name, profilePicture, socialLinks, featuredProduct, styleTemplate } = config;
 
-	const primaryColor = colors?.primary ?? '#000000';
-	const backgroundColor = colors?.background ?? '#FAFAFA';
-	const surfaceColor = colors?.surface ?? '#FFFFFF';
-	const borderRadius = radius ?? 16;
+	// Generate tokens from the style template
+	const tokens = createTokensFromStyleTemplate(styleTemplate);
 
 	const assets: (TFontAsset | TImageAsset)[] = [];
 
@@ -41,48 +39,19 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 		});
 	}
 
-	// Add heading font to assets
-	const headingFont = getFontMetadata(fonts?.heading?.family);
+	// Add template font to assets
+	const templateFontFamily = styleTemplate.typography.fontFamily;
+	const templateFont = getFontMetadata(templateFontFamily);
 	assets.push({
 		id: createId('asset'),
 		type: 'font',
-		hash: getFontHash(headingFont.font),
+		hash: getFontHash(templateFont.font),
 		contentType: 'font/woff2',
 		storage: {
 			type: 'url',
-			url: `https://fonts.googleapis.com/css2?family=${headingFont.googleFont}&display=swap`
+			url: `https://fonts.googleapis.com/css2?family=${templateFont.googleFont}&display=swap`
 		},
-		font: headingFont.font
-	});
-
-	// Add body font to assets if different from heading
-	const bodyFont = getFontMetadata(fonts?.body?.family);
-	if (bodyFont.font.family !== headingFont.font.family) {
-		assets.push({
-			id: createId('asset'),
-			type: 'font',
-			hash: getFontHash(bodyFont.font),
-			contentType: 'font/woff2',
-			storage: {
-				type: 'url',
-				url: `https://fonts.googleapis.com/css2?family=${bodyFont.googleFont}&display=swap`
-			},
-			font: bodyFont.font
-		});
-	}
-
-	// Add Lora font for creative text elements
-	const loraFont = fontMetadataMap.lora;
-	assets.push({
-		id: createId('asset'),
-		type: 'font',
-		hash: getFontHash(loraFont.font),
-		contentType: 'font/woff2',
-		storage: {
-			type: 'url',
-			url: `https://fonts.googleapis.com/css2?family=${loraFont.googleFont}&display=swap`
-		},
-		font: loraFont.font
+		font: templateFont.font
 	});
 
 	// Create product node
@@ -140,8 +109,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 			text: {
 				appearance: {
 					visible: true,
-					opacity: tokenRef(),
-					borderRadius: tokenRef()
+					opacity: tokenRef()
 				},
 				typography: {
 					font: tokenRef(),
@@ -273,7 +241,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 						url: `https://${shopId}`,
 						variant: {
 							type: 'default',
-							userTitle: '🛒 Add a link to your Shopify store'
+							userTitle: '🛒 Visit our Shopify store'
 						}
 					},
 					autoLayout: {
@@ -308,11 +276,12 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 						shadow: tokenRef()
 					}
 				},
+				...(productNode != null ? [productNode] : []),
 				{
 					id: createId('node'),
 					type: 'text',
 					content: {
-						text: '### 📙 Or some text\nwith a different font and background color'
+						text: '✨ Thanks for visiting!'
 					},
 					autoLayout: {
 						horizontalPadding: tokenRef(),
@@ -321,15 +290,9 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					appearance: {
 						visible: true,
 						opacity: tokenRef(),
-						borderRadius: 0
+						borderRadius: tokenRef()
 					},
-					fill: {
-						paint: {
-							type: 'solid',
-							color: hexToRgba('#E6EDFF')
-						},
-						opacity: 1
-					},
+					fill: tokenRef(),
 					stroke: tokenRef(),
 					shadow: tokenRef(),
 					text: {
@@ -338,11 +301,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 							opacity: tokenRef()
 						},
 						typography: {
-							font: {
-								family: 'Lora',
-								weight: 400,
-								style: 'normal'
-							},
+							font: tokenRef(),
 							fontSize: tokenRef(),
 							textAlignHorizontal: tokenRef(),
 							textAlignVertical: tokenRef(),
@@ -354,55 +313,6 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 						shadow: tokenRef()
 					}
 				},
-				{
-					id: createId('node'),
-					type: 'text',
-					content: {
-						text: '🔮 Let your imagination flow'
-					},
-					autoLayout: {
-						horizontalPadding: tokenRef(),
-						verticalPadding: tokenRef()
-					},
-					appearance: {
-						visible: true,
-						opacity: tokenRef(),
-						borderRadius: 999
-					},
-					fill: {
-						paint: {
-							type: 'solid',
-							color: hexToRgba('#FAF5FF')
-						},
-						opacity: 1
-					},
-					stroke: tokenRef(),
-					shadow: tokenRef(),
-					text: {
-						appearance: {
-							visible: true,
-							opacity: tokenRef()
-						},
-						typography: {
-							font: tokenRef(),
-							fontSize: 16,
-							textAlignHorizontal: tokenRef(),
-							textAlignVertical: tokenRef(),
-							lineHeight: tokenRef(),
-							letterSpacing: tokenRef()
-						},
-						fill: {
-							paint: {
-								type: 'solid',
-								color: hexToRgba('#E879F9')
-							},
-							opacity: 1
-						},
-						stroke: tokenRef(),
-						shadow: tokenRef()
-					}
-				},
-				...(productNode != null ? [productNode] : []),
 				{
 					id: createId('node'),
 					type: 'media',
@@ -439,150 +349,19 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 			fill: {
 				paint: {
 					type: 'solid',
-					color: hexToRgba(backgroundColor)
+					color: hexToRgba(styleTemplate.colors.background)
 				},
 				opacity: 1
 			}
 		},
-		tokens: [
-			{
-				type: 'autoLayout',
-				key: 'default',
-				value: {
-					horizontalPadding: 12,
-					verticalPadding: 12,
-					horizontalGap: 12,
-					verticalGap: 12
-				}
-			},
-			{
-				type: 'appearance',
-				key: 'default',
-				value: {
-					visible: true,
-					opacity: 1,
-					borderRadius
-				}
-			},
-			{
-				type: 'typography',
-				key: 'default',
-				value: {
-					font: bodyFont.font,
-					fontSize: 16,
-					textAlignHorizontal: 'center',
-					textAlignVertical: 'center',
-					lineHeight: { type: 'auto' },
-					letterSpacing: { type: 'auto' }
-				}
-			},
-			{
-				type: 'fill',
-				key: 'default',
-				value: {
-					paint: {
-						type: 'solid',
-						color: hexToRgba(surfaceColor)
-					},
-					opacity: 1
-				}
-			},
-			{
-				type: 'stroke',
-				key: 'default',
-				value: {
-					color: { r: 0, g: 0, b: 0, a: 0.1 },
-					width: 1
-				}
-			},
-			{
-				type: 'shadow',
-				key: 'default',
-				value: {
-					color: { r: 0, g: 0, b: 0, a: 0.1 },
-					offsetX: 0,
-					offsetY: 4,
-					blur: 6,
-					spread: -1
-				}
-			},
-			{
-				type: 'text',
-				key: 'default',
-				value: {
-					appearance: {
-						visible: true,
-						opacity: 1
-					},
-					typography: {
-						font: bodyFont.font,
-						fontSize: 16,
-						textAlignHorizontal: 'center',
-						textAlignVertical: 'center',
-						lineHeight: { type: 'auto' },
-						letterSpacing: { type: 'auto' }
-					},
-					fill: {
-						paint: {
-							type: 'solid',
-							color: hexToRgba(primaryColor)
-						},
-						opacity: 1
-					},
-					stroke: null,
-					shadow: null
-				}
-			},
-			{
-				type: 'button',
-				key: 'default',
-				value: {
-					appearance: {
-						visible: true,
-						opacity: 1,
-						borderRadius
-					},
-					fill: {
-						paint: {
-							type: 'solid',
-							color: hexToRgba(primaryColor)
-						},
-						opacity: 1
-					},
-					stroke: null,
-					shadow: null,
-					text: {
-						appearance: {
-							visible: true,
-							opacity: 1
-						},
-						typography: {
-							font: bodyFont.font,
-							fontSize: 16,
-							textAlignHorizontal: 'center',
-							textAlignVertical: 'center',
-							lineHeight: { type: 'auto' },
-							letterSpacing: { type: 'auto' }
-						},
-						fill: {
-							paint: {
-								type: 'solid',
-								color: hexToRgba(surfaceColor)
-							},
-							opacity: 1
-						},
-						stroke: null,
-						shadow: null
-					}
-				}
-			}
-		]
+		tokens
 	};
 }
 
 interface TBlankPresetConfig {
 	shopId: string;
 	name: string;
+	styleTemplate: TStyleTemplate;
 	profilePicture?: string;
 	socialLinks?: {
 		platform: string;
@@ -601,16 +380,6 @@ interface TBlankPresetConfig {
 			selectedOptions?: { name: string; value: string }[];
 		}[];
 	};
-	colors?: {
-		primary?: string;
-		background?: string;
-		surface?: string;
-	};
-	fonts?: {
-		heading?: { family?: string };
-		body?: { family?: string };
-	};
-	radius?: number;
 }
 
 function getFontMetadata(fontFamily?: string): TFontMetadata {

@@ -1,4 +1,4 @@
-import { TButtonStyleMixin, TButtonStyleToken, TTokenSet } from '@repo/editor';
+import { TButtonStyleMixin, TButtonStyleToken, TMixinTokenSet } from '@repo/editor';
 import { Text } from '@shopify/polaris';
 import { TState } from 'feature-state';
 import { TPageEditor } from '../../lib';
@@ -10,7 +10,7 @@ import { TextStyleMixinEditor } from '../text-style';
 
 export const ButtonStyleMixinEditor = <
 	GValue extends Record<string, any>,
-	GTokenSet extends TTokenSet
+	GTokenSet extends TMixinTokenSet
 >(
 	props: TButtonStyleMixinEditorProps<GValue, GTokenSet>
 ) => {
@@ -82,7 +82,7 @@ export const ButtonStyleMixinEditor = <
 
 interface TButtonStyleMixinEditorProps<
 	GValue extends Record<string, any>,
-	GTokenSet extends TTokenSet
+	GTokenSet extends TMixinTokenSet
 > {
 	state: TState<GValue, any>;
 	mapValue: (value: GValue) => TButtonStyleMixin['value'];

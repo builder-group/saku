@@ -2,8 +2,8 @@ import {
 	TFont,
 	TLetterSpacing,
 	TLineHeight,
+	TMixinTokenSet,
 	TTextAlign,
-	TTokenSet,
 	TTypographyStyleMixin,
 	TTypographyStyleToken
 } from '@repo/editor';
@@ -12,7 +12,7 @@ import { AppError } from '@/lib';
 import { resolveNestedTokenRef, TMixinResolveContext } from '../../lib';
 import { TResolvedTypographyStyleMixin } from './types';
 
-export function resolveTypographyStyleMixin<GTokenSet extends TTokenSet>(
+export function resolveTypographyStyleMixin<GTokenSet extends TMixinTokenSet>(
 	typography: TTypographyStyleMixin['value'],
 	cx: TMixinResolveContext<TTypographyStyleToken['value'], GTokenSet>
 ): TResult<TResolvedTypographyStyleMixin['value'], AppError> {

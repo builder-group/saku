@@ -1,10 +1,10 @@
 import { deepCopy } from '@blgc/utils';
 import {
 	isTokenRef,
+	TMixinTokenSet,
 	tokenRef,
 	TShadowStyleMixin,
-	TShadowStyleToken,
-	TTokenSet
+	TShadowStyleToken
 } from '@repo/editor';
 import { Button, Text } from '@shopify/polaris';
 import { useCompute } from 'feature-react';
@@ -17,7 +17,7 @@ import { TPageEditor } from '../../lib';
 
 export const ShadowStyleMixinEditor = <
 	GValue extends Record<string, any> | null,
-	GTokenSet extends TTokenSet
+	GTokenSet extends TMixinTokenSet
 >(
 	props: TShadowStyleMixinEditorProps<GValue, GTokenSet>
 ) => {
@@ -38,7 +38,7 @@ export const ShadowStyleMixinEditor = <
 		({ value }) => {
 			const shadow = mapValue(value);
 			if (isTokenRef(shadow)) {
-				return mapToToken?.(shadow.ref, tokenSet?._v) != null;
+				return mapToToken?.(shadow.key, tokenSet?._v) != null;
 			}
 			return shadow != null;
 		},
@@ -178,7 +178,7 @@ export const ShadowStyleMixinEditor = <
 	const handleToggleTokenLink = React.useCallback(() => {
 		if (isLinked) {
 			const shadow = mapValue(state._v);
-			const tokenValue = isTokenRef(shadow) ? mapToToken?.(shadow.ref, tokenSet?._v) : undefined;
+			const tokenValue = isTokenRef(shadow) ? mapToToken?.(shadow.key, tokenSet?._v) : undefined;
 			if (tokenValue !== undefined) {
 				applyValue(state, deepCopy(tokenValue));
 				state._notify();
@@ -345,7 +345,7 @@ export const ShadowStyleMixinEditor = <
 
 interface TShadowStyleMixinEditorProps<
 	GValue extends Record<string, any> | null,
-	GTokenSet extends TTokenSet
+	GTokenSet extends TMixinTokenSet
 > {
 	state: TState<GValue, any>;
 	mapValue: (value: GValue) => TShadowStyleMixin['value'];

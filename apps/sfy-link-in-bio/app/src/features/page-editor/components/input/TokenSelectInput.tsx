@@ -1,4 +1,4 @@
-import { isTokenRef, tokenRef, TRef, TTokenSet } from '@repo/editor';
+import { isTokenRef, TMixinTokenSet, tokenRef, TRef } from '@repo/editor';
 import { Select, SelectProps, Text } from '@shopify/polaris';
 import { useCombinedCompute, useCompute } from 'feature-react/state';
 import { createState, TState } from 'feature-state';
@@ -10,7 +10,7 @@ import { TokenActionOverlay } from './TokenActionOverlay';
 export const TokenSelectInput = <
 	GValue extends string,
 	GRefValue extends TRef<GValue> | undefined,
-	GTokenSet extends TTokenSet
+	GTokenSet extends TMixinTokenSet
 >(
 	props: TTokenSelectInputProps<GValue, GRefValue, GTokenSet>
 ) => {
@@ -32,7 +32,7 @@ export const TokenSelectInput = <
 		[state, tokenSet ?? createState(undefined)],
 		([{ value: stateValue }, { value: tokenMapValue }]) => {
 			return isTokenRef(stateValue)
-				? mapToTokenValue(stateValue.ref, tokenMapValue)
+				? mapToTokenValue(stateValue.key, tokenMapValue)
 				: (stateValue as GValue);
 		},
 		[mapToTokenValue]
@@ -68,7 +68,7 @@ export const TokenSelectInput = <
 
 		if (isLinked) {
 			const tokenValue = isTokenRef(state._v)
-				? mapToTokenValue(state._v.ref, tokenSet?._v)
+				? mapToTokenValue(state._v.key, tokenSet?._v)
 				: undefined;
 			if (tokenValue != null) {
 				state.set(tokenValue as GRefValue);
@@ -137,7 +137,7 @@ export const TokenSelectInput = <
 export interface TTokenSelectInputProps<
 	GValue extends string,
 	GRefValue extends TRef<GValue> | undefined,
-	GTokenSet extends TTokenSet
+	GTokenSet extends TMixinTokenSet
 > extends Omit<SelectProps, 'label' | 'labelHidden' | 'value' | 'onChange'> {
 	state: TState<GRefValue, any>;
 

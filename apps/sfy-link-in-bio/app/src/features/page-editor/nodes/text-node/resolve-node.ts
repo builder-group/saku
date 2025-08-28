@@ -22,7 +22,7 @@ export function resolveTextNode(
 		resolveAutoLayoutStyleMixin(autoLayout, {
 			node: cx,
 			tokenSet: cx.site.getTokenSet('autoLayout'),
-			mapToToken: (ref, tokenSet) => tokenSet?.[ref]
+			mapToToken: (ref, tokenSet) => tokenSet?.[ref]?.value
 		});
 	if (!isResolvedAutoLayoutOk) {
 		return Err(resolvedAutoLayoutErr.wrapWith('#ERR_RESOLVE_AUTO_LAYOUT_STYLE'));
@@ -31,7 +31,7 @@ export function resolveTextNode(
 		resolveAppearanceStyleMixin(appearance, {
 			node: cx,
 			tokenSet: cx.site.getTokenSet('appearance'),
-			mapToToken: (ref, tokenSet) => tokenSet?.[ref]
+			mapToToken: (ref, tokenSet) => tokenSet?.[ref]?.value
 		});
 	if (!isResolvedAppearanceOk) {
 		return Err(resolvedAppearanceErr.wrapWith('#ERR_RESOLVE_APPEARANCE_STYLE'));
@@ -39,7 +39,7 @@ export function resolveTextNode(
 	const [isResolvedFillOk, resolvedFillErr, resolvedFill] = resolveFillStyleMixin(fill, {
 		node: cx,
 		tokenSet: cx.site.getTokenSet('fill'),
-		mapToToken: (ref, tokenSet) => tokenSet?.[ref]
+		mapToToken: (ref, tokenSet) => tokenSet?.[ref]?.value
 	});
 	if (!isResolvedFillOk) {
 		return Err(resolvedFillErr.wrapWith('#ERR_RESOLVE_FILL_STYLE'));
@@ -47,7 +47,7 @@ export function resolveTextNode(
 	const [isResolvedStrokeOk, resolvedStrokeErr, resolvedStroke] = resolveStrokeStyleMixin(stroke, {
 		node: cx,
 		tokenSet: cx.site.getTokenSet('stroke'),
-		mapToToken: (ref, tokenSet) => tokenSet?.[ref]
+		mapToToken: (ref, tokenSet) => tokenSet?.[ref]?.value
 	});
 	if (!isResolvedStrokeOk) {
 		return Err(resolvedStrokeErr.wrapWith('#ERR_RESOLVE_STROKE_STYLE'));
@@ -55,7 +55,7 @@ export function resolveTextNode(
 	const [isResolvedShadowOk, resolvedShadowErr, resolvedShadow] = resolveShadowStyleMixin(shadow, {
 		node: cx,
 		tokenSet: cx.site.getTokenSet('shadow'),
-		mapToToken: (ref, tokenSet) => tokenSet?.[ref]
+		mapToToken: (ref, tokenSet) => tokenSet?.[ref]?.value
 	});
 	if (!isResolvedShadowOk) {
 		return Err(resolvedShadowErr.wrapWith('#ERR_RESOLVE_SHADOW_STYLE'));
@@ -63,7 +63,7 @@ export function resolveTextNode(
 	const [isResolvedTextOk, resolvedTextErr, resolvedText] = resolveTextStyleMixin(text, {
 		node: cx,
 		tokenSet: cx.site.getTokenSet('text'),
-		mapToToken: (ref, tokenSet) => tokenSet?.[ref]
+		mapToToken: (ref, tokenSet) => tokenSet?.[ref]?.value
 	});
 	if (!isResolvedTextOk) {
 		return Err(resolvedTextErr.wrapWith('#ERR_RESOLVE_TEXT_STYLE'));

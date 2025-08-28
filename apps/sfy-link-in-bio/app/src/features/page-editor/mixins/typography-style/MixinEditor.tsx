@@ -1,8 +1,8 @@
 import {
 	fontMetadata,
 	isTokenRef,
+	TMixinTokenSet,
 	TRef,
-	TTokenSet,
 	TTypographyStyleMixin,
 	TTypographyStyleToken
 } from '@repo/editor';
@@ -15,7 +15,7 @@ import { TPageEditor } from '../../lib';
 
 export const TypographyStyleMixinEditor = <
 	GValue extends Record<string, any>,
-	GTokenSet extends TTokenSet
+	GTokenSet extends TMixinTokenSet
 >(
 	props: TTypographyStyleMixinEditorProps<GValue, GTokenSet>
 ) => {
@@ -186,7 +186,7 @@ export const TypographyStyleMixinEditor = <
 
 interface TTypographyStyleMixinEditorProps<
 	GValue extends Record<string, any>,
-	GTokenSet extends TTokenSet
+	GTokenSet extends TMixinTokenSet
 > {
 	state: TState<GValue, any>;
 	mapValue: (value: GValue) => TTypographyStyleMixin['value'];

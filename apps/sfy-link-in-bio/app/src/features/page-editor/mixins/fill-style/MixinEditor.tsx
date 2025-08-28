@@ -1,5 +1,11 @@
 import { deepCopy } from '@blgc/utils';
-import { isTokenRef, TFillStyleMixin, TFillStyleToken, tokenRef, TTokenSet } from '@repo/editor';
+import {
+	isTokenRef,
+	TFillStyleMixin,
+	TFillStyleToken,
+	TMixinTokenSet,
+	tokenRef
+} from '@repo/editor';
 import { Button, Text } from '@shopify/polaris';
 import { useCompute } from 'feature-react';
 import { TState } from 'feature-state';
@@ -11,7 +17,7 @@ import { TPageEditor } from '../../lib';
 
 export const FillStyleMixinEditor = <
 	GValue extends Record<string, any> | null,
-	GTokenSet extends TTokenSet
+	GTokenSet extends TMixinTokenSet
 >(
 	props: TFillStyleMixinEditorProps<GValue, GTokenSet>
 ) => {
@@ -32,7 +38,7 @@ export const FillStyleMixinEditor = <
 		({ value }) => {
 			const fill = mapValue(value);
 			if (isTokenRef(fill)) {
-				return mapToToken?.(fill.ref, tokenSet?._v) != null;
+				return mapToToken?.(fill.key, tokenSet?._v) != null;
 			}
 			return fill != null;
 		},
@@ -83,7 +89,7 @@ export const FillStyleMixinEditor = <
 	const handleToggleTokenLink = React.useCallback(() => {
 		if (isLinked) {
 			const fill = mapValue(state._v);
-			const tokenValue = isTokenRef(fill) ? mapToToken?.(fill.ref, tokenSet?._v) : undefined;
+			const tokenValue = isTokenRef(fill) ? mapToToken?.(fill.key, tokenSet?._v) : undefined;
 			if (tokenValue !== undefined) {
 				applyValue(state, deepCopy(tokenValue));
 				state._notify();
@@ -169,7 +175,7 @@ export const FillStyleMixinEditor = <
 
 interface TFillStyleMixinEditorProps<
 	GValue extends Record<string, any> | null,
-	GTokenSet extends TTokenSet
+	GTokenSet extends TMixinTokenSet
 > {
 	state: TState<GValue, any>;
 	mapValue: (value: GValue) => TFillStyleMixin['value'];

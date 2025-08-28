@@ -1,10 +1,10 @@
-import { TAutoLayoutStyleMixin, TAutoLayoutStyleToken, TTokenSet } from '@repo/editor';
+import { TAutoLayoutStyleMixin, TAutoLayoutStyleToken, TMixinTokenSet } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
 import { resolveNestedTokenRef, TMixinResolveContext } from '../../lib';
 import { TResolvedAutoLayoutStyleMixin } from './types';
 
-export function resolveAutoLayoutStyleMixin<GTokenSet extends TTokenSet>(
+export function resolveAutoLayoutStyleMixin<GTokenSet extends TMixinTokenSet>(
 	layout: TAutoLayoutStyleMixin['value'],
 	cx: TMixinResolveContext<TAutoLayoutStyleToken['value'], GTokenSet>
 ): TResult<TResolvedAutoLayoutStyleMixin['value'], AppError> {

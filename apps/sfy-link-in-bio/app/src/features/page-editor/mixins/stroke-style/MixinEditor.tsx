@@ -1,10 +1,10 @@
 import { deepCopy } from '@blgc/utils';
 import {
 	isTokenRef,
+	TMixinTokenSet,
 	tokenRef,
 	TStrokeStyleMixin,
-	TStrokeStyleToken,
-	TTokenSet
+	TStrokeStyleToken
 } from '@repo/editor';
 import { Button, Text } from '@shopify/polaris';
 import { useCompute } from 'feature-react';
@@ -17,7 +17,7 @@ import { TPageEditor } from '../../lib';
 
 export const StrokeStyleMixinEditor = <
 	GValue extends Record<string, any> | null,
-	GTokenSet extends TTokenSet
+	GTokenSet extends TMixinTokenSet
 >(
 	props: TStrokeStyleMixinEditorProps<GValue, GTokenSet>
 ) => {
@@ -37,7 +37,7 @@ export const StrokeStyleMixinEditor = <
 		({ value }) => {
 			const stroke = mapValue(value);
 			if (isTokenRef(stroke)) {
-				return mapToToken?.(stroke.ref, tokenSet?._v) != null;
+				return mapToToken?.(stroke.key, tokenSet?._v) != null;
 			}
 			return stroke != null;
 		},
@@ -111,7 +111,7 @@ export const StrokeStyleMixinEditor = <
 	const handleToggleTokenLink = React.useCallback(() => {
 		if (isLinked) {
 			const stroke = mapValue(state._v);
-			const tokenValue = isTokenRef(stroke) ? mapToToken?.(stroke.ref, tokenSet?._v) : undefined;
+			const tokenValue = isTokenRef(stroke) ? mapToToken?.(stroke.key, tokenSet?._v) : undefined;
 			if (tokenValue !== undefined) {
 				applyValue(state, deepCopy(tokenValue));
 				state._notify();
@@ -216,7 +216,7 @@ export const StrokeStyleMixinEditor = <
 
 interface TStrokeStyleMixinEditorProps<
 	GValue extends Record<string, any> | null,
-	GTokenSet extends TTokenSet
+	GTokenSet extends TMixinTokenSet
 > {
 	state: TState<GValue, any>;
 	mapValue: (value: GValue) => TStrokeStyleMixin['value'];

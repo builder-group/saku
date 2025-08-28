@@ -5,8 +5,8 @@ import {
 	TFlatSite,
 	TIntegration,
 	TIntegrationId,
-	TNodeId,
-	TTokenGroupMap
+	TMixinTokenGroupMap,
+	TNodeId
 } from '@repo/editor';
 import { TSiteHydrateContext } from './types';
 
@@ -17,11 +17,29 @@ export class StaticSiteHydrateContext implements TSiteHydrateContext {
 	public readonly id: string;
 	public readonly handle: string;
 	private readonly site: TFlatSite;
+	private readonly mixinTokenGroupMap: TMixinTokenGroupMap;
 
 	constructor(site: TFlatSite, id: string, handle: string) {
 		this.site = site;
 		this.id = id;
 		this.handle = handle;
+		this.mixinTokenGroupMap = this.createMixinTokenGroupMap();
+	}
+
+	private createMixinTokenGroupMap(): TMixinTokenGroupMap {
+		const groups: TMixinTokenGroupMap = {};
+
+		Object.values(this.site.tokens).forEach((token) => {
+			if (token.type === 'mixin') {
+				const mixinKey = token.mixinKey;
+				if (groups[mixinKey] == null) {
+					groups[mixinKey] = {};
+				}
+				groups[mixinKey][token.key] = token;
+			}
+		});
+
+		return groups;
 	}
 
 	public getNode(id: TNodeId): TFlatNode | null {
@@ -40,9 +58,9 @@ export class StaticSiteHydrateContext implements TSiteHydrateContext {
 		return this.site.integrations[id] ?? null;
 	}
 
-	public getTokenSet<GGroupKey extends keyof TTokenGroupMap>(
+	public getTokenSet<GGroupKey extends keyof TMixinTokenGroupMap>(
 		groupKey: GGroupKey
-	): TTokenGroupMap[GGroupKey] | null {
-		return this.site.tokens[groupKey] || null;
+	): TMixinTokenGroupMap[GGroupKey] | null {
+		return this.mixinTokenGroupMap[groupKey] || null;
 	}
 }

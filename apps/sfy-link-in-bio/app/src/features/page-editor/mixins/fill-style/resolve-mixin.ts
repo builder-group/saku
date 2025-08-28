@@ -1,10 +1,10 @@
-import { TFillStyleMixin, TFillStyleToken, TPaint, TTokenSet } from '@repo/editor';
+import { TFillStyleMixin, TFillStyleToken, TMixinTokenSet, TPaint } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
 import { resolvePaint, resolveTokenRef, TMixinResolveContext } from '../../lib';
 import { TResolvedFillStyleMixin } from './types';
 
-export function resolveFillStyleMixin<GTokenSet extends TTokenSet>(
+export function resolveFillStyleMixin<GTokenSet extends TMixinTokenSet>(
 	fill: TFillStyleMixin['value'],
 	cx: TMixinResolveContext<TFillStyleToken['value'], GTokenSet>
 ): TResult<TResolvedFillStyleMixin['value'], AppError> {

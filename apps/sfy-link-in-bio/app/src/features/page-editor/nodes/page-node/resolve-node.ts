@@ -39,7 +39,7 @@ export function resolvePageNodeWithoutChildren(
 		resolveAutoLayoutStyleMixin(autoLayout, {
 			node: cx,
 			tokenSet: cx.site.getTokenSet('autoLayout'),
-			mapToToken: (ref, tokenSet) => tokenSet?.[ref]
+			mapToToken: (ref, tokenSet) => tokenSet?.[ref]?.value
 		});
 	if (!isResolvedAutoLayoutOk) {
 		return Err(resolvedAutoLayoutErr.wrapWith('#ERR_RESOLVE_AUTO_LAYOUT_STYLE'));
@@ -48,7 +48,7 @@ export function resolvePageNodeWithoutChildren(
 		resolveAppearanceStyleMixin(appearance, {
 			node: cx,
 			tokenSet: cx.site.getTokenSet('appearance'),
-			mapToToken: (ref, tokenSet) => tokenSet?.[ref]
+			mapToToken: (ref, tokenSet) => tokenSet?.[ref]?.value
 		});
 	if (!isResolvedAppearanceOk) {
 		return Err(resolvedAppearanceErr.wrapWith('#ERR_RESOLVE_APPEARANCE_STYLE'));
@@ -56,7 +56,7 @@ export function resolvePageNodeWithoutChildren(
 	const [isResolvedFillOk, resolvedFillErr, resolvedFill] = resolveFillStyleMixin(fill, {
 		node: cx,
 		tokenSet: cx.site.getTokenSet('fill'),
-		mapToToken: (ref, tokenSet) => tokenSet?.[ref]
+		mapToToken: (ref, tokenSet) => tokenSet?.[ref]?.value
 	});
 	if (!isResolvedFillOk) {
 		return Err(resolvedFillErr.wrapWith('#ERR_RESOLVE_FILL_STYLE'));

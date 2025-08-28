@@ -1,4 +1,4 @@
-import { isTokenRef, tokenRef, TRef, TTokenSet } from '@repo/editor';
+import { isTokenRef, TMixinTokenSet, tokenRef, TRef } from '@repo/editor';
 import { Text, TextField, TextFieldProps } from '@shopify/polaris';
 import { useCombinedCompute, useCompute } from 'feature-react/state';
 import { createState, TState } from 'feature-state';
@@ -10,7 +10,7 @@ import { TokenActionOverlay } from './TokenActionOverlay';
 export const TokenTextInput = <
 	GValue extends string | number,
 	GRefValue extends TRef<GValue> | undefined,
-	GTokenSet extends TTokenSet
+	GTokenSet extends TMixinTokenSet
 >(
 	props: TTokenTextInputProps<GValue, GRefValue, GTokenSet>
 ) => {
@@ -37,7 +37,7 @@ export const TokenTextInput = <
 		[state, tokenSet ?? createState(undefined)],
 		([{ value: stateValue }, { value: tokenMapValue }]) => {
 			const rawValue = isTokenRef(stateValue)
-				? mapToTokenValue(stateValue.ref, tokenMapValue)
+				? mapToTokenValue(stateValue.key, tokenMapValue)
 				: (stateValue as GValue);
 			if (rawValue == null) {
 				return undefined;
@@ -103,7 +103,7 @@ export const TokenTextInput = <
 
 		if (isLinked) {
 			const tokenValue = isTokenRef(state._v)
-				? mapToTokenValue(state._v.ref, tokenSet?._v)
+				? mapToTokenValue(state._v.key, tokenSet?._v)
 				: undefined;
 			if (tokenValue != null) {
 				state.set(tokenValue as GRefValue);
@@ -174,7 +174,7 @@ export const TokenTextInput = <
 export interface TTokenTextInputProps<
 	GValue extends string | number,
 	GRefValue extends TRef<GValue> | undefined,
-	GTokenSet extends TTokenSet
+	GTokenSet extends TMixinTokenSet
 > extends Omit<TextFieldProps, 'label' | 'labelHidden' | 'value' | 'onChange'> {
 	state: TState<GRefValue, any>;
 	mapToDisplay?: (value: GValue) => GValue;

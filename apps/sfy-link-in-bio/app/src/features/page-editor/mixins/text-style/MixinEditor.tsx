@@ -1,4 +1,4 @@
-import { TTextStyleMixin, TTextStyleToken, TTokenSet } from '@repo/editor';
+import { TMixinTokenSet, TTextStyleMixin, TTextStyleToken } from '@repo/editor';
 import { TState } from 'feature-state';
 import { TPageEditor } from '../../lib';
 import { AppearanceStyleMixinEditor } from '../appearance-style';
@@ -9,7 +9,7 @@ import { TypographyStyleMixinEditor } from '../typography-style';
 
 export const TextStyleMixinEditor = <
 	GValue extends Record<string, any>,
-	GTokenSet extends TTokenSet
+	GTokenSet extends TMixinTokenSet
 >(
 	props: TTextStyleMixinEditorProps<GValue, GTokenSet>
 ) => {
@@ -78,7 +78,7 @@ export const TextStyleMixinEditor = <
 
 interface TTextStyleMixinEditorProps<
 	GValue extends Record<string, any>,
-	GTokenSet extends TTokenSet
+	GTokenSet extends TMixinTokenSet
 > {
 	state: TState<GValue, any>;
 	mapValue: (value: GValue) => TTextStyleMixin['value'];

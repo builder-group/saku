@@ -225,16 +225,16 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 					<AutoLayoutStyleMixinEditor
 						state={nodeState}
 						mapValue={(value) => value.autoLayout}
-						tokenSet={editor.tokensMap.autoLayout}
-						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]}
+						tokenSet={editor.mixinTokenMap.autoLayout}
+						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
 						editor={editor}
 					/>
 					<div className="h-px bg-neutral-200" />
 					<AppearanceStyleMixinEditor
 						state={nodeState}
 						mapValue={(value) => value.appearance}
-						tokenSet={editor.tokensMap.appearance}
-						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]}
+						tokenSet={editor.mixinTokenMap.appearance}
+						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
 						editor={editor}
 					/>
 					<div className="h-px bg-neutral-200" />
@@ -244,8 +244,8 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 						applyValue={(state, value) => {
 							state._v.fill = value;
 						}}
-						tokenSet={editor.tokensMap.fill}
-						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]}
+						tokenSet={editor.mixinTokenMap.fill}
+						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
 						editor={editor}
 					/>
 					<div className="h-px bg-neutral-200" />
@@ -255,8 +255,8 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 						applyValue={(state, value) => {
 							state._v.stroke = value;
 						}}
-						tokenSet={editor.tokensMap.stroke}
-						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]}
+						tokenSet={editor.mixinTokenMap.stroke}
+						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
 						editor={editor}
 					/>
 					<div className="h-px bg-neutral-200" />
@@ -266,8 +266,8 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 						applyValue={(state, value) => {
 							state._v.shadow = value;
 						}}
-						tokenSet={editor.tokensMap.shadow}
-						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]}
+						tokenSet={editor.mixinTokenMap.shadow}
+						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
 						editor={editor}
 					/>
 				</AccordionSection>
@@ -280,8 +280,8 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 					<TextStyleMixinEditor
 						state={nodeState}
 						mapValue={(value) => value.text}
-						tokenSet={editor.tokensMap.text}
-						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]}
+						tokenSet={editor.mixinTokenMap.text}
+						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
 						editor={editor}
 					/>
 				</AccordionSection>

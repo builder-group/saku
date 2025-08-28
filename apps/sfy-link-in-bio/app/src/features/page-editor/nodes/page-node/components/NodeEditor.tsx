@@ -26,24 +26,27 @@ import {
 export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TFlatPageNode>> = (props) => {
 	const { nodeState, editor } = props;
 
-	const defaultAppearanceToken = useMapState(editor.tokensMap.appearance, {
+	const defaultAppearanceToken = useMapState(editor.mixinTokenMap.appearance, {
 		map: (token) =>
 			token['default'] !== undefined
-				? token['default']
+				? token['default'].value
 				: ({
 						visible: true,
 						opacity: 1,
 						borderRadius: 0
 					} satisfies TAppearanceStyleToken['value']),
 		sync: (token, value, notifyOptions) => {
-			token._v['default'] = value;
-			token._notify(notifyOptions);
+			const tokenDefault = token._v['default'];
+			if (tokenDefault != null) {
+				tokenDefault.value = value;
+				token._notify(notifyOptions);
+			}
 		}
 	});
-	const defaultAutoLayoutToken = useMapState(editor.tokensMap.autoLayout, {
+	const defaultAutoLayoutToken = useMapState(editor.mixinTokenMap.autoLayout, {
 		map: (token) =>
 			token['default'] !== undefined
-				? token['default']
+				? token['default'].value
 				: ({
 						horizontalPadding: 0,
 						verticalPadding: 0,
@@ -51,14 +54,17 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TFlatPageNode>> 
 						verticalGap: 0
 					} satisfies TAutoLayoutStyleToken['value']),
 		sync: (token, value, notifyOptions) => {
-			token._v['default'] = value;
-			token._notify(notifyOptions);
+			const tokenDefault = token._v['default'];
+			if (tokenDefault != null) {
+				tokenDefault.value = value;
+				token._notify(notifyOptions);
+			}
 		}
 	});
-	const defaultFillToken = useMapState(editor.tokensMap.fill, {
+	const defaultFillToken = useMapState(editor.mixinTokenMap.fill, {
 		map: (token) =>
 			token['default'] !== undefined
-				? token['default']
+				? token['default'].value
 				: ({
 						paint: {
 							type: 'solid',
@@ -67,24 +73,30 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TFlatPageNode>> 
 						opacity: 1
 					} satisfies TFillStyleToken['value']),
 		sync: (token, value, notifyOptions) => {
-			token._v['default'] = value;
-			token._notify(notifyOptions);
+			const tokenDefault = token._v['default'];
+			if (tokenDefault != null) {
+				tokenDefault.value = value;
+				token._notify(notifyOptions);
+			}
 		}
 	});
-	const defaultStrokeToken = useMapState(editor.tokensMap.stroke, {
+	const defaultStrokeToken = useMapState(editor.mixinTokenMap.stroke, {
 		map: (token) =>
 			token['default'] !== undefined
-				? token['default']
+				? token['default'].value
 				: ({ color: { r: 0, g: 0, b: 0, a: 0.1 }, width: 1 } satisfies TStrokeStyleToken['value']),
 		sync: (token, value, notifyOptions) => {
-			token._v['default'] = value;
-			token._notify(notifyOptions);
+			const tokenDefault = token._v['default'];
+			if (tokenDefault != null) {
+				tokenDefault.value = value;
+				token._notify(notifyOptions);
+			}
 		}
 	});
-	const defaultShadowToken = useMapState(editor.tokensMap.shadow, {
+	const defaultShadowToken = useMapState(editor.mixinTokenMap.shadow, {
 		map: (token) =>
 			token['default'] !== undefined
-				? token['default']
+				? token['default'].value
 				: ({
 						color: { r: 0, g: 0, b: 0, a: 0.1 },
 						offsetX: 0,
@@ -93,14 +105,17 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TFlatPageNode>> 
 						spread: -1
 					} satisfies TShadowStyleToken['value']),
 		sync: (token, value, notifyOptions) => {
-			token._v['default'] = value;
-			token._notify(notifyOptions);
+			const tokenDefault = token._v['default'];
+			if (tokenDefault != null) {
+				tokenDefault.value = value;
+				token._notify(notifyOptions);
+			}
 		}
 	});
-	const defaultTextToken = useMapState(editor.tokensMap.text, {
+	const defaultTextToken = useMapState(editor.mixinTokenMap.text, {
 		map: (token) =>
 			token['default'] !== undefined
-				? token['default']
+				? token['default'].value
 				: ({
 						appearance: { visible: true, opacity: 1, borderRadius: 0 },
 						typography: {
@@ -122,14 +137,17 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TFlatPageNode>> 
 						shadow: null
 					} satisfies TTextStyleToken['value']),
 		sync: (token, value, notifyOptions) => {
-			token._v['default'] = value;
-			token._notify(notifyOptions);
+			const tokenDefault = token._v['default'];
+			if (tokenDefault != null) {
+				tokenDefault.value = value;
+				token._notify(notifyOptions);
+			}
 		}
 	});
-	const defaultButtonToken = useMapState(editor.tokensMap.button, {
+	const defaultButtonToken = useMapState(editor.mixinTokenMap.button, {
 		map: (token) =>
 			token['default'] !== undefined
-				? token['default']
+				? token['default'].value
 				: ({
 						appearance: { visible: true, opacity: 1, borderRadius: 0 },
 						fill: {
@@ -163,8 +181,11 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TFlatPageNode>> 
 						}
 					} satisfies TButtonStyleToken['value']),
 		sync: (token, value, notifyOptions) => {
-			token._v['default'] = value;
-			token._notify(notifyOptions);
+			const tokenDefault = token._v['default'];
+			if (tokenDefault != null) {
+				tokenDefault.value = value;
+				token._notify(notifyOptions);
+			}
 		}
 	});
 

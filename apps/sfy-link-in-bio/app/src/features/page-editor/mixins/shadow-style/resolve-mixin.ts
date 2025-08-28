@@ -1,10 +1,10 @@
-import { TRgba, TShadowStyleMixin, TShadowStyleToken, TTokenSet } from '@repo/editor';
+import { TMixinTokenSet, TRgba, TShadowStyleMixin, TShadowStyleToken } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
 import { resolveColor, resolveTokenRef, TMixinResolveContext } from '../../lib';
 import { TResolvedShadowStyleMixin } from './types';
 
-export function resolveShadowStyleMixin<GTokenSet extends TTokenSet>(
+export function resolveShadowStyleMixin<GTokenSet extends TMixinTokenSet>(
 	shadow: TShadowStyleMixin['value'],
 	cx: TMixinResolveContext<TShadowStyleToken['value'], GTokenSet>
 ): TResult<TResolvedShadowStyleMixin['value'], AppError> {

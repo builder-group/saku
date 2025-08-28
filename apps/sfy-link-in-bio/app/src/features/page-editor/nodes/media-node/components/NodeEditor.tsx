@@ -127,16 +127,16 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 					<AutoLayoutStyleMixinEditor
 						state={nodeState}
 						mapValue={(value) => value.autoLayout}
-						tokenSet={editor.tokensMap.autoLayout}
-						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]}
+						tokenSet={editor.mixinTokenMap.autoLayout}
+						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
 						editor={editor}
 					/>
 					<div className="h-px bg-neutral-200" />
 					<AppearanceStyleMixinEditor
 						state={nodeState}
 						mapValue={(value) => value.appearance}
-						tokenSet={editor.tokensMap.appearance}
-						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]}
+						tokenSet={editor.mixinTokenMap.appearance}
+						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
 						editor={editor}
 					/>
 					<div className="h-px bg-neutral-200" />
@@ -146,8 +146,8 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 						applyValue={(state, value) => {
 							state._v.fill = value;
 						}}
-						tokenSet={editor.tokensMap.fill}
-						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]}
+						tokenSet={editor.mixinTokenMap.fill}
+						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
 						editor={editor}
 					/>
 					<div className="h-px bg-neutral-200" />
@@ -157,8 +157,8 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 						applyValue={(state, value) => {
 							state._v.stroke = value;
 						}}
-						tokenSet={editor.tokensMap.stroke}
-						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]}
+						tokenSet={editor.mixinTokenMap.stroke}
+						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
 						editor={editor}
 					/>
 					<div className="h-px bg-neutral-200" />
@@ -168,8 +168,8 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 						applyValue={(state, value) => {
 							state._v.shadow = value;
 						}}
-						tokenSet={editor.tokensMap.shadow}
-						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]}
+						tokenSet={editor.mixinTokenMap.shadow}
+						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
 						editor={editor}
 					/>
 				</AccordionSection>

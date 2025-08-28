@@ -1,11 +1,11 @@
 import { notEmpty } from '@blgc/utils';
 import { createState, TState } from 'feature-state';
 import { useMemoCleanup } from '@/hooks';
-import { TPageEditor, TTokenStateGroupMap } from '../lib';
+import { TMixinTokenGroupMap, TPageEditor } from '../lib';
 
 export function useTokenSetNotifier(
 	editor: TPageEditor,
-	tokenTypes: (keyof TTokenStateGroupMap)[]
+	tokenTypes: (keyof TMixinTokenGroupMap)[]
 ): TState<null, []> {
 	return useMemoCleanup(() => {
 		const notifier = createState(null);
@@ -13,7 +13,7 @@ export function useTokenSetNotifier(
 		// Subscribe to all specified token sets
 		const unsubscribes = tokenTypes
 			.map((type) => {
-				const tokenState = editor.tokensMap[type];
+				const tokenState = editor.mixinTokenMap[type];
 				if (tokenState == null) {
 					return null;
 				}

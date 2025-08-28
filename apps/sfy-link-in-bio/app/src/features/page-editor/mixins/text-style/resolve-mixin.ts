@@ -1,4 +1,4 @@
-import { TTextStyleMixin, TTextStyleToken, TTokenSet } from '@repo/editor';
+import { TMixinTokenSet, TTextStyleMixin, TTextStyleToken } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
 import { TMixinResolveContext } from '../../lib';
@@ -15,7 +15,7 @@ import {
 } from '../typography-style';
 import { TResolvedTextStyleMixin } from './types';
 
-export function resolveTextStyleMixin<GTokenSet extends TTokenSet>(
+export function resolveTextStyleMixin<GTokenSet extends TMixinTokenSet>(
 	text: TTextStyleMixin['value'],
 	cx: TMixinResolveContext<TTextStyleToken['value'], GTokenSet>
 ): TResult<TResolvedTextStyleMixin['value'], AppError> {

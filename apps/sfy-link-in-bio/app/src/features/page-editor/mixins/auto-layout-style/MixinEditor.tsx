@@ -1,4 +1,9 @@
-import { isTokenRef, TAutoLayoutStyleMixin, TAutoLayoutStyleToken, TTokenSet } from '@repo/editor';
+import {
+	isTokenRef,
+	TAutoLayoutStyleMixin,
+	TAutoLayoutStyleToken,
+	TMixinTokenSet
+} from '@repo/editor';
 import { Text } from '@shopify/polaris';
 import { useCompute } from 'feature-react';
 import { TState } from 'feature-state';
@@ -9,7 +14,7 @@ import { TPageEditor } from '../../lib';
 
 export const AutoLayoutStyleMixinEditor = <
 	GValue extends Record<string, any>,
-	GTokenSet extends TTokenSet
+	GTokenSet extends TMixinTokenSet
 >(
 	props: TAutoLayoutStyleMixinEditorProps<GValue, GTokenSet>
 ) => {
@@ -202,7 +207,7 @@ export const AutoLayoutStyleMixinEditor = <
 
 interface TAutoLayoutStyleMixinEditorProps<
 	GValue extends Record<string, any>,
-	GTokenSet extends TTokenSet
+	GTokenSet extends TMixinTokenSet
 > {
 	state: TState<GValue, any>;
 	mapValue: (value: GValue) => TAutoLayoutStyleMixin['value'];

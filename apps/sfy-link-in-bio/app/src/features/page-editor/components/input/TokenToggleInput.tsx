@@ -1,4 +1,4 @@
-import { isTokenRef, tokenRef, TRef, TTokenSet } from '@repo/editor';
+import { isTokenRef, TMixinTokenSet, tokenRef, TRef } from '@repo/editor';
 import { Text, Tooltip } from '@shopify/polaris';
 import { useCombinedCompute, useCompute } from 'feature-react/state';
 import { createState, TState } from 'feature-state';
@@ -9,7 +9,7 @@ import { cn } from '@/lib';
 export const TokenToggleInput = <
 	GValue extends boolean,
 	GRefValue extends TRef<GValue> | undefined,
-	GTokenSet extends TTokenSet
+	GTokenSet extends TMixinTokenSet
 >(
 	props: TTokenToggleInputProps<GValue, GRefValue, GTokenSet>
 ) => {
@@ -31,7 +31,7 @@ export const TokenToggleInput = <
 		[state, tokenSet ?? createState(undefined)],
 		([{ value: stateValue }, { value: tokenMapValue }]) => {
 			return isTokenRef(stateValue)
-				? mapToTokenValue(stateValue.ref, tokenMapValue)
+				? mapToTokenValue(stateValue.key, tokenMapValue)
 				: (stateValue as GValue);
 		},
 		[mapToTokenValue]
@@ -59,7 +59,7 @@ export const TokenToggleInput = <
 
 		if (isLinked) {
 			const tokenValue = isTokenRef(state._v)
-				? mapToTokenValue(state._v.ref, tokenSet?._v)
+				? mapToTokenValue(state._v.key, tokenSet?._v)
 				: undefined;
 			if (tokenValue != null) {
 				state.set(tokenValue as GRefValue);
@@ -132,7 +132,7 @@ export const TokenToggleInput = <
 export interface TTokenToggleInputProps<
 	GValue extends boolean,
 	GRefValue extends TRef<GValue> | undefined,
-	GTokenSet extends TTokenSet
+	GTokenSet extends TMixinTokenSet
 > extends Omit<TKnobProps, 'selected' | 'onClick'> {
 	state: TState<GRefValue, any>;
 

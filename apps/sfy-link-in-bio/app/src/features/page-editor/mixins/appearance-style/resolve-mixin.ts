@@ -1,10 +1,10 @@
-import { TAppearanceStyleMixin, TAppearanceStyleToken, TTokenSet } from '@repo/editor';
+import { TAppearanceStyleMixin, TAppearanceStyleToken, TMixinTokenSet } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
 import { resolveNestedTokenRef, TMixinResolveContext } from '../../lib';
 import { TResolvedAppearanceStyleMixin } from './types';
 
-export function resolveAppearanceStyleMixin<GTokenSet extends TTokenSet>(
+export function resolveAppearanceStyleMixin<GTokenSet extends TMixinTokenSet>(
 	appearance: TAppearanceStyleMixin['value'],
 	cx: TMixinResolveContext<TAppearanceStyleToken['value'], GTokenSet>
 ): TResult<TResolvedAppearanceStyleMixin['value'], AppError> {

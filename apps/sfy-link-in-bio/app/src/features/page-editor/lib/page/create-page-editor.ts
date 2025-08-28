@@ -13,10 +13,14 @@ import {
 	TImageAsset,
 	TIntegration,
 	TIntegrationId,
+	TMixinToken,
+	TMixinTokenKey,
 	TNodeId,
 	toHierarchical,
 	TSite,
-	TToken
+	TTokenMap,
+	TVariableToken,
+	TVariableTokenKey
 } from '@repo/editor';
 import { ShopifyGlobal } from '@shopify/app-bridge-react';
 import { FetchError, NetworkError, RequestError } from 'feature-fetch';
@@ -71,11 +75,35 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 
 		assetsMap: site.content.assets,
 		integrationsMap: site.content.integrations,
-		tokensMap: Object.fromEntries(
-			Object.entries(site.content.tokens).map(([tokenType, tokenRecord]) => [
-				tokenType,
-				createState(tokenRecord)
-			])
+		mixinTokenMap: (() => {
+			const mixinGroups: Record<string, Record<string, TMixinToken>> = {};
+
+			// Iterate through flat tokens and group mixin tokens
+			Object.values(site.content.tokens).forEach((token) => {
+				if (token.type === 'mixin') {
+					if (mixinGroups[token.mixinKey] == null) {
+						mixinGroups[token.mixinKey] = {};
+					}
+					// @ts-expect-error - we ensure object exists above
+					mixinGroups[token.mixinKey][token.key] = token;
+				}
+			});
+
+			// Create state for each mixin group
+			return Object.fromEntries(
+				Object.entries(mixinGroups).map(([mixinKey, tokens]) => [mixinKey, createState(tokens)])
+			);
+		})(),
+		variableTokenMap: createState(
+			(() => {
+				const variables: Record<string, TVariableToken> = {};
+				Object.values(site.content.tokens).forEach((token) => {
+					if (token.type === 'variable') {
+						variables[token.key] = token;
+					}
+				});
+				return variables;
+			})()
 		),
 
 		activeView: createState('layers' as TViewType),
@@ -626,9 +654,23 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 				),
 				assets: deepCopy(this.assetsMap),
 				integrations: deepCopy(this.integrationsMap),
-				tokens: Object.fromEntries(
-					Object.entries(this.tokensMap).map(([type, state]) => [type, state._v])
-				)
+				tokens: (() => {
+					const flatTokens: TTokenMap = {};
+
+					// Add mixin tokens with mixin.mixinKey.key format
+					Object.entries(this.mixinTokenMap).forEach(([mixinKey, state]) => {
+						Object.values(state._v).forEach((token) => {
+							flatTokens[`mixin.${mixinKey}.${token.key}` as TMixinTokenKey] = token;
+						});
+					});
+
+					// Add variable tokens with variable.key format
+					Object.values(this.variableTokenMap._v).forEach((token) => {
+						flatTokens[`variable.${token.key}` as TVariableTokenKey] = token;
+					});
+
+					return flatTokens;
+				})()
 			} satisfies TFlatSite;
 		}
 	};
@@ -662,7 +704,8 @@ export interface TPageEditor {
 
 	assetsMap: Record<TAssetHash, TAsset>;
 	integrationsMap: Record<TIntegrationId, TIntegration>;
-	tokensMap: TTokenStateGroupMap;
+	mixinTokenMap: TMixinTokenGroupMap;
+	variableTokenMap: TState<Record<string, TVariableToken>, []>;
 
 	activeView: TState<TViewType, []>;
 	activeSettingsSection: TState<TSettingsSectionType | null, []>;
@@ -719,11 +762,11 @@ export interface TBoundingRect {
 	right: number;
 }
 
-export type TTokenStateGroupMap<GToken extends TToken = TToken> = {
-	[K in GToken['type']]?: TStateTokenSet<Extract<GToken, { type: K }>>;
+export type TMixinTokenGroupMap<GToken extends TMixinToken = TMixinToken> = {
+	[K in GToken['mixinKey']]?: TMixinTokenSetState<Extract<GToken, { mixinKey: K }>>;
 };
 
-export type TStateTokenSet<GToken extends TToken = TToken> = TState<
-	Record<string, GToken['value']>,
+export type TMixinTokenSetState<GToken extends TMixinToken = TMixinToken> = TState<
+	Record<string, GToken>,
 	[]
 >;

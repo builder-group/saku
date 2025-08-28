@@ -5,10 +5,10 @@ import {
 	isValidHex,
 	rgbaToHex,
 	rgbaToHsba,
+	TMixinTokenSet,
 	tokenRef,
 	TRef,
-	TRgba,
-	TTokenSet
+	TRgba
 } from '@repo/editor';
 import { ColorPicker, HSBAColor, Popover, Text, TextField, TextFieldProps } from '@shopify/polaris';
 import { useCombinedCompute, useCompute } from 'feature-react/state';
@@ -21,7 +21,7 @@ import { TokenActionOverlay } from './TokenActionOverlay';
 export const TokenColorInput = <
 	GValue extends TRgba,
 	GRefValue extends TRef<GValue> | undefined,
-	GTokenSet extends TTokenSet
+	GTokenSet extends TMixinTokenSet
 >(
 	props: TTokenColorInputProps<GValue, GRefValue, GTokenSet>
 ) => {
@@ -46,7 +46,7 @@ export const TokenColorInput = <
 		[state, tokenSet ?? createState(undefined)],
 		([{ value: stateValue }, { value: tokenMapValue }]) => {
 			return isTokenRef(stateValue)
-				? mapToTokenValue(stateValue.ref, tokenMapValue)
+				? mapToTokenValue(stateValue.key, tokenMapValue)
 				: (stateValue as GValue);
 		},
 		[mapToTokenValue],
@@ -129,7 +129,7 @@ export const TokenColorInput = <
 
 		if (isLinked) {
 			const tokenValue = isTokenRef(state._v)
-				? mapToTokenValue(state._v.ref, tokenSet?._v)
+				? mapToTokenValue(state._v.key, tokenSet?._v)
 				: undefined;
 			if (tokenValue != null) {
 				state.set(tokenValue as GRefValue);
@@ -239,7 +239,7 @@ export const TokenColorInput = <
 export interface TTokenColorInputProps<
 	GValue extends TRgba,
 	GRefValue extends TRef<GValue> | undefined,
-	GTokenSet extends TTokenSet
+	GTokenSet extends TMixinTokenSet
 > extends Omit<
 		TextFieldProps,
 		'label' | 'labelHidden' | 'value' | 'onChange' | 'onFocus' | 'prefix' | 'autoComplete' | 'error'

@@ -1,10 +1,10 @@
-import { TRgba, TStrokeStyleMixin, TStrokeStyleToken, TTokenSet } from '@repo/editor';
+import { TMixinTokenSet, TRgba, TStrokeStyleMixin, TStrokeStyleToken } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
 import { resolveColor, resolveTokenRef, TMixinResolveContext } from '../../lib';
 import { TResolvedStrokeStyleMixin } from './types';
 
-export function resolveStrokeStyleMixin<GTokenSet extends TTokenSet>(
+export function resolveStrokeStyleMixin<GTokenSet extends TMixinTokenSet>(
 	stroke: TStrokeStyleMixin['value'],
 	cx: TMixinResolveContext<TStrokeStyleToken['value'], GTokenSet>
 ): TResult<TResolvedStrokeStyleMixin['value'], AppError> {

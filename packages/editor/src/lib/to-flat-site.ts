@@ -9,7 +9,7 @@ import {
 	TNode,
 	TNodeId,
 	TSite,
-	TTokenGroupMap
+	TTokenMap
 } from '../types';
 
 /**
@@ -29,13 +29,18 @@ export function toFlatSite(site: TSite): TFlatSite {
 	});
 
 	// Convert tokens array to record
-	const tokens: TTokenGroupMap = {};
+	const tokens: TTokenMap = {};
 	site.tokens.forEach((token) => {
-		const tokenType = token.type;
-		if (tokens[tokenType] == null) {
-			tokens[tokenType] = {};
+		switch (token.type) {
+			case 'variable': {
+				tokens[`variable.${token.key}`] = token;
+				break;
+			}
+			case 'mixin': {
+				tokens[`mixin.${token.mixinKey}.${token.key}`] = token as any;
+				break;
+			}
 		}
-		tokens[tokenType][token.key] = token.value;
 	});
 
 	// Convert nodes to flat structure
