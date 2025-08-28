@@ -335,7 +335,7 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 							weight: 400,
 							style: 'normal'
 						},
-						fontSize: 14,
+						fontSize: 16,
 						textAlignHorizontal: 'center',
 						textAlignVertical: 'center',
 						lineHeight: { type: 'auto' },
@@ -381,7 +381,7 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 								weight: 400,
 								style: 'normal'
 							},
-							fontSize: 14,
+							fontSize: 16,
 							textAlignHorizontal: 'center',
 							textAlignVertical: 'center',
 							lineHeight: { type: 'auto' },

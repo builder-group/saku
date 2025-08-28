@@ -146,7 +146,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 				typography: {
 					font: tokenRef(),
 					fontSize: tokenRef(),
-					textAlignHorizontal: tokenRef(),
+					textAlignHorizontal: 'start',
 					textAlignVertical: tokenRef(),
 					lineHeight: tokenRef(),
 					letterSpacing: tokenRef()
@@ -257,7 +257,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 							font: tokenRef(),
 							fontSize: tokenRef(),
 							textAlignHorizontal: 'center',
-							textAlignVertical: 'center',
+							textAlignVertical: tokenRef(),
 							lineHeight: tokenRef(),
 							letterSpacing: tokenRef()
 						},
@@ -385,7 +385,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 						},
 						typography: {
 							font: tokenRef(),
-							fontSize: 24,
+							fontSize: 16,
 							textAlignHorizontal: tokenRef(),
 							textAlignVertical: tokenRef(),
 							lineHeight: tokenRef(),
