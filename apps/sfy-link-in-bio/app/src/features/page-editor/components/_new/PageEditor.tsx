@@ -22,6 +22,9 @@ export const PageEditor: React.FC<TPageEditorProps> = (props) => {
 		}
 
 		const modifiedLayout = [...layout];
+		// Single panel modification seems to be the only reliable way to force recompute - tested balanced approach.
+		// Balanced changes get rounded away during validation, single panel change passes areEqual reliably but violates 100% rule.
+		// See setLayout logic: https://github.com/bvaughn/react-resizable-panels/blob/f65a4815c73d43ae884c0465d59da76991f4d14e/packages/react-resizable-panels/src/PanelGroup.ts#L184
 		// @ts-expect-error -- we check the length above
 		modifiedLayout[0] += 1e-6;
 		panelGroupRef.current?.setLayout(modifiedLayout);
@@ -45,8 +48,8 @@ export const PageEditor: React.FC<TPageEditorProps> = (props) => {
 		editor.loadFonts();
 	}, [editor]);
 
-	// Force panel layout recompute when views change to prevent flex-1 layout issues
-	// Without this, dynamic views wouldn't recalculate their layout and stay at flex-1
+	// Force panel layout recompute when views change to prevent flex-1 layout issues.
+	// Without this, dynamic views wouldn't recalculate their layout and stay at flex-1.
 	// TODO: Find better solution without layout manipulation
 	useListener(editor.activeSettingsSection, forcePanelGroupLayoutRecompute);
 	useListener(editor.activeView, forcePanelGroupLayoutRecompute);
