@@ -119,7 +119,7 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 			{/* Design Section */}
 			<AccordionSection title="Design" collapsibleClassName="p-0 border-b-0">
 				<AccordionSection
-					title="Card"
+					title="Layer"
 					collapsibleClassName="px-0 space-y-3"
 					size="tight"
 					defaultOpen={true}

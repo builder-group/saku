@@ -135,6 +135,24 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 			{/* Content Section */}
 			<AccordionSection title="Content" defaultOpen={true}>
 				<div className="space-y-4">
+					{/* Avatar */}
+					<div className="space-y-1">
+						<Text as="span" variant="bodySm" tone="subdued">
+							Avatar
+						</Text>
+						<ImageUploadField
+							image={profilePictureImage}
+							onChange={handleProfilePictureChange}
+							onError={setProfilePictureImageError}
+						/>
+						{profilePictureImageError != null && (
+							<InlineError
+								message={profilePictureImageError}
+								fieldID="profile-picture-upload-error"
+							/>
+						)}
+					</div>
+
 					{/* Name */}
 					<div className="space-y-1">
 						<Text as="span" variant="bodySm" tone="subdued">
@@ -166,24 +184,6 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 							autoComplete="off"
 							placeholder="Tell us about yourself"
 						/>
-					</div>
-
-					{/* Avatar */}
-					<div className="space-y-1">
-						<Text as="span" variant="bodySm" tone="subdued">
-							Avatar
-						</Text>
-						<ImageUploadField
-							image={profilePictureImage}
-							onChange={handleProfilePictureChange}
-							onError={setProfilePictureImageError}
-						/>
-						{profilePictureImageError != null && (
-							<InlineError
-								message={profilePictureImageError}
-								fieldID="profile-picture-upload-error"
-							/>
-						)}
 					</div>
 				</div>
 			</AccordionSection>
@@ -217,7 +217,7 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 			{/* Design Section */}
 			<AccordionSection title="Design" collapsibleClassName="p-0 border-b-0">
 				<AccordionSection
-					title="Card"
+					title="Layer"
 					collapsibleClassName="px-0 space-y-3"
 					size="tight"
 					defaultOpen={true}

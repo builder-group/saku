@@ -230,7 +230,7 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 			{/* Design Section */}
 			<AccordionSection title="Design" collapsibleClassName="p-0 border-b-0">
 				<AccordionSection
-					title="Card"
+					title="Layer"
 					collapsibleClassName="px-0 space-y-3"
 					size="tight"
 					defaultOpen={true}
