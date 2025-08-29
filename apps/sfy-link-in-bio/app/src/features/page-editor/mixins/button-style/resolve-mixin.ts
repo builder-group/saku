@@ -64,7 +64,13 @@ export function resolveButtonStyleMixin<GTokenSet extends TMixinTokenSet>(
 		fill: resolvedFill,
 		stroke: resolvedStroke,
 		shadow: resolvedShadow,
-		text: resolvedText
+		text: resolvedText,
+		styles: {
+			...resolvedAppearance.styles,
+			...resolvedFill?.styles,
+			...resolvedStroke?.styles,
+			...resolvedShadow?.styles
+		}
 	});
 }
 

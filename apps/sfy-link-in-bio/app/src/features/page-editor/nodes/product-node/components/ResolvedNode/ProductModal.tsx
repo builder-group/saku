@@ -5,7 +5,12 @@ import { TResolvedNodeProps } from '../../../../lib';
 import { TResolvedProductNode } from '../../types';
 
 export const ProductModal: React.FC<TProductModalProps> = (props) => {
-	const { product, cx, modalRef } = props;
+	const {
+		product,
+		node: { button },
+		cx,
+		modalRef
+	} = props;
 
 	const [selectedImageIndex, setSelectedImageIndex] = React.useState(0);
 	const [isBuying, setIsBuying] = React.useState(false);
@@ -175,12 +180,19 @@ export const ProductModal: React.FC<TProductModalProps> = (props) => {
 
 						{/* Buy Button */}
 						{cx.integrations.shopify != null && selectedVariant != null && (
-							<button onClick={handleBuyNow} disabled={isBuying} className="btn btn-primary w-full">
-								{isBuying ? (
-									<span className="loading loading-spinner loading-sm"></span>
-								) : (
-									'Buy Now'
-								)}
+							<button
+								onClick={handleBuyNow}
+								disabled={isBuying}
+								className="w-full py-2"
+								style={button.styles}
+							>
+								<div style={button.text.styles}>
+									{isBuying ? (
+										<span className="loading loading-spinner loading-sm"></span>
+									) : (
+										'Buy Now'
+									)}
+								</div>
 							</button>
 						)}
 					</div>
@@ -195,12 +207,13 @@ export const ProductModal: React.FC<TProductModalProps> = (props) => {
 
 interface TProductModalProps {
 	product: NonNullable<TResolvedProductNode['content']['product']>;
+	node: TResolvedProductNode;
 	cx: TResolvedNodeProps<TResolvedProductNode>['cx'];
 	modalRef: React.RefObject<HTMLDialogElement>;
 }
 
 export function useProductModal(config: TUseProductModalConfig) {
-	const { product, cx, onShow, onHide } = config;
+	const { product, node, cx, onShow, onHide } = config;
 	const modalRef = React.useRef<HTMLDialogElement>(null);
 
 	const showModal = React.useCallback(() => {
@@ -218,8 +231,8 @@ export function useProductModal(config: TUseProductModalConfig) {
 	}, [onHide]);
 
 	const ModalComponent = React.useCallback(() => {
-		return <ProductModal product={product} cx={cx} modalRef={modalRef} />;
-	}, [product, cx]);
+		return <ProductModal product={product} node={node} cx={cx} modalRef={modalRef} />;
+	}, [product, node, cx]);
 
 	return React.useMemo(
 		() => ({
@@ -234,6 +247,7 @@ export function useProductModal(config: TUseProductModalConfig) {
 
 interface TUseProductModalConfig {
 	product: NonNullable<TResolvedProductNode['content']['product']>;
+	node: TResolvedProductNode;
 	cx: TResolvedNodeProps<TResolvedProductNode>['cx'];
 	onShow?: () => void;
 	onHide?: () => void;

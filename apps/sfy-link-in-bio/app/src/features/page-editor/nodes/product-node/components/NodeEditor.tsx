@@ -120,16 +120,17 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 				hidden: false,
 				draft: false,
 				archived: false
-			},
-			selectionIds:
-				content.product != null
-					? [
-							{
-								id: content.product.id,
-								variants: content.product.variants.map((variant) => ({ id: variant.id }))
-							}
-						]
-					: undefined
+			}
+			// TODO: add back in once its possible to do a new selection without the previous selection being hidden (and thus unselectable)
+			// selectionIds:
+			// 	content.product != null
+			// 		? [
+			// 				{
+			// 					id: content.product.id,
+			// 					variants: content.product.variants.map((variant) => ({ id: variant.id }))
+			// 				}
+			// 			]
+			// 		: undefined
 		});
 		const product = results?.[0];
 		if (!isProduct(product)) {

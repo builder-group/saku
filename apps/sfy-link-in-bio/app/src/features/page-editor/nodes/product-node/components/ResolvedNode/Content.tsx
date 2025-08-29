@@ -7,14 +7,12 @@ import { TResolvedProductNode } from '../../types';
 import { useProductModal } from './ProductModal';
 
 export const Content: React.FC<TContentProps> = (props) => {
-	const {
-		product,
-		node: { autoLayout, appearance, fill, stroke, shadow, text },
-		cx
-	} = props;
+	const { product, node, cx } = props;
+	const { autoLayout, appearance, fill, stroke, shadow, text, button } = node;
 
 	const { Modal: ProductModal, showModal: showProductModal } = useProductModal({
 		product,
+		node,
 		cx
 	});
 
@@ -214,14 +212,12 @@ export const Content: React.FC<TContentProps> = (props) => {
 								handleBuyNow();
 							}}
 							disabled={isBuying}
-							className="btn btn-sm ml-3 text-white"
-							style={{
-								backgroundColor: '#000',
-								borderColor: '#000',
-								borderRadius: appearance.styles.borderRadius
-							}}
+							className="ml-3 px-3 py-1.5"
+							style={button.styles}
 						>
-							{isBuying ? <span className="loading loading-spinner loading-xs"></span> : 'Buy'}
+							<div style={button.text.styles}>
+								{isBuying ? <span className="loading loading-spinner loading-xs"></span> : 'Buy'}
+							</div>
 						</button>
 					)}
 				</div>

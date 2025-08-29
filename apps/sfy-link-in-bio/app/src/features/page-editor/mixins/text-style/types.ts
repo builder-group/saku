@@ -16,7 +16,8 @@ export type TResolvedTextStyleMixin = TBaseMixin<
 		styles: {
 			color?: string;
 			WebkitTextStroke?: string;
-			extShadow?: string;
-		};
+			textShadow?: string;
+		} & TResolvedAppearanceStyleMixin['value']['styles'] &
+			TResolvedTypographyStyleMixin['value']['styles'];
 	}
 >;

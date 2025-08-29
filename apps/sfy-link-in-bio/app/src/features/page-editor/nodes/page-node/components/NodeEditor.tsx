@@ -222,8 +222,8 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TFlatPageNode>> 
 				/>
 			</AccordionSection>
 
-			{/* Card Section */}
-			<AccordionSection title="Card" collapsibleClassName="px-0 space-y-3">
+			{/* Layer Section */}
+			<AccordionSection title="Layer" collapsibleClassName="px-0 space-y-3">
 				{defaultAutoLayoutToken && (
 					<AutoLayoutStyleMixinEditor
 						state={defaultAutoLayoutToken}
