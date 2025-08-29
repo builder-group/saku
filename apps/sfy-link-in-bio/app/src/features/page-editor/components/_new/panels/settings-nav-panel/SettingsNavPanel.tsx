@@ -46,7 +46,7 @@ export const SettingsNavPanel: React.FC<TSettingsNavPanelProps> = (props) => {
 	);
 
 	// =========================================================================
-	// Actions
+	// Events
 	// =========================================================================
 
 	const handleSectionSelect = React.useCallback(
