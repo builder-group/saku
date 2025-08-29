@@ -276,8 +276,9 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 		},
 		tokens: [
 			{
-				type: 'autoLayout',
+				type: 'mixin',
 				key: 'default',
+				mixinKey: 'autoLayout',
 				value: {
 					horizontalPadding: 12,
 					verticalPadding: 12,
@@ -286,8 +287,9 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 				}
 			},
 			{
-				type: 'appearance',
+				type: 'mixin',
 				key: 'default',
+				mixinKey: 'appearance',
 				value: {
 					visible: true,
 					opacity: 1,
@@ -295,8 +297,9 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 				}
 			},
 			{
-				type: 'fill',
+				type: 'mixin',
 				key: 'default',
+				mixinKey: 'fill',
 				value: {
 					paint: {
 						type: 'solid',
@@ -306,13 +309,15 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 				}
 			},
 			{
-				type: 'stroke',
+				type: 'mixin',
 				key: 'default',
+				mixinKey: 'stroke',
 				value: null
 			},
 			{
-				type: 'shadow',
+				type: 'mixin',
 				key: 'default',
+				mixinKey: 'shadow',
 				value: {
 					color: { r: 0, g: 0, b: 0, a: 0.1 },
 					offsetX: 0,
@@ -322,8 +327,9 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 				}
 			},
 			{
-				type: 'text',
+				type: 'mixin',
 				key: 'default',
+				mixinKey: 'text',
 				value: {
 					appearance: {
 						visible: true,
@@ -353,8 +359,9 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 				}
 			},
 			{
-				type: 'button',
-				key: 'default',
+				type: 'mixin',
+				key: 'primary',
+				mixinKey: 'button',
 				value: {
 					appearance: {
 						visible: true,
