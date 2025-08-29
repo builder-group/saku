@@ -64,6 +64,12 @@ export const PageEditor: React.FC<TPageEditorProps> = (props) => {
 				ref={panelGroupRef}
 				direction="horizontal"
 				className="flex-1"
+				// TODO: Fix panel storage explosion issue
+				// Currently react-resizable-panels stores each unique panel combination separately
+				// This means nav-panel has different sizes in different views when it should be consistent
+				// Example: nav-panel is 3.52% in settings but might be different in layers view
+				// We need custom storage that groups panels logically (nav=nav, settings-content=all settings panels)
+				autoSaveId={'page-editor'}
 				// onLayout={(sizes) => {
 				// 	logger.info('recompute layout', { sizes });
 				// }}
