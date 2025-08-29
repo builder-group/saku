@@ -1,3 +1,4 @@
+export * from './_new';
 export * from './CanvasPanel';
 export * from './Editor';
 export * from './EditorContent';
