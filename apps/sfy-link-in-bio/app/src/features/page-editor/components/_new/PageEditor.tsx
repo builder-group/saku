@@ -3,7 +3,6 @@ import React from 'react';
 import { ImperativePanelGroupHandle } from 'react-resizable-panels';
 import { useBoundingRectObserver } from '@/hooks';
 import { ResizablePanelGroup } from '../../../../components';
-import { logger } from '../../../../environment';
 import { TPageEditor } from '../../lib';
 import { EditorView } from './views';
 
@@ -11,6 +10,26 @@ export const PageEditor: React.FC<TPageEditorProps> = (props) => {
 	const { editor } = props;
 
 	const panelGroupRef = React.useRef<ImperativePanelGroupHandle>(null);
+
+	// =========================================================================
+	// Events
+	// =========================================================================
+
+	const forcePanelGroupLayoutRecompute = React.useCallback(() => {
+		const layout = panelGroupRef.current?.getLayout();
+		if (!layout?.length) {
+			return;
+		}
+
+		const modifiedLayout = [...layout];
+		// @ts-expect-error -- we check the length above
+		modifiedLayout[0] += 1e-6;
+		panelGroupRef.current?.setLayout(modifiedLayout);
+	}, []);
+
+	// =========================================================================
+	// Effects
+	// =========================================================================
 
 	useBoundingRectObserver(
 		editor.editorRef,
@@ -26,23 +45,15 @@ export const PageEditor: React.FC<TPageEditorProps> = (props) => {
 		editor.loadFonts();
 	}, [editor]);
 
-	// Force computation after settings section changed by alternating layout modifications
-	// This ensures the panel group recalculates its layout and triggers any necessary re-renders
-	useListener(
-		editor.activeSettingsSection,
-		() => {
-			const layout = panelGroupRef.current?.getLayout();
-			if (!layout?.length) {
-				return;
-			}
+	// Force panel layout recompute when views change to prevent flex-1 layout issues
+	// Without this, dynamic views wouldn't recalculate their layout and stay at flex-1
+	// TODO: Find better solution without layout manipulation
+	useListener(editor.activeSettingsSection, forcePanelGroupLayoutRecompute);
+	useListener(editor.activeView, forcePanelGroupLayoutRecompute);
 
-			const modifiedLayout = [...layout];
-			// @ts-expect-error -- we check the length above
-			modifiedLayout[0] += 1e-6;
-			panelGroupRef.current?.setLayout(modifiedLayout);
-		},
-		[]
-	);
+	// =========================================================================
+	// UI
+	// =========================================================================
 
 	return (
 		<div ref={editor.editorRef} className="flex h-screen w-full flex-col">
@@ -50,9 +61,9 @@ export const PageEditor: React.FC<TPageEditorProps> = (props) => {
 				ref={panelGroupRef}
 				direction="horizontal"
 				className="flex-1"
-				onLayout={(sizes) => {
-					logger.info('recompute layout', { sizes });
-				}}
+				// onLayout={(sizes) => {
+				// 	logger.info('recompute layout', { sizes });
+				// }}
 			>
 				<EditorView editor={editor} />
 			</ResizablePanelGroup>
