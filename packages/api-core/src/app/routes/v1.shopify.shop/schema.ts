@@ -117,6 +117,9 @@ export const GetShopOverviewRoute = createRoute({
 						z.object({
 							id: z.string().openapi({ example: 'gid://shopify/Product/123456789' }),
 							title: z.string().openapi({ example: 'Premium T-Shirt' }),
+							descriptionHtml: z
+								.string()
+								.openapi({ example: '<p>Premium T-Shirt description</p>' }),
 							images: z
 								.array(
 									z.object({

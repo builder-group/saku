@@ -636,6 +636,8 @@ export interface components {
                 id: string;
                 /** @example Premium T-Shirt */
                 title: string;
+                /** @example <p>Premium T-Shirt description</p> */
+                descriptionHtml: string;
                 /** @description Product images */
                 images: {
                     /**

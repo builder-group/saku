@@ -58,7 +58,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 	let productNode: TProductNode | null = null;
 	if (featuredProduct != null) {
 		const productImageHashIds: string[] = [];
-		for (const image of featuredProduct.images ?? []) {
+		for (const image of featuredProduct.images) {
 			const productImageHashId = createId('asset');
 			assets.push({
 				id: productImageHashId,
@@ -81,15 +81,34 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 				product: {
 					id: featuredProduct.id,
 					title: featuredProduct.title,
+					description: { type: 'html', value: featuredProduct.descriptionHtml },
 					images: productImageHashIds,
-					options: featuredProduct.options ?? [],
-					variants:
-						featuredProduct.variants?.map((variant) => ({
+					options: featuredProduct.options,
+					variants: featuredProduct.variants.map((variant) => {
+						let variantImageHashId: TId<'asset'> | undefined;
+						if (variant.image != null) {
+							variantImageHashId = createId('asset');
+							assets.push({
+								id: variantImageHashId,
+								type: 'image',
+								hash: variantImageHashId,
+								contentType: 'image/png',
+								storage: {
+									type: 'url',
+									url: variant.image.url
+								},
+								altText: variant.image.altText ?? variant.title
+							});
+						}
+
+						return {
 							id: variant.id,
 							title: variant.title,
+							image: variantImageHashId,
 							price: variant.price,
-							selectedOptions: variant.selectedOptions ?? []
-						})) ?? []
+							selectedOptions: variant.selectedOptions
+						};
+					})
 				}
 			},
 			autoLayout: {
@@ -153,18 +172,18 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 		};
 	}
 
-	// Add welcome GIF to assets
-	const welcomeAssetHashId = createId('asset');
+	// Add excited GIF to assets
+	const excitedGifAssetHashId = createId('asset');
 	assets.push({
-		id: welcomeAssetHashId,
+		id: excitedGifAssetHashId,
 		type: 'image',
-		hash: welcomeAssetHashId,
+		hash: excitedGifAssetHashId,
 		contentType: 'image/gif',
 		storage: {
 			type: 'url',
-			url: 'https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExemloNXVzbmtyM3Fremh6b2ZvZXEzeWk4bjdreDYxNDNxamdtcjFhMSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/CjmvTCZf2U3p09Cn0h/giphy.gif'
+			url: 'https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExN3ZvamQ0NzU0cDVnbXJhMmdlbHlycTY0cXJmazJyajJ1am9ieGxyZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/5GoVLqeAOo6PK/giphy.gif'
 		},
-		altText: 'Welcome GIF'
+		altText: 'Excited GIF'
 	});
 
 	// Create social links array with shop link always first
@@ -319,7 +338,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					content: {
 						media: {
 							type: 'image',
-							hash: welcomeAssetHashId,
+							hash: excitedGifAssetHashId,
 							altText: 'Welcome GIF'
 						}
 					},
@@ -371,13 +390,21 @@ interface TBlankPresetConfig {
 	featuredProduct?: {
 		id: string;
 		title: string;
-		images?: { url: string; altText?: string }[];
-		options?: { name: string; values: string[] }[];
-		variants?: {
+		descriptionHtml: string;
+		images: {
+			url: string;
+			altText?: string;
+		}[];
+		options: { name: string; values: string[] }[];
+		variants: {
 			id: string;
 			title: string;
 			price: { amount: string; currencyCode: string };
-			selectedOptions?: { name: string; value: string }[];
+			image?: {
+				url: string;
+				altText?: string;
+			};
+			selectedOptions: { name: string; value: string }[];
 		}[];
 	};
 }
@@ -389,7 +416,7 @@ function getFontMetadata(fontFamily?: string): TFontMetadata {
 
 	// Try to match font family to available fonts
 	const matchedFont = Object.entries(fontMetadataMap).find(
-		([_, metadata]) => metadata.font.family.toLowerCase() === fontFamily.toLowerCase()
+		([, metadata]) => metadata.font.family.toLowerCase() === fontFamily.toLowerCase()
 	);
 
 	return matchedFont ? matchedFont[1] : fontMetadataMap.inter;
