@@ -1,24 +1,25 @@
 import {
 	fontMetadata,
-	inherit,
-	isInherited,
-	resolveReference,
-	TFlatNode,
-	TMergeMixins,
-	TRgba,
-	TTextAlign,
+	isTokenRef,
+	TMixinTokenSet,
+	TRef,
 	TTypographyStyleMixin,
-	TUnreference
+	TTypographyStyleToken
 } from '@repo/editor';
 import { Text } from '@shopify/polaris';
+import { TState } from 'feature-state';
 import React from 'react';
-import { MappedColorInput, MappedSelectInput, MappedTextInput } from '@/components';
-import { TNodeState, TPageEditor } from '../../lib';
+import { useMapState } from '@/hooks';
+import { TokenSelectInput, TokenTextInput } from '../../components';
+import { TPageEditor } from '../../lib';
 
-export const TypographyStyleMixinEditor = <GNode extends TFlatNode, GParentNode extends TFlatNode>(
-	props: TTypographyStyleMixinEditorProps<GNode, GParentNode>
+export const TypographyStyleMixinEditor = <
+	GValue extends Record<string, any>,
+	GTokenSet extends TMixinTokenSet
+>(
+	props: TTypographyStyleMixinEditorProps<GValue, GTokenSet>
 ) => {
-	const { nodeState, parentNodeState, editor } = props;
+	const { state, mapValue, tokenSet, mapToToken, disabledTokenLink = false, editor } = props;
 
 	const fontOptions = React.useMemo(() => {
 		return fontMetadata.map((font) => ({
@@ -26,6 +27,101 @@ export const TypographyStyleMixinEditor = <GNode extends TFlatNode, GParentNode 
 			value: font.font.family
 		}));
 	}, []);
+	const textAlignOptions = React.useMemo(() => {
+		return [
+			{ label: 'Start', value: 'start' },
+			{ label: 'Center', value: 'center' },
+			{ label: 'End', value: 'end' }
+		];
+	}, []);
+
+	const fontFamilyState = useMapState(state, {
+		map(baseValue): TRef<string> {
+			const typography = mapValue(baseValue);
+			if (isTokenRef(typography)) {
+				return typography;
+			}
+			if (isTokenRef(typography.font)) {
+				return typography.font;
+			}
+			return typography.font.family;
+		},
+		sync(baseState, mappedValue, notifyOptions) {
+			const typography = mapValue(baseState._v);
+			if (!isTokenRef(typography)) {
+				if (isTokenRef(mappedValue)) {
+					typography.font = mappedValue;
+					baseState._notify(notifyOptions);
+				} else {
+					const font = editor.registerFontFamily(mappedValue as string);
+					if (font != null) {
+						typography.font = font;
+						baseState._notify(notifyOptions);
+					}
+				}
+			}
+		}
+	});
+	const fontSizeState = useMapState(state, {
+		map(baseValue) {
+			const typography = mapValue(baseValue);
+			if (isTokenRef(typography)) {
+				return typography;
+			}
+			return typography.fontSize;
+		},
+		sync(baseState, mappedValue, notifyOptions) {
+			const typography = mapValue(baseState._v);
+			if (!isTokenRef(typography)) {
+				typography.fontSize = mappedValue;
+				baseState._notify(notifyOptions);
+			}
+		}
+	});
+	const textAlignHorizontalState = useMapState(state, {
+		map(baseValue) {
+			const typography = mapValue(baseValue);
+			if (isTokenRef(typography)) {
+				return typography;
+			}
+			return typography.textAlignHorizontal;
+		},
+		sync(baseState, mappedValue, notifyOptions) {
+			const typography = mapValue(baseState._v);
+			if (!isTokenRef(typography)) {
+				typography.textAlignHorizontal = mappedValue;
+				baseState._notify(notifyOptions);
+			}
+		}
+	});
+	// const textAlignVerticalState = useMapState(state, {
+	// 	map(baseValue) {
+	// 		const typography = mapValue(baseValue);
+	// 		if (isTokenRef(typography)) {
+	// 			return typography;
+	// 		}
+	// 		return typography.textAlignVertical;
+	// 	},
+	// 	sync(baseState, mappedValue, notifyOptions) {
+	// 		const typography = mapValue(baseState._v);
+	// 		if (!isTokenRef(typography)) {
+	// 			typography.textAlignVertical = mappedValue;
+	// 			baseState._notify(notifyOptions);
+	// 		}
+	// 	}
+	// });
+
+	// =========================================================================
+	// Events
+	// =========================================================================
+
+	const handleNavigateToToken = React.useCallback(() => {
+		editor.switchView('settings');
+	}, [editor]);
+
+	// =========================================================================
+	// UI
+	// =========================================================================
 
 	return (
 		<div className="space-y-3 px-4">
@@ -36,136 +132,66 @@ export const TypographyStyleMixinEditor = <GNode extends TFlatNode, GParentNode 
 			</div>
 			<div className="space-y-3">
 				<div className="grid grid-cols-2 gap-3">
-					<MappedSelectInput
+					<TokenSelectInput
 						label="Font Family"
 						options={fontOptions}
-						state={nodeState}
-						parentState={parentNodeState}
-						mapValue={(value) =>
-							isInherited(value.typography.font)
-								? { type: 'inherit' }
-								: resolveReference(value.typography.font)?.family
-						}
-						onValueChange={(value) => {
-							if (value != null) {
-								const font = editor.registerFontFamily(value);
-								if (font != null) {
-									nodeState._v.typography.font = font;
-									nodeState._notify();
-								}
-							}
-						}}
-						mapParentValue={(parent) => parent.childMixins?.typography?.font?.family}
-						onInheritChange={(shouldInherit, parentValue) => {
-							if (shouldInherit) {
-								nodeState._v.typography.font = inherit();
-								nodeState._notify();
-							} else {
-								const font = editor.registerFontFamily(parentValue as string);
-								if (font != null) {
-									nodeState._v.typography.font = font;
-									nodeState._notify();
-								}
-							}
-						}}
-						onNavigateToParent={() => {
-							editor.switchView('settings');
-						}}
+						state={fontFamilyState}
+						tokenSet={tokenSet}
+						mapToTokenValue={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.font?.family}
+						onNavigateToToken={handleNavigateToToken}
+						disabledTokenLink={disabledTokenLink}
 					/>
-
-					<MappedSelectInput
-						label="Text Align"
-						options={[
-							{ label: 'Left', value: 'left' },
-							{ label: 'Center', value: 'center' },
-							{ label: 'Right', value: 'right' }
-						]}
-						state={nodeState}
-						parentState={parentNodeState}
-						mapValue={(value) => value.typography.textAlign}
-						onValueChange={(value) => {
-							if (value != null) {
-								nodeState._v.typography.textAlign = value;
-								nodeState._notify();
-							}
-						}}
-						mapParentValue={(parent) => parent.childMixins?.typography?.textAlign}
-						onInheritChange={(shouldInherit, parentValue) => {
-							nodeState._v.typography.textAlign = shouldInherit
-								? inherit()
-								: (parentValue as TTextAlign);
-							nodeState._notify();
-						}}
-						onNavigateToParent={() => {
-							editor.switchView('settings');
-						}}
-					/>
-				</div>
-
-				<div className="grid grid-cols-2 gap-3">
-					<MappedTextInput
+					<TokenTextInput
 						label="Font Size"
 						type="number"
 						autoComplete="off"
 						min={0}
 						max={96}
-						step={4}
-						state={nodeState}
-						parentState={parentNodeState}
-						mapValue={(value) => value.typography.fontSize}
-						onValueChange={(value) => {
-							if (value != null) {
-								nodeState._v.typography.fontSize = value;
-								nodeState._notify();
-							}
-						}}
-						mapParentValue={(parent) => parent.childMixins?.typography?.fontSize}
-						onInheritChange={(shouldInherit, parentValue) => {
-							nodeState._v.typography.fontSize = shouldInherit
-								? inherit()
-								: (parentValue as number);
-							nodeState._notify();
-						}}
-						onNavigateToParent={() => {
-							editor.switchView('settings');
-						}}
+						step={2}
+						state={fontSizeState}
+						tokenSet={tokenSet}
+						mapToTokenValue={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.fontSize}
+						onNavigateToToken={handleNavigateToToken}
+						disabledTokenLink={disabledTokenLink}
 					/>
-
-					<MappedColorInput
-						label="Text Color"
-						autoComplete="off"
-						state={nodeState}
-						parentState={parentNodeState}
-						mapValue={(value) => value.typography.textColor}
-						onValueChange={(value) => {
-							if (value != null) {
-								nodeState._v.typography.textColor = value;
-								nodeState._notify();
-							}
-						}}
-						mapParentValue={(parent) => parent.childMixins?.typography?.textColor}
-						onInheritChange={(shouldInherit, parentValue) => {
-							nodeState._v.typography.textColor = shouldInherit
-								? inherit()
-								: (parentValue as TRgba);
-							nodeState._notify();
-						}}
-						onNavigateToParent={() => {
-							editor.switchView('settings');
-						}}
+				</div>
+				<div className="grid grid-cols-2 gap-3">
+					<TokenSelectInput
+						label="Horizontal Text Align"
+						options={textAlignOptions}
+						state={textAlignHorizontalState}
+						tokenSet={tokenSet}
+						mapToTokenValue={(tokenRef, tokenSet) =>
+							mapToToken?.(tokenRef, tokenSet)?.textAlignHorizontal
+						}
+						onNavigateToToken={handleNavigateToToken}
+						disabledTokenLink={disabledTokenLink}
 					/>
+					{/* <TokenSelectInput
+						label="Vertical Text Align"
+						options={textAlignOptions}
+						state={textAlignVerticalState}
+						tokenSet={tokenSet}
+						mapToTokenValue={(tokenRef, tokenSet) =>
+							mapToToken?.(tokenRef, tokenSet)?.textAlignVertical
+						}
+						onNavigateToToken={handleNavigateToToken}
+						disabledTokenLink={disabledTokenLink}
+					/> */}
 				</div>
 			</div>
 		</div>
 	);
 };
 
-interface TTypographyStyleMixinEditorProps<GNode extends TFlatNode, GParentNode extends TFlatNode> {
-	nodeState: TNodeState<GNode & TMergeMixins<[TTypographyStyleMixin]>>;
-	parentNodeState?: TNodeState<
-		GParentNode & {
-			childMixins: TMergeMixins<[TUnreference<TTypographyStyleMixin>]>;
-		}
-	>;
+interface TTypographyStyleMixinEditorProps<
+	GValue extends Record<string, any>,
+	GTokenSet extends TMixinTokenSet
+> {
+	state: TState<GValue, any>;
+	mapValue: (value: GValue) => TTypographyStyleMixin['value'];
+	tokenSet?: TState<GTokenSet, any>;
+	mapToToken?: (ref: string, tokenSet?: GTokenSet) => TTypographyStyleToken['value'] | undefined;
+	disabledTokenLink?: boolean;
 	editor: TPageEditor;
 }

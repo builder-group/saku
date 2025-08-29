@@ -1,20 +1,18 @@
-import { TFont, TLetterSpacing, TLineHeight, TMixin, TTextAlign } from '@repo/editor';
-import { TResolvedColor } from '../../lib';
+import { TBaseMixin, TFont, TLetterSpacing, TLineHeight, TTextAlign } from '@repo/editor';
 
-export type TResolvedTypographyStyleMixin = TMixin<
+export type TResolvedTypographyStyleMixin = TBaseMixin<
 	'typography',
 	{
 		font: TFont;
 		fontSize: number;
-		textColor: TResolvedColor;
-		textAlign: TTextAlign;
+		textAlignHorizontal: TTextAlign;
+		textAlignVertical: TTextAlign;
 		lineHeight: TLineHeight;
 		letterSpacing: TLetterSpacing;
 		// Computed CSS styles
 		styles: {
 			fontFamily: React.CSSProperties['fontFamily'];
 			fontSize: React.CSSProperties['fontSize'];
-			color: React.CSSProperties['color'];
 			textAlign: React.CSSProperties['textAlign'];
 			lineHeight: React.CSSProperties['lineHeight'];
 			letterSpacing: React.CSSProperties['letterSpacing'];

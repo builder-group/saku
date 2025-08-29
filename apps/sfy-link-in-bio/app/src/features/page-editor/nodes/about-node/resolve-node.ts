@@ -4,11 +4,11 @@ import { AppError } from '@/lib';
 import { resolveAsset, TNodeResolveContext } from '../../lib';
 import {
 	resolveAppearanceStyleMixin,
+	resolveAutoLayoutStyleMixin,
 	resolveFillStyleMixin,
-	resolveLayoutStyleMixin,
 	resolveShadowStyleMixin,
 	resolveStrokeStyleMixin,
-	resolveTypographyStyleMixin
+	resolveTextStyleMixin
 } from '../../mixins';
 import { TResolvedAboutNode } from './types';
 
@@ -16,46 +16,57 @@ export function resolveAboutNode(
 	node: TAboutNode,
 	cx: TNodeResolveContext
 ): TResult<TResolvedAboutNode, AppError> {
-	const { content, layout, appearance, typography, fill, stroke, shadow, ...rest } = node;
+	const { content, autoLayout, appearance, fill, stroke, shadow, text, ...rest } = node;
 
-	const [isResolvedLayoutOk, resolvedLayoutErr, resolvedLayout] = resolveLayoutStyleMixin(
-		layout,
-		cx.childMixins?.layout
-	);
-	if (!isResolvedLayoutOk) {
-		return Err(resolvedLayoutErr.wrapWith('#ERR_RESOLVE_LAYOUT_STYLE'));
+	const [isResolvedAutoLayoutOk, resolvedAutoLayoutErr, resolvedAutoLayout] =
+		resolveAutoLayoutStyleMixin(autoLayout, {
+			node: cx,
+			tokenSet: cx.site.getTokenSet('autoLayout'),
+			mapToToken: (ref, tokenSet) => tokenSet?.[ref]?.value
+		});
+	if (!isResolvedAutoLayoutOk) {
+		return Err(resolvedAutoLayoutErr.wrapWith('#ERR_RESOLVE_AUTO_LAYOUT_STYLE'));
 	}
 	const [isResolvedAppearanceOk, resolvedAppearanceErr, resolvedAppearance] =
-		resolveAppearanceStyleMixin(appearance, cx.childMixins?.appearance);
+		resolveAppearanceStyleMixin(appearance, {
+			node: cx,
+			tokenSet: cx.site.getTokenSet('appearance'),
+			mapToToken: (ref, tokenSet) => tokenSet?.[ref]?.value
+		});
 	if (!isResolvedAppearanceOk) {
 		return Err(resolvedAppearanceErr.wrapWith('#ERR_RESOLVE_APPEARANCE_STYLE'));
 	}
-	const [isResolvedTypographyOk, resolvedTypographyErr, resolvedTypography] =
-		resolveTypographyStyleMixin(typography, cx.childMixins?.typography);
-	if (!isResolvedTypographyOk) {
-		return Err(resolvedTypographyErr.wrapWith('#ERR_RESOLVE_TYPOGRAPHY_STYLE'));
-	}
-	const [isResolvedFillOk, resolvedFillErr, resolvedFill] = resolveFillStyleMixin(
-		fill,
-		cx.site,
-		cx.childMixins?.fill
-	);
+	const [isResolvedFillOk, resolvedFillErr, resolvedFill] = resolveFillStyleMixin(fill, {
+		node: cx,
+		tokenSet: cx.site.getTokenSet('fill'),
+		mapToToken: (ref, tokenSet) => tokenSet?.[ref]?.value
+	});
 	if (!isResolvedFillOk) {
 		return Err(resolvedFillErr.wrapWith('#ERR_RESOLVE_FILL_STYLE'));
 	}
-	const [isResolvedStrokeOk, resolvedStrokeErr, resolvedStroke] = resolveStrokeStyleMixin(
-		stroke,
-		cx.childMixins?.stroke
-	);
+	const [isResolvedStrokeOk, resolvedStrokeErr, resolvedStroke] = resolveStrokeStyleMixin(stroke, {
+		node: cx,
+		tokenSet: cx.site.getTokenSet('stroke'),
+		mapToToken: (ref, tokenSet) => tokenSet?.[ref]?.value
+	});
 	if (!isResolvedStrokeOk) {
 		return Err(resolvedStrokeErr.wrapWith('#ERR_RESOLVE_STROKE_STYLE'));
 	}
-	const [isResolvedShadowOk, resolvedShadowErr, resolvedShadow] = resolveShadowStyleMixin(
-		shadow,
-		cx.childMixins?.shadow
-	);
+	const [isResolvedShadowOk, resolvedShadowErr, resolvedShadow] = resolveShadowStyleMixin(shadow, {
+		node: cx,
+		tokenSet: cx.site.getTokenSet('shadow'),
+		mapToToken: (ref, tokenSet) => tokenSet?.[ref]?.value
+	});
 	if (!isResolvedShadowOk) {
 		return Err(resolvedShadowErr.wrapWith('#ERR_RESOLVE_SHADOW_STYLE'));
+	}
+	const [isResolvedTextOk, resolvedTextErr, resolvedText] = resolveTextStyleMixin(text, {
+		node: cx,
+		tokenSet: cx.site.getTokenSet('text'),
+		mapToToken: (ref, tokenSet) => tokenSet?.[ref]?.value
+	});
+	if (!isResolvedTextOk) {
+		return Err(resolvedTextErr.wrapWith('#ERR_RESOLVE_TEXT_STYLE'));
 	}
 
 	return Ok({
@@ -65,11 +76,11 @@ export function resolveAboutNode(
 			profilePicture:
 				content.profilePicture != null ? resolveAsset(content.profilePicture, cx.site) : undefined
 		},
-		layout: resolvedLayout,
+		autoLayout: resolvedAutoLayout,
 		appearance: resolvedAppearance,
-		typography: resolvedTypography,
 		fill: resolvedFill,
 		stroke: resolvedStroke,
-		shadow: resolvedShadow
+		shadow: resolvedShadow,
+		text: resolvedText
 	});
 }

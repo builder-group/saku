@@ -1,7 +1,7 @@
-import { TMixin } from '@repo/editor';
+import { TBaseMixin } from '@repo/editor';
 import { TResolvedColor } from '../../lib';
 
-export type TResolvedStrokeStyleMixin = TMixin<
+export type TResolvedStrokeStyleMixin = TBaseMixin<
 	'stroke',
 	{
 		width: number;

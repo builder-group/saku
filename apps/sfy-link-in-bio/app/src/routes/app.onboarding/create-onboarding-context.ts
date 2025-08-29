@@ -218,44 +218,45 @@ export function createOnboardingContext(
 		},
 
 		async complete() {
-			await sleep(3000);
-			crisp?.showMessageAsOperator('text', '🎉 Your bio page is live!');
-			crisp?.showMessageAsOperator('picker', {
-				id: 'post_onboarding_goals',
-				text: 'What would you like to do next?',
-				choices: [
-					{
-						value: 'customize',
-						label: 'Customize design',
-						selected: false
-					},
-					{
-						value: 'products',
-						label: 'Add products',
-						selected: false
-					},
-					{
-						value: 'analytics',
-						label: 'Track performance',
-						selected: false
-					},
-					{
-						value: 'other',
-						label: 'Something else',
-						selected: false
-					}
-				]
-			});
+			setTimeout(() => {
+				crisp?.showMessageAsOperator('text', '🎉 Your bio page is live!');
+				crisp?.showMessageAsOperator('picker', {
+					id: 'post_onboarding_goals',
+					text: 'What would you like to do next?',
+					choices: [
+						{
+							value: 'customize',
+							label: 'Customize design',
+							selected: false
+						},
+						{
+							value: 'products',
+							label: 'Add products',
+							selected: false
+						},
+						{
+							value: 'analytics',
+							label: 'Track performance',
+							selected: false
+						},
+						{
+							value: 'other',
+							label: 'Something else',
+							selected: false
+						}
+					]
+				});
 
-			// Listen for picker interaction and show simple follow-up
-			const unsubscribe = crisp?.onMessageReceived(async (data) => {
-				if (data.origin !== 'update' || data.type !== 'picker') {
-					return;
-				}
-				await sleep(1000);
-				crisp?.showMessageAsOperator('text', 'Got it! Reach out anytime if you need help.');
-				unsubscribe?.();
-			});
+				// Listen for picker interaction and show simple follow-up
+				const unsubscribe = crisp?.onMessageReceived(async (data) => {
+					if (data.origin !== 'update' || data.type !== 'picker') {
+						return;
+					}
+					await sleep(1000);
+					crisp?.showMessageAsOperator('text', 'Got it! Reach out anytime if you need help.');
+					unsubscribe?.();
+				});
+			}, 3000);
 		},
 
 		goBack() {

@@ -1,28 +1,30 @@
-import { TBaseNode, TIdMixin, TMixin } from '@repo/editor';
+import { TBaseMixin, TBaseNode, TContent, TIdMixin } from '@repo/editor';
 import { TResolvedAsset } from '../../lib';
 import {
 	TResolvedAppearanceStyleMixin,
+	TResolvedAutoLayoutStyleMixin,
+	TResolvedButtonStyleMixin,
 	TResolvedFillStyleMixin,
-	TResolvedLayoutStyleMixin,
 	TResolvedShadowStyleMixin,
 	TResolvedStrokeStyleMixin,
-	TResolvedTypographyStyleMixin
+	TResolvedTextStyleMixin
 } from '../../mixins';
 
 export type TResolvedProductNode = TBaseNode<
 	TResolvedProductNodeMixin,
 	[
 		TIdMixin,
-		TResolvedLayoutStyleMixin,
+		TResolvedAutoLayoutStyleMixin,
 		TResolvedAppearanceStyleMixin,
-		TResolvedTypographyStyleMixin,
 		TResolvedFillStyleMixin,
 		TResolvedStrokeStyleMixin,
-		TResolvedShadowStyleMixin
+		TResolvedShadowStyleMixin,
+		TResolvedTextStyleMixin,
+		TResolvedButtonStyleMixin
 	]
 >;
 
-export type TResolvedProductNodeMixin = TMixin<
+export type TResolvedProductNodeMixin = TBaseMixin<
 	'node',
 	{
 		type: 'product';
@@ -35,6 +37,7 @@ export type TResolvedProductNodeMixin = TMixin<
 export interface TResolvedProduct {
 	id: string;
 	title: string;
+	description?: TContent;
 	images: TResolvedAsset[];
 	options: { name: string; values: string[] }[];
 	variants: {

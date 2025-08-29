@@ -1,25 +1,27 @@
-import { resolveReference, TAsset, TAssetHash, TFillStyleMixin, TPaint } from '@repo/editor';
-import { Ok, TResult } from 'tuple-result';
+import { TFillStyleMixin, TFillStyleToken, TMixinTokenSet, TPaint } from '@repo/editor';
+import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
-import { resolvePaint } from '../../lib';
+import { resolvePaint, resolveTokenRef, TMixinResolveContext } from '../../lib';
 import { TResolvedFillStyleMixin } from './types';
 
-export function resolveFillStyleMixin(
+export function resolveFillStyleMixin<GTokenSet extends TMixinTokenSet>(
 	fill: TFillStyleMixin['value'],
-	context: {
-		getAsset: (hash: TAssetHash) => TAsset | null;
-	},
-	parentMixin?: {
-		paint: TPaint;
-		opacity: number;
-	} | null
+	cx: TMixinResolveContext<TFillStyleToken['value'], GTokenSet>
 ): TResult<TResolvedFillStyleMixin['value'], AppError> {
-	const resolvedFill = resolveReference(fill, parentMixin);
+	const [isResolvedFillOk, resolvedFillErr, resolvedFill] = resolveTokenRef(
+		fill,
+		cx.tokenSet,
+		cx.mapToToken
+	);
+	if (!isResolvedFillOk) {
+		return Err(resolvedFillErr.wrapWith('#ERR_RESOLVE_FILL'));
+	}
+
 	if (resolvedFill == null) {
 		return Ok(null);
 	}
 
-	const resolvedPaint = resolvePaint(resolvedFill.paint, context);
+	const resolvedPaint = resolvePaint(resolvedFill.paint, cx.node.site);
 
 	const styles: {
 		backgroundColor?: string;
@@ -49,3 +51,8 @@ export function resolveFillStyleMixin(
 		styles
 	});
 }
+
+export type TResolveFillStyleMixinParentMixin = {
+	paint: TPaint;
+	opacity: number;
+} | null;

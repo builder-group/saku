@@ -6,13 +6,13 @@ import {
 	getFontHash,
 	getFontMetadataByFamily,
 	hexToRgba,
-	inherit,
 	TAboutNode,
 	TAsset,
 	TAssetHash,
 	TFontAsset,
 	TImageAsset,
 	TLinkNode,
+	tokenRef,
 	TPaint,
 	TSite,
 	TSocialLink,
@@ -71,25 +71,41 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 				profilePicture: profilePictureHash,
 				socialLinks: transformSocialLinks(page.socialMediaAccounts ?? [])
 			},
-			layout: {
-				padding: inherit()
+			autoLayout: {
+				horizontalPadding: tokenRef(),
+				verticalPadding: tokenRef(),
+				verticalGap: tokenRef()
 			},
 			appearance: {
-				borderRadius: 0,
-				opacity: inherit(),
-				visible: inherit()
-			},
-			typography: {
-				font: inherit(),
-				fontSize: 16,
-				textColor: cssRgbaToRgba(page?.themeSettings?.fontColor) ?? hexToRgba('#000000'),
-				textAlign: inherit(),
-				lineHeight: inherit(),
-				letterSpacing: inherit()
+				visible: true,
+				opacity: tokenRef(),
+				borderRadius: 0
 			},
 			fill: null,
 			stroke: null,
-			shadow: null
+			shadow: null,
+			text: {
+				appearance: {
+					visible: true,
+					opacity: tokenRef()
+				},
+				typography: {
+					font: tokenRef(),
+					fontSize: 16,
+					textAlignHorizontal: 'center',
+					textAlignVertical: 'center',
+					lineHeight: tokenRef(),
+					letterSpacing: tokenRef()
+				},
+				fill: {
+					paint: {
+						type: 'solid',
+						color: cssRgbaToRgba(page?.themeSettings?.fontColor) ?? hexToRgba('#000000')
+					}
+				},
+				stroke: null,
+				shadow: null
+			}
 		} as TAboutNode;
 		children.push(aboutNode);
 	}
@@ -111,13 +127,16 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 
 				// Determine variant based on __typename
 				let variant: TLinkNode['content']['variant'];
-				let layout: TLinkNode['layout'] = {
-					padding: inherit()
+				let autoLayout: TLinkNode['autoLayout'] = {
+					horizontalPadding: tokenRef(),
+					verticalPadding: tokenRef(),
+					horizontalGap: tokenRef(),
+					verticalGap: tokenRef()
 				};
 				let appearance: TLinkNode['appearance'] = {
-					borderRadius: inherit(),
-					opacity: inherit(),
-					visible: true
+					visible: true,
+					opacity: tokenRef(),
+					borderRadius: tokenRef()
 				};
 
 				switch (link.__typename) {
@@ -128,13 +147,16 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 								type: 'youtube-video-embed' as const,
 								videoId
 							};
-							layout = {
-								padding: 0
+							autoLayout = {
+								horizontalPadding: 0,
+								verticalPadding: 0,
+								horizontalGap: 0,
+								verticalGap: 0
 							};
 							appearance = {
-								borderRadius: Math.min(borderRadius, 40),
-								opacity: inherit(),
-								visible: true
+								visible: true,
+								opacity: tokenRef(),
+								borderRadius: Math.min(borderRadius, 40)
 							};
 						} else {
 							variant = {
@@ -161,19 +183,28 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 						url: link.url,
 						variant
 					},
-					layout,
+					autoLayout,
 					appearance,
-					typography: {
-						font: inherit(),
-						fontSize: inherit(),
-						textColor: inherit(),
-						textAlign: inherit(),
-						lineHeight: inherit(),
-						letterSpacing: inherit()
-					},
-					fill: inherit(),
-					stroke: inherit(),
-					shadow: inherit()
+					fill: tokenRef(),
+					stroke: tokenRef(),
+					shadow: tokenRef(),
+					text: {
+						appearance: {
+							visible: true,
+							opacity: tokenRef()
+						},
+						typography: {
+							font: tokenRef(),
+							fontSize: tokenRef(),
+							textAlignHorizontal: tokenRef(),
+							textAlignVertical: tokenRef(),
+							lineHeight: tokenRef(),
+							letterSpacing: tokenRef()
+						},
+						fill: tokenRef(),
+						stroke: tokenRef(),
+						shadow: tokenRef()
+					}
 				} satisfies TLinkNode);
 			} else {
 				// Create text node for links without URLs
@@ -183,25 +214,35 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 					content: {
 						text: link.title
 					},
-					layout: {
-						padding: inherit()
+					autoLayout: {
+						horizontalPadding: tokenRef(),
+						verticalPadding: tokenRef()
 					},
 					appearance: {
-						borderRadius: inherit(),
-						opacity: inherit(),
-						visible: true
+						visible: true,
+						opacity: tokenRef(),
+						borderRadius: tokenRef()
 					},
-					typography: {
-						font: inherit(),
-						fontSize: inherit(),
-						textColor: inherit(),
-						textAlign: inherit(),
-						lineHeight: inherit(),
-						letterSpacing: inherit()
-					},
-					fill: inherit(),
-					stroke: inherit(),
-					shadow: inherit()
+					fill: tokenRef(),
+					stroke: tokenRef(),
+					shadow: tokenRef(),
+					text: {
+						appearance: {
+							visible: true,
+							opacity: tokenRef()
+						},
+						typography: {
+							font: tokenRef(),
+							fontSize: tokenRef(),
+							textAlignHorizontal: tokenRef(),
+							textAlignVertical: tokenRef(),
+							lineHeight: tokenRef(),
+							letterSpacing: tokenRef()
+						},
+						fill: tokenRef(),
+						stroke: tokenRef(),
+						shadow: tokenRef()
+					}
 				} satisfies TTextNode);
 			}
 		}
@@ -218,56 +259,154 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 				metadata: {}
 			},
 			children,
-			layout: {
-				spacing: 16
+			autoLayout: {
+				horizontalPadding: 24,
+				verticalPadding: 48,
+				verticalGap: 24
 			},
 			appearance: {
-				borderRadius: 0,
+				visible: true,
 				opacity: 1,
-				visible: true
+				borderRadius: 0
 			},
 			fill: {
 				paint: backgroundPaint,
 				opacity: 1
+			}
+		},
+		tokens: [
+			{
+				type: 'mixin',
+				key: 'default',
+				mixinKey: 'autoLayout',
+				value: {
+					horizontalPadding: 12,
+					verticalPadding: 12,
+					horizontalGap: 12,
+					verticalGap: 12
+				}
 			},
-			childMixins: {
-				layout: {
-					padding: 8
-				},
-				appearance: {
-					borderRadius,
+			{
+				type: 'mixin',
+				key: 'default',
+				mixinKey: 'appearance',
+				value: {
+					visible: true,
 					opacity: 1,
-					visible: true
-				},
-				typography: {
-					font: {
-						family: primaryFont,
-						weight: 400,
-						style: 'normal'
-					},
-					fontSize: 14,
-					textColor: cssRgbaToRgba(page?.themeSettings?.linkCardFontColor) ?? hexToRgba('#000000'),
-					textAlign: 'center',
-					lineHeight: { type: 'auto' },
-					letterSpacing: 0
-				},
-				fill: {
+					borderRadius
+				}
+			},
+			{
+				type: 'mixin',
+				key: 'default',
+				mixinKey: 'fill',
+				value: {
 					paint: {
 						type: 'solid',
 						color: cssRgbaToRgba(page?.themeSettings?.linkCardColor) ?? hexToRgba('#FFFFFF')
 					},
 					opacity: 1
-				},
-				stroke: null,
-				shadow: {
+				}
+			},
+			{
+				type: 'mixin',
+				key: 'default',
+				mixinKey: 'stroke',
+				value: null
+			},
+			{
+				type: 'mixin',
+				key: 'default',
+				mixinKey: 'shadow',
+				value: {
 					color: { r: 0, g: 0, b: 0, a: 0.1 },
 					offsetX: 0,
 					offsetY: 2,
 					blur: 4,
 					spread: 0
 				}
+			},
+			{
+				type: 'mixin',
+				key: 'default',
+				mixinKey: 'text',
+				value: {
+					appearance: {
+						visible: true,
+						opacity: 1
+					},
+					typography: {
+						font: {
+							family: primaryFont,
+							weight: 400,
+							style: 'normal'
+						},
+						fontSize: 16,
+						textAlignHorizontal: 'center',
+						textAlignVertical: 'center',
+						lineHeight: { type: 'auto' },
+						letterSpacing: { type: 'auto' }
+					},
+					fill: {
+						paint: {
+							type: 'solid',
+							color: cssRgbaToRgba(page?.themeSettings?.linkCardFontColor) ?? hexToRgba('#000000')
+						},
+						opacity: 1
+					},
+					stroke: null,
+					shadow: null
+				}
+			},
+			{
+				type: 'mixin',
+				key: 'primary',
+				mixinKey: 'button',
+				value: {
+					appearance: {
+						visible: true,
+						opacity: 1,
+						borderRadius: borderRadius * 0.5
+					},
+					fill: {
+						paint: {
+							type: 'solid',
+							color: cssRgbaToRgba(page?.themeSettings?.linkCardFontColor) ?? hexToRgba('#FFFFFF')
+						},
+						opacity: 1
+					},
+					stroke: null,
+					shadow: null,
+					text: {
+						appearance: {
+							visible: true,
+							opacity: 1
+						},
+						typography: {
+							font: {
+								family: primaryFont,
+								weight: 400,
+								style: 'normal'
+							},
+							fontSize: 16,
+							textAlignHorizontal: 'center',
+							textAlignVertical: 'center',
+							lineHeight: { type: 'auto' },
+							letterSpacing: { type: 'auto' }
+						},
+						fill: {
+							paint: {
+								type: 'solid',
+								color: cssRgbaToRgba(page?.themeSettings?.linkCardColor) ?? hexToRgba('#000000')
+							},
+							opacity: 1
+						},
+						stroke: null,
+						shadow: null
+					}
+				}
 			}
-		}
+		]
 	};
 }
 

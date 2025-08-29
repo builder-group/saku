@@ -6,8 +6,8 @@ import { AccordionSection, ImageUploadField, TImageUploadEvent } from '@/compone
 import { TNodeEditorComponentProps } from '../../../lib';
 import {
 	AppearanceStyleMixinEditor,
+	AutoLayoutStyleMixinEditor,
 	FillStyleMixinEditor,
-	LayoutStyleMixinEditor,
 	ShadowStyleMixinEditor,
 	StrokeStyleMixinEditor
 } from '../../../mixins';
@@ -15,8 +15,6 @@ import {
 export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = (props) => {
 	const { nodeState, editor } = props;
 	const { content } = useFeatureState(nodeState);
-
-	const parentNodeState = React.useMemo(() => editor.getRootNode(), [editor]);
 
 	const [mediaImageError, setImageError] = React.useState<string | null>(null);
 	const [selectedMediaType, setSelectedMediaType] = React.useState<TMediaType>(() => {
@@ -118,37 +116,63 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 				</div>
 			</AccordionSection>
 
-			{/* Style Section */}
-			<AccordionSection title="Style" defaultOpen={true} collapsibleClassName="px-0 space-y-3">
-				<LayoutStyleMixinEditor
-					nodeState={nodeState}
-					parentNodeState={parentNodeState}
-					editor={editor}
-				/>
-				<div className="h-px bg-gray-200" />
-				<AppearanceStyleMixinEditor
-					nodeState={nodeState}
-					parentNodeState={parentNodeState}
-					editor={editor}
-				/>
-				<div className="h-px bg-gray-200" />
-				<FillStyleMixinEditor
-					nodeState={nodeState}
-					parentNodeState={parentNodeState}
-					editor={editor}
-				/>
-				<div className="h-px bg-gray-200" />
-				<StrokeStyleMixinEditor
-					nodeState={nodeState}
-					parentNodeState={parentNodeState}
-					editor={editor}
-				/>
-				<div className="h-px bg-gray-200" />
-				<ShadowStyleMixinEditor
-					nodeState={nodeState}
-					parentNodeState={parentNodeState}
-					editor={editor}
-				/>
+			{/* Design Section */}
+			<AccordionSection title="Design" collapsibleClassName="p-0 border-b-0">
+				<AccordionSection
+					title="Card"
+					collapsibleClassName="px-0 space-y-3"
+					size="tight"
+					defaultOpen={true}
+				>
+					<AutoLayoutStyleMixinEditor
+						state={nodeState}
+						mapValue={(value) => value.autoLayout}
+						tokenSet={editor.mixinTokenMap.autoLayout}
+						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
+						editor={editor}
+					/>
+					<div className="h-px bg-neutral-200" />
+					<AppearanceStyleMixinEditor
+						state={nodeState}
+						mapValue={(value) => value.appearance}
+						tokenSet={editor.mixinTokenMap.appearance}
+						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
+						editor={editor}
+					/>
+					<div className="h-px bg-neutral-200" />
+					<FillStyleMixinEditor
+						state={nodeState}
+						mapValue={(value) => value.fill}
+						applyValue={(state, value) => {
+							state._v.fill = value;
+						}}
+						tokenSet={editor.mixinTokenMap.fill}
+						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
+						editor={editor}
+					/>
+					<div className="h-px bg-neutral-200" />
+					<StrokeStyleMixinEditor
+						state={nodeState}
+						mapValue={(value) => value.stroke}
+						applyValue={(state, value) => {
+							state._v.stroke = value;
+						}}
+						tokenSet={editor.mixinTokenMap.stroke}
+						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
+						editor={editor}
+					/>
+					<div className="h-px bg-neutral-200" />
+					<ShadowStyleMixinEditor
+						state={nodeState}
+						mapValue={(value) => value.shadow}
+						applyValue={(state, value) => {
+							state._v.shadow = value;
+						}}
+						tokenSet={editor.mixinTokenMap.shadow}
+						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
+						editor={editor}
+					/>
+				</AccordionSection>
 			</AccordionSection>
 		</>
 	);

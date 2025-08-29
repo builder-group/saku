@@ -72,7 +72,7 @@ export const IntegrationsContent: React.FC<TIntegrationsContentProps> = (props) 
 										<s-badge tone="success">Connected</s-badge>
 									</div>
 								</div>
-								{index < shopifyIntegrations.length - 1 && <div className="h-px bg-gray-200" />}
+								{index < shopifyIntegrations.length - 1 && <div className="h-px bg-neutral-200" />}
 							</React.Fragment>
 						))}
 					</AccordionSection>

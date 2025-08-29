@@ -3,7 +3,7 @@ import { Err, Ok, type TResult } from 'tuple-result';
 import { AppError } from '@/lib';
 import { resolvePageNode } from '../../../nodes';
 import { TResolvedSite } from '../../../types';
-import { TSiteResolveContext } from '../types';
+import { TSiteResolveContext } from '../site-resolve-context';
 
 export function resolveSite(cx: TSiteResolveContext): TResult<TResolvedSite, AppError> {
 	const { rootId, nodes, assets: _, ...rest } = cx.getSite();

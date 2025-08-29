@@ -1,52 +1,63 @@
 import { deepCopy } from '@blgc/utils';
 import {
-	inherit,
-	isInherited,
-	resolveReference,
+	isTokenRef,
 	TFillStyleMixin,
-	TFlatNode,
-	TMergeMixins,
-	TUnreference
+	TFillStyleToken,
+	TMixinTokenSet,
+	tokenRef
 } from '@repo/editor';
 import { Button, Text } from '@shopify/polaris';
-import { useCombinedCompute, useCompute } from 'feature-react';
-import { createState } from 'feature-state';
+import { useCompute } from 'feature-react';
+import { TState } from 'feature-state';
 import React from 'react';
-import {
-	Badge,
-	InheritanceActionOverlay,
-	LinkIcon,
-	LinkOffIcon,
-	MappedPaintInput,
-	MinusIcon,
-	PlusIcon
-} from '@/components';
-import { useMapReferenceToProperty } from '../../hooks';
-import { TNodeState, TPageEditor } from '../../lib';
+import { Badge, LinkIcon, LinkOffIcon, MinusIcon, PlusIcon } from '@/components';
+import { useMapState } from '@/hooks';
+import { TokenActionOverlay, TokenPaintInput, TTokenPaintInputPaintType } from '../../components';
+import { TPageEditor } from '../../lib';
 
-export const FillStyleMixinEditor = <GNode extends TFlatNode, GParentNode extends TFlatNode>(
-	props: TFillStyleMixinEditorProps<GNode, GParentNode>
+export const FillStyleMixinEditor = <
+	GValue extends Record<string, any> | null,
+	GTokenSet extends TMixinTokenSet
+>(
+	props: TFillStyleMixinEditorProps<GValue, GTokenSet>
 ) => {
-	const { nodeState, parentNodeState, editor } = props;
+	const {
+		state,
+		mapValue,
+		applyValue,
+		tokenSet,
+		mapToToken,
+		disabledTokenLink = false,
+		editor,
+		allowedPaintTypes
+	} = props;
 
-	const resolvedFill = useCombinedCompute(
-		[nodeState, parentNodeState ?? createState(undefined)],
-		([{ value: nodeValue }, { value: parentValue }]) => {
-			return resolveReference(nodeValue.fill, parentValue?.childMixins?.fill);
-		}
+	const isLinked = useCompute(state, ({ value }) => isTokenRef(mapValue(value)), [mapValue]);
+	const isSet = useCompute(
+		state,
+		({ value }) => {
+			const fill = mapValue(value);
+			if (isTokenRef(fill)) {
+				return mapToToken?.(fill.key, tokenSet?._v) != null;
+			}
+			return fill != null;
+		},
+		[mapValue]
 	);
 
-	const isInheritedFill = useCompute(nodeState, ({ value }) => {
-		return isInherited(value.fill);
-	});
-
-	const paintState = useMapReferenceToProperty(nodeState, {
-		topLevelReference: (value) => value.fill,
-		propertyReference: (value) => value?.paint,
-		updateProperty: (value) => {
-			if (nodeState._v.fill != null && !isInherited(nodeState._v.fill)) {
-				nodeState._v.fill.paint = value;
-				nodeState._notify();
+	const paintState = useMapState(state, {
+		map(baseValue) {
+			const fill = mapValue(baseValue);
+			if (isTokenRef(fill)) {
+				return fill;
+			}
+			return fill?.paint;
+		},
+		sync(baseState, mappedValue, notifyOptions) {
+			const fill = mapValue(baseState._v);
+			if (fill != null && !isTokenRef(fill) && mappedValue != null && !isTokenRef(mappedValue)) {
+				fill.paint = mappedValue;
+				baseState._notify(notifyOptions);
 			}
 		}
 	});
@@ -56,28 +67,42 @@ export const FillStyleMixinEditor = <GNode extends TFlatNode, GParentNode extend
 	// =========================================================================
 
 	const handleAddFill = React.useCallback(() => {
-		const parentFill = parentNodeState?._v.childMixins?.fill;
-		nodeState._v.fill = parentFill ?? {
-			paint: {
-				type: 'solid',
-				color: { r: 255, g: 255, b: 255, a: 1 }
-			},
-			opacity: 1
-		};
-		nodeState._notify();
-	}, [nodeState, parentNodeState]);
+		const tokenValue = mapToToken?.('default', tokenSet?._v);
+		applyValue(
+			state,
+			tokenValue ?? {
+				paint: {
+					type: 'solid',
+					color: { r: 255, g: 255, b: 255, a: 1 }
+				},
+				opacity: 1
+			}
+		);
+		state._notify();
+	}, [mapToToken, tokenSet, applyValue, state]);
 
 	const handleRemoveFill = React.useCallback(() => {
-		nodeState._v.fill = null;
-		nodeState._notify();
-	}, [nodeState]);
+		applyValue(state, null);
+		state._notify();
+	}, [applyValue, state]);
 
-	const handleToggleInheritance = React.useCallback(() => {
-		nodeState._v.fill = isInheritedFill
-			? (deepCopy(parentNodeState?._v.childMixins?.fill) ?? null)
-			: inherit();
-		nodeState._notify();
-	}, [isInheritedFill, parentNodeState, nodeState]);
+	const handleToggleTokenLink = React.useCallback(() => {
+		if (isLinked) {
+			const fill = mapValue(state._v);
+			const tokenValue = isTokenRef(fill) ? mapToToken?.(fill.key, tokenSet?._v) : undefined;
+			if (tokenValue !== undefined) {
+				applyValue(state, deepCopy(tokenValue));
+				state._notify();
+			}
+		} else {
+			applyValue(state, tokenRef('default'));
+			state._notify();
+		}
+	}, [isLinked, mapValue, state, mapToToken, tokenSet, applyValue]);
+
+	const handleNavigateToToken = React.useCallback(() => {
+		editor.switchView('settings');
+	}, [editor]);
 
 	// =========================================================================
 	// UI
@@ -88,14 +113,14 @@ export const FillStyleMixinEditor = <GNode extends TFlatNode, GParentNode extend
 			<div className="flex items-center justify-between">
 				<div className="flex items-center gap-2">
 					{/* Mixin-level inheritance button */}
-					{parentNodeState != null && (
+					{!disabledTokenLink && (
 						<button
 							type="button"
-							onClick={handleToggleInheritance}
+							onClick={handleToggleTokenLink}
 							className="flex cursor-pointer items-center justify-center opacity-60 transition-opacity hover:opacity-100"
-							title={isInheritedFill ? 'Unlink from parent' : 'Link to parent'}
+							title={isLinked ? 'Unlink' : 'Link'}
 						>
-							{isInheritedFill ? (
+							{isLinked ? (
 								<LinkOffIcon className="h-3.5 w-3.5" />
 							) : (
 								<LinkIcon className="h-3.5 w-3.5" />
@@ -107,13 +132,13 @@ export const FillStyleMixinEditor = <GNode extends TFlatNode, GParentNode extend
 						<Text as="span" variant="headingXs" tone="subdued">
 							Fill
 						</Text>
-						{isInheritedFill && (
+						{isLinked && (
 							<Badge className="group relative hover:w-32">
-								Inherited
-								<InheritanceActionOverlay
+								Linked
+								<TokenActionOverlay
 									variant={'full-overlay'}
-									onUnlink={handleToggleInheritance}
-									onNavigateToParent={() => editor.switchView('settings')}
+									onUnlink={handleToggleTokenLink}
+									onNavigateToToken={handleNavigateToToken}
 								/>
 							</Badge>
 						)}
@@ -121,46 +146,43 @@ export const FillStyleMixinEditor = <GNode extends TFlatNode, GParentNode extend
 				</div>
 
 				{/* Add/Remove fill buttons */}
-				{resolvedFill != null ? (
+				{isSet ? (
 					<Button icon={MinusIcon} onClick={handleRemoveFill} variant="plain" size="micro" />
 				) : (
 					<Button icon={PlusIcon} onClick={handleAddFill} variant="plain" size="micro" />
 				)}
 			</div>
 
-			{resolvedFill != null && (
-				<div>
-					<MappedPaintInput
-						label="Paint"
-						autoComplete="off"
-						state={paintState}
-						parentState={parentNodeState}
-						mapValue={(value) => value}
-						onValueChange={(value) => {
-							paintState.set(value);
-						}}
-						mapParentValue={(parent) => parent.childMixins?.fill?.paint}
-						onInheritChange={() => {
-							handleToggleInheritance();
-						}}
-						onNavigateToParent={() => {
-							editor.switchView('settings');
-						}}
-						disableFieldInheritance
-						editor={editor}
-					/>
-				</div>
+			{isSet && (
+				<TokenPaintInput
+					label="Paint"
+					state={paintState}
+					tokenSet={tokenSet}
+					mapToTokenValue={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.paint}
+					onLinkChange={() => {
+						handleToggleTokenLink();
+						return { preventDefault: true };
+					}}
+					onNavigateToToken={handleNavigateToToken}
+					disabledTokenLink={disabledTokenLink}
+					editor={editor}
+					allowedPaintTypes={allowedPaintTypes}
+				/>
 			)}
 		</div>
 	);
 };
 
-interface TFillStyleMixinEditorProps<GNode extends TFlatNode, GParentNode extends TFlatNode> {
-	nodeState: TNodeState<GNode & TMergeMixins<[TFillStyleMixin]>>;
-	parentNodeState?: TNodeState<
-		GParentNode & {
-			childMixins: TMergeMixins<[TUnreference<TFillStyleMixin>]>;
-		}
-	>;
+interface TFillStyleMixinEditorProps<
+	GValue extends Record<string, any> | null,
+	GTokenSet extends TMixinTokenSet
+> {
+	state: TState<GValue, any>;
+	mapValue: (value: GValue) => TFillStyleMixin['value'];
+	applyValue: (state: TState<GValue, any>, value: TFillStyleMixin['value']) => void;
+	tokenSet?: TState<GTokenSet, any>;
+	mapToToken?: (ref: string, tokenSet?: GTokenSet) => TFillStyleToken['value'] | undefined;
+	disabledTokenLink?: boolean;
 	editor: TPageEditor;
+	allowedPaintTypes?: TTokenPaintInputPaintType[];
 }

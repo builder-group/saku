@@ -1,12 +1,12 @@
-import { TBaseNode, TIdMixin, TMixin } from '@repo/editor';
+import { TBaseMixin, TBaseNode, TIdMixin } from '@repo/editor';
 import { TResolvedAsset } from '../../lib';
 import {
 	TResolvedAppearanceStyleMixin,
+	TResolvedAutoLayoutStyleMixin,
 	TResolvedFillStyleMixin,
-	TResolvedLayoutStyleMixin,
 	TResolvedShadowStyleMixin,
 	TResolvedStrokeStyleMixin,
-	TResolvedTypographyStyleMixin
+	TResolvedTextStyleMixin
 } from '../../mixins';
 
 export type TResolvedLinkNode<GVariant extends TResolvedLinkVariant = TResolvedLinkVariant> =
@@ -14,17 +14,17 @@ export type TResolvedLinkNode<GVariant extends TResolvedLinkVariant = TResolvedL
 		TResolvedLinkNodeMixin<GVariant>,
 		[
 			TIdMixin,
-			TResolvedLayoutStyleMixin,
+			TResolvedAutoLayoutStyleMixin,
 			TResolvedAppearanceStyleMixin,
-			TResolvedTypographyStyleMixin,
 			TResolvedFillStyleMixin,
 			TResolvedStrokeStyleMixin,
-			TResolvedShadowStyleMixin
+			TResolvedShadowStyleMixin,
+			TResolvedTextStyleMixin
 		]
 	>;
 
 export type TResolvedLinkNodeMixin<GVariant extends TResolvedLinkVariant = TResolvedLinkVariant> =
-	TMixin<
+	TBaseMixin<
 		'node',
 		{
 			type: 'link';

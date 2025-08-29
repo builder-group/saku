@@ -1,10 +1,16 @@
 import React from 'react';
+import { logger } from '@/environment';
 import { getCurrencySymbol } from '../../../../environment';
 import { TResolvedNodeProps } from '../../../../lib';
 import { TResolvedProductNode } from '../../types';
 
 export const ProductModal: React.FC<TProductModalProps> = (props) => {
-	const { product, cx, modalRef } = props;
+	const {
+		product,
+		node: { button },
+		cx,
+		modalRef
+	} = props;
 
 	const [selectedImageIndex, setSelectedImageIndex] = React.useState(0);
 	const [isBuying, setIsBuying] = React.useState(false);
@@ -58,7 +64,9 @@ export const ProductModal: React.FC<TProductModalProps> = (props) => {
 			}
 		]);
 		if (result.isErr()) {
-			console.error('Failed to buy now:', result.error);
+			logger.warn('Failed to buy now:', {
+				error: result.error
+			});
 			setIsBuying(false);
 			return;
 		}
@@ -131,14 +139,17 @@ export const ProductModal: React.FC<TProductModalProps> = (props) => {
 						)}
 
 						{/* Description */}
-						<div className="prose prose-sm">
-							<p className="text-gray-700">
-								{/* Add description here when available in product type */}
-								{'description' in product && typeof product.description === 'string'
-									? product.description
-									: 'Product description would appear here.'}
-							</p>
-						</div>
+						{product.description?.type === 'html' && (
+							<div
+								className="prose prose-sm text-gray-700"
+								dangerouslySetInnerHTML={{ __html: product.description.value }}
+							/>
+						)}
+						{product.description?.type === 'text' && (
+							<div className="prose prose-sm text-gray-700">
+								<p className="text-gray-700">{product.description.value}</p>
+							</div>
+						)}
 
 						{/* Product Options */}
 						{product.options?.map((option) => {
@@ -169,12 +180,19 @@ export const ProductModal: React.FC<TProductModalProps> = (props) => {
 
 						{/* Buy Button */}
 						{cx.integrations.shopify != null && selectedVariant != null && (
-							<button onClick={handleBuyNow} disabled={isBuying} className="btn btn-primary w-full">
-								{isBuying ? (
-									<span className="loading loading-spinner loading-sm"></span>
-								) : (
-									'Buy Now'
-								)}
+							<button
+								onClick={handleBuyNow}
+								disabled={isBuying}
+								className="w-full py-2"
+								style={button.styles}
+							>
+								<div style={button.text.styles}>
+									{isBuying ? (
+										<span className="loading loading-spinner loading-sm"></span>
+									) : (
+										'Buy Now'
+									)}
+								</div>
 							</button>
 						)}
 					</div>
@@ -189,12 +207,13 @@ export const ProductModal: React.FC<TProductModalProps> = (props) => {
 
 interface TProductModalProps {
 	product: NonNullable<TResolvedProductNode['content']['product']>;
+	node: TResolvedProductNode;
 	cx: TResolvedNodeProps<TResolvedProductNode>['cx'];
 	modalRef: React.RefObject<HTMLDialogElement>;
 }
 
 export function useProductModal(config: TUseProductModalConfig) {
-	const { product, cx, onShow, onHide } = config;
+	const { product, node, cx, onShow, onHide } = config;
 	const modalRef = React.useRef<HTMLDialogElement>(null);
 
 	const showModal = React.useCallback(() => {
@@ -212,8 +231,8 @@ export function useProductModal(config: TUseProductModalConfig) {
 	}, [onHide]);
 
 	const ModalComponent = React.useCallback(() => {
-		return <ProductModal product={product} cx={cx} modalRef={modalRef} />;
-	}, [product, cx]);
+		return <ProductModal product={product} node={node} cx={cx} modalRef={modalRef} />;
+	}, [product, node, cx]);
 
 	return React.useMemo(
 		() => ({
@@ -228,6 +247,7 @@ export function useProductModal(config: TUseProductModalConfig) {
 
 interface TUseProductModalConfig {
 	product: NonNullable<TResolvedProductNode['content']['product']>;
+	node: TResolvedProductNode;
 	cx: TResolvedNodeProps<TResolvedProductNode>['cx'];
 	onShow?: () => void;
 	onHide?: () => void;

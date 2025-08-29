@@ -111,7 +111,7 @@ export const AssetsContent: React.FC<TAssetsContentProps> = (props) => {
 										<s-badge tone="info">Font</s-badge>
 									</div>
 								</div>
-								{index < fontAssets.length - 1 && <div className="h-px bg-gray-200" />}
+								{index < fontAssets.length - 1 && <div className="h-px bg-neutral-200" />}
 							</React.Fragment>
 						))}
 					</AccordionSection>
@@ -142,7 +142,7 @@ export const AssetsContent: React.FC<TAssetsContentProps> = (props) => {
 										<s-badge tone="success">Image</s-badge>
 									</div>
 								</div>
-								{index < imageAssets.length - 1 && <div className="h-px bg-gray-200" />}
+								{index < imageAssets.length - 1 && <div className="h-px bg-neutral-200" />}
 							</React.Fragment>
 						))}
 					</AccordionSection>

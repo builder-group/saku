@@ -42,9 +42,15 @@ export interface TFont {
 	style?: 'normal' | 'italic';
 }
 
-export type TTextAlign = 'left' | 'center' | 'right';
-export type TLineHeight = number | { type: 'auto' };
-export type TLetterSpacing = number;
+export type TTextAlign = 'start' | 'center' | 'end';
+export type TLineHeight =
+	| { type: 'percent'; value: number }
+	| { type: 'pixel'; value: number }
+	| { type: 'auto' };
+export type TLetterSpacing =
+	| { type: 'percent'; value: number }
+	| { type: 'pixel'; value: number }
+	| { type: 'auto' };
 
 // =========================================================================
 // Paint
@@ -104,6 +110,27 @@ export interface TImageMedia {
 	type: 'image';
 	hash: TAssetHash;
 	altText?: string;
+}
+
+// =========================================================================
+// Content
+// =========================================================================
+
+export type TContent = TTextContent | TMarkdownContent | THtmlContent;
+
+export interface TTextContent {
+	type: 'text';
+	value: string;
+}
+
+export interface TMarkdownContent {
+	type: 'markdown';
+	value: string;
+}
+
+export interface THtmlContent {
+	type: 'html';
+	value: string;
 }
 
 // =========================================================================

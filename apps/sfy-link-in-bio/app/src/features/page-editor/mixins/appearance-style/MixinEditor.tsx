@@ -1,29 +1,85 @@
 import {
-	inherit,
-	isInherited,
+	isTokenRef,
 	TAppearanceStyleMixin,
-	TFlatNode,
-	TMergeMixins,
-	TUnreference
+	TAppearanceStyleToken,
+	TMixinTokenSet
 } from '@repo/editor';
 import { Button, Text } from '@shopify/polaris';
+import { useCompute } from 'feature-react';
+import { TState } from 'feature-state';
 import React from 'react';
-import { HideIcon, MappedTextInput, ViewIcon } from '@/components';
-import { TNodeState, TPageEditor } from '../../lib';
+import { HideIcon, ViewIcon } from '@/components';
+import { useMapState } from '@/hooks';
+import { TokenTextInput } from '../../components';
+import { TPageEditor } from '../../lib';
 
-export const AppearanceStyleMixinEditor = <GNode extends TFlatNode, GParentNode extends TFlatNode>(
-	props: TAppearanceStyleMixinEditorProps<GNode, GParentNode>
+export const AppearanceStyleMixinEditor = <
+	GValue extends Record<string, any>,
+	GTokenSet extends TMixinTokenSet
+>(
+	props: TAppearanceStyleMixinEditorProps<GValue, GTokenSet>
 ) => {
-	const { nodeState, parentNodeState, editor } = props;
+	const {
+		state,
+		mapValue,
+		tokenSet,
+		mapToToken,
+		disabledTokenLink = false,
+		disabledVisibilityToggle = false,
+		editor
+	} = props;
+
+	const hasBorderRadius = useCompute(state, ({ value }) => mapValue(value).borderRadius != null, [
+		mapValue
+	]);
+	const isVisible = useCompute(state, ({ value }) => mapValue(value).visible, [mapValue]);
+
+	const opacityState = useMapState(state, {
+		map(baseValue) {
+			const appearance = mapValue(baseValue);
+			if (isTokenRef(appearance)) {
+				return appearance;
+			}
+			return appearance.opacity;
+		},
+		sync(baseState, mappedValue, notifyOptions) {
+			const appearance = mapValue(baseState._v);
+			if (!isTokenRef(appearance)) {
+				appearance.opacity = mappedValue;
+				baseState._notify(notifyOptions);
+			}
+		}
+	});
+	const borderRadiusState = useMapState(state, {
+		map(baseValue) {
+			const appearance = mapValue(baseValue);
+			if (isTokenRef(appearance)) {
+				return appearance;
+			}
+			return appearance.borderRadius;
+		},
+		sync(baseState, mappedValue, notifyOptions) {
+			const appearance = mapValue(baseState._v);
+			if (!isTokenRef(appearance)) {
+				appearance.borderRadius = mappedValue;
+				baseState._notify(notifyOptions);
+			}
+		}
+	});
 
 	// =========================================================================
 	// Events
 	// =========================================================================
 
 	const handleToggleVisibility = React.useCallback(() => {
-		nodeState._v.appearance.visible = !nodeState._v.appearance.visible;
-		nodeState._notify();
-	}, [nodeState]);
+		const appearance = mapValue(state._v);
+		appearance.visible = !appearance.visible;
+		state._notify();
+	}, [state, mapValue]);
+
+	const handleNavigateToToken = React.useCallback(() => {
+		editor.switchView('settings');
+	}, [editor]);
 
 	// =========================================================================
 	// UI
@@ -36,82 +92,58 @@ export const AppearanceStyleMixinEditor = <GNode extends TFlatNode, GParentNode 
 					Appearance
 				</Text>
 
-				{nodeState._v.appearance.visible ? (
-					<Button icon={ViewIcon} onClick={handleToggleVisibility} variant="plain" size="micro" />
-				) : (
-					<Button icon={HideIcon} onClick={handleToggleVisibility} variant="plain" size="micro" />
-				)}
+				{!disabledVisibilityToggle &&
+					(isVisible ? (
+						<Button icon={ViewIcon} onClick={handleToggleVisibility} variant="plain" size="micro" />
+					) : (
+						<Button icon={HideIcon} onClick={handleToggleVisibility} variant="plain" size="micro" />
+					))}
 			</div>
 			<div className="grid grid-cols-2 gap-3">
-				<MappedTextInput
+				<TokenTextInput
 					label="Opacity"
 					type="number"
 					autoComplete="off"
 					min={0}
 					max={100}
 					step={5}
-					state={nodeState}
-					parentState={parentNodeState}
-					mapValue={(value) =>
-						isInherited(value.appearance.opacity) ? inherit() : value.appearance.opacity * 100
-					}
-					onValueChange={(value) => {
-						if (value != null) {
-							nodeState._v.appearance.opacity = value / 100;
-							nodeState._notify();
-						}
-					}}
-					mapParentValue={(parent) => parent.childMixins.appearance.opacity * 100}
-					onInheritChange={(shouldInherit, parentValue) => {
-						nodeState._v.appearance.opacity = shouldInherit
-							? inherit()
-							: (parentValue as number) / 100;
-						nodeState._notify();
-					}}
-					onNavigateToParent={() => {
-						editor.switchView('settings');
-					}}
-					disableFieldInheritance={parentNodeState == null}
+					state={opacityState}
+					tokenSet={tokenSet}
+					mapToTokenValue={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.opacity}
+					mapToDisplay={(value) => Math.round(value * 100)}
+					mapToInternal={(displayValue) => displayValue / 100}
+					onNavigateToToken={handleNavigateToToken}
+					disabledTokenLink={disabledTokenLink}
 				/>
-				<MappedTextInput
-					label="Border Radius"
-					type="number"
-					autoComplete="off"
-					min={0}
-					max={999}
-					step={4}
-					state={nodeState}
-					parentState={parentNodeState}
-					mapValue={(value) => value.appearance.borderRadius}
-					onValueChange={(value) => {
-						if (value != null) {
-							nodeState._v.appearance.borderRadius = value;
-							nodeState._notify();
-						}
-					}}
-					mapParentValue={(parent) => parent.childMixins.appearance.borderRadius}
-					onInheritChange={(shouldInherit, parentValue) => {
-						nodeState._v.appearance.borderRadius = shouldInherit
-							? inherit()
-							: (parentValue as number);
-						nodeState._notify();
-					}}
-					onNavigateToParent={() => {
-						editor.switchView('settings');
-					}}
-					disableFieldInheritance={parentNodeState == null}
-				/>
+				{hasBorderRadius && (
+					<TokenTextInput
+						label="Border Radius"
+						type="number"
+						autoComplete="off"
+						min={0}
+						max={999}
+						step={4}
+						state={borderRadiusState}
+						tokenSet={tokenSet}
+						mapToTokenValue={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.borderRadius}
+						onNavigateToToken={handleNavigateToToken}
+						disabledTokenLink={disabledTokenLink}
+					/>
+				)}
 			</div>
 		</div>
 	);
 };
 
-interface TAppearanceStyleMixinEditorProps<GNode extends TFlatNode, GParentNode extends TFlatNode> {
-	nodeState: TNodeState<GNode & TMergeMixins<[TAppearanceStyleMixin]>>;
-	parentNodeState?: TNodeState<
-		GParentNode & {
-			childMixins: TMergeMixins<[TUnreference<TAppearanceStyleMixin>]>;
-		}
-	>;
+interface TAppearanceStyleMixinEditorProps<
+	GValue extends Record<string, any>,
+	GTokenSet extends TMixinTokenSet
+> {
+	state: TState<GValue, any>;
+	mapValue: (value: GValue) => TAppearanceStyleMixin['value'];
+	tokenSet?: TState<GTokenSet, any>;
+	mapToToken?: (ref: string, tokenSet?: GTokenSet) => TAppearanceStyleToken['value'] | undefined;
+	disabledTokenLink?: boolean;
+	disabledVisibilityToggle?: boolean;
 	editor: TPageEditor;
 }

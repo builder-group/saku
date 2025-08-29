@@ -1,20 +1,22 @@
-import { resolveReference, TRgba, TShadowStyleMixin } from '@repo/editor';
-import { Ok, TResult } from 'tuple-result';
+import { TMixinTokenSet, TRgba, TShadowStyleMixin, TShadowStyleToken } from '@repo/editor';
+import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
-import { resolveColor } from '../../lib';
+import { resolveColor, resolveTokenRef, TMixinResolveContext } from '../../lib';
 import { TResolvedShadowStyleMixin } from './types';
 
-export function resolveShadowStyleMixin(
+export function resolveShadowStyleMixin<GTokenSet extends TMixinTokenSet>(
 	shadow: TShadowStyleMixin['value'],
-	parentMixin?: {
-		color: TRgba;
-		offsetX: number;
-		offsetY: number;
-		blur: number;
-		spread: number;
-	} | null
+	cx: TMixinResolveContext<TShadowStyleToken['value'], GTokenSet>
 ): TResult<TResolvedShadowStyleMixin['value'], AppError> {
-	const resolvedShadow = resolveReference(shadow, parentMixin);
+	const [isResolvedShadowOk, resolvedShadowErr, resolvedShadow] = resolveTokenRef(
+		shadow,
+		cx.tokenSet,
+		cx.mapToToken
+	);
+	if (!isResolvedShadowOk) {
+		return Err(resolvedShadowErr.wrapWith('#ERR_RESOLVE_SHADOW'));
+	}
+
 	if (resolvedShadow == null) {
 		return Ok(null);
 	}
@@ -32,3 +34,11 @@ export function resolveShadowStyleMixin(
 		}
 	});
 }
+
+export type TResolveShadowStyleMixinParentMixin = {
+	color: TRgba;
+	offsetX: number;
+	offsetY: number;
+	blur: number;
+	spread: number;
+} | null;

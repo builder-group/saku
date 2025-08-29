@@ -1,4 +1,5 @@
 import { TFlatNode, TNode, TNodeId } from './node';
+import { TToken, TTokenMap } from './token';
 import { TAsset, TAssetHash, TIntegration, TIntegrationId } from './utils';
 
 export interface TSite {
@@ -6,6 +7,7 @@ export interface TSite {
 	root: TNode;
 	assets: TAsset[];
 	integrations: TIntegration[];
+	tokens: TToken[];
 }
 
 export interface TFlatSite {
@@ -14,4 +16,5 @@ export interface TFlatSite {
 	nodes: Record<TNodeId, TFlatNode>;
 	assets: Record<TAssetHash, TAsset>;
 	integrations: Record<TIntegrationId, TIntegration>;
+	tokens: TTokenMap;
 }

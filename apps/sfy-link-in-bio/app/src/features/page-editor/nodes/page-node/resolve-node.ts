@@ -1,16 +1,12 @@
-import { getBestContrastColor, resolveReference, TAboutNode, TFlatPageNode } from '@repo/editor';
-import { Err, Ok, TResult, unwrapOrNull } from 'tuple-result';
+import { TAboutNode, TFlatPageNode } from '@repo/editor';
+import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
-import { resolveAsset, resolveColor, TNodeResolveContext } from '../../lib';
+import { resolveAsset, TNodeResolveContext } from '../../lib';
 import {
 	resolveAppearanceStyleMixin,
+	resolveAutoLayoutStyleMixin,
 	resolveFillStyleMixin,
-	resolveFlatChildrenMixin,
-	resolveLayoutStyleMixin,
-	resolvePageLayoutStyleMixin,
-	resolveShadowStyleMixin,
-	resolveStrokeStyleMixin,
-	resolveTypographyStyleMixin
+	resolveFlatChildrenMixin
 } from '../../mixins';
 import { TResolvedPageNode } from './types';
 
@@ -37,24 +33,31 @@ export function resolvePageNodeWithoutChildren(
 	node: TFlatPageNode,
 	cx: TNodeResolveContext
 ): TResult<Omit<TResolvedPageNode, 'children'>, AppError> {
-	const { layout, appearance, fill, childMixins: childDefaults, ...rest } = node;
+	const { autoLayout, appearance, fill, ...rest } = node;
 
-	const unreferencedFill = resolveReference(fill);
-	const watermarkColor = resolveColor(
-		getBestContrastColor(
-			unreferencedFill?.paint.type === 'solid'
-				? unreferencedFill.paint.color
-				: { r: 255, g: 255, b: 255, a: 1 }
-		)
-	);
-
-	const resolvedPageLayout = resolvePageLayoutStyleMixin(layout);
+	const [isResolvedAutoLayoutOk, resolvedAutoLayoutErr, resolvedAutoLayout] =
+		resolveAutoLayoutStyleMixin(autoLayout, {
+			node: cx,
+			tokenSet: cx.site.getTokenSet('autoLayout'),
+			mapToToken: (ref, tokenSet) => tokenSet?.[ref]?.value
+		});
+	if (!isResolvedAutoLayoutOk) {
+		return Err(resolvedAutoLayoutErr.wrapWith('#ERR_RESOLVE_AUTO_LAYOUT_STYLE'));
+	}
 	const [isResolvedAppearanceOk, resolvedAppearanceErr, resolvedAppearance] =
-		resolveAppearanceStyleMixin(appearance);
+		resolveAppearanceStyleMixin(appearance, {
+			node: cx,
+			tokenSet: cx.site.getTokenSet('appearance'),
+			mapToToken: (ref, tokenSet) => tokenSet?.[ref]?.value
+		});
 	if (!isResolvedAppearanceOk) {
 		return Err(resolvedAppearanceErr.wrapWith('#ERR_RESOLVE_APPEARANCE_STYLE'));
 	}
-	const [isResolvedFillOk, resolvedFillErr, resolvedFill] = resolveFillStyleMixin(fill, cx.site);
+	const [isResolvedFillOk, resolvedFillErr, resolvedFill] = resolveFillStyleMixin(fill, {
+		node: cx,
+		tokenSet: cx.site.getTokenSet('fill'),
+		mapToToken: (ref, tokenSet) => tokenSet?.[ref]?.value
+	});
 	if (!isResolvedFillOk) {
 		return Err(resolvedFillErr.wrapWith('#ERR_RESOLVE_FILL_STYLE'));
 	}
@@ -64,18 +67,9 @@ export function resolvePageNodeWithoutChildren(
 		content: {
 			metadata: resolvePageMetadata(node, cx)
 		},
-		layout: resolvedPageLayout,
+		autoLayout: resolvedAutoLayout,
 		appearance: resolvedAppearance,
-		fill: resolvedFill,
-		childMixins: {
-			layout: unwrapOrNull(resolveLayoutStyleMixin(childDefaults.layout)) ?? undefined,
-			appearance: unwrapOrNull(resolveAppearanceStyleMixin(childDefaults.appearance)) ?? undefined,
-			typography: unwrapOrNull(resolveTypographyStyleMixin(childDefaults.typography)) ?? undefined,
-			fill: unwrapOrNull(resolveFillStyleMixin(childDefaults.fill, cx.site)) ?? undefined,
-			stroke: unwrapOrNull(resolveStrokeStyleMixin(childDefaults.stroke)) ?? undefined,
-			shadow: unwrapOrNull(resolveShadowStyleMixin(childDefaults.shadow)) ?? undefined
-		},
-		watermarkColor
+		fill: resolvedFill
 	});
 }
 

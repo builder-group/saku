@@ -1,19 +1,18 @@
 import React from 'react';
 import { ChevronDownIcon } from '@/components';
+import { logger } from '@/environment';
 import { getCurrencySymbol } from '../../../../environment';
 import { TResolvedNodeProps } from '../../../../lib';
 import { TResolvedProductNode } from '../../types';
 import { useProductModal } from './ProductModal';
 
 export const Content: React.FC<TContentProps> = (props) => {
-	const {
-		product,
-		node: { layout, appearance, typography, fill, stroke, shadow },
-		cx
-	} = props;
+	const { product, node, cx } = props;
+	const { autoLayout, appearance, fill, stroke, shadow, text, button } = node;
 
 	const { Modal: ProductModal, showModal: showProductModal } = useProductModal({
 		product,
+		node,
 		cx
 	});
 
@@ -84,7 +83,9 @@ export const Content: React.FC<TContentProps> = (props) => {
 			}
 		]);
 		if (result.isErr()) {
-			console.error('Failed to buy now:', result.error);
+			logger.warn('Failed to buy now:', {
+				error: result.error
+			});
 			setIsBuying(false);
 			return;
 		}
@@ -116,9 +117,8 @@ export const Content: React.FC<TContentProps> = (props) => {
 				onClick={handleProductClick}
 				className="relative flex w-full items-center gap-3 bg-white"
 				style={{
-					...layout.styles,
+					...autoLayout.styles,
 					...appearance.styles,
-					...typography.styles,
 					...fill?.styles,
 					...stroke?.styles,
 					...shadow?.styles
@@ -137,7 +137,9 @@ export const Content: React.FC<TContentProps> = (props) => {
 				{/* Product Details */}
 				<div className="flex min-w-0 flex-grow items-center justify-between">
 					<div className="flex min-w-0 flex-col justify-center gap-1">
-						<p className="truncate font-medium">{product.title}</p>
+						<p className="truncate font-medium" style={text.styles}>
+							{product.title}
+						</p>
 
 						{/* Price and Option Badges */}
 						<div className="flex flex-wrap items-center gap-2">
@@ -154,15 +156,8 @@ export const Content: React.FC<TContentProps> = (props) => {
 
 							{/* Option Dropdowns */}
 							{product.options?.map((option) => {
-								const currentValue = React.useMemo(
-									() => selectedOptions[option.name],
-									[selectedOptions, option.name]
-								);
-								const placeholderText = React.useMemo(
-									() =>
-										`Pick ${option.name.slice(0, 1).toUpperCase()}${option.name.toLowerCase().slice(1)}`,
-									[option.name]
-								);
+								const currentValue = selectedOptions[option.name];
+								const placeholderText = `Pick ${option.name.slice(0, 1).toUpperCase()}${option.name.toLowerCase().slice(1)}`;
 
 								return (
 									<div key={option.name} className="relative" onClick={(e) => e.stopPropagation()}>
@@ -217,14 +212,12 @@ export const Content: React.FC<TContentProps> = (props) => {
 								handleBuyNow();
 							}}
 							disabled={isBuying}
-							className="btn btn-sm ml-3 text-white"
-							style={{
-								backgroundColor: '#000',
-								borderColor: '#000',
-								borderRadius: appearance.styles.borderRadius
-							}}
+							className="ml-3 px-3 py-1.5"
+							style={button.styles}
 						>
-							{isBuying ? <span className="loading loading-spinner loading-xs"></span> : 'Buy'}
+							<div style={button.text.styles}>
+								{isBuying ? <span className="loading loading-spinner loading-xs"></span> : 'Buy'}
+							</div>
 						</button>
 					)}
 				</div>

@@ -41,8 +41,8 @@
 
 ```typescript
 // Each mixin has a unique key and value
-type TFillMixin = TMixin<'fill', { fills: TPaint[]; blendMode: string }>;
-type TLayoutMixin = TMixin<'layout', { padding: number; width: number | 'auto' }>;
+type TFillMixin = TBaseMixin<'fill', { fills: TPaint[]; blendMode: string }>;
+type TLayoutMixin = TBaseMixin<'layout', { padding: number; width: number | 'auto' }>;
 
 // Nodes compose mixins for their specific needs
 type TProductNode = TNode<'product', [
@@ -52,4 +52,75 @@ type TProductNode = TNode<'product', [
   TFillMixin,           // fill: { fills: TPaint[]; blendMode: string }
   TLayoutMixin          // layout: { padding: number; width: number | 'auto' }
 ]>;
+```
+
+### Why mixed approach (flat core + abstracted specialized) instead of all flat or all abstracted?
+
+- **Core properties are universal**: Every node needs `visible`, `fill`, `stroke`, `shadow` - no conflicts at this level
+- **Abstraction only when needed**: `TTextStyleMixin` and `TCtaStyleMixin` have specialized properties that could clash with core properties
+- **Prevents style conflicts**: Complex nodes need multiple styled elements (text, CTA) - flat mixins would create key collisions
+- **Semantic grouping**: UI elements like "text" and "CTA" are meaningful design concepts that belong together
+- **ECS component overhead**: With SoA ECS, flat approach would require separate components (`TextFill`, `CtaFill`, ..) since entities can't have the same component multiple times
+
+#### When to use flat vs abstracted mixins?
+
+```typescript
+// Simple node: Use flat core properties
+type TRectangleNode = TNode<'rectangle', [
+  TIdMixin,
+  TAppearanceStyleMixin,    // visible, opacity, borderRadius
+  TFillStyleMixin,          // fill paint and opacity
+  TStrokeStyleMixin,        // stroke width and color
+  TShadowStyleMixin         // shadow properties
+]>;
+
+// Complex node: Mix flat core + abstracted specialized
+type TProductNode = TNode<'product', [
+  TIdMixin,
+  // Core properties (flat - no conflicts)
+  TAppearanceStyleMixin,    // visible, opacity, borderRadius
+  TFillStyleMixin,          // fill paint and opacity
+  TStrokeStyleMixin,        // stroke width and color
+  TShadowStyleMixin,        // shadow properties
+  TAutoLayoutStyleMixin,        // basic padding/width
+  // Specialized properties (abstracted to avoid conflicts)
+  TTextStyleMixin,          // typography: { font, fontSize, textColor }
+  TCtaStyleMixin            // CTA-specific styling
+]>;
+
+// In ECS: Core properties become separate components, specialized become composite
+// components.Appearance[entityId] = { visible, opacity, borderRadius }
+// components.Text[entityId] = { typography: { font, fontSize, textColor } }
+```
+
+### What are tokens?
+
+- **Design tokens for mixins**: Named presets for mixins (e.g., `text`, `button`, `fill`, `appearance`) stored at the site level (e.g., `tokens.text.default`).
+- **How nodes use tokens**: A mixin is EITHER a token ref (mixin-level) OR a value object. In value mode, individual properties may use token refs for granular overrides. Its not possible to mix a mixin-level token ref with property values.
+- **Why tokens**: Global consistency, simple theming/templates, and no schema churn. Local overrides remain possible when needed.
+
+Example usage:
+
+```typescript
+// Site-level tokens (simplified)
+tokens: {
+  text: { default: { /* TTextStyle */ } },
+  button: { default: { /* TButtonStyle */ },ctaPrimary: { /* TButtonStyle */ }, ctaSecondary: { /* TButtonStyle */ } },
+  fill: { default: { /* TFillStyle */ } },
+  appearance: { default: { visible: true, opacity: 1 } }
+}
+
+// Node references
+// 1) Ref mode (mixin-level)
+text: { type: 'token', ref: 'default' }
+button: { type: 'token', ref: 'ctaPrimary' }
+fill: { type: 'token', ref: 'default' }
+
+// 2) Value mode with property-level token ref (no mixin-level ref here)
+text: {
+  typography: { fontSize: { type: 'token', ref: 'displayLg' } },
+  fill: { type: 'token', ref: 'default' },
+  stroke: null,
+  shadow: null
+}
 ```

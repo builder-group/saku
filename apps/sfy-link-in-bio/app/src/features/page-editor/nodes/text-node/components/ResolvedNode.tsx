@@ -9,13 +9,13 @@ export const ResolvedTextNode = React.forwardRef<
 	TResolvedNodeProps<TResolvedTextNode>
 >((props, ref) => {
 	const {
-		node: { content, layout, appearance, typography, fill, stroke, shadow },
+		node: { content, autoLayout, appearance, fill, stroke, shadow, text },
 		...divProps
 	} = props;
 
 	const mdxComponents = React.useMemo(
-		() => createMdxComponents(typography.fontSize),
-		[typography.fontSize]
+		() => createMdxComponents(text.typography.fontSize),
+		[text.typography.fontSize]
 	);
 
 	// Use evaluateSync for SSR because async (e.g. with React Query) wouldn't render on server
@@ -48,19 +48,14 @@ export const ResolvedTextNode = React.forwardRef<
 			<div
 				className="relative overflow-hidden"
 				style={{
-					...layout.styles,
+					...autoLayout.styles,
 					...appearance.styles,
 					...fill?.styles,
 					...stroke?.styles,
 					...shadow?.styles
 				}}
 			>
-				<div
-					className="flex min-h-12 w-full flex-col justify-start p-4"
-					style={{
-						...typography.styles
-					}}
-				>
+				<div className="flex min-h-12 w-full flex-col justify-start p-4" style={text.styles}>
 					{mdxContent}
 				</div>
 			</div>
@@ -123,7 +118,7 @@ const createMdxComponents = (baseFontSize: number): Record<string, React.Compone
 			{...props}
 		/>
 	),
-	hr: (props) => <hr className="my-6 border-gray-200 first:mt-0 last:mb-0" {...props} />,
+	hr: (props) => <hr className="my-6 border-neutral-200 first:mt-0 last:mb-0" {...props} />,
 	code: (props) => (
 		<code className="rounded bg-gray-100 px-1 py-0.5 font-mono text-sm" {...props} />
 	),

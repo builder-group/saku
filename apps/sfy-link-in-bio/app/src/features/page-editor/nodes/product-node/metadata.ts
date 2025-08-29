@@ -1,4 +1,4 @@
-import { inherit } from '@repo/editor';
+import { tokenRef } from '@repo/editor';
 import { LayoutSectionIcon } from '@/components';
 import { TNodeMetadata } from '../../lib';
 
@@ -9,24 +9,61 @@ export const productNodeMetadata: TNodeMetadata<'product'> = {
 	internal: false,
 	defaultData: {
 		content: {},
-		layout: {
-			padding: inherit()
+		autoLayout: {
+			horizontalPadding: tokenRef(),
+			verticalPadding: tokenRef(),
+			verticalGap: tokenRef()
 		},
 		appearance: {
-			borderRadius: inherit(),
-			opacity: inherit(),
-			visible: true
+			visible: true,
+			opacity: tokenRef(),
+			borderRadius: tokenRef()
 		},
-		typography: {
-			font: inherit(),
-			fontSize: inherit(),
-			textColor: inherit(),
-			textAlign: 'left',
-			lineHeight: inherit(),
-			letterSpacing: inherit()
+		fill: tokenRef(),
+		stroke: tokenRef(),
+		shadow: tokenRef(),
+		text: {
+			appearance: {
+				visible: true,
+				opacity: tokenRef()
+			},
+			typography: {
+				font: tokenRef(),
+				fontSize: tokenRef(),
+				textAlignHorizontal: 'start',
+				textAlignVertical: tokenRef(),
+				lineHeight: tokenRef(),
+				letterSpacing: tokenRef()
+			},
+			fill: tokenRef(),
+			stroke: tokenRef(),
+			shadow: tokenRef()
 		},
-		fill: inherit(),
-		stroke: inherit(),
-		shadow: inherit()
+		button: {
+			appearance: {
+				visible: true,
+				opacity: tokenRef()
+			},
+			fill: tokenRef(),
+			stroke: tokenRef(),
+			shadow: tokenRef(),
+			text: {
+				appearance: {
+					visible: true,
+					opacity: tokenRef()
+				},
+				typography: {
+					font: tokenRef(),
+					fontSize: tokenRef(),
+					textAlignHorizontal: tokenRef(),
+					textAlignVertical: tokenRef(),
+					lineHeight: tokenRef(),
+					letterSpacing: tokenRef()
+				},
+				fill: tokenRef(),
+				stroke: tokenRef(),
+				shadow: tokenRef()
+			}
+		}
 	}
 };
