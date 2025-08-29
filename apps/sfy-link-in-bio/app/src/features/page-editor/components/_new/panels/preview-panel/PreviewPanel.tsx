@@ -10,7 +10,7 @@ import { createPreviewPanelContext } from './create-preview-panel-context';
 import { PanelHeader } from './PanelHeader';
 
 export const PreviewPanel: React.FC<TPreviewPanelProps> = (props) => {
-	const { editor } = props;
+	const { editor, order } = props;
 
 	const cx = React.useMemo(() => createPreviewPanelContext(editor), [editor]);
 	const previewedNode = useFeatureState(cx.previewedNode);
@@ -19,7 +19,7 @@ export const PreviewPanel: React.FC<TPreviewPanelProps> = (props) => {
 	const [stylesLoaded, setStylesLoaded] = React.useState(false);
 
 	return (
-		<ResizablePanel className="relative">
+		<ResizablePanel id="preview-panel" order={order} className="relative">
 			<PanelHeader cx={cx} />
 
 			{!stylesLoaded && (
@@ -68,4 +68,5 @@ export const PreviewPanel: React.FC<TPreviewPanelProps> = (props) => {
 
 interface TPreviewPanelProps {
 	editor: TPageEditor;
+	order: number;
 }

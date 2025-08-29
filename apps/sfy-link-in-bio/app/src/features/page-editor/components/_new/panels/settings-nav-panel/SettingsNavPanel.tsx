@@ -8,7 +8,7 @@ import { TPageEditor } from '../../../../lib';
 import { PanelHeader } from '../../../PanelHeader';
 
 export const SettingsNavPanel: React.FC<TSettingsNavPanelProps> = (props) => {
-	const { editor } = props;
+	const { editor, order } = props;
 
 	const selectedSection = useFeatureState(editor.activeSettingsSection);
 
@@ -61,7 +61,13 @@ export const SettingsNavPanel: React.FC<TSettingsNavPanelProps> = (props) => {
 	// =========================================================================
 
 	return (
-		<ResizablePanel minSize={sizes.minSize} defaultSize={sizes.defaultSize} maxSize={sizes.maxSize}>
+		<ResizablePanel
+			id="settings-nav-panel"
+			order={order}
+			minSize={sizes.minSize}
+			defaultSize={sizes.defaultSize}
+			maxSize={sizes.maxSize}
+		>
 			<div className="flex h-full flex-col bg-white">
 				<PanelHeader>
 					<Text as="h2" variant="headingMd">
@@ -97,4 +103,5 @@ export const SettingsNavPanel: React.FC<TSettingsNavPanelProps> = (props) => {
 
 interface TSettingsNavPanelProps {
 	editor: TPageEditor;
+	order: number;
 }

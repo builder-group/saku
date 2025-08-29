@@ -7,11 +7,11 @@ import { NodeCanvas } from '../../../NodeCanvas';
 import { PanelHeader } from './PanelHeader';
 
 export const CanvasPanel: React.FC<TCanvasPanelProps> = (props) => {
-	const { editor } = props;
+	const { editor, order } = props;
 	const [stylesLoaded, setStylesLoaded] = React.useState(false);
 
 	return (
-		<ResizablePanel className="relative">
+		<ResizablePanel id="canvas-panel" order={order} className="relative">
 			<PanelHeader editor={editor} />
 
 			{!stylesLoaded && (
@@ -39,4 +39,5 @@ export const CanvasPanel: React.FC<TCanvasPanelProps> = (props) => {
 
 interface TCanvasPanelProps {
 	editor: TPageEditor;
+	order: number;
 }

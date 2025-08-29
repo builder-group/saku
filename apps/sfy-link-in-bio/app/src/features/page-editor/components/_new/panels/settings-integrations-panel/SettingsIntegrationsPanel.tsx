@@ -8,7 +8,7 @@ import { PanelHeader } from '../../../PanelHeader';
 import { Placeholder } from './Placeholder';
 
 export const SettingsIntegrationsPanel: React.FC<TSettingsIntegrationsPanelProps> = (props) => {
-	const { editor } = props;
+	const { editor, order } = props;
 
 	const { shopifyIntegrations, hasIntegrations } = React.useMemo(() => {
 		const shopifyIntegrations: {
@@ -76,7 +76,13 @@ export const SettingsIntegrationsPanel: React.FC<TSettingsIntegrationsPanelProps
 	// =========================================================================
 
 	return (
-		<ResizablePanel minSize={sizes.minSize} defaultSize={sizes.defaultSize} maxSize={sizes.maxSize}>
+		<ResizablePanel
+			id="settings-integrations-panel"
+			order={order}
+			minSize={sizes.minSize}
+			defaultSize={sizes.defaultSize}
+			maxSize={sizes.maxSize}
+		>
 			<div className="flex h-full flex-col bg-white">
 				<PanelHeader>
 					<Text as="h2" variant="headingMd">
@@ -126,4 +132,5 @@ export const SettingsIntegrationsPanel: React.FC<TSettingsIntegrationsPanelProps
 
 interface TSettingsIntegrationsPanelProps {
 	editor: TPageEditor;
+	order: number;
 }

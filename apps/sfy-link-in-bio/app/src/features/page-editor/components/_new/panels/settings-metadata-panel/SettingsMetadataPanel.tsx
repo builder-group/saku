@@ -8,7 +8,7 @@ import { resolvePageNodeWithoutChildren } from '../../../../nodes';
 import { PanelHeader } from '../../../PanelHeader';
 
 export const SettingsMetadataPanel: React.FC<TSettingsMetadataPanelProps> = (props) => {
-	const { editor } = props;
+	const { editor, order } = props;
 
 	const rootNode = React.useMemo(() => editor.getRootNode(), [editor]);
 	const { content } = useFeatureState(rootNode);
@@ -113,7 +113,13 @@ export const SettingsMetadataPanel: React.FC<TSettingsMetadataPanelProps> = (pro
 	// =========================================================================
 
 	return (
-		<ResizablePanel minSize={sizes.minSize} defaultSize={sizes.defaultSize} maxSize={sizes.maxSize}>
+		<ResizablePanel
+			id="settings-metadata-panel"
+			order={order}
+			minSize={sizes.minSize}
+			defaultSize={sizes.defaultSize}
+			maxSize={sizes.maxSize}
+		>
 			<div className="flex h-full flex-col bg-white">
 				<PanelHeader>
 					<Text as="h2" variant="headingMd">
@@ -178,4 +184,5 @@ export const SettingsMetadataPanel: React.FC<TSettingsMetadataPanelProps> = (pro
 
 interface TSettingsMetadataPanelProps {
 	editor: TPageEditor;
+	order: number;
 }

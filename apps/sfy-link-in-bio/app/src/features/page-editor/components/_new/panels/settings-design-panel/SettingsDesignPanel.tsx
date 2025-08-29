@@ -7,7 +7,7 @@ import { PanelHeader } from '../../../PanelHeader';
 import { CustomizeTab, tabs, TemplateTab } from './tabs';
 
 export const SettingsDesignPanel: React.FC<TSettingsDesignPanelProps> = (props) => {
-	const { editor } = props;
+	const { editor, order } = props;
 
 	const [tabIndex, setTabIndex] = React.useState(0);
 
@@ -57,7 +57,13 @@ export const SettingsDesignPanel: React.FC<TSettingsDesignPanelProps> = (props) 
 	// =========================================================================
 
 	return (
-		<ResizablePanel minSize={sizes.minSize} defaultSize={sizes.defaultSize} maxSize={sizes.maxSize}>
+		<ResizablePanel
+			id="settings-design-panel"
+			order={order}
+			minSize={sizes.minSize}
+			defaultSize={sizes.defaultSize}
+			maxSize={sizes.maxSize}
+		>
 			<div className="flex h-full flex-col bg-white">
 				{' '}
 				<PanelHeader>
@@ -77,4 +83,5 @@ export const SettingsDesignPanel: React.FC<TSettingsDesignPanelProps> = (props) 
 
 interface TSettingsDesignPanelProps {
 	editor: TPageEditor;
+	order: number;
 }

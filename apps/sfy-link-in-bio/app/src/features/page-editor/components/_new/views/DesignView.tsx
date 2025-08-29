@@ -4,19 +4,20 @@ import { TPageEditor } from '../../../lib';
 import { CanvasPanel, LayersPanel, NodeInspectorPanel } from '../panels';
 
 export const DesignView: React.FC<TDesignViewProps> = (props) => {
-	const { editor } = props;
+	const { editor, order } = props;
 
 	return (
 		<>
-			<LayersPanel editor={editor} />
+			<LayersPanel editor={editor} order={order} />
 			<ResizableHandle className="w-px bg-neutral-200" />
-			<CanvasPanel editor={editor} />
+			<CanvasPanel editor={editor} order={order + 1} />
 			<ResizableHandle className="w-px bg-neutral-200" />
-			<NodeInspectorPanel editor={editor} />
+			<NodeInspectorPanel editor={editor} order={order + 2} />
 		</>
 	);
 };
 
 interface TDesignViewProps {
 	editor: TPageEditor;
+	order: number;
 }

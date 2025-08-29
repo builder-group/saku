@@ -9,7 +9,7 @@ import { PanelHeader } from '../../../PanelHeader';
 import { Placeholder } from './Placeholder';
 
 export const SettingsAssetsPanel: React.FC<TSettingsAssetsPanelProps> = (props) => {
-	const { editor } = props;
+	const { editor, order } = props;
 
 	const { fontAssets, imageAssets, hasAssets } = React.useMemo(() => {
 		const fontAssets: {
@@ -110,7 +110,13 @@ export const SettingsAssetsPanel: React.FC<TSettingsAssetsPanelProps> = (props) 
 	// =========================================================================
 
 	return (
-		<ResizablePanel minSize={sizes.minSize} defaultSize={sizes.defaultSize} maxSize={sizes.maxSize}>
+		<ResizablePanel
+			id="settings-assets-panel"
+			order={order}
+			minSize={sizes.minSize}
+			defaultSize={sizes.defaultSize}
+			maxSize={sizes.maxSize}
+		>
 			<div className="flex h-full flex-col bg-white">
 				<PanelHeader>
 					<Text as="h2" variant="headingMd">
@@ -194,4 +200,5 @@ export const SettingsAssetsPanel: React.FC<TSettingsAssetsPanelProps> = (props) 
 
 interface TSettingsAssetsPanelProps {
 	editor: TPageEditor;
+	order: number;
 }

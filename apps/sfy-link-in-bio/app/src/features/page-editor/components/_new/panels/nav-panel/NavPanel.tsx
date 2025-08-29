@@ -7,7 +7,7 @@ import { TViewType, viewMetadata } from '../../../../environment';
 import { TPageEditor } from '../../../../lib';
 
 export const NavPanel: React.FC<TNavPanelProps> = (props) => {
-	const { editor } = props;
+	const { editor, order } = props;
 	const [sidebarCollapsed, setSidebarCollapsed] = React.useState(true);
 	const activeView = useFeatureState(editor.activeView);
 
@@ -66,6 +66,8 @@ export const NavPanel: React.FC<TNavPanelProps> = (props) => {
 
 	return (
 		<ResizablePanel
+			id="nav-panel"
+			order={order}
 			collapsible={true}
 			collapsedSize={sizes.collapsedSize}
 			minSize={sizes.minSize}
@@ -105,4 +107,5 @@ export const NavPanel: React.FC<TNavPanelProps> = (props) => {
 
 interface TNavPanelProps {
 	editor: TPageEditor;
+	order: number;
 }

@@ -8,3 +8,4 @@ export * from './settings-design-panel';
 export * from './settings-integrations-panel';
 export * from './settings-metadata-panel';
 export * from './settings-nav-panel';
+export * from './settings-placeholder-panel';

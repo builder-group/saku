@@ -8,33 +8,34 @@ import { PreviewView } from './PreviewView';
 import { SettingsView } from './SettingsView';
 
 export const EditorView: React.FC<TEditorViewProps> = (props) => {
-	const { editor } = props;
+	const { editor, order = 1 } = props;
 
 	return (
 		<>
-			<NavPanel editor={editor} />
+			<NavPanel editor={editor} order={order} />
 			<ResizableHandle className="w-px bg-neutral-200" />
-			<View editor={editor} />
+			<View editor={editor} order={order + 1} />
 		</>
 	);
 };
 
 interface TEditorViewProps {
 	editor: TPageEditor;
+	order?: number;
 }
 
 const View: React.FC<TViewProps> = (props) => {
-	const { editor } = props;
+	const { editor, order } = props;
 
 	const activeView = useFeatureState(editor.activeView);
 
 	switch (activeView) {
 		case 'layers':
-			return <DesignView editor={editor} />;
+			return <DesignView editor={editor} order={order} />;
 		case 'preview':
-			return <PreviewView editor={editor} />;
+			return <PreviewView editor={editor} order={order} />;
 		case 'settings':
-			return <SettingsView editor={editor} />;
+			return <SettingsView editor={editor} order={order} />;
 		default:
 			return null;
 	}
@@ -42,4 +43,5 @@ const View: React.FC<TViewProps> = (props) => {
 
 interface TViewProps {
 	editor: TPageEditor;
+	order: number;
 }

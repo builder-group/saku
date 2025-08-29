@@ -21,7 +21,7 @@ import { LayerItem } from './LayerItem';
 import { PanelHeader } from './PanelHeader';
 
 export const LayersPanel: React.FC<TLayersPanelProps> = (props) => {
-	const { editor } = props;
+	const { editor, order } = props;
 
 	const { nodes, nodeIds } = useCompute(editor.getRootNode(), ({ value }) => {
 		return {
@@ -101,7 +101,13 @@ export const LayersPanel: React.FC<TLayersPanelProps> = (props) => {
 	// =========================================================================
 
 	return (
-		<ResizablePanel minSize={sizes.minSize} defaultSize={sizes.defaultSize} maxSize={sizes.maxSize}>
+		<ResizablePanel
+			id="layers-panel"
+			order={order}
+			minSize={sizes.minSize}
+			defaultSize={sizes.defaultSize}
+			maxSize={sizes.maxSize}
+		>
 			<div className="flex h-full flex-col bg-white">
 				<PanelHeader editor={editor} />
 				<div className="flex-1 overflow-auto p-2">
@@ -137,4 +143,5 @@ export const LayersPanel: React.FC<TLayersPanelProps> = (props) => {
 
 interface TLayersPanelProps {
 	editor: TPageEditor;
+	order: number;
 }
