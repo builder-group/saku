@@ -41,16 +41,16 @@ export const TemplateTab: React.FC<TTemplateTabProps> = (props) => {
 
 		return (
 			<div
-				className="rounded-lg border p-4"
+				className="flex items-center justify-center rounded-lg border p-3"
 				style={{
 					backgroundColor: colors.background,
 					borderColor: 'rgba(0,0,0,0.1)',
 					minHeight: '80px'
 				}}
 			>
-				{/* Single card with Aa and Button - responsive layout */}
+				{/* Card preview */}
 				<div
-					className="flex flex-wrap items-center gap-2 rounded p-2"
+					className="flex flex-wrap items-center justify-center gap-2 rounded p-2"
 					style={{
 						backgroundColor: colors.surface,
 						borderRadius: `${spacing.borderRadius}px`,
@@ -63,11 +63,10 @@ export const TemplateTab: React.FC<TTemplateTabProps> = (props) => {
 						style={{
 							color: colors.text,
 							fontFamily: typography.fontFamily,
-							fontSize: '24px',
+							fontSize: '20px',
 							fontWeight: typography.fontWeight,
 							lineHeight: 1,
-							margin: 0,
-							minWidth: '30px'
+							margin: 0
 						}}
 					>
 						Aa
@@ -75,7 +74,7 @@ export const TemplateTab: React.FC<TTemplateTabProps> = (props) => {
 
 					{/* Button preview */}
 					<div
-						className="rounded px-4 py-2 text-sm font-medium"
+						className="rounded px-3 py-1 text-sm font-medium"
 						style={{
 							backgroundColor: colors.primary,
 							color: colors.surface,
