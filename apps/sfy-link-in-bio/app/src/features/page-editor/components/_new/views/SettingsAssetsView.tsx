@@ -1,7 +1,7 @@
 import React from 'react';
 import { ResizableHandle } from '@/components';
 import { TPageEditor } from '../../../lib';
-import { CanvasPanel, SettingsAssetsPanel } from '../panels';
+import { AssetDetailsPanel, SettingsAssetsPanel } from '../panels';
 
 export const SettingsAssetsView: React.FC<TSettingsAssetsViewProps> = (props) => {
 	const { editor, order } = props;
@@ -10,7 +10,7 @@ export const SettingsAssetsView: React.FC<TSettingsAssetsViewProps> = (props) =>
 		<>
 			<SettingsAssetsPanel editor={editor} order={order} />
 			<ResizableHandle className="w-px bg-neutral-200" />
-			<CanvasPanel editor={editor} order={order + 1} />
+			<AssetDetailsPanel editor={editor} order={order + 1} />
 		</>
 	);
 };

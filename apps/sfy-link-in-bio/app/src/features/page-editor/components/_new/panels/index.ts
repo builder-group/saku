@@ -1,4 +1,6 @@
+export * from './asset-details-panel';
 export * from './canvas-panel';
+export * from './integration-details-panel';
 export * from './layers-panel';
 export * from './metadata-preview-panel';
 export * from './nav-panel';
