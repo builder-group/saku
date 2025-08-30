@@ -21,8 +21,8 @@ export const SettingsDesignPanel: React.FC<TSettingsDesignPanelProps> = (props) 
 				// Note: Return default sizes instead of null to prevent the panel from being hidden on hot reload
 				return {
 					minSize: 20,
-					defaultSize: 25,
-					maxSize: 30
+					defaultSize: 30,
+					maxSize: 40
 				};
 			}
 
@@ -30,8 +30,8 @@ export const SettingsDesignPanel: React.FC<TSettingsDesignPanelProps> = (props) 
 
 			return {
 				minSize: toPercent(300), // ~ 20
-				defaultSize: toPercent(375), // ~ 25
-				maxSize: toPercent(450) // ~ 30
+				defaultSize: toPercent(450), // ~ 30
+				maxSize: toPercent(600) // ~ 40
 			};
 		},
 		[],

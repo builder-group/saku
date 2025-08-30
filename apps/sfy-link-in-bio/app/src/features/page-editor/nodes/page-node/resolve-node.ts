@@ -73,7 +73,7 @@ export function resolvePageNodeWithoutChildren(
 	});
 }
 
-function resolvePageMetadata(
+export function resolvePageMetadata(
 	node: TFlatPageNode,
 	cx: TNodeResolveContext
 ): {

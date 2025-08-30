@@ -1,29 +1,27 @@
 import { InlineError, Text, TextField } from '@shopify/polaris';
-import { useCompute, useFeatureState } from 'feature-react/state';
+import { useCompute } from 'feature-react/state';
 import React from 'react';
-import { unwrapOrNull } from 'tuple-result';
 import { ImageUploadField, ResizablePanel, TImageUploadEvent } from '@/components';
 import { EditorSiteResolveContext, TPageEditor } from '../../../../lib';
-import { resolvePageNodeWithoutChildren } from '../../../../nodes';
+import { resolvePageMetadata } from '../../../../nodes';
 import { PanelHeader } from '../../../PanelHeader';
 
 export const SettingsMetadataPanel: React.FC<TSettingsMetadataPanelProps> = (props) => {
 	const { editor, order } = props;
 
 	const rootNode = React.useMemo(() => editor.getRootNode(), [editor]);
-	const { content } = useFeatureState(rootNode);
-	const resolvedPageNode = useCompute(
+	const { resolvedMetadata, metadata } = useCompute(
 		rootNode,
-		({ value: node }) =>
-			unwrapOrNull(
-				resolvePageNodeWithoutChildren(node, { site: new EditorSiteResolveContext(editor) })
-			),
+		({ value }) => ({
+			resolvedMetadata: resolvePageMetadata(value, { site: new EditorSiteResolveContext(editor) }),
+			metadata: value.content.metadata
+		}),
 		[editor]
 	);
 
 	const [imageError, setImageError] = React.useState<string | null>(null);
 	const image = React.useMemo(() => {
-		const asset = editor.getImageAsset(content.metadata?.image);
+		const asset = editor.getImageAsset(metadata?.image);
 		if (asset == null || asset.storage.type !== 'url') {
 			return undefined;
 		}
@@ -32,7 +30,7 @@ export const SettingsMetadataPanel: React.FC<TSettingsMetadataPanelProps> = (pro
 			url: asset.storage.url,
 			fileName: asset.fileName
 		};
-	}, [content.metadata?.image, editor]);
+	}, [metadata?.image, editor]);
 
 	// TODO: Figure out better solution
 	// https://github.com/bvaughn/react-resizable-panels/issues/46
@@ -44,8 +42,8 @@ export const SettingsMetadataPanel: React.FC<TSettingsMetadataPanelProps> = (pro
 				// Note: Return default sizes instead of null to prevent the panel from being hidden on hot reload
 				return {
 					minSize: 20,
-					defaultSize: 25,
-					maxSize: 30
+					defaultSize: 30,
+					maxSize: 40
 				};
 			}
 
@@ -53,8 +51,8 @@ export const SettingsMetadataPanel: React.FC<TSettingsMetadataPanelProps> = (pro
 
 			return {
 				minSize: toPercent(300), // ~ 20
-				defaultSize: toPercent(375), // ~ 25
-				maxSize: toPercent(450) // ~ 30
+				defaultSize: toPercent(450), // ~ 30
+				maxSize: toPercent(600) // ~ 40
 			};
 		},
 		[],
@@ -137,10 +135,10 @@ export const SettingsMetadataPanel: React.FC<TSettingsMetadataPanelProps> = (pro
 								id="title-field"
 								label="Title"
 								labelHidden
-								value={content.metadata.title}
+								value={metadata.title}
 								onChange={handleTitleChange}
 								autoComplete="off"
-								placeholder={resolvedPageNode?.content.metadata?.title}
+								placeholder={resolvedMetadata.title}
 							/>
 						</div>
 
@@ -153,11 +151,11 @@ export const SettingsMetadataPanel: React.FC<TSettingsMetadataPanelProps> = (pro
 								id="description-field"
 								label="Description"
 								labelHidden
-								value={content.metadata.description}
+								value={metadata.description}
 								onChange={handleDescriptionChange}
 								multiline={4}
 								autoComplete="off"
-								placeholder={resolvedPageNode?.content.metadata?.description}
+								placeholder={resolvedMetadata.description}
 							/>
 						</div>
 

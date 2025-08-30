@@ -1,5 +1,6 @@
 export * from './canvas-panel';
 export * from './layers-panel';
+export * from './metadata-preview-panel';
 export * from './nav-panel';
 export * from './node-inspector-panel';
 export * from './preview-panel';

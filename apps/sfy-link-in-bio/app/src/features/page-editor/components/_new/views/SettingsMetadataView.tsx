@@ -1,7 +1,7 @@
 import React from 'react';
 import { ResizableHandle } from '@/components';
 import { TPageEditor } from '../../../lib';
-import { CanvasPanel, SettingsMetadataPanel } from '../panels';
+import { MetadataPreviewPanel, SettingsMetadataPanel } from '../panels';
 
 export const SettingsMetadataView: React.FC<TSettingsMetadataViewProps> = (props) => {
 	const { editor, order } = props;
@@ -10,7 +10,7 @@ export const SettingsMetadataView: React.FC<TSettingsMetadataViewProps> = (props
 		<>
 			<SettingsMetadataPanel editor={editor} order={order} />
 			<ResizableHandle className="w-px bg-neutral-200" />
-			<CanvasPanel editor={editor} order={order + 1} />
+			<MetadataPreviewPanel editor={editor} order={order + 1} />
 		</>
 	);
 };

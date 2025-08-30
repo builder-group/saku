@@ -50,7 +50,7 @@ export const TemplateTab: React.FC<TTemplateTabProps> = (props) => {
 			>
 				{/* Single card with Aa and Button - responsive layout */}
 				<div
-					className="flex flex-wrap items-center gap-2 rounded p-3"
+					className="flex flex-wrap items-center gap-2 rounded p-2"
 					style={{
 						backgroundColor: colors.surface,
 						borderRadius: `${spacing.borderRadius}px`,
