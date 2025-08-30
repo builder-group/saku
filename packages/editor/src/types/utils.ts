@@ -74,45 +74,6 @@ export interface TImagePaint extends TBasePaint {
 }
 
 // =========================================================================
-// Link Variant
-// =========================================================================
-
-export type TLinkVariant = TDefaultLinkVariant | TYouTubeVideoEmbedVariant;
-
-export interface TBaseLinkVariant {
-	type: string;
-}
-
-export interface TDefaultLinkVariant extends TBaseLinkVariant {
-	type: 'default';
-	// User overrides (take priority)
-	userTitle?: string;
-	userDescription?: string;
-	userFavicon?: TAssetHash | null; // null = explicitly removed, undefined = not set
-	// Source metadata (fallback)
-	title?: string;
-	description?: string;
-	favicon?: TAssetHash;
-}
-
-export interface TYouTubeVideoEmbedVariant extends TBaseLinkVariant {
-	type: 'youtube-video-embed';
-	videoId: string;
-}
-
-// =========================================================================
-// Media
-// =========================================================================
-
-export type TMedia = TImageMedia;
-
-export interface TImageMedia {
-	type: 'image';
-	hash: TAssetHash;
-	altText?: string;
-}
-
-// =========================================================================
 // Content
 // =========================================================================
 

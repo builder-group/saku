@@ -8,8 +8,6 @@ import {
 	TIntegrationId,
 	TLetterSpacing,
 	TLineHeight,
-	TLinkVariant,
-	TMedia,
 	TPaint,
 	TSocialLink,
 	TTextAlign
@@ -42,6 +40,10 @@ export type TFlatChildrenMixin = TBaseMixin<'children', TNodeId[]>;
 // Node Mixins
 // =========================================================================
 
+export interface TBaseNodeVariant {
+	type: string;
+}
+
 export type TNodeMixin =
 	| TPageNodeMixin
 	| TAboutNodeMixin
@@ -50,94 +52,165 @@ export type TNodeMixin =
 	| TTextNodeMixin
 	| TProductNodeMixin;
 
-export type TPageNodeMixin = TBaseMixin<
+export type TPageNodeMixin<GVariant extends TPageNodeVariant = TPageNodeVariant> = TBaseMixin<
 	'node',
 	{
 		type: 'page';
-		content: {
-			metadata: {
-				title?: string;
-				description?: string;
-				favicon?: TAssetHash;
-				image?: TAssetHash;
-			};
+		content: GVariant;
+		metadata: {
+			title?: string;
+			description?: string;
+			favicon?: TAssetHash;
+			image?: TAssetHash;
 		};
 	}
 >;
 
-export type TAboutNodeMixin = TBaseMixin<
+export type TPageNodeVariant = TDefaultPageNodeVariant;
+
+export interface TDefaultPageNodeVariant extends TBaseNodeVariant {
+	type: 'default';
+}
+
+export type TAboutNodeMixin<GVariant extends TAboutNodeVariant = TAboutNodeVariant> = TBaseMixin<
 	'node',
 	{
 		type: 'about';
-		content: {
-			name: string;
-			bio?: string;
-			profilePicture?: TAssetHash;
-			socialLinks: TSocialLink[];
-		};
+		content: GVariant;
 	}
 >;
 
-export type TLinkNodeMixin<GVariant extends TLinkVariant = TLinkVariant> = TBaseMixin<
+export type TAboutNodeVariant = TDefaultAboutNodeVariant;
+
+export interface TDefaultAboutNodeVariant extends TBaseNodeVariant {
+	type: 'default';
+	name: string;
+	bio?: string;
+	profilePicture?: TAssetHash;
+	socialLinks: TSocialLink[];
+}
+
+export type TLinkNodeMixin<GVariant extends TLinkNodeVariant = TLinkNodeVariant> = TBaseMixin<
 	'node',
 	{
 		type: 'link';
-		content: {
-			url: string;
-			variant: GVariant;
-		};
+		content: GVariant;
 	}
 >;
 
-export type TMediaNodeMixin<GMedia extends TMedia = TMedia> = TBaseMixin<
+export type TLinkNodeVariant =
+	| TSingleLinkNodeVariant
+	| TYouTubeVideoEmbedNodeVariant
+	| TMultiLinkNodeVariant;
+
+export interface TSingleLinkNodeVariant extends TBaseNodeVariant {
+	type: 'single';
+	url: string;
+	// User overrides (take priority)
+	userTitle?: string;
+	userDescription?: string;
+	userFavicon?: TAssetHash | null; // null = explicitly removed, undefined = not set
+	// Source metadata (fallback)
+	title?: string;
+	description?: string;
+	favicon?: TAssetHash;
+}
+
+export interface TYouTubeVideoEmbedNodeVariant extends TBaseNodeVariant {
+	type: 'youtube-video-embed';
+	url: string;
+	videoId: string;
+}
+
+export interface TMultiLinkNodeVariant extends TBaseNodeVariant {
+	type: 'multi';
+	title?: string;
+	links: {
+		url: string;
+		title?: string;
+		description?: string;
+		favicon?: TAssetHash;
+	}[];
+}
+
+export type TMediaNodeMixin<GVariant extends TMediaNodeVariant = TMediaNodeVariant> = TBaseMixin<
 	'node',
 	{
 		type: 'media';
-		content: {
-			media?: GMedia;
-		};
+		content: GVariant;
 	}
 >;
 
-export type TTextNodeMixin = TBaseMixin<
+export type TMediaNodeVariant = TImageMediaNodeVariant | TVideoMediaNodeVariant;
+
+export interface TImageMediaNodeVariant extends TBaseNodeVariant {
+	type: 'image';
+	media?: {
+		hash: TAssetHash;
+		altText?: string;
+	};
+}
+
+export interface TVideoMediaNodeVariant extends TBaseNodeVariant {
+	type: 'video';
+	media?: {
+		hash: TAssetHash;
+		autoplay?: boolean;
+		muted?: boolean;
+		controls?: boolean;
+	};
+}
+
+export type TTextNodeMixin<GVariant extends TTextNodeVariant = TTextNodeVariant> = TBaseMixin<
 	'node',
 	{
 		type: 'text';
-		content: {
-			text: string;
-		};
+		content: GVariant;
 	}
 >;
 
-export type TProductNodeMixin = TBaseMixin<
-	'node',
-	{
-		type: 'product';
-		content: {
-			product?: {
-				id: string;
-				title: string;
-				description?: TContent;
-				images: TAssetHash[];
-				options: { name: string; values: string[] }[];
-				variants: {
-					id: string;
-					title: string;
-					price: { amount: string; currencyCode: string };
-					image?: TAssetHash;
-					selectedOptions: { name: string; value: string }[];
-				}[];
-			};
-			integrationId?: TIntegrationId;
-		};
-	}
->;
+export type TTextNodeVariant = TPlainTextNodeVariant;
+
+export interface TPlainTextNodeVariant extends TBaseNodeVariant {
+	type: 'plain';
+	text: string;
+}
+
+export type TProductNodeMixin<GVariant extends TProductNodeVariant = TProductNodeVariant> =
+	TBaseMixin<
+		'node',
+		{
+			type: 'product';
+			content: GVariant;
+		}
+	>;
+
+export type TProductNodeVariant = TSingleProductNodeVariant;
+
+export interface TSingleProductNodeVariant extends TBaseNodeVariant {
+	type: 'single';
+	product?: {
+		id: string;
+		title: string;
+		description?: TContent;
+		images: TAssetHash[];
+		options: { name: string; values: string[] }[];
+		variants: {
+			id: string;
+			title: string;
+			price: { amount: string; currencyCode: string };
+			image?: TAssetHash;
+			selectedOptions: { name: string; value: string }[];
+		}[];
+	};
+	integrationId?: TIntegrationId;
+}
 
 // =========================================================================
 // Style Mixins
 // =========================================================================
 
-// export type TAutoLayoutStyleMixin = TBaseMixin<
+// export type TLayoutStyleMixin = TBaseMixin<
 // 	'layout',
 // 	{
 // 		width: number;
