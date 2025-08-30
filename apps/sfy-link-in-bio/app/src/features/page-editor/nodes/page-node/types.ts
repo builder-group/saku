@@ -23,8 +23,9 @@ export type TResolvedPageNodeMixin = TBaseMixin<
 		type: 'page';
 		content: {
 			metadata: {
-				title?: string;
-				description?: string;
+				title: string;
+				description: string;
+				favicon: string;
 				image?: string;
 			};
 		};

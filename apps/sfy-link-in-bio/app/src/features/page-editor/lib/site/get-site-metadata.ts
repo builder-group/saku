@@ -1,6 +1,7 @@
 import { TResolvedSite } from '@/features/page-editor';
 import { TMetaFunction } from '@/types';
 
+// https://api.reactrouter.com/v7/types/react_router.MetaDescriptor.html
 export function getSiteMetadata(site: TResolvedSite | null): ReturnType<TMetaFunction> {
 	if (site == null) {
 		return [
@@ -13,6 +14,7 @@ export function getSiteMetadata(site: TResolvedSite | null): ReturnType<TMetaFun
 	}
 
 	const metadata = [
+		{ tagName: 'link', rel: 'icon', href: site.root.content.metadata.favicon },
 		{ title: site.root.content.metadata.title },
 		{
 			name: 'description',

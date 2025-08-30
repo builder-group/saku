@@ -79,10 +79,12 @@ export function resolvePageMetadata(
 ): {
 	title: string;
 	description: string;
+	favicon: string;
 	image?: string;
 } {
 	let title: string | undefined;
 	let description: string | undefined;
+	let favicon: string | undefined;
 	let image: string | undefined;
 
 	// Use page metadata if available
@@ -91,6 +93,9 @@ export function resolvePageMetadata(
 	}
 	if (node.content.metadata?.description != null) {
 		description = node.content.metadata.description;
+	}
+	if (node.content.metadata?.favicon != null) {
+		favicon = node.content.metadata.favicon;
 	}
 	if (node.content.metadata?.image != null) {
 		image = resolveAsset(node.content.metadata.image, cx.site)?.src;
@@ -113,6 +118,7 @@ export function resolvePageMetadata(
 	return {
 		title: title ?? 'Link in Bio - Saku',
 		description: description ?? 'Check out this link in bio page created with Saku',
+		favicon: favicon ?? 'https://sfy-link-in-bio-app.saku.so/favicon.ico',
 		image
 	};
 }
