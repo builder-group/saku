@@ -69,7 +69,7 @@ export const PageEditor: React.FC<TPageEditorProps> = (props) => {
 				// This means nav-panel has different sizes in different views when it should be consistent.
 				// Example: nav-panel is 3.52% in settings but might be different in layers view.
 				// We need custom storage that groups panels logically (nav=nav, settings-content=all settings panels).
-				autoSaveId={'page-editor'}
+				// autoSaveId={'page-editor'}
 				// onLayout={(sizes) => {
 				// 	logger.info('recompute layout', { sizes });
 				// }}
