@@ -136,3 +136,27 @@ export interface TShopifyIntegration extends TBaseIntegration {
 	shopId: string;
 	storefrontAccessToken: string;
 }
+
+// =========================================================================
+// Action
+// =========================================================================
+
+export type TAction = TLinkAction | TEmailAction;
+
+export interface TLinkAction {
+	type: 'link';
+	url: string;
+	target?: '_blank' | '_self';
+}
+
+export interface TEmailAction {
+	type: 'email';
+	email: string;
+	subject?: string;
+	body?: string;
+}
+
+//   export interface TFormAction {
+// 	type: 'form';
+// 	formId: string;
+//   }

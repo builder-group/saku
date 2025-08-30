@@ -2,6 +2,7 @@ import { TRgba } from '../lib';
 import { TNode, TNodeId } from './node';
 import { TRef } from './ref';
 import {
+	TAction,
 	TAssetHash,
 	TContent,
 	TFont,
@@ -80,14 +81,26 @@ export type TAboutNodeMixin<GVariant extends TAboutNodeVariant = TAboutNodeVaria
 	}
 >;
 
-export type TAboutNodeVariant = TDefaultAboutNodeVariant;
+export type TAboutNodeVariant = TClassicAboutNodeVariant | THeroAboutNodeVariant;
 
-export interface TDefaultAboutNodeVariant extends TBaseNodeVariant {
-	type: 'default';
+export interface TClassicAboutNodeVariant extends TBaseNodeVariant {
+	type: 'classic'; // profile picture → name → bio
 	name: string;
 	bio?: string;
 	profilePicture?: TAssetHash;
 	socialLinks: TSocialLink[];
+}
+
+export interface THeroAboutNodeVariant extends TBaseNodeVariant {
+	type: 'hero'; // big headline → description → small profile picture
+	headline: string;
+	description?: string;
+	name?: string;
+	profilePicture?: TAssetHash;
+	callToAction?: {
+		label: string;
+		action: TAction;
+	};
 }
 
 export type TLinkNodeMixin<GVariant extends TLinkNodeVariant = TLinkNodeVariant> = TBaseMixin<
