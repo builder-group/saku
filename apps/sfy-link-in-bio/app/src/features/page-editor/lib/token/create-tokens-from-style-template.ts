@@ -80,9 +80,7 @@ export function createTokensFromStyleTemplate(styleTemplate: TStyleTemplate): TT
 			mixinKey: 'autoLayout',
 			value: {
 				horizontalPadding: spacing.padding,
-				verticalPadding: spacing.padding,
-				horizontalGap: spacing.gap,
-				verticalGap: spacing.gap
+				verticalPadding: spacing.padding
 			}
 		},
 		{

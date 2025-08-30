@@ -49,9 +49,7 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TFlatPageNode>> 
 				? token['default'].value
 				: ({
 						horizontalPadding: 0,
-						verticalPadding: 0,
-						horizontalGap: 0,
-						verticalGap: 0
+						verticalPadding: 0
 					} satisfies TAutoLayoutStyleToken['value']),
 		sync: (token, value, notifyOptions) => {
 			const tokenDefault = token._v['default'];

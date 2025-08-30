@@ -113,9 +113,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 			},
 			autoLayout: {
 				horizontalPadding: tokenRef(),
-				verticalPadding: tokenRef(),
-				horizontalGap: tokenRef(),
-				verticalGap: tokenRef()
+				verticalPadding: tokenRef()
 			},
 			appearance: {
 				visible: true,
@@ -224,8 +222,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					},
 					autoLayout: {
 						horizontalPadding: tokenRef(),
-						verticalPadding: tokenRef(),
-						verticalGap: tokenRef()
+						verticalPadding: tokenRef()
 					},
 					appearance: {
 						visible: true,
@@ -265,9 +262,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					},
 					autoLayout: {
 						horizontalPadding: tokenRef(),
-						verticalPadding: tokenRef(),
-						horizontalGap: tokenRef(),
-						verticalGap: tokenRef()
+						verticalPadding: tokenRef()
 					},
 					appearance: {
 						visible: true,

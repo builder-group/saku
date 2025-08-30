@@ -73,8 +73,7 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 			},
 			autoLayout: {
 				horizontalPadding: tokenRef(),
-				verticalPadding: tokenRef(),
-				verticalGap: tokenRef()
+				verticalPadding: tokenRef()
 			},
 			appearance: {
 				visible: true,
@@ -129,9 +128,7 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 				let variant: TLinkNode['content']['variant'];
 				let autoLayout: TLinkNode['autoLayout'] = {
 					horizontalPadding: tokenRef(),
-					verticalPadding: tokenRef(),
-					horizontalGap: tokenRef(),
-					verticalGap: tokenRef()
+					verticalPadding: tokenRef()
 				};
 				let appearance: TLinkNode['appearance'] = {
 					visible: true,
@@ -149,9 +146,7 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 							};
 							autoLayout = {
 								horizontalPadding: 0,
-								verticalPadding: 0,
-								horizontalGap: 0,
-								verticalGap: 0
+								verticalPadding: 0
 							};
 							appearance = {
 								visible: true,
@@ -281,9 +276,7 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 				mixinKey: 'autoLayout',
 				value: {
 					horizontalPadding: 12,
-					verticalPadding: 12,
-					horizontalGap: 12,
-					verticalGap: 12
+					verticalPadding: 12
 				}
 			},
 			{

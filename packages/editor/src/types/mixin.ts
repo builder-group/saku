@@ -204,6 +204,17 @@ export type TShadowStyleMixin = TBaseMixin<
 	} | null>
 >;
 
+export type TCardStyleMixin = TBaseMixin<
+	'card',
+	{
+		autoLayout: TAutoLayoutStyleMixin['value'];
+		appearance: TAppearanceStyleMixin['value'];
+		fill: TFillStyleMixin['value'];
+		stroke: TStrokeStyleMixin['value'];
+		shadow: TShadowStyleMixin['value'];
+	}
+>;
+
 export type TTextStyleMixin = TBaseMixin<
 	'text',
 	{
@@ -214,6 +225,7 @@ export type TTextStyleMixin = TBaseMixin<
 		shadow: TShadowStyleMixin['value'];
 	}
 >;
+export type THeadingStyleMixin = TBaseMixin<'headingText', TTextStyleMixin['value']>;
 
 export type TButtonStyleMixin = TBaseMixin<
 	'button',
@@ -227,3 +239,14 @@ export type TButtonStyleMixin = TBaseMixin<
 >;
 export type TPrimaryButtonStyleMixin = TBaseMixin<'primaryButton', TButtonStyleMixin['value']>;
 export type TSecondaryButtonStyleMixin = TBaseMixin<'secondaryButton', TButtonStyleMixin['value']>;
+
+export type TBadgeStyleMixin = TBaseMixin<
+	'badge',
+	{
+		appearance: TAppearanceStyleMixin['value'];
+		fill: TFillStyleMixin['value'];
+		stroke: TStrokeStyleMixin['value'];
+		shadow: TShadowStyleMixin['value'];
+		text: TTextStyleMixin['value'];
+	}
+>;

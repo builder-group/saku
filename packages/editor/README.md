@@ -93,6 +93,37 @@ type TProductNode = TNode<'product', [
 // components.Text[entityId] = { typography: { font, fontSize, textColor } }
 ```
 
+### Why don't nodes have card styling by default?
+
+- **Default = Linktree style**: Everything is styled at the node layer level (card-like appearance)
+- **Flat design flexibility**: Users can flatten styling by removing fill/stroke/shadow from nodes
+- **Multi-item variants**: When nodes contain multiple items (link lists, product grids), individual items get card styling within a container
+- **Progressive complexity**: Simple single-item nodes stay simple, complex multi-item nodes get appropriate card structure
+
+#### When do we use card styling vs layer styling?
+
+```typescript
+// Single item: Style at layer level (default Linktree style)
+LinkNode: { fill: 'blue', stroke: '1px', shadow: '4px' } // Node IS the card
+
+// Multiple items: Container + individual cards
+LinkSectionNode: {
+  // Styling (mixins)
+  autoLayout: { gap: '8px' },
+  fill: { paint: 'gray' },       // Container background
+  card: {                        // Card mixin for individual links (highlighted as cards)
+    fill: { paint: 'white' },
+    stroke: { width: 1 },
+    shadow: { blur: 4 }
+  },
+  // Content data only
+  content: { links: [...] }
+}
+
+// Flat design: Remove layer styling
+LinkNode: { fill: null, stroke: null, shadow: null } // Flat appearance
+```
+
 ### What are tokens?
 
 - **Design tokens for mixins**: Named presets for mixins (e.g., `text`, `button`, `fill`, `appearance`) stored at the site level (e.g., `tokens.text.default`).
