@@ -102,7 +102,7 @@ export function resolvePageMetadata(
 	}
 
 	// If still undefined, try to extract from about node
-	if (title == null || description == null) {
+	if (title == null || description == null || favicon == null) {
 		const aboutNode = findAboutNode(node, cx);
 		if (aboutNode != null) {
 			if (title == null) {
@@ -110,6 +110,13 @@ export function resolvePageMetadata(
 			}
 			if (description == null && aboutNode.content.bio != null) {
 				description = aboutNode.content.bio;
+			}
+			if (favicon == null && aboutNode.content.profilePicture != null) {
+				const src = resolveAsset(aboutNode.content.profilePicture, cx.site)?.src;
+				if (src != null) {
+					const separator = src.includes('?') ? '&' : '?';
+					favicon = `${src}${separator}crop=center&height=32&width=32`;
+				}
 			}
 		}
 	}
