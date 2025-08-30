@@ -60,7 +60,7 @@ export const StaticCanvasPanelHeader: React.FC<TStaticCanvasPanelHeaderProps> = 
 	// =========================================================================
 
 	return (
-		<PanelHeader className="h-12 justify-between">
+		<PanelHeader className="justify-between">
 			<ButtonGroup variant="segmented">
 				<Button
 					icon={<Icon source={DesktopIcon} />}

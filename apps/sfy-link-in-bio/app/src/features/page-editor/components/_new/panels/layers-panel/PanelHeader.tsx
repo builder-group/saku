@@ -10,10 +10,6 @@ export const PanelHeader: React.FC<TPanelHeaderProps> = (props) => {
 	const { editor } = props;
 	const isDragging = useFeatureState(editor.isDraggingLayer);
 
-	// =========================================================================
-	// UI
-	// =========================================================================
-
 	return (
 		<PanelHeaderBase className="flex flex-row items-center justify-between">
 			<Text as="h2" variant="headingMd">

@@ -2,7 +2,7 @@ import { Button, ButtonGroup, Icon } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react';
 import React from 'react';
 import { DesktopIcon, LiveIcon, MobileIcon, PageDownIcon } from '@/components';
-import { useConfetti } from '@/hooks';
+import { PublishButton } from '../../../input';
 import { PanelHeader as BasePanelHeader } from '../../../PanelHeader';
 import { TPreviewPanelContext } from './create-preview-panel-context';
 
@@ -11,21 +11,9 @@ export const PanelHeader: React.FC<TPanelHeaderProps> = (props) => {
 
 	const viewMode = useFeatureState(cx.viewMode);
 
-	const [isPublishing, setIsPublishing] = React.useState(false);
-	const triggerConfetti = useConfetti();
-
 	// =========================================================================
 	// Events
 	// =========================================================================
-
-	const handlePublish = React.useCallback(async () => {
-		setIsPublishing(true);
-		const isPublished = await cx.editor.publish();
-		if (isPublished) {
-			triggerConfetti();
-		}
-		setIsPublishing(false);
-	}, [cx, triggerConfetti]);
 
 	const handleJsonExport = React.useCallback(() => {
 		const json = JSON.stringify(cx.editor.toSite(), null, 2);
@@ -60,7 +48,7 @@ export const PanelHeader: React.FC<TPanelHeaderProps> = (props) => {
 	// =========================================================================
 
 	return (
-		<BasePanelHeader className="h-12 justify-between">
+		<BasePanelHeader className="justify-between">
 			<ButtonGroup variant="segmented">
 				<Button
 					icon={<Icon source={DesktopIcon} />}
@@ -91,14 +79,7 @@ export const PanelHeader: React.FC<TPanelHeaderProps> = (props) => {
 					onClick={handleViewProductionSite}
 					accessibilityLabel="View production site"
 				/>
-				<Button
-					variant="primary"
-					onClick={handlePublish}
-					disabled={isPublishing}
-					loading={isPublishing}
-				>
-					Publish
-				</Button>
+				<PublishButton editor={cx.editor} />
 			</div>
 		</BasePanelHeader>
 	);

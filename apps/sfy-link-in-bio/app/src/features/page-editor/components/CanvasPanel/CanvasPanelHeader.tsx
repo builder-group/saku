@@ -33,7 +33,7 @@ export const CanvasPanelHeader: React.FC<TCanvasPanelHeaderProps> = (props) => {
 	// =========================================================================
 
 	return (
-		<PanelHeader className="h-12 justify-end">
+		<PanelHeader className="justify-end">
 			<div className="flex items-center gap-2">
 				<Button
 					icon={ViewIcon}

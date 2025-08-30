@@ -1,28 +1,16 @@
 import { Button } from '@shopify/polaris';
 import React from 'react';
 import { ViewIcon } from '@/components';
-import { useConfetti } from '@/hooks';
 import { TPageEditor } from '../../../../lib';
+import { PublishButton } from '../../../input';
 import { PanelHeader as PanelHeaderBase } from '../../../PanelHeader';
 
 export const PanelHeader: React.FC<TPanelHeaderProps> = (props) => {
 	const { editor } = props;
 
-	const [isPublishing, setIsPublishing] = React.useState(false);
-	const triggerConfetti = useConfetti();
-
 	// =========================================================================
 	// Events
 	// =========================================================================
-
-	const handlePublish = React.useCallback(async () => {
-		setIsPublishing(true);
-		const isPublished = await editor.publish();
-		if (isPublished) {
-			triggerConfetti();
-		}
-		setIsPublishing(false);
-	}, [editor, triggerConfetti]);
 
 	const handlePreview = React.useCallback(() => {
 		editor.switchView('preview');
@@ -33,7 +21,7 @@ export const PanelHeader: React.FC<TPanelHeaderProps> = (props) => {
 	// =========================================================================
 
 	return (
-		<PanelHeaderBase className="h-12 justify-end">
+		<PanelHeaderBase className="justify-end">
 			<div className="flex items-center gap-2">
 				<Button
 					icon={ViewIcon}
@@ -41,14 +29,7 @@ export const PanelHeader: React.FC<TPanelHeaderProps> = (props) => {
 					onClick={handlePreview}
 					accessibilityLabel="Preview your Link In Bio page"
 				/>
-				<Button
-					variant="primary"
-					onClick={handlePublish}
-					disabled={isPublishing}
-					loading={isPublishing}
-				>
-					Publish
-				</Button>
+				<PublishButton editor={editor} />
 			</div>
 		</PanelHeaderBase>
 	);

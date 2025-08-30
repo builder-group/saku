@@ -65,7 +65,6 @@ export const SettingsDesignPanel: React.FC<TSettingsDesignPanelProps> = (props) 
 			maxSize={sizes.maxSize}
 		>
 			<div className="flex h-full flex-col bg-white">
-				{' '}
 				<PanelHeader>
 					{/* Offset 8px Tab padding which can't be removed */}
 					<div className="-ml-2">

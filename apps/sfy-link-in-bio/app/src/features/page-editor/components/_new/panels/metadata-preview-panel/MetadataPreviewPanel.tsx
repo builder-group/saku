@@ -4,6 +4,7 @@ import React from 'react';
 import { ResizablePanel } from '@/components';
 import { EditorSiteResolveContext, TPageEditor } from '../../../../lib';
 import { resolvePageMetadata } from '../../../../nodes';
+import { PublishButton } from '../../../input';
 import { PanelHeader } from '../../../PanelHeader';
 import { DefaultOGPreview, FacebookOGPreview, LinkedInOGPreview, XOGPreview } from './previews';
 import { tabs } from './tabs';
@@ -65,11 +66,12 @@ export const MetadataPreviewPanel: React.FC<TMetadataPreviewPanelProps> = (props
 	return (
 		<ResizablePanel id="metadata-preview-panel" order={order} className="relative">
 			<div className="flex h-full min-w-96 flex-col bg-white">
-				<PanelHeader>
+				<PanelHeader className="justify-between">
 					{/* Offset 8px Tab padding which can't be removed */}
 					<div className="-ml-2">
 						<Tabs tabs={tabs} selected={tabIndex} onSelect={handleTabChange} />
 					</div>
+					<PublishButton editor={editor} />
 				</PanelHeader>
 				<div className="flex-1 overflow-auto p-4">
 					<div className="max-w-md">{renderPreview()}</div>
