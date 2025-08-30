@@ -95,7 +95,7 @@ export function resolvePageMetadata(
 		description = node.content.metadata.description;
 	}
 	if (node.content.metadata?.favicon != null) {
-		favicon = node.content.metadata.favicon;
+		favicon = resolveAsset(node.content.metadata.favicon, cx.site)?.src;
 	}
 	if (node.content.metadata?.image != null) {
 		image = resolveAsset(node.content.metadata.image, cx.site)?.src;
