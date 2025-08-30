@@ -58,6 +58,7 @@ export type TPageNodeMixin = TBaseMixin<
 			metadata: {
 				title?: string;
 				description?: string;
+				favicon?: TAssetHash;
 				image?: TAssetHash;
 			};
 		};

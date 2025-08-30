@@ -73,16 +73,18 @@ export function resolvePageNodeWithoutChildren(
 	});
 }
 
-function resolvePageMetadata(
+export function resolvePageMetadata(
 	node: TFlatPageNode,
 	cx: TNodeResolveContext
 ): {
 	title: string;
 	description: string;
+	favicon: string;
 	image?: string;
 } {
 	let title: string | undefined;
 	let description: string | undefined;
+	let favicon: string | undefined;
 	let image: string | undefined;
 
 	// Use page metadata if available
@@ -92,12 +94,15 @@ function resolvePageMetadata(
 	if (node.content.metadata?.description != null) {
 		description = node.content.metadata.description;
 	}
+	if (node.content.metadata?.favicon != null) {
+		favicon = resolveAsset(node.content.metadata.favicon, cx.site)?.src;
+	}
 	if (node.content.metadata?.image != null) {
 		image = resolveAsset(node.content.metadata.image, cx.site)?.src;
 	}
 
 	// If still undefined, try to extract from about node
-	if (title == null || description == null) {
+	if (title == null || description == null || favicon == null) {
 		const aboutNode = findAboutNode(node, cx);
 		if (aboutNode != null) {
 			if (title == null) {
@@ -106,6 +111,13 @@ function resolvePageMetadata(
 			if (description == null && aboutNode.content.bio != null) {
 				description = aboutNode.content.bio;
 			}
+			if (favicon == null && aboutNode.content.profilePicture != null) {
+				const src = resolveAsset(aboutNode.content.profilePicture, cx.site)?.src;
+				if (src != null) {
+					const separator = src.includes('?') ? '&' : '?';
+					favicon = `${src}${separator}crop=center&height=32&width=32`;
+				}
+			}
 		}
 	}
 
@@ -113,6 +125,7 @@ function resolvePageMetadata(
 	return {
 		title: title ?? 'Link in Bio - Saku',
 		description: description ?? 'Check out this link in bio page created with Saku',
+		favicon: favicon ?? 'https://sfy-link-in-bio-app.saku.so/favicon.ico',
 		image
 	};
 }

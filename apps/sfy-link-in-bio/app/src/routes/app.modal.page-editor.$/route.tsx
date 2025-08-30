@@ -6,7 +6,7 @@ import React from 'react';
 import { Err, Ok } from 'tuple-result';
 import { shopify, shopifyConfig } from '@/.server/environment';
 import { coreApiClient } from '@/environment';
-import { createPageEditor, Editor } from '@/features/page-editor';
+import { createPageEditor, PageEditor } from '@/features/page-editor';
 import { createHandleFromShop, resultLoader, withResultLoader } from '@/lib';
 import { THeadersFunction, TLinksFunction } from '@/types';
 import styles from './styles.css?url';
@@ -25,7 +25,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 
 		return (
 			<div className="flex min-h-screen w-full">
-				<Editor editor={editor} />
+				<PageEditor editor={editor} />
 			</div>
 		);
 	},
