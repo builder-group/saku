@@ -9,11 +9,9 @@ export const linkNodeMetadata: TNodeMetadata<'link'> = {
 	internal: false,
 	defaultData: {
 		content: {
+			type: 'single',
 			url: 'https://www.shopify.com/',
-			variant: {
-				type: 'default',
-				title: 'Add your title here'
-			}
+			title: 'Add your title here'
 		},
 		autoLayout: {
 			horizontalPadding: tokenRef(),

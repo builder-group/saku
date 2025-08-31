@@ -10,7 +10,7 @@ import {
 	resolveStrokeStyleMixin,
 	resolveTextStyleMixin
 } from '../../mixins';
-import { TResolvedAboutNode } from './types';
+import { TResolvedAboutNode, TResolvedAboutNodeContent } from './types';
 
 export function resolveAboutNode(
 	node: TAboutNode,
@@ -18,6 +18,19 @@ export function resolveAboutNode(
 ): TResult<TResolvedAboutNode, AppError> {
 	const { content, autoLayout, appearance, fill, stroke, shadow, text, ...rest } = node;
 
+	// Resolve content
+	let resolvedContent: TResolvedAboutNodeContent;
+	switch (content.type) {
+		case 'default': {
+			resolvedContent = {
+				...content,
+				profilePicture:
+					content.profilePicture != null ? resolveAsset(content.profilePicture, cx.site) : undefined
+			};
+		}
+	}
+
+	// Resolve styles
 	const [isResolvedAutoLayoutOk, resolvedAutoLayoutErr, resolvedAutoLayout] =
 		resolveAutoLayoutStyleMixin(autoLayout, {
 			node: cx,
@@ -71,11 +84,7 @@ export function resolveAboutNode(
 
 	return Ok({
 		...rest,
-		content: {
-			...content,
-			profilePicture:
-				content.profilePicture != null ? resolveAsset(content.profilePicture, cx.site) : undefined
-		},
+		content: resolvedContent,
 		autoLayout: resolvedAutoLayout,
 		appearance: resolvedAppearance,
 		fill: resolvedFill,

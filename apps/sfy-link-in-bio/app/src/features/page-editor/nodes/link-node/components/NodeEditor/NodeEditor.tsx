@@ -1,4 +1,4 @@
-import { TDefaultLinkVariant, TLinkNode, TYouTubeVideoEmbedVariant } from '@repo/editor';
+import { TLinkNode, TSingleLinkNodeContent, TYouTubeVideoEmbedLinkNodeContent } from '@repo/editor';
 import { useAppBridge } from '@shopify/app-bridge-react';
 import { Select, Text, TextField } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react/state';
@@ -14,45 +14,43 @@ import {
 	StrokeStyleMixinEditor,
 	TextStyleMixinEditor
 } from '../../../../mixins';
-import { DefaultLinkVariant } from './DefaultLinkVariant';
-import { linkVariantMetadataMap, TVariantType } from './environment';
-import { getApplicableVariants } from './lib';
-import { YoutubeVideoEmbedVariant } from './YoutubeVideoEmbedVariant';
+import { contentMetadataMap, TContentType } from './environment';
+import { getApplicableContent } from './lib';
+import { SingleContent } from './SingleContent';
+import { YoutubeVideoEmbedContent } from './YoutubeVideoEmbedContent';
 
 export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (props) => {
 	const { nodeState, editor } = props;
 	const { content } = useFeatureState(nodeState);
 	const shopify = useAppBridge();
 
-	const [selectedVariantType, setSelectedVariantType] = React.useState<TVariantType>(() => {
-		return content.variant.type;
-	});
+	const [selectedVariantType, setSelectedVariantType] = React.useState<TContentType>(
+		() => content.type
+	);
 	const [isChangingVariant, setIsChangingVariant] = React.useState(false);
 	const [isEnhancingVariant, setIsEnhancingVariant] = React.useState(false);
 
-	const availableVariants = React.useMemo(() => getApplicableVariants(content.url), [content.url]);
+	const availableVariants = React.useMemo(() => getApplicableContent(content.url), [content.url]);
 
 	// =========================================================================
 	// Events
 	// =========================================================================
 
 	const handleVariantTypeChange = React.useCallback(
-		async (value: TVariantType) => {
-			setSelectedVariantType(value as TVariantType);
+		async (value: TContentType) => {
+			setSelectedVariantType(value as TContentType);
 
 			try {
-				const targetMetadata = linkVariantMetadataMap[value];
+				const targetMetadata = contentMetadataMap[value];
 				if (targetMetadata == null) {
 					shopify.toast.show('Unknown variant type', { duration: 3000 });
 					return;
 				}
 
 				// Extract common fields from current variant
-				const commonFields = linkVariantMetadataMap[content.variant.type].extractCommonFields(
-					content.variant as any
-				);
+				const commonFields = contentMetadataMap[content.type].extractCommonFields(content as any);
 
-				const variantResult = await targetMetadata.createVariant({
+				const variantResult = await targetMetadata.createContent({
 					url: content.url,
 					common: commonFields,
 					editor,
@@ -73,7 +71,7 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 					setIsEnhancingVariant(true);
 
 					targetMetadata
-						.enhanceVariant({
+						.enhanceContent({
 							url: content.url,
 							editor,
 							shopify,
@@ -92,7 +90,7 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 				setIsChangingVariant(false);
 			}
 		},
-		[content.url, content.variant, editor, nodeState, shopify]
+		[content, editor, nodeState, shopify]
 	);
 
 	const handleUrlChange = React.useCallback(
@@ -104,28 +102,28 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 	);
 
 	const handleUrlBlur = React.useCallback(async () => {
-		const currentVariantType = content.variant.type;
-		const metadata = linkVariantMetadataMap[currentVariantType];
+		const currentVariantType = content.type;
+		const metadata = contentMetadataMap[currentVariantType];
 
 		// Check if current variant is still valid for the new URL
-		const availableVariants = getApplicableVariants(content.url);
+		const availableVariants = getApplicableContent(content.url);
 		const isCurrentVariantValid = availableVariants.some(
 			(variant) => variant.value === currentVariantType
 		);
 
 		// If current variant is no longer valid, switch to default
-		if (!isCurrentVariantValid && currentVariantType !== 'default') {
-			handleVariantTypeChange('default');
+		if (!isCurrentVariantValid && currentVariantType !== 'single') {
+			handleVariantTypeChange('single');
 			return;
 		}
 
-		if (metadata?.enhanceVariant == null) {
+		if (metadata?.enhanceContent == null) {
 			return;
 		}
 
 		setIsEnhancingVariant(true);
 		metadata
-			.enhanceVariant({
+			.enhanceContent({
 				url: content.url,
 				editor,
 				shopify,
@@ -139,26 +137,26 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 			.finally(() => {
 				setIsEnhancingVariant(false);
 			});
-	}, [content.url, content.variant.type, editor, nodeState, shopify, handleVariantTypeChange]);
+	}, [content, editor, nodeState, shopify, handleVariantTypeChange]);
 
 	// =========================================================================
 	// UI
 	// =========================================================================
 
 	const renderVariantEditor = React.useCallback((): React.ReactElement | null => {
-		switch (content.variant.type) {
-			case 'default':
+		switch (content.type) {
+			case 'single':
 				return (
-					<DefaultLinkVariant
-						nodeState={nodeState as TNodeState<TLinkNode<TDefaultLinkVariant>>}
+					<SingleContent
+						nodeState={nodeState as TNodeState<TLinkNode<TSingleLinkNodeContent>>}
 						editor={editor}
 						isEnhancing={isEnhancingVariant}
 					/>
 				);
 			case 'youtube-video-embed':
 				return (
-					<YoutubeVideoEmbedVariant
-						nodeState={nodeState as TNodeState<TLinkNode<TYouTubeVideoEmbedVariant>>}
+					<YoutubeVideoEmbedContent
+						nodeState={nodeState as TNodeState<TLinkNode<TYouTubeVideoEmbedLinkNodeContent>>}
 						editor={editor}
 						isEnhancing={isEnhancingVariant}
 					/>
@@ -166,7 +164,7 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 			default:
 				return null;
 		}
-	}, [content.variant.type, editor, nodeState, isEnhancingVariant]);
+	}, [content.type, editor, nodeState, isEnhancingVariant]);
 
 	return (
 		<>

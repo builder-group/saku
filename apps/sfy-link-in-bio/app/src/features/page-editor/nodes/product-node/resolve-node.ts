@@ -1,5 +1,5 @@
 import { notEmpty } from '@blgc/utils';
-import { TProductNode } from '@repo/editor';
+import { TProduct, TProductNode } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
 import { resolveAsset, TNodeResolveContext } from '../../lib';
@@ -12,7 +12,7 @@ import {
 	resolveStrokeStyleMixin,
 	resolveTextStyleMixin
 } from '../../mixins';
-import { TResolvedProduct, TResolvedProductNode } from './types';
+import { TResolvedProduct, TResolvedProductNode, TResolvedProductNodeContent } from './types';
 
 export function resolveProductNode(
 	node: TProductNode,
@@ -20,25 +20,22 @@ export function resolveProductNode(
 ): TResult<TResolvedProductNode, AppError> {
 	const { content, autoLayout, appearance, fill, stroke, shadow, text, button, ...rest } = node;
 
-	let resolvedProduct: TResolvedProduct | undefined;
-	if (content.product != null) {
-		const variants = content.product.variants
-			.map((variant) => ({
-				...variant,
-				image: variant.image != null ? resolveAsset(variant.image, cx.site) : undefined
-			}))
-			.filter(notEmpty);
-
-		resolvedProduct = {
-			id: content.product.id,
-			title: content.product.title,
-			description: content.product.description,
-			images: content.product.images.map((asset) => resolveAsset(asset, cx.site)).filter(notEmpty),
-			options: content.product.options,
-			variants
-		};
+	// Resolve content
+	let resolvedContent: TResolvedProductNodeContent;
+	switch (content.type) {
+		case 'single': {
+			let resolvedProduct: TResolvedProduct | undefined;
+			if (content.product != null) {
+				resolvedProduct = resolveProduct(content.product, cx);
+			}
+			resolvedContent = {
+				...content,
+				product: resolvedProduct
+			};
+		}
 	}
 
+	// Resolve styles
 	const [isResolvedAutoLayoutOk, resolvedAutoLayoutErr, resolvedAutoLayout] =
 		resolveAutoLayoutStyleMixin(autoLayout, {
 			node: cx,
@@ -100,9 +97,7 @@ export function resolveProductNode(
 
 	return Ok({
 		...rest,
-		content: {
-			product: resolvedProduct
-		},
+		content: resolvedContent,
 		autoLayout: resolvedAutoLayout,
 		appearance: resolvedAppearance,
 		fill: resolvedFill,
@@ -111,4 +106,22 @@ export function resolveProductNode(
 		text: resolvedText,
 		button: resolvedButton
 	});
+}
+
+export function resolveProduct(product: TProduct, cx: TNodeResolveContext): TResolvedProduct {
+	const variants = product.variants
+		.map((variant) => ({
+			...variant,
+			image: variant.image != null ? resolveAsset(variant.image, cx.site) : undefined
+		}))
+		.filter(notEmpty);
+
+	return {
+		id: product.id,
+		title: product.title,
+		description: product.description,
+		images: product.images.map((asset) => resolveAsset(asset, cx.site)).filter(notEmpty),
+		options: product.options,
+		variants
+	};
 }

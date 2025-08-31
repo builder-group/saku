@@ -18,7 +18,7 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 
 	const [mediaImageError, setImageError] = React.useState<string | null>(null);
 	const [selectedMediaType, setSelectedMediaType] = React.useState<TMediaType>(() => {
-		return content.media?.type ?? 'image';
+		return content.type ?? 'image';
 	});
 
 	const mediaImage = React.useMemo(() => {
@@ -55,7 +55,6 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 					const hash = editor.registerImage(event.url, event.fileName);
 					if (hash != null) {
 						nodeState._v.content.media = {
-							type: 'image',
 							hash,
 							altText: event.fileName
 						};
@@ -178,4 +177,4 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 	);
 };
 
-type TMediaType = NonNullable<TMediaNode['content']['media']>['type'];
+type TMediaType = TMediaNode['content']['type'];

@@ -1,4 +1,4 @@
-import { TBaseMixin, TBaseNode, TContent, TIdMixin } from '@repo/editor';
+import { TBaseContentVariant, TBaseMixin, TBaseNode, TIdMixin, TRichContent } from '@repo/editor';
 import { TResolvedAsset } from '../../lib';
 import {
 	TResolvedAppearanceStyleMixin,
@@ -10,8 +10,10 @@ import {
 	TResolvedTextStyleMixin
 } from '../../mixins';
 
-export type TResolvedProductNode = TBaseNode<
-	TResolvedProductNodeMixin,
+export type TResolvedProductNode<
+	GContent extends TResolvedProductNodeContent = TResolvedProductNodeContent
+> = TBaseNode<
+	TResolvedProductNodeMixin<GContent>,
 	[
 		TIdMixin,
 		TResolvedAutoLayoutStyleMixin,
@@ -24,20 +26,27 @@ export type TResolvedProductNode = TBaseNode<
 	]
 >;
 
-export type TResolvedProductNodeMixin = TBaseMixin<
+export type TResolvedProductNodeMixin<
+	GContent extends TResolvedProductNodeContent = TResolvedProductNodeContent
+> = TBaseMixin<
 	'node',
 	{
 		type: 'product';
-		content: {
-			product?: TResolvedProduct;
-		};
+		content: GContent;
 	}
 >;
+
+export type TResolvedProductNodeContent = TResolvedSingleProductNodeContent;
+
+export interface TResolvedSingleProductNodeContent extends TBaseContentVariant {
+	type: 'single';
+	product?: TResolvedProduct;
+}
 
 export interface TResolvedProduct {
 	id: string;
 	title: string;
-	description?: TContent;
+	description?: TRichContent;
 	images: TResolvedAsset[];
 	options: { name: string; values: string[] }[];
 	variants: {

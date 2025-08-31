@@ -125,7 +125,7 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 				}
 
 				// Determine variant based on __typename
-				let variant: TLinkNode['content']['variant'];
+				let content: TLinkNode['content'];
 				let autoLayout: TLinkNode['autoLayout'] = {
 					horizontalPadding: tokenRef(),
 					verticalPadding: tokenRef()
@@ -140,8 +140,9 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 					case 'YouTubeVideoLink': {
 						const videoId = extractYouTubeVideoId(link.url);
 						if (videoId != null) {
-							variant = {
+							content = {
 								type: 'youtube-video-embed' as const,
+								url: link.url,
 								videoId
 							};
 							autoLayout = {
@@ -154,8 +155,9 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 								borderRadius: Math.min(borderRadius, 40)
 							};
 						} else {
-							variant = {
-								type: 'default' as const,
+							content = {
+								type: 'single' as const,
+								url: link.url,
 								userTitle: link.title,
 								userFavicon: faviconHash
 							};
@@ -163,8 +165,9 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 						break;
 					}
 					default:
-						variant = {
-							type: 'default' as const,
+						content = {
+							type: 'single' as const,
+							url: link.url,
 							userTitle: link.title,
 							userFavicon: faviconHash
 						};
@@ -174,10 +177,7 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 				children.push({
 					id: createId('node'),
 					type: 'link',
-					content: {
-						url: link.url,
-						variant
-					},
+					content,
 					autoLayout,
 					appearance,
 					fill: tokenRef(),
@@ -207,7 +207,8 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 					id: createId('node'),
 					type: 'text',
 					content: {
-						text: link.title
+						type: 'default',
+						text: { type: 'markdown', value: link.title }
 					},
 					autoLayout: {
 						horizontalPadding: tokenRef(),
@@ -251,8 +252,9 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 			id: createId('node'),
 			type: 'page',
 			content: {
-				metadata: {}
+				type: 'default'
 			},
+			metadata: {},
 			children,
 			autoLayout: {
 				horizontalPadding: 24,

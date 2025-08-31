@@ -9,7 +9,8 @@ export const textNodeMetadata: TNodeMetadata<'text'> = {
 	internal: false,
 	defaultData: {
 		content: {
-			text: 'Add your text here'
+			type: 'default',
+			text: { type: 'markdown', value: 'Add your text here' }
 		},
 		autoLayout: {
 			horizontalPadding: tokenRef(),

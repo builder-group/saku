@@ -7,13 +7,13 @@ export function getLinkNodeAssetHashes(node: TLinkNode): TAssetHash[] {
 	const hashes: TAssetHash[] = [];
 
 	// Favicon asset
-	switch (node.content.variant.type) {
-		case 'default': {
-			if (node.content.variant.userFavicon != null) {
-				hashes.push(node.content.variant.userFavicon);
+	switch (node.content.type) {
+		case 'single': {
+			if (node.content.userFavicon != null) {
+				hashes.push(node.content.userFavicon);
 			}
-			if (node.content.variant.favicon != null) {
-				hashes.push(node.content.variant.favicon);
+			if (node.content.favicon != null) {
+				hashes.push(node.content.favicon);
 			}
 			break;
 		}

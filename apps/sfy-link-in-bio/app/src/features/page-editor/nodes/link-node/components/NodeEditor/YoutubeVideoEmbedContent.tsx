@@ -1,13 +1,13 @@
-import { TLinkNode, TYouTubeVideoEmbedVariant } from '@repo/editor';
+import { TLinkNode, TYouTubeVideoEmbedLinkNodeContent } from '@repo/editor';
 import { Text, TextField } from '@shopify/polaris';
 import { useCompute, useListener } from 'feature-react/state';
 import React from 'react';
 import { TNodeState, TPageEditor } from '../../../../lib';
 import { extractYouTubeVideoId } from './lib';
 
-export const YoutubeVideoEmbedVariant: React.FC<TYoutubeVideoEmbedVariantProps> = (props) => {
+export const YoutubeVideoEmbedContent: React.FC<TYoutubeVideoEmbedContentProps> = (props) => {
 	const { nodeState, isEnhancing = false } = props;
-	const variant = useCompute(nodeState, ({ value: node }) => node.content.variant);
+	const content = useCompute(nodeState, ({ value }) => value.content);
 
 	// =========================================================================
 	// Events
@@ -15,8 +15,7 @@ export const YoutubeVideoEmbedVariant: React.FC<TYoutubeVideoEmbedVariantProps> 
 
 	const handleVideoIdChange = React.useCallback(
 		(value: string) => {
-			const embedVariant = nodeState._v.content.variant;
-			embedVariant.videoId = value;
+			nodeState._v.content.videoId = value;
 			nodeState._notify({ listenerContext: { source: 'video-id-change' } });
 		},
 		[nodeState]
@@ -29,7 +28,7 @@ export const YoutubeVideoEmbedVariant: React.FC<TYoutubeVideoEmbedVariantProps> 
 	useListener(
 		nodeState,
 		({ value: node, source }) => {
-			const embedVariant = node.content.variant;
+			const embedVariant = node.content;
 
 			// Sync videoId to URL
 			if (source === 'video-id-change') {
@@ -73,7 +72,7 @@ export const YoutubeVideoEmbedVariant: React.FC<TYoutubeVideoEmbedVariantProps> 
 					id="video-id-field"
 					label="Video ID"
 					labelHidden
-					value={variant.videoId}
+					value={content.videoId}
 					onChange={handleVideoIdChange}
 					autoComplete="off"
 					placeholder="dQw4w9WgXcQ"
@@ -84,8 +83,8 @@ export const YoutubeVideoEmbedVariant: React.FC<TYoutubeVideoEmbedVariantProps> 
 	);
 };
 
-interface TYoutubeVideoEmbedVariantProps {
-	nodeState: TNodeState<TLinkNode<TYouTubeVideoEmbedVariant>>;
+interface TYoutubeVideoEmbedContentProps {
+	nodeState: TNodeState<TLinkNode<TYouTubeVideoEmbedLinkNodeContent>>;
 	editor: TPageEditor;
 	isEnhancing?: boolean;
 }

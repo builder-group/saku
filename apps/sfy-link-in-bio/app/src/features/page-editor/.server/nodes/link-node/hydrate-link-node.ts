@@ -20,6 +20,8 @@ export function hydrateLinkNode(
 		next: (async () => {
 			const { content, ...rest } = node;
 
+			// TODO: Refetch link data
+
 			// const result = await coreApiClient.get('/v1/url/metadata', {
 			// 	queryParams: { url: content.url },
 			// 	requestMiddlewares: [accessSecretMiddleware]

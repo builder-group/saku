@@ -9,58 +9,45 @@ import {
 	TResolvedTextStyleMixin
 } from '../../mixins';
 
-export type TResolvedLinkNode<GVariant extends TResolvedLinkVariant = TResolvedLinkVariant> =
-	TBaseNode<
-		TResolvedLinkNodeMixin<GVariant>,
-		[
-			TIdMixin,
-			TResolvedAutoLayoutStyleMixin,
-			TResolvedAppearanceStyleMixin,
-			TResolvedFillStyleMixin,
-			TResolvedStrokeStyleMixin,
-			TResolvedShadowStyleMixin,
-			TResolvedTextStyleMixin
-		]
-	>;
+export type TResolvedLinkNode<
+	GContent extends TResolvedLinkNodeContent = TResolvedLinkNodeContent
+> = TBaseNode<
+	TResolvedLinkNodeMixin<GContent>,
+	[
+		TIdMixin,
+		TResolvedAutoLayoutStyleMixin,
+		TResolvedAppearanceStyleMixin,
+		TResolvedFillStyleMixin,
+		TResolvedStrokeStyleMixin,
+		TResolvedShadowStyleMixin,
+		TResolvedTextStyleMixin
+	]
+>;
 
-export type TResolvedLinkNodeMixin<GVariant extends TResolvedLinkVariant = TResolvedLinkVariant> =
-	TBaseMixin<
-		'node',
-		{
-			type: 'link';
-			content: {
-				url: string;
-				variant: GVariant;
-			};
-		}
-	>;
+export type TResolvedLinkNodeMixin<
+	GContent extends TResolvedLinkNodeContent = TResolvedLinkNodeContent
+> = TBaseMixin<
+	'node',
+	{
+		type: 'link';
+		content: GContent;
+	}
+>;
 
-export type TResolvedLinkVariant =
-	| TResolvedDefaultLinkVariant
-	// | TResolvedYouTubeVideoLinkVariant
-	// | TResolvedYouTubeChannelLinkVariant
-	| TResolvedYouTubeVideoEmbedLinkVariant;
+export type TResolvedLinkNodeContent =
+	| TResolvedSingleLinkNodeContent
+	| TResolvedYouTubeVideoEmbedLinkNodeContent;
 
-export interface TResolvedDefaultLinkVariant {
-	type: 'default';
+export interface TResolvedSingleLinkNodeContent {
+	type: 'single';
+	url: string;
 	title?: string;
 	description?: string;
 	favicon?: TResolvedAsset;
 }
 
-export interface TResolvedYouTubeVideoLinkVariant {
-	type: 'youtube-video';
-	title?: string;
-	thumbnail?: TResolvedAsset;
-}
-
-export interface TResolvedYouTubeChannelLinkVariant {
-	type: 'youtube-channel';
-	title?: string;
-	avatar?: TResolvedAsset;
-}
-
-export interface TResolvedYouTubeVideoEmbedLinkVariant {
+export interface TResolvedYouTubeVideoEmbedLinkNodeContent {
 	type: 'youtube-video-embed';
+	url: string;
 	embedUrl: string;
 }

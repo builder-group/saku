@@ -35,6 +35,7 @@ export function resolvePageNodeWithoutChildren(
 ): TResult<Omit<TResolvedPageNode, 'children'>, AppError> {
 	const { autoLayout, appearance, fill, ...rest } = node;
 
+	// Resolve styles
 	const [isResolvedAutoLayoutOk, resolvedAutoLayoutErr, resolvedAutoLayout] =
 		resolveAutoLayoutStyleMixin(autoLayout, {
 			node: cx,
@@ -64,9 +65,7 @@ export function resolvePageNodeWithoutChildren(
 
 	return Ok({
 		...rest,
-		content: {
-			metadata: resolvePageMetadata(node, cx)
-		},
+		metadata: resolvePageMetadata(node, cx),
 		autoLayout: resolvedAutoLayout,
 		appearance: resolvedAppearance,
 		fill: resolvedFill
@@ -88,17 +87,17 @@ export function resolvePageMetadata(
 	let image: string | undefined;
 
 	// Use page metadata if available
-	if (node.content.metadata?.title != null) {
-		title = node.content.metadata.title;
+	if (node.metadata?.title != null) {
+		title = node.metadata.title;
 	}
-	if (node.content.metadata?.description != null) {
-		description = node.content.metadata.description;
+	if (node.metadata?.description != null) {
+		description = node.metadata.description;
 	}
-	if (node.content.metadata?.favicon != null) {
-		favicon = resolveAsset(node.content.metadata.favicon, cx.site)?.src;
+	if (node.metadata?.favicon != null) {
+		favicon = resolveAsset(node.metadata.favicon, cx.site)?.src;
 	}
-	if (node.content.metadata?.image != null) {
-		image = resolveAsset(node.content.metadata.image, cx.site)?.src;
+	if (node.metadata?.image != null) {
+		image = resolveAsset(node.metadata.image, cx.site)?.src;
 	}
 
 	// If still undefined, try to extract from about node

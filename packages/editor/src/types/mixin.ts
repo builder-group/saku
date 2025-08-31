@@ -2,14 +2,13 @@ import { TRgba } from '../lib';
 import { TNode, TNodeId } from './node';
 import { TRef } from './ref';
 import {
-	TAction,
 	TAssetHash,
-	TContent,
 	TFont,
 	TIntegrationId,
 	TLetterSpacing,
 	TLineHeight,
 	TPaint,
+	TRichContent,
 	TSocialLink,
 	TTextAlign
 } from './utils';
@@ -41,7 +40,7 @@ export type TFlatChildrenMixin = TBaseMixin<'children', TNodeId[]>;
 // Node Mixins
 // =========================================================================
 
-export interface TBaseNodeVariant {
+export interface TBaseContentVariant {
 	type: string;
 }
 
@@ -53,11 +52,11 @@ export type TNodeMixin =
 	| TTextNodeMixin
 	| TProductNodeMixin;
 
-export type TPageNodeMixin<GVariant extends TPageNodeVariant = TPageNodeVariant> = TBaseMixin<
+export type TPageNodeMixin<GContent extends TPageNodeContent = TPageNodeContent> = TBaseMixin<
 	'node',
 	{
 		type: 'page';
-		content: GVariant;
+		content: GContent;
 		metadata: {
 			title?: string;
 			description?: string;
@@ -67,56 +66,53 @@ export type TPageNodeMixin<GVariant extends TPageNodeVariant = TPageNodeVariant>
 	}
 >;
 
-export type TPageNodeVariant = TDefaultPageNodeVariant;
+export type TPageNodeContent = TDefaultPageNodeContent;
 
-export interface TDefaultPageNodeVariant extends TBaseNodeVariant {
+export interface TDefaultPageNodeContent extends TBaseContentVariant {
 	type: 'default';
 }
 
-export type TAboutNodeMixin<GVariant extends TAboutNodeVariant = TAboutNodeVariant> = TBaseMixin<
+export type TAboutNodeMixin<GContent extends TAboutNodeContent = TAboutNodeContent> = TBaseMixin<
 	'node',
 	{
 		type: 'about';
-		content: GVariant;
+		content: GContent;
 	}
 >;
 
-export type TAboutNodeVariant = TClassicAboutNodeVariant | THeroAboutNodeVariant;
+export type TAboutNodeContent = TDefaultAboutNodeContent;
 
-export interface TClassicAboutNodeVariant extends TBaseNodeVariant {
-	type: 'classic'; // profile picture → name → bio
+export interface TDefaultAboutNodeContent extends TBaseContentVariant {
+	type: 'default';
 	name: string;
 	bio?: string;
 	profilePicture?: TAssetHash;
 	socialLinks: TSocialLink[];
 }
 
-export interface THeroAboutNodeVariant extends TBaseNodeVariant {
-	type: 'hero'; // big headline → description → small profile picture
-	headline: string;
-	description?: string;
-	name?: string;
-	profilePicture?: TAssetHash;
-	callToAction?: {
-		label: string;
-		action: TAction;
-	};
-}
+// export interface THeroAboutNodeVariant extends TBaseNodeVariant {
+// 	type: 'hero'; // big headline → description → small profile picture
+// 	headline: string;
+// 	description?: string;
+// 	name?: string;
+// 	profilePicture?: TAssetHash;
+// 	callToAction?: {
+// 		label: string;
+// 		action: TAction;
+// 	};
+// }
 
-export type TLinkNodeMixin<GVariant extends TLinkNodeVariant = TLinkNodeVariant> = TBaseMixin<
+export type TLinkNodeMixin<GContent extends TLinkNodeContent = TLinkNodeContent> = TBaseMixin<
 	'node',
 	{
 		type: 'link';
-		content: GVariant;
+		content: GContent;
 	}
 >;
 
-export type TLinkNodeVariant =
-	| TSingleLinkNodeVariant
-	| TYouTubeVideoEmbedNodeVariant
-	| TMultiLinkNodeVariant;
+export type TLinkNodeContent = TSingleLinkNodeContent | TYouTubeVideoEmbedLinkNodeContent;
 
-export interface TSingleLinkNodeVariant extends TBaseNodeVariant {
+export interface TSingleLinkNodeContent extends TBaseContentVariant {
 	type: 'single';
 	url: string;
 	// User overrides (take priority)
@@ -129,34 +125,34 @@ export interface TSingleLinkNodeVariant extends TBaseNodeVariant {
 	favicon?: TAssetHash;
 }
 
-export interface TYouTubeVideoEmbedNodeVariant extends TBaseNodeVariant {
+export interface TYouTubeVideoEmbedLinkNodeContent extends TBaseContentVariant {
 	type: 'youtube-video-embed';
 	url: string;
 	videoId: string;
 }
 
-export interface TMultiLinkNodeVariant extends TBaseNodeVariant {
-	type: 'multi';
-	title?: string;
-	links: {
-		url: string;
-		title?: string;
-		description?: string;
-		favicon?: TAssetHash;
-	}[];
-}
+// export interface TMultiLinkNodeContent extends TBaseContentVariant {
+// 	type: 'multi';
+// 	title?: string;
+// 	links: {
+// 		url: string;
+// 		title?: string;
+// 		description?: string;
+// 		favicon?: TAssetHash;
+// 	}[];
+// }
 
-export type TMediaNodeMixin<GVariant extends TMediaNodeVariant = TMediaNodeVariant> = TBaseMixin<
+export type TMediaNodeMixin<GContent extends TMediaNodeContent = TMediaNodeContent> = TBaseMixin<
 	'node',
 	{
 		type: 'media';
-		content: GVariant;
+		content: GContent;
 	}
 >;
 
-export type TMediaNodeVariant = TImageMediaNodeVariant | TVideoMediaNodeVariant;
+export type TMediaNodeContent = TImageMediaNodeContent;
 
-export interface TImageMediaNodeVariant extends TBaseNodeVariant {
+export interface TImageMediaNodeContent extends TBaseContentVariant {
 	type: 'image';
 	media?: {
 		hash: TAssetHash;
@@ -164,59 +160,61 @@ export interface TImageMediaNodeVariant extends TBaseNodeVariant {
 	};
 }
 
-export interface TVideoMediaNodeVariant extends TBaseNodeVariant {
-	type: 'video';
-	media?: {
-		hash: TAssetHash;
-		autoplay?: boolean;
-		muted?: boolean;
-		controls?: boolean;
-	};
-}
+// export interface TVideoMediaNodeVariant extends TBaseNodeVariant {
+// 	type: 'video';
+// 	media?: {
+// 		hash: TAssetHash;
+// 		autoplay?: boolean;
+// 		muted?: boolean;
+// 		controls?: boolean;
+// 	};
+// }
 
-export type TTextNodeMixin<GVariant extends TTextNodeVariant = TTextNodeVariant> = TBaseMixin<
+export type TTextNodeMixin<GContent extends TTextNodeContent = TTextNodeContent> = TBaseMixin<
 	'node',
 	{
 		type: 'text';
-		content: GVariant;
+		content: GContent;
 	}
 >;
 
-export type TTextNodeVariant = TPlainTextNodeVariant;
+export type TTextNodeContent = TDefaultTextNodeContent;
 
-export interface TPlainTextNodeVariant extends TBaseNodeVariant {
-	type: 'plain';
-	text: string;
+export interface TDefaultTextNodeContent extends TBaseContentVariant {
+	type: 'default';
+	text: TRichContent;
 }
 
-export type TProductNodeMixin<GVariant extends TProductNodeVariant = TProductNodeVariant> =
+export type TProductNodeMixin<GContent extends TProductNodeContent = TProductNodeContent> =
 	TBaseMixin<
 		'node',
 		{
 			type: 'product';
-			content: GVariant;
+			content: GContent;
 		}
 	>;
 
-export type TProductNodeVariant = TSingleProductNodeVariant;
+export type TProductNodeContent = TSingleProductNodeContent;
 
-export interface TSingleProductNodeVariant extends TBaseNodeVariant {
+export interface TSingleProductNodeContent extends TBaseContentVariant {
 	type: 'single';
-	product?: {
+	product?: TProduct;
+	integrationId?: TIntegrationId;
+}
+
+export interface TProduct {
+	id: string;
+	title: string;
+	description?: TRichContent;
+	images: TAssetHash[];
+	options: { name: string; values: string[] }[];
+	variants: {
 		id: string;
 		title: string;
-		description?: TContent;
-		images: TAssetHash[];
-		options: { name: string; values: string[] }[];
-		variants: {
-			id: string;
-			title: string;
-			price: { amount: string; currencyCode: string };
-			image?: TAssetHash;
-			selectedOptions: { name: string; value: string }[];
-		}[];
-	};
-	integrationId?: TIntegrationId;
+		price: { amount: string; currencyCode: string };
+		image?: TAssetHash;
+		selectedOptions: { name: string; value: string }[];
+	}[];
 }
 
 // =========================================================================

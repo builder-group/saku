@@ -74,22 +74,22 @@ export interface TImagePaint extends TBasePaint {
 }
 
 // =========================================================================
-// Content
+// Rich Content
 // =========================================================================
 
-export type TContent = TTextContent | TMarkdownContent | THtmlContent;
+export type TRichContent = TTextRichContent | TMarkdownRichContent | THtmlRichContent;
 
-export interface TTextContent {
+export interface TTextRichContent {
 	type: 'text';
 	value: string;
 }
 
-export interface TMarkdownContent {
+export interface TMarkdownRichContent {
 	type: 'markdown';
 	value: string;
 }
 
-export interface THtmlContent {
+export interface THtmlRichContent {
 	type: 'html';
 	value: string;
 }

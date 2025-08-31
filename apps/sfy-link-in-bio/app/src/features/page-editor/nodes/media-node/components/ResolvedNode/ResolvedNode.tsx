@@ -14,7 +14,7 @@ export const ResolvedMediaNode = React.forwardRef<
 	return (
 		<div ref={ref} {...divProps} className="w-full max-w-md">
 			{(() => {
-				switch (content.media?.type) {
+				switch (content.type) {
 					case 'image':
 						return <ImageContent node={node} cx={cx} />;
 					default:

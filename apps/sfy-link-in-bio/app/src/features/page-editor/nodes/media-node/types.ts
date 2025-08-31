@@ -1,4 +1,5 @@
-import { TBaseMixin, TBaseNode, TIdMixin } from '@repo/editor';
+import { TBaseContentVariant, TBaseMixin, TBaseNode, TIdMixin } from '@repo/editor';
+import { TResolvedAsset } from '../../lib';
 import {
 	TResolvedAppearanceStyleMixin,
 	TResolvedAutoLayoutStyleMixin,
@@ -7,8 +8,10 @@ import {
 	TResolvedStrokeStyleMixin
 } from '../../mixins';
 
-export type TResolvedMediaNode<GMedia extends TResolvedMedia = TResolvedMedia> = TBaseNode<
-	TResolvedMediaNodeMixin<GMedia>,
+export type TResolvedMediaNode<
+	GContent extends TResolvedMediaNodeContent = TResolvedMediaNodeContent
+> = TBaseNode<
+	TResolvedMediaNodeMixin<GContent>,
 	[
 		TIdMixin,
 		TResolvedAutoLayoutStyleMixin,
@@ -19,15 +22,21 @@ export type TResolvedMediaNode<GMedia extends TResolvedMedia = TResolvedMedia> =
 	]
 >;
 
-export type TResolvedMediaNodeMixin<GMedia extends TResolvedMedia = TResolvedMedia> = TBaseMixin<
+export type TResolvedMediaNodeMixin<
+	GContent extends TResolvedMediaNodeContent = TResolvedMediaNodeContent
+> = TBaseMixin<
 	'node',
-	{ type: 'media'; content: { media?: GMedia } }
+	{
+		type: 'media';
+		content: GContent;
+	}
 >;
 
-export type TResolvedMedia = TResolvedImageMedia;
+export type TResolvedMediaNodeContent = TResolvedImageMediaNodeContent;
 
-export interface TResolvedImageMedia {
+export interface TResolvedImageMediaNodeContent extends TBaseContentVariant {
 	type: 'image';
-	src: string;
-	altText?: string;
+	media?: {
+		altText?: string;
+	} & TResolvedAsset;
 }

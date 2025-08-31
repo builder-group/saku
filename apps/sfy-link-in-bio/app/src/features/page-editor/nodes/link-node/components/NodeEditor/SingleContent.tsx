@@ -1,4 +1,4 @@
-import { TDefaultLinkVariant, TLinkNode } from '@repo/editor';
+import { TLinkNode, TSingleLinkNodeContent } from '@repo/editor';
 import { useAppBridge } from '@shopify/app-bridge-react';
 import { Button, InlineError, Text, TextField } from '@shopify/polaris';
 import { useCompute } from 'feature-react/state';
@@ -7,12 +7,9 @@ import { ImageUploadField, TImageUploadEvent } from '@/components';
 import { TNodeState, TPageEditor } from '../../../../lib';
 import { fetchUrlMetadata } from './lib';
 
-export const DefaultLinkVariant: React.FC<TDefaultLinkVariantProps> = (props) => {
+export const SingleContent: React.FC<TSingleContentProps> = (props) => {
 	const { nodeState, editor, isEnhancing = false } = props;
-	const { url, variant } = useCompute(nodeState, ({ value: node }) => ({
-		url: node.content.url,
-		variant: node.content.variant
-	}));
+	const content = useCompute(nodeState, ({ value }) => value.content);
 	const shopify = useAppBridge();
 
 	const [faviconImageError, setFaviconImageError] = React.useState<string | null>(null);
@@ -20,7 +17,7 @@ export const DefaultLinkVariant: React.FC<TDefaultLinkVariantProps> = (props) =>
 
 	const faviconImage = React.useMemo(() => {
 		const asset = editor.getImageAsset(
-			variant.userFavicon === undefined ? variant.favicon : variant.userFavicon
+			content.userFavicon === undefined ? content.favicon : content.userFavicon
 		);
 		if (asset == null || asset.storage.type !== 'url') {
 			return undefined;
@@ -30,35 +27,32 @@ export const DefaultLinkVariant: React.FC<TDefaultLinkVariantProps> = (props) =>
 			url: asset.storage.url,
 			fileName: asset.fileName
 		};
-	}, [variant.userFavicon, variant.favicon, editor]);
+	}, [content.userFavicon, content.favicon, editor]);
 
 	const titleValue = React.useMemo(() => {
-		return variant.userTitle ?? variant.title;
-	}, [variant.userTitle, variant.title]);
-
+		return content.userTitle ?? content.title;
+	}, [content.userTitle, content.title]);
 	const descriptionValue = React.useMemo(() => {
-		return variant.userDescription ?? variant.description;
-	}, [variant.userDescription, variant.description]);
+		return content.userDescription ?? content.description;
+	}, [content.userDescription, content.description]);
 
 	const canResetTitle = React.useMemo(
-		() => variant.title != null && variant.userTitle != null && variant.userTitle !== variant.title,
-		[variant.userTitle, variant.title]
+		() => content.title != null && content.userTitle != null && content.userTitle !== content.title,
+		[content.userTitle, content.title]
 	);
-
 	const canResetDescription = React.useMemo(
 		() =>
-			variant.description != null &&
-			variant.userDescription != null &&
-			variant.userDescription !== variant.description,
-		[variant.userDescription, variant.description]
+			content.description != null &&
+			content.userDescription != null &&
+			content.userDescription !== content.description,
+		[content.userDescription, content.description]
 	);
-
 	const canResetFavicon = React.useMemo(
 		() =>
-			variant.favicon !== undefined &&
-			variant.userFavicon !== undefined &&
-			variant.userFavicon !== variant.favicon,
-		[variant.userFavicon, variant.favicon]
+			content.favicon !== undefined &&
+			content.userFavicon !== undefined &&
+			content.userFavicon !== content.favicon,
+		[content.userFavicon, content.favicon]
 	);
 
 	// =========================================================================
@@ -67,27 +61,27 @@ export const DefaultLinkVariant: React.FC<TDefaultLinkVariantProps> = (props) =>
 
 	const handleTitleChange = React.useCallback(
 		(value: string) => {
-			nodeState._v.content.variant.userTitle = value;
+			nodeState._v.content.userTitle = value;
 			nodeState._notify();
 		},
 		[nodeState]
 	);
 
 	const handleTitleReset = React.useCallback(() => {
-		nodeState._v.content.variant.userTitle = undefined;
+		nodeState._v.content.userTitle = undefined;
 		nodeState._notify();
 	}, [nodeState]);
 
 	const handleDescriptionChange = React.useCallback(
 		(value: string) => {
-			nodeState._v.content.variant.userDescription = value;
+			nodeState._v.content.userDescription = value;
 			nodeState._notify();
 		},
 		[nodeState]
 	);
 
 	const handleDescriptionReset = React.useCallback(() => {
-		nodeState._v.content.variant.userDescription = undefined;
+		nodeState._v.content.userDescription = undefined;
 		nodeState._notify();
 	}, [nodeState]);
 
@@ -97,13 +91,13 @@ export const DefaultLinkVariant: React.FC<TDefaultLinkVariantProps> = (props) =>
 				case 'Changed': {
 					const hash = editor.registerImage(image.url, image.fileName ?? 'favicon');
 					if (hash != null) {
-						nodeState._v.content.variant.userFavicon = hash;
+						nodeState._v.content.userFavicon = hash;
 						nodeState._notify();
 					}
 					break;
 				}
 				case 'Removed': {
-					nodeState._v.content.variant.userFavicon = null;
+					nodeState._v.content.userFavicon = null;
 					nodeState._notify();
 					break;
 				}
@@ -113,14 +107,14 @@ export const DefaultLinkVariant: React.FC<TDefaultLinkVariantProps> = (props) =>
 	);
 
 	const handleFaviconReset = React.useCallback(() => {
-		nodeState._v.content.variant.userFavicon = undefined;
+		nodeState._v.content.userFavicon = undefined;
 		nodeState._notify();
 	}, [nodeState]);
 
 	const handleUrlFetch = React.useCallback(async () => {
 		setIsFetchingUrlMetadata(true);
 		try {
-			const metadata = await fetchUrlMetadata(url, shopify);
+			const metadata = await fetchUrlMetadata(content.url, shopify);
 			if (metadata == null) {
 				shopify.toast.show('Failed to fetch URL metadata', {
 					duration: 3000,
@@ -135,14 +129,14 @@ export const DefaultLinkVariant: React.FC<TDefaultLinkVariantProps> = (props) =>
 				faviconHash = editor.registerImage(metadata.favicon, 'favicon');
 			}
 
-			nodeState._v.content.variant.title = metadata.title;
-			nodeState._v.content.variant.description = metadata.description;
-			nodeState._v.content.variant.favicon = faviconHash ?? undefined;
+			nodeState._v.content.title = metadata.title;
+			nodeState._v.content.description = metadata.description;
+			nodeState._v.content.favicon = faviconHash ?? undefined;
 			nodeState._notify();
 		} finally {
 			setIsFetchingUrlMetadata(false);
 		}
-	}, [editor, url, nodeState, shopify]);
+	}, [editor, content, nodeState, shopify]);
 
 	// =========================================================================
 	// UI
@@ -235,8 +229,8 @@ export const DefaultLinkVariant: React.FC<TDefaultLinkVariantProps> = (props) =>
 	);
 };
 
-interface TDefaultLinkVariantProps {
-	nodeState: TNodeState<TLinkNode<TDefaultLinkVariant>>;
+interface TSingleContentProps {
+	nodeState: TNodeState<TLinkNode<TSingleLinkNodeContent>>;
 	editor: TPageEditor;
 	isEnhancing?: boolean;
 }

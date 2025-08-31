@@ -9,6 +9,7 @@ export const aboutNodeMetadata: TNodeMetadata<'about'> = {
 	internal: false,
 	defaultData: {
 		content: {
+			type: 'default',
 			name: 'Your Name',
 			bio: 'Tell us about yourself',
 			socialLinks: []

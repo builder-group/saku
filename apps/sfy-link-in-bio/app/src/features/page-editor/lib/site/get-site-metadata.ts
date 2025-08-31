@@ -14,19 +14,19 @@ export function getSiteMetadata(site: TResolvedSite | null): ReturnType<TMetaFun
 	}
 
 	const metadata = [
-		{ tagName: 'link', rel: 'icon', href: site.root.content.metadata.favicon },
-		{ title: site.root.content.metadata.title },
+		{ tagName: 'link', rel: 'icon', href: site.root.metadata.favicon },
+		{ title: site.root.metadata.title },
 		{
 			name: 'description',
-			content: site.root.content.metadata.description
+			content: site.root.metadata.description
 		},
 		{
 			property: 'og:title',
-			content: site.root.content.metadata.title
+			content: site.root.metadata.title
 		},
 		{
 			property: 'og:description',
-			content: site.root.content.metadata.description
+			content: site.root.metadata.description
 		},
 		{
 			name: 'twitter:card',
@@ -34,23 +34,23 @@ export function getSiteMetadata(site: TResolvedSite | null): ReturnType<TMetaFun
 		},
 		{
 			name: 'twitter:title',
-			content: site.root.content.metadata.title
+			content: site.root.metadata.title
 		},
 		{
 			name: 'twitter:description',
-			content: site.root.content.metadata.description
+			content: site.root.metadata.description
 		}
 	];
 
 	// Add OpenGraph image if available
-	if (site.root.content.metadata.image != null) {
+	if (site.root.metadata.image != null) {
 		metadata.push({
 			property: 'og:image',
-			content: site.root.content.metadata.image
+			content: site.root.metadata.image
 		});
 		metadata.push({
 			name: 'twitter:image',
-			content: site.root.content.metadata.image
+			content: site.root.metadata.image
 		});
 	}
 

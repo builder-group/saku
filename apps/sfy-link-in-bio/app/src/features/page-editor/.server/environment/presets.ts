@@ -78,6 +78,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 			id: createId('node'),
 			type: 'product',
 			content: {
+				type: 'single',
 				product: {
 					id: featuredProduct.id,
 					title: featuredProduct.title,
@@ -208,13 +209,15 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 			type: 'page',
 			id: createId('node'),
 			content: {
-				metadata: {}
+				type: 'default'
 			},
+			metadata: {},
 			children: [
 				{
 					id: createId('node'),
 					type: 'about',
 					content: {
+						type: 'default',
 						name,
 						bio: 'Welcome to your new page! Add a short description about yourself or your brand.',
 						profilePicture: profilePictureAssetHashId,
@@ -254,11 +257,9 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					id: createId('node'),
 					type: 'link',
 					content: {
+						type: 'single',
 						url: `https://${shopId}`,
-						variant: {
-							type: 'default',
-							userTitle: '🛒 Visit our Shopify store'
-						}
+						userTitle: '🛒 Visit our Shopify store'
 					},
 					autoLayout: {
 						horizontalPadding: tokenRef(),
@@ -295,7 +296,8 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					id: createId('node'),
 					type: 'text',
 					content: {
-						text: '✨ Thanks for visiting!'
+						type: 'default',
+						text: { type: 'markdown', value: '✨ Thanks for visiting!' }
 					},
 					autoLayout: {
 						horizontalPadding: tokenRef(),
@@ -331,8 +333,8 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					id: createId('node'),
 					type: 'media',
 					content: {
+						type: 'image',
 						media: {
-							type: 'image',
 							hash: excitedGifAssetHashId,
 							altText: 'Welcome GIF'
 						}

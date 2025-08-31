@@ -7,8 +7,8 @@ export function getPageNodeAssetHashes(node: TFlatPageNode): TAssetHash[] {
 	const hashes: TAssetHash[] = [];
 
 	// Metadata image asset
-	if (node.content.metadata?.image != null) {
-		hashes.push(node.content.metadata.image);
+	if (node.metadata?.image != null) {
+		hashes.push(node.metadata.image);
 	}
 
 	// Fill asset (if not linked)
