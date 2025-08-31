@@ -15,28 +15,30 @@ export const ResolvedLinkNode = React.forwardRef<
 	const { node, cx, ...divProps } = props;
 	const { content } = node;
 
+	const renderContent = React.useCallback(() => {
+		switch (content.type) {
+			case 'single':
+				return (
+					<DefaultContent
+						node={node as TResolvedLinkNode<TResolvedSingleLinkNodeContent>}
+						cx={cx}
+					/>
+				);
+			case 'youtube-video-embed':
+				return (
+					<YouTubeVideoEmbedContent
+						node={node as TResolvedLinkNode<TResolvedYouTubeVideoEmbedLinkNodeContent>}
+						cx={cx}
+					/>
+				);
+			default:
+				return null;
+		}
+	}, [content.type, node, cx]);
+
 	return (
 		<div {...divProps} ref={ref} className="w-full max-w-md">
-			{(() => {
-				switch (content.type) {
-					case 'single':
-						return (
-							<DefaultContent
-								node={node as TResolvedLinkNode<TResolvedSingleLinkNodeContent>}
-								cx={cx}
-							/>
-						);
-					case 'youtube-video-embed':
-						return (
-							<YouTubeVideoEmbedContent
-								node={node as TResolvedLinkNode<TResolvedYouTubeVideoEmbedLinkNodeContent>}
-								cx={cx}
-							/>
-						);
-					default:
-						return null;
-				}
-			})()}
+			{renderContent()}
 		</div>
 	);
 });

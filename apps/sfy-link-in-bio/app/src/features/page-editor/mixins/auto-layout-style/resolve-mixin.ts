@@ -35,8 +35,14 @@ export function resolveAutoLayoutStyleMixin<GTokenSet extends TMixinTokenSet>(
 		horizontalGap: resolvedHorizontalGap,
 		verticalGap: resolvedVerticalGap,
 		styles: {
-			padding: `${resolvedVerticalPadding ?? 0}px ${resolvedHorizontalPadding ?? 0}px`,
-			gap: `${resolvedVerticalGap ?? 0}px ${resolvedHorizontalGap ?? 0}px`
+			padding:
+				resolvedVerticalPadding != null || resolvedHorizontalPadding != null
+					? `${resolvedVerticalPadding ?? 0}px ${resolvedHorizontalPadding ?? 0}px`
+					: undefined,
+			gap:
+				resolvedVerticalGap != null || resolvedHorizontalGap != null
+					? `${resolvedVerticalGap ?? 0}px ${resolvedHorizontalGap ?? 0}px`
+					: undefined
 		}
 	});
 }

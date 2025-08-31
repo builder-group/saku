@@ -3,11 +3,11 @@ import { ChevronDownIcon } from '@/components';
 import { logger } from '@/environment';
 import { getCurrencySymbol } from '../../../../environment';
 import { TResolvedNodeProps } from '../../../../lib';
-import { TResolvedProductNode } from '../../types';
+import { TResolvedProductNode, TResolvedSingleProductNodeContent } from '../../types';
 import { useProductModal } from './ProductModal';
 
-export const Content: React.FC<TContentProps> = (props) => {
-	const { product, node, cx } = props;
+export const SingleContent: React.FC<TSingleContentProps> = (props) => {
+	const { node, product, cx } = props;
 	const { autoLayout, appearance, fill, stroke, shadow, text, button } = node;
 
 	const { Modal: ProductModal, showModal: showProductModal } = useProductModal({
@@ -228,8 +228,8 @@ export const Content: React.FC<TContentProps> = (props) => {
 	);
 };
 
-interface TContentProps {
-	product: NonNullable<TResolvedProductNode['content']['product']>;
-	node: TResolvedProductNode;
-	cx: TResolvedNodeProps<TResolvedProductNode>['cx'];
+interface TSingleContentProps {
+	node: TResolvedProductNode<TResolvedSingleProductNodeContent>;
+	product: NonNullable<TResolvedSingleProductNodeContent['product']>;
+	cx: TResolvedNodeProps<TResolvedProductNode<TResolvedSingleProductNodeContent>>['cx'];
 }

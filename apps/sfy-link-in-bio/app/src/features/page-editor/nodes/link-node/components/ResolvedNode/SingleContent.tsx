@@ -79,5 +79,5 @@ export const DefaultContent: React.FC<TSingleContentProps> = (props) => {
 
 interface TSingleContentProps {
 	node: TResolvedLinkNode<TResolvedSingleLinkNodeContent>;
-	cx: TResolvedNodeProps<TResolvedLinkNode>['cx'];
+	cx: TResolvedNodeProps<TResolvedLinkNode<TResolvedSingleLinkNodeContent>>['cx'];
 }

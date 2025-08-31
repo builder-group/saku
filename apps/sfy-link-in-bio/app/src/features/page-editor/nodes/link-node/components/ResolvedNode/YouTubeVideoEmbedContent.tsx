@@ -32,5 +32,5 @@ export const YouTubeVideoEmbedContent: React.FC<TYouTubeVideoEmbedContentProps> 
 
 interface TYouTubeVideoEmbedContentProps {
 	node: TResolvedLinkNode<TResolvedYouTubeVideoEmbedLinkNodeContent>;
-	cx: TResolvedNodeProps<TResolvedLinkNode>['cx'];
+	cx: TResolvedNodeProps<TResolvedLinkNode<TResolvedYouTubeVideoEmbedLinkNodeContent>>['cx'];
 }
