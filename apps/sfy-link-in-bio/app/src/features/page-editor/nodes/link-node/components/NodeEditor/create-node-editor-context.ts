@@ -4,7 +4,7 @@ import { createState, TState } from 'feature-state';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
 import { TNodeState, TPageEditor } from '../../../../lib';
-import { contentMetadataMap, TContentType } from './environment';
+import { contentMetadataMap, contentTypePriority, TContentType } from './environment';
 import { getApplicableContent } from './lib';
 
 export function createNodeEditorContext<GContent extends TLinkNodeContent>(
@@ -17,6 +17,7 @@ export function createNodeEditorContext<GContent extends TLinkNodeContent>(
 		editor,
 		shopify,
 		selectedContentType: createState<TContentType>('single'),
+		applicableContentTypes: createState(getApplicableContent(node._v.content.url)),
 		isChangingContentType: createState(false),
 		isEnhancing: createState(false),
 
@@ -74,13 +75,14 @@ export function createNodeEditorContext<GContent extends TLinkNodeContent>(
 			const contentType = this.selectedContentType._v;
 			const content = this.node._v.content;
 
-			// Check if current content variant is still valid for the new URL
+			// Get applicable content variants for the new URL
 			const applicableContentVariants = getApplicableContent(content.url);
-			const isContentApplicable = applicableContentVariants.some(
-				(variant) => variant.value === contentType
-			);
-			if (!isContentApplicable) {
-				return await this.updateContentType('single');
+			this.applicableContentTypes.set(applicableContentVariants);
+
+			// Auto-switch to best applicable variant (prioritize more specific types)
+			const bestVariant = this.getBestContentType(applicableContentVariants);
+			if (bestVariant !== contentType) {
+				return await this.updateContentType(bestVariant);
 			}
 
 			// Enhance content
@@ -90,6 +92,16 @@ export function createNodeEditorContext<GContent extends TLinkNodeContent>(
 			}
 
 			return Ok(undefined);
+		},
+
+		getBestContentType(this: TNodeEditorContext<GContent>, applicableTypes) {
+			for (const type of contentTypePriority) {
+				if (applicableTypes.includes(type)) {
+					return type;
+				}
+			}
+
+			return applicableTypes[0] as TContentType;
 		},
 
 		async enhanceContent(
@@ -126,11 +138,13 @@ export interface TNodeEditorContext<GContent extends TLinkNodeContent> {
 	editor: TPageEditor;
 	shopify: ShopifyGlobal;
 	selectedContentType: TState<TContentType, []>;
+	applicableContentTypes: TState<TContentType[], []>;
 	isChangingContentType: TState<boolean, []>;
 	isEnhancing: TState<boolean, []>;
 
 	updateUrl: (value: string) => void;
 	updateContentType: (contentType: TContentType) => Promise<TResult<void, AppError>>;
 	validateAndEnhanceContent: () => Promise<TResult<void, AppError>>;
+	getBestContentType: (applicableTypes: TContentType[]) => TContentType;
 	enhanceContent: (contentType?: TContentType) => Promise<TResult<void, AppError>>;
 }

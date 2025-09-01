@@ -8,7 +8,7 @@ import { extractYouTubeVideoId } from './lib';
 
 export const YoutubeVideoEmbedContent: React.FC<TYoutubeVideoEmbedContentProps> = (props) => {
 	const { cx, className } = props;
-	const content = useCompute(cx.node, ({ value }) => value.content);
+	const content = useCompute(cx.node, ({ value }) => value.content, [], { isEqual: false });
 	const isEnhancing = useFeatureState(cx.isEnhancing);
 
 	// =========================================================================

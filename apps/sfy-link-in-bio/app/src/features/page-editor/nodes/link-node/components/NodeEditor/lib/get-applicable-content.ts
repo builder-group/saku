@@ -1,10 +1,7 @@
 import { contentMetadata, TContentType } from '../environment';
 
-export function getApplicableContent(url: string): { label: string; value: TContentType }[] {
+export function getApplicableContent(url: string): TContentType[] {
 	return contentMetadata
 		.filter((variant) => variant.isApplicable(url))
-		.map((variant) => ({
-			label: variant.label,
-			value: variant.type
-		}));
+		.map((variant) => variant.type);
 }

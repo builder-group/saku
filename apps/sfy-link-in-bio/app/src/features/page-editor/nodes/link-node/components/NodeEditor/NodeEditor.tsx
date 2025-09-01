@@ -14,8 +14,7 @@ import {
 	TextStyleMixinEditor
 } from '../../../../mixins';
 import { createNodeEditorContext, TNodeEditorContext } from './create-node-editor-context';
-import { TContentType } from './environment';
-import { getApplicableContent } from './lib';
+import { contentMetadataMap, TContentType } from './environment';
 import { SingleContent } from './SingleContent';
 import { YoutubeVideoEmbedContent } from './YoutubeVideoEmbedContent';
 
@@ -29,8 +28,11 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 	);
 
 	const contentVariant = useCompute(cx.node, ({ value }) => value.content.type);
-	const applicableContentVariants = useCompute(cx.node, ({ value }) =>
-		getApplicableContent(value.content.url)
+	const applicableContentOptions = useCompute(cx.applicableContentTypes, ({ value }) =>
+		value.map((type) => ({
+			label: contentMetadataMap[type].label,
+			value: type
+		}))
 	);
 	const isChangingContentType = useFeatureState(cx.isChangingContentType);
 	const isEnhancingVariant = useFeatureState(cx.isEnhancing);
@@ -85,12 +87,10 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 						id="link-display-field"
 						label="Link display"
 						labelHidden
-						options={applicableContentVariants}
+						options={applicableContentOptions}
 						value={selectedContentType}
 						onChange={handleContentTypeChange}
-						disabled={
-							applicableContentVariants.length === 1 || isChangingContentType || isEnhancingVariant
-						}
+						disabled={isChangingContentType || isEnhancingVariant}
 					/>
 				</div>
 

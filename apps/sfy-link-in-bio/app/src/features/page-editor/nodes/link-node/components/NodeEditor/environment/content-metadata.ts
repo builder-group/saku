@@ -100,6 +100,9 @@ export const contentMetadataMap = {
 
 export const contentMetadata = Object.values(contentMetadataMap);
 
+// Content type priority for auto-switching (most specific to most generic)
+export const contentTypePriority: TContentType[] = ['youtube-video-embed', 'single'];
+
 export type TContentType = keyof typeof contentMetadataMap;
 
 export interface TContentMetadata<GContent extends TLinkNodeContent = TLinkNodeContent> {

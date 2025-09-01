@@ -10,7 +10,7 @@ import { fetchUrlMetadata } from './lib';
 export const SingleContent: React.FC<TSingleContentProps> = (props) => {
 	const { cx, className } = props;
 
-	const content = useCompute(cx.node, ({ value }) => value.content);
+	const content = useCompute(cx.node, ({ value }) => value.content, [], { isEqual: false });
 	const isEnhancing = useFeatureState(cx.isEnhancing);
 
 	const [faviconImageError, setFaviconImageError] = React.useState<string | null>(null);
