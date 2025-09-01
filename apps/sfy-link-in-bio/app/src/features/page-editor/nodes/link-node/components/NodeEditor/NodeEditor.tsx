@@ -1,11 +1,10 @@
 import { TLinkNode, TSingleLinkNodeContent, TYouTubeVideoEmbedLinkNodeContent } from '@repo/editor';
 import { useAppBridge } from '@shopify/app-bridge-react';
-import { Select, Text, TextField } from '@shopify/polaris';
-import { useFeatureState } from 'feature-react/state';
+import { Select, Text } from '@shopify/polaris';
+import { useCompute, useFeatureState } from 'feature-react/state';
 import React from 'react';
-import { AccordionSection } from '@/components';
-import { PortalPulse } from '@/components/display';
-import { TNodeEditorComponentProps, TNodeState } from '../../../../lib';
+import { AccordionSection, PortalPulse } from '@/components';
+import { TNodeEditorComponentProps } from '../../../../lib';
 import {
 	AppearanceStyleMixinEditor,
 	AutoLayoutStyleMixinEditor,
@@ -14,213 +13,94 @@ import {
 	StrokeStyleMixinEditor,
 	TextStyleMixinEditor
 } from '../../../../mixins';
-import { contentMetadataMap, TContentType } from './environment';
+import { createNodeEditorContext, TNodeEditorContext } from './create-node-editor-context';
+import { TContentType } from './environment';
 import { getApplicableContent } from './lib';
 import { SingleContent } from './SingleContent';
 import { YoutubeVideoEmbedContent } from './YoutubeVideoEmbedContent';
 
 export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (props) => {
 	const { nodeState, editor } = props;
-	const { content } = useFeatureState(nodeState);
 	const shopify = useAppBridge();
 
-	const [selectedVariantType, setSelectedVariantType] = React.useState<TContentType>(
-		() => content.type
+	const cx = React.useMemo(
+		() => createNodeEditorContext({ node: nodeState, editor, shopify }),
+		[nodeState, editor, shopify]
 	);
-	const [isChangingVariant, setIsChangingVariant] = React.useState(false);
-	const [isEnhancingVariant, setIsEnhancingVariant] = React.useState(false);
 
-	const availableVariants = React.useMemo(() => getApplicableContent(content.url), [content.url]);
+	const contentVariant = useCompute(cx.node, ({ value }) => value.content.type);
+	const applicableContentVariants = useCompute(cx.node, ({ value }) =>
+		getApplicableContent(value.content.url)
+	);
+	const isChangingContentType = useFeatureState(cx.isChangingContentType);
+	const isEnhancingVariant = useFeatureState(cx.isEnhancing);
+	const selectedContentType = useFeatureState(cx.selectedContentType);
 
 	// =========================================================================
 	// Events
 	// =========================================================================
 
-	const handleVariantTypeChange = React.useCallback(
-		async (value: TContentType) => {
-			setSelectedVariantType(value as TContentType);
-
-			try {
-				const targetMetadata = contentMetadataMap[value];
-				if (targetMetadata == null) {
-					shopify.toast.show('Unknown variant type', { duration: 3000 });
-					return;
+	const handleContentTypeChange = React.useCallback(
+		(value: TContentType) => {
+			cx.updateContentType(value).then((result) => {
+				if (result.isErr()) {
+					shopify.toast.show('Failed to update variant type', { duration: 3000 });
 				}
-
-				// Extract common fields from current variant
-				const commonFields = contentMetadataMap[content.type].extractCommonFields(content as any);
-
-				const variantResult = await targetMetadata.createContent({
-					url: content.url,
-					common: commonFields,
-					editor,
-					shopify,
-					nodeState: nodeState as any
-				});
-				if (variantResult.isErr()) {
-					shopify.toast.show('Failed to create variant', {
-						duration: 3000,
-						action: 'Retry',
-						onAction: () => handleVariantTypeChange(value)
-					});
-					return;
-				}
-
-				// Start background enhancement if available
-				if ('enhanceVariant' in targetMetadata && targetMetadata.enhanceVariant != null) {
-					setIsEnhancingVariant(true);
-
-					targetMetadata
-						.enhanceContent({
-							url: content.url,
-							editor,
-							shopify,
-							nodeState: nodeState as any
-						})
-						.then((enhanceResult) => {
-							if (enhanceResult.isErr()) {
-								shopify.toast.show('Failed to enhance variant data', { duration: 3000 });
-							}
-						})
-						.finally(() => {
-							setIsEnhancingVariant(false);
-						});
-				}
-			} finally {
-				setIsChangingVariant(false);
-			}
-		},
-		[content, editor, nodeState, shopify]
-	);
-
-	const handleUrlChange = React.useCallback(
-		(value: string) => {
-			nodeState._v.content.url = value;
-			nodeState._notify({ listenerContext: { source: 'url-change' } });
-		},
-		[nodeState]
-	);
-
-	const handleUrlBlur = React.useCallback(async () => {
-		const currentVariantType = content.type;
-		const metadata = contentMetadataMap[currentVariantType];
-
-		// Check if current variant is still valid for the new URL
-		const availableVariants = getApplicableContent(content.url);
-		const isCurrentVariantValid = availableVariants.some(
-			(variant) => variant.value === currentVariantType
-		);
-
-		// If current variant is no longer valid, switch to default
-		if (!isCurrentVariantValid && currentVariantType !== 'single') {
-			handleVariantTypeChange('single');
-			return;
-		}
-
-		if (metadata?.enhanceContent == null) {
-			return;
-		}
-
-		setIsEnhancingVariant(true);
-		metadata
-			.enhanceContent({
-				url: content.url,
-				editor,
-				shopify,
-				nodeState: nodeState as any
-			})
-			.then((enhanceResult) => {
-				if (enhanceResult.isErr()) {
-					shopify.toast.show('Failed to enhance variant data', { duration: 3000 });
-				}
-			})
-			.finally(() => {
-				setIsEnhancingVariant(false);
 			});
-	}, [content, editor, nodeState, shopify, handleVariantTypeChange]);
+		},
+		[cx, shopify]
+	);
 
 	// =========================================================================
 	// UI
 	// =========================================================================
 
 	const renderVariantEditor = React.useCallback((): React.ReactElement | null => {
-		switch (content.type) {
+		switch (contentVariant) {
 			case 'single':
 				return (
-					<SingleContent
-						nodeState={nodeState as TNodeState<TLinkNode<TSingleLinkNodeContent>>}
-						editor={editor}
-						isEnhancing={isEnhancingVariant}
-					/>
+					<SingleContent cx={cx as TNodeEditorContext<TSingleLinkNodeContent>} className="z-10" />
 				);
 			case 'youtube-video-embed':
 				return (
 					<YoutubeVideoEmbedContent
-						nodeState={nodeState as TNodeState<TLinkNode<TYouTubeVideoEmbedLinkNodeContent>>}
-						editor={editor}
-						isEnhancing={isEnhancingVariant}
+						cx={cx as TNodeEditorContext<TYouTubeVideoEmbedLinkNodeContent>}
+						className="z-10"
 					/>
 				);
 			default:
 				return null;
 		}
-	}, [content.type, editor, nodeState, isEnhancingVariant]);
+	}, [contentVariant, cx]);
 
 	return (
 		<>
 			{/* Content Section */}
 			<AccordionSection title="Content" defaultOpen={true} collapsibleClassName="px-0 space-y-3">
-				<div className="space-y-3 px-4">
-					{/* URL */}
-					<div className="space-y-1">
-						<Text as="span" variant="bodySm" tone="subdued">
-							URL
-						</Text>
-						<TextField
-							id="url-field"
-							label="URL"
-							labelHidden
-							value={content.url}
-							onChange={handleUrlChange}
-							onBlur={handleUrlBlur}
-							autoComplete="off"
-							placeholder="https://example.com"
-							type="url"
-							disabled={isChangingVariant}
-						/>
-					</div>
-
-					{/* Link variant */}
-					<div className="space-y-1">
-						<Text as="span" variant="bodySm" tone="subdued">
-							Variant {isEnhancingVariant && '(enhancing...)'}
-						</Text>
-						<Select
-							id="link-display-field"
-							label="Link display"
-							labelHidden
-							options={availableVariants}
-							value={selectedVariantType}
-							onChange={handleVariantTypeChange}
-							disabled={availableVariants.length === 1 || isChangingVariant || isEnhancingVariant}
-						/>
-					</div>
+				<div className="space-y-1 px-4">
+					<Text as="span" variant="bodySm" tone="subdued">
+						Content Type
+					</Text>
+					<Select
+						id="link-display-field"
+						label="Link display"
+						labelHidden
+						options={applicableContentVariants}
+						value={selectedContentType}
+						onChange={handleContentTypeChange}
+						disabled={
+							applicableContentVariants.length === 1 || isChangingContentType || isEnhancingVariant
+						}
+					/>
 				</div>
 
-				{!isChangingVariant && (
+				{!isChangingContentType && (
 					<>
 						<div className="h-px bg-neutral-200" />
-						{isEnhancingVariant ? (
-							<PortalPulse
-								isActive={true}
-								className="relative"
-								pulseClassName="absolute -top-3 -bottom-4 left-0 right-0"
-							>
-								{renderVariantEditor()}
-							</PortalPulse>
-						) : (
-							renderVariantEditor()
-						)}
+						<div className="relative">
+							<PortalPulse isActive={cx.isEnhancing} className="-top-3 right-0 -bottom-3 left-0" />
+							{renderVariantEditor()}
+						</div>
 					</>
 				)}
 			</AccordionSection>

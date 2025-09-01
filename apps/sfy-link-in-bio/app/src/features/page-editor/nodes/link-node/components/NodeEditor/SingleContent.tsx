@@ -1,22 +1,23 @@
-import { TLinkNode, TSingleLinkNodeContent } from '@repo/editor';
-import { useAppBridge } from '@shopify/app-bridge-react';
+import { TSingleLinkNodeContent } from '@repo/editor';
 import { Button, InlineError, Text, TextField } from '@shopify/polaris';
-import { useCompute } from 'feature-react/state';
+import { useCompute, useFeatureState } from 'feature-react/state';
 import React from 'react';
 import { ImageUploadField, TImageUploadEvent } from '@/components';
-import { TNodeState, TPageEditor } from '../../../../lib';
+import { cn } from '@/lib';
+import { TNodeEditorContext } from './create-node-editor-context';
 import { fetchUrlMetadata } from './lib';
 
 export const SingleContent: React.FC<TSingleContentProps> = (props) => {
-	const { nodeState, editor, isEnhancing = false } = props;
-	const content = useCompute(nodeState, ({ value }) => value.content);
-	const shopify = useAppBridge();
+	const { cx, className } = props;
+
+	const content = useCompute(cx.node, ({ value }) => value.content);
+	const isEnhancing = useFeatureState(cx.isEnhancing);
 
 	const [faviconImageError, setFaviconImageError] = React.useState<string | null>(null);
 	const [isFetchingUrlMetadata, setIsFetchingUrlMetadata] = React.useState(false);
 
 	const faviconImage = React.useMemo(() => {
-		const asset = editor.getImageAsset(
+		const asset = cx.editor.getImageAsset(
 			content.userFavicon === undefined ? content.favicon : content.userFavicon
 		);
 		if (asset == null || asset.storage.type !== 'url') {
@@ -27,7 +28,7 @@ export const SingleContent: React.FC<TSingleContentProps> = (props) => {
 			url: asset.storage.url,
 			fileName: asset.fileName
 		};
-	}, [content.userFavicon, content.favicon, editor]);
+	}, [content.userFavicon, content.favicon, cx]);
 
 	const titleValue = React.useMemo(() => {
 		return content.userTitle ?? content.title;
@@ -59,64 +60,79 @@ export const SingleContent: React.FC<TSingleContentProps> = (props) => {
 	// Events
 	// =========================================================================
 
+	const handleUrlChange = React.useCallback(
+		(value: string) => {
+			cx.updateUrl(value);
+		},
+		[cx]
+	);
+
+	const handleUrlBlur = React.useCallback(() => {
+		cx.validateAndEnhanceContent().then((result) => {
+			if (result.isErr()) {
+				cx.shopify.toast.show('Failed to validate and enhance content', { duration: 3000 });
+			}
+		});
+	}, [cx]);
+
 	const handleTitleChange = React.useCallback(
 		(value: string) => {
-			nodeState._v.content.userTitle = value;
-			nodeState._notify();
+			cx.node._v.content.userTitle = value;
+			cx.node._notify();
 		},
-		[nodeState]
+		[cx]
 	);
 
 	const handleTitleReset = React.useCallback(() => {
-		nodeState._v.content.userTitle = undefined;
-		nodeState._notify();
-	}, [nodeState]);
+		cx.node._v.content.userTitle = undefined;
+		cx.node._notify();
+	}, [cx]);
 
 	const handleDescriptionChange = React.useCallback(
 		(value: string) => {
-			nodeState._v.content.userDescription = value;
-			nodeState._notify();
+			cx.node._v.content.userDescription = value;
+			cx.node._notify();
 		},
-		[nodeState]
+		[cx]
 	);
 
 	const handleDescriptionReset = React.useCallback(() => {
-		nodeState._v.content.userDescription = undefined;
-		nodeState._notify();
-	}, [nodeState]);
+		cx.node._v.content.userDescription = undefined;
+		cx.node._notify();
+	}, [cx]);
 
 	const handleFaviconImageChange = React.useCallback(
 		(image: TImageUploadEvent) => {
 			switch (image.type) {
 				case 'Changed': {
-					const hash = editor.registerImage(image.url, image.fileName ?? 'favicon');
+					const hash = cx.editor.registerImage(image.url, image.fileName ?? 'favicon');
 					if (hash != null) {
-						nodeState._v.content.userFavicon = hash;
-						nodeState._notify();
+						cx.node._v.content.userFavicon = hash;
+						cx.node._notify();
 					}
 					break;
 				}
 				case 'Removed': {
-					nodeState._v.content.userFavicon = null;
-					nodeState._notify();
+					cx.node._v.content.userFavicon = null;
+					cx.node._notify();
 					break;
 				}
 			}
 		},
-		[nodeState, editor]
+		[cx]
 	);
 
 	const handleFaviconReset = React.useCallback(() => {
-		nodeState._v.content.userFavicon = undefined;
-		nodeState._notify();
-	}, [nodeState]);
+		cx.node._v.content.userFavicon = undefined;
+		cx.node._notify();
+	}, [cx]);
 
 	const handleUrlFetch = React.useCallback(async () => {
 		setIsFetchingUrlMetadata(true);
 		try {
-			const metadata = await fetchUrlMetadata(content.url, shopify);
+			const metadata = await fetchUrlMetadata(content.url, cx.shopify);
 			if (metadata == null) {
-				shopify.toast.show('Failed to fetch URL metadata', {
+				cx.shopify.toast.show('Failed to fetch URL metadata', {
 					duration: 3000,
 					action: 'Retry',
 					onAction: handleUrlFetch
@@ -126,27 +142,27 @@ export const SingleContent: React.FC<TSingleContentProps> = (props) => {
 
 			let faviconHash: string | null = null;
 			if (metadata.favicon != null) {
-				faviconHash = editor.registerImage(metadata.favicon, 'favicon');
+				faviconHash = cx.editor.registerImage(metadata.favicon, 'favicon');
 			}
 
-			nodeState._v.content.title = metadata.title;
-			nodeState._v.content.description = metadata.description;
-			nodeState._v.content.favicon = faviconHash ?? undefined;
-			nodeState._notify();
+			cx.node._v.content.title = metadata.title;
+			cx.node._v.content.description = metadata.description;
+			cx.node._v.content.favicon = faviconHash ?? undefined;
+			cx.node._notify();
 		} finally {
 			setIsFetchingUrlMetadata(false);
 		}
-	}, [editor, content, nodeState, shopify]);
+	}, [cx, content]);
 
 	// =========================================================================
 	// UI
 	// =========================================================================
 
 	return (
-		<div className="space-y-3 px-4">
+		<div className={cn('space-y-3 px-4', className)}>
 			<div className="flex items-center justify-between">
 				<Text as="span" variant="headingXs" tone="subdued">
-					Variant {isEnhancing && '(enhancing...)'}
+					Content {isEnhancing && '(enhancing...)'}
 				</Text>
 				<Button
 					variant="plain"
@@ -156,6 +172,24 @@ export const SingleContent: React.FC<TSingleContentProps> = (props) => {
 				>
 					{isFetchingUrlMetadata ? 'Fetching metadata...' : 'Fetch metadata'}
 				</Button>
+			</div>
+
+			{/* URL */}
+			<div className="space-y-1">
+				<Text as="span" variant="bodySm" tone="subdued">
+					URL
+				</Text>
+				<TextField
+					id="url-field"
+					label="URL"
+					labelHidden
+					value={content.url}
+					onChange={handleUrlChange}
+					onBlur={handleUrlBlur}
+					autoComplete="off"
+					placeholder="https://example.com"
+					type="url"
+				/>
 			</div>
 
 			{/* Title */}
@@ -230,7 +264,6 @@ export const SingleContent: React.FC<TSingleContentProps> = (props) => {
 };
 
 interface TSingleContentProps {
-	nodeState: TNodeState<TLinkNode<TSingleLinkNodeContent>>;
-	editor: TPageEditor;
-	isEnhancing?: boolean;
+	cx: TNodeEditorContext<TSingleLinkNodeContent>;
+	className: string;
 }

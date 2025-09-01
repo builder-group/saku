@@ -13,7 +13,7 @@ import { extractYouTubeVideoId, fetchUrlMetadata } from '../lib';
 export const contentMetadataMap = {
 	'single': {
 		type: 'single',
-		label: 'Single',
+		label: 'Link Card',
 		isApplicable: () => true,
 		extractCommonFields(variant) {
 			return {
@@ -22,14 +22,14 @@ export const contentMetadataMap = {
 			};
 		},
 		async createContent(cx) {
-			cx.nodeState._v.content = {
+			cx.node._v.content = {
 				type: 'single',
 				url: cx.url,
 				title: cx.common.title,
 				userTitle: cx.common.userTitle,
 				description: cx.common.description
 			};
-			cx.nodeState._notify();
+			cx.node._notify();
 			return Ok(undefined);
 		},
 		async enhanceContent(cx) {
@@ -47,14 +47,14 @@ export const contentMetadataMap = {
 				faviconHash = cx.editor.registerImage(metadata.favicon, 'favicon');
 			}
 
-			const content = cx.nodeState._v.content;
+			const content = cx.node._v.content;
 
 			// Update all fields with new metadata (overwriting existing)
 			content.title = metadata.title;
 			content.description = metadata.description;
 			if (faviconHash != null) content.favicon = faviconHash;
 
-			cx.nodeState._notify();
+			cx.node._notify();
 			return Ok(undefined);
 		}
 	} satisfies TContentMetadata<TSingleLinkNodeContent>,
@@ -76,21 +76,21 @@ export const contentMetadataMap = {
 		},
 		async createContent(cx) {
 			const videoId = extractYouTubeVideoId(cx.url) ?? '';
-			cx.nodeState._v.content = {
+			cx.node._v.content = {
 				type: 'youtube-video-embed',
 				url: cx.url,
 				videoId
 			};
-			cx.nodeState._notify();
+			cx.node._notify();
 			return Ok(undefined);
 		},
 		async enhanceContent(cx) {
 			const videoId = extractYouTubeVideoId(cx.url) ?? '';
-			const content = cx.nodeState._v.content;
+			const content = cx.node._v.content;
 
 			if (videoId !== content.videoId) {
 				content.videoId = videoId;
-				cx.nodeState._notify();
+				cx.node._notify();
 			}
 
 			return Ok(undefined);
@@ -114,7 +114,7 @@ export interface TContentMetadata<GContent extends TLinkNodeContent = TLinkNodeC
 		common: TCommonContentFields;
 		editor: TPageEditor;
 		shopify: ShopifyGlobal;
-		nodeState: TNodeState<TLinkNode<GContent>>;
+		node: TNodeState<TLinkNode<GContent>>;
 	}) => Promise<TResult<void, AppError>>;
 	/**
 	 * Optional method to enhance the content with additional data after creation or url change
@@ -123,7 +123,7 @@ export interface TContentMetadata<GContent extends TLinkNodeContent = TLinkNodeC
 		url: string;
 		editor: TPageEditor;
 		shopify: ShopifyGlobal;
-		nodeState: TNodeState<TLinkNode<GContent>>;
+		node: TNodeState<TLinkNode<GContent>>;
 	}) => Promise<TResult<void, AppError>>;
 	/**
 	 * Extracts common fields from a content of this type

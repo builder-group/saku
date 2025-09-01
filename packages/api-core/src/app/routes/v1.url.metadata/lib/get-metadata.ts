@@ -23,9 +23,13 @@ export async function getMetadata(url: string): Promise<TUrlMetadataDto> {
 		Object.entries(raw.link).map(([key, value]) => [key, toAbsoluteUrl(url, value)])
 	);
 
-	// If the icon is not found, use the favicon.ico
+	// If the icon is not found, check if favicon.ico exists
 	if (links['icon'] == null) {
-		links['icon'] = toAbsoluteUrl(url, '/favicon.ico');
+		const faviconUrl = toAbsoluteUrl(url, '/favicon.ico');
+		const faviconCheck = await fetchClient.get(faviconUrl, { parseAs: 'text' });
+		if (faviconCheck.isOk()) {
+			links['icon'] = faviconUrl;
+		}
 	}
 
 	return {
