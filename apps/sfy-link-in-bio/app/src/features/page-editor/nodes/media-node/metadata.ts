@@ -13,8 +13,7 @@ export const mediaNodeMetadata: TNodeMetadata<'media'> = {
 		},
 		autoLayout: {
 			horizontalPadding: tokenRef(),
-			verticalPadding: tokenRef(),
-			verticalGap: tokenRef()
+			verticalPadding: tokenRef()
 		},
 		appearance: {
 			visible: true,

@@ -14,8 +14,7 @@ export const textNodeMetadata: TNodeMetadata<'text'> = {
 		},
 		autoLayout: {
 			horizontalPadding: tokenRef(),
-			verticalPadding: tokenRef(),
-			verticalGap: tokenRef()
+			verticalPadding: tokenRef()
 		},
 		appearance: {
 			visible: true,

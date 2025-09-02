@@ -16,8 +16,7 @@ export const aboutNodeMetadata: TNodeMetadata<'about'> = {
 		},
 		autoLayout: {
 			horizontalPadding: tokenRef(),
-			verticalPadding: tokenRef(),
-			verticalGap: tokenRef()
+			verticalPadding: tokenRef()
 		},
 		appearance: {
 			visible: true,

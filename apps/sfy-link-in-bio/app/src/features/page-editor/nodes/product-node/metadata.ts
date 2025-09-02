@@ -13,8 +13,7 @@ export const productNodeMetadata: TNodeMetadata<'product'> = {
 		},
 		autoLayout: {
 			horizontalPadding: tokenRef(),
-			verticalPadding: tokenRef(),
-			verticalGap: tokenRef()
+			verticalPadding: tokenRef()
 		},
 		appearance: {
 			visible: true,

@@ -15,8 +15,7 @@ export const linkNodeMetadata: TNodeMetadata<'link'> = {
 		},
 		autoLayout: {
 			horizontalPadding: tokenRef(),
-			verticalPadding: tokenRef(),
-			verticalGap: tokenRef()
+			verticalPadding: tokenRef()
 		},
 		appearance: {
 			visible: true,
