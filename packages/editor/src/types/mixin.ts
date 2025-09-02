@@ -288,16 +288,20 @@ export type TShadowStyleMixin = TBaseMixin<
 	} | null>
 >;
 
-export type TCardStyleMixin = TBaseMixin<
-	'card',
-	{
-		autoLayout: TAutoLayoutStyleMixin['value'];
-		appearance: TAppearanceStyleMixin['value'];
-		fill: TFillStyleMixin['value'];
-		stroke: TStrokeStyleMixin['value'];
-		shadow: TShadowStyleMixin['value'];
-	}
->;
+// =========================================================================
+// Composed Style Mixins
+// =========================================================================
+
+// export type TCardStyleMixin = TBaseMixin<
+// 	'card',
+// 	{
+// 		autoLayout: TAutoLayoutStyleMixin['value'];
+// 		appearance: TAppearanceStyleMixin['value'];
+// 		fill: TFillStyleMixin['value'];
+// 		stroke: TStrokeStyleMixin['value'];
+// 		shadow: TShadowStyleMixin['value'];
+// 	}
+// >;
 
 export type TTextStyleMixin = TBaseMixin<
 	'text',
@@ -332,5 +336,28 @@ export type TBadgeStyleMixin = TBaseMixin<
 		stroke: TStrokeStyleMixin['value'];
 		shadow: TShadowStyleMixin['value'];
 		text: TTextStyleMixin['value'];
+	}
+>;
+
+export type TImageStyleMixin = TBaseMixin<
+	'image',
+	{
+		appearance: TAppearanceStyleMixin['value'];
+		stroke: TStrokeStyleMixin['value'];
+		shadow: TShadowStyleMixin['value'];
+	}
+>;
+
+export type TProductDetailsStyleMixin = TBaseMixin<
+	'productDetails',
+	{
+		appearance: TAppearanceStyleMixin['value'];
+		fill: TFillStyleMixin['value'];
+		stroke: TStrokeStyleMixin['value'];
+		shadow: TShadowStyleMixin['value'];
+		image: TImageStyleMixin['value'];
+		heading: THeadingStyleMixin['value'];
+		primaryButton: TPrimaryButtonStyleMixin['value'];
+		badge: TBadgeStyleMixin['value'];
 	}
 >;
