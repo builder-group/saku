@@ -61,6 +61,10 @@ export function createNodeEditorContext<GContent extends TLinkNodeContent>(
 		},
 
 		async updateUrlAndEnhance(this: TNodeEditorContext<GContent>, newUrl: string) {
+			if (newUrl === this.node._v.content.url) {
+				return Ok(undefined);
+			}
+
 			const contentType = this.selectedContentType._v;
 
 			// Ensure URL has proper protocol prefix
