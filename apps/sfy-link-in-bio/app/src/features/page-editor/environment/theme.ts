@@ -94,8 +94,8 @@ export const themes: TTheme[] = [
 			errorContent: '#ffffff'
 		},
 		typography: {
-			heading: { fontFamily: 'Inter', fontWeight: 600 },
-			text: { fontFamily: 'Inter', fontWeight: 400 }
+			heading: { fontFamily: 'Poppins', fontWeight: 600 },
+			text: { fontFamily: 'Open Sans', fontWeight: 400 }
 		},
 		radius: { box: 20, field: 16, selector: 12 },
 		effects: {
@@ -134,8 +134,8 @@ export const themes: TTheme[] = [
 			errorContent: '#ffffff'
 		},
 		typography: {
-			heading: { fontFamily: 'Inter', fontWeight: 600 },
-			text: { fontFamily: 'Inter', fontWeight: 400 }
+			heading: { fontFamily: 'Montserrat', fontWeight: 600 },
+			text: { fontFamily: 'Lato', fontWeight: 400 }
 		},
 		radius: { box: 16, field: 12, selector: 8 },
 		effects: {
@@ -174,8 +174,8 @@ export const themes: TTheme[] = [
 			errorContent: '#ffffff'
 		},
 		typography: {
-			heading: { fontFamily: 'Inter', fontWeight: 600 },
-			text: { fontFamily: 'Inter', fontWeight: 400 }
+			heading: { fontFamily: 'Karla', fontWeight: 600 },
+			text: { fontFamily: 'Karla', fontWeight: 400 }
 		},
 		radius: { box: 16, field: 12, selector: 8 },
 		effects: {
@@ -208,8 +208,8 @@ export const themes: TTheme[] = [
 			errorContent: '#ffffff'
 		},
 		typography: {
-			heading: { fontFamily: 'Inter', fontWeight: 600 },
-			text: { fontFamily: 'Inter', fontWeight: 400 }
+			heading: { fontFamily: 'Roboto', fontWeight: 600 },
+			text: { fontFamily: 'Roboto', fontWeight: 400 }
 		},
 		radius: { box: 8, field: 6, selector: 4 },
 		effects: {
@@ -248,8 +248,8 @@ export const themes: TTheme[] = [
 			errorContent: '#2d1b69'
 		},
 		typography: {
-			heading: { fontFamily: 'Inter', fontWeight: 600 },
-			text: { fontFamily: 'Inter', fontWeight: 400 }
+			heading: { fontFamily: 'B612', fontWeight: 600 },
+			text: { fontFamily: 'B612', fontWeight: 400 }
 		},
 		size: {
 			text: 0.9,
@@ -292,8 +292,8 @@ export const themes: TTheme[] = [
 			errorContent: '#2d1b69'
 		},
 		typography: {
-			heading: { fontFamily: 'Inter', fontWeight: 600 },
-			text: { fontFamily: 'Inter', fontWeight: 400 }
+			heading: { fontFamily: 'Playfair Display', fontWeight: 600 },
+			text: { fontFamily: 'Lora', fontWeight: 400 }
 		},
 		size: {
 			text: 1.2,
@@ -336,8 +336,8 @@ export const themes: TTheme[] = [
 			errorContent: '#1f2937'
 		},
 		typography: {
-			heading: { fontFamily: 'Inter', fontWeight: 600 },
-			text: { fontFamily: 'Inter', fontWeight: 400 }
+			heading: { fontFamily: 'B612', fontWeight: 600 },
+			text: { fontFamily: 'B612', fontWeight: 400 }
 		},
 		radius: { box: 0, field: 0, selector: 0 },
 		effects: {
@@ -376,8 +376,8 @@ export const themes: TTheme[] = [
 			errorContent: '#ffffff'
 		},
 		typography: {
-			heading: { fontFamily: 'Inter', fontWeight: 600 },
-			text: { fontFamily: 'Inter', fontWeight: 400 }
+			heading: { fontFamily: 'Playfair Display', fontWeight: 600 },
+			text: { fontFamily: 'Lora', fontWeight: 400 }
 		},
 		radius: { box: 20, field: 16, selector: 12 },
 		effects: {
@@ -416,8 +416,8 @@ export const themes: TTheme[] = [
 			errorContent: '#ffffff'
 		},
 		typography: {
-			heading: { fontFamily: 'Inter', fontWeight: 600 },
-			text: { fontFamily: 'Inter', fontWeight: 400 }
+			heading: { fontFamily: 'BioRhyme', fontWeight: 600 },
+			text: { fontFamily: 'BioRhyme', fontWeight: 400 }
 		},
 		radius: { box: 12, field: 8, selector: 6 },
 		effects: {
@@ -588,8 +588,8 @@ export const themes: TTheme[] = [
 			errorContent: '#ffffff'
 		},
 		typography: {
-			heading: { fontFamily: 'Inter', fontWeight: 600 },
-			text: { fontFamily: 'Inter', fontWeight: 400 }
+			heading: { fontFamily: 'Cairo', fontWeight: 600 },
+			text: { fontFamily: 'Cairo', fontWeight: 400 }
 		},
 		radius: { box: 0, field: 0, selector: 0 },
 		effects: {
@@ -622,8 +622,8 @@ export const themes: TTheme[] = [
 			errorContent: '#7f1d1d'
 		},
 		typography: {
-			heading: { fontFamily: 'Inter', fontWeight: 600 },
-			text: { fontFamily: 'Inter', fontWeight: 400 }
+			heading: { fontFamily: 'Mulish', fontWeight: 600 },
+			text: { fontFamily: 'Mulish', fontWeight: 400 }
 		},
 		radius: { box: 20, field: 16, selector: 12 },
 		effects: {
@@ -656,8 +656,8 @@ export const themes: TTheme[] = [
 			errorContent: '#ffffff'
 		},
 		typography: {
-			heading: { fontFamily: 'Inter', fontWeight: 600 },
-			text: { fontFamily: 'Inter', fontWeight: 400 }
+			heading: { fontFamily: 'Vollkorn', fontWeight: 600 },
+			text: { fontFamily: 'Vollkorn', fontWeight: 400 }
 		},
 		radius: { box: 24, field: 20, selector: 16 },
 		effects: {
@@ -696,8 +696,8 @@ export const themes: TTheme[] = [
 			errorContent: '#ffffff'
 		},
 		typography: {
-			heading: { fontFamily: 'Inter', fontWeight: 600 },
-			text: { fontFamily: 'Inter', fontWeight: 400 }
+			heading: { fontFamily: 'system-ui', fontWeight: 600 },
+			text: { fontFamily: 'system-ui', fontWeight: 400 }
 		},
 		radius: { box: 0, field: 0, selector: 0 },
 		effects: {
@@ -776,8 +776,8 @@ export const themes: TTheme[] = [
 			errorContent: '#ffffff'
 		},
 		typography: {
-			heading: { fontFamily: 'Inter', fontWeight: 600 },
-			text: { fontFamily: 'Inter', fontWeight: 400 }
+			heading: { fontFamily: 'Playfair Display', fontWeight: 600 },
+			text: { fontFamily: 'Lora', fontWeight: 400 }
 		},
 		size: {
 			text: 0.95,
@@ -820,8 +820,8 @@ export const themes: TTheme[] = [
 			errorContent: '#282a36'
 		},
 		typography: {
-			heading: { fontFamily: 'Inter', fontWeight: 600 },
-			text: { fontFamily: 'Inter', fontWeight: 400 }
+			heading: { fontFamily: 'BioRhyme', fontWeight: 600 },
+			text: { fontFamily: 'BioRhyme', fontWeight: 400 }
 		},
 		size: {
 			text: 1.05,
@@ -986,12 +986,12 @@ export const themes: TTheme[] = [
 			errorContent: '#000000'
 		},
 		typography: {
-			heading: { fontFamily: 'Inter', fontWeight: 600 },
-			text: { fontFamily: 'Inter', fontWeight: 400 }
+			heading: { fontFamily: 'B612', fontWeight: 600 },
+			text: { fontFamily: 'B612', fontWeight: 400 }
 		},
 		size: {
-			text: 0.85,
-			box: 0.7
+			text: 1,
+			box: 0.9
 		},
 		radius: { box: 0, field: 0, selector: 0 },
 		effects: {
