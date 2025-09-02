@@ -2,14 +2,14 @@ import { hexToRgba, TToken } from '@repo/editor';
 import { TTheme } from '../../environment';
 
 export function createTokensFromTheme(theme: TTheme): TToken[] {
+	const { color, typography, gap = 24, size = {}, radius, effects } = theme;
 	const {
-		color,
-		typography,
-		gap = 24,
-		size = { heading: 1, text: 1, box: 1, field: 1, selector: 1 },
-		radius,
-		effects
-	} = theme;
+		heading: headingSize = 1,
+		text: textSize = 1,
+		box: boxSize = 1,
+		field: fieldSize = 1,
+		selector: selectorSize = 1
+	} = size;
 
 	return [
 		// Variable tokens (atomic design values)
@@ -95,19 +95,19 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 			type: 'variable',
 			key: 'size.heading',
 			name: 'Heading Size',
-			value: size.heading
+			value: headingSize
 		},
 		{
 			type: 'variable',
 			key: 'size.text',
 			name: 'Text Size',
-			value: size.text
+			value: textSize
 		},
 		{
 			type: 'variable',
 			key: 'size.box',
 			name: 'Box Size',
-			value: size.box
+			value: boxSize
 		},
 		{
 			type: 'variable',
@@ -134,8 +134,8 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 			key: 'default',
 			mixinKey: 'autoLayout',
 			value: {
-				horizontalPadding: gap,
-				verticalPadding: gap
+				horizontalPadding: boxSize * 8,
+				verticalPadding: boxSize * 8
 			}
 		},
 		{
@@ -158,7 +158,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 					weight: typography.text.fontWeight,
 					style: 'normal'
 				},
-				fontSize: size.text * 16,
+				fontSize: textSize * 16,
 				textAlignHorizontal: 'center',
 				textAlignVertical: 'center',
 				lineHeight: { type: 'auto' },
@@ -219,7 +219,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 						weight: typography.text.fontWeight,
 						style: 'normal'
 					},
-					fontSize: size.text * 16,
+					fontSize: textSize * 16,
 					textAlignHorizontal: 'center',
 					textAlignVertical: 'center',
 					lineHeight: { type: 'auto' },
@@ -266,7 +266,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 							weight: typography.text.fontWeight,
 							style: 'normal'
 						},
-						fontSize: size.text * 16,
+						fontSize: textSize * 16,
 						textAlignHorizontal: 'center',
 						textAlignVertical: 'center',
 						lineHeight: { type: 'auto' },

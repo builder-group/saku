@@ -251,6 +251,10 @@ export const themes: TTheme[] = [
 			heading: { fontFamily: 'Inter', fontWeight: 600 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
+		size: {
+			text: 0.9,
+			box: 0.8
+		},
 		radius: { box: 4, field: 2, selector: 2 },
 		effects: {
 			stroke: { width: 1 },
@@ -290,6 +294,10 @@ export const themes: TTheme[] = [
 		typography: {
 			heading: { fontFamily: 'Inter', fontWeight: 600 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
+		},
+		size: {
+			text: 1.2,
+			box: 1.4
 		},
 		radius: { box: 0, field: 0, selector: 0 },
 		effects: {
@@ -451,6 +459,10 @@ export const themes: TTheme[] = [
 			heading: { fontFamily: 'Inter', fontWeight: 600 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
+		size: {
+			text: 1.05,
+			box: 1.15
+		},
 		radius: { box: 20, field: 16, selector: 12 },
 		effects: {
 			stroke: { width: 2 },
@@ -491,6 +503,10 @@ export const themes: TTheme[] = [
 			heading: { fontFamily: 'Inter', fontWeight: 600 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
+		size: {
+			text: 1.1,
+			box: 1.2
+		},
 		radius: { box: 16, field: 12, selector: 8 },
 		effects: {
 			stroke: { width: 2 },
@@ -530,6 +546,10 @@ export const themes: TTheme[] = [
 		typography: {
 			heading: { fontFamily: 'Inter', fontWeight: 600 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
+		},
+		size: {
+			text: 1.05,
+			box: 1.1
 		},
 		radius: { box: 16, field: 12, selector: 8 },
 		effects: {
@@ -759,6 +779,10 @@ export const themes: TTheme[] = [
 			heading: { fontFamily: 'Inter', fontWeight: 600 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
+		size: {
+			text: 0.95,
+			box: 0.7
+		},
 		radius: { box: 8, field: 6, selector: 4 },
 		effects: {
 			stroke: { width: 1 },
@@ -798,6 +822,10 @@ export const themes: TTheme[] = [
 		typography: {
 			heading: { fontFamily: 'Inter', fontWeight: 600 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
+		},
+		size: {
+			text: 1.05,
+			box: 1.1
 		},
 		radius: { box: 12, field: 8, selector: 6 },
 		effects: {
@@ -839,6 +867,10 @@ export const themes: TTheme[] = [
 			heading: { fontFamily: 'Inter', fontWeight: 600 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
+		size: {
+			text: 0.95,
+			box: 0.9
+		},
 		radius: { box: 8, field: 6, selector: 4 },
 		effects: {
 			stroke: { width: 1 },
@@ -878,6 +910,10 @@ export const themes: TTheme[] = [
 		typography: {
 			heading: { fontFamily: 'Inter', fontWeight: 600 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
+		},
+		size: {
+			text: 1.1,
+			box: 1.15
 		},
 		radius: { box: 16, field: 12, selector: 8 },
 		effects: {
@@ -953,6 +989,10 @@ export const themes: TTheme[] = [
 			heading: { fontFamily: 'Inter', fontWeight: 600 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
+		size: {
+			text: 0.85,
+			box: 0.7
+		},
 		radius: { box: 0, field: 0, selector: 0 },
 		effects: {
 			stroke: { width: 2 }
@@ -986,6 +1026,10 @@ export const themes: TTheme[] = [
 		typography: {
 			heading: { fontFamily: 'Inter', fontWeight: 600 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
+		},
+		size: {
+			text: 1.1,
+			box: 1.2
 		},
 		radius: { box: 20, field: 16, selector: 12 },
 		effects: {
@@ -1027,6 +1071,10 @@ export const themes: TTheme[] = [
 			heading: { fontFamily: 'Inter', fontWeight: 600 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
+		size: {
+			text: 1.05,
+			box: 1.15
+		},
 		radius: { box: 16, field: 12, selector: 8 },
 		effects: {
 			stroke: { width: 2 },
@@ -1067,6 +1115,10 @@ export const themes: TTheme[] = [
 			heading: { fontFamily: 'Inter', fontWeight: 600 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
+		size: {
+			text: 1.1,
+			box: 1.2
+		},
 		radius: { box: 12, field: 8, selector: 6 },
 		effects: {
 			stroke: { width: 2 },
@@ -1106,6 +1158,10 @@ export const themes: TTheme[] = [
 		typography: {
 			heading: { fontFamily: 'Inter', fontWeight: 600 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
+		},
+		size: {
+			text: 1.05,
+			box: 1.1
 		},
 		radius: { box: 16, field: 12, selector: 8 },
 		effects: {
@@ -1227,6 +1283,10 @@ export const themes: TTheme[] = [
 			heading: { fontFamily: 'Inter', fontWeight: 600 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
+		size: {
+			text: 1.1,
+			box: 1.2
+		},
 		radius: { box: 16, field: 12, selector: 8 },
 		effects: {
 			stroke: { width: 2 },
@@ -1281,11 +1341,11 @@ export interface TTheme {
 	gap?: number; // spacing between elements, in px
 
 	size?: {
-		heading: number; // heading as relative multiplicator (base = 1)
-		text: number; // text as relative multiplicator (base = 1)
-		box: number; // card, modal, alert, etc. as relative multiplicator (base = 1)
-		field: number; // input, select, tab, etc. as relative multiplicator (base = 1)
-		selector: number; // checkbox, toggle, badge, etc. as relative multiplicator (base = 1)
+		heading?: number; // heading size multiplier (1 = default)
+		text?: number; // text size multiplier (1 = default)
+		box?: number; // card, modal, alert, etc. size multiplier (1 = default)
+		field?: number; // input, select, tab, etc. size multiplier (1 = default)
+		selector?: number; // checkbox, toggle, badge, etc. size multiplier (1 = default)
 	};
 
 	radius: {
