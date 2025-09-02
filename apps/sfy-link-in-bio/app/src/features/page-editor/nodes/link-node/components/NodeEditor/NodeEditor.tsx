@@ -13,6 +13,7 @@ import {
 	StrokeStyleMixinEditor,
 	TextStyleMixinEditor
 } from '../../../../mixins';
+import { ContentSkeleton } from './ContentSkeleton';
 import { createNodeEditorContext, TNodeEditorContext } from './create-node-editor-context';
 import { contentMetadataMap, TContentType } from './environment';
 import { SingleContent } from './SingleContent';
@@ -94,14 +95,14 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 					/>
 				</div>
 
-				{!isChangingContentType && (
-					<>
-						<div className="h-px bg-neutral-200" />
-						<div className="relative">
-							<PortalPulse isActive={cx.isEnhancing} className="-top-3 right-0 -bottom-3 left-0" />
-							{renderVariantEditor()}
-						</div>
-					</>
+				<div className="h-px bg-neutral-200" />
+				{isChangingContentType ? (
+					<ContentSkeleton className="z-10" />
+				) : (
+					<div className="relative">
+						<PortalPulse isActive={cx.isEnhancing} className="-top-3 right-0 -bottom-3 left-0" />
+						{renderVariantEditor()}
+					</div>
 				)}
 			</AccordionSection>
 

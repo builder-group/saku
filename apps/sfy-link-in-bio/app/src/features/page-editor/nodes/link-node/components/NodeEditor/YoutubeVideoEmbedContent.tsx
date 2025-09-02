@@ -8,27 +8,27 @@ import { extractYouTubeVideoId } from './lib';
 
 export const YoutubeVideoEmbedContent: React.FC<TYoutubeVideoEmbedContentProps> = (props) => {
 	const { cx, className } = props;
+
 	const content = useCompute(cx.node, ({ value }) => value.content, [], { isEqual: false });
 	const isEnhancing = useFeatureState(cx.isEnhancing);
+
+	const [displayUrl, setDisplayUrl] = React.useState(content.url);
 
 	// =========================================================================
 	// Events
 	// =========================================================================
 
-	const handleUrlChange = React.useCallback(
-		(value: string) => {
-			cx.updateUrl(value);
-		},
-		[cx]
-	);
+	const handleUrlChange = React.useCallback((value: string) => {
+		setDisplayUrl(value);
+	}, []);
 
 	const handleUrlBlur = React.useCallback(() => {
-		cx.validateAndEnhanceContent().then((result) => {
+		cx.updateUrlAndEnhance(displayUrl).then((result) => {
 			if (result.isErr()) {
-				cx.shopify.toast.show('Failed to validate and enhance content', { duration: 3000 });
+				cx.shopify.toast.show('Failed to update URL and enhance content', { duration: 3000 });
 			}
 		});
-	}, [cx]);
+	}, [cx, displayUrl]);
 
 	const handleVideoIdChange = React.useCallback(
 		(value: string) => {
@@ -41,6 +41,16 @@ export const YoutubeVideoEmbedContent: React.FC<TYoutubeVideoEmbedContentProps> 
 	// =========================================================================
 	// Effects
 	// =========================================================================
+
+	useListener(
+		cx.node,
+		({ value: node, source }) => {
+			if (displayUrl !== node.content.url && source !== 'apply-url-and-enhance') {
+				setDisplayUrl(node.content.url);
+			}
+		},
+		[cx, displayUrl]
+	);
 
 	useListener(
 		cx.node,
@@ -63,6 +73,8 @@ export const YoutubeVideoEmbedContent: React.FC<TYoutubeVideoEmbedContentProps> 
 					embedVariant.videoId = videoId;
 					cx.node._notify({ listenerContext: { source: 'video-embed-listener' } });
 				}
+				// Update display URL to match actual URL
+				setDisplayUrl(node.content.url);
 			}
 		},
 		[cx]
@@ -89,7 +101,7 @@ export const YoutubeVideoEmbedContent: React.FC<TYoutubeVideoEmbedContentProps> 
 					id="url-field"
 					label="URL"
 					labelHidden
-					value={content.url}
+					value={displayUrl}
 					onChange={handleUrlChange}
 					onBlur={handleUrlBlur}
 					autoComplete="off"

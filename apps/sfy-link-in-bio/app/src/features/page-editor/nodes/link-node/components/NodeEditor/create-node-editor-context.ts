@@ -2,7 +2,7 @@ import { TLinkNode, TLinkNodeContent } from '@repo/editor';
 import type { ShopifyGlobal } from '@shopify/app-bridge-types';
 import { createState, TState } from 'feature-state';
 import { Err, Ok, TResult } from 'tuple-result';
-import { AppError } from '@/lib';
+import { AppError, parseUrl } from '@/lib';
 import { TNodeState, TPageEditor } from '../../../../lib';
 import { contentMetadataMap, contentTypePriority, TContentType } from './environment';
 import { getApplicableContent } from './lib';
@@ -20,17 +20,6 @@ export function createNodeEditorContext<GContent extends TLinkNodeContent>(
 		applicableContentTypes: createState(getApplicableContent(node._v.content.url)),
 		isChangingContentType: createState(false),
 		isEnhancing: createState(false),
-
-		updateUrl(this: TNodeEditorContext<GContent>, value) {
-			// Ensure URL has proper protocol prefix
-			let normalizedUrl = value.trim();
-			if (normalizedUrl != null && !normalizedUrl.match(/^https?:\/\//)) {
-				normalizedUrl = `https://${normalizedUrl}`;
-			}
-
-			this.node._v.content.url = normalizedUrl;
-			this.node._notify({ listenerContext: { source: 'url-change' } });
-		},
 
 		async updateContentType(this: TNodeEditorContext<GContent>, contentType) {
 			this.isChangingContentType.set(true);
@@ -58,31 +47,48 @@ export function createNodeEditorContext<GContent extends TLinkNodeContent>(
 				if (contentResult.isErr()) {
 					return Err(new AppError('#ERR_FAILED_TO_CREATE_VARIANT'));
 				}
-
-				// Enhance content
-				const enhanceResult = await this.enhanceContent(contentType);
-				if (enhanceResult.isErr()) {
-					return enhanceResult;
-				}
 			} finally {
 				this.isChangingContentType.set(false);
+			}
+
+			// Enhance content
+			const enhanceResult = await this.enhanceContent(contentType);
+			if (enhanceResult.isErr()) {
+				return enhanceResult;
 			}
 
 			return Ok(undefined);
 		},
 
-		async validateAndEnhanceContent(this: TNodeEditorContext<GContent>) {
+		async updateUrlAndEnhance(this: TNodeEditorContext<GContent>, newUrl: string) {
 			const contentType = this.selectedContentType._v;
-			const content = this.node._v.content;
 
-			// Get applicable content variants for the new URL
-			const applicableContentVariants = getApplicableContent(content.url);
-			this.applicableContentTypes.set(applicableContentVariants);
+			// Ensure URL has proper protocol prefix
+			let normalizedUrl = newUrl.trim();
+			if (normalizedUrl && !normalizedUrl.match(/^https?:\/\//)) {
+				normalizedUrl = `https://${normalizedUrl}`;
+			}
 
-			// Auto-switch to best applicable variant (prioritize more specific types)
-			const bestVariant = this.getBestContentType(applicableContentVariants);
-			if (bestVariant !== contentType) {
-				return await this.updateContentType(bestVariant);
+			// Check if this is a major URL change
+			const current = parseUrl(this.node._v.content.url);
+			const updated = parseUrl(newUrl);
+			const isMajorChange = current?.hostname !== updated?.hostname;
+
+			// Update the actual URL
+			this.node._v.content.url = normalizedUrl;
+			this.node._notify({ listenerContext: { source: 'apply-url-and-enhance' } });
+
+			// Only switch variants on major changes
+			if (isMajorChange) {
+				// Get applicable content variants for the new URL
+				const applicableContentVariants = getApplicableContent(normalizedUrl);
+				this.applicableContentTypes.set(applicableContentVariants);
+
+				// Auto-switch to best applicable variant (prioritize more specific types)
+				const bestVariant = this.getBestContentType(applicableContentVariants);
+				if (bestVariant !== contentType) {
+					return await this.updateContentType(bestVariant);
+				}
 			}
 
 			// Enhance content
@@ -141,10 +147,8 @@ export interface TNodeEditorContext<GContent extends TLinkNodeContent> {
 	applicableContentTypes: TState<TContentType[], []>;
 	isChangingContentType: TState<boolean, []>;
 	isEnhancing: TState<boolean, []>;
-
-	updateUrl: (value: string) => void;
 	updateContentType: (contentType: TContentType) => Promise<TResult<void, AppError>>;
-	validateAndEnhanceContent: () => Promise<TResult<void, AppError>>;
+	updateUrlAndEnhance: (newUrl: string) => Promise<TResult<void, AppError>>;
 	getBestContentType: (applicableTypes: TContentType[]) => TContentType;
 	enhanceContent: (contentType?: TContentType) => Promise<TResult<void, AppError>>;
 }
