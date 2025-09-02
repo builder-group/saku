@@ -1,35 +1,35 @@
-// Based on: https://daisyui.com/theme-generator
+// Inspired by: https://daisyui.com/theme-generator
 export const themes: TTheme[] = [
 	{
 		key: 'light',
 		name: 'Light',
 		color: {
 			base100: '#ffffff',
-			base200: '#fafafa',
-			base300: '#f2f2f2',
-			baseContent: '#353535',
-			primary: '#570df8',
-			primaryContent: '#f0f0f0',
-			secondary: '#f000b8',
+			base200: '#f8fafc',
+			base300: '#e2e8f0',
+			baseContent: '#1e293b',
+			primary: '#3b82f6',
+			primaryContent: '#ffffff',
+			secondary: '#8b5cf6',
 			secondaryContent: '#ffffff',
-			neutral: '#232323',
-			neutralContent: '#ebebeb',
-			accent: '#37cdbe',
-			accentContent: '#003320',
-			info: '#3abff8',
-			infoContent: '#002b3d',
-			success: '#36d399',
-			successContent: '#003320',
-			warning: '#fbbd23',
-			warningContent: '#382800',
-			error: '#f87272',
-			errorContent: '#470000'
+			neutral: '#64748b',
+			neutralContent: '#ffffff',
+			accent: '#e2e8f0',
+			accentContent: '#475569',
+			info: '#0ea5e9',
+			infoContent: '#ffffff',
+			success: '#10b981',
+			successContent: '#ffffff',
+			warning: '#f59e0b',
+			warningContent: '#ffffff',
+			error: '#ef4444',
+			errorContent: '#ffffff'
 		},
 		typography: {
 			heading: { fontFamily: 'Inter', fontWeight: 600 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
-		radius: { box: 8, field: 4, selector: 8 },
+		radius: { box: 12, field: 8, selector: 6 },
 		effects: {
 			stroke: { width: 1 }
 		}
@@ -38,32 +38,32 @@ export const themes: TTheme[] = [
 		key: 'dark',
 		name: 'Dark',
 		color: {
-			base100: '#1d232a',
-			base200: '#191e24',
-			base300: '#15191e',
-			baseContent: '#ffffff',
-			primary: '#6419e6',
+			base100: '#0f172a',
+			base200: '#1e293b',
+			base300: '#334155',
+			baseContent: '#f1f5f9',
+			primary: '#6366f1',
 			primaryContent: '#ffffff',
-			secondary: '#f000b8',
+			secondary: '#a855f7',
 			secondaryContent: '#ffffff',
-			neutral: '#232323',
-			neutralContent: '#ebebeb',
-			accent: '#37cdbe',
-			accentContent: '#003320',
-			info: '#3abff8',
-			infoContent: '#002b3d',
-			success: '#36d399',
-			successContent: '#003320',
-			warning: '#fbbd23',
-			warningContent: '#382800',
-			error: '#f87272',
-			errorContent: '#470000'
+			neutral: '#94a3b8',
+			neutralContent: '#0f172a',
+			accent: '#334155',
+			accentContent: '#cbd5e1',
+			info: '#06b6d4',
+			infoContent: '#ffffff',
+			success: '#059669',
+			successContent: '#ffffff',
+			warning: '#d97706',
+			warningContent: '#ffffff',
+			error: '#dc2626',
+			errorContent: '#ffffff'
 		},
 		typography: {
 			heading: { fontFamily: 'Inter', fontWeight: 600 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
-		radius: { box: 8, field: 4, selector: 8 },
+		radius: { box: 12, field: 8, selector: 6 },
 		effects: {
 			stroke: { width: 1 }
 		}
@@ -72,102 +72,114 @@ export const themes: TTheme[] = [
 		key: 'cupcake',
 		name: 'Cupcake',
 		color: {
-			base100: '#faf7f5',
-			base200: '#efeae6',
-			base300: '#e7e2df',
-			baseContent: '#291334',
-			primary: '#65c3c8',
-			primaryContent: '#003320',
-			secondary: '#ef9fbc',
-			secondaryContent: '#4a0e35',
-			accent: '#eeaf3a',
-			accentContent: '#4a3800',
-			neutral: '#291334',
-			neutralContent: '#ebebeb',
-			info: '#3abff8',
-			infoContent: '#002b3d',
-			success: '#36d399',
-			successContent: '#003320',
-			warning: '#fbbd23',
-			warningContent: '#382800',
-			error: '#f87272',
-			errorContent: '#470000'
+			base100: '#fef7f5',
+			base200: '#fdf2f8',
+			base300: '#fce7f3',
+			baseContent: '#581c87',
+			primary: '#ec4899',
+			primaryContent: '#ffffff',
+			secondary: '#f59e0b',
+			secondaryContent: '#ffffff',
+			accent: '#fbbf24',
+			accentContent: '#92400e',
+			neutral: '#581c87',
+			neutralContent: '#fdf2f8',
+			info: '#06b6d4',
+			infoContent: '#ffffff',
+			success: '#10b981',
+			successContent: '#ffffff',
+			warning: '#f59e0b',
+			warningContent: '#ffffff',
+			error: '#ef4444',
+			errorContent: '#ffffff'
 		},
 		typography: {
 			heading: { fontFamily: 'Inter', fontWeight: 600 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
-		radius: { box: 16, field: 32, selector: 16 },
+		radius: { box: 20, field: 16, selector: 12 },
 		effects: {
-			stroke: { width: 2 }
+			stroke: { width: 3 },
+			shadow: {
+				blur: 20,
+				offsetX: 0,
+				offsetY: 10,
+				spread: 0
+			}
 		}
 	},
 	{
 		key: 'bumblebee',
 		name: 'Bumblebee',
 		color: {
-			base100: '#ffffff',
-			base200: '#fefce8',
-			base300: '#fef3c7',
-			baseContent: '#1f2937',
-			primary: '#f59e0b',
+			base100: '#fefce8',
+			base200: '#fef3c7',
+			base300: '#fde68a',
+			baseContent: '#451a03',
+			primary: '#d97706',
 			primaryContent: '#ffffff',
 			secondary: '#fbbf24',
-			secondaryContent: '#1f2937',
-			accent: '#fbbf24',
-			accentContent: '#1f2937',
-			neutral: '#1f2937',
-			neutralContent: '#ffffff',
-			info: '#3abff8',
-			infoContent: '#002b3d',
-			success: '#36d399',
-			successContent: '#003320',
-			warning: '#fbbd23',
-			warningContent: '#382800',
-			error: '#f87272',
-			errorContent: '#470000'
+			secondaryContent: '#451a03',
+			accent: '#f59e0b',
+			accentContent: '#451a03',
+			neutral: '#451a03',
+			neutralContent: '#fefce8',
+			info: '#0ea5e9',
+			infoContent: '#ffffff',
+			success: '#059669',
+			successContent: '#ffffff',
+			warning: '#d97706',
+			warningContent: '#ffffff',
+			error: '#dc2626',
+			errorContent: '#ffffff'
 		},
 		typography: {
 			heading: { fontFamily: 'Inter', fontWeight: 600 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
-		radius: { box: 8, field: 4, selector: 8 },
+		radius: { box: 16, field: 12, selector: 8 },
 		effects: {
-			stroke: { width: 1 }
+			stroke: { width: 3 },
+			shadow: {
+				blur: 16,
+				offsetX: 0,
+				offsetY: 8,
+				spread: 0
+			}
 		}
 	},
 	{
 		key: 'emerald',
 		name: 'Emerald',
 		color: {
-			base100: '#ffffff',
-			base200: '#f0fdf4',
-			base300: '#dcfce7',
-			baseContent: '#1f2937',
-			primary: '#10b981',
+			base100: '#f0fdf4',
+			base200: '#dcfce7',
+			base300: '#bbf7d0',
+			baseContent: '#14532d',
+			primary: '#059669',
 			primaryContent: '#ffffff',
-			secondary: '#059669',
+			secondary: '#10b981',
 			secondaryContent: '#ffffff',
 			accent: '#34d399',
 			accentContent: '#064e3b',
-			neutral: '#1f2937',
-			neutralContent: '#ffffff',
-			info: '#3abff8',
-			infoContent: '#002b3d',
-			success: '#36d399',
-			successContent: '#003320',
-			warning: '#fbbd23',
-			warningContent: '#382800',
-			error: '#f87272',
-			errorContent: '#470000'
+			neutral: '#14532d',
+			neutralContent: '#f0fdf4',
+			info: '#0ea5e9',
+			infoContent: '#ffffff',
+			success: '#059669',
+			successContent: '#ffffff',
+			warning: '#d97706',
+			warningContent: '#ffffff',
+			error: '#dc2626',
+			errorContent: '#ffffff'
 		},
 		typography: {
 			heading: { fontFamily: 'Inter', fontWeight: 600 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
-		radius: { box: 8, field: 4, selector: 8 },
+		radius: { box: 16, field: 12, selector: 8 },
 		effects: {
-			stroke: { width: 1 }
+			stroke: { width: 2 }
 		}
 	},
 	{
@@ -178,30 +190,36 @@ export const themes: TTheme[] = [
 			base200: '#f8fafc',
 			base300: '#e2e8f0',
 			baseContent: '#1e293b',
-			primary: '#4f46e5',
+			primary: '#1e40af',
 			primaryContent: '#ffffff',
-			secondary: '#7c3aed',
+			secondary: '#475569',
 			secondaryContent: '#ffffff',
-			accent: '#06b6d4',
+			accent: '#64748b',
 			accentContent: '#ffffff',
 			neutral: '#1e293b',
 			neutralContent: '#ffffff',
-			info: '#3abff8',
-			infoContent: '#002b3d',
-			success: '#36d399',
-			successContent: '#003320',
-			warning: '#fbbd23',
-			warningContent: '#382800',
-			error: '#f87272',
-			errorContent: '#470000'
+			info: '#0ea5e9',
+			infoContent: '#ffffff',
+			success: '#059669',
+			successContent: '#ffffff',
+			warning: '#d97706',
+			warningContent: '#ffffff',
+			error: '#dc2626',
+			errorContent: '#ffffff'
 		},
 		typography: {
 			heading: { fontFamily: 'Inter', fontWeight: 600 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
-		radius: { box: 8, field: 4, selector: 8 },
+		radius: { box: 8, field: 6, selector: 4 },
 		effects: {
-			stroke: { width: 1 }
+			stroke: { width: 1 },
+			shadow: {
+				blur: 6,
+				offsetX: 0,
+				offsetY: 2,
+				spread: 0
+			}
 		}
 	},
 	{
@@ -213,29 +231,35 @@ export const themes: TTheme[] = [
 			base300: '#0f0a23',
 			baseContent: '#ffffff',
 			primary: '#e779c1',
-			primaryContent: '#ffffff',
+			primaryContent: '#2d1b69',
 			secondary: '#58c7f3',
-			secondaryContent: '#003320',
+			secondaryContent: '#2d1b69',
 			accent: '#f3cc30',
-			accentContent: '#382800',
+			accentContent: '#2d1b69',
 			neutral: '#ffffff',
 			neutralContent: '#2d1b69',
 			info: '#3abff8',
-			infoContent: '#002b3d',
+			infoContent: '#2d1b69',
 			success: '#36d399',
-			successContent: '#003320',
+			successContent: '#2d1b69',
 			warning: '#fbbd23',
-			warningContent: '#382800',
+			warningContent: '#2d1b69',
 			error: '#f87272',
-			errorContent: '#470000'
+			errorContent: '#2d1b69'
 		},
 		typography: {
 			heading: { fontFamily: 'Inter', fontWeight: 600 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
-		radius: { box: 8, field: 4, selector: 8 },
+		radius: { box: 4, field: 2, selector: 2 },
 		effects: {
-			stroke: { width: 1 }
+			stroke: { width: 1 },
+			shadow: {
+				blur: 20,
+				offsetX: 0,
+				offsetY: 0,
+				spread: 0
+			}
 		}
 	},
 	{
@@ -249,27 +273,33 @@ export const themes: TTheme[] = [
 			primary: '#ef9995',
 			primaryContent: '#2d1b69',
 			secondary: '#a991f7',
-			secondaryContent: '#ffffff',
+			secondaryContent: '#2d1b69',
 			accent: '#dc8850',
 			accentContent: '#2d1b69',
 			neutral: '#2d1b69',
 			neutralContent: '#e4d8b4',
 			info: '#3abff8',
-			infoContent: '#002b3d',
+			infoContent: '#2d1b69',
 			success: '#36d399',
-			successContent: '#003320',
+			successContent: '#2d1b69',
 			warning: '#fbbd23',
-			warningContent: '#382800',
+			warningContent: '#2d1b69',
 			error: '#f87272',
-			errorContent: '#470000'
+			errorContent: '#2d1b69'
 		},
 		typography: {
 			heading: { fontFamily: 'Inter', fontWeight: 600 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
-		radius: { box: 8, field: 4, selector: 8 },
+		radius: { box: 0, field: 0, selector: 0 },
 		effects: {
-			stroke: { width: 1 }
+			stroke: { width: 4 },
+			shadow: {
+				blur: 0,
+				offsetX: 4,
+				offsetY: 4,
+				spread: 0
+			}
 		}
 	},
 	{
@@ -283,197 +313,233 @@ export const themes: TTheme[] = [
 			primary: '#ff7598',
 			primaryContent: '#ffffff',
 			secondary: '#75d1f0',
-			secondaryContent: '#003320',
+			secondaryContent: '#1f2937',
 			accent: '#c779e0',
 			accentContent: '#ffffff',
 			neutral: '#1f2937',
 			neutralContent: '#ffffff',
 			info: '#3abff8',
-			infoContent: '#002b3d',
+			infoContent: '#1f2937',
 			success: '#36d399',
-			successContent: '#003320',
+			successContent: '#1f2937',
 			warning: '#fbbd23',
-			warningContent: '#382800',
+			warningContent: '#1f2937',
 			error: '#f87272',
-			errorContent: '#470000'
+			errorContent: '#1f2937'
 		},
 		typography: {
 			heading: { fontFamily: 'Inter', fontWeight: 600 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
-		radius: { box: 8, field: 4, selector: 8 },
+		radius: { box: 0, field: 0, selector: 0 },
 		effects: {
-			stroke: { width: 1 }
+			stroke: { width: 3 },
+			shadow: {
+				blur: 0,
+				offsetX: 0,
+				offsetY: 0,
+				spread: 4
+			}
 		}
 	},
 	{
 		key: 'valentine',
 		name: 'Valentine',
 		color: {
-			base100: '#faf6f6',
-			base200: '#f1e4e6',
-			base300: '#e9d5d7',
-			baseContent: '#632c3b',
-			primary: '#e96d7b',
+			base100: '#fef2f2',
+			base200: '#fecaca',
+			base300: '#fca5a5',
+			baseContent: '#7f1d1d',
+			primary: '#dc2626',
 			primaryContent: '#ffffff',
-			secondary: '#f4a6b7',
-			secondaryContent: '#632c3b',
-			accent: '#d4145a',
+			secondary: '#f472b6',
+			secondaryContent: '#ffffff',
+			accent: '#ec4899',
 			accentContent: '#ffffff',
-			neutral: '#632c3b',
-			neutralContent: '#ffffff',
-			info: '#3abff8',
-			infoContent: '#002b3d',
-			success: '#36d399',
-			successContent: '#003320',
-			warning: '#fbbd23',
-			warningContent: '#382800',
-			error: '#f87272',
-			errorContent: '#470000'
+			neutral: '#7f1d1d',
+			neutralContent: '#fef2f2',
+			info: '#0ea5e9',
+			infoContent: '#ffffff',
+			success: '#059669',
+			successContent: '#ffffff',
+			warning: '#d97706',
+			warningContent: '#ffffff',
+			error: '#dc2626',
+			errorContent: '#ffffff'
 		},
 		typography: {
 			heading: { fontFamily: 'Inter', fontWeight: 600 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
-		radius: { box: 8, field: 4, selector: 8 },
+		radius: { box: 20, field: 16, selector: 12 },
 		effects: {
-			stroke: { width: 1 }
+			stroke: { width: 2 },
+			shadow: {
+				blur: 20,
+				offsetX: 0,
+				offsetY: 10,
+				spread: 0
+			}
 		}
 	},
 	{
 		key: 'halloween',
 		name: 'Halloween',
 		color: {
-			base100: '#ffffff',
-			base200: '#f2f2f2',
-			base300: '#e5e6e6',
-			baseContent: '#1f2937',
-			primary: '#f28c18',
-			primaryContent: '#ffffff',
-			secondary: '#6d3a9c',
+			base100: '#1f2937',
+			base200: '#374151',
+			base300: '#4b5563',
+			baseContent: '#fbbf24',
+			primary: '#f59e0b',
+			primaryContent: '#1f2937',
+			secondary: '#dc2626',
 			secondaryContent: '#ffffff',
-			accent: '#49324b',
+			accent: '#7c3aed',
 			accentContent: '#ffffff',
-			neutral: '#1f2937',
-			neutralContent: '#ffffff',
-			info: '#3abff8',
-			infoContent: '#002b3d',
-			success: '#36d399',
-			successContent: '#003320',
-			warning: '#fbbd23',
-			warningContent: '#382800',
-			error: '#f87272',
-			errorContent: '#470000'
+			neutral: '#fbbf24',
+			neutralContent: '#1f2937',
+			info: '#0ea5e9',
+			infoContent: '#ffffff',
+			success: '#059669',
+			successContent: '#ffffff',
+			warning: '#f59e0b',
+			warningContent: '#1f2937',
+			error: '#dc2626',
+			errorContent: '#ffffff'
 		},
 		typography: {
 			heading: { fontFamily: 'Inter', fontWeight: 600 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
-		radius: { box: 8, field: 4, selector: 8 },
+		radius: { box: 12, field: 8, selector: 6 },
 		effects: {
-			stroke: { width: 1 }
+			stroke: { width: 2 },
+			shadow: {
+				blur: 20,
+				offsetX: 0,
+				offsetY: 8,
+				spread: 0
+			}
 		}
 	},
 	{
 		key: 'garden',
 		name: 'Garden',
 		color: {
-			base100: '#ffffff',
-			base200: '#f0fdf4',
-			base300: '#dcfce7',
-			baseContent: '#1f2937',
-			primary: '#5c7cfa',
+			base100: '#f0fdf4',
+			base200: '#dcfce7',
+			base300: '#bbf7d0',
+			baseContent: '#14532d',
+			primary: '#059669',
 			primaryContent: '#ffffff',
 			secondary: '#f59e0b',
 			secondaryContent: '#ffffff',
-			accent: '#37cdbe',
-			accentContent: '#003320',
-			neutral: '#1f2937',
-			neutralContent: '#ffffff',
-			info: '#3abff8',
-			infoContent: '#002b3d',
-			success: '#36d399',
-			successContent: '#003320',
-			warning: '#fbbd23',
-			warningContent: '#382800',
-			error: '#f87272',
-			errorContent: '#470000'
+			accent: '#10b981',
+			accentContent: '#064e3b',
+			neutral: '#14532d',
+			neutralContent: '#f0fdf4',
+			info: '#0ea5e9',
+			infoContent: '#ffffff',
+			success: '#059669',
+			successContent: '#ffffff',
+			warning: '#d97706',
+			warningContent: '#ffffff',
+			error: '#dc2626',
+			errorContent: '#ffffff'
 		},
 		typography: {
 			heading: { fontFamily: 'Inter', fontWeight: 600 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
-		radius: { box: 8, field: 4, selector: 8 },
+		radius: { box: 20, field: 16, selector: 12 },
 		effects: {
-			stroke: { width: 1 }
+			stroke: { width: 2 },
+			shadow: {
+				blur: 12,
+				offsetX: 0,
+				offsetY: 6,
+				spread: 0
+			}
 		}
 	},
 	{
 		key: 'forest',
 		name: 'Forest',
 		color: {
-			base100: '#171212',
-			base200: '#1f1b1b',
-			base300: '#282424',
-			baseContent: '#ffffff',
-			primary: '#6419e6',
+			base100: '#0f172a',
+			base200: '#1e293b',
+			base300: '#334155',
+			baseContent: '#f0fdf4',
+			primary: '#059669',
 			primaryContent: '#ffffff',
-			secondary: '#1db954',
+			secondary: '#10b981',
 			secondaryContent: '#ffffff',
-			accent: '#1db954',
-			accentContent: '#ffffff',
-			neutral: '#ffffff',
-			neutralContent: '#171212',
-			info: '#3abff8',
-			infoContent: '#002b3d',
-			success: '#36d399',
-			successContent: '#003320',
-			warning: '#fbbd23',
-			warningContent: '#382800',
-			error: '#f87272',
-			errorContent: '#470000'
+			accent: '#34d399',
+			accentContent: '#064e3b',
+			neutral: '#f0fdf4',
+			neutralContent: '#0f172a',
+			info: '#0ea5e9',
+			infoContent: '#ffffff',
+			success: '#059669',
+			successContent: '#ffffff',
+			warning: '#d97706',
+			warningContent: '#ffffff',
+			error: '#dc2626',
+			errorContent: '#ffffff'
 		},
 		typography: {
 			heading: { fontFamily: 'Inter', fontWeight: 600 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
-		radius: { box: 8, field: 4, selector: 8 },
+		radius: { box: 16, field: 12, selector: 8 },
 		effects: {
-			stroke: { width: 1 }
+			stroke: { width: 2 },
+			shadow: {
+				blur: 16,
+				offsetX: 0,
+				offsetY: 8,
+				spread: 0
+			}
 		}
 	},
 	{
 		key: 'aqua',
 		name: 'Aqua',
 		color: {
-			base100: '#e0f8ff',
-			base200: '#b3e5fc',
-			base300: '#81d4fa',
-			baseContent: '#0d47a1',
+			base100: '#f0f9ff',
+			base200: '#e0f2fe',
+			base300: '#bae6fd',
+			baseContent: '#0c4a6e',
 			primary: '#0284c7',
 			primaryContent: '#ffffff',
 			secondary: '#06b6d4',
 			secondaryContent: '#ffffff',
 			accent: '#0891b2',
 			accentContent: '#ffffff',
-			neutral: '#0d47a1',
-			neutralContent: '#ffffff',
-			info: '#3abff8',
-			infoContent: '#002b3d',
-			success: '#36d399',
-			successContent: '#003320',
-			warning: '#fbbd23',
-			warningContent: '#382800',
-			error: '#f87272',
-			errorContent: '#470000'
+			neutral: '#0c4a6e',
+			neutralContent: '#f0f9ff',
+			info: '#0ea5e9',
+			infoContent: '#ffffff',
+			success: '#059669',
+			successContent: '#ffffff',
+			warning: '#d97706',
+			warningContent: '#ffffff',
+			error: '#dc2626',
+			errorContent: '#ffffff'
 		},
 		typography: {
 			heading: { fontFamily: 'Inter', fontWeight: 600 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
-		radius: { box: 8, field: 4, selector: 8 },
+		radius: { box: 16, field: 12, selector: 8 },
 		effects: {
-			stroke: { width: 1 }
+			stroke: { width: 2 },
+			shadow: {
+				blur: 12,
+				offsetX: 0,
+				offsetY: 6,
+				spread: 0
+			}
 		}
 	},
 	{
@@ -492,28 +558,22 @@ export const themes: TTheme[] = [
 			accentContent: '#ffffff',
 			neutral: '#000000',
 			neutralContent: '#ffffff',
-			info: '#3abff8',
-			infoContent: '#002b3d',
-			success: '#36d399',
-			successContent: '#003320',
-			warning: '#fbbd23',
-			warningContent: '#382800',
-			error: '#f87272',
-			errorContent: '#470000'
+			info: '#000000',
+			infoContent: '#ffffff',
+			success: '#000000',
+			successContent: '#ffffff',
+			warning: '#000000',
+			warningContent: '#ffffff',
+			error: '#000000',
+			errorContent: '#ffffff'
 		},
 		typography: {
 			heading: { fontFamily: 'Inter', fontWeight: 600 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
-		radius: { box: 8, field: 4, selector: 8 },
+		radius: { box: 0, field: 0, selector: 0 },
 		effects: {
-			stroke: { width: 1 },
-			shadow: {
-				blur: 8,
-				offsetX: 0,
-				offsetY: 2,
-				spread: 0
-			}
+			stroke: { width: 2 }
 		}
 	},
 	{
@@ -523,29 +583,29 @@ export const themes: TTheme[] = [
 			base100: '#ffffff',
 			base200: '#fafafa',
 			base300: '#f5f5f5',
-			baseContent: '#1f2937',
-			primary: '#d1c1d7',
-			primaryContent: '#1f2937',
-			secondary: '#f6e7a3',
-			secondaryContent: '#1f2937',
-			accent: '#bbd4c9',
-			accentContent: '#1f2937',
-			neutral: '#1f2937',
+			baseContent: '#374151',
+			primary: '#f3e8ff',
+			primaryContent: '#581c87',
+			secondary: '#fef3c7',
+			secondaryContent: '#92400e',
+			accent: '#dbeafe',
+			accentContent: '#1e40af',
+			neutral: '#374151',
 			neutralContent: '#ffffff',
-			info: '#3abff8',
-			infoContent: '#002b3d',
-			success: '#36d399',
-			successContent: '#003320',
-			warning: '#fbbd23',
-			warningContent: '#382800',
-			error: '#f87272',
-			errorContent: '#470000'
+			info: '#e0f2fe',
+			infoContent: '#0c4a6e',
+			success: '#dcfce7',
+			successContent: '#14532d',
+			warning: '#fef3c7',
+			warningContent: '#92400e',
+			error: '#fee2e2',
+			errorContent: '#7f1d1d'
 		},
 		typography: {
 			heading: { fontFamily: 'Inter', fontWeight: 600 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
-		radius: { box: 8, field: 4, selector: 8 },
+		radius: { box: 20, field: 16, selector: 12 },
 		effects: {
 			stroke: { width: 2 }
 		}
@@ -557,31 +617,37 @@ export const themes: TTheme[] = [
 			base100: '#ffffff',
 			base200: '#f8f8ff',
 			base300: '#f0f0ff',
-			baseContent: '#1f2937',
-			primary: '#6d28d9',
+			baseContent: '#1e1b4b',
+			primary: '#7c3aed',
 			primaryContent: '#ffffff',
-			secondary: '#f000b8',
+			secondary: '#ec4899',
 			secondaryContent: '#ffffff',
-			accent: '#37cdbe',
-			accentContent: '#003320',
-			neutral: '#1f2937',
+			accent: '#a855f7',
+			accentContent: '#ffffff',
+			neutral: '#1e1b4b',
 			neutralContent: '#ffffff',
-			info: '#3abff8',
-			infoContent: '#002b3d',
-			success: '#36d399',
-			successContent: '#003320',
-			warning: '#fbbd23',
-			warningContent: '#382800',
-			error: '#f87272',
-			errorContent: '#470000'
+			info: '#0ea5e9',
+			infoContent: '#ffffff',
+			success: '#059669',
+			successContent: '#ffffff',
+			warning: '#d97706',
+			warningContent: '#ffffff',
+			error: '#dc2626',
+			errorContent: '#ffffff'
 		},
 		typography: {
 			heading: { fontFamily: 'Inter', fontWeight: 600 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
-		radius: { box: 8, field: 4, selector: 8 },
+		radius: { box: 24, field: 20, selector: 16 },
 		effects: {
-			stroke: { width: 1 }
+			stroke: { width: 2 },
+			shadow: {
+				blur: 20,
+				offsetX: 0,
+				offsetY: 10,
+				spread: 0
+			}
 		}
 	},
 	{
@@ -613,9 +679,15 @@ export const themes: TTheme[] = [
 			heading: { fontFamily: 'Inter', fontWeight: 600 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
-		radius: { box: 8, field: 4, selector: 8 },
+		radius: { box: 0, field: 0, selector: 0 },
 		effects: {
-			stroke: { width: 1 }
+			stroke: { width: 5 },
+			shadow: {
+				blur: 0,
+				offsetX: 0,
+				offsetY: 0,
+				spread: 6
+			}
 		}
 	},
 	{
@@ -647,9 +719,15 @@ export const themes: TTheme[] = [
 			heading: { fontFamily: 'Inter', fontWeight: 600 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
-		radius: { box: 8, field: 4, selector: 8 },
+		radius: { box: 8, field: 6, selector: 4 },
 		effects: {
-			stroke: { width: 1 }
+			stroke: { width: 1 },
+			shadow: {
+				blur: 0,
+				offsetX: 0,
+				offsetY: 0,
+				spread: 0
+			}
 		}
 	},
 	{
@@ -660,7 +738,7 @@ export const themes: TTheme[] = [
 			base200: '#f8f8f8',
 			base300: '#f0f0f0',
 			baseContent: '#1f2937',
-			primary: '#050505',
+			primary: '#000000',
 			primaryContent: '#ffffff',
 			secondary: '#1f2937',
 			secondaryContent: '#ffffff',
@@ -668,20 +746,20 @@ export const themes: TTheme[] = [
 			accentContent: '#ffffff',
 			neutral: '#1f2937',
 			neutralContent: '#ffffff',
-			info: '#3abff8',
-			infoContent: '#002b3d',
-			success: '#36d399',
-			successContent: '#003320',
-			warning: '#fbbd23',
-			warningContent: '#382800',
-			error: '#f87272',
-			errorContent: '#470000'
+			info: '#0ea5e9',
+			infoContent: '#ffffff',
+			success: '#059669',
+			successContent: '#ffffff',
+			warning: '#d97706',
+			warningContent: '#ffffff',
+			error: '#dc2626',
+			errorContent: '#ffffff'
 		},
 		typography: {
 			heading: { fontFamily: 'Inter', fontWeight: 600 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
-		radius: { box: 8, field: 4, selector: 8 },
+		radius: { box: 8, field: 6, selector: 4 },
 		effects: {
 			stroke: { width: 1 },
 			shadow: {
@@ -721,9 +799,15 @@ export const themes: TTheme[] = [
 			heading: { fontFamily: 'Inter', fontWeight: 600 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
-		radius: { box: 8, field: 4, selector: 8 },
+		radius: { box: 12, field: 8, selector: 6 },
 		effects: {
-			stroke: { width: 1 }
+			stroke: { width: 1 },
+			shadow: {
+				blur: 16,
+				offsetX: 0,
+				offsetY: 8,
+				spread: 0
+			}
 		}
 	},
 	{
@@ -734,64 +818,70 @@ export const themes: TTheme[] = [
 			base200: '#f8f8f8',
 			base300: '#f0f0f0',
 			baseContent: '#1f2937',
-			primary: '#45aeee',
+			primary: '#0ea5e9',
 			primaryContent: '#ffffff',
-			secondary: '#e8486a',
+			secondary: '#ec4899',
 			secondaryContent: '#ffffff',
-			accent: '#f7931e',
+			accent: '#f59e0b',
 			accentContent: '#ffffff',
 			neutral: '#1f2937',
 			neutralContent: '#ffffff',
-			info: '#3abff8',
-			infoContent: '#002b3d',
-			success: '#36d399',
-			successContent: '#003320',
-			warning: '#fbbd23',
-			warningContent: '#382800',
-			error: '#f87272',
-			errorContent: '#470000'
+			info: '#0ea5e9',
+			infoContent: '#ffffff',
+			success: '#059669',
+			successContent: '#ffffff',
+			warning: '#d97706',
+			warningContent: '#ffffff',
+			error: '#dc2626',
+			errorContent: '#ffffff'
 		},
 		typography: {
 			heading: { fontFamily: 'Inter', fontWeight: 600 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
-		radius: { box: 8, field: 4, selector: 8 },
+		radius: { box: 8, field: 6, selector: 4 },
 		effects: {
-			stroke: { width: 1 }
+			stroke: { width: 1 },
+			shadow: {
+				blur: 8,
+				offsetX: 0,
+				offsetY: 4,
+				spread: 0
+			}
 		}
 	},
 	{
 		key: 'autumn',
 		name: 'Autumn',
 		color: {
-			base100: '#ffffff',
-			base200: '#f8f8f8',
-			base300: '#f0f0f0',
-			baseContent: '#1f2937',
-			primary: '#d65d31',
+			base100: '#fef7f5',
+			base200: '#fde8e0',
+			base300: '#fcd5c5',
+			baseContent: '#7c2d12',
+			primary: '#ea580c',
 			primaryContent: '#ffffff',
-			secondary: '#8b5cf6',
+			secondary: '#dc2626',
 			secondaryContent: '#ffffff',
 			accent: '#f59e0b',
 			accentContent: '#ffffff',
-			neutral: '#1f2937',
-			neutralContent: '#ffffff',
-			info: '#3abff8',
-			infoContent: '#002b3d',
-			success: '#36d399',
-			successContent: '#003320',
-			warning: '#fbbd23',
-			warningContent: '#382800',
-			error: '#f87272',
-			errorContent: '#470000'
+			neutral: '#7c2d12',
+			neutralContent: '#fef7f5',
+			info: '#0ea5e9',
+			infoContent: '#ffffff',
+			success: '#059669',
+			successContent: '#ffffff',
+			warning: '#d97706',
+			warningContent: '#ffffff',
+			error: '#dc2626',
+			errorContent: '#ffffff'
 		},
 		typography: {
 			heading: { fontFamily: 'Inter', fontWeight: 600 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
-		radius: { box: 8, field: 4, selector: 8 },
+		radius: { box: 16, field: 12, selector: 8 },
 		effects: {
-			stroke: { width: 1 }
+			stroke: { width: 2 }
 		}
 	},
 	{
@@ -799,203 +889,233 @@ export const themes: TTheme[] = [
 		name: 'Business',
 		color: {
 			base100: '#ffffff',
-			base200: '#f8f8f8',
-			base300: '#f0f0f0',
-			baseContent: '#1f2937',
-			primary: '#1d4ed8',
+			base200: '#f8fafc',
+			base300: '#e2e8f0',
+			baseContent: '#1e293b',
+			primary: '#1e40af',
 			primaryContent: '#ffffff',
-			secondary: '#64748b',
+			secondary: '#475569',
 			secondaryContent: '#ffffff',
-			accent: '#f59e0b',
+			accent: '#64748b',
 			accentContent: '#ffffff',
-			neutral: '#1f2937',
+			neutral: '#1e293b',
 			neutralContent: '#ffffff',
-			info: '#3abff8',
-			infoContent: '#002b3d',
-			success: '#36d399',
-			successContent: '#003320',
-			warning: '#fbbd23',
-			warningContent: '#382800',
-			error: '#f87272',
-			errorContent: '#470000'
+			info: '#0ea5e9',
+			infoContent: '#ffffff',
+			success: '#059669',
+			successContent: '#ffffff',
+			warning: '#d97706',
+			warningContent: '#ffffff',
+			error: '#dc2626',
+			errorContent: '#ffffff'
 		},
 		typography: {
 			heading: { fontFamily: 'Inter', fontWeight: 600 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
-		radius: { box: 8, field: 4, selector: 8 },
+		radius: { box: 6, field: 4, selector: 2 },
 		effects: {
-			stroke: { width: 1 }
+			stroke: { width: 1 },
+			shadow: {
+				blur: 4,
+				offsetX: 0,
+				offsetY: 2,
+				spread: 0
+			}
 		}
 	},
 	{
 		key: 'acid',
 		name: 'Acid',
 		color: {
-			base100: '#ffffff',
-			base200: '#f8f8f8',
-			base300: '#f0f0f0',
-			baseContent: '#1f2937',
-			primary: '#ff006e',
-			primaryContent: '#ffffff',
-			secondary: '#8338ec',
-			secondaryContent: '#ffffff',
-			accent: '#3a86ff',
-			accentContent: '#ffffff',
-			neutral: '#1f2937',
-			neutralContent: '#ffffff',
-			info: '#3abff8',
-			infoContent: '#002b3d',
-			success: '#36d399',
-			successContent: '#003320',
-			warning: '#fbbd23',
-			warningContent: '#382800',
-			error: '#f87272',
-			errorContent: '#470000'
+			base100: '#000000',
+			base200: '#1a1a1a',
+			base300: '#333333',
+			baseContent: '#00ff00',
+			primary: '#00ff00',
+			primaryContent: '#000000',
+			secondary: '#ff00ff',
+			secondaryContent: '#000000',
+			accent: '#ffff00',
+			accentContent: '#000000',
+			neutral: '#00ff00',
+			neutralContent: '#000000',
+			info: '#00ffff',
+			infoContent: '#000000',
+			success: '#00ff00',
+			successContent: '#000000',
+			warning: '#ffff00',
+			warningContent: '#000000',
+			error: '#ff0000',
+			errorContent: '#000000'
 		},
 		typography: {
 			heading: { fontFamily: 'Inter', fontWeight: 600 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
-		radius: { box: 8, field: 4, selector: 8 },
+		radius: { box: 0, field: 0, selector: 0 },
 		effects: {
-			stroke: { width: 1 }
+			stroke: { width: 2 }
 		}
 	},
 	{
 		key: 'lemonade',
 		name: 'Lemonade',
 		color: {
-			base100: '#ffffff',
-			base200: '#f8f8f8',
-			base300: '#f0f0f0',
-			baseContent: '#1f2937',
-			primary: '#519903',
+			base100: '#fefce8',
+			base200: '#fef3c7',
+			base300: '#fde68a',
+			baseContent: '#451a03',
+			primary: '#65a30d',
 			primaryContent: '#ffffff',
-			secondary: '#e7e09e',
-			secondaryContent: '#1f2937',
-			accent: '#fbbd23',
-			accentContent: '#1f2937',
-			neutral: '#1f2937',
-			neutralContent: '#ffffff',
-			info: '#3abff8',
-			infoContent: '#002b3d',
-			success: '#36d399',
-			successContent: '#003320',
-			warning: '#fbbd23',
-			warningContent: '#382800',
-			error: '#f87272',
-			errorContent: '#470000'
+			secondary: '#fbbf24',
+			secondaryContent: '#451a03',
+			accent: '#f59e0b',
+			accentContent: '#451a03',
+			neutral: '#451a03',
+			neutralContent: '#fefce8',
+			info: '#0ea5e9',
+			infoContent: '#ffffff',
+			success: '#059669',
+			successContent: '#ffffff',
+			warning: '#d97706',
+			warningContent: '#ffffff',
+			error: '#dc2626',
+			errorContent: '#ffffff'
 		},
 		typography: {
 			heading: { fontFamily: 'Inter', fontWeight: 600 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
-		radius: { box: 8, field: 4, selector: 8 },
+		radius: { box: 20, field: 16, selector: 12 },
 		effects: {
-			stroke: { width: 1 }
+			stroke: { width: 2 },
+			shadow: {
+				blur: 16,
+				offsetX: 0,
+				offsetY: 8,
+				spread: 0
+			}
 		}
 	},
 	{
 		key: 'night',
 		name: 'Night',
 		color: {
-			base100: '#0f1729',
+			base100: '#0f172a',
 			base200: '#1e293b',
 			base300: '#334155',
-			baseContent: '#ffffff',
+			baseContent: '#f1f5f9',
 			primary: '#38bdf8',
-			primaryContent: '#0f1729',
+			primaryContent: '#0f172a',
 			secondary: '#818cf8',
-			secondaryContent: '#0f1729',
+			secondaryContent: '#0f172a',
 			accent: '#f472b6',
-			accentContent: '#0f1729',
-			neutral: '#ffffff',
-			neutralContent: '#0f1729',
-			info: '#3abff8',
-			infoContent: '#002b3d',
-			success: '#36d399',
-			successContent: '#003320',
-			warning: '#fbbd23',
-			warningContent: '#382800',
-			error: '#f87272',
-			errorContent: '#470000'
+			accentContent: '#0f172a',
+			neutral: '#f1f5f9',
+			neutralContent: '#0f172a',
+			info: '#0ea5e9',
+			infoContent: '#0f172a',
+			success: '#059669',
+			successContent: '#0f172a',
+			warning: '#d97706',
+			warningContent: '#0f172a',
+			error: '#dc2626',
+			errorContent: '#0f172a'
 		},
 		typography: {
 			heading: { fontFamily: 'Inter', fontWeight: 600 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
-		radius: { box: 8, field: 4, selector: 8 },
+		radius: { box: 16, field: 12, selector: 8 },
 		effects: {
-			stroke: { width: 1 }
+			stroke: { width: 2 },
+			shadow: {
+				blur: 20,
+				offsetX: 0,
+				offsetY: 10,
+				spread: 0
+			}
 		}
 	},
 	{
 		key: 'coffee',
 		name: 'Coffee',
 		color: {
-			base100: '#191926',
+			base100: '#1a1a1a',
 			base200: '#2d2b42',
 			base300: '#454960',
-			baseContent: '#ffffff',
+			baseContent: '#f5f5f4',
 			primary: '#db924b',
-			primaryContent: '#191926',
+			primaryContent: '#1a1a1a',
 			secondary: '#263e3f',
-			secondaryContent: '#ffffff',
+			secondaryContent: '#f5f5f4',
 			accent: '#f0b323',
-			accentContent: '#191926',
-			neutral: '#ffffff',
-			neutralContent: '#191926',
-			info: '#3abff8',
-			infoContent: '#002b3d',
-			success: '#36d399',
-			successContent: '#003320',
-			warning: '#fbbd23',
-			warningContent: '#382800',
-			error: '#f87272',
-			errorContent: '#470000'
+			accentContent: '#1a1a1a',
+			neutral: '#f5f5f4',
+			neutralContent: '#1a1a1a',
+			info: '#0ea5e9',
+			infoContent: '#1a1a1a',
+			success: '#059669',
+			successContent: '#1a1a1a',
+			warning: '#d97706',
+			warningContent: '#1a1a1a',
+			error: '#dc2626',
+			errorContent: '#1a1a1a'
 		},
 		typography: {
 			heading: { fontFamily: 'Inter', fontWeight: 600 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
-		radius: { box: 8, field: 4, selector: 8 },
+		radius: { box: 12, field: 8, selector: 6 },
 		effects: {
-			stroke: { width: 1 }
+			stroke: { width: 2 },
+			shadow: {
+				blur: 16,
+				offsetX: 0,
+				offsetY: 8,
+				spread: 0
+			}
 		}
 	},
 	{
 		key: 'winter',
 		name: 'Winter',
 		color: {
-			base100: '#ffffff',
-			base200: '#f8f8f8',
-			base300: '#f0f0f0',
-			baseContent: '#1f2937',
-			primary: '#057aff',
+			base100: '#f0f9ff',
+			base200: '#e0f2fe',
+			base300: '#bae6fd',
+			baseContent: '#0c4a6e',
+			primary: '#0284c7',
 			primaryContent: '#ffffff',
-			secondary: '#463aa1',
+			secondary: '#6366f1',
 			secondaryContent: '#ffffff',
-			accent: '#c148ac',
+			accent: '#ec4899',
 			accentContent: '#ffffff',
-			neutral: '#1f2937',
-			neutralContent: '#ffffff',
-			info: '#3abff8',
-			infoContent: '#002b3d',
-			success: '#36d399',
-			successContent: '#003320',
-			warning: '#fbbd23',
-			warningContent: '#382800',
-			error: '#f87272',
-			errorContent: '#470000'
+			neutral: '#0c4a6e',
+			neutralContent: '#f0f9ff',
+			info: '#0ea5e9',
+			infoContent: '#ffffff',
+			success: '#059669',
+			successContent: '#ffffff',
+			warning: '#d97706',
+			warningContent: '#ffffff',
+			error: '#dc2626',
+			errorContent: '#ffffff'
 		},
 		typography: {
 			heading: { fontFamily: 'Inter', fontWeight: 600 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
-		radius: { box: 8, field: 4, selector: 8 },
+		radius: { box: 16, field: 12, selector: 8 },
 		effects: {
-			stroke: { width: 1 }
+			stroke: { width: 2 },
+			shadow: {
+				blur: 12,
+				offsetX: 0,
+				offsetY: 6,
+				spread: 0
+			}
 		}
 	},
 	{
@@ -1005,31 +1125,37 @@ export const themes: TTheme[] = [
 			base100: '#1f2937',
 			base200: '#374151',
 			base300: '#4b5563',
-			baseContent: '#ffffff',
-			primary: '#ff9d3b',
+			baseContent: '#f9fafb',
+			primary: '#f59e0b',
 			primaryContent: '#1f2937',
-			secondary: '#ff6b6b',
+			secondary: '#ef4444',
 			secondaryContent: '#ffffff',
-			accent: '#51cf66',
+			accent: '#10b981',
 			accentContent: '#1f2937',
-			neutral: '#ffffff',
+			neutral: '#f9fafb',
 			neutralContent: '#1f2937',
-			info: '#3abff8',
-			infoContent: '#002b3d',
-			success: '#36d399',
-			successContent: '#003320',
-			warning: '#fbbd23',
-			warningContent: '#382800',
-			error: '#f87272',
-			errorContent: '#470000'
+			info: '#0ea5e9',
+			infoContent: '#1f2937',
+			success: '#059669',
+			successContent: '#1f2937',
+			warning: '#d97706',
+			warningContent: '#1f2937',
+			error: '#dc2626',
+			errorContent: '#1f2937'
 		},
 		typography: {
 			heading: { fontFamily: 'Inter', fontWeight: 600 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
-		radius: { box: 8, field: 4, selector: 8 },
+		radius: { box: 12, field: 8, selector: 6 },
 		effects: {
-			stroke: { width: 1 }
+			stroke: { width: 1 },
+			shadow: {
+				blur: 8,
+				offsetX: 0,
+				offsetY: 4,
+				spread: 0
+			}
 		}
 	},
 	{
@@ -1061,9 +1187,15 @@ export const themes: TTheme[] = [
 			heading: { fontFamily: 'Inter', fontWeight: 600 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
-		radius: { box: 8, field: 4, selector: 8 },
+		radius: { box: 12, field: 8, selector: 6 },
 		effects: {
-			stroke: { width: 1 }
+			stroke: { width: 1 },
+			shadow: {
+				blur: 12,
+				offsetX: 0,
+				offsetY: 6,
+				spread: 0
+			}
 		}
 	},
 	{
@@ -1078,26 +1210,32 @@ export const themes: TTheme[] = [
 			primaryContent: '#ffffff',
 			secondary: '#f59e0b',
 			secondaryContent: '#ffffff',
-			accent: '#e11d48',
+			accent: '#ec4899',
 			accentContent: '#ffffff',
 			neutral: '#ffffff',
 			neutralContent: '#2d1b69',
-			info: '#3abff8',
-			infoContent: '#002b3d',
-			success: '#36d399',
-			successContent: '#003320',
-			warning: '#fbbd23',
-			warningContent: '#382800',
-			error: '#f87272',
-			errorContent: '#470000'
+			info: '#0ea5e9',
+			infoContent: '#ffffff',
+			success: '#059669',
+			successContent: '#ffffff',
+			warning: '#d97706',
+			warningContent: '#ffffff',
+			error: '#dc2626',
+			errorContent: '#ffffff'
 		},
 		typography: {
 			heading: { fontFamily: 'Inter', fontWeight: 600 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
-		radius: { box: 8, field: 4, selector: 8 },
+		radius: { box: 16, field: 12, selector: 8 },
 		effects: {
-			stroke: { width: 1 }
+			stroke: { width: 2 },
+			shadow: {
+				blur: 20,
+				offsetX: 0,
+				offsetY: 10,
+				spread: 0
+			}
 		}
 	}
 ];

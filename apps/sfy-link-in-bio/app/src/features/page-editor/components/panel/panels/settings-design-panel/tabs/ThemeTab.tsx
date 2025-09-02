@@ -42,7 +42,7 @@ export const ThemeTab: React.FC<TThemeTabProps> = (props) => {
 
 		return (
 			<div
-				className="flex items-center justify-center rounded-lg border p-2.5"
+				className="flex items-center justify-center rounded-lg border p-2"
 				style={{
 					backgroundColor: color.base200,
 					borderColor: 'rgba(0,0,0,0.1)',

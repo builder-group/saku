@@ -196,7 +196,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 			value:
 				effects?.shadow != null
 					? {
-							color: { ...hexToRgba(color.neutral), a: 0.15 },
+							color: { ...hexToRgba(color.baseContent), a: 0.1 },
 							offsetX: effects.shadow.offsetX,
 							offsetY: effects.shadow.offsetY,
 							blur: effects.shadow.blur,
