@@ -27,7 +27,7 @@ export const ThemeTab: React.FC<TThemeTabProps> = (props) => {
 				fill: {
 					paint: {
 						type: 'solid',
-						color: hexToRgba(theme.colors.background)
+						color: hexToRgba(theme.color.base200)
 					},
 					opacity: 1
 				}
@@ -37,13 +37,14 @@ export const ThemeTab: React.FC<TThemeTabProps> = (props) => {
 	);
 
 	const renderTemplatePreview = React.useCallback((template: TTheme) => {
-		const { colors, typography, spacing } = template;
+		const { color, typography, radius, effects } = template;
+		const primaryColor = hexToRgba(color.primary);
 
 		return (
 			<div
-				className="flex items-center justify-center rounded-lg border p-3"
+				className="flex items-center justify-center rounded-lg border p-2.5"
 				style={{
-					backgroundColor: colors.background,
+					backgroundColor: color.base200,
 					borderColor: 'rgba(0,0,0,0.1)',
 					minHeight: '80px'
 				}}
@@ -52,19 +53,23 @@ export const ThemeTab: React.FC<TThemeTabProps> = (props) => {
 				<div
 					className="flex flex-wrap items-center justify-center gap-2 rounded p-2"
 					style={{
-						backgroundColor: colors.surface,
-						borderRadius: `${spacing.borderRadius}px`,
-						border: `1px solid ${colors.secondary}`,
-						boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+						backgroundColor: color.base100,
+						borderRadius: `${radius.box}px`,
+						border:
+							effects?.stroke != null ? `${effects.stroke.width}px solid ${color.accent}` : 'none',
+						boxShadow:
+							effects?.shadow != null
+								? `${effects.shadow.offsetX}px ${effects.shadow.offsetY}px ${effects.shadow.blur}px ${effects.shadow.spread}px rgba(${primaryColor.r}, ${primaryColor.g}, ${primaryColor.b}, 0.15)`
+								: 'none'
 					}}
 				>
 					{/* Typography preview */}
 					<h2
 						style={{
-							color: colors.text,
-							fontFamily: typography.fontFamily,
+							color: color.baseContent,
+							fontFamily: typography.heading.fontFamily,
 							fontSize: '20px',
-							fontWeight: typography.fontWeight,
+							fontWeight: typography.heading.fontWeight,
 							lineHeight: 1,
 							margin: 0
 						}}
@@ -76,11 +81,11 @@ export const ThemeTab: React.FC<TThemeTabProps> = (props) => {
 					<div
 						className="rounded px-3 py-1 text-sm font-medium"
 						style={{
-							backgroundColor: colors.primary,
-							color: colors.surface,
-							fontFamily: typography.fontFamily,
-							fontWeight: typography.fontWeight,
-							borderRadius: `${spacing.borderRadius}px`
+							backgroundColor: color.primary,
+							color: color.primaryContent,
+							fontFamily: typography.text.fontFamily,
+							fontWeight: typography.text.fontWeight,
+							borderRadius: `${radius.field}px`
 						}}
 					>
 						Button
@@ -103,26 +108,26 @@ export const ThemeTab: React.FC<TThemeTabProps> = (props) => {
 						{/* Color palette grid */}
 						<div
 							className="grid shrink-0 grid-cols-2 gap-0.5 rounded-md p-1 shadow-sm"
-							style={{ backgroundColor: template.colors.background }}
+							style={{ backgroundColor: template.color.base100 }}
 						>
 							<div
 								className="size-1.5 rounded-full"
-								style={{ backgroundColor: template.colors.primary }}
+								style={{ backgroundColor: template.color.baseContent }}
 								title="Primary"
 							/>
 							<div
 								className="size-1.5 rounded-full"
-								style={{ backgroundColor: template.colors.secondary }}
+								style={{ backgroundColor: template.color.primary }}
 								title="Secondary"
 							/>
 							<div
 								className="size-1.5 rounded-full"
-								style={{ backgroundColor: template.colors.surface }}
-								title="Surface"
+								style={{ backgroundColor: template.color.secondary }}
+								title="Neutral"
 							/>
 							<div
 								className="size-1.5 rounded-full"
-								style={{ backgroundColor: template.colors.primary }}
+								style={{ backgroundColor: template.color.accent }}
 								title="Accent"
 							/>
 						</div>

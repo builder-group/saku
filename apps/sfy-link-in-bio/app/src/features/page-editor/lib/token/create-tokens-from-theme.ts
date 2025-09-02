@@ -2,7 +2,14 @@ import { hexToRgba, TToken } from '@repo/editor';
 import { TTheme } from '../../environment';
 
 export function createTokensFromTheme(theme: TTheme): TToken[] {
-	const { colors, typography, spacing } = theme;
+	const {
+		color,
+		typography,
+		gap = 24,
+		size = { heading: 1, text: 1, box: 1, field: 1, selector: 1 },
+		radius,
+		effects
+	} = theme;
 
 	return [
 		// Variable tokens (atomic design values)
@@ -10,67 +17,115 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 			type: 'variable',
 			key: 'color.primary',
 			name: 'Primary Color',
-			value: colors.primary
+			value: color.primary
 		},
 		{
 			type: 'variable',
-			key: 'color.secondary',
-			name: 'Secondary Color',
-			value: colors.secondary
+			key: 'color.base100',
+			name: 'Base 100 Color',
+			value: color.base100
 		},
 		{
 			type: 'variable',
-			key: 'color.surface',
-			name: 'Surface Color',
-			value: colors.surface
+			key: 'color.baseContent',
+			name: 'Base Content Color',
+			value: color.baseContent
 		},
 		{
 			type: 'variable',
-			key: 'color.background',
-			name: 'Background Color',
-			value: colors.background
+			key: 'color.neutral',
+			name: 'Neutral Color',
+			value: color.neutral
 		},
 		{
 			type: 'variable',
-			key: 'color.text',
-			name: 'Text Color',
-			value: colors.text
+			key: 'color.neutralContent',
+			name: 'Neutral Content Color',
+			value: color.neutralContent
 		},
 		{
 			type: 'variable',
-			key: 'typography.fontFamily',
-			name: 'Font Family',
-			value: typography.fontFamily
+			key: 'color.accent',
+			name: 'Accent Color',
+			value: color.accent
 		},
 		{
 			type: 'variable',
-			key: 'typography.fontWeight',
-			name: 'Font Weight',
-			value: typography.fontWeight
+			key: 'color.accentContent',
+			name: 'Accent Content Color',
+			value: color.accentContent
 		},
 		{
 			type: 'variable',
-			key: 'typography.fontSize',
-			name: 'Font Size',
-			value: typography.fontSize
+			key: 'color.primaryContent',
+			name: 'Primary Content Color',
+			value: color.primaryContent
 		},
 		{
 			type: 'variable',
-			key: 'spacing.borderRadius',
-			name: 'Border Radius',
-			value: spacing.borderRadius
+			key: 'typography.heading.fontFamily',
+			name: 'Heading Font Family',
+			value: typography.heading.fontFamily
 		},
 		{
 			type: 'variable',
-			key: 'spacing.padding',
-			name: 'Padding',
-			value: spacing.padding
+			key: 'typography.heading.fontWeight',
+			name: 'Heading Font Weight',
+			value: typography.heading.fontWeight
+		},
+		{
+			type: 'variable',
+			key: 'typography.text.fontFamily',
+			name: 'Text Font Family',
+			value: typography.text.fontFamily
+		},
+		{
+			type: 'variable',
+			key: 'typography.text.fontWeight',
+			name: 'Text Font Weight',
+			value: typography.text.fontWeight
 		},
 		{
 			type: 'variable',
 			key: 'spacing.gap',
 			name: 'Gap',
-			value: spacing.gap
+			value: gap
+		},
+		{
+			type: 'variable',
+			key: 'size.heading',
+			name: 'Heading Size',
+			value: size.heading
+		},
+		{
+			type: 'variable',
+			key: 'size.text',
+			name: 'Text Size',
+			value: size.text
+		},
+		{
+			type: 'variable',
+			key: 'size.box',
+			name: 'Box Size',
+			value: size.box
+		},
+		{
+			type: 'variable',
+			key: 'radius.box',
+			name: 'Box Border Radius',
+			value: radius.box
+		},
+		{
+			type: 'variable',
+			key: 'radius.field',
+			name: 'Field Border Radius',
+			value: radius.field
+		},
+		{
+			type: 'variable',
+			key: 'radius.selector',
+			name: 'Selector Border Radius',
+			value: radius.selector
 		},
 
 		// Mixin tokens (component style definitions)
@@ -79,8 +134,8 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 			key: 'default',
 			mixinKey: 'autoLayout',
 			value: {
-				horizontalPadding: spacing.padding,
-				verticalPadding: spacing.padding
+				horizontalPadding: gap,
+				verticalPadding: gap
 			}
 		},
 		{
@@ -90,7 +145,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 			value: {
 				visible: true,
 				opacity: 1,
-				borderRadius: spacing.borderRadius
+				borderRadius: radius.box
 			}
 		},
 		{
@@ -98,8 +153,12 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 			key: 'default',
 			mixinKey: 'typography',
 			value: {
-				font: { family: typography.fontFamily, weight: typography.fontWeight, style: 'normal' },
-				fontSize: typography.fontSize,
+				font: {
+					family: typography.text.fontFamily,
+					weight: typography.text.fontWeight,
+					style: 'normal'
+				},
+				fontSize: size.text * 16,
 				textAlignHorizontal: 'center',
 				textAlignVertical: 'center',
 				lineHeight: { type: 'auto' },
@@ -113,7 +172,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 			value: {
 				paint: {
 					type: 'solid',
-					color: hexToRgba(colors.surface)
+					color: hexToRgba(color.base100)
 				},
 				opacity: 1
 			}
@@ -122,22 +181,28 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 			type: 'mixin',
 			key: 'default',
 			mixinKey: 'stroke',
-			value: {
-				color: hexToRgba(colors.secondary),
-				width: 1
-			}
+			value:
+				effects?.stroke != null
+					? {
+							color: hexToRgba(color.accent),
+							width: effects.stroke.width
+						}
+					: null
 		},
 		{
 			type: 'mixin',
 			key: 'default',
 			mixinKey: 'shadow',
-			value: {
-				color: { ...hexToRgba(colors.primary), a: 0.15 },
-				offsetX: 0,
-				offsetY: 4,
-				blur: 12,
-				spread: -2
-			}
+			value:
+				effects?.shadow != null
+					? {
+							color: { ...hexToRgba(color.neutral), a: 0.15 },
+							offsetX: effects.shadow.offsetX,
+							offsetY: effects.shadow.offsetY,
+							blur: effects.shadow.blur,
+							spread: effects.shadow.spread
+						}
+					: null
 		},
 		{
 			type: 'mixin',
@@ -149,8 +214,12 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 					opacity: 1
 				},
 				typography: {
-					font: { family: typography.fontFamily, weight: typography.fontWeight, style: 'normal' },
-					fontSize: typography.fontSize,
+					font: {
+						family: typography.text.fontFamily,
+						weight: typography.text.fontWeight,
+						style: 'normal'
+					},
+					fontSize: size.text * 16,
 					textAlignHorizontal: 'center',
 					textAlignVertical: 'center',
 					lineHeight: { type: 'auto' },
@@ -159,7 +228,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 				fill: {
 					paint: {
 						type: 'solid',
-						color: hexToRgba(colors.text)
+						color: hexToRgba(color.baseContent)
 					},
 					opacity: 1
 				},
@@ -175,12 +244,12 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 				appearance: {
 					visible: true,
 					opacity: 1,
-					borderRadius: spacing.borderRadius
+					borderRadius: radius.field
 				},
 				fill: {
 					paint: {
 						type: 'solid',
-						color: hexToRgba(colors.primary)
+						color: hexToRgba(color.primary)
 					},
 					opacity: 1
 				},
@@ -193,11 +262,11 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 					},
 					typography: {
 						font: {
-							family: typography.fontFamily,
-							weight: typography.fontWeight,
+							family: typography.text.fontFamily,
+							weight: typography.text.fontWeight,
 							style: 'normal'
 						},
-						fontSize: typography.fontSize,
+						fontSize: size.text * 16,
 						textAlignHorizontal: 'center',
 						textAlignVertical: 'center',
 						lineHeight: { type: 'auto' },
@@ -206,7 +275,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 					fill: {
 						paint: {
 							type: 'solid',
-							color: hexToRgba(colors.surface)
+							color: hexToRgba(color.primaryContent)
 						},
 						opacity: 1
 					},
