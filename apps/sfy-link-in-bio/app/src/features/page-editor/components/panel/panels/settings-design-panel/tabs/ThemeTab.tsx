@@ -1,16 +1,16 @@
 import { hexToRgba } from '@repo/editor';
 import { Text } from '@shopify/polaris';
 import React from 'react';
-import { styleTemplates, type TStyleTemplate } from '../../../../../environment';
-import { createTokensFromStyleTemplate, TPageEditor } from '../../../../../lib';
+import { themes, type TTheme } from '../../../../../environment';
+import { createTokensFromTheme, TPageEditor } from '../../../../../lib';
 
-export const TemplateTab: React.FC<TTemplateTabProps> = (props) => {
+export const ThemeTab: React.FC<TThemeTabProps> = (props) => {
 	const { editor } = props;
 
-	const applyTemplate = React.useCallback(
-		(styleTemplate: TStyleTemplate) => {
+	const applyTheme = React.useCallback(
+		(theme: TTheme) => {
 			// Apply tokens for elements (cards, text, buttons)
-			const tokens = createTokensFromStyleTemplate(styleTemplate);
+			const tokens = createTokensFromTheme(theme);
 			tokens.forEach((token) => {
 				if (token.type === 'mixin') {
 					editor.mixinTokenMap[token.mixinKey]?.set((currentTokens: any) => ({
@@ -27,7 +27,7 @@ export const TemplateTab: React.FC<TTemplateTabProps> = (props) => {
 				fill: {
 					paint: {
 						type: 'solid',
-						color: hexToRgba(styleTemplate.colors.background)
+						color: hexToRgba(theme.colors.background)
 					},
 					opacity: 1
 				}
@@ -36,7 +36,7 @@ export const TemplateTab: React.FC<TTemplateTabProps> = (props) => {
 		[editor]
 	);
 
-	const renderTemplatePreview = React.useCallback((template: TStyleTemplate) => {
+	const renderTemplatePreview = React.useCallback((template: TTheme) => {
 		const { colors, typography, spacing } = template;
 
 		return (
@@ -92,11 +92,11 @@ export const TemplateTab: React.FC<TTemplateTabProps> = (props) => {
 
 	return (
 		<div className="grid grid-cols-2 gap-3 p-4">
-			{styleTemplates.map((template) => (
+			{themes.map((template) => (
 				<div
 					key={template.key}
 					className="group cursor-pointer rounded-lg border border-gray-200 p-3 transition-all hover:border-gray-300 hover:shadow-sm"
-					onClick={() => applyTemplate(template)}
+					onClick={() => applyTheme(template)}
 				>
 					{/* Header with colors, name, and apply badge */}
 					<div className="mb-3 flex items-center gap-2">
@@ -140,6 +140,6 @@ export const TemplateTab: React.FC<TTemplateTabProps> = (props) => {
 	);
 };
 
-interface TTemplateTabProps {
+interface TThemeTabProps {
 	editor: TPageEditor;
 }

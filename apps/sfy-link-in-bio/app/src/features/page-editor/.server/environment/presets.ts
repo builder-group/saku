@@ -13,14 +13,12 @@ import {
 	type TImageAsset,
 	type TSocialLink
 } from '@repo/editor';
-import { createTokensFromStyleTemplate, type TStyleTemplate } from '@/features/page-editor';
+import { createTokensFromTheme, type TTheme } from '@/features/page-editor';
 import { createHandleFromShop } from '@/lib';
 
 export function blankPreset(config: TBlankPresetConfig): TSite {
-	const { shopId, name, profilePicture, socialLinks, featuredProduct, styleTemplate } = config;
-
-	// Generate tokens from the style template
-	const tokens = createTokensFromStyleTemplate(styleTemplate);
+	const { shopId, name, profilePicture, socialLinks, featuredProduct, theme } = config;
+	const tokens = createTokensFromTheme(theme);
 
 	const assets: (TFontAsset | TImageAsset)[] = [];
 
@@ -39,19 +37,19 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 		});
 	}
 
-	// Add template font to assets
-	const templateFontFamily = styleTemplate.typography.fontFamily;
-	const templateFont = getFontMetadata(templateFontFamily);
+	// Add theme font to assets
+	const themeFontFamily = theme.typography.fontFamily;
+	const themeFont = getFontMetadata(themeFontFamily);
 	assets.push({
 		id: createId('asset'),
 		type: 'font',
-		hash: getFontHash(templateFont.font),
+		hash: getFontHash(themeFont.font),
 		contentType: 'font/woff2',
 		storage: {
 			type: 'url',
-			url: `https://fonts.googleapis.com/css2?family=${templateFont.googleFont}&display=swap`
+			url: `https://fonts.googleapis.com/css2?family=${themeFont.googleFont}&display=swap`
 		},
-		font: templateFont.font
+		font: themeFont.font
 	});
 
 	// Create product node
@@ -365,7 +363,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 			fill: {
 				paint: {
 					type: 'solid',
-					color: hexToRgba(styleTemplate.colors.background)
+					color: hexToRgba(theme.colors.background)
 				},
 				opacity: 1
 			}
@@ -377,7 +375,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 interface TBlankPresetConfig {
 	shopId: string;
 	name: string;
-	styleTemplate: TStyleTemplate;
+	theme: TTheme;
 	profilePicture?: string;
 	socialLinks?: {
 		platform: string;

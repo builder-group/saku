@@ -9,7 +9,7 @@ import { shopify } from '@/.server/environment';
 import { getSessionTokenFromRequest, redirectWithAuth } from '@/.server/lib';
 import { useCrisp } from '@/components';
 import { appConfig, coreApiClient } from '@/environment';
-import { styleTemplates, TStyleTemplate } from '@/features/page-editor';
+import { themes, TTheme } from '@/features/page-editor';
 import { blankPreset } from '@/features/page-editor/.server';
 import { resultLoader, withResultLoader } from '@/lib';
 import { THeadersFunction } from '@/types';
@@ -185,7 +185,7 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 						profilePicture: shopOverview.theme.logo,
 						socialLinks: shopOverview.socialLinks,
 						featuredProduct: shopOverview.recommendedProducts?.[0],
-						styleTemplate: styleTemplates[0] as TStyleTemplate
+						theme: themes[0] as TTheme
 						// colors: {
 						// 	primary: shopOverview.theme.colors.primary,
 						// 	background: shopOverview.theme.colors.background,

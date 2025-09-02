@@ -1,8 +1,8 @@
 import { hexToRgba, TToken } from '@repo/editor';
-import { TStyleTemplate } from '../../environment';
+import { TTheme } from '../../environment';
 
-export function createTokensFromStyleTemplate(styleTemplate: TStyleTemplate): TToken[] {
-	const { colors, typography, spacing } = styleTemplate;
+export function createTokensFromTheme(theme: TTheme): TToken[] {
+	const { colors, typography, spacing } = theme;
 
 	return [
 		// Variable tokens (atomic design values)

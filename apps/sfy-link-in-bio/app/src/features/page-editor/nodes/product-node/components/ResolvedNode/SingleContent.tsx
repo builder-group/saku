@@ -4,17 +4,19 @@ import { logger } from '@/environment';
 import { getCurrencySymbol } from '../../../../environment';
 import { TResolvedNodeProps } from '../../../../lib';
 import { TResolvedProductNode, TResolvedSingleProductNodeContent } from '../../types';
-import { useProductModal } from './ProductModal';
+import { useProductDetailsModal } from './ProductDetailsModal';
 
 export const SingleContent: React.FC<TSingleContentProps> = (props) => {
 	const { node, product, cx } = props;
 	const { autoLayout, appearance, fill, stroke, shadow, text, button } = node;
 
-	const { Modal: ProductModal, showModal: showProductModal } = useProductModal({
-		product,
-		node,
-		cx
-	});
+	const { Modal: ProductDetailsModal, showModal: showProductDetailsModal } = useProductDetailsModal(
+		{
+			product,
+			node,
+			cx
+		}
+	);
 
 	// const [isAdding, setIsAdding] = React.useState(false);
 	const [isBuying, setIsBuying] = React.useState(false);
@@ -104,8 +106,8 @@ export const SingleContent: React.FC<TSingleContentProps> = (props) => {
 	}, []);
 
 	const handleProductClick = React.useCallback(() => {
-		showProductModal();
-	}, [showProductModal]);
+		showProductDetailsModal();
+	}, [showProductDetailsModal]);
 
 	// =========================================================================
 	// UI
@@ -223,7 +225,7 @@ export const SingleContent: React.FC<TSingleContentProps> = (props) => {
 				</div>
 			</div>
 
-			<ProductModal />
+			<ProductDetailsModal />
 		</>
 	);
 };

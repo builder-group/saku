@@ -4,7 +4,7 @@ import { getCurrencySymbol } from '../../../../environment';
 import { TResolvedNodeProps } from '../../../../lib';
 import { TResolvedProductNode } from '../../types';
 
-export const ProductModal: React.FC<TProductModalProps> = (props) => {
+export const ProductDetailsModal: React.FC<TProductDetailsModalProps> = (props) => {
 	const {
 		product,
 		node: { button },
@@ -205,14 +205,14 @@ export const ProductModal: React.FC<TProductModalProps> = (props) => {
 	);
 };
 
-interface TProductModalProps {
+interface TProductDetailsModalProps {
 	product: NonNullable<TResolvedProductNode['content']['product']>;
 	node: TResolvedProductNode;
 	cx: TResolvedNodeProps<TResolvedProductNode>['cx'];
 	modalRef: React.RefObject<HTMLDialogElement>;
 }
 
-export function useProductModal(config: TUseProductModalConfig) {
+export function useProductDetailsModal(config: TUseProductDetailsModalConfig) {
 	const { product, node, cx, onShow, onHide } = config;
 	const modalRef = React.useRef<HTMLDialogElement>(null);
 
@@ -231,7 +231,7 @@ export function useProductModal(config: TUseProductModalConfig) {
 	}, [onHide]);
 
 	const ModalComponent = React.useCallback(() => {
-		return <ProductModal product={product} node={node} cx={cx} modalRef={modalRef} />;
+		return <ProductDetailsModal product={product} node={node} cx={cx} modalRef={modalRef} />;
 	}, [product, node, cx]);
 
 	return React.useMemo(
@@ -245,7 +245,7 @@ export function useProductModal(config: TUseProductModalConfig) {
 	);
 }
 
-interface TUseProductModalConfig {
+interface TUseProductDetailsModalConfig {
 	product: NonNullable<TResolvedProductNode['content']['product']>;
 	node: TResolvedProductNode;
 	cx: TResolvedNodeProps<TResolvedProductNode>['cx'];
