@@ -252,7 +252,7 @@ export const themes: TTheme[] = [
 			text: { fontFamily: 'B612', fontWeight: 400 }
 		},
 		size: {
-			text: 0.9,
+			text: 1.0,
 			box: 0.8
 		},
 		radius: { box: 4, field: 2, selector: 2 },
@@ -418,6 +418,10 @@ export const themes: TTheme[] = [
 		typography: {
 			heading: { fontFamily: 'BioRhyme', fontWeight: 600 },
 			text: { fontFamily: 'BioRhyme', fontWeight: 400 }
+		},
+		size: {
+			text: 1.1,
+			box: 1.0
 		},
 		radius: { box: 12, field: 8, selector: 6 },
 		effects: {
@@ -659,6 +663,10 @@ export const themes: TTheme[] = [
 			heading: { fontFamily: 'Vollkorn', fontWeight: 600 },
 			text: { fontFamily: 'Vollkorn', fontWeight: 400 }
 		},
+		size: {
+			text: 1.1,
+			box: 1.0
+		},
 		radius: { box: 24, field: 20, selector: 16 },
 		effects: {
 			stroke: { width: 2 },
@@ -824,7 +832,7 @@ export const themes: TTheme[] = [
 			text: { fontFamily: 'BioRhyme', fontWeight: 400 }
 		},
 		size: {
-			text: 1.05,
+			text: 1.1,
 			box: 1.1
 		},
 		radius: { box: 12, field: 8, selector: 6 },
@@ -990,7 +998,7 @@ export const themes: TTheme[] = [
 			text: { fontFamily: 'B612', fontWeight: 400 }
 		},
 		size: {
-			text: 1,
+			text: 1.0,
 			box: 0.9
 		},
 		radius: { box: 0, field: 0, selector: 0 },
