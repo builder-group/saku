@@ -10,5 +10,10 @@ export const tabs = [
 		id: 'customize',
 		content: 'Customize',
 		panelID: 'customize'
+	},
+	{
+		id: 'advanced',
+		content: 'Advanced',
+		panelID: 'advanced'
 	}
 ] satisfies TabProps[];

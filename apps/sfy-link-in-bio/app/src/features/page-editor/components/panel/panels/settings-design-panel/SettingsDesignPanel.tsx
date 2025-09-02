@@ -4,7 +4,7 @@ import React from 'react';
 import { ResizablePanel } from '@/components';
 import { TPageEditor } from '../../../../lib';
 import { PanelHeader } from '../../PanelHeader';
-import { CustomizeTab, tabs, ThemeTab } from './tabs';
+import { AdvancedTab, CustomizeTab, tabs, ThemeTab } from './tabs';
 
 export const SettingsDesignPanel: React.FC<TSettingsDesignPanelProps> = (props) => {
 	const { editor, order } = props;
@@ -74,6 +74,7 @@ export const SettingsDesignPanel: React.FC<TSettingsDesignPanelProps> = (props) 
 				<div className="flex-1 overflow-auto">
 					{tabIndex === 0 && <ThemeTab editor={editor} />}
 					{tabIndex === 1 && <CustomizeTab editor={editor} />}
+					{tabIndex === 2 && <AdvancedTab editor={editor} />}
 				</div>
 			</div>
 		</ResizablePanel>
