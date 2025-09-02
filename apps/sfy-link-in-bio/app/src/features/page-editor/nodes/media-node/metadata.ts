@@ -8,7 +8,9 @@ export const mediaNodeMetadata: TNodeMetadata<'media'> = {
 	label: 'Media',
 	internal: false,
 	defaultData: {
-		content: {},
+		content: {
+			type: 'image'
+		},
 		autoLayout: {
 			horizontalPadding: tokenRef(),
 			verticalPadding: tokenRef(),

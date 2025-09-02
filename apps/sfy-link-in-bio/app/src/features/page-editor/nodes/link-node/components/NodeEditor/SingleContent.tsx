@@ -1,26 +1,25 @@
-import { TDefaultLinkVariant, TLinkNode } from '@repo/editor';
-import { useAppBridge } from '@shopify/app-bridge-react';
+import { TSingleLinkNodeContent } from '@repo/editor';
 import { Button, InlineError, Text, TextField } from '@shopify/polaris';
-import { useCompute } from 'feature-react/state';
+import { useCompute, useFeatureState, useListener } from 'feature-react/state';
 import React from 'react';
 import { ImageUploadField, TImageUploadEvent } from '@/components';
-import { TNodeState, TPageEditor } from '../../../../lib';
+import { cn } from '@/lib';
+import { TNodeEditorContext } from './create-node-editor-context';
 import { fetchUrlMetadata } from './lib';
 
-export const DefaultLinkVariant: React.FC<TDefaultLinkVariantProps> = (props) => {
-	const { nodeState, editor, isEnhancing = false } = props;
-	const { url, variant } = useCompute(nodeState, ({ value: node }) => ({
-		url: node.content.url,
-		variant: node.content.variant
-	}));
-	const shopify = useAppBridge();
+export const SingleContent: React.FC<TSingleContentProps> = (props) => {
+	const { cx, className } = props;
 
+	const content = useCompute(cx.node, ({ value }) => value.content, [], { isEqual: false });
+	const isEnhancing = useFeatureState(cx.isEnhancing);
+
+	const [displayUrl, setDisplayUrl] = React.useState(content.url);
 	const [faviconImageError, setFaviconImageError] = React.useState<string | null>(null);
 	const [isFetchingUrlMetadata, setIsFetchingUrlMetadata] = React.useState(false);
 
 	const faviconImage = React.useMemo(() => {
-		const asset = editor.getImageAsset(
-			variant.userFavicon === undefined ? variant.favicon : variant.userFavicon
+		const asset = cx.editor.getImageAsset(
+			content.userFavicon === undefined ? content.favicon : content.userFavicon
 		);
 		if (asset == null || asset.storage.type !== 'url') {
 			return undefined;
@@ -30,99 +29,108 @@ export const DefaultLinkVariant: React.FC<TDefaultLinkVariantProps> = (props) =>
 			url: asset.storage.url,
 			fileName: asset.fileName
 		};
-	}, [variant.userFavicon, variant.favicon, editor]);
+	}, [content.userFavicon, content.favicon, cx]);
 
 	const titleValue = React.useMemo(() => {
-		return variant.userTitle ?? variant.title;
-	}, [variant.userTitle, variant.title]);
-
+		return content.userTitle ?? content.title;
+	}, [content.userTitle, content.title]);
 	const descriptionValue = React.useMemo(() => {
-		return variant.userDescription ?? variant.description;
-	}, [variant.userDescription, variant.description]);
+		return content.userDescription ?? content.description;
+	}, [content.userDescription, content.description]);
 
 	const canResetTitle = React.useMemo(
-		() => variant.title != null && variant.userTitle != null && variant.userTitle !== variant.title,
-		[variant.userTitle, variant.title]
+		() => content.title != null && content.userTitle != null && content.userTitle !== content.title,
+		[content.userTitle, content.title]
 	);
-
 	const canResetDescription = React.useMemo(
 		() =>
-			variant.description != null &&
-			variant.userDescription != null &&
-			variant.userDescription !== variant.description,
-		[variant.userDescription, variant.description]
+			content.description != null &&
+			content.userDescription != null &&
+			content.userDescription !== content.description,
+		[content.userDescription, content.description]
 	);
-
 	const canResetFavicon = React.useMemo(
 		() =>
-			variant.favicon !== undefined &&
-			variant.userFavicon !== undefined &&
-			variant.userFavicon !== variant.favicon,
-		[variant.userFavicon, variant.favicon]
+			content.favicon !== undefined &&
+			content.userFavicon !== undefined &&
+			content.userFavicon !== content.favicon,
+		[content.userFavicon, content.favicon]
 	);
 
 	// =========================================================================
 	// Events
 	// =========================================================================
 
+	const handleUrlChange = React.useCallback((value: string) => {
+		setDisplayUrl(value);
+	}, []);
+
+	const handleUrlBlur = React.useCallback(() => {
+		cx.updateUrlAndEnhance(displayUrl).then((result) => {
+			if (result.isErr()) {
+				cx.shopify.toast.show('Failed to update URL and enhance content', { duration: 3000 });
+			}
+		});
+	}, [cx, displayUrl]);
+
 	const handleTitleChange = React.useCallback(
 		(value: string) => {
-			nodeState._v.content.variant.userTitle = value;
-			nodeState._notify();
+			cx.node._v.content.userTitle = value;
+			cx.node._notify();
 		},
-		[nodeState]
+		[cx]
 	);
 
 	const handleTitleReset = React.useCallback(() => {
-		nodeState._v.content.variant.userTitle = undefined;
-		nodeState._notify();
-	}, [nodeState]);
+		cx.node._v.content.userTitle = undefined;
+		cx.node._notify();
+	}, [cx]);
 
 	const handleDescriptionChange = React.useCallback(
 		(value: string) => {
-			nodeState._v.content.variant.userDescription = value;
-			nodeState._notify();
+			cx.node._v.content.userDescription = value;
+			cx.node._notify();
 		},
-		[nodeState]
+		[cx]
 	);
 
 	const handleDescriptionReset = React.useCallback(() => {
-		nodeState._v.content.variant.userDescription = undefined;
-		nodeState._notify();
-	}, [nodeState]);
+		cx.node._v.content.userDescription = undefined;
+		cx.node._notify();
+	}, [cx]);
 
 	const handleFaviconImageChange = React.useCallback(
 		(image: TImageUploadEvent) => {
 			switch (image.type) {
 				case 'Changed': {
-					const hash = editor.registerImage(image.url, image.fileName ?? 'favicon');
+					const hash = cx.editor.registerImage(image.url, image.fileName ?? 'favicon');
 					if (hash != null) {
-						nodeState._v.content.variant.userFavicon = hash;
-						nodeState._notify();
+						cx.node._v.content.userFavicon = hash;
+						cx.node._notify();
 					}
 					break;
 				}
 				case 'Removed': {
-					nodeState._v.content.variant.userFavicon = null;
-					nodeState._notify();
+					cx.node._v.content.userFavicon = null;
+					cx.node._notify();
 					break;
 				}
 			}
 		},
-		[nodeState, editor]
+		[cx]
 	);
 
 	const handleFaviconReset = React.useCallback(() => {
-		nodeState._v.content.variant.userFavicon = undefined;
-		nodeState._notify();
-	}, [nodeState]);
+		cx.node._v.content.userFavicon = undefined;
+		cx.node._notify();
+	}, [cx]);
 
 	const handleUrlFetch = React.useCallback(async () => {
 		setIsFetchingUrlMetadata(true);
 		try {
-			const metadata = await fetchUrlMetadata(url, shopify);
+			const metadata = await fetchUrlMetadata(content.url, cx.shopify);
 			if (metadata == null) {
-				shopify.toast.show('Failed to fetch URL metadata', {
+				cx.shopify.toast.show('Failed to fetch URL metadata', {
 					duration: 3000,
 					action: 'Retry',
 					onAction: handleUrlFetch
@@ -132,27 +140,41 @@ export const DefaultLinkVariant: React.FC<TDefaultLinkVariantProps> = (props) =>
 
 			let faviconHash: string | null = null;
 			if (metadata.favicon != null) {
-				faviconHash = editor.registerImage(metadata.favicon, 'favicon');
+				faviconHash = cx.editor.registerImage(metadata.favicon, 'favicon');
 			}
 
-			nodeState._v.content.variant.title = metadata.title;
-			nodeState._v.content.variant.description = metadata.description;
-			nodeState._v.content.variant.favicon = faviconHash ?? undefined;
-			nodeState._notify();
+			cx.node._v.content.title = metadata.title;
+			cx.node._v.content.description = metadata.description;
+			cx.node._v.content.favicon = faviconHash ?? undefined;
+			cx.node._notify();
 		} finally {
 			setIsFetchingUrlMetadata(false);
 		}
-	}, [editor, url, nodeState, shopify]);
+	}, [cx, content]);
+
+	// =========================================================================
+	// Effects
+	// =========================================================================
+
+	useListener(
+		cx.node,
+		({ value: node, source }) => {
+			if (displayUrl !== node.content.url && source !== 'apply-url-and-enhance') {
+				setDisplayUrl(node.content.url);
+			}
+		},
+		[cx, displayUrl]
+	);
 
 	// =========================================================================
 	// UI
 	// =========================================================================
 
 	return (
-		<div className="space-y-3 px-4">
+		<div className={cn('space-y-3 px-4', className)}>
 			<div className="flex items-center justify-between">
 				<Text as="span" variant="headingXs" tone="subdued">
-					Variant {isEnhancing && '(enhancing...)'}
+					Content {isEnhancing && '(enhancing...)'}
 				</Text>
 				<Button
 					variant="plain"
@@ -162,6 +184,24 @@ export const DefaultLinkVariant: React.FC<TDefaultLinkVariantProps> = (props) =>
 				>
 					{isFetchingUrlMetadata ? 'Fetching metadata...' : 'Fetch metadata'}
 				</Button>
+			</div>
+
+			{/* URL */}
+			<div className="space-y-1">
+				<Text as="span" variant="bodySm" tone="subdued">
+					URL
+				</Text>
+				<TextField
+					id="url-field"
+					label="URL"
+					labelHidden
+					value={displayUrl}
+					onChange={handleUrlChange}
+					onBlur={handleUrlBlur}
+					autoComplete="off"
+					placeholder="https://example.com"
+					type="url"
+				/>
 			</div>
 
 			{/* Title */}
@@ -235,8 +275,7 @@ export const DefaultLinkVariant: React.FC<TDefaultLinkVariantProps> = (props) =>
 	);
 };
 
-interface TDefaultLinkVariantProps {
-	nodeState: TNodeState<TLinkNode<TDefaultLinkVariant>>;
-	editor: TPageEditor;
-	isEnhancing?: boolean;
+interface TSingleContentProps {
+	cx: TNodeEditorContext<TSingleLinkNodeContent>;
+	className: string;
 }

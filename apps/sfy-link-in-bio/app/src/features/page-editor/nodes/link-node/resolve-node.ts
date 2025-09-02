@@ -10,7 +10,7 @@ import {
 	resolveStrokeStyleMixin,
 	resolveTextStyleMixin
 } from '../../mixins';
-import { TResolvedLinkNode, TResolvedLinkVariant } from './types';
+import { TResolvedLinkNode, TResolvedLinkNodeContent } from './types';
 
 export function resolveLinkNode(
 	node: TLinkNode,
@@ -18,44 +18,31 @@ export function resolveLinkNode(
 ): TResult<TResolvedLinkNode, AppError> {
 	const { content, autoLayout, appearance, fill, stroke, shadow, text, ...rest } = node;
 
-	let resolvedVariant: TResolvedLinkVariant;
-	switch (content.variant.type) {
-		case 'default': {
-			const favicon =
-				content.variant.userFavicon !== undefined
-					? content.variant.userFavicon
-					: content.variant.favicon;
-			resolvedVariant = {
-				type: 'default',
-				title: content.variant.userTitle ?? content.variant.title,
-				description: content.variant.userDescription ?? content.variant.description,
+	// Resolve content
+	let resolvedContent: TResolvedLinkNodeContent;
+	switch (content.type) {
+		case 'single': {
+			const favicon = content.userFavicon !== undefined ? content.userFavicon : content.favicon;
+			resolvedContent = {
+				type: 'single',
+				url: content.url,
+				title: content.userTitle ?? content.title,
+				description: content.userDescription ?? content.description,
 				favicon: favicon != null ? resolveAsset(favicon, cx.site) : undefined
 			};
 			break;
 		}
-		// case 'youtube-video': {
-		// 	variant = {
-		// 		type: 'youtube-video',
-		// 		title: content.variant.userTitle ?? content.variant.title
-		// 	};
-		// 	break;
-		// }
-		// case 'youtube-channel': {
-		// 	variant = {
-		// 		type: 'youtube-channel',
-		// 		title: content.variant.userTitle ?? content.variant.title
-		// 	};
-		// 	break;
-		// }
 		case 'youtube-video-embed': {
-			resolvedVariant = {
+			resolvedContent = {
 				type: 'youtube-video-embed',
-				embedUrl: `https://www.youtube.com/embed/${content.variant.videoId}`
+				url: content.url,
+				embedUrl: `https://www.youtube.com/embed/${content.videoId}`
 			};
 			break;
 		}
 	}
 
+	// Resolve styles
 	const [isResolvedAutoLayoutOk, resolvedAutoLayoutErr, resolvedAutoLayout] =
 		resolveAutoLayoutStyleMixin(autoLayout, {
 			node: cx,
@@ -109,10 +96,7 @@ export function resolveLinkNode(
 
 	return Ok({
 		...rest,
-		content: {
-			url: content.url,
-			variant: resolvedVariant
-		},
+		content: resolvedContent,
 		autoLayout: resolvedAutoLayout,
 		appearance: resolvedAppearance,
 		fill: resolvedFill,

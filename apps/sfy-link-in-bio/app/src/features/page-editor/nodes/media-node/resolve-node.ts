@@ -9,7 +9,11 @@ import {
 	resolveShadowStyleMixin,
 	resolveStrokeStyleMixin
 } from '../../mixins';
-import { TResolvedMedia, TResolvedMediaNode } from './types';
+import {
+	TResolvedImageMediaNodeContent,
+	TResolvedMediaNode,
+	TResolvedMediaNodeContent
+} from './types';
 
 export function resolveMediaNode(
 	node: TMediaNode,
@@ -17,22 +21,29 @@ export function resolveMediaNode(
 ): TResult<TResolvedMediaNode, AppError> {
 	const { content, autoLayout, appearance, fill, stroke, shadow, ...rest } = node;
 
-	let resolvedMedia: TResolvedMedia | undefined;
-	switch (content.media?.type) {
+	// Resolve content
+	let resolvedContent: TResolvedMediaNodeContent;
+	switch (content.type) {
 		case 'image': {
-			const resolvedAsset = resolveAsset(content.media.hash, cx.site);
-			if (resolvedAsset != null) {
-				resolvedMedia = {
-					...content.media,
-					src: resolvedAsset.src
-				};
+			let resolvedMedia: TResolvedImageMediaNodeContent['media'] | undefined;
+			if (content.media != null) {
+				const resolvedAsset = resolveAsset(content.media?.hash, cx.site);
+				if (resolvedAsset != null) {
+					resolvedMedia = {
+						...content.media,
+						src: resolvedAsset.src
+					};
+				}
 			}
+			resolvedContent = {
+				...content,
+				media: resolvedMedia
+			};
 			break;
 		}
-		default:
-		// do nothing
 	}
 
+	// Resolve styles
 	const [isResolvedAutoLayoutOk, resolvedAutoLayoutErr, resolvedAutoLayout] =
 		resolveAutoLayoutStyleMixin(autoLayout, {
 			node: cx,
@@ -78,9 +89,7 @@ export function resolveMediaNode(
 
 	return Ok({
 		...rest,
-		content: {
-			media: resolvedMedia
-		},
+		content: resolvedContent,
 		autoLayout: resolvedAutoLayout,
 		appearance: resolvedAppearance,
 		fill: resolvedFill,

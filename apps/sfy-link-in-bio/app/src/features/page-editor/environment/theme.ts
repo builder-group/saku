@@ -1,5 +1,5 @@
 // Based on: https://daisyui.com/theme-generator
-export const styleTemplates: TStyleTemplate[] = [
+export const themes: TTheme[] = [
 	{
 		key: 'light',
 		name: 'Light',
@@ -170,7 +170,7 @@ export const styleTemplates: TStyleTemplate[] = [
 	}
 ];
 
-export interface TStyleTemplate {
+export interface TTheme {
 	key: string;
 	name: string;
 	colors: {

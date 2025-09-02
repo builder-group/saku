@@ -17,15 +17,13 @@ export const TextNodeEditor: React.FC<TNodeEditorComponentProps<TTextNode>> = (p
 	const { nodeState, editor } = props;
 	const { content } = useFeatureState(nodeState);
 
-	const parentNodeState = React.useMemo(() => editor.getRootNode(), [editor]);
-
 	// =========================================================================
 	// Events
 	// =========================================================================
 
 	const handleTextChange = React.useCallback(
 		(value: string) => {
-			nodeState._v.content.text = value;
+			nodeState._v.content.text = { type: 'markdown', value };
 			nodeState._notify();
 		},
 		[nodeState]
@@ -49,7 +47,7 @@ export const TextNodeEditor: React.FC<TNodeEditorComponentProps<TTextNode>> = (p
 							id="text-field"
 							label="Text"
 							labelHidden
-							value={content.text}
+							value={content.text.value}
 							onChange={handleTextChange}
 							multiline={4}
 							autoComplete="off"

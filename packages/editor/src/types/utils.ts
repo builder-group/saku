@@ -74,61 +74,22 @@ export interface TImagePaint extends TBasePaint {
 }
 
 // =========================================================================
-// Link Variant
+// Rich Content
 // =========================================================================
 
-export type TLinkVariant = TDefaultLinkVariant | TYouTubeVideoEmbedVariant;
+export type TRichContent = TTextRichContent | TMarkdownRichContent | THtmlRichContent;
 
-export interface TBaseLinkVariant {
-	type: string;
-}
-
-export interface TDefaultLinkVariant extends TBaseLinkVariant {
-	type: 'default';
-	// User overrides (take priority)
-	userTitle?: string;
-	userDescription?: string;
-	userFavicon?: TAssetHash | null; // null = explicitly removed, undefined = not set
-	// Source metadata (fallback)
-	title?: string;
-	description?: string;
-	favicon?: TAssetHash;
-}
-
-export interface TYouTubeVideoEmbedVariant extends TBaseLinkVariant {
-	type: 'youtube-video-embed';
-	videoId: string;
-}
-
-// =========================================================================
-// Media
-// =========================================================================
-
-export type TMedia = TImageMedia;
-
-export interface TImageMedia {
-	type: 'image';
-	hash: TAssetHash;
-	altText?: string;
-}
-
-// =========================================================================
-// Content
-// =========================================================================
-
-export type TContent = TTextContent | TMarkdownContent | THtmlContent;
-
-export interface TTextContent {
+export interface TTextRichContent {
 	type: 'text';
 	value: string;
 }
 
-export interface TMarkdownContent {
+export interface TMarkdownRichContent {
 	type: 'markdown';
 	value: string;
 }
 
-export interface THtmlContent {
+export interface THtmlRichContent {
 	type: 'html';
 	value: string;
 }
@@ -175,3 +136,27 @@ export interface TShopifyIntegration extends TBaseIntegration {
 	shopId: string;
 	storefrontAccessToken: string;
 }
+
+// =========================================================================
+// Action
+// =========================================================================
+
+export type TAction = TLinkAction | TEmailAction;
+
+export interface TLinkAction {
+	type: 'link';
+	url: string;
+	target?: '_blank' | '_self';
+}
+
+export interface TEmailAction {
+	type: 'email';
+	email: string;
+	subject?: string;
+	body?: string;
+}
+
+//   export interface TFormAction {
+// 	type: 'form';
+// 	formId: string;
+//   }

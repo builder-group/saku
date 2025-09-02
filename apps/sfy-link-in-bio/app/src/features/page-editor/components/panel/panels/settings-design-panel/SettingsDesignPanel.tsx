@@ -4,7 +4,7 @@ import React from 'react';
 import { ResizablePanel } from '@/components';
 import { TPageEditor } from '../../../../lib';
 import { PanelHeader } from '../../PanelHeader';
-import { CustomizeTab, tabs, TemplateTab } from './tabs';
+import { CustomizeTab, tabs, ThemeTab } from './tabs';
 
 export const SettingsDesignPanel: React.FC<TSettingsDesignPanelProps> = (props) => {
 	const { editor, order } = props;
@@ -21,8 +21,8 @@ export const SettingsDesignPanel: React.FC<TSettingsDesignPanelProps> = (props) 
 				// Note: Return default sizes instead of null to prevent the panel from being hidden on hot reload
 				return {
 					minSize: 20,
-					defaultSize: 30,
-					maxSize: 40
+					defaultSize: 27,
+					maxSize: 35
 				};
 			}
 
@@ -30,8 +30,8 @@ export const SettingsDesignPanel: React.FC<TSettingsDesignPanelProps> = (props) 
 
 			return {
 				minSize: toPercent(300), // ~ 20
-				defaultSize: toPercent(450), // ~ 30
-				maxSize: toPercent(600) // ~ 40
+				defaultSize: toPercent(405), // ~ 27
+				maxSize: toPercent(525) // ~ 35
 			};
 		},
 		[],
@@ -72,7 +72,7 @@ export const SettingsDesignPanel: React.FC<TSettingsDesignPanelProps> = (props) 
 					</div>
 				</PanelHeader>
 				<div className="flex-1 overflow-auto">
-					{tabIndex === 0 && <TemplateTab editor={editor} />}
+					{tabIndex === 0 && <ThemeTab editor={editor} />}
 					{tabIndex === 1 && <CustomizeTab editor={editor} />}
 				</div>
 			</div>

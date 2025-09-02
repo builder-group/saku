@@ -1,6 +1,6 @@
 import React from 'react';
 import { TResolvedNodeProps } from '../../../../lib';
-import { TResolvedLinkNode, TResolvedYouTubeVideoEmbedLinkVariant } from '../../types';
+import { TResolvedLinkNode, TResolvedYouTubeVideoEmbedLinkNodeContent } from '../../types';
 
 export const YouTubeVideoEmbedContent: React.FC<TYouTubeVideoEmbedContentProps> = (props) => {
 	const {
@@ -20,7 +20,7 @@ export const YouTubeVideoEmbedContent: React.FC<TYouTubeVideoEmbedContentProps> 
 		>
 			<div className="relative aspect-[16/9] w-full">
 				<iframe
-					src={content.variant.embedUrl}
+					src={content.embedUrl}
 					className="absolute inset-0 h-full w-full"
 					allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
 					allowFullScreen
@@ -31,6 +31,6 @@ export const YouTubeVideoEmbedContent: React.FC<TYouTubeVideoEmbedContentProps> 
 };
 
 interface TYouTubeVideoEmbedContentProps {
-	node: TResolvedLinkNode<TResolvedYouTubeVideoEmbedLinkVariant>;
-	cx: TResolvedNodeProps<TResolvedLinkNode>['cx'];
+	node: TResolvedLinkNode<TResolvedYouTubeVideoEmbedLinkNodeContent>;
+	cx: TResolvedNodeProps<TResolvedLinkNode<TResolvedYouTubeVideoEmbedLinkNodeContent>>['cx'];
 }

@@ -1,1 +1,1 @@
-export * from './create-tokens-from-style-template';
+export * from './create-tokens-from-theme';

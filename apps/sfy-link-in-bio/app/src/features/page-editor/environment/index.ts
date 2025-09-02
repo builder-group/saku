@@ -1,4 +1,4 @@
 export * from './currency-metadata';
 export * from './settings-metadata';
-export * from './style-templates';
+export * from './theme';
 export * from './view-metadata';

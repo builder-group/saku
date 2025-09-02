@@ -1,1 +1,1 @@
-export * from './link-variant-metadata';
+export * from './content-metadata';

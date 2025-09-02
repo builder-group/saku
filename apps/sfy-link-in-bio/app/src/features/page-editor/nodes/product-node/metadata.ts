@@ -8,7 +8,9 @@ export const productNodeMetadata: TNodeMetadata<'product'> = {
 	label: 'Product',
 	internal: false,
 	defaultData: {
-		content: {},
+		content: {
+			type: 'single'
+		},
 		autoLayout: {
 			horizontalPadding: tokenRef(),
 			verticalPadding: tokenRef(),

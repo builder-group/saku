@@ -14,7 +14,7 @@ export const SettingsMetadataPanel: React.FC<TSettingsMetadataPanelProps> = (pro
 		rootNode,
 		({ value }) => ({
 			resolvedMetadata: resolvePageMetadata(value, { site: new EditorSiteResolveContext(editor) }),
-			metadata: value.content.metadata
+			metadata: value.metadata
 		}),
 		[editor]
 	);
@@ -42,8 +42,8 @@ export const SettingsMetadataPanel: React.FC<TSettingsMetadataPanelProps> = (pro
 				// Note: Return default sizes instead of null to prevent the panel from being hidden on hot reload
 				return {
 					minSize: 20,
-					defaultSize: 30,
-					maxSize: 40
+					defaultSize: 27,
+					maxSize: 35
 				};
 			}
 
@@ -51,8 +51,8 @@ export const SettingsMetadataPanel: React.FC<TSettingsMetadataPanelProps> = (pro
 
 			return {
 				minSize: toPercent(300), // ~ 20
-				defaultSize: toPercent(450), // ~ 30
-				maxSize: toPercent(600) // ~ 40
+				defaultSize: toPercent(405), // ~ 27
+				maxSize: toPercent(525) // ~ 35
 			};
 		},
 		[],
@@ -71,7 +71,7 @@ export const SettingsMetadataPanel: React.FC<TSettingsMetadataPanelProps> = (pro
 
 	const handleTitleChange = React.useCallback(
 		(value: string) => {
-			rootNode._v.content.metadata.title = value.length > 0 ? value : undefined;
+			rootNode._v.metadata.title = value.length > 0 ? value : undefined;
 			rootNode._notify();
 		},
 		[rootNode]
@@ -79,7 +79,7 @@ export const SettingsMetadataPanel: React.FC<TSettingsMetadataPanelProps> = (pro
 
 	const handleDescriptionChange = React.useCallback(
 		(value: string) => {
-			rootNode._v.content.metadata.description = value.length > 0 ? value : undefined;
+			rootNode._v.metadata.description = value.length > 0 ? value : undefined;
 			rootNode._notify();
 		},
 		[rootNode]
@@ -91,13 +91,13 @@ export const SettingsMetadataPanel: React.FC<TSettingsMetadataPanelProps> = (pro
 				case 'Changed': {
 					const hash = editor.registerImage(image.url, image.fileName);
 					if (hash != null) {
-						rootNode._v.content.metadata.image = hash;
+						rootNode._v.metadata.image = hash;
 						rootNode._notify();
 					}
 					break;
 				}
 				case 'Removed': {
-					rootNode._v.content.metadata.image = undefined;
+					rootNode._v.metadata.image = undefined;
 					rootNode._notify();
 					break;
 				}

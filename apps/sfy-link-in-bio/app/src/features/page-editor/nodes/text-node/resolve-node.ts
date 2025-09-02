@@ -18,6 +18,7 @@ export function resolveTextNode(
 ): TResult<TResolvedTextNode, AppError> {
 	const { autoLayout, appearance, fill, stroke, shadow, text, ...rest } = node;
 
+	// Resolve styles
 	const [isResolvedAutoLayoutOk, resolvedAutoLayoutErr, resolvedAutoLayout] =
 		resolveAutoLayoutStyleMixin(autoLayout, {
 			node: cx,

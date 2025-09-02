@@ -1,8 +1,8 @@
 import React from 'react';
 import { TResolvedNodeProps } from '../../../../lib';
-import { TResolvedDefaultLinkVariant, TResolvedLinkNode } from '../../types';
+import { TResolvedLinkNode, TResolvedSingleLinkNodeContent } from '../../types';
 
-export const DefaultContent: React.FC<TDefaultContentProps> = (props) => {
+export const DefaultContent: React.FC<TSingleContentProps> = (props) => {
 	const {
 		node: { content, autoLayout, appearance, fill, stroke, shadow, text }
 	} = props;
@@ -37,7 +37,7 @@ export const DefaultContent: React.FC<TDefaultContentProps> = (props) => {
 		>
 			<div className="flex min-h-12 w-full items-center gap-3">
 				{/* Site Icon */}
-				{content.variant.favicon != null && (
+				{content.favicon != null && (
 					<div
 						className="h-12 w-12 flex-shrink-0 overflow-hidden bg-gray-100"
 						style={{
@@ -45,8 +45,8 @@ export const DefaultContent: React.FC<TDefaultContentProps> = (props) => {
 						}}
 					>
 						<img
-							src={content.variant.favicon.src}
-							alt={content.variant.title ?? 'Site Icon'}
+							src={content.favicon.src}
+							alt={content.title ?? 'Site Icon'}
 							className="h-full w-full object-cover"
 							draggable={false}
 						/>
@@ -55,12 +55,12 @@ export const DefaultContent: React.FC<TDefaultContentProps> = (props) => {
 
 				{/* Link Details */}
 				<div className="min-w-0 flex-grow">
-					{content.variant.title != null && (
+					{content.title != null && (
 						<p className="truncate font-medium" style={text.styles}>
-							{content.variant.title}
+							{content.title}
 						</p>
 					)}
-					{content.variant.description != null && (
+					{content.description != null && (
 						<p
 							className="truncate opacity-70"
 							style={{
@@ -68,7 +68,7 @@ export const DefaultContent: React.FC<TDefaultContentProps> = (props) => {
 								fontSize: text.typography.fontSize * 0.875
 							}}
 						>
-							{content.variant.description}
+							{content.description}
 						</p>
 					)}
 				</div>
@@ -77,7 +77,7 @@ export const DefaultContent: React.FC<TDefaultContentProps> = (props) => {
 	);
 };
 
-interface TDefaultContentProps {
-	node: TResolvedLinkNode<TResolvedDefaultLinkVariant>;
-	cx: TResolvedNodeProps<TResolvedLinkNode>['cx'];
+interface TSingleContentProps {
+	node: TResolvedLinkNode<TResolvedSingleLinkNodeContent>;
+	cx: TResolvedNodeProps<TResolvedLinkNode<TResolvedSingleLinkNodeContent>>['cx'];
 }

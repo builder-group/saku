@@ -3,18 +3,20 @@ import { ChevronDownIcon } from '@/components';
 import { logger } from '@/environment';
 import { getCurrencySymbol } from '../../../../environment';
 import { TResolvedNodeProps } from '../../../../lib';
-import { TResolvedProductNode } from '../../types';
-import { useProductModal } from './ProductModal';
+import { TResolvedProductNode, TResolvedSingleProductNodeContent } from '../../types';
+import { useProductDetailsModal } from './ProductDetailsModal';
 
-export const Content: React.FC<TContentProps> = (props) => {
-	const { product, node, cx } = props;
+export const SingleContent: React.FC<TSingleContentProps> = (props) => {
+	const { node, product, cx } = props;
 	const { autoLayout, appearance, fill, stroke, shadow, text, button } = node;
 
-	const { Modal: ProductModal, showModal: showProductModal } = useProductModal({
-		product,
-		node,
-		cx
-	});
+	const { Modal: ProductDetailsModal, showModal: showProductDetailsModal } = useProductDetailsModal(
+		{
+			product,
+			node,
+			cx
+		}
+	);
 
 	// const [isAdding, setIsAdding] = React.useState(false);
 	const [isBuying, setIsBuying] = React.useState(false);
@@ -104,8 +106,8 @@ export const Content: React.FC<TContentProps> = (props) => {
 	}, []);
 
 	const handleProductClick = React.useCallback(() => {
-		showProductModal();
-	}, [showProductModal]);
+		showProductDetailsModal();
+	}, [showProductDetailsModal]);
 
 	// =========================================================================
 	// UI
@@ -223,13 +225,13 @@ export const Content: React.FC<TContentProps> = (props) => {
 				</div>
 			</div>
 
-			<ProductModal />
+			<ProductDetailsModal />
 		</>
 	);
 };
 
-interface TContentProps {
-	product: NonNullable<TResolvedProductNode['content']['product']>;
-	node: TResolvedProductNode;
-	cx: TResolvedNodeProps<TResolvedProductNode>['cx'];
+interface TSingleContentProps {
+	node: TResolvedProductNode<TResolvedSingleProductNodeContent>;
+	product: NonNullable<TResolvedSingleProductNodeContent['product']>;
+	cx: TResolvedNodeProps<TResolvedProductNode<TResolvedSingleProductNodeContent>>['cx'];
 }

@@ -19,27 +19,38 @@ export const ResolvedTextNode = React.forwardRef<
 	);
 
 	// Use evaluateSync for SSR because async (e.g. with React Query) wouldn't render on server
-	const mdxContent = React.useMemo(() => {
-		if (content.text.trim() === '') {
-			return null;
-		}
+	const textContent = React.useMemo(() => {
+		switch (content.text.type) {
+			case 'text': {
+				return <p>{content.text.value}</p>;
+			}
+			case 'markdown': {
+				const textValue = content.text.value;
+				if (textValue.trim() === '') {
+					return null;
+				}
 
-		try {
-			const { default: Component } = evaluateSync(content.text, {
-				jsx: React.createElement,
-				jsxs: React.createElement,
-				Fragment: React.Fragment,
-				// Prevents MDX from including debug objects (fileName, lineNumber, columnNumber)
-				// that React tries to render as children,
-				// causing "Objects are not valid as a React child" errors during SSR.
-				// Debug info breaks serialization between server and client.
-				development: false
-			});
+				try {
+					const { default: Component } = evaluateSync(textValue, {
+						jsx: React.createElement,
+						jsxs: React.createElement,
+						Fragment: React.Fragment,
+						// Prevents MDX from including debug objects (fileName, lineNumber, columnNumber)
+						// that React tries to render as children,
+						// causing "Objects are not valid as a React child" errors during SSR.
+						// Debug info breaks serialization between server and client.
+						development: false
+					});
 
-			return Component({ components: mdxComponents });
-		} catch (error) {
-			logger.warn('MDX parsing error:', error);
-			return <span>{content.text}</span>;
+					return Component({ components: mdxComponents });
+				} catch (error) {
+					logger.warn('MDX parsing error:', error);
+					return <span>{textValue}</span>;
+				}
+			}
+			case 'html': {
+				return <div dangerouslySetInnerHTML={{ __html: content.text.value }} />;
+			}
 		}
 	}, [content.text, mdxComponents]);
 
@@ -56,7 +67,7 @@ export const ResolvedTextNode = React.forwardRef<
 				}}
 			>
 				<div className="flex min-h-12 w-full flex-col justify-start p-4" style={text.styles}>
-					{mdxContent}
+					{textContent}
 				</div>
 			</div>
 		</div>

@@ -93,35 +93,67 @@ type TProductNode = TNode<'product', [
 // components.Text[entityId] = { typography: { font, fontSize, textColor } }
 ```
 
+### Why do all nodes use a variant-based content structure?
+
+- **Start simple, grow complex**: Begin with basic variants (`'default'`, `'single'`) and add advanced variants later without breaking changes
+- **Progressive enhancement**: Users start with simple functionality and can upgrade to more complex variants when needed
+- **Future-proof architecture**: Easy to add specialized variants (multi-link, Instagram embed, product grid) without restructuring existing nodes
+- **Consistent user experience**: Single node type with clear variant choices vs. confusing array of different node types
+
+#### Examples of variant evolution:
+
+```typescript
+// Phase 1: Start simple
+LinkNode: { content: { type: 'single', url: '...' } }
+
+// Phase 2: Add specialized variants  
+LinkNode: { content: { type: 'instagram', username: '...' } }
+LinkNode: { content: { type: 'multi', title: '...', links: [...] } }
+
+// Phase 3: Add advanced presentation variants
+LinkNode: { content: { type: 'grid', columns: 2, links: [...] } }
+LinkNode: { content: { type: 'carousel', autoplay: true, links: [...] } }
+
+// Users upgrade variants, not node types
+```
+
 ### Why don't nodes have card styling by default?
 
 - **Default = Linktree style**: Everything is styled at the node layer level (card-like appearance)
 - **Flat design flexibility**: Users can flatten styling by removing fill/stroke/shadow from nodes
-- **Multi-item variants**: When nodes contain multiple items (link lists, product grids), individual items get card styling within a container
+- **Multi-item variants**: When content variants contain multiple items (link lists, product grids), individual items get card styling within a container
 - **Progressive complexity**: Simple single-item nodes stay simple, complex multi-item nodes get appropriate card structure
 
 #### When do we use card styling vs layer styling?
 
 ```typescript
-// Single item: Style at layer level (default Linktree style)
-LinkNode: { fill: 'blue', stroke: '1px', shadow: '4px' } // Node IS the card
+// Single link: Style at layer level (default Linktree style)
+LinkNode: { 
+  fill: { paint: 'blue' }, 
+  stroke: { width: 1 }, 
+  shadow: { blur: 4 },
+  content: { type: 'single', url: '...' } // Node IS the card
+}
 
-// Multiple items: Container + individual cards
-LinkSectionNode: {
-  // Styling (mixins)
+// Multiple links: Container + individual cards
+LinkNode: {
+  // Container styling (mixins)
   autoLayout: { gap: '8px' },
   fill: { paint: 'gray' },       // Container background
-  card: {                        // Card mixin for individual links (highlighted as cards)
+  card: {                        // Card mixin for individual links
     fill: { paint: 'white' },
     stroke: { width: 1 },
     shadow: { blur: 4 }
   },
   // Content data only
-  content: { links: [...] }
+  content: { type: 'multi', title: 'My Links', links: [...] }
 }
 
 // Flat design: Remove layer styling
-LinkNode: { fill: null, stroke: null, shadow: null } // Flat appearance
+LinkNode: { 
+  fill: null, stroke: null, shadow: null,
+  content: { type: 'single', url: '...' } // Flat appearance
+}
 ```
 
 ### What are tokens?
