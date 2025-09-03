@@ -1,3 +1,35 @@
+export const themeMetadata = {
+	size: {
+		text: {
+			xs: 12,
+			sm: 14,
+			md: 16,
+			lg: 18,
+			xl: 20,
+			step: 0.125,
+			get: (step = 0) => 1 + step * 0.125
+		},
+		heading: {
+			xs: 16,
+			sm: 18,
+			md: 20,
+			lg: 24,
+			xl: 28,
+			step: 0.125,
+			get: (step = 0) => 1 + step * 0.125
+		},
+		box: {
+			xs: 2,
+			sm: 4,
+			md: 6,
+			lg: 8,
+			xl: 12,
+			step: 0.25,
+			get: (step = 0) => 1 + step * 0.25
+		}
+	}
+} as const;
+
 // Inspired by: https://daisyui.com/theme-generator
 export const themes: TTheme[] = [
 	{
@@ -252,8 +284,8 @@ export const themes: TTheme[] = [
 			text: { fontFamily: 'B612', fontWeight: 400 }
 		},
 		size: {
-			text: 1.0,
-			box: 0.8
+			text: themeMetadata.size.text.get(0),
+			box: themeMetadata.size.box.get(-1)
 		},
 		radius: { box: 4, field: 2, selector: 2 },
 		effects: {
@@ -296,8 +328,8 @@ export const themes: TTheme[] = [
 			text: { fontFamily: 'Lora', fontWeight: 400 }
 		},
 		size: {
-			text: 1.2,
-			box: 1.4
+			text: themeMetadata.size.text.get(2),
+			box: themeMetadata.size.box.get(2)
 		},
 		radius: { box: 0, field: 0, selector: 0 },
 		effects: {
@@ -420,8 +452,8 @@ export const themes: TTheme[] = [
 			text: { fontFamily: 'BioRhyme', fontWeight: 400 }
 		},
 		size: {
-			text: 1.1,
-			box: 1.0
+			text: themeMetadata.size.text.get(1),
+			box: themeMetadata.size.box.get(0)
 		},
 		radius: { box: 12, field: 8, selector: 6 },
 		effects: {
@@ -464,8 +496,8 @@ export const themes: TTheme[] = [
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
 		size: {
-			text: 1.05,
-			box: 1.15
+			text: themeMetadata.size.text.get(0),
+			box: themeMetadata.size.box.get(1)
 		},
 		radius: { box: 20, field: 16, selector: 12 },
 		effects: {
@@ -508,8 +540,8 @@ export const themes: TTheme[] = [
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
 		size: {
-			text: 1.1,
-			box: 1.2
+			text: themeMetadata.size.text.get(1),
+			box: themeMetadata.size.box.get(1)
 		},
 		radius: { box: 16, field: 12, selector: 8 },
 		effects: {
@@ -552,8 +584,8 @@ export const themes: TTheme[] = [
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
 		size: {
-			text: 1.05,
-			box: 1.1
+			text: themeMetadata.size.text.get(0),
+			box: themeMetadata.size.box.get(1)
 		},
 		radius: { box: 16, field: 12, selector: 8 },
 		effects: {
@@ -664,8 +696,8 @@ export const themes: TTheme[] = [
 			text: { fontFamily: 'Vollkorn', fontWeight: 400 }
 		},
 		size: {
-			text: 1.1,
-			box: 1.0
+			text: themeMetadata.size.text.get(1),
+			box: themeMetadata.size.box.get(0)
 		},
 		radius: { box: 24, field: 20, selector: 16 },
 		effects: {
@@ -788,8 +820,8 @@ export const themes: TTheme[] = [
 			text: { fontFamily: 'Lora', fontWeight: 400 }
 		},
 		size: {
-			text: 0.95,
-			box: 0.7
+			text: themeMetadata.size.text.get(-1),
+			box: themeMetadata.size.box.get(-1)
 		},
 		radius: { box: 8, field: 6, selector: 4 },
 		effects: {
@@ -832,8 +864,8 @@ export const themes: TTheme[] = [
 			text: { fontFamily: 'BioRhyme', fontWeight: 400 }
 		},
 		size: {
-			text: 1.1,
-			box: 1.1
+			text: themeMetadata.size.text.get(1),
+			box: themeMetadata.size.box.get(1)
 		},
 		radius: { box: 12, field: 8, selector: 6 },
 		effects: {
@@ -876,8 +908,8 @@ export const themes: TTheme[] = [
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
 		size: {
-			text: 0.95,
-			box: 0.9
+			text: themeMetadata.size.text.get(-1),
+			box: themeMetadata.size.box.get(-1)
 		},
 		radius: { box: 8, field: 6, selector: 4 },
 		effects: {
@@ -920,8 +952,8 @@ export const themes: TTheme[] = [
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
 		size: {
-			text: 1.1,
-			box: 1.15
+			text: themeMetadata.size.text.get(1),
+			box: themeMetadata.size.box.get(1)
 		},
 		radius: { box: 16, field: 12, selector: 8 },
 		effects: {
@@ -998,8 +1030,8 @@ export const themes: TTheme[] = [
 			text: { fontFamily: 'B612', fontWeight: 400 }
 		},
 		size: {
-			text: 1.0,
-			box: 0.9
+			text: themeMetadata.size.text.get(0),
+			box: themeMetadata.size.box.get(-1)
 		},
 		radius: { box: 0, field: 0, selector: 0 },
 		effects: {
@@ -1036,8 +1068,8 @@ export const themes: TTheme[] = [
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
 		size: {
-			text: 1.1,
-			box: 1.2
+			text: themeMetadata.size.text.get(1),
+			box: themeMetadata.size.box.get(1)
 		},
 		radius: { box: 20, field: 16, selector: 12 },
 		effects: {
@@ -1080,8 +1112,8 @@ export const themes: TTheme[] = [
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
 		size: {
-			text: 1.05,
-			box: 1.15
+			text: themeMetadata.size.text.get(0),
+			box: themeMetadata.size.box.get(1)
 		},
 		radius: { box: 16, field: 12, selector: 8 },
 		effects: {
@@ -1124,8 +1156,8 @@ export const themes: TTheme[] = [
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
 		size: {
-			text: 1.1,
-			box: 1.2
+			text: themeMetadata.size.text.get(1),
+			box: themeMetadata.size.box.get(1)
 		},
 		radius: { box: 12, field: 8, selector: 6 },
 		effects: {
@@ -1168,8 +1200,8 @@ export const themes: TTheme[] = [
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
 		size: {
-			text: 1.05,
-			box: 1.1
+			text: themeMetadata.size.text.get(0),
+			box: themeMetadata.size.box.get(1)
 		},
 		radius: { box: 16, field: 12, selector: 8 },
 		effects: {
@@ -1292,8 +1324,8 @@ export const themes: TTheme[] = [
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
 		size: {
-			text: 1.1,
-			box: 1.2
+			text: themeMetadata.size.text.get(1),
+			box: themeMetadata.size.box.get(1)
 		},
 		radius: { box: 16, field: 12, selector: 8 },
 		effects: {

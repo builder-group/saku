@@ -1,15 +1,38 @@
 import { hexToRgba, TToken } from '@repo/editor';
-import { TTheme } from '../../environment';
+import { themeMetadata, TTheme } from '../../environment';
 
 export function createTokensFromTheme(theme: TTheme): TToken[] {
 	const { color, typography, gap = 24, size = {}, radius, effects } = theme;
 	const {
-		heading: headingSize = 1,
-		text: textSize = 1,
-		box: boxSize = 1,
-		field: fieldSize = 1,
-		selector: selectorSize = 1
+		heading: headingSize = themeMetadata.size.text.get(0),
+		text: textSize = themeMetadata.size.text.get(0),
+		box: boxSize = themeMetadata.size.box.get(0),
+		field: fieldSize = themeMetadata.size.box.get(0),
+		selector: selectorSize = themeMetadata.size.box.get(0)
 	} = size;
+
+	// Calculate semantic sizes
+	const textSizes = {
+		xs: textSize * themeMetadata.size.text.xs,
+		sm: textSize * themeMetadata.size.text.sm,
+		md: textSize * themeMetadata.size.text.md,
+		lg: textSize * themeMetadata.size.text.lg,
+		xl: textSize * themeMetadata.size.text.xl
+	};
+	const headingSizes = {
+		xs: headingSize * themeMetadata.size.heading.xs,
+		sm: headingSize * themeMetadata.size.heading.sm,
+		md: headingSize * themeMetadata.size.heading.md,
+		lg: headingSize * themeMetadata.size.heading.lg,
+		xl: headingSize * themeMetadata.size.heading.xl
+	};
+	const boxSizes = {
+		xs: boxSize * themeMetadata.size.box.xs,
+		sm: boxSize * themeMetadata.size.box.sm,
+		md: boxSize * themeMetadata.size.box.md,
+		lg: boxSize * themeMetadata.size.box.lg,
+		xl: boxSize * themeMetadata.size.box.xl
+	};
 
 	return [
 		// Variable tokens (atomic design values)
@@ -134,8 +157,8 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 			key: 'default',
 			mixinKey: 'autoLayout',
 			value: {
-				horizontalPadding: boxSize * 8,
-				verticalPadding: boxSize * 8
+				horizontalPadding: boxSizes.lg,
+				verticalPadding: boxSizes.lg
 			}
 		},
 		{
@@ -158,7 +181,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 					weight: typography.text.fontWeight,
 					style: 'normal'
 				},
-				fontSize: textSize * 16,
+				fontSize: textSizes.md,
 				textAlignHorizontal: 'center',
 				textAlignVertical: 'center',
 				lineHeight: { type: 'auto' },
@@ -219,7 +242,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 						weight: typography.text.fontWeight,
 						style: 'normal'
 					},
-					fontSize: textSize * 16,
+					fontSize: textSizes.md,
 					textAlignHorizontal: 'center',
 					textAlignVertical: 'center',
 					lineHeight: { type: 'auto' },
@@ -251,7 +274,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 						weight: typography.heading.fontWeight,
 						style: 'normal'
 					},
-					fontSize: headingSize * 24,
+					fontSize: headingSizes.sm,
 					textAlignHorizontal: 'center',
 					textAlignVertical: 'center',
 					lineHeight: { type: 'auto' },
@@ -298,7 +321,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 							weight: typography.text.fontWeight,
 							style: 'normal'
 						},
-						fontSize: textSize * 16,
+						fontSize: textSizes.md,
 						textAlignHorizontal: 'center',
 						textAlignVertical: 'center',
 						lineHeight: { type: 'auto' },
@@ -346,7 +369,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 							weight: typography.text.fontWeight,
 							style: 'normal'
 						},
-						fontSize: textSize * 16,
+						fontSize: textSizes.md,
 						textAlignHorizontal: 'center',
 						textAlignVertical: 'center',
 						lineHeight: { type: 'auto' },
@@ -394,7 +417,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 							weight: typography.text.fontWeight,
 							style: 'normal'
 						},
-						fontSize: textSize * 14,
+						fontSize: textSizes.sm,
 						textAlignHorizontal: 'center',
 						textAlignVertical: 'center',
 						lineHeight: { type: 'auto' },
@@ -456,7 +479,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 							weight: typography.heading.fontWeight,
 							style: 'normal'
 						},
-						fontSize: headingSize * 20,
+						fontSize: headingSizes.md,
 						textAlignHorizontal: 'start',
 						textAlignVertical: 'center',
 						lineHeight: { type: 'auto' },
@@ -483,7 +506,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 							weight: typography.text.fontWeight,
 							style: 'normal'
 						},
-						fontSize: textSize * 16,
+						fontSize: textSizes.md,
 						textAlignHorizontal: 'start',
 						textAlignVertical: 'center',
 						lineHeight: { type: 'auto' },
@@ -525,7 +548,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 								weight: typography.text.fontWeight,
 								style: 'normal'
 							},
-							fontSize: textSize * 16,
+							fontSize: textSizes.md,
 							textAlignHorizontal: 'center',
 							textAlignVertical: 'center',
 							lineHeight: { type: 'auto' },
