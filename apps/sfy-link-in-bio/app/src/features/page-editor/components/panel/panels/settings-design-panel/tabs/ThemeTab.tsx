@@ -74,7 +74,7 @@ export const ThemeTab: React.FC<TThemeTabProps> = (props) => {
 				>
 					{/* Card preview */}
 					<div
-						className="flex flex-wrap items-center justify-center gap-2 rounded p-2"
+						className="flex flex-wrap items-center justify-center gap-1 rounded p-2"
 						style={{
 							backgroundColor: color.base100,
 							borderRadius: `${radius.box}px`,
