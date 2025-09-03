@@ -6,7 +6,7 @@ export const themeMetadata = {
 			md: 16,
 			lg: 18,
 			xl: 20,
-			step: 0.125,
+			// step: 0.125
 			get: (step = 0) => 1 + step * 0.125
 		},
 		heading: {
@@ -15,7 +15,7 @@ export const themeMetadata = {
 			md: 20,
 			lg: 24,
 			xl: 28,
-			step: 0.125,
+			// step: 0.125
 			get: (step = 0) => 1 + step * 0.125
 		},
 		box: {
@@ -24,7 +24,7 @@ export const themeMetadata = {
 			md: 6,
 			lg: 8,
 			xl: 12,
-			step: 0.25,
+			// step: 0.25
 			get: (step = 0) => 1 + step * 0.25
 		}
 	}

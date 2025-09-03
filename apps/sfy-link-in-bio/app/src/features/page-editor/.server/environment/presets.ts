@@ -298,18 +298,18 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 		};
 	}
 
-	// Add excited GIF to assets
-	const excitedGifAssetHashId = createId('asset');
+	// Add GIF to assets
+	const gifAssetHashId = createId('asset');
 	assets.push({
-		id: excitedGifAssetHashId,
+		id: gifAssetHashId,
 		type: 'image',
-		hash: excitedGifAssetHashId,
+		hash: gifAssetHashId,
 		contentType: 'image/gif',
 		storage: {
 			type: 'url',
-			url: 'https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExN3ZvamQ0NzU0cDVnbXJhMmdlbHlycTY0cXJmazJyajJ1am9ieGxyZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/5GoVLqeAOo6PK/giphy.gif'
+			url: 'https://media1.tenor.com/m/k5cZgAKH5jAAAAAd/bunny-rabbit.gif'
 		},
-		altText: 'Excited GIF'
+		altText: 'Vibe Rabbit GIF'
 	});
 
 	// Create social links array with shop link always first
@@ -512,7 +512,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					content: {
 						type: 'image',
 						media: {
-							hash: excitedGifAssetHashId,
+							hash: gifAssetHashId,
 							altText: 'Welcome GIF'
 						}
 					},
