@@ -1,4 +1,4 @@
-import { hexToRgba } from '@repo/editor';
+import { getFontMetadataByFamily, hexToRgba } from '@repo/editor';
 import { Text } from '@shopify/polaris';
 import React from 'react';
 import { themes, type TTheme } from '../../../../../environment';
@@ -20,6 +20,10 @@ export const ThemeTab: React.FC<TThemeTabProps> = (props) => {
 				}
 			});
 
+			// Register fonts
+			editor.registerFontFamily(theme.typography.heading.fontFamily);
+			editor.registerFontFamily(theme.typography.text.fontFamily);
+
 			// Apply page background directly to the root node
 			const rootNode = editor.getRootNode();
 			rootNode.set((node) => ({
@@ -39,59 +43,81 @@ export const ThemeTab: React.FC<TThemeTabProps> = (props) => {
 	const renderTemplatePreview = React.useCallback((template: TTheme) => {
 		const { color, typography, radius, effects } = template;
 		const primaryColor = hexToRgba(color.primary);
+		const headingFontMetadata = getFontMetadataByFamily(typography.heading.fontFamily);
+		const textFontMetadata = getFontMetadataByFamily(typography.text.fontFamily);
+		const headingFontUrl =
+			headingFontMetadata?.googleFont != null
+				? `https://fonts.googleapis.com/css2?family=${headingFontMetadata.googleFont}&display=swap`
+				: null;
+		const textFontUrl =
+			textFontMetadata?.googleFont != null
+				? `https://fonts.googleapis.com/css2?family=${textFontMetadata.googleFont}&display=swap`
+				: null;
 
 		return (
-			<div
-				className="flex items-center justify-center rounded-lg border p-2"
-				style={{
-					backgroundColor: color.base200,
-					borderColor: 'rgba(0,0,0,0.1)',
-					minHeight: '80px'
-				}}
-			>
-				{/* Card preview */}
+			<>
+				{/* Dynamic font loading */}
+				{(headingFontUrl != null || textFontUrl != null) && (
+					<style>
+						{headingFontUrl != null && `@import url('${headingFontUrl}');`}
+						{textFontUrl != null && `@import url('${textFontUrl}');`}
+					</style>
+				)}
+
 				<div
-					className="flex flex-wrap items-center justify-center gap-2 rounded p-2"
+					className="flex items-center justify-center rounded-lg border p-1"
 					style={{
-						backgroundColor: color.base100,
-						borderRadius: `${radius.box}px`,
-						border:
-							effects?.stroke != null ? `${effects.stroke.width}px solid ${color.accent}` : 'none',
-						boxShadow:
-							effects?.shadow != null
-								? `${effects.shadow.offsetX}px ${effects.shadow.offsetY}px ${effects.shadow.blur}px ${effects.shadow.spread}px rgba(${primaryColor.r}, ${primaryColor.g}, ${primaryColor.b}, 0.15)`
-								: 'none'
+						backgroundColor: color.base200,
+						borderColor: 'rgba(0,0,0,0.1)',
+						minHeight: '80px'
 					}}
 				>
-					{/* Typography preview */}
-					<h2
-						style={{
-							color: color.baseContent,
-							fontFamily: typography.heading.fontFamily,
-							fontSize: '20px',
-							fontWeight: typography.heading.fontWeight,
-							lineHeight: 1,
-							margin: 0
-						}}
-					>
-						Aa
-					</h2>
-
-					{/* Button preview */}
+					{/* Card preview */}
 					<div
-						className="rounded px-3 py-1 text-sm font-medium"
+						className="flex flex-wrap items-center justify-center gap-2 rounded p-2"
 						style={{
-							backgroundColor: color.primary,
-							color: color.primaryContent,
-							fontFamily: typography.text.fontFamily,
-							fontWeight: typography.text.fontWeight,
-							borderRadius: `${radius.field}px`
+							backgroundColor: color.base100,
+							borderRadius: `${radius.box}px`,
+							border:
+								effects?.stroke != null
+									? `${effects.stroke.width}px solid ${color.accent}`
+									: 'none',
+							boxShadow:
+								effects?.shadow != null
+									? `${effects.shadow.offsetX}px ${effects.shadow.offsetY}px ${effects.shadow.blur}px ${effects.shadow.spread}px rgba(${primaryColor.r}, ${primaryColor.g}, ${primaryColor.b}, 0.15)`
+									: 'none'
 						}}
 					>
-						Button
+						{/* Typography preview */}
+						<h2
+							style={{
+								color: color.baseContent,
+								fontFamily: typography.heading.fontFamily,
+								fontSize: '20px',
+								fontWeight: typography.heading.fontWeight,
+								lineHeight: 1,
+								margin: 0
+							}}
+						>
+							Aa
+						</h2>
+
+						{/* Button preview */}
+						<div
+							className="rounded px-3 py-1 text-sm font-medium"
+							style={{
+								backgroundColor: color.primary,
+								color: color.primaryContent,
+								fontFamily: typography.text.fontFamily,
+								fontWeight: typography.text.fontWeight,
+								borderRadius: `${radius.field}px`
+							}}
+						>
+							Button
+						</div>
 					</div>
 				</div>
-			</div>
+			</>
 		);
 	}, []);
 

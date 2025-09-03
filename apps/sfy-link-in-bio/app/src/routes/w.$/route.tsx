@@ -2,11 +2,10 @@ import { TFlatSite, TIntegration } from '@repo/editor';
 import { Text } from '@shopify/polaris';
 import { isStatusCode } from 'feature-fetch';
 import React from 'react';
-import { Err, Ok, unwrapOrNull } from 'tuple-result';
+import { Err, Ok } from 'tuple-result';
 import { coreApiClient } from '@/environment';
 import {
 	createPageContext,
-	getSiteFontUrls,
 	getSiteMetadata,
 	StaticNodeCanvas,
 	TResolvedSite
@@ -27,15 +26,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 			[site.id, site.integrations]
 		);
 
-		return (
-			<>
-				{site.fontUrls.map((fontUrl, index) => (
-					<link key={`font-${index}`} rel="stylesheet" href={fontUrl} />
-				))}
-
-				<StaticNodeCanvas cx={cx} nodes={[site.content.root]} />
-			</>
-		);
+		return <StaticNodeCanvas cx={cx} nodes={[site.root]} />;
 	},
 	Error: ({ error }) => (
 		<div className="flex min-h-screen items-center justify-center p-4">
@@ -58,8 +49,18 @@ export const meta: TMetaFunction<typeof loader> = ({ data }) => {
 		return [];
 	}
 
-	const result = unwrapOrNull(data);
-	return getSiteMetadata(result?.site?.content ?? null);
+	const [isOk, , result] = data;
+	if (!isOk) {
+		return [
+			{ title: 'Page Not Found - Saku' },
+			{
+				name: 'description',
+				content: 'The requested page could not be found'
+			}
+		];
+	}
+
+	return getSiteMetadata(result.site);
 };
 
 export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async ({ request }) => {
@@ -115,10 +116,9 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 
 	return Ok({
 		site: {
+			...hydrateSiteResult.value,
 			id: site.id,
-			content: hydrateSiteResult.value,
-			integrations: Object.values(flatSite.integrations),
-			fontUrls: getSiteFontUrls(flatSite)
+			integrations: Object.values(flatSite.integrations)
 		}
 	}).toArray();
 });
@@ -131,8 +131,6 @@ interface TErrorLoaderData {
 interface TSuccessLoaderData {
 	site: {
 		id: string;
-		content: TResolvedSite;
 		integrations: TIntegration[];
-		fontUrls: string[];
-	};
+	} & TResolvedSite;
 }

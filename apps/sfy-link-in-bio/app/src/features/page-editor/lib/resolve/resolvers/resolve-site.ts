@@ -3,10 +3,11 @@ import { Err, Ok, type TResult } from 'tuple-result';
 import { AppError } from '@/lib';
 import { resolvePageNode } from '../../../nodes';
 import { TResolvedSite } from '../../../types';
+import { getFontUrls } from '../../site';
 import { TSiteResolveContext } from '../site-resolve-context';
 
 export function resolveSite(cx: TSiteResolveContext): TResult<TResolvedSite, AppError> {
-	const { rootId, nodes, assets: _, ...rest } = cx.getSite();
+	const { rootId, nodes, assets, ...rest } = cx.getSite();
 	const root = nodes[rootId] as TFlatPageNode;
 
 	const [isOk, error, resolvedPageNode] = resolvePageNode(root, {
@@ -18,6 +19,7 @@ export function resolveSite(cx: TSiteResolveContext): TResult<TResolvedSite, App
 
 	return Ok({
 		...rest,
-		root: resolvedPageNode
+		root: resolvedPageNode,
+		fontUrls: getFontUrls(assets)
 	});
 }

@@ -11,6 +11,7 @@ import {
 
 export interface TResolvedSite extends Omit<TSite, 'root' | 'assets' | 'integrations' | 'tokens'> {
 	root: TResolvedPageNode;
+	fontUrls: string[];
 }
 
 export type TResolvedNode =
