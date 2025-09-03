@@ -46,10 +46,3 @@ export function resolveAutoLayoutStyleMixin<GTokenSet extends TMixinTokenSet>(
 		}
 	});
 }
-
-export interface TResolveAutoLayoutStyleMixinParentMixin {
-	horizontalPadding?: number;
-	verticalPadding?: number;
-	horizontalGap?: number;
-	verticalGap?: number;
-}

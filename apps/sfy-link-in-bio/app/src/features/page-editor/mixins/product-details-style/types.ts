@@ -1,29 +1,26 @@
 import { TBaseMixin } from '@repo/editor';
 import { TResolvedAppearanceStyleMixin } from '../appearance-style';
+import { TResolvedPrimaryButtonStyleMixin } from '../button-style';
 import { TResolvedFillStyleMixin } from '../fill-style';
+import { TResolvedImageStyleMixin } from '../image-style';
 import { TResolvedShadowStyleMixin } from '../shadow-style';
 import { TResolvedStrokeStyleMixin } from '../stroke-style';
-import { TResolvedTextStyleMixin } from '../text-style';
+import { TResolvedHeadingTextStyleMixin, TResolvedTextStyleMixin } from '../text-style';
 
-export type TResolvedButtonStyleMixin = TBaseMixin<
-	'button',
+export type TResolvedProductDetailsStyleMixin = TBaseMixin<
+	'productDetails',
 	{
 		appearance: TResolvedAppearanceStyleMixin['value'];
 		fill: TResolvedFillStyleMixin['value'];
 		stroke: TResolvedStrokeStyleMixin['value'];
 		shadow: TResolvedShadowStyleMixin['value'];
+		headingText: TResolvedHeadingTextStyleMixin['value'];
 		text: TResolvedTextStyleMixin['value'];
+		primaryButton: TResolvedPrimaryButtonStyleMixin['value'];
+		image: TResolvedImageStyleMixin['value'];
 		styles: TResolvedAppearanceStyleMixin['value']['styles'] &
 			Partial<NonNullable<TResolvedFillStyleMixin['value']>['styles']> &
 			Partial<NonNullable<TResolvedStrokeStyleMixin['value']>['styles']> &
 			Partial<NonNullable<TResolvedShadowStyleMixin['value']>['styles']>;
 	}
->;
-export type TResolvedPrimaryButtonStyleMixin = TBaseMixin<
-	'primaryButton',
-	TResolvedButtonStyleMixin['value']
->;
-export type TResolvedSecondaryButtonStyleMixin = TBaseMixin<
-	'secondaryButton',
-	TResolvedButtonStyleMixin['value']
 >;

@@ -43,9 +43,3 @@ export function resolveAppearanceStyleMixin<GTokenSet extends TMixinTokenSet>(
 		}
 	});
 }
-
-export interface TResolveAppearanceStyleMixinParentMixin {
-	visible: boolean;
-	opacity: number;
-	borderRadius?: number;
-}

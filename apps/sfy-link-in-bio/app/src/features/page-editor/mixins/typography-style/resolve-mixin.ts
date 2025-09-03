@@ -1,9 +1,7 @@
 import {
-	TFont,
 	TLetterSpacing,
 	TLineHeight,
 	TMixinTokenSet,
-	TTextAlign,
 	TTypographyStyleMixin,
 	TTypographyStyleToken
 } from '@repo/editor';
@@ -79,16 +77,7 @@ export function resolveTypographyStyleMixin<GTokenSet extends TMixinTokenSet>(
 	});
 }
 
-export interface TResolveTypographyStyleMixinParentMixin {
-	font: TFont;
-	fontSize: number;
-	textAlignHorizontal: TTextAlign;
-	textAlignVertical: TTextAlign;
-	lineHeight: TLineHeight;
-	letterSpacing: TLetterSpacing;
-}
-
-function resolveLineHeight(lineHeight: TLineHeight): React.CSSProperties['lineHeight'] {
+export function resolveLineHeight(lineHeight: TLineHeight): React.CSSProperties['lineHeight'] {
 	switch (lineHeight.type) {
 		case 'percent':
 			return `${lineHeight.value}%`;
@@ -99,7 +88,9 @@ function resolveLineHeight(lineHeight: TLineHeight): React.CSSProperties['lineHe
 	}
 }
 
-function resolveLetterSpacing(letterSpacing: TLetterSpacing): React.CSSProperties['letterSpacing'] {
+export function resolveLetterSpacing(
+	letterSpacing: TLetterSpacing
+): React.CSSProperties['letterSpacing'] {
 	switch (letterSpacing.type) {
 		case 'percent':
 			return `${letterSpacing.value}%`;

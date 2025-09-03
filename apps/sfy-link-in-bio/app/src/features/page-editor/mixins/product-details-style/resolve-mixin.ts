@@ -1,0 +1,109 @@
+import { TMixinTokenSet, TProductDetailsStyleMixin, TProductDetailsStyleToken } from '@repo/editor';
+import { Err, Ok, TResult } from 'tuple-result';
+import { AppError } from '@/lib';
+import { TMixinResolveContext } from '../../lib';
+import { resolveAppearanceStyleMixin } from '../appearance-style';
+import { resolveButtonStyleMixin } from '../button-style';
+import { resolveFillStyleMixin } from '../fill-style';
+import { resolveImageStyleMixin } from '../image-style';
+import { resolveShadowStyleMixin } from '../shadow-style';
+import { resolveStrokeStyleMixin } from '../stroke-style';
+import { resolveTextStyleMixin } from '../text-style';
+import { TResolvedProductDetailsStyleMixin } from './types';
+
+export function resolveProductDetailsStyleMixin<GTokenSet extends TMixinTokenSet>(
+	productDetails: TProductDetailsStyleMixin['value'],
+	cx: TMixinResolveContext<TProductDetailsStyleToken['value'], GTokenSet>
+): TResult<TResolvedProductDetailsStyleMixin['value'], AppError> {
+	const [isResolvedAppearanceOk, resolvedAppearanceErr, resolvedAppearance] =
+		resolveAppearanceStyleMixin(productDetails.appearance, {
+			...cx,
+			mapToToken: (ref, tokenSet) => cx.mapToToken(ref, tokenSet)?.appearance
+		});
+	if (!isResolvedAppearanceOk) {
+		return Err(resolvedAppearanceErr.wrapWith('#ERR_RESOLVE_APPEARANCE_STYLE'));
+	}
+	const [isResolvedFillOk, resolvedFillErr, resolvedFill] = resolveFillStyleMixin(
+		productDetails.fill,
+		{
+			...cx,
+			mapToToken: (ref, tokenSet) => cx.mapToToken(ref, tokenSet)?.fill
+		}
+	);
+	if (!isResolvedFillOk) {
+		return Err(resolvedFillErr.wrapWith('#ERR_RESOLVE_FILL_STYLE'));
+	}
+	const [isResolvedStrokeOk, resolvedStrokeErr, resolvedStroke] = resolveStrokeStyleMixin(
+		productDetails.stroke,
+		{
+			...cx,
+			mapToToken: (ref, tokenSet) => cx.mapToToken(ref, tokenSet)?.stroke
+		}
+	);
+	if (!isResolvedStrokeOk) {
+		return Err(resolvedStrokeErr.wrapWith('#ERR_RESOLVE_STROKE_STYLE'));
+	}
+	const [isResolvedShadowOk, resolvedShadowErr, resolvedShadow] = resolveShadowStyleMixin(
+		productDetails.shadow,
+		{
+			...cx,
+			mapToToken: (ref, tokenSet) => cx.mapToToken(ref, tokenSet)?.shadow
+		}
+	);
+	if (!isResolvedShadowOk) {
+		return Err(resolvedShadowErr.wrapWith('#ERR_RESOLVE_SHADOW_STYLE'));
+	}
+	const [isResolvedHeadingTextOk, resolvedHeadingTextErr, resolvedHeadingText] =
+		resolveTextStyleMixin(productDetails.headingText, {
+			...cx,
+			mapToToken: (ref, tokenSet) => cx.mapToToken(ref, tokenSet)?.headingText
+		});
+	if (!isResolvedHeadingTextOk) {
+		return Err(resolvedHeadingTextErr.wrapWith('#ERR_RESOLVE_HEADING_TEXT_STYLE'));
+	}
+	const [isResolvedTextOk, resolvedTextErr, resolvedText] = resolveTextStyleMixin(
+		productDetails.text,
+		{
+			...cx,
+			mapToToken: (ref, tokenSet) => cx.mapToToken(ref, tokenSet)?.text
+		}
+	);
+	if (!isResolvedTextOk) {
+		return Err(resolvedTextErr.wrapWith('#ERR_RESOLVE_TEXT_STYLE'));
+	}
+	const [isResolvedPrimaryButtonOk, resolvedPrimaryButtonErr, resolvedPrimaryButton] =
+		resolveButtonStyleMixin(productDetails.primaryButton, {
+			...cx,
+			mapToToken: (ref, tokenSet) => cx.mapToToken(ref, tokenSet)?.primaryButton
+		});
+	if (!isResolvedPrimaryButtonOk) {
+		return Err(resolvedPrimaryButtonErr.wrapWith('#ERR_RESOLVE_PRIMARY_BUTTON_STYLE'));
+	}
+	const [isResolvedImageOk, resolvedImageErr, resolvedImage] = resolveImageStyleMixin(
+		productDetails.image,
+		{
+			...cx,
+			mapToToken: (ref, tokenSet) => cx.mapToToken(ref, tokenSet)?.image
+		}
+	);
+	if (!isResolvedImageOk) {
+		return Err(resolvedImageErr.wrapWith('#ERR_RESOLVE_IMAGE_STYLE'));
+	}
+
+	return Ok({
+		appearance: resolvedAppearance,
+		fill: resolvedFill,
+		stroke: resolvedStroke,
+		shadow: resolvedShadow,
+		headingText: resolvedHeadingText,
+		text: resolvedText,
+		primaryButton: resolvedPrimaryButton,
+		image: resolvedImage,
+		styles: {
+			...resolvedAppearance.styles,
+			...resolvedFill?.styles,
+			...resolvedStroke?.styles,
+			...resolvedShadow?.styles
+		}
+	});
+}

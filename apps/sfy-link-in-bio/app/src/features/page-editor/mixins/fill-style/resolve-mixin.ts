@@ -1,4 +1,4 @@
-import { TFillStyleMixin, TFillStyleToken, TMixinTokenSet, TPaint } from '@repo/editor';
+import { TFillStyleMixin, TFillStyleToken, TMixinTokenSet } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
 import { resolvePaint, resolveTokenRef, TMixinResolveContext } from '../../lib';
@@ -51,8 +51,3 @@ export function resolveFillStyleMixin<GTokenSet extends TMixinTokenSet>(
 		styles
 	});
 }
-
-export type TResolveFillStyleMixinParentMixin = {
-	paint: TPaint;
-	opacity: number;
-} | null;

@@ -9,7 +9,7 @@ import {
 	TChildrenMixin,
 	TFillStyleMixin,
 	TFlatChildrenMixin,
-	THeadingStyleMixin,
+	THeadingTextStyleMixin,
 	TIdMixin,
 	TImageStyleMixin,
 	TLinkNodeContent,
@@ -69,7 +69,7 @@ export type TAboutNode<GVariant extends TAboutNodeContent = TAboutNodeContent> =
 		TFillStyleMixin,
 		TStrokeStyleMixin,
 		TShadowStyleMixin,
-		THeadingStyleMixin,
+		THeadingTextStyleMixin,
 		TTextStyleMixin,
 		TImageStyleMixin
 	]
@@ -84,7 +84,7 @@ export type TLinkNode<GContent extends TLinkNodeContent = TLinkNodeContent> = TB
 		TFillStyleMixin,
 		TStrokeStyleMixin,
 		TShadowStyleMixin,
-		THeadingStyleMixin,
+		THeadingTextStyleMixin,
 		TTextStyleMixin,
 		TImageStyleMixin
 	]

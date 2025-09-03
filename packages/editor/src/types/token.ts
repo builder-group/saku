@@ -1,9 +1,15 @@
 import {
 	TAppearanceStyleMixin,
 	TAutoLayoutStyleMixin,
+	TBadgeStyleMixin,
 	TBaseMixin,
 	TButtonStyleMixin,
 	TFillStyleMixin,
+	THeadingTextStyleMixin,
+	TImageStyleMixin,
+	TPrimaryButtonStyleMixin,
+	TProductDetailsStyleMixin,
+	TSecondaryButtonStyleMixin,
 	TShadowStyleMixin,
 	TStrokeStyleMixin,
 	TTextStyleMixin,
@@ -81,4 +87,10 @@ export type TFillStyleToken = TBaseMixinToken<TFillStyleMixin>;
 export type TStrokeStyleToken = TBaseMixinToken<TStrokeStyleMixin>;
 export type TShadowStyleToken = TBaseMixinToken<TShadowStyleMixin>;
 export type TTextStyleToken = TBaseMixinToken<TTextStyleMixin>;
+export type THeadingStyleToken = TBaseMixinToken<THeadingTextStyleMixin>;
 export type TButtonStyleToken = TBaseMixinToken<TButtonStyleMixin>;
+export type TPrimaryButtonStyleToken = TBaseMixinToken<TPrimaryButtonStyleMixin>;
+export type TSecondaryButtonStyleToken = TBaseMixinToken<TSecondaryButtonStyleMixin>;
+export type TBadgeStyleToken = TBaseMixinToken<TBadgeStyleMixin>;
+export type TImageStyleToken = TBaseMixinToken<TImageStyleMixin>;
+export type TProductDetailsStyleToken = TBaseMixinToken<TProductDetailsStyleMixin>;

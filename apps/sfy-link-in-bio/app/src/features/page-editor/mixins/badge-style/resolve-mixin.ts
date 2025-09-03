@@ -1,4 +1,4 @@
-import { TMixinTokenSet, TTextStyleMixin, TTextStyleToken } from '@repo/editor';
+import { TBadgeStyleMixin, TBadgeStyleToken, TMixinTokenSet } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
 import { TMixinResolveContext } from '../../lib';
@@ -6,30 +6,22 @@ import { resolveAppearanceStyleMixin } from '../appearance-style';
 import { resolveFillStyleMixin } from '../fill-style';
 import { resolveShadowStyleMixin } from '../shadow-style';
 import { resolveStrokeStyleMixin } from '../stroke-style';
-import { resolveTypographyStyleMixin } from '../typography-style';
-import { TResolvedTextStyleMixin } from './types';
+import { resolveTextStyleMixin } from '../text-style';
+import { TResolvedBadgeStyleMixin } from './types';
 
-export function resolveTextStyleMixin<GTokenSet extends TMixinTokenSet>(
-	text: TTextStyleMixin['value'],
-	cx: TMixinResolveContext<TTextStyleToken['value'], GTokenSet>
-): TResult<TResolvedTextStyleMixin['value'], AppError> {
+export function resolveBadgeStyleMixin<GTokenSet extends TMixinTokenSet>(
+	badge: TBadgeStyleMixin['value'],
+	cx: TMixinResolveContext<TBadgeStyleToken['value'], GTokenSet>
+): TResult<TResolvedBadgeStyleMixin['value'], AppError> {
 	const [isResolvedAppearanceOk, resolvedAppearanceErr, resolvedAppearance] =
-		resolveAppearanceStyleMixin(text.appearance, {
+		resolveAppearanceStyleMixin(badge.appearance, {
 			...cx,
 			mapToToken: (ref, tokenSet) => cx.mapToToken(ref, tokenSet)?.appearance
 		});
 	if (!isResolvedAppearanceOk) {
 		return Err(resolvedAppearanceErr.wrapWith('#ERR_RESOLVE_APPEARANCE_STYLE'));
 	}
-	const [isResolvedTypographyOk, resolvedTypographyErr, resolvedTypography] =
-		resolveTypographyStyleMixin(text.typography, {
-			...cx,
-			mapToToken: (ref, tokenSet) => cx.mapToToken(ref, tokenSet)?.typography
-		});
-	if (!isResolvedTypographyOk) {
-		return Err(resolvedTypographyErr.wrapWith('#ERR_RESOLVE_TYPOGRAPHY_STYLE'));
-	}
-	const [isResolvedFillOk, resolvedFillErr, resolvedFill] = resolveFillStyleMixin(text.fill, {
+	const [isResolvedFillOk, resolvedFillErr, resolvedFill] = resolveFillStyleMixin(badge.fill, {
 		...cx,
 		mapToToken: (ref, tokenSet) => cx.mapToToken(ref, tokenSet)?.fill
 	});
@@ -37,7 +29,7 @@ export function resolveTextStyleMixin<GTokenSet extends TMixinTokenSet>(
 		return Err(resolvedFillErr.wrapWith('#ERR_RESOLVE_FILL_STYLE'));
 	}
 	const [isResolvedStrokeOk, resolvedStrokeErr, resolvedStroke] = resolveStrokeStyleMixin(
-		text.stroke,
+		badge.stroke,
 		{
 			...cx,
 			mapToToken: (ref, tokenSet) => cx.mapToToken(ref, tokenSet)?.stroke
@@ -47,7 +39,7 @@ export function resolveTextStyleMixin<GTokenSet extends TMixinTokenSet>(
 		return Err(resolvedStrokeErr.wrapWith('#ERR_RESOLVE_STROKE_STYLE'));
 	}
 	const [isResolvedShadowOk, resolvedShadowErr, resolvedShadow] = resolveShadowStyleMixin(
-		text.shadow,
+		badge.shadow,
 		{
 			...cx,
 			mapToToken: (ref, tokenSet) => cx.mapToToken(ref, tokenSet)?.shadow
@@ -56,24 +48,25 @@ export function resolveTextStyleMixin<GTokenSet extends TMixinTokenSet>(
 	if (!isResolvedShadowOk) {
 		return Err(resolvedShadowErr.wrapWith('#ERR_RESOLVE_SHADOW_STYLE'));
 	}
+	const [isResolvedTextOk, resolvedTextErr, resolvedText] = resolveTextStyleMixin(badge.text, {
+		...cx,
+		mapToToken: (ref, tokenSet) => cx.mapToToken(ref, tokenSet)?.text
+	});
+	if (!isResolvedTextOk) {
+		return Err(resolvedTextErr.wrapWith('#ERR_RESOLVE_TEXT_STYLE'));
+	}
 
 	return Ok({
 		appearance: resolvedAppearance,
-		typography: resolvedTypography,
 		fill: resolvedFill,
 		stroke: resolvedStroke,
 		shadow: resolvedShadow,
+		text: resolvedText,
 		styles: {
 			...resolvedAppearance.styles,
-			...resolvedTypography.styles,
-			color: resolvedFill?.paint.type === 'solid' ? resolvedFill?.paint.color : undefined,
-			WebkitTextStroke: resolvedStroke?.width
-				? `${resolvedStroke.width}px ${resolvedStroke.color}`
-				: undefined,
-			textShadow:
-				resolvedShadow != null
-					? `${resolvedShadow.offsetX}px ${resolvedShadow.offsetY}px ${resolvedShadow.blur}px ${resolvedShadow.color}`
-					: undefined
+			...resolvedFill?.styles,
+			...resolvedStroke?.styles,
+			...resolvedShadow?.styles
 		}
 	});
 }

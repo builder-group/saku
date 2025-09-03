@@ -313,7 +313,7 @@ export type TTextStyleMixin = TBaseMixin<
 		shadow: TShadowStyleMixin['value'];
 	}
 >;
-export type THeadingStyleMixin = TBaseMixin<'headingText', TTextStyleMixin['value']>;
+export type THeadingTextStyleMixin = TBaseMixin<'headingText', TTextStyleMixin['value']>;
 
 export type TButtonStyleMixin = TBaseMixin<
 	'button',
@@ -355,9 +355,9 @@ export type TProductDetailsStyleMixin = TBaseMixin<
 		fill: TFillStyleMixin['value'];
 		stroke: TStrokeStyleMixin['value'];
 		shadow: TShadowStyleMixin['value'];
-		image: TImageStyleMixin['value'];
-		heading: THeadingStyleMixin['value'];
+		headingText: THeadingTextStyleMixin['value'];
+		text: TTextStyleMixin['value'];
 		primaryButton: TPrimaryButtonStyleMixin['value'];
-		badge: TBadgeStyleMixin['value'];
+		image: TImageStyleMixin['value'];
 	}
 >;

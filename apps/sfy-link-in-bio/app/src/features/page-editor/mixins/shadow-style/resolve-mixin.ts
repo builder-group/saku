@@ -1,4 +1,4 @@
-import { TMixinTokenSet, TRgba, TShadowStyleMixin, TShadowStyleToken } from '@repo/editor';
+import { TMixinTokenSet, TShadowStyleMixin, TShadowStyleToken } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
 import { resolveColor, resolveTokenRef, TMixinResolveContext } from '../../lib';
@@ -34,11 +34,3 @@ export function resolveShadowStyleMixin<GTokenSet extends TMixinTokenSet>(
 		}
 	});
 }
-
-export type TResolveShadowStyleMixinParentMixin = {
-	color: TRgba;
-	offsetX: number;
-	offsetY: number;
-	blur: number;
-	spread: number;
-} | null;
