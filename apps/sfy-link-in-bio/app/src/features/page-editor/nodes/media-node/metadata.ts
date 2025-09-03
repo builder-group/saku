@@ -22,6 +22,14 @@ export const mediaNodeMetadata: TNodeMetadata<'media'> = {
 		},
 		fill: tokenRef(),
 		stroke: tokenRef(),
-		shadow: tokenRef()
+		shadow: tokenRef(),
+		image: {
+			appearance: {
+				visible: true,
+				opacity: tokenRef()
+			},
+			stroke: tokenRef(),
+			shadow: tokenRef()
+		}
 	}
 };

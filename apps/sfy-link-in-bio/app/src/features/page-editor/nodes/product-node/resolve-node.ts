@@ -18,7 +18,8 @@ export function resolveProductNode(
 	node: TProductNode,
 	cx: TNodeResolveContext
 ): TResult<TResolvedProductNode, AppError> {
-	const { content, autoLayout, appearance, fill, stroke, shadow, text, button, ...rest } = node;
+	const { content, autoLayout, appearance, fill, stroke, shadow, text, primaryButton, ...rest } =
+		node;
 
 	// Resolve content
 	let resolvedContent: TResolvedProductNodeContent;
@@ -86,13 +87,14 @@ export function resolveProductNode(
 	if (!isResolvedTextOk) {
 		return Err(resolvedTextErr.wrapWith('#ERR_RESOLVE_TEXT_STYLE'));
 	}
-	const [isResolvedButtonOk, resolvedButtonErr, resolvedButton] = resolveButtonStyleMixin(button, {
-		node: cx,
-		tokenSet: cx.site.getTokenSet('button'),
-		mapToToken: (ref, tokenSet) => tokenSet?.[ref]?.value
-	});
-	if (!isResolvedButtonOk) {
-		return Err(resolvedButtonErr.wrapWith('#ERR_RESOLVE_BUTTON_STYLE'));
+	const [isResolvedPrimaryButtonOk, resolvedPrimaryButtonErr, resolvedPrimaryButton] =
+		resolveButtonStyleMixin(primaryButton, {
+			node: cx,
+			tokenSet: cx.site.getTokenSet('button'),
+			mapToToken: (ref, tokenSet) => tokenSet?.[ref]?.value
+		});
+	if (!isResolvedPrimaryButtonOk) {
+		return Err(resolvedPrimaryButtonErr.wrapWith('#ERR_RESOLVE_BUTTON_STYLE'));
 	}
 
 	return Ok({
@@ -104,7 +106,7 @@ export function resolveProductNode(
 		stroke: resolvedStroke,
 		shadow: resolvedShadow,
 		text: resolvedText,
-		button: resolvedButton
+		button: resolvedPrimaryButton
 	});
 }
 

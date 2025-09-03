@@ -238,7 +238,39 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 		},
 		{
 			type: 'mixin',
-			key: 'default',
+			key: 'heading',
+			mixinKey: 'text',
+			value: {
+				appearance: {
+					visible: true,
+					opacity: 1
+				},
+				typography: {
+					font: {
+						family: typography.heading.fontFamily,
+						weight: typography.heading.fontWeight,
+						style: 'normal'
+					},
+					fontSize: headingSize * 24,
+					textAlignHorizontal: 'center',
+					textAlignVertical: 'center',
+					lineHeight: { type: 'auto' },
+					letterSpacing: { type: 'auto' }
+				},
+				fill: {
+					paint: {
+						type: 'solid',
+						color: hexToRgba(color.baseContent)
+					},
+					opacity: 1
+				},
+				stroke: null,
+				shadow: null
+			}
+		},
+		{
+			type: 'mixin',
+			key: 'primary',
 			mixinKey: 'button',
 			value: {
 				appearance: {
@@ -278,6 +310,243 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 							color: hexToRgba(color.primaryContent)
 						},
 						opacity: 1
+					},
+					stroke: null,
+					shadow: null
+				}
+			}
+		},
+		{
+			type: 'mixin',
+			key: 'secondary',
+			mixinKey: 'button',
+			value: {
+				appearance: {
+					visible: true,
+					opacity: 1,
+					borderRadius: radius.field
+				},
+				fill: {
+					paint: {
+						type: 'solid',
+						color: hexToRgba(color.neutral)
+					},
+					opacity: 1
+				},
+				stroke: null,
+				shadow: null,
+				text: {
+					appearance: {
+						visible: true,
+						opacity: 1
+					},
+					typography: {
+						font: {
+							family: typography.text.fontFamily,
+							weight: typography.text.fontWeight,
+							style: 'normal'
+						},
+						fontSize: textSize * 16,
+						textAlignHorizontal: 'center',
+						textAlignVertical: 'center',
+						lineHeight: { type: 'auto' },
+						letterSpacing: { type: 'auto' }
+					},
+					fill: {
+						paint: {
+							type: 'solid',
+							color: hexToRgba(color.neutralContent)
+						},
+						opacity: 1
+					},
+					stroke: null,
+					shadow: null
+				}
+			}
+		},
+		{
+			type: 'mixin',
+			key: 'default',
+			mixinKey: 'badge',
+			value: {
+				appearance: {
+					visible: true,
+					opacity: 1,
+					borderRadius: radius.selector
+				},
+				fill: {
+					paint: {
+						type: 'solid',
+						color: hexToRgba(color.accent)
+					},
+					opacity: 1
+				},
+				stroke: null,
+				shadow: null,
+				text: {
+					appearance: {
+						visible: true,
+						opacity: 1
+					},
+					typography: {
+						font: {
+							family: typography.text.fontFamily,
+							weight: typography.text.fontWeight,
+							style: 'normal'
+						},
+						fontSize: textSize * 14,
+						textAlignHorizontal: 'center',
+						textAlignVertical: 'center',
+						lineHeight: { type: 'auto' },
+						letterSpacing: { type: 'auto' }
+					},
+					fill: {
+						paint: {
+							type: 'solid',
+							color: hexToRgba(color.accentContent)
+						},
+						opacity: 1
+					},
+					stroke: null,
+					shadow: null
+				}
+			}
+		},
+		{
+			type: 'mixin',
+			key: 'default',
+			mixinKey: 'image',
+			value: {
+				appearance: {
+					visible: true,
+					opacity: 1,
+					borderRadius: radius.box
+				},
+				stroke: null,
+				shadow: null
+			}
+		},
+		{
+			type: 'mixin',
+			key: 'default',
+			mixinKey: 'productDetails',
+			value: {
+				appearance: {
+					visible: true,
+					opacity: 1,
+					borderRadius: radius.box
+				},
+				fill: {
+					paint: {
+						type: 'solid',
+						color: hexToRgba(color.base100)
+					},
+					opacity: 1
+				},
+				stroke: null,
+				shadow: null,
+				headingText: {
+					appearance: {
+						visible: true,
+						opacity: 1
+					},
+					typography: {
+						font: {
+							family: typography.heading.fontFamily,
+							weight: typography.heading.fontWeight,
+							style: 'normal'
+						},
+						fontSize: headingSize * 20,
+						textAlignHorizontal: 'start',
+						textAlignVertical: 'center',
+						lineHeight: { type: 'auto' },
+						letterSpacing: { type: 'auto' }
+					},
+					fill: {
+						paint: {
+							type: 'solid',
+							color: hexToRgba(color.baseContent)
+						},
+						opacity: 1
+					},
+					stroke: null,
+					shadow: null
+				},
+				text: {
+					appearance: {
+						visible: true,
+						opacity: 1
+					},
+					typography: {
+						font: {
+							family: typography.text.fontFamily,
+							weight: typography.text.fontWeight,
+							style: 'normal'
+						},
+						fontSize: textSize * 16,
+						textAlignHorizontal: 'start',
+						textAlignVertical: 'center',
+						lineHeight: { type: 'auto' },
+						letterSpacing: { type: 'auto' }
+					},
+					fill: {
+						paint: {
+							type: 'solid',
+							color: hexToRgba(color.baseContent)
+						},
+						opacity: 1
+					},
+					stroke: null,
+					shadow: null
+				},
+				primaryButton: {
+					appearance: {
+						visible: true,
+						opacity: 1,
+						borderRadius: radius.field
+					},
+					fill: {
+						paint: {
+							type: 'solid',
+							color: hexToRgba(color.primary)
+						},
+						opacity: 1
+					},
+					stroke: null,
+					shadow: null,
+					text: {
+						appearance: {
+							visible: true,
+							opacity: 1
+						},
+						typography: {
+							font: {
+								family: typography.text.fontFamily,
+								weight: typography.text.fontWeight,
+								style: 'normal'
+							},
+							fontSize: textSize * 16,
+							textAlignHorizontal: 'center',
+							textAlignVertical: 'center',
+							lineHeight: { type: 'auto' },
+							letterSpacing: { type: 'auto' }
+						},
+						fill: {
+							paint: {
+								type: 'solid',
+								color: hexToRgba(color.primaryContent)
+							},
+							opacity: 1
+						},
+						stroke: null,
+						shadow: null
+					}
+				},
+				image: {
+					appearance: {
+						visible: true,
+						opacity: 1,
+						borderRadius: radius.box
 					},
 					stroke: null,
 					shadow: null

@@ -431,7 +431,7 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 				>
 					<ButtonStyleMixinEditor
 						state={nodeState}
-						mapValue={(value) => value.button}
+						mapValue={(value) => value.primaryButton}
 						tokenSet={editor.mixinTokenMap.button}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
 						editor={editor}

@@ -183,6 +183,23 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 					fill: tokenRef(),
 					stroke: tokenRef(),
 					shadow: tokenRef(),
+					headingText: {
+						appearance: {
+							visible: true,
+							opacity: tokenRef()
+						},
+						typography: {
+							font: tokenRef(),
+							fontSize: tokenRef(),
+							textAlignHorizontal: tokenRef(),
+							textAlignVertical: tokenRef(),
+							lineHeight: tokenRef(),
+							letterSpacing: tokenRef()
+						},
+						fill: tokenRef(),
+						stroke: tokenRef(),
+						shadow: tokenRef()
+					},
 					text: {
 						appearance: {
 							visible: true,
@@ -197,6 +214,14 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 							letterSpacing: tokenRef()
 						},
 						fill: tokenRef(),
+						stroke: tokenRef(),
+						shadow: tokenRef()
+					},
+					image: {
+						appearance: {
+							visible: true,
+							opacity: tokenRef()
+						},
 						stroke: tokenRef(),
 						shadow: tokenRef()
 					}
@@ -355,6 +380,38 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 			},
 			{
 				type: 'mixin',
+				key: 'heading',
+				mixinKey: 'text',
+				value: {
+					appearance: {
+						visible: true,
+						opacity: 1
+					},
+					typography: {
+						font: {
+							family: primaryFont,
+							weight: 400,
+							style: 'normal'
+						},
+						fontSize: 16,
+						textAlignHorizontal: 'center',
+						textAlignVertical: 'center',
+						lineHeight: { type: 'auto' },
+						letterSpacing: { type: 'auto' }
+					},
+					fill: {
+						paint: {
+							type: 'solid',
+							color: cssRgbaToRgba(page?.themeSettings?.linkCardFontColor) ?? hexToRgba('#000000')
+						},
+						opacity: 1
+					},
+					stroke: null,
+					shadow: null
+				}
+			},
+			{
+				type: 'mixin',
 				key: 'primary',
 				mixinKey: 'button',
 				value: {
@@ -399,6 +456,20 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 						stroke: null,
 						shadow: null
 					}
+				}
+			},
+			{
+				type: 'mixin',
+				key: 'default',
+				mixinKey: 'image',
+				value: {
+					appearance: {
+						visible: true,
+						opacity: 1,
+						borderRadius: borderRadius * 0.5
+					},
+					stroke: null,
+					shadow: null
 				}
 			}
 		]

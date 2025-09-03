@@ -37,19 +37,32 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 		});
 	}
 
-	// Add theme font to assets
-	const themeFontFamily = theme.typography.fontFamily;
-	const themeFont = getFontMetadata(themeFontFamily);
+	// Add theme fonts to assets
+	const themeHeadingTextFontFamily = theme.typography.heading.fontFamily;
+	const themeHeadingTextFont = getFontMetadata(themeHeadingTextFontFamily);
 	assets.push({
 		id: createId('asset'),
 		type: 'font',
-		hash: getFontHash(themeFont.font),
+		hash: getFontHash(themeHeadingTextFont.font),
 		contentType: 'font/woff2',
 		storage: {
 			type: 'url',
-			url: `https://fonts.googleapis.com/css2?family=${themeFont.googleFont}&display=swap`
+			url: `https://fonts.googleapis.com/css2?family=${themeHeadingTextFont.googleFont}&display=swap`
 		},
-		font: themeFont.font
+		font: themeHeadingTextFont.font
+	});
+	const themeTextFontFamily = theme.typography.text.fontFamily;
+	const themeTextFont = getFontMetadata(themeTextFontFamily);
+	assets.push({
+		id: createId('asset'),
+		type: 'font',
+		hash: getFontHash(themeTextFont.font),
+		contentType: 'font/woff2',
+		storage: {
+			type: 'url',
+			url: `https://fonts.googleapis.com/css2?family=${themeTextFont.googleFont}&display=swap`
+		},
+		font: themeTextFont.font
 	});
 
 	// Create product node
@@ -139,7 +152,34 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 				stroke: tokenRef(),
 				shadow: tokenRef()
 			},
-			button: {
+			primaryButton: {
+				appearance: {
+					visible: true,
+					opacity: tokenRef('primary'),
+					borderRadius: tokenRef('primary')
+				},
+				fill: tokenRef('primary'),
+				stroke: tokenRef('primary'),
+				shadow: tokenRef('primary'),
+				text: {
+					appearance: {
+						visible: true,
+						opacity: tokenRef('primary')
+					},
+					typography: {
+						font: tokenRef('primary'),
+						fontSize: tokenRef('primary'),
+						textAlignHorizontal: tokenRef('primary'),
+						textAlignVertical: tokenRef('primary'),
+						lineHeight: tokenRef('primary'),
+						letterSpacing: tokenRef('primary')
+					},
+					fill: tokenRef('primary'),
+					stroke: tokenRef('primary'),
+					shadow: tokenRef('primary')
+				}
+			},
+			badge: {
 				appearance: {
 					visible: true,
 					opacity: tokenRef(),
@@ -162,6 +202,95 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 						letterSpacing: tokenRef()
 					},
 					fill: tokenRef(),
+					stroke: tokenRef(),
+					shadow: tokenRef()
+				}
+			},
+			image: {
+				appearance: {
+					visible: true,
+					opacity: tokenRef(),
+					borderRadius: tokenRef()
+				},
+				stroke: tokenRef(),
+				shadow: tokenRef()
+			},
+			productDetails: {
+				appearance: {
+					visible: true,
+					opacity: tokenRef(),
+					borderRadius: tokenRef()
+				},
+				fill: tokenRef(),
+				stroke: tokenRef(),
+				shadow: tokenRef(),
+				headingText: {
+					appearance: {
+						visible: true,
+						opacity: tokenRef()
+					},
+					typography: {
+						font: tokenRef(),
+						fontSize: tokenRef(),
+						textAlignHorizontal: tokenRef(),
+						textAlignVertical: tokenRef(),
+						lineHeight: tokenRef(),
+						letterSpacing: tokenRef()
+					},
+					fill: tokenRef(),
+					stroke: tokenRef(),
+					shadow: tokenRef()
+				},
+				text: {
+					appearance: {
+						visible: true,
+						opacity: tokenRef()
+					},
+					typography: {
+						font: tokenRef(),
+						fontSize: tokenRef(),
+						textAlignHorizontal: tokenRef(),
+						textAlignVertical: tokenRef(),
+						lineHeight: tokenRef(),
+						letterSpacing: tokenRef()
+					},
+					fill: tokenRef(),
+					stroke: tokenRef(),
+					shadow: tokenRef()
+				},
+				primaryButton: {
+					appearance: {
+						visible: true,
+						opacity: tokenRef(),
+						borderRadius: tokenRef()
+					},
+					fill: tokenRef(),
+					stroke: tokenRef(),
+					shadow: tokenRef(),
+					text: {
+						appearance: {
+							visible: true,
+							opacity: tokenRef()
+						},
+						typography: {
+							font: tokenRef(),
+							fontSize: tokenRef(),
+							textAlignHorizontal: tokenRef(),
+							textAlignVertical: tokenRef(),
+							lineHeight: tokenRef(),
+							letterSpacing: tokenRef()
+						},
+						fill: tokenRef(),
+						stroke: tokenRef(),
+						shadow: tokenRef()
+					}
+				},
+				image: {
+					appearance: {
+						visible: true,
+						opacity: tokenRef(),
+						borderRadius: tokenRef()
+					},
 					stroke: tokenRef(),
 					shadow: tokenRef()
 				}
@@ -233,6 +362,23 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					fill: null,
 					stroke: null,
 					shadow: null,
+					headingText: {
+						appearance: {
+							visible: true,
+							opacity: tokenRef('heading')
+						},
+						typography: {
+							font: tokenRef('heading'),
+							fontSize: tokenRef('heading'),
+							textAlignHorizontal: 'center',
+							textAlignVertical: tokenRef('heading'),
+							lineHeight: tokenRef('heading'),
+							letterSpacing: tokenRef('heading')
+						},
+						fill: tokenRef('heading'),
+						stroke: tokenRef('heading'),
+						shadow: tokenRef('heading')
+					},
 					text: {
 						appearance: {
 							visible: true,
@@ -247,6 +393,14 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 							letterSpacing: tokenRef()
 						},
 						fill: tokenRef(),
+						stroke: tokenRef(),
+						shadow: tokenRef()
+					},
+					image: {
+						appearance: {
+							visible: true,
+							opacity: tokenRef()
+						},
 						stroke: tokenRef(),
 						shadow: tokenRef()
 					}
@@ -271,6 +425,23 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					fill: tokenRef(),
 					stroke: tokenRef(),
 					shadow: tokenRef(),
+					headingText: {
+						appearance: {
+							visible: true,
+							opacity: tokenRef('heading')
+						},
+						typography: {
+							font: tokenRef('heading'),
+							fontSize: tokenRef('heading'),
+							textAlignHorizontal: tokenRef('heading'),
+							textAlignVertical: tokenRef('heading'),
+							lineHeight: tokenRef('heading'),
+							letterSpacing: tokenRef('heading')
+						},
+						fill: tokenRef('heading'),
+						stroke: tokenRef('heading'),
+						shadow: tokenRef('heading')
+					},
 					text: {
 						appearance: {
 							visible: true,
@@ -285,6 +456,14 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 							letterSpacing: tokenRef()
 						},
 						fill: tokenRef(),
+						stroke: tokenRef(),
+						shadow: tokenRef()
+					},
+					image: {
+						appearance: {
+							visible: true,
+							opacity: tokenRef()
+						},
 						stroke: tokenRef(),
 						shadow: tokenRef()
 					}
@@ -348,7 +527,15 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					},
 					fill: tokenRef(),
 					stroke: tokenRef(),
-					shadow: tokenRef()
+					shadow: tokenRef(),
+					image: {
+						appearance: {
+							visible: true,
+							opacity: tokenRef()
+						},
+						stroke: tokenRef(),
+						shadow: tokenRef()
+					}
 				}
 			],
 			autoLayout: {
@@ -363,7 +550,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 			fill: {
 				paint: {
 					type: 'solid',
-					color: hexToRgba(theme.colors.background)
+					color: hexToRgba(theme.color.base200)
 				},
 				opacity: 1
 			}

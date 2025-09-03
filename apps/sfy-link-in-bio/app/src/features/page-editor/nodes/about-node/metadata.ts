@@ -26,6 +26,23 @@ export const aboutNodeMetadata: TNodeMetadata<'about'> = {
 		fill: tokenRef(),
 		stroke: tokenRef(),
 		shadow: tokenRef(),
+		headingText: {
+			appearance: {
+				visible: true,
+				opacity: tokenRef('heading')
+			},
+			typography: {
+				font: tokenRef('heading'),
+				fontSize: tokenRef('heading'),
+				textAlignHorizontal: 'center',
+				textAlignVertical: 'center',
+				lineHeight: tokenRef('heading'),
+				letterSpacing: tokenRef('heading')
+			},
+			fill: tokenRef('heading'),
+			stroke: tokenRef('heading'),
+			shadow: tokenRef('heading')
+		},
 		text: {
 			appearance: {
 				visible: true,
@@ -40,6 +57,14 @@ export const aboutNodeMetadata: TNodeMetadata<'about'> = {
 				letterSpacing: tokenRef()
 			},
 			fill: tokenRef(),
+			stroke: tokenRef(),
+			shadow: tokenRef()
+		},
+		image: {
+			appearance: {
+				visible: true,
+				opacity: tokenRef()
+			},
 			stroke: tokenRef(),
 			shadow: tokenRef()
 		}

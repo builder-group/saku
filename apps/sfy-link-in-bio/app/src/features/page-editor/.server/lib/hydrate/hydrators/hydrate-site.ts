@@ -1,12 +1,13 @@
 import { TFlatPageNode } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
+import { getFontUrls } from '../../../../lib';
 import { TResolvedSite } from '../../../../types';
 import { hydratePageNode } from '../../../nodes';
 import { TSiteHydrateContext } from '../types';
 
 export function hydrateSite(cx: TSiteHydrateContext): TResult<TResolvedSite, AppError> {
-	const { rootId, nodes, assets: _, ...rest } = cx.getSite();
+	const { rootId, nodes, assets, ...rest } = cx.getSite();
 	const root = nodes[rootId] as TFlatPageNode;
 
 	const hydratePageNodeResult = hydratePageNode(root, {
@@ -18,6 +19,7 @@ export function hydrateSite(cx: TSiteHydrateContext): TResult<TResolvedSite, App
 
 	return Ok({
 		...rest,
-		root: hydratePageNodeResult.value
+		root: hydratePageNodeResult.value,
+		fontUrls: getFontUrls(assets)
 	});
 }
