@@ -9,8 +9,11 @@ import { TNodeEditorComponentProps } from '../../../lib';
 import {
 	AppearanceStyleMixinEditor,
 	AutoLayoutStyleMixinEditor,
+	BadgeStyleMixinEditor,
 	ButtonStyleMixinEditor,
 	FillStyleMixinEditor,
+	ImageStyleMixinEditor,
+	ProductDetailsStyleMixinEditor,
 	ShadowStyleMixinEditor,
 	StrokeStyleMixinEditor,
 	TextStyleMixinEditor
@@ -424,7 +427,7 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 					/>
 				</AccordionSection>
 				<AccordionSection
-					title="Button"
+					title="Buy Button"
 					collapsibleClassName="px-0 space-y-3"
 					size="tight"
 					defaultOpen={true}
@@ -433,6 +436,48 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 						state={nodeState}
 						mapValue={(value) => value.primaryButton}
 						tokenSet={editor.mixinTokenMap.button}
+						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
+						editor={editor}
+					/>
+				</AccordionSection>
+				<AccordionSection
+					title="Badge"
+					collapsibleClassName="px-0 space-y-3"
+					size="tight"
+					defaultOpen={true}
+				>
+					<BadgeStyleMixinEditor
+						state={nodeState}
+						mapValue={(value) => value.badge}
+						tokenSet={editor.mixinTokenMap.badge}
+						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
+						editor={editor}
+					/>
+				</AccordionSection>
+				<AccordionSection
+					title="Image"
+					collapsibleClassName="px-0 space-y-3"
+					size="tight"
+					defaultOpen={true}
+				>
+					<ImageStyleMixinEditor
+						state={nodeState}
+						mapValue={(value) => value.image}
+						tokenSet={editor.mixinTokenMap.image}
+						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
+						editor={editor}
+					/>
+				</AccordionSection>
+				<AccordionSection
+					title="Product Details"
+					collapsibleClassName="px-0 space-y-3"
+					size="tight"
+					defaultOpen={true}
+				>
+					<ProductDetailsStyleMixinEditor
+						state={nodeState}
+						mapValue={(value) => value.productDetails}
+						tokenSet={editor.mixinTokenMap.productDetails}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
 						editor={editor}
 					/>

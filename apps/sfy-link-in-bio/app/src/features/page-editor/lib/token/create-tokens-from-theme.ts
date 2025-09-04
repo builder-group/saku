@@ -27,114 +27,213 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 	};
 
 	return [
-		// Variable tokens (atomic design values)
+		// Theme metadata
 		{
 			type: 'variable',
-			key: 'color.primary',
-			name: 'Primary Color',
-			value: color.primary
+			key: 'theme.key',
+			value: theme.key
 		},
 		{
 			type: 'variable',
+			key: 'theme.name',
+			value: theme.name
+		},
+
+		// Color tokens
+		{
+			type: 'variable',
 			key: 'color.base100',
-			name: 'Base 100 Color',
 			value: color.base100
 		},
 		{
 			type: 'variable',
+			key: 'color.base200',
+			value: color.base200
+		},
+		{
+			type: 'variable',
+			key: 'color.base300',
+			value: color.base300
+		},
+		{
+			type: 'variable',
 			key: 'color.baseContent',
-			name: 'Base Content Color',
 			value: color.baseContent
 		},
 		{
 			type: 'variable',
+			key: 'color.primary',
+			value: color.primary
+		},
+		{
+			type: 'variable',
+			key: 'color.primaryContent',
+			value: color.primaryContent
+		},
+		{
+			type: 'variable',
+			key: 'color.secondary',
+			value: color.secondary
+		},
+		{
+			type: 'variable',
+			key: 'color.secondaryContent',
+			value: color.secondaryContent
+		},
+		{
+			type: 'variable',
 			key: 'color.neutral',
-			name: 'Neutral Color',
 			value: color.neutral
 		},
 		{
 			type: 'variable',
 			key: 'color.neutralContent',
-			name: 'Neutral Content Color',
 			value: color.neutralContent
 		},
 		{
 			type: 'variable',
 			key: 'color.accent',
-			name: 'Accent Color',
 			value: color.accent
 		},
 		{
 			type: 'variable',
 			key: 'color.accentContent',
-			name: 'Accent Content Color',
 			value: color.accentContent
 		},
 		{
 			type: 'variable',
-			key: 'color.primaryContent',
-			name: 'Primary Content Color',
-			value: color.primaryContent
+			key: 'color.info',
+			value: color.info
 		},
 		{
 			type: 'variable',
+			key: 'color.infoContent',
+			value: color.infoContent
+		},
+		{
+			type: 'variable',
+			key: 'color.success',
+			value: color.success
+		},
+		{
+			type: 'variable',
+			key: 'color.successContent',
+			value: color.successContent
+		},
+		{
+			type: 'variable',
+			key: 'color.warning',
+			value: color.warning
+		},
+		{
+			type: 'variable',
+			key: 'color.warningContent',
+			value: color.warningContent
+		},
+		{
+			type: 'variable',
+			key: 'color.error',
+			value: color.error
+		},
+		{
+			type: 'variable',
+			key: 'color.errorContent',
+			value: color.errorContent
+		},
+
+		// Typography tokens
+		{
+			type: 'variable',
 			key: 'typography.heading.fontFamily',
-			name: 'Heading Font Family',
 			value: typography.heading.fontFamily
 		},
 		{
 			type: 'variable',
 			key: 'typography.heading.fontWeight',
-			name: 'Heading Font Weight',
 			value: typography.heading.fontWeight
 		},
 		{
 			type: 'variable',
 			key: 'typography.text.fontFamily',
-			name: 'Text Font Family',
 			value: typography.text.fontFamily
 		},
 		{
 			type: 'variable',
 			key: 'typography.text.fontWeight',
-			name: 'Text Font Weight',
 			value: typography.text.fontWeight
 		},
+
+		// Spacing tokens
 		{
 			type: 'variable',
 			key: 'spacing.gap',
-			name: 'Gap',
 			value: gap
 		},
+
+		// Size tokens
 		{
 			type: 'variable',
 			key: 'size.text',
-			name: 'Text Size',
 			value: textSize
 		},
 		{
 			type: 'variable',
 			key: 'size.box',
-			name: 'Box Size',
 			value: boxSize
 		},
 		{
 			type: 'variable',
+			key: 'size.field',
+			value: size.field ?? themeMetadata.size.box.get(0)
+		},
+		{
+			type: 'variable',
+			key: 'size.selector',
+			value: size.selector ?? themeMetadata.size.box.get(0)
+		},
+
+		// Radius tokens
+		{
+			type: 'variable',
 			key: 'radius.box',
-			name: 'Box Border Radius',
 			value: radius.box
 		},
 		{
 			type: 'variable',
 			key: 'radius.field',
-			name: 'Field Border Radius',
 			value: radius.field
 		},
 		{
 			type: 'variable',
 			key: 'radius.selector',
-			name: 'Selector Border Radius',
 			value: radius.selector
+		},
+
+		// Effects tokens
+		{
+			type: 'variable',
+			key: 'effects.stroke.width',
+			value: effects?.stroke?.width ?? 0
+		},
+		{
+			type: 'variable',
+			key: 'effects.shadow.blur',
+			value: effects?.shadow?.blur ?? 0
+		},
+		{
+			type: 'variable',
+			key: 'effects.shadow.offsetX',
+			value: effects?.shadow?.offsetX ?? 0
+		},
+		{
+			type: 'variable',
+			key: 'effects.shadow.offsetY',
+			value: effects?.shadow?.offsetY ?? 0
+		},
+		{
+			type: 'variable',
+			key: 'effects.shadow.spread',
+			value: effects?.shadow?.spread ?? 0
 		},
 
 		// Mixin tokens (component style definitions)

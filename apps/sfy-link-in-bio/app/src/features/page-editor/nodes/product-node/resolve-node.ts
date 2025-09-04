@@ -6,8 +6,11 @@ import { resolveAsset, TNodeResolveContext } from '../../lib';
 import {
 	resolveAppearanceStyleMixin,
 	resolveAutoLayoutStyleMixin,
+	resolveBadgeStyleMixin,
 	resolveButtonStyleMixin,
 	resolveFillStyleMixin,
+	resolveImageStyleMixin,
+	resolveProductDetailsStyleMixin,
 	resolveShadowStyleMixin,
 	resolveStrokeStyleMixin,
 	resolveTextStyleMixin
@@ -18,8 +21,20 @@ export function resolveProductNode(
 	node: TProductNode,
 	cx: TNodeResolveContext
 ): TResult<TResolvedProductNode, AppError> {
-	const { content, autoLayout, appearance, fill, stroke, shadow, text, primaryButton, ...rest } =
-		node;
+	const {
+		content,
+		autoLayout,
+		appearance,
+		fill,
+		stroke,
+		shadow,
+		text,
+		primaryButton,
+		badge,
+		image,
+		productDetails,
+		...rest
+	} = node;
 
 	// Resolve content
 	let resolvedContent: TResolvedProductNodeContent;
@@ -103,6 +118,34 @@ export function resolveProductNode(
 	if (!isResolvedPrimaryButtonOk) {
 		return Err(resolvedPrimaryButtonErr.wrapWith('#ERR_RESOLVE_BUTTON_STYLE'));
 	}
+	const [isResolvedBadgeOk, resolvedBadgeErr, resolvedBadge] = resolveBadgeStyleMixin(badge, {
+		node: cx,
+		mixinTokenSet: cx.site.getMixinTokenSet('badge'),
+		mapToMixinTokenValue: (ref, tokenSet) => tokenSet?.[ref]?.value,
+		variableTokenMap: cx.site.getVariableTokenMap()
+	});
+	if (!isResolvedBadgeOk) {
+		return Err(resolvedBadgeErr.wrapWith('#ERR_RESOLVE_BADGE_STYLE'));
+	}
+	const [isResolvedImageOk, resolvedImageErr, resolvedImage] = resolveImageStyleMixin(image, {
+		node: cx,
+		mixinTokenSet: cx.site.getMixinTokenSet('image'),
+		mapToMixinTokenValue: (ref, tokenSet) => tokenSet?.[ref]?.value,
+		variableTokenMap: cx.site.getVariableTokenMap()
+	});
+	if (!isResolvedImageOk) {
+		return Err(resolvedImageErr.wrapWith('#ERR_RESOLVE_IMAGE_STYLE'));
+	}
+	const [isResolvedProductDetailsOk, resolvedProductDetailsErr, resolvedProductDetails] =
+		resolveProductDetailsStyleMixin(productDetails, {
+			node: cx,
+			mixinTokenSet: cx.site.getMixinTokenSet('productDetails'),
+			mapToMixinTokenValue: (ref, tokenSet) => tokenSet?.[ref]?.value,
+			variableTokenMap: cx.site.getVariableTokenMap()
+		});
+	if (!isResolvedProductDetailsOk) {
+		return Err(resolvedProductDetailsErr.wrapWith('#ERR_RESOLVE_PRODUCT_DETAILS_STYLE'));
+	}
 
 	return Ok({
 		...rest,
@@ -113,7 +156,10 @@ export function resolveProductNode(
 		stroke: resolvedStroke,
 		shadow: resolvedShadow,
 		text: resolvedText,
-		button: resolvedPrimaryButton
+		primaryButton: resolvedPrimaryButton,
+		badge: resolvedBadge,
+		image: resolvedImage,
+		productDetails: resolvedProductDetails
 	});
 }
 

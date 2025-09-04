@@ -8,7 +8,7 @@ import { useProductDetailsModal } from './ProductDetailsModal';
 
 export const SingleContent: React.FC<TSingleContentProps> = (props) => {
 	const { node, product, cx } = props;
-	const { autoLayout, appearance, fill, stroke, shadow, text, button } = node;
+	const { autoLayout, appearance, fill, stroke, shadow, text, primaryButton, badge, image } = node;
 
 	const { Modal: ProductDetailsModal, showModal: showProductDetailsModal } = useProductDetailsModal(
 		{
@@ -32,7 +32,7 @@ export const SingleContent: React.FC<TSingleContentProps> = (props) => {
 		return initialOptions;
 	});
 
-	const image = React.useMemo(() => product.images?.[0], [product.images]);
+	const productImage = React.useMemo(() => product.images?.[0], [product.images]);
 
 	const selectedVariant = React.useMemo(() => {
 		if (!product.variants?.length) {
@@ -46,6 +46,20 @@ export const SingleContent: React.FC<TSingleContentProps> = (props) => {
 			) || product.variants[0]
 		);
 	}, [product.variants, selectedOptions]);
+
+	const imageBorderRadius = React.useMemo(() => {
+		const verticalPadding = autoLayout?.verticalPadding ?? 0;
+		const horizontalPadding = autoLayout?.horizontalPadding ?? 0;
+		const padding = Math.max(verticalPadding, horizontalPadding);
+
+		const outerRadius = appearance?.borderRadius;
+		if (outerRadius == null || outerRadius === 0) {
+			return undefined;
+		}
+
+		const ratio = outerRadius / (outerRadius + padding);
+		return outerRadius * Math.pow(ratio, 1.5);
+	}, [autoLayout?.verticalPadding, autoLayout?.horizontalPadding, appearance?.borderRadius]);
 
 	// =========================================================================
 	// Events
@@ -127,12 +141,17 @@ export const SingleContent: React.FC<TSingleContentProps> = (props) => {
 				}}
 			>
 				{/* Product Image */}
-				{image != null && (
+				{productImage != null && (
 					<div
 						className="h-12 w-12 flex-shrink-0 overflow-hidden bg-gray-100"
-						style={{ borderRadius: appearance.styles.borderRadius }}
+						style={{ ...image.styles, borderRadius: imageBorderRadius }}
 					>
-						<img src={image.src} alt={product.title} className="h-full w-full object-cover" />
+						<img
+							src={productImage.src}
+							alt={product.title}
+							className="h-full w-full object-cover"
+							draggable={false}
+						/>
 					</div>
 				)}
 
@@ -215,9 +234,9 @@ export const SingleContent: React.FC<TSingleContentProps> = (props) => {
 							}}
 							disabled={isBuying}
 							className="ml-3 px-3 py-1.5"
-							style={button.styles}
+							style={primaryButton.styles}
 						>
-							<div style={button.text.styles}>
+							<div style={primaryButton.text.styles}>
 								{isBuying ? <span className="loading loading-spinner loading-xs"></span> : 'Buy'}
 							</div>
 						</button>
