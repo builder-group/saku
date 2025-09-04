@@ -9,15 +9,6 @@ export const themeMetadata = {
 			// step: 0.125
 			get: (step = 0) => 1 + step * 0.125
 		},
-		heading: {
-			xs: 16,
-			sm: 18,
-			md: 20,
-			lg: 24,
-			xl: 28,
-			// step: 0.125
-			get: (step = 0) => 1 + step * 0.125
-		},
 		box: {
 			xs: 2,
 			sm: 4,
@@ -1381,7 +1372,6 @@ export interface TTheme {
 	gap?: number; // spacing between elements, in px
 
 	size?: {
-		heading?: number; // heading size multiplier (1 = default)
 		text?: number; // text size multiplier (1 = default)
 		box?: number; // card, modal, alert, etc. size multiplier (1 = default)
 		field?: number; // input, select, tab, etc. size multiplier (1 = default)

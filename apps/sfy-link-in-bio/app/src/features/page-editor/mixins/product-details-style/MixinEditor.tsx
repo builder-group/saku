@@ -72,9 +72,9 @@ export const ProductDetailsStyleMixinEditor = <
 			</div>
 			<TextStyleMixinEditor
 				state={state}
-				mapValue={(value) => mapValue(value).headingText}
+				mapValue={(value) => mapValue(value).xlText}
 				tokenSet={tokenSet}
-				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.headingText}
+				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.xlText}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 			/>

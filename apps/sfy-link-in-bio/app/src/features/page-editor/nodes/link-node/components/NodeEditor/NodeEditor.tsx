@@ -41,7 +41,7 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 	const selectedContentType = useFeatureState(cx.selectedContentType);
 
 	const hasTextStyle = useCompute(cx.node, ({ value }) => value.content.type === 'single');
-	const hasHeadingTextStyle = useCompute(cx.node, ({ value }) => value.content.type === 'single');
+	const hasSmTextStyle = useCompute(cx.node, ({ value }) => value.content.type === 'single');
 	const hasImageStyle = useCompute(
 		cx.node,
 		({ value }) =>
@@ -173,25 +173,10 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 						editor={editor}
 					/>
 				</AccordionSection>
-				{hasHeadingTextStyle && (
-					<AccordionSection
-						title="Heading Text"
-						collapsibleClassName="px-0 space-y-3"
-						size="tight"
-						defaultOpen={true}
-					>
-						<TextStyleMixinEditor
-							state={nodeState}
-							mapValue={(value) => value.headingText}
-							tokenSet={editor.mixinTokenMap.text}
-							mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
-							editor={editor}
-						/>
-					</AccordionSection>
-				)}
+
 				{hasTextStyle && (
 					<AccordionSection
-						title="Text"
+						title="Title Text"
 						collapsibleClassName="px-0 space-y-3"
 						size="tight"
 						defaultOpen={true}
@@ -199,6 +184,22 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 						<TextStyleMixinEditor
 							state={nodeState}
 							mapValue={(value) => value.text}
+							tokenSet={editor.mixinTokenMap.text}
+							mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
+							editor={editor}
+						/>
+					</AccordionSection>
+				)}
+				{hasSmTextStyle && (
+					<AccordionSection
+						title="Description Text"
+						collapsibleClassName="px-0 space-y-3"
+						size="tight"
+						defaultOpen={true}
+					>
+						<TextStyleMixinEditor
+							state={nodeState}
+							mapValue={(value) => value.smText}
 							tokenSet={editor.mixinTokenMap.text}
 							mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
 							editor={editor}

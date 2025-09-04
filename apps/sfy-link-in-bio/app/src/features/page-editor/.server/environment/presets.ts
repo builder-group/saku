@@ -5,7 +5,6 @@ import {
 	getFontHash,
 	hexToRgba,
 	TId,
-	tokenRef,
 	TProductNode,
 	TSite,
 	type TFontAsset,
@@ -13,7 +12,15 @@ import {
 	type TImageAsset,
 	type TSocialLink
 } from '@repo/editor';
-import { createTokensFromTheme, type TTheme } from '@/features/page-editor';
+import {
+	aboutNodeMetadata,
+	createTokensFromTheme,
+	linkNodeMetadata,
+	mediaNodeMetadata,
+	productNodeMetadata,
+	textNodeMetadata,
+	type TTheme
+} from '@/features/page-editor';
 import { createHandleFromShop } from '@/lib';
 
 export function blankPreset(config: TBlankPresetConfig): TSite {
@@ -88,6 +95,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 		productNode = {
 			id: createId('node'),
 			type: 'product',
+			...productNodeMetadata.defaultData,
 			content: {
 				type: 'single',
 				product: {
@@ -121,178 +129,6 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 							selectedOptions: variant.selectedOptions
 						};
 					})
-				}
-			},
-			autoLayout: {
-				horizontalPadding: tokenRef(),
-				verticalPadding: tokenRef()
-			},
-			appearance: {
-				visible: true,
-				opacity: tokenRef(),
-				borderRadius: tokenRef()
-			},
-			fill: tokenRef(),
-			stroke: tokenRef(),
-			shadow: tokenRef(),
-			text: {
-				appearance: {
-					visible: true,
-					opacity: tokenRef()
-				},
-				typography: {
-					font: tokenRef(),
-					fontSize: tokenRef(),
-					textAlignHorizontal: 'start',
-					textAlignVertical: tokenRef(),
-					lineHeight: tokenRef(),
-					letterSpacing: tokenRef()
-				},
-				fill: tokenRef(),
-				stroke: tokenRef(),
-				shadow: tokenRef()
-			},
-			primaryButton: {
-				appearance: {
-					visible: true,
-					opacity: tokenRef('primary'),
-					borderRadius: tokenRef('primary')
-				},
-				fill: tokenRef('primary'),
-				stroke: tokenRef('primary'),
-				shadow: tokenRef('primary'),
-				text: {
-					appearance: {
-						visible: true,
-						opacity: tokenRef('primary')
-					},
-					typography: {
-						font: tokenRef('primary'),
-						fontSize: tokenRef('primary'),
-						textAlignHorizontal: tokenRef('primary'),
-						textAlignVertical: tokenRef('primary'),
-						lineHeight: tokenRef('primary'),
-						letterSpacing: tokenRef('primary')
-					},
-					fill: tokenRef('primary'),
-					stroke: tokenRef('primary'),
-					shadow: tokenRef('primary')
-				}
-			},
-			badge: {
-				appearance: {
-					visible: true,
-					opacity: tokenRef(),
-					borderRadius: tokenRef()
-				},
-				fill: tokenRef(),
-				stroke: tokenRef(),
-				shadow: tokenRef(),
-				text: {
-					appearance: {
-						visible: true,
-						opacity: tokenRef()
-					},
-					typography: {
-						font: tokenRef(),
-						fontSize: tokenRef(),
-						textAlignHorizontal: tokenRef(),
-						textAlignVertical: tokenRef(),
-						lineHeight: tokenRef(),
-						letterSpacing: tokenRef()
-					},
-					fill: tokenRef(),
-					stroke: tokenRef(),
-					shadow: tokenRef()
-				}
-			},
-			image: {
-				appearance: {
-					visible: true,
-					opacity: tokenRef(),
-					borderRadius: tokenRef()
-				},
-				stroke: tokenRef(),
-				shadow: tokenRef()
-			},
-			productDetails: {
-				appearance: {
-					visible: true,
-					opacity: tokenRef(),
-					borderRadius: tokenRef()
-				},
-				fill: tokenRef(),
-				stroke: tokenRef(),
-				shadow: tokenRef(),
-				headingText: {
-					appearance: {
-						visible: true,
-						opacity: tokenRef()
-					},
-					typography: {
-						font: tokenRef(),
-						fontSize: tokenRef(),
-						textAlignHorizontal: tokenRef(),
-						textAlignVertical: tokenRef(),
-						lineHeight: tokenRef(),
-						letterSpacing: tokenRef()
-					},
-					fill: tokenRef(),
-					stroke: tokenRef(),
-					shadow: tokenRef()
-				},
-				text: {
-					appearance: {
-						visible: true,
-						opacity: tokenRef()
-					},
-					typography: {
-						font: tokenRef(),
-						fontSize: tokenRef(),
-						textAlignHorizontal: tokenRef(),
-						textAlignVertical: tokenRef(),
-						lineHeight: tokenRef(),
-						letterSpacing: tokenRef()
-					},
-					fill: tokenRef(),
-					stroke: tokenRef(),
-					shadow: tokenRef()
-				},
-				primaryButton: {
-					appearance: {
-						visible: true,
-						opacity: tokenRef(),
-						borderRadius: tokenRef()
-					},
-					fill: tokenRef(),
-					stroke: tokenRef(),
-					shadow: tokenRef(),
-					text: {
-						appearance: {
-							visible: true,
-							opacity: tokenRef()
-						},
-						typography: {
-							font: tokenRef(),
-							fontSize: tokenRef(),
-							textAlignHorizontal: tokenRef(),
-							textAlignVertical: tokenRef(),
-							lineHeight: tokenRef(),
-							letterSpacing: tokenRef()
-						},
-						fill: tokenRef(),
-						stroke: tokenRef(),
-						shadow: tokenRef()
-					}
-				},
-				image: {
-					appearance: {
-						visible: true,
-						opacity: tokenRef(),
-						borderRadius: tokenRef()
-					},
-					stroke: tokenRef(),
-					shadow: tokenRef()
 				}
 			}
 		};
@@ -343,199 +179,45 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 				{
 					id: createId('node'),
 					type: 'about',
+					...aboutNodeMetadata.defaultData,
 					content: {
 						type: 'default',
 						name,
 						bio: 'Welcome to your new page! Add a short description about yourself or your brand.',
 						profilePicture: profilePictureAssetHashId,
 						socialLinks: allSocialLinks
-					},
-					autoLayout: {
-						horizontalPadding: tokenRef(),
-						verticalPadding: tokenRef()
-					},
-					appearance: {
-						visible: true,
-						opacity: tokenRef(),
-						borderRadius: 0
-					},
-					fill: null,
-					stroke: null,
-					shadow: null,
-					headingText: {
-						appearance: {
-							visible: true,
-							opacity: tokenRef('heading')
-						},
-						typography: {
-							font: tokenRef('heading'),
-							fontSize: tokenRef('heading'),
-							textAlignHorizontal: 'center',
-							textAlignVertical: tokenRef('heading'),
-							lineHeight: tokenRef('heading'),
-							letterSpacing: tokenRef('heading')
-						},
-						fill: tokenRef('heading'),
-						stroke: tokenRef('heading'),
-						shadow: tokenRef('heading')
-					},
-					text: {
-						appearance: {
-							visible: true,
-							opacity: tokenRef()
-						},
-						typography: {
-							font: tokenRef(),
-							fontSize: tokenRef(),
-							textAlignHorizontal: 'center',
-							textAlignVertical: tokenRef(),
-							lineHeight: tokenRef(),
-							letterSpacing: tokenRef()
-						},
-						fill: tokenRef(),
-						stroke: tokenRef(),
-						shadow: tokenRef()
-					},
-					image: {
-						appearance: {
-							visible: true,
-							opacity: tokenRef(),
-							borderRadius: tokenRef()
-						},
-						stroke: tokenRef(),
-						shadow: tokenRef()
 					}
 				},
 				{
 					id: createId('node'),
 					type: 'link',
+					...linkNodeMetadata.defaultData,
 					content: {
 						type: 'single',
 						url: `https://${shopId}`,
 						userTitle: '🛒 Visit our Shopify store'
-					},
-					autoLayout: {
-						horizontalPadding: tokenRef(),
-						verticalPadding: tokenRef()
-					},
-					appearance: {
-						visible: true,
-						opacity: tokenRef(),
-						borderRadius: tokenRef()
-					},
-					fill: tokenRef(),
-					stroke: tokenRef(),
-					shadow: tokenRef(),
-					headingText: {
-						appearance: {
-							visible: true,
-							opacity: tokenRef('heading')
-						},
-						typography: {
-							font: tokenRef('heading'),
-							fontSize: tokenRef('heading'),
-							textAlignHorizontal: tokenRef('heading'),
-							textAlignVertical: tokenRef('heading'),
-							lineHeight: tokenRef('heading'),
-							letterSpacing: tokenRef('heading')
-						},
-						fill: tokenRef('heading'),
-						stroke: tokenRef('heading'),
-						shadow: tokenRef('heading')
-					},
-					text: {
-						appearance: {
-							visible: true,
-							opacity: tokenRef()
-						},
-						typography: {
-							font: tokenRef(),
-							fontSize: tokenRef(),
-							textAlignHorizontal: tokenRef(),
-							textAlignVertical: tokenRef(),
-							lineHeight: tokenRef(),
-							letterSpacing: tokenRef()
-						},
-						fill: tokenRef(),
-						stroke: tokenRef(),
-						shadow: tokenRef()
-					},
-					image: {
-						appearance: {
-							visible: true,
-							opacity: tokenRef()
-						},
-						stroke: tokenRef(),
-						shadow: tokenRef()
 					}
 				},
 				...(productNode != null ? [productNode] : []),
 				{
 					id: createId('node'),
 					type: 'text',
+					...textNodeMetadata.defaultData,
 					content: {
 						type: 'default',
 						text: { type: 'markdown', value: '✨ Thanks for visiting!' }
-					},
-					autoLayout: {
-						horizontalPadding: tokenRef(),
-						verticalPadding: tokenRef()
-					},
-					appearance: {
-						visible: true,
-						opacity: tokenRef(),
-						borderRadius: tokenRef()
-					},
-					fill: tokenRef(),
-					stroke: tokenRef(),
-					shadow: tokenRef(),
-					text: {
-						appearance: {
-							visible: true,
-							opacity: tokenRef()
-						},
-						typography: {
-							font: tokenRef(),
-							fontSize: tokenRef(),
-							textAlignHorizontal: tokenRef(),
-							textAlignVertical: tokenRef(),
-							lineHeight: tokenRef(),
-							letterSpacing: tokenRef()
-						},
-						fill: tokenRef(),
-						stroke: tokenRef(),
-						shadow: tokenRef()
 					}
 				},
 				{
 					id: createId('node'),
 					type: 'media',
+					...mediaNodeMetadata.defaultData,
 					content: {
 						type: 'image',
 						media: {
 							hash: gifAssetHashId,
 							altText: 'Welcome GIF'
 						}
-					},
-					autoLayout: {
-						horizontalPadding: 0,
-						verticalPadding: 0
-					},
-					appearance: {
-						visible: true,
-						opacity: tokenRef(),
-						borderRadius: tokenRef()
-					},
-					fill: tokenRef(),
-					stroke: tokenRef(),
-					shadow: tokenRef(),
-					image: {
-						appearance: {
-							visible: true,
-							opacity: tokenRef()
-						},
-						stroke: tokenRef(),
-						shadow: tokenRef()
 					}
 				}
 			],

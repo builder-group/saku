@@ -21,7 +21,5 @@ export type TResolvedTextStyleMixin = TBaseMixin<
 			TResolvedTypographyStyleMixin['value']['styles'];
 	}
 >;
-export type TResolvedHeadingTextStyleMixin = TBaseMixin<
-	'headingText',
-	TResolvedTextStyleMixin['value']
->;
+export type TResolvedXlTextStyleMixin = TBaseMixin<'xlText', TResolvedTextStyleMixin['value']>;
+export type TResolvedSmTextStyleMixin = TBaseMixin<'smText', TResolvedTextStyleMixin['value']>;

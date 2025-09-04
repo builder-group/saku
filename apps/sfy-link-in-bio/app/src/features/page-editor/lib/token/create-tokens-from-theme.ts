@@ -4,11 +4,10 @@ import { themeMetadata, TTheme } from '../../environment';
 export function createTokensFromTheme(theme: TTheme): TToken[] {
 	const { color, typography, gap = 24, size = {}, radius, effects } = theme;
 	const {
-		heading: headingSize = themeMetadata.size.text.get(0),
 		text: textSize = themeMetadata.size.text.get(0),
-		box: boxSize = themeMetadata.size.box.get(0),
-		field: fieldSize = themeMetadata.size.box.get(0),
-		selector: selectorSize = themeMetadata.size.box.get(0)
+		box: boxSize = themeMetadata.size.box.get(0)
+		// field: fieldSize = themeMetadata.size.box.get(0),
+		// selector: selectorSize = themeMetadata.size.box.get(0)
 	} = size;
 
 	// Calculate semantic sizes
@@ -18,13 +17,6 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 		md: textSize * themeMetadata.size.text.md,
 		lg: textSize * themeMetadata.size.text.lg,
 		xl: textSize * themeMetadata.size.text.xl
-	};
-	const headingSizes = {
-		xs: headingSize * themeMetadata.size.heading.xs,
-		sm: headingSize * themeMetadata.size.heading.sm,
-		md: headingSize * themeMetadata.size.heading.md,
-		lg: headingSize * themeMetadata.size.heading.lg,
-		xl: headingSize * themeMetadata.size.heading.xl
 	};
 	const boxSizes = {
 		xs: boxSize * themeMetadata.size.box.xs,
@@ -113,12 +105,6 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 			key: 'spacing.gap',
 			name: 'Gap',
 			value: gap
-		},
-		{
-			type: 'variable',
-			key: 'size.heading',
-			name: 'Heading Size',
-			value: headingSize
 		},
 		{
 			type: 'variable',
@@ -261,7 +247,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 		},
 		{
 			type: 'mixin',
-			key: 'heading',
+			key: 'xl',
 			mixinKey: 'text',
 			value: {
 				appearance: {
@@ -274,7 +260,39 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 						weight: typography.heading.fontWeight,
 						style: 'normal'
 					},
-					fontSize: headingSizes.sm,
+					fontSize: textSizes.lg,
+					textAlignHorizontal: 'center',
+					textAlignVertical: 'center',
+					lineHeight: { type: 'auto' },
+					letterSpacing: { type: 'auto' }
+				},
+				fill: {
+					paint: {
+						type: 'solid',
+						color: hexToRgba(color.baseContent)
+					},
+					opacity: 1
+				},
+				stroke: null,
+				shadow: null
+			}
+		},
+		{
+			type: 'mixin',
+			key: 'sm',
+			mixinKey: 'text',
+			value: {
+				appearance: {
+					visible: true,
+					opacity: 1
+				},
+				typography: {
+					font: {
+						family: typography.text.fontFamily,
+						weight: typography.text.fontWeight,
+						style: 'normal'
+					},
+					fontSize: textSizes.sm,
 					textAlignHorizontal: 'center',
 					textAlignVertical: 'center',
 					lineHeight: { type: 'auto' },
@@ -468,7 +486,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 				},
 				stroke: null,
 				shadow: null,
-				headingText: {
+				xlText: {
 					appearance: {
 						visible: true,
 						opacity: 1
@@ -479,7 +497,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 							weight: typography.heading.fontWeight,
 							style: 'normal'
 						},
-						fontSize: headingSizes.md,
+						fontSize: textSizes.xl,
 						textAlignHorizontal: 'start',
 						textAlignVertical: 'center',
 						lineHeight: { type: 'auto' },

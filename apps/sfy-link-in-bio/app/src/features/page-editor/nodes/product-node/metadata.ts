@@ -43,27 +43,28 @@ export const productNodeMetadata: TNodeMetadata<'product'> = {
 		primaryButton: {
 			appearance: {
 				visible: true,
-				opacity: tokenRef()
+				opacity: tokenRef('primary'),
+				borderRadius: tokenRef('primary')
 			},
-			fill: tokenRef(),
-			stroke: tokenRef(),
-			shadow: tokenRef(),
+			fill: tokenRef('primary'),
+			stroke: tokenRef('primary'),
+			shadow: tokenRef('primary'),
 			text: {
 				appearance: {
 					visible: true,
-					opacity: tokenRef()
+					opacity: tokenRef('primary')
 				},
 				typography: {
-					font: tokenRef(),
-					fontSize: tokenRef(),
-					textAlignHorizontal: tokenRef(),
-					textAlignVertical: tokenRef(),
-					lineHeight: tokenRef(),
-					letterSpacing: tokenRef()
+					font: tokenRef('primary'),
+					fontSize: tokenRef('primary'),
+					textAlignHorizontal: tokenRef('primary'),
+					textAlignVertical: tokenRef('primary'),
+					lineHeight: tokenRef('primary'),
+					letterSpacing: tokenRef('primary')
 				},
-				fill: tokenRef(),
-				stroke: tokenRef(),
-				shadow: tokenRef()
+				fill: tokenRef('primary'),
+				stroke: tokenRef('primary'),
+				shadow: tokenRef('primary')
 			}
 		},
 		badge: {
@@ -111,7 +112,7 @@ export const productNodeMetadata: TNodeMetadata<'product'> = {
 			fill: tokenRef(),
 			stroke: tokenRef(),
 			shadow: tokenRef(),
-			headingText: {
+			xlText: {
 				appearance: {
 					visible: true,
 					opacity: tokenRef()

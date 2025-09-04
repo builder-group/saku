@@ -66,6 +66,7 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 			id: createId('node'),
 			type: 'about',
 			content: {
+				type: 'default',
 				name: page.title ?? 'Your Name',
 				bio: page.bio,
 				profilePicture: profilePictureHash,
@@ -83,6 +84,29 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 			fill: null,
 			stroke: null,
 			shadow: null,
+			xlText: {
+				appearance: {
+					visible: true,
+					opacity: tokenRef('xl')
+				},
+				typography: {
+					font: tokenRef('xl'),
+					fontSize: tokenRef('xl'),
+					textAlignHorizontal: 'center',
+					textAlignVertical: 'center',
+					lineHeight: tokenRef('xl'),
+					letterSpacing: tokenRef('xl')
+				},
+				fill: {
+					paint: {
+						type: 'solid',
+						color: cssRgbaToRgba(page?.themeSettings?.fontColor) ?? hexToRgba('#000000')
+					},
+					opacity: 1
+				},
+				stroke: null,
+				shadow: null
+			},
 			text: {
 				appearance: {
 					visible: true,
@@ -90,7 +114,7 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 				},
 				typography: {
 					font: tokenRef(),
-					fontSize: 16,
+					fontSize: tokenRef(),
 					textAlignHorizontal: 'center',
 					textAlignVertical: 'center',
 					lineHeight: tokenRef(),
@@ -100,12 +124,22 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 					paint: {
 						type: 'solid',
 						color: cssRgbaToRgba(page?.themeSettings?.fontColor) ?? hexToRgba('#000000')
-					}
+					},
+					opacity: 1
+				},
+				stroke: null,
+				shadow: null
+			},
+			image: {
+				appearance: {
+					visible: true,
+					opacity: tokenRef(),
+					borderRadius: tokenRef()
 				},
 				stroke: null,
 				shadow: null
 			}
-		} as TAboutNode;
+		};
 		children.push(aboutNode);
 	}
 
@@ -183,23 +217,6 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 					fill: tokenRef(),
 					stroke: tokenRef(),
 					shadow: tokenRef(),
-					headingText: {
-						appearance: {
-							visible: true,
-							opacity: tokenRef()
-						},
-						typography: {
-							font: tokenRef(),
-							fontSize: tokenRef(),
-							textAlignHorizontal: tokenRef(),
-							textAlignVertical: tokenRef(),
-							lineHeight: tokenRef(),
-							letterSpacing: tokenRef()
-						},
-						fill: tokenRef(),
-						stroke: tokenRef(),
-						shadow: tokenRef()
-					},
 					text: {
 						appearance: {
 							visible: true,
@@ -216,6 +233,23 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 						fill: tokenRef(),
 						stroke: tokenRef(),
 						shadow: tokenRef()
+					},
+					smText: {
+						appearance: {
+							visible: true,
+							opacity: tokenRef('sm')
+						},
+						typography: {
+							font: tokenRef('sm'),
+							fontSize: tokenRef('sm'),
+							textAlignHorizontal: tokenRef('sm'),
+							textAlignVertical: tokenRef('sm'),
+							lineHeight: tokenRef('sm'),
+							letterSpacing: tokenRef('sm')
+						},
+						fill: tokenRef('sm'),
+						stroke: tokenRef('sm'),
+						shadow: tokenRef('sm')
 					},
 					image: {
 						appearance: {
@@ -380,7 +414,7 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 			},
 			{
 				type: 'mixin',
-				key: 'heading',
+				key: 'xl',
 				mixinKey: 'text',
 				value: {
 					appearance: {
@@ -393,7 +427,39 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 							weight: 400,
 							style: 'normal'
 						},
-						fontSize: 16,
+						fontSize: 20,
+						textAlignHorizontal: 'center',
+						textAlignVertical: 'center',
+						lineHeight: { type: 'auto' },
+						letterSpacing: { type: 'auto' }
+					},
+					fill: {
+						paint: {
+							type: 'solid',
+							color: cssRgbaToRgba(page?.themeSettings?.linkCardFontColor) ?? hexToRgba('#000000')
+						},
+						opacity: 1
+					},
+					stroke: null,
+					shadow: null
+				}
+			},
+			{
+				type: 'mixin',
+				key: 'sm',
+				mixinKey: 'text',
+				value: {
+					appearance: {
+						visible: true,
+						opacity: 1
+					},
+					typography: {
+						font: {
+							family: primaryFont,
+							weight: 400,
+							style: 'normal'
+						},
+						fontSize: 14,
 						textAlignHorizontal: 'center',
 						textAlignVertical: 'center',
 						lineHeight: { type: 'auto' },
@@ -466,7 +532,7 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 					appearance: {
 						visible: true,
 						opacity: 1,
-						borderRadius: borderRadius * 0.5
+						borderRadius
 					},
 					stroke: null,
 					shadow: null

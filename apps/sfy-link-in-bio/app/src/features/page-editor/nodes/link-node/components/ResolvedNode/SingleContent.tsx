@@ -4,7 +4,7 @@ import { TResolvedLinkNode, TResolvedSingleLinkNodeContent } from '../../types';
 
 export const DefaultContent: React.FC<TSingleContentProps> = (props) => {
 	const {
-		node: { content, autoLayout, appearance, fill, stroke, shadow, headingText, text, image }
+		node: { content, autoLayout, appearance, fill, stroke, shadow, text, smText, image }
 	} = props;
 
 	const imageBorderRadius = React.useMemo(() => {
@@ -54,12 +54,12 @@ export const DefaultContent: React.FC<TSingleContentProps> = (props) => {
 				{/* Link Details */}
 				<div className="min-w-0 flex-grow">
 					{content.title != null && (
-						<p className="truncate font-medium" style={headingText.styles}>
+						<p className="truncate font-medium" style={text.styles}>
 							{content.title}
 						</p>
 					)}
 					{content.description != null && (
-						<p className="truncate opacity-70" style={text.styles}>
+						<p className="truncate opacity-70" style={smText.styles}>
 							{content.description}
 						</p>
 					)}

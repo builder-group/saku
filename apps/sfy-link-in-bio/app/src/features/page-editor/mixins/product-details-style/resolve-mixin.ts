@@ -53,13 +53,15 @@ export function resolveProductDetailsStyleMixin<GTokenSet extends TMixinTokenSet
 	if (!isResolvedShadowOk) {
 		return Err(resolvedShadowErr.wrapWith('#ERR_RESOLVE_SHADOW_STYLE'));
 	}
-	const [isResolvedHeadingTextOk, resolvedHeadingTextErr, resolvedHeadingText] =
-		resolveTextStyleMixin(productDetails.headingText, {
+	const [isResolvedXlTextOk, resolvedXlTextErr, resolvedXlText] = resolveTextStyleMixin(
+		productDetails.xlText,
+		{
 			...cx,
-			mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.headingText
-		});
-	if (!isResolvedHeadingTextOk) {
-		return Err(resolvedHeadingTextErr.wrapWith('#ERR_RESOLVE_HEADING_TEXT_STYLE'));
+			mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.xlText
+		}
+	);
+	if (!isResolvedXlTextOk) {
+		return Err(resolvedXlTextErr.wrapWith('#ERR_RESOLVE_XL_TEXT_STYLE'));
 	}
 	const [isResolvedTextOk, resolvedTextErr, resolvedText] = resolveTextStyleMixin(
 		productDetails.text,
@@ -95,7 +97,7 @@ export function resolveProductDetailsStyleMixin<GTokenSet extends TMixinTokenSet
 		fill: resolvedFill,
 		stroke: resolvedStroke,
 		shadow: resolvedShadow,
-		headingText: resolvedHeadingText,
+		xlText: resolvedXlText,
 		text: resolvedText,
 		primaryButton: resolvedPrimaryButton,
 		image: resolvedImage,

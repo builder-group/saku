@@ -9,7 +9,6 @@ import {
 	TChildrenMixin,
 	TFillStyleMixin,
 	TFlatChildrenMixin,
-	THeadingTextStyleMixin,
 	TIdMixin,
 	TImageStyleMixin,
 	TLinkNodeContent,
@@ -24,10 +23,12 @@ import {
 	TProductNodeContent,
 	TProductNodeMixin,
 	TShadowStyleMixin,
+	TSmTextStyleMixin,
 	TStrokeStyleMixin,
 	TTextNodeContent,
 	TTextNodeMixin,
-	TTextStyleMixin
+	TTextStyleMixin,
+	TXlTextStyleMixin
 } from './mixin';
 
 export type TNode = TPageNode | TAboutNode | TLinkNode | TMediaNode | TTextNode | TProductNode;
@@ -69,7 +70,7 @@ export type TAboutNode<GVariant extends TAboutNodeContent = TAboutNodeContent> =
 		TFillStyleMixin,
 		TStrokeStyleMixin,
 		TShadowStyleMixin,
-		THeadingTextStyleMixin,
+		TXlTextStyleMixin,
 		TTextStyleMixin,
 		TImageStyleMixin
 	]
@@ -84,8 +85,8 @@ export type TLinkNode<GContent extends TLinkNodeContent = TLinkNodeContent> = TB
 		TFillStyleMixin,
 		TStrokeStyleMixin,
 		TShadowStyleMixin,
-		THeadingTextStyleMixin,
 		TTextStyleMixin,
+		TSmTextStyleMixin,
 		TImageStyleMixin
 	]
 >;

@@ -26,22 +26,22 @@ export const aboutNodeMetadata: TNodeMetadata<'about'> = {
 		fill: null,
 		stroke: null,
 		shadow: null,
-		headingText: {
+		xlText: {
 			appearance: {
 				visible: true,
-				opacity: tokenRef('heading')
+				opacity: tokenRef('xl')
 			},
 			typography: {
-				font: tokenRef('heading'),
-				fontSize: tokenRef('heading'),
+				font: tokenRef('xl'),
+				fontSize: tokenRef('xl'),
 				textAlignHorizontal: 'center',
 				textAlignVertical: 'center',
-				lineHeight: tokenRef('heading'),
-				letterSpacing: tokenRef('heading')
+				lineHeight: tokenRef('xl'),
+				letterSpacing: tokenRef('xl')
 			},
-			fill: tokenRef('heading'),
-			stroke: tokenRef('heading'),
-			shadow: tokenRef('heading')
+			fill: tokenRef('xl'),
+			stroke: tokenRef('xl'),
+			shadow: tokenRef('xl')
 		},
 		text: {
 			appearance: {

@@ -17,18 +17,8 @@ export function resolveLinkNode(
 	node: TLinkNode,
 	cx: TNodeResolveContext
 ): TResult<TResolvedLinkNode, AppError> {
-	const {
-		content,
-		autoLayout,
-		appearance,
-		fill,
-		stroke,
-		shadow,
-		headingText,
-		text,
-		image,
-		...rest
-	} = node;
+	const { content, autoLayout, appearance, fill, stroke, shadow, text, smText, image, ...rest } =
+		node;
 
 	// Resolve content
 	let resolvedContent: TResolvedLinkNodeContent;
@@ -102,16 +92,6 @@ export function resolveLinkNode(
 	if (!isResolvedShadowOk) {
 		return Err(resolvedShadowErr.wrapWith('#ERR_RESOLVE_SHADOW_STYLE'));
 	}
-	const [isResolvedHeadingTextOk, resolvedHeadingTextErr, resolvedHeadingText] =
-		resolveTextStyleMixin(headingText, {
-			node: cx,
-			mixinTokenSet: cx.site.getMixinTokenSet('text'),
-			mapToMixinTokenValue: (ref, tokenSet) => tokenSet?.[ref]?.value,
-			variableTokenMap: cx.site.getVariableTokenMap()
-		});
-	if (!isResolvedHeadingTextOk) {
-		return Err(resolvedHeadingTextErr.wrapWith('#ERR_RESOLVE_HEADING_TEXT_STYLE'));
-	}
 	const [isResolvedTextOk, resolvedTextErr, resolvedText] = resolveTextStyleMixin(text, {
 		node: cx,
 		mixinTokenSet: cx.site.getMixinTokenSet('text'),
@@ -120,6 +100,15 @@ export function resolveLinkNode(
 	});
 	if (!isResolvedTextOk) {
 		return Err(resolvedTextErr.wrapWith('#ERR_RESOLVE_TEXT_STYLE'));
+	}
+	const [isResolvedSmTextOk, resolvedSmTextErr, resolvedSmText] = resolveTextStyleMixin(smText, {
+		node: cx,
+		mixinTokenSet: cx.site.getMixinTokenSet('text'),
+		mapToMixinTokenValue: (ref, tokenSet) => tokenSet?.[ref]?.value,
+		variableTokenMap: cx.site.getVariableTokenMap()
+	});
+	if (!isResolvedSmTextOk) {
+		return Err(resolvedSmTextErr.wrapWith('#ERR_RESOLVE_SM_TEXT_STYLE'));
 	}
 	const [isResolvedImageOk, resolvedImageErr, resolvedImage] = resolveImageStyleMixin(image, {
 		node: cx,
@@ -139,8 +128,8 @@ export function resolveLinkNode(
 		fill: resolvedFill,
 		stroke: resolvedStroke,
 		shadow: resolvedShadow,
-		headingText: resolvedHeadingText,
 		text: resolvedText,
+		smText: resolvedSmText,
 		image: resolvedImage
 	});
 }

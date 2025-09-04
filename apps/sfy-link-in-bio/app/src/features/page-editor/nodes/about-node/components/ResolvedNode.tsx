@@ -8,7 +8,7 @@ export const ResolvedAboutNode = React.forwardRef<
 	TResolvedNodeProps<TResolvedAboutNode>
 >((props, ref) => {
 	const {
-		node: { content, autoLayout, appearance, fill, stroke, shadow, headingText, text, image },
+		node: { content, autoLayout, appearance, fill, stroke, shadow, xlText, text, image },
 		...divProps
 	} = props;
 
@@ -45,7 +45,7 @@ export const ResolvedAboutNode = React.forwardRef<
 					)}
 
 					{/* Name */}
-					<h1 className="font-semibold" style={headingText.styles}>
+					<h1 className="font-semibold" style={xlText.styles}>
 						{content.name}
 					</h1>
 

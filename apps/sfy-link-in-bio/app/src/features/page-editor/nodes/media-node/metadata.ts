@@ -12,8 +12,8 @@ export const mediaNodeMetadata: TNodeMetadata<'media'> = {
 			type: 'image'
 		},
 		autoLayout: {
-			horizontalPadding: tokenRef(),
-			verticalPadding: tokenRef()
+			horizontalPadding: 0,
+			verticalPadding: 0
 		},
 		appearance: {
 			visible: true,

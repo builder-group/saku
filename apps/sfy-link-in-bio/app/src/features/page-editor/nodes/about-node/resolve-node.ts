@@ -17,18 +17,8 @@ export function resolveAboutNode(
 	node: TAboutNode,
 	cx: TNodeResolveContext
 ): TResult<TResolvedAboutNode, AppError> {
-	const {
-		content,
-		autoLayout,
-		appearance,
-		fill,
-		stroke,
-		shadow,
-		headingText,
-		text,
-		image,
-		...rest
-	} = node;
+	const { content, autoLayout, appearance, fill, stroke, shadow, xlText, text, image, ...rest } =
+		node;
 
 	// Resolve content
 	let resolvedContent: TResolvedAboutNodeContent;
@@ -90,15 +80,14 @@ export function resolveAboutNode(
 	if (!isResolvedShadowOk) {
 		return Err(resolvedShadowErr.wrapWith('#ERR_RESOLVE_SHADOW_STYLE'));
 	}
-	const [isResolvedHeadingTextOk, resolvedHeadingTextErr, resolvedHeadingText] =
-		resolveTextStyleMixin(headingText, {
-			node: cx,
-			mixinTokenSet: cx.site.getMixinTokenSet('text'),
-			mapToMixinTokenValue: (ref, tokenSet) => tokenSet?.[ref]?.value,
-			variableTokenMap: cx.site.getVariableTokenMap()
-		});
-	if (!isResolvedHeadingTextOk) {
-		return Err(resolvedHeadingTextErr.wrapWith('#ERR_RESOLVE_HEADING_TEXT_STYLE'));
+	const [isResolvedXlTextOk, resolvedXlTextErr, resolvedXlText] = resolveTextStyleMixin(xlText, {
+		node: cx,
+		mixinTokenSet: cx.site.getMixinTokenSet('text'),
+		mapToMixinTokenValue: (ref, tokenSet) => tokenSet?.[ref]?.value,
+		variableTokenMap: cx.site.getVariableTokenMap()
+	});
+	if (!isResolvedXlTextOk) {
+		return Err(resolvedXlTextErr.wrapWith('#ERR_RESOLVE_XL_TEXT_STYLE'));
 	}
 	const [isResolvedTextOk, resolvedTextErr, resolvedText] = resolveTextStyleMixin(text, {
 		node: cx,
@@ -127,7 +116,7 @@ export function resolveAboutNode(
 		fill: resolvedFill,
 		stroke: resolvedStroke,
 		shadow: resolvedShadow,
-		headingText: resolvedHeadingText,
+		xlText: resolvedXlText,
 		text: resolvedText,
 		image: resolvedImage
 	});

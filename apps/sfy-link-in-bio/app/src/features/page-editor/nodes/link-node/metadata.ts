@@ -25,23 +25,6 @@ export const linkNodeMetadata: TNodeMetadata<'link'> = {
 		fill: tokenRef(),
 		stroke: tokenRef(),
 		shadow: tokenRef(),
-		headingText: {
-			appearance: {
-				visible: true,
-				opacity: tokenRef('heading')
-			},
-			typography: {
-				font: tokenRef('heading'),
-				fontSize: tokenRef('heading'),
-				textAlignHorizontal: tokenRef('heading'),
-				textAlignVertical: tokenRef('heading'),
-				lineHeight: tokenRef('heading'),
-				letterSpacing: tokenRef('heading')
-			},
-			fill: tokenRef('heading'),
-			stroke: tokenRef('heading'),
-			shadow: tokenRef('heading')
-		},
 		text: {
 			appearance: {
 				visible: true,
@@ -58,6 +41,23 @@ export const linkNodeMetadata: TNodeMetadata<'link'> = {
 			fill: tokenRef(),
 			stroke: tokenRef(),
 			shadow: tokenRef()
+		},
+		smText: {
+			appearance: {
+				visible: true,
+				opacity: tokenRef('sm')
+			},
+			typography: {
+				font: tokenRef('sm'),
+				fontSize: tokenRef('sm'),
+				textAlignHorizontal: tokenRef('sm'),
+				textAlignVertical: tokenRef('sm'),
+				lineHeight: tokenRef('sm'),
+				letterSpacing: tokenRef('sm')
+			},
+			fill: tokenRef('sm'),
+			stroke: tokenRef('sm'),
+			shadow: tokenRef('sm')
 		},
 		image: {
 			appearance: {

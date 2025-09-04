@@ -16,22 +16,6 @@ export function resolveAppearanceStyleMixin<GTokenSet extends TMixinTokenSet>(
 		return Err(resolvedAppearanceErr.wrapWith('#ERR_RESOLVE_APPEARANCE'));
 	}
 
-	const [isResolvedBorderRadiusOk, resolvedBorderRadiusErr, resolvedBorderRadius] = resolveTokenRef(
-		resolvedAppearance.borderRadius,
-		{
-			mixin: {
-				tokenSet: cx.mixinTokenSet,
-				mapToTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.borderRadius
-			},
-			variable: {
-				tokenMap: cx.variableTokenMap,
-				expectedType: 'number'
-			}
-		}
-	);
-	if (!isResolvedBorderRadiusOk) {
-		return Err(resolvedBorderRadiusErr.wrapWith('#ERR_RESOLVE_BORDER_RADIUS'));
-	}
 	const [isResolvedVisibleOk, resolvedVisibleErr, resolvedVisible] = resolveTokenRef(
 		resolvedAppearance.visible,
 		{
@@ -63,6 +47,22 @@ export function resolveAppearanceStyleMixin<GTokenSet extends TMixinTokenSet>(
 	);
 	if (!isResolvedOpacityOk) {
 		return Err(resolvedOpacityErr.wrapWith('#ERR_RESOLVE_OPACITY'));
+	}
+	const [isResolvedBorderRadiusOk, resolvedBorderRadiusErr, resolvedBorderRadius] = resolveTokenRef(
+		resolvedAppearance.borderRadius,
+		{
+			mixin: {
+				tokenSet: cx.mixinTokenSet,
+				mapToTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.borderRadius
+			},
+			variable: {
+				tokenMap: cx.variableTokenMap,
+				expectedType: 'number'
+			}
+		}
+	);
+	if (!isResolvedBorderRadiusOk) {
+		return Err(resolvedBorderRadiusErr.wrapWith('#ERR_RESOLVE_BORDER_RADIUS'));
 	}
 
 	return Ok({

@@ -273,21 +273,21 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 					/>
 				</AccordionSection>
 				<AccordionSection
-					title="Heading Text"
+					title="Title Text"
 					collapsibleClassName="px-0 space-y-3"
 					size="tight"
 					defaultOpen={true}
 				>
 					<TextStyleMixinEditor
 						state={nodeState}
-						mapValue={(value) => value.headingText}
+						mapValue={(value) => value.xlText}
 						tokenSet={editor.mixinTokenMap.text}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
 						editor={editor}
 					/>
 				</AccordionSection>
 				<AccordionSection
-					title="Text"
+					title="Bio Text"
 					collapsibleClassName="px-0 space-y-3"
 					size="tight"
 					defaultOpen={true}

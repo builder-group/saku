@@ -14,7 +14,7 @@ export type TNodeMetadata<GType extends TFlatNode['type']> = {
 			label: string;
 			defaultData: Omit<Extract<TFlatNode, { type: GType }>, 'id' | 'type'>;
 	  }
-	| { internal: true; defaultData?: Omit<Extract<TFlatNode, { type: GType }>, 'id' | 'type'> }
+	| { internal: true; defaultData: Omit<Extract<TFlatNode, { type: GType }>, 'id' | 'type'> }
 );
 
 export interface TResolvedNodeProps<GResolvedNode extends TResolvedNode>
