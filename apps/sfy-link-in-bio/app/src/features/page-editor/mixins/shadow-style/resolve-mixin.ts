@@ -8,11 +8,9 @@ export function resolveShadowStyleMixin<GTokenSet extends TMixinTokenSet>(
 	shadow: TShadowStyleMixin['value'],
 	cx: TMixinResolveContext<TShadowStyleToken['value'], GTokenSet>
 ): TResult<TResolvedShadowStyleMixin['value'], AppError> {
-	const [isResolvedShadowOk, resolvedShadowErr, resolvedShadow] = resolveTokenRef(
-		shadow,
-		cx.tokenSet,
-		cx.mapToToken
-	);
+	const [isResolvedShadowOk, resolvedShadowErr, resolvedShadow] = resolveTokenRef(shadow, {
+		mixin: { tokenSet: cx.mixinTokenSet, mapToTokenValue: cx.mapToMixinTokenValue }
+	});
 	if (!isResolvedShadowOk) {
 		return Err(resolvedShadowErr.wrapWith('#ERR_RESOLVE_SHADOW'));
 	}

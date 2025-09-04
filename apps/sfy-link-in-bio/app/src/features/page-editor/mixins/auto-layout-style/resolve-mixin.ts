@@ -1,30 +1,77 @@
 import { TAutoLayoutStyleMixin, TAutoLayoutStyleToken, TMixinTokenSet } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
-import { resolveNestedTokenRef, TMixinResolveContext } from '../../lib';
+import { resolveTokenRef, TMixinResolveContext } from '../../lib';
 import { TResolvedAutoLayoutStyleMixin } from './types';
 
 export function resolveAutoLayoutStyleMixin<GTokenSet extends TMixinTokenSet>(
 	layout: TAutoLayoutStyleMixin['value'],
 	cx: TMixinResolveContext<TAutoLayoutStyleToken['value'], GTokenSet>
 ): TResult<TResolvedAutoLayoutStyleMixin['value'], AppError> {
+	const [isResolvedAutoLayoutOk, resolvedAutoLayoutErr, resolvedAutoLayout] = resolveTokenRef(
+		layout,
+		{ mixin: { tokenSet: cx.mixinTokenSet, mapToTokenValue: cx.mapToMixinTokenValue } }
+	);
+	if (!isResolvedAutoLayoutOk) {
+		return Err(resolvedAutoLayoutErr.wrapWith('#ERR_RESOLVE_AUTO_LAYOUT'));
+	}
+
 	const [isResolvedHorizontalPaddingOk, resolvedHorizontalPaddingErr, resolvedHorizontalPadding] =
-		resolveNestedTokenRef(layout, cx.tokenSet, cx.mapToToken, 'horizontalPadding');
+		resolveTokenRef(resolvedAutoLayout.horizontalPadding, {
+			mixin: {
+				tokenSet: cx.mixinTokenSet,
+				mapToTokenValue: (ref, tokenSet) =>
+					cx.mapToMixinTokenValue(ref, tokenSet)?.horizontalPadding
+			},
+			variable: {
+				tokenMap: cx.variableTokenMap,
+				expectedType: 'number'
+			}
+		});
 	if (!isResolvedHorizontalPaddingOk) {
 		return Err(resolvedHorizontalPaddingErr.wrapWith('#ERR_RESOLVE_HORIZONTAL_PADDING'));
 	}
 	const [isResolvedVerticalPaddingOk, resolvedVerticalPaddingErr, resolvedVerticalPadding] =
-		resolveNestedTokenRef(layout, cx.tokenSet, cx.mapToToken, 'verticalPadding');
+		resolveTokenRef(resolvedAutoLayout.verticalPadding, {
+			mixin: {
+				tokenSet: cx.mixinTokenSet,
+				mapToTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.verticalPadding
+			},
+			variable: {
+				tokenMap: cx.variableTokenMap,
+				expectedType: 'number'
+			}
+		});
 	if (!isResolvedVerticalPaddingOk) {
 		return Err(resolvedVerticalPaddingErr.wrapWith('#ERR_RESOLVE_VERTICAL_PADDING'));
 	}
 	const [isResolvedHorizontalGapOk, resolvedHorizontalGapErr, resolvedHorizontalGap] =
-		resolveNestedTokenRef(layout, cx.tokenSet, cx.mapToToken, 'horizontalGap');
+		resolveTokenRef(resolvedAutoLayout.horizontalGap, {
+			mixin: {
+				tokenSet: cx.mixinTokenSet,
+				mapToTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.horizontalGap
+			},
+			variable: {
+				tokenMap: cx.variableTokenMap,
+				expectedType: 'number'
+			}
+		});
 	if (!isResolvedHorizontalGapOk) {
 		return Err(resolvedHorizontalGapErr.wrapWith('#ERR_RESOLVE_HORIZONTAL_GAP'));
 	}
-	const [isResolvedVerticalGapOk, resolvedVerticalGapErr, resolvedVerticalGap] =
-		resolveNestedTokenRef(layout, cx.tokenSet, cx.mapToToken, 'verticalGap');
+	const [isResolvedVerticalGapOk, resolvedVerticalGapErr, resolvedVerticalGap] = resolveTokenRef(
+		resolvedAutoLayout.verticalGap,
+		{
+			mixin: {
+				tokenSet: cx.mixinTokenSet,
+				mapToTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.verticalGap
+			},
+			variable: {
+				tokenMap: cx.variableTokenMap,
+				expectedType: 'number'
+			}
+		}
+	);
 	if (!isResolvedVerticalGapOk) {
 		return Err(resolvedVerticalGapErr.wrapWith('#ERR_RESOLVE_VERTICAL_GAP'));
 	}

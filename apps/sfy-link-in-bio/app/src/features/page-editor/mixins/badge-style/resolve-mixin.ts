@@ -16,14 +16,14 @@ export function resolveBadgeStyleMixin<GTokenSet extends TMixinTokenSet>(
 	const [isResolvedAppearanceOk, resolvedAppearanceErr, resolvedAppearance] =
 		resolveAppearanceStyleMixin(badge.appearance, {
 			...cx,
-			mapToToken: (ref, tokenSet) => cx.mapToToken(ref, tokenSet)?.appearance
+			mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.appearance
 		});
 	if (!isResolvedAppearanceOk) {
 		return Err(resolvedAppearanceErr.wrapWith('#ERR_RESOLVE_APPEARANCE_STYLE'));
 	}
 	const [isResolvedFillOk, resolvedFillErr, resolvedFill] = resolveFillStyleMixin(badge.fill, {
 		...cx,
-		mapToToken: (ref, tokenSet) => cx.mapToToken(ref, tokenSet)?.fill
+		mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.fill
 	});
 	if (!isResolvedFillOk) {
 		return Err(resolvedFillErr.wrapWith('#ERR_RESOLVE_FILL_STYLE'));
@@ -32,7 +32,7 @@ export function resolveBadgeStyleMixin<GTokenSet extends TMixinTokenSet>(
 		badge.stroke,
 		{
 			...cx,
-			mapToToken: (ref, tokenSet) => cx.mapToToken(ref, tokenSet)?.stroke
+			mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.stroke
 		}
 	);
 	if (!isResolvedStrokeOk) {
@@ -42,7 +42,7 @@ export function resolveBadgeStyleMixin<GTokenSet extends TMixinTokenSet>(
 		badge.shadow,
 		{
 			...cx,
-			mapToToken: (ref, tokenSet) => cx.mapToToken(ref, tokenSet)?.shadow
+			mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.shadow
 		}
 	);
 	if (!isResolvedShadowOk) {
@@ -50,7 +50,7 @@ export function resolveBadgeStyleMixin<GTokenSet extends TMixinTokenSet>(
 	}
 	const [isResolvedTextOk, resolvedTextErr, resolvedText] = resolveTextStyleMixin(badge.text, {
 		...cx,
-		mapToToken: (ref, tokenSet) => cx.mapToToken(ref, tokenSet)?.text
+		mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.text
 	});
 	if (!isResolvedTextOk) {
 		return Err(resolvedTextErr.wrapWith('#ERR_RESOLVE_TEXT_STYLE'));

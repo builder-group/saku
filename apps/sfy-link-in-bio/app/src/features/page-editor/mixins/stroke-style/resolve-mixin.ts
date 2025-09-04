@@ -8,11 +8,9 @@ export function resolveStrokeStyleMixin<GTokenSet extends TMixinTokenSet>(
 	stroke: TStrokeStyleMixin['value'],
 	cx: TMixinResolveContext<TStrokeStyleToken['value'], GTokenSet>
 ): TResult<TResolvedStrokeStyleMixin['value'], AppError> {
-	const [isResolvedStorkeOk, resolvedStorkeErr, resolvedStroke] = resolveTokenRef(
-		stroke,
-		cx.tokenSet,
-		cx.mapToToken
-	);
+	const [isResolvedStorkeOk, resolvedStorkeErr, resolvedStroke] = resolveTokenRef(stroke, {
+		mixin: { tokenSet: cx.mixinTokenSet, mapToTokenValue: cx.mapToMixinTokenValue }
+	});
 	if (!isResolvedStorkeOk) {
 		return Err(resolvedStorkeErr.wrapWith('#ERR_RESOLVE_STROKE'));
 	}

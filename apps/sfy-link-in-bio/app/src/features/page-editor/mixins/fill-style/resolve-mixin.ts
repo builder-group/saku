@@ -8,11 +8,9 @@ export function resolveFillStyleMixin<GTokenSet extends TMixinTokenSet>(
 	fill: TFillStyleMixin['value'],
 	cx: TMixinResolveContext<TFillStyleToken['value'], GTokenSet>
 ): TResult<TResolvedFillStyleMixin['value'], AppError> {
-	const [isResolvedFillOk, resolvedFillErr, resolvedFill] = resolveTokenRef(
-		fill,
-		cx.tokenSet,
-		cx.mapToToken
-	);
+	const [isResolvedFillOk, resolvedFillErr, resolvedFill] = resolveTokenRef(fill, {
+		mixin: { tokenSet: cx.mixinTokenSet, mapToTokenValue: cx.mapToMixinTokenValue }
+	});
 	if (!isResolvedFillOk) {
 		return Err(resolvedFillErr.wrapWith('#ERR_RESOLVE_FILL'));
 	}

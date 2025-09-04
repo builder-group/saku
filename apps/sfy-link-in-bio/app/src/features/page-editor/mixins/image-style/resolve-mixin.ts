@@ -14,7 +14,7 @@ export function resolveImageStyleMixin<GTokenSet extends TMixinTokenSet>(
 	const [isResolvedAppearanceOk, resolvedAppearanceErr, resolvedAppearance] =
 		resolveAppearanceStyleMixin(image.appearance, {
 			...cx,
-			mapToToken: (ref, tokenSet) => cx.mapToToken(ref, tokenSet)?.appearance
+			mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.appearance
 		});
 	if (!isResolvedAppearanceOk) {
 		return Err(resolvedAppearanceErr.wrapWith('#ERR_RESOLVE_APPEARANCE_STYLE'));
@@ -23,7 +23,7 @@ export function resolveImageStyleMixin<GTokenSet extends TMixinTokenSet>(
 		image.stroke,
 		{
 			...cx,
-			mapToToken: (ref, tokenSet) => cx.mapToToken(ref, tokenSet)?.stroke
+			mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.stroke
 		}
 	);
 	if (!isResolvedStrokeOk) {
@@ -33,7 +33,7 @@ export function resolveImageStyleMixin<GTokenSet extends TMixinTokenSet>(
 		image.shadow,
 		{
 			...cx,
-			mapToToken: (ref, tokenSet) => cx.mapToToken(ref, tokenSet)?.shadow
+			mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.shadow
 		}
 	);
 	if (!isResolvedShadowOk) {

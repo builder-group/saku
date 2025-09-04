@@ -30,9 +30,9 @@ import { TokenActionOverlay } from './TokenActionOverlay';
 export const TokenPaintInput = <
 	GValue extends TPaint,
 	GRefValue extends TRef<GValue> | undefined,
-	GTokenSet extends TMixinTokenSet
+	GMixinTokenSet extends TMixinTokenSet
 >(
-	props: TTokenPaintInputProps<GValue, GRefValue, GTokenSet>
+	props: TTokenPaintInputProps<GValue, GRefValue, GMixinTokenSet>
 ) => {
 	const {
 		state,
@@ -452,15 +452,15 @@ export const TokenPaintInput = <
 export interface TTokenPaintInputProps<
 	GValue extends TPaint,
 	GRefValue extends TRef<GValue> | undefined,
-	GTokenSet extends TMixinTokenSet
+	GMixinTokenSet extends TMixinTokenSet
 > extends Omit<
 		TextFieldProps,
 		'label' | 'labelHidden' | 'value' | 'onChange' | 'onFocus' | 'prefix' | 'autoComplete' | 'error'
 	> {
 	state: TState<GRefValue, any>;
 
-	tokenSet?: TState<GTokenSet, any>;
-	mapToTokenValue: (tokenRef: string, tokenSet?: GTokenSet) => GValue | undefined;
+	tokenSet?: TState<GMixinTokenSet, any>;
+	mapToTokenValue: (key: string, tokenSet?: GMixinTokenSet) => GValue | undefined;
 	onLinkChange?: (isLinked: boolean) => { preventDefault: boolean } | void;
 	onNavigateToToken?: () => void;
 	disabledTokenLink?: boolean;

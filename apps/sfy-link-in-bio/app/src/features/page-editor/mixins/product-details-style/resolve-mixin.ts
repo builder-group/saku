@@ -18,7 +18,7 @@ export function resolveProductDetailsStyleMixin<GTokenSet extends TMixinTokenSet
 	const [isResolvedAppearanceOk, resolvedAppearanceErr, resolvedAppearance] =
 		resolveAppearanceStyleMixin(productDetails.appearance, {
 			...cx,
-			mapToToken: (ref, tokenSet) => cx.mapToToken(ref, tokenSet)?.appearance
+			mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.appearance
 		});
 	if (!isResolvedAppearanceOk) {
 		return Err(resolvedAppearanceErr.wrapWith('#ERR_RESOLVE_APPEARANCE_STYLE'));
@@ -27,7 +27,7 @@ export function resolveProductDetailsStyleMixin<GTokenSet extends TMixinTokenSet
 		productDetails.fill,
 		{
 			...cx,
-			mapToToken: (ref, tokenSet) => cx.mapToToken(ref, tokenSet)?.fill
+			mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.fill
 		}
 	);
 	if (!isResolvedFillOk) {
@@ -37,7 +37,7 @@ export function resolveProductDetailsStyleMixin<GTokenSet extends TMixinTokenSet
 		productDetails.stroke,
 		{
 			...cx,
-			mapToToken: (ref, tokenSet) => cx.mapToToken(ref, tokenSet)?.stroke
+			mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.stroke
 		}
 	);
 	if (!isResolvedStrokeOk) {
@@ -47,7 +47,7 @@ export function resolveProductDetailsStyleMixin<GTokenSet extends TMixinTokenSet
 		productDetails.shadow,
 		{
 			...cx,
-			mapToToken: (ref, tokenSet) => cx.mapToToken(ref, tokenSet)?.shadow
+			mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.shadow
 		}
 	);
 	if (!isResolvedShadowOk) {
@@ -56,7 +56,7 @@ export function resolveProductDetailsStyleMixin<GTokenSet extends TMixinTokenSet
 	const [isResolvedHeadingTextOk, resolvedHeadingTextErr, resolvedHeadingText] =
 		resolveTextStyleMixin(productDetails.headingText, {
 			...cx,
-			mapToToken: (ref, tokenSet) => cx.mapToToken(ref, tokenSet)?.headingText
+			mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.headingText
 		});
 	if (!isResolvedHeadingTextOk) {
 		return Err(resolvedHeadingTextErr.wrapWith('#ERR_RESOLVE_HEADING_TEXT_STYLE'));
@@ -65,7 +65,7 @@ export function resolveProductDetailsStyleMixin<GTokenSet extends TMixinTokenSet
 		productDetails.text,
 		{
 			...cx,
-			mapToToken: (ref, tokenSet) => cx.mapToToken(ref, tokenSet)?.text
+			mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.text
 		}
 	);
 	if (!isResolvedTextOk) {
@@ -74,7 +74,7 @@ export function resolveProductDetailsStyleMixin<GTokenSet extends TMixinTokenSet
 	const [isResolvedPrimaryButtonOk, resolvedPrimaryButtonErr, resolvedPrimaryButton] =
 		resolveButtonStyleMixin(productDetails.primaryButton, {
 			...cx,
-			mapToToken: (ref, tokenSet) => cx.mapToToken(ref, tokenSet)?.primaryButton
+			mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.primaryButton
 		});
 	if (!isResolvedPrimaryButtonOk) {
 		return Err(resolvedPrimaryButtonErr.wrapWith('#ERR_RESOLVE_PRIMARY_BUTTON_STYLE'));
@@ -83,7 +83,7 @@ export function resolveProductDetailsStyleMixin<GTokenSet extends TMixinTokenSet
 		productDetails.image,
 		{
 			...cx,
-			mapToToken: (ref, tokenSet) => cx.mapToToken(ref, tokenSet)?.image
+			mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.image
 		}
 	);
 	if (!isResolvedImageOk) {

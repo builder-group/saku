@@ -9,9 +9,9 @@ import { cn } from '@/lib';
 export const TokenToggleInput = <
 	GValue extends boolean,
 	GRefValue extends TRef<GValue> | undefined,
-	GTokenSet extends TMixinTokenSet
+	GMixinTokenSet extends TMixinTokenSet
 >(
-	props: TTokenToggleInputProps<GValue, GRefValue, GTokenSet>
+	props: TTokenToggleInputProps<GValue, GRefValue, GMixinTokenSet>
 ) => {
 	const {
 		state,
@@ -132,12 +132,12 @@ export const TokenToggleInput = <
 export interface TTokenToggleInputProps<
 	GValue extends boolean,
 	GRefValue extends TRef<GValue> | undefined,
-	GTokenSet extends TMixinTokenSet
+	GMixinTokenSet extends TMixinTokenSet
 > extends Omit<TKnobProps, 'selected' | 'onClick'> {
 	state: TState<GRefValue, any>;
 
-	tokenSet?: TState<GTokenSet, any>;
-	mapToTokenValue: (tokenRef: string, tokenSet?: GTokenSet) => GValue | undefined;
+	tokenSet?: TState<GMixinTokenSet, any>;
+	mapToTokenValue: (key: string, tokenSet?: GMixinTokenSet) => GValue | undefined;
 	onLinkChange?: (isLinked: boolean) => { preventDefault: boolean } | void;
 	onNavigateToToken?: () => void;
 	disabledTokenLink?: boolean;

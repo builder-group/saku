@@ -10,9 +10,9 @@ import { TokenActionOverlay } from './TokenActionOverlay';
 export const TokenTextInput = <
 	GValue extends string | number,
 	GRefValue extends TRef<GValue> | undefined,
-	GTokenSet extends TMixinTokenSet
+	GMixinTokenSet extends TMixinTokenSet
 >(
-	props: TTokenTextInputProps<GValue, GRefValue, GTokenSet>
+	props: TTokenTextInputProps<GValue, GRefValue, GMixinTokenSet>
 ) => {
 	const {
 		state,
@@ -174,14 +174,14 @@ export const TokenTextInput = <
 export interface TTokenTextInputProps<
 	GValue extends string | number,
 	GRefValue extends TRef<GValue> | undefined,
-	GTokenSet extends TMixinTokenSet
+	GMixinTokenSet extends TMixinTokenSet
 > extends Omit<TextFieldProps, 'label' | 'labelHidden' | 'value' | 'onChange'> {
 	state: TState<GRefValue, any>;
 	mapToDisplay?: (value: GValue) => GValue;
 	mapToInternal?: (displayValue: GValue) => GValue;
 
-	tokenSet?: TState<GTokenSet, any>;
-	mapToTokenValue: (tokenRef: string, tokenSet?: GTokenSet) => GValue | undefined;
+	tokenSet?: TState<GMixinTokenSet, any>;
+	mapToTokenValue: (key: string, tokenSet?: GMixinTokenSet) => GValue | undefined;
 	onLinkChange?: (isLinked: boolean) => { preventDefault: boolean } | void;
 	onNavigateToToken?: () => void;
 	disabledTokenLink?: boolean;

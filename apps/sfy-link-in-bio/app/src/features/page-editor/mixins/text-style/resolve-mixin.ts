@@ -16,7 +16,7 @@ export function resolveTextStyleMixin<GTokenSet extends TMixinTokenSet>(
 	const [isResolvedAppearanceOk, resolvedAppearanceErr, resolvedAppearance] =
 		resolveAppearanceStyleMixin(text.appearance, {
 			...cx,
-			mapToToken: (ref, tokenSet) => cx.mapToToken(ref, tokenSet)?.appearance
+			mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.appearance
 		});
 	if (!isResolvedAppearanceOk) {
 		return Err(resolvedAppearanceErr.wrapWith('#ERR_RESOLVE_APPEARANCE_STYLE'));
@@ -24,14 +24,14 @@ export function resolveTextStyleMixin<GTokenSet extends TMixinTokenSet>(
 	const [isResolvedTypographyOk, resolvedTypographyErr, resolvedTypography] =
 		resolveTypographyStyleMixin(text.typography, {
 			...cx,
-			mapToToken: (ref, tokenSet) => cx.mapToToken(ref, tokenSet)?.typography
+			mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.typography
 		});
 	if (!isResolvedTypographyOk) {
 		return Err(resolvedTypographyErr.wrapWith('#ERR_RESOLVE_TYPOGRAPHY_STYLE'));
 	}
 	const [isResolvedFillOk, resolvedFillErr, resolvedFill] = resolveFillStyleMixin(text.fill, {
 		...cx,
-		mapToToken: (ref, tokenSet) => cx.mapToToken(ref, tokenSet)?.fill
+		mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.fill
 	});
 	if (!isResolvedFillOk) {
 		return Err(resolvedFillErr.wrapWith('#ERR_RESOLVE_FILL_STYLE'));
@@ -40,7 +40,7 @@ export function resolveTextStyleMixin<GTokenSet extends TMixinTokenSet>(
 		text.stroke,
 		{
 			...cx,
-			mapToToken: (ref, tokenSet) => cx.mapToToken(ref, tokenSet)?.stroke
+			mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.stroke
 		}
 	);
 	if (!isResolvedStrokeOk) {
@@ -50,7 +50,7 @@ export function resolveTextStyleMixin<GTokenSet extends TMixinTokenSet>(
 		text.shadow,
 		{
 			...cx,
-			mapToToken: (ref, tokenSet) => cx.mapToToken(ref, tokenSet)?.shadow
+			mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.shadow
 		}
 	);
 	if (!isResolvedShadowOk) {
