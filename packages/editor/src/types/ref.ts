@@ -1,9 +1,6 @@
-export type TRef<T> = TTokenRef | T;
+import { TTokenRef } from './token';
 
-export interface TTokenRef {
-	type: 'token';
-	key: string;
-}
+export type TRef<T> = TTokenRef | T;
 
 export type TUnreference<T> = T extends { type: 'token' }
 	? never // Remove token completely

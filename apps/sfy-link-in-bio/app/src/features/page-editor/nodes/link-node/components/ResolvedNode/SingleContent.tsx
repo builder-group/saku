@@ -4,10 +4,10 @@ import { TResolvedLinkNode, TResolvedSingleLinkNodeContent } from '../../types';
 
 export const DefaultContent: React.FC<TSingleContentProps> = (props) => {
 	const {
-		node: { content, autoLayout, appearance, fill, stroke, shadow, text }
+		node: { content, autoLayout, appearance, fill, stroke, shadow, headingText, text, image }
 	} = props;
 
-	const iconBorderRadius = React.useMemo(() => {
+	const imageBorderRadius = React.useMemo(() => {
 		const verticalPadding = autoLayout?.verticalPadding ?? 0;
 		const horizontalPadding = autoLayout?.horizontalPadding ?? 0;
 		const padding = Math.max(verticalPadding, horizontalPadding);
@@ -40,9 +40,7 @@ export const DefaultContent: React.FC<TSingleContentProps> = (props) => {
 				{content.favicon != null && (
 					<div
 						className="h-12 w-12 flex-shrink-0 overflow-hidden bg-gray-100"
-						style={{
-							borderRadius: iconBorderRadius
-						}}
+						style={{ ...image.styles, borderRadius: imageBorderRadius }}
 					>
 						<img
 							src={content.favicon.src}
@@ -56,18 +54,12 @@ export const DefaultContent: React.FC<TSingleContentProps> = (props) => {
 				{/* Link Details */}
 				<div className="min-w-0 flex-grow">
 					{content.title != null && (
-						<p className="truncate font-medium" style={text.styles}>
+						<p className="truncate font-medium" style={headingText.styles}>
 							{content.title}
 						</p>
 					)}
 					{content.description != null && (
-						<p
-							className="truncate opacity-70"
-							style={{
-								...text.styles,
-								fontSize: text.typography.fontSize * 0.875
-							}}
-						>
+						<p className="truncate opacity-70" style={text.styles}>
 							{content.description}
 						</p>
 					)}

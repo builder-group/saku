@@ -39,7 +39,7 @@ export function resolveAppearanceStyleMixin<GTokenSet extends TMixinTokenSet>(
 		styles: {
 			visibility: resolvedVisible ? 'visible' : 'hidden',
 			opacity: `${resolvedOpacity * 100}%`,
-			borderRadius: resolvedBorderRadius ? `${resolvedBorderRadius}px` : undefined
+			borderRadius: resolvedBorderRadius != null ? `${resolvedBorderRadius}px` : undefined
 		}
 	});
 }

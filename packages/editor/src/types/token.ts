@@ -20,6 +20,12 @@ export type TTokenType = TToken['type'];
 export type TTokenMap = TMixinTokenMap<TMixinToken> & TVariableTokenMap;
 export type TTokenKey = TMixinTokenKey | TVariableTokenKey;
 
+export interface TTokenRef {
+	type: 'token';
+	tokenType: TTokenType;
+	key: string;
+}
+
 // =========================================================================
 // Variable tokens (atomic design values)
 // =========================================================================

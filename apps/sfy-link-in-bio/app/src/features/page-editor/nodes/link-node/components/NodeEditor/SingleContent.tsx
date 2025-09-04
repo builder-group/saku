@@ -1,4 +1,4 @@
-import { TSingleLinkNodeContent } from '@repo/editor';
+import { tokenRef, TSingleLinkNodeContent } from '@repo/editor';
 import { Button, InlineError, Text, TextField } from '@shopify/polaris';
 import { useCompute, useFeatureState, useListener } from 'feature-react/state';
 import React from 'react';
@@ -106,12 +106,16 @@ export const SingleContent: React.FC<TSingleContentProps> = (props) => {
 					const hash = cx.editor.registerImage(image.url, image.fileName ?? 'favicon');
 					if (hash != null) {
 						cx.node._v.content.userFavicon = hash;
+						cx.node._v.headingText.typography.textAlignHorizontal = 'start';
+						cx.node._v.text.typography.textAlignHorizontal = 'start';
 						cx.node._notify();
 					}
 					break;
 				}
 				case 'Removed': {
 					cx.node._v.content.userFavicon = null;
+					cx.node._v.headingText.typography.textAlignHorizontal = tokenRef('heading');
+					cx.node._v.text.typography.textAlignHorizontal = tokenRef();
 					cx.node._notify();
 					break;
 				}

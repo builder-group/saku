@@ -6,6 +6,7 @@ import {
 	resolveAppearanceStyleMixin,
 	resolveAutoLayoutStyleMixin,
 	resolveFillStyleMixin,
+	resolveImageStyleMixin,
 	resolveShadowStyleMixin,
 	resolveStrokeStyleMixin,
 	resolveTextStyleMixin
@@ -16,7 +17,18 @@ export function resolveLinkNode(
 	node: TLinkNode,
 	cx: TNodeResolveContext
 ): TResult<TResolvedLinkNode, AppError> {
-	const { content, autoLayout, appearance, fill, stroke, shadow, text, ...rest } = node;
+	const {
+		content,
+		autoLayout,
+		appearance,
+		fill,
+		stroke,
+		shadow,
+		headingText,
+		text,
+		image,
+		...rest
+	} = node;
 
 	// Resolve content
 	let resolvedContent: TResolvedLinkNodeContent;
@@ -85,6 +97,15 @@ export function resolveLinkNode(
 	if (!isResolvedShadowOk) {
 		return Err(resolvedShadowErr.wrapWith('#ERR_RESOLVE_SHADOW_STYLE'));
 	}
+	const [isResolvedHeadingTextOk, resolvedHeadingTextErr, resolvedHeadingText] =
+		resolveTextStyleMixin(headingText, {
+			node: cx,
+			tokenSet: cx.site.getTokenSet('text'),
+			mapToToken: (ref, tokenSet) => tokenSet?.[ref]?.value
+		});
+	if (!isResolvedHeadingTextOk) {
+		return Err(resolvedHeadingTextErr.wrapWith('#ERR_RESOLVE_HEADING_TEXT_STYLE'));
+	}
 	const [isResolvedTextOk, resolvedTextErr, resolvedText] = resolveTextStyleMixin(text, {
 		node: cx,
 		tokenSet: cx.site.getTokenSet('text'),
@@ -92,6 +113,14 @@ export function resolveLinkNode(
 	});
 	if (!isResolvedTextOk) {
 		return Err(resolvedTextErr.wrapWith('#ERR_RESOLVE_TEXT_STYLE'));
+	}
+	const [isResolvedImageOk, resolvedImageErr, resolvedImage] = resolveImageStyleMixin(image, {
+		node: cx,
+		tokenSet: cx.site.getTokenSet('image'),
+		mapToToken: (ref, tokenSet) => tokenSet?.[ref]?.value
+	});
+	if (!isResolvedImageOk) {
+		return Err(resolvedImageErr.wrapWith('#ERR_RESOLVE_IMAGE_STYLE'));
 	}
 
 	return Ok({
@@ -102,6 +131,8 @@ export function resolveLinkNode(
 		fill: resolvedFill,
 		stroke: resolvedStroke,
 		shadow: resolvedShadow,
-		text: resolvedText
+		headingText: resolvedHeadingText,
+		text: resolvedText,
+		image: resolvedImage
 	});
 }
