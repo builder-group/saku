@@ -1,7 +1,7 @@
 import { isTokenRef, TMixinTokenSet, tokenRef, TRef } from '@repo/editor';
 import { Text, TextField, TextFieldProps } from '@shopify/polaris';
 import { useCombinedCompute, useCompute } from 'feature-react/state';
-import { createState, TState } from 'feature-state';
+import { TState } from 'feature-state';
 import React from 'react';
 import { LinkIcon, LinkOffIcon } from '@/components';
 import { cn } from '@/lib';
@@ -34,11 +34,11 @@ export const TokenTextInput = <
 
 	const [displayValue, setDisplayValue] = React.useState<string>('');
 	const resolvedValue = useCombinedCompute(
-		[state, tokenSet ?? createState(undefined)],
-		([{ value: stateValue }, { value: tokenMapValue }]) => {
-			const rawValue = isTokenRef(stateValue)
-				? mapToTokenValue(stateValue.key, tokenMapValue)
-				: (stateValue as GValue);
+		[state, tokenSet],
+		([stateCx, tokenSetCx]) => {
+			const rawValue = isTokenRef(stateCx.value)
+				? mapToTokenValue(stateCx.value.key, tokenSetCx?.value)
+				: (stateCx.value as GValue);
 			if (rawValue == null) {
 				return undefined;
 			}

@@ -20,7 +20,7 @@ import {
 	TextFieldProps
 } from '@shopify/polaris';
 import { useCombinedCompute, useCompute } from 'feature-react/state';
-import { createState, TState } from 'feature-state';
+import { TState } from 'feature-state';
 import React from 'react';
 import { ImageUploadField, LinkIcon, LinkOffIcon, TImageUploadEvent } from '@/components';
 import { TPageEditor } from '@/features/page-editor';
@@ -85,11 +85,11 @@ export const TokenPaintInput = <
 	const [displayValue, setDisplayValue] = React.useState('');
 	const lastChangeFromText = React.useRef(false);
 	const resolvedValue = useCombinedCompute(
-		[state, tokenSet ?? createState(undefined)],
-		([{ value: stateValue }, { value: tokenMapValue }]) => {
-			return isTokenRef(stateValue)
-				? mapToTokenValue(stateValue.key, tokenMapValue)
-				: (stateValue as GValue);
+		[state, tokenSet],
+		([stateCx, tokenSetCx]) => {
+			return isTokenRef(stateCx.value)
+				? mapToTokenValue(stateCx.value.key, tokenSetCx?.value)
+				: (stateCx.value as GValue);
 		},
 		[mapToTokenValue]
 	);

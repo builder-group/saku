@@ -1,7 +1,7 @@
 import { isTokenRef, TMixinTokenSet, tokenRef, TRef } from '@repo/editor';
 import { Text, Tooltip } from '@shopify/polaris';
 import { useCombinedCompute, useCompute } from 'feature-react/state';
-import { createState, TState } from 'feature-state';
+import { TState } from 'feature-state';
 import React from 'react';
 import { Knob, LinkIcon, LinkOffIcon, TKnobProps } from '@/components';
 import { cn } from '@/lib';
@@ -28,11 +28,11 @@ export const TokenToggleInput = <
 
 	const [displayValue, setDisplayValue] = React.useState<boolean>(false);
 	const resolvedValue = useCombinedCompute(
-		[state, tokenSet ?? createState(undefined)],
-		([{ value: stateValue }, { value: tokenMapValue }]) => {
-			return isTokenRef(stateValue)
-				? mapToTokenValue(stateValue.key, tokenMapValue)
-				: (stateValue as GValue);
+		[state, tokenSet],
+		([stateCx, tokenSetCx]) => {
+			return isTokenRef(stateCx.value)
+				? mapToTokenValue(stateCx.value.key, tokenSetCx?.value)
+				: (stateCx.value as GValue);
 		},
 		[mapToTokenValue]
 	);
