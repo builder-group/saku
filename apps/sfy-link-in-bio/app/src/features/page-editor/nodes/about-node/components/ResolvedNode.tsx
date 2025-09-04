@@ -8,7 +8,7 @@ export const ResolvedAboutNode = React.forwardRef<
 	TResolvedNodeProps<TResolvedAboutNode>
 >((props, ref) => {
 	const {
-		node: { content, autoLayout, appearance, fill, stroke, shadow, text },
+		node: { content, autoLayout, appearance, fill, stroke, shadow, headingText, text, image },
 		...divProps
 	} = props;
 
@@ -27,7 +27,7 @@ export const ResolvedAboutNode = React.forwardRef<
 				<div className="flex flex-col items-center gap-4">
 					{/* Avatar */}
 					{content.profilePicture != null ? (
-						<div className="h-20 w-20 overflow-hidden rounded-full">
+						<div className="h-20 w-20 overflow-hidden" style={image.styles}>
 							<img
 								src={content.profilePicture.src}
 								alt={content.name}
@@ -36,19 +36,16 @@ export const ResolvedAboutNode = React.forwardRef<
 							/>
 						</div>
 					) : (
-						<div className="flex h-20 w-20 items-center justify-center rounded-full bg-neutral-200 text-gray-500">
+						<div
+							className="flex h-20 w-20 items-center justify-center bg-neutral-200 text-gray-500"
+							style={image.styles}
+						>
 							{content.name.charAt(0).toUpperCase()}
 						</div>
 					)}
 
 					{/* Name */}
-					<h1
-						className="font-semibold"
-						style={{
-							...text.styles,
-							fontSize: text.typography.fontSize * 1.25 // Scale up for title
-						}}
-					>
+					<h1 className="font-semibold" style={headingText.styles}>
 						{content.name}
 					</h1>
 

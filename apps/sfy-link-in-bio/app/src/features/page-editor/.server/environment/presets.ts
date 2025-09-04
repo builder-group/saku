@@ -399,7 +399,8 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					image: {
 						appearance: {
 							visible: true,
-							opacity: tokenRef()
+							opacity: tokenRef(),
+							borderRadius: tokenRef()
 						},
 						stroke: tokenRef(),
 						shadow: tokenRef()

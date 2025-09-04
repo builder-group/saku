@@ -23,9 +23,9 @@ export const aboutNodeMetadata: TNodeMetadata<'about'> = {
 			opacity: tokenRef(),
 			borderRadius: tokenRef()
 		},
-		fill: tokenRef(),
-		stroke: tokenRef(),
-		shadow: tokenRef(),
+		fill: null,
+		stroke: null,
+		shadow: null,
 		headingText: {
 			appearance: {
 				visible: true,
@@ -63,7 +63,8 @@ export const aboutNodeMetadata: TNodeMetadata<'about'> = {
 		image: {
 			appearance: {
 				visible: true,
-				opacity: tokenRef()
+				opacity: tokenRef(),
+				borderRadius: tokenRef()
 			},
 			stroke: tokenRef(),
 			shadow: tokenRef()

@@ -1,5 +1,6 @@
 import { getFontMetadataByFamily, hexToRgba } from '@repo/editor';
 import { Text } from '@shopify/polaris';
+import { createState } from 'feature-state';
 import React from 'react';
 import { themes, type TTheme } from '../../../../../environment';
 import { createTokensFromTheme, TPageEditor } from '../../../../../lib';
@@ -13,10 +14,12 @@ export const ThemeTab: React.FC<TThemeTabProps> = (props) => {
 			const tokens = createTokensFromTheme(theme);
 			tokens.forEach((token) => {
 				if (token.type === 'mixin') {
-					editor.mixinTokenMap[token.mixinKey]?.set((currentTokens: any) => ({
-						...currentTokens,
-						[token.key]: token
-					}));
+					if (editor.mixinTokenMap[token.mixinKey] == null) {
+						editor.mixinTokenMap[token.mixinKey] = createState({});
+					}
+					// @ts-expect-error - we ensure object exists above
+					editor.mixinTokenMap[token.mixinKey]._v[token.key] = token;
+					editor.mixinTokenMap[token.mixinKey]?._notify();
 				}
 			});
 

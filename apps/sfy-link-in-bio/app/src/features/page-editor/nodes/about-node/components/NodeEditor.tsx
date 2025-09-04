@@ -9,6 +9,7 @@ import {
 	AppearanceStyleMixinEditor,
 	AutoLayoutStyleMixinEditor,
 	FillStyleMixinEditor,
+	ImageStyleMixinEditor,
 	ShadowStyleMixinEditor,
 	StrokeStyleMixinEditor,
 	TextStyleMixinEditor
@@ -272,6 +273,20 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 					/>
 				</AccordionSection>
 				<AccordionSection
+					title="Heading Text"
+					collapsibleClassName="px-0 space-y-3"
+					size="tight"
+					defaultOpen={true}
+				>
+					<TextStyleMixinEditor
+						state={nodeState}
+						mapValue={(value) => value.headingText}
+						tokenSet={editor.mixinTokenMap.text}
+						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
+						editor={editor}
+					/>
+				</AccordionSection>
+				<AccordionSection
 					title="Text"
 					collapsibleClassName="px-0 space-y-3"
 					size="tight"
@@ -281,6 +296,20 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 						state={nodeState}
 						mapValue={(value) => value.text}
 						tokenSet={editor.mixinTokenMap.text}
+						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
+						editor={editor}
+					/>
+				</AccordionSection>
+				<AccordionSection
+					title="Image"
+					collapsibleClassName="px-0 space-y-3"
+					size="tight"
+					defaultOpen={true}
+				>
+					<ImageStyleMixinEditor
+						state={nodeState}
+						mapValue={(value) => value.image}
+						tokenSet={editor.mixinTokenMap.image}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
 						editor={editor}
 					/>
