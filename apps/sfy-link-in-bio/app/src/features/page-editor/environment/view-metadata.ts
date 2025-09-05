@@ -1,20 +1,20 @@
 import { IconSource } from '@shopify/polaris';
-import { LayoutSectionIcon, SettingsIcon, ViewIcon } from '@/components';
+import { PolarisLayoutSectionIcon, PolarisSettingsIcon, PolarisViewIcon } from '@/components';
 
 export const viewMetadataMap = {
 	layers: {
 		type: 'layers',
-		icon: LayoutSectionIcon,
+		icon: PolarisLayoutSectionIcon,
 		label: 'Layers'
 	} satisfies TViewMetadata,
 	preview: {
 		type: 'preview',
-		icon: ViewIcon,
+		icon: PolarisViewIcon,
 		label: 'Preview'
 	} satisfies TViewMetadata,
 	settings: {
 		type: 'settings',
-		icon: SettingsIcon,
+		icon: PolarisSettingsIcon,
 		label: 'Settings'
 	} satisfies TViewMetadata
 };

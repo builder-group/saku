@@ -1,7 +1,12 @@
 import { Button, ButtonGroup, Icon } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react';
 import React from 'react';
-import { DesktopIcon, LiveIcon, MobileIcon, PageDownIcon } from '@/components';
+import {
+	PolarisDesktopIcon,
+	PolarisLiveIcon,
+	PolarisMobileIcon,
+	PolarisPageDownIcon
+} from '@/components';
 import { PublishButton } from '../../../input';
 import { PanelHeader as BasePanelHeader } from '../../PanelHeader';
 import { TPreviewPanelContext } from './create-preview-panel-context';
@@ -51,14 +56,14 @@ export const PanelHeader: React.FC<TPanelHeaderProps> = (props) => {
 		<BasePanelHeader className="justify-between">
 			<ButtonGroup variant="segmented">
 				<Button
-					icon={<Icon source={DesktopIcon} />}
+					icon={<Icon source={PolarisDesktopIcon} />}
 					pressed={viewMode === 'desktop'}
 					onClick={() => cx.switchViewMode('desktop')}
 					variant="secondary"
 					accessibilityLabel="Desktop view"
 				/>
 				<Button
-					icon={<Icon source={MobileIcon} />}
+					icon={<Icon source={PolarisMobileIcon} />}
 					pressed={viewMode === 'mobile'}
 					onClick={() => cx.switchViewMode('mobile')}
 					variant="secondary"
@@ -68,13 +73,13 @@ export const PanelHeader: React.FC<TPanelHeaderProps> = (props) => {
 
 			<div className="flex items-center gap-2">
 				<Button
-					icon={PageDownIcon}
+					icon={PolarisPageDownIcon}
 					variant="secondary"
 					onClick={handleJsonExport}
 					accessibilityLabel="Export as JSON"
 				/>
 				<Button
-					icon={LiveIcon}
+					icon={PolarisLiveIcon}
 					variant="secondary"
 					onClick={handleViewProductionSite}
 					accessibilityLabel="View production site"

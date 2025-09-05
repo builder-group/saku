@@ -9,9 +9,9 @@ import {
 	ClipboardButton,
 	FeedbackCard,
 	IframeContent,
+	PolarisViewIcon,
 	QuickHelpCard,
-	SitePreview,
-	ViewIcon
+	SitePreview
 } from '@/components';
 import { appConfig, coreApiClient, logger } from '@/environment';
 import { createShopifyTokenMiddleware, resultLoader, withResultLoader } from '@/lib';
@@ -137,7 +137,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 									{/* Action Buttons */}
 									<div className="flex items-center gap-2">
 										<Button
-											icon={ViewIcon}
+											icon={PolarisViewIcon}
 											variant="secondary"
 											url={site.url}
 											target="_blank"

@@ -1,7 +1,7 @@
 import { useAppBridge } from '@shopify/app-bridge-react';
 import { DropZone, Icon, Spinner, Text } from '@shopify/polaris';
 import React from 'react';
-import { DeleteIcon, ReplaceIcon } from '@/components';
+import { PolarisDeleteIcon, PolarisReplaceIcon } from '@/components';
 import { cn, listMediaFiles, uploadFiles } from '@/lib';
 
 export const ImageUploadField: React.FC<TImageUploadFieldProps> = (props) => {
@@ -232,7 +232,7 @@ export const ImageUploadField: React.FC<TImageUploadFieldProps> = (props) => {
 						onClick={handleFilePicker}
 						disabled={isUploading || isFetchingMedia}
 					>
-						{isFetchingMedia ? <Spinner size="small" /> : <Icon source={ReplaceIcon} />}
+						{isFetchingMedia ? <Spinner size="small" /> : <Icon source={PolarisReplaceIcon} />}
 					</button>
 					<button
 						className={cn(
@@ -242,7 +242,7 @@ export const ImageUploadField: React.FC<TImageUploadFieldProps> = (props) => {
 						onClick={handleRemove}
 						disabled={isUploading}
 					>
-						<Icon source={DeleteIcon} />
+						<Icon source={PolarisDeleteIcon} />
 					</button>
 				</div>
 			)}

@@ -8,7 +8,7 @@ import { Button, Text } from '@shopify/polaris';
 import { useCompute } from 'feature-react';
 import { TState } from 'feature-state';
 import React from 'react';
-import { HideIcon, ViewIcon } from '@/components';
+import { PolarisHideIcon, PolarisViewIcon } from '@/components';
 import { useMapState } from '@/hooks';
 import { TokenTextInput } from '../../components';
 import { TPageEditor } from '../../lib';
@@ -94,9 +94,19 @@ export const AppearanceStyleMixinEditor = <
 
 				{!disabledVisibilityToggle &&
 					(isVisible ? (
-						<Button icon={ViewIcon} onClick={handleToggleVisibility} variant="plain" size="micro" />
+						<Button
+							icon={PolarisViewIcon}
+							onClick={handleToggleVisibility}
+							variant="plain"
+							size="micro"
+						/>
 					) : (
-						<Button icon={HideIcon} onClick={handleToggleVisibility} variant="plain" size="micro" />
+						<Button
+							icon={PolarisHideIcon}
+							onClick={handleToggleVisibility}
+							variant="plain"
+							size="micro"
+						/>
 					))}
 			</div>
 			<div className="grid grid-cols-2 gap-3">

@@ -3,7 +3,7 @@ import { TProductNode } from '@repo/editor';
 import { Button, IndexTable, Scrollable, Text, useIndexResourceState } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react/state';
 import React from 'react';
-import { AccordionSection, DeleteIcon, ProductAddIcon } from '@/components';
+import { AccordionSection, PolarisDeleteIcon, PolarisProductAddIcon } from '@/components';
 import { capitalizeFirstLetter, isProduct, mutateWithReferenceUpdate } from '@/lib';
 import { TNodeEditorComponentProps } from '../../../lib';
 import {
@@ -76,7 +76,7 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 	const bulkActions = React.useMemo(
 		() => [
 			{
-				icon: DeleteIcon,
+				icon: PolarisDeleteIcon,
 				destructive: true,
 				content: `Delete ${selectedResources.length > 1 ? `${selectedResources.length} ${resourceName.plural}` : resourceName.singular}`,
 				disabled: variantRows.length === 1 || selectedResources.length >= variantRows.length,
@@ -346,7 +346,11 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 								</Scrollable>
 							</div>
 						) : (
-							<Button onClick={handleSelectProduct} variant="secondary" icon={ProductAddIcon}>
+							<Button
+								onClick={handleSelectProduct}
+								variant="secondary"
+								icon={PolarisProductAddIcon}
+							>
 								Select Product
 							</Button>
 						)}

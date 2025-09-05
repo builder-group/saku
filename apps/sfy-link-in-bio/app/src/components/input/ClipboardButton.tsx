@@ -1,7 +1,7 @@
 import { useAppBridge } from '@shopify/app-bridge-react';
 import { Button } from '@shopify/polaris';
 import React from 'react';
-import { ClipboardCheckIcon, ClipboardIcon } from '../display';
+import { PolarisClipboardCheckIcon, PolarisClipboardIcon } from '../display';
 
 export const ClipboardButton: React.FC<TProps> = ({ textToCopy, ...buttonProps }) => {
 	const [isCopied, setIsCopied] = React.useState(false);
@@ -37,7 +37,7 @@ export const ClipboardButton: React.FC<TProps> = ({ textToCopy, ...buttonProps }
 	return (
 		<Button
 			{...buttonProps}
-			icon={isCopied ? ClipboardCheckIcon : ClipboardIcon}
+			icon={isCopied ? PolarisClipboardCheckIcon : PolarisClipboardIcon}
 			onClick={handleCopyToClipboard}
 			disabled={isDisabled || buttonProps.disabled}
 		/>

@@ -1,7 +1,7 @@
 import { shortId } from '@blgc/utils';
 import { BlockStack, Button, Card, Text } from '@shopify/polaris';
 import React from 'react';
-import { ChatIcon, QuestionCircleIcon } from '@/components/display/icons';
+import { PolarisChatIcon, PolarisQuestionCircleIcon } from '@/components/display/icons';
 import { useCrisp } from '../../provider';
 
 export const QuickHelpCard: React.FC<TQuickHelpCardProps> = (props) => {
@@ -29,13 +29,13 @@ export const QuickHelpCard: React.FC<TQuickHelpCardProps> = (props) => {
 					<Button
 						fullWidth
 						variant="secondary"
-						icon={ChatIcon}
+						icon={PolarisChatIcon}
 						onClick={handleStartChat}
 						disabled={crisp == null}
 					>
 						Start Chat
 					</Button>
-					<Button fullWidth variant="secondary" icon={QuestionCircleIcon} url={helpPageUrl}>
+					<Button fullWidth variant="secondary" icon={PolarisQuestionCircleIcon} url={helpPageUrl}>
 						Help & Resources
 					</Button>
 				</BlockStack>

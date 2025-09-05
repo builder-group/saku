@@ -2,7 +2,7 @@ import { Collapsible, Icon, Text } from '@shopify/polaris';
 import { cva, type VariantProps } from 'class-variance-authority';
 import React from 'react';
 import { cn } from '../../lib';
-import { ChevronDownIcon } from '../display';
+import { PolarisChevronDownIcon } from '../display';
 
 export const AccordionSection = React.forwardRef<HTMLDivElement, TAccordionSectionProps>(
 	(
@@ -52,7 +52,7 @@ export const AccordionSection = React.forwardRef<HTMLDivElement, TAccordionSecti
 						className="ml-2 transition-transform duration-200"
 						style={{ transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
 					>
-						<Icon source={ChevronDownIcon} tone="subdued" />
+						<Icon source={PolarisChevronDownIcon} tone="subdued" />
 					</span>
 				</div>
 				<Collapsible open={isOpen} id={`accordion-section-${title.replace(/\s+/g, '-')}`}>

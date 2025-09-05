@@ -1,7 +1,7 @@
 import { Icon, Text } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react';
 import React from 'react';
-import { PlusCircleIcon } from '@/components';
+import { PolarisPlusCircleIcon } from '@/components';
 import { cn } from '@/lib';
 import { TPageEditor } from '../../../../lib';
 import { LayerSelectorPopover } from './LayerSelectorPopover';
@@ -22,7 +22,7 @@ export const AddLayerButton: React.FC<TAddLayerButtonProps> = (props) => {
 					)}
 				>
 					<div>
-						<Icon source={PlusCircleIcon} />
+						<Icon source={PolarisPlusCircleIcon} />
 					</div>
 					<Text as="p" variant="bodyMd">
 						Add layer

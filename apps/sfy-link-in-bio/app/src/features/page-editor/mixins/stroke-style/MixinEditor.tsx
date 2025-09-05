@@ -10,7 +10,7 @@ import { Button, Text } from '@shopify/polaris';
 import { useCompute } from 'feature-react';
 import { TState } from 'feature-state';
 import React from 'react';
-import { Badge, LinkIcon, LinkOffIcon, MinusIcon, PlusIcon } from '@/components';
+import { Badge, LinkIcon, LinkOffIcon, PolarisMinusIcon, PolarisPlusIcon } from '@/components';
 import { useMapState } from '@/hooks';
 import { TokenActionOverlay, TokenColorInput, TokenTextInput } from '../../components';
 import { TPageEditor } from '../../lib';
@@ -169,9 +169,14 @@ export const StrokeStyleMixinEditor = <
 
 				{/* Add/Remove stroke buttons */}
 				{isSet ? (
-					<Button icon={MinusIcon} onClick={handleRemoveStroke} variant="plain" size="micro" />
+					<Button
+						icon={PolarisMinusIcon}
+						onClick={handleRemoveStroke}
+						variant="plain"
+						size="micro"
+					/>
 				) : (
-					<Button icon={PlusIcon} onClick={handleAddStroke} variant="plain" size="micro" />
+					<Button icon={PolarisPlusIcon} onClick={handleAddStroke} variant="plain" size="micro" />
 				)}
 			</div>
 

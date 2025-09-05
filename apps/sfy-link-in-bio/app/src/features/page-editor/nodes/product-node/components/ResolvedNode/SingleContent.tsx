@@ -166,7 +166,7 @@ export const SingleContent: React.FC<TSingleContentProps> = (props) => {
 						<div className="flex flex-wrap items-center gap-2">
 							{/* Price Badge */}
 							{selectedVariant?.price && (
-								<div className="badge badge-sm" style={badge.styles}>
+								<div className="px-2 py-0.5" style={badge.styles}>
 									<div style={badge.text.styles}>
 										{getCurrencySymbol(selectedVariant.price.currencyCode)}
 										{selectedVariant.price.amount}
@@ -196,7 +196,7 @@ export const SingleContent: React.FC<TSingleContentProps> = (props) => {
 											))}
 										</select>
 										<div
-											className="badge badge-ghost badge-sm pointer-events-none flex max-w-24 cursor-pointer items-center gap-1"
+											className="pointer-events-none flex max-w-24 cursor-pointer items-center gap-1 px-2 py-0.5"
 											style={badge.styles}
 										>
 											<span className="truncate" style={badge.text.styles}>
