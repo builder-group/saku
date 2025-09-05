@@ -248,7 +248,7 @@ export const SingleContent: React.FC<TSingleContentProps> = (props) => {
 								handleBuyNow();
 							}}
 							disabled={isBuying}
-							className="ml-3 px-3 py-1.5"
+							className="ml-3 cursor-pointer px-3 py-1.5"
 							style={primaryButton.styles}
 						>
 							<div style={primaryButton.text.styles}>

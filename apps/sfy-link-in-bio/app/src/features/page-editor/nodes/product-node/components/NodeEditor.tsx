@@ -445,14 +445,28 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 					/>
 				</AccordionSection>
 				<AccordionSection
-					title="Badge"
+					title="Price Badge"
 					collapsibleClassName="px-0 space-y-3"
 					size="tight"
 					defaultOpen={true}
 				>
 					<BadgeStyleMixinEditor
 						state={nodeState}
-						mapValue={(value) => value.badge}
+						mapValue={(value) => value.primaryBadge}
+						tokenSet={editor.mixinTokenMap.badge}
+						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
+						editor={editor}
+					/>
+				</AccordionSection>
+				<AccordionSection
+					title="Variant Badge"
+					collapsibleClassName="px-0 space-y-3"
+					size="tight"
+					defaultOpen={true}
+				>
+					<BadgeStyleMixinEditor
+						state={nodeState}
+						mapValue={(value) => value.neutralBadge}
 						tokenSet={editor.mixinTokenMap.badge}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
 						editor={editor}
