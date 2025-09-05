@@ -14,7 +14,15 @@ export const BadgeStyleMixinEditor = <
 >(
 	props: TBadgeStyleMixinEditorProps<GValue, GTokenSet>
 ) => {
-	const { state, mapValue, tokenSet, mapToToken, disabledTokenLink = false, editor } = props;
+	const {
+		state,
+		mapValue,
+		tokenSet,
+		tokenRefKey,
+		mapToToken,
+		disabledTokenLink = false,
+		editor
+	} = props;
 
 	return (
 		<>
@@ -22,6 +30,7 @@ export const BadgeStyleMixinEditor = <
 				state={state}
 				mapValue={(value) => mapValue(value).appearance}
 				tokenSet={tokenSet}
+				tokenRefKey={tokenRefKey}
 				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.appearance}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
@@ -34,6 +43,7 @@ export const BadgeStyleMixinEditor = <
 					mapValue(state._v).fill = value;
 				}}
 				tokenSet={tokenSet}
+				tokenRefKey={tokenRefKey}
 				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.fill}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
@@ -46,6 +56,7 @@ export const BadgeStyleMixinEditor = <
 					mapValue(state._v).stroke = value;
 				}}
 				tokenSet={tokenSet}
+				tokenRefKey={tokenRefKey}
 				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.stroke}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
@@ -58,6 +69,7 @@ export const BadgeStyleMixinEditor = <
 					mapValue(state._v).shadow = value;
 				}}
 				tokenSet={tokenSet}
+				tokenRefKey={tokenRefKey}
 				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.shadow}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
@@ -72,6 +84,7 @@ export const BadgeStyleMixinEditor = <
 				state={state}
 				mapValue={(value) => mapValue(value).text}
 				tokenSet={tokenSet}
+				tokenRefKey={tokenRefKey}
 				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.text}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
@@ -87,6 +100,7 @@ interface TBadgeStyleMixinEditorProps<
 	state: TState<GValue, any>;
 	mapValue: (value: GValue) => TBadgeStyleMixin['value'];
 	tokenSet?: TState<GTokenSet, any>;
+	tokenRefKey?: string;
 	mapToToken?: (ref: string, tokenSet?: GTokenSet) => TBadgeStyleToken['value'] | undefined;
 	disabledTokenLink?: boolean;
 	editor: TPageEditor;

@@ -16,8 +16,8 @@ export const TokenToggleInput = <
 	const {
 		state,
 		tokenSet,
+		tokenRefKey = 'default',
 		mapToTokenValue,
-		onNavigateToToken,
 		onLinkChange,
 		disabledTokenLink = false,
 		label,
@@ -65,9 +65,9 @@ export const TokenToggleInput = <
 				state.set(tokenValue as GRefValue);
 			}
 		} else {
-			state.set(tokenRef('default') as GRefValue);
+			state.set(tokenRef(tokenRefKey) as GRefValue);
 		}
-	}, [onLinkChange, isLinked, state, mapToTokenValue, tokenSet]);
+	}, [onLinkChange, isLinked, state, mapToTokenValue, tokenSet, tokenRefKey]);
 
 	// =========================================================================
 	// Effects
@@ -137,9 +137,9 @@ export interface TTokenToggleInputProps<
 	state: TState<GRefValue, any>;
 
 	tokenSet?: TState<GMixinTokenSet, any>;
+	tokenRefKey?: string;
 	mapToTokenValue: (key: string, tokenSet?: GMixinTokenSet) => GValue | undefined;
 	onLinkChange?: (isLinked: boolean) => { preventDefault: boolean } | void;
-	onNavigateToToken?: () => void;
 	disabledTokenLink?: boolean;
 
 	label: string;

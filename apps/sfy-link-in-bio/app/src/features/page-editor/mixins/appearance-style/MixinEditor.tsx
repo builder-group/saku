@@ -23,6 +23,7 @@ export const AppearanceStyleMixinEditor = <
 		state,
 		mapValue,
 		tokenSet,
+		tokenRefKey,
 		mapToToken,
 		disabledTokenLink = false,
 		disabledVisibilityToggle = false,
@@ -119,6 +120,7 @@ export const AppearanceStyleMixinEditor = <
 					step={5}
 					state={opacityState}
 					tokenSet={tokenSet}
+					tokenRefKey={tokenRefKey}
 					mapToTokenValue={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.opacity}
 					mapToDisplay={(value) => Math.round(value * 100)}
 					mapToInternal={(displayValue) => displayValue / 100}
@@ -135,6 +137,7 @@ export const AppearanceStyleMixinEditor = <
 						step={4}
 						state={borderRadiusState}
 						tokenSet={tokenSet}
+						tokenRefKey={tokenRefKey}
 						mapToTokenValue={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.borderRadius}
 						onNavigateToToken={handleNavigateToToken}
 						disabledTokenLink={disabledTokenLink}
@@ -152,6 +155,7 @@ interface TAppearanceStyleMixinEditorProps<
 	state: TState<GValue, any>;
 	mapValue: (value: GValue) => TAppearanceStyleMixin['value'];
 	tokenSet?: TState<GTokenSet, any>;
+	tokenRefKey?: string;
 	mapToToken?: (ref: string, tokenSet?: GTokenSet) => TAppearanceStyleToken['value'] | undefined;
 	disabledTokenLink?: boolean;
 	disabledVisibilityToggle?: boolean;

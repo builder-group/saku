@@ -19,6 +19,7 @@ export const TokenTextInput = <
 		mapToDisplay,
 		mapToInternal,
 		tokenSet,
+		tokenRefKey = 'default',
 		mapToTokenValue,
 		onNavigateToToken,
 		onLinkChange,
@@ -109,9 +110,9 @@ export const TokenTextInput = <
 				state.set(tokenValue as GRefValue);
 			}
 		} else {
-			state.set(tokenRef('default') as GRefValue);
+			state.set(tokenRef(tokenRefKey) as GRefValue);
 		}
-	}, [onLinkChange, isLinked, state, mapToTokenValue, tokenSet]);
+	}, [onLinkChange, isLinked, state, mapToTokenValue, tokenSet, tokenRefKey]);
 
 	// =========================================================================
 	// Effects
@@ -181,6 +182,7 @@ export interface TTokenTextInputProps<
 	mapToInternal?: (displayValue: GValue) => GValue;
 
 	tokenSet?: TState<GMixinTokenSet, any>;
+	tokenRefKey?: string;
 	mapToTokenValue: (key: string, tokenSet?: GMixinTokenSet) => GValue | undefined;
 	onLinkChange?: (isLinked: boolean) => { preventDefault: boolean } | void;
 	onNavigateToToken?: () => void;

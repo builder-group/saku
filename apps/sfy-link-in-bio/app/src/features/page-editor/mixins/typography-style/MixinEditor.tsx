@@ -19,7 +19,15 @@ export const TypographyStyleMixinEditor = <
 >(
 	props: TTypographyStyleMixinEditorProps<GValue, GTokenSet>
 ) => {
-	const { state, mapValue, tokenSet, mapToToken, disabledTokenLink = false, editor } = props;
+	const {
+		state,
+		mapValue,
+		tokenSet,
+		tokenRefKey,
+		mapToToken,
+		disabledTokenLink = false,
+		editor
+	} = props;
 
 	const fontOptions = React.useMemo(() => {
 		return fontMetadata.map((font) => ({
@@ -137,6 +145,7 @@ export const TypographyStyleMixinEditor = <
 						options={fontOptions}
 						state={fontFamilyState}
 						tokenSet={tokenSet}
+						tokenRefKey={tokenRefKey}
 						mapToTokenValue={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.font?.family}
 						onNavigateToToken={handleNavigateToToken}
 						disabledTokenLink={disabledTokenLink}
@@ -150,6 +159,7 @@ export const TypographyStyleMixinEditor = <
 						step={2}
 						state={fontSizeState}
 						tokenSet={tokenSet}
+						tokenRefKey={tokenRefKey}
 						mapToTokenValue={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.fontSize}
 						onNavigateToToken={handleNavigateToToken}
 						disabledTokenLink={disabledTokenLink}
@@ -161,6 +171,7 @@ export const TypographyStyleMixinEditor = <
 						options={textAlignOptions}
 						state={textAlignHorizontalState}
 						tokenSet={tokenSet}
+						tokenRefKey={tokenRefKey}
 						mapToTokenValue={(tokenRef, tokenSet) =>
 							mapToToken?.(tokenRef, tokenSet)?.textAlignHorizontal
 						}
@@ -172,6 +183,7 @@ export const TypographyStyleMixinEditor = <
 						options={textAlignOptions}
 						state={textAlignVerticalState}
 						tokenSet={tokenSet}
+						tokenRefKey={tokenRefKey}
 						mapToTokenValue={(tokenRef, tokenSet) =>
 							mapToToken?.(tokenRef, tokenSet)?.textAlignVertical
 						}
@@ -191,6 +203,7 @@ interface TTypographyStyleMixinEditorProps<
 	state: TState<GValue, any>;
 	mapValue: (value: GValue) => TTypographyStyleMixin['value'];
 	tokenSet?: TState<GTokenSet, any>;
+	tokenRefKey?: string;
 	mapToToken?: (ref: string, tokenSet?: GTokenSet) => TTypographyStyleToken['value'] | undefined;
 	disabledTokenLink?: boolean;
 	editor: TPageEditor;

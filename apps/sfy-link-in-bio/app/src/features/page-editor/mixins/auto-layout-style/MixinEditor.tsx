@@ -18,7 +18,15 @@ export const AutoLayoutStyleMixinEditor = <
 >(
 	props: TAutoLayoutStyleMixinEditorProps<GValue, GTokenSet>
 ) => {
-	const { state, mapValue, tokenSet, mapToToken, disabledTokenLink = false, editor } = props;
+	const {
+		state,
+		mapValue,
+		tokenSet,
+		tokenRefKey,
+		mapToToken,
+		disabledTokenLink = false,
+		editor
+	} = props;
 
 	const hasHorizontalPadding = useCompute(
 		state,
@@ -137,6 +145,7 @@ export const AutoLayoutStyleMixinEditor = <
 							step={4}
 							state={horizontalPaddingState}
 							tokenSet={tokenSet}
+							tokenRefKey={tokenRefKey}
 							mapToTokenValue={(tokenRef, tokenSet) =>
 								mapToToken?.(tokenRef, tokenSet)?.horizontalPadding
 							}
@@ -154,6 +163,7 @@ export const AutoLayoutStyleMixinEditor = <
 							step={4}
 							state={verticalPaddingState}
 							tokenSet={tokenSet}
+							tokenRefKey={tokenRefKey}
 							mapToTokenValue={(tokenRef, tokenSet) =>
 								mapToToken?.(tokenRef, tokenSet)?.verticalPadding
 							}
@@ -175,6 +185,7 @@ export const AutoLayoutStyleMixinEditor = <
 							step={4}
 							state={horizontalGapState}
 							tokenSet={tokenSet}
+							tokenRefKey={tokenRefKey}
 							mapToTokenValue={(tokenRef, tokenSet) =>
 								mapToToken?.(tokenRef, tokenSet)?.horizontalGap
 							}
@@ -192,6 +203,7 @@ export const AutoLayoutStyleMixinEditor = <
 							step={4}
 							state={verticalGapState}
 							tokenSet={tokenSet}
+							tokenRefKey={tokenRefKey}
 							mapToTokenValue={(tokenRef, tokenSet) =>
 								mapToToken?.(tokenRef, tokenSet)?.verticalGap
 							}
@@ -212,6 +224,7 @@ interface TAutoLayoutStyleMixinEditorProps<
 	state: TState<GValue, any>;
 	mapValue: (value: GValue) => TAutoLayoutStyleMixin['value'];
 	tokenSet?: TState<GTokenSet, any>;
+	tokenRefKey?: string;
 	mapToToken?: (ref: string, tokenSet?: GTokenSet) => TAutoLayoutStyleToken['value'] | undefined;
 	disabledTokenLink?: boolean;
 	editor: TPageEditor;

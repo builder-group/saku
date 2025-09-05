@@ -69,6 +69,7 @@ export const TextNodeEditor: React.FC<TNodeEditorComponentProps<TTextNode>> = (p
 						state={nodeState}
 						mapValue={(value) => value.autoLayout}
 						tokenSet={editor.mixinTokenMap.autoLayout}
+						tokenRefKey={'default'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
 						editor={editor}
 					/>
@@ -77,6 +78,7 @@ export const TextNodeEditor: React.FC<TNodeEditorComponentProps<TTextNode>> = (p
 						state={nodeState}
 						mapValue={(value) => value.appearance}
 						tokenSet={editor.mixinTokenMap.appearance}
+						tokenRefKey={'default'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
 						editor={editor}
 					/>
@@ -88,6 +90,7 @@ export const TextNodeEditor: React.FC<TNodeEditorComponentProps<TTextNode>> = (p
 							state._v.fill = value;
 						}}
 						tokenSet={editor.mixinTokenMap.fill}
+						tokenRefKey={'default'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
 						editor={editor}
 					/>
@@ -99,6 +102,7 @@ export const TextNodeEditor: React.FC<TNodeEditorComponentProps<TTextNode>> = (p
 							state._v.stroke = value;
 						}}
 						tokenSet={editor.mixinTokenMap.stroke}
+						tokenRefKey={'default'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
 						editor={editor}
 					/>
@@ -110,6 +114,7 @@ export const TextNodeEditor: React.FC<TNodeEditorComponentProps<TTextNode>> = (p
 							state._v.shadow = value;
 						}}
 						tokenSet={editor.mixinTokenMap.shadow}
+						tokenRefKey={'default'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
 						editor={editor}
 					/>
@@ -124,6 +129,7 @@ export const TextNodeEditor: React.FC<TNodeEditorComponentProps<TTextNode>> = (p
 						state={nodeState}
 						mapValue={(value) => value.text}
 						tokenSet={editor.mixinTokenMap.text}
+						tokenRefKey={'default'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
 						editor={editor}
 					/>

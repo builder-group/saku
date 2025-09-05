@@ -28,6 +28,7 @@ export const TokenColorInput = <
 	const {
 		state,
 		tokenSet,
+		tokenRefKey = 'default',
 		mapToTokenValue,
 		onLinkChange,
 		onNavigateToToken,
@@ -135,9 +136,9 @@ export const TokenColorInput = <
 				state.set(tokenValue as GRefValue);
 			}
 		} else {
-			state.set(tokenRef('default') as GRefValue);
+			state.set(tokenRef(tokenRefKey) as GRefValue);
 		}
-	}, [onLinkChange, isLinked, state, mapToTokenValue, tokenSet]);
+	}, [onLinkChange, isLinked, state, mapToTokenValue, tokenSet, tokenRefKey]);
 
 	const togglePopoverActive = React.useCallback(() => {
 		if (!isLinked) {
@@ -247,6 +248,7 @@ export interface TTokenColorInputProps<
 	state: TState<GRefValue, any>;
 
 	tokenSet?: TState<GMixinTokenSet, any>;
+	tokenRefKey?: string;
 	mapToTokenValue: (key: string, tokenSet?: GMixinTokenSet) => GValue | undefined;
 	onLinkChange?: (isLinked: boolean) => { preventDefault: boolean } | void;
 	onNavigateToToken?: () => void;

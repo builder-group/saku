@@ -370,6 +370,7 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 						state={nodeState}
 						mapValue={(value) => value.autoLayout}
 						tokenSet={editor.mixinTokenMap.autoLayout}
+						tokenRefKey={'default'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
 						editor={editor}
 					/>
@@ -378,6 +379,7 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 						state={nodeState}
 						mapValue={(value) => value.appearance}
 						tokenSet={editor.mixinTokenMap.appearance}
+						tokenRefKey={'default'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
 						editor={editor}
 					/>
@@ -389,6 +391,7 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 							state._v.fill = value;
 						}}
 						tokenSet={editor.mixinTokenMap.fill}
+						tokenRefKey={'default'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
 						editor={editor}
 					/>
@@ -400,6 +403,7 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 							state._v.stroke = value;
 						}}
 						tokenSet={editor.mixinTokenMap.stroke}
+						tokenRefKey={'default'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
 						editor={editor}
 					/>
@@ -411,13 +415,14 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 							state._v.shadow = value;
 						}}
 						tokenSet={editor.mixinTokenMap.shadow}
+						tokenRefKey={'default'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
 						editor={editor}
 					/>
 				</AccordionSection>
 
 				<AccordionSection
-					title="Text"
+					title="Product Title"
 					collapsibleClassName="px-0 space-y-3"
 					size="tight"
 					defaultOpen={true}
@@ -426,6 +431,7 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 						state={nodeState}
 						mapValue={(value) => value.text}
 						tokenSet={editor.mixinTokenMap.text}
+						tokenRefKey={'default'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
 						editor={editor}
 					/>
@@ -440,6 +446,7 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 						state={nodeState}
 						mapValue={(value) => value.primaryButton}
 						tokenSet={editor.mixinTokenMap.button}
+						tokenRefKey={'primary'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
 						editor={editor}
 					/>
@@ -454,6 +461,7 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 						state={nodeState}
 						mapValue={(value) => value.primaryBadge}
 						tokenSet={editor.mixinTokenMap.badge}
+						tokenRefKey={'primary'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
 						editor={editor}
 					/>
@@ -468,12 +476,13 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 						state={nodeState}
 						mapValue={(value) => value.neutralBadge}
 						tokenSet={editor.mixinTokenMap.badge}
+						tokenRefKey={'neutral'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
 						editor={editor}
 					/>
 				</AccordionSection>
 				<AccordionSection
-					title="Image"
+					title="Product Image"
 					collapsibleClassName="px-0 space-y-3"
 					size="tight"
 					defaultOpen={true}
@@ -482,12 +491,13 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 						state={nodeState}
 						mapValue={(value) => value.image}
 						tokenSet={editor.mixinTokenMap.image}
+						tokenRefKey={'default'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
 						editor={editor}
 					/>
 				</AccordionSection>
 				<AccordionSection
-					title="Product Details"
+					title="Product Details Modal"
 					collapsibleClassName="px-0 space-y-3"
 					size="tight"
 					defaultOpen={true}
@@ -496,6 +506,7 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 						state={nodeState}
 						mapValue={(value) => value.productDetails}
 						tokenSet={editor.mixinTokenMap.productDetails}
+						tokenRefKey={'default'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
 						editor={editor}
 					/>
