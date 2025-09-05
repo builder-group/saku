@@ -1,11 +1,12 @@
 import { TMediaNode } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
-import { AppError } from '@/lib';
+import { AppError, computeInnerBorderRadius } from '@/lib';
 import { resolveAsset, TNodeResolveContext } from '../../lib';
 import {
 	resolveAppearanceStyleMixin,
 	resolveAutoLayoutStyleMixin,
 	resolveFillStyleMixin,
+	resolveImageStyleMixin,
 	resolveShadowStyleMixin,
 	resolveStrokeStyleMixin
 } from '../../mixins';
@@ -19,7 +20,7 @@ export function resolveMediaNode(
 	node: TMediaNode,
 	cx: TNodeResolveContext
 ): TResult<TResolvedMediaNode, AppError> {
-	const { content, autoLayout, appearance, fill, stroke, shadow, ...rest } = node;
+	const { content, autoLayout, appearance, fill, stroke, shadow, image, ...rest } = node;
 
 	// Resolve content
 	let resolvedContent: TResolvedMediaNodeContent;
@@ -91,6 +92,23 @@ export function resolveMediaNode(
 	if (!isResolvedShadowOk) {
 		return Err(resolvedShadowErr.wrapWith('#ERR_RESOLVE_SHADOW_STYLE'));
 	}
+	const [isResolvedImageOk, resolvedImageErr, resolvedImage] = resolveImageStyleMixin(image, {
+		node: cx,
+		mixinTokenSet: cx.site.getMixinTokenSet('image'),
+		mapToMixinTokenValue: (ref, tokenSet) => tokenSet?.[ref]?.value,
+		variableTokenMap: cx.site.getVariableTokenMap()
+	});
+	if (!isResolvedImageOk) {
+		return Err(resolvedImageErr.wrapWith('#ERR_RESOLVE_IMAGE_STYLE'));
+	}
+
+	const imageBorderRadius =
+		resolvedImage.appearance.borderRadius ??
+		computeInnerBorderRadius(
+			resolvedAppearance.borderRadius ?? 0,
+			resolvedAutoLayout.verticalPadding,
+			resolvedAutoLayout.horizontalPadding
+		);
 
 	return Ok({
 		...rest,
@@ -99,6 +117,17 @@ export function resolveMediaNode(
 		appearance: resolvedAppearance,
 		fill: resolvedFill,
 		stroke: resolvedStroke,
-		shadow: resolvedShadow
+		shadow: resolvedShadow,
+		image: {
+			...resolvedImage,
+			appearance: {
+				...resolvedImage.appearance,
+				borderRadius: imageBorderRadius,
+				styles: {
+					...resolvedImage.appearance.styles,
+					borderRadius: `${imageBorderRadius}px`
+				}
+			}
+		}
 	});
 }

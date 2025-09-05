@@ -1,6 +1,6 @@
 import { TLinkNode } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
-import { AppError } from '@/lib';
+import { AppError, computeInnerBorderRadius } from '@/lib';
 import { resolveAsset, TNodeResolveContext } from '../../lib';
 import {
 	resolveAppearanceStyleMixin,
@@ -120,6 +120,14 @@ export function resolveLinkNode(
 		return Err(resolvedImageErr.wrapWith('#ERR_RESOLVE_IMAGE_STYLE'));
 	}
 
+	const imageBorderRadius =
+		resolvedImage.appearance.borderRadius ??
+		computeInnerBorderRadius(
+			resolvedAppearance.borderRadius ?? 0,
+			resolvedAutoLayout.verticalPadding,
+			resolvedAutoLayout.horizontalPadding
+		);
+
 	return Ok({
 		...rest,
 		content: resolvedContent,
@@ -130,6 +138,16 @@ export function resolveLinkNode(
 		shadow: resolvedShadow,
 		text: resolvedText,
 		textSm: resolvedSmText,
-		image: resolvedImage
+		image: {
+			...resolvedImage,
+			appearance: {
+				...resolvedImage.appearance,
+				borderRadius: imageBorderRadius,
+				styles: {
+					...resolvedImage.appearance.styles,
+					borderRadius: `${imageBorderRadius}px`
+				}
+			}
+		}
 	});
 }

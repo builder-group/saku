@@ -58,20 +58,6 @@ export const SingleContent: React.FC<TSingleContentProps> = (props) => {
 		);
 	}, [product.variants, selectedOptions]);
 
-	const imageBorderRadius = React.useMemo(() => {
-		const verticalPadding = autoLayout?.verticalPadding ?? 0;
-		const horizontalPadding = autoLayout?.horizontalPadding ?? 0;
-		const padding = Math.max(verticalPadding, horizontalPadding);
-
-		const outerRadius = appearance?.borderRadius;
-		if (outerRadius == null || outerRadius === 0) {
-			return undefined;
-		}
-
-		const ratio = outerRadius / (outerRadius + padding);
-		return outerRadius * Math.pow(ratio, 1.5);
-	}, [autoLayout?.verticalPadding, autoLayout?.horizontalPadding, appearance?.borderRadius]);
-
 	// =========================================================================
 	// Events
 	// =========================================================================
@@ -155,7 +141,7 @@ export const SingleContent: React.FC<TSingleContentProps> = (props) => {
 				{productImage != null && (
 					<div
 						className="h-12 w-12 flex-shrink-0 overflow-hidden bg-gray-100"
-						style={{ ...image.styles, borderRadius: imageBorderRadius }}
+						style={image.appearance.styles}
 					>
 						<img
 							src={productImage.src}

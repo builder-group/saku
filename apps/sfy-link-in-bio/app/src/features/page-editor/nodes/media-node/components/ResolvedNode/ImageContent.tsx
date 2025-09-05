@@ -4,7 +4,7 @@ import { TResolvedImageMediaNodeContent, TResolvedMediaNode } from '../../types'
 
 export const ImageContent: React.FC<TImageContentProps> = (props) => {
 	const {
-		node: { autoLayout, appearance, fill, stroke, shadow },
+		node: { autoLayout, appearance, fill, stroke, shadow, image },
 		media
 	} = props;
 
@@ -24,7 +24,7 @@ export const ImageContent: React.FC<TImageContentProps> = (props) => {
 				alt={media.altText}
 				className="h-auto w-full object-cover"
 				draggable={false}
-				style={{ borderRadius: appearance?.borderRadius }}
+				style={image.appearance.styles}
 			/>
 		</div>
 	);

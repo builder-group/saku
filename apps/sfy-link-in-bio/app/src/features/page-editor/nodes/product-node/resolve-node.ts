@@ -1,7 +1,7 @@
 import { notEmpty } from '@blgc/utils';
 import { TProduct, TProductNode } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
-import { AppError } from '@/lib';
+import { AppError, computeInnerBorderRadius } from '@/lib';
 import { resolveAsset, TNodeResolveContext } from '../../lib';
 import {
 	resolveAppearanceStyleMixin,
@@ -159,6 +159,14 @@ export function resolveProductNode(
 		return Err(resolvedProductDetailsErr.wrapWith('#ERR_RESOLVE_PRODUCT_DETAILS_STYLE'));
 	}
 
+	const imageBorderRadius =
+		resolvedImage.appearance.borderRadius ??
+		computeInnerBorderRadius(
+			resolvedAppearance.borderRadius ?? 0,
+			resolvedAutoLayout.verticalPadding,
+			resolvedAutoLayout.horizontalPadding
+		);
+
 	return Ok({
 		...rest,
 		content: resolvedContent,
@@ -171,7 +179,17 @@ export function resolveProductNode(
 		buttonPrimary: resolvedPrimaryButton,
 		badgePrimary: resolvedPrimaryBadge,
 		badgeNeutral: resolvedNeutralBadge,
-		image: resolvedImage,
+		image: {
+			...resolvedImage,
+			appearance: {
+				...resolvedImage.appearance,
+				borderRadius: imageBorderRadius,
+				styles: {
+					...resolvedImage.appearance.styles,
+					borderRadius: `${imageBorderRadius}px`
+				}
+			}
+		},
 		productDetails: resolvedProductDetails
 	});
 }
