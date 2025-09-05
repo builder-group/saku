@@ -10,7 +10,7 @@ import { getSessionTokenFromRequest, redirectWithAuth } from '@/.server/lib';
 import { useCrisp } from '@/components';
 import { appConfig, coreApiClient } from '@/environment';
 import { blankPreset } from '@/features/page-editor/.server';
-import { resultLoader, withResultLoader } from '@/lib';
+import { createShopifyTokenMiddleware, resultLoader, withResultLoader } from '@/lib';
 import { THeadersFunction } from '@/types';
 import {
 	AccountConnectionStep,
@@ -145,13 +145,18 @@ export const shouldRevalidate: ShouldRevalidateFunction = () => {
 
 export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async ({ request }) => {
 	const { session } = await shopify.authenticate.admin(request);
+
 	const sessionToken = getSessionTokenFromRequest(request);
+	if (sessionToken == null) {
+		return Err({
+			code: '#ERR_UNAUTHORIZED' as const,
+			message: 'Unauthorized'
+		}).toArray();
+	}
 
 	// Check if already onboarded
 	const workspaceResult = await coreApiClient.get('/v1/shopify/workspace', {
-		headers: {
-			Authorization: `Bearer ${sessionToken}`
-		}
+		requestMiddlewares: [createShopifyTokenMiddleware(sessionToken)]
 	});
 	if (workspaceResult.isOk() && workspaceResult.value.data.onboardingCompletedAt != null) {
 		throw redirectWithAuth(request, '/app');

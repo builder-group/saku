@@ -23,7 +23,7 @@ export type TResolvedPrimaryButtonStyleMixin = TBaseMixin<
 	'primaryButton',
 	TResolvedButtonStyleMixin['value']
 >;
-export type TResolvedSecondaryButtonStyleMixin = TBaseMixin<
-	'secondaryButton',
+export type TResolvedNeutralButtonStyleMixin = TBaseMixin<
+	'neutralButton',
 	TResolvedButtonStyleMixin['value']
 >;

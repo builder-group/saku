@@ -465,7 +465,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 		},
 		{
 			type: 'mixin',
-			key: 'secondary',
+			key: 'neutral',
 			mixinKey: 'button',
 			value: {
 				appearance: {
@@ -514,7 +514,56 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 		},
 		{
 			type: 'mixin',
-			key: 'default',
+			key: 'primary',
+			mixinKey: 'badge',
+			value: {
+				appearance: {
+					visible: true,
+					opacity: 1,
+					borderRadius: radius.selector
+				},
+				fill: {
+					paint: {
+						type: 'solid',
+						color: hexToRgba(color.secondary)
+					},
+					opacity: 1
+				},
+				stroke: null,
+				shadow: null,
+				text: {
+					appearance: {
+						visible: true,
+						opacity: 1,
+						borderRadius: undefined
+					},
+					typography: {
+						font: {
+							family: typography.text.fontFamily,
+							weight: typography.text.fontWeight,
+							style: 'normal'
+						},
+						fontSize: textSizes.sm,
+						textAlignHorizontal: 'center',
+						textAlignVertical: 'center',
+						lineHeight: { type: 'auto' },
+						letterSpacing: { type: 'auto' }
+					},
+					fill: {
+						paint: {
+							type: 'solid',
+							color: hexToRgba(color.secondaryContent)
+						},
+						opacity: 1
+					},
+					stroke: null,
+					shadow: null
+				}
+			}
+		},
+		{
+			type: 'mixin',
+			key: 'neutral',
 			mixinKey: 'badge',
 			value: {
 				appearance: {

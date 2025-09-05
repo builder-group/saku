@@ -1,20 +1,23 @@
 import { shortId } from '@blgc/utils';
 import {
+	aboutNodeMetadata,
 	createId,
 	createTokensFromTheme,
+	cssRgbaToHex,
 	cssRgbaToRgba,
 	fontMetadataMap,
 	getFontHash,
 	getFontMetadataByFamily,
 	hexToRgba,
+	linkNodeMetadata,
 	TAboutNode,
 	TAsset,
 	TAssetHash,
+	textNodeMetadata,
 	TFontAsset,
 	themes,
 	TImageAsset,
 	TLinkNode,
-	tokenRef,
 	TPaint,
 	TSite,
 	TSocialLink,
@@ -68,6 +71,7 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 		const aboutNode: TAboutNode = {
 			id: createId('node'),
 			type: 'about',
+			...aboutNodeMetadata.default,
 			content: {
 				type: 'default',
 				name: page.title ?? 'Your Name',
@@ -75,76 +79,32 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 				profilePicture: profilePictureHash,
 				socialLinks: transformSocialLinks(page.socialMediaAccounts ?? [])
 			},
-			autoLayout: {
-				horizontalPadding: tokenRef(),
-				verticalPadding: tokenRef(),
-				horizontalGap: undefined,
-				verticalGap: undefined
-			},
-			appearance: {
-				visible: true,
-				opacity: tokenRef(),
-				borderRadius: 0
-			},
-			fill: null,
-			stroke: null,
-			shadow: null,
 			xlText: {
-				appearance: {
-					visible: true,
-					opacity: tokenRef('xl'),
-					borderRadius: undefined
-				},
-				typography: {
-					font: tokenRef('xl'),
-					fontSize: tokenRef('xl'),
-					textAlignHorizontal: 'center',
-					textAlignVertical: 'center',
-					lineHeight: tokenRef('xl'),
-					letterSpacing: tokenRef('xl')
-				},
+				...aboutNodeMetadata.default.xlText,
 				fill: {
 					paint: {
 						type: 'solid',
 						color: cssRgbaToRgba(page?.themeSettings?.fontColor) ?? hexToRgba('#000000')
 					},
 					opacity: 1
-				},
-				stroke: null,
-				shadow: null
+				}
 			},
 			text: {
-				appearance: {
-					visible: true,
-					opacity: tokenRef(),
-					borderRadius: undefined
-				},
-				typography: {
-					font: tokenRef(),
-					fontSize: tokenRef(),
-					textAlignHorizontal: 'center',
-					textAlignVertical: 'center',
-					lineHeight: tokenRef(),
-					letterSpacing: tokenRef()
-				},
+				...textNodeMetadata.default.text,
 				fill: {
 					paint: {
 						type: 'solid',
 						color: cssRgbaToRgba(page?.themeSettings?.fontColor) ?? hexToRgba('#000000')
 					},
 					opacity: 1
-				},
-				stroke: null,
-				shadow: null
+				}
 			},
 			image: {
+				...aboutNodeMetadata.default.image,
 				appearance: {
-					visible: true,
-					opacity: tokenRef(),
-					borderRadius: tokenRef()
-				},
-				stroke: null,
-				shadow: null
+					...aboutNodeMetadata.default.image.appearance,
+					borderRadius: 999
+				}
 			}
 		};
 		children.push(aboutNode);
@@ -167,17 +127,8 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 
 				// Determine variant based on __typename
 				let content: TLinkNode['content'];
-				let autoLayout: TLinkNode['autoLayout'] = {
-					horizontalPadding: tokenRef(),
-					verticalPadding: tokenRef(),
-					horizontalGap: undefined,
-					verticalGap: undefined
-				};
-				let appearance: TLinkNode['appearance'] = {
-					visible: true,
-					opacity: tokenRef(),
-					borderRadius: tokenRef()
-				};
+				let autoLayout: TLinkNode['autoLayout'] = linkNodeMetadata.default.autoLayout;
+				let appearance: TLinkNode['appearance'] = linkNodeMetadata.default.appearance;
 
 				switch (link.__typename) {
 					case 'YouTubeVideoLink': {
@@ -189,14 +140,12 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 								videoId
 							};
 							autoLayout = {
+								...linkNodeMetadata.default.autoLayout,
 								horizontalPadding: 0,
-								verticalPadding: 0,
-								horizontalGap: undefined,
-								verticalGap: undefined
+								verticalPadding: 0
 							};
 							appearance = {
-								visible: true,
-								opacity: tokenRef(),
+								...linkNodeMetadata.default.appearance,
 								borderRadius: Math.min(borderRadius, 40)
 							};
 						} else {
@@ -222,98 +171,20 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 				children.push({
 					id: createId('node'),
 					type: 'link',
+					...linkNodeMetadata.default,
 					content,
 					autoLayout,
-					appearance,
-					fill: tokenRef(),
-					stroke: tokenRef(),
-					shadow: tokenRef(),
-					text: {
-						appearance: {
-							visible: true,
-							opacity: tokenRef(),
-							borderRadius: undefined
-						},
-						typography: {
-							font: tokenRef(),
-							fontSize: tokenRef(),
-							textAlignHorizontal: tokenRef(),
-							textAlignVertical: tokenRef(),
-							lineHeight: tokenRef(),
-							letterSpacing: tokenRef()
-						},
-						fill: tokenRef(),
-						stroke: tokenRef(),
-						shadow: tokenRef()
-					},
-					smText: {
-						appearance: {
-							visible: true,
-							opacity: tokenRef('sm'),
-							borderRadius: undefined
-						},
-						typography: {
-							font: tokenRef('sm'),
-							fontSize: tokenRef('sm'),
-							textAlignHorizontal: tokenRef('sm'),
-							textAlignVertical: tokenRef('sm'),
-							lineHeight: tokenRef('sm'),
-							letterSpacing: tokenRef('sm')
-						},
-						fill: tokenRef('sm'),
-						stroke: tokenRef('sm'),
-						shadow: tokenRef('sm')
-					},
-					image: {
-						appearance: {
-							visible: true,
-							opacity: tokenRef(),
-							borderRadius: tokenRef()
-						},
-						stroke: tokenRef(),
-						shadow: tokenRef()
-					}
+					appearance
 				} satisfies TLinkNode);
 			} else {
 				// Create text node for links without URLs
 				children.push({
 					id: createId('node'),
 					type: 'text',
+					...textNodeMetadata.default,
 					content: {
 						type: 'default',
 						text: { type: 'markdown', value: link.title }
-					},
-					autoLayout: {
-						horizontalPadding: tokenRef(),
-						verticalPadding: tokenRef(),
-						horizontalGap: undefined,
-						verticalGap: undefined
-					},
-					appearance: {
-						visible: true,
-						opacity: tokenRef(),
-						borderRadius: tokenRef()
-					},
-					fill: tokenRef(),
-					stroke: tokenRef(),
-					shadow: tokenRef(),
-					text: {
-						appearance: {
-							visible: true,
-							opacity: tokenRef(),
-							borderRadius: undefined
-						},
-						typography: {
-							font: tokenRef(),
-							fontSize: tokenRef(),
-							textAlignHorizontal: tokenRef(),
-							textAlignVertical: tokenRef(),
-							lineHeight: tokenRef(),
-							letterSpacing: tokenRef()
-						},
-						fill: tokenRef(),
-						stroke: tokenRef(),
-						shadow: tokenRef()
 					}
 				} satisfies TTextNode);
 			}
@@ -355,11 +226,13 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 			name: 'LinkPop Import',
 			color: {
 				...defaultTheme.color,
-				base100: page?.themeSettings?.linkCardColor ?? defaultTheme.color.base100,
-				base200: page?.themeSettings?.backgroundColor ?? defaultTheme.color.base200,
-				baseContent: page?.themeSettings?.linkCardFontColor ?? defaultTheme.color.baseContent,
-				primary: page?.themeSettings?.linkCardFontColor ?? defaultTheme.color.primary,
-				primaryContent: page?.themeSettings?.linkCardColor ?? defaultTheme.color.primaryContent
+				base100: cssRgbaToHex(page?.themeSettings?.linkCardColor) ?? defaultTheme.color.base100,
+				base200: cssRgbaToHex(page?.themeSettings?.backgroundColor) ?? defaultTheme.color.base200,
+				baseContent:
+					cssRgbaToHex(page?.themeSettings?.linkCardFontColor) ?? defaultTheme.color.baseContent,
+				primary: cssRgbaToHex(page?.themeSettings?.linkCardFontColor) ?? defaultTheme.color.primary,
+				primaryContent:
+					cssRgbaToHex(page?.themeSettings?.linkCardColor) ?? defaultTheme.color.primaryContent
 			},
 			typography: {
 				heading: {

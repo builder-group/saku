@@ -1,30 +1,68 @@
 import {
+	aboutNodeMetadata,
 	createTokensFromTheme,
 	getFontMetadataByFamily,
 	hexToRgba,
+	linkNodeMetadata,
+	TAboutNode,
 	themes,
+	TLinkNode,
 	TTheme
 } from '@repo/editor';
 import { Text } from '@shopify/polaris';
 import { createState } from 'feature-state';
 import React from 'react';
-import { TPageEditor } from '../../../../../lib';
+import { logger } from '@/environment';
+import { TNodeState, TPageEditor } from '../../../../../lib';
 
 export const ThemeTab: React.FC<TThemeTabProps> = (props) => {
 	const { editor } = props;
 
 	const applyTheme = React.useCallback(
 		(theme: TTheme) => {
+			const prevThemeKey = editor.variableTokenMap._v['theme.key']?.value;
+
+			// Reset LinkPop node styles to ensure they are all linked to the design tokens
+			if (prevThemeKey === 'linkpop') {
+				logger.info('Detected LinkPop theme');
+				for (const node of Object.values(editor.nodeMap)) {
+					switch (node.type) {
+						case 'about': {
+							(node as TNodeState<TAboutNode>)._v.xlText = aboutNodeMetadata.default.xlText;
+							(node as TNodeState<TAboutNode>)._v.text = aboutNodeMetadata.default.text;
+							(node as TNodeState<TAboutNode>)._v.image = aboutNodeMetadata.default.image;
+							node._notify();
+							break;
+						}
+						case 'link': {
+							(node as TNodeState<TLinkNode>)._v.appearance = linkNodeMetadata.default.appearance;
+							node._notify();
+							break;
+						}
+						default:
+						// do nothing
+					}
+				}
+			}
+
 			// Apply tokens for elements (cards, text, buttons)
 			const tokens = createTokensFromTheme(theme);
 			tokens.forEach((token) => {
-				if (token.type === 'mixin') {
-					if (editor.mixinTokenMap[token.mixinKey] == null) {
-						editor.mixinTokenMap[token.mixinKey] = createState({});
+				switch (token.type) {
+					case 'mixin': {
+						if (editor.mixinTokenMap[token.mixinKey] == null) {
+							editor.mixinTokenMap[token.mixinKey] = createState({});
+						}
+						// @ts-expect-error - we ensure object exists above
+						editor.mixinTokenMap[token.mixinKey]._v[token.key] = token;
+						editor.mixinTokenMap[token.mixinKey]?._notify();
+						break;
 					}
-					// @ts-expect-error - we ensure object exists above
-					editor.mixinTokenMap[token.mixinKey]._v[token.key] = token;
-					editor.mixinTokenMap[token.mixinKey]?._notify();
+					case 'variable': {
+						editor.variableTokenMap._v[token.key] = token;
+						editor.variableTokenMap?._notify();
+						break;
+					}
 				}
 			});
 

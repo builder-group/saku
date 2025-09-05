@@ -3,9 +3,10 @@ import { TResolvedAsset } from '../../lib';
 import {
 	TResolvedAppearanceStyleMixin,
 	TResolvedAutoLayoutStyleMixin,
-	TResolvedBadgeStyleMixin,
 	TResolvedFillStyleMixin,
 	TResolvedImageStyleMixin,
+	TResolvedNeutralBadgeStyleMixin,
+	TResolvedPrimaryBadgeStyleMixin,
 	TResolvedPrimaryButtonStyleMixin,
 	TResolvedProductDetailsStyleMixin,
 	TResolvedShadowStyleMixin,
@@ -26,7 +27,8 @@ export type TResolvedProductNode<
 		TResolvedShadowStyleMixin,
 		TResolvedTextStyleMixin,
 		TResolvedPrimaryButtonStyleMixin,
-		TResolvedBadgeStyleMixin,
+		TResolvedPrimaryBadgeStyleMixin,
+		TResolvedNeutralBadgeStyleMixin,
 		TResolvedImageStyleMixin,
 		TResolvedProductDetailsStyleMixin
 	]

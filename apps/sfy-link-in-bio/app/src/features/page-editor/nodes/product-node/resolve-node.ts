@@ -30,7 +30,8 @@ export function resolveProductNode(
 		shadow,
 		text,
 		primaryButton,
-		badge,
+		primaryBadge,
+		neutralBadge,
 		image,
 		productDetails,
 		...rest
@@ -118,14 +119,25 @@ export function resolveProductNode(
 	if (!isResolvedPrimaryButtonOk) {
 		return Err(resolvedPrimaryButtonErr.wrapWith('#ERR_RESOLVE_BUTTON_STYLE'));
 	}
-	const [isResolvedBadgeOk, resolvedBadgeErr, resolvedBadge] = resolveBadgeStyleMixin(badge, {
-		node: cx,
-		mixinTokenSet: cx.site.getMixinTokenSet('badge'),
-		mapToMixinTokenValue: (ref, tokenSet) => tokenSet?.[ref]?.value,
-		variableTokenMap: cx.site.getVariableTokenMap()
-	});
-	if (!isResolvedBadgeOk) {
-		return Err(resolvedBadgeErr.wrapWith('#ERR_RESOLVE_BADGE_STYLE'));
+	const [isResolvedPrimaryBadgeOk, resolvedPrimaryBadgeErr, resolvedPrimaryBadge] =
+		resolveBadgeStyleMixin(primaryBadge, {
+			node: cx,
+			mixinTokenSet: cx.site.getMixinTokenSet('badge'),
+			mapToMixinTokenValue: (ref, tokenSet) => tokenSet?.[ref]?.value,
+			variableTokenMap: cx.site.getVariableTokenMap()
+		});
+	if (!isResolvedPrimaryBadgeOk) {
+		return Err(resolvedPrimaryBadgeErr.wrapWith('#ERR_RESOLVE_PRIMARY_BADGE_STYLE'));
+	}
+	const [isResolvedNeutralBadgeOk, resolvedNeutralBadgeErr, resolvedNeutralBadge] =
+		resolveBadgeStyleMixin(neutralBadge, {
+			node: cx,
+			mixinTokenSet: cx.site.getMixinTokenSet('badge'),
+			mapToMixinTokenValue: (ref, tokenSet) => tokenSet?.[ref]?.value,
+			variableTokenMap: cx.site.getVariableTokenMap()
+		});
+	if (!isResolvedNeutralBadgeOk) {
+		return Err(resolvedNeutralBadgeErr.wrapWith('#ERR_RESOLVE_NEUTRAL_BADGE_STYLE'));
 	}
 	const [isResolvedImageOk, resolvedImageErr, resolvedImage] = resolveImageStyleMixin(image, {
 		node: cx,
@@ -157,7 +169,8 @@ export function resolveProductNode(
 		shadow: resolvedShadow,
 		text: resolvedText,
 		primaryButton: resolvedPrimaryButton,
-		badge: resolvedBadge,
+		primaryBadge: resolvedPrimaryBadge,
+		neutralBadge: resolvedNeutralBadge,
 		image: resolvedImage,
 		productDetails: resolvedProductDetails
 	});

@@ -4,7 +4,6 @@ import {
 	TAboutNodeMixin,
 	TAppearanceStyleMixin,
 	TAutoLayoutStyleMixin,
-	TBadgeStyleMixin,
 	TBaseMixin,
 	TChildrenMixin,
 	TFillStyleMixin,
@@ -16,8 +15,10 @@ import {
 	TMediaNodeContent,
 	TMediaNodeMixin,
 	TMergeMixins,
+	TNeutralBadgeStyleMixin,
 	TPageNodeContent,
 	TPageNodeMixin,
+	TPrimaryBadgeStyleMixin,
 	TPrimaryButtonStyleMixin,
 	TProductDetailsStyleMixin,
 	TProductNodeContent,
@@ -128,7 +129,8 @@ export type TProductNode<GContent extends TProductNodeContent = TProductNodeCont
 		TShadowStyleMixin,
 		TTextStyleMixin,
 		TPrimaryButtonStyleMixin,
-		TBadgeStyleMixin,
+		TPrimaryBadgeStyleMixin,
+		TNeutralBadgeStyleMixin,
 		TImageStyleMixin,
 		TProductDetailsStyleMixin
 	]

@@ -268,32 +268,60 @@ export const productNodeMetadata: TNodeMetadata<'product'> = {
 				shadow: tokenRef('primary')
 			}
 		},
-		badge: {
+		primaryBadge: {
 			appearance: {
 				visible: true,
-				opacity: tokenRef(),
-				borderRadius: tokenRef()
+				opacity: tokenRef('primary'),
+				borderRadius: tokenRef('primary')
 			},
-			fill: tokenRef(),
-			stroke: tokenRef(),
-			shadow: tokenRef(),
+			fill: tokenRef('primary'),
+			stroke: tokenRef('primary'),
+			shadow: tokenRef('primary'),
 			text: {
 				appearance: {
 					visible: true,
-					opacity: tokenRef(),
+					opacity: tokenRef('primary'),
 					borderRadius: undefined
 				},
 				typography: {
-					font: tokenRef(),
-					fontSize: tokenRef(),
-					textAlignHorizontal: tokenRef(),
-					textAlignVertical: tokenRef(),
-					lineHeight: tokenRef(),
-					letterSpacing: tokenRef()
+					font: tokenRef('primary'),
+					fontSize: tokenRef('primary'),
+					textAlignHorizontal: tokenRef('primary'),
+					textAlignVertical: tokenRef('primary'),
+					lineHeight: tokenRef('primary'),
+					letterSpacing: tokenRef('primary')
 				},
-				fill: tokenRef(),
-				stroke: tokenRef(),
-				shadow: tokenRef()
+				fill: tokenRef('primary'),
+				stroke: tokenRef('primary'),
+				shadow: tokenRef('primary')
+			}
+		},
+		neutralBadge: {
+			appearance: {
+				visible: true,
+				opacity: tokenRef('neutral'),
+				borderRadius: tokenRef('neutral')
+			},
+			fill: tokenRef('neutral'),
+			stroke: tokenRef('neutral'),
+			shadow: tokenRef('neutral'),
+			text: {
+				appearance: {
+					visible: true,
+					opacity: tokenRef('neutral'),
+					borderRadius: undefined
+				},
+				typography: {
+					font: tokenRef('neutral'),
+					fontSize: tokenRef('neutral'),
+					textAlignHorizontal: tokenRef('neutral'),
+					textAlignVertical: tokenRef('neutral'),
+					lineHeight: tokenRef('neutral'),
+					letterSpacing: tokenRef('neutral')
+				},
+				fill: tokenRef('neutral'),
+				stroke: tokenRef('neutral'),
+				shadow: tokenRef('neutral')
 			}
 		},
 		image: {
@@ -434,7 +462,7 @@ export const textNodeMetadata: TNodeMetadata<'text'> = {
 	}
 };
 
-export const nodeMetadata = {
+export const nodeMetadataMap = {
 	page: pageNodeMetadata,
 	about: aboutNodeMetadata,
 	link: linkNodeMetadata,

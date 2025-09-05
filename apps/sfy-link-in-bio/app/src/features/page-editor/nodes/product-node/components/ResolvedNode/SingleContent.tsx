@@ -8,7 +8,18 @@ import { useProductDetailsModal } from './ProductDetailsModal';
 
 export const SingleContent: React.FC<TSingleContentProps> = (props) => {
 	const { node, product, cx } = props;
-	const { autoLayout, appearance, fill, stroke, shadow, text, primaryButton, badge, image } = node;
+	const {
+		autoLayout,
+		appearance,
+		fill,
+		stroke,
+		shadow,
+		text,
+		primaryButton,
+		primaryBadge,
+		neutralBadge,
+		image
+	} = node;
 
 	const { Modal: ProductDetailsModal, showModal: showProductDetailsModal } = useProductDetailsModal(
 		{
@@ -166,8 +177,8 @@ export const SingleContent: React.FC<TSingleContentProps> = (props) => {
 						<div className="flex flex-wrap items-center gap-2">
 							{/* Price Badge */}
 							{selectedVariant?.price && (
-								<div className="px-2 py-0.5" style={badge.styles}>
-									<div style={badge.text.styles}>
+								<div className="px-2 py-0.5" style={primaryBadge.styles}>
+									<div style={primaryBadge.text.styles}>
 										{getCurrencySymbol(selectedVariant.price.currencyCode)}
 										{selectedVariant.price.amount}
 									</div>
@@ -197,14 +208,14 @@ export const SingleContent: React.FC<TSingleContentProps> = (props) => {
 										</select>
 										<div
 											className="pointer-events-none flex max-w-24 cursor-pointer items-center gap-1 px-2 py-0.5"
-											style={badge.styles}
+											style={neutralBadge.styles}
 										>
-											<span className="truncate" style={badge.text.styles}>
+											<span className="truncate" style={neutralBadge.text.styles}>
 												{currentValue || placeholderText}
 											</span>
 											<ChevronDownIcon
 												className="h-3 w-3 flex-shrink-0"
-												style={{ color: badge.text.styles.color }}
+												style={{ color: neutralBadge.text.styles?.color }}
 											/>
 										</div>
 									</div>

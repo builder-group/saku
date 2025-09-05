@@ -28,7 +28,7 @@ export function hexToRgba(hex: string): TRgba {
 	return defaultColor;
 }
 
-export function rgbaToHex({ r, g, b }: TRgba): string {
+export function rgbaToHex({ r, g, b }: TRgba): `#${string}` {
 	const toHex = (n: number): string => {
 		const value = Math.round(clamp(n) * 255);
 		const hex = value.toString(16);
@@ -144,6 +144,14 @@ export function cssRgbaToRgba(css: string | null | undefined): TRgba | undefined
 		b: clamp(b / 255),
 		a: clamp(a)
 	};
+}
+
+export function cssRgbaToHex(css: string | null | undefined): `#${string}` | undefined {
+	const rgba = cssRgbaToRgba(css);
+	if (rgba == null) {
+		return undefined;
+	}
+	return rgbaToHex(rgba);
 }
 
 /**
