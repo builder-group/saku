@@ -66,7 +66,7 @@ export const ResolvedTextNode = React.forwardRef<
 					...shadow?.styles
 				}}
 			>
-				<div className="flex min-h-12 w-full flex-col justify-start p-4" style={text.styles}>
+				<div className="flex h-full min-h-12 w-full flex-col justify-center" style={text.styles}>
 					{textContent}
 				</div>
 			</div>
