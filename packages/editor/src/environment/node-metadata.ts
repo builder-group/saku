@@ -136,7 +136,7 @@ export const linkNodeMetadata: TNodeMetadata<'link'> = {
 			appearance: {
 				visible: true,
 				opacity: tokenRef('mixin', 'default'),
-				borderRadius: tokenRef('mixin', 'default')
+				borderRadius: undefined
 			},
 			stroke: tokenRef('mixin', 'default'),
 			shadow: tokenRef('mixin', 'default')
