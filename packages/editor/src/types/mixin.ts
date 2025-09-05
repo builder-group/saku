@@ -327,7 +327,7 @@ export type TButtonStyleMixin = TBaseMixin<
 	}
 >;
 export type TPrimaryButtonStyleMixin = TBaseMixin<'primaryButton', TButtonStyleMixin['value']>;
-export type TSecondaryButtonStyleMixin = TBaseMixin<'secondaryButton', TButtonStyleMixin['value']>;
+export type TNeutralButtonStyleMixin = TBaseMixin<'neutralButton', TButtonStyleMixin['value']>;
 
 export type TBadgeStyleMixin = TBaseMixin<
 	'badge',
@@ -339,6 +339,8 @@ export type TBadgeStyleMixin = TBaseMixin<
 		text: TTextStyleMixin['value'];
 	}
 >;
+export type TPrimaryBadgeStyleMixin = TBaseMixin<'primaryBadge', TBadgeStyleMixin['value']>;
+export type TNeutralBadgeStyleMixin = TBaseMixin<'neutralBadge', TBadgeStyleMixin['value']>;
 
 export type TImageStyleMixin = TBaseMixin<
 	'image',

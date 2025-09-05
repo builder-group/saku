@@ -53,6 +53,9 @@ export {
 } from '@shopify/polaris-icons'; // https://polaris-react.shopify.com/icons
 export {
 	ArrowRightIcon,
+	// ChevronDownIcon,
+	// ChevronRightIcon,
+	// ChevronUpIcon,
 	LayoutListIcon,
 	LayoutTemplateIcon,
 	Link2Icon as LinkIcon,

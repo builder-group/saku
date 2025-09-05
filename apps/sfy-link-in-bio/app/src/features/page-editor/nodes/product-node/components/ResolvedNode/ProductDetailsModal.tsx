@@ -7,10 +7,11 @@ import { TResolvedProductNode } from '../../types';
 export const ProductDetailsModal: React.FC<TProductDetailsModalProps> = (props) => {
 	const {
 		product,
-		node: { button },
+		node: { productDetails },
 		cx,
 		modalRef
 	} = props;
+	const { primaryButton } = productDetails;
 
 	const [selectedImageIndex, setSelectedImageIndex] = React.useState(0);
 	const [isBuying, setIsBuying] = React.useState(false);
@@ -184,9 +185,9 @@ export const ProductDetailsModal: React.FC<TProductDetailsModalProps> = (props) 
 								onClick={handleBuyNow}
 								disabled={isBuying}
 								className="w-full py-2"
-								style={button.styles}
+								style={primaryButton.styles}
 							>
-								<div style={button.text.styles}>
+								<div style={primaryButton.text.styles}>
 									{isBuying ? (
 										<span className="loading loading-spinner loading-sm"></span>
 									) : (

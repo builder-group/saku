@@ -273,7 +273,7 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 					/>
 				</AccordionSection>
 				<AccordionSection
-					title="Title Text"
+					title="Name"
 					collapsibleClassName="px-0 space-y-3"
 					size="tight"
 					defaultOpen={true}
@@ -287,7 +287,7 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 					/>
 				</AccordionSection>
 				<AccordionSection
-					title="Bio Text"
+					title="Bio"
 					collapsibleClassName="px-0 space-y-3"
 					size="tight"
 					defaultOpen={true}
@@ -301,7 +301,7 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 					/>
 				</AccordionSection>
 				<AccordionSection
-					title="Image"
+					title="Avatar"
 					collapsibleClassName="px-0 space-y-3"
 					size="tight"
 					defaultOpen={true}

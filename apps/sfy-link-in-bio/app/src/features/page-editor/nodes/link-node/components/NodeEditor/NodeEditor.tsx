@@ -176,7 +176,7 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 
 				{hasTextStyle && (
 					<AccordionSection
-						title="Title Text"
+						title="Title"
 						collapsibleClassName="px-0 space-y-3"
 						size="tight"
 						defaultOpen={true}
@@ -192,7 +192,7 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 				)}
 				{hasSmTextStyle && (
 					<AccordionSection
-						title="Description Text"
+						title="Description"
 						collapsibleClassName="px-0 space-y-3"
 						size="tight"
 						defaultOpen={true}
@@ -208,7 +208,7 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 				)}
 				{hasImageStyle && (
 					<AccordionSection
-						title="Image"
+						title="Favicon"
 						collapsibleClassName="px-0 space-y-3"
 						size="tight"
 						defaultOpen={true}

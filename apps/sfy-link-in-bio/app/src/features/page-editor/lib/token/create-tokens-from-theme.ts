@@ -517,7 +517,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 				fill: {
 					paint: {
 						type: 'solid',
-						color: hexToRgba(color.accent)
+						color: hexToRgba(color.neutral)
 					},
 					opacity: 1
 				},
@@ -543,7 +543,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 					fill: {
 						paint: {
 							type: 'solid',
-							color: hexToRgba(color.accentContent)
+							color: hexToRgba(color.neutralContent)
 						},
 						opacity: 1
 					},

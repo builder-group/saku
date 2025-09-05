@@ -166,12 +166,11 @@ export const SingleContent: React.FC<TSingleContentProps> = (props) => {
 						<div className="flex flex-wrap items-center gap-2">
 							{/* Price Badge */}
 							{selectedVariant?.price && (
-								<div
-									className="badge badge-neutral badge-sm"
-									style={{ borderRadius: appearance.styles.borderRadius }}
-								>
-									{getCurrencySymbol(selectedVariant.price.currencyCode)}
-									{selectedVariant.price.amount}
+								<div className="badge badge-sm" style={badge.styles}>
+									<div style={badge.text.styles}>
+										{getCurrencySymbol(selectedVariant.price.currencyCode)}
+										{selectedVariant.price.amount}
+									</div>
 								</div>
 							)}
 
@@ -198,10 +197,15 @@ export const SingleContent: React.FC<TSingleContentProps> = (props) => {
 										</select>
 										<div
 											className="badge badge-ghost badge-sm pointer-events-none flex max-w-24 cursor-pointer items-center gap-1"
-											style={{ borderRadius: appearance.styles.borderRadius }}
+											style={badge.styles}
 										>
-											<span className="truncate">{currentValue || placeholderText}</span>
-											<ChevronDownIcon className="h-3 w-3 flex-shrink-0" />
+											<span className="truncate" style={badge.text.styles}>
+												{currentValue || placeholderText}
+											</span>
+											<ChevronDownIcon
+												className="h-3 w-3 flex-shrink-0"
+												style={{ color: badge.text.styles.color }}
+											/>
 										</div>
 									</div>
 								);
