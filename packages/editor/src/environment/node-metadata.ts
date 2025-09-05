@@ -169,7 +169,7 @@ export const mediaNodeMetadata: TNodeMetadata<'media'> = {
 			appearance: {
 				visible: true,
 				opacity: tokenRef('mixin', 'default'),
-				borderRadius: tokenRef('mixin', 'default')
+				borderRadius: undefined
 			},
 			stroke: tokenRef('mixin', 'default'),
 			shadow: tokenRef('mixin', 'default')
@@ -328,7 +328,7 @@ export const productNodeMetadata: TNodeMetadata<'product'> = {
 			appearance: {
 				visible: true,
 				opacity: tokenRef('mixin', 'default'),
-				borderRadius: tokenRef('mixin', 'default')
+				borderRadius: undefined
 			},
 			stroke: tokenRef('mixin', 'default'),
 			shadow: tokenRef('mixin', 'default')
