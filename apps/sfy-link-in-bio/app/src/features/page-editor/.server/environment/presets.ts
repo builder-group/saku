@@ -1,12 +1,14 @@
 import { shortId } from '@blgc/utils';
 import {
 	createId,
+	createTokensFromTheme,
 	fontMetadataMap,
 	getFontHash,
 	hexToRgba,
 	TId,
 	TProductNode,
 	TSite,
+	TTheme,
 	type TFontAsset,
 	type TFontMetadata,
 	type TImageAsset,
@@ -14,12 +16,10 @@ import {
 } from '@repo/editor';
 import {
 	aboutNodeMetadata,
-	createTokensFromTheme,
 	linkNodeMetadata,
 	mediaNodeMetadata,
 	productNodeMetadata,
-	textNodeMetadata,
-	type TTheme
+	textNodeMetadata
 } from '@/features/page-editor';
 import { createHandleFromShop } from '@/lib';
 
@@ -95,7 +95,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 		productNode = {
 			id: createId('node'),
 			type: 'product',
-			...productNodeMetadata.defaultData,
+			...productNodeMetadata.default,
 			content: {
 				type: 'single',
 				product: {
@@ -179,7 +179,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 				{
 					id: createId('node'),
 					type: 'about',
-					...aboutNodeMetadata.defaultData,
+					...aboutNodeMetadata.default,
 					content: {
 						type: 'default',
 						name,
@@ -191,7 +191,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 				{
 					id: createId('node'),
 					type: 'link',
-					...linkNodeMetadata.defaultData,
+					...linkNodeMetadata.default,
 					content: {
 						type: 'single',
 						url: `https://${shopId}`,
@@ -202,7 +202,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 				{
 					id: createId('node'),
 					type: 'text',
-					...textNodeMetadata.defaultData,
+					...textNodeMetadata.default,
 					content: {
 						type: 'default',
 						text: { type: 'markdown', value: '✨ Thanks for visiting!' }
@@ -211,7 +211,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 				{
 					id: createId('node'),
 					type: 'media',
-					...mediaNodeMetadata.defaultData,
+					...mediaNodeMetadata.default,
 					content: {
 						type: 'image',
 						media: {
@@ -224,11 +224,13 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 			autoLayout: {
 				horizontalPadding: 24,
 				verticalPadding: 48,
-				verticalGap: 24
+				verticalGap: 24,
+				horizontalGap: undefined
 			},
 			appearance: {
 				visible: true,
-				opacity: 1
+				opacity: 1,
+				borderRadius: undefined
 			},
 			fill: {
 				paint: {

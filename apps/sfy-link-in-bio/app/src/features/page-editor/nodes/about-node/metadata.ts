@@ -1,73 +1,11 @@
-import { tokenRef } from '@repo/editor';
+import { aboutNodeMetadata as editorAboutNodeMetadata } from '@repo/editor';
 import { LayoutSectionIcon } from '@/components';
 import { TNodeMetadata } from '../../lib';
 
 export const aboutNodeMetadata: TNodeMetadata<'about'> = {
 	type: 'about',
 	icon: LayoutSectionIcon,
-	label: 'About',
+	label: editorAboutNodeMetadata.label,
 	internal: false,
-	defaultData: {
-		content: {
-			type: 'default',
-			name: 'Your Name',
-			bio: 'Tell us about yourself',
-			socialLinks: []
-		},
-		autoLayout: {
-			horizontalPadding: tokenRef(),
-			verticalPadding: tokenRef()
-		},
-		appearance: {
-			visible: true,
-			opacity: tokenRef(),
-			borderRadius: tokenRef()
-		},
-		fill: null,
-		stroke: null,
-		shadow: null,
-		xlText: {
-			appearance: {
-				visible: true,
-				opacity: tokenRef('xl')
-			},
-			typography: {
-				font: tokenRef('xl'),
-				fontSize: tokenRef('xl'),
-				textAlignHorizontal: 'center',
-				textAlignVertical: 'center',
-				lineHeight: tokenRef('xl'),
-				letterSpacing: tokenRef('xl')
-			},
-			fill: tokenRef('xl'),
-			stroke: tokenRef('xl'),
-			shadow: tokenRef('xl')
-		},
-		text: {
-			appearance: {
-				visible: true,
-				opacity: tokenRef()
-			},
-			typography: {
-				font: tokenRef(),
-				fontSize: tokenRef(),
-				textAlignHorizontal: 'center',
-				textAlignVertical: 'center',
-				lineHeight: tokenRef(),
-				letterSpacing: tokenRef()
-			},
-			fill: tokenRef(),
-			stroke: tokenRef(),
-			shadow: tokenRef()
-		},
-		image: {
-			appearance: {
-				visible: true,
-				opacity: tokenRef(),
-				borderRadius: tokenRef()
-			},
-			stroke: tokenRef(),
-			shadow: tokenRef()
-		}
-	}
+	default: editorAboutNodeMetadata.default
 };

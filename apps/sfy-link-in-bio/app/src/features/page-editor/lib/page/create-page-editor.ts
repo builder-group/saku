@@ -190,7 +190,7 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 				{
 					id: createId('node'),
 					type: nodeType,
-					...deepCopy(nodeMetadata.defaultData)
+					...deepCopy(nodeMetadata.default)
 				} as TFlatNode,
 				parentId,
 				index

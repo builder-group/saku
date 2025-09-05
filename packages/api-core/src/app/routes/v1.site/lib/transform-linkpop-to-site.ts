@@ -1,6 +1,7 @@
 import { shortId } from '@blgc/utils';
 import {
 	createId,
+	createTokensFromTheme,
 	cssRgbaToRgba,
 	fontMetadataMap,
 	getFontHash,
@@ -10,13 +11,15 @@ import {
 	TAsset,
 	TAssetHash,
 	TFontAsset,
+	themes,
 	TImageAsset,
 	TLinkNode,
 	tokenRef,
 	TPaint,
 	TSite,
 	TSocialLink,
-	TTextNode
+	TTextNode,
+	TTheme
 } from '@repo/editor';
 import { extractYouTubeVideoId } from './extract-youtube-video-id';
 import { TLinkPopData } from './parse-linkpop-html';
@@ -74,7 +77,9 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 			},
 			autoLayout: {
 				horizontalPadding: tokenRef(),
-				verticalPadding: tokenRef()
+				verticalPadding: tokenRef(),
+				horizontalGap: undefined,
+				verticalGap: undefined
 			},
 			appearance: {
 				visible: true,
@@ -87,7 +92,8 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 			xlText: {
 				appearance: {
 					visible: true,
-					opacity: tokenRef('xl')
+					opacity: tokenRef('xl'),
+					borderRadius: undefined
 				},
 				typography: {
 					font: tokenRef('xl'),
@@ -110,7 +116,8 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 			text: {
 				appearance: {
 					visible: true,
-					opacity: tokenRef()
+					opacity: tokenRef(),
+					borderRadius: undefined
 				},
 				typography: {
 					font: tokenRef(),
@@ -162,7 +169,9 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 				let content: TLinkNode['content'];
 				let autoLayout: TLinkNode['autoLayout'] = {
 					horizontalPadding: tokenRef(),
-					verticalPadding: tokenRef()
+					verticalPadding: tokenRef(),
+					horizontalGap: undefined,
+					verticalGap: undefined
 				};
 				let appearance: TLinkNode['appearance'] = {
 					visible: true,
@@ -181,7 +190,9 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 							};
 							autoLayout = {
 								horizontalPadding: 0,
-								verticalPadding: 0
+								verticalPadding: 0,
+								horizontalGap: undefined,
+								verticalGap: undefined
 							};
 							appearance = {
 								visible: true,
@@ -220,7 +231,8 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 					text: {
 						appearance: {
 							visible: true,
-							opacity: tokenRef()
+							opacity: tokenRef(),
+							borderRadius: undefined
 						},
 						typography: {
 							font: tokenRef(),
@@ -237,7 +249,8 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 					smText: {
 						appearance: {
 							visible: true,
-							opacity: tokenRef('sm')
+							opacity: tokenRef('sm'),
+							borderRadius: undefined
 						},
 						typography: {
 							font: tokenRef('sm'),
@@ -254,7 +267,8 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 					image: {
 						appearance: {
 							visible: true,
-							opacity: tokenRef()
+							opacity: tokenRef(),
+							borderRadius: tokenRef()
 						},
 						stroke: tokenRef(),
 						shadow: tokenRef()
@@ -271,7 +285,9 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 					},
 					autoLayout: {
 						horizontalPadding: tokenRef(),
-						verticalPadding: tokenRef()
+						verticalPadding: tokenRef(),
+						horizontalGap: undefined,
+						verticalGap: undefined
 					},
 					appearance: {
 						visible: true,
@@ -284,7 +300,8 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 					text: {
 						appearance: {
 							visible: true,
-							opacity: tokenRef()
+							opacity: tokenRef(),
+							borderRadius: undefined
 						},
 						typography: {
 							font: tokenRef(),
@@ -303,6 +320,7 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 		}
 	}
 
+	const defaultTheme = themes[0] as TTheme;
 	return {
 		version: 'v0.0.1',
 		assets,
@@ -318,7 +336,8 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 			autoLayout: {
 				horizontalPadding: 24,
 				verticalPadding: 48,
-				verticalGap: 24
+				verticalGap: 24,
+				horizontalGap: undefined
 			},
 			appearance: {
 				visible: true,
@@ -330,215 +349,31 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 				opacity: 1
 			}
 		},
-		tokens: [
-			{
-				type: 'mixin',
-				key: 'default',
-				mixinKey: 'autoLayout',
-				value: {
-					horizontalPadding: 12,
-					verticalPadding: 12
-				}
+		tokens: createTokensFromTheme({
+			...defaultTheme,
+			key: 'linkpop',
+			name: 'LinkPop Import',
+			color: {
+				...defaultTheme.color,
+				base100: page?.themeSettings?.linkCardColor ?? defaultTheme.color.base100,
+				base200: page?.themeSettings?.backgroundColor ?? defaultTheme.color.base200,
+				baseContent: page?.themeSettings?.linkCardFontColor ?? defaultTheme.color.baseContent,
+				primary: page?.themeSettings?.linkCardFontColor ?? defaultTheme.color.primary,
+				primaryContent: page?.themeSettings?.linkCardColor ?? defaultTheme.color.primaryContent
 			},
-			{
-				type: 'mixin',
-				key: 'default',
-				mixinKey: 'appearance',
-				value: {
-					visible: true,
-					opacity: 1,
-					borderRadius
-				}
+			typography: {
+				heading: {
+					fontFamily: primaryFont,
+					fontWeight: defaultTheme.typography.heading.fontWeight
+				},
+				text: { fontFamily: primaryFont, fontWeight: defaultTheme.typography.text.fontWeight }
 			},
-			{
-				type: 'mixin',
-				key: 'default',
-				mixinKey: 'fill',
-				value: {
-					paint: {
-						type: 'solid',
-						color: cssRgbaToRgba(page?.themeSettings?.linkCardColor) ?? hexToRgba('#FFFFFF')
-					},
-					opacity: 1
-				}
-			},
-			{
-				type: 'mixin',
-				key: 'default',
-				mixinKey: 'stroke',
-				value: null
-			},
-			{
-				type: 'mixin',
-				key: 'default',
-				mixinKey: 'shadow',
-				value: {
-					color: { r: 0, g: 0, b: 0, a: 0.1 },
-					offsetX: 0,
-					offsetY: 2,
-					blur: 4,
-					spread: 0
-				}
-			},
-			{
-				type: 'mixin',
-				key: 'default',
-				mixinKey: 'text',
-				value: {
-					appearance: {
-						visible: true,
-						opacity: 1
-					},
-					typography: {
-						font: {
-							family: primaryFont,
-							weight: 400,
-							style: 'normal'
-						},
-						fontSize: 16,
-						textAlignHorizontal: 'center',
-						textAlignVertical: 'center',
-						lineHeight: { type: 'auto' },
-						letterSpacing: { type: 'auto' }
-					},
-					fill: {
-						paint: {
-							type: 'solid',
-							color: cssRgbaToRgba(page?.themeSettings?.linkCardFontColor) ?? hexToRgba('#000000')
-						},
-						opacity: 1
-					},
-					stroke: null,
-					shadow: null
-				}
-			},
-			{
-				type: 'mixin',
-				key: 'xl',
-				mixinKey: 'text',
-				value: {
-					appearance: {
-						visible: true,
-						opacity: 1
-					},
-					typography: {
-						font: {
-							family: primaryFont,
-							weight: 400,
-							style: 'normal'
-						},
-						fontSize: 20,
-						textAlignHorizontal: 'center',
-						textAlignVertical: 'center',
-						lineHeight: { type: 'auto' },
-						letterSpacing: { type: 'auto' }
-					},
-					fill: {
-						paint: {
-							type: 'solid',
-							color: cssRgbaToRgba(page?.themeSettings?.linkCardFontColor) ?? hexToRgba('#000000')
-						},
-						opacity: 1
-					},
-					stroke: null,
-					shadow: null
-				}
-			},
-			{
-				type: 'mixin',
-				key: 'sm',
-				mixinKey: 'text',
-				value: {
-					appearance: {
-						visible: true,
-						opacity: 1
-					},
-					typography: {
-						font: {
-							family: primaryFont,
-							weight: 400,
-							style: 'normal'
-						},
-						fontSize: 14,
-						textAlignHorizontal: 'center',
-						textAlignVertical: 'center',
-						lineHeight: { type: 'auto' },
-						letterSpacing: { type: 'auto' }
-					},
-					fill: {
-						paint: {
-							type: 'solid',
-							color: cssRgbaToRgba(page?.themeSettings?.linkCardFontColor) ?? hexToRgba('#000000')
-						},
-						opacity: 1
-					},
-					stroke: null,
-					shadow: null
-				}
-			},
-			{
-				type: 'mixin',
-				key: 'primary',
-				mixinKey: 'button',
-				value: {
-					appearance: {
-						visible: true,
-						opacity: 1,
-						borderRadius: borderRadius * 0.5
-					},
-					fill: {
-						paint: {
-							type: 'solid',
-							color: cssRgbaToRgba(page?.themeSettings?.linkCardFontColor) ?? hexToRgba('#FFFFFF')
-						},
-						opacity: 1
-					},
-					stroke: null,
-					shadow: null,
-					text: {
-						appearance: {
-							visible: true,
-							opacity: 1
-						},
-						typography: {
-							font: {
-								family: primaryFont,
-								weight: 400,
-								style: 'normal'
-							},
-							fontSize: 16,
-							textAlignHorizontal: 'center',
-							textAlignVertical: 'center',
-							lineHeight: { type: 'auto' },
-							letterSpacing: { type: 'auto' }
-						},
-						fill: {
-							paint: {
-								type: 'solid',
-								color: cssRgbaToRgba(page?.themeSettings?.linkCardColor) ?? hexToRgba('#000000')
-							},
-							opacity: 1
-						},
-						stroke: null,
-						shadow: null
-					}
-				}
-			},
-			{
-				type: 'mixin',
-				key: 'default',
-				mixinKey: 'image',
-				value: {
-					appearance: {
-						visible: true,
-						opacity: 1,
-						borderRadius
-					},
-					stroke: null,
-					shadow: null
-				}
+			radius: {
+				box: borderRadius,
+				field: borderRadius * 0.5,
+				selector: borderRadius * 0.25
 			}
-		]
+		})
 	};
 }
 

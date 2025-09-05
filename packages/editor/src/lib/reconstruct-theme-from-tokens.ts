@@ -1,27 +1,27 @@
-import { TToken } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
-import { AppError } from '@/lib';
-import { TTheme } from '../../environment';
+import { TTheme } from '../environment';
+import { TToken } from '../types';
+import { EditorError } from './EditorError';
 
-export function reconstructThemeFromTokens(tokens: TToken[]): TResult<TTheme, AppError> {
+export function reconstructThemeFromTokens(tokens: TToken[]): TResult<TTheme, EditorError> {
 	// Create a map for easy lookup
 	const tokenMap = new Map(
 		tokens.filter((token) => token.type === 'variable').map((token) => [token.key, token.value])
 	);
 
 	// Helper to get required value or return error
-	const getRequired = (key: string): TResult<string | number, AppError> => {
+	const getRequired = (key: string): TResult<string | number, EditorError> => {
 		const value = tokenMap.get(key);
 		if (value == null) {
 			return Err(
-				new AppError('#ERR_MISSING_REQUIRED_TOKEN', {
+				new EditorError('#ERR_MISSING_REQUIRED_TOKEN', {
 					detail: `Missing required token: ${key}`
 				})
 			);
 		}
 		if (typeof value !== 'string' && typeof value !== 'number') {
 			return Err(
-				new AppError('#ERR_INVALID_TOKEN_VALUE_TYPE', {
+				new EditorError('#ERR_INVALID_TOKEN_VALUE_TYPE', {
 					detail: `Invalid token value type for ${key}: expected string or number, got ${typeof value}`
 				})
 			);

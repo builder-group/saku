@@ -154,18 +154,18 @@ export interface TLinkPopData {
 			url: string;
 		};
 		themeSettings?: {
-			backgroundColor: string;
+			backgroundColor: `#${string}`;
 			backgroundStyle: string;
 			backgroundImage?: {
 				id: string;
 				signedBlobId: string;
 				url: string;
 			};
-			fontColor: string;
-			primaryFont: string;
+			fontColor: `#${string}`;
+			primaryFont: `#${string}`;
 			linkCardShape: string;
-			linkCardColor: string;
-			linkCardFontColor: string;
+			linkCardColor: `#${string}`;
+			linkCardFontColor: `#${string}`;
 		};
 		links?: {
 			__typename: string;

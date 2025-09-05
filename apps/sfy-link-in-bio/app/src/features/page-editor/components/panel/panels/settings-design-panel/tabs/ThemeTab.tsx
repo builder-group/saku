@@ -1,9 +1,14 @@
-import { getFontMetadataByFamily, hexToRgba } from '@repo/editor';
+import {
+	createTokensFromTheme,
+	getFontMetadataByFamily,
+	hexToRgba,
+	themes,
+	TTheme
+} from '@repo/editor';
 import { Text } from '@shopify/polaris';
 import { createState } from 'feature-state';
 import React from 'react';
-import { themes, type TTheme } from '../../../../../environment';
-import { createTokensFromTheme, TPageEditor } from '../../../../../lib';
+import { TPageEditor } from '../../../../../lib';
 
 export const ThemeTab: React.FC<TThemeTabProps> = (props) => {
 	const { editor } = props;

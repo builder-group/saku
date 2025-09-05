@@ -221,6 +221,19 @@ export interface TProduct {
 // Style Mixins
 // =========================================================================
 
+export type TStyleMixin =
+	| TAutoLayoutStyleMixin
+	| TAppearanceStyleMixin
+	| TTypographyStyleMixin
+	| TFillStyleMixin
+	| TStrokeStyleMixin
+	| TShadowStyleMixin
+	| TTextStyleMixin
+	| TButtonStyleMixin
+	| TBadgeStyleMixin
+	| TImageStyleMixin
+	| TProductDetailsStyleMixin;
+
 // export type TLayoutStyleMixin = TBaseMixin<
 // 	'layout',
 // 	{
@@ -233,10 +246,10 @@ export interface TProduct {
 export type TAutoLayoutStyleMixin = TBaseMixin<
 	'autoLayout',
 	{
-		horizontalPadding?: TRef<number>;
-		verticalPadding?: TRef<number>;
-		horizontalGap?: TRef<number>;
-		verticalGap?: TRef<number>;
+		horizontalPadding: TRef<number>;
+		verticalPadding: TRef<number>;
+		horizontalGap: TRef<number> | undefined;
+		verticalGap: TRef<number> | undefined;
 	}
 >;
 
@@ -245,7 +258,7 @@ export type TAppearanceStyleMixin = TBaseMixin<
 	{
 		visible: boolean;
 		opacity: TRef<number>;
-		borderRadius?: TRef<number>;
+		borderRadius: TRef<number> | undefined;
 	}
 >;
 

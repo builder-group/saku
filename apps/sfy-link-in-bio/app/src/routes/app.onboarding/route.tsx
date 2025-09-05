@@ -1,4 +1,4 @@
-import { toFlatSite } from '@repo/editor';
+import { themes, toFlatSite, TTheme } from '@repo/editor';
 import { useAppBridge } from '@shopify/app-bridge-react';
 import { Button, ButtonGroup, Text } from '@shopify/polaris';
 import { boundary } from '@shopify/shopify-app-react-router/server';
@@ -9,7 +9,6 @@ import { shopify } from '@/.server/environment';
 import { getSessionTokenFromRequest, redirectWithAuth } from '@/.server/lib';
 import { useCrisp } from '@/components';
 import { appConfig, coreApiClient } from '@/environment';
-import { themes, TTheme } from '@/features/page-editor';
 import { blankPreset } from '@/features/page-editor/.server';
 import { resultLoader, withResultLoader } from '@/lib';
 import { THeadersFunction } from '@/types';
