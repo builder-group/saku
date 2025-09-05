@@ -29,9 +29,9 @@ export function resolveProductNode(
 		stroke,
 		shadow,
 		text,
-		primaryButton,
-		primaryBadge,
-		neutralBadge,
+		buttonPrimary,
+		badgePrimary,
+		badgeNeutral,
 		image,
 		productDetails,
 		...rest
@@ -110,7 +110,7 @@ export function resolveProductNode(
 		return Err(resolvedTextErr.wrapWith('#ERR_RESOLVE_TEXT_STYLE'));
 	}
 	const [isResolvedPrimaryButtonOk, resolvedPrimaryButtonErr, resolvedPrimaryButton] =
-		resolveButtonStyleMixin(primaryButton, {
+		resolveButtonStyleMixin(buttonPrimary, {
 			node: cx,
 			mixinTokenSet: cx.site.getMixinTokenSet('button'),
 			mapToMixinTokenValue: (ref, tokenSet) => tokenSet?.[ref]?.value,
@@ -120,7 +120,7 @@ export function resolveProductNode(
 		return Err(resolvedPrimaryButtonErr.wrapWith('#ERR_RESOLVE_BUTTON_STYLE'));
 	}
 	const [isResolvedPrimaryBadgeOk, resolvedPrimaryBadgeErr, resolvedPrimaryBadge] =
-		resolveBadgeStyleMixin(primaryBadge, {
+		resolveBadgeStyleMixin(badgePrimary, {
 			node: cx,
 			mixinTokenSet: cx.site.getMixinTokenSet('badge'),
 			mapToMixinTokenValue: (ref, tokenSet) => tokenSet?.[ref]?.value,
@@ -130,7 +130,7 @@ export function resolveProductNode(
 		return Err(resolvedPrimaryBadgeErr.wrapWith('#ERR_RESOLVE_PRIMARY_BADGE_STYLE'));
 	}
 	const [isResolvedNeutralBadgeOk, resolvedNeutralBadgeErr, resolvedNeutralBadge] =
-		resolveBadgeStyleMixin(neutralBadge, {
+		resolveBadgeStyleMixin(badgeNeutral, {
 			node: cx,
 			mixinTokenSet: cx.site.getMixinTokenSet('badge'),
 			mapToMixinTokenValue: (ref, tokenSet) => tokenSet?.[ref]?.value,
@@ -168,9 +168,9 @@ export function resolveProductNode(
 		stroke: resolvedStroke,
 		shadow: resolvedShadow,
 		text: resolvedText,
-		primaryButton: resolvedPrimaryButton,
-		primaryBadge: resolvedPrimaryBadge,
-		neutralBadge: resolvedNeutralBadge,
+		buttonPrimary: resolvedPrimaryButton,
+		badgePrimary: resolvedPrimaryBadge,
+		badgeNeutral: resolvedNeutralBadge,
 		image: resolvedImage,
 		productDetails: resolvedProductDetails
 	});

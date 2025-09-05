@@ -28,7 +28,7 @@ export const ThemeTab: React.FC<TThemeTabProps> = (props) => {
 				for (const node of Object.values(editor.nodeMap)) {
 					switch (node.type) {
 						case 'about': {
-							(node as TNodeState<TAboutNode>)._v.xlText = aboutNodeMetadata.default.xlText;
+							(node as TNodeState<TAboutNode>)._v.textXl = aboutNodeMetadata.default.textXl;
 							(node as TNodeState<TAboutNode>)._v.text = aboutNodeMetadata.default.text;
 							(node as TNodeState<TAboutNode>)._v.image = aboutNodeMetadata.default.image;
 							node._notify();

@@ -54,10 +54,10 @@ export function resolveProductDetailsStyleMixin<GTokenSet extends TMixinTokenSet
 		return Err(resolvedShadowErr.wrapWith('#ERR_RESOLVE_SHADOW_STYLE'));
 	}
 	const [isResolvedXlTextOk, resolvedXlTextErr, resolvedXlText] = resolveTextStyleMixin(
-		productDetails.xlText,
+		productDetails.textXl,
 		{
 			...cx,
-			mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.xlText
+			mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.textXl
 		}
 	);
 	if (!isResolvedXlTextOk) {
@@ -74,9 +74,9 @@ export function resolveProductDetailsStyleMixin<GTokenSet extends TMixinTokenSet
 		return Err(resolvedTextErr.wrapWith('#ERR_RESOLVE_TEXT_STYLE'));
 	}
 	const [isResolvedPrimaryButtonOk, resolvedPrimaryButtonErr, resolvedPrimaryButton] =
-		resolveButtonStyleMixin(productDetails.primaryButton, {
+		resolveButtonStyleMixin(productDetails.buttonPrimary, {
 			...cx,
-			mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.primaryButton
+			mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.buttonPrimary
 		});
 	if (!isResolvedPrimaryButtonOk) {
 		return Err(resolvedPrimaryButtonErr.wrapWith('#ERR_RESOLVE_PRIMARY_BUTTON_STYLE'));
@@ -97,9 +97,9 @@ export function resolveProductDetailsStyleMixin<GTokenSet extends TMixinTokenSet
 		fill: resolvedFill,
 		stroke: resolvedStroke,
 		shadow: resolvedShadow,
-		xlText: resolvedXlText,
+		textXl: resolvedXlText,
 		text: resolvedText,
-		primaryButton: resolvedPrimaryButton,
+		buttonPrimary: resolvedPrimaryButton,
 		image: resolvedImage,
 		styles: {
 			...resolvedAppearance.styles,

@@ -107,15 +107,15 @@ export const SingleContent: React.FC<TSingleContentProps> = (props) => {
 					if (hash != null) {
 						cx.node._v.content.userFavicon = hash;
 						cx.node._v.text.typography.textAlignHorizontal = 'start';
-						cx.node._v.smText.typography.textAlignHorizontal = 'start';
+						cx.node._v.textSm.typography.textAlignHorizontal = 'start';
 						cx.node._notify();
 					}
 					break;
 				}
 				case 'Removed': {
 					cx.node._v.content.userFavicon = null;
-					cx.node._v.text.typography.textAlignHorizontal = tokenRef();
-					cx.node._v.smText.typography.textAlignHorizontal = tokenRef('sm');
+					cx.node._v.text.typography.textAlignHorizontal = tokenRef('mixin', 'default');
+					cx.node._v.textSm.typography.textAlignHorizontal = tokenRef('mixin', 'sm');
 					cx.node._notify();
 					break;
 				}

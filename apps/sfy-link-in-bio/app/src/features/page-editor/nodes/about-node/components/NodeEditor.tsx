@@ -285,7 +285,7 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 				>
 					<TextStyleMixinEditor
 						state={nodeState}
-						mapValue={(value) => value.xlText}
+						mapValue={(value) => value.textXl}
 						tokenSet={editor.mixinTokenMap.text}
 						tokenRefKey={'xl'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}

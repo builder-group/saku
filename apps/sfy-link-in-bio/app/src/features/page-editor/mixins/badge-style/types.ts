@@ -20,10 +20,10 @@ export type TResolvedBadgeStyleMixin = TBaseMixin<
 	}
 >;
 export type TResolvedPrimaryBadgeStyleMixin = TBaseMixin<
-	'primaryBadge',
+	'badgePrimary',
 	TResolvedBadgeStyleMixin['value']
 >;
 export type TResolvedNeutralBadgeStyleMixin = TBaseMixin<
-	'neutralBadge',
+	'badgeNeutral',
 	TResolvedBadgeStyleMixin['value']
 >;

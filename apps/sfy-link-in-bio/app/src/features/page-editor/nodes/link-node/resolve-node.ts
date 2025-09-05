@@ -17,7 +17,7 @@ export function resolveLinkNode(
 	node: TLinkNode,
 	cx: TNodeResolveContext
 ): TResult<TResolvedLinkNode, AppError> {
-	const { content, autoLayout, appearance, fill, stroke, shadow, text, smText, image, ...rest } =
+	const { content, autoLayout, appearance, fill, stroke, shadow, text, textSm, image, ...rest } =
 		node;
 
 	// Resolve content
@@ -101,7 +101,7 @@ export function resolveLinkNode(
 	if (!isResolvedTextOk) {
 		return Err(resolvedTextErr.wrapWith('#ERR_RESOLVE_TEXT_STYLE'));
 	}
-	const [isResolvedSmTextOk, resolvedSmTextErr, resolvedSmText] = resolveTextStyleMixin(smText, {
+	const [isResolvedSmTextOk, resolvedSmTextErr, resolvedSmText] = resolveTextStyleMixin(textSm, {
 		node: cx,
 		mixinTokenSet: cx.site.getMixinTokenSet('text'),
 		mapToMixinTokenValue: (ref, tokenSet) => tokenSet?.[ref]?.value,
@@ -129,7 +129,7 @@ export function resolveLinkNode(
 		stroke: resolvedStroke,
 		shadow: resolvedShadow,
 		text: resolvedText,
-		smText: resolvedSmText,
+		textSm: resolvedSmText,
 		image: resolvedImage
 	});
 }

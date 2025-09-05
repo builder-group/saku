@@ -118,7 +118,7 @@ export const StrokeStyleMixinEditor = <
 				state._notify();
 			}
 		} else {
-			applyValue(state, tokenRef(tokenRefKey));
+			applyValue(state, tokenRef('mixin', tokenRefKey));
 			state._notify();
 		}
 	}, [isLinked, mapValue, state, mapToToken, tokenSet, applyValue, tokenRefKey]);

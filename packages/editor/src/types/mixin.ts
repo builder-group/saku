@@ -326,8 +326,8 @@ export type TTextStyleMixin = TBaseMixin<
 		shadow: TShadowStyleMixin['value'];
 	}
 >;
-export type TXlTextStyleMixin = TBaseMixin<'xlText', TTextStyleMixin['value']>;
-export type TSmTextStyleMixin = TBaseMixin<'smText', TTextStyleMixin['value']>;
+export type TTextXlStyleMixin = TBaseMixin<'textXl', TTextStyleMixin['value']>;
+export type TTextSmStyleMixin = TBaseMixin<'textSm', TTextStyleMixin['value']>;
 
 export type TButtonStyleMixin = TBaseMixin<
 	'button',
@@ -339,8 +339,8 @@ export type TButtonStyleMixin = TBaseMixin<
 		text: TTextStyleMixin['value'];
 	}
 >;
-export type TPrimaryButtonStyleMixin = TBaseMixin<'primaryButton', TButtonStyleMixin['value']>;
-export type TNeutralButtonStyleMixin = TBaseMixin<'neutralButton', TButtonStyleMixin['value']>;
+export type TButtonPrimaryStyleMixin = TBaseMixin<'buttonPrimary', TButtonStyleMixin['value']>;
+export type TButtonNeutralStyleMixin = TBaseMixin<'buttonNeutral', TButtonStyleMixin['value']>;
 
 export type TBadgeStyleMixin = TBaseMixin<
 	'badge',
@@ -352,8 +352,8 @@ export type TBadgeStyleMixin = TBaseMixin<
 		text: TTextStyleMixin['value'];
 	}
 >;
-export type TPrimaryBadgeStyleMixin = TBaseMixin<'primaryBadge', TBadgeStyleMixin['value']>;
-export type TNeutralBadgeStyleMixin = TBaseMixin<'neutralBadge', TBadgeStyleMixin['value']>;
+export type TBadgePrimaryStyleMixin = TBaseMixin<'badgePrimary', TBadgeStyleMixin['value']>;
+export type TBadgeNeutralStyleMixin = TBaseMixin<'badgeNeutral', TBadgeStyleMixin['value']>;
 
 export type TImageStyleMixin = TBaseMixin<
 	'image',
@@ -371,9 +371,9 @@ export type TProductDetailsStyleMixin = TBaseMixin<
 		fill: TFillStyleMixin['value'];
 		stroke: TStrokeStyleMixin['value'];
 		shadow: TShadowStyleMixin['value'];
-		xlText: TXlTextStyleMixin['value'];
+		textXl: TTextXlStyleMixin['value'];
 		text: TTextStyleMixin['value'];
-		primaryButton: TPrimaryButtonStyleMixin['value'];
+		buttonPrimary: TButtonPrimaryStyleMixin['value'];
 		image: TImageStyleMixin['value'];
 	}
 >;

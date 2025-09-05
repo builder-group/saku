@@ -17,7 +17,7 @@ export function resolveAboutNode(
 	node: TAboutNode,
 	cx: TNodeResolveContext
 ): TResult<TResolvedAboutNode, AppError> {
-	const { content, autoLayout, appearance, fill, stroke, shadow, xlText, text, image, ...rest } =
+	const { content, autoLayout, appearance, fill, stroke, shadow, textXl, text, image, ...rest } =
 		node;
 
 	// Resolve content
@@ -80,7 +80,7 @@ export function resolveAboutNode(
 	if (!isResolvedShadowOk) {
 		return Err(resolvedShadowErr.wrapWith('#ERR_RESOLVE_SHADOW_STYLE'));
 	}
-	const [isResolvedXlTextOk, resolvedXlTextErr, resolvedXlText] = resolveTextStyleMixin(xlText, {
+	const [isResolvedXlTextOk, resolvedXlTextErr, resolvedXlText] = resolveTextStyleMixin(textXl, {
 		node: cx,
 		mixinTokenSet: cx.site.getMixinTokenSet('text'),
 		mapToMixinTokenValue: (ref, tokenSet) => tokenSet?.[ref]?.value,
@@ -116,7 +116,7 @@ export function resolveAboutNode(
 		fill: resolvedFill,
 		stroke: resolvedStroke,
 		shadow: resolvedShadow,
-		xlText: resolvedXlText,
+		textXl: resolvedXlText,
 		text: resolvedText,
 		image: resolvedImage
 	});

@@ -110,7 +110,7 @@ export const TokenTextInput = <
 				state.set(tokenValue as GRefValue);
 			}
 		} else {
-			state.set(tokenRef(tokenRefKey) as GRefValue);
+			state.set(tokenRef('mixin', tokenRefKey) as GRefValue);
 		}
 	}, [onLinkChange, isLinked, state, mapToTokenValue, tokenSet, tokenRefKey]);
 

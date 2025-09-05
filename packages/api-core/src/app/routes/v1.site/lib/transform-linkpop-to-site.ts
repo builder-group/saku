@@ -79,8 +79,8 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 				profilePicture: profilePictureHash,
 				socialLinks: transformSocialLinks(page.socialMediaAccounts ?? [])
 			},
-			xlText: {
-				...aboutNodeMetadata.default.xlText,
+			textXl: {
+				...aboutNodeMetadata.default.textXl,
 				fill: {
 					paint: {
 						type: 'solid',

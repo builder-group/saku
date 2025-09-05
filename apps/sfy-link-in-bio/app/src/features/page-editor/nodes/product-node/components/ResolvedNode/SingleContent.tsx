@@ -15,9 +15,9 @@ export const SingleContent: React.FC<TSingleContentProps> = (props) => {
 		stroke,
 		shadow,
 		text,
-		primaryButton,
-		primaryBadge,
-		neutralBadge,
+		buttonPrimary,
+		badgePrimary,
+		badgeNeutral,
 		image
 	} = node;
 
@@ -177,8 +177,8 @@ export const SingleContent: React.FC<TSingleContentProps> = (props) => {
 						<div className="flex flex-wrap items-center gap-2">
 							{/* Price Badge */}
 							{selectedVariant?.price && (
-								<div className="px-2 py-0.5" style={primaryBadge.styles}>
-									<div style={primaryBadge.text.styles}>
+								<div className="px-2 py-0.5" style={badgePrimary.styles}>
+									<div style={badgePrimary.text.styles}>
 										{getCurrencySymbol(selectedVariant.price.currencyCode)}
 										{selectedVariant.price.amount}
 									</div>
@@ -208,14 +208,14 @@ export const SingleContent: React.FC<TSingleContentProps> = (props) => {
 										</select>
 										<div
 											className="pointer-events-none flex max-w-24 cursor-pointer items-center gap-1 px-2 py-0.5"
-											style={neutralBadge.styles}
+											style={badgeNeutral.styles}
 										>
-											<span className="truncate" style={neutralBadge.text.styles}>
+											<span className="truncate" style={badgeNeutral.text.styles}>
 												{currentValue || placeholderText}
 											</span>
 											<ChevronDownIcon
 												className="h-3 w-3 flex-shrink-0"
-												style={{ color: neutralBadge.text.styles?.color }}
+												style={{ color: badgeNeutral.text.styles?.color }}
 											/>
 										</div>
 									</div>
@@ -249,9 +249,9 @@ export const SingleContent: React.FC<TSingleContentProps> = (props) => {
 							}}
 							disabled={isBuying}
 							className="ml-3 cursor-pointer px-3 py-1.5"
-							style={primaryButton.styles}
+							style={buttonPrimary.styles}
 						>
-							<div style={primaryButton.text.styles}>
+							<div style={buttonPrimary.text.styles}>
 								{isBuying ? <span className="loading loading-spinner loading-xs"></span> : 'Buy'}
 							</div>
 						</button>

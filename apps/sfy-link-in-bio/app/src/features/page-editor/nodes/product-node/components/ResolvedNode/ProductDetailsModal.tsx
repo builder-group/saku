@@ -11,7 +11,7 @@ export const ProductDetailsModal: React.FC<TProductDetailsModalProps> = (props) 
 		cx,
 		modalRef
 	} = props;
-	const { primaryButton } = productDetails;
+	const { buttonPrimary } = productDetails;
 
 	const [selectedImageIndex, setSelectedImageIndex] = React.useState(0);
 	const [isBuying, setIsBuying] = React.useState(false);
@@ -185,9 +185,9 @@ export const ProductDetailsModal: React.FC<TProductDetailsModalProps> = (props) 
 								onClick={handleBuyNow}
 								disabled={isBuying}
 								className="w-full py-2"
-								style={primaryButton.styles}
+								style={buttonPrimary.styles}
 							>
-								<div style={primaryButton.text.styles}>
+								<div style={buttonPrimary.text.styles}>
 									{isBuying ? (
 										<span className="loading loading-spinner loading-sm"></span>
 									) : (

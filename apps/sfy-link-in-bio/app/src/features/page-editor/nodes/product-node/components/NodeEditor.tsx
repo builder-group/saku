@@ -444,7 +444,7 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 				>
 					<ButtonStyleMixinEditor
 						state={nodeState}
-						mapValue={(value) => value.primaryButton}
+						mapValue={(value) => value.buttonPrimary}
 						tokenSet={editor.mixinTokenMap.button}
 						tokenRefKey={'primary'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
@@ -459,7 +459,7 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 				>
 					<BadgeStyleMixinEditor
 						state={nodeState}
-						mapValue={(value) => value.primaryBadge}
+						mapValue={(value) => value.badgePrimary}
 						tokenSet={editor.mixinTokenMap.badge}
 						tokenRefKey={'primary'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
@@ -474,7 +474,7 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 				>
 					<BadgeStyleMixinEditor
 						state={nodeState}
-						mapValue={(value) => value.neutralBadge}
+						mapValue={(value) => value.badgeNeutral}
 						tokenSet={editor.mixinTokenMap.badge}
 						tokenRefKey={'neutral'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}

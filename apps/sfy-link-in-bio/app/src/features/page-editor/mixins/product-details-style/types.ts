@@ -14,9 +14,9 @@ export type TResolvedProductDetailsStyleMixin = TBaseMixin<
 		fill: TResolvedFillStyleMixin['value'];
 		stroke: TResolvedStrokeStyleMixin['value'];
 		shadow: TResolvedShadowStyleMixin['value'];
-		xlText: TResolvedXlTextStyleMixin['value'];
+		textXl: TResolvedXlTextStyleMixin['value'];
 		text: TResolvedTextStyleMixin['value'];
-		primaryButton: TResolvedPrimaryButtonStyleMixin['value'];
+		buttonPrimary: TResolvedPrimaryButtonStyleMixin['value'];
 		image: TResolvedImageStyleMixin['value'];
 		styles: TResolvedAppearanceStyleMixin['value']['styles'] &
 			Partial<NonNullable<TResolvedFillStyleMixin['value']>['styles']> &

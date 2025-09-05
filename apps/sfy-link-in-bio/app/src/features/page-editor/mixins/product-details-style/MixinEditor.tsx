@@ -84,10 +84,10 @@ export const ProductDetailsStyleMixinEditor = <
 			</div>
 			<TextStyleMixinEditor
 				state={state}
-				mapValue={(value) => mapValue(value).xlText}
+				mapValue={(value) => mapValue(value).textXl}
 				tokenSet={tokenSet}
 				tokenRefKey={tokenRefKey}
-				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.xlText}
+				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.textXl}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 			/>
@@ -112,10 +112,10 @@ export const ProductDetailsStyleMixinEditor = <
 			</div>
 			<ButtonStyleMixinEditor
 				state={state}
-				mapValue={(value) => mapValue(value).primaryButton}
+				mapValue={(value) => mapValue(value).buttonPrimary}
 				tokenSet={tokenSet}
 				tokenRefKey={tokenRefKey}
-				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.primaryButton}
+				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.buttonPrimary}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 			/>

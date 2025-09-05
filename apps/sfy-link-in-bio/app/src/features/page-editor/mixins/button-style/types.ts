@@ -20,10 +20,10 @@ export type TResolvedButtonStyleMixin = TBaseMixin<
 	}
 >;
 export type TResolvedPrimaryButtonStyleMixin = TBaseMixin<
-	'primaryButton',
+	'buttonPrimary',
 	TResolvedButtonStyleMixin['value']
 >;
 export type TResolvedNeutralButtonStyleMixin = TBaseMixin<
-	'neutralButton',
+	'buttonNeutral',
 	TResolvedButtonStyleMixin['value']
 >;

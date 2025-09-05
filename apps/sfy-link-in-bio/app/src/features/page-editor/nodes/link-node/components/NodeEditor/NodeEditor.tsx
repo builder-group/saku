@@ -205,7 +205,7 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 					>
 						<TextStyleMixinEditor
 							state={nodeState}
-							mapValue={(value) => value.smText}
+							mapValue={(value) => value.textSm}
 							tokenSet={editor.mixinTokenMap.text}
 							tokenRefKey={'sm'}
 							mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}

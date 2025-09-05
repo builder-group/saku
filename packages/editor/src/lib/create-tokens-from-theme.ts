@@ -643,7 +643,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 				},
 				stroke: null,
 				shadow: null,
-				xlText: {
+				textXl: {
 					appearance: {
 						visible: true,
 						opacity: 1,
@@ -699,7 +699,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 					stroke: null,
 					shadow: null
 				},
-				primaryButton: {
+				buttonPrimary: {
 					appearance: {
 						visible: true,
 						opacity: 1,
