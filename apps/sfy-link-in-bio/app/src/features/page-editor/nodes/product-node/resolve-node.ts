@@ -188,6 +188,10 @@ export function resolveProductNode(
 					...resolvedImage.appearance.styles,
 					borderRadius: `${imageBorderRadius}px`
 				}
+			},
+			styles: {
+				...resolvedImage.appearance.styles,
+				borderRadius: `${imageBorderRadius}px`
 			}
 		},
 		productDetails: resolvedProductDetails

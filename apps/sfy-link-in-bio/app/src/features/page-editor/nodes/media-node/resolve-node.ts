@@ -129,6 +129,10 @@ export function resolveMediaNode(
 					...resolvedImage.appearance.styles,
 					borderRadius: `${imageBorderRadius}px`
 				}
+			},
+			styles: {
+				...resolvedImage.appearance.styles,
+				borderRadius: `${imageBorderRadius}px`
 			}
 		}
 	});

@@ -147,6 +147,10 @@ export function resolveLinkNode(
 					...resolvedImage.appearance.styles,
 					borderRadius: `${imageBorderRadius}px`
 				}
+			},
+			styles: {
+				...resolvedImage.appearance.styles,
+				borderRadius: `${imageBorderRadius}px`
 			}
 		}
 	});

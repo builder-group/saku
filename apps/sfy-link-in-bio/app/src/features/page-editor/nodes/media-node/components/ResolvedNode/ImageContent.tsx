@@ -24,7 +24,7 @@ export const ImageContent: React.FC<TImageContentProps> = (props) => {
 				alt={media.altText}
 				className="h-auto w-full object-cover"
 				draggable={false}
-				style={image.appearance.styles}
+				style={image.styles}
 			/>
 		</div>
 	);
