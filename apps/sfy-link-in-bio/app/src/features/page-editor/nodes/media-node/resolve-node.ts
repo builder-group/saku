@@ -104,11 +104,13 @@ export function resolveMediaNode(
 
 	const imageBorderRadius =
 		resolvedImage.appearance.borderRadius ??
-		computeInnerBorderRadius(
-			resolvedAppearance.borderRadius ?? 0,
-			resolvedAutoLayout.verticalPadding,
-			resolvedAutoLayout.horizontalPadding
-		);
+		(resolvedAutoLayout.verticalPadding === 0 && resolvedAutoLayout.horizontalPadding === 0
+			? 0 // If no padding let overflow hidden handle it
+			: computeInnerBorderRadius(
+					resolvedAppearance.borderRadius ?? 0,
+					resolvedAutoLayout.verticalPadding,
+					resolvedAutoLayout.horizontalPadding
+				));
 
 	return Ok({
 		...rest,

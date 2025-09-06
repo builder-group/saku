@@ -7,6 +7,7 @@ import {
 	TAboutNode,
 	themes,
 	TLinkNode,
+	TMixinToken,
 	TTheme
 } from '@repo/editor';
 import { Text } from '@shopify/polaris';
@@ -47,6 +48,8 @@ export const ThemeTab: React.FC<TThemeTabProps> = (props) => {
 
 			// Apply tokens for elements (cards, text, buttons)
 			const tokens = createTokensFromTheme(theme);
+			const toNotifyMixinKeys = new Set<TMixinToken['mixinKey']>();
+			let notifyVariableTokenMap = false;
 			tokens.forEach((token) => {
 				switch (token.type) {
 					case 'mixin': {
@@ -55,16 +58,22 @@ export const ThemeTab: React.FC<TThemeTabProps> = (props) => {
 						}
 						// @ts-expect-error - we ensure object exists above
 						editor.mixinTokenMap[token.mixinKey]._v[token.key] = token;
-						editor.mixinTokenMap[token.mixinKey]?._notify();
+						toNotifyMixinKeys.add(token.mixinKey);
 						break;
 					}
 					case 'variable': {
 						editor.variableTokenMap._v[token.key] = token;
-						editor.variableTokenMap?._notify();
+						notifyVariableTokenMap = true;
 						break;
 					}
 				}
 			});
+			toNotifyMixinKeys.forEach((key) => {
+				editor.mixinTokenMap[key]?._notify();
+			});
+			if (notifyVariableTokenMap) {
+				editor.variableTokenMap?._notify();
+			}
 
 			// Register fonts
 			editor.registerFontFamily(theme.typography.heading.fontFamily);
