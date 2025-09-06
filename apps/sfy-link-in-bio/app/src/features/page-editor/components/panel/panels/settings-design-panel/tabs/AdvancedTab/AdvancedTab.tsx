@@ -1,5 +1,4 @@
 import {
-	isTokenRef,
 	TAppearanceStyleToken,
 	TAutoLayoutStyleToken,
 	TBadgeStyleToken,
@@ -9,8 +8,7 @@ import {
 	TProductDetailsStyleToken,
 	TShadowStyleToken,
 	TStrokeStyleToken,
-	TTextStyleToken,
-	TTypographyStyleToken
+	TTextStyleToken
 } from '@repo/editor';
 import React from 'react';
 import { AccordionSection } from '@/components';
@@ -25,8 +23,7 @@ import {
 	ProductDetailsStyleMixinEditor,
 	ShadowStyleMixinEditor,
 	StrokeStyleMixinEditor,
-	TextStyleMixinEditor,
-	TypographyStyleMixinEditor
+	TextStyleMixinEditor
 } from '../../../../../../mixins';
 import { PageNodeEditor } from '../../../../../../nodes';
 import { useMixinTokens } from './use-mixin-tokens';
@@ -41,9 +38,9 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 	const appearanceTokens = useMixinTokens<TAppearanceStyleToken['value']>(
 		editor.mixinTokenMap.appearance
 	);
-	const typographyTokens = useMixinTokens<TTypographyStyleToken['value']>(
-		editor.mixinTokenMap.typography
-	);
+	// const typographyTokens = useMixinTokens<TTypographyStyleToken['value']>(
+	// 	editor.mixinTokenMap.typography
+	// );
 	const fillTokens = useMixinTokens<TFillStyleToken['value']>(editor.mixinTokenMap.fill);
 	const strokeTokens = useMixinTokens<TStrokeStyleToken['value']>(editor.mixinTokenMap.stroke);
 	const shadowTokens = useMixinTokens<TShadowStyleToken['value']>(editor.mixinTokenMap.shadow);
@@ -66,13 +63,13 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 				<PageNodeEditor nodeState={editor.getRootNode()} editor={editor} />
 			</AccordionSection>
 
-			{/* Auto Layout Variants Section */}
+			{/* Auto Layout Section */}
 			{autoLayoutTokens.length > 0 && (
-				<AccordionSection title="Auto Layout Variants" collapsibleClassName="p-0 border-b-0">
+				<AccordionSection title="Auto Layout" collapsibleClassName="p-0 border-b-0">
 					{autoLayoutTokens.map(({ variant, state }) => (
 						<AccordionSection
 							key={variant}
-							title={`${variant.charAt(0).toUpperCase() + variant.slice(1)} Auto Layout`}
+							title={variant.charAt(0).toUpperCase() + variant.slice(1)}
 							collapsibleClassName="px-0 space-y-3"
 							size="tight"
 							defaultOpen={true}
@@ -88,13 +85,13 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 				</AccordionSection>
 			)}
 
-			{/* Appearance Variants Section */}
+			{/* Appearance Section */}
 			{appearanceTokens.length > 0 && (
-				<AccordionSection title="Appearance Variants" collapsibleClassName="p-0 border-b-0">
+				<AccordionSection title="Appearance" collapsibleClassName="p-0 border-b-0">
 					{appearanceTokens.map(({ variant, state }) => (
 						<AccordionSection
 							key={variant}
-							title={`${variant.charAt(0).toUpperCase() + variant.slice(1)} Appearance`}
+							title={variant.charAt(0).toUpperCase() + variant.slice(1)}
 							collapsibleClassName="px-0 space-y-3"
 							size="tight"
 							defaultOpen={true}
@@ -110,13 +107,13 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 				</AccordionSection>
 			)}
 
-			{/* Typography Variants Section */}
-			{typographyTokens.length > 0 && (
-				<AccordionSection title="Typography Variants" collapsibleClassName="p-0 border-b-0">
+			{/* Typography Section */}
+			{/* {typographyTokens.length > 0 && (
+				<AccordionSection title="Typography" collapsibleClassName="p-0 border-b-0">
 					{typographyTokens.map(({ variant, state }) => (
 						<AccordionSection
 							key={variant}
-							title={`${variant.charAt(0).toUpperCase() + variant.slice(1)} Typography`}
+							title={variant.charAt(0).toUpperCase() + variant.slice(1)}
 							collapsibleClassName="px-0 space-y-3"
 							size="tight"
 							defaultOpen={true}
@@ -125,7 +122,7 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 								state={state}
 								mapValue={(value) => value}
 								applyValue={(state, value) => {
-									state._v = value;
+									state._v = value as TTypographyStyleToken['value'];
 								}}
 								disabledTokenLink
 								editor={editor}
@@ -133,15 +130,15 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 						</AccordionSection>
 					))}
 				</AccordionSection>
-			)}
+			)} */}
 
-			{/* Fill Variants Section */}
+			{/* Fill Section */}
 			{fillTokens.length > 0 && (
-				<AccordionSection title="Fill Variants" collapsibleClassName="p-0 border-b-0">
+				<AccordionSection title="Fill" collapsibleClassName="p-0 border-b-0">
 					{fillTokens.map(({ variant, state }) => (
 						<AccordionSection
 							key={variant}
-							title={`${variant.charAt(0).toUpperCase() + variant.slice(1)} Fill`}
+							title={variant.charAt(0).toUpperCase() + variant.slice(1)}
 							collapsibleClassName="px-0 space-y-3"
 							size="tight"
 							defaultOpen={true}
@@ -150,9 +147,7 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 								state={state}
 								mapValue={(value) => value}
 								applyValue={(state, value) => {
-									if (!isTokenRef(value)) {
-										state._v = value;
-									}
+									state._v = value as TFillStyleToken['value'];
 								}}
 								disabledTokenLink
 								editor={editor}
@@ -162,13 +157,13 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 				</AccordionSection>
 			)}
 
-			{/* Stroke Variants Section */}
+			{/* Stroke Section */}
 			{strokeTokens.length > 0 && (
-				<AccordionSection title="Stroke Variants" collapsibleClassName="p-0 border-b-0">
+				<AccordionSection title="Stroke" collapsibleClassName="p-0 border-b-0">
 					{strokeTokens.map(({ variant, state }) => (
 						<AccordionSection
 							key={variant}
-							title={`${variant.charAt(0).toUpperCase() + variant.slice(1)} Stroke`}
+							title={variant.charAt(0).toUpperCase() + variant.slice(1)}
 							collapsibleClassName="px-0 space-y-3"
 							size="tight"
 							defaultOpen={true}
@@ -177,9 +172,7 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 								state={state}
 								mapValue={(value) => value}
 								applyValue={(state, value) => {
-									if (!isTokenRef(value)) {
-										state._v = value;
-									}
+									state._v = value as TStrokeStyleToken['value'];
 								}}
 								disabledTokenLink
 								editor={editor}
@@ -189,13 +182,13 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 				</AccordionSection>
 			)}
 
-			{/* Shadow Variants Section */}
+			{/* Shadow Section */}
 			{shadowTokens.length > 0 && (
-				<AccordionSection title="Shadow Variants" collapsibleClassName="p-0 border-b-0">
+				<AccordionSection title="Shadow" collapsibleClassName="p-0 border-b-0">
 					{shadowTokens.map(({ variant, state }) => (
 						<AccordionSection
 							key={variant}
-							title={`${variant.charAt(0).toUpperCase() + variant.slice(1)} Shadow`}
+							title={variant.charAt(0).toUpperCase() + variant.slice(1)}
 							collapsibleClassName="px-0 space-y-3"
 							size="tight"
 							defaultOpen={true}
@@ -204,9 +197,7 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 								state={state}
 								mapValue={(value) => value}
 								applyValue={(state, value) => {
-									if (!isTokenRef(value)) {
-										state._v = value;
-									}
+									state._v = value as TShadowStyleToken['value'];
 								}}
 								disabledTokenLink
 								editor={editor}
@@ -216,13 +207,13 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 				</AccordionSection>
 			)}
 
-			{/* Button Variants Section */}
+			{/* Button Section */}
 			{buttonTokens.length > 0 && (
-				<AccordionSection title="Button Variants" collapsibleClassName="p-0 border-b-0">
+				<AccordionSection title="Button" collapsibleClassName="p-0 border-b-0">
 					{buttonTokens.map(({ variant, state }) => (
 						<AccordionSection
 							key={variant}
-							title={`${variant.charAt(0).toUpperCase() + variant.slice(1)} Button`}
+							title={variant.charAt(0).toUpperCase() + variant.slice(1)}
 							collapsibleClassName="px-0 space-y-3"
 							size="tight"
 							defaultOpen={true}
@@ -238,13 +229,13 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 				</AccordionSection>
 			)}
 
-			{/* Badge Variants Section */}
+			{/* Badge Section */}
 			{badgeTokens.length > 0 && (
-				<AccordionSection title="Badge Variants" collapsibleClassName="p-0 border-b-0">
+				<AccordionSection title="Badge" collapsibleClassName="p-0 border-b-0">
 					{badgeTokens.map(({ variant, state }) => (
 						<AccordionSection
 							key={variant}
-							title={`${variant.charAt(0).toUpperCase() + variant.slice(1)} Badge`}
+							title={variant.charAt(0).toUpperCase() + variant.slice(1)}
 							collapsibleClassName="px-0 space-y-3"
 							size="tight"
 							defaultOpen={true}
@@ -260,13 +251,13 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 				</AccordionSection>
 			)}
 
-			{/* Text Variants Section */}
+			{/* Text Section */}
 			{textTokens.length > 0 && (
-				<AccordionSection title="Text Variants" collapsibleClassName="p-0 border-b-0">
+				<AccordionSection title="Text" collapsibleClassName="p-0 border-b-0">
 					{textTokens.map(({ variant, state }) => (
 						<AccordionSection
 							key={variant}
-							title={`${variant.charAt(0).toUpperCase() + variant.slice(1)} Text`}
+							title={variant.charAt(0).toUpperCase() + variant.slice(1)}
 							collapsibleClassName="px-0 space-y-3"
 							size="tight"
 							defaultOpen={true}
@@ -282,13 +273,13 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 				</AccordionSection>
 			)}
 
-			{/* Image Variants Section */}
+			{/* Image Section */}
 			{imageTokens.length > 0 && (
-				<AccordionSection title="Image Variants" collapsibleClassName="p-0 border-b-0">
+				<AccordionSection title="Image" collapsibleClassName="p-0 border-b-0">
 					{imageTokens.map(({ variant, state }) => (
 						<AccordionSection
 							key={variant}
-							title={`${variant.charAt(0).toUpperCase() + variant.slice(1)} Image`}
+							title={variant.charAt(0).toUpperCase() + variant.slice(1)}
 							collapsibleClassName="px-0 space-y-3"
 							size="tight"
 							defaultOpen={true}
@@ -304,13 +295,13 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 				</AccordionSection>
 			)}
 
-			{/* Product Details Variants Section */}
+			{/* Product Details Section */}
 			{productDetailsTokens.length > 0 && (
-				<AccordionSection title="Product Details Variants" collapsibleClassName="p-0 border-b-0">
+				<AccordionSection title="Product Details" collapsibleClassName="p-0 border-b-0">
 					{productDetailsTokens.map(({ variant, state }) => (
 						<AccordionSection
 							key={variant}
-							title={`${variant.charAt(0).toUpperCase() + variant.slice(1)} Product Details`}
+							title={variant.charAt(0).toUpperCase() + variant.slice(1)}
 							collapsibleClassName="px-0 space-y-3"
 							size="tight"
 							defaultOpen={true}

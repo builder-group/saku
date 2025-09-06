@@ -24,10 +24,7 @@ export const DefaultContent: React.FC<TSingleContentProps> = (props) => {
 			<div className="flex min-h-12 w-full items-center gap-3">
 				{/* Site Icon */}
 				{content.favicon != null && (
-					<div
-						className="h-12 w-12 flex-shrink-0 overflow-hidden bg-gray-100"
-						style={image.appearance.styles}
-					>
+					<div className="h-12 w-12 flex-shrink-0 overflow-hidden bg-gray-100" style={image.styles}>
 						<img
 							src={content.favicon.src}
 							alt={content.title ?? 'Site Icon'}
