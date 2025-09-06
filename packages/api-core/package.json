@@ -38,7 +38,7 @@
 	},
 	"dependencies": {
 		"@blgc/utils": "^0.0.59",
-		"@heymantle/client": "^1.1.62",
+		"@heymantle/client": "^1.1.63",
 		"@hono/zod-openapi": "1.1.0",
 		"@hono/zod-validator": "^0.7.2",
 		"@repo/editor": "workspace:*",
@@ -67,7 +67,7 @@
 	"devDependencies": {
 		"@hono/node-server": "^1.19.1",
 		"@rollup/plugin-replace": "^6.0.2",
-		"@types/node": "^24.3.0",
+		"@types/node": "^24.3.1",
 		"@types/pg": "^8.15.5",
 		"@types/react": "^18.3.1",
 		"drizzle-kit": "^0.31.4",

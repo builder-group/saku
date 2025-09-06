@@ -30,7 +30,7 @@
 		"@blgc/config": "^0.0.38",
 		"@shopify/cli": "^3.84.1",
 		"dotenv": "^17.2.2",
-		"eslint": "^9.34.0",
+		"eslint": "^9.35.0",
 		"prettier": "^3.6.2",
 		"rollup": "^4.50.0",
 		"rollup-presets": "^0.0.24",
