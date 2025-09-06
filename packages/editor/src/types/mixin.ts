@@ -264,14 +264,14 @@ export type TAppearanceStyleMixin = TBaseMixin<
 
 export type TTypographyStyleMixin = TBaseMixin<
 	'typography',
-	{
+	TRef<{
 		font: TRef<TFont>;
 		fontSize: TRef<number>;
 		textAlignHorizontal: TRef<TTextAlign>;
 		textAlignVertical: TRef<TTextAlign>;
 		lineHeight: TRef<TLineHeight>;
 		letterSpacing: TRef<TLetterSpacing>;
-	}
+	}>
 >;
 
 export type TFillStyleMixin = TBaseMixin<

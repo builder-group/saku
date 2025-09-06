@@ -7,3 +7,5 @@ export type TUnreference<T> = T extends { type: 'token' }
 	: T extends object
 		? { [K in keyof T]: TUnreference<T[K]> }
 		: T;
+
+export type TUnreferenceTop<T> = T extends { type: 'token' } ? never : T;

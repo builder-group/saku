@@ -102,14 +102,7 @@ export const linkNodeMetadata: TNodeMetadata<'link'> = {
 				opacity: tokenRef('mixin', 'default'),
 				borderRadius: undefined
 			},
-			typography: {
-				font: tokenRef('mixin', 'default'),
-				fontSize: tokenRef('mixin', 'default'),
-				textAlignHorizontal: tokenRef('mixin', 'default'),
-				textAlignVertical: tokenRef('mixin', 'default'),
-				lineHeight: tokenRef('mixin', 'default'),
-				letterSpacing: tokenRef('mixin', 'default')
-			},
+			typography: tokenRef('mixin', 'default'),
 			fill: tokenRef('mixin', 'default'),
 			stroke: tokenRef('mixin', 'default'),
 			shadow: tokenRef('mixin', 'default')
@@ -120,14 +113,7 @@ export const linkNodeMetadata: TNodeMetadata<'link'> = {
 				opacity: tokenRef('mixin', 'sm'),
 				borderRadius: undefined
 			},
-			typography: {
-				font: tokenRef('mixin', 'sm'),
-				fontSize: tokenRef('mixin', 'sm'),
-				textAlignHorizontal: tokenRef('mixin', 'sm'),
-				textAlignVertical: tokenRef('mixin', 'sm'),
-				lineHeight: tokenRef('mixin', 'sm'),
-				letterSpacing: tokenRef('mixin', 'sm')
-			},
+			typography: tokenRef('mixin', 'sm'),
 			fill: tokenRef('mixin', 'sm'),
 			stroke: tokenRef('mixin', 'sm'),
 			shadow: tokenRef('mixin', 'sm')
@@ -255,14 +241,7 @@ export const productNodeMetadata: TNodeMetadata<'product'> = {
 					opacity: tokenRef('mixin', 'primary'),
 					borderRadius: undefined
 				},
-				typography: {
-					font: tokenRef('mixin', 'primary'),
-					fontSize: tokenRef('mixin', 'primary'),
-					textAlignHorizontal: tokenRef('mixin', 'primary'),
-					textAlignVertical: tokenRef('mixin', 'primary'),
-					lineHeight: tokenRef('mixin', 'primary'),
-					letterSpacing: tokenRef('mixin', 'primary')
-				},
+				typography: tokenRef('mixin', 'primary'),
 				fill: tokenRef('mixin', 'primary'),
 				stroke: tokenRef('mixin', 'primary'),
 				shadow: tokenRef('mixin', 'primary')
@@ -283,14 +262,7 @@ export const productNodeMetadata: TNodeMetadata<'product'> = {
 					opacity: tokenRef('mixin', 'primary'),
 					borderRadius: undefined
 				},
-				typography: {
-					font: tokenRef('mixin', 'primary'),
-					fontSize: tokenRef('mixin', 'primary'),
-					textAlignHorizontal: tokenRef('mixin', 'primary'),
-					textAlignVertical: tokenRef('mixin', 'primary'),
-					lineHeight: tokenRef('mixin', 'primary'),
-					letterSpacing: tokenRef('mixin', 'primary')
-				},
+				typography: tokenRef('mixin', 'primary'),
 				fill: tokenRef('mixin', 'primary'),
 				stroke: tokenRef('mixin', 'primary'),
 				shadow: tokenRef('mixin', 'primary')
@@ -311,14 +283,7 @@ export const productNodeMetadata: TNodeMetadata<'product'> = {
 					opacity: tokenRef('mixin', 'neutral'),
 					borderRadius: undefined
 				},
-				typography: {
-					font: tokenRef('mixin', 'neutral'),
-					fontSize: tokenRef('mixin', 'neutral'),
-					textAlignHorizontal: tokenRef('mixin', 'neutral'),
-					textAlignVertical: tokenRef('mixin', 'neutral'),
-					lineHeight: tokenRef('mixin', 'neutral'),
-					letterSpacing: tokenRef('mixin', 'neutral')
-				},
+				typography: tokenRef('mixin', 'neutral'),
 				fill: tokenRef('mixin', 'neutral'),
 				stroke: tokenRef('mixin', 'neutral'),
 				shadow: tokenRef('mixin', 'neutral')
@@ -348,14 +313,7 @@ export const productNodeMetadata: TNodeMetadata<'product'> = {
 					opacity: tokenRef('mixin', 'default'),
 					borderRadius: undefined
 				},
-				typography: {
-					font: tokenRef('mixin', 'default'),
-					fontSize: tokenRef('mixin', 'default'),
-					textAlignHorizontal: tokenRef('mixin', 'default'),
-					textAlignVertical: tokenRef('mixin', 'default'),
-					lineHeight: tokenRef('mixin', 'default'),
-					letterSpacing: tokenRef('mixin', 'default')
-				},
+				typography: tokenRef('mixin', 'default'),
 				fill: tokenRef('mixin', 'default'),
 				stroke: tokenRef('mixin', 'default'),
 				shadow: tokenRef('mixin', 'default')
@@ -366,14 +324,7 @@ export const productNodeMetadata: TNodeMetadata<'product'> = {
 					opacity: tokenRef('mixin', 'default'),
 					borderRadius: undefined
 				},
-				typography: {
-					font: tokenRef('mixin', 'default'),
-					fontSize: tokenRef('mixin', 'default'),
-					textAlignHorizontal: tokenRef('mixin', 'default'),
-					textAlignVertical: tokenRef('mixin', 'default'),
-					lineHeight: tokenRef('mixin', 'default'),
-					letterSpacing: tokenRef('mixin', 'default')
-				},
+				typography: tokenRef('mixin', 'default'),
 				fill: tokenRef('mixin', 'default'),
 				stroke: tokenRef('mixin', 'default'),
 				shadow: tokenRef('mixin', 'default')
@@ -393,14 +344,7 @@ export const productNodeMetadata: TNodeMetadata<'product'> = {
 						opacity: tokenRef('mixin', 'default'),
 						borderRadius: undefined
 					},
-					typography: {
-						font: tokenRef('mixin', 'default'),
-						fontSize: tokenRef('mixin', 'default'),
-						textAlignHorizontal: tokenRef('mixin', 'default'),
-						textAlignVertical: tokenRef('mixin', 'default'),
-						lineHeight: tokenRef('mixin', 'default'),
-						letterSpacing: tokenRef('mixin', 'default')
-					},
+					typography: tokenRef('mixin', 'default'),
 					fill: tokenRef('mixin', 'default'),
 					stroke: tokenRef('mixin', 'default'),
 					shadow: tokenRef('mixin', 'default')
@@ -447,14 +391,7 @@ export const textNodeMetadata: TNodeMetadata<'text'> = {
 				opacity: tokenRef('mixin', 'default'),
 				borderRadius: undefined
 			},
-			typography: {
-				font: tokenRef('mixin', 'default'),
-				fontSize: tokenRef('mixin', 'default'),
-				textAlignHorizontal: tokenRef('mixin', 'default'),
-				textAlignVertical: tokenRef('mixin', 'default'),
-				lineHeight: tokenRef('mixin', 'default'),
-				letterSpacing: tokenRef('mixin', 'default')
-			},
+			typography: tokenRef('mixin', 'default'),
 			fill: tokenRef('mixin', 'default'),
 			stroke: tokenRef('mixin', 'default'),
 			shadow: tokenRef('mixin', 'default')

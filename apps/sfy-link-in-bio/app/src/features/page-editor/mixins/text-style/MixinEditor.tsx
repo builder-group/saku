@@ -38,6 +38,9 @@ export const TextStyleMixinEditor = <
 			<TypographyStyleMixinEditor
 				state={state}
 				mapValue={(value) => mapValue(value).typography}
+				applyValue={(state, value) => {
+					mapValue(state._v).typography = value;
+				}}
 				tokenSet={tokenSet}
 				tokenRefKey={tokenRefKey}
 				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.typography}

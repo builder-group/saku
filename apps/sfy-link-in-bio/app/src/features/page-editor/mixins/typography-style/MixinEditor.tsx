@@ -4,7 +4,8 @@ import {
 	TMixinTokenSet,
 	TRef,
 	TTypographyStyleMixin,
-	TTypographyStyleToken
+	TTypographyStyleToken,
+	TUnreferenceTop
 } from '@repo/editor';
 import { Text } from '@shopify/polaris';
 import { TState } from 'feature-state';
@@ -22,6 +23,7 @@ export const TypographyStyleMixinEditor = <
 	const {
 		state,
 		mapValue,
+		applyValue,
 		tokenSet,
 		tokenRefKey,
 		mapToToken,
@@ -55,19 +57,19 @@ export const TypographyStyleMixinEditor = <
 			return typography.font.family;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
-			const typography = mapValue(baseState._v);
-			if (!isTokenRef(typography)) {
-				if (isTokenRef(mappedValue)) {
-					typography.font = mappedValue;
-					baseState._notify(notifyOptions);
-				} else {
-					const font = editor.registerFontFamily(mappedValue as string);
-					if (font != null) {
-						typography.font = font;
-						baseState._notify(notifyOptions);
-					}
+			const typography = unpackTypographyTokenRef(mapValue(baseState._v));
+
+			if (isTokenRef(mappedValue)) {
+				typography.font = mappedValue;
+			} else {
+				const font = editor.registerFontFamily(mappedValue as string);
+				if (font != null) {
+					typography.font = font;
 				}
 			}
+
+			applyValue(baseState, packTypographyTokenRef(typography));
+			baseState._notify(notifyOptions);
 		}
 	});
 	const fontSizeState = useMapState(state, {
@@ -79,11 +81,10 @@ export const TypographyStyleMixinEditor = <
 			return typography.fontSize;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
-			const typography = mapValue(baseState._v);
-			if (!isTokenRef(typography)) {
-				typography.fontSize = mappedValue;
-				baseState._notify(notifyOptions);
-			}
+			const typography = unpackTypographyTokenRef(mapValue(baseState._v));
+			typography.fontSize = mappedValue;
+			applyValue(baseState, packTypographyTokenRef(typography));
+			baseState._notify(notifyOptions);
 		}
 	});
 	const textAlignHorizontalState = useMapState(state, {
@@ -95,29 +96,12 @@ export const TypographyStyleMixinEditor = <
 			return typography.textAlignHorizontal;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
-			const typography = mapValue(baseState._v);
-			if (!isTokenRef(typography)) {
-				typography.textAlignHorizontal = mappedValue;
-				baseState._notify(notifyOptions);
-			}
+			const typography = unpackTypographyTokenRef(mapValue(baseState._v));
+			typography.textAlignHorizontal = mappedValue;
+			applyValue(baseState, packTypographyTokenRef(typography));
+			baseState._notify(notifyOptions);
 		}
 	});
-	// const textAlignVerticalState = useMapState(state, {
-	// 	map(baseValue) {
-	// 		const typography = mapValue(baseValue);
-	// 		if (isTokenRef(typography)) {
-	// 			return typography;
-	// 		}
-	// 		return typography.textAlignVertical;
-	// 	},
-	// 	sync(baseState, mappedValue, notifyOptions) {
-	// 		const typography = mapValue(baseState._v);
-	// 		if (!isTokenRef(typography)) {
-	// 			typography.textAlignVertical = mappedValue;
-	// 			baseState._notify(notifyOptions);
-	// 		}
-	// 	}
-	// });
 
 	// =========================================================================
 	// Events
@@ -202,9 +186,52 @@ interface TTypographyStyleMixinEditorProps<
 > {
 	state: TState<GValue, any>;
 	mapValue: (value: GValue) => TTypographyStyleMixin['value'];
+	applyValue: (state: TState<GValue, any>, value: TTypographyStyleMixin['value']) => void;
 	tokenSet?: TState<GTokenSet, any>;
 	tokenRefKey?: string;
 	mapToToken?: (ref: string, tokenSet?: GTokenSet) => TTypographyStyleToken['value'] | undefined;
 	disabledTokenLink?: boolean;
 	editor: TPageEditor;
+}
+
+function unpackTypographyTokenRef(
+	typography: TTypographyStyleMixin['value']
+): TUnreferenceTop<TTypographyStyleMixin['value']> {
+	if (!isTokenRef(typography)) {
+		return typography;
+	}
+
+	return {
+		font: typography,
+		fontSize: typography,
+		textAlignHorizontal: typography,
+		textAlignVertical: typography,
+		lineHeight: typography,
+		letterSpacing: typography
+	};
+}
+
+function packTypographyTokenRef(
+	typography: TUnreferenceTop<TTypographyStyleMixin['value']>
+): TTypographyStyleMixin['value'] {
+	const { font, fontSize, textAlignHorizontal, textAlignVertical, lineHeight, letterSpacing } =
+		typography;
+
+	if (
+		isTokenRef(font) &&
+		isTokenRef(fontSize) &&
+		fontSize.key === font.key &&
+		isTokenRef(textAlignHorizontal) &&
+		textAlignHorizontal.key === font.key &&
+		isTokenRef(textAlignVertical) &&
+		textAlignVertical.key === font.key &&
+		isTokenRef(lineHeight) &&
+		lineHeight.key === font.key &&
+		isTokenRef(letterSpacing) &&
+		letterSpacing.key === font.key
+	) {
+		return font;
+	}
+
+	return typography;
 }
