@@ -44,10 +44,9 @@ export function useMixinTokens<GTokenValue>(
 
 		setTokens(newTokens);
 
-		// TODO: unsubscribe all callbacks
-		// return () => {
-		// 	unsubscribeCallbacks.forEach((unsubscribe) => unsubscribe());
-		// };
+		return () => {
+			unsubscribeCallbacks.forEach((unsubscribe) => unsubscribe());
+		};
 	});
 
 	return tokens;
