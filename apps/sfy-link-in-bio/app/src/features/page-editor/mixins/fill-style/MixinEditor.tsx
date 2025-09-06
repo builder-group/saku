@@ -10,7 +10,7 @@ import { Button, Text } from '@shopify/polaris';
 import { useCompute } from 'feature-react';
 import { TState } from 'feature-state';
 import React from 'react';
-import { Badge, LinkIcon, LinkOffIcon, MinusIcon, PlusIcon } from '@/components';
+import { Badge, LinkIcon, LinkOffIcon, PolarisMinusIcon, PolarisPlusIcon } from '@/components';
 import { useMapState } from '@/hooks';
 import { TokenActionOverlay, TokenPaintInput, TTokenPaintInputPaintType } from '../../components';
 import { TPageEditor } from '../../lib';
@@ -26,6 +26,7 @@ export const FillStyleMixinEditor = <
 		mapValue,
 		applyValue,
 		tokenSet,
+		tokenRefKey = 'default',
 		mapToToken,
 		disabledTokenLink = false,
 		editor,
@@ -67,7 +68,7 @@ export const FillStyleMixinEditor = <
 	// =========================================================================
 
 	const handleAddFill = React.useCallback(() => {
-		const tokenValue = mapToToken?.('default', tokenSet?._v);
+		const tokenValue = mapToToken?.(tokenRefKey, tokenSet?._v);
 		applyValue(
 			state,
 			tokenValue ?? {
@@ -79,7 +80,7 @@ export const FillStyleMixinEditor = <
 			}
 		);
 		state._notify();
-	}, [mapToToken, tokenSet, applyValue, state]);
+	}, [mapToToken, tokenSet, applyValue, state, tokenRefKey]);
 
 	const handleRemoveFill = React.useCallback(() => {
 		applyValue(state, null);
@@ -95,10 +96,10 @@ export const FillStyleMixinEditor = <
 				state._notify();
 			}
 		} else {
-			applyValue(state, tokenRef('default'));
+			applyValue(state, tokenRef('mixin', tokenRefKey));
 			state._notify();
 		}
-	}, [isLinked, mapValue, state, mapToToken, tokenSet, applyValue]);
+	}, [isLinked, mapValue, state, mapToToken, tokenSet, applyValue, tokenRefKey]);
 
 	const handleNavigateToToken = React.useCallback(() => {
 		editor.switchView('settings');
@@ -147,9 +148,9 @@ export const FillStyleMixinEditor = <
 
 				{/* Add/Remove fill buttons */}
 				{isSet ? (
-					<Button icon={MinusIcon} onClick={handleRemoveFill} variant="plain" size="micro" />
+					<Button icon={PolarisMinusIcon} onClick={handleRemoveFill} variant="plain" size="micro" />
 				) : (
-					<Button icon={PlusIcon} onClick={handleAddFill} variant="plain" size="micro" />
+					<Button icon={PolarisPlusIcon} onClick={handleAddFill} variant="plain" size="micro" />
 				)}
 			</div>
 
@@ -158,6 +159,7 @@ export const FillStyleMixinEditor = <
 					label="Paint"
 					state={paintState}
 					tokenSet={tokenSet}
+					tokenRefKey={tokenRefKey}
 					mapToTokenValue={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.paint}
 					onLinkChange={() => {
 						handleToggleTokenLink();
@@ -181,6 +183,7 @@ interface TFillStyleMixinEditorProps<
 	mapValue: (value: GValue) => TFillStyleMixin['value'];
 	applyValue: (state: TState<GValue, any>, value: TFillStyleMixin['value']) => void;
 	tokenSet?: TState<GTokenSet, any>;
+	tokenRefKey?: string;
 	mapToToken?: (ref: string, tokenSet?: GTokenSet) => TFillStyleToken['value'] | undefined;
 	disabledTokenLink?: boolean;
 	editor: TPageEditor;

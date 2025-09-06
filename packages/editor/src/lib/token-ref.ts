@@ -1,5 +1,5 @@
-import { TTokenRef } from '../types';
+import { TTokenRef, TTokenType } from '../types';
 
-export function tokenRef(ref: string = 'default'): TTokenRef {
-	return { type: 'token', key: ref };
+export function tokenRef(tokenType: TTokenType = 'mixin', key = 'default'): TTokenRef {
+	return { type: 'token', tokenType, key };
 }

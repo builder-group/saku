@@ -6,7 +6,8 @@ import {
 	TIntegration,
 	TIntegrationId,
 	TMixinTokenGroupMap,
-	TNodeId
+	TNodeId,
+	TVariableToken
 } from '@repo/editor';
 import { TSiteHydrateContext } from './types';
 
@@ -17,29 +18,33 @@ export class StaticSiteHydrateContext implements TSiteHydrateContext {
 	public readonly id: string;
 	public readonly handle: string;
 	private readonly site: TFlatSite;
-	private readonly mixinTokenGroupMap: TMixinTokenGroupMap;
+	private readonly mixinTokenGroupMap: TMixinTokenGroupMap = {};
+	private readonly variableTokenMap: Record<string, TVariableToken> = {};
 
 	constructor(site: TFlatSite, id: string, handle: string) {
 		this.site = site;
 		this.id = id;
 		this.handle = handle;
-		this.mixinTokenGroupMap = this.createMixinTokenGroupMap();
+		this.createTokenMaps();
 	}
 
-	private createMixinTokenGroupMap(): TMixinTokenGroupMap {
-		const groups: TMixinTokenGroupMap = {};
-
+	private createTokenMaps(): void {
 		Object.values(this.site.tokens).forEach((token) => {
-			if (token.type === 'mixin') {
-				const mixinKey = token.mixinKey;
-				if (groups[mixinKey] == null) {
-					groups[mixinKey] = {};
+			switch (token.type) {
+				case 'mixin': {
+					const mixinKey = token.mixinKey;
+					if (this.mixinTokenGroupMap[mixinKey] == null) {
+						this.mixinTokenGroupMap[mixinKey] = {};
+					}
+					this.mixinTokenGroupMap[mixinKey][token.key] = token;
+					break;
 				}
-				groups[mixinKey][token.key] = token;
+				case 'variable': {
+					this.variableTokenMap[token.key] = token;
+					break;
+				}
 			}
 		});
-
-		return groups;
 	}
 
 	public getNode(id: TNodeId): TFlatNode | null {
@@ -58,9 +63,13 @@ export class StaticSiteHydrateContext implements TSiteHydrateContext {
 		return this.site.integrations[id] ?? null;
 	}
 
-	public getTokenSet<GGroupKey extends keyof TMixinTokenGroupMap>(
+	public getMixinTokenSet<GGroupKey extends keyof TMixinTokenGroupMap>(
 		groupKey: GGroupKey
 	): TMixinTokenGroupMap[GGroupKey] | null {
 		return this.mixinTokenGroupMap[groupKey] || null;
+	}
+
+	public getVariableTokenMap(): Record<string, TVariableToken> {
+		return this.variableTokenMap;
 	}
 }

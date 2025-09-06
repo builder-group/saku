@@ -15,7 +15,8 @@ export const MediaNode = React.forwardRef<HTMLDivElement, TNodeProps<TMediaNode>
 		'appearance',
 		'fill',
 		'stroke',
-		'shadow'
+		'shadow',
+		'image'
 	]);
 
 	const node = useCombinedCompute([nodeState, tokenSetNotifier], ([{ value }]) => {

@@ -12,6 +12,7 @@ import React from 'react';
 import { useMapState } from '@/hooks';
 import { TokenSelectInput, TokenTextInput } from '../../components';
 import { TPageEditor } from '../../lib';
+import { packTypographyTokenRef, unpackTypographyTokenRef } from './pack-mixin';
 
 export const TypographyStyleMixinEditor = <
 	GValue extends Record<string, any>,
@@ -19,7 +20,16 @@ export const TypographyStyleMixinEditor = <
 >(
 	props: TTypographyStyleMixinEditorProps<GValue, GTokenSet>
 ) => {
-	const { state, mapValue, tokenSet, mapToToken, disabledTokenLink = false, editor } = props;
+	const {
+		state,
+		mapValue,
+		applyValue,
+		tokenSet,
+		tokenRefKey,
+		mapToToken,
+		disabledTokenLink = false,
+		editor
+	} = props;
 
 	const fontOptions = React.useMemo(() => {
 		return fontMetadata.map((font) => ({
@@ -47,19 +57,19 @@ export const TypographyStyleMixinEditor = <
 			return typography.font.family;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
-			const typography = mapValue(baseState._v);
-			if (!isTokenRef(typography)) {
-				if (isTokenRef(mappedValue)) {
-					typography.font = mappedValue;
-					baseState._notify(notifyOptions);
-				} else {
-					const font = editor.registerFontFamily(mappedValue as string);
-					if (font != null) {
-						typography.font = font;
-						baseState._notify(notifyOptions);
-					}
+			const typography = unpackTypographyTokenRef(mapValue(baseState._v));
+
+			if (isTokenRef(mappedValue)) {
+				typography.font = mappedValue;
+			} else {
+				const font = editor.registerFontFamily(mappedValue as string);
+				if (font != null) {
+					typography.font = font;
 				}
 			}
+
+			applyValue(baseState, packTypographyTokenRef(typography));
+			baseState._notify(notifyOptions);
 		}
 	});
 	const fontSizeState = useMapState(state, {
@@ -71,11 +81,10 @@ export const TypographyStyleMixinEditor = <
 			return typography.fontSize;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
-			const typography = mapValue(baseState._v);
-			if (!isTokenRef(typography)) {
-				typography.fontSize = mappedValue;
-				baseState._notify(notifyOptions);
-			}
+			const typography = unpackTypographyTokenRef(mapValue(baseState._v));
+			typography.fontSize = mappedValue;
+			applyValue(baseState, packTypographyTokenRef(typography));
+			baseState._notify(notifyOptions);
 		}
 	});
 	const textAlignHorizontalState = useMapState(state, {
@@ -87,29 +96,12 @@ export const TypographyStyleMixinEditor = <
 			return typography.textAlignHorizontal;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
-			const typography = mapValue(baseState._v);
-			if (!isTokenRef(typography)) {
-				typography.textAlignHorizontal = mappedValue;
-				baseState._notify(notifyOptions);
-			}
+			const typography = unpackTypographyTokenRef(mapValue(baseState._v));
+			typography.textAlignHorizontal = mappedValue;
+			applyValue(baseState, packTypographyTokenRef(typography));
+			baseState._notify(notifyOptions);
 		}
 	});
-	// const textAlignVerticalState = useMapState(state, {
-	// 	map(baseValue) {
-	// 		const typography = mapValue(baseValue);
-	// 		if (isTokenRef(typography)) {
-	// 			return typography;
-	// 		}
-	// 		return typography.textAlignVertical;
-	// 	},
-	// 	sync(baseState, mappedValue, notifyOptions) {
-	// 		const typography = mapValue(baseState._v);
-	// 		if (!isTokenRef(typography)) {
-	// 			typography.textAlignVertical = mappedValue;
-	// 			baseState._notify(notifyOptions);
-	// 		}
-	// 	}
-	// });
 
 	// =========================================================================
 	// Events
@@ -137,6 +129,7 @@ export const TypographyStyleMixinEditor = <
 						options={fontOptions}
 						state={fontFamilyState}
 						tokenSet={tokenSet}
+						tokenRefKey={tokenRefKey}
 						mapToTokenValue={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.font?.family}
 						onNavigateToToken={handleNavigateToToken}
 						disabledTokenLink={disabledTokenLink}
@@ -150,6 +143,7 @@ export const TypographyStyleMixinEditor = <
 						step={2}
 						state={fontSizeState}
 						tokenSet={tokenSet}
+						tokenRefKey={tokenRefKey}
 						mapToTokenValue={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.fontSize}
 						onNavigateToToken={handleNavigateToToken}
 						disabledTokenLink={disabledTokenLink}
@@ -161,6 +155,7 @@ export const TypographyStyleMixinEditor = <
 						options={textAlignOptions}
 						state={textAlignHorizontalState}
 						tokenSet={tokenSet}
+						tokenRefKey={tokenRefKey}
 						mapToTokenValue={(tokenRef, tokenSet) =>
 							mapToToken?.(tokenRef, tokenSet)?.textAlignHorizontal
 						}
@@ -172,6 +167,7 @@ export const TypographyStyleMixinEditor = <
 						options={textAlignOptions}
 						state={textAlignVerticalState}
 						tokenSet={tokenSet}
+						tokenRefKey={tokenRefKey}
 						mapToTokenValue={(tokenRef, tokenSet) =>
 							mapToToken?.(tokenRef, tokenSet)?.textAlignVertical
 						}
@@ -190,7 +186,9 @@ interface TTypographyStyleMixinEditorProps<
 > {
 	state: TState<GValue, any>;
 	mapValue: (value: GValue) => TTypographyStyleMixin['value'];
+	applyValue: (state: TState<GValue, any>, value: TTypographyStyleMixin['value']) => void;
 	tokenSet?: TState<GTokenSet, any>;
+	tokenRefKey?: string;
 	mapToToken?: (ref: string, tokenSet?: GTokenSet) => TTypographyStyleToken['value'] | undefined;
 	disabledTokenLink?: boolean;
 	editor: TPageEditor;

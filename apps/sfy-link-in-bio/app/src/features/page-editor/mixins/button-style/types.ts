@@ -19,3 +19,11 @@ export type TResolvedButtonStyleMixin = TBaseMixin<
 			Partial<NonNullable<TResolvedShadowStyleMixin['value']>['styles']>;
 	}
 >;
+export type TResolvedPrimaryButtonStyleMixin = TBaseMixin<
+	'buttonPrimary',
+	TResolvedButtonStyleMixin['value']
+>;
+export type TResolvedNeutralButtonStyleMixin = TBaseMixin<
+	'buttonNeutral',
+	TResolvedButtonStyleMixin['value']
+>;

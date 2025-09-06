@@ -1,19 +1,26 @@
 import { shortId } from '@blgc/utils';
 import {
 	createId,
+	createTokensFromTheme,
 	fontMetadataMap,
 	getFontHash,
 	hexToRgba,
 	TId,
-	tokenRef,
 	TProductNode,
 	TSite,
+	TTheme,
 	type TFontAsset,
 	type TFontMetadata,
 	type TImageAsset,
 	type TSocialLink
 } from '@repo/editor';
-import { createTokensFromTheme, type TTheme } from '@/features/page-editor';
+import {
+	aboutNodeMetadata,
+	linkNodeMetadata,
+	mediaNodeMetadata,
+	productNodeMetadata,
+	textNodeMetadata
+} from '@/features/page-editor';
 import { createHandleFromShop } from '@/lib';
 
 export function blankPreset(config: TBlankPresetConfig): TSite {
@@ -37,19 +44,32 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 		});
 	}
 
-	// Add theme font to assets
-	const themeFontFamily = theme.typography.fontFamily;
-	const themeFont = getFontMetadata(themeFontFamily);
+	// Add theme fonts to assets
+	const themeHeadingTextFontFamily = theme.typography.heading.fontFamily;
+	const themeHeadingTextFont = getFontMetadata(themeHeadingTextFontFamily);
 	assets.push({
 		id: createId('asset'),
 		type: 'font',
-		hash: getFontHash(themeFont.font),
+		hash: getFontHash(themeHeadingTextFont.font),
 		contentType: 'font/woff2',
 		storage: {
 			type: 'url',
-			url: `https://fonts.googleapis.com/css2?family=${themeFont.googleFont}&display=swap`
+			url: `https://fonts.googleapis.com/css2?family=${themeHeadingTextFont.googleFont}&display=swap`
 		},
-		font: themeFont.font
+		font: themeHeadingTextFont.font
+	});
+	const themeTextFontFamily = theme.typography.text.fontFamily;
+	const themeTextFont = getFontMetadata(themeTextFontFamily);
+	assets.push({
+		id: createId('asset'),
+		type: 'font',
+		hash: getFontHash(themeTextFont.font),
+		contentType: 'font/woff2',
+		storage: {
+			type: 'url',
+			url: `https://fonts.googleapis.com/css2?family=${themeTextFont.googleFont}&display=swap`
+		},
+		font: themeTextFont.font
 	});
 
 	// Create product node
@@ -75,6 +95,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 		productNode = {
 			id: createId('node'),
 			type: 'product',
+			...productNodeMetadata.default,
 			content: {
 				type: 'single',
 				product: {
@@ -109,78 +130,22 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 						};
 					})
 				}
-			},
-			autoLayout: {
-				horizontalPadding: tokenRef(),
-				verticalPadding: tokenRef()
-			},
-			appearance: {
-				visible: true,
-				opacity: tokenRef(),
-				borderRadius: tokenRef()
-			},
-			fill: tokenRef(),
-			stroke: tokenRef(),
-			shadow: tokenRef(),
-			text: {
-				appearance: {
-					visible: true,
-					opacity: tokenRef()
-				},
-				typography: {
-					font: tokenRef(),
-					fontSize: tokenRef(),
-					textAlignHorizontal: 'start',
-					textAlignVertical: tokenRef(),
-					lineHeight: tokenRef(),
-					letterSpacing: tokenRef()
-				},
-				fill: tokenRef(),
-				stroke: tokenRef(),
-				shadow: tokenRef()
-			},
-			button: {
-				appearance: {
-					visible: true,
-					opacity: tokenRef(),
-					borderRadius: tokenRef()
-				},
-				fill: tokenRef(),
-				stroke: tokenRef(),
-				shadow: tokenRef(),
-				text: {
-					appearance: {
-						visible: true,
-						opacity: tokenRef()
-					},
-					typography: {
-						font: tokenRef(),
-						fontSize: tokenRef(),
-						textAlignHorizontal: tokenRef(),
-						textAlignVertical: tokenRef(),
-						lineHeight: tokenRef(),
-						letterSpacing: tokenRef()
-					},
-					fill: tokenRef(),
-					stroke: tokenRef(),
-					shadow: tokenRef()
-				}
 			}
 		};
 	}
 
-	// Add excited GIF to assets
-	const excitedGifAssetHashId = createId('asset');
+	// Add GIF to assets
+	const gifAssetHashId = createId('asset');
 	assets.push({
-		id: excitedGifAssetHashId,
+		id: gifAssetHashId,
 		type: 'image',
-		hash: excitedGifAssetHashId,
+		hash: gifAssetHashId,
 		contentType: 'image/gif',
 		storage: {
 			type: 'url',
-			url: 'https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExN3ZvamQ0NzU0cDVnbXJhMmdlbHlycTY0cXJmazJyajJ1am9ieGxyZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/5GoVLqeAOo6PK/giphy.gif'
+			url: 'https://media1.tenor.com/m/k5cZgAKH5jAAAAAd/bunny-rabbit.gif'
 		},
-		altText: 'Excited GIF'
+		altText: 'Vibe Rabbit GIF'
 	});
 
 	// Create social links array with shop link always first
@@ -214,156 +179,63 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 				{
 					id: createId('node'),
 					type: 'about',
+					...aboutNodeMetadata.default,
 					content: {
 						type: 'default',
 						name,
 						bio: 'Welcome to your new page! Add a short description about yourself or your brand.',
 						profilePicture: profilePictureAssetHashId,
 						socialLinks: allSocialLinks
-					},
-					autoLayout: {
-						horizontalPadding: tokenRef(),
-						verticalPadding: tokenRef()
-					},
-					appearance: {
-						visible: true,
-						opacity: tokenRef(),
-						borderRadius: 0
-					},
-					fill: null,
-					stroke: null,
-					shadow: null,
-					text: {
-						appearance: {
-							visible: true,
-							opacity: tokenRef()
-						},
-						typography: {
-							font: tokenRef(),
-							fontSize: tokenRef(),
-							textAlignHorizontal: 'center',
-							textAlignVertical: tokenRef(),
-							lineHeight: tokenRef(),
-							letterSpacing: tokenRef()
-						},
-						fill: tokenRef(),
-						stroke: tokenRef(),
-						shadow: tokenRef()
 					}
 				},
 				{
 					id: createId('node'),
 					type: 'link',
+					...linkNodeMetadata.default,
 					content: {
 						type: 'single',
 						url: `https://${shopId}`,
 						userTitle: '🛒 Visit our Shopify store'
-					},
-					autoLayout: {
-						horizontalPadding: tokenRef(),
-						verticalPadding: tokenRef()
-					},
-					appearance: {
-						visible: true,
-						opacity: tokenRef(),
-						borderRadius: tokenRef()
-					},
-					fill: tokenRef(),
-					stroke: tokenRef(),
-					shadow: tokenRef(),
-					text: {
-						appearance: {
-							visible: true,
-							opacity: tokenRef()
-						},
-						typography: {
-							font: tokenRef(),
-							fontSize: tokenRef(),
-							textAlignHorizontal: tokenRef(),
-							textAlignVertical: tokenRef(),
-							lineHeight: tokenRef(),
-							letterSpacing: tokenRef()
-						},
-						fill: tokenRef(),
-						stroke: tokenRef(),
-						shadow: tokenRef()
 					}
 				},
 				...(productNode != null ? [productNode] : []),
 				{
 					id: createId('node'),
 					type: 'text',
+					...textNodeMetadata.default,
 					content: {
 						type: 'default',
 						text: { type: 'markdown', value: '✨ Thanks for visiting!' }
-					},
-					autoLayout: {
-						horizontalPadding: tokenRef(),
-						verticalPadding: tokenRef()
-					},
-					appearance: {
-						visible: true,
-						opacity: tokenRef(),
-						borderRadius: tokenRef()
-					},
-					fill: tokenRef(),
-					stroke: tokenRef(),
-					shadow: tokenRef(),
-					text: {
-						appearance: {
-							visible: true,
-							opacity: tokenRef()
-						},
-						typography: {
-							font: tokenRef(),
-							fontSize: tokenRef(),
-							textAlignHorizontal: tokenRef(),
-							textAlignVertical: tokenRef(),
-							lineHeight: tokenRef(),
-							letterSpacing: tokenRef()
-						},
-						fill: tokenRef(),
-						stroke: tokenRef(),
-						shadow: tokenRef()
 					}
 				},
 				{
 					id: createId('node'),
 					type: 'media',
+					...mediaNodeMetadata.default,
 					content: {
 						type: 'image',
 						media: {
-							hash: excitedGifAssetHashId,
+							hash: gifAssetHashId,
 							altText: 'Welcome GIF'
 						}
-					},
-					autoLayout: {
-						horizontalPadding: 0,
-						verticalPadding: 0
-					},
-					appearance: {
-						visible: true,
-						opacity: tokenRef(),
-						borderRadius: tokenRef()
-					},
-					fill: tokenRef(),
-					stroke: tokenRef(),
-					shadow: tokenRef()
+					}
 				}
 			],
 			autoLayout: {
 				horizontalPadding: 24,
 				verticalPadding: 48,
-				verticalGap: 24
+				verticalGap: 24,
+				horizontalGap: undefined
 			},
 			appearance: {
 				visible: true,
-				opacity: 1
+				opacity: 1,
+				borderRadius: undefined
 			},
 			fill: {
 				paint: {
 					type: 'solid',
-					color: hexToRgba(theme.colors.background)
+					color: hexToRgba(theme.color.base200)
 				},
 				opacity: 1
 			}

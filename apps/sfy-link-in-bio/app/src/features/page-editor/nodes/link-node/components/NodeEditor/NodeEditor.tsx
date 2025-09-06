@@ -9,6 +9,7 @@ import {
 	AppearanceStyleMixinEditor,
 	AutoLayoutStyleMixinEditor,
 	FillStyleMixinEditor,
+	ImageStyleMixinEditor,
 	ShadowStyleMixinEditor,
 	StrokeStyleMixinEditor,
 	TextStyleMixinEditor
@@ -38,6 +39,15 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 	const isChangingContentType = useFeatureState(cx.isChangingContentType);
 	const isEnhancingVariant = useFeatureState(cx.isEnhancing);
 	const selectedContentType = useFeatureState(cx.selectedContentType);
+
+	const hasTextStyle = useCompute(cx.node, ({ value }) => value.content.type === 'single');
+	const hasSmTextStyle = useCompute(cx.node, ({ value }) => value.content.type === 'single');
+	const hasImageStyle = useCompute(
+		cx.node,
+		({ value }) =>
+			value.content.type === 'single' &&
+			(value.content.favicon != null || value.content.userFavicon != null)
+	);
 
 	// =========================================================================
 	// Events
@@ -118,6 +128,7 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 						state={nodeState}
 						mapValue={(value) => value.autoLayout}
 						tokenSet={editor.mixinTokenMap.autoLayout}
+						tokenRefKey={'default'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
 						editor={editor}
 					/>
@@ -126,6 +137,7 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 						state={nodeState}
 						mapValue={(value) => value.appearance}
 						tokenSet={editor.mixinTokenMap.appearance}
+						tokenRefKey={'default'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
 						editor={editor}
 					/>
@@ -137,6 +149,7 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 							state._v.fill = value;
 						}}
 						tokenSet={editor.mixinTokenMap.fill}
+						tokenRefKey={'default'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
 						editor={editor}
 					/>
@@ -148,6 +161,7 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 							state._v.stroke = value;
 						}}
 						tokenSet={editor.mixinTokenMap.stroke}
+						tokenRefKey={'default'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
 						editor={editor}
 					/>
@@ -159,24 +173,63 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 							state._v.shadow = value;
 						}}
 						tokenSet={editor.mixinTokenMap.shadow}
+						tokenRefKey={'default'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
 						editor={editor}
 					/>
 				</AccordionSection>
-				<AccordionSection
-					title="Text"
-					collapsibleClassName="px-0 space-y-3"
-					size="tight"
-					defaultOpen={true}
-				>
-					<TextStyleMixinEditor
-						state={nodeState}
-						mapValue={(value) => value.text}
-						tokenSet={editor.mixinTokenMap.text}
-						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
-						editor={editor}
-					/>
-				</AccordionSection>
+
+				{hasTextStyle && (
+					<AccordionSection
+						title="Title Text"
+						collapsibleClassName="px-0 space-y-3"
+						size="tight"
+						defaultOpen={true}
+					>
+						<TextStyleMixinEditor
+							state={nodeState}
+							mapValue={(value) => value.text}
+							tokenSet={editor.mixinTokenMap.text}
+							tokenRefKey={'default'}
+							mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
+							editor={editor}
+						/>
+					</AccordionSection>
+				)}
+				{hasSmTextStyle && (
+					<AccordionSection
+						title="Description Text"
+						collapsibleClassName="px-0 space-y-3"
+						size="tight"
+						defaultOpen={true}
+					>
+						<TextStyleMixinEditor
+							state={nodeState}
+							mapValue={(value) => value.textSm}
+							tokenSet={editor.mixinTokenMap.text}
+							tokenRefKey={'sm'}
+							mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
+							editor={editor}
+						/>
+					</AccordionSection>
+				)}
+				{hasImageStyle && (
+					<AccordionSection
+						title="Favicon Image"
+						collapsibleClassName="px-0 space-y-3"
+						size="tight"
+						defaultOpen={true}
+					>
+						<ImageStyleMixinEditor
+							state={nodeState}
+							mapValue={(value) => value.image}
+							tokenSet={editor.mixinTokenMap.image}
+							tokenRefKey={'default'}
+							mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
+							editor={editor}
+						/>
+					</AccordionSection>
+				)}
 			</AccordionSection>
 		</>
 	);

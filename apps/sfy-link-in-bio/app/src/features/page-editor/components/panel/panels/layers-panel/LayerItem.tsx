@@ -5,7 +5,7 @@ import { TFlatNode } from '@repo/editor';
 import { Icon, Text } from '@shopify/polaris';
 import { useCompute } from 'feature-react/state';
 import React from 'react';
-import { DeleteIcon, DragHandleIcon, DuplicateIcon } from '@/components';
+import { PolarisDeleteIcon, PolarisDragHandleIcon, PolarisDuplicateIcon } from '@/components';
 import { cn } from '@/lib';
 import { nodeMetadataRegistry, TNodeState, TPageEditor } from '../../../../lib';
 
@@ -87,7 +87,7 @@ export const LayerItem: React.FC<TLayerItemProps> = (props) => {
 						!isAnyItemDragging && 'group-hover:block'
 					)}
 				>
-					<Icon source={DragHandleIcon} />
+					<Icon source={PolarisDragHandleIcon} />
 				</div>
 			</div>
 			<Text as="p" variant="bodyMd">
@@ -98,13 +98,13 @@ export const LayerItem: React.FC<TLayerItemProps> = (props) => {
 					className="cursor-pointer rounded-lg p-0.5 hover:bg-neutral-200"
 					onClick={handleCopyNode}
 				>
-					<Icon source={DuplicateIcon} />
+					<Icon source={PolarisDuplicateIcon} />
 				</button>
 				<button
 					className="cursor-pointer rounded-lg p-0.5 hover:bg-neutral-200 hover:text-red-500"
 					onClick={handleDeleteNode}
 				>
-					<Icon source={DeleteIcon} />
+					<Icon source={PolarisDeleteIcon} />
 				</button>
 			</div>
 		</div>

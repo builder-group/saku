@@ -1,8 +1,8 @@
 import { Badge, Button, Card, Text } from '@shopify/polaris';
 import React from 'react';
-import { XIcon } from '@/components';
+import { PolarisXIcon } from '@/components';
 import { cn } from '@/lib';
-import { CheckIcon } from './icons';
+import { PolarisCheckIcon } from './icons';
 
 // https://www.polariscomponents.com/components/knob
 export const PricingCard: React.FC<TPricingCardProps> = (props) => {
@@ -92,9 +92,9 @@ export const PricingCard: React.FC<TPricingCardProps> = (props) => {
 											)}
 										>
 											{feature.included ? (
-												<CheckIcon className="h-3 w-3 text-green-600" />
+												<PolarisCheckIcon className="h-3 w-3 text-green-600" />
 											) : (
-												<XIcon className="h-3 w-3 text-red-600" />
+												<PolarisXIcon className="h-3 w-3 text-red-600" />
 											)}
 										</span>
 										<Text as="span" variant="bodyMd" tone="subdued">

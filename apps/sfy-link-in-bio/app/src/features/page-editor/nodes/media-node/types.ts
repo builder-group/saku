@@ -4,6 +4,7 @@ import {
 	TResolvedAppearanceStyleMixin,
 	TResolvedAutoLayoutStyleMixin,
 	TResolvedFillStyleMixin,
+	TResolvedImageStyleMixin,
 	TResolvedShadowStyleMixin,
 	TResolvedStrokeStyleMixin
 } from '../../mixins';
@@ -18,7 +19,8 @@ export type TResolvedMediaNode<
 		TResolvedAppearanceStyleMixin,
 		TResolvedFillStyleMixin,
 		TResolvedStrokeStyleMixin,
-		TResolvedShadowStyleMixin
+		TResolvedShadowStyleMixin,
+		TResolvedImageStyleMixin
 	]
 >;
 

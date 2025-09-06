@@ -1,9 +1,10 @@
-import { TSingleLinkNodeContent } from '@repo/editor';
+import { tokenRef, TSingleLinkNodeContent } from '@repo/editor';
 import { Button, InlineError, Text, TextField } from '@shopify/polaris';
 import { useCompute, useFeatureState, useListener } from 'feature-react/state';
 import React from 'react';
 import { ImageUploadField, TImageUploadEvent } from '@/components';
 import { cn } from '@/lib';
+import { packTypographyTokenRef, unpackTypographyTokenRef } from '../../../../mixins';
 import { TNodeEditorContext } from './create-node-editor-context';
 import { fetchUrlMetadata } from './lib';
 
@@ -106,12 +107,30 @@ export const SingleContent: React.FC<TSingleContentProps> = (props) => {
 					const hash = cx.editor.registerImage(image.url, image.fileName ?? 'favicon');
 					if (hash != null) {
 						cx.node._v.content.userFavicon = hash;
+
+						// Update text alignment
+						const textTypography = unpackTypographyTokenRef(cx.node._v.text.typography);
+						const textSmTypography = unpackTypographyTokenRef(cx.node._v.textSm.typography);
+						textTypography.textAlignHorizontal = 'start';
+						textSmTypography.textAlignHorizontal = 'start';
+						cx.node._v.text.typography = textTypography;
+						cx.node._v.textSm.typography = textSmTypography;
+
 						cx.node._notify();
 					}
 					break;
 				}
 				case 'Removed': {
 					cx.node._v.content.userFavicon = null;
+
+					// Update text alignment
+					const textTypography = unpackTypographyTokenRef(cx.node._v.text.typography);
+					const textSmTypography = unpackTypographyTokenRef(cx.node._v.textSm.typography);
+					textTypography.textAlignHorizontal = tokenRef('mixin', 'default');
+					textSmTypography.textAlignHorizontal = tokenRef('mixin', 'sm');
+					cx.node._v.text.typography = packTypographyTokenRef(textTypography);
+					cx.node._v.textSm.typography = packTypographyTokenRef(textSmTypography);
+
 					cx.node._notify();
 					break;
 				}

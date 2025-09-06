@@ -8,6 +8,7 @@ import {
 	AppearanceStyleMixinEditor,
 	AutoLayoutStyleMixinEditor,
 	FillStyleMixinEditor,
+	ImageStyleMixinEditor,
 	ShadowStyleMixinEditor,
 	StrokeStyleMixinEditor
 } from '../../../mixins';
@@ -127,6 +128,7 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 						state={nodeState}
 						mapValue={(value) => value.autoLayout}
 						tokenSet={editor.mixinTokenMap.autoLayout}
+						tokenRefKey={'default'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
 						editor={editor}
 					/>
@@ -135,6 +137,7 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 						state={nodeState}
 						mapValue={(value) => value.appearance}
 						tokenSet={editor.mixinTokenMap.appearance}
+						tokenRefKey={'default'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
 						editor={editor}
 					/>
@@ -146,6 +149,7 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 							state._v.fill = value;
 						}}
 						tokenSet={editor.mixinTokenMap.fill}
+						tokenRefKey={'default'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
 						editor={editor}
 					/>
@@ -157,6 +161,7 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 							state._v.stroke = value;
 						}}
 						tokenSet={editor.mixinTokenMap.stroke}
+						tokenRefKey={'default'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
 						editor={editor}
 					/>
@@ -168,6 +173,22 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 							state._v.shadow = value;
 						}}
 						tokenSet={editor.mixinTokenMap.shadow}
+						tokenRefKey={'default'}
+						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
+						editor={editor}
+					/>
+				</AccordionSection>
+				<AccordionSection
+					title="Image"
+					collapsibleClassName="px-0 space-y-3"
+					size="tight"
+					defaultOpen={true}
+				>
+					<ImageStyleMixinEditor
+						state={nodeState}
+						mapValue={(value) => value.image}
+						tokenSet={editor.mixinTokenMap.image}
+						tokenRefKey={'default'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
 						editor={editor}
 					/>

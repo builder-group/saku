@@ -1,13 +1,16 @@
 import { notEmpty } from '@blgc/utils';
 import { TProduct, TProductNode } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
-import { AppError } from '@/lib';
+import { AppError, computeInnerBorderRadius } from '@/lib';
 import { resolveAsset, TNodeResolveContext } from '../../lib';
 import {
 	resolveAppearanceStyleMixin,
 	resolveAutoLayoutStyleMixin,
+	resolveBadgeStyleMixin,
 	resolveButtonStyleMixin,
 	resolveFillStyleMixin,
+	resolveImageStyleMixin,
+	resolveProductDetailsStyleMixin,
 	resolveShadowStyleMixin,
 	resolveStrokeStyleMixin,
 	resolveTextStyleMixin
@@ -18,7 +21,21 @@ export function resolveProductNode(
 	node: TProductNode,
 	cx: TNodeResolveContext
 ): TResult<TResolvedProductNode, AppError> {
-	const { content, autoLayout, appearance, fill, stroke, shadow, text, button, ...rest } = node;
+	const {
+		content,
+		autoLayout,
+		appearance,
+		fill,
+		stroke,
+		shadow,
+		text,
+		buttonPrimary,
+		badgePrimary,
+		badgeNeutral,
+		image,
+		productDetails,
+		...rest
+	} = node;
 
 	// Resolve content
 	let resolvedContent: TResolvedProductNodeContent;
@@ -39,8 +56,9 @@ export function resolveProductNode(
 	const [isResolvedAutoLayoutOk, resolvedAutoLayoutErr, resolvedAutoLayout] =
 		resolveAutoLayoutStyleMixin(autoLayout, {
 			node: cx,
-			tokenSet: cx.site.getTokenSet('autoLayout'),
-			mapToToken: (ref, tokenSet) => tokenSet?.[ref]?.value
+			mixinTokenSet: cx.site.getMixinTokenSet('autoLayout'),
+			mapToMixinTokenValue: (ref, tokenSet) => tokenSet?.[ref]?.value,
+			variableTokenMap: cx.site.getVariableTokenMap()
 		});
 	if (!isResolvedAutoLayoutOk) {
 		return Err(resolvedAutoLayoutErr.wrapWith('#ERR_RESOLVE_AUTO_LAYOUT_STYLE'));
@@ -48,52 +66,106 @@ export function resolveProductNode(
 	const [isResolvedAppearanceOk, resolvedAppearanceErr, resolvedAppearance] =
 		resolveAppearanceStyleMixin(appearance, {
 			node: cx,
-			tokenSet: cx.site.getTokenSet('appearance'),
-			mapToToken: (ref, tokenSet) => tokenSet?.[ref]?.value
+			mixinTokenSet: cx.site.getMixinTokenSet('appearance'),
+			mapToMixinTokenValue: (ref, tokenSet) => tokenSet?.[ref]?.value,
+			variableTokenMap: cx.site.getVariableTokenMap()
 		});
 	if (!isResolvedAppearanceOk) {
 		return Err(resolvedAppearanceErr.wrapWith('#ERR_RESOLVE_APPEARANCE_STYLE'));
 	}
 	const [isResolvedFillOk, resolvedFillErr, resolvedFill] = resolveFillStyleMixin(fill, {
 		node: cx,
-		tokenSet: cx.site.getTokenSet('fill'),
-		mapToToken: (ref, tokenSet) => tokenSet?.[ref]?.value
+		mixinTokenSet: cx.site.getMixinTokenSet('fill'),
+		mapToMixinTokenValue: (ref, tokenSet) => tokenSet?.[ref]?.value,
+		variableTokenMap: cx.site.getVariableTokenMap()
 	});
 	if (!isResolvedFillOk) {
 		return Err(resolvedFillErr.wrapWith('#ERR_RESOLVE_FILL_STYLE'));
 	}
 	const [isResolvedStrokeOk, resolvedStrokeErr, resolvedStroke] = resolveStrokeStyleMixin(stroke, {
 		node: cx,
-		tokenSet: cx.site.getTokenSet('stroke'),
-		mapToToken: (ref, tokenSet) => tokenSet?.[ref]?.value
+		mixinTokenSet: cx.site.getMixinTokenSet('stroke'),
+		mapToMixinTokenValue: (ref, tokenSet) => tokenSet?.[ref]?.value,
+		variableTokenMap: cx.site.getVariableTokenMap()
 	});
 	if (!isResolvedStrokeOk) {
 		return Err(resolvedStrokeErr.wrapWith('#ERR_RESOLVE_STROKE_STYLE'));
 	}
 	const [isResolvedShadowOk, resolvedShadowErr, resolvedShadow] = resolveShadowStyleMixin(shadow, {
 		node: cx,
-		tokenSet: cx.site.getTokenSet('shadow'),
-		mapToToken: (ref, tokenSet) => tokenSet?.[ref]?.value
+		mixinTokenSet: cx.site.getMixinTokenSet('shadow'),
+		mapToMixinTokenValue: (ref, tokenSet) => tokenSet?.[ref]?.value,
+		variableTokenMap: cx.site.getVariableTokenMap()
 	});
 	if (!isResolvedShadowOk) {
 		return Err(resolvedShadowErr.wrapWith('#ERR_RESOLVE_SHADOW_STYLE'));
 	}
 	const [isResolvedTextOk, resolvedTextErr, resolvedText] = resolveTextStyleMixin(text, {
 		node: cx,
-		tokenSet: cx.site.getTokenSet('text'),
-		mapToToken: (ref, tokenSet) => tokenSet?.[ref]?.value
+		mixinTokenSet: cx.site.getMixinTokenSet('text'),
+		mapToMixinTokenValue: (ref, tokenSet) => tokenSet?.[ref]?.value,
+		variableTokenMap: cx.site.getVariableTokenMap()
 	});
 	if (!isResolvedTextOk) {
 		return Err(resolvedTextErr.wrapWith('#ERR_RESOLVE_TEXT_STYLE'));
 	}
-	const [isResolvedButtonOk, resolvedButtonErr, resolvedButton] = resolveButtonStyleMixin(button, {
-		node: cx,
-		tokenSet: cx.site.getTokenSet('button'),
-		mapToToken: (ref, tokenSet) => tokenSet?.[ref]?.value
-	});
-	if (!isResolvedButtonOk) {
-		return Err(resolvedButtonErr.wrapWith('#ERR_RESOLVE_BUTTON_STYLE'));
+	const [isResolvedPrimaryButtonOk, resolvedPrimaryButtonErr, resolvedPrimaryButton] =
+		resolveButtonStyleMixin(buttonPrimary, {
+			node: cx,
+			mixinTokenSet: cx.site.getMixinTokenSet('button'),
+			mapToMixinTokenValue: (ref, tokenSet) => tokenSet?.[ref]?.value,
+			variableTokenMap: cx.site.getVariableTokenMap()
+		});
+	if (!isResolvedPrimaryButtonOk) {
+		return Err(resolvedPrimaryButtonErr.wrapWith('#ERR_RESOLVE_BUTTON_STYLE'));
 	}
+	const [isResolvedPrimaryBadgeOk, resolvedPrimaryBadgeErr, resolvedPrimaryBadge] =
+		resolveBadgeStyleMixin(badgePrimary, {
+			node: cx,
+			mixinTokenSet: cx.site.getMixinTokenSet('badge'),
+			mapToMixinTokenValue: (ref, tokenSet) => tokenSet?.[ref]?.value,
+			variableTokenMap: cx.site.getVariableTokenMap()
+		});
+	if (!isResolvedPrimaryBadgeOk) {
+		return Err(resolvedPrimaryBadgeErr.wrapWith('#ERR_RESOLVE_PRIMARY_BADGE_STYLE'));
+	}
+	const [isResolvedNeutralBadgeOk, resolvedNeutralBadgeErr, resolvedNeutralBadge] =
+		resolveBadgeStyleMixin(badgeNeutral, {
+			node: cx,
+			mixinTokenSet: cx.site.getMixinTokenSet('badge'),
+			mapToMixinTokenValue: (ref, tokenSet) => tokenSet?.[ref]?.value,
+			variableTokenMap: cx.site.getVariableTokenMap()
+		});
+	if (!isResolvedNeutralBadgeOk) {
+		return Err(resolvedNeutralBadgeErr.wrapWith('#ERR_RESOLVE_NEUTRAL_BADGE_STYLE'));
+	}
+	const [isResolvedImageOk, resolvedImageErr, resolvedImage] = resolveImageStyleMixin(image, {
+		node: cx,
+		mixinTokenSet: cx.site.getMixinTokenSet('image'),
+		mapToMixinTokenValue: (ref, tokenSet) => tokenSet?.[ref]?.value,
+		variableTokenMap: cx.site.getVariableTokenMap()
+	});
+	if (!isResolvedImageOk) {
+		return Err(resolvedImageErr.wrapWith('#ERR_RESOLVE_IMAGE_STYLE'));
+	}
+	const [isResolvedProductDetailsOk, resolvedProductDetailsErr, resolvedProductDetails] =
+		resolveProductDetailsStyleMixin(productDetails, {
+			node: cx,
+			mixinTokenSet: cx.site.getMixinTokenSet('productDetails'),
+			mapToMixinTokenValue: (ref, tokenSet) => tokenSet?.[ref]?.value,
+			variableTokenMap: cx.site.getVariableTokenMap()
+		});
+	if (!isResolvedProductDetailsOk) {
+		return Err(resolvedProductDetailsErr.wrapWith('#ERR_RESOLVE_PRODUCT_DETAILS_STYLE'));
+	}
+
+	const imageBorderRadius =
+		resolvedImage.appearance.borderRadius ??
+		computeInnerBorderRadius(
+			resolvedAppearance.borderRadius ?? 0,
+			resolvedAutoLayout.verticalPadding,
+			resolvedAutoLayout.horizontalPadding
+		);
 
 	return Ok({
 		...rest,
@@ -104,7 +176,25 @@ export function resolveProductNode(
 		stroke: resolvedStroke,
 		shadow: resolvedShadow,
 		text: resolvedText,
-		button: resolvedButton
+		buttonPrimary: resolvedPrimaryButton,
+		badgePrimary: resolvedPrimaryBadge,
+		badgeNeutral: resolvedNeutralBadge,
+		image: {
+			...resolvedImage,
+			appearance: {
+				...resolvedImage.appearance,
+				borderRadius: imageBorderRadius,
+				styles: {
+					...resolvedImage.appearance.styles,
+					borderRadius: `${imageBorderRadius}px`
+				}
+			},
+			styles: {
+				...resolvedImage.appearance.styles,
+				borderRadius: `${imageBorderRadius}px`
+			}
+		},
+		productDetails: resolvedProductDetails
 	});
 }
 

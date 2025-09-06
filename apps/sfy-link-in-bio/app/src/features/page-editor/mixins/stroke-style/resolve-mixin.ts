@@ -1,4 +1,4 @@
-import { TMixinTokenSet, TRgba, TStrokeStyleMixin, TStrokeStyleToken } from '@repo/editor';
+import { TMixinTokenSet, TStrokeStyleMixin, TStrokeStyleToken } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
 import { resolveColor, resolveTokenRef, TMixinResolveContext } from '../../lib';
@@ -8,11 +8,9 @@ export function resolveStrokeStyleMixin<GTokenSet extends TMixinTokenSet>(
 	stroke: TStrokeStyleMixin['value'],
 	cx: TMixinResolveContext<TStrokeStyleToken['value'], GTokenSet>
 ): TResult<TResolvedStrokeStyleMixin['value'], AppError> {
-	const [isResolvedStorkeOk, resolvedStorkeErr, resolvedStroke] = resolveTokenRef(
-		stroke,
-		cx.tokenSet,
-		cx.mapToToken
-	);
+	const [isResolvedStorkeOk, resolvedStorkeErr, resolvedStroke] = resolveTokenRef(stroke, {
+		mixin: { tokenSet: cx.mixinTokenSet, mapToTokenValue: cx.mapToMixinTokenValue }
+	});
 	if (!isResolvedStorkeOk) {
 		return Err(resolvedStorkeErr.wrapWith('#ERR_RESOLVE_STROKE'));
 	}
@@ -31,8 +29,3 @@ export function resolveStrokeStyleMixin<GTokenSet extends TMixinTokenSet>(
 		}
 	});
 }
-
-export type TResolveStrokeStyleMixinParentMixin = {
-	width: number;
-	color: TRgba;
-} | null;

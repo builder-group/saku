@@ -4,22 +4,8 @@ import { TResolvedLinkNode, TResolvedSingleLinkNodeContent } from '../../types';
 
 export const DefaultContent: React.FC<TSingleContentProps> = (props) => {
 	const {
-		node: { content, autoLayout, appearance, fill, stroke, shadow, text }
+		node: { content, autoLayout, appearance, fill, stroke, shadow, text, textSm, image }
 	} = props;
-
-	const iconBorderRadius = React.useMemo(() => {
-		const verticalPadding = autoLayout?.verticalPadding ?? 0;
-		const horizontalPadding = autoLayout?.horizontalPadding ?? 0;
-		const padding = Math.max(verticalPadding, horizontalPadding);
-
-		const outerRadius = appearance?.borderRadius;
-		if (outerRadius == null || outerRadius === 0) {
-			return undefined;
-		}
-
-		const ratio = outerRadius / (outerRadius + padding);
-		return outerRadius * Math.pow(ratio, 1.5);
-	}, [autoLayout?.verticalPadding, autoLayout?.horizontalPadding, appearance?.borderRadius]);
 
 	return (
 		<a
@@ -38,12 +24,7 @@ export const DefaultContent: React.FC<TSingleContentProps> = (props) => {
 			<div className="flex min-h-12 w-full items-center gap-3">
 				{/* Site Icon */}
 				{content.favicon != null && (
-					<div
-						className="h-12 w-12 flex-shrink-0 overflow-hidden bg-gray-100"
-						style={{
-							borderRadius: iconBorderRadius
-						}}
-					>
+					<div className="h-12 w-12 flex-shrink-0 overflow-hidden bg-gray-100" style={image.styles}>
 						<img
 							src={content.favicon.src}
 							alt={content.title ?? 'Site Icon'}
@@ -61,13 +42,7 @@ export const DefaultContent: React.FC<TSingleContentProps> = (props) => {
 						</p>
 					)}
 					{content.description != null && (
-						<p
-							className="truncate opacity-70"
-							style={{
-								...text.styles,
-								fontSize: text.typography.fontSize * 0.875
-							}}
-						>
+						<p className="truncate opacity-70" style={textSm.styles}>
 							{content.description}
 						</p>
 					)}

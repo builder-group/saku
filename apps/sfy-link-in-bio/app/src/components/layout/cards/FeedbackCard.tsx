@@ -3,7 +3,7 @@ import { useAppBridge } from '@shopify/app-bridge-react';
 import { BlockStack, Button, Card, InlineStack, Text } from '@shopify/polaris';
 import React from 'react';
 import { requestReview } from '@/lib';
-import { ChatIcon } from '../../display';
+import { PolarisChatIcon } from '../../display';
 import { useCrisp } from '../../provider';
 
 export const FeedbackCard: React.FC<TFeedbackCardProps> = (props) => {
@@ -68,7 +68,7 @@ export const FeedbackCard: React.FC<TFeedbackCardProps> = (props) => {
 						<BlockStack gap="200">
 							<Button
 								variant="primary"
-								icon={ChatIcon}
+								icon={PolarisChatIcon}
 								onClick={handleStartChat}
 								disabled={crisp == null}
 							>

@@ -4,7 +4,9 @@ import {
 	TResolvedAppearanceStyleMixin,
 	TResolvedAutoLayoutStyleMixin,
 	TResolvedFillStyleMixin,
+	TResolvedImageStyleMixin,
 	TResolvedShadowStyleMixin,
+	TResolvedSmTextStyleMixin,
 	TResolvedStrokeStyleMixin,
 	TResolvedTextStyleMixin
 } from '../../mixins';
@@ -20,7 +22,9 @@ export type TResolvedLinkNode<
 		TResolvedFillStyleMixin,
 		TResolvedStrokeStyleMixin,
 		TResolvedShadowStyleMixin,
-		TResolvedTextStyleMixin
+		TResolvedTextStyleMixin,
+		TResolvedSmTextStyleMixin,
+		TResolvedImageStyleMixin
 	]
 >;
 

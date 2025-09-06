@@ -2,7 +2,7 @@ import { TResolvedMediaNode } from '../../types';
 
 export const Skeleton: React.FC<TSkeletonProps> = (props) => {
 	const {
-		node: { autoLayout, appearance, fill, stroke, shadow }
+		node: { autoLayout, appearance, fill, stroke, shadow, image }
 	} = props;
 
 	return (
@@ -18,7 +18,7 @@ export const Skeleton: React.FC<TSkeletonProps> = (props) => {
 		>
 			<div
 				className="flex aspect-[16/9] w-full animate-pulse bg-gray-300"
-				style={{ borderRadius: appearance?.borderRadius }}
+				style={{ borderRadius: image.appearance.styles.borderRadius }}
 			></div>
 		</div>
 	);

@@ -1,70 +1,71 @@
-import { isTokenRef, TMixinTokenSet, TRef, TUnreference } from '@repo/editor';
+import { isTokenRef, TMixinTokenSet, TRef, TVariableToken } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
 
-export function resolveTokenRef<GValue, GTokenSet extends TMixinTokenSet>(
+export function resolveTokenRef<GValue, GMixinTokenSet extends TMixinTokenSet>(
 	sourceValue: TRef<GValue>,
-	tokenSet: GTokenSet | undefined | null,
-	mapToToken: (ref: string, tokenSet?: GTokenSet) => GValue | undefined
+	options: TResolveTokenRefOptions<GValue, GMixinTokenSet>
 ): TResult<GValue, AppError> {
-	if (tokenSet == null) {
-		return Err(new AppError('#ERR_TOKEN_MAP_NOT_FOUND'));
+	if (!isTokenRef(sourceValue)) {
+		return Ok(sourceValue);
 	}
 
-	// Resolve sourceValue if it's a token ref
-	if (isTokenRef(sourceValue)) {
-		const sourceToken = mapToToken(sourceValue.key, tokenSet);
-		if (sourceToken === undefined) {
+	// Resolve mixin token
+	if (sourceValue.tokenType === 'mixin' && options.mixin != null) {
+		const { tokenSet, mapToTokenValue } = options.mixin;
+		if (tokenSet == null) {
+			return Err(new AppError('#ERR_TOKEN_SET_NOT_FOUND'));
+		}
+
+		const tokenValue = mapToTokenValue(sourceValue.key, tokenSet);
+		if (tokenValue === undefined) {
 			return Err(
 				new AppError('#ERR_TOKEN_NOT_FOUND', {
-					detail: `Source token not found: ${sourceValue.key}`
+					detail: `Mixin token value not found: ${sourceValue.key}`
 				})
 			);
 		}
-		return Ok(sourceToken);
+
+		return Ok(tokenValue);
 	}
 
-	return Ok(sourceValue);
+	// Resolve variable token
+	if (sourceValue.tokenType === 'variable' && options.variable != null) {
+		const { tokenMap, expectedType } = options.variable;
+		if (tokenMap == null) {
+			return Err(new AppError('#ERR_TOKEN_MAP_NOT_FOUND'));
+		}
+
+		const token = tokenMap[sourceValue.key];
+		if (token == null) {
+			return Err(
+				new AppError('#ERR_TOKEN_NOT_FOUND', {
+					detail: `Variable token not found: ${sourceValue.key}`
+				})
+			);
+		}
+
+		if (expectedType != null && typeof token.value !== expectedType) {
+			return Err(
+				new AppError('#ERR_TOKEN_TYPE_MISMATCH', {
+					detail: `Source token type mismatch: ${token.type} !== ${expectedType}`
+				})
+			);
+		}
+
+		return Ok(token.value as GValue);
+	}
+
+	return Err(new AppError('#ERR_TOKEN_REF_NOT_FOUND'));
 }
 
-export function resolveNestedTokenRef<
-	GValue extends Record<string, TRef<any>>,
-	GPropertyKey extends keyof GValue,
-	GTokenSet extends TMixinTokenSet
->(
-	sourceValue: TRef<GValue>,
-	tokenSet: GTokenSet | undefined | null,
-	mapToToken: (ref: string, tokenSet?: GTokenSet) => GValue | undefined,
-	propertyKey: GPropertyKey
-): TResult<TUnreference<GValue[GPropertyKey]>, AppError> {
-	if (tokenSet == null) {
-		return Err(new AppError('#ERR_TOKEN_MAP_NOT_FOUND'));
-	}
-
-	// Resolve sourceValue if it's a token ref
-	const [isResolvedOk, resolvedErr, resolvedValue] = resolveTokenRef(
-		sourceValue,
-		tokenSet,
-		mapToToken
-	);
-	if (!isResolvedOk) {
-		return Err(resolvedErr);
-	}
-
-	// Resolve propertyValue if it's a token ref
-	const propertyValue: TRef<GValue[GPropertyKey]> = resolvedValue[propertyKey];
-	if (isTokenRef(propertyValue)) {
-		const propertyToken = mapToToken(propertyValue.key, tokenSet);
-		if (propertyToken === undefined) {
-			return Err(
-				new AppError('#ERR_TOKEN_NOT_FOUND', {
-					detail: `Property token not found: ${propertyValue.key}`
-				})
-			);
-		}
-
-		return Ok(propertyToken[propertyKey]);
-	}
-
-	return Ok(propertyValue);
+export interface TResolveTokenRefOptions<GValue, GMixinTokenSet extends TMixinTokenSet> {
+	mixin?: {
+		tokenSet: GMixinTokenSet | undefined | null;
+		mapToTokenValue: (key: string, tokenSet?: GMixinTokenSet) => GValue | undefined;
+	};
+	variable?: {
+		tokenMap: Record<string, TVariableToken> | undefined | null;
+		expectedType?: 'string' | 'number' | 'boolean';
+	};
 }

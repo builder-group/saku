@@ -1,7 +1,7 @@
 import { Button, Text } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react';
 import React from 'react';
-import { PlusIcon } from '@/components';
+import { PolarisPlusIcon } from '@/components';
 import { TPageEditor } from '../../../../lib';
 import { PanelHeader as PanelHeaderBase } from '../../PanelHeader';
 import { LayerSelectorPopover } from './LayerSelectorPopover';
@@ -19,7 +19,7 @@ export const PanelHeader: React.FC<TPanelHeaderProps> = (props) => {
 				editor={editor}
 				activator={
 					<div className="flex items-center justify-center">
-						<Button icon={PlusIcon} disabled={isDragging} variant="plain" />
+						<Button icon={PolarisPlusIcon} disabled={isDragging} variant="plain" />
 					</div>
 				}
 				width="auto"

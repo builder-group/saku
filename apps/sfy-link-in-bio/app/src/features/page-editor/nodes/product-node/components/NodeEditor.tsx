@@ -3,14 +3,17 @@ import { TProductNode } from '@repo/editor';
 import { Button, IndexTable, Scrollable, Text, useIndexResourceState } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react/state';
 import React from 'react';
-import { AccordionSection, DeleteIcon, ProductAddIcon } from '@/components';
+import { AccordionSection, PolarisDeleteIcon, PolarisProductAddIcon } from '@/components';
 import { capitalizeFirstLetter, isProduct, mutateWithReferenceUpdate } from '@/lib';
 import { TNodeEditorComponentProps } from '../../../lib';
 import {
 	AppearanceStyleMixinEditor,
 	AutoLayoutStyleMixinEditor,
+	BadgeStyleMixinEditor,
 	ButtonStyleMixinEditor,
 	FillStyleMixinEditor,
+	ImageStyleMixinEditor,
+	ProductDetailsStyleMixinEditor,
 	ShadowStyleMixinEditor,
 	StrokeStyleMixinEditor,
 	TextStyleMixinEditor
@@ -73,7 +76,7 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 	const bulkActions = React.useMemo(
 		() => [
 			{
-				icon: DeleteIcon,
+				icon: PolarisDeleteIcon,
 				destructive: true,
 				content: `Delete ${selectedResources.length > 1 ? `${selectedResources.length} ${resourceName.plural}` : resourceName.singular}`,
 				disabled: variantRows.length === 1 || selectedResources.length >= variantRows.length,
@@ -343,7 +346,11 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 								</Scrollable>
 							</div>
 						) : (
-							<Button onClick={handleSelectProduct} variant="secondary" icon={ProductAddIcon}>
+							<Button
+								onClick={handleSelectProduct}
+								variant="secondary"
+								icon={PolarisProductAddIcon}
+							>
 								Select Product
 							</Button>
 						)}
@@ -363,6 +370,7 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 						state={nodeState}
 						mapValue={(value) => value.autoLayout}
 						tokenSet={editor.mixinTokenMap.autoLayout}
+						tokenRefKey={'default'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
 						editor={editor}
 					/>
@@ -371,6 +379,7 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 						state={nodeState}
 						mapValue={(value) => value.appearance}
 						tokenSet={editor.mixinTokenMap.appearance}
+						tokenRefKey={'default'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
 						editor={editor}
 					/>
@@ -382,6 +391,7 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 							state._v.fill = value;
 						}}
 						tokenSet={editor.mixinTokenMap.fill}
+						tokenRefKey={'default'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
 						editor={editor}
 					/>
@@ -393,6 +403,7 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 							state._v.stroke = value;
 						}}
 						tokenSet={editor.mixinTokenMap.stroke}
+						tokenRefKey={'default'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
 						editor={editor}
 					/>
@@ -404,13 +415,14 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 							state._v.shadow = value;
 						}}
 						tokenSet={editor.mixinTokenMap.shadow}
+						tokenRefKey={'default'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
 						editor={editor}
 					/>
 				</AccordionSection>
 
 				<AccordionSection
-					title="Text"
+					title="Product Title"
 					collapsibleClassName="px-0 space-y-3"
 					size="tight"
 					defaultOpen={true}
@@ -419,20 +431,82 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 						state={nodeState}
 						mapValue={(value) => value.text}
 						tokenSet={editor.mixinTokenMap.text}
+						tokenRefKey={'default'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
 						editor={editor}
 					/>
 				</AccordionSection>
 				<AccordionSection
-					title="Button"
+					title="Buy Button"
 					collapsibleClassName="px-0 space-y-3"
 					size="tight"
 					defaultOpen={true}
 				>
 					<ButtonStyleMixinEditor
 						state={nodeState}
-						mapValue={(value) => value.button}
+						mapValue={(value) => value.buttonPrimary}
 						tokenSet={editor.mixinTokenMap.button}
+						tokenRefKey={'primary'}
+						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
+						editor={editor}
+					/>
+				</AccordionSection>
+				<AccordionSection
+					title="Price Badge"
+					collapsibleClassName="px-0 space-y-3"
+					size="tight"
+					defaultOpen={true}
+				>
+					<BadgeStyleMixinEditor
+						state={nodeState}
+						mapValue={(value) => value.badgePrimary}
+						tokenSet={editor.mixinTokenMap.badge}
+						tokenRefKey={'primary'}
+						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
+						editor={editor}
+					/>
+				</AccordionSection>
+				<AccordionSection
+					title="Variant Badge"
+					collapsibleClassName="px-0 space-y-3"
+					size="tight"
+					defaultOpen={true}
+				>
+					<BadgeStyleMixinEditor
+						state={nodeState}
+						mapValue={(value) => value.badgeNeutral}
+						tokenSet={editor.mixinTokenMap.badge}
+						tokenRefKey={'neutral'}
+						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
+						editor={editor}
+					/>
+				</AccordionSection>
+				<AccordionSection
+					title="Product Image"
+					collapsibleClassName="px-0 space-y-3"
+					size="tight"
+					defaultOpen={true}
+				>
+					<ImageStyleMixinEditor
+						state={nodeState}
+						mapValue={(value) => value.image}
+						tokenSet={editor.mixinTokenMap.image}
+						tokenRefKey={'default'}
+						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
+						editor={editor}
+					/>
+				</AccordionSection>
+				<AccordionSection
+					title="Product Details Modal"
+					collapsibleClassName="px-0 space-y-3"
+					size="tight"
+					defaultOpen={true}
+				>
+					<ProductDetailsStyleMixinEditor
+						state={nodeState}
+						mapValue={(value) => value.productDetails}
+						tokenSet={editor.mixinTokenMap.productDetails}
+						tokenRefKey={'default'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
 						editor={editor}
 					/>

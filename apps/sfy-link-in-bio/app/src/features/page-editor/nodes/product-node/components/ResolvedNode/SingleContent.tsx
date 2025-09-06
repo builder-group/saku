@@ -8,7 +8,18 @@ import { useProductDetailsModal } from './ProductDetailsModal';
 
 export const SingleContent: React.FC<TSingleContentProps> = (props) => {
 	const { node, product, cx } = props;
-	const { autoLayout, appearance, fill, stroke, shadow, text, button } = node;
+	const {
+		autoLayout,
+		appearance,
+		fill,
+		stroke,
+		shadow,
+		text,
+		buttonPrimary,
+		badgePrimary,
+		badgeNeutral,
+		image
+	} = node;
 
 	const { Modal: ProductDetailsModal, showModal: showProductDetailsModal } = useProductDetailsModal(
 		{
@@ -32,7 +43,7 @@ export const SingleContent: React.FC<TSingleContentProps> = (props) => {
 		return initialOptions;
 	});
 
-	const image = React.useMemo(() => product.images?.[0], [product.images]);
+	const productImage = React.useMemo(() => product.images?.[0], [product.images]);
 
 	const selectedVariant = React.useMemo(() => {
 		if (!product.variants?.length) {
@@ -127,12 +138,14 @@ export const SingleContent: React.FC<TSingleContentProps> = (props) => {
 				}}
 			>
 				{/* Product Image */}
-				{image != null && (
-					<div
-						className="h-12 w-12 flex-shrink-0 overflow-hidden bg-gray-100"
-						style={{ borderRadius: appearance.styles.borderRadius }}
-					>
-						<img src={image.src} alt={product.title} className="h-full w-full object-cover" />
+				{productImage != null && (
+					<div className="h-12 w-12 flex-shrink-0 overflow-hidden bg-gray-100" style={image.styles}>
+						<img
+							src={productImage.src}
+							alt={product.title}
+							className="h-full w-full object-cover"
+							draggable={false}
+						/>
 					</div>
 				)}
 
@@ -147,12 +160,11 @@ export const SingleContent: React.FC<TSingleContentProps> = (props) => {
 						<div className="flex flex-wrap items-center gap-2">
 							{/* Price Badge */}
 							{selectedVariant?.price && (
-								<div
-									className="badge badge-neutral badge-sm"
-									style={{ borderRadius: appearance.styles.borderRadius }}
-								>
-									{getCurrencySymbol(selectedVariant.price.currencyCode)}
-									{selectedVariant.price.amount}
+								<div className="px-2 py-0.5" style={badgePrimary.styles}>
+									<div style={badgePrimary.text.styles}>
+										{getCurrencySymbol(selectedVariant.price.currencyCode)}
+										{selectedVariant.price.amount}
+									</div>
 								</div>
 							)}
 
@@ -178,11 +190,16 @@ export const SingleContent: React.FC<TSingleContentProps> = (props) => {
 											))}
 										</select>
 										<div
-											className="badge badge-ghost badge-sm pointer-events-none flex max-w-24 cursor-pointer items-center gap-1"
-											style={{ borderRadius: appearance.styles.borderRadius }}
+											className="pointer-events-none flex max-w-24 cursor-pointer items-center gap-1 px-2 py-0.5"
+											style={badgeNeutral.styles}
 										>
-											<span className="truncate">{currentValue || placeholderText}</span>
-											<ChevronDownIcon className="h-3 w-3 flex-shrink-0" />
+											<span className="truncate" style={badgeNeutral.text.styles}>
+												{currentValue || placeholderText}
+											</span>
+											<ChevronDownIcon
+												className="h-3 w-3 flex-shrink-0"
+												style={{ color: badgeNeutral.text.styles?.color }}
+											/>
 										</div>
 									</div>
 								);
@@ -214,10 +231,10 @@ export const SingleContent: React.FC<TSingleContentProps> = (props) => {
 								handleBuyNow();
 							}}
 							disabled={isBuying}
-							className="ml-3 px-3 py-1.5"
-							style={button.styles}
+							className="ml-3 cursor-pointer px-3 py-1.5"
+							style={buttonPrimary.styles}
 						>
-							<div style={button.text.styles}>
+							<div style={buttonPrimary.text.styles}>
 								{isBuying ? <span className="loading loading-spinner loading-xs"></span> : 'Buy'}
 							</div>
 						</button>

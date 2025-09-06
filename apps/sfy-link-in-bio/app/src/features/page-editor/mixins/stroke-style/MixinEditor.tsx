@@ -10,7 +10,7 @@ import { Button, Text } from '@shopify/polaris';
 import { useCompute } from 'feature-react';
 import { TState } from 'feature-state';
 import React from 'react';
-import { Badge, LinkIcon, LinkOffIcon, MinusIcon, PlusIcon } from '@/components';
+import { Badge, LinkIcon, LinkOffIcon, PolarisMinusIcon, PolarisPlusIcon } from '@/components';
 import { useMapState } from '@/hooks';
 import { TokenActionOverlay, TokenColorInput, TokenTextInput } from '../../components';
 import { TPageEditor } from '../../lib';
@@ -26,6 +26,7 @@ export const StrokeStyleMixinEditor = <
 		mapValue,
 		applyValue,
 		tokenSet,
+		tokenRefKey = 'default',
 		mapToToken,
 		disabledTokenLink = false,
 		editor
@@ -92,7 +93,7 @@ export const StrokeStyleMixinEditor = <
 	// =========================================================================
 
 	const handleAddStroke = React.useCallback(() => {
-		const tokenValue = mapToToken?.('default', tokenSet?._v);
+		const tokenValue = mapToToken?.(tokenRefKey, tokenSet?._v);
 		applyValue(
 			state,
 			tokenValue ?? {
@@ -101,7 +102,7 @@ export const StrokeStyleMixinEditor = <
 			}
 		);
 		state._notify();
-	}, [mapToToken, tokenSet, state, applyValue]);
+	}, [mapToToken, tokenSet, state, applyValue, tokenRefKey]);
 
 	const handleRemoveStroke = React.useCallback(() => {
 		applyValue(state, null);
@@ -117,10 +118,10 @@ export const StrokeStyleMixinEditor = <
 				state._notify();
 			}
 		} else {
-			applyValue(state, tokenRef('default'));
+			applyValue(state, tokenRef('mixin', tokenRefKey));
 			state._notify();
 		}
-	}, [isLinked, mapValue, state, mapToToken, tokenSet, applyValue]);
+	}, [isLinked, mapValue, state, mapToToken, tokenSet, applyValue, tokenRefKey]);
 
 	const handleNavigateToToken = React.useCallback(() => {
 		editor.switchView('settings');
@@ -169,9 +170,14 @@ export const StrokeStyleMixinEditor = <
 
 				{/* Add/Remove stroke buttons */}
 				{isSet ? (
-					<Button icon={MinusIcon} onClick={handleRemoveStroke} variant="plain" size="micro" />
+					<Button
+						icon={PolarisMinusIcon}
+						onClick={handleRemoveStroke}
+						variant="plain"
+						size="micro"
+					/>
 				) : (
-					<Button icon={PlusIcon} onClick={handleAddStroke} variant="plain" size="micro" />
+					<Button icon={PolarisPlusIcon} onClick={handleAddStroke} variant="plain" size="micro" />
 				)}
 			</div>
 
@@ -181,6 +187,7 @@ export const StrokeStyleMixinEditor = <
 						label="Color"
 						state={colorState}
 						tokenSet={tokenSet}
+						tokenRefKey={tokenRefKey}
 						mapToTokenValue={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.color}
 						onLinkChange={() => {
 							handleToggleTokenLink();
@@ -198,6 +205,7 @@ export const StrokeStyleMixinEditor = <
 						step={1}
 						state={widthState}
 						tokenSet={tokenSet}
+						tokenRefKey={tokenRefKey}
 						mapToTokenValue={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.width}
 						mapToDisplay={(value) => value}
 						mapToInternal={(displayValue) => displayValue}
@@ -222,6 +230,7 @@ interface TStrokeStyleMixinEditorProps<
 	mapValue: (value: GValue) => TStrokeStyleMixin['value'];
 	applyValue: (state: TState<GValue, any>, value: TStrokeStyleMixin['value']) => void;
 	tokenSet?: TState<GTokenSet, any>;
+	tokenRefKey?: string;
 	mapToToken?: (ref: string, tokenSet?: GTokenSet) => TStrokeStyleToken['value'] | undefined;
 	disabledTokenLink?: boolean;
 	editor: TPageEditor;

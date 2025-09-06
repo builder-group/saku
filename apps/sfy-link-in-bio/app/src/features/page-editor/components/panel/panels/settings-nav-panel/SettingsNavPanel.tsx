@@ -1,7 +1,7 @@
 import { Icon, Text } from '@shopify/polaris';
 import { useCompute, useFeatureState } from 'feature-react/state';
 import React from 'react';
-import { ChevronRightIcon, ResizablePanel } from '@/components';
+import { PolarisChevronRightIcon, ResizablePanel } from '@/components';
 import { cn } from '@/lib';
 import { settingsMetadata, TSettingsSectionType } from '../../../../environment';
 import { TPageEditor } from '../../../../lib';
@@ -91,7 +91,7 @@ export const SettingsNavPanel: React.FC<TSettingsNavPanelProps> = (props) => {
 								{section.label}
 							</Text>
 							<span className="ml-2">
-								<Icon source={ChevronRightIcon} tone="subdued" />
+								<Icon source={PolarisChevronRightIcon} tone="subdued" />
 							</span>
 						</div>
 					))}

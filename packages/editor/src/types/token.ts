@@ -1,9 +1,12 @@
 import {
 	TAppearanceStyleMixin,
 	TAutoLayoutStyleMixin,
+	TBadgeStyleMixin,
 	TBaseMixin,
 	TButtonStyleMixin,
 	TFillStyleMixin,
+	TImageStyleMixin,
+	TProductDetailsStyleMixin,
 	TShadowStyleMixin,
 	TStrokeStyleMixin,
 	TTextStyleMixin,
@@ -16,6 +19,12 @@ export type TTokenType = TToken['type'];
 
 export type TTokenMap = TMixinTokenMap<TMixinToken> & TVariableTokenMap;
 export type TTokenKey = TMixinTokenKey | TVariableTokenKey;
+
+export interface TTokenRef {
+	type: 'token';
+	tokenType: TTokenType;
+	key: string;
+}
 
 // =========================================================================
 // Variable tokens (atomic design values)
@@ -45,7 +54,10 @@ export type TMixinToken =
 	| TStrokeStyleToken
 	| TShadowStyleToken
 	| TTextStyleToken
-	| TButtonStyleToken;
+	| TButtonStyleToken
+	| TBadgeStyleToken
+	| TImageStyleToken
+	| TProductDetailsStyleToken;
 
 export interface TBaseMixinToken<GMixin extends TBaseMixin<any, any>> {
 	type: 'mixin';
@@ -82,3 +94,6 @@ export type TStrokeStyleToken = TBaseMixinToken<TStrokeStyleMixin>;
 export type TShadowStyleToken = TBaseMixinToken<TShadowStyleMixin>;
 export type TTextStyleToken = TBaseMixinToken<TTextStyleMixin>;
 export type TButtonStyleToken = TBaseMixinToken<TButtonStyleMixin>;
+export type TBadgeStyleToken = TBaseMixinToken<TBadgeStyleMixin>;
+export type TImageStyleToken = TBaseMixinToken<TImageStyleMixin>;
+export type TProductDetailsStyleToken = TBaseMixinToken<TProductDetailsStyleMixin>;

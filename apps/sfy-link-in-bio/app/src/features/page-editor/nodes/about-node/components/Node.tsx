@@ -16,7 +16,8 @@ export const AboutNode = React.forwardRef<HTMLDivElement, TNodeProps<TAboutNode>
 		'fill',
 		'stroke',
 		'shadow',
-		'text'
+		'text',
+		'image'
 	]);
 
 	const node = useCombinedCompute([nodeState, tokenSetNotifier], ([{ value }]) => {

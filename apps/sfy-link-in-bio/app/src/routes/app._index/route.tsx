@@ -9,9 +9,9 @@ import {
 	ClipboardButton,
 	FeedbackCard,
 	IframeContent,
+	PolarisViewIcon,
 	QuickHelpCard,
-	SitePreview,
-	ViewIcon
+	SitePreview
 } from '@/components';
 import { appConfig, coreApiClient, logger } from '@/environment';
 import { createShopifyTokenMiddleware, resultLoader, withResultLoader } from '@/lib';
@@ -137,7 +137,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 									{/* Action Buttons */}
 									<div className="flex items-center gap-2">
 										<Button
-											icon={ViewIcon}
+											icon={PolarisViewIcon}
 											variant="secondary"
 											url={site.url}
 											target="_blank"
@@ -246,16 +246,17 @@ export const headers: THeadersFunction = (headersArgs) => {
 
 export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async ({ request }) => {
 	const { session } = await shopify.authenticate.admin(request);
-	const sessionToken = getSessionTokenFromRequest(request);
-	const url = new URL(request.url);
-	const shouldOpenEditor = url.searchParams.get('openEditor') === 'true';
 
+	const sessionToken = getSessionTokenFromRequest(request);
 	if (sessionToken == null) {
 		return Err({
 			code: '#ERR_UNAUTHORIZED' as const,
 			message: 'Unauthorized'
 		}).toArray();
 	}
+
+	const url = new URL(request.url);
+	const shouldOpenEditor = url.searchParams.get('openEditor') === 'true';
 
 	// 1. Check workspace onboarding status
 	const workspaceResult = await coreApiClient.get('/v1/shopify/workspace', {

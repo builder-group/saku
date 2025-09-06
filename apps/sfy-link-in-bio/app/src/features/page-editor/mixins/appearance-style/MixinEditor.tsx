@@ -8,7 +8,7 @@ import { Button, Text } from '@shopify/polaris';
 import { useCompute } from 'feature-react';
 import { TState } from 'feature-state';
 import React from 'react';
-import { HideIcon, ViewIcon } from '@/components';
+import { PolarisHideIcon, PolarisViewIcon } from '@/components';
 import { useMapState } from '@/hooks';
 import { TokenTextInput } from '../../components';
 import { TPageEditor } from '../../lib';
@@ -23,6 +23,7 @@ export const AppearanceStyleMixinEditor = <
 		state,
 		mapValue,
 		tokenSet,
+		tokenRefKey,
 		mapToToken,
 		disabledTokenLink = false,
 		disabledVisibilityToggle = false,
@@ -94,9 +95,19 @@ export const AppearanceStyleMixinEditor = <
 
 				{!disabledVisibilityToggle &&
 					(isVisible ? (
-						<Button icon={ViewIcon} onClick={handleToggleVisibility} variant="plain" size="micro" />
+						<Button
+							icon={PolarisViewIcon}
+							onClick={handleToggleVisibility}
+							variant="plain"
+							size="micro"
+						/>
 					) : (
-						<Button icon={HideIcon} onClick={handleToggleVisibility} variant="plain" size="micro" />
+						<Button
+							icon={PolarisHideIcon}
+							onClick={handleToggleVisibility}
+							variant="plain"
+							size="micro"
+						/>
 					))}
 			</div>
 			<div className="grid grid-cols-2 gap-3">
@@ -109,6 +120,7 @@ export const AppearanceStyleMixinEditor = <
 					step={5}
 					state={opacityState}
 					tokenSet={tokenSet}
+					tokenRefKey={tokenRefKey}
 					mapToTokenValue={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.opacity}
 					mapToDisplay={(value) => Math.round(value * 100)}
 					mapToInternal={(displayValue) => displayValue / 100}
@@ -125,6 +137,7 @@ export const AppearanceStyleMixinEditor = <
 						step={4}
 						state={borderRadiusState}
 						tokenSet={tokenSet}
+						tokenRefKey={tokenRefKey}
 						mapToTokenValue={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.borderRadius}
 						onNavigateToToken={handleNavigateToToken}
 						disabledTokenLink={disabledTokenLink}
@@ -142,6 +155,7 @@ interface TAppearanceStyleMixinEditorProps<
 	state: TState<GValue, any>;
 	mapValue: (value: GValue) => TAppearanceStyleMixin['value'];
 	tokenSet?: TState<GTokenSet, any>;
+	tokenRefKey?: string;
 	mapToToken?: (ref: string, tokenSet?: GTokenSet) => TAppearanceStyleToken['value'] | undefined;
 	disabledTokenLink?: boolean;
 	disabledVisibilityToggle?: boolean;

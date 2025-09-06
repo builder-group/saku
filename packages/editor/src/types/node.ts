@@ -4,12 +4,15 @@ import {
 	TAboutNodeMixin,
 	TAppearanceStyleMixin,
 	TAutoLayoutStyleMixin,
+	TBadgeNeutralStyleMixin,
+	TBadgePrimaryStyleMixin,
 	TBaseMixin,
-	TButtonStyleMixin,
+	TButtonPrimaryStyleMixin,
 	TChildrenMixin,
 	TFillStyleMixin,
 	TFlatChildrenMixin,
 	TIdMixin,
+	TImageStyleMixin,
 	TLinkNodeContent,
 	TLinkNodeMixin,
 	TMediaNodeContent,
@@ -17,13 +20,16 @@ import {
 	TMergeMixins,
 	TPageNodeContent,
 	TPageNodeMixin,
+	TProductDetailsStyleMixin,
 	TProductNodeContent,
 	TProductNodeMixin,
 	TShadowStyleMixin,
 	TStrokeStyleMixin,
 	TTextNodeContent,
 	TTextNodeMixin,
-	TTextStyleMixin
+	TTextSmStyleMixin,
+	TTextStyleMixin,
+	TTextXlStyleMixin
 } from './mixin';
 
 export type TNode = TPageNode | TAboutNode | TLinkNode | TMediaNode | TTextNode | TProductNode;
@@ -65,7 +71,9 @@ export type TAboutNode<GVariant extends TAboutNodeContent = TAboutNodeContent> =
 		TFillStyleMixin,
 		TStrokeStyleMixin,
 		TShadowStyleMixin,
-		TTextStyleMixin
+		TTextXlStyleMixin,
+		TTextStyleMixin,
+		TImageStyleMixin
 	]
 >;
 
@@ -78,7 +86,9 @@ export type TLinkNode<GContent extends TLinkNodeContent = TLinkNodeContent> = TB
 		TFillStyleMixin,
 		TStrokeStyleMixin,
 		TShadowStyleMixin,
-		TTextStyleMixin
+		TTextStyleMixin,
+		TTextSmStyleMixin,
+		TImageStyleMixin
 	]
 >;
 
@@ -90,7 +100,8 @@ export type TMediaNode<GContent extends TMediaNodeContent = TMediaNodeContent> =
 		TAppearanceStyleMixin,
 		TFillStyleMixin,
 		TStrokeStyleMixin,
-		TShadowStyleMixin
+		TShadowStyleMixin,
+		TImageStyleMixin
 	]
 >;
 
@@ -117,6 +128,10 @@ export type TProductNode<GContent extends TProductNodeContent = TProductNodeCont
 		TStrokeStyleMixin,
 		TShadowStyleMixin,
 		TTextStyleMixin,
-		TButtonStyleMixin
+		TButtonPrimaryStyleMixin,
+		TBadgePrimaryStyleMixin,
+		TBadgeNeutralStyleMixin,
+		TImageStyleMixin,
+		TProductDetailsStyleMixin
 	]
 >;

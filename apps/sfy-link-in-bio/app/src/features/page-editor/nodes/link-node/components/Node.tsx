@@ -16,7 +16,8 @@ export const LinkNode = React.forwardRef<HTMLDivElement, TNodeProps<TLinkNode>>(
 		'fill',
 		'stroke',
 		'shadow',
-		'text'
+		'text',
+		'image'
 	]);
 
 	const node = useCombinedCompute([nodeState, tokenSetNotifier], ([{ value }]) => {

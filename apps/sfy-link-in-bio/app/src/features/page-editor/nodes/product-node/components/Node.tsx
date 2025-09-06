@@ -18,7 +18,10 @@ export const ProductNode = React.forwardRef<HTMLDivElement, TNodeProps<TProductN
 			'stroke',
 			'shadow',
 			'text',
-			'button'
+			'button',
+			'badge',
+			'image',
+			'productDetails'
 		]);
 
 		const node = useCombinedCompute([nodeState, tokenSetNotifier], ([{ value }]) => {

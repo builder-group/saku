@@ -7,10 +7,12 @@ import { TResolvedProductNode } from '../../types';
 export const ProductDetailsModal: React.FC<TProductDetailsModalProps> = (props) => {
 	const {
 		product,
-		node: { button },
+		node: { productDetails },
 		cx,
 		modalRef
 	} = props;
+
+	const { appearance, fill, stroke, shadow, textXl, text, buttonPrimary, image } = productDetails;
 
 	const [selectedImageIndex, setSelectedImageIndex] = React.useState(0);
 	const [isBuying, setIsBuying] = React.useState(false);
@@ -76,22 +78,41 @@ export const ProductDetailsModal: React.FC<TProductDetailsModalProps> = (props) 
 	}, [selectedVariant?.id, cx.integrations.shopify]);
 
 	return (
-		<dialog ref={modalRef} className="modal">
-			<div className="modal-box max-w-4xl">
-				{/* Modal Header */}
-				<div className="mb-4 flex items-center justify-between">
-					<h3 className="text-lg font-bold">Product Details</h3>
-					<form method="dialog">
-						<button className="btn btn-sm btn-circle btn-ghost">✕</button>
-					</form>
-				</div>
+		<dialog
+			ref={modalRef}
+			className="modal"
+			style={{
+				opacity: appearance.styles.opacity,
+				visibility: appearance.styles.visibility
+			}}
+		>
+			<div
+				className="modal-box max-w-4xl"
+				style={{
+					borderRadius: appearance.styles.borderRadius,
+					...fill?.styles,
+					...stroke?.styles,
+					...shadow?.styles
+				}}
+			>
+				{/* Close Button */}
+				<form method="dialog">
+					<button className="btn btn-sm btn-circle btn-ghost absolute top-4 right-4">✕</button>
+				</form>
 
 				{/* Modal Content */}
 				<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
 					{/* Product Images */}
 					<div className="space-y-4">
 						{/* Main Image */}
-						<div className="aspect-square w-full overflow-hidden rounded-lg bg-gray-100">
+						<div
+							className="aspect-square w-full overflow-hidden bg-gray-100"
+							style={{
+								...image.appearance.styles,
+								...image.stroke?.styles,
+								...image.shadow?.styles
+							}}
+						>
 							{selectedImage && (
 								<img
 									src={selectedImage.src}
@@ -128,11 +149,16 @@ export const ProductDetailsModal: React.FC<TProductDetailsModalProps> = (props) 
 					{/* Product Details */}
 					<div className="flex flex-col space-y-4">
 						{/* Title */}
-						<h1 className="text-2xl font-bold text-gray-900">{product.title}</h1>
+						<h1 className="font-bold" style={textXl.styles}>
+							{product.title}
+						</h1>
 
 						{/* Price */}
 						{selectedVariant?.price && (
-							<p className="text-2xl font-semibold text-gray-900">
+							<p
+								className="font-semibold"
+								style={{ ...textXl.styles, fontSize: textXl.typography.fontSize * 0.875 }}
+							>
 								{getCurrencySymbol(selectedVariant.price.currencyCode)}
 								{selectedVariant.price.amount}
 							</p>
@@ -141,13 +167,14 @@ export const ProductDetailsModal: React.FC<TProductDetailsModalProps> = (props) 
 						{/* Description */}
 						{product.description?.type === 'html' && (
 							<div
-								className="prose prose-sm text-gray-700"
+								className="prose prose-sm"
+								style={text.styles}
 								dangerouslySetInnerHTML={{ __html: product.description.value }}
 							/>
 						)}
 						{product.description?.type === 'text' && (
-							<div className="prose prose-sm text-gray-700">
-								<p className="text-gray-700">{product.description.value}</p>
+							<div className="prose prose-sm" style={text.styles}>
+								<p>{product.description.value}</p>
 							</div>
 						)}
 
@@ -184,9 +211,14 @@ export const ProductDetailsModal: React.FC<TProductDetailsModalProps> = (props) 
 								onClick={handleBuyNow}
 								disabled={isBuying}
 								className="w-full py-2"
-								style={button.styles}
+								style={{
+									...buttonPrimary.appearance.styles,
+									...buttonPrimary.fill?.styles,
+									...buttonPrimary.stroke?.styles,
+									...buttonPrimary.shadow?.styles
+								}}
 							>
-								<div style={button.text.styles}>
+								<div style={buttonPrimary.text.styles}>
 									{isBuying ? (
 										<span className="loading loading-spinner loading-sm"></span>
 									) : (

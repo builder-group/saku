@@ -4,18 +4,20 @@ import polarisTranslations from '@shopify/polaris/locales/en.json';
 import { boundary } from '@shopify/shopify-app-react-router/server';
 import React from 'react';
 import { Link, Outlet, useLoaderData, useLocation, useRouteError } from 'react-router';
+import { unwrapOr } from 'tuple-result';
 import { shopify, shopifyConfig } from '@/.server/environment';
+import { getSessionTokenFromRequest } from '@/.server/lib';
 import {
 	EmbeddedAppProvider,
 	TEmbeddedAppProviderI18n,
 	TEmbeddedAppProviderUserContext
 } from '@/components';
 import { appConfig } from '@/environment';
-import { createDisplayNameFromShop } from '@/lib';
+import { checkOnboardingStatus, createDisplayNameFromShop } from '@/lib';
 import { THeadersFunction, TLoaderFunction } from '@/types';
 
 const Page: React.FC = () => {
-	const { shopifyApiKey, mantleApiToken, polarisTranslations, userContext } =
+	const { shopifyApiKey, mantleApiToken, polarisTranslations, userContext, completedOnboarding } =
 		useLoaderData<typeof loader>();
 	const location = useLocation();
 
@@ -35,13 +37,15 @@ const Page: React.FC = () => {
 			disabledCrispCallbacks={disabledCrispCallbacks}
 			disabledMantle={!appConfig.featureFlags.mantle}
 		>
-			<ui-nav-menu>
-				<Link to="/app" rel="home">
-					Home
-				</Link>
-				<Link to="/app/settings">Settings</Link>
-				<Link to="/app/help">Help & Resources</Link>
-			</ui-nav-menu>
+			{completedOnboarding && (
+				<ui-nav-menu>
+					<Link to="/app" rel="home">
+						Home
+					</Link>
+					<Link to="/app/settings">Settings</Link>
+					<Link to="/app/help">Help & Resources</Link>
+				</ui-nav-menu>
+			)}
 			<Outlet />
 		</EmbeddedAppProvider>
 	);
@@ -62,6 +66,8 @@ export const links = () => [{ rel: 'stylesheet', href: polarisStyles }];
 
 export const loader: TLoaderFunction<TLoaderData> = async ({ request }) => {
 	const { session } = await shopify.authenticate.admin(request);
+	const sessionToken = getSessionTokenFromRequest(request);
+
 	const user = session.onlineAccessInfo?.associated_user;
 
 	return {
@@ -81,7 +87,9 @@ export const loader: TLoaderFunction<TLoaderData> = async ({ request }) => {
 				locale: user?.locale,
 				plan: 'free'
 			}
-		}
+		},
+		completedOnboarding:
+			sessionToken != null ? unwrapOr(await checkOnboardingStatus(sessionToken), false) : false
 	};
 };
 
@@ -90,4 +98,5 @@ interface TLoaderData {
 	mantleApiToken?: string;
 	polarisTranslations: TEmbeddedAppProviderI18n;
 	userContext: TEmbeddedAppProviderUserContext;
+	completedOnboarding: boolean;
 }

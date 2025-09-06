@@ -1,7 +1,7 @@
 import { isTokenRef, TMixinTokenSet, tokenRef, TRef } from '@repo/editor';
 import { Text, TextField, TextFieldProps } from '@shopify/polaris';
 import { useCombinedCompute, useCompute } from 'feature-react/state';
-import { createState, TState } from 'feature-state';
+import { TState } from 'feature-state';
 import React from 'react';
 import { LinkIcon, LinkOffIcon } from '@/components';
 import { cn } from '@/lib';
@@ -10,15 +10,16 @@ import { TokenActionOverlay } from './TokenActionOverlay';
 export const TokenTextInput = <
 	GValue extends string | number,
 	GRefValue extends TRef<GValue> | undefined,
-	GTokenSet extends TMixinTokenSet
+	GMixinTokenSet extends TMixinTokenSet
 >(
-	props: TTokenTextInputProps<GValue, GRefValue, GTokenSet>
+	props: TTokenTextInputProps<GValue, GRefValue, GMixinTokenSet>
 ) => {
 	const {
 		state,
 		mapToDisplay,
 		mapToInternal,
 		tokenSet,
+		tokenRefKey = 'default',
 		mapToTokenValue,
 		onNavigateToToken,
 		onLinkChange,
@@ -34,11 +35,11 @@ export const TokenTextInput = <
 
 	const [displayValue, setDisplayValue] = React.useState<string>('');
 	const resolvedValue = useCombinedCompute(
-		[state, tokenSet ?? createState(undefined)],
-		([{ value: stateValue }, { value: tokenMapValue }]) => {
-			const rawValue = isTokenRef(stateValue)
-				? mapToTokenValue(stateValue.key, tokenMapValue)
-				: (stateValue as GValue);
+		[state, tokenSet],
+		([stateCx, tokenSetCx]) => {
+			const rawValue = isTokenRef(stateCx.value)
+				? mapToTokenValue?.(stateCx.value.key, tokenSetCx?.value)
+				: (stateCx.value as GValue);
 			if (rawValue == null) {
 				return undefined;
 			}
@@ -103,15 +104,15 @@ export const TokenTextInput = <
 
 		if (isLinked) {
 			const tokenValue = isTokenRef(state._v)
-				? mapToTokenValue(state._v.key, tokenSet?._v)
+				? mapToTokenValue?.(state._v.key, tokenSet?._v)
 				: undefined;
 			if (tokenValue != null) {
 				state.set(tokenValue as GRefValue);
 			}
 		} else {
-			state.set(tokenRef('default') as GRefValue);
+			state.set(tokenRef('mixin', tokenRefKey) as GRefValue);
 		}
-	}, [onLinkChange, isLinked, state, mapToTokenValue, tokenSet]);
+	}, [onLinkChange, isLinked, state, mapToTokenValue, tokenSet, tokenRefKey]);
 
 	// =========================================================================
 	// Effects
@@ -174,14 +175,15 @@ export const TokenTextInput = <
 export interface TTokenTextInputProps<
 	GValue extends string | number,
 	GRefValue extends TRef<GValue> | undefined,
-	GTokenSet extends TMixinTokenSet
+	GMixinTokenSet extends TMixinTokenSet
 > extends Omit<TextFieldProps, 'label' | 'labelHidden' | 'value' | 'onChange'> {
 	state: TState<GRefValue, any>;
 	mapToDisplay?: (value: GValue) => GValue;
 	mapToInternal?: (displayValue: GValue) => GValue;
 
-	tokenSet?: TState<GTokenSet, any>;
-	mapToTokenValue: (tokenRef: string, tokenSet?: GTokenSet) => GValue | undefined;
+	tokenSet?: TState<GMixinTokenSet, any>;
+	tokenRefKey?: string;
+	mapToTokenValue?: (key: string, tokenSet?: GMixinTokenSet) => GValue | undefined;
 	onLinkChange?: (isLinked: boolean) => { preventDefault: boolean } | void;
 	onNavigateToToken?: () => void;
 	disabledTokenLink?: boolean;

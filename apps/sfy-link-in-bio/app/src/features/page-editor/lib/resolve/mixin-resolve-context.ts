@@ -1,11 +1,12 @@
-import { TMixinTokenSet } from '@repo/editor';
+import { TMixinTokenSet, TVariableToken } from '@repo/editor';
 import { TNodeResolveContext } from './node-resolve-context';
 
 export interface TMixinResolveContext<
 	GValue extends Record<string, any> | null | undefined,
-	GTokenSet extends TMixinTokenSet = TMixinTokenSet
+	GMixinTokenSet extends TMixinTokenSet = TMixinTokenSet
 > {
 	node: TNodeResolveContext;
-	tokenSet: GTokenSet | undefined | null;
-	mapToToken: (tokenRef: string, tokenSet?: GTokenSet) => GValue | undefined;
+	mixinTokenSet: GMixinTokenSet | undefined | null;
+	mapToMixinTokenValue: (tokenKey: string, tokenSet?: GMixinTokenSet) => GValue | undefined;
+	variableTokenMap: Record<string, TVariableToken> | undefined | null;
 }

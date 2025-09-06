@@ -2,17 +2,7 @@ import { TResolvedSite } from '@/features/page-editor';
 import { TMetaFunction } from '@/types';
 
 // https://api.reactrouter.com/v7/types/react_router.MetaDescriptor.html
-export function getSiteMetadata(site: TResolvedSite | null): ReturnType<TMetaFunction> {
-	if (site == null) {
-		return [
-			{ title: 'Page Not Found - Saku' },
-			{
-				name: 'description',
-				content: 'The requested page could not be found'
-			}
-		];
-	}
-
+export function getSiteMetadata(site: TResolvedSite): ReturnType<TMetaFunction> {
 	const metadata = [
 		{ tagName: 'link', rel: 'icon', href: site.root.metadata.favicon },
 		{ title: site.root.metadata.title },
@@ -41,6 +31,17 @@ export function getSiteMetadata(site: TResolvedSite | null): ReturnType<TMetaFun
 			content: site.root.metadata.description
 		}
 	];
+
+	// Add font links if available
+	if (site.fontUrls.length > 0) {
+		site.fontUrls.forEach((fontUrl) => {
+			metadata.push({
+				tagName: 'link',
+				rel: 'stylesheet',
+				href: fontUrl
+			});
+		});
+	}
 
 	// Add OpenGraph image if available
 	if (site.root.metadata.image != null) {

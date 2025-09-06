@@ -12,7 +12,7 @@ import {
 } from '@repo/editor';
 import { ColorPicker, HSBAColor, Popover, Text, TextField, TextFieldProps } from '@shopify/polaris';
 import { useCombinedCompute, useCompute } from 'feature-react/state';
-import { createState, TState } from 'feature-state';
+import { TState } from 'feature-state';
 import React from 'react';
 import { LinkIcon, LinkOffIcon } from '@/components';
 import { cn } from '@/lib';
@@ -21,13 +21,14 @@ import { TokenActionOverlay } from './TokenActionOverlay';
 export const TokenColorInput = <
 	GValue extends TRgba,
 	GRefValue extends TRef<GValue> | undefined,
-	GTokenSet extends TMixinTokenSet
+	GMixinTokenSet extends TMixinTokenSet
 >(
-	props: TTokenColorInputProps<GValue, GRefValue, GTokenSet>
+	props: TTokenColorInputProps<GValue, GRefValue, GMixinTokenSet>
 ) => {
 	const {
 		state,
 		tokenSet,
+		tokenRefKey = 'default',
 		mapToTokenValue,
 		onLinkChange,
 		onNavigateToToken,
@@ -43,11 +44,11 @@ export const TokenColorInput = <
 	const [displayValue, setDisplayValue] = React.useState('');
 	const lastChangeFromText = React.useRef(false);
 	const resolvedValue = useCombinedCompute(
-		[state, tokenSet ?? createState(undefined)],
-		([{ value: stateValue }, { value: tokenMapValue }]) => {
-			return isTokenRef(stateValue)
-				? mapToTokenValue(stateValue.key, tokenMapValue)
-				: (stateValue as GValue);
+		[state, tokenSet],
+		([stateCx, tokenSetCx]) => {
+			return isTokenRef(stateCx.value)
+				? mapToTokenValue?.(stateCx.value.key, tokenSetCx?.value)
+				: (stateCx.value as GValue);
 		},
 		[mapToTokenValue],
 		{
@@ -129,15 +130,15 @@ export const TokenColorInput = <
 
 		if (isLinked) {
 			const tokenValue = isTokenRef(state._v)
-				? mapToTokenValue(state._v.key, tokenSet?._v)
+				? mapToTokenValue?.(state._v.key, tokenSet?._v)
 				: undefined;
 			if (tokenValue != null) {
 				state.set(tokenValue as GRefValue);
 			}
 		} else {
-			state.set(tokenRef('default') as GRefValue);
+			state.set(tokenRef('mixin', tokenRefKey) as GRefValue);
 		}
-	}, [onLinkChange, isLinked, state, mapToTokenValue, tokenSet]);
+	}, [onLinkChange, isLinked, state, mapToTokenValue, tokenSet, tokenRefKey]);
 
 	const togglePopoverActive = React.useCallback(() => {
 		if (!isLinked) {
@@ -239,15 +240,16 @@ export const TokenColorInput = <
 export interface TTokenColorInputProps<
 	GValue extends TRgba,
 	GRefValue extends TRef<GValue> | undefined,
-	GTokenSet extends TMixinTokenSet
+	GMixinTokenSet extends TMixinTokenSet
 > extends Omit<
 		TextFieldProps,
 		'label' | 'labelHidden' | 'value' | 'onChange' | 'onFocus' | 'prefix' | 'autoComplete' | 'error'
 	> {
 	state: TState<GRefValue, any>;
 
-	tokenSet?: TState<GTokenSet, any>;
-	mapToTokenValue: (tokenRef: string, tokenSet?: GTokenSet) => GValue | undefined;
+	tokenSet?: TState<GMixinTokenSet, any>;
+	tokenRefKey?: string;
+	mapToTokenValue?: (key: string, tokenSet?: GMixinTokenSet) => GValue | undefined;
 	onLinkChange?: (isLinked: boolean) => { preventDefault: boolean } | void;
 	onNavigateToToken?: () => void;
 	disabledTokenLink?: boolean;

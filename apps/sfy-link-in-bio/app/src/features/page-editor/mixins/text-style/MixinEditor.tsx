@@ -13,7 +13,15 @@ export const TextStyleMixinEditor = <
 >(
 	props: TTextStyleMixinEditorProps<GValue, GTokenSet>
 ) => {
-	const { state, mapValue, tokenSet, mapToToken, disabledTokenLink = false, editor } = props;
+	const {
+		state,
+		mapValue,
+		tokenSet,
+		tokenRefKey,
+		mapToToken,
+		disabledTokenLink = false,
+		editor
+	} = props;
 
 	return (
 		<>
@@ -21,6 +29,7 @@ export const TextStyleMixinEditor = <
 				state={state}
 				mapValue={(value) => mapValue(value).appearance}
 				tokenSet={tokenSet}
+				tokenRefKey={tokenRefKey}
 				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.appearance}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
@@ -29,7 +38,11 @@ export const TextStyleMixinEditor = <
 			<TypographyStyleMixinEditor
 				state={state}
 				mapValue={(value) => mapValue(value).typography}
+				applyValue={(state, value) => {
+					mapValue(state._v).typography = value;
+				}}
 				tokenSet={tokenSet}
+				tokenRefKey={tokenRefKey}
 				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.typography}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
@@ -42,6 +55,7 @@ export const TextStyleMixinEditor = <
 					mapValue(state._v).fill = value;
 				}}
 				tokenSet={tokenSet}
+				tokenRefKey={tokenRefKey}
 				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.fill}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
@@ -55,6 +69,7 @@ export const TextStyleMixinEditor = <
 					mapValue(state._v).stroke = value;
 				}}
 				tokenSet={tokenSet}
+				tokenRefKey={tokenRefKey}
 				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.stroke}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
@@ -67,6 +82,7 @@ export const TextStyleMixinEditor = <
 					mapValue(state._v).shadow = value;
 				}}
 				tokenSet={tokenSet}
+				tokenRefKey={tokenRefKey}
 				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.shadow}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
@@ -83,6 +99,7 @@ interface TTextStyleMixinEditorProps<
 	state: TState<GValue, any>;
 	mapValue: (value: GValue) => TTextStyleMixin['value'];
 	tokenSet?: TState<GTokenSet, any>;
+	tokenRefKey?: string;
 	mapToToken?: (ref: string, tokenSet?: GTokenSet) => TTextStyleToken['value'] | undefined;
 	disabledTokenLink?: boolean;
 	editor: TPageEditor;

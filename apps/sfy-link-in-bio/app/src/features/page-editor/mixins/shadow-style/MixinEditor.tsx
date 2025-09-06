@@ -10,7 +10,7 @@ import { Button, Text } from '@shopify/polaris';
 import { useCompute } from 'feature-react';
 import { TState } from 'feature-state';
 import React from 'react';
-import { Badge, LinkIcon, LinkOffIcon, MinusIcon, PlusIcon } from '@/components';
+import { Badge, LinkIcon, LinkOffIcon, PolarisMinusIcon, PolarisPlusIcon } from '@/components';
 import { useMapState } from '@/hooks';
 import { TokenActionOverlay, TokenColorInput, TokenTextInput } from '../../components';
 import { TPageEditor } from '../../lib';
@@ -26,6 +26,7 @@ export const ShadowStyleMixinEditor = <
 		mapValue,
 		applyValue,
 		tokenSet,
+		tokenRefKey = 'default',
 		mapToToken,
 		disabledTokenLink = false,
 		editor,
@@ -156,7 +157,7 @@ export const ShadowStyleMixinEditor = <
 	// =========================================================================
 
 	const handleAddShadow = React.useCallback(() => {
-		const tokenValue = mapToToken?.('default', tokenSet?._v);
+		const tokenValue = mapToToken?.(tokenRefKey, tokenSet?._v);
 		applyValue(
 			state,
 			tokenValue ?? {
@@ -168,7 +169,7 @@ export const ShadowStyleMixinEditor = <
 			}
 		);
 		state._notify();
-	}, [mapToToken, tokenSet, applyValue, state, disabledSpread]);
+	}, [mapToToken, tokenSet, applyValue, state, disabledSpread, tokenRefKey]);
 
 	const handleRemoveShadow = React.useCallback(() => {
 		applyValue(state, null);
@@ -184,10 +185,10 @@ export const ShadowStyleMixinEditor = <
 				state._notify();
 			}
 		} else {
-			applyValue(state, tokenRef('default'));
+			applyValue(state, tokenRef('mixin', tokenRefKey));
 			state._notify();
 		}
-	}, [isLinked, mapValue, state, mapToToken, tokenSet, applyValue]);
+	}, [isLinked, mapValue, state, mapToToken, tokenSet, applyValue, tokenRefKey]);
 
 	const handleNavigateToToken = React.useCallback(() => {
 		editor.switchView('settings');
@@ -236,9 +237,14 @@ export const ShadowStyleMixinEditor = <
 
 				{/* Add/Remove shadow buttons */}
 				{isSet ? (
-					<Button icon={MinusIcon} onClick={handleRemoveShadow} variant="plain" size="micro" />
+					<Button
+						icon={PolarisMinusIcon}
+						onClick={handleRemoveShadow}
+						variant="plain"
+						size="micro"
+					/>
 				) : (
-					<Button icon={PlusIcon} onClick={handleAddShadow} variant="plain" size="micro" />
+					<Button icon={PolarisPlusIcon} onClick={handleAddShadow} variant="plain" size="micro" />
 				)}
 			</div>
 
@@ -248,6 +254,7 @@ export const ShadowStyleMixinEditor = <
 						label="Color"
 						state={colorState}
 						tokenSet={tokenSet}
+						tokenRefKey={tokenRefKey}
 						mapToTokenValue={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.color}
 						onLinkChange={() => {
 							handleToggleTokenLink();
@@ -266,6 +273,7 @@ export const ShadowStyleMixinEditor = <
 							step={4}
 							state={blurState}
 							tokenSet={tokenSet}
+							tokenRefKey={tokenRefKey}
 							mapToTokenValue={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.blur}
 							mapToDisplay={(value) => value}
 							mapToInternal={(displayValue) => displayValue}
@@ -285,6 +293,7 @@ export const ShadowStyleMixinEditor = <
 							step={4}
 							state={spreadState}
 							tokenSet={tokenSet}
+							tokenRefKey={tokenRefKey}
 							mapToTokenValue={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.spread}
 							mapToDisplay={(value) => value}
 							mapToInternal={(displayValue) => displayValue}
@@ -307,6 +316,7 @@ export const ShadowStyleMixinEditor = <
 							step={4}
 							state={offsetXState}
 							tokenSet={tokenSet}
+							tokenRefKey={tokenRefKey}
 							mapToTokenValue={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.offsetX}
 							mapToDisplay={(value) => value}
 							mapToInternal={(displayValue) => displayValue}
@@ -326,6 +336,7 @@ export const ShadowStyleMixinEditor = <
 							step={4}
 							state={offsetYState}
 							tokenSet={tokenSet}
+							tokenRefKey={tokenRefKey}
 							mapToTokenValue={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.offsetY}
 							mapToDisplay={(value) => value}
 							mapToInternal={(displayValue) => displayValue}
@@ -351,6 +362,7 @@ interface TShadowStyleMixinEditorProps<
 	mapValue: (value: GValue) => TShadowStyleMixin['value'];
 	applyValue: (state: TState<GValue, any>, value: TShadowStyleMixin['value']) => void;
 	tokenSet?: TState<GTokenSet, any>;
+	tokenRefKey?: string;
 	mapToToken?: (ref: string, tokenSet?: GTokenSet) => TShadowStyleToken['value'] | undefined;
 	disabledTokenLink?: boolean;
 	editor: TPageEditor;

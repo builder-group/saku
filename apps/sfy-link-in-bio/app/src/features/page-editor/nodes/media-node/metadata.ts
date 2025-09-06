@@ -1,28 +1,11 @@
-import { tokenRef } from '@repo/editor';
-import { LayoutSectionIcon } from '@/components';
+import { mediaNodeMetadata as editorMediaNodeMetadata } from '@repo/editor';
+import { PolarisLayoutSectionIcon } from '@/components';
 import { TNodeMetadata } from '../../lib';
 
 export const mediaNodeMetadata: TNodeMetadata<'media'> = {
 	type: 'media',
-	icon: LayoutSectionIcon,
-	label: 'Media',
+	icon: PolarisLayoutSectionIcon,
+	label: editorMediaNodeMetadata.label,
 	internal: false,
-	defaultData: {
-		content: {
-			type: 'image'
-		},
-		autoLayout: {
-			horizontalPadding: tokenRef(),
-			verticalPadding: tokenRef(),
-			verticalGap: tokenRef()
-		},
-		appearance: {
-			visible: true,
-			opacity: tokenRef(),
-			borderRadius: tokenRef()
-		},
-		fill: tokenRef(),
-		stroke: tokenRef(),
-		shadow: tokenRef()
-	}
+	default: editorMediaNodeMetadata.default
 };
