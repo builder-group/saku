@@ -47,7 +47,7 @@ export const TokenColorInput = <
 		[state, tokenSet],
 		([stateCx, tokenSetCx]) => {
 			return isTokenRef(stateCx.value)
-				? mapToTokenValue(stateCx.value.key, tokenSetCx?.value)
+				? mapToTokenValue?.(stateCx.value.key, tokenSetCx?.value)
 				: (stateCx.value as GValue);
 		},
 		[mapToTokenValue],
@@ -130,7 +130,7 @@ export const TokenColorInput = <
 
 		if (isLinked) {
 			const tokenValue = isTokenRef(state._v)
-				? mapToTokenValue(state._v.key, tokenSet?._v)
+				? mapToTokenValue?.(state._v.key, tokenSet?._v)
 				: undefined;
 			if (tokenValue != null) {
 				state.set(tokenValue as GRefValue);
@@ -249,7 +249,7 @@ export interface TTokenColorInputProps<
 
 	tokenSet?: TState<GMixinTokenSet, any>;
 	tokenRefKey?: string;
-	mapToTokenValue: (key: string, tokenSet?: GMixinTokenSet) => GValue | undefined;
+	mapToTokenValue?: (key: string, tokenSet?: GMixinTokenSet) => GValue | undefined;
 	onLinkChange?: (isLinked: boolean) => { preventDefault: boolean } | void;
 	onNavigateToToken?: () => void;
 	disabledTokenLink?: boolean;

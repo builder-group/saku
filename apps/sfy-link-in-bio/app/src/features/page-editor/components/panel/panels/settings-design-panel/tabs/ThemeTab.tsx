@@ -1,99 +1,11 @@
-import {
-	aboutNodeMetadata,
-	createTokensFromTheme,
-	getFontMetadataByFamily,
-	hexToRgba,
-	linkNodeMetadata,
-	TAboutNode,
-	themes,
-	TLinkNode,
-	TMixinToken,
-	TTheme
-} from '@repo/editor';
+import { getFontMetadataByFamily, hexToRgba, themes, TTheme } from '@repo/editor';
 import { Text } from '@shopify/polaris';
-import { createState } from 'feature-state';
 import React from 'react';
-import { logger } from '@/environment';
-import { TNodeState, TPageEditor } from '../../../../../lib';
+import { TPageEditor } from '../../../../../lib';
+import { applyTheme } from '../apply-theme';
 
 export const ThemeTab: React.FC<TThemeTabProps> = (props) => {
 	const { editor } = props;
-
-	const applyTheme = React.useCallback(
-		(theme: TTheme) => {
-			const prevThemeKey = editor.variableTokenMap._v['theme.key']?.value;
-
-			// Reset LinkPop node styles to ensure they are all linked to the design tokens
-			if (prevThemeKey === 'linkpop') {
-				logger.info('Detected LinkPop theme');
-				for (const node of Object.values(editor.nodeMap)) {
-					switch (node.type) {
-						case 'about': {
-							(node as TNodeState<TAboutNode>)._v.textXl = aboutNodeMetadata.default.textXl;
-							(node as TNodeState<TAboutNode>)._v.text = aboutNodeMetadata.default.text;
-							(node as TNodeState<TAboutNode>)._v.image = aboutNodeMetadata.default.image;
-							node._notify();
-							break;
-						}
-						case 'link': {
-							(node as TNodeState<TLinkNode>)._v.appearance = linkNodeMetadata.default.appearance;
-							node._notify();
-							break;
-						}
-						default:
-						// do nothing
-					}
-				}
-			}
-
-			// Apply tokens for elements (cards, text, buttons)
-			const tokens = createTokensFromTheme(theme);
-			const toNotifyMixinKeys = new Set<TMixinToken['mixinKey']>();
-			let notifyVariableTokenMap = false;
-			tokens.forEach((token) => {
-				switch (token.type) {
-					case 'mixin': {
-						if (editor.mixinTokenMap[token.mixinKey] == null) {
-							editor.mixinTokenMap[token.mixinKey] = createState({});
-						}
-						// @ts-expect-error - we ensure object exists above
-						editor.mixinTokenMap[token.mixinKey]._v[token.key] = token;
-						toNotifyMixinKeys.add(token.mixinKey);
-						break;
-					}
-					case 'variable': {
-						editor.variableTokenMap._v[token.key] = token;
-						notifyVariableTokenMap = true;
-						break;
-					}
-				}
-			});
-			toNotifyMixinKeys.forEach((key) => {
-				editor.mixinTokenMap[key]?._notify();
-			});
-			if (notifyVariableTokenMap) {
-				editor.variableTokenMap?._notify();
-			}
-
-			// Register fonts
-			editor.registerFontFamily(theme.typography.heading.fontFamily);
-			editor.registerFontFamily(theme.typography.text.fontFamily);
-
-			// Apply page background directly to the root node
-			const rootNode = editor.getRootNode();
-			rootNode.set((node) => ({
-				...node,
-				fill: {
-					paint: {
-						type: 'solid',
-						color: hexToRgba(theme.color.base200)
-					},
-					opacity: 1
-				}
-			}));
-		},
-		[editor]
-	);
 
 	const renderTemplatePreview = React.useCallback((template: TTheme) => {
 		const { color, typography, radius, effects } = template;
@@ -182,7 +94,7 @@ export const ThemeTab: React.FC<TThemeTabProps> = (props) => {
 				<div
 					key={template.key}
 					className="group cursor-pointer rounded-lg border border-gray-200 p-3 transition-all hover:border-gray-300 hover:shadow-sm"
-					onClick={() => applyTheme(template)}
+					onClick={() => applyTheme(template, editor)}
 				>
 					{/* Header with colors, name, and apply badge */}
 					<div className="mb-3 flex items-center gap-2">
