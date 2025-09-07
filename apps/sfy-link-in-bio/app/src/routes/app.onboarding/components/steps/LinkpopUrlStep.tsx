@@ -13,7 +13,8 @@ export const LinkpopUrlStep: React.FC<TLinkpopUrlStepProps> = (props) => {
 	});
 	const [handle, setHandle] = React.useState(initialHandle);
 	const [isLoading, setIsLoading] = React.useState(false);
-	const [error, setError] = React.useState<{ message: string; isNotFound: boolean } | null>(null);
+	const [error, setError] = React.useState<{ message: string; showFallback: boolean } | null>(null);
+	const [retryCount, setRetryCount] = React.useState(0);
 
 	// =========================================================================
 	// Events
@@ -41,6 +42,7 @@ export const LinkpopUrlStep: React.FC<TLinkpopUrlStepProps> = (props) => {
 		const newHandle = value.replace(/^\/+|\/+$/g, '');
 		setHandle(newHandle);
 		setError(null);
+		setRetryCount(0);
 	}, []);
 
 	const handleContinue = React.useCallback(async () => {
@@ -49,15 +51,21 @@ export const LinkpopUrlStep: React.FC<TLinkpopUrlStepProps> = (props) => {
 
 		const result = await onboardingContext.continueFromLinkpopUrl(handle.trim());
 		if (result.isErr()) {
-			setError(result.error);
+			const newRetryCount = retryCount + 1;
+			setRetryCount(newRetryCount);
+
+			setError({
+				message: result.error.message,
+				// Show fallback options after 3 attempts or LinkPop is not found (404)
+				showFallback: result.error.isNotFound || newRetryCount >= 3
+			});
 			setIsLoading(false);
 		}
-	}, [onboardingContext, handle]);
+	}, [onboardingContext, handle, retryCount]);
 
-	const handleFallbackToTemplate = React.useCallback(() => {
+	const handleFallbackToTheme = React.useCallback(() => {
 		onboardingContext.stepr.goTo({
-			type: 'templates',
-			selectedTemplate: 'blank'
+			type: 'theme'
 		});
 	}, [onboardingContext]);
 
@@ -94,13 +102,13 @@ export const LinkpopUrlStep: React.FC<TLinkpopUrlStepProps> = (props) => {
 				</div>
 			</div>
 
-			{error != null && !error.isNotFound && (
+			{error != null && !error.showFallback && (
 				<Banner tone="critical" onDismiss={() => setError(null)}>
 					{error.message}
 				</Banner>
 			)}
 
-			{error?.isNotFound && (
+			{error?.showFallback && (
 				<Banner tone="warning">
 					<p className="text-left">LinkPop page not found. You can:</p>
 					<ul className="mt-2 list-inside list-disc text-left">
@@ -112,7 +120,7 @@ export const LinkpopUrlStep: React.FC<TLinkpopUrlStepProps> = (props) => {
 			)}
 
 			<div className="flex flex-col gap-2">
-				{error?.isNotFound ? (
+				{error?.showFallback ? (
 					<>
 						<Button
 							variant="primary"
@@ -128,7 +136,7 @@ export const LinkpopUrlStep: React.FC<TLinkpopUrlStepProps> = (props) => {
 							variant="secondary"
 							size="large"
 							fullWidth
-							onClick={handleFallbackToTemplate}
+							onClick={handleFallbackToTheme}
 							disabled={isLoading}
 						>
 							Start with blank template
