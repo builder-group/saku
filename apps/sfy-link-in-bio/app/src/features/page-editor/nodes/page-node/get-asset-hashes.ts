@@ -6,7 +6,10 @@ import { isTokenRef, TAssetHash, TFlatPageNode } from '@repo/editor';
 export function getPageNodeAssetHashes(node: TFlatPageNode): TAssetHash[] {
 	const hashes: TAssetHash[] = [];
 
-	// Metadata image asset
+	// Metadata assets
+	if (node.metadata?.favicon != null) {
+		hashes.push(node.metadata.favicon);
+	}
 	if (node.metadata?.image != null) {
 		hashes.push(node.metadata.image);
 	}
