@@ -80,14 +80,14 @@ export const ProductDetailsModal: React.FC<TProductDetailsModalProps> = (props) 
 	return (
 		<dialog
 			ref={modalRef}
-			className="modal"
+			className="modal modal-bottom sm:modal-middle"
 			style={{
 				opacity: appearance.styles.opacity,
 				visibility: appearance.styles.visibility
 			}}
 		>
 			<div
-				className="modal-box max-w-4xl"
+				className="modal-box sm:max-w-[80rem]"
 				style={{
 					borderRadius: appearance.styles.borderRadius,
 					...fill?.styles,
@@ -97,7 +97,7 @@ export const ProductDetailsModal: React.FC<TProductDetailsModalProps> = (props) 
 			>
 				{/* Close Button */}
 				<form method="dialog">
-					<button className="btn btn-sm btn-circle btn-ghost absolute top-4 right-4">✕</button>
+					<button className="btn btn-sm btn-circle absolute top-4 right-4">✕</button>
 				</form>
 
 				{/* Modal Content */}
