@@ -20,6 +20,8 @@ export const SettingsMetadataPanel: React.FC<TSettingsMetadataPanelProps> = (pro
 	);
 
 	const [imageError, setImageError] = React.useState<string | null>(null);
+	const [faviconError, setFaviconError] = React.useState<string | null>(null);
+
 	const image = React.useMemo(() => {
 		const asset = editor.getImageAsset(metadata?.image);
 		if (asset == null || asset.storage.type !== 'url') {
@@ -31,6 +33,18 @@ export const SettingsMetadataPanel: React.FC<TSettingsMetadataPanelProps> = (pro
 			fileName: asset.fileName
 		};
 	}, [metadata?.image, editor]);
+
+	const favicon = React.useMemo(() => {
+		const asset = editor.getImageAsset(metadata?.favicon);
+		if (asset == null || asset.storage.type !== 'url') {
+			return undefined;
+		}
+
+		return {
+			url: asset.storage.url,
+			fileName: asset.fileName
+		};
+	}, [metadata?.favicon, editor]);
 
 	// TODO: Figure out better solution
 	// https://github.com/bvaughn/react-resizable-panels/issues/46
@@ -106,6 +120,27 @@ export const SettingsMetadataPanel: React.FC<TSettingsMetadataPanelProps> = (pro
 		[rootNode, editor]
 	);
 
+	const handleFaviconChange = React.useCallback(
+		(favicon: TImageUploadEvent) => {
+			switch (favicon.type) {
+				case 'Changed': {
+					const hash = editor.registerImage(favicon.url, favicon.fileName);
+					if (hash != null) {
+						rootNode._v.metadata.favicon = hash;
+						rootNode._notify();
+					}
+					break;
+				}
+				case 'Removed': {
+					rootNode._v.metadata.favicon = undefined;
+					rootNode._notify();
+					break;
+				}
+			}
+		},
+		[rootNode, editor]
+	);
+
 	// =========================================================================
 	// UI
 	// =========================================================================
@@ -126,6 +161,21 @@ export const SettingsMetadataPanel: React.FC<TSettingsMetadataPanelProps> = (pro
 				</PanelHeader>
 				<div className="flex-1 overflow-auto">
 					<div className="space-y-4 p-4">
+						{/* Favicon */}
+						<div className="space-y-1">
+							<Text as="span" variant="bodySm" tone="subdued">
+								Favicon
+							</Text>
+							<ImageUploadField
+								image={favicon}
+								onChange={handleFaviconChange}
+								onError={setFaviconError}
+							/>
+							{faviconError != null && (
+								<InlineError message={faviconError} fieldID="metadata-favicon-upload-error" />
+							)}
+						</div>
+
 						{/* Title */}
 						<div className="space-y-1">
 							<Text as="span" variant="bodySm" tone="subdued">

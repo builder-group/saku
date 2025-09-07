@@ -114,13 +114,15 @@ export function resolvePageMetadata(
 				description = aboutNode.content.bio;
 			}
 			if (favicon == null && aboutNode.content.profilePicture != null) {
-				const src = resolveAsset(aboutNode.content.profilePicture, cx.site)?.src;
-				if (src != null) {
-					const separator = src.includes('?') ? '&' : '?';
-					favicon = `${src}${separator}crop=center&height=32&width=32`;
-				}
+				favicon = resolveAsset(aboutNode.content.profilePicture, cx.site)?.src;
 			}
 		}
+	}
+
+	// Crop favicon if it's hosted on Shopify CDN
+	if (favicon != null && favicon.includes('cdn.shopify.com')) {
+		const separator = favicon.includes('?') ? '&' : '?';
+		favicon = `${favicon}${separator}crop=center&height=32&width=32`;
 	}
 
 	// Assign defaults if still undefined
