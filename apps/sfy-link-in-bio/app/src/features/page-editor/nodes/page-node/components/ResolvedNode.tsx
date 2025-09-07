@@ -35,7 +35,7 @@ export const ResolvedPageNode: React.FC<TResolvedNodeProps<TResolvedPageNode>> =
 				href="https://saku.so"
 				target="_blank"
 				rel="noopener noreferrer"
-				className="fixed right-4 bottom-4 z-[999] flex items-center gap-1 rounded-lg bg-white px-2 py-[6px] text-sm no-underline shadow-[0_0_0_1px_rgba(20,24,31,0.025),0_2px_8px_rgba(20,24,31,0.1)] hover:opacity-75"
+				className="fixed right-4 bottom-4 z-[999] flex items-center gap-1 rounded-lg bg-white px-2 py-[6px] text-sm text-black no-underline shadow-[0_0_0_1px_rgba(20,24,31,0.025),0_2px_8px_rgba(20,24,31,0.1)] hover:opacity-75"
 			>
 				<LogoIcon className="h-6 w-6" />
 				<span>Made in Saku</span>
