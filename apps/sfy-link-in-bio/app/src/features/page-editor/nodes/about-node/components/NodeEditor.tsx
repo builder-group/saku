@@ -1,11 +1,17 @@
 import { shortId } from '@blgc/utils';
-import { TAboutNode, TEmailAction, TPhoneAction, TSocialAction } from '@repo/editor';
+import {
+	contactMetadataMap,
+	getContactKey,
+	TAboutNode,
+	TEmailAction,
+	TPhoneAction,
+	TSocialAction
+} from '@repo/editor';
 import { InlineError, Text, TextField } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react/state';
 import React from 'react';
 import { AccordionSection, ImageUploadField, type TImageUploadEvent } from '@/components';
 import { parseUrl } from '@/lib/parse-url';
-import { contactMetadataMap, getContactKey } from '../../../environment';
 import { TNodeEditorComponentProps } from '../../../lib';
 import {
 	AppearanceStyleMixinEditor,

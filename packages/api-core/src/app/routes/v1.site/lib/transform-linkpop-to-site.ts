@@ -8,11 +8,13 @@ import {
 	fontMetadataMap,
 	getFontHash,
 	getFontMetadataByFamily,
+	getSocialContactMetadata,
 	hexToRgba,
 	linkNodeMetadata,
 	TAboutNode,
 	TAsset,
 	TAssetHash,
+	TContactIcon,
 	textNodeMetadata,
 	TFontAsset,
 	themes,
@@ -20,7 +22,6 @@ import {
 	TLinkNode,
 	TPaint,
 	TSite,
-	TSocialLink,
 	TTextNode,
 	TTheme
 } from '@repo/editor';
@@ -77,7 +78,7 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 				name: page.title ?? 'Your Name',
 				bio: page.bio,
 				profilePicture: profilePictureHash,
-				socialLinks: transformSocialLinks(page.socialMediaAccounts ?? [])
+				contactIcons: transformSocialLinks(page.socialMediaAccounts ?? [])
 			},
 			textXl: {
 				...aboutNodeMetadata.default.textXl,
@@ -252,65 +253,26 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 
 function transformSocialLinks(
 	linkpopSocialLinks: Array<{ id: string; handle: string; network: string }>
-): TSocialLink[] {
-	const validSocialLinks: TSocialLink[] = [];
+): TContactIcon[] {
+	const contactIcons: TContactIcon[] = [];
 
 	for (const social of linkpopSocialLinks) {
-		const provider = mapSocialPlatform(social.network);
-		if (provider != null) {
-			validSocialLinks.push({
+		const contactMetadata = getSocialContactMetadata(social.network);
+		if (contactMetadata != null) {
+			contactIcons.push({
 				id: shortId(),
-				provider,
-				handle: social.handle,
-				url: constructSocialUrl(provider, social.handle)
+				action: {
+					type: 'social',
+					provider: contactMetadata.provider,
+					handle: social.handle,
+					url: contactMetadata.getUrl(social.handle)
+				},
+				title: contactMetadata.getTitle(social.handle)
 			});
 		}
 	}
 
-	return validSocialLinks;
-}
-
-function mapSocialPlatform(platform: string): TSocialLink['provider'] | null {
-	const platformLower = platform.toLowerCase();
-
-	const platformMap: Record<string, TSocialLink['provider']> = {
-		instagram: 'instagram',
-		twitter: 'twitter',
-		x: 'twitter', // X is the new Twitter
-		youtube: 'youtube',
-		tiktok: 'tiktok',
-		linkedin: 'linkedin',
-		facebook: 'facebook',
-		shop: 'shopify', // LinkPop uses "shop" for Shopify stores
-		shopify: 'shopify',
-		bluesky: 'bluesky',
-		discord: 'discord',
-		github: 'github',
-		google: 'google',
-		spotify: 'spotify'
-	};
-
-	return platformMap[platformLower] ?? null;
-}
-
-function constructSocialUrl(provider: TSocialLink['provider'], handleOrUrl: string): string {
-	const urlMap: Record<TSocialLink['provider'], string> = {
-		instagram: `https://instagram.com/${handleOrUrl}`,
-		twitter: `https://twitter.com/${handleOrUrl}`,
-		youtube: `https://youtube.com/@${handleOrUrl}`,
-		tiktok: `https://tiktok.com/@${handleOrUrl}`,
-		linkedin: `https://linkedin.com/in/${handleOrUrl}`,
-		facebook: `https://facebook.com/${handleOrUrl}`,
-		shopify: handleOrUrl, // This case is handled above
-		bluesky: `https://bsky.app/profile/${handleOrUrl}`,
-		discord: `https://discord.gg/${handleOrUrl}`,
-		github: `https://github.com/${handleOrUrl}`,
-		google: `https://plus.google.com/${handleOrUrl}`,
-		spotify: `https://open.spotify.com/user/${handleOrUrl}`,
-		pinterest: `https://pinterest.com/${handleOrUrl}`
-	};
-
-	return urlMap[provider];
+	return contactIcons;
 }
 
 function createFontAsset(fontFamily: string): TFontAsset {

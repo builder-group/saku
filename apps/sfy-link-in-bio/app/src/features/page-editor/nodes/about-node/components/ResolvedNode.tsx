@@ -1,5 +1,6 @@
+import { getContactKey } from '@repo/editor';
 import React from 'react';
-import { contactIconMap, getContactKey } from '../../../environment';
+import { contactIconMap } from '../../../environment';
 import { TResolvedNodeProps } from '../../../lib/node/types';
 import { TResolvedAboutNode } from '../types';
 

@@ -1,11 +1,13 @@
 import { notEmpty, shortId } from '@blgc/utils';
 import {
 	aboutNodeMetadata,
+	contactMetadataMap,
 	createId,
 	createTokensFromTheme,
 	fontMetadataMap,
 	getFontHash,
 	getFontMetadataByFamily,
+	getSocialContactMetadata,
 	hexToRgba,
 	linkNodeMetadata,
 	mediaNodeMetadata,
@@ -20,7 +22,6 @@ import {
 	type TImageAsset
 } from '@repo/editor';
 import { createHandleFromShop } from '@/lib';
-import { contactMetadataMap, TContactMetadata } from '../../environment';
 
 export function blankPreset(config: TBlankPresetConfig): TSite {
 	const { shopId, name, profilePicture, socialLinks, featuredProduct, theme } = config;
@@ -44,7 +45,8 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 
 	// Add theme fonts to assets
 	if (theme != null) {
-		const themeHeadingTextFont = getFontMetadataByFamily(theme.typography.heading.fontFamily) ?? fontMetadataMap.inter;
+		const themeHeadingTextFont =
+			getFontMetadataByFamily(theme.typography.heading.fontFamily) ?? fontMetadataMap.inter;
 		assets.push({
 			id: createId('asset'),
 			type: 'font',
@@ -56,7 +58,8 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 			},
 			font: themeHeadingTextFont.font
 		});
-		const themeTextFont = getFontMetadataByFamily(theme.typography.text.fontFamily) ?? fontMetadataMap.inter;
+		const themeTextFont =
+			getFontMetadataByFamily(theme.typography.text.fontFamily) ?? fontMetadataMap.inter;
 		assets.push({
 			id: createId('asset'),
 			type: 'font',
@@ -296,40 +299,4 @@ interface TBlankPresetConfig {
 			selectedOptions: { name: string; value: string }[];
 		}[];
 	};
-}
-
-function getSocialContactMetadata(
-	platform: string
-): Extract<TContactMetadata, { type: 'social' }> | null {
-	switch (platform.toLowerCase()) {
-		case 'instagram':
-			return contactMetadataMap['social.instagram'];
-		case 'twitter':
-		case 'x':
-			return contactMetadataMap['social.x'];
-		case 'youtube':
-			return contactMetadataMap['social.youtube'];
-		case 'tiktok':
-			return contactMetadataMap['social.tiktok'];
-		case 'linkedin':
-			return contactMetadataMap['social.linkedin'];
-		case 'facebook':
-			return contactMetadataMap['social.facebook'];
-		case 'pinterest':
-			return contactMetadataMap['social.pinterest'];
-		case 'shopify':
-			return contactMetadataMap['social.shopify'];
-		case 'bluesky':
-			return contactMetadataMap['social.bluesky'];
-		case 'discord':
-			return contactMetadataMap['social.discord'];
-		case 'github':
-			return contactMetadataMap['social.github'];
-		case 'google':
-			return contactMetadataMap['social.google'];
-		case 'spotify':
-			return contactMetadataMap['social.spotify'];
-		default:
-			return null;
-	}
 }
