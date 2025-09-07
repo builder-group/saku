@@ -1,4 +1,4 @@
-import { themes, toFlatSite, TTheme } from '@repo/editor';
+import { toFlatSite } from '@repo/editor';
 import { useAppBridge } from '@shopify/app-bridge-react';
 import { Button, ButtonGroup, Text } from '@shopify/polaris';
 import { boundary } from '@shopify/shopify-app-react-router/server';
@@ -18,7 +18,7 @@ import {
 	LinkpopPreviewStep,
 	LinkpopUrlStep,
 	SiteCreationOptionsStep,
-	TemplatesStep,
+	ThemeStep,
 	WelcomeStep
 } from './components';
 import {
@@ -99,8 +99,8 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 				return <LinkpopUrlStep onboardingContext={onboardingContext} />;
 			case 'linkpop-preview':
 				return <LinkpopPreviewStep onboardingContext={onboardingContext} />;
-			case 'templates':
-				return <TemplatesStep onboardingContext={onboardingContext} />;
+			case 'theme':
+				return <ThemeStep onboardingContext={onboardingContext} />;
 			default:
 				return null;
 		}
@@ -188,8 +188,7 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 						name: shopOverview.shop.name,
 						profilePicture: shopOverview.theme.logo,
 						socialLinks: shopOverview.socialLinks,
-						featuredProduct: shopOverview.recommendedProducts?.[0],
-						theme: themes[0] as TTheme
+						featuredProduct: shopOverview.recommendedProducts?.[0]
 						// colors: {
 						// 	primary: shopOverview.theme.colors.primary,
 						// 	background: shopOverview.theme.colors.background,

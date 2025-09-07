@@ -5,6 +5,7 @@ import {
 	createTokensFromTheme,
 	fontMetadataMap,
 	getFontHash,
+	getFontMetadataByFamily,
 	hexToRgba,
 	linkNodeMetadata,
 	mediaNodeMetadata,
@@ -16,7 +17,6 @@ import {
 	TSite,
 	TTheme,
 	type TFontAsset,
-	type TFontMetadata,
 	type TImageAsset
 } from '@repo/editor';
 import { createHandleFromShop } from '@/lib';
@@ -24,7 +24,6 @@ import { contactMetadataMap, TContactMetadata } from '../../environment';
 
 export function blankPreset(config: TBlankPresetConfig): TSite {
 	const { shopId, name, profilePicture, socialLinks, featuredProduct, theme } = config;
-	const tokens = createTokensFromTheme(theme);
 
 	const assets: (TFontAsset | TImageAsset)[] = [];
 
@@ -44,32 +43,32 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 	}
 
 	// Add theme fonts to assets
-	const themeHeadingTextFontFamily = theme.typography.heading.fontFamily;
-	const themeHeadingTextFont = getFontMetadata(themeHeadingTextFontFamily);
-	assets.push({
-		id: createId('asset'),
-		type: 'font',
-		hash: getFontHash(themeHeadingTextFont.font),
-		contentType: 'font/woff2',
-		storage: {
-			type: 'url',
-			url: `https://fonts.googleapis.com/css2?family=${themeHeadingTextFont.googleFont}&display=swap`
-		},
-		font: themeHeadingTextFont.font
-	});
-	const themeTextFontFamily = theme.typography.text.fontFamily;
-	const themeTextFont = getFontMetadata(themeTextFontFamily);
-	assets.push({
-		id: createId('asset'),
-		type: 'font',
-		hash: getFontHash(themeTextFont.font),
-		contentType: 'font/woff2',
-		storage: {
-			type: 'url',
-			url: `https://fonts.googleapis.com/css2?family=${themeTextFont.googleFont}&display=swap`
-		},
-		font: themeTextFont.font
-	});
+	if (theme != null) {
+		const themeHeadingTextFont = getFontMetadataByFamily(theme.typography.heading.fontFamily) ?? fontMetadataMap.inter;
+		assets.push({
+			id: createId('asset'),
+			type: 'font',
+			hash: getFontHash(themeHeadingTextFont.font),
+			contentType: 'font/woff2',
+			storage: {
+				type: 'url',
+				url: `https://fonts.googleapis.com/css2?family=${themeHeadingTextFont.googleFont}&display=swap`
+			},
+			font: themeHeadingTextFont.font
+		});
+		const themeTextFont = getFontMetadataByFamily(theme.typography.text.fontFamily) ?? fontMetadataMap.inter;
+		assets.push({
+			id: createId('asset'),
+			type: 'font',
+			hash: getFontHash(themeTextFont.font),
+			contentType: 'font/woff2',
+			storage: {
+				type: 'url',
+				url: `https://fonts.googleapis.com/css2?family=${themeTextFont.googleFont}&display=swap`
+			},
+			font: themeTextFont.font
+		});
+	}
 
 	// Create product node
 	let productNode: TProductNode | null = null;
@@ -252,22 +251,25 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 				opacity: 1,
 				borderRadius: undefined
 			},
-			fill: {
-				paint: {
-					type: 'solid',
-					color: hexToRgba(theme.color.base200)
-				},
-				opacity: 1
-			}
+			fill:
+				theme != null
+					? {
+							paint: {
+								type: 'solid',
+								color: hexToRgba(theme.color.base200)
+							},
+							opacity: 1
+						}
+					: null
 		},
-		tokens
+		tokens: theme != null ? createTokensFromTheme(theme) : []
 	};
 }
 
 interface TBlankPresetConfig {
 	shopId: string;
 	name: string;
-	theme: TTheme;
+	theme?: TTheme;
 	profilePicture?: string;
 	socialLinks?: {
 		platform: string;
@@ -294,19 +296,6 @@ interface TBlankPresetConfig {
 			selectedOptions: { name: string; value: string }[];
 		}[];
 	};
-}
-
-function getFontMetadata(fontFamily?: string): TFontMetadata {
-	if (fontFamily == null) {
-		return fontMetadataMap.inter;
-	}
-
-	// Try to match font family to available fonts
-	const matchedFont = Object.entries(fontMetadataMap).find(
-		([, metadata]) => metadata.font.family.toLowerCase() === fontFamily.toLowerCase()
-	);
-
-	return matchedFont ? matchedFont[1] : fontMetadataMap.inter;
 }
 
 function getSocialContactMetadata(

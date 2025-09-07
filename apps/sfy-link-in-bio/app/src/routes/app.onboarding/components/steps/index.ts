@@ -3,5 +3,5 @@ export * from './HandleStep';
 export * from './LinkpopPreviewStep';
 export * from './LinkpopUrlStep';
 export * from './SiteCreationOptionsStep';
-export * from './TemplatesStep';
+export * from './ThemeStep';
 export * from './WelcomeStep';

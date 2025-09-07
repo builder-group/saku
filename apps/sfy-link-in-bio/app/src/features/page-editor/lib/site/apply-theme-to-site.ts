@@ -1,0 +1,86 @@
+import {
+	createId,
+	createTokensFromTheme,
+	fontMetadataMap,
+	getFontHash,
+	getFontMetadataByFamily,
+	hexToRgba,
+	TFlatSite,
+	TTheme
+} from '@repo/editor';
+
+/**
+ * Applies a theme to an existing flat site by:
+ * 1. Adding theme font assets to the site
+ * 2. Applying theme tokens to the site
+ * 3. Updating the root node's background color and gap
+ */
+export function applyThemeToSite(site: TFlatSite, theme: TTheme): TFlatSite {
+	// Add theme fonts to assets if they don't already exist
+	const headingFontMetadata = getFontMetadataByFamily(theme.typography.heading.fontFamily) ?? fontMetadataMap.inter;
+	const headingFontHash = getFontHash(headingFontMetadata.font);
+	if (site.assets[headingFontHash] == null) {
+		site.assets[headingFontHash] = {
+			id: createId('asset'),
+			type: 'font',
+			hash: headingFontHash,
+			contentType: 'font/woff2',
+			storage: {
+				type: 'url',
+				url: `https://fonts.googleapis.com/css2?family=${headingFontMetadata.googleFont}&display=swap`
+			},
+			font: headingFontMetadata.font
+		};
+	}
+	const textFontMetadata = getFontMetadataByFamily(theme.typography.text.fontFamily) ?? fontMetadataMap.inter;
+	const textFontHash = getFontHash(textFontMetadata.font);
+	if (site.assets[textFontHash] == null) {
+		site.assets[textFontHash] = {
+			id: createId('asset'),
+			type: 'font',
+			hash: textFontHash,
+			contentType: 'font/woff2',
+			storage: {
+				type: 'url',
+				url: `https://fonts.googleapis.com/css2?family=${textFontMetadata.googleFont}&display=swap`
+			},
+			font: textFontMetadata.font
+		};
+	}
+
+	// Apply theme tokens (theme tokens take precedence)
+	const themeTokens = createTokensFromTheme(theme);
+	themeTokens.forEach((token) => {
+		switch (token.type) {
+			case 'variable': {
+				site.tokens[`variable.${token.key}`] = token;
+				break;
+			}
+			case 'mixin': {
+				site.tokens[`mixin.${token.mixinKey}.${token.key}`] = token as any;
+				break;
+			}
+		}
+	});
+
+	// Update root node with theme background and gap
+	const rootNode = site.nodes[site.rootId];
+	if (rootNode != null && rootNode.type === 'page') {
+		site.nodes[site.rootId] = {
+			...rootNode,
+			autoLayout: {
+				...rootNode.autoLayout,
+				verticalGap: theme.gap ?? rootNode.autoLayout.verticalGap
+			},
+			fill: {
+				paint: {
+					type: 'solid' as const,
+					color: hexToRgba(theme.color.base200)
+				},
+				opacity: 1
+			}
+		};
+	}
+
+	return site;
+}

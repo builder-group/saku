@@ -1,8 +1,9 @@
 import { shortId, sleep } from '@blgc/utils';
-import { TFlatSite } from '@repo/editor';
+import { TFlatSite, TTheme } from '@repo/editor';
 import type { ShopifyGlobal } from '@shopify/app-bridge-types';
 import { Err, Ok, TResult } from 'tuple-result';
 import { coreApiClient } from '@/environment';
+import { applyThemeToSite } from '@/features/page-editor';
 import { createShopifyTokenMiddleware, createStepr, Crisp, type TStepr } from '@/lib';
 
 export function createOnboardingContext(
@@ -99,7 +100,7 @@ export function createOnboardingContext(
 			switch (option) {
 				case 'create-new': {
 					this.stepr.goTo({
-						type: 'templates'
+						type: 'theme'
 					});
 					break;
 				}
@@ -181,16 +182,17 @@ export function createOnboardingContext(
 			return Ok(undefined);
 		},
 
-		async continueFromTemplates(selectedTemplate) {
+		async continueFromTheme(selectedTheme) {
 			this.stepr.current.set({
-				type: 'templates',
-				selectedTemplate
+				type: 'theme',
+				selectedTheme
 			});
 
-			const preset = this.presets[selectedTemplate];
+			const preset = this.presets['blank'];
 			if (preset == null) {
-				return Err('Invalid template');
+				return Err('Could not find blank preset');
 			}
+			applyThemeToSite(preset.content, selectedTheme);
 
 			// Get the handle and override flag from the handle step
 			const { handle = 'bio', shouldOverrideRedirect = false } =
@@ -289,7 +291,7 @@ export interface TOnboardingContext {
 	continueFromSiteCreationOptions: (option: TSiteCreationOption) => void;
 	continueFromLinkpopUrl: (handle: string) => Promise<TResult<void, TLinkpopStepError>>;
 	continueFromLinkpopPreview: () => Promise<TResult<void, string>>;
-	continueFromTemplates: (selectedTemplate: TTemplate) => Promise<TResult<void, string>>;
+	continueFromTheme: (selectedTheme: TTheme) => Promise<TResult<void, string>>;
 	complete: () => Promise<void>;
 	goBack: () => void;
 }
@@ -306,8 +308,8 @@ export type TOnboardingStep =
 	| { type: 'linkpop-url'; handle?: string }
 	| { type: 'linkpop-preview'; url?: string; site?: TFlatSite }
 	| {
-			type: 'templates';
-			selectedTemplate?: TTemplate;
+			type: 'theme';
+			selectedTheme?: TTheme;
 	  };
 
 export type TSiteCreationOption = 'create-new' | 'linkpop';
