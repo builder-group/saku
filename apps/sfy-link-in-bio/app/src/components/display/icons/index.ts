@@ -58,6 +58,8 @@ export {
 	LayoutTemplateIcon,
 	Link2Icon as LinkIcon,
 	Link2OffIcon as LinkOffIcon,
+	MailIcon,
+	PhoneIcon,
 	ScanEyeIcon,
 	StampIcon
 } from 'lucide-react'; // https://lucide.dev/icons/

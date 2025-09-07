@@ -9,7 +9,7 @@ export const aboutNodeMetadata: TNodeMetadata<'about'> = {
 			type: 'default',
 			name: 'Your Name',
 			bio: 'Tell us about yourself',
-			socialLinks: []
+			contactIcons: []
 		},
 		autoLayout: {
 			horizontalPadding: tokenRef('mixin', 'default'),

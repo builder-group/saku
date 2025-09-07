@@ -1,27 +1,26 @@
-import { shortId } from '@blgc/utils';
+import { notEmpty, shortId } from '@blgc/utils';
 import {
+	aboutNodeMetadata,
 	createId,
 	createTokensFromTheme,
 	fontMetadataMap,
 	getFontHash,
 	hexToRgba,
+	linkNodeMetadata,
+	mediaNodeMetadata,
+	productNodeMetadata,
+	TContactIcon,
+	textNodeMetadata,
 	TId,
 	TProductNode,
 	TSite,
 	TTheme,
 	type TFontAsset,
 	type TFontMetadata,
-	type TImageAsset,
-	type TSocialLink
+	type TImageAsset
 } from '@repo/editor';
-import {
-	aboutNodeMetadata,
-	linkNodeMetadata,
-	mediaNodeMetadata,
-	productNodeMetadata,
-	textNodeMetadata
-} from '@/features/page-editor';
 import { createHandleFromShop } from '@/lib';
+import { contactMetadataMap, TContactMetadata } from '../../environment';
 
 export function blankPreset(config: TBlankPresetConfig): TSite {
 	const { shopId, name, profilePicture, socialLinks, featuredProduct, theme } = config;
@@ -148,20 +147,41 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 		altText: 'Vibe Rabbit GIF'
 	});
 
-	// Create social links array with shop link always first
-	const allSocialLinks = [
+	// Create contact icons array with shop link always first
+	const storeHandle = createHandleFromShop(shopId);
+	const contactIcons: TContactIcon[] = [
 		{
 			id: shortId(),
-			provider: 'shopify' as const,
-			handle: createHandleFromShop(shopId),
-			url: `https://${shopId}`
+			action: {
+				type: 'social',
+				provider: 'shopify',
+				handle: storeHandle,
+				url: contactMetadataMap['social.shopify'].getUrl(storeHandle)
+			},
+			title: contactMetadataMap['social.shopify'].getTitle(storeHandle)
 		},
-		...(socialLinks?.map((link) => ({
-			id: shortId(),
-			provider: mapPlatformToProvider(link.platform),
-			handle: link.username ?? link.platform,
-			url: link.url
-		})) ?? [])
+		...(socialLinks
+			?.map((link) => {
+				const contactMetadata = getSocialContactMetadata(link.platform);
+				if (contactMetadata == null) {
+					return null;
+				}
+				const handle = contactMetadata.getHandle(link.url);
+				if (handle == null) {
+					return null;
+				}
+				return {
+					id: shortId(),
+					action: {
+						type: 'social',
+						provider: contactMetadata.provider,
+						handle,
+						url: contactMetadata.getUrl(handle)
+					},
+					title: contactMetadata.getTitle(handle)
+				} satisfies TContactIcon;
+			})
+			.filter(notEmpty) ?? [])
 	];
 
 	return {
@@ -185,7 +205,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 						name,
 						bio: 'Welcome to your new page! Add a short description about yourself or your brand.',
 						profilePicture: profilePictureAssetHashId,
-						socialLinks: allSocialLinks
+						contactIcons: contactIcons
 					}
 				},
 				{
@@ -289,17 +309,38 @@ function getFontMetadata(fontFamily?: string): TFontMetadata {
 	return matchedFont ? matchedFont[1] : fontMetadataMap.inter;
 }
 
-function mapPlatformToProvider(platform: string): TSocialLink['provider'] {
-	const platformMap: Record<string, TSocialLink['provider']> = {
-		instagram: 'instagram',
-		twitter: 'twitter',
-		x: 'twitter',
-		youtube: 'youtube',
-		tiktok: 'tiktok',
-		linkedin: 'linkedin',
-		facebook: 'facebook',
-		pinterest: 'pinterest'
-	};
-
-	return platformMap[platform.toLowerCase()] ?? 'instagram';
+function getSocialContactMetadata(
+	platform: string
+): Extract<TContactMetadata, { type: 'social' }> | null {
+	switch (platform.toLowerCase()) {
+		case 'instagram':
+			return contactMetadataMap['social.instagram'];
+		case 'twitter':
+		case 'x':
+			return contactMetadataMap['social.x'];
+		case 'youtube':
+			return contactMetadataMap['social.youtube'];
+		case 'tiktok':
+			return contactMetadataMap['social.tiktok'];
+		case 'linkedin':
+			return contactMetadataMap['social.linkedin'];
+		case 'facebook':
+			return contactMetadataMap['social.facebook'];
+		case 'pinterest':
+			return contactMetadataMap['social.pinterest'];
+		case 'shopify':
+			return contactMetadataMap['social.shopify'];
+		case 'bluesky':
+			return contactMetadataMap['social.bluesky'];
+		case 'discord':
+			return contactMetadataMap['social.discord'];
+		case 'github':
+			return contactMetadataMap['social.github'];
+		case 'google':
+			return contactMetadataMap['social.google'];
+		case 'spotify':
+			return contactMetadataMap['social.spotify'];
+		default:
+			return null;
+	}
 }

@@ -3,13 +3,15 @@ import { TNode, TNodeId } from './node';
 import { TRef } from './ref';
 import {
 	TAssetHash,
+	TEmailAction,
 	TFont,
 	TIntegrationId,
 	TLetterSpacing,
 	TLineHeight,
 	TPaint,
+	TPhoneAction,
 	TRichContent,
-	TSocialLink,
+	TSocialAction,
 	TTextAlign
 } from './utils';
 
@@ -87,7 +89,13 @@ export interface TDefaultAboutNodeContent extends TBaseContentVariant {
 	name: string;
 	bio?: string;
 	profilePicture?: TAssetHash;
-	socialLinks: TSocialLink[];
+	contactIcons: TContactIcon[];
+}
+
+export interface TContactIcon {
+	id: string;
+	action: TEmailAction | TPhoneAction | TSocialAction;
+	title?: string;
 }
 
 // export interface THeroAboutNodeVariant extends TBaseNodeVariant {

@@ -1,6 +1,6 @@
 import React from 'react';
+import { contactIconMap, getContactKey } from '../../../environment';
 import { TResolvedNodeProps } from '../../../lib/node/types';
-import { socialIconMap } from '../social-icon';
 import { TResolvedAboutNode } from '../types';
 
 export const ResolvedAboutNode = React.forwardRef<
@@ -56,26 +56,29 @@ export const ResolvedAboutNode = React.forwardRef<
 						</p>
 					)}
 
-					{/* Social Links */}
-					{content.socialLinks.length > 0 && (
+					{/* Contact Icons */}
+					{content.contactIcons.length > 0 && (
 						<div className="flex flex-wrap justify-center gap-4">
-							{content.socialLinks.map((social) => {
-								const IconComponent = socialIconMap[social.provider];
+							{content.contactIcons.map((contactIcon) => {
+								const action = contactIcon.action;
+								const contactKey = getContactKey(action);
+
+								const IconComponent = contactIconMap[contactKey];
 								if (IconComponent == null) {
 									return null;
 								}
 
 								return (
 									<a
-										key={social.id}
-										href={social.url || `#${social.handle}`}
-										target="_blank"
-										rel="noopener noreferrer"
+										key={contactIcon.id}
+										href={action.url}
+										target={action.type === 'social' ? '_blank' : undefined}
+										rel={action.type === 'social' ? 'noopener noreferrer' : undefined}
 										className="flex h-6 w-6 items-center justify-center hover:opacity-70"
 										style={{
 											color: text.styles.color
 										}}
-										title={`${social.provider}: ${social.handle}`}
+										title={contactIcon.title}
 									>
 										<IconComponent className="h-full w-full" />
 									</a>

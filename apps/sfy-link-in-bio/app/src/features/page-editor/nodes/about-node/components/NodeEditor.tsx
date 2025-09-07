@@ -1,9 +1,11 @@
 import { shortId } from '@blgc/utils';
-import { TAboutNode, TSocialLink } from '@repo/editor';
+import { TAboutNode, TEmailAction, TPhoneAction, TSocialAction } from '@repo/editor';
 import { InlineError, Text, TextField } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react/state';
 import React from 'react';
 import { AccordionSection, ImageUploadField, type TImageUploadEvent } from '@/components';
+import { parseUrl } from '@/lib/parse-url';
+import { contactMetadataMap, getContactKey } from '../../../environment';
 import { TNodeEditorComponentProps } from '../../../lib';
 import {
 	AppearanceStyleMixinEditor,
@@ -14,7 +16,6 @@ import {
 	StrokeStyleMixinEditor,
 	TextStyleMixinEditor
 } from '../../../mixins';
-import { generateSocialUrl, socialMetadataMap, TSocialMetadata } from '../social-metadata';
 
 export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = (props) => {
 	const { nodeState, editor } = props;
@@ -35,21 +36,29 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 		};
 	}, [content.profilePicture, editor]);
 
-	const socialHandles = React.useMemo(() => {
-		const handles: Record<TSocialLink['provider'], string> = Object.keys(socialMetadataMap).reduce(
-			(acc, provider) => {
-				acc[provider as TSocialLink['provider']] = '';
-				return acc;
-			},
-			{} as Record<TSocialLink['provider'], string>
-		);
+	const contactValues = React.useMemo(() => {
+		return Object.entries(contactMetadataMap).map(([key, metadata]) => {
+			const contactIcon = content.contactIcons?.find(({ action }) => key === getContactKey(action));
 
-		content.socialLinks?.forEach((link) => {
-			handles[link.provider] = link.handle;
+			// Extract value from icon
+			let value = '';
+			if (contactIcon != null) {
+				switch (contactIcon.action.type) {
+					case 'email':
+						value = contactIcon.action.email;
+						break;
+					case 'phone':
+						value = contactIcon.action.phone;
+						break;
+					case 'social':
+						value = contactIcon.action.handle;
+						break;
+				}
+			}
+
+			return { key: key as keyof typeof contactMetadataMap, value, metadata };
 		});
-
-		return handles;
-	}, [content.socialLinks]);
+	}, [content.contactIcons]);
 
 	// =========================================================================
 	// Events
@@ -96,33 +105,96 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 		[nodeState, editor]
 	);
 
-	const handleSocialHandleChange = React.useCallback(
-		(provider: TSocialLink['provider'], handle: string) => {
-			nodeState.set((prev) => {
-				const currentLinks = prev.content.socialLinks ?? [];
+	const handleContactChange = React.useCallback(
+		(
+			params:
+				| { type: 'email'; key: keyof typeof contactMetadataMap; value: string }
+				| { type: 'phone'; key: keyof typeof contactMetadataMap; value: string }
+				| {
+						type: 'social';
+						key: keyof typeof contactMetadataMap;
+						value: string;
+						provider: TSocialAction['provider'];
+				  }
+		) => {
+			const currentIcons = [...(nodeState._v.content.contactIcons ?? [])];
+			let trimmedValue = params.value.trim();
 
-				// Remove existing link for this provider
-				const filteredLinks = currentLinks.filter((link) => link.provider !== provider);
+			// Auto-detect and parse URLs for social platforms
+			if (params.type === 'social' && parseUrl(trimmedValue) != null) {
+				const extractedHandle =
+					contactMetadataMap[`social.${params.provider}`].getHandle(trimmedValue);
+				if (extractedHandle != null && extractedHandle !== trimmedValue) {
+					trimmedValue = extractedHandle;
+				}
+			}
 
-				// Add new link if handle is not empty
-				if (handle.trim() !== '') {
-					const newLink: TSocialLink = {
-						id: shortId(),
-						provider,
-						handle: handle.trim(),
-						url: generateSocialUrl(provider, handle.trim())
-					};
-					filteredLinks.push(newLink);
+			const existingIndex = currentIcons.findIndex(
+				({ action }) => params.key === getContactKey(action)
+			);
+
+			// Create new icon
+			if (trimmedValue !== '') {
+				let newIcon;
+				switch (params.type) {
+					case 'email': {
+						newIcon = {
+							id: shortId(),
+							action: {
+								type: 'email',
+								email: trimmedValue,
+								url: contactMetadataMap.email.getUrl(trimmedValue)
+							} as TEmailAction,
+							title: contactMetadataMap.email.getTitle(trimmedValue)
+						};
+						break;
+					}
+					case 'phone': {
+						newIcon = {
+							id: shortId(),
+							action: {
+								type: 'phone',
+								phone: trimmedValue,
+								url: contactMetadataMap.phone.getUrl(trimmedValue)
+							} as TPhoneAction,
+							title: contactMetadataMap.phone.getTitle(trimmedValue)
+						};
+						break;
+					}
+					case 'social': {
+						const metadata = contactMetadataMap[`social.${params.provider}`];
+						newIcon = {
+							id: shortId(),
+							action: {
+								type: 'social',
+								provider: params.provider,
+								handle: trimmedValue,
+								url: metadata.getUrl(trimmedValue)
+							} as TSocialAction,
+							title: metadata.getTitle(trimmedValue)
+						};
+						break;
+					}
 				}
 
-				return {
-					...prev,
-					content: {
-						...prev.content,
-						socialLinks: filteredLinks
+				if (newIcon != null) {
+					// Update existing icon
+					if (existingIndex >= 0) {
+						currentIcons[existingIndex] = newIcon;
 					}
-				};
-			});
+					// Add new icon
+					else {
+						currentIcons.push(newIcon);
+					}
+				}
+			}
+			// Remove icon if value is empty
+			else if (existingIndex >= 0) {
+				currentIcons.splice(existingIndex, 1);
+			}
+
+			nodeState._v.content.contactIcons = currentIcons;
+			nodeState._notify();
 		},
 		[nodeState]
 	);
@@ -189,29 +261,40 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 				</div>
 			</AccordionSection>
 
-			{/* Socials Section */}
-			<AccordionSection title="Socials" defaultOpen={false}>
+			{/* Contact Section */}
+			<AccordionSection title="Contact" defaultOpen={false}>
 				<div className="space-y-3">
-					{(Object.entries(socialMetadataMap) as [TSocialLink['provider'], TSocialMetadata][]).map(
-						([provider, metadata]) => {
-							return (
-								<div key={provider} className="space-y-1">
-									<Text as="span" variant="bodySm" tone="subdued">
-										{metadata.label}
-									</Text>
-									<TextField
-										id={`social-${provider}-field`}
-										label={metadata.label}
-										labelHidden
-										value={socialHandles[provider]}
-										onChange={(value) => handleSocialHandleChange(provider, value)}
-										autoComplete="off"
-										placeholder={metadata.placeholder}
-									/>
-								</div>
-							);
-						}
-					)}
+					{contactValues.map(({ key, value, metadata }) => {
+						return (
+							<div key={key} className="space-y-1">
+								<Text as="span" variant="bodySm" tone="subdued">
+									{metadata.label}
+								</Text>
+								<TextField
+									id={`${key}-field`}
+									label={metadata.label}
+									labelHidden
+									value={value}
+									onChange={(newValue) => {
+										switch (metadata.type) {
+											case 'social':
+												handleContactChange({
+													type: 'social',
+													key,
+													value: newValue,
+													provider: metadata.provider
+												});
+												break;
+											default:
+												handleContactChange({ type: metadata.type, key, value: newValue });
+										}
+									}}
+									autoComplete="off"
+									placeholder={metadata.placeholder}
+								/>
+							</div>
+						);
+					})}
 				</div>
 			</AccordionSection>
 

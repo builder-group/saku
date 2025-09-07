@@ -95,14 +95,36 @@ export interface THtmlRichContent {
 }
 
 // =========================================================================
-// Social Links
+// Action
 // =========================================================================
 
-export interface TSocialLink {
-	id: string;
+export type TAction = TLinkAction | TEmailAction | TPhoneAction | TSocialAction;
+
+export interface TLinkAction {
+	type: 'link';
+	url: string;
+	target?: '_blank' | '_self';
+}
+
+export interface TEmailAction {
+	type: 'email';
+	email: string;
+	subject?: string;
+	body?: string;
+	url?: string;
+}
+
+export interface TPhoneAction {
+	type: 'phone';
+	phone: string;
+	url?: string;
+}
+
+export interface TSocialAction {
+	type: 'social';
 	provider:
 		| 'instagram'
-		| 'twitter'
+		| 'x'
 		| 'youtube'
 		| 'tiktok'
 		| 'linkedin'
@@ -117,6 +139,11 @@ export interface TSocialLink {
 	handle: string;
 	url?: string;
 }
+
+//   export interface TFormAction {
+// 	type: 'form';
+// 	formId: string;
+//   }
 
 // =========================================================================
 // Integration
@@ -136,27 +163,3 @@ export interface TShopifyIntegration extends TBaseIntegration {
 	shopId: string;
 	storefrontAccessToken: string;
 }
-
-// =========================================================================
-// Action
-// =========================================================================
-
-export type TAction = TLinkAction | TEmailAction;
-
-export interface TLinkAction {
-	type: 'link';
-	url: string;
-	target?: '_blank' | '_self';
-}
-
-export interface TEmailAction {
-	type: 'email';
-	email: string;
-	subject?: string;
-	body?: string;
-}
-
-//   export interface TFormAction {
-// 	type: 'form';
-// 	formId: string;
-//   }

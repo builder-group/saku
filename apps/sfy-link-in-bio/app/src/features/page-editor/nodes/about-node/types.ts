@@ -1,4 +1,4 @@
-import { TBaseContentVariant, TBaseMixin, TBaseNode, TIdMixin, TSocialLink } from '@repo/editor';
+import { TBaseContentVariant, TBaseMixin, TBaseNode, TContactIcon, TIdMixin } from '@repo/editor';
 import { TResolvedAsset } from '../../lib';
 import {
 	TResolvedAppearanceStyleMixin,
@@ -45,5 +45,5 @@ export interface TResolvedDefaultAboutNodeContent extends TBaseContentVariant {
 	name: string;
 	bio?: string;
 	profilePicture?: TResolvedAsset;
-	socialLinks: TSocialLink[];
+	contactIcons: TContactIcon[];
 }
