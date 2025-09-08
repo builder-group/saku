@@ -8,7 +8,7 @@ export type TResolvedAppearanceStyleMixin = TBaseMixin<
 		borderRadius: number | undefined;
 		// Computed CSS styles
 		styles: {
-			visibility: React.CSSProperties['visibility'];
+			display?: React.CSSProperties['display'];
 			opacity: React.CSSProperties['opacity'];
 			borderRadius?: React.CSSProperties['borderRadius'];
 		};

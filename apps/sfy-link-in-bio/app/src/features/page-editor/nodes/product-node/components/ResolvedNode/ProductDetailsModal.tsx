@@ -78,17 +78,13 @@ export const ProductDetailsModal: React.FC<TProductDetailsModalProps> = (props) 
 	}, [selectedVariant?.id, cx.integrations.shopify]);
 
 	return (
-		<dialog
-			ref={modalRef}
-			className="modal modal-bottom sm:modal-middle"
-			style={{
-				opacity: appearance.styles.opacity,
-				visibility: appearance.styles.visibility
-			}}
-		>
+		<dialog ref={modalRef} className="modal modal-bottom sm:modal-middle">
 			<div
 				className="modal-box sm:max-w-[80rem]"
 				style={{
+					display: appearance.styles.display,
+					// Don't set opacity as it interferes with DaisyUI modal animations
+					// opacity: appearance.styles.opacity,
 					borderRadius: appearance.styles.borderRadius,
 					...fill?.styles,
 					...stroke?.styles,
@@ -113,7 +109,7 @@ export const ProductDetailsModal: React.FC<TProductDetailsModalProps> = (props) 
 								...image.shadow?.styles
 							}}
 						>
-							{selectedImage && (
+							{selectedImage != null && (
 								<img
 									src={selectedImage.src}
 									alt={product.title}
@@ -123,7 +119,7 @@ export const ProductDetailsModal: React.FC<TProductDetailsModalProps> = (props) 
 						</div>
 
 						{/* Image Thumbnails */}
-						{product.images && product.images.length > 1 && (
+						{product.images.length > 1 && (
 							<div className="grid grid-cols-4 gap-2">
 								{product.images.map((img, index) => (
 									<button
@@ -154,7 +150,7 @@ export const ProductDetailsModal: React.FC<TProductDetailsModalProps> = (props) 
 						</h1>
 
 						{/* Price */}
-						{selectedVariant?.price && (
+						{selectedVariant?.price != null && (
 							<p
 								className="font-semibold"
 								style={{ ...textXl.styles, fontSize: textXl.typography.fontSize * 0.875 }}
