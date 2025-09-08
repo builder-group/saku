@@ -1,5 +1,6 @@
 import React from 'react';
 import { logger } from '@/environment';
+import { cn } from '@/lib';
 import { getCurrencySymbol } from '../../../../environment';
 import { TResolvedNodeProps } from '../../../../lib';
 import { TResolvedProductNode } from '../../types';
@@ -81,12 +82,20 @@ export const ProductDetailsModal: React.FC<TProductDetailsModalProps> = (props) 
 	return (
 		<dialog ref={modalRef} className="modal modal-bottom sm:modal-middle">
 			<div
-				className="modal-box sm:max-w-[80rem]"
+				className={cn(
+					'modal-box sm:max-w-[80rem]',
+					appearance.styles.borderRadius != null &&
+						'rounded-t-[var(--border-radius)] sm:rounded-[var(--border-radius)]'
+				)}
 				style={{
 					display: appearance.styles.display,
 					// Don't set opacity as it interferes with DaisyUI modal animations
 					// opacity: appearance.styles.opacity,
-					borderRadius: appearance.styles.borderRadius,
+					...(appearance.styles.borderRadius
+						? {
+								'--border-radius': appearance.styles.borderRadius
+							}
+						: {}),
 					...fill?.styles,
 					...stroke?.styles,
 					...shadow?.styles
