@@ -15,7 +15,7 @@ export const ResolvedPageNode: React.FC<TResolvedNodeProps<TResolvedPageNode>> =
 		<>
 			<div
 				{...divProps}
-				className="relative min-h-screen w-full"
+				className="relative min-h-screen w-full overflow-x-hidden"
 				style={{
 					...appearance.styles,
 					...fill?.styles

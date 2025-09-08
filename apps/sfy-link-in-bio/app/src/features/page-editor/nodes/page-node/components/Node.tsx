@@ -47,7 +47,7 @@ export const PageNode = React.forwardRef<HTMLDivElement, TNodeProps<TFlatPageNod
 				<div
 					{...divProps}
 					ref={ref}
-					className="relative min-h-screen w-full"
+					className="relative min-h-screen w-full overflow-x-hidden"
 					style={{
 						...appearance.styles,
 						...fill?.styles
