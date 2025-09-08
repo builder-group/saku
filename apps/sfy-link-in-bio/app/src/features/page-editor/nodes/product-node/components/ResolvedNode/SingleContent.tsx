@@ -103,7 +103,8 @@ export const SingleContent: React.FC<TSingleContentProps> = (props) => {
 			return;
 		}
 
-		window.open(result.value.checkoutUrl, '_blank', 'noopener');
+		// Use '_top' instead of '_blank' to avoid Safari's strict popup blocking in async contexts
+		window.open(result.value.checkoutUrl, '_top');
 		setIsBuying(false);
 	}, [selectedVariant?.id, cx.integrations.shopify]);
 
