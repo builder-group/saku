@@ -2,6 +2,7 @@ import { shortId } from '@blgc/utils';
 import {
 	contactMetadataMap,
 	getContactKey,
+	parseUrl,
 	TAboutNode,
 	TEmailAction,
 	TPhoneAction,
@@ -11,7 +12,6 @@ import { InlineError, Text, TextField } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react/state';
 import React from 'react';
 import { AccordionSection, ImageUploadField, type TImageUploadEvent } from '@/components';
-import { parseUrl } from '@/lib/parse-url';
 import { TNodeEditorComponentProps } from '../../../lib';
 import {
 	AppearanceStyleMixinEditor,

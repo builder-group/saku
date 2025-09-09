@@ -1,9 +1,13 @@
-import { TSpotifyEmbedContentType, TSpotifyEmbedLinkNodeContent } from '@repo/editor';
+import {
+	createSpotifyUrl,
+	extractSpotifyId,
+	TSpotifyEmbedContentType,
+	TSpotifyEmbedLinkNodeContent
+} from '@repo/editor';
 import { Select, Text, TextField } from '@shopify/polaris';
 import { useCompute, useFeatureState, useListener } from 'feature-react/state';
 import React from 'react';
 import { cn } from '@/lib';
-import { createSpotifyUrl, extractSpotifyId } from '../../lib';
 import { TNodeEditorContext } from './create-node-editor-context';
 
 export const SpotifyEmbedContent: React.FC<TSpotifyEmbedContentProps> = (props) => {

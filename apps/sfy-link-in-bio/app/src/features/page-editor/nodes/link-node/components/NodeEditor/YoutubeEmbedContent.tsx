@@ -1,9 +1,13 @@
-import { TYouTubeEmbedContentType, TYouTubeEmbedLinkNodeContent } from '@repo/editor';
+import {
+	createYouTubeUrl,
+	extractYouTubeId,
+	TYouTubeEmbedContentType,
+	TYouTubeEmbedLinkNodeContent
+} from '@repo/editor';
 import { Select, Text, TextField } from '@shopify/polaris';
 import { useCompute, useFeatureState, useListener } from 'feature-react/state';
 import React from 'react';
 import { cn } from '@/lib';
-import { createYouTubeUrl, extractYouTubeId } from '../../lib';
 import { TNodeEditorContext } from './create-node-editor-context';
 
 export const YoutubeEmbedContent: React.FC<TYoutubeEmbedContentProps> = (props) => {

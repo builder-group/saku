@@ -1,8 +1,8 @@
-import { TLinkNode, TLinkNodeContent } from '@repo/editor';
+import { parseUrl, TLinkNode, TLinkNodeContent } from '@repo/editor';
 import type { ShopifyGlobal } from '@shopify/app-bridge-types';
 import { createState, TState } from 'feature-state';
 import { Err, Ok, TResult } from 'tuple-result';
-import { AppError, parseUrl } from '@/lib';
+import { AppError } from '@/lib';
 import { TNodeState, TPageEditor } from '../../../../lib';
 import { contentMetadataMap, contentTypePriority, TContentType } from './environment';
 import { getApplicableContent } from './lib';

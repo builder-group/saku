@@ -1,5 +1,5 @@
-import { TYouTubeEmbedContentType } from '@repo/editor';
-import { parseUrl } from '@/lib';
+import { TYouTubeEmbedContentType } from '../types';
+import { parseUrl } from './parse-url';
 
 export function extractYouTubeId(
 	url: string

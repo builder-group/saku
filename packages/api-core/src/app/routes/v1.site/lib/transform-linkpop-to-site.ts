@@ -5,6 +5,8 @@ import {
 	createTokensFromTheme,
 	cssRgbaToHex,
 	cssRgbaToRgba,
+	extractSpotifyId,
+	extractYouTubeId,
 	fontMetadataMap,
 	getFontHash,
 	getFontMetadataByFamily,
@@ -25,7 +27,6 @@ import {
 	TTextNode,
 	TTheme
 } from '@repo/editor';
-import { extractYouTubeVideoId } from './extract-youtube-video-id';
 import { TLinkPopData } from './parse-linkpop-html';
 
 export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
@@ -132,13 +133,47 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 				let appearance: TLinkNode['appearance'] = linkNodeMetadata.default.appearance;
 
 				switch (link.__typename) {
-					case 'YouTubeVideoLink': {
-						const videoId = extractYouTubeVideoId(link.url);
-						if (videoId != null) {
+					case 'YouTubeVideoLink':
+					case 'YouTubePlaylistLink': {
+						const youtubeData = extractYouTubeId(link.url);
+						if (youtubeData != null) {
 							content = {
-								type: 'youtube-video-embed' as const,
+								type: 'youtube-embed' as const,
 								url: link.url,
-								videoId
+								contentType: youtubeData.type,
+								contentId: youtubeData.id
+							};
+							autoLayout = {
+								...linkNodeMetadata.default.autoLayout,
+								horizontalPadding: 0,
+								verticalPadding: 0
+							};
+							appearance = {
+								...linkNodeMetadata.default.appearance,
+								borderRadius: Math.min(borderRadius, 40)
+							};
+						} else {
+							content = {
+								type: 'single' as const,
+								url: link.url,
+								userTitle: link.title,
+								userFavicon: faviconHash
+							};
+						}
+						break;
+					}
+					case 'SpotifyAlbumLink':
+					case 'SpotifyTrackLink':
+					case 'SpotifyPlaylistLink':
+					case 'SpotifyArtistLink': {
+						const spotifyData = extractSpotifyId(link.url);
+						if (spotifyData != null) {
+							content = {
+								type: 'spotify-embed' as const,
+								url: link.url,
+								contentType: spotifyData.type,
+								contentId: spotifyData.id,
+								height: 152 // Default to compact height
 							};
 							autoLayout = {
 								...linkNodeMetadata.default.autoLayout,

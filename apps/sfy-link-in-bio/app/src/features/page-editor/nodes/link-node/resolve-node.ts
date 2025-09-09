@@ -1,4 +1,4 @@
-import { TLinkNode } from '@repo/editor';
+import { createSpotifyEmbedUrl, createYouTubeEmbedUrl, TLinkNode } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError, computeInnerBorderRadius } from '@/lib';
 import { resolveAsset, TNodeResolveContext } from '../../lib';
@@ -11,7 +11,6 @@ import {
 	resolveStrokeStyleMixin,
 	resolveTextStyleMixin
 } from '../../mixins';
-import { createSpotifyEmbedUrl, createYouTubeEmbedUrl } from './lib';
 import { TResolvedLinkNode, TResolvedLinkNodeContent } from './types';
 
 export function resolveLinkNode(

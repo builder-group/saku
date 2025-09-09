@@ -1,5 +1,5 @@
-import { TSpotifyEmbedContentType } from '@repo/editor';
-import { parseUrl } from '@/lib';
+import { TSpotifyEmbedContentType } from '../types';
+import { parseUrl } from './parse-url';
 
 export function extractSpotifyId(
 	url: string
