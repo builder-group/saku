@@ -173,7 +173,7 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 								url: link.url,
 								contentType: spotifyData.type,
 								contentId: spotifyData.id,
-								height: 152 // Default to compact height
+								height: 352 // Default to normal height
 							};
 							autoLayout = {
 								...linkNodeMetadata.default.autoLayout,
