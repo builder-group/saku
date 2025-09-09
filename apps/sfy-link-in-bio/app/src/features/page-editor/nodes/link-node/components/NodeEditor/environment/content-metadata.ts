@@ -9,7 +9,8 @@ import { ShopifyGlobal } from '@shopify/app-bridge-react';
 import { Err, Ok, type TResult } from 'tuple-result';
 import { AppError } from '@/lib';
 import { TNodeState, TPageEditor } from '../../../../../lib';
-import { extractSpotifyId, extractYouTubeId, fetchUrlMetadata } from '../lib';
+import { extractSpotifyId, extractYouTubeId } from '../../../lib';
+import { fetchUrlMetadata } from '../lib';
 
 export const contentMetadataMap = {
 	'single': {

@@ -44,3 +44,12 @@ export function createYouTubeEmbedUrl(type: TYouTubeEmbedContentType, id: string
 			return `https://www.youtube.com/embed/videoseries?list=${id}`;
 	}
 }
+
+export function createYouTubeUrl(type: TYouTubeEmbedContentType, id: string): string {
+	switch (type) {
+		case 'video':
+			return `https://www.youtube.com/watch?v=${id}`;
+		case 'playlist':
+			return `https://www.youtube.com/playlist?list=${id}`;
+	}
+}

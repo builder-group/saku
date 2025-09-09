@@ -1,10 +1,10 @@
-import { TYouTubeEmbedLinkNodeContent } from '@repo/editor';
+import { TYouTubeEmbedContentType, TYouTubeEmbedLinkNodeContent } from '@repo/editor';
 import { Select, Text, TextField } from '@shopify/polaris';
 import { useCompute, useFeatureState, useListener } from 'feature-react/state';
 import React from 'react';
 import { cn } from '@/lib';
+import { createYouTubeUrl, extractYouTubeId } from '../../lib';
 import { TNodeEditorContext } from './create-node-editor-context';
-import { extractYouTubeId } from './lib';
 
 export const YoutubeEmbedContent: React.FC<TYoutubeEmbedContentProps> = (props) => {
 	const { cx, className } = props;
@@ -31,8 +31,8 @@ export const YoutubeEmbedContent: React.FC<TYoutubeEmbedContentProps> = (props) 
 	}, [cx, displayUrl]);
 
 	const handleContentTypeChange = React.useCallback(
-		(value: string) => {
-			cx.node._v.content.contentType = value as 'video' | 'playlist';
+		(value: TYouTubeEmbedContentType) => {
+			cx.node._v.content.contentType = value;
 			cx.node._notify({ listenerContext: { source: 'content-type-change' } });
 		},
 		[cx]
@@ -65,33 +65,41 @@ export const YoutubeEmbedContent: React.FC<TYoutubeEmbedContentProps> = (props) 
 		({ value: node, source }) => {
 			const embedVariant = node.content;
 
-			// Sync contentId to URL
-			if (source === 'content-id-change') {
-				if (embedVariant.contentId.trim().length > 0) {
-					if (embedVariant.contentType === 'video') {
-						cx.node._v.content.url = `https://www.youtube.com/watch?v=${embedVariant.contentId.trim()}`;
-					} else {
-						cx.node._v.content.url = `https://www.youtube.com/playlist?list=${embedVariant.contentId.trim()}`;
+			switch (source) {
+				case 'content-id-change': {
+					if (embedVariant.contentId.trim().length > 0) {
+						cx.node._v.content.url = createYouTubeUrl(
+							embedVariant.contentType,
+							embedVariant.contentId.trim()
+						);
+						cx.node._notify({ listenerContext: { source: 'youtube-embed-listener' } });
 					}
-					cx.node._notify({ listenerContext: { source: 'youtube-embed-listener' } });
+					break;
 				}
-				return;
-			}
-
-			// Sync URL to contentId
-			if (source === 'url-change') {
-				const youtubeData = extractYouTubeId(node.content.url);
-				if (
-					youtubeData != null &&
-					(youtubeData.id !== embedVariant.contentId ||
-						youtubeData.type !== embedVariant.contentType)
-				) {
-					embedVariant.contentType = youtubeData.type;
-					embedVariant.contentId = youtubeData.id;
-					cx.node._notify({ listenerContext: { source: 'youtube-embed-listener' } });
+				case 'content-type-change': {
+					if (embedVariant.contentId.trim().length > 0) {
+						cx.node._v.content.url = createYouTubeUrl(
+							embedVariant.contentType,
+							embedVariant.contentId.trim()
+						);
+						cx.node._notify({ listenerContext: { source: 'youtube-embed-listener' } });
+					}
+					break;
 				}
-				// Update display URL to match actual URL
-				setDisplayUrl(node.content.url);
+				case 'url-change': {
+					const youtubeData = extractYouTubeId(node.content.url);
+					if (
+						youtubeData != null &&
+						(youtubeData.id !== embedVariant.contentId ||
+							youtubeData.type !== embedVariant.contentType)
+					) {
+						embedVariant.contentType = youtubeData.type;
+						embedVariant.contentId = youtubeData.id;
+						cx.node._notify({ listenerContext: { source: 'youtube-embed-listener' } });
+					}
+					setDisplayUrl(node.content.url);
+					break;
+				}
 			}
 		},
 		[cx]
@@ -130,10 +138,10 @@ export const YoutubeEmbedContent: React.FC<TYoutubeEmbedContentProps> = (props) 
 			{/* Content Type */}
 			<div className="space-y-1">
 				<Text as="span" variant="bodySm" tone="subdued">
-					Content Type
+					Embed Type
 				</Text>
 				<Select
-					label="Content Type"
+					label="YouTube Type"
 					labelHidden
 					options={[
 						{ label: 'Video', value: 'video' },

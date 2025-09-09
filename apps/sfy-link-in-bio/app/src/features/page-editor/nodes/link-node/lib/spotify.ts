@@ -29,3 +29,7 @@ export function extractSpotifyId(
 export function createSpotifyEmbedUrl(type: TSpotifyEmbedContentType, id: string): string {
 	return `https://open.spotify.com/embed/${type}/${id}`;
 }
+
+export function createSpotifyUrl(type: TSpotifyEmbedContentType, id: string): string {
+	return `https://open.spotify.com/${type}/${id}`;
+}

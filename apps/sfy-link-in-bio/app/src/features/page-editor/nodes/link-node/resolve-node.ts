@@ -11,8 +11,7 @@ import {
 	resolveStrokeStyleMixin,
 	resolveTextStyleMixin
 } from '../../mixins';
-import { createSpotifyEmbedUrl } from './components/NodeEditor/lib/spotify-embed';
-import { createYouTubeEmbedUrl } from './components/NodeEditor/lib/youtube-embed';
+import { createSpotifyEmbedUrl, createYouTubeEmbedUrl } from './lib';
 import { TResolvedLinkNode, TResolvedLinkNodeContent } from './types';
 
 export function resolveLinkNode(

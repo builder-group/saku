@@ -1,10 +1,10 @@
-import { TSpotifyEmbedLinkNodeContent } from '@repo/editor';
+import { TSpotifyEmbedContentType, TSpotifyEmbedLinkNodeContent } from '@repo/editor';
 import { Select, Text, TextField } from '@shopify/polaris';
 import { useCompute, useFeatureState, useListener } from 'feature-react/state';
 import React from 'react';
 import { cn } from '@/lib';
+import { createSpotifyUrl, extractSpotifyId } from '../../lib';
 import { TNodeEditorContext } from './create-node-editor-context';
-import { extractSpotifyId } from './lib';
 
 export const SpotifyEmbedContent: React.FC<TSpotifyEmbedContentProps> = (props) => {
 	const { cx, className } = props;
@@ -31,8 +31,8 @@ export const SpotifyEmbedContent: React.FC<TSpotifyEmbedContentProps> = (props) 
 	}, [cx, displayUrl]);
 
 	const handleContentTypeChange = React.useCallback(
-		(value: string) => {
-			cx.node._v.content.contentType = value as 'track' | 'album' | 'playlist' | 'artist';
+		(value: TSpotifyEmbedContentType) => {
+			cx.node._v.content.contentType = value;
 			cx.node._notify({ listenerContext: { source: 'content-type-change' } });
 		},
 		[cx]
@@ -73,29 +73,41 @@ export const SpotifyEmbedContent: React.FC<TSpotifyEmbedContentProps> = (props) 
 		({ value: node, source }) => {
 			const embedVariant = node.content;
 
-			// Sync contentId to URL
-			if (source === 'content-id-change') {
-				if (embedVariant.contentId.trim().length > 0) {
-					cx.node._v.content.url = `https://open.spotify.com/${embedVariant.contentType}/${embedVariant.contentId.trim()}`;
-					cx.node._notify({ listenerContext: { source: 'spotify-embed-listener' } });
+			switch (source) {
+				case 'content-id-change': {
+					if (embedVariant.contentId.trim().length > 0) {
+						cx.node._v.content.url = createSpotifyUrl(
+							embedVariant.contentType,
+							embedVariant.contentId.trim()
+						);
+						cx.node._notify({ listenerContext: { source: 'spotify-embed-listener' } });
+					}
+					break;
 				}
-				return;
-			}
-
-			// Sync URL to contentId
-			if (source === 'url-change') {
-				const spotifyData = extractSpotifyId(node.content.url);
-				if (
-					spotifyData != null &&
-					(spotifyData.id !== embedVariant.contentId ||
-						spotifyData.type !== embedVariant.contentType)
-				) {
-					embedVariant.contentType = spotifyData.type;
-					embedVariant.contentId = spotifyData.id;
-					cx.node._notify({ listenerContext: { source: 'spotify-embed-listener' } });
+				case 'content-type-change': {
+					if (embedVariant.contentId.trim().length > 0) {
+						cx.node._v.content.url = createSpotifyUrl(
+							embedVariant.contentType,
+							embedVariant.contentId.trim()
+						);
+						cx.node._notify({ listenerContext: { source: 'spotify-embed-listener' } });
+					}
+					break;
 				}
-				// Update display URL to match actual URL
-				setDisplayUrl(node.content.url);
+				case 'url-change': {
+					const spotifyData = extractSpotifyId(node.content.url);
+					if (
+						spotifyData != null &&
+						(spotifyData.id !== embedVariant.contentId ||
+							spotifyData.type !== embedVariant.contentType)
+					) {
+						embedVariant.contentType = spotifyData.type;
+						embedVariant.contentId = spotifyData.id;
+						cx.node._notify({ listenerContext: { source: 'spotify-embed-listener' } });
+					}
+					setDisplayUrl(node.content.url);
+					break;
+				}
 			}
 		},
 		[cx]
@@ -164,10 +176,10 @@ export const SpotifyEmbedContent: React.FC<TSpotifyEmbedContentProps> = (props) 
 			{/* Content Type */}
 			<div className="space-y-1">
 				<Text as="span" variant="bodySm" tone="subdued">
-					Content Type
+					Embed Type
 				</Text>
 				<Select
-					label="Content Type"
+					label="Spotify Type"
 					labelHidden
 					options={[
 						{ label: 'Track', value: 'track' },
