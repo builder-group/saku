@@ -1,4 +1,5 @@
 export * from './check-url-redirect-availability';
+export * from './cleanup-shop-data';
 export * from './create-display-name-from-shop';
 export * from './create-handle-from-shop';
 export * from './create-url-redirect';

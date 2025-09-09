@@ -7363,7 +7363,8 @@ export interface paths {
          * @description The `parent` and `source` objects are present when the repository is a fork. `parent` is the repository this repository was forked from, `source` is the ultimate source for the network.
          *
          *     > [!NOTE]
-         *     > In order to see the `security_and_analysis` block for a repository you must have admin permissions for the repository or be an owner or security manager for the organization that owns the repository. For more information, see "[Managing security managers in your organization](https://docs.github.com/enterprise-server@3.15/organizations/managing-peoples-access-to-your-organization-with-roles/managing-security-managers-in-your-organization)."
+         *     > - In order to see the `security_and_analysis` block for a repository you must have admin permissions for the repository or be an owner or security manager for the organization that owns the repository. For more information, see "[Managing security managers in your organization](https://docs.github.com/enterprise-server@3.15/organizations/managing-peoples-access-to-your-organization-with-roles/managing-security-managers-in-your-organization)."
+         *     > - To view merge-related settings, you must have the `contents:read` and `contents:write` permissions.
          */
         get: operations["repos/get"];
         put?: never;
@@ -16046,7 +16047,7 @@ export interface paths {
          * Create a public SSH key for the authenticated user
          * @description Adds a public SSH key to the authenticated user's GitHub account.
          *
-         *     OAuth app tokens and personal access tokens (classic) need the `write:gpg_key` scope to use this endpoint.
+         *     OAuth app tokens and personal access tokens (classic) need the `write:public_key` scope to use this endpoint.
          */
         post: operations["users/create-public-ssh-key-for-authenticated-user"];
         delete?: never;
@@ -18123,7 +18124,7 @@ export interface components {
              */
             starring?: "read" | "write";
             /**
-             * @description The level of permission to grant the access token to list and manage repositories a user is starring.
+             * @description The level of permission to grant the access token to administer an enterprise account.
              * @enum {string}
              */
             enterprise_administration?: "read" | "write";
@@ -20589,6 +20590,47 @@ export interface components {
             total_blocking: number;
         };
         /**
+         * Issue Field Value
+         * @description A value assigned to an issue field
+         */
+        "issue-field-value": {
+            /**
+             * Format: int64
+             * @description Unique identifier for the issue field.
+             * @example 1
+             */
+            issue_field_id: number;
+            /** @example IFT_GDKND */
+            node_id: string;
+            /**
+             * @description The data type of the issue field
+             * @example text
+             * @enum {string}
+             */
+            data_type: "text" | "single_select" | "number" | "date";
+            /** @description The value of the issue field */
+            value: (string | number) | null;
+            /** @description Details about the selected option (only present for single_select fields) */
+            single_select_option?: {
+                /**
+                 * Format: int64
+                 * @description Unique identifier for the option.
+                 * @example 1
+                 */
+                id: number;
+                /**
+                 * @description The name of the option
+                 * @example High
+                 */
+                name: string;
+                /**
+                 * @description The color of the option
+                 * @example red
+                 */
+                color: string;
+            } | null;
+        };
+        /**
          * Issue
          * @description Issues are a great way to keep track of tasks, enhancements, and bugs for your projects.
          */
@@ -20689,10 +20731,16 @@ export interface components {
             type?: components["schemas"]["issue-type"];
             repository?: components["schemas"]["repository"];
             performed_via_github_app?: components["schemas"]["nullable-integration"];
-            author_association: components["schemas"]["author-association"];
+            author_association?: components["schemas"]["author-association"];
             reactions?: components["schemas"]["reaction-rollup"];
             sub_issues_summary?: components["schemas"]["sub-issues-summary"];
+            /**
+             * Format: uri
+             * @description URL to get the parent issue of this issue, if it is a sub-issue
+             */
+            parent_issue_url?: string | null;
             issue_dependencies_summary?: components["schemas"]["issue-dependencies-summary"];
+            issue_field_values?: components["schemas"]["issue-field-value"][];
         };
         /**
          * Issue Comment
@@ -24388,7 +24436,7 @@ export interface components {
          * @description An actor that can bypass rules in a ruleset
          */
         "repository-ruleset-bypass-actor": {
-            /** @description The ID of the actor that can bypass a ruleset. If `actor_type` is `OrganizationAdmin`, this should be `1`. If `actor_type` is `DeployKey`, this should be null. `OrganizationAdmin` is not applicable for personal repositories. */
+            /** @description The ID of the actor that can bypass a ruleset. Required for `Integration`, `RepositoryRole`, and `Team` actor types. If `actor_type` is `OrganizationAdmin`, this should be `1`. If `actor_type` is `DeployKey`, this should be null. `OrganizationAdmin` is not applicable for personal repositories. */
             actor_id?: number | null;
             /**
              * @description The type of actor that can bypass a ruleset
@@ -26649,6 +26697,8 @@ export interface components {
              * @example true
              */
             is_alphanumeric: boolean;
+            /** Format: date-time */
+            updated_at?: string | null;
         };
         /**
          * Check Dependabot security updates
@@ -29460,10 +29510,16 @@ export interface components {
             type?: components["schemas"]["issue-type"];
             repository?: components["schemas"]["repository"];
             performed_via_github_app?: components["schemas"]["nullable-integration"];
-            author_association: components["schemas"]["author-association"];
+            author_association?: components["schemas"]["author-association"];
             reactions?: components["schemas"]["reaction-rollup"];
             sub_issues_summary?: components["schemas"]["sub-issues-summary"];
+            /**
+             * Format: uri
+             * @description URL to get the parent issue of this issue, if it is a sub-issue
+             */
+            parent_issue_url?: string | null;
             issue_dependencies_summary?: components["schemas"]["issue-dependencies-summary"];
+            issue_field_values?: components["schemas"]["issue-field-value"][];
         } | null;
         /**
          * Issue Event Label
@@ -30087,6 +30143,8 @@ export interface components {
             };
             /** Format: date-time */
             submitted_at?: string;
+            /** Format: date-time */
+            updated_at?: string | null;
             /**
              * @description A commit SHA for the review.
              * @example 54bb654c9e6025347f57900a4a5c2313a96b8035
@@ -31048,6 +31106,8 @@ export interface components {
             created_at: string;
             /** Format: date-time */
             published_at: string | null;
+            /** Format: date-time */
+            updated_at?: string | null;
             author: components["schemas"]["simple-user"];
             assets: components["schemas"]["release-asset"][];
             body_html?: string;
@@ -31586,7 +31646,7 @@ export interface components {
              */
             displayName: string;
             /** @description The group members. */
-            members: {
+            members?: {
                 /**
                  * @description The local unique identifier for the member
                  * @example 23a35c27-23d3-4c03-b4c5-6443c09e7173
@@ -31928,6 +31988,7 @@ export interface components {
             }[];
             sub_issues_summary?: components["schemas"]["sub-issues-summary"];
             issue_dependencies_summary?: components["schemas"]["issue-dependencies-summary"];
+            issue_field_values?: components["schemas"]["issue-field-value"][];
             state: string;
             state_reason?: string | null;
             assignee: components["schemas"]["nullable-simple-user"];
@@ -34408,6 +34469,7 @@ export interface components {
             repository_url: string;
             sub_issues_summary?: components["schemas"]["sub-issues-summary"];
             issue_dependencies_summary?: components["schemas"]["issue-dependencies-summary"];
+            issue_field_values?: components["schemas"]["issue-field-value"][];
             /**
              * @description State of the issue; either 'open' or 'closed'
              * @enum {string}
@@ -34899,6 +34961,7 @@ export interface components {
             repository_url: string;
             sub_issues_summary?: components["schemas"]["sub-issues-summary"];
             issue_dependencies_summary?: components["schemas"]["issue-dependencies-summary"];
+            issue_field_values?: components["schemas"]["issue-field-value"][];
             /**
              * @description State of the issue; either 'open' or 'closed'
              * @enum {string}
@@ -37490,6 +37553,8 @@ export interface components {
             state: string;
             /** Format: date-time */
             submitted_at: string | null;
+            /** Format: date-time */
+            updated_at?: string | null;
             /** User */
             user: {
                 /** Format: uri */
@@ -37640,6 +37705,8 @@ export interface components {
             body: string | null;
             /** Format: date-time */
             created_at: string | null;
+            /** Format: date-time */
+            updated_at: string | null;
             /** Format: uri */
             discussion_url?: string;
             /** @description Whether the release is a draft or published */
@@ -37826,6 +37893,8 @@ export interface components {
             tarball_url: string | null;
             /** @description Specifies the commitish value that determines where the Git tag is created from. */
             target_commitish: string;
+            /** Format: date-time */
+            updated_at: string | null;
             /** Format: uri-template */
             upload_url: string;
             /** Format: uri */
@@ -38347,6 +38416,7 @@ export interface components {
             action?: "completed";
             check_run: components["schemas"]["check-run-with-simple-check-suite"];
             installation?: components["schemas"]["simple-installation"];
+            enterprise?: components["schemas"]["enterprise-webhooks"];
             organization?: components["schemas"]["organization-simple-webhooks"];
             repository: components["schemas"]["repository-webhooks"];
             sender: components["schemas"]["simple-user"];
@@ -38365,6 +38435,7 @@ export interface components {
             action?: "created";
             check_run: components["schemas"]["check-run-with-simple-check-suite"];
             installation?: components["schemas"]["simple-installation"];
+            enterprise?: components["schemas"]["enterprise-webhooks"];
             organization?: components["schemas"]["organization-simple-webhooks"];
             repository: components["schemas"]["repository-webhooks"];
             sender: components["schemas"]["simple-user"];
@@ -38383,6 +38454,7 @@ export interface components {
             action: "requested_action";
             check_run: components["schemas"]["check-run-with-simple-check-suite"];
             installation?: components["schemas"]["simple-installation"];
+            enterprise?: components["schemas"]["enterprise-webhooks"];
             organization?: components["schemas"]["organization-simple-webhooks"];
             repository: components["schemas"]["repository-webhooks"];
             /** @description The action requested by the user. */
@@ -38406,6 +38478,7 @@ export interface components {
             action?: "rerequested";
             check_run: components["schemas"]["check-run-with-simple-check-suite"];
             installation?: components["schemas"]["simple-installation"];
+            enterprise?: components["schemas"]["enterprise-webhooks"];
             organization?: components["schemas"]["organization-simple-webhooks"];
             repository: components["schemas"]["repository-webhooks"];
             sender: components["schemas"]["simple-user"];
@@ -45229,6 +45302,7 @@ export interface components {
                 repository_url: string;
                 sub_issues_summary?: components["schemas"]["sub-issues-summary"];
                 issue_dependencies_summary?: components["schemas"]["issue-dependencies-summary"];
+                issue_field_values?: components["schemas"]["issue-field-value"][];
                 /**
                  * @description State of the issue; either 'open' or 'closed'
                  * @enum {string}
@@ -45719,6 +45793,7 @@ export interface components {
                 repository_url: string;
                 sub_issues_summary?: components["schemas"]["sub-issues-summary"];
                 issue_dependencies_summary?: components["schemas"]["issue-dependencies-summary"];
+                issue_field_values?: components["schemas"]["issue-field-value"][];
                 /**
                  * @description State of the issue; either 'open' or 'closed'
                  * @enum {string}
@@ -46146,6 +46221,7 @@ export interface components {
                 repository_url: string;
                 sub_issues_summary?: components["schemas"]["sub-issues-summary"];
                 issue_dependencies_summary?: components["schemas"]["issue-dependencies-summary"];
+                issue_field_values?: components["schemas"]["issue-field-value"][];
                 /**
                  * @description State of the issue; either 'open' or 'closed'
                  * @enum {string}
@@ -46586,6 +46662,7 @@ export interface components {
                 repository_url: string;
                 sub_issues_summary?: components["schemas"]["sub-issues-summary"];
                 issue_dependencies_summary?: components["schemas"]["issue-dependencies-summary"];
+                issue_field_values?: components["schemas"]["issue-field-value"][];
                 /**
                  * @description State of the issue; either 'open' or 'closed'
                  * @enum {string}
@@ -47015,6 +47092,7 @@ export interface components {
                 repository_url: string;
                 sub_issues_summary?: components["schemas"]["sub-issues-summary"];
                 issue_dependencies_summary?: components["schemas"]["issue-dependencies-summary"];
+                issue_field_values?: components["schemas"]["issue-field-value"][];
                 /**
                  * @description State of the issue; either 'open' or 'closed'
                  * @enum {string}
@@ -47446,6 +47524,7 @@ export interface components {
                 repository_url: string;
                 sub_issues_summary?: components["schemas"]["sub-issues-summary"];
                 issue_dependencies_summary?: components["schemas"]["issue-dependencies-summary"];
+                issue_field_values?: components["schemas"]["issue-field-value"][];
                 /**
                  * @description State of the issue; either 'open' or 'closed'
                  * @enum {string}
@@ -47873,6 +47952,7 @@ export interface components {
                 repository_url: string;
                 sub_issues_summary?: components["schemas"]["sub-issues-summary"];
                 issue_dependencies_summary?: components["schemas"]["issue-dependencies-summary"];
+                issue_field_values?: components["schemas"]["issue-field-value"][];
                 /**
                  * @description State of the issue; either 'open' or 'closed'
                  * @enum {string}
@@ -48302,6 +48382,7 @@ export interface components {
                     repository_url?: string;
                     sub_issues_summary?: components["schemas"]["sub-issues-summary"];
                     issue_dependencies_summary?: components["schemas"]["issue-dependencies-summary"];
+                    issue_field_values?: components["schemas"]["issue-field-value"][];
                     /**
                      * @description State of the issue; either 'open' or 'closed'
                      * @enum {string}
@@ -48971,6 +49052,7 @@ export interface components {
                 repository_url: string;
                 sub_issues_summary?: components["schemas"]["sub-issues-summary"];
                 issue_dependencies_summary?: components["schemas"]["issue-dependencies-summary"];
+                issue_field_values?: components["schemas"]["issue-field-value"][];
                 /**
                  * @description State of the issue; either 'open' or 'closed'
                  * @enum {string}
@@ -49409,6 +49491,7 @@ export interface components {
                 repository_url: string;
                 sub_issues_summary?: components["schemas"]["sub-issues-summary"];
                 issue_dependencies_summary?: components["schemas"]["issue-dependencies-summary"];
+                issue_field_values?: components["schemas"]["issue-field-value"][];
                 /**
                  * @description State of the issue; either 'open' or 'closed'
                  * @enum {string}
@@ -49837,6 +49920,7 @@ export interface components {
                     repository_url: string;
                     sub_issues_summary?: components["schemas"]["sub-issues-summary"];
                     issue_dependencies_summary?: components["schemas"]["issue-dependencies-summary"];
+                    issue_field_values?: components["schemas"]["issue-field-value"][];
                     /**
                      * @description State of the issue; either 'open' or 'closed'
                      * @enum {string}
@@ -50548,6 +50632,7 @@ export interface components {
                 repository_url: string;
                 sub_issues_summary?: components["schemas"]["sub-issues-summary"];
                 issue_dependencies_summary?: components["schemas"]["issue-dependencies-summary"];
+                issue_field_values?: components["schemas"]["issue-field-value"][];
                 /**
                  * @description State of the issue; either 'open' or 'closed'
                  * @enum {string}
@@ -63104,6 +63189,8 @@ export interface components {
                 state: "dismissed" | "approved" | "changes_requested";
                 /** Format: date-time */
                 submitted_at: string;
+                /** Format: date-time */
+                updated_at?: string | null;
                 /** User */
                 user: {
                     /** Format: uri */
@@ -71578,6 +71665,8 @@ export interface components {
                 }[];
                 node_id: string;
             };
+            /** Format: date-time */
+            updated_at?: string | null;
         };
         /** pull_request_review_thread unresolved event */
         "webhook-pull-request-review-thread-unresolved": {
@@ -72792,6 +72881,8 @@ export interface components {
                 }[];
                 node_id: string;
             };
+            /** Format: date-time */
+            updated_at?: string | null;
         };
         /** pull_request synchronize event */
         "webhook-pull-request-synchronize": {
@@ -78540,6 +78631,8 @@ export interface components {
                 target_commitish: string;
                 /** Format: uri-template */
                 upload_url: string;
+                /** Format: date-time */
+                updated_at: string | null;
                 /** Format: uri */
                 url: string;
                 /** Format: uri */
@@ -84214,7 +84307,7 @@ export interface operations {
                 /** @description If specified, only return advisories that affect any of `package` or `package@version`. A maximum of 1000 packages can be specified.
                  *     If the query parameter causes the URL to exceed the maximum URL length supported by your client, you must specify fewer packages.
                  *
-                 *     Example: `affects=package1,package2@1.0.0,package3@^2.0.0` or `affects[]=package1&affects[]=package2@1.0.0` */
+                 *     Example: `affects=package1,package2@1.0.0,package3@2.0.0` or `affects[]=package1&affects[]=package2@1.0.0` */
                 affects?: string | string[];
                 /** @description If specified, only return advisories that were published on a date or date range.
                  *

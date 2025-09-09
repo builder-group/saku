@@ -124,6 +124,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/shopify/shop/reset": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Reset all shop settings to default values
+         * @description Reset all settings to their default values. This action cannot be undone.
+         */
+        post: operations["resetShopSettings"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/shopify/site": {
         parameters: {
             query?: never;
@@ -690,6 +710,10 @@ export interface components {
                     }[];
                 }[];
             }[];
+        };
+        ResetShopSettingsDto: {
+            /** @example Shop settings reset successfully */
+            message: string;
         };
         SiteSummaryDto: {
             /**
@@ -1258,6 +1282,44 @@ export interface operations {
             };
             /** @description Resource not found */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppErrorDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppErrorDto"];
+                };
+            };
+        };
+    };
+    resetShopSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResetShopSettingsDto"];
+                };
+            };
+            /** @description Bad request */
+            400: {
                 headers: {
                     [name: string]: unknown;
                 };

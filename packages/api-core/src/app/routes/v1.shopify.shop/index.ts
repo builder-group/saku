@@ -1,6 +1,7 @@
 import { AppError } from '@repo/hono-utils';
 import { router } from '@/app/router';
 import {
+	cleanupShopData,
 	getRecommendedProducts,
 	getShopifyOfflineAccessToken,
 	getShopInfo,
@@ -8,7 +9,7 @@ import {
 } from '@/lib';
 import { getMainTheme, getParsedThemeSettingsData } from '@/lib/shopify';
 import { extractThemeDataFromSettings } from '@/lib/shopify/theme/extract-theme-data';
-import { GetShopOverviewRoute } from './schema';
+import { GetShopOverviewRoute, ResetShopSettingsRoute } from './schema';
 
 router.openapi(GetShopOverviewRoute, async (c) => {
 	const { shopId } = (await verifyShopifySession(c)).unwrap();
@@ -98,6 +99,19 @@ router.openapi(GetShopOverviewRoute, async (c) => {
 			},
 			socialLinks: themeSettings.socialLinks,
 			recommendedProducts: recommendedProducts.products
+		},
+		200
+	);
+});
+
+router.openapi(ResetShopSettingsRoute, async (c) => {
+	const { shopId } = (await verifyShopifySession(c)).unwrap();
+
+	await cleanupShopData(shopId);
+
+	return c.json(
+		{
+			message: 'Shop settings reset successfully'
 		},
 		200
 	);

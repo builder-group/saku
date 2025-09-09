@@ -1,16 +1,37 @@
 import { shortId } from '@blgc/utils';
+import { useAppBridge } from '@shopify/app-bridge-react';
 import React from 'react';
+import { useNavigate } from 'react-router';
 import { useCrisp } from '@/components';
-import { appConfig } from '@/environment';
+import { appConfig, coreApiClient, logger } from '@/environment';
+import { createShopifyTokenMiddleware } from '@/lib';
 
 // https://shopify.dev/docs/api/app-home/patterns/settings
 const Page: React.FC = () => {
 	const crisp = useCrisp();
+	const shopifyBridge = useAppBridge();
+	const navigate = useNavigate();
+	const [isResetting, setIsResetting] = React.useState(false);
 
-	const handleResetSettings = React.useCallback(() => {
-		// TODO: Implement reset settings functionality
-		console.log('Reset settings clicked');
-	}, []);
+	const handleResetSettings = React.useCallback(async () => {
+		setIsResetting(true);
+
+		const result = await coreApiClient.post('/v1/shopify/shop/reset', undefined, {
+			requestMiddlewares: [createShopifyTokenMiddleware(shopifyBridge)]
+		});
+		if (result.isErr()) {
+			logger.error('Failed to reset settings:', result.error);
+			shopifyBridge.toast.show('Failed to reset settings. Please try again.', {
+				isError: true,
+				duration: 5000
+			});
+			setIsResetting(false);
+			return;
+		}
+
+		// Success - redirect to onboarding
+		navigate('/app/onboarding');
+	}, [shopifyBridge, navigate]);
 
 	const handleStartChat = React.useCallback(() => {
 		crisp?.openChat();
@@ -106,7 +127,12 @@ const Page: React.FC = () => {
 										Reset all settings to their default values. This action cannot be undone.
 									</s-paragraph>
 								</s-box>
-								<s-button tone="critical" onClick={handleResetSettings}>
+								<s-button
+									tone="critical"
+									onClick={handleResetSettings}
+									loading={isResetting}
+									disabled={isResetting}
+								>
 									Reset
 								</s-button>
 							</s-grid>

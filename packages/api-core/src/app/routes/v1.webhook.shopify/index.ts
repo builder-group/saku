@@ -1,14 +1,7 @@
 import { and, eq } from 'drizzle-orm';
 import { router } from '@/app/router';
-import {
-	db,
-	logger,
-	shopifySessionTable,
-	siteTable,
-	workspaceAccountTable,
-	workspaceTable
-} from '@/environment';
-import { createHandleFromShop, sendUninstallFeedbackEmail, verifyShopifyWebhook } from '@/lib';
+import { db, logger, shopifySessionTable, siteTable, workspaceAccountTable } from '@/environment';
+import { cleanupShopData, sendUninstallFeedbackEmail, verifyShopifyWebhook } from '@/lib';
 import {
 	AppScopesUpdateWebhookRoute,
 	AppUninstalledWebhookRoute,
@@ -66,64 +59,7 @@ router.openapi(ShopRedactWebhookRoute, async (c) => {
 	// Delete all data related to this shop
 	// This happens 48 hours after app uninstallation
 
-	// 1. Delete Shopify sessions for this shop
-	const deletedSessions = await db
-		.delete(shopifySessionTable)
-		.where(eq(shopifySessionTable.shopId, shopDomain))
-		.returning({ sessionId: shopifySessionTable.sessionId });
-
-	logger.info(`Deleted ${deletedSessions.length} Shopify sessions for shop: ${shopDomain}`);
-
-	// 2. Delete workspace account data (Shopify store connection)
-	const deletedShopifyAccounts = await db
-		.delete(workspaceAccountTable)
-		.where(
-			and(
-				eq(workspaceAccountTable.provider, 'shopify'),
-				eq(workspaceAccountTable.providerAccountId, shopDomain)
-			)
-		)
-		.returning({ workspaceId: workspaceAccountTable.workspaceId });
-
-	logger.info(
-		`Deleted ${deletedShopifyAccounts.length} workspace accounts for shop: ${shopDomain}`
-	);
-
-	const shopHandle = createHandleFromShop(shopDomain);
-
-	// 3. Delete workspace if it was created specifically for this Shopify store
-	// and no other accounts are connected to it
-	// Note: Currently, workspace = single Shopify store (1:1 relationship)
-	// While the schema supports multiple stores per workspace (future SaaS),
-	// we currently enforce 1 store = 1 workspace for simplicity.
-	// This is enforced by setting the workspace handle to the shop handle.
-	for (const deletedShopifyAccount of deletedShopifyAccounts) {
-		const workspaceId = deletedShopifyAccount.workspaceId;
-
-		// Get workspace info and remaining account count
-		const [workspace] = await db
-			.select({
-				id: workspaceTable.id,
-				remainingAccountCount: db.$count(
-					workspaceAccountTable,
-					eq(workspaceAccountTable.workspaceId, workspaceId)
-				)
-			})
-			.from(workspaceTable)
-			.where(and(eq(workspaceTable.id, workspaceId), eq(workspaceTable.handle, shopHandle)))
-			.limit(1);
-
-		// Only delete if workspace exists with correct handle and has no remaining accounts
-		// Note: Shopify account was deleted in the previous step
-		// Note: This will cascade delete: sites, workspace members, and all related content
-		if (workspace != null && workspace.remainingAccountCount === 0) {
-			await db.delete(workspaceTable).where(eq(workspaceTable.id, workspaceId));
-			logger.info(
-				`Deleted workspace and all associated data for shop: ${shopDomain} (ID: ${workspaceId}, handle: ${shopHandle})`
-			);
-			logger.info(`  - Cascade deleted: sites, workspace members, site content`);
-		}
-	}
+	await cleanupShopData(shopDomain);
 
 	// Note: We do NOT delete user accounts in shop/redact
 	// - Users may have multiple shops/workspaces

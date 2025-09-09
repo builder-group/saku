@@ -179,3 +179,23 @@ export const GetShopOverviewRoute = createRoute({
 		500: InternalServerErrorResponse
 	}
 });
+
+export const ResetShopSettingsRoute = createRoute({
+	method: 'post',
+	path: '/v1/shopify/shop/reset',
+	tags: ['shopify', 'shop'],
+	summary: 'Reset all shop settings to default values',
+	operationId: 'resetShopSettings',
+	description: 'Reset all settings to their default values. This action cannot be undone.',
+	responses: {
+		200: JsonSuccessResponse(
+			z
+				.object({
+					message: z.string().openapi({ example: 'Shop settings reset successfully' })
+				})
+				.openapi('ResetShopSettingsDto')
+		),
+		400: BadRequestResponse,
+		500: InternalServerErrorResponse
+	}
+});
