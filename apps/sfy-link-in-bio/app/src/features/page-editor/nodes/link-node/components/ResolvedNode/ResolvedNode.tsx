@@ -3,10 +3,12 @@ import { TResolvedNodeProps } from '../../../../lib';
 import {
 	TResolvedLinkNode,
 	TResolvedSingleLinkNodeContent,
-	TResolvedYouTubeVideoEmbedLinkNodeContent
+	TResolvedSpotifyEmbedLinkNodeContent,
+	TResolvedYouTubeEmbedLinkNodeContent
 } from '../../types';
 import { DefaultContent } from './SingleContent';
-import { YouTubeVideoEmbedContent } from './YouTubeVideoEmbedContent';
+import { SpotifyEmbedContent } from './SpotifyEmbedContent';
+import { YouTubeEmbedContent } from './YouTubeEmbedContent';
 
 export const ResolvedLinkNode = React.forwardRef<
 	HTMLDivElement,
@@ -24,10 +26,17 @@ export const ResolvedLinkNode = React.forwardRef<
 						cx={cx}
 					/>
 				);
-			case 'youtube-video-embed':
+			case 'youtube-embed':
 				return (
-					<YouTubeVideoEmbedContent
-						node={node as TResolvedLinkNode<TResolvedYouTubeVideoEmbedLinkNodeContent>}
+					<YouTubeEmbedContent
+						node={node as TResolvedLinkNode<TResolvedYouTubeEmbedLinkNodeContent>}
+						cx={cx}
+					/>
+				);
+			case 'spotify-embed':
+				return (
+					<SpotifyEmbedContent
+						node={node as TResolvedLinkNode<TResolvedSpotifyEmbedLinkNodeContent>}
 						cx={cx}
 					/>
 				);

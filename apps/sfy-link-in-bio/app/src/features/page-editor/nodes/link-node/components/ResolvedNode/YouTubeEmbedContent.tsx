@@ -1,8 +1,8 @@
 import React from 'react';
 import { TResolvedNodeProps } from '../../../../lib';
-import { TResolvedLinkNode, TResolvedYouTubeVideoEmbedLinkNodeContent } from '../../types';
+import { TResolvedLinkNode, TResolvedYouTubeEmbedLinkNodeContent } from '../../types';
 
-export const YouTubeVideoEmbedContent: React.FC<TYouTubeVideoEmbedContentProps> = (props) => {
+export const YouTubeEmbedContent: React.FC<TYouTubeEmbedContentProps> = (props) => {
 	const {
 		node: { content, autoLayout, appearance, fill, stroke, shadow }
 	} = props;
@@ -22,7 +22,9 @@ export const YouTubeVideoEmbedContent: React.FC<TYouTubeVideoEmbedContentProps> 
 				<iframe
 					src={content.embedUrl}
 					className="absolute inset-0 h-full w-full"
-					allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+					title="YouTube video player"
+					allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+					referrerPolicy="strict-origin-when-cross-origin"
 					allowFullScreen
 				></iframe>
 			</div>
@@ -30,7 +32,7 @@ export const YouTubeVideoEmbedContent: React.FC<TYouTubeVideoEmbedContentProps> 
 	);
 };
 
-interface TYouTubeVideoEmbedContentProps {
-	node: TResolvedLinkNode<TResolvedYouTubeVideoEmbedLinkNodeContent>;
-	cx: TResolvedNodeProps<TResolvedLinkNode<TResolvedYouTubeVideoEmbedLinkNodeContent>>['cx'];
+interface TYouTubeEmbedContentProps {
+	node: TResolvedLinkNode<TResolvedYouTubeEmbedLinkNodeContent>;
+	cx: TResolvedNodeProps<TResolvedLinkNode<TResolvedYouTubeEmbedLinkNodeContent>>['cx'];
 }

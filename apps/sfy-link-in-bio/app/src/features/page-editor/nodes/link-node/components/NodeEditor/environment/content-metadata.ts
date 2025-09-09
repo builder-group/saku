@@ -2,13 +2,14 @@ import {
 	TLinkNode,
 	TLinkNodeContent,
 	TSingleLinkNodeContent,
-	TYouTubeVideoEmbedLinkNodeContent
+	TSpotifyEmbedLinkNodeContent,
+	TYouTubeEmbedLinkNodeContent
 } from '@repo/editor';
 import { ShopifyGlobal } from '@shopify/app-bridge-react';
 import { Err, Ok, type TResult } from 'tuple-result';
 import { AppError } from '@/lib';
 import { TNodeState, TPageEditor } from '../../../../../lib';
-import { extractYouTubeVideoId, fetchUrlMetadata } from '../lib';
+import { extractSpotifyId, extractYouTubeId, fetchUrlMetadata } from '../lib';
 
 export const contentMetadataMap = {
 	'single': {
@@ -58,50 +59,109 @@ export const contentMetadataMap = {
 			return Ok(undefined);
 		}
 	} satisfies TContentMetadata<TSingleLinkNodeContent>,
-	'youtube-video-embed': {
-		type: 'youtube-video-embed',
-		label: 'YouTube Video Embed',
+	'youtube-embed': {
+		type: 'youtube-embed',
+		label: 'YouTube Embed',
 		isApplicable(url) {
 			if (!url.trim().length) {
 				return false;
 			}
-
-			return (
-				/^https?:\/\/(www\.)?youtube\.com\/watch\?v=/i.test(url) ||
-				/^https?:\/\/youtu\.be\//i.test(url)
-			);
+			const youtubeData = extractYouTubeId(url);
+			return youtubeData != null;
 		},
 		extractCommonFields() {
 			return {};
 		},
 		async createContent(cx) {
-			const videoId = extractYouTubeVideoId(cx.url) ?? '';
+			const youtubeData = extractYouTubeId(cx.url);
+			if (youtubeData == null) {
+				return Err(
+					new AppError('#ERR_INVALID_YOUTUBE_URL', {
+						detail: 'Invalid YouTube URL'
+					})
+				);
+			}
+
 			cx.node._v.content = {
-				type: 'youtube-video-embed',
+				type: 'youtube-embed',
 				url: cx.url,
-				videoId
+				contentType: youtubeData.type,
+				contentId: youtubeData.id
 			};
 			cx.node._notify();
 			return Ok(undefined);
 		},
 		async enhanceContent(cx) {
-			const videoId = extractYouTubeVideoId(cx.url) ?? '';
-			const content = cx.node._v.content;
+			const youtubeData = extractYouTubeId(cx.url);
+			if (youtubeData == null) {
+				return Ok(undefined);
+			}
 
-			if (videoId !== content.videoId) {
-				content.videoId = videoId;
+			const content = cx.node._v.content;
+			if (youtubeData.type !== content.contentType || youtubeData.id !== content.contentId) {
+				content.contentType = youtubeData.type;
+				content.contentId = youtubeData.id;
 				cx.node._notify();
 			}
 
 			return Ok(undefined);
 		}
-	} satisfies TContentMetadata<TYouTubeVideoEmbedLinkNodeContent>
+	} satisfies TContentMetadata<TYouTubeEmbedLinkNodeContent>,
+	'spotify-embed': {
+		type: 'spotify-embed',
+		label: 'Spotify Embed',
+		isApplicable(url) {
+			if (!url.trim().length) {
+				return false;
+			}
+			const spotifyData = extractSpotifyId(url);
+			return spotifyData != null;
+		},
+		extractCommonFields() {
+			return {};
+		},
+		async createContent(cx) {
+			const spotifyData = extractSpotifyId(cx.url);
+			if (spotifyData == null) {
+				return Err(
+					new AppError('#ERR_INVALID_SPOTIFY_URL', {
+						detail: 'Invalid Spotify URL'
+					})
+				);
+			}
+
+			cx.node._v.content = {
+				type: 'spotify-embed',
+				url: cx.url,
+				contentType: spotifyData.type,
+				contentId: spotifyData.id,
+				height: 352 // Default to normal height
+			};
+			cx.node._notify();
+			return Ok(undefined);
+		},
+		async enhanceContent(cx) {
+			const spotifyData = extractSpotifyId(cx.url);
+			if (spotifyData == null) {
+				return Ok(undefined);
+			}
+
+			const content = cx.node._v.content;
+			if (spotifyData.type !== content.contentType || spotifyData.id !== content.contentId) {
+				content.contentType = spotifyData.type;
+				content.contentId = spotifyData.id;
+				cx.node._notify();
+			}
+
+			return Ok(undefined);
+		}
+	} satisfies TContentMetadata<TSpotifyEmbedLinkNodeContent>
 };
 
 export const contentMetadata = Object.values(contentMetadataMap);
 
 // Content type priority for auto-switching (most specific to most generic)
-export const contentTypePriority: TContentType[] = ['youtube-video-embed', 'single'];
+export const contentTypePriority: TContentType[] = ['youtube-embed', 'spotify-embed', 'single'];
 
 export type TContentType = keyof typeof contentMetadataMap;
 

@@ -11,6 +11,8 @@ import {
 	resolveStrokeStyleMixin,
 	resolveTextStyleMixin
 } from '../../mixins';
+import { createSpotifyEmbedUrl } from './components/NodeEditor/lib/spotify-embed';
+import { createYouTubeEmbedUrl } from './components/NodeEditor/lib/youtube-embed';
 import { TResolvedLinkNode, TResolvedLinkNodeContent } from './types';
 
 export function resolveLinkNode(
@@ -34,11 +36,20 @@ export function resolveLinkNode(
 			};
 			break;
 		}
-		case 'youtube-video-embed': {
+		case 'youtube-embed': {
 			resolvedContent = {
-				type: 'youtube-video-embed',
+				type: 'youtube-embed',
 				url: content.url,
-				embedUrl: `https://www.youtube.com/embed/${content.videoId}`
+				embedUrl: createYouTubeEmbedUrl(content.contentType, content.contentId)
+			};
+			break;
+		}
+		case 'spotify-embed': {
+			resolvedContent = {
+				type: 'spotify-embed',
+				url: content.url,
+				embedUrl: createSpotifyEmbedUrl(content.contentType, content.contentId),
+				height: content.height
 			};
 			break;
 		}

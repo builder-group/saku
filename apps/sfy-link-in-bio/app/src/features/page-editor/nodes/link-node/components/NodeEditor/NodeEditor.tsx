@@ -1,4 +1,9 @@
-import { TLinkNode, TSingleLinkNodeContent, TYouTubeVideoEmbedLinkNodeContent } from '@repo/editor';
+import {
+	TLinkNode,
+	TSingleLinkNodeContent,
+	TSpotifyEmbedLinkNodeContent,
+	TYouTubeEmbedLinkNodeContent
+} from '@repo/editor';
 import { useAppBridge } from '@shopify/app-bridge-react';
 import { Select, Text } from '@shopify/polaris';
 import { useCompute, useFeatureState } from 'feature-react/state';
@@ -18,7 +23,8 @@ import { ContentSkeleton } from './ContentSkeleton';
 import { createNodeEditorContext, TNodeEditorContext } from './create-node-editor-context';
 import { contentMetadataMap, TContentType } from './environment';
 import { SingleContent } from './SingleContent';
-import { YoutubeVideoEmbedContent } from './YoutubeVideoEmbedContent';
+import { SpotifyEmbedContent } from './SpotifyEmbedContent';
+import { YoutubeEmbedContent } from './YoutubeEmbedContent';
 
 export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (props) => {
 	const { nodeState, editor } = props;
@@ -74,10 +80,17 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 				return (
 					<SingleContent cx={cx as TNodeEditorContext<TSingleLinkNodeContent>} className="z-10" />
 				);
-			case 'youtube-video-embed':
+			case 'youtube-embed':
 				return (
-					<YoutubeVideoEmbedContent
-						cx={cx as TNodeEditorContext<TYouTubeVideoEmbedLinkNodeContent>}
+					<YoutubeEmbedContent
+						cx={cx as TNodeEditorContext<TYouTubeEmbedLinkNodeContent>}
+						className="z-10"
+					/>
+				);
+			case 'spotify-embed':
+				return (
+					<SpotifyEmbedContent
+						cx={cx as TNodeEditorContext<TSpotifyEmbedLinkNodeContent>}
 						className="z-10"
 					/>
 				);

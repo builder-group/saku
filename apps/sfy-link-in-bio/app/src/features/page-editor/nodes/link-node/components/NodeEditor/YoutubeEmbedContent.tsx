@@ -1,12 +1,12 @@
-import { TYouTubeVideoEmbedLinkNodeContent } from '@repo/editor';
-import { Text, TextField } from '@shopify/polaris';
+import { TYouTubeEmbedLinkNodeContent } from '@repo/editor';
+import { Select, Text, TextField } from '@shopify/polaris';
 import { useCompute, useFeatureState, useListener } from 'feature-react/state';
 import React from 'react';
 import { cn } from '@/lib';
 import { TNodeEditorContext } from './create-node-editor-context';
-import { extractYouTubeVideoId } from './lib';
+import { extractYouTubeId } from './lib';
 
-export const YoutubeVideoEmbedContent: React.FC<TYoutubeVideoEmbedContentProps> = (props) => {
+export const YoutubeEmbedContent: React.FC<TYoutubeEmbedContentProps> = (props) => {
 	const { cx, className } = props;
 
 	const content = useCompute(cx.node, ({ value }) => value.content, [], { isEqual: false });
@@ -30,10 +30,18 @@ export const YoutubeVideoEmbedContent: React.FC<TYoutubeVideoEmbedContentProps> 
 		});
 	}, [cx, displayUrl]);
 
-	const handleVideoIdChange = React.useCallback(
+	const handleContentTypeChange = React.useCallback(
 		(value: string) => {
-			cx.node._v.content.videoId = value;
-			cx.node._notify({ listenerContext: { source: 'video-id-change' } });
+			cx.node._v.content.contentType = value as 'video' | 'playlist';
+			cx.node._notify({ listenerContext: { source: 'content-type-change' } });
+		},
+		[cx]
+	);
+
+	const handleContentIdChange = React.useCallback(
+		(value: string) => {
+			cx.node._v.content.contentId = value;
+			cx.node._notify({ listenerContext: { source: 'content-id-change' } });
 		},
 		[cx]
 	);
@@ -57,21 +65,30 @@ export const YoutubeVideoEmbedContent: React.FC<TYoutubeVideoEmbedContentProps> 
 		({ value: node, source }) => {
 			const embedVariant = node.content;
 
-			// Sync videoId to URL
-			if (source === 'video-id-change') {
-				if (embedVariant.videoId.trim().length > 0) {
-					cx.node._v.content.url = `https://www.youtube.com/watch?v=${embedVariant.videoId.trim()}`;
-					cx.node._notify({ listenerContext: { source: 'video-embed-listener' } });
+			// Sync contentId to URL
+			if (source === 'content-id-change') {
+				if (embedVariant.contentId.trim().length > 0) {
+					if (embedVariant.contentType === 'video') {
+						cx.node._v.content.url = `https://www.youtube.com/watch?v=${embedVariant.contentId.trim()}`;
+					} else {
+						cx.node._v.content.url = `https://www.youtube.com/playlist?list=${embedVariant.contentId.trim()}`;
+					}
+					cx.node._notify({ listenerContext: { source: 'youtube-embed-listener' } });
 				}
 				return;
 			}
 
-			// Sync URL to videoId
+			// Sync URL to contentId
 			if (source === 'url-change') {
-				const videoId = extractYouTubeVideoId(node.content.url);
-				if (videoId != null && videoId !== embedVariant.videoId) {
-					embedVariant.videoId = videoId;
-					cx.node._notify({ listenerContext: { source: 'video-embed-listener' } });
+				const youtubeData = extractYouTubeId(node.content.url);
+				if (
+					youtubeData != null &&
+					(youtubeData.id !== embedVariant.contentId ||
+						youtubeData.type !== embedVariant.contentType)
+				) {
+					embedVariant.contentType = youtubeData.type;
+					embedVariant.contentId = youtubeData.id;
+					cx.node._notify({ listenerContext: { source: 'youtube-embed-listener' } });
 				}
 				// Update display URL to match actual URL
 				setDisplayUrl(node.content.url);
@@ -110,19 +127,39 @@ export const YoutubeVideoEmbedContent: React.FC<TYoutubeVideoEmbedContentProps> 
 				/>
 			</div>
 
-			{/* Video ID */}
+			{/* Content Type */}
 			<div className="space-y-1">
 				<Text as="span" variant="bodySm" tone="subdued">
-					Video ID
+					Content Type
+				</Text>
+				<Select
+					label="Content Type"
+					labelHidden
+					options={[
+						{ label: 'Video', value: 'video' },
+						{ label: 'Playlist', value: 'playlist' }
+					]}
+					value={content.contentType}
+					onChange={handleContentTypeChange}
+					disabled={isEnhancing}
+				/>
+			</div>
+
+			{/* Content ID */}
+			<div className="space-y-1">
+				<Text as="span" variant="bodySm" tone="subdued">
+					{content.contentType === 'video' ? 'Video ID' : 'Playlist ID'}
 				</Text>
 				<TextField
-					id="video-id-field"
-					label="Video ID"
+					id="content-id-field"
+					label={content.contentType === 'video' ? 'Video ID' : 'Playlist ID'}
 					labelHidden
-					value={content.videoId}
-					onChange={handleVideoIdChange}
+					value={content.contentId}
+					onChange={handleContentIdChange}
 					autoComplete="off"
-					placeholder="dQw4w9WgXcQ"
+					placeholder={
+						content.contentType === 'video' ? 'dQw4w9WgXcQ' : 'PLFzsFUO-y0HAXM8e7CzDHI6fGmLVZjObn'
+					}
 					disabled={isEnhancing}
 				/>
 			</div>
@@ -130,7 +167,7 @@ export const YoutubeVideoEmbedContent: React.FC<TYoutubeVideoEmbedContentProps> 
 	);
 };
 
-interface TYoutubeVideoEmbedContentProps {
-	cx: TNodeEditorContext<TYouTubeVideoEmbedLinkNodeContent>;
+interface TYoutubeEmbedContentProps {
+	cx: TNodeEditorContext<TYouTubeEmbedLinkNodeContent>;
 	className: string;
 }

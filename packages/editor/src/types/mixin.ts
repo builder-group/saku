@@ -118,7 +118,10 @@ export type TLinkNodeMixin<GContent extends TLinkNodeContent = TLinkNodeContent>
 	}
 >;
 
-export type TLinkNodeContent = TSingleLinkNodeContent | TYouTubeVideoEmbedLinkNodeContent;
+export type TLinkNodeContent =
+	| TSingleLinkNodeContent
+	| TYouTubeEmbedLinkNodeContent
+	| TSpotifyEmbedLinkNodeContent;
 
 export interface TSingleLinkNodeContent extends TBaseContentVariant {
 	type: 'single';
@@ -133,11 +136,22 @@ export interface TSingleLinkNodeContent extends TBaseContentVariant {
 	favicon?: TAssetHash;
 }
 
-export interface TYouTubeVideoEmbedLinkNodeContent extends TBaseContentVariant {
-	type: 'youtube-video-embed';
+export interface TYouTubeEmbedLinkNodeContent extends TBaseContentVariant {
+	type: 'youtube-embed';
 	url: string;
-	videoId: string;
+	contentType: TYouTubeEmbedContentType;
+	contentId: string;
 }
+export type TYouTubeEmbedContentType = 'video' | 'playlist';
+
+export interface TSpotifyEmbedLinkNodeContent extends TBaseContentVariant {
+	type: 'spotify-embed';
+	url: string;
+	contentType: TSpotifyEmbedContentType;
+	contentId: string;
+	height: number; // normal = 352px, compact = 152px
+}
+export type TSpotifyEmbedContentType = 'track' | 'album' | 'playlist' | 'artist';
 
 // export interface TMultiLinkNodeContent extends TBaseContentVariant {
 // 	type: 'multi';

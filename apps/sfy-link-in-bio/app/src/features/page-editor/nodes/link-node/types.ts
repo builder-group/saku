@@ -40,7 +40,8 @@ export type TResolvedLinkNodeMixin<
 
 export type TResolvedLinkNodeContent =
 	| TResolvedSingleLinkNodeContent
-	| TResolvedYouTubeVideoEmbedLinkNodeContent;
+	| TResolvedYouTubeEmbedLinkNodeContent
+	| TResolvedSpotifyEmbedLinkNodeContent;
 
 export interface TResolvedSingleLinkNodeContent {
 	type: 'single';
@@ -50,8 +51,15 @@ export interface TResolvedSingleLinkNodeContent {
 	favicon?: TResolvedAsset;
 }
 
-export interface TResolvedYouTubeVideoEmbedLinkNodeContent {
-	type: 'youtube-video-embed';
+export interface TResolvedYouTubeEmbedLinkNodeContent {
+	type: 'youtube-embed';
 	url: string;
 	embedUrl: string;
+}
+
+export interface TResolvedSpotifyEmbedLinkNodeContent {
+	type: 'spotify-embed';
+	url: string;
+	embedUrl: string;
+	height: number;
 }
