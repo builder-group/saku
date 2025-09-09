@@ -16,7 +16,7 @@ export function createNodeEditorContext<GContent extends TLinkNodeContent>(
 		node,
 		editor,
 		shopify,
-		selectedContentType: createState<TContentType>('single'),
+		selectedContentType: createState<TContentType>(node._v.content.type),
 		applicableContentTypes: createState(getApplicableContent(node._v.content.url)),
 		isChangingContentType: createState(false),
 		isEnhancing: createState(false),
