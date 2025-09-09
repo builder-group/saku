@@ -18,7 +18,7 @@ export const SpotifyEmbedContent: React.FC<TSpotifyEmbedContentProps> = (props) 
 				...shadow?.styles
 			}}
 		>
-			<div className="relative h-auto w-full">
+			<div className="relative w-full" style={{ height: content.height }}>
 				<iframe
 					src={content.embedUrl}
 					className="absolute inset-0 h-full w-full"

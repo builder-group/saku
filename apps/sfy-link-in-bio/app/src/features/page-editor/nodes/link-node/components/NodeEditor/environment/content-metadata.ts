@@ -136,7 +136,7 @@ export const contentMetadataMap = {
 				url: cx.url,
 				contentType: spotifyData.type,
 				contentId: spotifyData.id,
-				height: 352 // Default to normal height
+				height: 152 // Default to compact height
 			};
 			cx.node._notify();
 			return Ok(undefined);

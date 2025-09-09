@@ -14,6 +14,34 @@ export const YoutubeEmbedContent: React.FC<TYoutubeEmbedContentProps> = (props) 
 
 	const [displayUrl, setDisplayUrl] = React.useState(content.url);
 
+	const contentTypeLabel = React.useMemo(() => {
+		switch (content.contentType) {
+			case 'video':
+				return 'Video';
+			case 'playlist':
+				return 'Playlist';
+			default:
+				return 'Content';
+		}
+	}, [content.contentType]);
+	const contentIdPlaceholder = React.useMemo(() => {
+		switch (content.contentType) {
+			case 'video':
+				return 'dQw4w9WgXcQ';
+			case 'playlist':
+				return 'PLFzsFUO-y0HAXM8e7CzDHI6fGmLVZjObn';
+			default:
+				return 'ID';
+		}
+	}, [content.contentType]);
+	const contentTypeOptions = React.useMemo(
+		() => [
+			{ label: 'Video', value: 'video' },
+			{ label: 'Playlist', value: 'playlist' }
+		],
+		[]
+	);
+
 	// =========================================================================
 	// Events
 	// =========================================================================
@@ -143,10 +171,7 @@ export const YoutubeEmbedContent: React.FC<TYoutubeEmbedContentProps> = (props) 
 				<Select
 					label="YouTube Type"
 					labelHidden
-					options={[
-						{ label: 'Video', value: 'video' },
-						{ label: 'Playlist', value: 'playlist' }
-					]}
+					options={contentTypeOptions}
 					value={content.contentType}
 					onChange={handleContentTypeChange}
 					disabled={isEnhancing}
@@ -156,18 +181,16 @@ export const YoutubeEmbedContent: React.FC<TYoutubeEmbedContentProps> = (props) 
 			{/* Content ID */}
 			<div className="space-y-1">
 				<Text as="span" variant="bodySm" tone="subdued">
-					{content.contentType === 'video' ? 'Video ID' : 'Playlist ID'}
+					{contentTypeLabel}
 				</Text>
 				<TextField
 					id="content-id-field"
-					label={content.contentType === 'video' ? 'Video ID' : 'Playlist ID'}
+					label={contentTypeLabel}
 					labelHidden
 					value={content.contentId}
 					onChange={handleContentIdChange}
 					autoComplete="off"
-					placeholder={
-						content.contentType === 'video' ? 'dQw4w9WgXcQ' : 'PLFzsFUO-y0HAXM8e7CzDHI6fGmLVZjObn'
-					}
+					placeholder={contentIdPlaceholder}
 					disabled={isEnhancing}
 				/>
 			</div>

@@ -13,6 +13,50 @@ export const SpotifyEmbedContent: React.FC<TSpotifyEmbedContentProps> = (props) 
 	const isEnhancing = useFeatureState(cx.isEnhancing);
 
 	const [displayUrl, setDisplayUrl] = React.useState(content.url);
+	const contentTypeLabel = React.useMemo(() => {
+		switch (content.contentType) {
+			case 'track':
+				return 'Track';
+			case 'album':
+				return 'Album';
+			case 'playlist':
+				return 'Playlist';
+			case 'artist':
+				return 'Artist';
+			default:
+				return 'Content';
+		}
+	}, [content.contentType]);
+	const contentIdPlaceholder = React.useMemo(() => {
+		switch (content.contentType) {
+			case 'track':
+				return '6HhvbFrtFZ43d6qJCiZ7YX';
+			case 'album':
+				return '0D6MiyCCYPgyEeLKMU5PAM';
+			case 'playlist':
+				return '37i9dQZF1E36XFretM2CHY';
+			case 'artist':
+				return '2Aq0ejE2gV9qe4lvGeNQQC';
+			default:
+				return 'ID';
+		}
+	}, [content.contentType]);
+	const contentTypeOptions = React.useMemo(
+		() => [
+			{ label: 'Track', value: 'track' },
+			{ label: 'Album', value: 'album' },
+			{ label: 'Playlist', value: 'playlist' },
+			{ label: 'Artist', value: 'artist' }
+		],
+		[]
+	);
+	const heightOptions = React.useMemo(
+		() => [
+			{ label: 'Normal', value: '352' },
+			{ label: 'Compact', value: '152' }
+		],
+		[]
+	);
 
 	// =========================================================================
 	// Events
@@ -117,36 +161,6 @@ export const SpotifyEmbedContent: React.FC<TSpotifyEmbedContentProps> = (props) 
 	// UI
 	// =========================================================================
 
-	const getContentTypeLabel = (type: string) => {
-		switch (type) {
-			case 'track':
-				return 'Track';
-			case 'album':
-				return 'Album';
-			case 'playlist':
-				return 'Playlist';
-			case 'artist':
-				return 'Artist';
-			default:
-				return 'Content';
-		}
-	};
-
-	const getContentIdPlaceholder = (type: string) => {
-		switch (type) {
-			case 'track':
-				return '6HhvbFrtFZ43d6qJCiZ7YX';
-			case 'album':
-				return '0D6MiyCCYPgyEeLKMU5PAM';
-			case 'playlist':
-				return '37i9dQZF1E36XFretM2CHY';
-			case 'artist':
-				return '2Aq0ejE2gV9qe4lvGeNQQC';
-			default:
-				return 'ID';
-		}
-	};
-
 	return (
 		<div className={cn('space-y-3 px-4', className)}>
 			<div>
@@ -181,12 +195,7 @@ export const SpotifyEmbedContent: React.FC<TSpotifyEmbedContentProps> = (props) 
 				<Select
 					label="Spotify Type"
 					labelHidden
-					options={[
-						{ label: 'Track', value: 'track' },
-						{ label: 'Album', value: 'album' },
-						{ label: 'Playlist', value: 'playlist' },
-						{ label: 'Artist', value: 'artist' }
-					]}
+					options={contentTypeOptions}
 					value={content.contentType}
 					onChange={handleContentTypeChange}
 					disabled={isEnhancing}
@@ -196,16 +205,16 @@ export const SpotifyEmbedContent: React.FC<TSpotifyEmbedContentProps> = (props) 
 			{/* Content ID */}
 			<div className="space-y-1">
 				<Text as="span" variant="bodySm" tone="subdued">
-					{getContentTypeLabel(content.contentType)} ID
+					{contentTypeLabel} ID
 				</Text>
 				<TextField
 					id="content-id-field"
-					label={`${getContentTypeLabel(content.contentType)} ID`}
+					label={`${contentTypeLabel} ID`}
 					labelHidden
 					value={content.contentId}
 					onChange={handleContentIdChange}
 					autoComplete="off"
-					placeholder={getContentIdPlaceholder(content.contentType)}
+					placeholder={contentIdPlaceholder}
 					disabled={isEnhancing}
 				/>
 			</div>
@@ -218,10 +227,7 @@ export const SpotifyEmbedContent: React.FC<TSpotifyEmbedContentProps> = (props) 
 				<Select
 					label="Height"
 					labelHidden
-					options={[
-						{ label: 'Normal (352px)', value: '352' },
-						{ label: 'Compact (152px)', value: '152' }
-					]}
+					options={heightOptions}
 					value={content.height.toString()}
 					onChange={handleHeightChange}
 					disabled={isEnhancing}
