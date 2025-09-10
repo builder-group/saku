@@ -44,6 +44,7 @@ export const appConfig = {
 		posthog: env === 'production',
 		crisp: true,
 		crispAutoResponse: true,
-		mantle: true
+		mantle: true,
+		requestReview: env === 'production'
 	}
 };
