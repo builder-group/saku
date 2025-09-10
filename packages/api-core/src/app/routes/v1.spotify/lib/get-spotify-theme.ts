@@ -50,7 +50,7 @@ function extractThemeFromHtml(html: string): Record<string, string | number | TR
 						break;
 					}
 
-					// Check if this div has the embed-widget-container data-testid
+					// Identify div with theme styles (embed-widget-container)
 					if (
 						currentAttributes['data-testid'] === 'embed-widget-container' &&
 						currentAttributes['style'] != null
@@ -95,10 +95,9 @@ function parseThemeFromStyles(styleString: string): Record<string, string | numb
 			continue;
 		}
 
-		// Convert CSS custom property name to camelCase
 		const camelName = cssToCamelCase(cssName);
 
-		// Try to parse value as number first
+		// Try to parse value as number
 		const numberValue = parseFloat(value);
 		if (!isNaN(numberValue)) {
 			theme[camelName] = numberValue;

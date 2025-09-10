@@ -3,9 +3,6 @@ import { ShopifyGlobal } from '@shopify/app-bridge-react';
 import { coreApiClient } from '@/environment';
 import { createShopifyTokenMiddleware } from '@/lib';
 
-/**
- * Fetches Spotify theme from the API
- */
 export async function fetchSpotifyTheme(
 	url: string,
 	shopify: ShopifyGlobal
