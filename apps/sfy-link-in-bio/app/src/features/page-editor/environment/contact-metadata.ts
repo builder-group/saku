@@ -8,6 +8,7 @@ import {
 	InstagramIcon,
 	LinkedInIcon,
 	MailIcon,
+	PatreonIcon,
 	PhoneIcon,
 	PinterestIcon,
 	ShopifyIcon,
@@ -32,7 +33,8 @@ export const contactIconMap = {
 	'social.github': GithubIcon,
 	'social.google': GoogleIcon,
 	'social.spotify': SpotifyIcon,
-	'social.pinterest': PinterestIcon
+	'social.pinterest': PinterestIcon,
+	'social.patreon': PatreonIcon
 } as const satisfies Record<
 	keyof typeof contactMetadataMap,
 	React.FC<React.SVGProps<SVGSVGElement>>

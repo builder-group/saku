@@ -114,6 +114,11 @@ const SOCIAL_PLATFORMS = [
 		name: 'linkedin',
 		platform: 'linkedin',
 		url: (handle: string) => `https://linkedin.com/in/${handle}`
+	},
+	{
+		name: 'patreon',
+		platform: 'patreon',
+		url: (handle: string) => `https://patreon.com/${handle}`
 	}
 ] as const;
 

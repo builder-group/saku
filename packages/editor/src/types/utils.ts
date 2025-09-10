@@ -135,7 +135,8 @@ export interface TSocialAction {
 		| 'github'
 		| 'google'
 		| 'spotify'
-		| 'pinterest';
+		| 'pinterest'
+		| 'patreon';
 	handle: string;
 	url?: string;
 }

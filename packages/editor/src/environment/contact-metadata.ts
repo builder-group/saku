@@ -152,6 +152,15 @@ export const contactMetadataMap = {
 		getUrl: (handle) => `https://pinterest.com/${handle}`,
 		getTitle: (handle) => (handle != null ? `Pinterest: ${handle}` : 'Pinterest'),
 		getHandle: (url) => url.replace(/^https?:\/\/(www\.)?pinterest\.com\//, '')
+	},
+	'social.patreon': {
+		type: 'social' as const,
+		provider: 'patreon',
+		label: 'Patreon',
+		placeholder: 'username',
+		getUrl: (handle) => `https://patreon.com/${handle}`,
+		getTitle: (handle) => (handle != null ? `Patreon: ${handle}` : 'Patreon'),
+		getHandle: (url) => url.replace(/^https?:\/\/(www\.)?patreon\.com\//, '')
 	}
 } as const satisfies Record<string, TContactMetadata>;
 
