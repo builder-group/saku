@@ -1,7 +1,7 @@
 import { createSpotifyEmbedUrl, createYouTubeEmbedUrl, TLinkNode } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError, computeInnerBorderRadius } from '@/lib';
-import { resolveAsset, TNodeResolveContext } from '../../lib';
+import { resolveAsset, resolveColor, TNodeResolveContext } from '../../lib';
 import {
 	resolveAppearanceStyleMixin,
 	resolveAutoLayoutStyleMixin,
@@ -47,7 +47,26 @@ export function resolveLinkNode(
 				type: 'spotify-embed',
 				url: content.url,
 				embedUrl: createSpotifyEmbedUrl(content.contentType, content.contentId),
-				height: content.height
+				height: content.height,
+				theme:
+					content.theme != null
+						? {
+								backgroundBase:
+									content.theme.backgroundBase != null
+										? resolveColor(content.theme.backgroundBase)
+										: undefined,
+								backgroundTinted:
+									content.theme.backgroundTinted != null
+										? resolveColor(content.theme.backgroundTinted)
+										: undefined,
+								textBase:
+									content.theme.textBase != null ? resolveColor(content.theme.textBase) : undefined,
+								textSubdued:
+									content.theme.textSubdued != null
+										? resolveColor(content.theme.textSubdued)
+										: undefined
+							}
+						: undefined
 			};
 			break;
 		}

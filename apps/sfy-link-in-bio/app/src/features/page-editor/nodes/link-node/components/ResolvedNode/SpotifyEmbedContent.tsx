@@ -26,7 +26,11 @@ export const SpotifyEmbedContent: React.FC<TSpotifyEmbedContentProps> = (props) 
 				height={content.height}
 				allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
 				loading="lazy"
-				style={{ ...image.styles, height: content.height }}
+				style={{
+					...image.styles,
+					height: content.height,
+					backgroundColor: content.theme?.backgroundBase
+				}}
 			></iframe>
 		</div>
 	);

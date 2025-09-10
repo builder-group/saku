@@ -1,5 +1,5 @@
 import { TBaseMixin, TBaseNode, TIdMixin } from '@repo/editor';
-import { TResolvedAsset } from '../../lib';
+import { TResolvedAsset, TResolvedColor } from '../../lib';
 import {
 	TResolvedAppearanceStyleMixin,
 	TResolvedAutoLayoutStyleMixin,
@@ -62,4 +62,12 @@ export interface TResolvedSpotifyEmbedLinkNodeContent {
 	url: string;
 	embedUrl: string;
 	height: number;
+	theme?: TResolvedSpotifyEmbedTheme;
+}
+
+export interface TResolvedSpotifyEmbedTheme {
+	backgroundBase?: TResolvedColor;
+	backgroundTinted?: TResolvedColor;
+	textBase?: TResolvedColor;
+	textSubdued?: TResolvedColor;
 }

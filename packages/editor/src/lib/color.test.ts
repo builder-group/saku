@@ -237,10 +237,21 @@ describe('Color conversion', () => {
 			expect(cssRgbaToRgba(css)).toEqual(rgba);
 		});
 
-		it('should handle alpha values', () => {
+		it('should handle 0-1 alpha values', () => {
 			const rgba: TRgba = { r: 0, g: 0.4, b: 0.8, a: 0.5 };
 			const css = rgbaToCssRgba(rgba);
 			expect(css).toBe('rgb(0 102 204 / 0.5)');
+			expect(cssRgbaToRgba(css)).toEqual(rgba);
+		});
+
+		it('should handle 0-255 alpha values', () => {
+			const rgba: TRgba = {
+				r: 0.1568627450980392,
+				g: 0.2823529411764706,
+				b: 0.6588235294117647,
+				a: 1
+			};
+			const css = 'rgba(40, 72, 168, 255)';
 			expect(cssRgbaToRgba(css)).toEqual(rgba);
 		});
 

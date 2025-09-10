@@ -1,4 +1,5 @@
 import {
+	createSpotifyEmbedUrl,
 	extractSpotifyId,
 	extractYouTubeId,
 	TLinkNode,
@@ -11,7 +12,7 @@ import { ShopifyGlobal } from '@shopify/app-bridge-react';
 import { Err, Ok, type TResult } from 'tuple-result';
 import { AppError } from '@/lib';
 import { TNodeState, TPageEditor } from '../../../../../lib';
-import { fetchUrlMetadata } from '../lib';
+import { fetchSpotifyTheme, fetchUrlMetadata } from '../lib';
 
 export const contentMetadataMap = {
 	'single': {
@@ -149,9 +150,26 @@ export const contentMetadataMap = {
 			}
 
 			const content = cx.node._v.content;
+			let hasChanges = false;
+
+			// Update content type and ID if changed
 			if (spotifyData.type !== content.contentType || spotifyData.id !== content.contentId) {
 				content.contentType = spotifyData.type;
 				content.contentId = spotifyData.id;
+				hasChanges = true;
+			}
+
+			// Fetch theme for the Spotify URL
+			const theme = await fetchSpotifyTheme(
+				createSpotifyEmbedUrl(content.contentType, content.contentId),
+				cx.shopify
+			);
+			if (theme != null) {
+				content.theme = theme;
+				hasChanges = true;
+			}
+
+			if (hasChanges) {
 				cx.node._notify();
 			}
 

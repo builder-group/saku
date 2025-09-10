@@ -134,7 +134,13 @@ export function cssRgbaToRgba(css: string | null | undefined): TRgba | undefined
 	const [r = 0, g = 0, b = 0] = values;
 	const a = values[3] ?? 1;
 
-	if (r > 255 || g > 255 || b > 255 || a > 1) {
+	if (r > 255 || g > 255 || b > 255) {
+		return undefined;
+	}
+
+	// Support both 0-1 and 0-255 alpha formats
+	const normalizedAlpha = a > 1 ? a / 255 : a;
+	if (normalizedAlpha > 1) {
 		return undefined;
 	}
 
@@ -142,7 +148,7 @@ export function cssRgbaToRgba(css: string | null | undefined): TRgba | undefined
 		r: clamp(r / 255),
 		g: clamp(g / 255),
 		b: clamp(b / 255),
-		a: clamp(a)
+		a: clamp(normalizedAlpha)
 	};
 }
 

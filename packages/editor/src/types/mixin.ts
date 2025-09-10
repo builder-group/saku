@@ -150,6 +150,14 @@ export interface TSpotifyEmbedLinkNodeContent extends TBaseContentVariant {
 	contentType: TSpotifyEmbedContentType;
 	contentId: string;
 	height: number; // normal = 352px, compact = 152px
+	theme?: TSpotifyEmbedTheme;
+}
+
+export interface TSpotifyEmbedTheme {
+	backgroundBase?: TRgba;
+	backgroundTinted?: TRgba;
+	textBase?: TRgba;
+	textSubdued?: TRgba;
 }
 export type TSpotifyEmbedContentType = 'track' | 'album' | 'playlist' | 'artist';
 

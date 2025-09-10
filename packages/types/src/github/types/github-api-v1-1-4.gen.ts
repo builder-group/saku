@@ -24955,9 +24955,9 @@ export interface components {
             actor_id?: number | null;
             /** @description The handle for the GitHub user account. */
             actor_name?: string | null;
-            /** @description The first commit sha before the push evaluation. */
+            /** @description The previous commit SHA of the ref. */
             before_sha?: string;
-            /** @description The last commit sha in the push evaluation. */
+            /** @description The new commit SHA of the ref. */
             after_sha?: string;
             /** @description The ref name that the evaluation ran on. */
             ref?: string;
@@ -35990,29 +35990,39 @@ export interface components {
          * @description An status update belonging to a project
          */
         "nullable-projects-v2-status-update": {
+            /** @description The unique identifier of the status update. */
             id: number;
+            /** @description The node ID of the status update. */
             node_id: string;
+            /** @description The node ID of the project that this status update belongs to. */
             project_node_id?: string;
             creator?: components["schemas"]["simple-user"];
             /**
              * Format: date-time
+             * @description The time when the status update was created.
              * @example 2022-04-28T12:00:00Z
              */
             created_at: string;
             /**
              * Format: date-time
+             * @description The time when the status update was last updated.
              * @example 2022-04-28T12:00:00Z
              */
             updated_at: string;
-            /** @enum {string|null} */
+            /**
+             * @description The current status.
+             * @enum {string|null}
+             */
             status?: "INACTIVE" | "ON_TRACK" | "AT_RISK" | "OFF_TRACK" | "COMPLETE" | null;
             /**
              * Format: date
+             * @description The start date of the period covered by the update.
              * @example 2022-04-28
              */
             start_date?: string;
             /**
              * Format: date
+             * @description The target date associated with the update.
              * @example 2022-04-28
              */
             target_date?: string;
@@ -36027,37 +36037,51 @@ export interface components {
          * @description A projects v2 project
          */
         "projects-v2": {
+            /** @description The unique identifier of the project. */
             id: number;
+            /** @description The node ID of the project. */
             node_id: string;
             owner: components["schemas"]["simple-user"];
             creator: components["schemas"]["simple-user"];
+            /** @description The project title. */
             title: string;
+            /** @description A short description of the project. */
             description: string | null;
+            /** @description Whether the project is visible to anyone with access to the owner. */
             public: boolean;
             /**
              * Format: date-time
+             * @description The time when the project was closed.
              * @example 2022-04-28T12:00:00Z
              */
             closed_at: string | null;
             /**
              * Format: date-time
+             * @description The time when the project was created.
              * @example 2022-04-28T12:00:00Z
              */
             created_at: string;
             /**
              * Format: date-time
+             * @description The time when the project was last updated.
              * @example 2022-04-28T12:00:00Z
              */
             updated_at: string;
+            /** @description The project number. */
             number: number;
+            /** @description A concise summary of the project. */
             short_description: string | null;
             /**
              * Format: date-time
+             * @description The time when the project was deleted.
              * @example 2022-04-28T12:00:00Z
              */
             deleted_at: string | null;
             deleted_by: components["schemas"]["nullable-simple-user"];
-            /** @enum {string} */
+            /**
+             * @description The current state of the project.
+             * @enum {string}
+             */
             state?: "open" | "closed";
             latest_status_update?: components["schemas"]["nullable-projects-v2-status-update"];
             /** @description Whether this project is a template */
@@ -36082,24 +36106,31 @@ export interface components {
          * @description An item belonging to a project
          */
         "projects-v2-item": {
+            /** @description The unique identifier of the project item. */
             id: number;
+            /** @description The node ID of the project item. */
             node_id?: string;
+            /** @description The node ID of the project that contains this item. */
             project_node_id?: string;
+            /** @description The node ID of the content represented by this item. */
             content_node_id: string;
             content_type: components["schemas"]["projects-v2-item-content-type"];
             creator?: components["schemas"]["simple-user"];
             /**
              * Format: date-time
+             * @description The time when the item was created.
              * @example 2022-04-28T12:00:00Z
              */
             created_at: string;
             /**
              * Format: date-time
+             * @description The time when the item was last updated.
              * @example 2022-04-28T12:00:00Z
              */
             updated_at: string;
             /**
              * Format: date-time
+             * @description The time when the item was archived.
              * @example 2022-04-28T12:00:00Z
              */
             archived_at: string | null;
@@ -36109,9 +36140,13 @@ export interface components {
          * @description An option for a single select field
          */
         "projects-v2-single-select-option": {
+            /** @description The unique identifier of the option. */
             id: string;
+            /** @description The display name of the option. */
             name: string;
+            /** @description The color associated with the option. */
             color?: string | null;
+            /** @description A short description of the option. */
             description?: string | null;
         };
         /**
@@ -36119,11 +36154,17 @@ export interface components {
          * @description An iteration setting for an iteration field
          */
         "projects-v2-iteration-setting": {
+            /** @description The unique identifier of the iteration setting. */
             id: string;
+            /** @description The iteration title. */
             title: string;
+            /** @description The iteration title, rendered as HTML. */
             title_html?: string;
+            /** @description The duration of the iteration in days. */
             duration?: number | null;
+            /** @description The start date of the iteration. */
             start_date?: string | null;
+            /** @description Whether the iteration has been completed. */
             completed?: boolean;
         };
         /** @description The pull request number. */

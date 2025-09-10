@@ -8,5 +8,6 @@ import './v1.shopify.site';
 import './v1.shopify.ugc';
 import './v1.shopify.workspace';
 import './v1.site';
+import './v1.spotify';
 import './v1.url.metadata';
 import './v1.webhook.shopify';

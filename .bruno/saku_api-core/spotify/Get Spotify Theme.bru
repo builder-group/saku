@@ -1,0 +1,19 @@
+meta {
+  name: Get Spotify Theme
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{host}}/v1/spotify/theme?url=https://open.spotify.com/embed/artist/0TnOYISbd1XYRBk9myaseg
+  body: none
+  auth: inherit
+}
+
+params:query {
+  url: https://open.spotify.com/embed/artist/0TnOYISbd1XYRBk9myaseg
+}
+
+settings {
+  encodeUrl: true
+}

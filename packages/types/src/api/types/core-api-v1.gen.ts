@@ -316,6 +316,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/spotify/theme": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get theme from Spotify embed URL */
+        get: operations["getSpotifyTheme"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/url/metadata": {
         parameters: {
             query?: never;
@@ -861,6 +878,40 @@ export interface components {
         };
         NodeDto: {
             [key: string]: unknown;
+        };
+        Rgba: {
+            /**
+             * @description Red component (0-1)
+             * @example 0.157
+             */
+            r: number;
+            /**
+             * @description Green component (0-1)
+             * @example 0.282
+             */
+            g: number;
+            /**
+             * @description Blue component (0-1)
+             * @example 0.659
+             */
+            b: number;
+            /**
+             * @description Alpha/opacity component (0-1)
+             * @example 1
+             */
+            a: number;
+        };
+        SpotifyThemeDto: {
+            /**
+             * Format: uri
+             * @description The Spotify embed URL that was processed
+             * @example https://open.spotify.com/embed/artist/0TnOYISbd1XYRBk9myaseg
+             */
+            url: string;
+            /** @description Dynamic theme properties extracted from CSS custom properties */
+            theme?: {
+                [key: string]: string | number | components["schemas"]["Rgba"];
+            };
         };
         UrlMetadataDto: {
             /**
@@ -1887,6 +1938,56 @@ export interface operations {
             };
             /** @description Bad request */
             400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppErrorDto"];
+                };
+            };
+        };
+    };
+    getSpotifyTheme: {
+        parameters: {
+            query: {
+                /** @description The Spotify embed URL to extract theme from */
+                url: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SpotifyThemeDto"];
+                };
+            };
+            /** @description Bad request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppErrorDto"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppErrorDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
                 headers: {
                     [name: string]: unknown;
                 };
