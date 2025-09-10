@@ -4,12 +4,12 @@ import { TResolvedLinkNode, TResolvedSpotifyEmbedLinkNodeContent } from '../../t
 
 export const SpotifyEmbedContent: React.FC<TSpotifyEmbedContentProps> = (props) => {
 	const {
-		node: { content, autoLayout, appearance, fill, stroke, shadow }
+		node: { content, autoLayout, appearance, fill, stroke, shadow, image }
 	} = props;
 
 	return (
 		<div
-			className="relative block w-full overflow-hidden bg-white"
+			className="relative overflow-hidden"
 			style={{
 				...autoLayout.styles,
 				...appearance.styles,
@@ -18,17 +18,16 @@ export const SpotifyEmbedContent: React.FC<TSpotifyEmbedContentProps> = (props) 
 				...shadow?.styles
 			}}
 		>
-			<div className="relative w-full" style={{ height: content.height }}>
-				<iframe
-					src={content.embedUrl}
-					className="absolute inset-0 h-full w-full"
-					title="Spotify embed"
-					width="100%"
-					height={content.height}
-					allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-					loading="lazy"
-				></iframe>
-			</div>
+			<iframe
+				src={content.embedUrl}
+				className="h-full w-full rounded-none"
+				title="Spotify embed"
+				width="100%"
+				height={content.height}
+				allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+				loading="lazy"
+				style={{ ...image.styles, height: content.height }}
+			></iframe>
 		</div>
 	);
 };

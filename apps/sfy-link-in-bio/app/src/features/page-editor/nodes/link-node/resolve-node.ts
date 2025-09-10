@@ -158,7 +158,7 @@ export function resolveLinkNode(
 				}
 			},
 			styles: {
-				...resolvedImage.appearance.styles,
+				...resolvedImage.styles,
 				borderRadius: `${imageBorderRadius}px`
 			}
 		}

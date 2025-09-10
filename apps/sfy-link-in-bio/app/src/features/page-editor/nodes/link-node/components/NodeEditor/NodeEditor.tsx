@@ -46,14 +46,46 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 	const isEnhancingVariant = useFeatureState(cx.isEnhancing);
 	const selectedContentType = useFeatureState(cx.selectedContentType);
 
-	const hasTextStyle = useCompute(cx.node, ({ value }) => value.content.type === 'single');
-	const hasSmTextStyle = useCompute(cx.node, ({ value }) => value.content.type === 'single');
-	const hasImageStyle = useCompute(
-		cx.node,
-		({ value }) =>
-			value.content.type === 'single' &&
-			(value.content.favicon != null || value.content.userFavicon != null)
-	);
+	const hasTextStyle = useCompute(cx.node, ({ value }) => {
+		switch (value.content.type) {
+			case 'single':
+				return true;
+			default:
+				return false;
+		}
+	});
+	const hasSmTextStyle = useCompute(cx.node, ({ value }) => {
+		switch (value.content.type) {
+			case 'single':
+				return true;
+			default:
+				return false;
+		}
+	});
+	const imageStyle = useCompute(cx.node, ({ value }) => {
+		switch (value.content.type) {
+			case 'single':
+				return {
+					enabled: value.content.favicon != null || value.content.userFavicon != null,
+					title: 'Favicon Image'
+				};
+			case 'youtube-embed':
+				return {
+					enabled: true,
+					title: 'Embed'
+				};
+			case 'spotify-embed':
+				return {
+					enabled: true,
+					title: 'Embed'
+				};
+			default:
+				return {
+					enabled: false,
+					title: ''
+				};
+		}
+	});
 
 	// =========================================================================
 	// Events
@@ -226,9 +258,9 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 						/>
 					</AccordionSection>
 				)}
-				{hasImageStyle && (
+				{imageStyle.enabled && (
 					<AccordionSection
-						title="Favicon Image"
+						title={imageStyle.title}
 						collapsibleClassName="px-0 space-y-3"
 						size="tight"
 						defaultOpen={true}

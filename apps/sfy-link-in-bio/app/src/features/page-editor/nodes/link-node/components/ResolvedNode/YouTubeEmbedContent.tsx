@@ -4,12 +4,12 @@ import { TResolvedLinkNode, TResolvedYouTubeEmbedLinkNodeContent } from '../../t
 
 export const YouTubeEmbedContent: React.FC<TYouTubeEmbedContentProps> = (props) => {
 	const {
-		node: { content, autoLayout, appearance, fill, stroke, shadow }
+		node: { content, autoLayout, appearance, fill, stroke, shadow, image }
 	} = props;
 
 	return (
 		<div
-			className="relative block w-full overflow-hidden bg-white"
+			className="relative overflow-hidden"
 			style={{
 				...autoLayout.styles,
 				...appearance.styles,
@@ -18,16 +18,15 @@ export const YouTubeEmbedContent: React.FC<TYouTubeEmbedContentProps> = (props) 
 				...shadow?.styles
 			}}
 		>
-			<div className="relative aspect-[16/9] w-full">
-				<iframe
-					src={content.embedUrl}
-					className="absolute inset-0 h-full w-full"
-					title="YouTube video player"
-					allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-					referrerPolicy="strict-origin-when-cross-origin"
-					allowFullScreen
-				></iframe>
-			</div>
+			<iframe
+				src={content.embedUrl}
+				className="aspect-[16/9] h-full w-full rounded-none"
+				title="YouTube video player"
+				allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+				referrerPolicy="strict-origin-when-cross-origin"
+				allowFullScreen
+				style={image.styles}
+			></iframe>
 		</div>
 	);
 };
