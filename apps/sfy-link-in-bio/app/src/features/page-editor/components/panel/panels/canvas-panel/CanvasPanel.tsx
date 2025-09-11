@@ -33,7 +33,7 @@ export const CanvasPanel: React.FC<TCanvasPanelProps> = (props) => {
 				minSize: undefined
 			};
 		},
-		[],
+		[isMd],
 		{
 			isEqual(a, b) {
 				return a.minSize === b.minSize;

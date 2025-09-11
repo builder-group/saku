@@ -4,12 +4,15 @@ import { useCompute } from 'feature-react';
 import React from 'react';
 import { AccordionSection, ResizablePanel } from '@/components';
 import { prettifyFileSize } from '@/lib';
+import { useEditorBreakpoint } from '../../../../hooks';
 import { resolveAsset, TPageEditor } from '../../../../lib';
 import { PanelHeader } from '../../PanelHeader';
 import { Placeholder } from './Placeholder';
 
 export const SettingsAssetsPanel: React.FC<TSettingsAssetsPanelProps> = (props) => {
 	const { editor, order } = props;
+
+	const isMd = useEditorBreakpoint(editor, 'md');
 
 	const { fontAssets, imageAssets, hasAssets } = React.useMemo(() => {
 		const fontAssets: {
@@ -77,25 +80,25 @@ export const SettingsAssetsPanel: React.FC<TSettingsAssetsPanelProps> = (props) 
 	const sizes = useCompute(
 		editor.boundingRect,
 		({ value: rect }) => {
-			const width = rect.right - rect.left;
-			if (width <= 0) {
-				// Note: Return default sizes instead of null to prevent the panel from being hidden on hot reload
+			// Desktop (horizontal layout): Resizable based on width
+			if (isMd) {
+				const width = rect.right - rect.left;
+				const toPercent = (pixels: number) => (pixels / (width > 0 ? width : 15)) * 100;
 				return {
-					minSize: 20,
-					defaultSize: 27,
-					maxSize: 35
+					minSize: toPercent(300), // ~ 20
+					defaultSize: toPercent(405), // ~ 27
+					maxSize: toPercent(525) // ~ 35
 				};
 			}
 
-			const toPercent = (pixels: number) => (pixels / width) * 100;
-
+			// Mobile (vertical layout): Fixed height for navbar with icons
 			return {
-				minSize: toPercent(300), // ~ 20
-				defaultSize: toPercent(405), // ~ 27
-				maxSize: toPercent(525) // ~ 35
+				minSize: undefined,
+				defaultSize: undefined,
+				maxSize: undefined
 			};
 		},
-		[],
+		[isMd],
 		{
 			isEqual(a, b) {
 				return (

@@ -2,12 +2,15 @@ import { InlineError, Text, TextField } from '@shopify/polaris';
 import { useCompute } from 'feature-react/state';
 import React from 'react';
 import { ImageUploadField, ResizablePanel, TImageUploadEvent } from '@/components';
+import { useEditorBreakpoint } from '../../../../hooks';
 import { EditorSiteResolveContext, TPageEditor } from '../../../../lib';
 import { resolvePageMetadata } from '../../../../nodes';
 import { PanelHeader } from '../../PanelHeader';
 
 export const SettingsMetadataPanel: React.FC<TSettingsMetadataPanelProps> = (props) => {
 	const { editor, order } = props;
+
+	const isMd = useEditorBreakpoint(editor, 'md');
 
 	const rootNode = React.useMemo(() => editor.getRootNode(), [editor]);
 	const { resolvedMetadata, metadata } = useCompute(
@@ -51,25 +54,25 @@ export const SettingsMetadataPanel: React.FC<TSettingsMetadataPanelProps> = (pro
 	const sizes = useCompute(
 		editor.boundingRect,
 		({ value: rect }) => {
-			const width = rect.right - rect.left;
-			if (width <= 0) {
-				// Note: Return default sizes instead of null to prevent the panel from being hidden on hot reload
+			// Desktop (horizontal layout): Resizable based on width
+			if (isMd) {
+				const width = rect.right - rect.left;
+				const toPercent = (pixels: number) => (pixels / (width > 0 ? width : 15)) * 100;
 				return {
-					minSize: 20,
-					defaultSize: 27,
-					maxSize: 35
+					minSize: toPercent(300), // ~ 20
+					defaultSize: toPercent(405), // ~ 27
+					maxSize: toPercent(525) // ~ 35
 				};
 			}
 
-			const toPercent = (pixels: number) => (pixels / width) * 100;
-
+			// Mobile (vertical layout): Fixed height for navbar with icons
 			return {
-				minSize: toPercent(300), // ~ 20
-				defaultSize: toPercent(405), // ~ 27
-				maxSize: toPercent(525) // ~ 35
+				minSize: undefined,
+				defaultSize: undefined,
+				maxSize: undefined
 			};
 		},
-		[],
+		[isMd],
 		{
 			isEqual(a, b) {
 				return (

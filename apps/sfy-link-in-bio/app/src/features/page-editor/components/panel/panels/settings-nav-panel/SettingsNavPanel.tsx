@@ -4,12 +4,15 @@ import React from 'react';
 import { PolarisChevronRightIcon, ResizablePanel } from '@/components';
 import { cn } from '@/lib';
 import { settingsMetadata, TSettingsSectionType } from '../../../../environment';
+import { useEditorBreakpoint } from '../../../../hooks';
 import { TPageEditor } from '../../../../lib';
 import { PanelHeader } from '../../PanelHeader';
 
 export const SettingsNavPanel: React.FC<TSettingsNavPanelProps> = (props) => {
 	const { editor, order } = props;
 
+	const isMd = useEditorBreakpoint(editor, 'md');
+	const [collapsed, setCollapsed] = React.useState(false);
 	const selectedSection = useFeatureState(editor.activeSettingsSection);
 
 	// TODO: Figure out better solution
@@ -17,29 +20,36 @@ export const SettingsNavPanel: React.FC<TSettingsNavPanelProps> = (props) => {
 	const sizes = useCompute(
 		editor.boundingRect,
 		({ value: rect }) => {
-			const width = rect.right - rect.left;
-			if (width <= 0) {
-				// Note: Return default sizes instead of null to prevent the panel from being hidden on hot reload
+			// Desktop (horizontal layout): Resizable based on width
+			if (isMd) {
+				const width = rect.right - rect.left;
+				const toPercent = (pixels: number) => (pixels / (width > 0 ? width : 15)) * 100;
 				return {
-					minSize: 10,
-					defaultSize: 15,
-					maxSize: 20
+					collapsedSize: undefined,
+					minSize: toPercent(150), // ~ 10
+					defaultSize: toPercent(225), // ~ 15
+					maxSize: toPercent(300) // ~ 20
 				};
 			}
 
-			const toPercent = (pixels: number) => (pixels / width) * 100;
-
+			// Mobile (vertical layout): Fixed height for navbar with icons
+			const height = rect.bottom - rect.top;
+			const toPercent = (pixels: number) => (pixels / (height > 0 ? height : 15)) * 100;
 			return {
+				collapsedSize: toPercent(45), // ~ 3
 				minSize: toPercent(150), // ~ 10
 				defaultSize: toPercent(225), // ~ 15
-				maxSize: toPercent(300) // ~ 20
+				maxSize: toPercent(450) // ~ 30
 			};
 		},
-		[],
+		[isMd],
 		{
 			isEqual(a, b) {
 				return (
-					a.minSize === b.minSize && a.defaultSize === b.defaultSize && a.maxSize === b.maxSize
+					a.collapsedSize === b.collapsedSize &&
+					a.minSize === b.minSize &&
+					a.defaultSize === b.defaultSize &&
+					a.maxSize === b.maxSize
 				);
 			}
 		}
@@ -64,9 +74,13 @@ export const SettingsNavPanel: React.FC<TSettingsNavPanelProps> = (props) => {
 		<ResizablePanel
 			id="settings-nav-panel"
 			order={order}
+			collapsible={sizes.collapsedSize != null}
+			collapsedSize={sizes.collapsedSize}
 			minSize={sizes.minSize}
 			defaultSize={sizes.defaultSize}
 			maxSize={sizes.maxSize}
+			onCollapse={() => setCollapsed(true)}
+			onExpand={() => setCollapsed(false)}
 		>
 			<div className="flex h-full flex-col bg-white">
 				<PanelHeader>
@@ -74,7 +88,7 @@ export const SettingsNavPanel: React.FC<TSettingsNavPanelProps> = (props) => {
 						Settings
 					</Text>
 				</PanelHeader>
-				<div>
+				<div className="flex flex-1 flex-col overflow-auto">
 					{settingsMetadata.map((section) => (
 						<div
 							key={section.type}

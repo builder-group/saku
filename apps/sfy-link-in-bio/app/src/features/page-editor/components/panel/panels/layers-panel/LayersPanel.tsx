@@ -70,7 +70,7 @@ export const LayersPanel: React.FC<TLayersPanelProps> = (props) => {
 				maxSize: toPercent(600) // ~ 40
 			};
 		},
-		[],
+		[isMd],
 		{
 			isEqual(a, b) {
 				return (

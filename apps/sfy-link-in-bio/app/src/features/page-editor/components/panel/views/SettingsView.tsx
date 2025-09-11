@@ -1,6 +1,7 @@
 import { useFeatureState } from 'feature-react';
 import React from 'react';
 import { ResizableHandle } from '@/components';
+import { useEditorBreakpoint } from '../../../hooks';
 import { TPageEditor } from '../../../lib';
 import { SettingsNavPanel, SettingsPlaceholderPanel } from '../panels';
 import { SettingsAssetsView } from './SettingsAssetsView';
@@ -10,12 +11,23 @@ import { SettingsMetadataView } from './SettingsMetadataView';
 
 export const SettingsView: React.FC<TSettingsViewProps> = (props) => {
 	const { editor, order } = props;
+	const isMd = useEditorBreakpoint(editor, 'md');
+
+	if (isMd) {
+		return (
+			<>
+				<SettingsNavPanel editor={editor} order={order} />
+				<ResizableHandle className="w-px bg-neutral-200" />
+				<View editor={editor} order={order + 1} />
+			</>
+		);
+	}
 
 	return (
 		<>
-			<SettingsNavPanel editor={editor} order={order} />
+			<View editor={editor} order={order} />
 			<ResizableHandle className="w-px bg-neutral-200" />
-			<View editor={editor} order={order + 1} />
+			<SettingsNavPanel editor={editor} order={order + 1} />
 		</>
 	);
 };
