@@ -24,8 +24,7 @@ export const DesignView: React.FC<TDesignViewProps> = (props) => {
 		<>
 			<CanvasPanel editor={editor} order={order} />
 			<NodeInspectorPanel editor={editor} order={order + 1} withResizableHandle />
-			<ResizableHandle className="bg-neutral-200" withHandle />
-			<LayersPanel editor={editor} order={order + 2} />
+			<LayersPanel editor={editor} order={order + 2} withResizableHandle />
 		</>
 	);
 };

@@ -31,8 +31,8 @@ export const SettingsDesignPanel: React.FC<TSettingsDesignPanelProps> = (props) 
 
 			// Mobile (vertical layout): Fixed height for navbar with icons
 			return {
-				minSize: undefined,
-				defaultSize: undefined,
+				minSize: 50,
+				defaultSize: 50,
 				maxSize: undefined
 			};
 		},

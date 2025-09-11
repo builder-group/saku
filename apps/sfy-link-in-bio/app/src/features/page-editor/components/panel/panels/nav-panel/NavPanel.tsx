@@ -83,7 +83,7 @@ export const NavPanel: React.FC<TNavPanelProps> = (props) => {
 			onExpand={() => setCollapsed(false)}
 		>
 			<div className="flex h-full flex-col bg-white">
-				<nav className="flex flex-row justify-between gap-1 p-2 md:flex-col md:justify-start">
+				<nav className="mr-24 flex flex-row justify-between gap-1 p-2 md:mr-0 md:flex-col md:justify-start">
 					{viewMetadata.map((item, index) => {
 						return (
 							<button

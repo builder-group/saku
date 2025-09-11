@@ -14,7 +14,7 @@ import { TNodeId } from '@repo/editor';
 import { Text } from '@shopify/polaris';
 import { useCompute } from 'feature-react/state';
 import React from 'react';
-import { ResizablePanel, StampIcon } from '@/components';
+import { ResizableHandle, ResizablePanel, StampIcon } from '@/components';
 import { cn } from '@/lib';
 import { useEditorBreakpoint } from '../../../../hooks';
 import { TPageEditor } from '../../../../lib';
@@ -23,7 +23,7 @@ import { LayerItem } from './LayerItem';
 import { PanelHeader } from './PanelHeader';
 
 export const LayersPanel: React.FC<TLayersPanelProps> = (props) => {
-	const { editor, order } = props;
+	const { editor, order, withResizableHandle = false } = props;
 
 	const isMd = useEditorBreakpoint(editor, 'md');
 	const [collapsed, setCollapsed] = React.useState(false);
@@ -33,6 +33,7 @@ export const LayersPanel: React.FC<TLayersPanelProps> = (props) => {
 			nodeIds: value.children
 		};
 	});
+	const hasSelectedNode = useCompute(editor.selectedNodeId, ({ value }) => value != null);
 
 	// https://docs.dndkit.com/presets/sortable
 	const sensors = useSensors(
@@ -65,7 +66,7 @@ export const LayersPanel: React.FC<TLayersPanelProps> = (props) => {
 			const toPercent = (pixels: number) => (pixels / (height > 0 ? height : 15)) * 100;
 			return {
 				collapsedSize: toPercent(45), // ~ 3
-				minSize: toPercent(150), // ~ 10
+				minSize: toPercent(120), // ~ 8
 				defaultSize: toPercent(225), // ~ 15
 				maxSize: toPercent(600) // ~ 40
 			};
@@ -111,52 +112,61 @@ export const LayersPanel: React.FC<TLayersPanelProps> = (props) => {
 	// UI
 	// =========================================================================
 
-	return (
-		<ResizablePanel
-			id="layers-panel"
-			order={order}
-			collapsible={sizes.collapsedSize != null}
-			collapsedSize={sizes.collapsedSize}
-			minSize={sizes.minSize}
-			defaultSize={sizes.defaultSize}
-			maxSize={sizes.maxSize}
-			onCollapse={() => setCollapsed(true)}
-			onExpand={() => setCollapsed(false)}
-		>
-			<div className="flex h-full flex-col bg-white">
-				<PanelHeader editor={editor} />
-				<div className={cn('flex-1 overflow-auto', collapsed ? 'p-0' : 'p-2')}>
-					<DndContext
-						sensors={sensors}
-						collisionDetection={closestCenter}
-						onDragEnd={handleDragEnd}
-						onDragStart={handleDragStart}
-						modifiers={[restrictToParentElement]}
-					>
-						<SortableContext items={nodeIds} strategy={verticalListSortingStrategy}>
-							<div className="flex flex-col gap-2">
-								{nodes.map((nodeState) => (
-									<LayerItem key={nodeState._v.id} nodeState={nodeState} editor={editor} />
-								))}
-								{/* Watermark item */}
-								<div className="flex h-8 w-full items-center gap-2 rounded-lg px-2 opacity-60">
-									<StampIcon className="h-5 w-5" />
-									<Text as="p" variant="bodyMd">
-										Watermark
-									</Text>
-								</div>
-							</div>
-						</SortableContext>
-					</DndContext>
+	// Hide panel if node is selected and on mobile
+	if (hasSelectedNode && !isMd) {
+		return null;
+	}
 
-					<AddLayerButton editor={editor} />
+	return (
+		<>
+			{withResizableHandle && <ResizableHandle className="bg-neutral-200" withHandle={!isMd} />}
+			<ResizablePanel
+				id="layers-panel"
+				order={order}
+				collapsible={sizes.collapsedSize != null}
+				collapsedSize={sizes.collapsedSize}
+				minSize={sizes.minSize}
+				defaultSize={sizes.defaultSize}
+				maxSize={sizes.maxSize}
+				onCollapse={() => setCollapsed(true)}
+				onExpand={() => setCollapsed(false)}
+			>
+				<div className="flex h-full flex-col bg-white">
+					<PanelHeader editor={editor} />
+					<div className={cn('flex-1 overflow-auto', collapsed ? 'p-0' : 'p-2')}>
+						<DndContext
+							sensors={sensors}
+							collisionDetection={closestCenter}
+							onDragEnd={handleDragEnd}
+							onDragStart={handleDragStart}
+							modifiers={[restrictToParentElement]}
+						>
+							<SortableContext items={nodeIds} strategy={verticalListSortingStrategy}>
+								<div className="flex flex-col gap-2">
+									{nodes.map((nodeState) => (
+										<LayerItem key={nodeState._v.id} nodeState={nodeState} editor={editor} />
+									))}
+									{/* Watermark item */}
+									<div className="flex h-8 w-full items-center gap-2 rounded-lg px-2 opacity-60">
+										<StampIcon className="h-5 w-5" />
+										<Text as="p" variant="bodyMd">
+											Watermark
+										</Text>
+									</div>
+								</div>
+							</SortableContext>
+						</DndContext>
+
+						<AddLayerButton editor={editor} />
+					</div>
 				</div>
-			</div>
-		</ResizablePanel>
+			</ResizablePanel>
+		</>
 	);
 };
 
 interface TLayersPanelProps {
 	editor: TPageEditor;
 	order: number;
+	withResizableHandle?: boolean;
 }

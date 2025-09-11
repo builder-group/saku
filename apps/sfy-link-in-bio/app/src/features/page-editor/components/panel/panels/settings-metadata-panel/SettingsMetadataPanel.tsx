@@ -67,8 +67,8 @@ export const SettingsMetadataPanel: React.FC<TSettingsMetadataPanelProps> = (pro
 
 			// Mobile (vertical layout): Fixed height for navbar with icons
 			return {
-				minSize: undefined,
-				defaultSize: undefined,
+				minSize: 50,
+				defaultSize: 50,
 				maxSize: undefined
 			};
 		},
