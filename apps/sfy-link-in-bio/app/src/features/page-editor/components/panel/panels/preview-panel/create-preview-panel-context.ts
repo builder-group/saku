@@ -1,5 +1,6 @@
 import { createState, TState } from 'feature-state';
 import { logger } from '@/environment';
+import { isBreakpointActive } from '@/lib';
 import { EditorSiteResolveContext, TPageEditor } from '../../../../lib';
 import { resolvePageNode } from '../../../../nodes';
 import { TResolvedNode } from '../../../../types';
@@ -20,7 +21,9 @@ export function createPreviewPanelContext(editor: TPageEditor): TPreviewPanelCon
 		previewedNode: createState<TResolvedNode | null>(
 			resolvedPageNodeResult.isOk() ? resolvedPageNodeResult.value : null
 		),
-		viewMode: createState<TPreviewPanelViewMode>('desktop'),
+		viewMode: createState<TPreviewPanelViewMode>(
+			isBreakpointActive(editor.breakpoint._v, 'md') ? 'desktop' : 'mobile'
+		),
 		switchViewMode(mode: TPreviewPanelViewMode) {
 			this.viewMode.set(mode);
 		}

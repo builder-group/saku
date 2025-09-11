@@ -1,5 +1,5 @@
 import { Button, ButtonGroup, Icon } from '@shopify/polaris';
-import { useFeatureState } from 'feature-react';
+import { useFeatureState, useListener } from 'feature-react';
 import React from 'react';
 import {
 	PolarisDesktopIcon,
@@ -7,6 +7,8 @@ import {
 	PolarisMobileIcon,
 	PolarisPageDownIcon
 } from '@/components';
+import { isBreakpointActive } from '@/lib';
+import { useEditorBreakpoint } from '../../../../hooks';
 import { PublishButton } from '../../../input';
 import { PanelHeader as BasePanelHeader } from '../../PanelHeader';
 import { TPreviewPanelContext } from './create-preview-panel-context';
@@ -15,6 +17,7 @@ export const PanelHeader: React.FC<TPanelHeaderProps> = (props) => {
 	const { cx } = props;
 
 	const viewMode = useFeatureState(cx.viewMode);
+	const isMd = useEditorBreakpoint(cx.editor, 'md');
 
 	// =========================================================================
 	// Events
@@ -49,6 +52,17 @@ export const PanelHeader: React.FC<TPanelHeaderProps> = (props) => {
 	}, [cx]);
 
 	// =========================================================================
+	// Effects
+	// =========================================================================
+
+	// Auto-switch to mobile view on mobile breakpoint
+	useListener(cx.editor.breakpoint, ({ value }) => {
+		if (!isBreakpointActive(value, 'md') && cx.viewMode._v !== 'mobile') {
+			cx.switchViewMode('mobile');
+		}
+	});
+
+	// =========================================================================
 	// UI
 	// =========================================================================
 
@@ -61,6 +75,7 @@ export const PanelHeader: React.FC<TPanelHeaderProps> = (props) => {
 					onClick={() => cx.switchViewMode('desktop')}
 					variant="secondary"
 					accessibilityLabel="Desktop view"
+					disabled={!isMd}
 				/>
 				<Button
 					icon={<Icon source={PolarisMobileIcon} />}
