@@ -1,6 +1,7 @@
 export * from './capitalize-first-letter';
 export * from './cn';
 export * from './compute-inner-border-radius';
+export * from './get-breakpoint';
 export * from './mutate-with-reference-update';
 export * from './prettify-file-size';
 export * from './stepr';
