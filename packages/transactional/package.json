@@ -35,12 +35,12 @@
 		"update:latest": "pnpm update --latest '!react' '!@types/react'"
 	},
 	"dependencies": {
-		"@react-email/components": "^0.5.2"
+		"@react-email/components": "^0.5.3"
 	},
 	"devDependencies": {
-		"@react-email/preview-server": "4.2.8",
+		"@react-email/preview-server": "4.2.11",
 		"@types/react": "^18.3.1",
 		"react": "18.3.1",
-		"react-email": "^4.2.8"
+		"react-email": "^4.2.11"
 	}
 }

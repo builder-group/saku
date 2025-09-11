@@ -410,4 +410,4 @@ When using [`@shopify/shopify-app-session-storage`](https://www.npmjs.com/packag
 
 ## 💡 Resources / References
 
-- [Polaris Web Components](https://shopify.dev/docs/api/app-home/polaris-web-components)
+- [Polaris Web Components](https://shopify.dev/docs/api/app-home/polaris-web-components) [Storybook](https://storybook.polaris-admin.shopify.dev/)
