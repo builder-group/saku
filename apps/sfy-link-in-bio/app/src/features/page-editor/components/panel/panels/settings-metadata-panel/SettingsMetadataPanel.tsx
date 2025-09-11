@@ -82,12 +82,6 @@ export const SettingsMetadataPanel: React.FC<TSettingsMetadataPanelProps> = (pro
 		}
 	);
 
-	// Force panel layout recompute on mount to prevent resize-panel issues
-	const [, forceRender] = React.useReducer((s: number) => s + 1, 0);
-	React.useLayoutEffect(() => {
-		forceRender();
-	}, []);
-
 	// =========================================================================
 	// Events
 	// =========================================================================

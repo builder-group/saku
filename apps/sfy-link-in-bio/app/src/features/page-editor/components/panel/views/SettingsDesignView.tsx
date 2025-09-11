@@ -8,6 +8,12 @@ export const SettingsDesignView: React.FC<TSettingsDesignViewProps> = (props) =>
 	const { editor, order } = props;
 	const isMd = useEditorBreakpoint(editor, 'md');
 
+	// Force panel layout recompute on mount to prevent resize-panel issues
+	const [, forceRender] = React.useReducer((s: number) => s + 1, 0);
+	React.useLayoutEffect(() => {
+		forceRender();
+	}, []);
+
 	if (isMd) {
 		return (
 			<>
