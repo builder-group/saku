@@ -1,7 +1,7 @@
 import { Button, Tabs } from '@shopify/polaris';
 import { useCompute } from 'feature-react/state';
 import React from 'react';
-import { PolarisXIcon, ResizablePanel } from '@/components';
+import { PolarisXIcon, ResizableHandle, ResizablePanel } from '@/components';
 import { useEditorBreakpoint } from '../../../../hooks';
 import { TPageEditor } from '../../../../lib';
 import { PanelHeader } from '../../PanelHeader';
@@ -9,7 +9,7 @@ import { Placeholder } from './Placeholder';
 import { AnalyticsTab, CustomizeTab, tabs } from './tabs';
 
 export const NodeInspectorPanel: React.FC<TNodeInspectorPanelProps> = (props) => {
-	const { editor, order } = props;
+	const { editor, order, withResizableHandle = false } = props;
 
 	const isMd = useEditorBreakpoint(editor, 'md');
 	const [tabIndex, setTabIndex] = React.useState(0);
@@ -81,46 +81,50 @@ export const NodeInspectorPanel: React.FC<TNodeInspectorPanelProps> = (props) =>
 	}
 
 	return (
-		<ResizablePanel
-			id="node-inspector-panel"
-			order={order}
-			minSize={sizes.minSize}
-			defaultSize={sizes.defaultSize}
-			maxSize={sizes.maxSize}
-		>
-			{selectedNode != null ? (
-				<div className="flex h-full flex-col bg-white">
-					<PanelHeader>
-						<div className="flex w-full items-center justify-between">
-							{/* Offset 8px Tab padding which can't be removed */}
-							<div className="-ml-2">
-								<Tabs tabs={tabs} selected={tabIndex} onSelect={handleTabChange} />
+		<>
+			{withResizableHandle && <ResizableHandle className="bg-neutral-200" withHandle={!isMd} />}
+			<ResizablePanel
+				id="node-inspector-panel"
+				order={order}
+				minSize={sizes.minSize}
+				defaultSize={sizes.defaultSize}
+				maxSize={sizes.maxSize}
+			>
+				{selectedNode != null ? (
+					<div className="flex h-full flex-col bg-white">
+						<PanelHeader>
+							<div className="flex w-full items-center justify-between">
+								{/* Offset 8px Tab padding which can't be removed */}
+								<div className="-ml-2">
+									<Tabs tabs={tabs} selected={tabIndex} onSelect={handleTabChange} />
+								</div>
+								{/* Cross icon for mobile to unselect node */}
+								{!isMd && (
+									<Button
+										icon={PolarisXIcon}
+										variant="plain"
+										onClick={handleUnselectNode}
+										accessibilityLabel="Unselect node"
+									/>
+								)}
 							</div>
-							{/* Cross icon for mobile to unselect node */}
-							{!isMd && (
-								<Button
-									icon={PolarisXIcon}
-									variant="plain"
-									onClick={handleUnselectNode}
-									accessibilityLabel="Unselect node"
-								/>
-							)}
+						</PanelHeader>
+						{/* 96px bottom padding is to avoid blocking content with Live Chat overlay */}
+						<div className="flex-1 overflow-auto pb-24">
+							{tabIndex === 0 && <CustomizeTab nodeState={selectedNode} editor={editor} />}
+							{tabIndex === 1 && <AnalyticsTab nodeState={selectedNode} editor={editor} />}
 						</div>
-					</PanelHeader>
-					{/* 96px bottom padding is to avoid blocking content with Live Chat overlay */}
-					<div className="flex-1 overflow-auto pb-24">
-						{tabIndex === 0 && <CustomizeTab nodeState={selectedNode} editor={editor} />}
-						{tabIndex === 1 && <AnalyticsTab nodeState={selectedNode} editor={editor} />}
 					</div>
-				</div>
-			) : (
-				<Placeholder />
-			)}
-		</ResizablePanel>
+				) : (
+					<Placeholder />
+				)}
+			</ResizablePanel>
+		</>
 	);
 };
 
 interface TNodeInspectorPanelProps {
 	editor: TPageEditor;
 	order: number;
+	withResizableHandle?: boolean;
 }

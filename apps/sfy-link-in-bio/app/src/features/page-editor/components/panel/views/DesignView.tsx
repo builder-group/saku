@@ -23,8 +23,7 @@ export const DesignView: React.FC<TDesignViewProps> = (props) => {
 	return (
 		<>
 			<CanvasPanel editor={editor} order={order} />
-			<ResizableHandle className="bg-neutral-200" withHandle />
-			<NodeInspectorPanel editor={editor} order={order + 1} />
+			<NodeInspectorPanel editor={editor} order={order + 1} withResizableHandle />
 			<ResizableHandle className="bg-neutral-200" withHandle />
 			<LayersPanel editor={editor} order={order + 2} />
 		</>
