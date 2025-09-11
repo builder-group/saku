@@ -1,7 +1,13 @@
-import { Icon, Text } from '@shopify/polaris';
+import { Button, Icon, Text } from '@shopify/polaris';
 import { useCompute, useFeatureState } from 'feature-react/state';
 import React from 'react';
-import { PolarisChevronRightIcon, ResizablePanel } from '@/components';
+import { ImperativePanelHandle } from 'react-resizable-panels';
+import {
+	PolarisChevronDownIcon,
+	PolarisChevronRightIcon,
+	PolarisChevronUpIcon,
+	ResizablePanel
+} from '@/components';
 import { cn } from '@/lib';
 import { settingsMetadata, TSettingsSectionType } from '../../../../environment';
 import { useEditorBreakpoint } from '../../../../hooks';
@@ -14,6 +20,7 @@ export const SettingsNavPanel: React.FC<TSettingsNavPanelProps> = (props) => {
 	const isMd = useEditorBreakpoint(editor, 'md');
 	const [collapsed, setCollapsed] = React.useState(false);
 	const selectedSection = useFeatureState(editor.activeSettingsSection);
+	const panelRef = React.useRef<ImperativePanelHandle>(null);
 
 	// TODO: Figure out better solution
 	// https://github.com/bvaughn/react-resizable-panels/issues/46
@@ -66,12 +73,22 @@ export const SettingsNavPanel: React.FC<TSettingsNavPanelProps> = (props) => {
 		[editor, selectedSection]
 	);
 
+	const handleToggleCollapse = React.useCallback(() => {
+		const panel = panelRef.current;
+		if (collapsed) {
+			panel?.expand();
+		} else {
+			panel?.collapse();
+		}
+	}, [collapsed]);
+
 	// =========================================================================
 	// UI
 	// =========================================================================
 
 	return (
 		<ResizablePanel
+			ref={panelRef}
 			id="settings-nav-panel"
 			order={order}
 			collapsible={sizes.collapsedSize != null}
@@ -84,9 +101,20 @@ export const SettingsNavPanel: React.FC<TSettingsNavPanelProps> = (props) => {
 		>
 			<div className="flex h-full flex-col bg-white">
 				<PanelHeader>
-					<Text as="h2" variant="headingMd">
-						Settings
-					</Text>
+					<div className="flex w-full items-center justify-between">
+						<Text as="h2" variant="headingMd">
+							Settings
+						</Text>
+						{/* Chevron icon for mobile to collapse/expand panel */}
+						{!isMd && (
+							<Button
+								icon={collapsed ? PolarisChevronDownIcon : PolarisChevronUpIcon}
+								variant="plain"
+								onClick={handleToggleCollapse}
+								accessibilityLabel={collapsed ? 'Expand panel' : 'Collapse panel'}
+							/>
+						)}
+					</div>
 				</PanelHeader>
 				<div className="flex flex-1 flex-col overflow-auto">
 					{settingsMetadata.map((section) => (
