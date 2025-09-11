@@ -1,7 +1,7 @@
-import { Tabs } from '@shopify/polaris';
+import { Button, Tabs } from '@shopify/polaris';
 import { useCompute } from 'feature-react/state';
 import React from 'react';
-import { ResizablePanel } from '@/components';
+import { PolarisXIcon, ResizablePanel } from '@/components';
 import { useEditorBreakpoint } from '../../../../hooks';
 import { TPageEditor } from '../../../../lib';
 import { PanelHeader } from '../../PanelHeader';
@@ -67,6 +67,10 @@ export const NodeInspectorPanel: React.FC<TNodeInspectorPanelProps> = (props) =>
 		setTabIndex(tabIndex);
 	}, []);
 
+	const handleUnselectNode = React.useCallback(() => {
+		editor.selectedNodeId.set(null);
+	}, [editor]);
+
 	// =========================================================================
 	// UI
 	// =========================================================================
@@ -87,9 +91,20 @@ export const NodeInspectorPanel: React.FC<TNodeInspectorPanelProps> = (props) =>
 			{selectedNode != null ? (
 				<div className="flex h-full flex-col bg-white">
 					<PanelHeader>
-						{/* Offset 8px Tab padding which can't be removed */}
-						<div className="-ml-2">
-							<Tabs tabs={tabs} selected={tabIndex} onSelect={handleTabChange} />
+						<div className="flex w-full items-center justify-between">
+							{/* Offset 8px Tab padding which can't be removed */}
+							<div className="-ml-2">
+								<Tabs tabs={tabs} selected={tabIndex} onSelect={handleTabChange} />
+							</div>
+							{/* Cross icon for mobile to unselect node */}
+							{!isMd && (
+								<Button
+									icon={PolarisXIcon}
+									variant="plain"
+									onClick={handleUnselectNode}
+									accessibilityLabel="Unselect node"
+								/>
+							)}
 						</div>
 					</PanelHeader>
 					{/* 96px bottom padding is to avoid blocking content with Live Chat overlay */}

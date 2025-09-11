@@ -3,12 +3,15 @@ import { useCompute } from 'feature-react';
 import React from 'react';
 import { ResizablePanel, ShadowRoot } from '@/components';
 import tailwindStylesHref from '@/styles.css?url';
+import { useEditorBreakpoint } from '../../../../hooks';
 import { TPageEditor } from '../../../../lib';
 import { NodeCanvas } from '../../../node';
 import { PanelHeader } from './PanelHeader';
 
 export const CanvasPanel: React.FC<TCanvasPanelProps> = (props) => {
 	const { editor, order } = props;
+
+	const isMd = useEditorBreakpoint(editor, 'md');
 	const [stylesLoaded, setStylesLoaded] = React.useState(false);
 
 	// TODO: Figure out better solution
@@ -16,10 +19,18 @@ export const CanvasPanel: React.FC<TCanvasPanelProps> = (props) => {
 	const sizes = useCompute(
 		editor.boundingRect,
 		({ value: rect }) => {
-			const width = rect.right - rect.left;
-			const toPercent = (pixels: number) => (pixels / (width > 0 ? width : 15)) * 100;
+			// Desktop (horizontal layout): Resizable based on width
+			if (isMd) {
+				const width = rect.right - rect.left;
+				const toPercent = (pixels: number) => (pixels / (width > 0 ? width : 15)) * 100;
+				return {
+					minSize: toPercent(405) // ~ 27
+				};
+			}
+
+			// Mobile (vertical layout): Resizable based on height
 			return {
-				minSize: toPercent(405) // ~ 27
+				minSize: undefined
 			};
 		},
 		[],
