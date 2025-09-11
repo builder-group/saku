@@ -1,18 +1,32 @@
 import React from 'react';
 import { ResizableHandle } from '@/components';
+import { useEditorBreakpoint } from '../../../hooks';
 import { TPageEditor } from '../../../lib';
 import { CanvasPanel, LayersPanel, NodeInspectorPanel } from '../panels';
 
 export const DesignView: React.FC<TDesignViewProps> = (props) => {
 	const { editor, order } = props;
+	const isMd = useEditorBreakpoint(editor, 'md');
+
+	if (isMd) {
+		return (
+			<>
+				<LayersPanel editor={editor} order={order} />
+				<ResizableHandle className="w-px bg-neutral-200" />
+				<CanvasPanel editor={editor} order={order + 1} />
+				<ResizableHandle className="w-px bg-neutral-200" />
+				<NodeInspectorPanel editor={editor} order={order + 2} />
+			</>
+		);
+	}
 
 	return (
 		<>
-			<LayersPanel editor={editor} order={order} />
+			<CanvasPanel editor={editor} order={order} />
 			<ResizableHandle className="w-px bg-neutral-200" />
-			<CanvasPanel editor={editor} order={order + 1} />
+			<NodeInspectorPanel editor={editor} order={order + 1} />
 			<ResizableHandle className="w-px bg-neutral-200" />
-			<NodeInspectorPanel editor={editor} order={order + 2} />
+			<LayersPanel editor={editor} order={order + 2} />
 		</>
 	);
 };

@@ -27,7 +27,7 @@ import { FetchError, NetworkError, RequestError } from 'feature-fetch';
 import { createState, TState } from 'feature-state';
 import React from 'react';
 import { appConfig, coreApiClient, logger } from '@/environment';
-import { createShopifyTokenMiddleware, requestReview } from '@/lib';
+import { createShopifyTokenMiddleware, requestReview, TBreakpoint } from '@/lib';
 import { TSettingsSectionType, TViewType } from '../../environment';
 import { createNodeState, getNodeAssetHashes, nodeMetadataRegistry, TNodeState } from '../node';
 import { createPageContext, TPageContext } from './create-page-context';
@@ -118,6 +118,7 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 			bottom: 0,
 			right: 0
 		}),
+		breakpoint: createState('base' as TBreakpoint),
 		canvasBoundingRect: createState<TBoundingRect>({
 			left: 0,
 			top: 0,
@@ -714,6 +715,7 @@ export interface TPageEditor {
 	isDraggingLayer: TState<boolean, []>;
 	shopify: ShopifyGlobal;
 	boundingRect: TState<TBoundingRect, []>;
+	breakpoint: TState<TBreakpoint, []>;
 	canvasBoundingRect: TState<TBoundingRect, []>;
 
 	editorRef: React.RefObject<HTMLDivElement>;

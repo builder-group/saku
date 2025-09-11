@@ -2,6 +2,7 @@ import { Spinner } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react';
 import React from 'react';
 import { ResizableHandle } from '@/components';
+import { useEditorBreakpoint } from '../../../hooks';
 import { TPageEditor } from '../../../lib';
 import { NavPanel } from '../panels';
 import { DesignView } from './DesignView';
@@ -12,6 +13,7 @@ export const EditorView: React.FC<TEditorViewProps> = (props) => {
 	const { editor, order = 1 } = props;
 
 	const isReady = useFeatureState(editor.isReady);
+	const isMd = useEditorBreakpoint(editor, 'md');
 
 	// Show loading spinner while not ready to hide messed up panel layout
 	if (!isReady) {
@@ -22,11 +24,21 @@ export const EditorView: React.FC<TEditorViewProps> = (props) => {
 		);
 	}
 
+	if (isMd) {
+		return (
+			<>
+				<NavPanel editor={editor} order={order} />
+				<ResizableHandle className="w-px bg-neutral-200" />
+				<View editor={editor} order={order + 1} />
+			</>
+		);
+	}
+
 	return (
 		<>
-			<NavPanel editor={editor} order={order} />
+			<View editor={editor} order={order} />
 			<ResizableHandle className="w-px bg-neutral-200" />
-			<View editor={editor} order={order + 1} />
+			<NavPanel editor={editor} order={order + 1} />
 		</>
 	);
 };

@@ -2,6 +2,7 @@ import { Tabs } from '@shopify/polaris';
 import { useCompute } from 'feature-react/state';
 import React from 'react';
 import { ResizablePanel } from '@/components';
+import { useEditorBreakpoint } from '../../../../hooks';
 import { TPageEditor } from '../../../../lib';
 import { PanelHeader } from '../../PanelHeader';
 import { Placeholder } from './Placeholder';
@@ -10,6 +11,7 @@ import { AnalyticsTab, CustomizeTab, tabs } from './tabs';
 export const NodeInspectorPanel: React.FC<TNodeInspectorPanelProps> = (props) => {
 	const { editor, order } = props;
 
+	const isMd = useEditorBreakpoint(editor, 'md');
 	const [tabIndex, setTabIndex] = React.useState(0);
 	const selectedNode = useCompute(
 		editor.selectedNodeId,
@@ -27,25 +29,27 @@ export const NodeInspectorPanel: React.FC<TNodeInspectorPanelProps> = (props) =>
 	const sizes = useCompute(
 		editor.boundingRect,
 		({ value: rect }) => {
-			const width = rect.right - rect.left;
-			if (width <= 0) {
-				// Note: Return default sizes instead of null to prevent the panel from being hidden on hot reload
+			// Desktop (horizontal layout): Resizable based on width
+			if (isMd) {
+				const width = rect.right - rect.left;
+				const toPercent = (pixels: number) => (pixels / (width > 0 ? width : 15)) * 100;
 				return {
-					minSize: 20,
-					defaultSize: 25,
-					maxSize: 30
+					minSize: toPercent(300), // ~ 20
+					defaultSize: toPercent(375), // ~ 25
+					maxSize: toPercent(450) // ~ 30
 				};
 			}
 
-			const toPercent = (pixels: number) => (pixels / width) * 100;
-
+			// Mobile (vertical layout): Resizable based on height
+			const height = rect.bottom - rect.top;
+			const toPercent = (pixels: number) => (pixels / (height > 0 ? height : 15)) * 100;
 			return {
 				minSize: toPercent(300), // ~ 20
-				defaultSize: toPercent(375), // ~ 25
+				defaultSize: toPercent(300), // ~ 20
 				maxSize: toPercent(450) // ~ 30
 			};
 		},
-		[],
+		[isMd],
 		{
 			isEqual(a, b) {
 				return (
@@ -66,6 +70,11 @@ export const NodeInspectorPanel: React.FC<TNodeInspectorPanelProps> = (props) =>
 	// =========================================================================
 	// UI
 	// =========================================================================
+
+	// Hide panel if no node is selected and on mobile
+	if (selectedNode == null && !isMd) {
+		return null;
+	}
 
 	return (
 		<ResizablePanel
