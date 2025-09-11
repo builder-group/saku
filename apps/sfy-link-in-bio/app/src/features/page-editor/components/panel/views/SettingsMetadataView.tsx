@@ -12,7 +12,7 @@ export const SettingsMetadataView: React.FC<TSettingsMetadataViewProps> = (props
 		return (
 			<>
 				<SettingsMetadataPanel editor={editor} order={order} />
-				<ResizableHandle className="w-px bg-neutral-200" />
+				<ResizableHandle className="bg-neutral-200" />
 				<MetadataPreviewPanel editor={editor} order={order + 1} />
 			</>
 		);

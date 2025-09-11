@@ -17,7 +17,7 @@ export const SettingsView: React.FC<TSettingsViewProps> = (props) => {
 		return (
 			<>
 				<SettingsNavPanel editor={editor} order={order} />
-				<ResizableHandle className="w-px bg-neutral-200" />
+				<ResizableHandle className="bg-neutral-200" />
 				<View editor={editor} order={order + 1} />
 			</>
 		);
@@ -26,7 +26,7 @@ export const SettingsView: React.FC<TSettingsViewProps> = (props) => {
 	return (
 		<>
 			<View editor={editor} order={order} />
-			<ResizableHandle className="w-px bg-neutral-200" />
+			<ResizableHandle className="bg-neutral-200" withHandle />
 			<SettingsNavPanel editor={editor} order={order + 1} />
 		</>
 	);

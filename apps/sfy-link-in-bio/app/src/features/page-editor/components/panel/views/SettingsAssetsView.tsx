@@ -12,7 +12,7 @@ export const SettingsAssetsView: React.FC<TSettingsAssetsViewProps> = (props) =>
 		return (
 			<>
 				<SettingsAssetsPanel editor={editor} order={order} />
-				<ResizableHandle className="w-px bg-neutral-200" />
+				<ResizableHandle className="bg-neutral-200" />
 				<AssetDetailsPanel editor={editor} order={order + 1} />
 			</>
 		);

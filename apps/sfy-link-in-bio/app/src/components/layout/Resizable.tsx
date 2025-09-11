@@ -3,7 +3,7 @@
  * This file includes code derived from the project shadcn-ui/ui by \@shadcn.
  * Project Repository: https://github.com/shadcn-ui/ui/blob/main/apps/www/registry/new-york/ui/resizable.tsx
  *
- * Date of Import: 11 June 2025
+ * Date of Import: 11 September 2025
  * -----------------------------------------------------------------------------
  * The code included in this file is licensed under the MIT License,
  * as per the original project by \@shadcn.
@@ -13,24 +13,18 @@
 'use client';
 
 import { GripVertical } from 'lucide-react';
-import React from 'react';
 import * as ResizablePrimitive from 'react-resizable-panels';
 import { cn } from '@/lib';
 
-const ResizablePanelGroup: React.ForwardRefExoticComponent<
-	React.ComponentProps<typeof ResizablePrimitive.PanelGroup> &
-		React.RefAttributes<React.ElementRef<typeof ResizablePrimitive.PanelGroup>>
-> = React.forwardRef<
-	React.ElementRef<typeof ResizablePrimitive.PanelGroup>,
-	React.ComponentProps<typeof ResizablePrimitive.PanelGroup>
->(({ className, ...props }, ref) => (
+const ResizablePanelGroup = ({
+	className,
+	...props
+}: React.ComponentProps<typeof ResizablePrimitive.PanelGroup>) => (
 	<ResizablePrimitive.PanelGroup
-		ref={ref}
 		className={cn('flex h-full w-full data-[panel-group-direction=vertical]:flex-col', className)}
 		{...props}
 	/>
-));
-ResizablePanelGroup.displayName = 'ResizablePanelGroup';
+);
 
 const ResizablePanel = ResizablePrimitive.Panel;
 
@@ -49,7 +43,7 @@ const ResizableHandle = ({
 		{...props}
 	>
 		{withHandle && (
-			<div className="bg-border z-10 flex h-4 w-3 items-center justify-center rounded-sm border">
+			<div className="z-10 flex h-4 w-3 items-center justify-center rounded-sm bg-inherit">
 				<GripVertical className="h-2.5 w-2.5" />
 			</div>
 		)}

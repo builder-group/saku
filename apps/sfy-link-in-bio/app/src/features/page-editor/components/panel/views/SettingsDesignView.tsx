@@ -12,7 +12,7 @@ export const SettingsDesignView: React.FC<TSettingsDesignViewProps> = (props) =>
 		return (
 			<>
 				<SettingsDesignPanel editor={editor} order={order} />
-				<ResizableHandle className="w-px bg-neutral-200" />
+				<ResizableHandle className="bg-neutral-200" />
 				<CanvasPanel editor={editor} order={order + 1} />
 			</>
 		);

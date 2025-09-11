@@ -12,7 +12,7 @@ export const SettingsIntegrationsView: React.FC<TSettingsIntegrationsViewProps> 
 		return (
 			<>
 				<SettingsIntegrationsPanel editor={editor} order={order} />
-				<ResizableHandle className="w-px bg-neutral-200" />
+				<ResizableHandle className="bg-neutral-200" />
 				<IntegrationDetailsPanel editor={editor} order={order + 1} />
 			</>
 		);
