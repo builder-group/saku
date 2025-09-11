@@ -115,7 +115,7 @@ export const LayersPanel: React.FC<TLayersPanelProps> = (props) => {
 		<ResizablePanel
 			id="layers-panel"
 			order={order}
-			collapsible={true}
+			collapsible={sizes.collapsedSize != null}
 			collapsedSize={sizes.collapsedSize}
 			minSize={sizes.minSize}
 			defaultSize={sizes.defaultSize}

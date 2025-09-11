@@ -1,4 +1,5 @@
 import { Spinner } from '@shopify/polaris';
+import { useCompute } from 'feature-react';
 import React from 'react';
 import { ResizablePanel, ShadowRoot } from '@/components';
 import tailwindStylesHref from '@/styles.css?url';
@@ -10,8 +11,27 @@ export const CanvasPanel: React.FC<TCanvasPanelProps> = (props) => {
 	const { editor, order } = props;
 	const [stylesLoaded, setStylesLoaded] = React.useState(false);
 
+	// TODO: Figure out better solution
+	// https://github.com/bvaughn/react-resizable-panels/issues/46
+	const sizes = useCompute(
+		editor.boundingRect,
+		({ value: rect }) => {
+			const width = rect.right - rect.left;
+			const toPercent = (pixels: number) => (pixels / (width > 0 ? width : 15)) * 100;
+			return {
+				minSize: toPercent(405) // ~ 27
+			};
+		},
+		[],
+		{
+			isEqual(a, b) {
+				return a.minSize === b.minSize;
+			}
+		}
+	);
+
 	return (
-		<ResizablePanel id="canvas-panel" order={order} className="relative">
+		<ResizablePanel id="canvas-panel" order={order} minSize={sizes.minSize} className="relative">
 			<PanelHeader editor={editor} />
 
 			{!stylesLoaded && (

@@ -74,7 +74,7 @@ export const NavPanel: React.FC<TNavPanelProps> = (props) => {
 		<ResizablePanel
 			id="nav-panel"
 			order={order}
-			collapsible={true}
+			collapsible={sizes.collapsedSize != null}
 			collapsedSize={sizes.collapsedSize}
 			minSize={sizes.minSize}
 			defaultSize={sizes.defaultSize}
