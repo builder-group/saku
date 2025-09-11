@@ -44,7 +44,7 @@ export const NodeInspectorPanel: React.FC<TNodeInspectorPanelProps> = (props) =>
 			const height = rect.bottom - rect.top;
 			const toPercent = (pixels: number) => (pixels / (height > 0 ? height : 15)) * 100;
 			return {
-				minSize: toPercent(300), // ~ 20
+				minSize: toPercent(45), // ~ 3
 				defaultSize: toPercent(300), // ~ 20
 				maxSize: toPercent(450) // ~ 30
 			};
