@@ -1,10 +1,11 @@
 import { shortId } from '@blgc/utils';
 import { Plan } from '@heymantle/client';
 import { useMantle } from '@heymantle/react';
+import { Button } from '@shopify/polaris';
 import React from 'react';
 import { Err, Ok } from 'tuple-result';
 import { shopify } from '@/.server/environment';
-import { AccordionSection, PricingCard, useCrisp } from '@/components';
+import { AccordionSection, PolarisArrowLeftIcon, PricingCard, useCrisp } from '@/components';
 import { appConfig } from '@/environment';
 import { getMantleClient, isMantleError, resultLoader, withResultLoader } from '@/lib';
 
@@ -39,11 +40,11 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 				<ui-title-bar title="Select a Plan"></ui-title-bar>
 
 				{/* Back Button */}
-				<s-box paddingBlock="small-100" paddingInline="none">
-					<s-button variant="tertiary" href="/app/settings" icon="arrow-left">
+				<div className="flex w-full items-start py-4 pl-2 md:pl-0">
+					<Button url="/app/settings" variant="tertiary" icon={PolarisArrowLeftIcon}>
 						Back to Settings
-					</s-button>
-				</s-box>
+					</Button>
+				</div>
 
 				{/* Plans */}
 				<div className="mb-4 flex flex-col gap-6 md:flex-row md:justify-center">
@@ -55,7 +56,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 							price={plan.price}
 							frequency="month"
 							features={plan.features}
-							featuredText={plan.isPopular ? 'Most Popular' : undefined}
+							featuredText={plan.isRecommended ? 'Recommended' : undefined}
 							cta={{
 								content: plan.isCurrentPlan ? 'Current Plan' : 'Upgrade Now',
 								variant: plan.isCurrentPlan ? 'secondary' : 'primary',
@@ -100,51 +101,45 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 
 				{/* Get Help */}
 				<s-section heading="Get Help">
-					<s-stack gap="none" border="base" borderRadius="base" overflow="hidden">
-						<s-box padding="small-100">
-							<s-grid gridTemplateColumns="1fr auto" alignItems="center" gap="base">
-								<s-box>
-									<s-heading>Chat with us</s-heading>
-									<s-paragraph color="subdued">Get quick help with plans and billing</s-paragraph>
-								</s-box>
-								<s-button variant="primary" onClick={handleStartChat}>
-									Start Chat
-								</s-button>
-							</s-grid>
-						</s-box>
-						<s-box paddingInline="small-100">
+					<div className="overflow-hidden rounded-lg border border-neutral-200">
+						<div className="grid grid-cols-[1fr_auto] items-center gap-4 p-4">
+							<div>
+								<s-heading>Chat with us</s-heading>
+								<s-paragraph color="subdued">Get quick help with plans and billing</s-paragraph>
+							</div>
+							<s-button variant="primary" onClick={handleStartChat}>
+								Start Chat
+							</s-button>
+						</div>
+						<div className="px-4">
 							<s-divider></s-divider>
-						</s-box>
-						<s-box padding="small-100">
-							<s-grid gridTemplateColumns="1fr auto" alignItems="center" gap="base">
-								<s-box>
-									<s-heading>Discord Community</s-heading>
-									<s-paragraph color="subdued">Join our community for help and updates</s-paragraph>
-								</s-box>
-								<s-button variant="secondary" href={appConfig.social.discord} target="_blank">
-									Join
-								</s-button>
-							</s-grid>
-						</s-box>
-						<s-box paddingInline="small-100">
+						</div>
+						<div className="grid grid-cols-[1fr_auto] items-center gap-4 p-4">
+							<div>
+								<s-heading>Discord Community</s-heading>
+								<s-paragraph color="subdued">Join our community for help and updates</s-paragraph>
+							</div>
+							<s-button variant="secondary" href={appConfig.social.discord} target="_blank">
+								Join
+							</s-button>
+						</div>
+						<div className="px-4">
 							<s-divider></s-divider>
-						</s-box>
-						<s-box padding="small-100">
-							<s-grid gridTemplateColumns="1fr auto" alignItems="center" gap="base">
-								<s-box>
-									<s-heading>Email Support</s-heading>
-									<s-paragraph color="subdued">{appConfig.support.email}</s-paragraph>
-								</s-box>
-								<s-button
-									variant="secondary"
-									href={`mailto:${appConfig.support.email}`}
-									target="_blank"
-								>
-									Contact
-								</s-button>
-							</s-grid>
-						</s-box>
-					</s-stack>
+						</div>
+						<div className="grid grid-cols-[1fr_auto] items-center gap-4 p-4">
+							<div>
+								<s-heading>Email Support</s-heading>
+								<s-paragraph color="subdued">{appConfig.support.email}</s-paragraph>
+							</div>
+							<s-button
+								variant="secondary"
+								href={`mailto:${appConfig.support.email}`}
+								target="_blank"
+							>
+								Contact
+							</s-button>
+						</div>
+					</div>
 				</s-section>
 			</s-page>
 		);
@@ -154,16 +149,16 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 			<ui-title-bar title="Select a Plan"></ui-title-bar>
 
 			{/* Back Button */}
-			<s-box paddingBlock="small-100" paddingInline="none">
-				<s-button variant="tertiary" href="/app/settings" icon="arrow-left">
+			<div className="flex w-full items-start py-4 pl-2 md:pl-0">
+				<Button url="/app/settings" variant="tertiary" icon={PolarisArrowLeftIcon}>
 					Back to Settings
-				</s-button>
-			</s-box>
+				</Button>
+			</div>
 
 			{/* Error State */}
 			<s-section heading="Unable to Load Plans">
-				<s-box padding="small-100">
-					<s-stack gap="base">
+				<div className="p-4">
+					<div className="space-y-4">
 						<s-paragraph color="subdued">
 							We're having trouble loading the available plans. Please try again or contact support
 							if the issue persists.
@@ -171,8 +166,8 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 						<s-button variant="primary" onClick={() => window.location.reload()}>
 							Try Again
 						</s-button>
-					</s-stack>
-				</s-box>
+					</div>
+				</div>
 			</s-section>
 		</s-page>
 	)
@@ -234,8 +229,6 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 			// do nothing
 		}
 
-		console.log(mantlePlan);
-
 		return {
 			id: mantlePlan.id,
 			name: mantlePlan.name,
@@ -245,7 +238,7 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 				currency: (mantlePlan.presentmentCurrencyCode as unknown as string) || 'USD'
 			}).format(mantlePlan.presentmentAmount),
 			features,
-			isPopular: planName === 'awesome',
+			isRecommended: planName === 'awesome',
 			isCurrentPlan,
 			mantlePlan
 		};
@@ -269,7 +262,7 @@ interface TPlan {
 	description: string;
 	price: string;
 	features: TFeature[];
-	isPopular: boolean;
+	isRecommended: boolean;
 	isCurrentPlan: boolean;
 	mantlePlan: Plan;
 }

@@ -1,5 +1,7 @@
 import React from 'react';
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router';
+import { WindowSize } from '@/components';
+import { appConfig } from '@/environment';
 import { TLinksFunction } from '@/types';
 import { RootProviders } from './providers';
 import styles from './styles.css?url'; // ?url required for Shopify app hot reloading
@@ -20,6 +22,7 @@ const Root: React.FC = () => {
 					<Outlet />
 					<ScrollRestoration />
 					<Scripts />
+					{appConfig.env === 'development' && <WindowSize />}
 				</RootProviders>
 			</body>
 		</html>
