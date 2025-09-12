@@ -34,6 +34,7 @@ export const LayersPanel: React.FC<TLayersPanelProps> = (props) => {
 			nodeIds: value.children
 		};
 	});
+	const hasSelectedNode = useCompute(editor.selectedNodeId, ({ value }) => value != null);
 	const panelRef = React.useRef<ImperativePanelHandle>(null);
 
 	// https://docs.dndkit.com/presets/sortable
@@ -120,6 +121,8 @@ export const LayersPanel: React.FC<TLayersPanelProps> = (props) => {
 				return;
 			}
 
+			// TODO: Programmatic collapse/expand doesn't work rn
+			// https://github.com/bvaughn/react-resizable-panels/issues/515#issuecomment-3285269376
 			const panel = panelRef.current;
 			if (value != null) {
 				panel?.collapse();
@@ -133,6 +136,12 @@ export const LayersPanel: React.FC<TLayersPanelProps> = (props) => {
 	// =========================================================================
 	// UI
 	// =========================================================================
+
+	// Hide panel if node is selected and on mobile
+	// TODO: Remove once programmatic collapse/expand is fixed
+	if (!isMd && hasSelectedNode) {
+		return;
+	}
 
 	return (
 		<>

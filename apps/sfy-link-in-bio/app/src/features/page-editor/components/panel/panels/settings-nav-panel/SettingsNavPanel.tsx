@@ -74,6 +74,8 @@ export const SettingsNavPanel: React.FC<TSettingsNavPanelProps> = (props) => {
 	);
 
 	const handleToggleCollapse = React.useCallback(() => {
+		// TODO: Programmatic collapse/expand doesn't work rn
+		// https://github.com/bvaughn/react-resizable-panels/issues/515#issuecomment-3285269376
 		const panel = panelRef.current;
 		if (collapsed) {
 			panel?.expand();
