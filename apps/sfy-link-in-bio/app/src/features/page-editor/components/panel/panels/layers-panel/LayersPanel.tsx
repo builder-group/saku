@@ -12,8 +12,9 @@ import { restrictToParentElement } from '@dnd-kit/modifiers';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { TNodeId } from '@repo/editor';
 import { Text } from '@shopify/polaris';
-import { useCompute } from 'feature-react/state';
+import { useCompute, useListener } from 'feature-react/state';
 import React from 'react';
+import { ImperativePanelHandle } from 'react-resizable-panels';
 import { ResizableHandle, ResizablePanel, StampIcon } from '@/components';
 import { cn } from '@/lib';
 import { useEditorBreakpoint } from '../../../../hooks';
@@ -33,7 +34,7 @@ export const LayersPanel: React.FC<TLayersPanelProps> = (props) => {
 			nodeIds: value.children
 		};
 	});
-	const hasSelectedNode = useCompute(editor.selectedNodeId, ({ value }) => value != null);
+	const panelRef = React.useRef<ImperativePanelHandle>(null);
 
 	// https://docs.dndkit.com/presets/sortable
 	const sensors = useSensors(
@@ -109,18 +110,35 @@ export const LayersPanel: React.FC<TLayersPanelProps> = (props) => {
 	);
 
 	// =========================================================================
-	// UI
+	// Effects
 	// =========================================================================
 
-	// Hide panel if node is selected and on mobile
-	if (hasSelectedNode && !isMd) {
-		return null;
-	}
+	useListener(
+		editor.selectedNodeId,
+		({ value }) => {
+			if (isMd) {
+				return;
+			}
+
+			const panel = panelRef.current;
+			if (value != null) {
+				panel?.collapse();
+			} else {
+				panel?.expand();
+			}
+		},
+		[isMd]
+	);
+
+	// =========================================================================
+	// UI
+	// =========================================================================
 
 	return (
 		<>
 			{withResizableHandle && <ResizableHandle className="bg-neutral-200" withHandle={!isMd} />}
 			<ResizablePanel
+				ref={panelRef}
 				id="layers-panel"
 				order={order}
 				collapsible={sizes.collapsedSize != null}

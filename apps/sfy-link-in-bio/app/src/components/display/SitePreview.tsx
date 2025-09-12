@@ -59,9 +59,9 @@ export const SitePreview: React.FC<TSitePreviewProps> = (props) => {
 
 			{/* Mobile Preview */}
 			<div className="absolute top-8 right-0 w-32 md:top-12 md:w-44">
-				<div className="rounded-3xl border-2 border-gray-800 bg-gray-800 p-1 shadow-xl md:border-4">
+				<div className="rounded-3xl bg-gray-800 p-1 shadow-xl md:p-2">
 					{/* Screen */}
-					<div className="relative h-48 overflow-hidden rounded-2xl bg-white md:h-80">
+					<div className="relative h-48 overflow-hidden rounded-[1.25rem] bg-white md:h-80 md:rounded-2xl">
 						<div
 							className="h-full w-full origin-top-left scale-42"
 							style={{

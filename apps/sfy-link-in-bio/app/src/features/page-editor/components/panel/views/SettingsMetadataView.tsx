@@ -4,7 +4,9 @@ import { useEditorBreakpoint } from '../../../hooks';
 import { TPageEditor } from '../../../lib';
 import { MetadataPreviewPanel, SettingsMetadataPanel } from '../panels';
 
-export const SettingsMetadataView: React.FC<TSettingsMetadataViewProps> = (props) => {
+export const SettingsMetadataView: React.FC<TSettingsMetadataViewProps> & { panelCount: number } = (
+	props
+) => {
 	const { editor, order } = props;
 	const isMd = useEditorBreakpoint(editor, 'md');
 
@@ -30,6 +32,7 @@ export const SettingsMetadataView: React.FC<TSettingsMetadataViewProps> = (props
 		</>
 	);
 };
+SettingsMetadataView.panelCount = 2;
 
 interface TSettingsMetadataViewProps {
 	editor: TPageEditor;

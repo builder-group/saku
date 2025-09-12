@@ -9,7 +9,30 @@ import { DesignView } from './DesignView';
 import { PreviewView } from './PreviewView';
 import { SettingsView } from './SettingsView';
 
-export const EditorView: React.FC<TEditorViewProps> = (props) => {
+const View: React.FC<TViewProps> & { panelCount: number } = (props) => {
+	const { editor, order } = props;
+
+	const activeView = useFeatureState(editor.activeView);
+
+	switch (activeView) {
+		case 'layers':
+			return <DesignView editor={editor} order={order} />;
+		case 'preview':
+			return <PreviewView editor={editor} order={order} />;
+		case 'settings':
+			return <SettingsView editor={editor} order={order} />;
+		default:
+			return null;
+	}
+};
+View.panelCount = Math.max(DesignView.panelCount, PreviewView.panelCount, SettingsView.panelCount);
+
+interface TViewProps {
+	editor: TPageEditor;
+	order: number;
+}
+
+export const EditorView: React.FC<TEditorViewProps> & { panelCount: number } = (props) => {
 	const { editor, order = 1 } = props;
 
 	const isReady = useFeatureState(editor.isReady);
@@ -38,34 +61,13 @@ export const EditorView: React.FC<TEditorViewProps> = (props) => {
 		<>
 			<View editor={editor} order={order} />
 			<ResizableHandle className="bg-neutral-200" />
-			<NavPanel editor={editor} order={order + 1} />
+			<NavPanel editor={editor} order={order + View.panelCount} />
 		</>
 	);
 };
+EditorView.panelCount = 1 + View.panelCount;
 
 interface TEditorViewProps {
 	editor: TPageEditor;
 	order?: number;
-}
-
-const View: React.FC<TViewProps> = (props) => {
-	const { editor, order } = props;
-
-	const activeView = useFeatureState(editor.activeView);
-
-	switch (activeView) {
-		case 'layers':
-			return <DesignView editor={editor} order={order} />;
-		case 'preview':
-			return <PreviewView editor={editor} order={order} />;
-		case 'settings':
-			return <SettingsView editor={editor} order={order} />;
-		default:
-			return null;
-	}
-};
-
-interface TViewProps {
-	editor: TPageEditor;
-	order: number;
 }

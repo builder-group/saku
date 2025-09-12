@@ -4,7 +4,7 @@ import { useEditorBreakpoint } from '../../../hooks';
 import { TPageEditor } from '../../../lib';
 import { CanvasPanel, LayersPanel, NodeInspectorPanel } from '../panels';
 
-export const DesignView: React.FC<TDesignViewProps> = (props) => {
+export const DesignView: React.FC<TDesignViewProps> & { panelCount: number } = (props) => {
 	const { editor, order } = props;
 	const isMd = useEditorBreakpoint(editor, 'md');
 
@@ -28,6 +28,7 @@ export const DesignView: React.FC<TDesignViewProps> = (props) => {
 		</>
 	);
 };
+DesignView.panelCount = 3;
 
 interface TDesignViewProps {
 	editor: TPageEditor;
