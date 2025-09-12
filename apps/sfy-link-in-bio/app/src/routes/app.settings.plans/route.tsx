@@ -40,7 +40,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 				<ui-title-bar title="Select a Plan"></ui-title-bar>
 
 				{/* Back Button */}
-				<div className="flex w-full items-start py-4 pl-2 md:pl-0">
+				<div className="flex w-full items-start py-4 pl-3">
 					<Button url="/app/settings" variant="tertiary" icon={PolarisArrowLeftIcon}>
 						Back to Settings
 					</Button>
@@ -149,7 +149,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 			<ui-title-bar title="Select a Plan"></ui-title-bar>
 
 			{/* Back Button */}
-			<div className="flex w-full items-start py-4 pl-2 md:pl-0">
+			<div className="flex w-full items-start py-4 pl-3">
 				<Button url="/app/settings" variant="tertiary" icon={PolarisArrowLeftIcon}>
 					Back to Settings
 				</Button>

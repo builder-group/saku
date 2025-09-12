@@ -21,7 +21,7 @@ const Page: React.FC = () => {
 
 			{/* Back Button - Show when coming from settings */}
 			{fromSettings && (
-				<div className="flex w-full items-start py-4 pl-2 md:pl-0">
+				<div className="flex w-full items-start py-4 pl-3">
 					<Button url="/app/settings" variant="tertiary" icon={PolarisArrowLeftIcon}>
 						Back to Settings
 					</Button>
