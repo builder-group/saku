@@ -1,4 +1,4 @@
-import { Button, ButtonGroup, Card, Layout, Spinner, Text, TextField } from '@shopify/polaris';
+import { Button, ButtonGroup, Layout, Spinner, Text, TextField } from '@shopify/polaris';
 import { boundary } from '@shopify/shopify-app-react-router/server';
 import { useFeatureState } from 'feature-react';
 import React from 'react';
@@ -7,10 +7,10 @@ import { shopify, shopifyConfig } from '@/.server/environment';
 import { getSessionTokenFromRequest, redirectWithAuth } from '@/.server/lib';
 import {
 	ClipboardButton,
-	FeedbackCard,
+	FeedbackSection,
 	IframeContent,
 	PolarisViewIcon,
-	QuickHelpCard,
+	QuickHelpSection,
 	SitePreview
 } from '@/components';
 import { appConfig, coreApiClient, logger } from '@/environment';
@@ -100,15 +100,15 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 
 					<Layout>
 						<Layout.Section>
-							{/* Bio Preview Card */}
-							<Card>
+							{/* Bio Preview Section */}
+							<s-section>
 								<SitePreview
 									url={site.url}
 									content={<IframeContent url={site.platformUrl} disableScroll={true} />}
 								/>
 
 								{/* Theme List Item */}
-								<div className="mt-4 flex items-center justify-between gap-4">
+								<div className="mt-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
 									<div className="flex items-center gap-3">
 										{/* Small Thumbnail */}
 										<div className="flex h-16 w-24 items-center justify-center rounded-md bg-neutral-200 px-3">
@@ -148,14 +148,14 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 										</Button>
 									</div>
 								</div>
-							</Card>
+							</s-section>
 						</Layout.Section>
 
 						<Layout.Section variant="oneThird">
 							<div className="flex flex-col gap-5">
-								{/* Your Link Card */}
-								<Card>
-									<div className="flex flex-col gap-3">
+								{/* Your Link Section */}
+								<s-section>
+									<div className="space-y-3">
 										<div className="flex items-center justify-between">
 											<Text as="h2" variant="headingMd">
 												Your Bio Link
@@ -175,9 +175,9 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 											connectedRight={<ClipboardButton textToCopy={site.url} />}
 										/>
 									</div>
-								</Card>
-								{/* Your Platform Link Card */}
-								{/* <Card>
+								</s-section>
+								{/* Your Platform Link Section */}
+								{/* <s-section>
 									<div className="flex flex-col gap-3">
 										<div className="flex items-center justify-between">
 											<Text as="h2" variant="headingMd">
@@ -198,12 +198,12 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 											connectedRight={<ClipboardButton textToCopy={platformUrl} />}
 										/>
 									</div>
-								</Card> */}
-								<FeedbackCard
+								</s-section> */}
+								<FeedbackSection
 									email={appConfig.support.email}
 									reviewUrl={appConfig.distribution.shopify}
 								/>
-								<QuickHelpCard />
+								<QuickHelpSection />
 							</div>
 						</Layout.Section>
 					</Layout>

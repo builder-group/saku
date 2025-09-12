@@ -6,12 +6,15 @@ export const SitePreview: React.FC<TSitePreviewProps> = (props) => {
 
 	return (
 		<div
-			className={cn('relative flex h-72 items-center justify-center overflow-hidden', className)}
+			className={cn(
+				'relative flex h-48 items-center justify-center overflow-hidden md:h-72',
+				className
+			)}
 			{...divProps}
 		>
 			{/* Desktop Preview */}
-			<div className="absolute top-0 left-0 w-[calc(100%-5rem)]">
-				<div className="rounded-xl bg-gray-800 p-2 pb-5 shadow-xl">
+			<div className="absolute top-0 left-0 w-[calc(100%-2rem)] md:w-[calc(100%-4rem)]">
+				<div className="rounded-xl bg-gray-800 p-1 pb-3 shadow-xl md:p-2 md:pb-5">
 					{/* Browser Chrome */}
 					<div className="flex h-7 items-center rounded-t-lg bg-gray-100 px-2">
 						{/* Traffic Lights */}
@@ -40,7 +43,7 @@ export const SitePreview: React.FC<TSitePreviewProps> = (props) => {
 					</div>
 
 					{/* Browser Content */}
-					<div className="relative h-72 overflow-hidden rounded-b-lg bg-white">
+					<div className="relative h-48 overflow-hidden rounded-b-lg bg-white md:h-72">
 						<div
 							className="h-full w-full origin-top-left scale-45"
 							style={{
@@ -55,10 +58,10 @@ export const SitePreview: React.FC<TSitePreviewProps> = (props) => {
 			</div>
 
 			{/* Mobile Preview */}
-			<div className="absolute top-12 right-0 w-44">
-				<div className="rounded-3xl border-4 border-gray-800 bg-gray-800 p-1 shadow-xl">
+			<div className="absolute top-8 right-0 w-32 md:top-12 md:w-44">
+				<div className="rounded-3xl border-2 border-gray-800 bg-gray-800 p-1 shadow-xl md:border-4">
 					{/* Screen */}
-					<div className="relative h-80 overflow-hidden rounded-2xl bg-white">
+					<div className="relative h-48 overflow-hidden rounded-2xl bg-white md:h-80">
 						<div
 							className="h-full w-full origin-top-left scale-42"
 							style={{
