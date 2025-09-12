@@ -66,67 +66,71 @@ export const ThemeStep: React.FC<TThemeStepProps> = (props) => {
 			icon={<LayoutTemplateIcon className="size-4" />}
 			title="Choose a theme"
 			description="Select a theme that matches your brand and style"
-			contentClassName="flex flex-col gap-6"
+			className="h-screen overflow-y-auto"
+			contentClassName="flex flex-col items-center gap-6 min-h-0 max-w-xl"
 		>
-			{/* Theme Selection Grid */}
-			<div className="relative left-1/2 grid max-h-96 w-[640px] -translate-x-1/2 grid-cols-3 gap-3 overflow-y-auto p-1">
-				{themes.map((theme) => {
-					const isSelected = selectedTheme.key === theme.key;
+			<div className="min-h-48 flex-1 overflow-y-auto">
+				<div className="grid grid-cols-2 gap-3 md:grid-cols-3">
+					{themes.map((theme) => {
+						const isSelected = selectedTheme.key === theme.key;
 
-					return (
-						<div
-							key={theme.key}
-							className={`group cursor-pointer rounded-lg border p-3 transition-all hover:shadow-sm ${
-								isSelected ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'
-							}`}
-							onClick={() => handleThemeSelect(theme)}
-						>
-							{/* Header with colors, name, and selection indicator */}
-							<div className="mb-3 flex items-center gap-2">
-								<ThemeIcon theme={theme} />
-
-								<div className="flex-1 text-left">
-									<p className="text-sm font-medium text-gray-900">{theme.name}</p>
-								</div>
-
-								{/* Selection indicator */}
-								{isSelected && (
-									<div className="flex h-4 w-4 items-center justify-center rounded-full bg-blue-500">
-										<div className="h-2 w-2 rounded-full bg-white" />
+						return (
+							<div
+								key={theme.key}
+								className={`group cursor-pointer rounded-lg border p-3 transition-all hover:shadow-sm ${
+									isSelected
+										? 'border-blue-500 bg-blue-50'
+										: 'border-gray-200 hover:border-gray-300'
+								}`}
+								onClick={() => handleThemeSelect(theme)}
+							>
+								<div className="mb-3 flex items-center gap-2">
+									<ThemeIcon theme={theme} />
+									<div className="flex-1 text-left">
+										<p className="text-sm font-medium text-gray-900">{theme.name}</p>
 									</div>
-								)}
+									{isSelected && (
+										<div className="flex h-4 w-4 items-center justify-center rounded-full bg-blue-500">
+											<div className="h-2 w-2 rounded-full bg-white" />
+										</div>
+									)}
+								</div>
+								<ThemePreview theme={theme} />
 							</div>
-
-							{/* Preview */}
-							<ThemePreview theme={theme} />
-						</div>
-					);
-				})}
+						);
+					})}
+				</div>
 			</div>
 
-			<Banner tone="info">You can always change your theme later in the editor settings.</Banner>
+			<div className="flex w-full max-w-sm flex-col gap-4">
+				<div className="hidden md:block">
+					<Banner tone="info">
+						You can always change your theme later in the editor settings.
+					</Banner>
+				</div>
 
-			{error != null && (
-				<Banner tone="critical" onDismiss={() => setError(null)}>
-					{error}
-				</Banner>
-			)}
+				{error != null && (
+					<Banner tone="critical" onDismiss={() => setError(null)}>
+						{error}
+					</Banner>
+				)}
 
-			<div className="flex flex-col gap-2">
-				<Button
-					variant="primary"
-					size="large"
-					fullWidth
-					onClick={handleContinue}
-					loading={isLoading}
-					disabled={isLoading}
-				>
-					Continue to editor
-				</Button>
+				<div className="flex flex-col gap-2">
+					<Button
+						variant="primary"
+						size="large"
+						fullWidth
+						onClick={handleContinue}
+						loading={isLoading}
+						disabled={isLoading}
+					>
+						Continue to editor
+					</Button>
 
-				<Button variant="monochromePlain" onClick={handleBack} disabled={isLoading}>
-					Go back
-				</Button>
+					<Button variant="monochromePlain" onClick={handleBack} disabled={isLoading}>
+						Go back
+					</Button>
+				</div>
 			</div>
 		</StepLayout>
 	);
