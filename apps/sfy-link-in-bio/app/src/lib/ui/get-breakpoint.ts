@@ -15,4 +15,27 @@ export function getBreakpoint(px: number): TBreakpoint {
 	return 'base';
 }
 
-type TBreakpoint = 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'base';
+/**
+ * Checks if a breakpoint is active (Tailwind-style behavior)
+ *
+ * @param currentBreakpoint - The current breakpoint
+ * @param targetBreakpoint - The breakpoint to check for
+ * @returns true if the target breakpoint is active or smaller
+ *
+ * @example
+ * isBreakpointActive('lg', 'md') // true (lg includes md)
+ * isBreakpointActive('sm', 'md') // false (sm doesn't include md)
+ * isBreakpointActive('md', 'md') // true (exact match)
+ */
+export function isBreakpointActive(
+	currentBreakpoint: TBreakpoint,
+	targetBreakpoint: TBreakpoint
+): boolean {
+	const currentIndex = breakpointOrder.indexOf(currentBreakpoint);
+	const targetIndex = breakpointOrder.indexOf(targetBreakpoint);
+	return currentIndex >= targetIndex;
+}
+
+const breakpointOrder: TBreakpoint[] = ['base', 'sm', 'md', 'lg', 'xl', '2xl'];
+
+export type TBreakpoint = 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'base';

@@ -1,3 +1,3 @@
 export * from './AccordionSection';
-export * from './cards';
 export * from './Resizable';
+export * from './sections';

@@ -1,10 +1,9 @@
-import { Badge, Button, Card, Text } from '@shopify/polaris';
+import { Badge, Button, Text } from '@shopify/polaris';
 import React from 'react';
 import { PolarisXIcon } from '@/components';
 import { cn } from '@/lib';
 import { PolarisCheckIcon } from './icons';
 
-// https://www.polariscomponents.com/components/knob
 export const PricingCard: React.FC<TPricingCardProps> = (props) => {
 	const {
 		title,
@@ -19,7 +18,7 @@ export const PricingCard: React.FC<TPricingCardProps> = (props) => {
 	} = props;
 
 	return (
-		<div className={cn('relative w-80', className)} {...divProps}>
+		<div className={cn('relative w-full md:max-w-80', className)} {...divProps}>
 			{featuredText != null && (
 				<div className="absolute -top-3 left-1/2 z-10 -translate-x-1/2 transform">
 					<Badge size="large" tone="success">
@@ -34,7 +33,7 @@ export const PricingCard: React.FC<TPricingCardProps> = (props) => {
 					featuredText != null && 'shadow-[0px_4px_20px_rgba(34,197,94,0.25)]'
 				)}
 			>
-				<Card>
+				<s-section>
 					<div className="p-6">
 						{/* Header */}
 						<div className="space-y-2">
@@ -105,7 +104,7 @@ export const PricingCard: React.FC<TPricingCardProps> = (props) => {
 							</ul>
 						</div>
 					</div>
-				</Card>
+				</s-section>
 			</div>
 		</div>
 	);
@@ -120,7 +119,7 @@ interface TPricingCardProps extends React.HTMLAttributes<HTMLDivElement> {
 	cta: {
 		content: string;
 		onClick?: () => void;
-		variant?: 'primary' | 'secondary' | 'tertiary' | 'plain' | 'monochromePlain';
+		variant?: 'primary' | 'secondary';
 		disabled?: boolean;
 	};
 	frequency: string;

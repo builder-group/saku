@@ -71,10 +71,10 @@ export const LinkpopPreviewStep: React.FC<TLinkpopPreviewStepProps> = (props) =>
 			icon={<ScanEyeIcon className="size-4" />}
 			title="Preview Import"
 			description="Preview how your Link In Bio page will look after importing"
-			contentClassName="flex flex-col gap-6"
+			contentClassName="flex flex-col items-center gap-6 min-h-0 max-w-xl"
 		>
 			{resolvedSite != null && (
-				<div className="relative left-1/2 w-[640px] -translate-x-1/2">
+				<div className="w-full">
 					<SitePreview
 						url="preview"
 						content={<StaticNodeCanvas cx={cx} nodes={[resolvedSite.root]} />}
@@ -89,7 +89,7 @@ export const LinkpopPreviewStep: React.FC<TLinkpopPreviewStepProps> = (props) =>
 				</Banner>
 			)}
 
-			<div className="flex flex-col gap-2">
+			<div className="flex w-full max-w-sm flex-col gap-2">
 				<Button
 					variant="primary"
 					size="large"

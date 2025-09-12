@@ -4,11 +4,14 @@ import React from 'react';
 import { ResizablePanel } from '@/components';
 import { cn } from '@/lib';
 import { TViewType, viewMetadata } from '../../../../environment';
+import { useEditorBreakpoint } from '../../../../hooks';
 import { TPageEditor } from '../../../../lib';
 
 export const NavPanel: React.FC<TNavPanelProps> = (props) => {
 	const { editor, order } = props;
-	const [sidebarCollapsed, setSidebarCollapsed] = React.useState(true);
+
+	const isMd = useEditorBreakpoint(editor, 'md');
+	const [collapsed, setCollapsed] = React.useState(true);
 	const activeView = useFeatureState(editor.activeView);
 
 	// TODO: Figure out better solution
@@ -16,27 +19,30 @@ export const NavPanel: React.FC<TNavPanelProps> = (props) => {
 	const sizes = useCompute(
 		editor.boundingRect,
 		({ value: rect }) => {
-			const width = rect.right - rect.left;
-			if (width <= 0) {
-				// Note: Return default sizes instead of null to prevent the panel from being hidden on hot reload
+			// Desktop (horizontal layout): Resizable based on width
+			if (isMd) {
+				const width = rect.right - rect.left;
+				const toPercent = (pixels: number) => (pixels / (width > 0 ? width : 15)) * 100;
 				return {
-					collapsedSize: 4,
-					minSize: 8,
-					defaultSize: 4,
-					maxSize: 12
+					collapsedSize: toPercent(60), // ~ 4
+					minSize: toPercent(120), // ~ 8
+					defaultSize: toPercent(60), // ~ 4
+					maxSize: toPercent(180) // ~ 12
 				};
 			}
 
-			const toPercent = (pixels: number) => (pixels / width) * 100;
-
+			// Mobile (vertical layout): Fixed height for navbar with icons
+			const height = rect.bottom - rect.top;
+			const toPercent = (pixels: number) => (pixels / (height > 0 ? height : 15)) * 100;
+			const navbarHeight = 60; // Fixed height for mobile navbar (~ 4)
 			return {
-				collapsedSize: toPercent(60), // ~ 4
-				minSize: toPercent(120), // ~ 8
-				defaultSize: toPercent(60), // ~ 4
-				maxSize: toPercent(180) // ~ 12
+				collapsedSize: toPercent(navbarHeight),
+				minSize: toPercent(navbarHeight),
+				defaultSize: toPercent(navbarHeight),
+				maxSize: toPercent(navbarHeight)
 			};
 		},
-		[],
+		[isMd],
 		{
 			isEqual(a, b) {
 				return (
@@ -68,22 +74,22 @@ export const NavPanel: React.FC<TNavPanelProps> = (props) => {
 		<ResizablePanel
 			id="nav-panel"
 			order={order}
-			collapsible={true}
+			collapsible={sizes.collapsedSize != null}
 			collapsedSize={sizes.collapsedSize}
 			minSize={sizes.minSize}
 			defaultSize={sizes.defaultSize}
 			maxSize={sizes.maxSize}
-			onCollapse={() => setSidebarCollapsed(true)}
-			onExpand={() => setSidebarCollapsed(false)}
+			onCollapse={() => setCollapsed(true)}
+			onExpand={() => setCollapsed(false)}
 		>
 			<div className="flex h-full flex-col bg-white">
-				<nav className="flex flex-col gap-1 p-2">
+				<nav className="mr-24 flex flex-row justify-between gap-1 p-2 md:mr-0 md:flex-col md:justify-start">
 					{viewMetadata.map((item, index) => {
 						return (
 							<button
 								key={index}
 								className={cn(
-									'flex w-full cursor-pointer items-center gap-3 rounded-lg p-3 text-left text-neutral-700 hover:bg-neutral-50',
+									'flex cursor-pointer items-center gap-3 rounded-lg p-3 text-left text-neutral-700 hover:bg-neutral-50',
 									activeView === item.type && 'bg-neutral-100 text-[#005BD3]'
 								)}
 								onClick={() => handleSwitchView(item.type as TViewType)}
@@ -91,7 +97,7 @@ export const NavPanel: React.FC<TNavPanelProps> = (props) => {
 								<div className="flex h-5 w-5 items-center justify-center">
 									<Icon source={item.icon} />
 								</div>
-								{!sidebarCollapsed && (
+								{!collapsed && (
 									<Text as="span" variant="bodyMd" truncate>
 										{item.label}
 									</Text>

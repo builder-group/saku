@@ -1,45 +1,62 @@
-import { Icon, Text } from '@shopify/polaris';
+import { Button, Icon, Text } from '@shopify/polaris';
 import { useCompute, useFeatureState } from 'feature-react/state';
 import React from 'react';
-import { PolarisChevronRightIcon, ResizablePanel } from '@/components';
+import { ImperativePanelHandle } from 'react-resizable-panels';
+import {
+	PolarisChevronDownIcon,
+	PolarisChevronRightIcon,
+	PolarisChevronUpIcon,
+	ResizablePanel
+} from '@/components';
 import { cn } from '@/lib';
 import { settingsMetadata, TSettingsSectionType } from '../../../../environment';
+import { useEditorBreakpoint } from '../../../../hooks';
 import { TPageEditor } from '../../../../lib';
 import { PanelHeader } from '../../PanelHeader';
 
 export const SettingsNavPanel: React.FC<TSettingsNavPanelProps> = (props) => {
 	const { editor, order } = props;
 
+	const isMd = useEditorBreakpoint(editor, 'md');
+	const [collapsed, setCollapsed] = React.useState(false);
 	const selectedSection = useFeatureState(editor.activeSettingsSection);
+	const panelRef = React.useRef<ImperativePanelHandle>(null);
 
 	// TODO: Figure out better solution
 	// https://github.com/bvaughn/react-resizable-panels/issues/46
 	const sizes = useCompute(
 		editor.boundingRect,
 		({ value: rect }) => {
-			const width = rect.right - rect.left;
-			if (width <= 0) {
-				// Note: Return default sizes instead of null to prevent the panel from being hidden on hot reload
+			// Desktop (horizontal layout): Resizable based on width
+			if (isMd) {
+				const width = rect.right - rect.left;
+				const toPercent = (pixels: number) => (pixels / (width > 0 ? width : 15)) * 100;
 				return {
-					minSize: 10,
-					defaultSize: 15,
-					maxSize: 20
+					collapsedSize: undefined,
+					minSize: toPercent(150), // ~ 10
+					defaultSize: toPercent(225), // ~ 15
+					maxSize: toPercent(300) // ~ 20
 				};
 			}
 
-			const toPercent = (pixels: number) => (pixels / width) * 100;
-
+			// Mobile (vertical layout): Fixed height for navbar with icons
+			const height = rect.bottom - rect.top;
+			const toPercent = (pixels: number) => (pixels / (height > 0 ? height : 15)) * 100;
 			return {
+				collapsedSize: toPercent(45), // ~ 3
 				minSize: toPercent(150), // ~ 10
 				defaultSize: toPercent(225), // ~ 15
-				maxSize: toPercent(300) // ~ 20
+				maxSize: toPercent(450) // ~ 30
 			};
 		},
-		[],
+		[isMd],
 		{
 			isEqual(a, b) {
 				return (
-					a.minSize === b.minSize && a.defaultSize === b.defaultSize && a.maxSize === b.maxSize
+					a.collapsedSize === b.collapsedSize &&
+					a.minSize === b.minSize &&
+					a.defaultSize === b.defaultSize &&
+					a.maxSize === b.maxSize
 				);
 			}
 		}
@@ -56,25 +73,52 @@ export const SettingsNavPanel: React.FC<TSettingsNavPanelProps> = (props) => {
 		[editor, selectedSection]
 	);
 
+	const handleToggleCollapse = React.useCallback(() => {
+		// TODO: Programmatic collapse/expand doesn't work rn
+		// https://github.com/bvaughn/react-resizable-panels/issues/515#issuecomment-3285269376
+		const panel = panelRef.current;
+		if (collapsed) {
+			panel?.expand();
+		} else {
+			panel?.collapse();
+		}
+	}, [collapsed]);
+
 	// =========================================================================
 	// UI
 	// =========================================================================
 
 	return (
 		<ResizablePanel
+			ref={panelRef}
 			id="settings-nav-panel"
 			order={order}
+			collapsible={sizes.collapsedSize != null}
+			collapsedSize={sizes.collapsedSize}
 			minSize={sizes.minSize}
 			defaultSize={sizes.defaultSize}
 			maxSize={sizes.maxSize}
+			onCollapse={() => setCollapsed(true)}
+			onExpand={() => setCollapsed(false)}
 		>
 			<div className="flex h-full flex-col bg-white">
 				<PanelHeader>
-					<Text as="h2" variant="headingMd">
-						Settings
-					</Text>
+					<div className="flex w-full items-center justify-between">
+						<Text as="h2" variant="headingMd">
+							Settings
+						</Text>
+						{/* Chevron icon for mobile to collapse/expand panel */}
+						{!isMd && (
+							<Button
+								icon={collapsed ? PolarisChevronDownIcon : PolarisChevronUpIcon}
+								variant="plain"
+								onClick={handleToggleCollapse}
+								accessibilityLabel={collapsed ? 'Expand panel' : 'Collapse panel'}
+							/>
+						)}
+					</div>
 				</PanelHeader>
-				<div>
+				<div className="flex flex-1 flex-col overflow-auto">
 					{settingsMetadata.map((section) => (
 						<div
 							key={section.type}

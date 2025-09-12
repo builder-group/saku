@@ -1,17 +1,48 @@
 import { Spinner } from '@shopify/polaris';
+import { useCompute } from 'feature-react';
 import React from 'react';
 import { ResizablePanel, ShadowRoot } from '@/components';
 import tailwindStylesHref from '@/styles.css?url';
+import { useEditorBreakpoint } from '../../../../hooks';
 import { TPageEditor } from '../../../../lib';
 import { NodeCanvas } from '../../../node';
 import { PanelHeader } from './PanelHeader';
 
 export const CanvasPanel: React.FC<TCanvasPanelProps> = (props) => {
 	const { editor, order } = props;
+
+	const isMd = useEditorBreakpoint(editor, 'md');
 	const [stylesLoaded, setStylesLoaded] = React.useState(false);
 
+	// TODO: Figure out better solution
+	// https://github.com/bvaughn/react-resizable-panels/issues/46
+	const sizes = useCompute(
+		editor.boundingRect,
+		({ value: rect }) => {
+			// Desktop (horizontal layout): Resizable based on width
+			if (isMd) {
+				const width = rect.right - rect.left;
+				const toPercent = (pixels: number) => (pixels / (width > 0 ? width : 15)) * 100;
+				return {
+					minSize: toPercent(405) // ~ 27
+				};
+			}
+
+			// Mobile (vertical layout): Resizable based on height
+			return {
+				minSize: undefined
+			};
+		},
+		[isMd],
+		{
+			isEqual(a, b) {
+				return a.minSize === b.minSize;
+			}
+		}
+	);
+
 	return (
-		<ResizablePanel id="canvas-panel" order={order} className="relative">
+		<ResizablePanel id="canvas-panel" order={order} minSize={sizes.minSize} className="relative">
 			<PanelHeader editor={editor} />
 
 			{!stylesLoaded && (

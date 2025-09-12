@@ -1,7 +1,8 @@
 import { shortId } from '@blgc/utils';
+import { Button } from '@shopify/polaris';
 import React from 'react';
 import { useSearchParams } from 'react-router';
-import { AccordionSection, useCrisp } from '@/components';
+import { AccordionSection, PolarisArrowLeftIcon, useCrisp } from '@/components';
 import { appConfig } from '@/environment';
 
 const Page: React.FC = () => {
@@ -20,82 +21,76 @@ const Page: React.FC = () => {
 
 			{/* Back Button - Show when coming from settings */}
 			{fromSettings && (
-				<s-box paddingBlock="small-100" paddingInline="none">
-					<s-button variant="tertiary" href="/app/settings" icon="arrow-left">
+				<div className="flex w-full items-start py-4 pl-3">
+					<Button url="/app/settings" variant="tertiary" icon={PolarisArrowLeftIcon}>
 						Back to Settings
-					</s-button>
-				</s-box>
+					</Button>
+				</div>
 			)}
 
 			{/* Get Help */}
 			<s-section heading="Get Help">
-				<s-stack gap="none" border="base" borderRadius="base" overflow="hidden">
-					<s-box padding="small-100">
-						<s-grid gridTemplateColumns="1fr auto" alignItems="center" gap="base">
-							<s-box>
-								<s-heading>Chat with us</s-heading>
-								<s-paragraph color="subdued">Get quick help via chat</s-paragraph>
-							</s-box>
-							<s-button variant="primary" onClick={handleStartChat}>
-								Start Chat
-							</s-button>
-						</s-grid>
-					</s-box>
-					<s-box paddingInline="small-100">
+				<div className="overflow-hidden rounded-lg border border-neutral-200">
+					<div className="grid grid-cols-[1fr_auto] items-center gap-4 p-4">
+						<div>
+							<s-heading>Chat with us</s-heading>
+							<s-paragraph color="subdued">Get quick help via chat</s-paragraph>
+						</div>
+						<s-button variant="primary" onClick={handleStartChat}>
+							Start Chat
+						</s-button>
+					</div>
+					<div className="px-4">
 						<s-divider></s-divider>
-					</s-box>
-					<s-box padding="small-100">
-						<s-grid gridTemplateColumns="1fr auto" alignItems="center" gap="base">
-							<s-box>
-								<s-heading>Discord Community</s-heading>
-								<s-paragraph color="subdued">Join our community for help and updates</s-paragraph>
-							</s-box>
-							<s-button variant="secondary" href={appConfig.social.discord} target="_blank">
-								Join
-							</s-button>
-						</s-grid>
-					</s-box>
-					<s-box paddingInline="small-100">
+					</div>
+					<div className="grid grid-cols-[1fr_auto] items-center gap-4 p-4">
+						<div>
+							<s-heading>Discord Community</s-heading>
+							<s-paragraph color="subdued">Join our community for help and updates</s-paragraph>
+						</div>
+						<s-button variant="secondary" href={appConfig.social.discord} target="_blank">
+							Join
+						</s-button>
+					</div>
+					<div className="px-4">
 						<s-divider></s-divider>
-					</s-box>
-					<s-box padding="small-100">
-						<s-grid gridTemplateColumns="1fr auto" alignItems="center" gap="base">
-							<s-box>
-								<s-heading>Email Support</s-heading>
-								<s-paragraph color="subdued">{appConfig.support.email}</s-paragraph>
-							</s-box>
-							<s-button
-								variant="secondary"
-								href={`mailto:${appConfig.support.email}`}
-								target="_blank"
-							>
-								Contact
-							</s-button>
-						</s-grid>
-					</s-box>
-				</s-stack>
+					</div>
+					<div className="grid grid-cols-[1fr_auto] items-center gap-4 p-4">
+						<div>
+							<s-heading>Email Support</s-heading>
+							<s-paragraph color="subdued">{appConfig.support.email}</s-paragraph>
+						</div>
+						<s-button
+							variant="secondary"
+							href={`mailto:${appConfig.support.email}`}
+							target="_blank"
+						>
+							Contact
+						</s-button>
+					</div>
+				</div>
 			</s-section>
 
 			{/* Documentation */}
 			<s-section heading="Documentation">
-				<s-stack gap="none" border="base" borderRadius="base" overflow="hidden">
+				<div className="overflow-hidden rounded-lg border border-neutral-200">
 					<s-clickable
 						padding="small-100"
 						href="https://youtu.be/I88GWORGmvU"
 						target="_blank"
 						accessibilityLabel="Watch quick walkthrough video in new tab"
 					>
-						<s-grid gridTemplateColumns="1fr auto" alignItems="center" gap="base">
-							<s-box>
+						<div className="grid grid-cols-[1fr_auto] items-center gap-4">
+							<div>
 								<s-heading>Quick Walkthrough</s-heading>
 								<s-paragraph color="subdued">
 									Watch our 5-minute video guide to get started
 								</s-paragraph>
-							</s-box>
+							</div>
 							<s-icon type="arrow-up-right"></s-icon>
-						</s-grid>
+						</div>
 					</s-clickable>
-				</s-stack>
+				</div>
 			</s-section>
 
 			{/* FAQ */}
@@ -151,68 +146,64 @@ const Page: React.FC = () => {
 
 			{/* System Information */}
 			<s-section heading="System Information">
-				<s-stack gap="none" border="base" borderRadius="base" overflow="hidden">
-					<s-box padding="small-100">
-						<s-grid gridTemplateColumns="1fr auto" alignItems="center" gap="base">
-							<s-box>
-								<s-heading>App Version</s-heading>
-								<s-paragraph color="subdued">Current running version</s-paragraph>
-							</s-box>
-							<s-badge tone="info">{appConfig.version}</s-badge>
-						</s-grid>
-					</s-box>
-					<s-box paddingInline="small-100">
+				<div className="overflow-hidden rounded-lg border border-neutral-200">
+					<div className="grid grid-cols-[1fr_auto] items-center gap-4 p-4">
+						<div>
+							<s-heading>App Version</s-heading>
+							<s-paragraph color="subdued">Current running version</s-paragraph>
+						</div>
+						<s-badge tone="info">{appConfig.version}</s-badge>
+					</div>
+					<div className="px-4">
 						<s-divider></s-divider>
-					</s-box>
-					<s-box padding="small-100">
-						<s-grid gridTemplateColumns="1fr auto" alignItems="center" gap="base">
-							<s-box>
-								<s-heading>API Status</s-heading>
-								<s-paragraph color="subdued">Backend service health</s-paragraph>
-							</s-box>
-							<s-badge tone="success">Healthy</s-badge>
-						</s-grid>
-					</s-box>
-				</s-stack>
+					</div>
+					<div className="grid grid-cols-[1fr_auto] items-center gap-4 p-4">
+						<div>
+							<s-heading>API Status</s-heading>
+							<s-paragraph color="subdued">Backend service health</s-paragraph>
+						</div>
+						<s-badge tone="success">Healthy</s-badge>
+					</div>
+				</div>
 			</s-section>
 
 			{/* Legal & Compliance */}
 			<s-section heading="Legal & Compliance">
-				<s-stack gap="none" border="base" borderRadius="base" overflow="hidden">
+				<div className="overflow-hidden rounded-lg border border-neutral-200">
 					<s-clickable
 						padding="small-100"
 						href={appConfig.legal.privacy}
 						target="_blank"
 						accessibilityLabel="View privacy policy in new tab"
 					>
-						<s-grid gridTemplateColumns="1fr auto" alignItems="center" gap="base">
-							<s-box>
+						<div className="grid grid-cols-[1fr_auto] items-center gap-4">
+							<div>
 								<s-heading>Privacy Policy</s-heading>
 								<s-paragraph color="subdued">
 									How we collect, use, and protect your data
 								</s-paragraph>
-							</s-box>
+							</div>
 							<s-icon type="arrow-up-right"></s-icon>
-						</s-grid>
+						</div>
 					</s-clickable>
-					<s-box paddingInline="small-100">
+					<div className="px-4">
 						<s-divider></s-divider>
-					</s-box>
+					</div>
 					<s-clickable
 						padding="small-100"
 						href={appConfig.legal.terms}
 						target="_blank"
 						accessibilityLabel="View terms of service in new tab"
 					>
-						<s-grid gridTemplateColumns="1fr auto" alignItems="center" gap="base">
-							<s-box>
+						<div className="grid grid-cols-[1fr_auto] items-center gap-4">
+							<div>
 								<s-heading>Terms of Service</s-heading>
 								<s-paragraph color="subdued">Terms and conditions for using Saku</s-paragraph>
-							</s-box>
+							</div>
 							<s-icon type="arrow-up-right"></s-icon>
-						</s-grid>
+						</div>
 					</s-clickable>
-				</s-stack>
+				</div>
 			</s-section>
 		</s-page>
 	);

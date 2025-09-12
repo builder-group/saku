@@ -1,6 +1,7 @@
 import { useFeatureState } from 'feature-react';
 import React from 'react';
 import { ResizableHandle } from '@/components';
+import { useEditorBreakpoint } from '../../../hooks';
 import { TPageEditor } from '../../../lib';
 import { SettingsNavPanel, SettingsPlaceholderPanel } from '../panels';
 import { SettingsAssetsView } from './SettingsAssetsView';
@@ -8,24 +9,7 @@ import { SettingsDesignView } from './SettingsDesignView';
 import { SettingsIntegrationsView } from './SettingsIntegrationsView';
 import { SettingsMetadataView } from './SettingsMetadataView';
 
-export const SettingsView: React.FC<TSettingsViewProps> = (props) => {
-	const { editor, order } = props;
-
-	return (
-		<>
-			<SettingsNavPanel editor={editor} order={order} />
-			<ResizableHandle className="w-px bg-neutral-200" />
-			<View editor={editor} order={order + 1} />
-		</>
-	);
-};
-
-interface TSettingsViewProps {
-	editor: TPageEditor;
-	order: number;
-}
-
-const View: React.FC<TViewProps> = (props) => {
+const View: React.FC<TViewProps> & { panelCount: number } = (props) => {
 	const { editor, order } = props;
 
 	const activeView = useFeatureState(editor.activeSettingsSection);
@@ -43,8 +27,43 @@ const View: React.FC<TViewProps> = (props) => {
 			return <SettingsPlaceholderPanel order={order} />;
 	}
 };
+View.panelCount = Math.max(
+	SettingsDesignView.panelCount,
+	SettingsMetadataView.panelCount,
+	SettingsAssetsView.panelCount,
+	SettingsIntegrationsView.panelCount
+);
 
 interface TViewProps {
+	editor: TPageEditor;
+	order: number;
+}
+
+export const SettingsView: React.FC<TSettingsViewProps> & { panelCount: number } = (props) => {
+	const { editor, order } = props;
+	const isMd = useEditorBreakpoint(editor, 'md');
+
+	if (isMd) {
+		return (
+			<>
+				<SettingsNavPanel editor={editor} order={order} />
+				<ResizableHandle className="bg-neutral-200" />
+				<View editor={editor} order={order + 1} />
+			</>
+		);
+	}
+
+	return (
+		<>
+			<View editor={editor} order={order} />
+			<ResizableHandle className="bg-neutral-200" withHandle />
+			<SettingsNavPanel editor={editor} order={order + 1} />
+		</>
+	);
+};
+SettingsView.panelCount = 1 + View.panelCount;
+
+interface TSettingsViewProps {
 	editor: TPageEditor;
 	order: number;
 }

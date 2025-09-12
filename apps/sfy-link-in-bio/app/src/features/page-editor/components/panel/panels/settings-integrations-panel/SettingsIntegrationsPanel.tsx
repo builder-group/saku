@@ -3,12 +3,15 @@ import { useCompute } from 'feature-react/state';
 import React from 'react';
 import { AccordionSection, ResizablePanel, ShopifyIcon } from '@/components';
 import { createDisplayNameFromShop } from '@/lib';
+import { useEditorBreakpoint } from '../../../../hooks';
 import { TPageEditor } from '../../../../lib';
 import { PanelHeader } from '../../PanelHeader';
 import { Placeholder } from './Placeholder';
 
 export const SettingsIntegrationsPanel: React.FC<TSettingsIntegrationsPanelProps> = (props) => {
 	const { editor, order } = props;
+
+	const isMd = useEditorBreakpoint(editor, 'md');
 
 	const { shopifyIntegrations, hasIntegrations } = React.useMemo(() => {
 		const shopifyIntegrations: {
@@ -43,25 +46,25 @@ export const SettingsIntegrationsPanel: React.FC<TSettingsIntegrationsPanelProps
 	const sizes = useCompute(
 		editor.boundingRect,
 		({ value: rect }) => {
-			const width = rect.right - rect.left;
-			if (width <= 0) {
-				// Note: Return default sizes instead of null to prevent the panel from being hidden on hot reload
+			// Desktop (horizontal layout): Resizable based on width
+			if (isMd) {
+				const width = rect.right - rect.left;
+				const toPercent = (pixels: number) => (pixels / (width > 0 ? width : 15)) * 100;
 				return {
-					minSize: 20,
-					defaultSize: 27,
-					maxSize: 35
+					minSize: toPercent(300), // ~ 20
+					defaultSize: toPercent(405), // ~ 27
+					maxSize: toPercent(525) // ~ 35
 				};
 			}
 
-			const toPercent = (pixels: number) => (pixels / width) * 100;
-
+			// Mobile (vertical layout): Resizable based on height
 			return {
-				minSize: toPercent(300), // ~ 20
-				defaultSize: toPercent(405), // ~ 27
-				maxSize: toPercent(525) // ~ 35
+				minSize: undefined,
+				defaultSize: undefined,
+				maxSize: undefined
 			};
 		},
-		[],
+		[isMd],
 		{
 			isEqual(a, b) {
 				return (
