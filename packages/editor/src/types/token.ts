@@ -1,3 +1,4 @@
+import { TRgba } from '../lib';
 import {
 	TAppearanceStyleMixin,
 	TAutoLayoutStyleMixin,
@@ -31,7 +32,7 @@ export interface TTokenRef {
 // =========================================================================
 
 export interface TVariableToken<
-	GValue extends string | number | boolean = string | number | boolean
+	GValue extends string | number | boolean | TRgba = string | number | boolean | TRgba
 > {
 	type: 'variable';
 	key: string;

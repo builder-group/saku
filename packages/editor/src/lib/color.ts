@@ -185,6 +185,21 @@ export function getBestContrastColor(backgroundColor: TRgba): TRgba {
 		: { r: 1, g: 1, b: 1, a: 1 }; // White
 }
 
+export function isRgba(value: unknown): value is TRgba {
+	return (
+		typeof value === 'object' &&
+		value != null &&
+		'r' in value &&
+		'g' in value &&
+		'b' in value &&
+		'a' in value &&
+		typeof value.r === 'number' &&
+		typeof value.g === 'number' &&
+		typeof value.b === 'number' &&
+		typeof value.a === 'number'
+	);
+}
+
 function clamp(n: number, min = 0, max = 1): number {
 	return Math.max(min, Math.min(max, n));
 }

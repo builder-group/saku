@@ -11,6 +11,30 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 		// selector: selectorSize = themeMetadata.size.box.get(0)
 	} = size;
 
+	// Convert colors
+	const rgbaColors = {
+		base100: hexToRgba(color.base100),
+		base200: hexToRgba(color.base200),
+		base300: hexToRgba(color.base300),
+		baseContent: hexToRgba(color.baseContent),
+		primary: hexToRgba(color.primary),
+		primaryContent: hexToRgba(color.primaryContent),
+		secondary: hexToRgba(color.secondary),
+		secondaryContent: hexToRgba(color.secondaryContent),
+		neutral: hexToRgba(color.neutral),
+		neutralContent: hexToRgba(color.neutralContent),
+		accent: hexToRgba(color.accent),
+		accentContent: hexToRgba(color.accentContent),
+		info: hexToRgba(color.info),
+		infoContent: hexToRgba(color.infoContent),
+		success: hexToRgba(color.success),
+		successContent: hexToRgba(color.successContent),
+		warning: hexToRgba(color.warning),
+		warningContent: hexToRgba(color.warningContent),
+		error: hexToRgba(color.error),
+		errorContent: hexToRgba(color.errorContent)
+	};
+
 	// Calculate semantic sizes
 	const textSizes = {
 		xs: textSize * themeMetadata.size.text.xs,
@@ -44,102 +68,102 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 		{
 			type: 'variable',
 			key: 'color.base100',
-			value: color.base100
+			value: rgbaColors.base100
 		},
 		{
 			type: 'variable',
 			key: 'color.base200',
-			value: color.base200
+			value: rgbaColors.base200
 		},
 		{
 			type: 'variable',
 			key: 'color.base300',
-			value: color.base300
+			value: rgbaColors.base300
 		},
 		{
 			type: 'variable',
 			key: 'color.baseContent',
-			value: color.baseContent
+			value: rgbaColors.baseContent
 		},
 		{
 			type: 'variable',
 			key: 'color.primary',
-			value: color.primary
+			value: rgbaColors.primary
 		},
 		{
 			type: 'variable',
 			key: 'color.primaryContent',
-			value: color.primaryContent
+			value: rgbaColors.primaryContent
 		},
 		{
 			type: 'variable',
 			key: 'color.secondary',
-			value: color.secondary
+			value: rgbaColors.secondary
 		},
 		{
 			type: 'variable',
 			key: 'color.secondaryContent',
-			value: color.secondaryContent
+			value: rgbaColors.secondaryContent
 		},
 		{
 			type: 'variable',
 			key: 'color.neutral',
-			value: color.neutral
+			value: rgbaColors.neutral
 		},
 		{
 			type: 'variable',
 			key: 'color.neutralContent',
-			value: color.neutralContent
+			value: rgbaColors.neutralContent
 		},
 		{
 			type: 'variable',
 			key: 'color.accent',
-			value: color.accent
+			value: rgbaColors.accent
 		},
 		{
 			type: 'variable',
 			key: 'color.accentContent',
-			value: color.accentContent
+			value: rgbaColors.accentContent
 		},
 		{
 			type: 'variable',
 			key: 'color.info',
-			value: color.info
+			value: rgbaColors.info
 		},
 		{
 			type: 'variable',
 			key: 'color.infoContent',
-			value: color.infoContent
+			value: rgbaColors.infoContent
 		},
 		{
 			type: 'variable',
 			key: 'color.success',
-			value: color.success
+			value: rgbaColors.success
 		},
 		{
 			type: 'variable',
 			key: 'color.successContent',
-			value: color.successContent
+			value: rgbaColors.successContent
 		},
 		{
 			type: 'variable',
 			key: 'color.warning',
-			value: color.warning
+			value: rgbaColors.warning
 		},
 		{
 			type: 'variable',
 			key: 'color.warningContent',
-			value: color.warningContent
+			value: rgbaColors.warningContent
 		},
 		{
 			type: 'variable',
 			key: 'color.error',
-			value: color.error
+			value: rgbaColors.error
 		},
 		{
 			type: 'variable',
 			key: 'color.errorContent',
-			value: color.errorContent
+			value: rgbaColors.errorContent
 		},
 
 		// Typography tokens
@@ -283,7 +307,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 			value: {
 				paint: {
 					type: 'solid',
-					color: hexToRgba(color.base100)
+					color: rgbaColors.base100
 				},
 				opacity: 1
 			}
@@ -295,7 +319,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 			value:
 				effects?.stroke != null
 					? {
-							color: hexToRgba(color.accent),
+							color: rgbaColors.accent,
 							width: effects.stroke.width
 						}
 					: null
@@ -307,7 +331,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 			value:
 				effects?.shadow != null
 					? {
-							color: { ...hexToRgba(color.baseContent), a: 0.1 },
+							color: { ...rgbaColors.baseContent, a: 0.1 },
 							offsetX: effects.shadow.offsetX,
 							offsetY: effects.shadow.offsetY,
 							blur: effects.shadow.blur,
@@ -340,7 +364,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 				fill: {
 					paint: {
 						type: 'solid',
-						color: hexToRgba(color.baseContent)
+						color: rgbaColors.baseContent
 					},
 					opacity: 1
 				},
@@ -373,7 +397,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 				fill: {
 					paint: {
 						type: 'solid',
-						color: hexToRgba(color.baseContent)
+						color: rgbaColors.baseContent
 					},
 					opacity: 1
 				},
@@ -406,7 +430,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 				fill: {
 					paint: {
 						type: 'solid',
-						color: hexToRgba(color.baseContent)
+						color: rgbaColors.baseContent
 					},
 					opacity: 1
 				},
@@ -427,7 +451,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 				fill: {
 					paint: {
 						type: 'solid',
-						color: hexToRgba(color.primary)
+						color: rgbaColors.primary
 					},
 					opacity: 1
 				},
@@ -454,7 +478,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 					fill: {
 						paint: {
 							type: 'solid',
-							color: hexToRgba(color.primaryContent)
+							color: rgbaColors.primaryContent
 						},
 						opacity: 1
 					},
@@ -476,7 +500,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 				fill: {
 					paint: {
 						type: 'solid',
-						color: hexToRgba(color.neutral)
+						color: rgbaColors.neutral
 					},
 					opacity: 1
 				},
@@ -503,7 +527,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 					fill: {
 						paint: {
 							type: 'solid',
-							color: hexToRgba(color.neutralContent)
+							color: rgbaColors.neutralContent
 						},
 						opacity: 1
 					},
@@ -525,7 +549,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 				fill: {
 					paint: {
 						type: 'solid',
-						color: hexToRgba(color.secondary)
+						color: rgbaColors.secondary
 					},
 					opacity: 1
 				},
@@ -552,7 +576,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 					fill: {
 						paint: {
 							type: 'solid',
-							color: hexToRgba(color.secondaryContent)
+							color: rgbaColors.secondaryContent
 						},
 						opacity: 1
 					},
@@ -574,7 +598,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 				fill: {
 					paint: {
 						type: 'solid',
-						color: hexToRgba(color.neutral)
+						color: rgbaColors.neutral
 					},
 					opacity: 1
 				},
@@ -601,7 +625,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 					fill: {
 						paint: {
 							type: 'solid',
-							color: hexToRgba(color.neutralContent)
+							color: rgbaColors.neutralContent
 						},
 						opacity: 1
 					},
@@ -637,7 +661,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 				fill: {
 					paint: {
 						type: 'solid',
-						color: hexToRgba(color.base100)
+						color: rgbaColors.base100
 					},
 					opacity: 1
 				},
@@ -664,7 +688,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 					fill: {
 						paint: {
 							type: 'solid',
-							color: hexToRgba(color.baseContent)
+							color: rgbaColors.baseContent
 						},
 						opacity: 1
 					},
@@ -692,7 +716,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 					fill: {
 						paint: {
 							type: 'solid',
-							color: hexToRgba(color.baseContent)
+							color: rgbaColors.baseContent
 						},
 						opacity: 1
 					},
@@ -708,7 +732,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 					fill: {
 						paint: {
 							type: 'solid',
-							color: hexToRgba(color.primary)
+							color: rgbaColors.primary
 						},
 						opacity: 1
 					},
@@ -735,7 +759,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 						fill: {
 							paint: {
 								type: 'solid',
-								color: hexToRgba(color.primaryContent)
+								color: rgbaColors.primaryContent
 							},
 							opacity: 1
 						},
