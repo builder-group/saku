@@ -35,5 +35,6 @@ export const shopifyConfig = {
 		'/shop',
 		'/products',
 		'/collections'
-	]
+	],
+	appHandle: appConfig.env === 'production' ? 'saku-link-in-bio' : 'saku-link-in-bio-local'
 };

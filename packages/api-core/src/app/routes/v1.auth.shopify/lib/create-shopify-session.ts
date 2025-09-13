@@ -2,7 +2,9 @@ import { AppError } from '@repo/hono-utils';
 import { and, eq } from 'drizzle-orm';
 import {
 	db,
+	logger,
 	mantleClient,
+	shopifyConfig,
 	shopifySessionTable,
 	TEmailOTPUserAccountData,
 	TTransaction as TPgTransaction,
@@ -15,8 +17,13 @@ import {
 	workspaceMemberTable,
 	workspaceTable
 } from '@/environment';
-import { createDisplayNameFromShop, createHandleFromShop } from '@/lib';
-import { getShopInfo } from '@/lib/gql/shopify-admin/queries';
+import {
+	createDisplayNameFromShop,
+	createHandleFromShop,
+	createShopifyAdminAppUrl,
+	getShopInfo,
+	sendWelcomeEmail
+} from '@/lib';
 import type { TShopifySessionDto } from '../schema';
 import { createHandleFromEmail } from './create-handle-from-email';
 
@@ -159,6 +166,16 @@ async function upsertUserAndWorkspace(
 				createdAt: new Date()
 			})
 			.onConflictDoNothing();
+
+		// Send welcome email for new users
+		const [emailSent, emailError] = await sendWelcomeEmail({
+			email: associatedUser.email,
+			shopName: createDisplayNameFromShop(session.shop),
+			dashboardUrl: createShopifyAdminAppUrl(session.shop, shopifyConfig.appHandle, '/app')
+		});
+		if (!emailSent) {
+			logger.error('Failed to send welcome email:', emailError);
+		}
 	}
 
 	const shopHandle = createHandleFromShop(session.shop);
