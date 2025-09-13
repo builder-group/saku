@@ -374,7 +374,7 @@ function getBorderRadiusFromShape(shape: string | null | undefined): number {
 		case 'rounded_small':
 			return 4;
 		case 'rounded_large':
-			return 999; // Very large radius for pill shape
+			return 48; // Very large radius for pill shape
 		default:
 			return 8; // Default fallback
 	}

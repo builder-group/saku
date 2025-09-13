@@ -101,6 +101,7 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 								mapValue={(value) => value}
 								disabledTokenLink
 								editor={editor}
+								disabledVisibilityToggle
 							/>
 						</AccordionSection>
 					))}

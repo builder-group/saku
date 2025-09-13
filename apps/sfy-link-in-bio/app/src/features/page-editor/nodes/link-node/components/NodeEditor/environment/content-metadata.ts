@@ -4,6 +4,7 @@ import {
 	extractYouTubeId,
 	TLinkNode,
 	TLinkNodeContent,
+	tokenRef,
 	TSingleLinkNodeContent,
 	TSpotifyEmbedLinkNodeContent,
 	TYouTubeEmbedLinkNodeContent
@@ -33,6 +34,8 @@ export const contentMetadataMap = {
 				userTitle: cx.common.userTitle,
 				description: cx.common.description
 			};
+			cx.node._v.autoLayout.horizontalPadding = tokenRef('mixin', 'default');
+			cx.node._v.autoLayout.verticalPadding = tokenRef('mixin', 'default');
 			cx.node._notify();
 			return Ok(undefined);
 		},
@@ -91,6 +94,8 @@ export const contentMetadataMap = {
 				contentType: youtubeData.type,
 				contentId: youtubeData.id
 			};
+			cx.node._v.autoLayout.horizontalPadding = 0;
+			cx.node._v.autoLayout.verticalPadding = 0;
 			cx.node._notify();
 			return Ok(undefined);
 		},
@@ -140,6 +145,8 @@ export const contentMetadataMap = {
 				contentId: spotifyData.id,
 				height: 152 // Default to compact height
 			};
+			cx.node._v.autoLayout.horizontalPadding = 0;
+			cx.node._v.autoLayout.verticalPadding = 0;
 			cx.node._notify();
 			return Ok(undefined);
 		},

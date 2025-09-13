@@ -10,7 +10,7 @@ export function reconstructThemeFromTokens(tokens: TToken[]): TResult<TTheme, Ed
 		tokens.filter((token) => token.type === 'variable').map((token) => [token.key, token.value])
 	);
 
-	// Helper to get string value with optional default
+	// Helper to get string value
 	const getString = (key: string, defaultValue?: string): TResult<string, EditorError> => {
 		const value = tokenMap.get(key);
 		if (value == null) {
@@ -33,7 +33,7 @@ export function reconstructThemeFromTokens(tokens: TToken[]): TResult<TTheme, Ed
 		return Ok(value);
 	};
 
-	// Helper to get number value with optional default
+	// Helper to get number value
 	const getNumber = (key: string, defaultValue?: number): TResult<number, EditorError> => {
 		const value = tokenMap.get(key);
 		if (value == null) {
@@ -56,7 +56,7 @@ export function reconstructThemeFromTokens(tokens: TToken[]): TResult<TTheme, Ed
 		return Ok(value);
 	};
 
-	// Helper to get color value with optional default
+	// Helper to get color value
 	const getColor = (
 		key: string,
 		defaultValue?: `#${string}`
