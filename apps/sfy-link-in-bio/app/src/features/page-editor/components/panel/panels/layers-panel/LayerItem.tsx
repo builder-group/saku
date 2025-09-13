@@ -12,11 +12,18 @@ import { nodeMetadataRegistry, TNodeState, TPageEditor } from '../../../../lib';
 
 export const LayerItem: React.FC<TLayerItemProps> = (props) => {
 	const { nodeState, editor } = props;
+
+	const isTouchDevice = useMediaQuery(mq.touch);
+
 	const nodeId = useCompute(nodeState, ({ value: node }) => node.id);
 	const nodeMetadata = useCompute(nodeState, ({ value: node }) => nodeMetadataRegistry[node.type]);
 	const isSelected = useCompute(
 		editor.selectedNodeId,
 		({ value: selectedNodeId }) => selectedNodeId === nodeId
+	);
+	const isPreSelected = useCompute(
+		editor.preSelectedNodeId,
+		({ value: preSelectedNodeId }) => preSelectedNodeId === nodeId
 	);
 
 	// https://docs.dndkit.com/presets/sortable
@@ -26,15 +33,12 @@ export const LayerItem: React.FC<TLayerItemProps> = (props) => {
 	const { active } = useDndContext();
 	const isAnyItemDragging = React.useMemo(() => active != null, [active]);
 
-	const isTouchDevice = useMediaQuery(mq.touch);
-	const isPreSelected = useCompute(
-		editor.preSelectedNodeId,
-		({ value: preSelectedNodeId }) => preSelectedNodeId === nodeId
-	);
+	const elementRef = React.useRef<HTMLDivElement | null>(null);
 	const longPressRef = React.useRef<{
 		timeout: NodeJS.Timeout;
 		wasSelected: boolean;
 	} | null>(null);
+	const touchBlockingTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 
 	// =========================================================================
 	// Events
@@ -55,7 +59,7 @@ export const LayerItem: React.FC<TLayerItemProps> = (props) => {
 				if (longPressRef.current != null) {
 					longPressRef.current.wasSelected = true;
 				}
-			}, 200),
+			}, 500),
 			wasSelected: false
 		};
 	}, [editor, isTouchDevice, nodeId]);
@@ -81,6 +85,17 @@ export const LayerItem: React.FC<TLayerItemProps> = (props) => {
 		},
 		[editor, nodeId, isTouchDevice]
 	);
+
+	const handlePointerCancel = React.useCallback(() => {
+		if (!isTouchDevice) {
+			return;
+		}
+
+		if (longPressRef.current != null) {
+			clearTimeout(longPressRef.current.timeout);
+			longPressRef.current = null;
+		}
+	}, [isTouchDevice]);
 
 	const handleDeleteNode = React.useCallback(
 		(e: React.PointerEvent<HTMLButtonElement>) => {
@@ -113,6 +128,51 @@ export const LayerItem: React.FC<TLayerItemProps> = (props) => {
 		[editor, nodeId, isTouchDevice]
 	);
 
+	const blockDefaultTouchBehavior = React.useCallback((event: TouchEvent) => {
+		if (event.cancelable) {
+			event.preventDefault();
+		}
+	}, []);
+
+	/**
+	 * Enables touch event blocking for custom interactions.
+	 *
+	 * Used only during specific interactions (e.g. panning, resizing) to avoid interfering
+	 * with native behaviors like scrolling, zooming, or pull-to-refresh, while also ensuring callbacks like onClick work.
+	 */
+	const enableTouchEventBlocking = React.useCallback(
+		(timeoutMs?: number) => {
+			const enableTouchEventBlocking = () => {
+				elementRef.current?.style.setProperty('touch-action', 'none');
+				elementRef.current?.addEventListener('touchmove', blockDefaultTouchBehavior, {
+					passive: false
+				});
+			};
+
+			if (timeoutMs != null) {
+				if (touchBlockingTimeoutRef.current != null) {
+					clearTimeout(touchBlockingTimeoutRef.current);
+				}
+				touchBlockingTimeoutRef.current = setTimeout(() => {
+					enableTouchEventBlocking();
+				}, timeoutMs);
+			} else {
+				enableTouchEventBlocking();
+			}
+		},
+		[blockDefaultTouchBehavior]
+	);
+
+	const restoreDefaultTouchBehavior = React.useCallback(() => {
+		if (touchBlockingTimeoutRef.current != null) {
+			clearTimeout(touchBlockingTimeoutRef.current);
+			touchBlockingTimeoutRef.current = null;
+		}
+
+		elementRef.current?.style.setProperty('touch-action', 'auto');
+		elementRef.current?.removeEventListener('touchmove', blockDefaultTouchBehavior);
+	}, [blockDefaultTouchBehavior]);
+
 	// =========================================================================
 	// Effects
 	// =========================================================================
@@ -129,6 +189,23 @@ export const LayerItem: React.FC<TLayerItemProps> = (props) => {
 		};
 	}, [editor, isTouchDevice]);
 
+	React.useEffect(() => {
+		if (!isTouchDevice) {
+			return;
+		}
+
+		// https://docs.dndkit.com/api-documentation/draggable#touch-action
+		if (active) {
+			enableTouchEventBlocking();
+		} else {
+			restoreDefaultTouchBehavior();
+		}
+
+		return () => {
+			restoreDefaultTouchBehavior();
+		};
+	}, [active, enableTouchEventBlocking, isTouchDevice, restoreDefaultTouchBehavior]);
+
 	// =========================================================================
 	// UI
 	// =========================================================================
@@ -139,7 +216,10 @@ export const LayerItem: React.FC<TLayerItemProps> = (props) => {
 
 	return (
 		<div
-			ref={setNodeRef}
+			ref={(el) => {
+				elementRef.current = el;
+				setNodeRef(el);
+			}}
 			style={{
 				transform: CSS.Transform.toString(transform),
 				transition
@@ -148,9 +228,7 @@ export const LayerItem: React.FC<TLayerItemProps> = (props) => {
 				'group flex h-8 w-full items-center gap-2 rounded-lg px-2',
 				isDragging && 'opacity-50',
 				!isAnyItemDragging && 'cursor-pointer hover:bg-neutral-50',
-				(isSelected || isPreSelected) && 'bg-neutral-100',
-				// https://docs.dndkit.com/api-documentation/draggable#touch-action
-				isTouchDevice && 'touch-none'
+				(isSelected || isPreSelected) && 'bg-neutral-100'
 			)}
 			{...(isTouchDevice ? { ...attributes, ...listeners } : {})}
 			onPointerDown={(e) => {
@@ -160,6 +238,10 @@ export const LayerItem: React.FC<TLayerItemProps> = (props) => {
 			onPointerUp={(e) => {
 				handlePointerUp(e);
 				listeners?.['onPointerUp']?.(e);
+			}}
+			onPointerCancel={(e) => {
+				handlePointerCancel();
+				listeners?.['onPointerCancel']?.(e);
 			}}
 		>
 			<div>

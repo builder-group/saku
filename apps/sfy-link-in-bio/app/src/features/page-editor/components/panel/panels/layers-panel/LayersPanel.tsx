@@ -3,6 +3,7 @@ import {
 	closestCenter,
 	DndContext,
 	DragStartEvent,
+	PointerActivationConstraint,
 	PointerSensor,
 	useSensor,
 	useSensors,
@@ -43,9 +44,11 @@ export const LayersPanel: React.FC<TLayersPanelProps> = (props) => {
 	// https://docs.dndkit.com/presets/sortable
 	const sensors = useSensors(
 		useSensor(PointerSensor, {
-			activationConstraint: {
-				distance: 8 // Require 8px movement before drag starts
-			}
+			activationConstraint: isTouchDevice
+				? ({ delay: 500 } as PointerActivationConstraint)
+				: ({
+						distance: 8
+					} as PointerActivationConstraint)
 		})
 	);
 
