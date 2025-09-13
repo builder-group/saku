@@ -69,7 +69,7 @@ export const ThemeStep: React.FC<TThemeStepProps> = (props) => {
 			className="h-screen overflow-y-auto"
 			contentClassName="flex flex-col items-center gap-6 min-h-0 max-w-xl"
 		>
-			<div className="min-h-48 flex-1 overflow-y-auto">
+			<div className="max-h-96 min-h-48 flex-1 overflow-y-auto">
 				<div className="grid grid-cols-2 gap-3 md:grid-cols-3">
 					{themes.map((theme) => {
 						const isSelected = selectedTheme.key === theme.key;
