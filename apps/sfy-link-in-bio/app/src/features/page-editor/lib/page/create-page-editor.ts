@@ -72,6 +72,7 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 		})(),
 		rootNodeId: site.content.rootId,
 		selectedNodeId: createState<TNodeId | null>(null),
+		preSelectedNodeId: createState<TNodeId | null>(null),
 
 		assetsMap: site.content.assets,
 		integrationsMap: site.content.integrations,
@@ -340,6 +341,16 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 
 		unselectNode() {
 			this.selectedNodeId.set(null);
+		},
+
+		preSelectNode(nodeId) {
+			if (this.nodeMap[nodeId] != null) {
+				this.preSelectedNodeId.set(nodeId);
+			}
+		},
+
+		unpreSelectNode() {
+			this.preSelectedNodeId.set(null);
 		},
 
 		copyNode(nodeId) {
@@ -701,6 +712,7 @@ export interface TPageEditor {
 
 	rootNodeId: TNodeId;
 	selectedNodeId: TState<TNodeId | null, []>;
+	preSelectedNodeId: TState<TNodeId | null, []>;
 	nodeMap: Record<TNodeId, TNodeState>;
 
 	assetsMap: Record<TAssetHash, TAsset>;
@@ -735,6 +747,8 @@ export interface TPageEditor {
 	updateNode: <GNode extends TFlatNode>(nodeId: TNodeId, updates: Partial<GNode>) => void;
 	selectNode: (nodeId: TNodeId) => void;
 	unselectNode: () => void;
+	preSelectNode: (nodeId: TNodeId) => void;
+	unpreSelectNode: () => void;
 	copyNode: (nodeId: TNodeId) => TNodeId | null;
 
 	getFontAsset: (hash: TAssetHash | undefined | null) => TFontAsset | null;

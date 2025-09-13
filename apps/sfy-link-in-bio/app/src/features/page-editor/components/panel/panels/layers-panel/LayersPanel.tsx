@@ -16,6 +16,7 @@ import { useCompute, useListener } from 'feature-react/state';
 import React from 'react';
 import { ImperativePanelHandle } from 'react-resizable-panels';
 import { ResizableHandle, ResizablePanel, StampIcon } from '@/components';
+import { mq, useMediaQuery } from '@/hooks';
 import { cn } from '@/lib';
 import { useEditorBreakpoint } from '../../../../hooks';
 import { TPageEditor } from '../../../../lib';
@@ -27,6 +28,8 @@ export const LayersPanel: React.FC<TLayersPanelProps> = (props) => {
 	const { editor, order, withResizableHandle = false } = props;
 
 	const isMd = useEditorBreakpoint(editor, 'md');
+	const isTouchDevice = useMediaQuery(mq.touch);
+
 	const [collapsed, setCollapsed] = React.useState(false);
 	const { nodes, nodeIds } = useCompute(editor.getRootNode(), ({ value }) => {
 		return {
@@ -104,10 +107,12 @@ export const LayersPanel: React.FC<TLayersPanelProps> = (props) => {
 
 			if (over != null && active.id !== over.id) {
 				editor.reorderNode(active.id as TNodeId, over.id as TNodeId);
-				editor.selectNode(active.id as TNodeId);
+				if (!isTouchDevice) {
+					editor.selectNode(active.id as TNodeId);
+				}
 			}
 		},
-		[editor]
+		[editor, isTouchDevice]
 	);
 
 	// =========================================================================

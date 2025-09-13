@@ -61,6 +61,18 @@ export const NodeIndicator: React.FC<TNodeIndicatorProps> = (props) => {
 		}
 	);
 
+	// =========================================================================
+	// Events
+	// =========================================================================
+
+	const handleSelectNode = React.useCallback(() => {
+		editor.selectNode(nodeId);
+	}, [editor, nodeId]);
+
+	// =========================================================================
+	// UI
+	// =========================================================================
+
 	if (!isVisible || position == null) {
 		return null;
 	}
@@ -73,7 +85,7 @@ export const NodeIndicator: React.FC<TNodeIndicatorProps> = (props) => {
 				top: `${position.top}px`,
 				height: `${position.height}px`
 			}}
-			onClick={() => editor.selectNode(nodeId)}
+			onClick={handleSelectNode}
 		>
 			{/* Gradient background */}
 			<div

@@ -27,33 +27,107 @@ export const LayerItem: React.FC<TLayerItemProps> = (props) => {
 	const isAnyItemDragging = React.useMemo(() => active != null, [active]);
 
 	const isTouchDevice = useMediaQuery(mq.touch);
+	const isPreSelected = useCompute(
+		editor.preSelectedNodeId,
+		({ value: preSelectedNodeId }) => preSelectedNodeId === nodeId
+	);
+	const longPressRef = React.useRef<{
+		timeout: NodeJS.Timeout;
+		wasSelected: boolean;
+	} | null>(null);
 
 	// =========================================================================
 	// Events
 	// =========================================================================
 
+	const handlePointerDown = React.useCallback(() => {
+		if (!isTouchDevice) {
+			return;
+		}
+
+		if (longPressRef.current != null) {
+			clearTimeout(longPressRef.current.timeout);
+		}
+
+		longPressRef.current = {
+			timeout: setTimeout(() => {
+				editor.preSelectNode(nodeId);
+				if (longPressRef.current != null) {
+					longPressRef.current.wasSelected = true;
+				}
+			}, 200),
+			wasSelected: false
+		};
+	}, [editor, isTouchDevice, nodeId]);
+
+	const handlePointerUp = React.useCallback(
+		(e: React.PointerEvent<HTMLDivElement>) => {
+			if (!isTouchDevice) {
+				if (e.button === 0) {
+					editor.selectNode(nodeId);
+				}
+				return;
+			}
+
+			if (!longPressRef.current?.wasSelected) {
+				editor.selectNode(nodeId);
+				editor.unpreSelectNode();
+			}
+
+			if (longPressRef.current != null) {
+				clearTimeout(longPressRef.current.timeout);
+				longPressRef.current = null;
+			}
+		},
+		[editor, nodeId, isTouchDevice]
+	);
+
 	const handleDeleteNode = React.useCallback(
-		(e: React.MouseEvent<HTMLButtonElement>) => {
+		(e: React.PointerEvent<HTMLButtonElement>) => {
+			if (e.button !== 0) {
+				return;
+			}
 			e.stopPropagation(); // Prevent the event from bubbling up to the parent (select event)
+
 			editor.removeNode(nodeId);
 		},
 		[editor, nodeId]
 	);
 
 	const handleCopyNode = React.useCallback(
-		(e: React.MouseEvent<HTMLButtonElement>) => {
+		(e: React.PointerEvent<HTMLButtonElement>) => {
+			if (e.button !== 0) {
+				return;
+			}
 			e.stopPropagation(); // Prevent the event from bubbling up to the parent (select event)
+
 			const copiedNodeId = editor.copyNode(nodeId);
 			if (copiedNodeId != null) {
-				editor.selectNode(copiedNodeId);
+				if (isTouchDevice) {
+					editor.preSelectNode(copiedNodeId);
+				} else {
+					editor.selectNode(copiedNodeId);
+				}
 			}
 		},
-		[editor, nodeId]
+		[editor, nodeId, isTouchDevice]
 	);
 
-	const handleSelectNode = React.useCallback(() => {
-		editor.selectNode(nodeId);
-	}, [editor, nodeId]);
+	// =========================================================================
+	// Effects
+	// =========================================================================
+
+	React.useEffect(() => {
+		if (!isTouchDevice) {
+			editor.unpreSelectNode();
+		}
+
+		return () => {
+			if (longPressRef.current != null) {
+				clearTimeout(longPressRef.current.timeout);
+			}
+		};
+	}, [editor, isTouchDevice]);
 
 	// =========================================================================
 	// UI
@@ -74,15 +148,28 @@ export const LayerItem: React.FC<TLayerItemProps> = (props) => {
 				'group flex h-8 w-full items-center gap-2 rounded-lg px-2',
 				isDragging && 'opacity-50',
 				!isAnyItemDragging && 'cursor-pointer hover:bg-neutral-50',
-				isSelected && 'bg-neutral-100',
+				(isSelected || isPreSelected) && 'bg-neutral-100',
 				// https://docs.dndkit.com/api-documentation/draggable#touch-action
 				isTouchDevice && 'touch-none'
 			)}
-			onClick={handleSelectNode}
 			{...(isTouchDevice ? { ...attributes, ...listeners } : {})}
+			onPointerDown={(e) => {
+				handlePointerDown();
+				listeners?.['onPointerDown']?.(e);
+			}}
+			onPointerUp={(e) => {
+				handlePointerUp(e);
+				listeners?.['onPointerUp']?.(e);
+			}}
 		>
 			<div>
-				<div className={cn('block', !isAnyItemDragging && 'group-hover:hidden')}>
+				<div
+					className={cn(
+						'block',
+						!isAnyItemDragging && 'group-hover:hidden',
+						isPreSelected && 'hidden'
+					)}
+				>
 					{nodeMetadata?.icon && <Icon source={nodeMetadata.icon} />}
 				</div>
 				<div
@@ -90,7 +177,8 @@ export const LayerItem: React.FC<TLayerItemProps> = (props) => {
 					{...listeners}
 					className={cn(
 						'hidden cursor-grab active:cursor-grabbing',
-						!isAnyItemDragging && 'group-hover:block'
+						!isAnyItemDragging && 'group-hover:block',
+						isPreSelected && 'block'
 					)}
 				>
 					<Icon source={PolarisDragHandleIcon} />
@@ -99,16 +187,24 @@ export const LayerItem: React.FC<TLayerItemProps> = (props) => {
 			<Text as="p" variant="bodyMd">
 				{nodeMetadata?.label}
 			</Text>
-			<div className={cn('ml-auto hidden gap-1', !isAnyItemDragging && 'group-hover:flex')}>
+			<div
+				className={cn(
+					'ml-auto hidden gap-1',
+					!isAnyItemDragging && 'group-hover:flex',
+					isPreSelected && 'flex'
+				)}
+			>
 				<button
 					className="cursor-pointer rounded-lg p-0.5 hover:bg-neutral-200"
-					onClick={handleCopyNode}
+					onPointerDown={(e) => e.stopPropagation()}
+					onPointerUp={handleCopyNode}
 				>
 					<Icon source={PolarisDuplicateIcon} />
 				</button>
 				<button
 					className="cursor-pointer rounded-lg p-0.5 hover:bg-neutral-200 hover:text-red-500"
-					onClick={handleDeleteNode}
+					onPointerDown={(e) => e.stopPropagation()}
+					onPointerUp={handleDeleteNode}
 				>
 					<Icon source={PolarisDeleteIcon} />
 				</button>
