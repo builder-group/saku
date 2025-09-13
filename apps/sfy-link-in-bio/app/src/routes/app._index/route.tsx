@@ -84,7 +84,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 
 				<s-page>
 					<ui-title-bar title="Saku Link In Bio">
-						<button variant="primary" onClick={handleCustomizeBio}>
+						{/* <button variant="primary" onClick={handleCustomizeBio}>
 							Customize
 						</button>
 						<button
@@ -95,7 +95,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 							}}
 						>
 							Visit
-						</button>
+						</button> */}
 					</ui-title-bar>
 
 					<Layout>

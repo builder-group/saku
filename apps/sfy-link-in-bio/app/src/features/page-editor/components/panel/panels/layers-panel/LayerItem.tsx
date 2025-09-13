@@ -6,6 +6,7 @@ import { Icon, Text } from '@shopify/polaris';
 import { useCompute } from 'feature-react/state';
 import React from 'react';
 import { PolarisDeleteIcon, PolarisDragHandleIcon, PolarisDuplicateIcon } from '@/components';
+import { mq, useMediaQuery } from '@/hooks';
 import { cn } from '@/lib';
 import { nodeMetadataRegistry, TNodeState, TPageEditor } from '../../../../lib';
 
@@ -24,6 +25,8 @@ export const LayerItem: React.FC<TLayerItemProps> = (props) => {
 	});
 	const { active } = useDndContext();
 	const isAnyItemDragging = React.useMemo(() => active != null, [active]);
+
+	const isTouchDevice = useMediaQuery(mq.touch);
 
 	// =========================================================================
 	// Events
@@ -71,9 +74,12 @@ export const LayerItem: React.FC<TLayerItemProps> = (props) => {
 				'group flex h-8 w-full items-center gap-2 rounded-lg px-2',
 				isDragging && 'opacity-50',
 				!isAnyItemDragging && 'cursor-pointer hover:bg-neutral-50',
-				isSelected && 'bg-neutral-100'
+				isSelected && 'bg-neutral-100',
+				// https://docs.dndkit.com/api-documentation/draggable#touch-action
+				isTouchDevice && 'touch-none'
 			)}
 			onClick={handleSelectNode}
+			{...(isTouchDevice ? { ...attributes, ...listeners } : {})}
 		>
 			<div>
 				<div className={cn('block', !isAnyItemDragging && 'group-hover:hidden')}>

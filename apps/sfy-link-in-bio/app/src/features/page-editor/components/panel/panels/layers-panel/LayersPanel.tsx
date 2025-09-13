@@ -91,7 +91,7 @@ export const LayersPanel: React.FC<TLayersPanelProps> = (props) => {
 	// =========================================================================
 
 	const handleDragStart = React.useCallback(
-		(_: DragStartEvent) => {
+		(_event: DragStartEvent) => {
 			editor.isDraggingLayer.set(true);
 		},
 		[editor]
