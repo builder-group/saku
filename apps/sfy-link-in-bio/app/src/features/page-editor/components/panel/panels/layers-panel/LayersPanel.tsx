@@ -45,7 +45,7 @@ export const LayersPanel: React.FC<TLayersPanelProps> = (props) => {
 	const sensors = useSensors(
 		useSensor(PointerSensor, {
 			activationConstraint: isTouchDevice
-				? ({ delay: 500 } as PointerActivationConstraint)
+				? ({ delay: 300 } as PointerActivationConstraint)
 				: ({
 						distance: 8
 					} as PointerActivationConstraint)

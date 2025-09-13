@@ -59,7 +59,7 @@ export const LayerItem: React.FC<TLayerItemProps> = (props) => {
 				if (longPressRef.current != null) {
 					longPressRef.current.wasSelected = true;
 				}
-			}, 500),
+			}, 300),
 			wasSelected: false
 		};
 	}, [editor, isTouchDevice, nodeId]);
