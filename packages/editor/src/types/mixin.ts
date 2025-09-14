@@ -275,21 +275,21 @@ export type TStyleMixin =
 
 export type TAutoLayoutStyleMixin = TBaseMixin<
 	'autoLayout',
-	{
+	TRef<{
 		horizontalPadding: TRef<number>;
 		verticalPadding: TRef<number>;
-		horizontalGap: TRef<number> | undefined;
-		verticalGap: TRef<number> | undefined;
-	}
+		horizontalGap: TRef<number | null>;
+		verticalGap: TRef<number | null>;
+	}>
 >;
 
 export type TAppearanceStyleMixin = TBaseMixin<
 	'appearance',
-	{
+	TRef<{
 		visible: boolean;
 		opacity: TRef<number>;
-		borderRadius: TRef<number> | undefined;
-	}
+		borderRadius: TRef<number | null>;
+	}>
 >;
 
 export type TTypographyStyleMixin = TBaseMixin<
@@ -335,26 +335,26 @@ export type TShadowStyleMixin = TBaseMixin<
 // Composed Style Mixins
 // =========================================================================
 
-// export type TCardStyleMixin = TBaseMixin<
-// 	'card',
-// 	{
-// 		autoLayout: TAutoLayoutStyleMixin['value'];
-// 		appearance: TAppearanceStyleMixin['value'];
-// 		fill: TFillStyleMixin['value'];
-// 		stroke: TStrokeStyleMixin['value'];
-// 		shadow: TShadowStyleMixin['value'];
-// 	}
-// >;
+export type TCardStyleMixin = TBaseMixin<
+	'card',
+	TRef<{
+		autoLayout: TAutoLayoutStyleMixin['value'];
+		appearance: TAppearanceStyleMixin['value'];
+		fill: TFillStyleMixin['value'];
+		stroke: TStrokeStyleMixin['value'];
+		shadow: TShadowStyleMixin['value'];
+	}>
+>;
 
 export type TTextStyleMixin = TBaseMixin<
 	'text',
-	{
+	TRef<{
 		appearance: TAppearanceStyleMixin['value'];
 		typography: TTypographyStyleMixin['value'];
 		fill: TFillStyleMixin['value'];
 		stroke: TStrokeStyleMixin['value'];
 		shadow: TShadowStyleMixin['value'];
-	}
+	}>
 >;
 export type TTextXlStyleMixin = TBaseMixin<'textXl', TTextStyleMixin['value']>;
 export type TTextSmStyleMixin = TBaseMixin<'textSm', TTextStyleMixin['value']>;
