@@ -65,7 +65,7 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 
 			{/* Auto Layout Section */}
 			{autoLayoutTokens.length > 0 && (
-				<AccordionSection title="Auto Layout" collapsibleClassName="p-0 border-b-0">
+				<AccordionSection title="Layout" collapsibleClassName="p-0 border-b-0">
 					{autoLayoutTokens.map(({ variant, state }) => (
 						<AccordionSection
 							key={variant}
