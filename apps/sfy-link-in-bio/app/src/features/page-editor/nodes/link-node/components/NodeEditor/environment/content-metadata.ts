@@ -13,6 +13,7 @@ import { ShopifyGlobal } from '@shopify/app-bridge-react';
 import { Err, Ok, type TResult } from 'tuple-result';
 import { AppError } from '@/lib';
 import { TNodeState, TPageEditor } from '../../../../../lib';
+import { packAutoLayoutTokenRef, unpackAutoLayoutTokenRef } from '../../../../../mixins';
 import { fetchSpotifyTheme, fetchUrlMetadata } from '../lib';
 
 export const contentMetadataMap = {
@@ -34,8 +35,10 @@ export const contentMetadataMap = {
 				userTitle: cx.common.userTitle,
 				description: cx.common.description
 			};
-			cx.node._v.autoLayout.horizontalPadding = tokenRef('mixin', 'default');
-			cx.node._v.autoLayout.verticalPadding = tokenRef('mixin', 'default');
+			const unpackedAutoLayout = unpackAutoLayoutTokenRef(cx.node._v.autoLayout);
+			unpackedAutoLayout.horizontalPadding = tokenRef('mixin', 'default');
+			unpackedAutoLayout.verticalPadding = tokenRef('mixin', 'default');
+			cx.node._v.autoLayout = packAutoLayoutTokenRef(unpackedAutoLayout);
 			cx.node._notify();
 			return Ok(undefined);
 		},
@@ -94,8 +97,10 @@ export const contentMetadataMap = {
 				contentType: youtubeData.type,
 				contentId: youtubeData.id
 			};
-			cx.node._v.autoLayout.horizontalPadding = 0;
-			cx.node._v.autoLayout.verticalPadding = 0;
+			const unpackedAutoLayout = unpackAutoLayoutTokenRef(cx.node._v.autoLayout);
+			unpackedAutoLayout.horizontalPadding = 0;
+			unpackedAutoLayout.verticalPadding = 0;
+			cx.node._v.autoLayout = unpackedAutoLayout;
 			cx.node._notify();
 			return Ok(undefined);
 		},
@@ -145,8 +150,10 @@ export const contentMetadataMap = {
 				contentId: spotifyData.id,
 				height: 152 // Default to compact height
 			};
-			cx.node._v.autoLayout.horizontalPadding = 0;
-			cx.node._v.autoLayout.verticalPadding = 0;
+			const unpackedAutoLayout = unpackAutoLayoutTokenRef(cx.node._v.autoLayout);
+			unpackedAutoLayout.horizontalPadding = 0;
+			unpackedAutoLayout.verticalPadding = 0;
+			cx.node._v.autoLayout = unpackedAutoLayout;
 			cx.node._notify();
 			return Ok(undefined);
 		},

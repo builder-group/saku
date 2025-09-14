@@ -8,13 +8,13 @@ const APPEARANCE_PROPERTIES: readonly (keyof TUnreferenceTop<TAppearanceStyleMix
 ];
 
 export function unpackAppearanceTokenRef(
-	text: TAppearanceStyleMixin['value']
+	appearance: TAppearanceStyleMixin['value']
 ): TUnreferenceTop<TAppearanceStyleMixin['value']> {
-	return unpackTokenRef(text, APPEARANCE_PROPERTIES);
+	return unpackTokenRef(appearance, APPEARANCE_PROPERTIES);
 }
 
 export function packAppearanceTokenRef(
-	text: TUnreferenceTop<TAppearanceStyleMixin['value']>
+	appearance: TUnreferenceTop<TAppearanceStyleMixin['value']>
 ): TAppearanceStyleMixin['value'] {
-	return packTokenRef(text, APPEARANCE_PROPERTIES);
+	return packTokenRef(appearance, APPEARANCE_PROPERTIES);
 }

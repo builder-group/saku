@@ -127,6 +127,9 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 					<AutoLayoutStyleMixinEditor
 						state={nodeState}
 						mapValue={(value) => value.autoLayout}
+						applyValue={(state, value) => {
+							state._v.autoLayout = value;
+						}}
 						tokenSet={editor.mixinTokenMap.autoLayout}
 						tokenRefKey={'default'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
@@ -190,6 +193,9 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 					<ImageStyleMixinEditor
 						state={nodeState}
 						mapValue={(value) => value.image}
+						applyValue={(state, value) => {
+							state._v.image = value;
+						}}
 						tokenSet={editor.mixinTokenMap.image}
 						tokenRefKey={'default'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}

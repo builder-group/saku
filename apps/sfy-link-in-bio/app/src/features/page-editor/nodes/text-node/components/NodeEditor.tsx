@@ -68,6 +68,9 @@ export const TextNodeEditor: React.FC<TNodeEditorComponentProps<TTextNode>> = (p
 					<AutoLayoutStyleMixinEditor
 						state={nodeState}
 						mapValue={(value) => value.autoLayout}
+						applyValue={(state, value) => {
+							state._v.autoLayout = value;
+						}}
 						tokenSet={editor.mixinTokenMap.autoLayout}
 						tokenRefKey={'default'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}

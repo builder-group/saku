@@ -269,8 +269,8 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 			value: {
 				horizontalPadding: boxSizes.lg,
 				verticalPadding: boxSizes.lg,
-				horizontalGap: undefined,
-				verticalGap: undefined
+				horizontalGap: null,
+				verticalGap: null
 			}
 		},
 		{

@@ -14,8 +14,8 @@ export const aboutNodeMetadata: TNodeMetadata<'about'> = {
 		autoLayout: {
 			horizontalPadding: tokenRef('mixin', 'default'),
 			verticalPadding: tokenRef('mixin', 'default'),
-			horizontalGap: undefined,
-			verticalGap: undefined
+			horizontalGap: null,
+			verticalGap: null
 		},
 		appearance: tokenRef('mixin', 'default'),
 		fill: null,
@@ -23,11 +23,7 @@ export const aboutNodeMetadata: TNodeMetadata<'about'> = {
 		shadow: null,
 		textXl: tokenRef('mixin', 'xl'),
 		text: tokenRef('mixin', 'default'),
-		image: {
-			appearance: tokenRef('mixin', 'default'),
-			stroke: tokenRef('mixin', 'default'),
-			shadow: tokenRef('mixin', 'default')
-		}
+		image: tokenRef('mixin', 'default')
 	}
 };
 
@@ -43,8 +39,8 @@ export const linkNodeMetadata: TNodeMetadata<'link'> = {
 		autoLayout: {
 			horizontalPadding: tokenRef('mixin', 'default'),
 			verticalPadding: tokenRef('mixin', 'default'),
-			horizontalGap: undefined,
-			verticalGap: undefined
+			horizontalGap: null,
+			verticalGap: null
 		},
 		appearance: tokenRef('mixin', 'default'),
 		fill: tokenRef('mixin', 'default'),
@@ -74,8 +70,8 @@ export const mediaNodeMetadata: TNodeMetadata<'media'> = {
 		autoLayout: {
 			horizontalPadding: 0,
 			verticalPadding: 0,
-			horizontalGap: undefined,
-			verticalGap: undefined
+			horizontalGap: null,
+			verticalGap: null
 		},
 		appearance: tokenRef('mixin', 'default'),
 		fill: tokenRef('mixin', 'default'),
@@ -101,7 +97,7 @@ export const pageNodeMetadata: TNodeMetadata<'page'> = {
 			horizontalPadding: 24,
 			verticalPadding: 48,
 			verticalGap: 24,
-			horizontalGap: undefined
+			horizontalGap: null
 		},
 		appearance: {
 			visible: true,
@@ -127,35 +123,17 @@ export const productNodeMetadata: TNodeMetadata<'product'> = {
 		autoLayout: {
 			horizontalPadding: tokenRef('mixin', 'default'),
 			verticalPadding: tokenRef('mixin', 'default'),
-			horizontalGap: undefined,
-			verticalGap: undefined
+			horizontalGap: null,
+			verticalGap: null
 		},
 		appearance: tokenRef('mixin', 'default'),
 		fill: tokenRef('mixin', 'default'),
 		stroke: tokenRef('mixin', 'default'),
 		shadow: tokenRef('mixin', 'default'),
 		text: tokenRef('mixin', 'default'),
-		buttonPrimary: {
-			appearance: tokenRef('mixin', 'primary'),
-			fill: tokenRef('mixin', 'primary'),
-			stroke: tokenRef('mixin', 'primary'),
-			shadow: tokenRef('mixin', 'primary'),
-			text: tokenRef('mixin', 'primary')
-		},
-		badgePrimary: {
-			appearance: tokenRef('mixin', 'primary'),
-			fill: tokenRef('mixin', 'primary'),
-			stroke: tokenRef('mixin', 'primary'),
-			shadow: tokenRef('mixin', 'primary'),
-			text: tokenRef('mixin', 'primary')
-		},
-		badgeNeutral: {
-			appearance: tokenRef('mixin', 'neutral'),
-			fill: tokenRef('mixin', 'neutral'),
-			stroke: tokenRef('mixin', 'neutral'),
-			shadow: tokenRef('mixin', 'neutral'),
-			text: tokenRef('mixin', 'neutral')
-		},
+		buttonPrimary: tokenRef('mixin', 'primary'),
+		badgePrimary: tokenRef('mixin', 'primary'),
+		badgeNeutral: tokenRef('mixin', 'neutral'),
 		image: {
 			appearance: {
 				visible: true,
@@ -165,26 +143,7 @@ export const productNodeMetadata: TNodeMetadata<'product'> = {
 			stroke: tokenRef('mixin', 'default'),
 			shadow: tokenRef('mixin', 'default')
 		},
-		productDetails: {
-			appearance: tokenRef('mixin', 'default'),
-			fill: tokenRef('mixin', 'default'),
-			stroke: tokenRef('mixin', 'default'),
-			shadow: tokenRef('mixin', 'default'),
-			textXl: tokenRef('mixin', 'default'),
-			text: tokenRef('mixin', 'default'),
-			buttonPrimary: {
-				appearance: tokenRef('mixin', 'default'),
-				fill: tokenRef('mixin', 'default'),
-				stroke: tokenRef('mixin', 'default'),
-				shadow: tokenRef('mixin', 'default'),
-				text: tokenRef('mixin', 'default')
-			},
-			image: {
-				appearance: tokenRef('mixin', 'default'),
-				stroke: tokenRef('mixin', 'default'),
-				shadow: tokenRef('mixin', 'default')
-			}
-		}
+		productDetails: tokenRef('mixin', 'default')
 	}
 };
 
@@ -199,8 +158,8 @@ export const textNodeMetadata: TNodeMetadata<'text'> = {
 		autoLayout: {
 			horizontalPadding: tokenRef('mixin', 'default'),
 			verticalPadding: tokenRef('mixin', 'default'),
-			horizontalGap: undefined,
-			verticalGap: undefined
+			horizontalGap: null,
+			verticalGap: null
 		},
 		appearance: tokenRef('mixin', 'default'),
 		fill: tokenRef('mixin', 'default'),

@@ -1,12 +1,14 @@
-import { TBadgeStyleMixin, TBadgeStyleToken, TMixinTokenSet } from '@repo/editor';
+import { isTokenRef, TBadgeStyleMixin, TBadgeStyleToken, TMixinTokenSet } from '@repo/editor';
 import { Text } from '@shopify/polaris';
 import { TState } from 'feature-state';
+import { useMapState } from '@/hooks';
 import { TPageEditor } from '../../lib';
 import { AppearanceStyleMixinEditor } from '../appearance-style';
 import { FillStyleMixinEditor } from '../fill-style';
 import { ShadowStyleMixinEditor } from '../shadow-style';
 import { StrokeStyleMixinEditor } from '../stroke-style';
 import { TextStyleMixinEditor } from '../text-style';
+import { packBadgeTokenRef, unpackBadgeTokenRef } from './pack-mixin';
 
 export const BadgeStyleMixinEditor = <
 	GValue extends Record<string, any>,
@@ -17,6 +19,7 @@ export const BadgeStyleMixinEditor = <
 	const {
 		state,
 		mapValue,
+		applyValue,
 		tokenSet,
 		tokenRefKey,
 		mapToToken,
@@ -24,13 +27,89 @@ export const BadgeStyleMixinEditor = <
 		editor
 	} = props;
 
+	const appearanceState = useMapState(state, {
+		map(baseValue) {
+			const badge = mapValue(baseValue);
+			if (isTokenRef(badge)) {
+				return badge;
+			}
+			return badge?.appearance;
+		},
+		sync(baseState, mappedValue, notifyOptions) {
+			const badge = unpackBadgeTokenRef(mapValue(baseState._v));
+			badge.appearance = mappedValue;
+			applyValue(baseState, packBadgeTokenRef(badge));
+			baseState._notify(notifyOptions);
+		}
+	});
+	const fillState = useMapState(state, {
+		map(baseValue) {
+			const badge = mapValue(baseValue);
+			if (isTokenRef(badge)) {
+				return badge;
+			}
+			return badge?.fill;
+		},
+		sync(baseState, mappedValue, notifyOptions) {
+			const badge = unpackBadgeTokenRef(mapValue(baseState._v));
+			badge.fill = mappedValue;
+			applyValue(baseState, packBadgeTokenRef(badge));
+			baseState._notify(notifyOptions);
+		}
+	});
+	const strokeState = useMapState(state, {
+		map(baseValue) {
+			const badge = mapValue(baseValue);
+			if (isTokenRef(badge)) {
+				return badge;
+			}
+			return badge?.stroke;
+		},
+		sync(baseState, mappedValue, notifyOptions) {
+			const badge = unpackBadgeTokenRef(mapValue(baseState._v));
+			badge.stroke = mappedValue;
+			applyValue(baseState, packBadgeTokenRef(badge));
+			baseState._notify(notifyOptions);
+		}
+	});
+	const shadowState = useMapState(state, {
+		map(baseValue) {
+			const badge = mapValue(baseValue);
+			if (isTokenRef(badge)) {
+				return badge;
+			}
+			return badge?.shadow;
+		},
+		sync(baseState, mappedValue, notifyOptions) {
+			const badge = unpackBadgeTokenRef(mapValue(baseState._v));
+			badge.shadow = mappedValue;
+			applyValue(baseState, packBadgeTokenRef(badge));
+			baseState._notify(notifyOptions);
+		}
+	});
+	const textState = useMapState(state, {
+		map(baseValue) {
+			const badge = mapValue(baseValue);
+			if (isTokenRef(badge)) {
+				return badge;
+			}
+			return badge?.text;
+		},
+		sync(baseState, mappedValue, notifyOptions) {
+			const badge = unpackBadgeTokenRef(mapValue(baseState._v));
+			badge.text = mappedValue;
+			applyValue(baseState, packBadgeTokenRef(badge));
+			baseState._notify(notifyOptions);
+		}
+	});
+
 	return (
 		<>
 			<AppearanceStyleMixinEditor
-				state={state}
-				mapValue={(value) => mapValue(value).appearance}
+				state={appearanceState}
+				mapValue={(value) => value}
 				applyValue={(state, value) => {
-					mapValue(state._v).appearance = value;
+					state._v = value;
 				}}
 				tokenSet={tokenSet}
 				tokenRefKey={tokenRefKey}
@@ -40,10 +119,10 @@ export const BadgeStyleMixinEditor = <
 			/>
 			<div className="h-px bg-neutral-200" />
 			<FillStyleMixinEditor
-				state={state}
-				mapValue={(value) => mapValue(value).fill}
+				state={fillState}
+				mapValue={(value) => value}
 				applyValue={(state, value) => {
-					mapValue(state._v).fill = value;
+					state._v = value;
 				}}
 				tokenSet={tokenSet}
 				tokenRefKey={tokenRefKey}
@@ -53,10 +132,10 @@ export const BadgeStyleMixinEditor = <
 			/>
 			<div className="h-px bg-neutral-200" />
 			<StrokeStyleMixinEditor
-				state={state}
-				mapValue={(value) => mapValue(value).stroke}
+				state={strokeState}
+				mapValue={(value) => value}
 				applyValue={(state, value) => {
-					mapValue(state._v).stroke = value;
+					state._v = value;
 				}}
 				tokenSet={tokenSet}
 				tokenRefKey={tokenRefKey}
@@ -66,10 +145,10 @@ export const BadgeStyleMixinEditor = <
 			/>
 			<div className="h-px bg-neutral-200" />
 			<ShadowStyleMixinEditor
-				state={state}
-				mapValue={(value) => mapValue(value).shadow}
+				state={shadowState}
+				mapValue={(value) => value}
 				applyValue={(state, value) => {
-					mapValue(state._v).shadow = value;
+					state._v = value;
 				}}
 				tokenSet={tokenSet}
 				tokenRefKey={tokenRefKey}
@@ -83,10 +162,10 @@ export const BadgeStyleMixinEditor = <
 				</Text>
 			</div>
 			<TextStyleMixinEditor
-				state={state}
-				mapValue={(value) => mapValue(value).text}
+				state={textState}
+				mapValue={(value) => value}
 				applyValue={(state, value) => {
-					mapValue(state._v).text = value;
+					state._v = value;
 				}}
 				tokenSet={tokenSet}
 				tokenRefKey={tokenRefKey}
@@ -104,6 +183,7 @@ interface TBadgeStyleMixinEditorProps<
 > {
 	state: TState<GValue, any>;
 	mapValue: (value: GValue) => TBadgeStyleMixin['value'];
+	applyValue: (state: TState<GValue, any>, value: TBadgeStyleMixin['value']) => void;
 	tokenSet?: TState<GTokenSet, any>;
 	tokenRefKey?: string;
 	mapToToken?: (ref: string, tokenSet?: GTokenSet) => TBadgeStyleToken['value'] | undefined;

@@ -1,12 +1,14 @@
-import { TButtonStyleMixin, TButtonStyleToken, TMixinTokenSet } from '@repo/editor';
+import { isTokenRef, TButtonStyleMixin, TButtonStyleToken, TMixinTokenSet } from '@repo/editor';
 import { Text } from '@shopify/polaris';
 import { TState } from 'feature-state';
+import { useMapState } from '@/hooks';
 import { TPageEditor } from '../../lib';
 import { AppearanceStyleMixinEditor } from '../appearance-style';
 import { FillStyleMixinEditor } from '../fill-style';
 import { ShadowStyleMixinEditor } from '../shadow-style';
 import { StrokeStyleMixinEditor } from '../stroke-style';
 import { TextStyleMixinEditor } from '../text-style';
+import { packButtonTokenRef, unpackButtonTokenRef } from './pack-mixin';
 
 export const ButtonStyleMixinEditor = <
 	GValue extends Record<string, any>,
@@ -17,6 +19,7 @@ export const ButtonStyleMixinEditor = <
 	const {
 		state,
 		mapValue,
+		applyValue,
 		tokenSet,
 		tokenRefKey,
 		mapToToken,
@@ -24,13 +27,89 @@ export const ButtonStyleMixinEditor = <
 		editor
 	} = props;
 
+	const appearanceState = useMapState(state, {
+		map(baseValue) {
+			const button = mapValue(baseValue);
+			if (isTokenRef(button)) {
+				return button;
+			}
+			return button?.appearance;
+		},
+		sync(baseState, mappedValue, notifyOptions) {
+			const button = unpackButtonTokenRef(mapValue(baseState._v));
+			button.appearance = mappedValue;
+			applyValue(baseState, packButtonTokenRef(button));
+			baseState._notify(notifyOptions);
+		}
+	});
+	const fillState = useMapState(state, {
+		map(baseValue) {
+			const button = mapValue(baseValue);
+			if (isTokenRef(button)) {
+				return button;
+			}
+			return button?.fill;
+		},
+		sync(baseState, mappedValue, notifyOptions) {
+			const button = unpackButtonTokenRef(mapValue(baseState._v));
+			button.fill = mappedValue;
+			applyValue(baseState, packButtonTokenRef(button));
+			baseState._notify(notifyOptions);
+		}
+	});
+	const strokeState = useMapState(state, {
+		map(baseValue) {
+			const button = mapValue(baseValue);
+			if (isTokenRef(button)) {
+				return button;
+			}
+			return button?.stroke;
+		},
+		sync(baseState, mappedValue, notifyOptions) {
+			const button = unpackButtonTokenRef(mapValue(baseState._v));
+			button.stroke = mappedValue;
+			applyValue(baseState, packButtonTokenRef(button));
+			baseState._notify(notifyOptions);
+		}
+	});
+	const shadowState = useMapState(state, {
+		map(baseValue) {
+			const button = mapValue(baseValue);
+			if (isTokenRef(button)) {
+				return button;
+			}
+			return button?.shadow;
+		},
+		sync(baseState, mappedValue, notifyOptions) {
+			const button = unpackButtonTokenRef(mapValue(baseState._v));
+			button.shadow = mappedValue;
+			applyValue(baseState, packButtonTokenRef(button));
+			baseState._notify(notifyOptions);
+		}
+	});
+	const textState = useMapState(state, {
+		map(baseValue) {
+			const button = mapValue(baseValue);
+			if (isTokenRef(button)) {
+				return button;
+			}
+			return button?.text;
+		},
+		sync(baseState, mappedValue, notifyOptions) {
+			const button = unpackButtonTokenRef(mapValue(baseState._v));
+			button.text = mappedValue;
+			applyValue(baseState, packButtonTokenRef(button));
+			baseState._notify(notifyOptions);
+		}
+	});
+
 	return (
 		<>
 			<AppearanceStyleMixinEditor
-				state={state}
-				mapValue={(value) => mapValue(value).appearance}
+				state={appearanceState}
+				mapValue={(value) => value}
 				applyValue={(state, value) => {
-					mapValue(state._v).appearance = value;
+					state._v = value;
 				}}
 				tokenSet={tokenSet}
 				tokenRefKey={tokenRefKey}
@@ -40,10 +119,10 @@ export const ButtonStyleMixinEditor = <
 			/>
 			<div className="h-px bg-neutral-200" />
 			<FillStyleMixinEditor
-				state={state}
-				mapValue={(value) => mapValue(value).fill}
+				state={fillState}
+				mapValue={(value) => value}
 				applyValue={(state, value) => {
-					mapValue(state._v).fill = value;
+					state._v = value;
 				}}
 				tokenSet={tokenSet}
 				tokenRefKey={tokenRefKey}
@@ -53,10 +132,10 @@ export const ButtonStyleMixinEditor = <
 			/>
 			<div className="h-px bg-neutral-200" />
 			<StrokeStyleMixinEditor
-				state={state}
-				mapValue={(value) => mapValue(value).stroke}
+				state={strokeState}
+				mapValue={(value) => value}
 				applyValue={(state, value) => {
-					mapValue(state._v).stroke = value;
+					state._v = value;
 				}}
 				tokenSet={tokenSet}
 				tokenRefKey={tokenRefKey}
@@ -66,10 +145,10 @@ export const ButtonStyleMixinEditor = <
 			/>
 			<div className="h-px bg-neutral-200" />
 			<ShadowStyleMixinEditor
-				state={state}
-				mapValue={(value) => mapValue(value).shadow}
+				state={shadowState}
+				mapValue={(value) => value}
 				applyValue={(state, value) => {
-					mapValue(state._v).shadow = value;
+					state._v = value;
 				}}
 				tokenSet={tokenSet}
 				tokenRefKey={tokenRefKey}
@@ -84,10 +163,10 @@ export const ButtonStyleMixinEditor = <
 				</Text>
 			</div>
 			<TextStyleMixinEditor
-				state={state}
-				mapValue={(value) => mapValue(value).text}
+				state={textState}
+				mapValue={(value) => value}
 				applyValue={(state, value) => {
-					mapValue(state._v).text = value;
+					state._v = value;
 				}}
 				tokenSet={tokenSet}
 				tokenRefKey={tokenRefKey}
@@ -105,6 +184,7 @@ interface TButtonStyleMixinEditorProps<
 > {
 	state: TState<GValue, any>;
 	mapValue: (value: GValue) => TButtonStyleMixin['value'];
+	applyValue: (state: TState<GValue, any>, value: TButtonStyleMixin['value']) => void;
 	tokenSet?: TState<GTokenSet, any>;
 	tokenRefKey?: string;
 	mapToToken?: (ref: string, tokenSet?: GTokenSet) => TButtonStyleToken['value'] | undefined;

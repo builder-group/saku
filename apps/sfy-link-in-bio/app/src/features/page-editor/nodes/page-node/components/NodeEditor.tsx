@@ -19,6 +19,9 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TFlatPageNode>> 
 			<AutoLayoutStyleMixinEditor
 				state={nodeState}
 				mapValue={(value) => value.autoLayout}
+				applyValue={(state, value) => {
+					state._v.autoLayout = value;
+				}}
 				disabledTokenLink
 				editor={editor}
 			/>

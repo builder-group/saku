@@ -1,7 +1,7 @@
 import { TButtonStyleMixin, TButtonStyleToken, TMixinTokenSet } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
-import { TMixinResolveContext } from '../../lib';
+import { resolveTokenRef, TMixinResolveContext } from '../../lib';
 import { resolveAppearanceStyleMixin } from '../appearance-style';
 import { resolveFillStyleMixin } from '../fill-style';
 import { resolveShadowStyleMixin } from '../shadow-style';
@@ -13,23 +13,33 @@ export function resolveButtonStyleMixin<GTokenSet extends TMixinTokenSet>(
 	button: TButtonStyleMixin['value'],
 	cx: TMixinResolveContext<TButtonStyleToken['value'], GTokenSet>
 ): TResult<TResolvedButtonStyleMixin['value'], AppError> {
+	const [isResolvedButtonOk, resolvedButtonErr, resolvedButton] = resolveTokenRef(button, {
+		mixin: { tokenSet: cx.mixinTokenSet, mapToTokenValue: cx.mapToMixinTokenValue }
+	});
+	if (!isResolvedButtonOk) {
+		return Err(resolvedButtonErr.wrapWith('#ERR_RESOLVE_BUTTON_STYLE'));
+	}
+
 	const [isResolvedAppearanceOk, resolvedAppearanceErr, resolvedAppearance] =
-		resolveAppearanceStyleMixin(button.appearance, {
+		resolveAppearanceStyleMixin(resolvedButton.appearance, {
 			...cx,
 			mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.appearance
 		});
 	if (!isResolvedAppearanceOk) {
 		return Err(resolvedAppearanceErr.wrapWith('#ERR_RESOLVE_APPEARANCE_STYLE'));
 	}
-	const [isResolvedFillOk, resolvedFillErr, resolvedFill] = resolveFillStyleMixin(button.fill, {
-		...cx,
-		mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.fill
-	});
+	const [isResolvedFillOk, resolvedFillErr, resolvedFill] = resolveFillStyleMixin(
+		resolvedButton.fill,
+		{
+			...cx,
+			mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.fill
+		}
+	);
 	if (!isResolvedFillOk) {
 		return Err(resolvedFillErr.wrapWith('#ERR_RESOLVE_FILL_STYLE'));
 	}
 	const [isResolvedStrokeOk, resolvedStrokeErr, resolvedStroke] = resolveStrokeStyleMixin(
-		button.stroke,
+		resolvedButton.stroke,
 		{
 			...cx,
 			mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.stroke
@@ -39,7 +49,7 @@ export function resolveButtonStyleMixin<GTokenSet extends TMixinTokenSet>(
 		return Err(resolvedStrokeErr.wrapWith('#ERR_RESOLVE_STROKE_STYLE'));
 	}
 	const [isResolvedShadowOk, resolvedShadowErr, resolvedShadow] = resolveShadowStyleMixin(
-		button.shadow,
+		resolvedButton.shadow,
 		{
 			...cx,
 			mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.shadow
@@ -48,10 +58,13 @@ export function resolveButtonStyleMixin<GTokenSet extends TMixinTokenSet>(
 	if (!isResolvedShadowOk) {
 		return Err(resolvedShadowErr.wrapWith('#ERR_RESOLVE_SHADOW_STYLE'));
 	}
-	const [isResolvedTextOk, resolvedTextErr, resolvedText] = resolveTextStyleMixin(button.text, {
-		...cx,
-		mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.text
-	});
+	const [isResolvedTextOk, resolvedTextErr, resolvedText] = resolveTextStyleMixin(
+		resolvedButton.text,
+		{
+			...cx,
+			mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.text
+		}
+	);
 	if (!isResolvedTextOk) {
 		return Err(resolvedTextErr.wrapWith('#ERR_RESOLVE_TEXT_STYLE'));
 	}

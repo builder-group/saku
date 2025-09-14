@@ -1,6 +1,6 @@
 import { isTokenRef, TMixinTokenSet, TTextStyleMixin, TTextStyleToken } from '@repo/editor';
 import { TState } from 'feature-state';
-import { useMapState } from '../../../../hooks';
+import { useMapState } from '@/hooks';
 import { TPageEditor } from '../../lib';
 import { AppearanceStyleMixinEditor } from '../appearance-style';
 import { FillStyleMixinEditor } from '../fill-style';
@@ -107,7 +107,9 @@ export const TextStyleMixinEditor = <
 			<AppearanceStyleMixinEditor
 				state={appearanceState}
 				mapValue={(value) => value}
-				applyValue={(state, value) => (state._v = value)}
+				applyValue={(state, value) => {
+					state._v = value;
+				}}
 				tokenSet={tokenSet}
 				tokenRefKey={tokenRefKey}
 				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.appearance}

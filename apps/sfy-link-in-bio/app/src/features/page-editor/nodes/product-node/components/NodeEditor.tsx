@@ -369,6 +369,9 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 					<AutoLayoutStyleMixinEditor
 						state={nodeState}
 						mapValue={(value) => value.autoLayout}
+						applyValue={(state, value) => {
+							state._v.autoLayout = value;
+						}}
 						tokenSet={editor.mixinTokenMap.autoLayout}
 						tokenRefKey={'default'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
@@ -451,6 +454,9 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 					<ButtonStyleMixinEditor
 						state={nodeState}
 						mapValue={(value) => value.buttonPrimary}
+						applyValue={(state, value) => {
+							state._v.buttonPrimary = value;
+						}}
 						tokenSet={editor.mixinTokenMap.button}
 						tokenRefKey={'primary'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
@@ -466,6 +472,9 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 					<BadgeStyleMixinEditor
 						state={nodeState}
 						mapValue={(value) => value.badgePrimary}
+						applyValue={(state, value) => {
+							state._v.badgePrimary = value;
+						}}
 						tokenSet={editor.mixinTokenMap.badge}
 						tokenRefKey={'primary'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
@@ -481,6 +490,9 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 					<BadgeStyleMixinEditor
 						state={nodeState}
 						mapValue={(value) => value.badgeNeutral}
+						applyValue={(state, value) => {
+							state._v.badgeNeutral = value;
+						}}
 						tokenSet={editor.mixinTokenMap.badge}
 						tokenRefKey={'neutral'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
@@ -496,6 +508,9 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 					<ImageStyleMixinEditor
 						state={nodeState}
 						mapValue={(value) => value.image}
+						applyValue={(state, value) => {
+							state._v.image = value;
+						}}
 						tokenSet={editor.mixinTokenMap.image}
 						tokenRefKey={'default'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
@@ -511,6 +526,9 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 					<ProductDetailsStyleMixinEditor
 						state={nodeState}
 						mapValue={(value) => value.productDetails}
+						applyValue={(state, value) => {
+							state._v.productDetails = value;
+						}}
 						tokenSet={editor.mixinTokenMap.productDetails}
 						tokenRefKey={'default'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}

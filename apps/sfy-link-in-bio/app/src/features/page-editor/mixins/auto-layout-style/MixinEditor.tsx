@@ -10,7 +10,9 @@ import { TState } from 'feature-state';
 import React from 'react';
 import { useMapState } from '@/hooks';
 import { TokenTextInput } from '../../components';
-import { TPageEditor } from '../../lib';
+import { EditorSiteResolveContext, TPageEditor } from '../../lib';
+import { packAutoLayoutTokenRef, unpackAutoLayoutTokenRef } from './pack-mixin';
+import { resolveAutoLayoutStyleMixin } from './resolve-mixin';
 
 export const AutoLayoutStyleMixinEditor = <
 	GValue extends Record<string, any>,
@@ -21,6 +23,7 @@ export const AutoLayoutStyleMixinEditor = <
 	const {
 		state,
 		mapValue,
+		applyValue,
 		tokenSet,
 		tokenRefKey,
 		mapToToken,
@@ -28,22 +31,18 @@ export const AutoLayoutStyleMixinEditor = <
 		editor
 	} = props;
 
-	const hasHorizontalPadding = useCompute(
+	const resolvedAutoLayout = useCompute(
 		state,
-		({ value }) => mapValue(value).horizontalPadding != null,
+		({ value }) => {
+			return resolveAutoLayoutStyleMixin(mapValue(value), {
+				node: { site: new EditorSiteResolveContext(editor) },
+				mixinTokenSet: tokenSet?._v,
+				mapToMixinTokenValue: (ref, tokenSet) => mapToToken?.(ref, tokenSet),
+				variableTokenMap: editor.variableTokenMap._v
+			}).unwrap();
+		},
 		[mapValue]
 	);
-	const hasVerticalPadding = useCompute(
-		state,
-		({ value }) => mapValue(value).verticalPadding != null,
-		[mapValue]
-	);
-	const hasHorizontalGap = useCompute(state, ({ value }) => mapValue(value).horizontalGap != null, [
-		mapValue
-	]);
-	const hasVerticalGap = useCompute(state, ({ value }) => mapValue(value).verticalGap != null, [
-		mapValue
-	]);
 
 	const horizontalPaddingState = useMapState(state, {
 		map(baseValue) {
@@ -54,11 +53,10 @@ export const AutoLayoutStyleMixinEditor = <
 			return autoLayout.horizontalPadding;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
-			const autoLayout = mapValue(baseState._v);
-			if (!isTokenRef(autoLayout)) {
-				autoLayout.horizontalPadding = mappedValue;
-				baseState._notify(notifyOptions);
-			}
+			const autoLayout = unpackAutoLayoutTokenRef(mapValue(baseState._v));
+			autoLayout.horizontalPadding = mappedValue;
+			applyValue(baseState, packAutoLayoutTokenRef(autoLayout));
+			baseState._notify(notifyOptions);
 		}
 	});
 	const verticalPaddingState = useMapState(state, {
@@ -70,11 +68,10 @@ export const AutoLayoutStyleMixinEditor = <
 			return autoLayout.verticalPadding;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
-			const autoLayout = mapValue(baseState._v);
-			if (!isTokenRef(autoLayout)) {
-				autoLayout.verticalPadding = mappedValue;
-				baseState._notify(notifyOptions);
-			}
+			const autoLayout = unpackAutoLayoutTokenRef(mapValue(baseState._v));
+			autoLayout.verticalPadding = mappedValue;
+			applyValue(baseState, packAutoLayoutTokenRef(autoLayout));
+			baseState._notify(notifyOptions);
 		}
 	});
 	const horizontalGapState = useMapState(state, {
@@ -83,14 +80,16 @@ export const AutoLayoutStyleMixinEditor = <
 			if (isTokenRef(autoLayout)) {
 				return autoLayout;
 			}
-			return autoLayout.horizontalGap;
+			if (isTokenRef(autoLayout.horizontalGap)) {
+				return autoLayout.horizontalGap;
+			}
+			return autoLayout.horizontalGap ?? undefined;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
-			const autoLayout = mapValue(baseState._v);
-			if (!isTokenRef(autoLayout)) {
-				autoLayout.horizontalGap = mappedValue;
-				baseState._notify(notifyOptions);
-			}
+			const autoLayout = unpackAutoLayoutTokenRef(mapValue(baseState._v));
+			autoLayout.horizontalGap = mappedValue ?? null;
+			applyValue(baseState, packAutoLayoutTokenRef(autoLayout));
+			baseState._notify(notifyOptions);
 		}
 	});
 	const verticalGapState = useMapState(state, {
@@ -99,14 +98,16 @@ export const AutoLayoutStyleMixinEditor = <
 			if (isTokenRef(autoLayout)) {
 				return autoLayout;
 			}
-			return autoLayout.verticalGap;
+			if (isTokenRef(autoLayout.verticalGap)) {
+				return autoLayout.verticalGap;
+			}
+			return autoLayout.verticalGap ?? undefined;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
-			const autoLayout = mapValue(baseState._v);
-			if (!isTokenRef(autoLayout)) {
-				autoLayout.verticalGap = mappedValue;
-				baseState._notify(notifyOptions);
-			}
+			const autoLayout = unpackAutoLayoutTokenRef(mapValue(baseState._v));
+			autoLayout.verticalGap = mappedValue ?? null;
+			applyValue(baseState, packAutoLayoutTokenRef(autoLayout));
+			baseState._notify(notifyOptions);
 		}
 	});
 
@@ -122,10 +123,6 @@ export const AutoLayoutStyleMixinEditor = <
 	// UI
 	// =========================================================================
 
-	if (!hasHorizontalPadding && !hasVerticalPadding && !hasHorizontalGap && !hasVerticalGap) {
-		return null;
-	}
-
 	return (
 		<div className="space-y-3 px-4">
 			<div>
@@ -133,49 +130,43 @@ export const AutoLayoutStyleMixinEditor = <
 					Layout
 				</Text>
 			</div>
-			{(hasHorizontalPadding || hasVerticalPadding) && (
+			<div className="grid grid-cols-2 gap-3">
+				<TokenTextInput
+					label="Padding (Horizontal)"
+					type="number"
+					autoComplete="off"
+					min={0}
+					max={96}
+					step={4}
+					state={horizontalPaddingState}
+					tokenSet={tokenSet}
+					tokenRefKey={tokenRefKey}
+					mapToTokenValue={(tokenRef, tokenSet) =>
+						mapToToken?.(tokenRef, tokenSet)?.horizontalPadding
+					}
+					onNavigateToToken={handleNavigateToToken}
+					disabledTokenLink={disabledTokenLink}
+				/>
+				<TokenTextInput
+					label="Padding (Vertical)"
+					type="number"
+					autoComplete="off"
+					min={0}
+					max={96}
+					step={4}
+					state={verticalPaddingState}
+					tokenSet={tokenSet}
+					tokenRefKey={tokenRefKey}
+					mapToTokenValue={(tokenRef, tokenSet) =>
+						mapToToken?.(tokenRef, tokenSet)?.verticalPadding
+					}
+					onNavigateToToken={handleNavigateToToken}
+					disabledTokenLink={disabledTokenLink}
+				/>
+			</div>
+			{(resolvedAutoLayout.horizontalGap != null || resolvedAutoLayout.verticalGap != null) && (
 				<div className="grid grid-cols-2 gap-3">
-					{hasHorizontalPadding && (
-						<TokenTextInput
-							label="Padding (Horizontal)"
-							type="number"
-							autoComplete="off"
-							min={0}
-							max={96}
-							step={4}
-							state={horizontalPaddingState}
-							tokenSet={tokenSet}
-							tokenRefKey={tokenRefKey}
-							mapToTokenValue={(tokenRef, tokenSet) =>
-								mapToToken?.(tokenRef, tokenSet)?.horizontalPadding
-							}
-							onNavigateToToken={handleNavigateToToken}
-							disabledTokenLink={disabledTokenLink}
-						/>
-					)}
-					{hasVerticalPadding && (
-						<TokenTextInput
-							label="Padding (Vertical)"
-							type="number"
-							autoComplete="off"
-							min={0}
-							max={96}
-							step={4}
-							state={verticalPaddingState}
-							tokenSet={tokenSet}
-							tokenRefKey={tokenRefKey}
-							mapToTokenValue={(tokenRef, tokenSet) =>
-								mapToToken?.(tokenRef, tokenSet)?.verticalPadding
-							}
-							onNavigateToToken={handleNavigateToToken}
-							disabledTokenLink={disabledTokenLink}
-						/>
-					)}
-				</div>
-			)}
-			{(hasHorizontalGap || hasVerticalGap) && (
-				<div className="grid grid-cols-2 gap-3">
-					{hasHorizontalGap && (
+					{resolvedAutoLayout.horizontalGap != null && (
 						<TokenTextInput
 							label="Gap (Horizontal)"
 							type="number"
@@ -187,13 +178,13 @@ export const AutoLayoutStyleMixinEditor = <
 							tokenSet={tokenSet}
 							tokenRefKey={tokenRefKey}
 							mapToTokenValue={(tokenRef, tokenSet) =>
-								mapToToken?.(tokenRef, tokenSet)?.horizontalGap
+								mapToToken?.(tokenRef, tokenSet)?.horizontalGap ?? undefined
 							}
 							onNavigateToToken={handleNavigateToToken}
 							disabledTokenLink={disabledTokenLink}
 						/>
 					)}
-					{hasVerticalGap && (
+					{resolvedAutoLayout.verticalGap != null && (
 						<TokenTextInput
 							label="Gap (Vertical)"
 							type="number"
@@ -205,7 +196,7 @@ export const AutoLayoutStyleMixinEditor = <
 							tokenSet={tokenSet}
 							tokenRefKey={tokenRefKey}
 							mapToTokenValue={(tokenRef, tokenSet) =>
-								mapToToken?.(tokenRef, tokenSet)?.verticalGap
+								mapToToken?.(tokenRef, tokenSet)?.verticalGap ?? undefined
 							}
 							onNavigateToToken={handleNavigateToToken}
 							disabledTokenLink={disabledTokenLink}
@@ -223,6 +214,7 @@ interface TAutoLayoutStyleMixinEditorProps<
 > {
 	state: TState<GValue, any>;
 	mapValue: (value: GValue) => TAutoLayoutStyleMixin['value'];
+	applyValue: (state: TState<GValue, any>, value: TAutoLayoutStyleMixin['value']) => void;
 	tokenSet?: TState<GTokenSet, any>;
 	tokenRefKey?: string;
 	mapToToken?: (ref: string, tokenSet?: GTokenSet) => TAutoLayoutStyleToken['value'] | undefined;

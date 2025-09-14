@@ -1,7 +1,7 @@
 import { TImageStyleMixin, TImageStyleToken, TMixinTokenSet } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
-import { TMixinResolveContext } from '../../lib';
+import { resolveTokenRef, TMixinResolveContext } from '../../lib';
 import { resolveAppearanceStyleMixin } from '../appearance-style';
 import { resolveShadowStyleMixin } from '../shadow-style';
 import { resolveStrokeStyleMixin } from '../stroke-style';
@@ -11,8 +11,15 @@ export function resolveImageStyleMixin<GTokenSet extends TMixinTokenSet>(
 	image: TImageStyleMixin['value'],
 	cx: TMixinResolveContext<TImageStyleToken['value'], GTokenSet>
 ): TResult<TResolvedImageStyleMixin['value'], AppError> {
+	const [isResolvedImageOk, resolvedImageErr, resolvedImage] = resolveTokenRef(image, {
+		mixin: { tokenSet: cx.mixinTokenSet, mapToTokenValue: cx.mapToMixinTokenValue }
+	});
+	if (!isResolvedImageOk) {
+		return Err(resolvedImageErr.wrapWith('#ERR_RESOLVE_IMAGE_STYLE'));
+	}
+
 	const [isResolvedAppearanceOk, resolvedAppearanceErr, resolvedAppearance] =
-		resolveAppearanceStyleMixin(image.appearance, {
+		resolveAppearanceStyleMixin(resolvedImage.appearance, {
 			...cx,
 			mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.appearance
 		});
@@ -20,7 +27,7 @@ export function resolveImageStyleMixin<GTokenSet extends TMixinTokenSet>(
 		return Err(resolvedAppearanceErr.wrapWith('#ERR_RESOLVE_APPEARANCE_STYLE'));
 	}
 	const [isResolvedStrokeOk, resolvedStrokeErr, resolvedStroke] = resolveStrokeStyleMixin(
-		image.stroke,
+		resolvedImage.stroke,
 		{
 			...cx,
 			mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.stroke
@@ -30,7 +37,7 @@ export function resolveImageStyleMixin<GTokenSet extends TMixinTokenSet>(
 		return Err(resolvedStrokeErr.wrapWith('#ERR_RESOLVE_STROKE_STYLE'));
 	}
 	const [isResolvedShadowOk, resolvedShadowErr, resolvedShadow] = resolveShadowStyleMixin(
-		image.shadow,
+		resolvedImage.shadow,
 		{
 			...cx,
 			mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.shadow

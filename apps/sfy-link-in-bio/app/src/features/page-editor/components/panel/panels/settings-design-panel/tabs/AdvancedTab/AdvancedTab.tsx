@@ -77,6 +77,9 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 							<AutoLayoutStyleMixinEditor
 								state={state}
 								mapValue={(value) => value}
+								applyValue={(state, value) => {
+									state._v = value as TAutoLayoutStyleToken['value'];
+								}}
 								disabledTokenLink
 								editor={editor}
 							/>
@@ -225,6 +228,9 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 							<ButtonStyleMixinEditor
 								state={state}
 								mapValue={(value) => value}
+								applyValue={(state, value) => {
+									state._v = value as TButtonStyleToken['value'];
+								}}
 								disabledTokenLink
 								editor={editor}
 							/>
@@ -247,6 +253,9 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 							<BadgeStyleMixinEditor
 								state={state}
 								mapValue={(value) => value}
+								applyValue={(state, value) => {
+									state._v = value as TBadgeStyleToken['value'];
+								}}
 								disabledTokenLink
 								editor={editor}
 							/>
@@ -294,6 +303,9 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 							<ImageStyleMixinEditor
 								state={state}
 								mapValue={(value) => value}
+								applyValue={(state, value) => {
+									state._v = value as TImageStyleToken['value'];
+								}}
 								disabledTokenLink
 								editor={editor}
 							/>
@@ -316,6 +328,9 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 							<ProductDetailsStyleMixinEditor
 								state={state}
 								mapValue={(value) => value}
+								applyValue={(state, value) => {
+									state._v = value as TProductDetailsStyleToken['value'];
+								}}
 								disabledTokenLink
 								editor={editor}
 							/>

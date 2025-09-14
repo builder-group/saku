@@ -315,6 +315,9 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 					<AutoLayoutStyleMixinEditor
 						state={nodeState}
 						mapValue={(value) => value.autoLayout}
+						applyValue={(state, value) => {
+							state._v.autoLayout = value;
+						}}
 						tokenSet={editor.mixinTokenMap.autoLayout}
 						tokenRefKey={'default'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
@@ -414,6 +417,9 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 					<ImageStyleMixinEditor
 						state={nodeState}
 						mapValue={(value) => value.image}
+						applyValue={(state, value) => {
+							state._v.image = value;
+						}}
 						tokenSet={editor.mixinTokenMap.image}
 						tokenRefKey={'default'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
