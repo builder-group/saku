@@ -56,7 +56,7 @@ export const linkNodeMetadata: TNodeMetadata<'link'> = {
 			appearance: {
 				visible: true,
 				opacity: tokenRef('mixin', 'default'),
-				borderRadius: undefined
+				borderRadius: null
 			},
 			stroke: tokenRef('mixin', 'default'),
 			shadow: tokenRef('mixin', 'default')
@@ -85,7 +85,7 @@ export const mediaNodeMetadata: TNodeMetadata<'media'> = {
 			appearance: {
 				visible: true,
 				opacity: tokenRef('mixin', 'default'),
-				borderRadius: undefined
+				borderRadius: null
 			},
 			stroke: tokenRef('mixin', 'default'),
 			shadow: tokenRef('mixin', 'default')
@@ -106,7 +106,7 @@ export const pageNodeMetadata: TNodeMetadata<'page'> = {
 		appearance: {
 			visible: true,
 			opacity: 1,
-			borderRadius: undefined
+			borderRadius: null
 		},
 		fill: tokenRef('mixin', 'default'),
 		children: [],
@@ -160,7 +160,7 @@ export const productNodeMetadata: TNodeMetadata<'product'> = {
 			appearance: {
 				visible: true,
 				opacity: tokenRef('mixin', 'default'),
-				borderRadius: undefined
+				borderRadius: null
 			},
 			stroke: tokenRef('mixin', 'default'),
 			shadow: tokenRef('mixin', 'default')

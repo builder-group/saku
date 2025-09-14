@@ -68,12 +68,15 @@ export const AppearanceStyleMixinEditor = <
 			if (isTokenRef(appearance)) {
 				return appearance;
 			}
-			return appearance.borderRadius;
+			if (isTokenRef(appearance.borderRadius)) {
+				return appearance.borderRadius;
+			}
+			return appearance.borderRadius ?? undefined;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
 			const appearance = mapValue(baseState._v);
 			if (!isTokenRef(appearance)) {
-				appearance.borderRadius = mappedValue;
+				appearance.borderRadius = mappedValue ?? null;
 				baseState._notify(notifyOptions);
 			}
 		}
@@ -151,7 +154,9 @@ export const AppearanceStyleMixinEditor = <
 						state={borderRadiusState}
 						tokenSet={tokenSet}
 						tokenRefKey={tokenRefKey}
-						mapToTokenValue={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.borderRadius}
+						mapToTokenValue={(tokenRef, tokenSet) =>
+							mapToToken?.(tokenRef, tokenSet)?.borderRadius ?? undefined
+						}
 						onNavigateToToken={handleNavigateToToken}
 						disabledTokenLink={disabledTokenLink}
 					/>

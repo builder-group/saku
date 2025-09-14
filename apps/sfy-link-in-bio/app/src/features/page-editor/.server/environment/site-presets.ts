@@ -252,7 +252,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 			appearance: {
 				visible: true,
 				opacity: 1,
-				borderRadius: undefined
+				borderRadius: null
 			},
 			fill:
 				theme != null

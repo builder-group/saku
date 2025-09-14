@@ -288,7 +288,7 @@ export type TAppearanceStyleMixin = TBaseMixin<
 	TRef<{
 		visible: boolean;
 		opacity: TRef<number>;
-		borderRadius: TRef<number | undefined>;
+		borderRadius: TRef<number | null>;
 	}>
 >;
 
