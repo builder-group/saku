@@ -21,8 +21,34 @@ export const aboutNodeMetadata: TNodeMetadata<'about'> = {
 		fill: null,
 		stroke: null,
 		shadow: null,
-		textXl: tokenRef('mixin', 'xl'),
-		text: tokenRef('mixin', 'default'),
+		textXl: {
+			appearance: tokenRef('mixin', 'xl'),
+			typography: {
+				font: tokenRef('mixin', 'xl'),
+				fontSize: tokenRef('mixin', 'xl'),
+				textAlignHorizontal: 'center',
+				textAlignVertical: 'center',
+				lineHeight: tokenRef('mixin', 'xl'),
+				letterSpacing: tokenRef('mixin', 'xl')
+			},
+			fill: tokenRef('mixin', 'xl'),
+			stroke: tokenRef('mixin', 'xl'),
+			shadow: tokenRef('mixin', 'xl')
+		},
+		text: {
+			appearance: tokenRef('mixin', 'default'),
+			typography: {
+				font: tokenRef('mixin', 'default'),
+				fontSize: tokenRef('mixin', 'default'),
+				textAlignHorizontal: 'center',
+				textAlignVertical: 'center',
+				lineHeight: tokenRef('mixin', 'default'),
+				letterSpacing: tokenRef('mixin', 'default')
+			},
+			fill: tokenRef('mixin', 'default'),
+			stroke: tokenRef('mixin', 'default'),
+			shadow: tokenRef('mixin', 'default')
+		},
 		image: tokenRef('mixin', 'default')
 	}
 };
@@ -130,7 +156,20 @@ export const productNodeMetadata: TNodeMetadata<'product'> = {
 		fill: tokenRef('mixin', 'default'),
 		stroke: tokenRef('mixin', 'default'),
 		shadow: tokenRef('mixin', 'default'),
-		text: tokenRef('mixin', 'default'),
+		text: {
+			appearance: tokenRef('mixin', 'default'),
+			typography: {
+				font: tokenRef('mixin', 'default'),
+				fontSize: tokenRef('mixin', 'default'),
+				textAlignHorizontal: 'start',
+				textAlignVertical: tokenRef('mixin', 'default'),
+				lineHeight: tokenRef('mixin', 'default'),
+				letterSpacing: tokenRef('mixin', 'default')
+			},
+			fill: tokenRef('mixin', 'default'),
+			stroke: tokenRef('mixin', 'default'),
+			shadow: tokenRef('mixin', 'default')
+		},
 		buttonPrimary: tokenRef('mixin', 'primary'),
 		badgePrimary: tokenRef('mixin', 'primary'),
 		badgeNeutral: tokenRef('mixin', 'neutral'),
