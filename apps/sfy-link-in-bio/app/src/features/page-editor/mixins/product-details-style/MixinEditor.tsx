@@ -17,140 +17,120 @@ import { StrokeStyleMixinEditor } from '../stroke-style';
 import { TextStyleMixinEditor } from '../text-style';
 import { packProductDetailsTokenRef, unpackProductDetailsTokenRef } from './pack-mixin';
 
-export const ProductDetailsStyleMixinEditor = <
-	GValue extends Record<string, any>,
-	GTokenSet extends TMixinTokenSet
->(
-	props: TProductDetailsStyleMixinEditorProps<GValue, GTokenSet>
+export const ProductDetailsStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
+	props: TProductDetailsStyleMixinEditorProps<GTokenSet>
 ) => {
-	const {
-		state,
-		mapValue,
-		applyValue,
-		tokenSet,
-		tokenRefKey,
-		mapToToken,
-		disabledTokenLink = false,
-		editor
-	} = props;
+	const { state, tokenSet, tokenRefKey, mapToToken, disabledTokenLink = false, editor } = props;
 
 	const appearanceState = useMapState(state, {
 		map(baseValue) {
-			const productDetails = mapValue(baseValue);
-			if (isTokenRef(productDetails)) {
-				return productDetails;
+			if (isTokenRef(baseValue)) {
+				return baseValue;
 			}
-			return productDetails?.appearance;
+			return baseValue?.appearance;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
-			const productDetails = unpackProductDetailsTokenRef(mapValue(baseState._v));
-			productDetails.appearance = mappedValue;
-			applyValue(baseState, packProductDetailsTokenRef(productDetails));
+			const unpackedBaseValue = unpackProductDetailsTokenRef(baseState._v);
+			unpackedBaseValue.appearance = mappedValue;
+			baseState._v = packProductDetailsTokenRef(unpackedBaseValue);
 			baseState._notify(notifyOptions);
 		}
 	});
 	const fillState = useMapState(state, {
 		map(baseValue) {
-			const productDetails = mapValue(baseValue);
-			if (isTokenRef(productDetails)) {
-				return productDetails;
+			if (isTokenRef(baseValue)) {
+				return baseValue;
 			}
-			return productDetails?.fill;
+			return baseValue?.fill;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
-			const productDetails = unpackProductDetailsTokenRef(mapValue(baseState._v));
-			productDetails.fill = mappedValue;
-			applyValue(baseState, packProductDetailsTokenRef(productDetails));
+			const unpackedBaseValue = unpackProductDetailsTokenRef(baseState._v);
+			unpackedBaseValue.fill = mappedValue;
+			baseState._v = packProductDetailsTokenRef(unpackedBaseValue);
 			baseState._notify(notifyOptions);
 		}
 	});
 	const strokeState = useMapState(state, {
 		map(baseValue) {
-			const productDetails = mapValue(baseValue);
-			if (isTokenRef(productDetails)) {
-				return productDetails;
+			if (isTokenRef(baseValue)) {
+				return baseValue;
 			}
-			return productDetails?.stroke;
+			return baseValue?.stroke;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
-			const productDetails = unpackProductDetailsTokenRef(mapValue(baseState._v));
-			productDetails.stroke = mappedValue;
-			applyValue(baseState, packProductDetailsTokenRef(productDetails));
+			const unpackedBaseValue = unpackProductDetailsTokenRef(baseState._v);
+			unpackedBaseValue.stroke = mappedValue;
+			baseState._v = packProductDetailsTokenRef(unpackedBaseValue);
 			baseState._notify(notifyOptions);
 		}
 	});
 	const shadowState = useMapState(state, {
 		map(baseValue) {
-			const productDetails = mapValue(baseValue);
-			if (isTokenRef(productDetails)) {
-				return productDetails;
+			if (isTokenRef(baseValue)) {
+				return baseValue;
 			}
-			return productDetails?.shadow;
+			return baseValue?.shadow;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
-			const productDetails = unpackProductDetailsTokenRef(mapValue(baseState._v));
-			productDetails.shadow = mappedValue;
-			applyValue(baseState, packProductDetailsTokenRef(productDetails));
+			const unpackedBaseValue = unpackProductDetailsTokenRef(baseState._v);
+			unpackedBaseValue.shadow = mappedValue;
+			baseState._v = packProductDetailsTokenRef(unpackedBaseValue);
 			baseState._notify(notifyOptions);
 		}
 	});
 	const textXlState = useMapState(state, {
 		map(baseValue) {
-			const productDetails = mapValue(baseValue);
-			if (isTokenRef(productDetails)) {
-				return productDetails;
+			if (isTokenRef(baseValue)) {
+				return baseValue;
 			}
-			return productDetails?.textXl;
+			return baseValue?.textXl;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
-			const productDetails = unpackProductDetailsTokenRef(mapValue(baseState._v));
-			productDetails.textXl = mappedValue;
-			applyValue(baseState, packProductDetailsTokenRef(productDetails));
+			const unpackedBaseValue = unpackProductDetailsTokenRef(baseState._v);
+			unpackedBaseValue.textXl = mappedValue;
+			baseState._v = packProductDetailsTokenRef(unpackedBaseValue);
 			baseState._notify(notifyOptions);
 		}
 	});
 	const textState = useMapState(state, {
 		map(baseValue) {
-			const productDetails = mapValue(baseValue);
-			if (isTokenRef(productDetails)) {
-				return productDetails;
+			if (isTokenRef(baseValue)) {
+				return baseValue;
 			}
-			return productDetails?.text;
+			return baseValue?.text;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
-			const productDetails = unpackProductDetailsTokenRef(mapValue(baseState._v));
-			productDetails.text = mappedValue;
-			applyValue(baseState, packProductDetailsTokenRef(productDetails));
+			const unpackedBaseValue = unpackProductDetailsTokenRef(baseState._v);
+			unpackedBaseValue.text = mappedValue;
+			baseState._v = packProductDetailsTokenRef(unpackedBaseValue);
 			baseState._notify(notifyOptions);
 		}
 	});
 	const buttonPrimaryState = useMapState(state, {
 		map(baseValue) {
-			const productDetails = mapValue(baseValue);
-			if (isTokenRef(productDetails)) {
-				return productDetails;
+			if (isTokenRef(baseValue)) {
+				return baseValue;
 			}
-			return productDetails?.buttonPrimary;
+			return baseValue?.buttonPrimary;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
-			const productDetails = unpackProductDetailsTokenRef(mapValue(baseState._v));
-			productDetails.buttonPrimary = mappedValue;
-			applyValue(baseState, packProductDetailsTokenRef(productDetails));
+			const unpackedBaseValue = unpackProductDetailsTokenRef(baseState._v);
+			unpackedBaseValue.buttonPrimary = mappedValue;
+			baseState._v = packProductDetailsTokenRef(unpackedBaseValue);
 			baseState._notify(notifyOptions);
 		}
 	});
 	const imageState = useMapState(state, {
 		map(baseValue) {
-			const productDetails = mapValue(baseValue);
-			if (isTokenRef(productDetails)) {
-				return productDetails;
+			if (isTokenRef(baseValue)) {
+				return baseValue;
 			}
-			return productDetails?.image;
+			return baseValue?.image;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
-			const productDetails = unpackProductDetailsTokenRef(mapValue(baseState._v));
-			productDetails.image = mappedValue;
-			applyValue(baseState, packProductDetailsTokenRef(productDetails));
+			const unpackedBaseValue = unpackProductDetailsTokenRef(baseState._v);
+			unpackedBaseValue.image = mappedValue;
+			baseState._v = packProductDetailsTokenRef(unpackedBaseValue);
 			baseState._notify(notifyOptions);
 		}
 	});
@@ -159,10 +139,6 @@ export const ProductDetailsStyleMixinEditor = <
 		<>
 			<AppearanceStyleMixinEditor
 				state={appearanceState}
-				mapValue={(value) => value}
-				applyValue={(state, value) => {
-					state._v = value;
-				}}
 				tokenSet={tokenSet}
 				tokenRefKey={tokenRefKey}
 				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.appearance}
@@ -172,10 +148,6 @@ export const ProductDetailsStyleMixinEditor = <
 			<div className="h-px bg-neutral-200" />
 			<FillStyleMixinEditor
 				state={fillState}
-				mapValue={(value) => value}
-				applyValue={(state, value) => {
-					state._v = value;
-				}}
 				tokenSet={tokenSet}
 				tokenRefKey={tokenRefKey}
 				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.fill}
@@ -185,10 +157,6 @@ export const ProductDetailsStyleMixinEditor = <
 			<div className="h-px bg-neutral-200" />
 			<StrokeStyleMixinEditor
 				state={strokeState}
-				mapValue={(value) => value}
-				applyValue={(state, value) => {
-					state._v = value;
-				}}
 				tokenSet={tokenSet}
 				tokenRefKey={tokenRefKey}
 				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.stroke}
@@ -198,10 +166,6 @@ export const ProductDetailsStyleMixinEditor = <
 			<div className="h-px bg-neutral-200" />
 			<ShadowStyleMixinEditor
 				state={shadowState}
-				mapValue={(value) => value}
-				applyValue={(state, value) => {
-					state._v = value;
-				}}
 				tokenSet={tokenSet}
 				tokenRefKey={tokenRefKey}
 				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.shadow}
@@ -216,10 +180,6 @@ export const ProductDetailsStyleMixinEditor = <
 			</div>
 			<TextStyleMixinEditor
 				state={textXlState}
-				mapValue={(value) => value}
-				applyValue={(state, value) => {
-					state._v = value;
-				}}
 				tokenSet={tokenSet}
 				tokenRefKey={tokenRefKey}
 				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.textXl}
@@ -233,10 +193,6 @@ export const ProductDetailsStyleMixinEditor = <
 			</div>
 			<TextStyleMixinEditor
 				state={textState}
-				mapValue={(value) => value}
-				applyValue={(state, value) => {
-					state._v = value;
-				}}
 				tokenSet={tokenSet}
 				tokenRefKey={tokenRefKey}
 				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.text}
@@ -250,10 +206,6 @@ export const ProductDetailsStyleMixinEditor = <
 			</div>
 			<ButtonStyleMixinEditor
 				state={buttonPrimaryState}
-				mapValue={(value) => value}
-				applyValue={(state, value) => {
-					state._v = value;
-				}}
 				tokenSet={tokenSet}
 				tokenRefKey={tokenRefKey}
 				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.buttonPrimary}
@@ -267,10 +219,6 @@ export const ProductDetailsStyleMixinEditor = <
 			</div>
 			<ImageStyleMixinEditor
 				state={imageState}
-				mapValue={(value) => value}
-				applyValue={(state, value) => {
-					state._v = value;
-				}}
 				tokenSet={tokenSet}
 				tokenRefKey={tokenRefKey}
 				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.image}
@@ -281,13 +229,8 @@ export const ProductDetailsStyleMixinEditor = <
 	);
 };
 
-interface TProductDetailsStyleMixinEditorProps<
-	GValue extends Record<string, any>,
-	GTokenSet extends TMixinTokenSet
-> {
-	state: TState<GValue, any>;
-	mapValue: (value: GValue) => TProductDetailsStyleMixin['value'];
-	applyValue: (state: TState<GValue, any>, value: TProductDetailsStyleMixin['value']) => void;
+interface TProductDetailsStyleMixinEditorProps<GTokenSet extends TMixinTokenSet> {
+	state: TState<TProductDetailsStyleMixin['value'], any>;
 	tokenSet?: TState<GTokenSet, any>;
 	tokenRefKey?: string;
 	mapToToken?: (

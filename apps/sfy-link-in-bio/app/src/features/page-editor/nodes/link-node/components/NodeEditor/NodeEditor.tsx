@@ -9,6 +9,7 @@ import { Select, Text } from '@shopify/polaris';
 import { useCompute, useFeatureState } from 'feature-react/state';
 import React from 'react';
 import { AccordionSection, PortalPulse } from '@/components';
+import { useMapState } from '@/hooks';
 import { TNodeEditorComponentProps } from '../../../../lib';
 import {
 	AppearanceStyleMixinEditor,
@@ -84,6 +85,79 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 					enabled: false,
 					title: ''
 				};
+		}
+	});
+
+	const autoLayoutState = useMapState(nodeState, {
+		map(baseValue) {
+			return baseValue.autoLayout;
+		},
+		sync(baseState, mappedValue, notifyOptions) {
+			baseState._v.autoLayout = mappedValue;
+			baseState._notify(notifyOptions);
+		}
+	});
+	const appearanceState = useMapState(nodeState, {
+		map(baseValue) {
+			return baseValue.appearance;
+		},
+		sync(baseState, mappedValue, notifyOptions) {
+			baseState._v.appearance = mappedValue;
+			baseState._notify(notifyOptions);
+		}
+	});
+	const fillState = useMapState(nodeState, {
+		map(baseValue) {
+			return baseValue.fill;
+		},
+		sync(baseState, mappedValue, notifyOptions) {
+			baseState._v.fill = mappedValue;
+			baseState._notify(notifyOptions);
+		}
+	});
+	const strokeState = useMapState(nodeState, {
+		map(baseValue) {
+			return baseValue.stroke;
+		},
+		sync(baseState, mappedValue, notifyOptions) {
+			baseState._v.stroke = mappedValue;
+			baseState._notify(notifyOptions);
+		}
+	});
+	const shadowState = useMapState(nodeState, {
+		map(baseValue) {
+			return baseValue.shadow;
+		},
+		sync(baseState, mappedValue, notifyOptions) {
+			baseState._v.shadow = mappedValue;
+			baseState._notify(notifyOptions);
+		}
+	});
+	const textState = useMapState(nodeState, {
+		map(baseValue) {
+			return baseValue.text;
+		},
+		sync(baseState, mappedValue, notifyOptions) {
+			baseState._v.text = mappedValue;
+			baseState._notify(notifyOptions);
+		}
+	});
+	const textSmState = useMapState(nodeState, {
+		map(baseValue) {
+			return baseValue.textSm;
+		},
+		sync(baseState, mappedValue, notifyOptions) {
+			baseState._v.textSm = mappedValue;
+			baseState._notify(notifyOptions);
+		}
+	});
+	const imageState = useMapState(nodeState, {
+		map(baseValue) {
+			return baseValue.image;
+		},
+		sync(baseState, mappedValue, notifyOptions) {
+			baseState._v.image = mappedValue;
+			baseState._notify(notifyOptions);
 		}
 	});
 
@@ -170,11 +244,7 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 					defaultOpen={true}
 				>
 					<AutoLayoutStyleMixinEditor
-						state={nodeState}
-						mapValue={(value) => value.autoLayout}
-						applyValue={(state, value) => {
-							state._v.autoLayout = value;
-						}}
+						state={autoLayoutState}
 						tokenSet={editor.mixinTokenMap.autoLayout}
 						tokenRefKey={'default'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
@@ -182,11 +252,7 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 					/>
 					<div className="h-px bg-neutral-200" />
 					<AppearanceStyleMixinEditor
-						state={nodeState}
-						mapValue={(value) => value.appearance}
-						applyValue={(state, value) => {
-							state._v.appearance = value;
-						}}
+						state={appearanceState}
 						tokenSet={editor.mixinTokenMap.appearance}
 						tokenRefKey={'default'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
@@ -194,11 +260,7 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 					/>
 					<div className="h-px bg-neutral-200" />
 					<FillStyleMixinEditor
-						state={nodeState}
-						mapValue={(value) => value.fill}
-						applyValue={(state, value) => {
-							state._v.fill = value;
-						}}
+						state={fillState}
 						tokenSet={editor.mixinTokenMap.fill}
 						tokenRefKey={'default'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
@@ -206,11 +268,7 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 					/>
 					<div className="h-px bg-neutral-200" />
 					<StrokeStyleMixinEditor
-						state={nodeState}
-						mapValue={(value) => value.stroke}
-						applyValue={(state, value) => {
-							state._v.stroke = value;
-						}}
+						state={strokeState}
 						tokenSet={editor.mixinTokenMap.stroke}
 						tokenRefKey={'default'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
@@ -218,11 +276,7 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 					/>
 					<div className="h-px bg-neutral-200" />
 					<ShadowStyleMixinEditor
-						state={nodeState}
-						mapValue={(value) => value.shadow}
-						applyValue={(state, value) => {
-							state._v.shadow = value;
-						}}
+						state={shadowState}
 						tokenSet={editor.mixinTokenMap.shadow}
 						tokenRefKey={'default'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
@@ -238,11 +292,7 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 						defaultOpen={true}
 					>
 						<TextStyleMixinEditor
-							state={nodeState}
-							mapValue={(value) => value.text}
-							applyValue={(state, value) => {
-								state._v.text = value;
-							}}
+							state={textState}
 							tokenSet={editor.mixinTokenMap.text}
 							tokenRefKey={'default'}
 							mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
@@ -258,11 +308,7 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 						defaultOpen={true}
 					>
 						<TextStyleMixinEditor
-							state={nodeState}
-							mapValue={(value) => value.textSm}
-							applyValue={(state, value) => {
-								state._v.textSm = value;
-							}}
+							state={textSmState}
 							tokenSet={editor.mixinTokenMap.text}
 							tokenRefKey={'sm'}
 							mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
@@ -278,11 +324,7 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 						defaultOpen={true}
 					>
 						<ImageStyleMixinEditor
-							state={nodeState}
-							mapValue={(value) => value.image}
-							applyValue={(state, value) => {
-								state._v.image = value;
-							}}
+							state={imageState}
 							tokenSet={editor.mixinTokenMap.image}
 							tokenRefKey={'default'}
 							mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}

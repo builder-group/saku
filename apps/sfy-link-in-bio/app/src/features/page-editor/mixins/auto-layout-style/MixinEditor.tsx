@@ -10,103 +10,86 @@ import { TState } from 'feature-state';
 import React from 'react';
 import { useMapState } from '@/hooks';
 import { TokenTextInput } from '../../components';
-import { EditorSiteResolveContext, TPageEditor } from '../../lib';
+import { TPageEditor } from '../../lib';
 import { packAutoLayoutTokenRef, unpackAutoLayoutTokenRef } from './pack-mixin';
-import { resolveAutoLayoutStyleMixin } from './resolve-mixin';
 
-export const AutoLayoutStyleMixinEditor = <
-	GValue extends Record<string, any>,
-	GTokenSet extends TMixinTokenSet
->(
-	props: TAutoLayoutStyleMixinEditorProps<GValue, GTokenSet>
+export const AutoLayoutStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
+	props: TAutoLayoutStyleMixinEditorProps<GTokenSet>
 ) => {
-	const {
-		state,
-		mapValue,
-		applyValue,
-		tokenSet,
-		tokenRefKey,
-		mapToToken,
-		disabledTokenLink = false,
-		editor
-	} = props;
+	const { state, tokenSet, tokenRefKey, mapToToken, disabledTokenLink = false, editor } = props;
 
-	const resolvedAutoLayout = useCompute(
+	const horizontalGap = useCompute(
 		state,
-		({ value }) => {
-			return resolveAutoLayoutStyleMixin(mapValue(value), {
-				node: { site: new EditorSiteResolveContext(editor) },
-				mixinTokenSet: tokenSet?._v,
-				mapToMixinTokenValue: (ref, tokenSet) => mapToToken?.(ref, tokenSet),
-				variableTokenMap: editor.variableTokenMap._v
-			}).unwrap();
-		},
-		[mapValue]
+		({ value }) =>
+			isTokenRef(value) ? mapToToken?.(value.key, tokenSet?._v)?.horizontalGap : undefined,
+		[mapToToken, tokenSet]
+	);
+	const verticalGap = useCompute(
+		state,
+		({ value }) =>
+			isTokenRef(value) ? mapToToken?.(value.key, tokenSet?._v)?.verticalGap : undefined,
+		[mapToToken, tokenSet]
 	);
 
 	const horizontalPaddingState = useMapState(state, {
 		map(baseValue) {
-			const autoLayout = mapValue(baseValue);
-			if (isTokenRef(autoLayout)) {
-				return autoLayout;
+			if (isTokenRef(baseValue)) {
+				return baseValue;
 			}
-			return autoLayout.horizontalPadding;
+			return baseValue.horizontalPadding;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
-			const autoLayout = unpackAutoLayoutTokenRef(mapValue(baseState._v));
-			autoLayout.horizontalPadding = mappedValue;
-			applyValue(baseState, packAutoLayoutTokenRef(autoLayout));
+			const unpackedBaseValue = unpackAutoLayoutTokenRef(baseState._v);
+			unpackedBaseValue.horizontalPadding = mappedValue;
+			baseState._v = packAutoLayoutTokenRef(unpackedBaseValue);
 			baseState._notify(notifyOptions);
 		}
 	});
 	const verticalPaddingState = useMapState(state, {
 		map(baseValue) {
-			const autoLayout = mapValue(baseValue);
-			if (isTokenRef(autoLayout)) {
-				return autoLayout;
+			if (isTokenRef(baseValue)) {
+				return baseValue;
 			}
-			return autoLayout.verticalPadding;
+			return baseValue.verticalPadding;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
-			const autoLayout = unpackAutoLayoutTokenRef(mapValue(baseState._v));
-			autoLayout.verticalPadding = mappedValue;
-			applyValue(baseState, packAutoLayoutTokenRef(autoLayout));
+			const unpackedBaseValue = unpackAutoLayoutTokenRef(baseState._v);
+			unpackedBaseValue.verticalPadding = mappedValue;
+			baseState._v = packAutoLayoutTokenRef(unpackedBaseValue);
 			baseState._notify(notifyOptions);
 		}
 	});
 	const horizontalGapState = useMapState(state, {
 		map(baseValue) {
-			const autoLayout = mapValue(baseValue);
-			if (isTokenRef(autoLayout)) {
-				return autoLayout;
+			if (isTokenRef(baseValue)) {
+				return baseValue;
 			}
-			if (isTokenRef(autoLayout.horizontalGap)) {
-				return autoLayout.horizontalGap;
+			if (isTokenRef(baseValue.horizontalGap)) {
+				return baseValue.horizontalGap;
 			}
-			return autoLayout.horizontalGap ?? undefined;
+			return baseValue.horizontalGap ?? undefined;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
-			const autoLayout = unpackAutoLayoutTokenRef(mapValue(baseState._v));
-			autoLayout.horizontalGap = mappedValue ?? null;
-			applyValue(baseState, packAutoLayoutTokenRef(autoLayout));
+			const unpackedBaseValue = unpackAutoLayoutTokenRef(baseState._v);
+			unpackedBaseValue.horizontalGap = mappedValue ?? null;
+			baseState._v = packAutoLayoutTokenRef(unpackedBaseValue);
 			baseState._notify(notifyOptions);
 		}
 	});
 	const verticalGapState = useMapState(state, {
 		map(baseValue) {
-			const autoLayout = mapValue(baseValue);
-			if (isTokenRef(autoLayout)) {
-				return autoLayout;
+			if (isTokenRef(baseValue)) {
+				return baseValue;
 			}
-			if (isTokenRef(autoLayout.verticalGap)) {
-				return autoLayout.verticalGap;
+			if (isTokenRef(baseValue.verticalGap)) {
+				return baseValue.verticalGap;
 			}
-			return autoLayout.verticalGap ?? undefined;
+			return baseValue.verticalGap ?? undefined;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
-			const autoLayout = unpackAutoLayoutTokenRef(mapValue(baseState._v));
-			autoLayout.verticalGap = mappedValue ?? null;
-			applyValue(baseState, packAutoLayoutTokenRef(autoLayout));
+			const unpackedBaseValue = unpackAutoLayoutTokenRef(baseState._v);
+			unpackedBaseValue.verticalGap = mappedValue ?? null;
+			baseState._v = packAutoLayoutTokenRef(unpackedBaseValue);
 			baseState._notify(notifyOptions);
 		}
 	});
@@ -164,9 +147,9 @@ export const AutoLayoutStyleMixinEditor = <
 					disabledTokenLink={disabledTokenLink}
 				/>
 			</div>
-			{(resolvedAutoLayout.horizontalGap != null || resolvedAutoLayout.verticalGap != null) && (
+			{(horizontalGap != null || verticalGap != null) && (
 				<div className="grid grid-cols-2 gap-3">
-					{resolvedAutoLayout.horizontalGap != null && (
+					{horizontalGap != null && (
 						<TokenTextInput
 							label="Gap (Horizontal)"
 							type="number"
@@ -184,7 +167,7 @@ export const AutoLayoutStyleMixinEditor = <
 							disabledTokenLink={disabledTokenLink}
 						/>
 					)}
-					{resolvedAutoLayout.verticalGap != null && (
+					{verticalGap != null && (
 						<TokenTextInput
 							label="Gap (Vertical)"
 							type="number"
@@ -208,13 +191,8 @@ export const AutoLayoutStyleMixinEditor = <
 	);
 };
 
-interface TAutoLayoutStyleMixinEditorProps<
-	GValue extends Record<string, any>,
-	GTokenSet extends TMixinTokenSet
-> {
-	state: TState<GValue, any>;
-	mapValue: (value: GValue) => TAutoLayoutStyleMixin['value'];
-	applyValue: (state: TState<GValue, any>, value: TAutoLayoutStyleMixin['value']) => void;
+interface TAutoLayoutStyleMixinEditorProps<GTokenSet extends TMixinTokenSet> {
+	state: TState<TAutoLayoutStyleMixin['value'], any>;
 	tokenSet?: TState<GTokenSet, any>;
 	tokenRefKey?: string;
 	mapToToken?: (ref: string, tokenSet?: GTokenSet) => TAutoLayoutStyleToken['value'] | undefined;

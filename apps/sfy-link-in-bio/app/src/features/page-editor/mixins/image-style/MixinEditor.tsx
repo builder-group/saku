@@ -7,65 +7,50 @@ import { ShadowStyleMixinEditor } from '../shadow-style';
 import { StrokeStyleMixinEditor } from '../stroke-style';
 import { packImageTokenRef, unpackImageTokenRef } from './pack-mixin';
 
-export const ImageStyleMixinEditor = <
-	GValue extends Record<string, any>,
-	GTokenSet extends TMixinTokenSet
->(
-	props: TImageStyleMixinEditorProps<GValue, GTokenSet>
+export const ImageStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
+	props: TImageStyleMixinEditorProps<GTokenSet>
 ) => {
-	const {
-		state,
-		mapValue,
-		applyValue,
-		tokenSet,
-		tokenRefKey,
-		mapToToken,
-		disabledTokenLink = false,
-		editor
-	} = props;
+	const { state, tokenSet, tokenRefKey, mapToToken, disabledTokenLink = false, editor } = props;
 
 	const appearanceState = useMapState(state, {
 		map(baseValue) {
-			const image = mapValue(baseValue);
-			if (isTokenRef(image)) {
-				return image;
+			if (isTokenRef(baseValue)) {
+				return baseValue;
 			}
-			return image?.appearance;
+			return baseValue?.appearance;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
-			const image = unpackImageTokenRef(mapValue(baseState._v));
-			image.appearance = mappedValue;
-			applyValue(baseState, packImageTokenRef(image));
+			const unpackedBaseValue = unpackImageTokenRef(baseState._v);
+			unpackedBaseValue.appearance = mappedValue;
+			baseState._v = packImageTokenRef(unpackedBaseValue);
 			baseState._notify(notifyOptions);
 		}
 	});
 	const strokeState = useMapState(state, {
 		map(baseValue) {
-			const image = mapValue(baseValue);
-			if (isTokenRef(image)) {
-				return image;
+			if (isTokenRef(baseValue)) {
+				return baseValue;
 			}
-			return image?.stroke;
+			return baseValue?.stroke;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
-			const image = unpackImageTokenRef(mapValue(baseState._v));
-			image.stroke = mappedValue;
-			applyValue(baseState, packImageTokenRef(image));
+			const unpackedBaseValue = unpackImageTokenRef(baseState._v);
+			unpackedBaseValue.stroke = mappedValue;
+			baseState._v = packImageTokenRef(unpackedBaseValue);
 			baseState._notify(notifyOptions);
 		}
 	});
 	const shadowState = useMapState(state, {
 		map(baseValue) {
-			const image = mapValue(baseValue);
-			if (isTokenRef(image)) {
-				return image;
+			if (isTokenRef(baseValue)) {
+				return baseValue;
 			}
-			return image?.shadow;
+			return baseValue?.shadow;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
-			const image = unpackImageTokenRef(mapValue(baseState._v));
-			image.shadow = mappedValue;
-			applyValue(baseState, packImageTokenRef(image));
+			const unpackedBaseValue = unpackImageTokenRef(baseState._v);
+			unpackedBaseValue.shadow = mappedValue;
+			baseState._v = packImageTokenRef(unpackedBaseValue);
 			baseState._notify(notifyOptions);
 		}
 	});
@@ -74,10 +59,6 @@ export const ImageStyleMixinEditor = <
 		<>
 			<AppearanceStyleMixinEditor
 				state={appearanceState}
-				mapValue={(value) => value}
-				applyValue={(state, value) => {
-					state._v = value;
-				}}
 				tokenSet={tokenSet}
 				tokenRefKey={tokenRefKey}
 				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.appearance}
@@ -88,10 +69,6 @@ export const ImageStyleMixinEditor = <
 
 			<StrokeStyleMixinEditor
 				state={strokeState}
-				mapValue={(value) => value}
-				applyValue={(state, value) => {
-					state._v = value;
-				}}
 				tokenSet={tokenSet}
 				tokenRefKey={tokenRefKey}
 				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.stroke}
@@ -101,10 +78,6 @@ export const ImageStyleMixinEditor = <
 			<div className="h-px bg-neutral-200" />
 			<ShadowStyleMixinEditor
 				state={shadowState}
-				mapValue={(value) => value}
-				applyValue={(state, value) => {
-					state._v = value;
-				}}
 				tokenSet={tokenSet}
 				tokenRefKey={tokenRefKey}
 				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.shadow}
@@ -116,13 +89,8 @@ export const ImageStyleMixinEditor = <
 	);
 };
 
-interface TImageStyleMixinEditorProps<
-	GValue extends Record<string, any>,
-	GTokenSet extends TMixinTokenSet
-> {
-	state: TState<GValue, any>;
-	mapValue: (value: GValue) => TImageStyleMixin['value'];
-	applyValue: (state: TState<GValue, any>, value: TImageStyleMixin['value']) => void;
+interface TImageStyleMixinEditorProps<GTokenSet extends TMixinTokenSet> {
+	state: TState<TImageStyleMixin['value'], any>;
 	tokenSet?: TState<GTokenSet, any>;
 	tokenRefKey?: string;
 	mapToToken?: (ref: string, tokenSet?: GTokenSet) => TImageStyleToken['value'] | undefined;

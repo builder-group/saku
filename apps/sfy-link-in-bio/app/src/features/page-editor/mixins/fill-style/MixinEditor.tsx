@@ -15,16 +15,11 @@ import { useMapState } from '@/hooks';
 import { TokenActionOverlay, TokenPaintInput, TTokenPaintInputPaintType } from '../../components';
 import { TPageEditor } from '../../lib';
 
-export const FillStyleMixinEditor = <
-	GValue extends Record<string, any> | null,
-	GTokenSet extends TMixinTokenSet
->(
-	props: TFillStyleMixinEditorProps<GValue, GTokenSet>
+export const FillStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
+	props: TFillStyleMixinEditorProps<GTokenSet>
 ) => {
 	const {
 		state,
-		mapValue,
-		applyValue,
 		tokenSet,
 		tokenRefKey = 'default',
 		mapToToken,
@@ -33,31 +28,33 @@ export const FillStyleMixinEditor = <
 		allowedPaintTypes
 	} = props;
 
-	const isLinked = useCompute(state, ({ value }) => isTokenRef(mapValue(value)), [mapValue]);
+	const isLinked = useCompute(state, ({ value }) => isTokenRef(value), []);
 	const isSet = useCompute(
 		state,
 		({ value }) => {
-			const fill = mapValue(value);
-			if (isTokenRef(fill)) {
-				return mapToToken?.(fill.key, tokenSet?._v) != null;
+			if (isTokenRef(value)) {
+				return mapToToken?.(value.key, tokenSet?._v) != null;
 			}
-			return fill != null;
+			return value != null;
 		},
-		[mapValue]
+		[]
 	);
 
 	const paintState = useMapState(state, {
 		map(baseValue) {
-			const fill = mapValue(baseValue);
-			if (isTokenRef(fill)) {
-				return fill;
+			if (isTokenRef(baseValue)) {
+				return baseValue;
 			}
-			return fill?.paint;
+			return baseValue?.paint;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
-			const fill = mapValue(baseState._v);
-			if (fill != null && !isTokenRef(fill) && mappedValue != null && !isTokenRef(mappedValue)) {
-				fill.paint = mappedValue;
+			if (
+				baseState._v != null &&
+				!isTokenRef(baseState._v) &&
+				mappedValue != null &&
+				!isTokenRef(mappedValue)
+			) {
+				baseState._v.paint = mappedValue;
 				baseState._notify(notifyOptions);
 			}
 		}
@@ -69,37 +66,35 @@ export const FillStyleMixinEditor = <
 
 	const handleAddFill = React.useCallback(() => {
 		const tokenValue = mapToToken?.(tokenRefKey, tokenSet?._v);
-		applyValue(
-			state,
-			tokenValue ?? {
-				paint: {
-					type: 'solid',
-					color: { r: 255, g: 255, b: 255, a: 1 }
-				},
-				opacity: 1
-			}
-		);
+		state._v = tokenValue ?? {
+			paint: {
+				type: 'solid',
+				color: { r: 255, g: 255, b: 255, a: 1 }
+			},
+			opacity: 1
+		};
 		state._notify();
-	}, [mapToToken, tokenSet, applyValue, state, tokenRefKey]);
+	}, [mapToToken, tokenSet, state, tokenRefKey]);
 
 	const handleRemoveFill = React.useCallback(() => {
-		applyValue(state, null);
+		state._v = null;
 		state._notify();
-	}, [applyValue, state]);
+	}, [state]);
 
 	const handleToggleTokenLink = React.useCallback(() => {
 		if (isLinked) {
-			const fill = mapValue(state._v);
-			const tokenValue = isTokenRef(fill) ? mapToToken?.(fill.key, tokenSet?._v) : undefined;
+			const tokenValue = isTokenRef(state._v)
+				? mapToToken?.(state._v.key, tokenSet?._v)
+				: undefined;
 			if (tokenValue !== undefined) {
-				applyValue(state, deepCopy(tokenValue));
+				state._v = deepCopy(tokenValue);
 				state._notify();
 			}
 		} else {
-			applyValue(state, tokenRef('mixin', tokenRefKey));
+			state._v = tokenRef('mixin', tokenRefKey);
 			state._notify();
 		}
-	}, [isLinked, mapValue, state, mapToToken, tokenSet, applyValue, tokenRefKey]);
+	}, [isLinked, state, mapToToken, tokenSet, tokenRefKey]);
 
 	const handleNavigateToToken = React.useCallback(() => {
 		editor.switchView('settings');
@@ -175,13 +170,8 @@ export const FillStyleMixinEditor = <
 	);
 };
 
-interface TFillStyleMixinEditorProps<
-	GValue extends Record<string, any> | null,
-	GTokenSet extends TMixinTokenSet
-> {
-	state: TState<GValue, any>;
-	mapValue: (value: GValue) => TFillStyleMixin['value'];
-	applyValue: (state: TState<GValue, any>, value: TFillStyleMixin['value']) => void;
+interface TFillStyleMixinEditorProps<GTokenSet extends TMixinTokenSet> {
+	state: TState<TFillStyleMixin['value'], any>;
 	tokenSet?: TState<GTokenSet, any>;
 	tokenRefKey?: string;
 	mapToToken?: (ref: string, tokenSet?: GTokenSet) => TFillStyleToken['value'] | undefined;

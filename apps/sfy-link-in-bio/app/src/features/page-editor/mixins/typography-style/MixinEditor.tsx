@@ -14,22 +14,10 @@ import { TokenSelectInput, TokenTextInput } from '../../components';
 import { TPageEditor } from '../../lib';
 import { packTypographyTokenRef, unpackTypographyTokenRef } from './pack-mixin';
 
-export const TypographyStyleMixinEditor = <
-	GValue extends Record<string, any>,
-	GTokenSet extends TMixinTokenSet
->(
-	props: TTypographyStyleMixinEditorProps<GValue, GTokenSet>
+export const TypographyStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
+	props: TTypographyStyleMixinEditorProps<GTokenSet>
 ) => {
-	const {
-		state,
-		mapValue,
-		applyValue,
-		tokenSet,
-		tokenRefKey,
-		mapToToken,
-		disabledTokenLink = false,
-		editor
-	} = props;
+	const { state, tokenSet, tokenRefKey, mapToToken, disabledTokenLink = false, editor } = props;
 
 	const fontOptions = React.useMemo(() => {
 		return fontMetadata.map((font) => ({
@@ -47,58 +35,55 @@ export const TypographyStyleMixinEditor = <
 
 	const fontFamilyState = useMapState(state, {
 		map(baseValue): TRef<string> {
-			const typography = mapValue(baseValue);
-			if (isTokenRef(typography)) {
-				return typography;
+			if (isTokenRef(baseValue)) {
+				return baseValue;
 			}
-			if (isTokenRef(typography.font)) {
-				return typography.font;
+			if (isTokenRef(baseValue.font)) {
+				return baseValue.font;
 			}
-			return typography.font.family;
+			return baseValue.font.family;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
-			const typography = unpackTypographyTokenRef(mapValue(baseState._v));
+			const unpackedBaseValue = unpackTypographyTokenRef(baseState._v);
 
 			if (isTokenRef(mappedValue)) {
-				typography.font = mappedValue;
+				unpackedBaseValue.font = mappedValue;
 			} else {
 				const font = editor.registerFontFamily(mappedValue as string);
 				if (font != null) {
-					typography.font = font;
+					unpackedBaseValue.font = font;
 				}
 			}
 
-			applyValue(baseState, packTypographyTokenRef(typography));
+			baseState._v = packTypographyTokenRef(unpackedBaseValue);
 			baseState._notify(notifyOptions);
 		}
 	});
 	const fontSizeState = useMapState(state, {
 		map(baseValue) {
-			const typography = mapValue(baseValue);
-			if (isTokenRef(typography)) {
-				return typography;
+			if (isTokenRef(baseValue)) {
+				return baseValue;
 			}
-			return typography.fontSize;
+			return baseValue.fontSize;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
-			const typography = unpackTypographyTokenRef(mapValue(baseState._v));
-			typography.fontSize = mappedValue;
-			applyValue(baseState, packTypographyTokenRef(typography));
+			const unpackedBaseValue = unpackTypographyTokenRef(baseState._v);
+			unpackedBaseValue.fontSize = mappedValue;
+			baseState._v = packTypographyTokenRef(unpackedBaseValue);
 			baseState._notify(notifyOptions);
 		}
 	});
 	const textAlignHorizontalState = useMapState(state, {
 		map(baseValue) {
-			const typography = mapValue(baseValue);
-			if (isTokenRef(typography)) {
-				return typography;
+			if (isTokenRef(baseValue)) {
+				return baseValue;
 			}
-			return typography.textAlignHorizontal;
+			return baseValue.textAlignHorizontal;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
-			const typography = unpackTypographyTokenRef(mapValue(baseState._v));
-			typography.textAlignHorizontal = mappedValue;
-			applyValue(baseState, packTypographyTokenRef(typography));
+			const unpackedBaseValue = unpackTypographyTokenRef(baseState._v);
+			unpackedBaseValue.textAlignHorizontal = mappedValue;
+			baseState._v = packTypographyTokenRef(unpackedBaseValue);
 			baseState._notify(notifyOptions);
 		}
 	});
@@ -180,13 +165,8 @@ export const TypographyStyleMixinEditor = <
 	);
 };
 
-interface TTypographyStyleMixinEditorProps<
-	GValue extends Record<string, any>,
-	GTokenSet extends TMixinTokenSet
-> {
-	state: TState<GValue, any>;
-	mapValue: (value: GValue) => TTypographyStyleMixin['value'];
-	applyValue: (state: TState<GValue, any>, value: TTypographyStyleMixin['value']) => void;
+interface TTypographyStyleMixinEditorProps<GTokenSet extends TMixinTokenSet> {
+	state: TState<TTypographyStyleMixin['value'], any>;
 	tokenSet?: TState<GTokenSet, any>;
 	tokenRefKey?: string;
 	mapToToken?: (ref: string, tokenSet?: GTokenSet) => TTypographyStyleToken['value'] | undefined;
