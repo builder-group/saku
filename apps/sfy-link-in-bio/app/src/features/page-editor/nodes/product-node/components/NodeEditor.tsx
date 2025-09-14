@@ -4,8 +4,8 @@ import { Button, IndexTable, Scrollable, Text, useIndexResourceState } from '@sh
 import { useFeatureState } from 'feature-react/state';
 import React from 'react';
 import { AccordionSection, PolarisDeleteIcon, PolarisProductAddIcon } from '@/components';
-import { useMapState } from '@/hooks';
 import { capitalizeFirstLetter, isProduct, mutateWithReferenceUpdate } from '@/lib';
+import { useNodeProperty } from '../../../hooks';
 import { TNodeEditorComponentProps } from '../../../lib';
 import {
 	AppearanceStyleMixinEditor,
@@ -113,105 +113,17 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 		return false;
 	}, [selectedResources, variantRows.length]);
 
-	const autoLayoutState = useMapState(nodeState, {
-		map(baseValue) {
-			return baseValue.autoLayout;
-		},
-		sync(baseState, mappedValue, notifyOptions) {
-			baseState._v.autoLayout = mappedValue;
-			baseState._notify(notifyOptions);
-		}
-	});
-	const appearanceState = useMapState(nodeState, {
-		map(baseValue) {
-			return baseValue.appearance;
-		},
-		sync(baseState, mappedValue, notifyOptions) {
-			baseState._v.appearance = mappedValue;
-			baseState._notify(notifyOptions);
-		}
-	});
-	const fillState = useMapState(nodeState, {
-		map(baseValue) {
-			return baseValue.fill;
-		},
-		sync(baseState, mappedValue, notifyOptions) {
-			baseState._v.fill = mappedValue;
-			baseState._notify(notifyOptions);
-		}
-	});
-	const strokeState = useMapState(nodeState, {
-		map(baseValue) {
-			return baseValue.stroke;
-		},
-		sync(baseState, mappedValue, notifyOptions) {
-			baseState._v.stroke = mappedValue;
-			baseState._notify(notifyOptions);
-		}
-	});
-	const shadowState = useMapState(nodeState, {
-		map(baseValue) {
-			return baseValue.shadow;
-		},
-		sync(baseState, mappedValue, notifyOptions) {
-			baseState._v.shadow = mappedValue;
-			baseState._notify(notifyOptions);
-		}
-	});
-	const textState = useMapState(nodeState, {
-		map(baseValue) {
-			return baseValue.text;
-		},
-		sync(baseState, mappedValue, notifyOptions) {
-			baseState._v.text = mappedValue;
-			baseState._notify(notifyOptions);
-		}
-	});
-	const buttonPrimaryState = useMapState(nodeState, {
-		map(baseValue) {
-			return baseValue.buttonPrimary;
-		},
-		sync(baseState, mappedValue, notifyOptions) {
-			baseState._v.buttonPrimary = mappedValue;
-			baseState._notify(notifyOptions);
-		}
-	});
-	const badgePrimaryState = useMapState(nodeState, {
-		map(baseValue) {
-			return baseValue.badgePrimary;
-		},
-		sync(baseState, mappedValue, notifyOptions) {
-			baseState._v.badgePrimary = mappedValue;
-			baseState._notify(notifyOptions);
-		}
-	});
-	const badgeNeutralState = useMapState(nodeState, {
-		map(baseValue) {
-			return baseValue.badgeNeutral;
-		},
-		sync(baseState, mappedValue, notifyOptions) {
-			baseState._v.badgeNeutral = mappedValue;
-			baseState._notify(notifyOptions);
-		}
-	});
-	const imageState = useMapState(nodeState, {
-		map(baseValue) {
-			return baseValue.image;
-		},
-		sync(baseState, mappedValue, notifyOptions) {
-			baseState._v.image = mappedValue;
-			baseState._notify(notifyOptions);
-		}
-	});
-	const productDetailsState = useMapState(nodeState, {
-		map(baseValue) {
-			return baseValue.productDetails;
-		},
-		sync(baseState, mappedValue, notifyOptions) {
-			baseState._v.productDetails = mappedValue;
-			baseState._notify(notifyOptions);
-		}
-	});
+	const autoLayoutState = useNodeProperty(nodeState, 'autoLayout');
+	const appearanceState = useNodeProperty(nodeState, 'appearance');
+	const fillState = useNodeProperty(nodeState, 'fill');
+	const strokeState = useNodeProperty(nodeState, 'stroke');
+	const shadowState = useNodeProperty(nodeState, 'shadow');
+	const textState = useNodeProperty(nodeState, 'text');
+	const buttonPrimaryState = useNodeProperty(nodeState, 'buttonPrimary');
+	const badgePrimaryState = useNodeProperty(nodeState, 'badgePrimary');
+	const badgeNeutralState = useNodeProperty(nodeState, 'badgeNeutral');
+	const imageState = useNodeProperty(nodeState, 'image');
+	const productDetailsState = useNodeProperty(nodeState, 'productDetails');
 
 	// =========================================================================
 	// Events

@@ -1,6 +1,6 @@
 import { TFlatPageNode } from '@repo/editor';
 import React from 'react';
-import { useMapState } from '@/hooks';
+import { useNodeProperty } from '../../../hooks';
 import { TNodeEditorComponentProps } from '../../../lib';
 import {
 	AppearanceStyleMixinEditor,
@@ -11,33 +11,9 @@ import {
 export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TFlatPageNode>> = (props) => {
 	const { nodeState, editor } = props;
 
-	const autoLayoutState = useMapState(nodeState, {
-		map(baseValue) {
-			return baseValue.autoLayout;
-		},
-		sync(baseState, mappedValue, notifyOptions) {
-			baseState._v.autoLayout = mappedValue;
-			baseState._notify(notifyOptions);
-		}
-	});
-	const appearanceState = useMapState(nodeState, {
-		map(baseValue) {
-			return baseValue.appearance;
-		},
-		sync(baseState, mappedValue, notifyOptions) {
-			baseState._v.appearance = mappedValue;
-			baseState._notify(notifyOptions);
-		}
-	});
-	const fillState = useMapState(nodeState, {
-		map(baseValue) {
-			return baseValue.fill;
-		},
-		sync(baseState, mappedValue, notifyOptions) {
-			baseState._v.fill = mappedValue;
-			baseState._notify(notifyOptions);
-		}
-	});
+	const autoLayoutState = useNodeProperty(nodeState, 'autoLayout');
+	const appearanceState = useNodeProperty(nodeState, 'appearance');
+	const fillState = useNodeProperty(nodeState, 'fill');
 
 	// =========================================================================
 	// UI

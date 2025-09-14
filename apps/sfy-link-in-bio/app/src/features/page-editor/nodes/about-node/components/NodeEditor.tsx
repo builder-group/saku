@@ -12,7 +12,7 @@ import { InlineError, Text, TextField } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react/state';
 import React from 'react';
 import { AccordionSection, ImageUploadField, type TImageUploadEvent } from '@/components';
-import { useMapState } from '@/hooks';
+import { useNodeProperty } from '../../../hooks';
 import { TNodeEditorComponentProps } from '../../../lib';
 import {
 	AppearanceStyleMixinEditor,
@@ -67,78 +67,14 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 		});
 	}, [content.contactIcons]);
 
-	const autoLayoutState = useMapState(nodeState, {
-		map(baseValue) {
-			return baseValue.autoLayout;
-		},
-		sync(baseState, mappedValue, notifyOptions) {
-			baseState._v.autoLayout = mappedValue;
-			baseState._notify(notifyOptions);
-		}
-	});
-	const appearanceState = useMapState(nodeState, {
-		map(baseValue) {
-			return baseValue.appearance;
-		},
-		sync(baseState, mappedValue, notifyOptions) {
-			baseState._v.appearance = mappedValue;
-			baseState._notify(notifyOptions);
-		}
-	});
-	const fillState = useMapState(nodeState, {
-		map(baseValue) {
-			return baseValue.fill;
-		},
-		sync(baseState, mappedValue, notifyOptions) {
-			baseState._v.fill = mappedValue;
-			baseState._notify(notifyOptions);
-		}
-	});
-	const strokeState = useMapState(nodeState, {
-		map(baseValue) {
-			return baseValue.stroke;
-		},
-		sync(baseState, mappedValue, notifyOptions) {
-			baseState._v.stroke = mappedValue;
-			baseState._notify(notifyOptions);
-		}
-	});
-	const shadowState = useMapState(nodeState, {
-		map(baseValue) {
-			return baseValue.shadow;
-		},
-		sync(baseState, mappedValue, notifyOptions) {
-			baseState._v.shadow = mappedValue;
-			baseState._notify(notifyOptions);
-		}
-	});
-	const textXlState = useMapState(nodeState, {
-		map(baseValue) {
-			return baseValue.textXl;
-		},
-		sync(baseState, mappedValue, notifyOptions) {
-			baseState._v.textXl = mappedValue;
-			baseState._notify(notifyOptions);
-		}
-	});
-	const textState = useMapState(nodeState, {
-		map(baseValue) {
-			return baseValue.text;
-		},
-		sync(baseState, mappedValue, notifyOptions) {
-			baseState._v.text = mappedValue;
-			baseState._notify(notifyOptions);
-		}
-	});
-	const imageState = useMapState(nodeState, {
-		map(baseValue) {
-			return baseValue.image;
-		},
-		sync(baseState, mappedValue, notifyOptions) {
-			baseState._v.image = mappedValue;
-			baseState._notify(notifyOptions);
-		}
-	});
+	const autoLayoutState = useNodeProperty(nodeState, 'autoLayout');
+	const appearanceState = useNodeProperty(nodeState, 'appearance');
+	const fillState = useNodeProperty(nodeState, 'fill');
+	const strokeState = useNodeProperty(nodeState, 'stroke');
+	const shadowState = useNodeProperty(nodeState, 'shadow');
+	const textXlState = useNodeProperty(nodeState, 'textXl');
+	const textState = useNodeProperty(nodeState, 'text');
+	const imageState = useNodeProperty(nodeState, 'image');
 
 	// =========================================================================
 	// Events
