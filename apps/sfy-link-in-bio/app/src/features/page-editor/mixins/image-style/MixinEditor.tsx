@@ -26,6 +26,9 @@ export const ImageStyleMixinEditor = <
 			<AppearanceStyleMixinEditor
 				state={state}
 				mapValue={(value) => mapValue(value).appearance}
+				applyValue={(state, value) => {
+					mapValue(state._v).appearance = value;
+				}}
 				tokenSet={tokenSet}
 				tokenRefKey={tokenRefKey}
 				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.appearance}

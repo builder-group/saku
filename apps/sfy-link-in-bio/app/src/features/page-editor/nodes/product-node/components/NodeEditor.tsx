@@ -378,6 +378,9 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 					<AppearanceStyleMixinEditor
 						state={nodeState}
 						mapValue={(value) => value.appearance}
+						applyValue={(state, value) => {
+							state._v.appearance = value;
+						}}
 						tokenSet={editor.mixinTokenMap.appearance}
 						tokenRefKey={'default'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
@@ -430,6 +433,9 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 					<TextStyleMixinEditor
 						state={nodeState}
 						mapValue={(value) => value.text}
+						applyValue={(state, value) => {
+							state._v.text = value;
+						}}
 						tokenSet={editor.mixinTokenMap.text}
 						tokenRefKey={'default'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}

@@ -2,7 +2,13 @@ import { TFlatNode } from '@repo/editor';
 import { useCombinedCompute, useCompute, useFeatureState } from 'feature-react';
 import React from 'react';
 import { cn } from '@/lib';
-import { isNodeVisible, nodeMetadataRegistry, TNodeState, TPageEditor } from '../../../lib';
+import {
+	EditorSiteResolveContext,
+	nodeMetadataRegistry,
+	TNodeState,
+	TPageEditor
+} from '../../../lib';
+import { resolveAppearanceStyleMixin } from '../../../mixins';
 
 export const NodeIndicators: React.FC<TNodeIndicatorsProps> = (props) => {
 	const { editor } = props;
@@ -43,7 +49,12 @@ export const NodeIndicator: React.FC<TNodeIndicatorProps> = (props) => {
 	);
 
 	const isVisible = useCompute(nodeState, ({ value }) => {
-		return isNodeVisible(value);
+		return resolveAppearanceStyleMixin(value.appearance, {
+			node: { site: new EditorSiteResolveContext(editor) },
+			mixinTokenSet: editor.mixinTokenMap.appearance?._v,
+			mapToMixinTokenValue: (ref, tokenSet) => tokenSet?.[ref]?.value,
+			variableTokenMap: editor.variableTokenMap._v
+		}).unwrap().visible;
 	});
 
 	const position = useCombinedCompute(

@@ -11,7 +11,9 @@ import React from 'react';
 import { PolarisHideIcon, PolarisViewIcon } from '@/components';
 import { useMapState } from '@/hooks';
 import { TokenTextInput } from '../../components';
-import { TPageEditor } from '../../lib';
+import { EditorSiteResolveContext, TPageEditor } from '../../lib';
+import { unpackAppearanceTokenRef } from './pack-mixin';
+import { resolveAppearanceStyleMixin } from './resolve-mixin';
 
 export const AppearanceStyleMixinEditor = <
 	GValue extends Record<string, any>,
@@ -22,6 +24,7 @@ export const AppearanceStyleMixinEditor = <
 	const {
 		state,
 		mapValue,
+		applyValue,
 		tokenSet,
 		tokenRefKey,
 		mapToToken,
@@ -30,10 +33,18 @@ export const AppearanceStyleMixinEditor = <
 		editor
 	} = props;
 
-	const hasBorderRadius = useCompute(state, ({ value }) => mapValue(value).borderRadius != null, [
-		mapValue
-	]);
-	const isVisible = useCompute(state, ({ value }) => mapValue(value).visible, [mapValue]);
+	const resolvedAppearance = useCompute(
+		state,
+		({ value }) => {
+			return resolveAppearanceStyleMixin(mapValue(value), {
+				node: { site: new EditorSiteResolveContext(editor) },
+				mixinTokenSet: tokenSet?._v,
+				mapToMixinTokenValue: (ref, tokenSet) => mapToToken?.(ref, tokenSet),
+				variableTokenMap: editor.variableTokenMap._v
+			}).unwrap();
+		},
+		[state, mapValue]
+	);
 
 	const opacityState = useMapState(state, {
 		map(baseValue) {
@@ -74,9 +85,11 @@ export const AppearanceStyleMixinEditor = <
 
 	const handleToggleVisibility = React.useCallback(() => {
 		const appearance = mapValue(state._v);
-		appearance.visible = !appearance.visible;
+		const unpackedAppearance = unpackAppearanceTokenRef(appearance);
+		unpackedAppearance.visible = !unpackedAppearance.visible;
+		applyValue(state, unpackedAppearance);
 		state._notify();
-	}, [state, mapValue]);
+	}, [mapValue, state, applyValue]);
 
 	const handleNavigateToToken = React.useCallback(() => {
 		editor.switchView('settings');
@@ -94,7 +107,7 @@ export const AppearanceStyleMixinEditor = <
 				</Text>
 
 				{!disabledVisibilityToggle &&
-					(isVisible ? (
+					(resolvedAppearance.visible ? (
 						<Button
 							icon={PolarisViewIcon}
 							onClick={handleToggleVisibility}
@@ -127,7 +140,7 @@ export const AppearanceStyleMixinEditor = <
 					onNavigateToToken={handleNavigateToToken}
 					disabledTokenLink={disabledTokenLink}
 				/>
-				{hasBorderRadius && (
+				{resolvedAppearance.borderRadius != null && (
 					<TokenTextInput
 						label="Border Radius"
 						type="number"
@@ -154,6 +167,7 @@ interface TAppearanceStyleMixinEditorProps<
 > {
 	state: TState<GValue, any>;
 	mapValue: (value: GValue) => TAppearanceStyleMixin['value'];
+	applyValue: (state: TState<GValue, any>, value: TAppearanceStyleMixin['value']) => void;
 	tokenSet?: TState<GTokenSet, any>;
 	tokenRefKey?: string;
 	mapToToken?: (ref: string, tokenSet?: GTokenSet) => TAppearanceStyleToken['value'] | undefined;

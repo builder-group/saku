@@ -99,6 +99,9 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 							<AppearanceStyleMixinEditor
 								state={state}
 								mapValue={(value) => value}
+								applyValue={(state, value) => {
+									state._v = value as TAppearanceStyleToken['value'];
+								}}
 								disabledTokenLink
 								editor={editor}
 								disabledVisibilityToggle
@@ -266,6 +269,9 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 							<TextStyleMixinEditor
 								state={state}
 								mapValue={(value) => value}
+								applyValue={(state, value) => {
+									state._v = value as TTextStyleToken['value'];
+								}}
 								disabledTokenLink
 								editor={editor}
 							/>

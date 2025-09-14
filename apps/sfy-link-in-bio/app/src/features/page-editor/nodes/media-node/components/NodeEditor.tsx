@@ -136,6 +136,9 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 					<AppearanceStyleMixinEditor
 						state={nodeState}
 						mapValue={(value) => value.appearance}
+						applyValue={(state, value) => {
+							state._v.appearance = value;
+						}}
 						tokenSet={editor.mixinTokenMap.appearance}
 						tokenRefKey={'default'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}

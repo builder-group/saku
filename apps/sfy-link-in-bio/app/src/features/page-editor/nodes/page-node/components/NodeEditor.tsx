@@ -26,6 +26,9 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TFlatPageNode>> 
 			<AppearanceStyleMixinEditor
 				state={nodeState}
 				mapValue={(value) => value.appearance}
+				applyValue={(state, value) => {
+					state._v.appearance = value;
+				}}
 				disabledTokenLink
 				editor={editor}
 			/>

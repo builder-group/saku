@@ -324,6 +324,9 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 					<AppearanceStyleMixinEditor
 						state={nodeState}
 						mapValue={(value) => value.appearance}
+						applyValue={(state, value) => {
+							state._v.appearance = value;
+						}}
 						tokenSet={editor.mixinTokenMap.appearance}
 						tokenRefKey={'default'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
@@ -375,6 +378,9 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 					<TextStyleMixinEditor
 						state={nodeState}
 						mapValue={(value) => value.textXl}
+						applyValue={(state, value) => {
+							state._v.textXl = value;
+						}}
 						tokenSet={editor.mixinTokenMap.text}
 						tokenRefKey={'xl'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
@@ -390,6 +396,9 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 					<TextStyleMixinEditor
 						state={nodeState}
 						mapValue={(value) => value.text}
+						applyValue={(state, value) => {
+							state._v.text = value;
+						}}
 						tokenSet={editor.mixinTokenMap.text}
 						tokenRefKey={'default'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}

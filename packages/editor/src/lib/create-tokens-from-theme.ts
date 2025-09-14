@@ -269,8 +269,8 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 			value: {
 				horizontalPadding: boxSizes.lg,
 				verticalPadding: boxSizes.lg,
-				horizontalGap: null,
-				verticalGap: null
+				horizontalGap: undefined,
+				verticalGap: undefined
 			}
 		},
 		{
@@ -347,7 +347,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 				appearance: {
 					visible: true,
 					opacity: 1,
-					borderRadius: null
+					borderRadius: undefined
 				},
 				typography: {
 					font: {
@@ -380,7 +380,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 				appearance: {
 					visible: true,
 					opacity: 1,
-					borderRadius: null
+					borderRadius: undefined
 				},
 				typography: {
 					font: {
@@ -413,7 +413,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 				appearance: {
 					visible: true,
 					opacity: 1,
-					borderRadius: null
+					borderRadius: undefined
 				},
 				typography: {
 					font: {
@@ -461,7 +461,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 					appearance: {
 						visible: true,
 						opacity: 1,
-						borderRadius: null
+						borderRadius: undefined
 					},
 					typography: {
 						font: {
@@ -510,7 +510,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 					appearance: {
 						visible: true,
 						opacity: 1,
-						borderRadius: null
+						borderRadius: undefined
 					},
 					typography: {
 						font: {
@@ -559,7 +559,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 					appearance: {
 						visible: true,
 						opacity: 1,
-						borderRadius: null
+						borderRadius: undefined
 					},
 					typography: {
 						font: {
@@ -608,7 +608,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 					appearance: {
 						visible: true,
 						opacity: 1,
-						borderRadius: null
+						borderRadius: undefined
 					},
 					typography: {
 						font: {
@@ -671,7 +671,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 					appearance: {
 						visible: true,
 						opacity: 1,
-						borderRadius: null
+						borderRadius: undefined
 					},
 					typography: {
 						font: {
@@ -699,7 +699,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 					appearance: {
 						visible: true,
 						opacity: 1,
-						borderRadius: null
+						borderRadius: undefined
 					},
 					typography: {
 						font: {
@@ -742,7 +742,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 						appearance: {
 							visible: true,
 							opacity: 1,
-							borderRadius: null
+							borderRadius: undefined
 						},
 						typography: {
 							font: {

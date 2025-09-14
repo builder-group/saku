@@ -31,6 +31,9 @@ export const ProductDetailsStyleMixinEditor = <
 			<AppearanceStyleMixinEditor
 				state={state}
 				mapValue={(value) => mapValue(value).appearance}
+				applyValue={(state, value) => {
+					mapValue(state._v).appearance = value;
+				}}
 				tokenSet={tokenSet}
 				tokenRefKey={tokenRefKey}
 				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.appearance}
@@ -85,6 +88,9 @@ export const ProductDetailsStyleMixinEditor = <
 			<TextStyleMixinEditor
 				state={state}
 				mapValue={(value) => mapValue(value).textXl}
+				applyValue={(state, value) => {
+					mapValue(state._v).textXl = value;
+				}}
 				tokenSet={tokenSet}
 				tokenRefKey={tokenRefKey}
 				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.textXl}
@@ -99,6 +105,9 @@ export const ProductDetailsStyleMixinEditor = <
 			<TextStyleMixinEditor
 				state={state}
 				mapValue={(value) => mapValue(value).text}
+				applyValue={(state, value) => {
+					mapValue(state._v).text = value;
+				}}
 				tokenSet={tokenSet}
 				tokenRefKey={tokenRefKey}
 				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.text}

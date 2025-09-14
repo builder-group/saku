@@ -1,11 +1,13 @@
-import { TMixinTokenSet, TTextStyleMixin, TTextStyleToken } from '@repo/editor';
+import { isTokenRef, TMixinTokenSet, TTextStyleMixin, TTextStyleToken } from '@repo/editor';
 import { TState } from 'feature-state';
+import { useMapState } from '../../../../hooks';
 import { TPageEditor } from '../../lib';
 import { AppearanceStyleMixinEditor } from '../appearance-style';
 import { FillStyleMixinEditor } from '../fill-style';
 import { ShadowStyleMixinEditor } from '../shadow-style';
 import { StrokeStyleMixinEditor } from '../stroke-style';
 import { TypographyStyleMixinEditor } from '../typography-style';
+import { packTextTokenRef, unpackTextTokenRef } from './pack-mixin';
 
 export const TextStyleMixinEditor = <
 	GValue extends Record<string, any>,
@@ -16,6 +18,7 @@ export const TextStyleMixinEditor = <
 	const {
 		state,
 		mapValue,
+		applyValue,
 		tokenSet,
 		tokenRefKey,
 		mapToToken,
@@ -23,11 +26,88 @@ export const TextStyleMixinEditor = <
 		editor
 	} = props;
 
+	const appearanceState = useMapState(state, {
+		map(baseValue) {
+			const text = mapValue(baseValue);
+			if (isTokenRef(text)) {
+				return text;
+			}
+			return text?.appearance;
+		},
+		sync(baseState, mappedValue, notifyOptions) {
+			const text = unpackTextTokenRef(mapValue(baseState._v));
+			text.appearance = mappedValue;
+			applyValue(baseState, packTextTokenRef(text));
+			baseState._notify(notifyOptions);
+		}
+	});
+	const typographyState = useMapState(state, {
+		map(baseValue) {
+			const text = mapValue(baseValue);
+			if (isTokenRef(text)) {
+				return text;
+			}
+			return text?.typography;
+		},
+		sync(baseState, mappedValue, notifyOptions) {
+			const text = unpackTextTokenRef(mapValue(baseState._v));
+			text.typography = mappedValue;
+			applyValue(baseState, packTextTokenRef(text));
+			baseState._notify(notifyOptions);
+		}
+	});
+	const fillState = useMapState(state, {
+		map(baseValue) {
+			const text = mapValue(baseValue);
+			if (isTokenRef(text)) {
+				return text;
+			}
+			return text?.fill;
+		},
+		sync(baseState, mappedValue, notifyOptions) {
+			const text = unpackTextTokenRef(mapValue(baseState._v));
+			text.fill = mappedValue;
+			applyValue(baseState, packTextTokenRef(text));
+			baseState._notify(notifyOptions);
+		}
+	});
+	const strokeState = useMapState(state, {
+		map(baseValue) {
+			const text = mapValue(baseValue);
+			if (isTokenRef(text)) {
+				return text;
+			}
+			return text?.stroke;
+		},
+		sync(baseState, mappedValue, notifyOptions) {
+			const text = unpackTextTokenRef(mapValue(baseState._v));
+			text.stroke = mappedValue;
+			applyValue(baseState, packTextTokenRef(text));
+			baseState._notify(notifyOptions);
+		}
+	});
+	const shadowState = useMapState(state, {
+		map(baseValue) {
+			const text = mapValue(baseValue);
+			if (isTokenRef(text)) {
+				return text;
+			}
+			return text?.shadow;
+		},
+		sync(baseState, mappedValue, notifyOptions) {
+			const text = unpackTextTokenRef(mapValue(baseState._v));
+			text.shadow = mappedValue;
+			applyValue(baseState, packTextTokenRef(text));
+			baseState._notify(notifyOptions);
+		}
+	});
+
 	return (
 		<>
 			<AppearanceStyleMixinEditor
-				state={state}
-				mapValue={(value) => mapValue(value).appearance}
+				state={appearanceState}
+				mapValue={(value) => value}
+				applyValue={(state, value) => (state._v = value)}
 				tokenSet={tokenSet}
 				tokenRefKey={tokenRefKey}
 				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.appearance}
@@ -36,10 +116,10 @@ export const TextStyleMixinEditor = <
 			/>
 			<div className="h-px bg-neutral-200" />
 			<TypographyStyleMixinEditor
-				state={state}
-				mapValue={(value) => mapValue(value).typography}
+				state={typographyState}
+				mapValue={(value) => value}
 				applyValue={(state, value) => {
-					mapValue(state._v).typography = value;
+					state._v = value;
 				}}
 				tokenSet={tokenSet}
 				tokenRefKey={tokenRefKey}
@@ -49,10 +129,10 @@ export const TextStyleMixinEditor = <
 			/>
 			<div className="h-px bg-neutral-200" />
 			<FillStyleMixinEditor
-				state={state}
-				mapValue={(value) => mapValue(value).fill}
+				state={fillState}
+				mapValue={(value) => value}
 				applyValue={(state, value) => {
-					mapValue(state._v).fill = value;
+					state._v = value;
 				}}
 				tokenSet={tokenSet}
 				tokenRefKey={tokenRefKey}
@@ -63,10 +143,10 @@ export const TextStyleMixinEditor = <
 			/>
 			<div className="h-px bg-neutral-200" />
 			<StrokeStyleMixinEditor
-				state={state}
-				mapValue={(value) => mapValue(value).stroke}
+				state={strokeState}
+				mapValue={(value) => value}
 				applyValue={(state, value) => {
-					mapValue(state._v).stroke = value;
+					state._v = value;
 				}}
 				tokenSet={tokenSet}
 				tokenRefKey={tokenRefKey}
@@ -76,10 +156,10 @@ export const TextStyleMixinEditor = <
 			/>
 			<div className="h-px bg-neutral-200" />
 			<ShadowStyleMixinEditor
-				state={state}
-				mapValue={(value) => mapValue(value).shadow}
+				state={shadowState}
+				mapValue={(value) => value}
 				applyValue={(state, value) => {
-					mapValue(state._v).shadow = value;
+					state._v = value;
 				}}
 				tokenSet={tokenSet}
 				tokenRefKey={tokenRefKey}
@@ -98,6 +178,7 @@ interface TTextStyleMixinEditorProps<
 > {
 	state: TState<GValue, any>;
 	mapValue: (value: GValue) => TTextStyleMixin['value'];
+	applyValue: (state: TState<GValue, any>, value: TTextStyleMixin['value']) => void;
 	tokenSet?: TState<GTokenSet, any>;
 	tokenRefKey?: string;
 	mapToToken?: (ref: string, tokenSet?: GTokenSet) => TTextStyleToken['value'] | undefined;

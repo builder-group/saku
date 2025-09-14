@@ -181,6 +181,9 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 					<AppearanceStyleMixinEditor
 						state={nodeState}
 						mapValue={(value) => value.appearance}
+						applyValue={(state, value) => {
+							state._v.appearance = value;
+						}}
 						tokenSet={editor.mixinTokenMap.appearance}
 						tokenRefKey={'default'}
 						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
@@ -234,6 +237,9 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 						<TextStyleMixinEditor
 							state={nodeState}
 							mapValue={(value) => value.text}
+							applyValue={(state, value) => {
+								state._v.text = value;
+							}}
 							tokenSet={editor.mixinTokenMap.text}
 							tokenRefKey={'default'}
 							mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
@@ -251,6 +257,9 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 						<TextStyleMixinEditor
 							state={nodeState}
 							mapValue={(value) => value.textSm}
+							applyValue={(state, value) => {
+								state._v.textSm = value;
+							}}
 							tokenSet={editor.mixinTokenMap.text}
 							tokenRefKey={'sm'}
 							mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
