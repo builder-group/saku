@@ -2,7 +2,8 @@ import { TMediaNode } from '@repo/editor';
 import { InlineError, Select, Text } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react/state';
 import React from 'react';
-import { AccordionSection, ImageUploadField, TImageUploadEvent } from '@/components';
+import { AccordionSection, ImageUploadField, JsonPreview, TImageUploadEvent } from '@/components';
+import { appConfig } from '@/environment';
 import { useNodeProperty } from '../../../hooks';
 import { TNodeEditorComponentProps } from '../../../lib';
 import {
@@ -187,6 +188,18 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 					/>
 				</AccordionSection>
 			</AccordionSection>
+
+			{/* Debug Section */}
+			{appConfig.env === 'development' && (
+				<AccordionSection title="Debug" collapsibleClassName="px-0 space-y-3">
+					<div className="space-y-1 px-4">
+						<Text as="span" variant="bodySm" tone="subdued">
+							JSON
+						</Text>
+						<JsonPreview data={nodeState._v} />
+					</div>
+				</AccordionSection>
+			)}
 		</>
 	);
 };

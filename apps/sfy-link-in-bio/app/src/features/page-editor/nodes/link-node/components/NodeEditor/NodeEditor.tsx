@@ -8,7 +8,8 @@ import { useAppBridge } from '@shopify/app-bridge-react';
 import { Select, Text } from '@shopify/polaris';
 import { useCompute, useFeatureState } from 'feature-react/state';
 import React from 'react';
-import { AccordionSection, PortalPulse } from '@/components';
+import { AccordionSection, JsonPreview, PortalPulse } from '@/components';
+import { appConfig } from '@/environment';
 import { useNodeProperty } from '../../../../hooks';
 import { TNodeEditorComponentProps } from '../../../../lib';
 import {
@@ -269,6 +270,18 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 					</AccordionSection>
 				)}
 			</AccordionSection>
+
+			{/* Debug Section */}
+			{appConfig.env === 'development' && (
+				<AccordionSection title="Debug" collapsibleClassName="px-0 space-y-3">
+					<div className="space-y-1 px-4">
+						<Text as="span" variant="bodySm" tone="subdued">
+							JSON
+						</Text>
+						<JsonPreview data={nodeState._v} />
+					</div>
+				</AccordionSection>
+			)}
 		</>
 	);
 };

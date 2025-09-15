@@ -3,7 +3,13 @@ import { TProductNode } from '@repo/editor';
 import { Button, IndexTable, Scrollable, Text, useIndexResourceState } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react/state';
 import React from 'react';
-import { AccordionSection, PolarisDeleteIcon, PolarisProductAddIcon } from '@/components';
+import {
+	AccordionSection,
+	JsonPreview,
+	PolarisDeleteIcon,
+	PolarisProductAddIcon
+} from '@/components';
+import { appConfig } from '@/environment';
 import { capitalizeFirstLetter, isProduct, mutateWithReferenceUpdate } from '@/lib';
 import { useNodeProperty } from '../../../hooks';
 import { TNodeEditorComponentProps } from '../../../lib';
@@ -505,6 +511,18 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 					/>
 				</AccordionSection>
 			</AccordionSection>
+
+			{/* Debug Section */}
+			{appConfig.env === 'development' && (
+				<AccordionSection title="Debug" collapsibleClassName="px-0 space-y-3">
+					<div className="space-y-1 px-4">
+						<Text as="span" variant="bodySm" tone="subdued">
+							JSON
+						</Text>
+						<JsonPreview data={nodeState._v} />
+					</div>
+				</AccordionSection>
+			)}
 		</>
 	);
 };
