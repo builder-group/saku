@@ -85,7 +85,7 @@ export const StrokeStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 	const handleAddStroke = React.useCallback(() => {
 		const tokenValue = mapToToken?.(tokenRefKey, tokenSet?._v);
 
-		state._v = tokenValue ?? {
+		state._v = deepCopy(tokenValue) ?? {
 			color: { r: 0, g: 0, b: 0, a: 1 },
 			width: 1
 		};

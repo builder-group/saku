@@ -142,7 +142,7 @@ export const ShadowStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 
 	const handleAddShadow = React.useCallback(() => {
 		const tokenValue = mapToToken?.(tokenRefKey, tokenSet?._v);
-		state._v = tokenValue ?? {
+		state._v = deepCopy(tokenValue) ?? {
 			color: { r: 0, g: 0, b: 0, a: 0.1 },
 			offsetX: 0,
 			offsetY: 4,

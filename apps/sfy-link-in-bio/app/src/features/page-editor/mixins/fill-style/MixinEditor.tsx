@@ -66,7 +66,7 @@ export const FillStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 
 	const handleAddFill = React.useCallback(() => {
 		const tokenValue = mapToToken?.(tokenRefKey, tokenSet?._v);
-		state._v = tokenValue ?? {
+		state._v = deepCopy(tokenValue) ?? {
 			paint: {
 				type: 'solid',
 				color: { r: 255, g: 255, b: 255, a: 1 }
