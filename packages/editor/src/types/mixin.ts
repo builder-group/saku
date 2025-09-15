@@ -286,7 +286,7 @@ export type TAutoLayoutStyleMixin = TBaseMixin<
 export type TAppearanceStyleMixin = TBaseMixin<
 	'appearance',
 	TRef<{
-		visible: boolean;
+		visible: TRef<boolean>;
 		opacity: TRef<number>;
 		borderRadius: TRef<number | null>;
 	}>

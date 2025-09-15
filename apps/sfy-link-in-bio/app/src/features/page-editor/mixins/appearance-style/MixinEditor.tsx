@@ -2,7 +2,8 @@ import {
 	isTokenRef,
 	TAppearanceStyleMixin,
 	TAppearanceStyleToken,
-	TMixinTokenSet
+	TMixinTokenSet,
+	tokenRef
 } from '@repo/editor';
 import { Button, Text } from '@shopify/polaris';
 import { useCompute } from 'feature-react';
@@ -20,7 +21,7 @@ export const AppearanceStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 	const {
 		state,
 		tokenSet,
-		tokenRefKey,
+		tokenRefKey = 'default',
 		mapToToken,
 		disabledTokenLink = false,
 		disabledVisibilityToggle = false,
@@ -29,13 +30,22 @@ export const AppearanceStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 
 	const visible = useCompute(
 		state,
-		({ value }) => (isTokenRef(value) ? mapToToken?.(value.key, tokenSet?._v)?.visible : undefined),
+		({ value }: { value: TAppearanceStyleMixin['value'] }) => {
+			if (isTokenRef(value) || isTokenRef(value.visible)) {
+				return mapToToken?.(tokenRefKey, tokenSet?._v)?.visible;
+			}
+			return value?.visible;
+		},
 		[mapToToken, tokenSet]
 	);
 	const borderRadius = useCompute(
 		state,
-		({ value }) =>
-			isTokenRef(value) ? mapToToken?.(value.key, tokenSet?._v)?.borderRadius : undefined,
+		({ value }: { value: TAppearanceStyleMixin['value'] }) => {
+			if (isTokenRef(value) || isTokenRef(value.borderRadius)) {
+				return mapToToken?.(tokenRefKey, tokenSet?._v)?.borderRadius;
+			}
+			return value?.borderRadius;
+		},
 		[mapToToken, tokenSet]
 	);
 
@@ -77,10 +87,15 @@ export const AppearanceStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 
 	const handleToggleVisibility = React.useCallback(() => {
 		const unpackedAppearance = unpackAppearanceTokenRef(state._v);
-		unpackedAppearance.visible = !unpackedAppearance.visible;
+		const tokenValue = mapToToken?.(tokenRefKey, tokenSet?._v);
+		const nextVisible = isTokenRef(unpackedAppearance.visible)
+			? !tokenValue?.visible
+			: !unpackedAppearance.visible;
+		unpackedAppearance.visible =
+			nextVisible === tokenValue?.visible ? tokenRef('mixin', tokenRefKey) : nextVisible;
 		state._v = packAppearanceTokenRef(unpackedAppearance);
 		state._notify();
-	}, [state]);
+	}, [mapToToken, state, tokenRefKey, tokenSet]);
 
 	const handleNavigateToToken = React.useCallback(() => {
 		editor.switchView('settings');
