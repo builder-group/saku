@@ -33,7 +33,7 @@ export const ShadowStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 		state,
 		({ value }) => {
 			if (isTokenRef(value)) {
-				return mapToToken?.(value.key, tokenSet?._v) != null;
+				return mapToToken?.(tokenRefKey, tokenSet?._v) != null;
 			}
 			return value != null;
 		},
@@ -142,13 +142,16 @@ export const ShadowStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 
 	const handleAddShadow = React.useCallback(() => {
 		const tokenValue = mapToToken?.(tokenRefKey, tokenSet?._v);
-		state._v = deepCopy(tokenValue) ?? {
-			color: { r: 0, g: 0, b: 0, a: 0.1 },
-			offsetX: 0,
-			offsetY: 4,
-			blur: 6,
-			spread: disabledSpread ? 0 : -1
-		};
+		state._v =
+			tokenValue != null
+				? deepCopy(tokenValue)
+				: {
+						color: { r: 0, g: 0, b: 0, a: 0.1 },
+						offsetX: 0,
+						offsetY: 4,
+						blur: 6,
+						spread: disabledSpread ? 0 : -1
+					};
 		state._notify();
 	}, [mapToToken, tokenSet, state, disabledSpread, tokenRefKey]);
 
@@ -159,9 +162,7 @@ export const ShadowStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 
 	const handleToggleTokenLink = React.useCallback(() => {
 		if (isLinked) {
-			const tokenValue = isTokenRef(state._v)
-				? mapToToken?.(state._v.key, tokenSet?._v)
-				: undefined;
+			const tokenValue = mapToToken?.(tokenRefKey, tokenSet?._v);
 			if (tokenValue !== undefined) {
 				state._v = deepCopy(tokenValue);
 				state._notify();

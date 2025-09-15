@@ -33,7 +33,7 @@ export const FillStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 		state,
 		({ value }) => {
 			if (isTokenRef(value)) {
-				return mapToToken?.(value.key, tokenSet?._v) != null;
+				return mapToToken?.(tokenRefKey, tokenSet?._v) != null;
 			}
 			return value != null;
 		},
@@ -66,13 +66,16 @@ export const FillStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 
 	const handleAddFill = React.useCallback(() => {
 		const tokenValue = mapToToken?.(tokenRefKey, tokenSet?._v);
-		state._v = deepCopy(tokenValue) ?? {
-			paint: {
-				type: 'solid',
-				color: { r: 255, g: 255, b: 255, a: 1 }
-			},
-			opacity: 1
-		};
+		state._v =
+			tokenValue != null
+				? deepCopy(tokenValue)
+				: {
+						paint: {
+							type: 'solid',
+							color: { r: 255, g: 255, b: 255, a: 1 }
+						},
+						opacity: 1
+					};
 		state._notify();
 	}, [mapToToken, tokenSet, state, tokenRefKey]);
 
@@ -83,9 +86,7 @@ export const FillStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 
 	const handleToggleTokenLink = React.useCallback(() => {
 		if (isLinked) {
-			const tokenValue = isTokenRef(state._v)
-				? mapToToken?.(state._v.key, tokenSet?._v)
-				: undefined;
+			const tokenValue = mapToToken?.(tokenRefKey, tokenSet?._v);
 			if (tokenValue !== undefined) {
 				state._v = deepCopy(tokenValue);
 				state._notify();

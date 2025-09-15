@@ -30,7 +30,7 @@ export const AppearanceStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 
 	const visible = useCompute(
 		state,
-		({ value }: { value: TAppearanceStyleMixin['value'] }) => {
+		({ value }) => {
 			if (isTokenRef(value) || isTokenRef(value.visible)) {
 				return mapToToken?.(tokenRefKey, tokenSet?._v)?.visible;
 			}
@@ -40,7 +40,7 @@ export const AppearanceStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 	);
 	const borderRadius = useCompute(
 		state,
-		({ value }: { value: TAppearanceStyleMixin['value'] }) => {
+		({ value }) => {
 			if (isTokenRef(value) || isTokenRef(value.borderRadius)) {
 				return mapToToken?.(tokenRefKey, tokenSet?._v)?.borderRadius;
 			}

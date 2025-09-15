@@ -32,7 +32,7 @@ export const StrokeStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 		state,
 		({ value }) => {
 			if (isTokenRef(value)) {
-				return mapToToken?.(value.key, tokenSet?._v) != null;
+				return mapToToken?.(tokenRefKey, tokenSet?._v) != null;
 			}
 			return value != null;
 		},
@@ -84,11 +84,13 @@ export const StrokeStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 
 	const handleAddStroke = React.useCallback(() => {
 		const tokenValue = mapToToken?.(tokenRefKey, tokenSet?._v);
-
-		state._v = deepCopy(tokenValue) ?? {
-			color: { r: 0, g: 0, b: 0, a: 1 },
-			width: 1
-		};
+		state._v =
+			tokenValue != null
+				? deepCopy(tokenValue)
+				: {
+						color: { r: 0, g: 0, b: 0, a: 1 },
+						width: 1
+					};
 		state._notify();
 	}, [mapToToken, tokenSet, state, tokenRefKey]);
 
@@ -99,9 +101,7 @@ export const StrokeStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 
 	const handleToggleTokenLink = React.useCallback(() => {
 		if (isLinked) {
-			const tokenValue = isTokenRef(state._v)
-				? mapToToken?.(state._v.key, tokenSet?._v)
-				: undefined;
+			const tokenValue = mapToToken?.(tokenRefKey, tokenSet?._v);
 			if (tokenValue !== undefined) {
 				state._v = deepCopy(tokenValue);
 				state._notify();
