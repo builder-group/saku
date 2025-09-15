@@ -39,12 +39,12 @@
 		"@oslojs/encoding": "^1.1.0",
 		"arctic": "^3.7.0",
 		"feature-fetch": "^0.0.51",
-		"hono": "^4.9.6",
+		"hono": "^4.9.7",
 		"jose": "^6.1.0",
-		"zod": "4.1.5"
+		"zod": "4.1.8"
 	},
 	"devDependencies": {
 		"@repo/types": "workspace:*",
-		"@types/node": "^24.3.1"
+		"@types/node": "^24.4.0"
 	}
 }

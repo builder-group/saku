@@ -1,7 +1,7 @@
 import { TMixinTokenSet, TProductDetailsStyleMixin, TProductDetailsStyleToken } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
-import { TMixinResolveContext } from '../../lib';
+import { resolveTokenRef, TMixinResolveContext } from '../../lib';
 import { resolveAppearanceStyleMixin } from '../appearance-style';
 import { resolveButtonStyleMixin } from '../button-style';
 import { resolveFillStyleMixin } from '../fill-style';
@@ -15,8 +15,16 @@ export function resolveProductDetailsStyleMixin<GTokenSet extends TMixinTokenSet
 	productDetails: TProductDetailsStyleMixin['value'],
 	cx: TMixinResolveContext<TProductDetailsStyleToken['value'], GTokenSet>
 ): TResult<TResolvedProductDetailsStyleMixin['value'], AppError> {
+	const [isResolvedProductDetailsOk, resolvedProductDetailsErr, resolvedProductDetails] =
+		resolveTokenRef(productDetails, {
+			mixin: { tokenSet: cx.mixinTokenSet, mapToTokenValue: cx.mapToMixinTokenValue }
+		});
+	if (!isResolvedProductDetailsOk) {
+		return Err(resolvedProductDetailsErr.wrapWith('#ERR_RESOLVE_PRODUCT_DETAILS_STYLE'));
+	}
+
 	const [isResolvedAppearanceOk, resolvedAppearanceErr, resolvedAppearance] =
-		resolveAppearanceStyleMixin(productDetails.appearance, {
+		resolveAppearanceStyleMixin(resolvedProductDetails.appearance, {
 			...cx,
 			mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.appearance
 		});
@@ -24,7 +32,7 @@ export function resolveProductDetailsStyleMixin<GTokenSet extends TMixinTokenSet
 		return Err(resolvedAppearanceErr.wrapWith('#ERR_RESOLVE_APPEARANCE_STYLE'));
 	}
 	const [isResolvedFillOk, resolvedFillErr, resolvedFill] = resolveFillStyleMixin(
-		productDetails.fill,
+		resolvedProductDetails.fill,
 		{
 			...cx,
 			mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.fill
@@ -34,7 +42,7 @@ export function resolveProductDetailsStyleMixin<GTokenSet extends TMixinTokenSet
 		return Err(resolvedFillErr.wrapWith('#ERR_RESOLVE_FILL_STYLE'));
 	}
 	const [isResolvedStrokeOk, resolvedStrokeErr, resolvedStroke] = resolveStrokeStyleMixin(
-		productDetails.stroke,
+		resolvedProductDetails.stroke,
 		{
 			...cx,
 			mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.stroke
@@ -44,7 +52,7 @@ export function resolveProductDetailsStyleMixin<GTokenSet extends TMixinTokenSet
 		return Err(resolvedStrokeErr.wrapWith('#ERR_RESOLVE_STROKE_STYLE'));
 	}
 	const [isResolvedShadowOk, resolvedShadowErr, resolvedShadow] = resolveShadowStyleMixin(
-		productDetails.shadow,
+		resolvedProductDetails.shadow,
 		{
 			...cx,
 			mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.shadow
@@ -54,7 +62,7 @@ export function resolveProductDetailsStyleMixin<GTokenSet extends TMixinTokenSet
 		return Err(resolvedShadowErr.wrapWith('#ERR_RESOLVE_SHADOW_STYLE'));
 	}
 	const [isResolvedXlTextOk, resolvedXlTextErr, resolvedXlText] = resolveTextStyleMixin(
-		productDetails.textXl,
+		resolvedProductDetails.textXl,
 		{
 			...cx,
 			mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.textXl
@@ -64,7 +72,7 @@ export function resolveProductDetailsStyleMixin<GTokenSet extends TMixinTokenSet
 		return Err(resolvedXlTextErr.wrapWith('#ERR_RESOLVE_XL_TEXT_STYLE'));
 	}
 	const [isResolvedTextOk, resolvedTextErr, resolvedText] = resolveTextStyleMixin(
-		productDetails.text,
+		resolvedProductDetails.text,
 		{
 			...cx,
 			mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.text
@@ -74,7 +82,7 @@ export function resolveProductDetailsStyleMixin<GTokenSet extends TMixinTokenSet
 		return Err(resolvedTextErr.wrapWith('#ERR_RESOLVE_TEXT_STYLE'));
 	}
 	const [isResolvedPrimaryButtonOk, resolvedPrimaryButtonErr, resolvedPrimaryButton] =
-		resolveButtonStyleMixin(productDetails.buttonPrimary, {
+		resolveButtonStyleMixin(resolvedProductDetails.buttonPrimary, {
 			...cx,
 			mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.buttonPrimary
 		});
@@ -82,7 +90,7 @@ export function resolveProductDetailsStyleMixin<GTokenSet extends TMixinTokenSet
 		return Err(resolvedPrimaryButtonErr.wrapWith('#ERR_RESOLVE_PRIMARY_BUTTON_STYLE'));
 	}
 	const [isResolvedImageOk, resolvedImageErr, resolvedImage] = resolveImageStyleMixin(
-		productDetails.image,
+		resolvedProductDetails.image,
 		{
 			...cx,
 			mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.image

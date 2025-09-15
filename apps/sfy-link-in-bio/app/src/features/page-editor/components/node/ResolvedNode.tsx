@@ -1,5 +1,5 @@
 import React from 'react';
-import { isNodeVisible, resolvedNodeRegistry, TResolvedNodeProps } from '../../lib';
+import { resolvedNodeRegistry, TResolvedNodeProps } from '../../lib';
 import { TResolvedNode } from '../../types';
 
 export const ResolvedNode = React.forwardRef<HTMLDivElement, TResolvedNodeProps<TResolvedNode>>(
@@ -7,7 +7,7 @@ export const ResolvedNode = React.forwardRef<HTMLDivElement, TResolvedNodeProps<
 		const { node, state, cx } = props;
 
 		const isVisible = React.useMemo(() => {
-			return isNodeVisible(node);
+			return !('appearance' in node) || node.appearance.visible;
 		}, [node]);
 
 		const ResolvedNodeComponent = React.useMemo(

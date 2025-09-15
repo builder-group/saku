@@ -22,6 +22,7 @@ import {
 	themes,
 	TImageAsset,
 	TLinkNode,
+	tokenRef,
 	TPaint,
 	TSite,
 	TTextNode,
@@ -104,8 +105,9 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 			image: {
 				...aboutNodeMetadata.default.image,
 				appearance: {
-					...aboutNodeMetadata.default.image.appearance,
-					borderRadius: 999
+					visible: true,
+					opacity: tokenRef('mixin', 'default'),
+					borderRadius: 48
 				}
 			}
 		};
@@ -244,7 +246,7 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 				horizontalPadding: 24,
 				verticalPadding: 48,
 				verticalGap: 24,
-				horizontalGap: undefined
+				horizontalGap: null
 			},
 			appearance: {
 				visible: true,

@@ -15,16 +15,11 @@ import { useMapState } from '@/hooks';
 import { TokenActionOverlay, TokenColorInput, TokenTextInput } from '../../components';
 import { TPageEditor } from '../../lib';
 
-export const ShadowStyleMixinEditor = <
-	GValue extends Record<string, any> | null,
-	GTokenSet extends TMixinTokenSet
->(
-	props: TShadowStyleMixinEditorProps<GValue, GTokenSet>
+export const ShadowStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
+	props: TShadowStyleMixinEditorProps<GTokenSet>
 ) => {
 	const {
 		state,
-		mapValue,
-		applyValue,
 		tokenSet,
 		tokenRefKey = 'default',
 		mapToToken,
@@ -33,120 +28,109 @@ export const ShadowStyleMixinEditor = <
 		disabledSpread = false
 	} = props;
 
-	const isLinked = useCompute(state, ({ value }) => isTokenRef(mapValue(value)), [mapValue]);
+	const isLinked = useCompute(state, ({ value }) => isTokenRef(value), []);
 	const isSet = useCompute(
 		state,
 		({ value }) => {
-			const shadow = mapValue(value);
-			if (isTokenRef(shadow)) {
-				return mapToToken?.(shadow.key, tokenSet?._v) != null;
+			if (isTokenRef(value)) {
+				return mapToToken?.(tokenRefKey, tokenSet?._v) != null;
 			}
-			return shadow != null;
+			return value != null;
 		},
-		[mapValue]
+		[]
 	);
 
 	const colorState = useMapState(state, {
 		map(baseValue) {
-			const shadow = mapValue(baseValue);
-			if (isTokenRef(shadow)) {
-				return shadow;
+			if (isTokenRef(baseValue)) {
+				return baseValue;
 			}
-			return shadow?.color;
+			return baseValue?.color;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
-			const shadow = mapValue(baseState._v);
 			if (
-				shadow != null &&
-				!isTokenRef(shadow) &&
+				baseState._v != null &&
+				!isTokenRef(baseState._v) &&
 				mappedValue != null &&
 				!isTokenRef(mappedValue)
 			) {
-				shadow.color = mappedValue;
+				baseState._v.color = mappedValue;
 				baseState._notify(notifyOptions);
 			}
 		}
 	});
 	const blurState = useMapState(state, {
 		map(baseValue) {
-			const shadow = mapValue(baseValue);
-			if (isTokenRef(shadow)) {
-				return shadow;
+			if (isTokenRef(baseValue)) {
+				return baseValue;
 			}
-			return shadow?.blur;
+			return baseValue?.blur;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
-			const shadow = mapValue(baseState._v);
 			if (
-				shadow != null &&
-				!isTokenRef(shadow) &&
+				baseState._v != null &&
+				!isTokenRef(baseState._v) &&
 				mappedValue != null &&
 				!isTokenRef(mappedValue)
 			) {
-				shadow.blur = mappedValue;
+				baseState._v.blur = mappedValue;
 				baseState._notify(notifyOptions);
 			}
 		}
 	});
 	const spreadState = useMapState(state, {
 		map(baseValue) {
-			const shadow = mapValue(baseValue);
-			if (isTokenRef(shadow)) {
-				return shadow;
+			if (isTokenRef(baseValue)) {
+				return baseValue;
 			}
-			return shadow?.spread;
+			return baseValue?.spread;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
-			const shadow = mapValue(baseState._v);
 			if (
-				shadow != null &&
-				!isTokenRef(shadow) &&
+				baseState._v != null &&
+				!isTokenRef(baseState._v) &&
 				mappedValue != null &&
 				!isTokenRef(mappedValue)
 			) {
-				shadow.spread = mappedValue;
+				baseState._v.spread = mappedValue;
 				baseState._notify(notifyOptions);
 			}
 		}
 	});
 	const offsetXState = useMapState(state, {
 		map(baseValue) {
-			const shadow = mapValue(baseValue);
-			if (isTokenRef(shadow)) {
-				return shadow;
+			if (isTokenRef(baseValue)) {
+				return baseValue;
 			}
-			return shadow?.offsetX;
+			return baseValue?.offsetX;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
-			const shadow = mapValue(baseState._v);
 			if (
-				shadow != null &&
-				!isTokenRef(shadow) &&
+				baseState._v != null &&
+				!isTokenRef(baseState._v) &&
 				mappedValue != null &&
 				!isTokenRef(mappedValue)
 			) {
-				shadow.offsetX = mappedValue;
+				baseState._v.offsetX = mappedValue;
 				baseState._notify(notifyOptions);
 			}
 		}
 	});
 	const offsetYState = useMapState(state, {
 		map(baseValue) {
-			const shadow = mapValue(baseValue);
-			if (isTokenRef(shadow)) {
-				return shadow;
+			if (isTokenRef(baseValue)) {
+				return baseValue;
 			}
-			return shadow?.offsetY;
+			return baseValue?.offsetY;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
-			const shadow = mapValue(baseState._v);
 			if (
-				shadow != null &&
-				!isTokenRef(shadow) &&
+				baseState._v != null &&
+				!isTokenRef(baseState._v) &&
 				mappedValue != null &&
 				!isTokenRef(mappedValue)
 			) {
-				shadow.offsetY = mappedValue;
+				baseState._v.offsetY = mappedValue;
 				baseState._notify(notifyOptions);
 			}
 		}
@@ -158,37 +142,36 @@ export const ShadowStyleMixinEditor = <
 
 	const handleAddShadow = React.useCallback(() => {
 		const tokenValue = mapToToken?.(tokenRefKey, tokenSet?._v);
-		applyValue(
-			state,
-			tokenValue ?? {
-				color: { r: 0, g: 0, b: 0, a: 0.1 },
-				offsetX: 0,
-				offsetY: 4,
-				blur: 6,
-				spread: disabledSpread ? 0 : -1
-			}
-		);
+		state._v =
+			tokenValue != null
+				? deepCopy(tokenValue)
+				: {
+						color: { r: 0, g: 0, b: 0, a: 0.1 },
+						offsetX: 0,
+						offsetY: 4,
+						blur: 6,
+						spread: disabledSpread ? 0 : -1
+					};
 		state._notify();
-	}, [mapToToken, tokenSet, applyValue, state, disabledSpread, tokenRefKey]);
+	}, [mapToToken, tokenSet, state, disabledSpread, tokenRefKey]);
 
 	const handleRemoveShadow = React.useCallback(() => {
-		applyValue(state, null);
+		state._v = null;
 		state._notify();
-	}, [state, applyValue]);
+	}, [state]);
 
 	const handleToggleTokenLink = React.useCallback(() => {
 		if (isLinked) {
-			const shadow = mapValue(state._v);
-			const tokenValue = isTokenRef(shadow) ? mapToToken?.(shadow.key, tokenSet?._v) : undefined;
+			const tokenValue = mapToToken?.(tokenRefKey, tokenSet?._v);
 			if (tokenValue !== undefined) {
-				applyValue(state, deepCopy(tokenValue));
+				state._v = deepCopy(tokenValue);
 				state._notify();
 			}
 		} else {
-			applyValue(state, tokenRef('mixin', tokenRefKey));
+			state._v = tokenRef('mixin', tokenRefKey);
 			state._notify();
 		}
-	}, [isLinked, mapValue, state, mapToToken, tokenSet, applyValue, tokenRefKey]);
+	}, [isLinked, state, mapToToken, tokenSet, tokenRefKey]);
 
 	const handleNavigateToToken = React.useCallback(() => {
 		editor.switchView('settings');
@@ -354,13 +337,8 @@ export const ShadowStyleMixinEditor = <
 	);
 };
 
-interface TShadowStyleMixinEditorProps<
-	GValue extends Record<string, any> | null,
-	GTokenSet extends TMixinTokenSet
-> {
-	state: TState<GValue, any>;
-	mapValue: (value: GValue) => TShadowStyleMixin['value'];
-	applyValue: (state: TState<GValue, any>, value: TShadowStyleMixin['value']) => void;
+interface TShadowStyleMixinEditorProps<GTokenSet extends TMixinTokenSet> {
+	state: TState<TShadowStyleMixin['value'], any>;
 	tokenSet?: TState<GTokenSet, any>;
 	tokenRefKey?: string;
 	mapToToken?: (ref: string, tokenSet?: GTokenSet) => TShadowStyleToken['value'] | undefined;

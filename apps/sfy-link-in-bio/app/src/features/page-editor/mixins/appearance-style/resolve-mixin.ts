@@ -68,7 +68,7 @@ export function resolveAppearanceStyleMixin<GTokenSet extends TMixinTokenSet>(
 	return Ok({
 		visible: resolvedVisible,
 		opacity: resolvedOpacity,
-		borderRadius: resolvedBorderRadius,
+		borderRadius: resolvedBorderRadius ?? undefined,
 		styles: {
 			// Elements are visible by default, so we only need to explicitly hide them
 			display: resolvedVisible ? undefined : 'none',

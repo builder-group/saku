@@ -5,6 +5,7 @@ import {
 	getFontHash,
 	getFontMetadataByFamily,
 	hexToRgba,
+	isTokenRef,
 	TFlatSite,
 	TTheme
 } from '@repo/editor';
@@ -17,7 +18,8 @@ import {
  */
 export function applyThemeToSite(site: TFlatSite, theme: TTheme): TFlatSite {
 	// Add theme fonts to assets if they don't already exist
-	const headingFontMetadata = getFontMetadataByFamily(theme.typography.heading.fontFamily) ?? fontMetadataMap.inter;
+	const headingFontMetadata =
+		getFontMetadataByFamily(theme.typography.heading.fontFamily) ?? fontMetadataMap.inter;
 	const headingFontHash = getFontHash(headingFontMetadata.font);
 	if (site.assets[headingFontHash] == null) {
 		site.assets[headingFontHash] = {
@@ -32,7 +34,8 @@ export function applyThemeToSite(site: TFlatSite, theme: TTheme): TFlatSite {
 			font: headingFontMetadata.font
 		};
 	}
-	const textFontMetadata = getFontMetadataByFamily(theme.typography.text.fontFamily) ?? fontMetadataMap.inter;
+	const textFontMetadata =
+		getFontMetadataByFamily(theme.typography.text.fontFamily) ?? fontMetadataMap.inter;
 	const textFontHash = getFontHash(textFontMetadata.font);
 	if (site.assets[textFontHash] == null) {
 		site.assets[textFontHash] = {
@@ -70,7 +73,9 @@ export function applyThemeToSite(site: TFlatSite, theme: TTheme): TFlatSite {
 			...rootNode,
 			autoLayout: {
 				...rootNode.autoLayout,
-				verticalGap: theme.gap ?? rootNode.autoLayout.verticalGap
+				verticalGap:
+					theme.gap ??
+					(isTokenRef(rootNode.autoLayout) ? rootNode.autoLayout : rootNode.autoLayout.verticalGap)
 			},
 			fill: {
 				paint: {

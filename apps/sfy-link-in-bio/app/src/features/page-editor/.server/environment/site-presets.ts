@@ -247,12 +247,12 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 				horizontalPadding: 24,
 				verticalPadding: 48,
 				verticalGap: 24,
-				horizontalGap: undefined
+				horizontalGap: null
 			},
 			appearance: {
 				visible: true,
 				opacity: 1,
-				borderRadius: undefined
+				borderRadius: null
 			},
 			fill:
 				theme != null

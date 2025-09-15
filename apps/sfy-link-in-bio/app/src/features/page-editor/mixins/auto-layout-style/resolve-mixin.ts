@@ -79,8 +79,8 @@ export function resolveAutoLayoutStyleMixin<GTokenSet extends TMixinTokenSet>(
 	return Ok({
 		horizontalPadding: resolvedHorizontalPadding,
 		verticalPadding: resolvedVerticalPadding,
-		horizontalGap: resolvedHorizontalGap,
-		verticalGap: resolvedVerticalGap,
+		horizontalGap: resolvedHorizontalGap ?? undefined,
+		verticalGap: resolvedVerticalGap ?? undefined,
 		styles: {
 			padding:
 				resolvedVerticalPadding != null || resolvedHorizontalPadding != null

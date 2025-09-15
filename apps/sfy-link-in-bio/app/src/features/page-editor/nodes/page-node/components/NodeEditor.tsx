@@ -1,5 +1,6 @@
 import { TFlatPageNode } from '@repo/editor';
 import React from 'react';
+import { useNodeProperty } from '../../../hooks';
 import { TNodeEditorComponentProps } from '../../../lib';
 import {
 	AppearanceStyleMixinEditor,
@@ -10,35 +11,21 @@ import {
 export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TFlatPageNode>> = (props) => {
 	const { nodeState, editor } = props;
 
+	const autoLayoutState = useNodeProperty(nodeState, 'autoLayout');
+	const appearanceState = useNodeProperty(nodeState, 'appearance');
+	const fillState = useNodeProperty(nodeState, 'fill');
+
 	// =========================================================================
 	// UI
 	// =========================================================================
 
 	return (
 		<>
-			<AutoLayoutStyleMixinEditor
-				state={nodeState}
-				mapValue={(value) => value.autoLayout}
-				disabledTokenLink
-				editor={editor}
-			/>
+			<AutoLayoutStyleMixinEditor state={autoLayoutState} disabledTokenLink editor={editor} />
 			<div className="h-px bg-neutral-200" />
-			<AppearanceStyleMixinEditor
-				state={nodeState}
-				mapValue={(value) => value.appearance}
-				disabledTokenLink
-				editor={editor}
-			/>
+			<AppearanceStyleMixinEditor state={appearanceState} disabledTokenLink editor={editor} />
 			<div className="h-px bg-neutral-200" />
-			<FillStyleMixinEditor
-				state={nodeState}
-				mapValue={(value) => value.fill}
-				applyValue={(state, value) => {
-					state._v.fill = value;
-				}}
-				disabledTokenLink
-				editor={editor}
-			/>
+			<FillStyleMixinEditor state={fillState} disabledTokenLink editor={editor} />
 		</>
 	);
 };

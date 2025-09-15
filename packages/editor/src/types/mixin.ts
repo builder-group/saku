@@ -275,21 +275,21 @@ export type TStyleMixin =
 
 export type TAutoLayoutStyleMixin = TBaseMixin<
 	'autoLayout',
-	{
+	TRef<{
 		horizontalPadding: TRef<number>;
 		verticalPadding: TRef<number>;
-		horizontalGap: TRef<number> | undefined;
-		verticalGap: TRef<number> | undefined;
-	}
+		horizontalGap: TRef<number | null>;
+		verticalGap: TRef<number | null>;
+	}>
 >;
 
 export type TAppearanceStyleMixin = TBaseMixin<
 	'appearance',
-	{
-		visible: boolean;
+	TRef<{
+		visible: TRef<boolean>;
 		opacity: TRef<number>;
-		borderRadius: TRef<number> | undefined;
-	}
+		borderRadius: TRef<number | null>;
+	}>
 >;
 
 export type TTypographyStyleMixin = TBaseMixin<
@@ -335,68 +335,68 @@ export type TShadowStyleMixin = TBaseMixin<
 // Composed Style Mixins
 // =========================================================================
 
-// export type TCardStyleMixin = TBaseMixin<
-// 	'card',
-// 	{
-// 		autoLayout: TAutoLayoutStyleMixin['value'];
-// 		appearance: TAppearanceStyleMixin['value'];
-// 		fill: TFillStyleMixin['value'];
-// 		stroke: TStrokeStyleMixin['value'];
-// 		shadow: TShadowStyleMixin['value'];
-// 	}
-// >;
+export type TCardStyleMixin = TBaseMixin<
+	'card',
+	TRef<{
+		autoLayout: TAutoLayoutStyleMixin['value'];
+		appearance: TAppearanceStyleMixin['value'];
+		fill: TFillStyleMixin['value'];
+		stroke: TStrokeStyleMixin['value'];
+		shadow: TShadowStyleMixin['value'];
+	}>
+>;
 
 export type TTextStyleMixin = TBaseMixin<
 	'text',
-	{
+	TRef<{
 		appearance: TAppearanceStyleMixin['value'];
 		typography: TTypographyStyleMixin['value'];
 		fill: TFillStyleMixin['value'];
 		stroke: TStrokeStyleMixin['value'];
 		shadow: TShadowStyleMixin['value'];
-	}
+	}>
 >;
 export type TTextXlStyleMixin = TBaseMixin<'textXl', TTextStyleMixin['value']>;
 export type TTextSmStyleMixin = TBaseMixin<'textSm', TTextStyleMixin['value']>;
 
 export type TButtonStyleMixin = TBaseMixin<
 	'button',
-	{
+	TRef<{
 		appearance: TAppearanceStyleMixin['value'];
 		fill: TFillStyleMixin['value'];
 		stroke: TStrokeStyleMixin['value'];
 		shadow: TShadowStyleMixin['value'];
 		text: TTextStyleMixin['value'];
-	}
+	}>
 >;
 export type TButtonPrimaryStyleMixin = TBaseMixin<'buttonPrimary', TButtonStyleMixin['value']>;
 export type TButtonNeutralStyleMixin = TBaseMixin<'buttonNeutral', TButtonStyleMixin['value']>;
 
 export type TBadgeStyleMixin = TBaseMixin<
 	'badge',
-	{
+	TRef<{
 		appearance: TAppearanceStyleMixin['value'];
 		fill: TFillStyleMixin['value'];
 		stroke: TStrokeStyleMixin['value'];
 		shadow: TShadowStyleMixin['value'];
 		text: TTextStyleMixin['value'];
-	}
+	}>
 >;
 export type TBadgePrimaryStyleMixin = TBaseMixin<'badgePrimary', TBadgeStyleMixin['value']>;
 export type TBadgeNeutralStyleMixin = TBaseMixin<'badgeNeutral', TBadgeStyleMixin['value']>;
 
 export type TImageStyleMixin = TBaseMixin<
 	'image',
-	{
+	TRef<{
 		appearance: TAppearanceStyleMixin['value'];
 		stroke: TStrokeStyleMixin['value'];
 		shadow: TShadowStyleMixin['value'];
-	}
+	}>
 >;
 
 export type TProductDetailsStyleMixin = TBaseMixin<
 	'productDetails',
-	{
+	TRef<{
 		appearance: TAppearanceStyleMixin['value'];
 		fill: TFillStyleMixin['value'];
 		stroke: TStrokeStyleMixin['value'];
@@ -405,5 +405,5 @@ export type TProductDetailsStyleMixin = TBaseMixin<
 		text: TTextStyleMixin['value'];
 		buttonPrimary: TButtonPrimaryStyleMixin['value'];
 		image: TImageStyleMixin['value'];
-	}
+	}>
 >;

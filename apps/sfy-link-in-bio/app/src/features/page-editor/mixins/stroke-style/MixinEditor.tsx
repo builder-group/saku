@@ -15,16 +15,11 @@ import { useMapState } from '@/hooks';
 import { TokenActionOverlay, TokenColorInput, TokenTextInput } from '../../components';
 import { TPageEditor } from '../../lib';
 
-export const StrokeStyleMixinEditor = <
-	GValue extends Record<string, any> | null,
-	GTokenSet extends TMixinTokenSet
->(
-	props: TStrokeStyleMixinEditorProps<GValue, GTokenSet>
+export const StrokeStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
+	props: TStrokeStyleMixinEditorProps<GTokenSet>
 ) => {
 	const {
 		state,
-		mapValue,
-		applyValue,
 		tokenSet,
 		tokenRefKey = 'default',
 		mapToToken,
@@ -32,57 +27,52 @@ export const StrokeStyleMixinEditor = <
 		editor
 	} = props;
 
-	const isLinked = useCompute(state, ({ value }) => isTokenRef(mapValue(value)), [mapValue]);
+	const isLinked = useCompute(state, ({ value }) => isTokenRef(value), []);
 	const isSet = useCompute(
 		state,
 		({ value }) => {
-			const stroke = mapValue(value);
-			if (isTokenRef(stroke)) {
-				return mapToToken?.(stroke.key, tokenSet?._v) != null;
+			if (isTokenRef(value)) {
+				return mapToToken?.(tokenRefKey, tokenSet?._v) != null;
 			}
-			return stroke != null;
+			return value != null;
 		},
-		[mapValue]
+		[]
 	);
 
 	const colorState = useMapState(state, {
 		map(baseValue) {
-			const stroke = mapValue(baseValue);
-			if (isTokenRef(stroke)) {
-				return stroke;
+			if (isTokenRef(baseValue)) {
+				return baseValue;
 			}
-			return stroke?.color;
+			return baseValue?.color;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
-			const stroke = mapValue(baseState._v);
 			if (
-				stroke != null &&
-				!isTokenRef(stroke) &&
+				baseState._v != null &&
+				!isTokenRef(baseState._v) &&
 				mappedValue != null &&
 				!isTokenRef(mappedValue)
 			) {
-				stroke.color = mappedValue;
+				baseState._v.color = mappedValue;
 				baseState._notify(notifyOptions);
 			}
 		}
 	});
 	const widthState = useMapState(state, {
 		map(baseValue) {
-			const stroke = mapValue(baseValue);
-			if (isTokenRef(stroke)) {
-				return stroke;
+			if (isTokenRef(baseValue)) {
+				return baseValue;
 			}
-			return stroke?.width;
+			return baseValue?.width;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
-			const stroke = mapValue(baseState._v);
 			if (
-				stroke != null &&
-				!isTokenRef(stroke) &&
+				baseState._v != null &&
+				!isTokenRef(baseState._v) &&
 				mappedValue != null &&
 				!isTokenRef(mappedValue)
 			) {
-				stroke.width = mappedValue;
+				baseState._v.width = mappedValue;
 				baseState._notify(notifyOptions);
 			}
 		}
@@ -94,34 +84,33 @@ export const StrokeStyleMixinEditor = <
 
 	const handleAddStroke = React.useCallback(() => {
 		const tokenValue = mapToToken?.(tokenRefKey, tokenSet?._v);
-		applyValue(
-			state,
-			tokenValue ?? {
-				color: { r: 0, g: 0, b: 0, a: 1 },
-				width: 1
-			}
-		);
+		state._v =
+			tokenValue != null
+				? deepCopy(tokenValue)
+				: {
+						color: { r: 0, g: 0, b: 0, a: 1 },
+						width: 1
+					};
 		state._notify();
-	}, [mapToToken, tokenSet, state, applyValue, tokenRefKey]);
+	}, [mapToToken, tokenSet, state, tokenRefKey]);
 
 	const handleRemoveStroke = React.useCallback(() => {
-		applyValue(state, null);
+		state._v = null;
 		state._notify();
-	}, [state, applyValue]);
+	}, [state]);
 
 	const handleToggleTokenLink = React.useCallback(() => {
 		if (isLinked) {
-			const stroke = mapValue(state._v);
-			const tokenValue = isTokenRef(stroke) ? mapToToken?.(stroke.key, tokenSet?._v) : undefined;
+			const tokenValue = mapToToken?.(tokenRefKey, tokenSet?._v);
 			if (tokenValue !== undefined) {
-				applyValue(state, deepCopy(tokenValue));
+				state._v = deepCopy(tokenValue);
 				state._notify();
 			}
 		} else {
-			applyValue(state, tokenRef('mixin', tokenRefKey));
+			state._v = tokenRef('mixin', tokenRefKey);
 			state._notify();
 		}
-	}, [isLinked, mapValue, state, mapToToken, tokenSet, applyValue, tokenRefKey]);
+	}, [isLinked, state, mapToToken, tokenSet, tokenRefKey]);
 
 	const handleNavigateToToken = React.useCallback(() => {
 		editor.switchView('settings');
@@ -222,13 +211,8 @@ export const StrokeStyleMixinEditor = <
 	);
 };
 
-interface TStrokeStyleMixinEditorProps<
-	GValue extends Record<string, any> | null,
-	GTokenSet extends TMixinTokenSet
-> {
-	state: TState<GValue, any>;
-	mapValue: (value: GValue) => TStrokeStyleMixin['value'];
-	applyValue: (state: TState<GValue, any>, value: TStrokeStyleMixin['value']) => void;
+interface TStrokeStyleMixinEditorProps<GTokenSet extends TMixinTokenSet> {
+	state: TState<TStrokeStyleMixin['value'], any>;
 	tokenSet?: TState<GTokenSet, any>;
 	tokenRefKey?: string;
 	mapToToken?: (ref: string, tokenSet?: GTokenSet) => TStrokeStyleToken['value'] | undefined;

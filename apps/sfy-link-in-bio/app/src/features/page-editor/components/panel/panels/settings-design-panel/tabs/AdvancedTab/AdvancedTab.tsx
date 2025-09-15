@@ -1,15 +1,26 @@
 import {
+	TAppearanceStyleMixin,
 	TAppearanceStyleToken,
+	TAutoLayoutStyleMixin,
 	TAutoLayoutStyleToken,
+	TBadgeStyleMixin,
 	TBadgeStyleToken,
+	TButtonStyleMixin,
 	TButtonStyleToken,
+	TFillStyleMixin,
 	TFillStyleToken,
+	TImageStyleMixin,
 	TImageStyleToken,
+	TProductDetailsStyleMixin,
 	TProductDetailsStyleToken,
+	TShadowStyleMixin,
 	TShadowStyleToken,
+	TStrokeStyleMixin,
 	TStrokeStyleToken,
+	TTextStyleMixin,
 	TTextStyleToken
 } from '@repo/editor';
+import { TState } from 'feature-state';
 import React from 'react';
 import { AccordionSection } from '@/components';
 import { TPageEditor } from '../../../../../../lib';
@@ -75,8 +86,7 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 							defaultOpen={true}
 						>
 							<AutoLayoutStyleMixinEditor
-								state={state}
-								mapValue={(value) => value}
+								state={state as TState<TAutoLayoutStyleMixin['value'], any>}
 								disabledTokenLink
 								editor={editor}
 							/>
@@ -97,8 +107,7 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 							defaultOpen={true}
 						>
 							<AppearanceStyleMixinEditor
-								state={state}
-								mapValue={(value) => value}
+								state={state as TState<TAppearanceStyleMixin['value'], any>}
 								disabledTokenLink
 								editor={editor}
 								disabledVisibilityToggle
@@ -145,11 +154,7 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 							defaultOpen={true}
 						>
 							<FillStyleMixinEditor
-								state={state}
-								mapValue={(value) => value}
-								applyValue={(state, value) => {
-									state._v = value as TFillStyleToken['value'];
-								}}
+								state={state as TState<TFillStyleMixin['value'], any>}
 								disabledTokenLink
 								editor={editor}
 							/>
@@ -170,11 +175,7 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 							defaultOpen={true}
 						>
 							<StrokeStyleMixinEditor
-								state={state}
-								mapValue={(value) => value}
-								applyValue={(state, value) => {
-									state._v = value as TStrokeStyleToken['value'];
-								}}
+								state={state as TState<TStrokeStyleMixin['value'], any>}
 								disabledTokenLink
 								editor={editor}
 							/>
@@ -195,11 +196,7 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 							defaultOpen={true}
 						>
 							<ShadowStyleMixinEditor
-								state={state}
-								mapValue={(value) => value}
-								applyValue={(state, value) => {
-									state._v = value as TShadowStyleToken['value'];
-								}}
+								state={state as TState<TShadowStyleMixin['value'], any>}
 								disabledTokenLink
 								editor={editor}
 							/>
@@ -220,8 +217,7 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 							defaultOpen={true}
 						>
 							<ButtonStyleMixinEditor
-								state={state}
-								mapValue={(value) => value}
+								state={state as TState<TButtonStyleMixin['value'], any>}
 								disabledTokenLink
 								editor={editor}
 							/>
@@ -242,8 +238,7 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 							defaultOpen={true}
 						>
 							<BadgeStyleMixinEditor
-								state={state}
-								mapValue={(value) => value}
+								state={state as TState<TBadgeStyleMixin['value'], any>}
 								disabledTokenLink
 								editor={editor}
 							/>
@@ -264,8 +259,7 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 							defaultOpen={true}
 						>
 							<TextStyleMixinEditor
-								state={state}
-								mapValue={(value) => value}
+								state={state as TState<TTextStyleMixin['value'], any>}
 								disabledTokenLink
 								editor={editor}
 							/>
@@ -286,8 +280,7 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 							defaultOpen={true}
 						>
 							<ImageStyleMixinEditor
-								state={state}
-								mapValue={(value) => value}
+								state={state as TState<TImageStyleMixin['value'], any>}
 								disabledTokenLink
 								editor={editor}
 							/>
@@ -308,8 +301,7 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 							defaultOpen={true}
 						>
 							<ProductDetailsStyleMixinEditor
-								state={state}
-								mapValue={(value) => value}
+								state={state as TState<TProductDetailsStyleMixin['value'], any>}
 								disabledTokenLink
 								editor={editor}
 							/>

@@ -1,7 +1,7 @@
 import { TMixinTokenSet, TTextStyleMixin, TTextStyleToken } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
-import { TMixinResolveContext } from '../../lib';
+import { resolveTokenRef, TMixinResolveContext } from '../../lib';
 import { resolveAppearanceStyleMixin } from '../appearance-style';
 import { resolveFillStyleMixin } from '../fill-style';
 import { resolveShadowStyleMixin } from '../shadow-style';
@@ -13,8 +13,15 @@ export function resolveTextStyleMixin<GTokenSet extends TMixinTokenSet>(
 	text: TTextStyleMixin['value'],
 	cx: TMixinResolveContext<TTextStyleToken['value'], GTokenSet>
 ): TResult<TResolvedTextStyleMixin['value'], AppError> {
+	const [isResolvedTextOk, resolvedTextErr, resolvedText] = resolveTokenRef(text, {
+		mixin: { tokenSet: cx.mixinTokenSet, mapToTokenValue: cx.mapToMixinTokenValue }
+	});
+	if (!isResolvedTextOk) {
+		return Err(resolvedTextErr.wrapWith('#ERR_RESOLVE_TEXT_STYLE'));
+	}
+
 	const [isResolvedAppearanceOk, resolvedAppearanceErr, resolvedAppearance] =
-		resolveAppearanceStyleMixin(text.appearance, {
+		resolveAppearanceStyleMixin(resolvedText.appearance, {
 			...cx,
 			mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.appearance
 		});
@@ -22,22 +29,25 @@ export function resolveTextStyleMixin<GTokenSet extends TMixinTokenSet>(
 		return Err(resolvedAppearanceErr.wrapWith('#ERR_RESOLVE_APPEARANCE_STYLE'));
 	}
 	const [isResolvedTypographyOk, resolvedTypographyErr, resolvedTypography] =
-		resolveTypographyStyleMixin(text.typography, {
+		resolveTypographyStyleMixin(resolvedText.typography, {
 			...cx,
 			mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.typography
 		});
 	if (!isResolvedTypographyOk) {
 		return Err(resolvedTypographyErr.wrapWith('#ERR_RESOLVE_TYPOGRAPHY_STYLE'));
 	}
-	const [isResolvedFillOk, resolvedFillErr, resolvedFill] = resolveFillStyleMixin(text.fill, {
-		...cx,
-		mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.fill
-	});
+	const [isResolvedFillOk, resolvedFillErr, resolvedFill] = resolveFillStyleMixin(
+		resolvedText.fill,
+		{
+			...cx,
+			mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.fill
+		}
+	);
 	if (!isResolvedFillOk) {
 		return Err(resolvedFillErr.wrapWith('#ERR_RESOLVE_FILL_STYLE'));
 	}
 	const [isResolvedStrokeOk, resolvedStrokeErr, resolvedStroke] = resolveStrokeStyleMixin(
-		text.stroke,
+		resolvedText.stroke,
 		{
 			...cx,
 			mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.stroke
@@ -47,7 +57,7 @@ export function resolveTextStyleMixin<GTokenSet extends TMixinTokenSet>(
 		return Err(resolvedStrokeErr.wrapWith('#ERR_RESOLVE_STROKE_STYLE'));
 	}
 	const [isResolvedShadowOk, resolvedShadowErr, resolvedShadow] = resolveShadowStyleMixin(
-		text.shadow,
+		resolvedText.shadow,
 		{
 			...cx,
 			mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.shadow

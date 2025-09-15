@@ -4,7 +4,12 @@ import { useCompute, useFeatureState, useListener } from 'feature-react/state';
 import React from 'react';
 import { ImageUploadField, TImageUploadEvent } from '@/components';
 import { cn } from '@/lib';
-import { packTypographyTokenRef, unpackTypographyTokenRef } from '../../../../mixins';
+import {
+	packTextTokenRef,
+	packTypographyTokenRef,
+	unpackTextTokenRef,
+	unpackTypographyTokenRef
+} from '../../../../mixins';
 import { TNodeEditorContext } from './create-node-editor-context';
 import { fetchUrlMetadata } from './lib';
 
@@ -109,12 +114,14 @@ export const SingleContent: React.FC<TSingleContentProps> = (props) => {
 						cx.node._v.content.userFavicon = hash;
 
 						// Update text alignment
-						const textTypography = unpackTypographyTokenRef(cx.node._v.text.typography);
-						const textSmTypography = unpackTypographyTokenRef(cx.node._v.textSm.typography);
-						textTypography.textAlignHorizontal = 'start';
-						textSmTypography.textAlignHorizontal = 'start';
-						cx.node._v.text.typography = textTypography;
-						cx.node._v.textSm.typography = textSmTypography;
+						const unpackedText = unpackTextTokenRef(cx.node._v.text);
+						const unpackedTextSm = unpackTextTokenRef(cx.node._v.textSm);
+						const unpackedTextTypography = unpackTypographyTokenRef(unpackedText.typography);
+						const unpackedTextSmTypography = unpackTypographyTokenRef(unpackedTextSm.typography);
+						unpackedTextTypography.textAlignHorizontal = 'start';
+						unpackedTextSmTypography.textAlignHorizontal = 'start';
+						cx.node._v.text = unpackedText;
+						cx.node._v.textSm = unpackedTextSm;
 
 						cx.node._notify();
 					}
@@ -124,12 +131,16 @@ export const SingleContent: React.FC<TSingleContentProps> = (props) => {
 					cx.node._v.content.userFavicon = null;
 
 					// Update text alignment
-					const textTypography = unpackTypographyTokenRef(cx.node._v.text.typography);
-					const textSmTypography = unpackTypographyTokenRef(cx.node._v.textSm.typography);
-					textTypography.textAlignHorizontal = tokenRef('mixin', 'default');
-					textSmTypography.textAlignHorizontal = tokenRef('mixin', 'sm');
-					cx.node._v.text.typography = packTypographyTokenRef(textTypography);
-					cx.node._v.textSm.typography = packTypographyTokenRef(textSmTypography);
+					const unpackedText = unpackTextTokenRef(cx.node._v.text);
+					const unpackedTextSm = unpackTextTokenRef(cx.node._v.textSm);
+					const unpackedTextTypography = unpackTypographyTokenRef(unpackedText.typography);
+					const unpackedTextSmTypography = unpackTypographyTokenRef(unpackedTextSm.typography);
+					unpackedTextTypography.textAlignHorizontal = tokenRef('mixin', 'default');
+					unpackedTextSmTypography.textAlignHorizontal = tokenRef('mixin', 'sm');
+					unpackedText.typography = packTypographyTokenRef(unpackedTextTypography);
+					unpackedTextSm.typography = packTypographyTokenRef(unpackedTextSmTypography);
+					cx.node._v.text = packTextTokenRef(unpackedText);
+					cx.node._v.textSm = packTextTokenRef(unpackedTextSm);
 
 					cx.node._notify();
 					break;

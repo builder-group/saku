@@ -14,23 +14,15 @@ export const aboutNodeMetadata: TNodeMetadata<'about'> = {
 		autoLayout: {
 			horizontalPadding: tokenRef('mixin', 'default'),
 			verticalPadding: tokenRef('mixin', 'default'),
-			horizontalGap: undefined,
-			verticalGap: undefined
+			horizontalGap: null,
+			verticalGap: null
 		},
-		appearance: {
-			visible: true,
-			opacity: tokenRef('mixin', 'default'),
-			borderRadius: tokenRef('mixin', 'default')
-		},
+		appearance: tokenRef('mixin', 'default'),
 		fill: null,
 		stroke: null,
 		shadow: null,
 		textXl: {
-			appearance: {
-				visible: true,
-				opacity: tokenRef('mixin', 'xl'),
-				borderRadius: undefined
-			},
+			appearance: tokenRef('mixin', 'xl'),
 			typography: {
 				font: tokenRef('mixin', 'xl'),
 				fontSize: tokenRef('mixin', 'xl'),
@@ -44,11 +36,7 @@ export const aboutNodeMetadata: TNodeMetadata<'about'> = {
 			shadow: tokenRef('mixin', 'xl')
 		},
 		text: {
-			appearance: {
-				visible: true,
-				opacity: tokenRef('mixin', 'default'),
-				borderRadius: undefined
-			},
+			appearance: tokenRef('mixin', 'default'),
 			typography: {
 				font: tokenRef('mixin', 'default'),
 				fontSize: tokenRef('mixin', 'default'),
@@ -61,15 +49,7 @@ export const aboutNodeMetadata: TNodeMetadata<'about'> = {
 			stroke: tokenRef('mixin', 'default'),
 			shadow: tokenRef('mixin', 'default')
 		},
-		image: {
-			appearance: {
-				visible: true,
-				opacity: tokenRef('mixin', 'default'),
-				borderRadius: tokenRef('mixin', 'default')
-			},
-			stroke: tokenRef('mixin', 'default'),
-			shadow: tokenRef('mixin', 'default')
-		}
+		image: tokenRef('mixin', 'default')
 	}
 };
 
@@ -85,44 +65,20 @@ export const linkNodeMetadata: TNodeMetadata<'link'> = {
 		autoLayout: {
 			horizontalPadding: tokenRef('mixin', 'default'),
 			verticalPadding: tokenRef('mixin', 'default'),
-			horizontalGap: undefined,
-			verticalGap: undefined
+			horizontalGap: null,
+			verticalGap: null
 		},
-		appearance: {
-			visible: true,
-			opacity: tokenRef('mixin', 'default'),
-			borderRadius: tokenRef('mixin', 'default')
-		},
+		appearance: tokenRef('mixin', 'default'),
 		fill: tokenRef('mixin', 'default'),
 		stroke: tokenRef('mixin', 'default'),
 		shadow: tokenRef('mixin', 'default'),
-		text: {
-			appearance: {
-				visible: true,
-				opacity: tokenRef('mixin', 'default'),
-				borderRadius: undefined
-			},
-			typography: tokenRef('mixin', 'default'),
-			fill: tokenRef('mixin', 'default'),
-			stroke: tokenRef('mixin', 'default'),
-			shadow: tokenRef('mixin', 'default')
-		},
-		textSm: {
-			appearance: {
-				visible: true,
-				opacity: tokenRef('mixin', 'sm'),
-				borderRadius: undefined
-			},
-			typography: tokenRef('mixin', 'sm'),
-			fill: tokenRef('mixin', 'sm'),
-			stroke: tokenRef('mixin', 'sm'),
-			shadow: tokenRef('mixin', 'sm')
-		},
+		text: tokenRef('mixin', 'default'),
+		textSm: tokenRef('mixin', 'sm'),
 		image: {
 			appearance: {
 				visible: true,
 				opacity: tokenRef('mixin', 'default'),
-				borderRadius: undefined
+				borderRadius: null
 			},
 			stroke: tokenRef('mixin', 'default'),
 			shadow: tokenRef('mixin', 'default')
@@ -140,14 +96,10 @@ export const mediaNodeMetadata: TNodeMetadata<'media'> = {
 		autoLayout: {
 			horizontalPadding: 0,
 			verticalPadding: 0,
-			horizontalGap: undefined,
-			verticalGap: undefined
+			horizontalGap: null,
+			verticalGap: null
 		},
-		appearance: {
-			visible: true,
-			opacity: tokenRef('mixin', 'default'),
-			borderRadius: tokenRef('mixin', 'default')
-		},
+		appearance: tokenRef('mixin', 'default'),
 		fill: tokenRef('mixin', 'default'),
 		stroke: tokenRef('mixin', 'default'),
 		shadow: tokenRef('mixin', 'default'),
@@ -155,7 +107,7 @@ export const mediaNodeMetadata: TNodeMetadata<'media'> = {
 			appearance: {
 				visible: true,
 				opacity: tokenRef('mixin', 'default'),
-				borderRadius: undefined
+				borderRadius: null
 			},
 			stroke: tokenRef('mixin', 'default'),
 			shadow: tokenRef('mixin', 'default')
@@ -171,12 +123,12 @@ export const pageNodeMetadata: TNodeMetadata<'page'> = {
 			horizontalPadding: 24,
 			verticalPadding: 48,
 			verticalGap: 24,
-			horizontalGap: undefined
+			horizontalGap: null
 		},
 		appearance: {
 			visible: true,
 			opacity: 1,
-			borderRadius: undefined
+			borderRadius: null
 		},
 		fill: tokenRef('mixin', 'default'),
 		children: [],
@@ -197,23 +149,15 @@ export const productNodeMetadata: TNodeMetadata<'product'> = {
 		autoLayout: {
 			horizontalPadding: tokenRef('mixin', 'default'),
 			verticalPadding: tokenRef('mixin', 'default'),
-			horizontalGap: undefined,
-			verticalGap: undefined
+			horizontalGap: null,
+			verticalGap: null
 		},
-		appearance: {
-			visible: true,
-			opacity: tokenRef('mixin', 'default'),
-			borderRadius: tokenRef('mixin', 'default')
-		},
+		appearance: tokenRef('mixin', 'default'),
 		fill: tokenRef('mixin', 'default'),
 		stroke: tokenRef('mixin', 'default'),
 		shadow: tokenRef('mixin', 'default'),
 		text: {
-			appearance: {
-				visible: true,
-				opacity: tokenRef('mixin', 'default'),
-				borderRadius: undefined
-			},
+			appearance: tokenRef('mixin', 'default'),
 			typography: {
 				font: tokenRef('mixin', 'default'),
 				fontSize: tokenRef('mixin', 'default'),
@@ -226,140 +170,19 @@ export const productNodeMetadata: TNodeMetadata<'product'> = {
 			stroke: tokenRef('mixin', 'default'),
 			shadow: tokenRef('mixin', 'default')
 		},
-		buttonPrimary: {
-			appearance: {
-				visible: true,
-				opacity: tokenRef('mixin', 'primary'),
-				borderRadius: tokenRef('mixin', 'primary')
-			},
-			fill: tokenRef('mixin', 'primary'),
-			stroke: tokenRef('mixin', 'primary'),
-			shadow: tokenRef('mixin', 'primary'),
-			text: {
-				appearance: {
-					visible: true,
-					opacity: tokenRef('mixin', 'primary'),
-					borderRadius: undefined
-				},
-				typography: tokenRef('mixin', 'primary'),
-				fill: tokenRef('mixin', 'primary'),
-				stroke: tokenRef('mixin', 'primary'),
-				shadow: tokenRef('mixin', 'primary')
-			}
-		},
-		badgePrimary: {
-			appearance: {
-				visible: true,
-				opacity: tokenRef('mixin', 'primary'),
-				borderRadius: tokenRef('mixin', 'primary')
-			},
-			fill: tokenRef('mixin', 'primary'),
-			stroke: tokenRef('mixin', 'primary'),
-			shadow: tokenRef('mixin', 'primary'),
-			text: {
-				appearance: {
-					visible: true,
-					opacity: tokenRef('mixin', 'primary'),
-					borderRadius: undefined
-				},
-				typography: tokenRef('mixin', 'primary'),
-				fill: tokenRef('mixin', 'primary'),
-				stroke: tokenRef('mixin', 'primary'),
-				shadow: tokenRef('mixin', 'primary')
-			}
-		},
-		badgeNeutral: {
-			appearance: {
-				visible: true,
-				opacity: tokenRef('mixin', 'neutral'),
-				borderRadius: tokenRef('mixin', 'neutral')
-			},
-			fill: tokenRef('mixin', 'neutral'),
-			stroke: tokenRef('mixin', 'neutral'),
-			shadow: tokenRef('mixin', 'neutral'),
-			text: {
-				appearance: {
-					visible: true,
-					opacity: tokenRef('mixin', 'neutral'),
-					borderRadius: undefined
-				},
-				typography: tokenRef('mixin', 'neutral'),
-				fill: tokenRef('mixin', 'neutral'),
-				stroke: tokenRef('mixin', 'neutral'),
-				shadow: tokenRef('mixin', 'neutral')
-			}
-		},
+		buttonPrimary: tokenRef('mixin', 'primary'),
+		badgePrimary: tokenRef('mixin', 'primary'),
+		badgeNeutral: tokenRef('mixin', 'neutral'),
 		image: {
 			appearance: {
 				visible: true,
 				opacity: tokenRef('mixin', 'default'),
-				borderRadius: undefined
+				borderRadius: null
 			},
 			stroke: tokenRef('mixin', 'default'),
 			shadow: tokenRef('mixin', 'default')
 		},
-		productDetails: {
-			appearance: {
-				visible: true,
-				opacity: tokenRef('mixin', 'default'),
-				borderRadius: tokenRef('mixin', 'default')
-			},
-			fill: tokenRef('mixin', 'default'),
-			stroke: tokenRef('mixin', 'default'),
-			shadow: tokenRef('mixin', 'default'),
-			textXl: {
-				appearance: {
-					visible: true,
-					opacity: tokenRef('mixin', 'default'),
-					borderRadius: undefined
-				},
-				typography: tokenRef('mixin', 'default'),
-				fill: tokenRef('mixin', 'default'),
-				stroke: tokenRef('mixin', 'default'),
-				shadow: tokenRef('mixin', 'default')
-			},
-			text: {
-				appearance: {
-					visible: true,
-					opacity: tokenRef('mixin', 'default'),
-					borderRadius: undefined
-				},
-				typography: tokenRef('mixin', 'default'),
-				fill: tokenRef('mixin', 'default'),
-				stroke: tokenRef('mixin', 'default'),
-				shadow: tokenRef('mixin', 'default')
-			},
-			buttonPrimary: {
-				appearance: {
-					visible: true,
-					opacity: tokenRef('mixin', 'default'),
-					borderRadius: tokenRef('mixin', 'default')
-				},
-				fill: tokenRef('mixin', 'default'),
-				stroke: tokenRef('mixin', 'default'),
-				shadow: tokenRef('mixin', 'default'),
-				text: {
-					appearance: {
-						visible: true,
-						opacity: tokenRef('mixin', 'default'),
-						borderRadius: undefined
-					},
-					typography: tokenRef('mixin', 'default'),
-					fill: tokenRef('mixin', 'default'),
-					stroke: tokenRef('mixin', 'default'),
-					shadow: tokenRef('mixin', 'default')
-				}
-			},
-			image: {
-				appearance: {
-					visible: true,
-					opacity: tokenRef('mixin', 'default'),
-					borderRadius: tokenRef('mixin', 'default')
-				},
-				stroke: tokenRef('mixin', 'default'),
-				shadow: tokenRef('mixin', 'default')
-			}
-		}
+		productDetails: tokenRef('mixin', 'default')
 	}
 };
 
@@ -374,28 +197,14 @@ export const textNodeMetadata: TNodeMetadata<'text'> = {
 		autoLayout: {
 			horizontalPadding: tokenRef('mixin', 'default'),
 			verticalPadding: tokenRef('mixin', 'default'),
-			horizontalGap: undefined,
-			verticalGap: undefined
+			horizontalGap: null,
+			verticalGap: null
 		},
-		appearance: {
-			visible: true,
-			opacity: tokenRef('mixin', 'default'),
-			borderRadius: tokenRef('mixin', 'default')
-		},
+		appearance: tokenRef('mixin', 'default'),
 		fill: tokenRef('mixin', 'default'),
 		stroke: tokenRef('mixin', 'default'),
 		shadow: tokenRef('mixin', 'default'),
-		text: {
-			appearance: {
-				visible: true,
-				opacity: tokenRef('mixin', 'default'),
-				borderRadius: undefined
-			},
-			typography: tokenRef('mixin', 'default'),
-			fill: tokenRef('mixin', 'default'),
-			stroke: tokenRef('mixin', 'default'),
-			shadow: tokenRef('mixin', 'default')
-		}
+		text: tokenRef('mixin', 'default')
 	}
 };
 
