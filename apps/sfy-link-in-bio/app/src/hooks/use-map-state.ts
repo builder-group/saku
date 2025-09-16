@@ -24,7 +24,7 @@ export function mapState<GBaseValue, GMappedValue>(
 	baseState: TState<GBaseValue, any>,
 	config: TMapStateConfig<GBaseValue, GMappedValue>
 ): [TState<GMappedValue, any>, () => void] {
-	const { map, sync, ...stateOptions } = config;
+	const { map, sync, isEqual = Object.is, ...stateOptions } = config;
 
 	const mappedState = createState(map(baseState._v), stateOptions);
 
@@ -34,7 +34,13 @@ export function mapState<GBaseValue, GMappedValue>(
 			return;
 		}
 
-		mappedState.set(map(value), { listenerContext: { source: 'mapState:base' } });
+		const newMappedValue = map(value);
+
+		// Only update if values are different (or isEqual is disabled)
+		if (isEqual === false || !isEqual(newMappedValue, mappedState._v)) {
+			mappedState._v = newMappedValue;
+			mappedState._notify({ listenerContext: { source: 'mapState:base' } });
+		}
 	});
 
 	// Keep base in sync with mapped
@@ -65,4 +71,5 @@ interface TMapStateConfig<GBaseValue, GMappedValue> extends TCreateStateOptions 
 		mappedValue: GMappedValue,
 		notifyOptions?: TStateNotifyOptions<GBaseValue>
 	) => void;
+	isEqual?: ((a: GMappedValue, b: GMappedValue) => boolean) | false;
 }
