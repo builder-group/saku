@@ -150,11 +150,15 @@ export function resolveLinkNode(
 
 	const imageBorderRadius =
 		resolvedImage.appearance.borderRadius ??
-		computeInnerBorderRadius(
-			resolvedAppearance.borderRadius ?? 0,
-			resolvedAutoLayout.verticalPadding,
-			resolvedAutoLayout.horizontalPadding
-		);
+		((content.type === 'spotify-embed' || content.type === 'youtube-embed') &&
+		resolvedAutoLayout.verticalPadding === 0 &&
+		resolvedAutoLayout.horizontalPadding === 0
+			? 0 // If no padding let overflow hidden handle it
+			: computeInnerBorderRadius(
+					resolvedAppearance.borderRadius ?? 0,
+					resolvedAutoLayout.verticalPadding,
+					resolvedAutoLayout.horizontalPadding
+				));
 
 	return Ok({
 		...rest,
