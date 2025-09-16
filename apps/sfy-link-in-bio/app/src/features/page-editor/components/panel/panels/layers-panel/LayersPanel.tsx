@@ -145,12 +145,6 @@ export const LayersPanel: React.FC<TLayersPanelProps> = (props) => {
 	// UI
 	// =========================================================================
 
-	// Hide panel if node is selected and on mobile
-	// TODO: Remove once programmatic collapse/expand is fixed
-	if (!isMd && hasSelectedNode) {
-		return;
-	}
-
 	return (
 		<>
 			{withResizableHandle && <ResizableHandle className="bg-neutral-200" withHandle={!isMd} />}

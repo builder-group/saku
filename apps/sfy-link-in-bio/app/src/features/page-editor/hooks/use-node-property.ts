@@ -15,6 +15,6 @@ export function useNodeProperty<GNode extends TFlatNode, TMixinKey extends keyof
 			baseState._v[key] = mappedValue;
 			baseState._notify(notifyOptions);
 		},
-		isEqual: false // Mixin objects are mutable references - we need to always update when the base state changes, even if the object reference is the same
+		isEqual: false
 	});
 }

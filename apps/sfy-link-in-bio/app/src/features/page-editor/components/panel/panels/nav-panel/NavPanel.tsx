@@ -4,13 +4,11 @@ import React from 'react';
 import { ResizablePanel } from '@/components';
 import { cn } from '@/lib';
 import { TViewType, viewMetadata } from '../../../../environment';
-import { useEditorBreakpoint } from '../../../../hooks';
 import { TPageEditor } from '../../../../lib';
 
 export const NavPanel: React.FC<TNavPanelProps> = (props) => {
 	const { editor, order } = props;
 
-	const isMd = useEditorBreakpoint(editor, 'md');
 	const [collapsed, setCollapsed] = React.useState(true);
 	const activeView = useFeatureState(editor.activeView);
 
@@ -19,30 +17,16 @@ export const NavPanel: React.FC<TNavPanelProps> = (props) => {
 	const sizes = useCompute(
 		editor.boundingRect,
 		({ value: rect }) => {
-			// Desktop (horizontal layout): Resizable based on width
-			if (isMd) {
-				const width = rect.right - rect.left;
-				const toPercent = (pixels: number) => (pixels / (width > 0 ? width : 15)) * 100;
-				return {
-					collapsedSize: toPercent(60), // ~ 4
-					minSize: toPercent(120), // ~ 8
-					defaultSize: toPercent(60), // ~ 4
-					maxSize: toPercent(180) // ~ 12
-				};
-			}
-
-			// Mobile (vertical layout): Fixed height for navbar with icons
-			const height = rect.bottom - rect.top;
-			const toPercent = (pixels: number) => (pixels / (height > 0 ? height : 15)) * 100;
-			const navbarHeight = 60; // Fixed height for mobile navbar (~ 4)
+			const width = rect.right - rect.left;
+			const toPercent = (pixels: number) => (pixels / (width > 0 ? width : 15)) * 100;
 			return {
-				collapsedSize: toPercent(navbarHeight),
-				minSize: toPercent(navbarHeight),
-				defaultSize: toPercent(navbarHeight),
-				maxSize: toPercent(navbarHeight)
+				collapsedSize: toPercent(60), // ~ 4
+				minSize: toPercent(120), // ~ 8
+				defaultSize: toPercent(60), // ~ 4
+				maxSize: toPercent(180) // ~ 12
 			};
 		},
-		[isMd],
+		[],
 		{
 			isEqual(a, b) {
 				return (
@@ -74,7 +58,7 @@ export const NavPanel: React.FC<TNavPanelProps> = (props) => {
 		<ResizablePanel
 			id="nav-panel"
 			order={order}
-			collapsible={sizes.collapsedSize != null}
+			collapsible={true}
 			collapsedSize={sizes.collapsedSize}
 			minSize={sizes.minSize}
 			defaultSize={sizes.defaultSize}
@@ -83,7 +67,7 @@ export const NavPanel: React.FC<TNavPanelProps> = (props) => {
 			onExpand={() => setCollapsed(false)}
 		>
 			<div className="flex h-full flex-col bg-white">
-				<nav className="mr-24 flex flex-row justify-between gap-1 p-2 md:mr-0 md:flex-col md:justify-start">
+				<nav className="flex flex-col gap-1 p-2">
 					{viewMetadata.map((item, index) => {
 						return (
 							<button

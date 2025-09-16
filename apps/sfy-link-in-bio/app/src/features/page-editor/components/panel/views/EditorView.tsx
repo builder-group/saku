@@ -4,7 +4,7 @@ import React from 'react';
 import { ResizableHandle } from '@/components';
 import { useEditorBreakpoint } from '../../../hooks';
 import { TPageEditor } from '../../../lib';
-import { NavPanel } from '../panels';
+import { MobileNavPanel, NavPanel } from '../panels';
 import { DesignView } from './DesignView';
 import { PreviewView } from './PreviewView';
 import { SettingsView } from './SettingsView';
@@ -61,7 +61,7 @@ export const EditorView: React.FC<TEditorViewProps> & { panelCount: number } = (
 		<>
 			<View editor={editor} order={order} />
 			<ResizableHandle className="bg-neutral-200" />
-			<NavPanel editor={editor} order={order + View.panelCount} />
+			<MobileNavPanel editor={editor} />
 		</>
 	);
 };
