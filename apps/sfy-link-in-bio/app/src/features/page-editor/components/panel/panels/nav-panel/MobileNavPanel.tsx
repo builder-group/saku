@@ -44,29 +44,6 @@ export const MobileNavPanel: React.FC<TMobileNavPanelProps> = (props) => {
 			})}
 		</nav>
 	);
-
-	// return (
-	// 	<div className="flex h-15 w-full items-center justify-between bg-white px-4 py-2">
-	// 		<nav className="flex w-full flex-row items-center justify-between gap-2">
-	// 			{viewMetadata.map((item, index) => {
-	// 				return (
-	// 					<button
-	// 						key={index}
-	// 						className={cn(
-	// 							'flex flex-1 cursor-pointer items-center justify-center rounded-lg p-3 text-neutral-700 hover:bg-neutral-50',
-	// 							activeView === item.type && 'bg-neutral-100 text-[#005BD3]'
-	// 						)}
-	// 						onClick={() => handleSwitchView(item.type as TViewType)}
-	// 					>
-	// 						<div className="flex h-6 w-6 items-center justify-center">
-	// 							<Icon source={item.icon} />
-	// 						</div>
-	// 					</button>
-	// 				);
-	// 			})}
-	// 		</nav>
-	// 	</div>
-	// );
 };
 
 interface TMobileNavPanelProps {
