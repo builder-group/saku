@@ -103,7 +103,9 @@ export const ProductDetailsModal: React.FC<TProductDetailsModalProps> = (props) 
 			>
 				{/* Modal Header */}
 				<form method="dialog">
-					<button className="btn btn-sm btn-circle absolute top-4 right-4 z-50">✕</button>
+					<button className="btn btn-sm btn-circle absolute top-4 right-4 z-50 bg-gray-100 text-gray-700 hover:bg-gray-200">
+						✕
+					</button>
 				</form>
 
 				{/* Modal Content */}
@@ -192,12 +194,14 @@ export const ProductDetailsModal: React.FC<TProductDetailsModalProps> = (props) 
 								return (
 									<div key={option.name} className="form-control">
 										<label className="label">
-											<span className="label-text font-medium">{option.name}</span>
+											<span className="label-text font-medium" style={{ color: text.styles.color }}>
+												{option.name}
+											</span>
 										</label>
 										<select
 											value={currentValue}
 											onChange={(e) => handleOptionSelect(option.name, e.target.value)}
-											className="select select-bordered w-full"
+											className="select select-bordered w-full bg-white text-gray-900"
 										>
 											<option disabled value="">
 												Choose {option.name}
