@@ -1,6 +1,6 @@
 import { tokenRef, TSingleLinkNodeContent } from '@repo/editor';
 import { Button, InlineError, Text, TextField } from '@shopify/polaris';
-import { useCompute, useFeatureState, useListener } from 'feature-react/state';
+import { useCompute, useFeatureState, useSubscriber } from 'feature-react/state';
 import React from 'react';
 import { ImageUploadField, TImageUploadEvent } from '@/components';
 import { cn } from '@/lib';
@@ -186,14 +186,14 @@ export const SingleContent: React.FC<TSingleContentProps> = (props) => {
 	// Effects
 	// =========================================================================
 
-	useListener(
+	useSubscriber(
 		cx.node,
-		({ value: node, source }) => {
-			if (displayUrl !== node.content.url && source !== 'apply-url-and-enhance') {
-				setDisplayUrl(node.content.url);
+		({ value, source }) => {
+			if (source !== 'apply-url-and-enhance') {
+				setDisplayUrl(value.content.url);
 			}
 		},
-		[cx, displayUrl]
+		[cx]
 	);
 
 	// =========================================================================
