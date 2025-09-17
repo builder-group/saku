@@ -163,4 +163,6 @@ export interface TShopifyIntegration extends TBaseIntegration {
 	type: 'shopify';
 	shopId: string;
 	storefrontAccessToken: string;
+	isPartnerDevelopment: boolean;
+	isShopifyPlus: boolean;
 }

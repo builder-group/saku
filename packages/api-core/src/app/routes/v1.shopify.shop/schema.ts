@@ -32,10 +32,16 @@ export const GetShopOverviewRoute = createRoute({
 						primaryDomain: z
 							.object({
 								host: z.string().openapi({ example: 'my-awesome-store.com' }),
-								url: z.string().url().openapi({ example: 'https://my-awesome-store.com' })
+								url: z.url().openapi({ example: 'https://my-awesome-store.com' })
+							})
+							.optional(),
+						plan: z
+							.object({
+								displayName: z.string().openapi({ example: 'Shopify Plus' }),
+								isPartnerDevelopment: z.boolean().openapi({ example: false }),
+								isShopifyPlus: z.boolean().openapi({ example: true })
 							})
 							.optional()
-							.openapi({ description: 'Primary custom domain if configured' })
 					}),
 					theme: z.object({
 						id: z.string().openapi({ example: 'gid://shopify/Theme/123456789' }),
@@ -109,7 +115,7 @@ export const GetShopOverviewRoute = createRoute({
 							platform: z
 								.string()
 								.openapi({ example: 'instagram', description: 'Social media platform' }),
-							url: z.string().url().openapi({ example: 'https://instagram.com/shopname' }),
+							url: z.url().openapi({ example: 'https://instagram.com/shopname' }),
 							username: z.string().optional().openapi({ example: '@shopname' })
 						})
 					),
@@ -123,7 +129,7 @@ export const GetShopOverviewRoute = createRoute({
 							images: z
 								.array(
 									z.object({
-										url: z.string().url().openapi({ example: 'https://cdn.shopify.com/image.jpg' }),
+										url: z.url().openapi({ example: 'https://cdn.shopify.com/image.jpg' }),
 										altText: z
 											.string()
 											.optional()
@@ -173,6 +179,31 @@ export const GetShopOverviewRoute = createRoute({
 					)
 				})
 				.openapi('ShopOverviewDto')
+		),
+		400: BadRequestResponse,
+		404: NotFoundResponse,
+		500: InternalServerErrorResponse
+	}
+});
+
+export const GetShopPlanRoute = createRoute({
+	method: 'get',
+	path: '/v1/shopify/shop/plan',
+	tags: ['shopify', 'shop'],
+	summary: 'Get shop plan information',
+	operationId: 'getShopPlan',
+	responses: {
+		200: JsonSuccessResponse(
+			z
+				.object({
+					id: z.string().openapi({ example: 'gid://shopify/Shop/123456789' }),
+					plan: z.object({
+						displayName: z.string().openapi({ example: 'Shopify Plus' }),
+						isPartnerDevelopment: z.boolean().openapi({ example: false }),
+						isShopifyPlus: z.boolean().openapi({ example: true })
+					})
+				})
+				.openapi('ShopPlanDto')
 		),
 		400: BadRequestResponse,
 		404: NotFoundResponse,

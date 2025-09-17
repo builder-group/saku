@@ -124,6 +124,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/shopify/shop/plan": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get shop plan information */
+        get: operations["getShopPlan"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/shopify/shop/reset": {
         parameters: {
             query?: never;
@@ -560,7 +577,6 @@ export interface components {
                 contactEmail: string;
                 /** @example America/New_York */
                 timezone: string;
-                /** @description Primary custom domain if configured */
                 primaryDomain?: {
                     /** @example my-awesome-store.com */
                     host: string;
@@ -569,6 +585,14 @@ export interface components {
                      * @example https://my-awesome-store.com
                      */
                     url: string;
+                };
+                plan?: {
+                    /** @example Shopify Plus */
+                    displayName: string;
+                    /** @example false */
+                    isPartnerDevelopment: boolean;
+                    /** @example true */
+                    isShopifyPlus: boolean;
                 };
             };
             theme: {
@@ -727,6 +751,18 @@ export interface components {
                     }[];
                 }[];
             }[];
+        };
+        ShopPlanDto: {
+            /** @example gid://shopify/Shop/123456789 */
+            id: string;
+            plan: {
+                /** @example Shopify Plus */
+                displayName: string;
+                /** @example false */
+                isPartnerDevelopment: boolean;
+                /** @example true */
+                isShopifyPlus: boolean;
+            };
         };
         ResetShopSettingsDto: {
             /** @example Shop settings reset successfully */
@@ -1320,6 +1356,53 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ShopOverviewDto"];
+                };
+            };
+            /** @description Bad request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppErrorDto"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppErrorDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppErrorDto"];
+                };
+            };
+        };
+    };
+    getShopPlan: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ShopPlanDto"];
                 };
             };
             /** @description Bad request */

@@ -560,6 +560,10 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 			return assetsToRemove;
 		},
 
+		isPartnerDevelopment() {
+			return this.integrationsMap['integration_shopify']?.isPartnerDevelopment ?? false;
+		},
+
 		async publish() {
 			// Clean up unused assets before saving
 			this.cleanupAssets();
@@ -585,7 +589,13 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 						window.open(this.site.url, '_blank');
 					}
 				});
-				await requestReview(this.shopify);
+
+				// Request review if not partner development
+				// because partner development stores have no Shopify review rate limit
+				if (!this.isPartnerDevelopment()) {
+					await requestReview(this.shopify);
+				}
+
 				return true;
 			} else {
 				const error = result.error;
@@ -764,6 +774,8 @@ export interface TPageEditor {
 	) => TAssetHash | null;
 
 	cleanupAssets: () => TAssetHash[];
+
+	isPartnerDevelopment: () => boolean;
 
 	publish: () => Promise<boolean>;
 

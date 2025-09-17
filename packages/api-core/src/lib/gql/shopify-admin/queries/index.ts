@@ -3,6 +3,7 @@ export * from './file-get-by-id';
 export * from './file-search-by-filename';
 export * from './product-recommended';
 export * from './shop-info';
+export * from './shop-plan';
 export * from './theme-settings';
 export * from './theme-themes';
 export * from './url-redirect-search';

@@ -2096,7 +2096,7 @@ export interface paths {
         };
         /**
          * Get GitHub Advanced Security active committers for an enterprise
-         * @description Gets the GitHub Advanced Security active committers for an enterprise per repository.
+         * @description Gets the GitHub Advanced Security active committers for an enterprise per repository. The authenticated user must be an enterprise admin or billing manager.
          *
          *     Each distinct user login across all repositories is counted as a single Advanced Security seat, so the `total_advanced_security_committers` is not the sum of active_users for each repository.
          *
@@ -5986,7 +5986,7 @@ export interface paths {
          * @description Gets all custom properties defined for an organization.
          *     Organization members can read these properties.
          */
-        get: operations["orgs/get-all-custom-properties"];
+        get: operations["orgs/custom-properties-for-repos-get-organization-definitions"];
         put?: never;
         post?: never;
         delete?: never;
@@ -6004,7 +6004,7 @@ export interface paths {
          *       - An administrator for the organization.
          *       - A user, or a user on a team, with the fine-grained permission of `custom_properties_org_definitions_manager` in the organization.
          */
-        patch: operations["orgs/create-or-update-custom-properties"];
+        patch: operations["orgs/custom-properties-for-repos-create-or-update-organization-definitions"];
         trace?: never;
     };
     "/orgs/{org}/properties/schema/{custom_property_name}": {
@@ -6019,7 +6019,7 @@ export interface paths {
          * @description Gets a custom property that is defined for an organization.
          *     Organization members can read these properties.
          */
-        get: operations["orgs/get-custom-property"];
+        get: operations["orgs/custom-properties-for-repos-get-organization-definition"];
         /**
          * Create or update a custom property for an organization
          * @description Creates a new or updates an existing custom property that is defined for an organization.
@@ -6028,7 +6028,7 @@ export interface paths {
          *     - An administrator for the organization.
          *     - A user, or a user on a team, with the fine-grained permission of `custom_properties_org_definitions_manager` in the organization.
          */
-        put: operations["orgs/create-or-update-custom-property"];
+        put: operations["orgs/custom-properties-for-repos-create-or-update-organization-definition"];
         post?: never;
         /**
          * Remove a custom property for an organization
@@ -6038,7 +6038,7 @@ export interface paths {
          *       - An administrator for the organization.
          *       - A user, or a user on a team, with the fine-grained permission of `custom_properties_org_definitions_manager` in the organization.
          */
-        delete: operations["orgs/remove-custom-property"];
+        delete: operations["orgs/custom-properties-for-repos-delete-organization-definition"];
         options?: never;
         head?: never;
         patch?: never;
@@ -24850,10 +24850,24 @@ export interface components {
             };
         };
         /**
+         * copilot_code_review
+         * @description Request Copilot code review for new pull requests automatically if the author has access to Copilot code review.
+         */
+        "repository-rule-copilot-code-review": {
+            /** @enum {string} */
+            type: "copilot_code_review";
+            parameters?: {
+                /** @description Copilot automatically reviews draft pull requests before they are marked as ready for review. */
+                review_draft_pull_requests?: boolean;
+                /** @description Copilot automatically reviews each new push to the pull request. */
+                review_on_push?: boolean;
+            };
+        };
+        /**
          * Repository Rule
          * @description A repository rule.
          */
-        "repository-rule": components["schemas"]["repository-rule-creation"] | components["schemas"]["repository-rule-update"] | components["schemas"]["repository-rule-deletion"] | components["schemas"]["repository-rule-required-linear-history"] | components["schemas"]["repository-rule-merge-queue"] | components["schemas"]["repository-rule-required-deployments"] | components["schemas"]["repository-rule-required-signatures"] | components["schemas"]["repository-rule-pull-request"] | components["schemas"]["repository-rule-required-status-checks"] | components["schemas"]["repository-rule-non-fast-forward"] | components["schemas"]["repository-rule-commit-message-pattern"] | components["schemas"]["repository-rule-commit-author-email-pattern"] | components["schemas"]["repository-rule-committer-email-pattern"] | components["schemas"]["repository-rule-branch-name-pattern"] | components["schemas"]["repository-rule-tag-name-pattern"] | components["schemas"]["repository-rule-workflows"] | components["schemas"]["repository-rule-code-scanning"];
+        "repository-rule": components["schemas"]["repository-rule-creation"] | components["schemas"]["repository-rule-update"] | components["schemas"]["repository-rule-deletion"] | components["schemas"]["repository-rule-required-linear-history"] | components["schemas"]["repository-rule-merge-queue"] | components["schemas"]["repository-rule-required-deployments"] | components["schemas"]["repository-rule-required-signatures"] | components["schemas"]["repository-rule-pull-request"] | components["schemas"]["repository-rule-required-status-checks"] | components["schemas"]["repository-rule-non-fast-forward"] | components["schemas"]["repository-rule-commit-message-pattern"] | components["schemas"]["repository-rule-commit-author-email-pattern"] | components["schemas"]["repository-rule-committer-email-pattern"] | components["schemas"]["repository-rule-branch-name-pattern"] | components["schemas"]["repository-rule-tag-name-pattern"] | components["schemas"]["repository-rule-workflows"] | components["schemas"]["repository-rule-code-scanning"] | components["schemas"]["repository-rule-copilot-code-review"];
         /**
          * Repository ruleset
          * @description A set of rules to apply when specified conditions are met.
@@ -26825,21 +26839,7 @@ export interface components {
                 site_admin?: boolean;
                 user_view_type?: string;
             }[];
-            teams: {
-                id?: number;
-                node_id?: string;
-                url?: string;
-                html_url?: string;
-                name?: string;
-                slug?: string;
-                description?: string | null;
-                privacy?: string;
-                notification_setting?: string;
-                permission?: string;
-                members_url?: string;
-                repositories_url?: string;
-                parent?: string | null;
-            }[];
+            teams: components["schemas"]["team"][];
             apps: {
                 id?: number;
                 slug?: string;
@@ -26989,7 +26989,7 @@ export interface components {
          */
         "diff-entry": {
             /** @example bbcd538c8e72b8c175046e27cc8f907076331401 */
-            sha: string;
+            sha: string | null;
             /** @example file1.txt */
             filename: string;
             /**
@@ -31147,7 +31147,7 @@ export interface components {
          * Repository Rule
          * @description A repository rule with ruleset details.
          */
-        "repository-rule-detailed": (components["schemas"]["repository-rule-creation"] & components["schemas"]["repository-rule-ruleset-info"]) | (components["schemas"]["repository-rule-update"] & components["schemas"]["repository-rule-ruleset-info"]) | (components["schemas"]["repository-rule-deletion"] & components["schemas"]["repository-rule-ruleset-info"]) | (components["schemas"]["repository-rule-required-linear-history"] & components["schemas"]["repository-rule-ruleset-info"]) | (components["schemas"]["repository-rule-merge-queue"] & components["schemas"]["repository-rule-ruleset-info"]) | (components["schemas"]["repository-rule-required-deployments"] & components["schemas"]["repository-rule-ruleset-info"]) | (components["schemas"]["repository-rule-required-signatures"] & components["schemas"]["repository-rule-ruleset-info"]) | (components["schemas"]["repository-rule-pull-request"] & components["schemas"]["repository-rule-ruleset-info"]) | (components["schemas"]["repository-rule-required-status-checks"] & components["schemas"]["repository-rule-ruleset-info"]) | (components["schemas"]["repository-rule-non-fast-forward"] & components["schemas"]["repository-rule-ruleset-info"]) | (components["schemas"]["repository-rule-commit-message-pattern"] & components["schemas"]["repository-rule-ruleset-info"]) | (components["schemas"]["repository-rule-commit-author-email-pattern"] & components["schemas"]["repository-rule-ruleset-info"]) | (components["schemas"]["repository-rule-committer-email-pattern"] & components["schemas"]["repository-rule-ruleset-info"]) | (components["schemas"]["repository-rule-branch-name-pattern"] & components["schemas"]["repository-rule-ruleset-info"]) | (components["schemas"]["repository-rule-tag-name-pattern"] & components["schemas"]["repository-rule-ruleset-info"]) | (components["schemas"]["repository-rule-workflows"] & components["schemas"]["repository-rule-ruleset-info"]) | (components["schemas"]["repository-rule-code-scanning"] & components["schemas"]["repository-rule-ruleset-info"]);
+        "repository-rule-detailed": (components["schemas"]["repository-rule-creation"] & components["schemas"]["repository-rule-ruleset-info"]) | (components["schemas"]["repository-rule-update"] & components["schemas"]["repository-rule-ruleset-info"]) | (components["schemas"]["repository-rule-deletion"] & components["schemas"]["repository-rule-ruleset-info"]) | (components["schemas"]["repository-rule-required-linear-history"] & components["schemas"]["repository-rule-ruleset-info"]) | (components["schemas"]["repository-rule-merge-queue"] & components["schemas"]["repository-rule-ruleset-info"]) | (components["schemas"]["repository-rule-required-deployments"] & components["schemas"]["repository-rule-ruleset-info"]) | (components["schemas"]["repository-rule-required-signatures"] & components["schemas"]["repository-rule-ruleset-info"]) | (components["schemas"]["repository-rule-pull-request"] & components["schemas"]["repository-rule-ruleset-info"]) | (components["schemas"]["repository-rule-required-status-checks"] & components["schemas"]["repository-rule-ruleset-info"]) | (components["schemas"]["repository-rule-non-fast-forward"] & components["schemas"]["repository-rule-ruleset-info"]) | (components["schemas"]["repository-rule-commit-message-pattern"] & components["schemas"]["repository-rule-ruleset-info"]) | (components["schemas"]["repository-rule-commit-author-email-pattern"] & components["schemas"]["repository-rule-ruleset-info"]) | (components["schemas"]["repository-rule-committer-email-pattern"] & components["schemas"]["repository-rule-ruleset-info"]) | (components["schemas"]["repository-rule-branch-name-pattern"] & components["schemas"]["repository-rule-ruleset-info"]) | (components["schemas"]["repository-rule-tag-name-pattern"] & components["schemas"]["repository-rule-ruleset-info"]) | (components["schemas"]["repository-rule-workflows"] & components["schemas"]["repository-rule-ruleset-info"]) | (components["schemas"]["repository-rule-code-scanning"] & components["schemas"]["repository-rule-ruleset-info"]) | (components["schemas"]["repository-rule-copilot-code-review"] & components["schemas"]["repository-rule-ruleset-info"]);
         "secret-scanning-alert": {
             number?: components["schemas"]["alert-number"];
             created_at?: components["schemas"]["alert-created-at"];
@@ -94470,7 +94470,7 @@ export interface operations {
             422: components["responses"]["validation_failed_simple"];
         };
     };
-    "orgs/get-all-custom-properties": {
+    "orgs/custom-properties-for-repos-get-organization-definitions": {
         parameters: {
             query?: never;
             header?: never;
@@ -94495,7 +94495,7 @@ export interface operations {
             404: components["responses"]["not_found"];
         };
     };
-    "orgs/create-or-update-custom-properties": {
+    "orgs/custom-properties-for-repos-create-or-update-organization-definitions": {
         parameters: {
             query?: never;
             header?: never;
@@ -94527,7 +94527,7 @@ export interface operations {
             404: components["responses"]["not_found"];
         };
     };
-    "orgs/get-custom-property": {
+    "orgs/custom-properties-for-repos-get-organization-definition": {
         parameters: {
             query?: never;
             header?: never;
@@ -94554,7 +94554,7 @@ export interface operations {
             404: components["responses"]["not_found"];
         };
     };
-    "orgs/create-or-update-custom-property": {
+    "orgs/custom-properties-for-repos-create-or-update-organization-definition": {
         parameters: {
             query?: never;
             header?: never;
@@ -94585,7 +94585,7 @@ export interface operations {
             404: components["responses"]["not_found"];
         };
     };
-    "orgs/remove-custom-property": {
+    "orgs/custom-properties-for-repos-delete-organization-definition": {
         parameters: {
             query?: never;
             header?: never;

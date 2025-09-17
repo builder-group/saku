@@ -5,11 +5,12 @@ import {
 	getRecommendedProducts,
 	getShopifyOfflineAccessToken,
 	getShopInfo,
+	getShopPlan,
 	verifyShopifySession
 } from '@/lib';
 import { getMainTheme, getParsedThemeSettingsData } from '@/lib/shopify';
 import { extractThemeDataFromSettings } from '@/lib/shopify/theme/extract-theme-data';
-import { GetShopOverviewRoute, ResetShopSettingsRoute } from './schema';
+import { GetShopOverviewRoute, GetShopPlanRoute, ResetShopSettingsRoute } from './schema';
 
 router.openapi(GetShopOverviewRoute, async (c) => {
 	const { shopId } = (await verifyShopifySession(c)).unwrap();
@@ -86,7 +87,8 @@ router.openapi(GetShopOverviewRoute, async (c) => {
 				email: shopInfo.email,
 				contactEmail: shopInfo.contactEmail,
 				timezone: shopInfo.timezone,
-				primaryDomain: shopInfo.primaryDomain
+				primaryDomain: shopInfo.primaryDomain,
+				plan: shopInfo.plan
 			},
 			theme: {
 				id: theme.id,
@@ -99,6 +101,32 @@ router.openapi(GetShopOverviewRoute, async (c) => {
 			},
 			socialLinks: themeSettings.socialLinks,
 			recommendedProducts: recommendedProducts.products
+		},
+		200
+	);
+});
+
+router.openapi(GetShopPlanRoute, async (c) => {
+	const { shopId } = (await verifyShopifySession(c)).unwrap();
+
+	const accessToken = (await getShopifyOfflineAccessToken(shopId)).unwrap();
+
+	// Get shop plan
+	const [isShopPlanOk, shopPlanErr, shopPlan] = await getShopPlan({
+		shopId,
+		accessToken
+	});
+	if (!isShopPlanOk) {
+		throw new AppError('#ERR_SHOP_PLAN_FETCH_FAILED', 500, {
+			title: 'Failed to fetch shop plan',
+			detail: shopPlanErr.message
+		});
+	}
+
+	return c.json(
+		{
+			id: shopPlan.id,
+			plan: shopPlan.plan
 		},
 		200
 	);

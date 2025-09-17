@@ -20,7 +20,8 @@ export const SHOP_INFO = gql(`
 				url
 			}
 			plan {
-				displayName
+				partnerDevelopment
+				publicDisplayName
 				shopifyPlus
 			}
 		}
@@ -73,8 +74,9 @@ export async function getShopInfo(
 			: undefined,
 		plan: shop.plan
 			? {
-					displayName: shop.plan.displayName,
-					shopifyPlus: shop.plan.shopifyPlus
+					displayName: shop.plan.publicDisplayName,
+					isPartnerDevelopment: shop.plan.partnerDevelopment,
+					isShopifyPlus: shop.plan.shopifyPlus
 				}
 			: undefined
 	});
@@ -101,6 +103,7 @@ export interface TGetShopInfoSuccess {
 	};
 	plan?: {
 		displayName: string;
-		shopifyPlus: boolean;
+		isPartnerDevelopment: boolean;
+		isShopifyPlus: boolean;
 	};
 }
