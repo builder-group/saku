@@ -18,13 +18,14 @@
 		"clean": "turbo run clean --force && shx rm -rf .turbo && shx rm -rf .vercel && shx rm -rf node_modules",
 		"docker:dev": "docker compose -f devops/docker-compose.yaml up --build",
 		"docker:dev:down": "docker compose -f devops/docker-compose.yaml down",
-		"fly:deploy:sfy-link-in-bio-app": "fly deploy -c devops/sfy-link-in-bio-app/fly.toml",
+		"fly:deploy:sfy-link-in-bio-app": "pnpm run version:patch:sfy-link-in-bio-app && fly deploy -c devops/sfy-link-in-bio-app/fly.toml",
 		"format": "prettier --write \"**/*.{ts,tsx,md,json,js,jsx}\"",
 		"install:clean": "pnpm clean && pnpm install && pnpm build",
 		"lint": "turbo run lint",
 		"start:dev": "turbo run start:dev",
 		"test": "turbo run test",
-		"update:latest": "turbo run update:latest --force && pnpm update --latest && pnpm build"
+		"update:latest": "turbo run update:latest --force && pnpm update --latest && pnpm build",
+		"version:patch:sfy-link-in-bio-app": "cd apps/sfy-link-in-bio/app && pnpm version patch"
 	},
 	"devDependencies": {
 		"@blgc/config": "^0.0.38",
