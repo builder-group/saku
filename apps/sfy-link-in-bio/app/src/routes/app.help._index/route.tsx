@@ -2,7 +2,7 @@ import { shortId } from '@blgc/utils';
 import { Button } from '@shopify/polaris';
 import React from 'react';
 import { useSearchParams } from 'react-router';
-import { AccordionSection, PolarisArrowLeftIcon, useCrisp } from '@/components';
+import { AccordionSection, ApiHealthBadge, PolarisArrowLeftIcon, useCrisp } from '@/components';
 import { appConfig } from '@/environment';
 
 const Page: React.FC = () => {
@@ -76,7 +76,7 @@ const Page: React.FC = () => {
 				<div className="overflow-hidden rounded-lg border border-neutral-200">
 					<s-clickable
 						padding="small-100"
-						href="https://youtu.be/I88GWORGmvU"
+						href="https://youtu.be/5CUtoSWYQ7U"
 						target="_blank"
 						accessibilityLabel="Watch quick walkthrough video in new tab"
 					>
@@ -157,12 +157,26 @@ const Page: React.FC = () => {
 					<div className="px-4">
 						<s-divider></s-divider>
 					</div>
-					<div className="grid grid-cols-[1fr_auto] items-center gap-4 p-4">
-						<div>
-							<s-heading>API Status</s-heading>
-							<s-paragraph color="subdued">Backend service health</s-paragraph>
-						</div>
-						<s-badge tone="success">Healthy</s-badge>
+					<div className="group">
+						<s-clickable
+							padding="small-100"
+							href="https://saku.openstatus.dev/"
+							target="_blank"
+							accessibilityLabel="View system status page in new tab"
+						>
+							<div className="grid grid-cols-[1fr_auto] items-center gap-4">
+								<div>
+									<s-heading>System Status</s-heading>
+									<s-paragraph color="subdued">Check real-time service status</s-paragraph>
+								</div>
+								<div className="flex items-center gap-2">
+									<ApiHealthBadge />
+									<div className="hidden group-hover:block">
+										<s-icon type="arrow-up-right"></s-icon>
+									</div>
+								</div>
+							</div>
+						</s-clickable>
 					</div>
 				</div>
 			</s-section>
