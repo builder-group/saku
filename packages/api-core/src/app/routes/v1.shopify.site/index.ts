@@ -312,7 +312,7 @@ router.openapi(UpdateShopifySiteContentRoute, async (c) => {
 		rootNode != null &&
 		rootNode.type === 'page' &&
 		!rootNode.content.hasWatermark &&
-		currentPlan.key === 'free'
+		currentPlan.key !== 'awesome'
 	) {
 		rootNode.content.hasWatermark = true;
 	}
