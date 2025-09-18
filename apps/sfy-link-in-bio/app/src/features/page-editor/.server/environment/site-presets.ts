@@ -194,7 +194,8 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 			type: 'page',
 			id: createId('node'),
 			content: {
-				type: 'default'
+				type: 'default',
+				hasWatermark: true
 			},
 			metadata: {},
 			children: [

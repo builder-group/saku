@@ -2,7 +2,6 @@ import { notEmpty } from '@blgc/utils';
 import {
 	closestCenter,
 	DndContext,
-	DragStartEvent,
 	PointerActivationConstraint,
 	PointerSensor,
 	useSensor,
@@ -12,12 +11,12 @@ import {
 import { restrictToParentElement } from '@dnd-kit/modifiers';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { TNodeId } from '@repo/editor';
-import { Text } from '@shopify/polaris';
+import { Icon, Text } from '@shopify/polaris';
 import { useCompute, useListener } from 'feature-react/state';
 import React from 'react';
 import { ImperativePanelHandle } from 'react-resizable-panels';
-import { ResizableHandle, ResizablePanel, StampIcon } from '@/components';
-import { mq, useMediaQuery } from '@/hooks';
+import { PolarisDeleteIcon, ResizableHandle, ResizablePanel, StampIcon } from '@/components';
+import { mq, useCurrentPlan, useMediaQuery } from '@/hooks';
 import { cn } from '@/lib';
 import { useEditorBreakpoint } from '../../../../hooks';
 import { TPageEditor } from '../../../../lib';
@@ -38,7 +37,10 @@ export const LayersPanel: React.FC<TLayersPanelProps> = (props) => {
 			nodeIds: value.children
 		};
 	});
-	const hasSelectedNode = useCompute(editor.selectedNodeId, ({ value }) => value != null);
+	const hasWatermark = useCompute(editor.getRootNode(), ({ value }) => {
+		return value.content.hasWatermark;
+	});
+	const currentPlan = useCurrentPlan();
 	const panelRef = React.useRef<ImperativePanelHandle>(null);
 
 	// https://docs.dndkit.com/presets/sortable
@@ -96,12 +98,9 @@ export const LayersPanel: React.FC<TLayersPanelProps> = (props) => {
 	// Events
 	// =========================================================================
 
-	const handleDragStart = React.useCallback(
-		(_event: DragStartEvent) => {
-			editor.isDraggingLayer.set(true);
-		},
-		[editor]
-	);
+	const handleDragStart = React.useCallback(() => {
+		editor.isDraggingLayer.set(true);
+	}, [editor]);
 
 	const handleDragEnd = React.useCallback(
 		(event: DragEndEvent) => {
@@ -116,6 +115,20 @@ export const LayersPanel: React.FC<TLayersPanelProps> = (props) => {
 			}
 		},
 		[editor, isTouchDevice]
+	);
+
+	const handleRemoveWatermark = React.useCallback(
+		(e: React.PointerEvent<HTMLButtonElement>) => {
+			if (e.button !== 0) {
+				return;
+			}
+			e.stopPropagation();
+
+			const rootNode = editor.getRootNode();
+			rootNode._v.content.hasWatermark = false;
+			rootNode._notify();
+		},
+		[editor]
 	);
 
 	// =========================================================================
@@ -176,12 +189,25 @@ export const LayersPanel: React.FC<TLayersPanelProps> = (props) => {
 										<LayerItem key={nodeState._v.id} nodeState={nodeState} editor={editor} />
 									))}
 									{/* Watermark item */}
-									<div className="flex h-8 w-full items-center gap-2 rounded-lg px-2 opacity-60">
-										<StampIcon className="h-5 w-5" />
-										<Text as="p" variant="bodyMd">
-											Watermark
-										</Text>
-									</div>
+									{hasWatermark && (
+										<div className="group flex h-8 w-full items-center gap-2 rounded-lg px-2 opacity-60 hover:bg-neutral-50">
+											<StampIcon className="h-5 w-5" />
+											<Text as="p" variant="bodyMd">
+												Watermark
+											</Text>
+											{currentPlan.key === 'awesome' && (
+												<div className="ml-auto hidden gap-1 group-hover:flex">
+													<button
+														className="cursor-pointer rounded-lg p-0.5 hover:bg-neutral-200 hover:text-red-500"
+														onPointerDown={(e) => e.stopPropagation()}
+														onPointerUp={handleRemoveWatermark}
+													>
+														<Icon source={PolarisDeleteIcon} />
+													</button>
+												</div>
+											)}
+										</div>
+									)}
 								</div>
 							</SortableContext>
 						</DndContext>

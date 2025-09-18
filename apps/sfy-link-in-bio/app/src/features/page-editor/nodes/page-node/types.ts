@@ -39,4 +39,5 @@ export type TResolvedPageNodeContent = TResolvedDefaultPageNodeContent;
 
 export interface TResolvedDefaultPageNodeContent extends TBaseContentVariant {
 	type: 'default';
+	hasWatermark: boolean;
 }

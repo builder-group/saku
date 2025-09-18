@@ -72,6 +72,7 @@ export type TPageNodeContent = TDefaultPageNodeContent;
 
 export interface TDefaultPageNodeContent extends TBaseContentVariant {
 	type: 'default';
+	hasWatermark: boolean;
 }
 
 export type TAboutNodeMixin<GContent extends TAboutNodeContent = TAboutNodeContent> = TBaseMixin<

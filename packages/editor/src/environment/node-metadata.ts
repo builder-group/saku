@@ -133,7 +133,8 @@ export const pageNodeMetadata: TNodeMetadata<'page'> = {
 		fill: tokenRef('mixin', 'default'),
 		children: [],
 		content: {
-			type: 'default'
+			type: 'default',
+			hasWatermark: true
 		},
 		metadata: {}
 	}

@@ -238,7 +238,8 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 			id: createId('node'),
 			type: 'page',
 			content: {
-				type: 'default'
+				type: 'default',
+				hasWatermark: true
 			},
 			metadata: {},
 			children,
