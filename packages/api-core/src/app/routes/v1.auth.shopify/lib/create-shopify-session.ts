@@ -22,6 +22,7 @@ import {
 	createHandleFromShop,
 	createShopifyAdminAppUrl,
 	getShopInfo,
+	isMantleError,
 	sendWelcomeEmail
 } from '@/lib';
 import type { TShopifySessionDto } from '../schema';
@@ -78,7 +79,7 @@ async function upsertSession(tx: TPgTransaction, session: TShopifySessionDto): P
 				myshopifyDomain: session.shop,
 				accessToken: session.accessToken
 			});
-			if ('apiToken' in identifyResponse) {
+			if (!isMantleError(identifyResponse)) {
 				sessionData.mantleApiToken = identifyResponse.apiToken;
 			}
 		}

@@ -1,4 +1,4 @@
-export function parseSessionId(sessionId: unknown): TSessionData | null {
+export function parseShopifySessionId(sessionId: unknown): TSessionData | null {
 	if (typeof sessionId !== 'string') {
 		return null;
 	}

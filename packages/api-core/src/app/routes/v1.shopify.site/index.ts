@@ -14,6 +14,7 @@ import {
 import {
 	createShopifyUrlRedirect,
 	deleteUrlRedirect,
+	getCurrentPlan,
 	getShopifyOfflineAccessToken,
 	getShopPlan,
 	getStorefrontToken,
@@ -302,6 +303,18 @@ router.openapi(UpdateShopifySiteContentRoute, async (c) => {
 			title: 'Site not found',
 			detail: `Site with ID ${siteId} was not found or you don't have access to it`
 		});
+	}
+
+	// Check if user is allowed to update hasWatermark in page node
+	const currentPlan = await getCurrentPlan(shopId);
+	const rootNode = content.nodes[content.rootId];
+	if (
+		rootNode != null &&
+		rootNode.type === 'page' &&
+		!rootNode.content.hasWatermark &&
+		currentPlan.key === 'free'
+	) {
+		rootNode.content.hasWatermark = true;
 	}
 
 	const [site] = await db

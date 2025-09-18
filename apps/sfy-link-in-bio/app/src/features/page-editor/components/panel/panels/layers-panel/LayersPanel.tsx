@@ -187,14 +187,16 @@ export const LayersPanel: React.FC<TLayersPanelProps> = (props) => {
 											<Text as="p" variant="bodyMd">
 												Watermark
 											</Text>
-											<div className="ml-auto flex gap-1">
-												<button
-													className="cursor-pointer rounded-lg p-0.5 hover:bg-neutral-200 hover:text-red-500"
-													onClick={handleRemoveWatermark}
-												>
-													<Icon source={PolarisDeleteIcon} />
-												</button>
-											</div>
+											{currentPlan.key === 'awesome' && (
+												<div className="ml-auto flex gap-1">
+													<button
+														className="cursor-pointer rounded-lg p-0.5 hover:bg-neutral-200 hover:text-red-500"
+														onClick={handleRemoveWatermark}
+													>
+														<Icon source={PolarisDeleteIcon} />
+													</button>
+												</div>
+											)}
 										</div>
 									)}
 								</div>

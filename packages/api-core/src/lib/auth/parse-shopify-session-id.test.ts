@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { parseSessionId } from './parse-session-id';
+import { parseShopifySessionId } from './parse-shopify-session-id';
 
-describe('parseSessionId function', () => {
+describe('parseShopifySessionId function', () => {
 	describe('offline sessions', () => {
 		it('parses offline session with shop domain only', () => {
-			const result = parseSessionId('my-shop.myshopify.com');
+			const result = parseShopifySessionId('my-shop.myshopify.com');
 
 			expect(result).toEqual({
 				type: 'offline',
@@ -13,7 +13,7 @@ describe('parseSessionId function', () => {
 		});
 
 		it('parses offline session with custom domain', () => {
-			const result = parseSessionId('coffee-shop.myshopify.com');
+			const result = parseShopifySessionId('coffee-shop.myshopify.com');
 
 			expect(result).toEqual({
 				type: 'offline',
@@ -24,7 +24,7 @@ describe('parseSessionId function', () => {
 
 	describe('online sessions', () => {
 		it('parses online session with shop domain and user ID', () => {
-			const result = parseSessionId('my-shop.myshopify.com_987654321');
+			const result = parseShopifySessionId('my-shop.myshopify.com_987654321');
 
 			expect(result).toEqual({
 				type: 'online',
@@ -34,7 +34,7 @@ describe('parseSessionId function', () => {
 		});
 
 		it('parses online session with different user ID format', () => {
-			const result = parseSessionId('test-store.myshopify.com_123456789');
+			const result = parseShopifySessionId('test-store.myshopify.com_123456789');
 
 			expect(result).toEqual({
 				type: 'online',
@@ -45,28 +45,28 @@ describe('parseSessionId function', () => {
 	});
 
 	it('returns null for empty string', () => {
-		expect(parseSessionId('')).toBe(null);
+		expect(parseShopifySessionId('')).toBe(null);
 	});
 
 	it('returns null for non-string input', () => {
-		expect(parseSessionId(null as any)).toBe(null);
-		expect(parseSessionId(undefined as any)).toBe(null);
-		expect(parseSessionId(123 as any)).toBe(null);
+		expect(parseShopifySessionId(null as any)).toBe(null);
+		expect(parseShopifySessionId(undefined as any)).toBe(null);
+		expect(parseShopifySessionId(123 as any)).toBe(null);
 	});
 
 	it('returns null for invalid online session format (empty shop domain)', () => {
-		expect(parseSessionId('_987654321')).toBe(null);
+		expect(parseShopifySessionId('_987654321')).toBe(null);
 	});
 
 	it('returns null for invalid online session format (empty user ID)', () => {
-		expect(parseSessionId('my-shop.myshopify.com_')).toBe(null);
+		expect(parseShopifySessionId('my-shop.myshopify.com_')).toBe(null);
 	});
 
 	it('returns null for too many parts', () => {
-		expect(parseSessionId('shop_user_extra')).toBe(null);
+		expect(parseShopifySessionId('shop_user_extra')).toBe(null);
 	});
 
 	it('returns null for multiple underscores', () => {
-		expect(parseSessionId('shop_user_extra_more')).toBe(null);
+		expect(parseShopifySessionId('shop_user_extra_more')).toBe(null);
 	});
 });
