@@ -22,7 +22,11 @@ unauthenticated_read_product_listings
 """
 
 [auth]
-redirect_urls = ["https://displays-cord-reservoir-dual.trycloudflare.com/auth/callback", "https://displays-cord-reservoir-dual.trycloudflare.com/auth/shopify/callback", "https://displays-cord-reservoir-dual.trycloudflare.com/api/auth/callback"]
+redirect_urls = [
+    "https://displays-cord-reservoir-dual.trycloudflare.com/auth/callback",
+    "https://displays-cord-reservoir-dual.trycloudflare.com/auth/shopify/callback",
+    "https://displays-cord-reservoir-dual.trycloudflare.com/api/auth/callback",
+]
 
 [webhooks]
 api_version = "2025-07"

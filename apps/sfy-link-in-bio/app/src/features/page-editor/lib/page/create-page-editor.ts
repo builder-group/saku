@@ -561,7 +561,10 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 		},
 
 		isPartnerDevelopment() {
-			return this.integrationsMap['integration_shopify']?.isPartnerDevelopment ?? false;
+			const shopifyIntegration = Object.values(this.integrationsMap).find(
+				(integration) => integration.type === 'shopify'
+			);
+			return shopifyIntegration?.isPartnerDevelopment ?? false;
 		},
 
 		async publish() {
