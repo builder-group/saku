@@ -67,7 +67,8 @@ async function upsertSession(tx: TPgTransaction, session: TShopifySessionDto): P
 		}
 
 		// Create Mantle API key for online sessions only
-		// because Mantle identifies shops based on user context - offline sessions have no user association
+		// because Mantle identifies shops based on user context
+		// and offline sessions have no user association
 		const [isShopInfoOk, , shopInfo] = await getShopInfo({
 			shopId: session.shop,
 			accessToken: session.accessToken
