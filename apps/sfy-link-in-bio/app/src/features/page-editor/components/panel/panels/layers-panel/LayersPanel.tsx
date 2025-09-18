@@ -117,19 +117,11 @@ export const LayersPanel: React.FC<TLayersPanelProps> = (props) => {
 		[editor, isTouchDevice]
 	);
 
-	const handleRemoveWatermark = React.useCallback(
-		(e: React.PointerEvent<HTMLButtonElement>) => {
-			if (e.button !== 0) {
-				return;
-			}
-			e.stopPropagation();
-
-			const rootNode = editor.getRootNode();
-			rootNode._v.content.hasWatermark = false;
-			rootNode._notify();
-		},
-		[editor]
-	);
+	const handleRemoveWatermark = React.useCallback(() => {
+		const rootNode = editor.getRootNode();
+		rootNode._v.content.hasWatermark = false;
+		rootNode._notify();
+	}, [editor]);
 
 	// =========================================================================
 	// Effects
@@ -195,17 +187,14 @@ export const LayersPanel: React.FC<TLayersPanelProps> = (props) => {
 											<Text as="p" variant="bodyMd">
 												Watermark
 											</Text>
-											{currentPlan.key === 'awesome' && (
-												<div className="ml-auto hidden gap-1 group-hover:flex">
-													<button
-														className="cursor-pointer rounded-lg p-0.5 hover:bg-neutral-200 hover:text-red-500"
-														onPointerDown={(e) => e.stopPropagation()}
-														onPointerUp={handleRemoveWatermark}
-													>
-														<Icon source={PolarisDeleteIcon} />
-													</button>
-												</div>
-											)}
+											<div className="ml-auto flex gap-1">
+												<button
+													className="cursor-pointer rounded-lg p-0.5 hover:bg-neutral-200 hover:text-red-500"
+													onClick={handleRemoveWatermark}
+												>
+													<Icon source={PolarisDeleteIcon} />
+												</button>
+											</div>
 										</div>
 									)}
 								</div>

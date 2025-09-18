@@ -58,7 +58,11 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 							features={plan.features}
 							featuredText={plan.isRecommended ? 'Recommended' : undefined}
 							cta={{
-								content: plan.isCurrentPlan ? 'Current Plan' : 'Upgrade Now',
+								content: plan.isCurrentPlan
+									? 'Current Plan'
+									: plan.name.toLowerCase() === 'free'
+										? 'Downgrade'
+										: 'Upgrade Now',
 								variant: plan.isCurrentPlan ? 'secondary' : 'primary',
 								disabled: plan.isCurrentPlan,
 								onClick: plan.isCurrentPlan
