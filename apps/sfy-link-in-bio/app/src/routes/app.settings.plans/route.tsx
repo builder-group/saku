@@ -1,7 +1,8 @@
 import { shortId } from '@blgc/utils';
 import { Plan } from '@heymantle/client';
 import { useMantle } from '@heymantle/react';
-import { Button } from '@shopify/polaris';
+import { Modal, TitleBar, useAppBridge } from '@shopify/app-bridge-react';
+import { Button, Text } from '@shopify/polaris';
 import React from 'react';
 import { Err, Ok } from 'tuple-result';
 import { shopify } from '@/.server/environment';
@@ -11,9 +12,13 @@ import { getMantleClient, isMantleError, resultLoader, withResultLoader } from '
 
 const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 	Success: ({ data }) => {
-		const { plans } = data;
 		const { client } = useMantle();
 		const crisp = useCrisp();
+		const shopifyBridge = useAppBridge();
+
+		const [plans, setPlans] = React.useState(data.plans);
+		const [pendingDowngrade, setPendingDowngrade] = React.useState<TPlan | null>(null);
+		const [isChangingPlan, setIsChangingPlan] = React.useState(false);
 
 		const currentPlanIndex = React.useMemo(() => {
 			return plans.findIndex((p) => p.isCurrentPlan);
@@ -23,20 +28,74 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 		// Events
 		// =========================================================================
 
-		const handleSelectPlan = React.useCallback(
+		const handleConfirmPlanChange = React.useCallback(
 			async ({ plan, discount }: TPlanSelection): Promise<void> => {
-				const subscription = await client.subscribe({
-					planId: plan.id,
-					discountId: discount?.id,
-					returnUrl: '/app/settings/plans'
-				});
+				setIsChangingPlan(true);
 
-				if ('confirmationUrl' in subscription && subscription.confirmationUrl != null) {
-					window.open(subscription.confirmationUrl, '_top');
+				try {
+					const subscription = await client.subscribe({
+						planId: plan.id,
+						discountId: discount?.id,
+						returnUrl: '/app/settings/plans'
+					});
+					if (isMantleError(subscription)) {
+						shopifyBridge.toast.show('Unable to change plan. Please try again.', {
+							isError: true,
+							duration: 5000
+						});
+						return;
+					}
+
+					// Upgrade - redirect to payment
+					if (subscription.confirmationUrl != null) {
+						window.open(subscription.confirmationUrl, '_top');
+					}
+					// Downgrade - update state immediately
+					else {
+						setPlans((prevPlans) =>
+							prevPlans.map((p) => ({
+								...p,
+								isCurrentPlan: p.id === plan.id
+							}))
+						);
+					}
+				} finally {
+					setIsChangingPlan(false);
 				}
 			},
-			[client]
+			[client, shopifyBridge]
 		);
+
+		const handleSelectPlan = React.useCallback(
+			({ plan, discount }: TPlanSelection): void => {
+				const planIndex = plans.findIndex((p) => p.id === plan.id);
+				const isDowngrade = currentPlanIndex !== -1 && planIndex < currentPlanIndex;
+
+				// Show confirmation modal for downgrades
+				if (isDowngrade) {
+					setPendingDowngrade(plan);
+					shopifyBridge.modal.show('downgrade-confirmation-modal');
+				}
+				// Proceed with upgrade immediately
+				else {
+					handleConfirmPlanChange({ plan, discount });
+				}
+			},
+			[plans, currentPlanIndex, shopifyBridge, handleConfirmPlanChange]
+		);
+
+		const handleConfirmDowngrade = React.useCallback(() => {
+			if (pendingDowngrade != null) {
+				handleConfirmPlanChange({ plan: pendingDowngrade });
+				setPendingDowngrade(null);
+				shopifyBridge.modal.hide('downgrade-confirmation-modal');
+			}
+		}, [pendingDowngrade, handleConfirmPlanChange, shopifyBridge]);
+
+		const handleCancelDowngrade = React.useCallback(() => {
+			setPendingDowngrade(null);
+			shopifyBridge.modal.hide('downgrade-confirmation-modal');
+		}, [shopifyBridge]);
 
 		const handleStartChat = React.useCallback(() => {
 			crisp?.openChat();
@@ -48,120 +107,143 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 		// =========================================================================
 
 		return (
-			<s-page inlineSize="small">
-				<ui-title-bar title="Select a Plan"></ui-title-bar>
+			<>
+				<s-page inlineSize="small">
+					<ui-title-bar title="Select a Plan"></ui-title-bar>
 
-				{/* Back Button */}
-				<div className="flex w-full items-start py-4 pl-3">
-					<Button url="/app/settings" variant="tertiary" icon={PolarisArrowLeftIcon}>
-						Back to Settings
-					</Button>
-				</div>
-
-				{/* Plans */}
-				<div className="mb-4 flex flex-col gap-6 md:flex-row md:justify-center">
-					{plans.map((plan, index) => {
-						const isDowngrade = currentPlanIndex !== -1 && index < currentPlanIndex;
-
-						return (
-							<PricingCard
-								key={plan.id}
-								title={plan.name}
-								description={plan.description}
-								price={plan.price}
-								frequency="month"
-								features={plan.features}
-								featuredText={plan.isRecommended ? 'Recommended' : undefined}
-								cta={{
-									content: plan.isCurrentPlan
-										? 'Current Plan'
-										: isDowngrade
-											? 'Downgrade'
-											: 'Upgrade Now',
-									variant: plan.isCurrentPlan ? 'secondary' : 'primary',
-									disabled: plan.isCurrentPlan,
-									onClick: plan.isCurrentPlan
-										? undefined
-										: () => handleSelectPlan({ plan: { id: plan.id } as TPlan })
-								}}
-							/>
-						);
-					})}
-				</div>
-
-				{/* FAQ */}
-				<s-section heading="Frequently Asked Questions">
-					<div className="overflow-hidden rounded-lg border border-neutral-200">
-						<AccordionSection title="How does billing work?" defaultOpen={false}>
-							<p className="text-sm text-neutral-600">
-								All plans are billed monthly. You can cancel or change your plan at any time.
-								Upgrades take effect immediately, while downgrades apply at the next billing cycle.
-							</p>
-						</AccordionSection>
-						<AccordionSection title="Can I cancel anytime?" defaultOpen={false}>
-							<p className="text-sm text-neutral-600">
-								Yes! You can cancel your subscription at any time from your account settings. You'll
-								continue to have access until the end of your current billing period.
-							</p>
-						</AccordionSection>
-						<AccordionSection title="What happens when I upgrade?" defaultOpen={false}>
-							<p className="text-sm text-neutral-600">
-								When you upgrade, you'll get immediate access to all new features. We'll prorate
-								your billing so you only pay for the time remaining in your current cycle.
-							</p>
-						</AccordionSection>
-						<AccordionSection title="Is there a free trial?" defaultOpen={false}>
-							<p className="text-sm text-neutral-600">
-								The Free plan is always available at no cost. For paid plans, we offer a 7-day free
-								trial so you can test all features before committing.
-							</p>
-						</AccordionSection>
+					{/* Back Button */}
+					<div className="flex w-full items-start py-4 pl-3">
+						<Button url="/app/settings" variant="tertiary" icon={PolarisArrowLeftIcon}>
+							Back to Settings
+						</Button>
 					</div>
-				</s-section>
 
-				{/* Get Help */}
-				<s-section heading="Get Help">
-					<div className="overflow-hidden rounded-lg border border-neutral-200">
-						<div className="grid grid-cols-[1fr_auto] items-center gap-4 p-4">
-							<div>
-								<s-heading>Chat with us</s-heading>
-								<s-paragraph color="subdued">Get quick help with plans and billing</s-paragraph>
-							</div>
-							<s-button variant="primary" onClick={handleStartChat}>
-								Start Chat
-							</s-button>
-						</div>
-						<div className="px-4">
-							<s-divider></s-divider>
-						</div>
-						<div className="grid grid-cols-[1fr_auto] items-center gap-4 p-4">
-							<div>
-								<s-heading>Discord Community</s-heading>
-								<s-paragraph color="subdued">Join our community for help and updates</s-paragraph>
-							</div>
-							<s-button variant="secondary" href={appConfig.social.discord} target="_blank">
-								Join
-							</s-button>
-						</div>
-						<div className="px-4">
-							<s-divider></s-divider>
-						</div>
-						<div className="grid grid-cols-[1fr_auto] items-center gap-4 p-4">
-							<div>
-								<s-heading>Email Support</s-heading>
-								<s-paragraph color="subdued">{appConfig.support.email}</s-paragraph>
-							</div>
-							<s-button
-								variant="secondary"
-								href={`mailto:${appConfig.support.email}`}
-								target="_blank"
-							>
-								Contact
-							</s-button>
-						</div>
+					{/* Plans */}
+					<div className="mb-4 flex flex-col gap-6 md:flex-row md:justify-center">
+						{plans.map((plan, index) => {
+							const isDowngrade = currentPlanIndex !== -1 && index < currentPlanIndex;
+
+							return (
+								<PricingCard
+									key={plan.id}
+									title={plan.name}
+									description={plan.description}
+									price={plan.price}
+									frequency="month"
+									features={plan.features}
+									featuredText={plan.isRecommended ? 'Recommended' : undefined}
+									cta={{
+										content: plan.isCurrentPlan
+											? 'Current Plan'
+											: isDowngrade
+												? 'Downgrade'
+												: 'Upgrade Now',
+										variant: plan.isCurrentPlan ? 'secondary' : 'primary',
+										disabled: plan.isCurrentPlan || isChangingPlan,
+										loading: isChangingPlan,
+										onClick: plan.isCurrentPlan ? undefined : () => handleSelectPlan({ plan })
+									}}
+								/>
+							);
+						})}
 					</div>
-				</s-section>
-			</s-page>
+
+					{/* FAQ */}
+					<s-section heading="Frequently Asked Questions">
+						<div className="overflow-hidden rounded-lg border border-neutral-200">
+							<AccordionSection title="How does billing work?" defaultOpen={false}>
+								<p className="text-sm text-neutral-600">
+									All plans are billed monthly. You can cancel or change your plan at any time.
+									Upgrades take effect immediately, while downgrades apply at the next billing
+									cycle.
+								</p>
+							</AccordionSection>
+							<AccordionSection title="Can I cancel anytime?" defaultOpen={false}>
+								<p className="text-sm text-neutral-600">
+									Yes! You can cancel your subscription at any time from your account settings.
+									You'll continue to have access until the end of your current billing period.
+								</p>
+							</AccordionSection>
+							<AccordionSection title="What happens when I upgrade?" defaultOpen={false}>
+								<p className="text-sm text-neutral-600">
+									When you upgrade, you'll get immediate access to all new features. We'll prorate
+									your billing so you only pay for the time remaining in your current cycle.
+								</p>
+							</AccordionSection>
+							<AccordionSection title="Is there a free trial?" defaultOpen={false}>
+								<p className="text-sm text-neutral-600">
+									The Free plan is always available at no cost. For paid plans, we offer a 7-day
+									free trial so you can test all features before committing.
+								</p>
+							</AccordionSection>
+						</div>
+					</s-section>
+
+					{/* Get Help */}
+					<s-section heading="Get Help">
+						<div className="overflow-hidden rounded-lg border border-neutral-200">
+							<div className="grid grid-cols-[1fr_auto] items-center gap-4 p-4">
+								<div>
+									<s-heading>Chat with us</s-heading>
+									<s-paragraph color="subdued">Get quick help with plans and billing</s-paragraph>
+								</div>
+								<s-button variant="primary" onClick={handleStartChat}>
+									Start Chat
+								</s-button>
+							</div>
+							<div className="px-4">
+								<s-divider></s-divider>
+							</div>
+							<div className="grid grid-cols-[1fr_auto] items-center gap-4 p-4">
+								<div>
+									<s-heading>Discord Community</s-heading>
+									<s-paragraph color="subdued">Join our community for help and updates</s-paragraph>
+								</div>
+								<s-button variant="secondary" href={appConfig.social.discord} target="_blank">
+									Join
+								</s-button>
+							</div>
+							<div className="px-4">
+								<s-divider></s-divider>
+							</div>
+							<div className="grid grid-cols-[1fr_auto] items-center gap-4 p-4">
+								<div>
+									<s-heading>Email Support</s-heading>
+									<s-paragraph color="subdued">{appConfig.support.email}</s-paragraph>
+								</div>
+								<s-button
+									variant="secondary"
+									href={`mailto:${appConfig.support.email}`}
+									target="_blank"
+								>
+									Contact
+								</s-button>
+							</div>
+						</div>
+					</s-section>
+				</s-page>
+
+				{/* Downgrade Confirmation Modal */}
+				<Modal id="downgrade-confirmation-modal">
+					<div className="p-4">
+						<Text variant="bodyMd" as="p">
+							You&apos;re about to downgrade to the <strong>{pendingDowngrade?.name}</strong> plan.
+							This change will take effect at the end of your current billing period, not
+							immediately.
+						</Text>
+						<br />
+						<Text variant="bodyMd" as="p">
+							You&apos;ll continue to have access to your current plan features until then.
+						</Text>
+					</div>
+					<TitleBar title="Confirm Plan Downgrade">
+						<button variant="primary" tone="critical" onClick={handleConfirmDowngrade}>
+							Downgrade Plan
+						</button>
+						<button onClick={handleCancelDowngrade}>Cancel</button>
+					</TitleBar>
+				</Modal>
+			</>
 		);
 	},
 	Error: ({ error }) => (

@@ -149,6 +149,7 @@ const Page: React.FC = () => {
 					</s-section>
 				</s-page>
 			</form>
+
 			{/* Reset Confirmation Modal */}
 			<Modal id="reset-confirmation-modal">
 				<div className="p-4">

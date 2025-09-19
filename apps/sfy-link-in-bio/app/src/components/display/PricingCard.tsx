@@ -67,6 +67,7 @@ export const PricingCard: React.FC<TPricingCardProps> = (props) => {
 								onClick={cta.onClick}
 								variant={cta.variant}
 								disabled={cta.disabled}
+								loading={cta.loading}
 								size="large"
 								fullWidth
 							>
@@ -121,6 +122,7 @@ interface TPricingCardProps extends React.HTMLAttributes<HTMLDivElement> {
 		onClick?: () => void;
 		variant?: 'primary' | 'secondary';
 		disabled?: boolean;
+		loading?: boolean;
 	};
 	frequency: string;
 }
