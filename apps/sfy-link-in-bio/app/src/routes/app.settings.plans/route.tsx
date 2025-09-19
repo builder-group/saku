@@ -51,6 +51,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 						window.open(subscription.confirmationUrl, '_top');
 					}
 					// Downgrade - update state immediately
+					// TODO: Figure out how to implement downgrade at end of billing period
 					else {
 						setPlans((prevPlans) =>
 							prevPlans.map((p) => ({
@@ -153,9 +154,8 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 						<div className="overflow-hidden rounded-lg border border-neutral-200">
 							<AccordionSection title="How does billing work?" defaultOpen={false}>
 								<p className="text-sm text-neutral-600">
-									All plans are billed monthly. You can cancel or change your plan at any time.
-									Upgrades take effect immediately, while downgrades apply at the next billing
-									cycle.
+									All plans are billed monthly. You can cancel or change your plan at any time. Both
+									upgrades and downgrades take effect immediately.
 								</p>
 							</AccordionSection>
 							<AccordionSection title="Can I cancel anytime?" defaultOpen={false}>
@@ -228,12 +228,11 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 					<div className="p-4">
 						<Text variant="bodyMd" as="p">
 							You&apos;re about to downgrade to the <strong>{pendingDowngrade?.name}</strong> plan.
-							This change will take effect at the end of your current billing period, not
-							immediately.
+							This change will take effect immediately.
 						</Text>
 						<br />
 						<Text variant="bodyMd" as="p">
-							You&apos;ll continue to have access to your current plan features until then.
+							You&apos;ll lose access to premium features right away.
 						</Text>
 					</div>
 					<TitleBar title="Confirm Plan Downgrade">
