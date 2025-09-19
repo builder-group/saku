@@ -15,6 +15,14 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 		const { client } = useMantle();
 		const crisp = useCrisp();
 
+		const currentPlanIndex = React.useMemo(() => {
+			return plans.findIndex((p) => p.isCurrentPlan);
+		}, [plans]);
+
+		// =========================================================================
+		// Events
+		// =========================================================================
+
 		const handleSelectPlan = React.useCallback(
 			async ({ plan, discount }: TPlanSelection): Promise<void> => {
 				const subscription = await client.subscribe({
@@ -35,6 +43,10 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 			crisp?.startThread(`app-settings-plans_${shortId()}`);
 		}, [crisp]);
 
+		// =========================================================================
+		// UI
+		// =========================================================================
+
 		return (
 			<s-page inlineSize="small">
 				<ui-title-bar title="Select a Plan"></ui-title-bar>
@@ -48,29 +60,33 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 
 				{/* Plans */}
 				<div className="mb-4 flex flex-col gap-6 md:flex-row md:justify-center">
-					{plans.map((plan) => (
-						<PricingCard
-							key={plan.id}
-							title={plan.name}
-							description={plan.description}
-							price={plan.price}
-							frequency="month"
-							features={plan.features}
-							featuredText={plan.isRecommended ? 'Recommended' : undefined}
-							cta={{
-								content: plan.isCurrentPlan
-									? 'Current Plan'
-									: plan.name.toLowerCase() === 'free'
-										? 'Downgrade'
-										: 'Upgrade Now',
-								variant: plan.isCurrentPlan ? 'secondary' : 'primary',
-								disabled: plan.isCurrentPlan,
-								onClick: plan.isCurrentPlan
-									? undefined
-									: () => handleSelectPlan({ plan: { id: plan.id } as TPlan })
-							}}
-						/>
-					))}
+					{plans.map((plan, index) => {
+						const isDowngrade = currentPlanIndex !== -1 && index < currentPlanIndex;
+
+						return (
+							<PricingCard
+								key={plan.id}
+								title={plan.name}
+								description={plan.description}
+								price={plan.price}
+								frequency="month"
+								features={plan.features}
+								featuredText={plan.isRecommended ? 'Recommended' : undefined}
+								cta={{
+									content: plan.isCurrentPlan
+										? 'Current Plan'
+										: isDowngrade
+											? 'Downgrade'
+											: 'Upgrade Now',
+									variant: plan.isCurrentPlan ? 'secondary' : 'primary',
+									disabled: plan.isCurrentPlan,
+									onClick: plan.isCurrentPlan
+										? undefined
+										: () => handleSelectPlan({ plan: { id: plan.id } as TPlan })
+								}}
+							/>
+						);
+					})}
 				</div>
 
 				{/* FAQ */}
@@ -199,7 +215,7 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 	}
 
 	// Map Mantle plans to our display format
-	const plans = mantleCustomer.plans.map((mantlePlan) => {
+	const mappedPlans = mantleCustomer.plans.map((mantlePlan) => {
 		const isCurrentPlan = mantleCustomer.subscription?.plan?.id === mantlePlan.id;
 		const planName = mantlePlan.name.toLowerCase();
 
@@ -241,12 +257,16 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 				style: 'currency',
 				currency: (mantlePlan.presentmentCurrencyCode as unknown as string) || 'USD'
 			}).format(mantlePlan.presentmentAmount),
+			priceAmount: mantlePlan.presentmentAmount,
 			features,
 			isRecommended: planName === 'awesome',
 			isCurrentPlan,
 			mantlePlan
 		};
 	});
+
+	// Sort plans by price (cheapest to most expensive)
+	const plans = mappedPlans.sort((a, b) => a.priceAmount - b.priceAmount);
 
 	return Ok({ plans }).toArray();
 });
@@ -269,6 +289,7 @@ interface TPlan {
 	isRecommended: boolean;
 	isCurrentPlan: boolean;
 	mantlePlan: Plan;
+	priceAmount: number;
 }
 
 interface TFeature {
