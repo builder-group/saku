@@ -13,6 +13,7 @@ export const PricingCard: React.FC<TPricingCardProps> = (props) => {
 		featuredText,
 		cta,
 		frequency,
+		trialDays,
 		className,
 		...divProps
 	} = props;
@@ -37,10 +38,15 @@ export const PricingCard: React.FC<TPricingCardProps> = (props) => {
 					<div className="p-6">
 						{/* Header */}
 						<div className="space-y-2">
-							<div>
+							<div className="flex items-center gap-2">
 								<Text as="h2" variant="headingLg">
 									{title}
 								</Text>
+								{trialDays != null && trialDays > 0 && (
+									<Badge size="small" tone="info">
+										{`${trialDays.toFixed(0)} day${trialDays !== 1 ? 's' : ''} free trial`}
+									</Badge>
+								)}
 							</div>
 							{description != null && (
 								<div>
@@ -125,6 +131,7 @@ interface TPricingCardProps extends React.HTMLAttributes<HTMLDivElement> {
 		loading?: boolean;
 	};
 	frequency: string;
+	trialDays?: number;
 }
 
 interface TFeature {

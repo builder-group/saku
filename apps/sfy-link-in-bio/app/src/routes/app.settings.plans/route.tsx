@@ -35,6 +35,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 				try {
 					const subscription = await client.subscribe({
 						planId: plan.id,
+						trialDays: plan.trialDays,
 						discountId: discount?.id,
 						returnUrl: '/app/settings/plans'
 					});
@@ -133,6 +134,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 									frequency="month"
 									features={plan.features}
 									featuredText={plan.isRecommended ? 'Recommended' : undefined}
+									trialDays={plan.trialDays}
 									cta={{
 										content: plan.isCurrentPlan
 											? 'Current Plan'
@@ -160,14 +162,20 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 							</AccordionSection>
 							<AccordionSection title="Can I cancel anytime?" defaultOpen={false}>
 								<p className="text-sm text-neutral-600">
-									Yes! You can cancel your subscription at any time from your account settings.
-									You'll continue to have access until the end of your current billing period.
+									Yes! You can cancel your subscription at any time. Your access will end
+									immediately upon cancellation.
 								</p>
 							</AccordionSection>
 							<AccordionSection title="What happens when I upgrade?" defaultOpen={false}>
 								<p className="text-sm text-neutral-600">
 									When you upgrade, you'll get immediate access to all new features. We'll prorate
 									your billing so you only pay for the time remaining in your current cycle.
+								</p>
+							</AccordionSection>
+							<AccordionSection title="What happens when I downgrade?" defaultOpen={false}>
+								<p className="text-sm text-neutral-600">
+									When you downgrade, the change takes effect immediately. You'll lose access to
+									premium features right away and your billing will be adjusted accordingly.
 								</p>
 							</AccordionSection>
 							<AccordionSection title="Is there a free trial?" defaultOpen={false}>
@@ -339,6 +347,7 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 				currency: (mantlePlan.presentmentCurrencyCode as unknown as string) || 'USD'
 			}).format(mantlePlan.presentmentAmount),
 			priceAmount: mantlePlan.presentmentAmount,
+			trialDays: mantlePlan.trialDays,
 			features,
 			isRecommended: planName === 'awesome',
 			isCurrentPlan,
@@ -366,11 +375,12 @@ interface TPlan {
 	name: string;
 	description: string;
 	price: string;
+	priceAmount: number;
+	trialDays: number;
 	features: TFeature[];
 	isRecommended: boolean;
 	isCurrentPlan: boolean;
 	mantlePlan: Plan;
-	priceAmount: number;
 }
 
 interface TFeature {
