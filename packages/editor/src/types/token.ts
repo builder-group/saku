@@ -36,6 +36,7 @@ export type TToken =
 	| TBadgeToken
 	| TImageToken
 	| TProductDetailsToken;
+export type TTokenType = TToken['type'];
 
 export interface TTokenRef {
 	type: TToken['type'];
