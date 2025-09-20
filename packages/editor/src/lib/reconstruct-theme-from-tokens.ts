@@ -142,14 +142,14 @@ export function reconstructThemeFromTokens(tokens: TToken[]): TResult<TTheme, Ed
 		return Err(errorContentErr.wrapWith('#ERR_RECONSTRUCT_COLOR_ERROR_CONTENT'));
 	}
 
-	// Get typography properties
-	const [isHeadingFontOk, headingFontErr, headingFont] = getValue('font', 'typography.heading');
+	// Get font properties
+	const [isHeadingFontOk, headingFontErr, headingFont] = getValue('font', 'font.heading');
 	if (!isHeadingFontOk) {
-		return Err(headingFontErr.wrapWith('#ERR_RECONSTRUCT_TYPOGRAPHY_HEADING'));
+		return Err(headingFontErr.wrapWith('#ERR_RECONSTRUCT_FONT_HEADING'));
 	}
-	const [isTextFontOk, textFontErr, textFont] = getValue('font', 'typography.text');
+	const [isTextFontOk, textFontErr, textFont] = getValue('font', 'font.text');
 	if (!isTextFontOk) {
-		return Err(textFontErr.wrapWith('#ERR_RECONSTRUCT_TYPOGRAPHY_TEXT'));
+		return Err(textFontErr.wrapWith('#ERR_RECONSTRUCT_FONT_TEXT'));
 	}
 
 	// Get spacing properties

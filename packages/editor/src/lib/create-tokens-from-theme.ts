@@ -166,10 +166,10 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 			value: rgbaColors.errorContent
 		},
 
-		// Typography tokens
+		// Font tokens
 		{
 			type: 'font',
-			key: 'typography.heading',
+			key: 'font.heading',
 			value: {
 				family: typography.heading.fontFamily,
 				weight: typography.heading.fontWeight
@@ -177,7 +177,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 		},
 		{
 			type: 'font',
-			key: 'typography.text',
+			key: 'font.text',
 			value: {
 				family: typography.text.fontFamily,
 				weight: typography.text.fontWeight
@@ -260,7 +260,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 		// Mixin tokens (component style definitions)
 		{
 			type: 'auto-layout',
-			key: 'default',
+			key: 'auto-layout.default',
 			value: {
 				horizontalPadding: boxSizes.lg,
 				verticalPadding: boxSizes.lg,
@@ -270,7 +270,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 		},
 		{
 			type: 'appearance',
-			key: 'default',
+			key: 'appearance.default',
 			value: {
 				visible: true,
 				opacity: 1,
@@ -279,7 +279,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 		},
 		{
 			type: 'typography',
-			key: 'default',
+			key: 'typography.default',
 			value: {
 				font: {
 					family: typography.text.fontFamily,
@@ -295,7 +295,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 		},
 		{
 			type: 'fill',
-			key: 'default',
+			key: 'fill.default',
 			value: {
 				paint: {
 					type: 'solid',
@@ -306,7 +306,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 		},
 		{
 			type: 'stroke',
-			key: 'default',
+			key: 'stroke.default',
 			value:
 				effects?.stroke != null
 					? {
@@ -317,7 +317,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 		},
 		{
 			type: 'shadow',
-			key: 'default',
+			key: 'shadow.default',
 			value:
 				effects?.shadow != null
 					? {
@@ -331,7 +331,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 		},
 		{
 			type: 'text',
-			key: 'default',
+			key: 'text.default',
 			value: {
 				appearance: {
 					visible: true,
@@ -363,7 +363,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 		},
 		{
 			type: 'text',
-			key: 'xl',
+			key: 'text.xl',
 			value: {
 				appearance: {
 					visible: true,
@@ -395,7 +395,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 		},
 		{
 			type: 'text',
-			key: 'sm',
+			key: 'text.sm',
 			value: {
 				appearance: {
 					visible: true,
@@ -427,7 +427,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 		},
 		{
 			type: 'button',
-			key: 'primary',
+			key: 'button.primary',
 			value: {
 				appearance: {
 					visible: true,
@@ -475,7 +475,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 		},
 		{
 			type: 'button',
-			key: 'neutral',
+			key: 'button.neutral',
 			value: {
 				appearance: {
 					visible: true,
@@ -523,7 +523,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 		},
 		{
 			type: 'badge',
-			key: 'primary',
+			key: 'badge.primary',
 			value: {
 				appearance: {
 					visible: true,
@@ -571,7 +571,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 		},
 		{
 			type: 'badge',
-			key: 'neutral',
+			key: 'badge.neutral',
 			value: {
 				appearance: {
 					visible: true,
@@ -619,7 +619,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 		},
 		{
 			type: 'image',
-			key: 'default',
+			key: 'image.default',
 			value: {
 				appearance: {
 					visible: true,
@@ -632,7 +632,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 		},
 		{
 			type: 'product-details',
-			key: 'default',
+			key: 'product-details.default',
 			value: {
 				appearance: {
 					visible: true,
