@@ -3,7 +3,6 @@ import {
 	TAppearanceStyleMixin,
 	TAutoLayoutStyleMixin,
 	TBadgeStyleMixin,
-	TBaseMixin,
 	TButtonStyleMixin,
 	TFillStyleMixin,
 	TImageStyleMixin,
@@ -13,88 +12,107 @@ import {
 	TTextStyleMixin,
 	TTypographyStyleMixin
 } from './mixin';
-import { TUnreference } from './ref';
+import { TUnreference, TUnreferenceTop } from './ref';
 
-export type TToken = TVariableToken | TMixinToken;
-export type TTokenType = TToken['type'];
+export interface TBaseToken {
+	type: string;
+	key: string;
+	name?: string;
+}
 
-export type TTokenMap = TMixinTokenMap<TMixinToken> & TVariableTokenMap;
-export type TTokenKey = TMixinTokenKey | TVariableTokenKey;
+export type TToken =
+	| TStringToken
+	| TNumberToken
+	| TBooleanToken
+	| TColorToken
+	| TAutoLayoutToken
+	| TAppearanceToken
+	| TTypographyToken
+	| TFillToken
+	| TStrokeToken
+	| TShadowToken
+	| TTextToken
+	| TButtonToken
+	| TBadgeToken
+	| TImageToken
+	| TProductDetailsToken;
 
 export interface TTokenRef {
-	type: 'token';
-	tokenType: TTokenType;
-	key: string;
+	type: TToken['type'];
+	key: TToken['key'];
 }
 
-// =========================================================================
-// Variable tokens (atomic design values)
-// =========================================================================
-
-export interface TVariableToken<
-	GValue extends string | number | boolean | TRgba = string | number | boolean | TRgba
-> {
-	type: 'variable';
-	key: string;
-	name?: string;
-	value: GValue;
+export interface TStringToken extends TBaseToken {
+	type: 'string';
+	value: string;
 }
 
-export type TVariableTokenMap = Record<`variable.${string}`, TVariableToken>;
-export type TVariableTokenKey = `variable.${string}`;
-
-// =========================================================================
-// Mixin tokens (component style definitions)
-// =========================================================================
-
-export type TMixinToken =
-	| TAutoLayoutStyleToken
-	| TAppearanceStyleToken
-	| TTypographyStyleToken
-	| TFillStyleToken
-	| TStrokeStyleToken
-	| TShadowStyleToken
-	| TTextStyleToken
-	| TButtonStyleToken
-	| TBadgeStyleToken
-	| TImageStyleToken
-	| TProductDetailsStyleToken;
-
-export interface TBaseMixinToken<GMixin extends TBaseMixin<any, any>> {
-	type: 'mixin';
-	key: string;
-	name?: string;
-	mixinKey: GMixin['key'];
-	value: TUnreference<GMixin['value']>;
+export interface TNumberToken extends TBaseToken {
+	type: 'number';
+	value: number;
 }
 
-export type TMixinTokenMap<GMixinToken extends TMixinToken = TMixinToken> = {
-	[K in `mixin.${GMixinToken['mixinKey']}.${string}`]: Extract<
-		GMixinToken,
-		{ mixinKey: K extends `mixin.${infer MKey}.${string}` ? MKey : never }
-	>;
-};
+export interface TBooleanToken extends TBaseToken {
+	type: 'boolean';
+	value: boolean;
+}
 
-export type TMixinTokenKey<GMixinToken extends TMixinToken = TMixinToken> =
-	`mixin.${GMixinToken['mixinKey']}.${string}`;
+export interface TColorToken extends TBaseToken {
+	type: 'color';
+	value: TRgba;
+}
 
-export type TMixinTokenGroupMap<GMixinToken extends TMixinToken = TMixinToken> = {
-	[K in GMixinToken['mixinKey']]?: TMixinTokenSet<Extract<GMixinToken, { mixinKey: K }>>;
-};
+export interface TAutoLayoutToken extends TBaseToken {
+	type: 'auto-layout';
+	value: TUnreference<TAutoLayoutStyleMixin['value']>;
+}
 
-export type TMixinTokenSet<GMixinToken extends TMixinToken = TMixinToken> = Record<
-	string,
-	GMixinToken
->;
+export interface TAppearanceToken extends TBaseToken {
+	type: 'appearance';
+	value: TUnreferenceTop<TAppearanceStyleMixin['value']>;
+}
 
-export type TAutoLayoutStyleToken = TBaseMixinToken<TAutoLayoutStyleMixin>;
-export type TAppearanceStyleToken = TBaseMixinToken<TAppearanceStyleMixin>;
-export type TTypographyStyleToken = TBaseMixinToken<TTypographyStyleMixin>;
-export type TFillStyleToken = TBaseMixinToken<TFillStyleMixin>;
-export type TStrokeStyleToken = TBaseMixinToken<TStrokeStyleMixin>;
-export type TShadowStyleToken = TBaseMixinToken<TShadowStyleMixin>;
-export type TTextStyleToken = TBaseMixinToken<TTextStyleMixin>;
-export type TButtonStyleToken = TBaseMixinToken<TButtonStyleMixin>;
-export type TBadgeStyleToken = TBaseMixinToken<TBadgeStyleMixin>;
-export type TImageStyleToken = TBaseMixinToken<TImageStyleMixin>;
-export type TProductDetailsStyleToken = TBaseMixinToken<TProductDetailsStyleMixin>;
+export interface TTypographyToken extends TBaseToken {
+	type: 'typography';
+	value: TUnreference<TTypographyStyleMixin['value']>;
+}
+
+export interface TFillToken extends TBaseToken {
+	type: 'fill';
+	value: TUnreference<TFillStyleMixin['value']>;
+}
+
+export interface TStrokeToken extends TBaseToken {
+	type: 'stroke';
+	value: TUnreference<TStrokeStyleMixin['value']>;
+}
+
+export interface TShadowToken extends TBaseToken {
+	type: 'shadow';
+	value: TUnreference<TShadowStyleMixin['value']>;
+}
+
+export interface TTextToken extends TBaseToken {
+	type: 'text';
+	value: TUnreference<TTextStyleMixin['value']>;
+}
+
+export interface TButtonToken extends TBaseToken {
+	type: 'button';
+	value: TUnreference<TButtonStyleMixin['value']>;
+}
+
+export interface TBadgeToken extends TBaseToken {
+	type: 'badge';
+	value: TUnreference<TBadgeStyleMixin['value']>;
+}
+
+export interface TImageToken extends TBaseToken {
+	type: 'image';
+	value: TUnreference<TImageStyleMixin['value']>;
+}
+
+export interface TProductDetailsToken extends TBaseToken {
+	type: 'product-details';
+	value: TUnreference<TProductDetailsStyleMixin['value']>;
+}
