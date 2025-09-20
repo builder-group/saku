@@ -31,7 +31,7 @@
 		"install:clean": "pnpm run clean && pnpm install",
 		"lint": "eslint . --fix",
 		"start:dev": "tsc -w",
-		"test": "echo \"🧪 No tests defined yet.\"",
+		"test": "vitest run",
 		"update:latest": "pnpm update --latest '!react' '!@types/react'"
 	},
 	"dependencies": {
