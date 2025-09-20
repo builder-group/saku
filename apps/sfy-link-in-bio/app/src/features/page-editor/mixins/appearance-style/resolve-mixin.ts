@@ -1,12 +1,12 @@
-import { TAppearanceStyleMixin, TAppearanceStyleToken } from '@repo/editor';
+import { TAppearanceStyleMixin, TAppearanceStyleToken, TToken } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
 import { resolveTokenRef, TMixinResolveContext } from '../../lib';
 import { TResolvedAppearanceStyleMixin } from './types';
 
-export function resolveAppearanceStyleMixin<GBaseValue>(
+export function resolveAppearanceStyleMixin<GBaseTokenValue extends TToken['value']>(
 	appearance: TAppearanceStyleMixin['value'],
-	cx: TMixinResolveContext<TAppearanceStyleToken['value'], GBaseValue>
+	cx: TMixinResolveContext<TAppearanceStyleToken['value'], GBaseTokenValue>
 ): TResult<TResolvedAppearanceStyleMixin['value'], AppError> {
 	const [isResolvedAppearanceOk, resolvedAppearanceErr, resolvedAppearance] = resolveTokenRef(
 		appearance,

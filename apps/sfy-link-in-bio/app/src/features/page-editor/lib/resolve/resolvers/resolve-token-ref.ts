@@ -2,10 +2,13 @@ import { isTokenRef, TRef, TToken } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
 
-export function resolveTokenRef<GValue, GBaseValue>(
-	sourceValue: TRef<GValue>,
-	options: TResolveTokenRefOptions<GValue, GBaseValue>
-): TResult<GValue, AppError> {
+export function resolveTokenRef<
+	GTokenValue extends TToken['value'],
+	GBaseValue extends TToken['value'] = TToken['value']
+>(
+	sourceValue: TRef<GTokenValue>,
+	options: TResolveTokenRefOptions<GTokenValue, GBaseValue>
+): TResult<GTokenValue, AppError> {
 	if (!isTokenRef(sourceValue)) {
 		return Ok(sourceValue);
 	}
@@ -24,22 +27,11 @@ export function resolveTokenRef<GValue, GBaseValue>(
 		);
 	}
 
-	// Verify token type if expected type is specified
-	if (expectedType != null && token.type !== expectedType) {
-		return Err(
-			new AppError('#ERR_TOKEN_TYPE_MISMATCH', {
-				detail: `Expected token type '${options.expectedType}' but got '${token.type}' for key: ${sourceValue.key}`
-			})
-		);
-	}
-
-	// If no mapping function provided, return the token value directly
-	if (mapToTokenValue == null) {
-		return Ok(token.value as GValue);
-	}
-
-	// Use mapping function to extract specific property from token value
-	const mappedValue = mapToTokenValue(token.value as GBaseValue);
+	// Use mapping function to extract specific property from token value, or return token value directly
+	const mappedValue =
+		mapToTokenValue != null
+			? mapToTokenValue(token.value as GBaseValue)
+			: (token.value as GTokenValue);
 	if (mappedValue === undefined) {
 		return Err(
 			new AppError('#ERR_TOKEN_VALUE_MAPPING', {
@@ -48,11 +40,23 @@ export function resolveTokenRef<GValue, GBaseValue>(
 		);
 	}
 
+	// Verify token type if expected type is specified
+	if (expectedType != null && token.type !== expectedType) {
+		return Err(
+			new AppError('#ERR_TOKEN_TYPE_MISMATCH', {
+				detail: `Expected token type '${expectedType}' but got '${token.type}' for key: ${sourceValue.key}`
+			})
+		);
+	}
+
 	return Ok(mappedValue);
 }
 
-export interface TResolveTokenRefOptions<GValue, GBaseValue> {
+export interface TResolveTokenRefOptions<
+	GTokenValue extends TToken['value'],
+	GBaseValue extends TToken['value'] = TToken['value']
+> {
 	tokenMap: Record<TToken['key'], TToken> | undefined | null;
 	expectedType?: TToken['type'];
-	mapToTokenValue?: (tokenValue: GBaseValue) => GValue | undefined;
+	mapToTokenValue?: (tokenValue: GBaseValue) => GTokenValue | undefined;
 }

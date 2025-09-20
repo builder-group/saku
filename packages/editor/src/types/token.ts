@@ -12,7 +12,7 @@ import {
 	TTextStyleMixin,
 	TTypographyStyleMixin
 } from './mixin';
-import { TUnreference } from './ref';
+import { TUnreference, TUnreferenceTop } from './ref';
 import { TFont, TPaint } from './utils';
 
 export interface TBaseToken {
@@ -94,51 +94,50 @@ export interface TAutoLayoutToken extends TBaseToken {
 
 export interface TAppearanceStyleToken extends TBaseToken {
 	type: 'appearance';
-	value: TUnreference<TAppearanceStyleMixin['value']>;
-	// value: TUnreferenceTop<TAppearanceStyleMixin['value']>; // TODO: Unreference top at some point so we can use other variables inside variables
+	value: TUnreferenceTop<TAppearanceStyleMixin['value']>;
 }
 
 export interface TTypographyStyleToken extends TBaseToken {
 	type: 'typography';
-	value: TUnreference<TTypographyStyleMixin['value']>;
+	value: TUnreferenceTop<TTypographyStyleMixin['value']>;
 }
 
 export interface TFillStyleToken extends TBaseToken {
 	type: 'fill';
-	value: TUnreference<TFillStyleMixin['value']>;
+	value: TUnreferenceTop<TFillStyleMixin['value']>;
 }
 
 export interface TStrokeStyleToken extends TBaseToken {
 	type: 'stroke';
-	value: TUnreference<TStrokeStyleMixin['value']>;
+	value: TUnreferenceTop<TStrokeStyleMixin['value']>;
 }
 
 export interface TShadowStyleToken extends TBaseToken {
 	type: 'shadow';
-	value: TUnreference<TShadowStyleMixin['value']>;
+	value: TUnreferenceTop<TShadowStyleMixin['value']>;
 }
 
 export interface TTextStyleToken extends TBaseToken {
 	type: 'text';
-	value: TUnreference<TTextStyleMixin['value']>;
+	value: TUnreferenceTop<TTextStyleMixin['value']>;
 }
 
 export interface TButtonStyleToken extends TBaseToken {
 	type: 'button';
-	value: TUnreference<TButtonStyleMixin['value']>;
+	value: TUnreferenceTop<TButtonStyleMixin['value']>;
 }
 
 export interface TBadgeStyleToken extends TBaseToken {
 	type: 'badge';
-	value: TUnreference<TBadgeStyleMixin['value']>;
+	value: TUnreferenceTop<TBadgeStyleMixin['value']>;
 }
 
 export interface TImageStyleToken extends TBaseToken {
 	type: 'image';
-	value: TUnreference<TImageStyleMixin['value']>;
+	value: TUnreferenceTop<TImageStyleMixin['value']>;
 }
 
 export interface TProductDetailsStyleToken extends TBaseToken {
 	type: 'product-details';
-	value: TUnreference<TProductDetailsStyleMixin['value']>;
+	value: TUnreferenceTop<TProductDetailsStyleMixin['value']>;
 }

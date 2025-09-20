@@ -1,5 +1,5 @@
-import { TTextStyleMixin, TTextStyleToken } from '@repo/editor';
-import { Err, Ok, TResult } from 'tuple-result';
+import { TTextStyleMixin, TTextStyleToken, TToken } from '@repo/editor';
+import { Err, Ok, TResult, unwrapOrNull } from 'tuple-result';
 import { AppError } from '@/lib';
 import { resolveTokenRef, TMixinResolveContext } from '../../lib';
 import { resolveAppearanceStyleMixin } from '../appearance-style';
@@ -9,9 +9,9 @@ import { resolveStrokeStyleMixin } from '../stroke-style';
 import { resolveTypographyStyleMixin } from '../typography-style';
 import { TResolvedTextStyleMixin } from './types';
 
-export function resolveTextStyleMixin<GBaseValue>(
+export function resolveTextStyleMixin<GBaseTokenValue extends TToken['value']>(
 	text: TTextStyleMixin['value'],
-	cx: TMixinResolveContext<TTextStyleToken['value'], GBaseValue>
+	cx: TMixinResolveContext<TTextStyleToken['value'], GBaseTokenValue>
 ): TResult<TResolvedTextStyleMixin['value'], AppError> {
 	const [isResolvedTextOk, resolvedTextErr, resolvedText] = resolveTokenRef(text, {
 		tokenMap: cx.tokenMap,
@@ -23,43 +23,93 @@ export function resolveTextStyleMixin<GBaseValue>(
 	}
 
 	const [isResolvedAppearanceOk, resolvedAppearanceErr, resolvedAppearance] =
-		resolveAppearanceStyleMixin<GBaseValue>(resolvedText.appearance, {
+		resolveAppearanceStyleMixin<GBaseTokenValue>(resolvedText.appearance, {
 			...cx,
-			mapToTokenValue: (value) => cx.mapToTokenValue(value)?.appearance
+			mapToTokenValue: (value) => {
+				const tokenValue = cx.mapToTokenValue(value)?.appearance;
+				if (tokenValue == null) {
+					return undefined;
+				}
+				const resolvedValue = resolveTokenRef(tokenValue, {
+					tokenMap: cx.tokenMap,
+					expectedType: 'appearance'
+				});
+				return unwrapOrNull(resolvedValue) ?? undefined;
+			}
 		});
 	if (!isResolvedAppearanceOk) {
 		return Err(resolvedAppearanceErr.wrapWith('#ERR_RESOLVE_APPEARANCE_STYLE'));
 	}
 	const [isResolvedTypographyOk, resolvedTypographyErr, resolvedTypography] =
-		resolveTypographyStyleMixin<GBaseValue>(resolvedText.typography, {
+		resolveTypographyStyleMixin<GBaseTokenValue>(resolvedText.typography, {
 			...cx,
-			mapToTokenValue: (value) => cx.mapToTokenValue(value)?.typography
+			mapToTokenValue: (value) => {
+				const tokenValue = cx.mapToTokenValue(value)?.typography;
+				if (tokenValue == null) {
+					return undefined;
+				}
+				const resolvedValue = resolveTokenRef(tokenValue, {
+					tokenMap: cx.tokenMap,
+					expectedType: 'typography'
+				});
+				return unwrapOrNull(resolvedValue) ?? undefined;
+			}
 		});
 	if (!isResolvedTypographyOk) {
 		return Err(resolvedTypographyErr.wrapWith('#ERR_RESOLVE_TYPOGRAPHY_STYLE'));
 	}
-	const [isResolvedFillOk, resolvedFillErr, resolvedFill] = resolveFillStyleMixin<GBaseValue>(
+	const [isResolvedFillOk, resolvedFillErr, resolvedFill] = resolveFillStyleMixin<GBaseTokenValue>(
 		resolvedText.fill,
 		{
 			...cx,
-			mapToTokenValue: (value) => cx.mapToTokenValue(value)?.fill
+			mapToTokenValue: (value) => {
+				const tokenValue = cx.mapToTokenValue(value)?.fill;
+				if (tokenValue == null) {
+					return undefined;
+				}
+				const resolvedValue = resolveTokenRef(tokenValue, {
+					tokenMap: cx.tokenMap,
+					expectedType: 'fill'
+				});
+				return unwrapOrNull(resolvedValue) ?? undefined;
+			}
 		}
 	);
 	if (!isResolvedFillOk) {
 		return Err(resolvedFillErr.wrapWith('#ERR_RESOLVE_FILL_STYLE'));
 	}
 	const [isResolvedStrokeOk, resolvedStrokeErr, resolvedStroke] =
-		resolveStrokeStyleMixin<GBaseValue>(resolvedText.stroke, {
+		resolveStrokeStyleMixin<GBaseTokenValue>(resolvedText.stroke, {
 			...cx,
-			mapToTokenValue: (value) => cx.mapToTokenValue(value)?.stroke
+			mapToTokenValue: (value) => {
+				const tokenValue = cx.mapToTokenValue(value)?.stroke;
+				if (tokenValue == null) {
+					return undefined;
+				}
+				const resolvedValue = resolveTokenRef(tokenValue, {
+					tokenMap: cx.tokenMap,
+					expectedType: 'stroke'
+				});
+				return unwrapOrNull(resolvedValue) ?? undefined;
+			}
 		});
 	if (!isResolvedStrokeOk) {
 		return Err(resolvedStrokeErr.wrapWith('#ERR_RESOLVE_STROKE_STYLE'));
 	}
 	const [isResolvedShadowOk, resolvedShadowErr, resolvedShadow] =
-		resolveShadowStyleMixin<GBaseValue>(resolvedText.shadow, {
+		resolveShadowStyleMixin<GBaseTokenValue>(resolvedText.shadow, {
 			...cx,
-			mapToTokenValue: (value) => cx.mapToTokenValue(value)?.shadow
+			mapToTokenValue: (value) => {
+				const tokenValue = cx.mapToTokenValue(value)?.shadow;
+				if (tokenValue == null) {
+					return undefined;
+				}
+				const resolvedValue = resolveTokenRef(tokenValue, {
+					tokenMap: cx.tokenMap,
+					expectedType: 'shadow'
+				});
+				return unwrapOrNull(resolvedValue) ?? undefined;
+			}
 		});
 	if (!isResolvedShadowOk) {
 		return Err(resolvedShadowErr.wrapWith('#ERR_RESOLVE_SHADOW_STYLE'));
