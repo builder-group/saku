@@ -29,7 +29,7 @@ export function resolveTokenRef<
 
 	// Use mapping function to extract specific property from token value, or return token value directly
 	const mappedValue =
-		mapToTokenValue != null
+		sourceValue.mapped && mapToTokenValue != null
 			? mapToTokenValue(token.value as GBaseValue)
 			: (token.value as GTokenValue);
 	if (mappedValue === undefined) {
@@ -56,7 +56,7 @@ export interface TResolveTokenRefOptions<
 	GTokenValue extends TToken['value'],
 	GBaseValue extends TToken['value'] = TToken['value']
 > {
-	tokenMap: Record<TToken['key'], TToken> | undefined | null;
+	tokenMap: Record<TToken['key'], TToken>;
 	expectedType?: TToken['type'];
 	mapToTokenValue?: (tokenValue: GBaseValue) => GTokenValue | undefined;
 }

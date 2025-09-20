@@ -26,6 +26,7 @@ export type TToken = TAtomicToken | TMixinToken;
 export interface TTokenRef {
 	type: TToken['type'];
 	key: TToken['key'];
+	mapped?: boolean; // If true, this token reference should be mapped to extract a property
 }
 
 // =========================================================================

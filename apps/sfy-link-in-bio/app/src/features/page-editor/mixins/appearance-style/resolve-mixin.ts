@@ -1,5 +1,5 @@
 import { TAppearanceStyleMixin, TAppearanceStyleToken, TToken } from '@repo/editor';
-import { Err, Ok, TResult } from 'tuple-result';
+import { Err, Ok, TResult, unwrapOrNull } from 'tuple-result';
 import { AppError } from '@/lib';
 import { resolveTokenRef, TMixinResolveContext } from '../../lib';
 import { TResolvedAppearanceStyleMixin } from './types';
@@ -24,7 +24,18 @@ export function resolveAppearanceStyleMixin<GBaseTokenValue extends TToken['valu
 		resolvedAppearance.visible,
 		{
 			tokenMap: cx.tokenMap,
-			expectedType: 'boolean'
+			expectedType: 'boolean',
+			mapToTokenValue: (value: GBaseTokenValue) => {
+				const tokenValue = cx.mapToTokenValue(value)?.visible;
+				if (tokenValue == null) {
+					return undefined;
+				}
+				const resolvedValue = resolveTokenRef(tokenValue, {
+					tokenMap: cx.tokenMap,
+					expectedType: 'boolean'
+				});
+				return unwrapOrNull(resolvedValue) ?? undefined;
+			}
 		}
 	);
 	if (!isResolvedVisibleOk) {
@@ -34,7 +45,18 @@ export function resolveAppearanceStyleMixin<GBaseTokenValue extends TToken['valu
 		resolvedAppearance.opacity,
 		{
 			tokenMap: cx.tokenMap,
-			expectedType: 'number'
+			expectedType: 'number',
+			mapToTokenValue: (value: GBaseTokenValue) => {
+				const tokenValue = cx.mapToTokenValue(value)?.opacity;
+				if (tokenValue == null) {
+					return undefined;
+				}
+				const resolvedValue = resolveTokenRef(tokenValue, {
+					tokenMap: cx.tokenMap,
+					expectedType: 'number'
+				});
+				return unwrapOrNull(resolvedValue) ?? undefined;
+			}
 		}
 	);
 	if (!isResolvedOpacityOk) {
@@ -44,7 +66,18 @@ export function resolveAppearanceStyleMixin<GBaseTokenValue extends TToken['valu
 		resolvedAppearance.borderRadius,
 		{
 			tokenMap: cx.tokenMap,
-			expectedType: 'number'
+			expectedType: 'number',
+			mapToTokenValue: (value: GBaseTokenValue) => {
+				const tokenValue = cx.mapToTokenValue(value)?.borderRadius;
+				if (tokenValue == null) {
+					return undefined;
+				}
+				const resolvedValue = resolveTokenRef(tokenValue, {
+					tokenMap: cx.tokenMap,
+					expectedType: 'number'
+				});
+				return unwrapOrNull(resolvedValue) ?? undefined;
+			}
 		}
 	);
 	if (!isResolvedBorderRadiusOk) {

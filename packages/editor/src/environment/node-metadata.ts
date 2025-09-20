@@ -12,8 +12,8 @@ export const aboutNodeMetadata: TNodeMetadata<'about'> = {
 			contactIcons: []
 		},
 		autoLayout: {
-			horizontalPadding: tokenRef('auto-layout', 'default'),
-			verticalPadding: tokenRef('auto-layout', 'default'),
+			horizontalPadding: tokenRef('auto-layout', 'default', true),
+			verticalPadding: tokenRef('auto-layout', 'default', true),
 			horizontalGap: null,
 			verticalGap: null
 		},
@@ -22,34 +22,34 @@ export const aboutNodeMetadata: TNodeMetadata<'about'> = {
 		stroke: null,
 		shadow: null,
 		textXl: {
-			appearance: tokenRef('text', 'xl'),
+			appearance: tokenRef('text', 'xl', true),
 			typography: {
-				font: tokenRef('text', 'xl'),
-				fontSize: tokenRef('text', 'xl'),
+				font: tokenRef('text', 'xl', true),
+				fontSize: tokenRef('text', 'xl', true),
 				textAlignHorizontal: 'center',
 				textAlignVertical: 'center',
-				lineHeight: tokenRef('text', 'xl'),
-				letterSpacing: tokenRef('text', 'xl')
+				lineHeight: tokenRef('text', 'xl', true),
+				letterSpacing: tokenRef('text', 'xl', true)
 			},
-			fill: tokenRef('text', 'xl'),
-			stroke: tokenRef('text', 'xl'),
-			shadow: tokenRef('text', 'xl')
+			fill: tokenRef('text', 'xl', true),
+			stroke: tokenRef('text', 'xl', true),
+			shadow: tokenRef('text', 'xl', true)
 		},
 		text: {
-			appearance: tokenRef('text', 'default'),
+			appearance: tokenRef('text', 'default', true),
 			typography: {
-				font: tokenRef('text', 'default'),
-				fontSize: tokenRef('text', 'default'),
+				font: tokenRef('text', 'default', true),
+				fontSize: tokenRef('text', 'default', true),
 				textAlignHorizontal: 'center',
 				textAlignVertical: 'center',
-				lineHeight: tokenRef('text', 'default'),
-				letterSpacing: tokenRef('text', 'default')
+				lineHeight: tokenRef('text', 'default', true),
+				letterSpacing: tokenRef('text', 'default', true)
 			},
-			fill: tokenRef('text', 'default'),
-			stroke: tokenRef('text', 'default'),
-			shadow: tokenRef('text', 'default')
+			fill: tokenRef('text', 'default', true),
+			stroke: tokenRef('text', 'default', true),
+			shadow: tokenRef('text', 'default', true)
 		},
-		image: tokenRef('text', 'default')
+		image: tokenRef('image', 'default')
 	}
 };
 
@@ -63,8 +63,8 @@ export const linkNodeMetadata: TNodeMetadata<'link'> = {
 			title: 'Add your title here'
 		},
 		autoLayout: {
-			horizontalPadding: tokenRef('auto-layout', 'default'),
-			verticalPadding: tokenRef('auto-layout', 'default'),
+			horizontalPadding: tokenRef('auto-layout', 'default', true),
+			verticalPadding: tokenRef('auto-layout', 'default', true),
 			horizontalGap: null,
 			verticalGap: null
 		},
@@ -77,11 +77,11 @@ export const linkNodeMetadata: TNodeMetadata<'link'> = {
 		image: {
 			appearance: {
 				visible: true,
-				opacity: tokenRef('appearance', 'default'),
+				opacity: tokenRef('image', 'default', true),
 				borderRadius: null
 			},
-			stroke: tokenRef('stroke', 'default'),
-			shadow: tokenRef('shadow', 'default')
+			stroke: tokenRef('image', 'default', true),
+			shadow: tokenRef('image', 'default', true)
 		}
 	}
 };
@@ -106,11 +106,11 @@ export const mediaNodeMetadata: TNodeMetadata<'media'> = {
 		image: {
 			appearance: {
 				visible: true,
-				opacity: tokenRef('appearance', 'default'),
+				opacity: tokenRef('image', 'default', true),
 				borderRadius: null
 			},
-			stroke: tokenRef('stroke', 'default'),
-			shadow: tokenRef('shadow', 'default')
+			stroke: tokenRef('image', 'default', true),
+			shadow: tokenRef('image', 'default', true)
 		}
 	}
 };
@@ -148,8 +148,8 @@ export const productNodeMetadata: TNodeMetadata<'product'> = {
 			type: 'single'
 		},
 		autoLayout: {
-			horizontalPadding: tokenRef('auto-layout', 'default'),
-			verticalPadding: tokenRef('auto-layout', 'default'),
+			horizontalPadding: tokenRef('auto-layout', 'default', true),
+			verticalPadding: tokenRef('auto-layout', 'default', true),
 			horizontalGap: null,
 			verticalGap: null
 		},
@@ -158,18 +158,18 @@ export const productNodeMetadata: TNodeMetadata<'product'> = {
 		stroke: tokenRef('stroke', 'default'),
 		shadow: tokenRef('shadow', 'default'),
 		text: {
-			appearance: tokenRef('appearance', 'default'),
+			appearance: tokenRef('text', 'default', true),
 			typography: {
-				font: tokenRef('typography', 'default'),
-				fontSize: tokenRef('typography', 'default'),
+				font: tokenRef('text', 'default', true),
+				fontSize: tokenRef('text', 'default', true),
 				textAlignHorizontal: 'start',
-				textAlignVertical: tokenRef('typography', 'default'),
-				lineHeight: tokenRef('typography', 'default'),
-				letterSpacing: tokenRef('typography', 'default')
+				textAlignVertical: tokenRef('text', 'default', true),
+				lineHeight: tokenRef('text', 'default', true),
+				letterSpacing: tokenRef('text', 'default', true)
 			},
-			fill: tokenRef('fill', 'default'),
-			stroke: tokenRef('stroke', 'default'),
-			shadow: tokenRef('shadow', 'default')
+			fill: tokenRef('text', 'default', true),
+			stroke: tokenRef('text', 'default', true),
+			shadow: tokenRef('text', 'default', true)
 		},
 		buttonPrimary: tokenRef('button', 'primary'),
 		badgePrimary: tokenRef('badge', 'primary'),
@@ -177,11 +177,11 @@ export const productNodeMetadata: TNodeMetadata<'product'> = {
 		image: {
 			appearance: {
 				visible: true,
-				opacity: tokenRef('appearance', 'default'),
+				opacity: tokenRef('image', 'default', true),
 				borderRadius: null
 			},
-			stroke: tokenRef('stroke', 'default'),
-			shadow: tokenRef('shadow', 'default')
+			stroke: tokenRef('image', 'default', true),
+			shadow: tokenRef('image', 'default', true)
 		},
 		productDetails: tokenRef('product-details', 'default')
 	}
@@ -196,8 +196,8 @@ export const textNodeMetadata: TNodeMetadata<'text'> = {
 			text: { type: 'markdown', value: 'Add your text here' }
 		},
 		autoLayout: {
-			horizontalPadding: tokenRef('auto-layout', 'default'),
-			verticalPadding: tokenRef('auto-layout', 'default'),
+			horizontalPadding: tokenRef('auto-layout', 'default', true),
+			verticalPadding: tokenRef('auto-layout', 'default', true),
 			horizontalGap: null,
 			verticalGap: null
 		},
