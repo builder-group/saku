@@ -1,16 +1,20 @@
-import { TAppearanceStyleMixin, TAppearanceStyleToken, TMixinTokenSet } from '@repo/editor';
+import { TAppearanceStyleMixin, TAppearanceStyleToken } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
 import { resolveTokenRef, TMixinResolveContext } from '../../lib';
 import { TResolvedAppearanceStyleMixin } from './types';
 
-export function resolveAppearanceStyleMixin<GTokenSet extends TMixinTokenSet>(
+export function resolveAppearanceStyleMixin<GBaseValue>(
 	appearance: TAppearanceStyleMixin['value'],
-	cx: TMixinResolveContext<TAppearanceStyleToken['value'], GTokenSet>
+	cx: TMixinResolveContext<TAppearanceStyleToken['value'], GBaseValue>
 ): TResult<TResolvedAppearanceStyleMixin['value'], AppError> {
 	const [isResolvedAppearanceOk, resolvedAppearanceErr, resolvedAppearance] = resolveTokenRef(
 		appearance,
-		{ mixin: { tokenSet: cx.mixinTokenSet, mapToTokenValue: cx.mapToMixinTokenValue } }
+		{
+			tokenMap: cx.tokenMap,
+			expectedType: 'appearance',
+			mapToTokenValue: cx.mapToTokenValue
+		}
 	);
 	if (!isResolvedAppearanceOk) {
 		return Err(resolvedAppearanceErr.wrapWith('#ERR_RESOLVE_APPEARANCE'));
@@ -19,14 +23,8 @@ export function resolveAppearanceStyleMixin<GTokenSet extends TMixinTokenSet>(
 	const [isResolvedVisibleOk, resolvedVisibleErr, resolvedVisible] = resolveTokenRef(
 		resolvedAppearance.visible,
 		{
-			mixin: {
-				tokenSet: cx.mixinTokenSet,
-				mapToTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.visible
-			},
-			variable: {
-				tokenMap: cx.variableTokenMap,
-				expectedType: 'boolean'
-			}
+			tokenMap: cx.tokenMap,
+			expectedType: 'boolean'
 		}
 	);
 	if (!isResolvedVisibleOk) {
@@ -35,14 +33,8 @@ export function resolveAppearanceStyleMixin<GTokenSet extends TMixinTokenSet>(
 	const [isResolvedOpacityOk, resolvedOpacityErr, resolvedOpacity] = resolveTokenRef(
 		resolvedAppearance.opacity,
 		{
-			mixin: {
-				tokenSet: cx.mixinTokenSet,
-				mapToTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.opacity
-			},
-			variable: {
-				tokenMap: cx.variableTokenMap,
-				expectedType: 'number'
-			}
+			tokenMap: cx.tokenMap,
+			expectedType: 'number'
 		}
 	);
 	if (!isResolvedOpacityOk) {
@@ -51,14 +43,8 @@ export function resolveAppearanceStyleMixin<GTokenSet extends TMixinTokenSet>(
 	const [isResolvedBorderRadiusOk, resolvedBorderRadiusErr, resolvedBorderRadius] = resolveTokenRef(
 		resolvedAppearance.borderRadius,
 		{
-			mixin: {
-				tokenSet: cx.mixinTokenSet,
-				mapToTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.borderRadius
-			},
-			variable: {
-				tokenMap: cx.variableTokenMap,
-				expectedType: 'number'
-			}
+			tokenMap: cx.tokenMap,
+			expectedType: 'number'
 		}
 	);
 	if (!isResolvedBorderRadiusOk) {
