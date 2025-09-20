@@ -13,6 +13,7 @@ import {
 	TTypographyStyleMixin
 } from './mixin';
 import { TUnreference, TUnreferenceTop } from './ref';
+import { TFont, TPaint } from './utils';
 
 export interface TBaseToken {
 	type: string;
@@ -20,28 +21,24 @@ export interface TBaseToken {
 	name?: string;
 }
 
-export type TToken =
-	| TStringToken
-	| TNumberToken
-	| TBooleanToken
-	| TColorToken
-	| TAutoLayoutToken
-	| TAppearanceToken
-	| TTypographyToken
-	| TFillToken
-	| TStrokeToken
-	| TShadowToken
-	| TTextToken
-	| TButtonToken
-	| TBadgeToken
-	| TImageToken
-	| TProductDetailsToken;
-export type TTokenType = TToken['type'];
+export type TToken = TAtomicToken | TMixinToken;
 
 export interface TTokenRef {
 	type: TToken['type'];
 	key: TToken['key'];
 }
+
+// =========================================================================
+// Atomic Tokens
+// =========================================================================
+
+export type TAtomicToken =
+	| TStringToken
+	| TNumberToken
+	| TBooleanToken
+	| TColorToken
+	| TPaintToken
+	| TFontToken;
 
 export interface TStringToken extends TBaseToken {
 	type: 'string';
@@ -62,6 +59,33 @@ export interface TColorToken extends TBaseToken {
 	type: 'color';
 	value: TRgba;
 }
+
+export interface TPaintToken extends TBaseToken {
+	type: 'paint';
+	value: TPaint;
+}
+
+export interface TFontToken extends TBaseToken {
+	type: 'font';
+	value: TFont;
+}
+
+// =========================================================================
+// Mixin Tokens
+// =========================================================================
+
+export type TMixinToken =
+	| TAutoLayoutToken
+	| TAppearanceToken
+	| TTypographyToken
+	| TFillToken
+	| TStrokeToken
+	| TShadowToken
+	| TTextToken
+	| TButtonToken
+	| TBadgeToken
+	| TImageToken
+	| TProductDetailsToken;
 
 export interface TAutoLayoutToken extends TBaseToken {
 	type: 'auto-layout';
