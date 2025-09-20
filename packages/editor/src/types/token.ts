@@ -23,9 +23,9 @@ export interface TBaseToken {
 
 export type TToken = TAtomicToken | TMixinToken;
 
-export interface TTokenRef {
-	type: TToken['type'];
-	key: TToken['key'];
+export interface TTokenRef<GToken extends TToken = TToken> {
+	type: GToken['type'];
+	key: GToken['key'];
 	mapped?: boolean; // If true, this token reference should be mapped to extract a property
 }
 
@@ -76,7 +76,7 @@ export interface TFontToken extends TBaseToken {
 // =========================================================================
 
 export type TMixinToken =
-	| TAutoLayoutToken
+	| TAutoLayoutStyleToken
 	| TAppearanceStyleToken
 	| TTypographyStyleToken
 	| TFillStyleToken
@@ -88,7 +88,7 @@ export type TMixinToken =
 	| TImageStyleToken
 	| TProductDetailsStyleToken;
 
-export interface TAutoLayoutToken extends TBaseToken {
+export interface TAutoLayoutStyleToken extends TBaseToken {
 	type: 'auto-layout';
 	value: TUnreference<TAutoLayoutStyleMixin['value']>;
 }
