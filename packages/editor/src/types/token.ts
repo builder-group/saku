@@ -12,7 +12,7 @@ import {
 	TTextStyleMixin,
 	TTypographyStyleMixin
 } from './mixin';
-import { TUnreference, TUnreferenceTop } from './ref';
+import { TUnreference } from './ref';
 import { TFont, TPaint } from './utils';
 
 export interface TBaseToken {
@@ -94,7 +94,8 @@ export interface TAutoLayoutToken extends TBaseToken {
 
 export interface TAppearanceToken extends TBaseToken {
 	type: 'appearance';
-	value: TUnreferenceTop<TAppearanceStyleMixin['value']>;
+	value: TUnreference<TAppearanceStyleMixin['value']>;
+	// value: TUnreferenceTop<TAppearanceStyleMixin['value']>; // TODO: Unreference top at some point so we can use other variables inside variables
 }
 
 export interface TTypographyToken extends TBaseToken {
