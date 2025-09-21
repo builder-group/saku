@@ -1,7 +1,14 @@
-import { isTokenRef, TMixinTokenSet, TTextStyleMixin, TTextStyleToken } from '@repo/editor';
+import {
+	isTokenRef,
+	TTextStyleMixin,
+	TTextStyleToken,
+	TTokenPaths,
+	TTokenRef,
+	TUnreferenceTop
+} from '@repo/editor';
 import { TState } from 'feature-state';
 import { useMapState } from '@/hooks';
-import { TPageEditor } from '../../lib';
+import { resolveTokenRef, TPageEditor } from '../../lib';
 import { AppearanceStyleMixinEditor } from '../appearance-style';
 import { FillStyleMixinEditor } from '../fill-style';
 import { ShadowStyleMixinEditor } from '../shadow-style';
@@ -9,15 +16,15 @@ import { StrokeStyleMixinEditor } from '../stroke-style';
 import { TypographyStyleMixinEditor } from '../typography-style';
 import { packTextTokenRef, unpackTextTokenRef } from './pack-mixin';
 
-export const TextStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
-	props: TTextStyleMixinEditorProps<GTokenSet>
-) => {
-	const { state, tokenSet, tokenRefKey, mapToToken, disabledTokenLink = false, editor } = props;
+export const TextStyleMixinEditor = (props: TTextStyleMixinEditorProps) => {
+	const { state, ref, disabledTokenLink = false, editor } = props;
 
 	const appearanceState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return baseValue;
+				return resolveTokenRef(baseValue, {
+					tokenMap: editor.tokenMap._v
+				}).unwrap().appearance;
 			}
 			return baseValue?.appearance;
 		},
@@ -89,9 +96,15 @@ export const TextStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 		<>
 			<AppearanceStyleMixinEditor
 				state={appearanceState}
-				tokenSet={tokenSet}
-				tokenRefKey={tokenRefKey}
-				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.appearance}
+				ref={{
+					type: 'token',
+					key: ref.key,
+					tokenType: ref.tokenType,
+					path:
+						ref.path != null
+							? (`${ref.path}.appearance` as TTokenPaths<TTextStyleToken>)
+							: 'appearance'
+				}}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 			/>
@@ -137,11 +150,9 @@ export const TextStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 	);
 };
 
-interface TTextStyleMixinEditorProps<GTokenSet extends TMixinTokenSet> {
+interface TTextStyleMixinEditorProps {
 	state: TState<TTextStyleMixin['value'], any>;
-	tokenSet?: TState<GTokenSet, any>;
-	tokenRefKey?: string;
-	mapToToken?: (ref: string, tokenSet?: GTokenSet) => TTextStyleToken['value'] | undefined;
+	ref: TTokenRef<TUnreferenceTop<TTextStyleToken['value']>>;
 	disabledTokenLink?: boolean;
 	editor: TPageEditor;
 }

@@ -1,4 +1,4 @@
-import { isTokenRef, TMixinTokenSet, tokenRef, TRef } from '@repo/editor';
+import { isTokenRef, TRef, TToken, TUnreferenceTop } from '@repo/editor';
 import { Text, TextField, TextFieldProps } from '@shopify/polaris';
 import { useCombinedCompute, useCompute } from 'feature-react/state';
 import { TState } from 'feature-state';
@@ -7,22 +7,17 @@ import { LinkIcon, LinkOffIcon } from '@/components';
 import { cn } from '@/lib';
 import { TokenActionOverlay } from './TokenActionOverlay';
 
-export const TokenTextInput = <
-	GValue extends string | number,
-	GRefValue extends TRef<GValue> | undefined,
-	GMixinTokenSet extends TMixinTokenSet
->(
-	props: TTokenTextInputProps<GValue, GRefValue, GMixinTokenSet>
+export const TokenTextInput = <GRefValue extends TRef<string | number> | undefined>(
+	props: TTokenTextInputProps<GRefValue>
 ) => {
 	const {
 		state,
-		mapToDisplay,
-		mapToInternal,
-		tokenSet,
-		tokenRefKey = 'default',
-		mapToTokenValue,
+		mapToDisplayValue,
+		mapToValue,
+		tokenMap,
+		onLinkToken,
+		onUnlinkToken,
 		onNavigateToToken,
-		onLinkChange,
 		disabledTokenLink = false,
 		label,
 		min,
@@ -35,17 +30,19 @@ export const TokenTextInput = <
 
 	const [displayValue, setDisplayValue] = React.useState<string>('');
 	const resolvedValue = useCombinedCompute(
-		[state, tokenSet],
-		([stateCx, tokenSetCx]) => {
+		[state, tokenMap],
+		([stateCx, tokenMapCx]) => {
 			const rawValue = isTokenRef(stateCx.value)
-				? mapToTokenValue?.(stateCx.value.key, tokenSetCx?.value)
-				: (stateCx.value as GValue);
+				? tokenMapCx?.value?.[stateCx.value.key]?.value
+				: stateCx.value;
 			if (rawValue == null) {
 				return undefined;
 			}
-			return mapToDisplay != null ? mapToDisplay(rawValue) : rawValue;
+			return mapToDisplayValue != null
+				? mapToDisplayValue(rawValue as TUnreferenceTop<GRefValue>)
+				: rawValue;
 		},
-		[mapToDisplay, mapToTokenValue]
+		[mapToDisplayValue]
 	);
 	const isLinked = useCompute(state, ({ value }) => isTokenRef(value));
 
@@ -58,10 +55,14 @@ export const TokenTextInput = <
 			if (isTokenRef(value)) {
 				state.set(value);
 			} else {
-				state.set((mapToInternal != null ? mapToInternal(value as GValue) : value) as GRefValue);
+				state.set(
+					(mapToValue != null
+						? mapToValue(value as TUnreferenceTop<GRefValue>)
+						: value) as GRefValue
+				);
 			}
 		},
-		[mapToInternal, state]
+		[mapToValue, state]
 	);
 
 	const handleTextChange = React.useCallback(
@@ -97,22 +98,28 @@ export const TokenTextInput = <
 	);
 
 	const handleToggleTokenLink = React.useCallback(() => {
-		const { preventDefault } = onLinkChange?.(isLinked) ?? {};
-		if (preventDefault) {
-			return;
-		}
-
+		// Unlink token
 		if (isLinked) {
-			const tokenValue = isTokenRef(state._v)
-				? mapToTokenValue?.(state._v.key, tokenSet?._v)
-				: undefined;
+			const result = onUnlinkToken?.();
+			if (isPreventDefault(result)) {
+				return;
+			}
+			const tokenValue = isTokenRef(result) ? tokenMap?._v?.[result.key]?.value : undefined;
 			if (tokenValue != null) {
 				state.set(tokenValue as GRefValue);
 			}
-		} else {
-			state.set(tokenRef('mixin', tokenRefKey) as GRefValue);
+			return;
 		}
-	}, [onLinkChange, isLinked, state, mapToTokenValue, tokenSet, tokenRefKey]);
+
+		// Link token
+		const result = onLinkToken?.();
+		if (isPreventDefault(result)) {
+			return;
+		}
+		if (isTokenRef(result)) {
+			state.set(result as GRefValue);
+		}
+	}, [onLinkToken, onUnlinkToken, isLinked, state, tokenMap]);
 
 	// =========================================================================
 	// Effects
@@ -172,22 +179,27 @@ export const TokenTextInput = <
 	);
 };
 
-export interface TTokenTextInputProps<
-	GValue extends string | number,
-	GRefValue extends TRef<GValue> | undefined,
-	GMixinTokenSet extends TMixinTokenSet
-> extends Omit<TextFieldProps, 'label' | 'labelHidden' | 'value' | 'onChange'> {
+export interface TTokenTextInputProps<GRefValue extends TRef<string | number> | undefined>
+	extends Omit<TextFieldProps, 'label' | 'labelHidden' | 'value' | 'onChange'> {
 	state: TState<GRefValue, any>;
-	mapToDisplay?: (value: GValue) => GValue;
-	mapToInternal?: (displayValue: GValue) => GValue;
+	mapToDisplayValue?: (value: TUnreferenceTop<GRefValue>) => TUnreferenceTop<GRefValue>;
+	mapToValue?: (displayValue: TUnreferenceTop<GRefValue>) => GRefValue;
 
-	tokenSet?: TState<GMixinTokenSet, any>;
-	tokenRefKey?: string;
-	mapToTokenValue?: (key: string, tokenSet?: GMixinTokenSet) => GValue | undefined;
-	onLinkChange?: (isLinked: boolean) => { preventDefault: boolean } | void;
+	tokenMap?: TState<Record<TToken['key'], TToken>, any>;
+	onLinkToken?: () => GRefValue | undefined | { preventDefault: true };
+	onUnlinkToken?: () => void | { preventDefault: true };
 	onNavigateToToken?: () => void;
 	disabledTokenLink?: boolean;
 
 	label: string;
 	className?: string;
+}
+
+function isPreventDefault(result: unknown): result is { preventDefault: true } {
+	return (
+		result != null &&
+		typeof result === 'object' &&
+		'preventDefault' in result &&
+		result.preventDefault === true
+	);
 }

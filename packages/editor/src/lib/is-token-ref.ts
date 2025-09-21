@@ -1,6 +1,8 @@
 import { TRef, TTokenRef } from '../types';
 
-export function isTokenRef(value: TRef<any> | null | undefined): value is TTokenRef {
+export function isTokenRef<GValue = any>(
+	value: TRef<GValue> | null | undefined
+): value is TTokenRef<GValue> {
 	return (
 		value != null &&
 		typeof value === 'object' &&

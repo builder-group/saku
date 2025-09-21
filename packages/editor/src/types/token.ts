@@ -23,10 +23,11 @@ export interface TBaseToken {
 
 export type TToken = TAtomicToken | TMixinToken;
 
-export interface TTokenRef<GToken extends TToken = TToken> {
+export interface TTokenRef<GValue = any, GToken extends TToken = TToken> {
+	readonly __brand?: GValue;
 	type: 'token';
 	key: GToken['key'];
-	tokenType?: GToken['type'];
+	tokenType: GToken['type'];
 	path?: TTokenPaths<GToken>;
 }
 

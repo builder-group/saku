@@ -1,6 +1,6 @@
 import { TToken, TTokenRef } from './token';
 
-export type TRef<GValue, GToken extends TToken = TToken> = TTokenRef<GToken> | GValue;
+export type TRef<GValue, GToken extends TToken = TToken> = TTokenRef<GValue, GToken> | GValue;
 
 export type TUnreference<T> = T extends TTokenRef
 	? never // Remove token completely
