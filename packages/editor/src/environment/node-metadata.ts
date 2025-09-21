@@ -12,8 +12,8 @@ export const aboutNodeMetadata: TNodeMetadata<'about'> = {
 			contactIcons: []
 		},
 		autoLayout: {
-			horizontalPadding: tokenRef('auto-layout', 'default', true),
-			verticalPadding: tokenRef('auto-layout', 'default', true),
+			horizontalPadding: tokenRef('auto-layout', 'default', 'horizontalPadding'),
+			verticalPadding: tokenRef('auto-layout', 'default', 'verticalPadding'),
 			horizontalGap: null,
 			verticalGap: null
 		},
@@ -22,32 +22,32 @@ export const aboutNodeMetadata: TNodeMetadata<'about'> = {
 		stroke: null,
 		shadow: null,
 		textXl: {
-			appearance: tokenRef('text', 'xl', true),
+			appearance: tokenRef('text', 'xl', 'appearance'),
 			typography: {
-				font: tokenRef('text', 'xl', true),
-				fontSize: tokenRef('text', 'xl', true),
+				font: tokenRef('text', 'xl', 'typography.font'),
+				fontSize: tokenRef('text', 'xl', 'typography.fontSize'),
 				textAlignHorizontal: 'center',
 				textAlignVertical: 'center',
-				lineHeight: tokenRef('text', 'xl', true),
-				letterSpacing: tokenRef('text', 'xl', true)
+				lineHeight: tokenRef('text', 'xl', 'typography.lineHeight'),
+				letterSpacing: tokenRef('text', 'xl', 'typography.letterSpacing')
 			},
-			fill: tokenRef('text', 'xl', true),
-			stroke: tokenRef('text', 'xl', true),
-			shadow: tokenRef('text', 'xl', true)
+			fill: tokenRef('text', 'xl', 'fill'),
+			stroke: tokenRef('text', 'xl', 'stroke'),
+			shadow: tokenRef('text', 'xl', 'shadow')
 		},
 		text: {
-			appearance: tokenRef('text', 'default', true),
+			appearance: tokenRef('text', 'default', 'appearance'),
 			typography: {
-				font: tokenRef('text', 'default', true),
-				fontSize: tokenRef('text', 'default', true),
+				font: tokenRef('text', 'default', 'typography.font'),
+				fontSize: tokenRef('text', 'default', 'typography.fontSize'),
 				textAlignHorizontal: 'center',
 				textAlignVertical: 'center',
-				lineHeight: tokenRef('text', 'default', true),
-				letterSpacing: tokenRef('text', 'default', true)
+				lineHeight: tokenRef('text', 'default', 'typography.lineHeight'),
+				letterSpacing: tokenRef('text', 'default', 'typography.letterSpacing')
 			},
-			fill: tokenRef('text', 'default', true),
-			stroke: tokenRef('text', 'default', true),
-			shadow: tokenRef('text', 'default', true)
+			fill: tokenRef('text', 'default', 'fill'),
+			stroke: tokenRef('text', 'default', 'stroke'),
+			shadow: tokenRef('text', 'default', 'shadow')
 		},
 		image: tokenRef('image', 'default')
 	}
@@ -63,8 +63,8 @@ export const linkNodeMetadata: TNodeMetadata<'link'> = {
 			title: 'Add your title here'
 		},
 		autoLayout: {
-			horizontalPadding: tokenRef('auto-layout', 'default', true),
-			verticalPadding: tokenRef('auto-layout', 'default', true),
+			horizontalPadding: tokenRef('auto-layout', 'default', 'horizontalPadding'),
+			verticalPadding: tokenRef('auto-layout', 'default', 'verticalPadding'),
 			horizontalGap: null,
 			verticalGap: null
 		},
@@ -77,11 +77,11 @@ export const linkNodeMetadata: TNodeMetadata<'link'> = {
 		image: {
 			appearance: {
 				visible: true,
-				opacity: tokenRef('image', 'default', true),
+				opacity: tokenRef('image', 'default', 'appearance.opacity'),
 				borderRadius: null
 			},
-			stroke: tokenRef('image', 'default', true),
-			shadow: tokenRef('image', 'default', true)
+			stroke: tokenRef('image', 'default', 'stroke'),
+			shadow: tokenRef('image', 'default', 'shadow')
 		}
 	}
 };
@@ -106,11 +106,11 @@ export const mediaNodeMetadata: TNodeMetadata<'media'> = {
 		image: {
 			appearance: {
 				visible: true,
-				opacity: tokenRef('image', 'default', true),
+				opacity: tokenRef('image', 'default', 'appearance.opacity'),
 				borderRadius: null
 			},
-			stroke: tokenRef('image', 'default', true),
-			shadow: tokenRef('image', 'default', true)
+			stroke: tokenRef('image', 'default', 'stroke'),
+			shadow: tokenRef('image', 'default', 'shadow')
 		}
 	}
 };
@@ -148,8 +148,8 @@ export const productNodeMetadata: TNodeMetadata<'product'> = {
 			type: 'single'
 		},
 		autoLayout: {
-			horizontalPadding: tokenRef('auto-layout', 'default', true),
-			verticalPadding: tokenRef('auto-layout', 'default', true),
+			horizontalPadding: tokenRef('auto-layout', 'default', 'horizontalPadding'),
+			verticalPadding: tokenRef('auto-layout', 'default', 'verticalPadding'),
 			horizontalGap: null,
 			verticalGap: null
 		},
@@ -158,18 +158,18 @@ export const productNodeMetadata: TNodeMetadata<'product'> = {
 		stroke: tokenRef('stroke', 'default'),
 		shadow: tokenRef('shadow', 'default'),
 		text: {
-			appearance: tokenRef('text', 'default', true),
+			appearance: tokenRef('text', 'default', 'appearance'),
 			typography: {
-				font: tokenRef('text', 'default', true),
-				fontSize: tokenRef('text', 'default', true),
+				font: tokenRef('text', 'default', 'typography.font'),
+				fontSize: tokenRef('text', 'default', 'typography.fontSize'),
 				textAlignHorizontal: 'start',
-				textAlignVertical: tokenRef('text', 'default', true),
-				lineHeight: tokenRef('text', 'default', true),
-				letterSpacing: tokenRef('text', 'default', true)
+				textAlignVertical: tokenRef('text', 'default', 'typography.textAlignVertical'),
+				lineHeight: tokenRef('text', 'default', 'typography.lineHeight'),
+				letterSpacing: tokenRef('text', 'default', 'typography.letterSpacing')
 			},
-			fill: tokenRef('text', 'default', true),
-			stroke: tokenRef('text', 'default', true),
-			shadow: tokenRef('text', 'default', true)
+			fill: tokenRef('text', 'default', 'fill'),
+			stroke: tokenRef('text', 'default', 'stroke'),
+			shadow: tokenRef('text', 'default', 'shadow')
 		},
 		buttonPrimary: tokenRef('button', 'primary'),
 		badgePrimary: tokenRef('badge', 'primary'),
@@ -177,11 +177,11 @@ export const productNodeMetadata: TNodeMetadata<'product'> = {
 		image: {
 			appearance: {
 				visible: true,
-				opacity: tokenRef('image', 'default', true),
+				opacity: tokenRef('image', 'default', 'appearance.opacity'),
 				borderRadius: null
 			},
-			stroke: tokenRef('image', 'default', true),
-			shadow: tokenRef('image', 'default', true)
+			stroke: tokenRef('image', 'default', 'stroke'),
+			shadow: tokenRef('image', 'default', 'shadow')
 		},
 		productDetails: tokenRef('product-details', 'default')
 	}
@@ -196,8 +196,8 @@ export const textNodeMetadata: TNodeMetadata<'text'> = {
 			text: { type: 'markdown', value: 'Add your text here' }
 		},
 		autoLayout: {
-			horizontalPadding: tokenRef('auto-layout', 'default', true),
-			verticalPadding: tokenRef('auto-layout', 'default', true),
+			horizontalPadding: tokenRef('auto-layout', 'default', 'horizontalPadding'),
+			verticalPadding: tokenRef('auto-layout', 'default', 'verticalPadding'),
 			horizontalGap: null,
 			verticalGap: null
 		},

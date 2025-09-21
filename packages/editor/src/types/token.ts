@@ -12,7 +12,7 @@ import {
 	TTextStyleMixin,
 	TTypographyStyleMixin
 } from './mixin';
-import { TUnreference, TUnreferenceTop } from './ref';
+import { TRef, TUnreference, TUnreferenceTop } from './ref';
 import { TFont, TPaint } from './utils';
 
 export interface TBaseToken {
@@ -24,10 +24,38 @@ export interface TBaseToken {
 export type TToken = TAtomicToken | TMixinToken;
 
 export interface TTokenRef<GToken extends TToken = TToken> {
-	type: GToken['type'];
+	type: 'token';
 	key: GToken['key'];
-	mapped?: boolean; // If true, this token reference should be mapped to extract a property
+	tokenType?: GToken['type'];
+	path?: TTokenPaths<GToken>;
 }
+
+export type TTokenPaths<GToken extends TToken> = TPaths<GToken['value']>;
+
+type TPaths<T> = T extends TTokenRef
+	? never // Skip token references to avoid circular dependencies
+	: T extends object
+		? {
+				[K in keyof T]: `${Exclude<K, symbol>}${'' | `.${TPaths<T[K]>}`}`;
+			}[keyof T]
+		: never;
+
+export type TGetTokenValue<GToken extends TToken, GPath extends string> = TGet<
+	GToken['value'],
+	GPath
+>;
+
+type TGet<T, P extends string> = P extends `${infer K}.${infer Rest}`
+	? K extends keyof T
+		? T[K] extends TRef<infer U>
+			? TGet<U, Rest>
+			: TGet<T[K], Rest>
+		: never
+	: P extends keyof T
+		? T[P] extends TRef<infer U>
+			? U
+			: T[P]
+		: never;
 
 // =========================================================================
 // Atomic Tokens

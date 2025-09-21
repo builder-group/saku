@@ -1,6 +1,7 @@
 import { TRgba } from '../lib';
 import { TNode, TNodeId } from './node';
 import { TRef } from './ref';
+import { TAutoLayoutStyleToken } from './token';
 import {
 	TAssetHash,
 	TEmailAction,
@@ -276,12 +277,15 @@ export type TStyleMixin =
 
 export type TAutoLayoutStyleMixin = TBaseMixin<
 	'autoLayout',
-	TRef<{
-		horizontalPadding: TRef<number>;
-		verticalPadding: TRef<number>;
-		horizontalGap: TRef<number | null>;
-		verticalGap: TRef<number | null>;
-	}>
+	TRef<
+		{
+			horizontalPadding: TRef<number>;
+			verticalPadding: TRef<number>;
+			horizontalGap: TRef<number | null>;
+			verticalGap: TRef<number | null>;
+		},
+		TAutoLayoutStyleToken
+	>
 >;
 
 export type TAppearanceStyleMixin = TBaseMixin<

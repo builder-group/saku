@@ -1,19 +1,17 @@
-import { TAppearanceStyleMixin, TAppearanceStyleToken, TToken } from '@repo/editor';
-import { Err, Ok, TResult, unwrapOrNull } from 'tuple-result';
+import { TAppearanceStyleMixin } from '@repo/editor';
+import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
 import { resolveTokenRef, TMixinResolveContext } from '../../lib';
 import { TResolvedAppearanceStyleMixin } from './types';
 
-export function resolveAppearanceStyleMixin<GBaseTokenValue extends TToken['value']>(
+export function resolveAppearanceStyleMixin(
 	appearance: TAppearanceStyleMixin['value'],
-	cx: TMixinResolveContext<TAppearanceStyleToken['value'], GBaseTokenValue>
+	cx: TMixinResolveContext
 ): TResult<TResolvedAppearanceStyleMixin['value'], AppError> {
 	const [isResolvedAppearanceOk, resolvedAppearanceErr, resolvedAppearance] = resolveTokenRef(
 		appearance,
 		{
-			tokenMap: cx.tokenMap,
-			expectedType: 'appearance',
-			mapToTokenValue: cx.mapToTokenValue
+			tokenMap: cx.tokenMap
 		}
 	);
 	if (!isResolvedAppearanceOk) {
@@ -23,19 +21,7 @@ export function resolveAppearanceStyleMixin<GBaseTokenValue extends TToken['valu
 	const [isResolvedVisibleOk, resolvedVisibleErr, resolvedVisible] = resolveTokenRef(
 		resolvedAppearance.visible,
 		{
-			tokenMap: cx.tokenMap,
-			expectedType: 'boolean',
-			mapToTokenValue: (value: GBaseTokenValue) => {
-				const tokenValue = cx.mapToTokenValue(value)?.visible;
-				if (tokenValue == null) {
-					return undefined;
-				}
-				const resolvedValue = resolveTokenRef(tokenValue, {
-					tokenMap: cx.tokenMap,
-					expectedType: 'boolean'
-				});
-				return unwrapOrNull(resolvedValue) ?? undefined;
-			}
+			tokenMap: cx.tokenMap
 		}
 	);
 	if (!isResolvedVisibleOk) {
@@ -44,19 +30,7 @@ export function resolveAppearanceStyleMixin<GBaseTokenValue extends TToken['valu
 	const [isResolvedOpacityOk, resolvedOpacityErr, resolvedOpacity] = resolveTokenRef(
 		resolvedAppearance.opacity,
 		{
-			tokenMap: cx.tokenMap,
-			expectedType: 'number',
-			mapToTokenValue: (value: GBaseTokenValue) => {
-				const tokenValue = cx.mapToTokenValue(value)?.opacity;
-				if (tokenValue == null) {
-					return undefined;
-				}
-				const resolvedValue = resolveTokenRef(tokenValue, {
-					tokenMap: cx.tokenMap,
-					expectedType: 'number'
-				});
-				return unwrapOrNull(resolvedValue) ?? undefined;
-			}
+			tokenMap: cx.tokenMap
 		}
 	);
 	if (!isResolvedOpacityOk) {
@@ -65,19 +39,7 @@ export function resolveAppearanceStyleMixin<GBaseTokenValue extends TToken['valu
 	const [isResolvedBorderRadiusOk, resolvedBorderRadiusErr, resolvedBorderRadius] = resolveTokenRef(
 		resolvedAppearance.borderRadius,
 		{
-			tokenMap: cx.tokenMap,
-			expectedType: 'number',
-			mapToTokenValue: (value: GBaseTokenValue) => {
-				const tokenValue = cx.mapToTokenValue(value)?.borderRadius;
-				if (tokenValue == null) {
-					return undefined;
-				}
-				const resolvedValue = resolveTokenRef(tokenValue, {
-					tokenMap: cx.tokenMap,
-					expectedType: 'number'
-				});
-				return unwrapOrNull(resolvedValue) ?? undefined;
-			}
+			tokenMap: cx.tokenMap
 		}
 	);
 	if (!isResolvedBorderRadiusOk) {
