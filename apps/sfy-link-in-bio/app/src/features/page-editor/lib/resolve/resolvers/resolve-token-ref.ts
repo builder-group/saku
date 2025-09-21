@@ -1,16 +1,17 @@
 import { isTokenRef, TRef, TToken } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
+import { safeParse, type BaseIssue, type BaseSchema } from 'valibot';
 import { AppError } from '@/lib';
 
 export function resolveTokenRef<GTokenValue extends TToken['value']>(
 	sourceValue: TRef<GTokenValue>,
-	options: TResolveTokenRefOptions
+	options: TResolveTokenRefOptions<GTokenValue>
 ): TResult<GTokenValue, AppError> {
 	if (!isTokenRef(sourceValue)) {
 		return Ok(sourceValue);
 	}
 
-	const { tokenMap, expectedType } = options;
+	const { tokenMap, schema } = options;
 	if (tokenMap == null) {
 		return Err(new AppError('#ERR_TOKEN_MAP_NOT_FOUND'));
 	}
@@ -24,20 +25,8 @@ export function resolveTokenRef<GTokenValue extends TToken['value']>(
 		);
 	}
 
-	// Verify token type if expected type is specified
-	if (
-		expectedType != null &&
-		sourceValue.tokenType != null &&
-		sourceValue.tokenType !== expectedType
-	) {
-		return Err(
-			new AppError('#ERR_TOKEN_TYPE_MISMATCH', {
-				detail: `Expected token type '${expectedType}' but got '${sourceValue.tokenType}' for key: ${sourceValue.key}`
-			})
-		);
-	}
-
 	// Handle path-based token reference
+	let resolvedValue: unknown;
 	if (sourceValue.path != null) {
 		const pathValue = getNestedProperty(token.value, sourceValue.path);
 		if (pathValue === undefined) {
@@ -47,16 +36,31 @@ export function resolveTokenRef<GTokenValue extends TToken['value']>(
 				})
 			);
 		}
-
-		return Ok(pathValue as GTokenValue);
+		resolvedValue = pathValue;
+	} else {
+		resolvedValue = token.value;
 	}
 
-	return Ok(token.value as GTokenValue);
+	// Validate the resolved value if schema is provided
+	if (schema != null) {
+		const result = safeParse(schema, resolvedValue);
+		if (!result.success) {
+			const issues = result.issues.map((issue) => issue.message).join(', ');
+			return Err(
+				new AppError('#ERR_INVALID_TOKEN_VALUE', {
+					detail: `Token value validation failed for: ${sourceValue.key}${sourceValue.path != null ? `.${sourceValue.path}` : ''} - ${issues}`
+				})
+			);
+		}
+		resolvedValue = result.output;
+	}
+
+	return Ok(resolvedValue as GTokenValue);
 }
 
-export interface TResolveTokenRefOptions {
+export interface TResolveTokenRefOptions<GTokenValue extends TToken['value']> {
 	tokenMap: Record<TToken['key'], TToken>;
-	expectedType?: TToken['type'];
+	schema?: BaseSchema<GTokenValue, unknown, BaseIssue<unknown>>;
 }
 
 function getNestedProperty(obj: unknown, path: string): unknown {

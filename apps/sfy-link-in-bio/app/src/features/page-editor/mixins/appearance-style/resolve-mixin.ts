@@ -1,5 +1,6 @@
 import { TAppearanceStyleMixin } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
+import * as v from 'valibot';
 import { AppError } from '@/lib';
 import { resolveTokenRef, TMixinResolveContext } from '../../lib';
 import { TResolvedAppearanceStyleMixin } from './types';
@@ -21,7 +22,8 @@ export function resolveAppearanceStyleMixin(
 	const [isResolvedVisibleOk, resolvedVisibleErr, resolvedVisible] = resolveTokenRef(
 		resolvedAppearance.visible,
 		{
-			tokenMap: cx.tokenMap
+			tokenMap: cx.tokenMap,
+			schema: v.boolean()
 		}
 	);
 	if (!isResolvedVisibleOk) {
@@ -30,7 +32,8 @@ export function resolveAppearanceStyleMixin(
 	const [isResolvedOpacityOk, resolvedOpacityErr, resolvedOpacity] = resolveTokenRef(
 		resolvedAppearance.opacity,
 		{
-			tokenMap: cx.tokenMap
+			tokenMap: cx.tokenMap,
+			schema: v.number()
 		}
 	);
 	if (!isResolvedOpacityOk) {
@@ -39,7 +42,8 @@ export function resolveAppearanceStyleMixin(
 	const [isResolvedBorderRadiusOk, resolvedBorderRadiusErr, resolvedBorderRadius] = resolveTokenRef(
 		resolvedAppearance.borderRadius,
 		{
-			tokenMap: cx.tokenMap
+			tokenMap: cx.tokenMap,
+			schema: v.nullable(v.number())
 		}
 	);
 	if (!isResolvedBorderRadiusOk) {
