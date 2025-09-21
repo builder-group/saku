@@ -37,7 +37,17 @@ type TPaths<T> = T extends TTokenRef
 	: T extends object
 		? {
 				[K in keyof T]: `${Exclude<K, symbol>}${'' | `.${TPaths<T[K]>}`}`;
-			}[keyof T]
+			}[keyof T] extends infer U
+			? U extends string
+				? U extends `${string}.undefined`
+					? never // Filter out paths ending with .undefined (from optional/nullable properties)
+					: U extends `undefined.${string}`
+						? never // Filter out paths starting with undefined. (from optional/nullable properties)
+						: U extends `undefined`
+							? never // Filter out just "undefined" (from optional/nullable properties)
+							: U
+				: never
+			: never
 		: never;
 
 export type TGetTokenValue<GToken extends TToken, GPath extends string> = TGet<
@@ -48,13 +58,13 @@ export type TGetTokenValue<GToken extends TToken, GPath extends string> = TGet<
 type TGet<T, P extends string> = P extends `${infer K}.${infer Rest}`
 	? K extends keyof T
 		? T[K] extends TRef<infer U>
-			? TGet<U, Rest>
-			: TGet<T[K], Rest>
+			? TGet<U, Rest> // Unwrap TRef<U> to U and continue path traversal
+			: TGet<T[K], Rest> // Continue with the property value as-is
 		: never
 	: P extends keyof T
 		? T[P] extends TRef<infer U>
-			? U
-			: T[P]
+			? U // Return the unwrapped value from TRef<U>
+			: T[P] // Return the property value as-is
 		: never;
 
 // =========================================================================
