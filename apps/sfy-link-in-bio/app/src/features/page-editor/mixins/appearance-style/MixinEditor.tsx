@@ -1,4 +1,11 @@
-import { isTokenRef, TAppearanceStyleMixin, TRef, TTokenRef, TUnreferenceTop } from '@repo/editor';
+import {
+	isTokenRef,
+	mapTokenRef,
+	TAppearanceStyleMixin,
+	TRef,
+	TTokenRef,
+	TUnreferenceTop
+} from '@repo/editor';
 import { Button, Text } from '@shopify/polaris';
 import { useCompute } from 'feature-react';
 import { TState } from 'feature-state';
@@ -109,14 +116,7 @@ export const AppearanceStyleMixinEditor = (props: TAppearanceStyleMixinEditorPro
 			? !resolvedVisible
 			: !unpackedAppearance.visible;
 		unpackedAppearance.visible =
-			nextVisible === resolvedVisible
-				? ({
-						type: 'token',
-						key: ref.key,
-						tokenType: ref.tokenType,
-						path: ref.path != null ? `${ref.path}.visible` : 'visible'
-					} as TRef<boolean>)
-				: nextVisible;
+			nextVisible === resolvedVisible ? mapTokenRef(ref, 'visible') : nextVisible;
 		state._v = packAppearanceTokenRef(unpackedAppearance);
 		state._notify();
 	}, [editor, ref, state]);
@@ -165,14 +165,7 @@ export const AppearanceStyleMixinEditor = (props: TAppearanceStyleMixinEditorPro
 					mapToDisplayValue={(value) => Math.round(value * 100)}
 					mapToValue={(displayValue) => displayValue / 100}
 					tokenMap={editor.tokenMap}
-					onLinkToken={() =>
-						({
-							type: 'token',
-							key: ref.key,
-							tokenType: ref.tokenType,
-							path: ref.path != null ? `${ref.path}.opacity` : 'opacity'
-						}) as TRef<number>
-					}
+					onLinkToken={() => mapTokenRef(ref, 'opacity')}
 					onNavigateToToken={handleNavigateToToken}
 					disabledTokenLink={disabledTokenLink}
 				/>
@@ -186,14 +179,7 @@ export const AppearanceStyleMixinEditor = (props: TAppearanceStyleMixinEditorPro
 						step={4}
 						state={borderRadiusState as TState<TRef<number>, any>}
 						tokenMap={editor.tokenMap}
-						onLinkToken={() =>
-							({
-								type: 'token',
-								key: ref.key,
-								tokenType: ref.tokenType,
-								path: ref.path != null ? `${ref.path}.borderRadius` : 'borderRadius'
-							}) as TRef<number>
-						}
+						onLinkToken={() => mapTokenRef(ref, 'borderRadius') as TRef<number>}
 						onNavigateToToken={handleNavigateToToken}
 						disabledTokenLink={disabledTokenLink}
 					/>

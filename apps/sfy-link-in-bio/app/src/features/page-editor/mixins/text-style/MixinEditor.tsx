@@ -1,8 +1,8 @@
 import {
 	isTokenRef,
+	mapTokenRef,
 	TTextStyleMixin,
 	TTextStyleToken,
-	TTokenPaths,
 	TTokenRef,
 	TUnreferenceTop
 } from '@repo/editor';
@@ -96,15 +96,7 @@ export const TextStyleMixinEditor = (props: TTextStyleMixinEditorProps) => {
 		<>
 			<AppearanceStyleMixinEditor
 				state={appearanceState}
-				ref={{
-					type: 'token',
-					key: ref.key,
-					tokenType: ref.tokenType,
-					path:
-						ref.path != null
-							? (`${ref.path}.appearance` as TTokenPaths<TTextStyleToken>)
-							: 'appearance'
-				}}
+				ref={mapTokenRef(ref, 'appearance')}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 			/>
