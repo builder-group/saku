@@ -1,7 +1,7 @@
 import { Err, Ok, TResult } from 'tuple-result';
 import { TTheme } from '../environment';
 import { TToken } from '../types';
-import { isRgba, rgbaToHex } from './color';
+import { isRgba, TRgba } from './color';
 import { EditorError } from './EditorError';
 
 export function reconstructThemeFromTokens(tokens: TToken[]): TResult<TTheme, EditorError> {
@@ -57,10 +57,7 @@ export function reconstructThemeFromTokens(tokens: TToken[]): TResult<TTheme, Ed
 	};
 
 	// Helper to get color value
-	const getColor = (
-		key: string,
-		defaultValue?: `#${string}`
-	): TResult<`#${string}`, EditorError> => {
+	const getColor = (key: string, defaultValue?: TRgba): TResult<TRgba, EditorError> => {
 		const value = tokenMap.get(key);
 		if (value == null) {
 			if (defaultValue != null) {
@@ -72,14 +69,14 @@ export function reconstructThemeFromTokens(tokens: TToken[]): TResult<TTheme, Ed
 				})
 			);
 		}
-		if (isRgba(value)) {
-			return Ok(rgbaToHex(value));
+		if (!isRgba(value)) {
+			return Err(
+				new EditorError('#ERR_INVALID_COLOR_TOKEN_VALUE_TYPE', {
+					detail: `Invalid color token value type for ${key}: expected TRgba object, got ${typeof value}`
+				})
+			);
 		}
-		return Err(
-			new EditorError('#ERR_INVALID_COLOR_TOKEN_VALUE_TYPE', {
-				detail: `Invalid color token value type for ${key}: expected TRgba object, got ${typeof value}`
-			})
-		);
+		return Ok(value);
 	};
 
 	// Get theme properties

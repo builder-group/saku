@@ -84,36 +84,57 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 			textXl:
 				fontColor != null
 					? {
-							...aboutNodeMetadata.default.textXl,
+							appearance: tokenRef('mixin', 'xl'),
+							typography: {
+								font: tokenRef('mixin', 'xl'),
+								fontSize: tokenRef('mixin', 'xl'),
+								textAlignHorizontal: 'center',
+								textAlignVertical: 'center',
+								lineHeight: tokenRef('mixin', 'xl'),
+								letterSpacing: tokenRef('mixin', 'xl')
+							},
 							fill: {
 								paint: {
 									type: 'solid',
 									color: fontColor
 								},
 								opacity: 1
-							}
+							},
+							stroke: tokenRef('mixin', 'xl'),
+							shadow: tokenRef('mixin', 'xl')
 						}
 					: aboutNodeMetadata.default.textXl,
 			text:
 				fontColor != null
 					? {
-							...aboutNodeMetadata.default.text,
+							appearance: tokenRef('mixin', 'default'),
+							typography: {
+								font: tokenRef('mixin', 'default'),
+								fontSize: tokenRef('mixin', 'default'),
+								textAlignHorizontal: 'center',
+								textAlignVertical: 'center',
+								lineHeight: tokenRef('mixin', 'default'),
+								letterSpacing: tokenRef('mixin', 'default')
+							},
 							fill: {
 								paint: {
 									type: 'solid',
 									color: fontColor
 								},
 								opacity: 1
-							}
+							},
+							stroke: tokenRef('mixin', 'default'),
+							shadow: tokenRef('mixin', 'default')
 						}
 					: aboutNodeMetadata.default.text,
 			image: {
-				...aboutNodeMetadata.default.image,
 				appearance: {
 					visible: true,
 					opacity: tokenRef('mixin', 'default'),
 					borderRadius: 48
-				}
+				},
+				stroke: tokenRef('mixin', 'default'),
+				shadow: tokenRef('mixin', 'default')
 			}
 		};
 		children.push(aboutNode);

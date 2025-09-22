@@ -4,7 +4,6 @@ import {
 	fontMetadataMap,
 	getFontHash,
 	getFontMetadataByFamily,
-	hexToRgba,
 	isTokenRef,
 	TFlatSite,
 	TTheme
@@ -80,7 +79,7 @@ export function applyThemeToSite(site: TFlatSite, theme: TTheme): TFlatSite {
 			fill: {
 				paint: {
 					type: 'solid' as const,
-					color: hexToRgba(theme.color.base200)
+					color: theme.color.base200
 				},
 				opacity: 1
 			}

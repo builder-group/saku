@@ -1,4 +1,4 @@
-import { fontMetadata, hexToRgba, rgbaToHex, TTheme } from '@repo/editor';
+import { fontMetadata, TTheme } from '@repo/editor';
 import { Text } from '@shopify/polaris';
 import { createState } from 'feature-state';
 import React from 'react';
@@ -29,101 +29,101 @@ export const ThemeEditor: React.FC<TThemeEditorProps> = (props) => {
 
 	// Map theme state to individual property states
 	const primaryColorState = useMapState(themeState, {
-		map: (theme) => hexToRgba(theme.color.primary),
+		map: (theme) => theme.color.primary,
 		sync: (baseState, value) => {
 			baseState.set((theme) => ({
 				...theme,
-				color: { ...theme.color, primary: rgbaToHex(value) }
+				color: { ...theme.color, primary: value }
 			}));
 		}
 	});
 
 	const secondaryColorState = useMapState(themeState, {
-		map: (theme) => hexToRgba(theme.color.secondary),
+		map: (theme) => theme.color.secondary,
 		sync: (baseState, value) => {
 			baseState.set((theme) => ({
 				...theme,
-				color: { ...theme.color, secondary: rgbaToHex(value) }
+				color: { ...theme.color, secondary: value }
 			}));
 		}
 	});
 
 	const accentColorState = useMapState(themeState, {
-		map: (theme) => hexToRgba(theme.color.accent),
+		map: (theme) => theme.color.accent,
 		sync: (baseState, value) => {
 			baseState.set((theme) => ({
 				...theme,
-				color: { ...theme.color, accent: rgbaToHex(value) }
+				color: { ...theme.color, accent: value }
 			}));
 		}
 	});
 
 	const base100ColorState = useMapState(themeState, {
-		map: (theme) => hexToRgba(theme.color.base100),
+		map: (theme) => theme.color.base100,
 		sync: (baseState, value) => {
 			baseState.set((theme) => ({
 				...theme,
-				color: { ...theme.color, base100: rgbaToHex(value) }
+				color: { ...theme.color, base100: value }
 			}));
 		}
 	});
 
 	const base200ColorState = useMapState(themeState, {
-		map: (theme) => hexToRgba(theme.color.base200),
+		map: (theme) => theme.color.base200,
 		sync: (baseState, value) => {
 			baseState.set((theme) => ({
 				...theme,
-				color: { ...theme.color, base200: rgbaToHex(value) }
+				color: { ...theme.color, base200: value }
 			}));
 		}
 	});
 
 	const base300ColorState = useMapState(themeState, {
-		map: (theme) => hexToRgba(theme.color.base300),
+		map: (theme) => theme.color.base300,
 		sync: (baseState, value) => {
 			baseState.set((theme) => ({
 				...theme,
-				color: { ...theme.color, base300: rgbaToHex(value) }
+				color: { ...theme.color, base300: value }
 			}));
 		}
 	});
 
 	const baseContentColorState = useMapState(themeState, {
-		map: (theme) => hexToRgba(theme.color.baseContent),
+		map: (theme) => theme.color.baseContent,
 		sync: (baseState, value) => {
 			baseState.set((theme) => ({
 				...theme,
-				color: { ...theme.color, baseContent: rgbaToHex(value) }
+				color: { ...theme.color, baseContent: value }
 			}));
 		}
 	});
 
 	const primaryContentColorState = useMapState(themeState, {
-		map: (theme) => hexToRgba(theme.color.primaryContent),
+		map: (theme) => theme.color.primaryContent,
 		sync: (baseState, value) => {
 			baseState.set((theme) => ({
 				...theme,
-				color: { ...theme.color, primaryContent: rgbaToHex(value) }
+				color: { ...theme.color, primaryContent: value }
 			}));
 		}
 	});
 
 	const secondaryContentColorState = useMapState(themeState, {
-		map: (theme) => hexToRgba(theme.color.secondaryContent),
+		map: (theme) => theme.color.secondaryContent,
 		sync: (baseState, value) => {
 			baseState.set((theme) => ({
 				...theme,
-				color: { ...theme.color, secondaryContent: rgbaToHex(value) }
+				color: { ...theme.color, secondaryContent: value }
 			}));
 		}
 	});
 
 	const accentContentColorState = useMapState(themeState, {
-		map: (theme) => hexToRgba(theme.color.accentContent),
+		map: (theme) => theme.color.accentContent,
 		sync: (baseState, value) => {
 			baseState.set((theme) => ({
 				...theme,
-				color: { ...theme.color, accentContent: rgbaToHex(value) }
+				color: { ...theme.color, accentContent: value }
 			}));
 		}
 	});

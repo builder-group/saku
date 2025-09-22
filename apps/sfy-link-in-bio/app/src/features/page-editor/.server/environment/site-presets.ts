@@ -8,7 +8,6 @@ import {
 	getFontHash,
 	getFontMetadataByFamily,
 	getSocialContactMetadata,
-	hexToRgba,
 	linkNodeMetadata,
 	mediaNodeMetadata,
 	productNodeMetadata,
@@ -260,7 +259,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					? {
 							paint: {
 								type: 'solid',
-								color: hexToRgba(theme.color.base200)
+								color: theme.color.base200
 							},
 							opacity: 1
 						}
