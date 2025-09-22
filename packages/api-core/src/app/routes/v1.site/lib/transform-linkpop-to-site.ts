@@ -35,7 +35,7 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 	const page = linkpopData.page;
 
 	// Create font asset for primary font
-	const primaryFontAsset = createFontAsset(page?.themeSettings?.primaryFont ?? 'Inter');
+	const primaryFontAsset = createFontAsset(page?.themeSettings?.primaryFont);
 	assets.push(primaryFontAsset);
 
 	// Handle background image if present
@@ -322,25 +322,25 @@ function transformSocialLinks(
 	return contactIcons;
 }
 
-function createFontAsset(fontFamily: string): TFontAsset {
+function createFontAsset(fontFamily?: string): TFontAsset {
 	const fontMetadata = getFontMetadataByFamily(fontFamily) ?? fontMetadataMap.inter;
 
 	return {
 		id: createId('asset'),
 		type: 'font',
 		hash: getFontHash({
-			family: fontFamily,
+			family: fontMetadata.font.family,
 			weight: 400,
 			style: 'normal'
 		}),
 		contentType: 'font/woff2', // Google Fonts serves woff2
-		fileName: `${fontFamily.toLowerCase().replace(/\s+/g, '-')}.woff2`,
+		fileName: `${fontMetadata.font.family.toLowerCase().replace(/\s+/g, '-')}.woff2`,
 		storage: {
 			type: 'url',
 			url: `https://fonts.googleapis.com/css2?family=${fontMetadata.googleFont}&display=swap`
 		},
 		font: {
-			family: fontFamily,
+			family: fontMetadata.font.family,
 			weight: 400,
 			style: 'normal'
 		}
