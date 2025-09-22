@@ -104,7 +104,11 @@ export const fontMetadata = Object.values(fontMetadataMap);
 export function getFontMetadataByFamily(
 	family: string
 ): (typeof fontMetadataMap)[keyof typeof fontMetadataMap] | null {
-	return Object.values(fontMetadataMap).find((metadata) => metadata.font.family === family) ?? null;
+	return (
+		Object.values(fontMetadataMap).find(
+			(metadata) => metadata.font.family.toLowerCase() === family.toLowerCase()
+		) ?? null
+	);
 }
 
 export type TFontType = keyof typeof fontMetadataMap;

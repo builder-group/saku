@@ -267,3 +267,5 @@ export interface THsba {
 	/** Alpha/opacity value (0-1) */
 	alpha: number;
 }
+
+export type THexColor = `#${string}`;

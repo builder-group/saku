@@ -1,3 +1,5 @@
+import { THexColor, TRgba } from '../lib';
+
 export const themeMetadata = {
 	size: {
 		text: {
@@ -1336,26 +1338,26 @@ export interface TTheme {
 	name: string;
 
 	color: {
-		base100: `#${string}`;
-		base200: `#${string}`;
-		base300: `#${string}`;
-		baseContent: `#${string}`;
-		primary: `#${string}`;
-		primaryContent: `#${string}`;
-		secondary: `#${string}`;
-		secondaryContent: `#${string}`;
-		neutral: `#${string}`;
-		neutralContent: `#${string}`;
-		accent: `#${string}`;
-		accentContent: `#${string}`;
-		info: `#${string}`;
-		infoContent: `#${string}`;
-		success: `#${string}`;
-		successContent: `#${string}`;
-		warning: `#${string}`;
-		warningContent: `#${string}`;
-		error: `#${string}`;
-		errorContent: `#${string}`;
+		base100: THexColor | TRgba;
+		base200: THexColor | TRgba;
+		base300: THexColor | TRgba;
+		baseContent: THexColor | TRgba;
+		primary: THexColor | TRgba;
+		primaryContent: THexColor | TRgba;
+		secondary: THexColor | TRgba;
+		secondaryContent: THexColor | TRgba;
+		neutral: THexColor | TRgba;
+		neutralContent: THexColor | TRgba;
+		accent: THexColor | TRgba;
+		accentContent: THexColor | TRgba;
+		info: THexColor | TRgba;
+		infoContent: THexColor | TRgba;
+		success: THexColor | TRgba;
+		successContent: THexColor | TRgba;
+		warning: THexColor | TRgba;
+		warningContent: THexColor | TRgba;
+		error: THexColor | TRgba;
+		errorContent: THexColor | TRgba;
 	};
 
 	typography: {

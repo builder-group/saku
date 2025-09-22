@@ -3,7 +3,6 @@ import {
 	aboutNodeMetadata,
 	createId,
 	createTokensFromTheme,
-	cssRgbaToHex,
 	cssRgbaToRgba,
 	extractSpotifyId,
 	extractYouTubeId,
@@ -36,9 +35,8 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 	const page = linkpopData.page;
 
 	// Create font asset for primary font
-	const primaryFont = page?.themeSettings?.primaryFont ?? 'Inter';
-	const fontAsset = createFontAsset(primaryFont);
-	assets.push(fontAsset);
+	const primaryFontAsset = createFontAsset(page?.themeSettings?.primaryFont ?? 'Inter');
+	assets.push(primaryFontAsset);
 
 	// Handle background image if present
 	let backgroundPaint: TPaint;
@@ -71,6 +69,7 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 			profilePictureHash = imageAsset.hash;
 		}
 
+		const fontColor = cssRgbaToRgba(page.themeSettings?.fontColor);
 		const aboutNode: TAboutNode = {
 			id: createId('node'),
 			type: 'about',
@@ -82,26 +81,32 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 				profilePicture: profilePictureHash,
 				contactIcons: transformSocialLinks(page.socialMediaAccounts ?? [])
 			},
-			textXl: {
-				...aboutNodeMetadata.default.textXl,
-				fill: {
-					paint: {
-						type: 'solid',
-						color: cssRgbaToRgba(page?.themeSettings?.fontColor) ?? hexToRgba('#000000')
-					},
-					opacity: 1
-				}
-			},
-			text: {
-				...textNodeMetadata.default.text,
-				fill: {
-					paint: {
-						type: 'solid',
-						color: cssRgbaToRgba(page?.themeSettings?.fontColor) ?? hexToRgba('#000000')
-					},
-					opacity: 1
-				}
-			},
+			textXl:
+				fontColor != null
+					? {
+							...aboutNodeMetadata.default.textXl,
+							fill: {
+								paint: {
+									type: 'solid',
+									color: fontColor
+								},
+								opacity: 1
+							}
+						}
+					: aboutNodeMetadata.default.textXl,
+			text:
+				fontColor != null
+					? {
+							...aboutNodeMetadata.default.text,
+							fill: {
+								paint: {
+									type: 'solid',
+									color: fontColor
+								},
+								opacity: 1
+							}
+						}
+					: aboutNodeMetadata.default.text,
 			image: {
 				...aboutNodeMetadata.default.image,
 				appearance: {
@@ -265,20 +270,24 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 			name: 'LinkPop Import',
 			color: {
 				...defaultTheme.color,
-				base100: cssRgbaToHex(page?.themeSettings?.linkCardColor) ?? defaultTheme.color.base100,
-				base200: cssRgbaToHex(page?.themeSettings?.backgroundColor) ?? defaultTheme.color.base200,
+				base100: cssRgbaToRgba(page?.themeSettings?.linkCardColor) ?? defaultTheme.color.base100,
+				base200: cssRgbaToRgba(page?.themeSettings?.backgroundColor) ?? defaultTheme.color.base200,
 				baseContent:
-					cssRgbaToHex(page?.themeSettings?.linkCardFontColor) ?? defaultTheme.color.baseContent,
-				primary: cssRgbaToHex(page?.themeSettings?.linkCardFontColor) ?? defaultTheme.color.primary,
+					cssRgbaToRgba(page?.themeSettings?.linkCardFontColor) ?? defaultTheme.color.baseContent,
+				primary:
+					cssRgbaToRgba(page?.themeSettings?.linkCardFontColor) ?? defaultTheme.color.primary,
 				primaryContent:
-					cssRgbaToHex(page?.themeSettings?.linkCardColor) ?? defaultTheme.color.primaryContent
+					cssRgbaToRgba(page?.themeSettings?.linkCardColor) ?? defaultTheme.color.primaryContent
 			},
 			typography: {
 				heading: {
-					fontFamily: primaryFont,
+					fontFamily: primaryFontAsset.font.family,
 					fontWeight: defaultTheme.typography.heading.fontWeight
 				},
-				text: { fontFamily: primaryFont, fontWeight: defaultTheme.typography.text.fontWeight }
+				text: {
+					fontFamily: primaryFontAsset.font.family,
+					fontWeight: defaultTheme.typography.text.fontWeight
+				}
 			},
 			radius: {
 				box: borderRadius,
