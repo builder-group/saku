@@ -1,7 +1,6 @@
 import { Err, Ok, TResult } from 'tuple-result';
 import { TTheme } from '../environment';
 import { TToken } from '../types';
-import { rgbaToHex } from './color';
 import { EditorError } from './EditorError';
 
 export function reconstructThemeFromTokens(tokens: TToken[]): TResult<TTheme, EditorError> {
@@ -229,26 +228,26 @@ export function reconstructThemeFromTokens(tokens: TToken[]): TResult<TTheme, Ed
 		key,
 		name,
 		color: {
-			base100: rgbaToHex(base100),
-			base200: rgbaToHex(base200),
-			base300: rgbaToHex(base300),
-			baseContent: rgbaToHex(baseContent),
-			primary: rgbaToHex(primary),
-			primaryContent: rgbaToHex(primaryContent),
-			secondary: rgbaToHex(secondary),
-			secondaryContent: rgbaToHex(secondaryContent),
-			neutral: rgbaToHex(neutral),
-			neutralContent: rgbaToHex(neutralContent),
-			accent: rgbaToHex(accent),
-			accentContent: rgbaToHex(accentContent),
-			info: rgbaToHex(info),
-			infoContent: rgbaToHex(infoContent),
-			success: rgbaToHex(success),
-			successContent: rgbaToHex(successContent),
-			warning: rgbaToHex(warning),
-			warningContent: rgbaToHex(warningContent),
-			error: rgbaToHex(error),
-			errorContent: rgbaToHex(errorContent)
+			base100,
+			base200,
+			base300,
+			baseContent,
+			primary,
+			primaryContent,
+			secondary,
+			secondaryContent,
+			neutral,
+			neutralContent,
+			accent,
+			accentContent,
+			info,
+			infoContent,
+			success,
+			successContent,
+			warning,
+			warningContent,
+			error,
+			errorContent
 		},
 		typography: {
 			heading: {

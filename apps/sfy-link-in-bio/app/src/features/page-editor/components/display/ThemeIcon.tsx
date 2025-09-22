@@ -1,4 +1,4 @@
-import { TTheme } from '@repo/editor';
+import { rgbaToHex, TTheme } from '@repo/editor';
 import React from 'react';
 
 export const ThemeIcon: React.FC<TThemeIconProps> = (props) => {
@@ -7,26 +7,36 @@ export const ThemeIcon: React.FC<TThemeIconProps> = (props) => {
 	return (
 		<div
 			className="grid shrink-0 grid-cols-2 gap-0.5 rounded-md p-1 shadow-sm"
-			style={{ backgroundColor: theme.color.base100 }}
+			style={{
+				backgroundColor: rgbaToHex(theme.color.base100)
+			}}
 		>
 			<div
 				className="size-1.5 rounded-full"
-				style={{ backgroundColor: theme.color.baseContent }}
+				style={{
+					backgroundColor: rgbaToHex(theme.color.baseContent)
+				}}
 				title="Primary"
 			/>
 			<div
 				className="size-1.5 rounded-full"
-				style={{ backgroundColor: theme.color.primary }}
+				style={{
+					backgroundColor: rgbaToHex(theme.color.primary)
+				}}
 				title="Secondary"
 			/>
 			<div
 				className="size-1.5 rounded-full"
-				style={{ backgroundColor: theme.color.secondary }}
+				style={{
+					backgroundColor: rgbaToHex(theme.color.secondary)
+				}}
 				title="Neutral"
 			/>
 			<div
 				className="size-1.5 rounded-full"
-				style={{ backgroundColor: theme.color.accent }}
+				style={{
+					backgroundColor: rgbaToHex(theme.color.accent)
+				}}
 				title="Accent"
 			/>
 		</div>

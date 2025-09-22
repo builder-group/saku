@@ -3,7 +3,6 @@ import {
 	aboutNodeMetadata,
 	createId,
 	createTokensFromTheme,
-	cssRgbaToHex,
 	cssRgbaToRgba,
 	extractSpotifyId,
 	extractYouTubeId,
@@ -36,9 +35,8 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 	const page = linkpopData.page;
 
 	// Create font asset for primary font
-	const primaryFont = page?.themeSettings?.primaryFont ?? 'Inter';
-	const fontAsset = createFontAsset(primaryFont);
-	assets.push(fontAsset);
+	const primaryFontAsset = createFontAsset(page?.themeSettings?.primaryFont);
+	assets.push(primaryFontAsset);
 
 	// Handle background image if present
 	let backgroundPaint: TPaint;
@@ -71,6 +69,7 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 			profilePictureHash = imageAsset.hash;
 		}
 
+		const fontColor = cssRgbaToRgba(page.themeSettings?.fontColor);
 		const aboutNode: TAboutNode = {
 			id: createId('node'),
 			type: 'about',
@@ -82,33 +81,60 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 				profilePicture: profilePictureHash,
 				contactIcons: transformSocialLinks(page.socialMediaAccounts ?? [])
 			},
-			textXl: {
-				...aboutNodeMetadata.default.textXl,
-				fill: {
-					paint: {
-						type: 'solid',
-						color: cssRgbaToRgba(page?.themeSettings?.fontColor) ?? hexToRgba('#000000')
-					},
-					opacity: 1
-				}
-			},
-			text: {
-				...textNodeMetadata.default.text,
-				fill: {
-					paint: {
-						type: 'solid',
-						color: cssRgbaToRgba(page?.themeSettings?.fontColor) ?? hexToRgba('#000000')
-					},
-					opacity: 1
-				}
-			},
+			textXl:
+				fontColor != null
+					? {
+							appearance: tokenRef('mixin', 'xl'),
+							typography: {
+								font: tokenRef('mixin', 'xl'),
+								fontSize: tokenRef('mixin', 'xl'),
+								textAlignHorizontal: 'center',
+								textAlignVertical: 'center',
+								lineHeight: tokenRef('mixin', 'xl'),
+								letterSpacing: tokenRef('mixin', 'xl')
+							},
+							fill: {
+								paint: {
+									type: 'solid',
+									color: fontColor
+								},
+								opacity: 1
+							},
+							stroke: tokenRef('mixin', 'xl'),
+							shadow: tokenRef('mixin', 'xl')
+						}
+					: aboutNodeMetadata.default.textXl,
+			text:
+				fontColor != null
+					? {
+							appearance: tokenRef('mixin', 'default'),
+							typography: {
+								font: tokenRef('mixin', 'default'),
+								fontSize: tokenRef('mixin', 'default'),
+								textAlignHorizontal: 'center',
+								textAlignVertical: 'center',
+								lineHeight: tokenRef('mixin', 'default'),
+								letterSpacing: tokenRef('mixin', 'default')
+							},
+							fill: {
+								paint: {
+									type: 'solid',
+									color: fontColor
+								},
+								opacity: 1
+							},
+							stroke: tokenRef('mixin', 'default'),
+							shadow: tokenRef('mixin', 'default')
+						}
+					: aboutNodeMetadata.default.text,
 			image: {
-				...aboutNodeMetadata.default.image,
 				appearance: {
 					visible: true,
 					opacity: tokenRef('mixin', 'default'),
 					borderRadius: 48
-				}
+				},
+				stroke: tokenRef('mixin', 'default'),
+				shadow: tokenRef('mixin', 'default')
 			}
 		};
 		children.push(aboutNode);
@@ -265,20 +291,24 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 			name: 'LinkPop Import',
 			color: {
 				...defaultTheme.color,
-				base100: cssRgbaToHex(page?.themeSettings?.linkCardColor) ?? defaultTheme.color.base100,
-				base200: cssRgbaToHex(page?.themeSettings?.backgroundColor) ?? defaultTheme.color.base200,
+				base100: cssRgbaToRgba(page?.themeSettings?.linkCardColor) ?? defaultTheme.color.base100,
+				base200: cssRgbaToRgba(page?.themeSettings?.backgroundColor) ?? defaultTheme.color.base200,
 				baseContent:
-					cssRgbaToHex(page?.themeSettings?.linkCardFontColor) ?? defaultTheme.color.baseContent,
-				primary: cssRgbaToHex(page?.themeSettings?.linkCardFontColor) ?? defaultTheme.color.primary,
+					cssRgbaToRgba(page?.themeSettings?.linkCardFontColor) ?? defaultTheme.color.baseContent,
+				primary:
+					cssRgbaToRgba(page?.themeSettings?.linkCardFontColor) ?? defaultTheme.color.primary,
 				primaryContent:
-					cssRgbaToHex(page?.themeSettings?.linkCardColor) ?? defaultTheme.color.primaryContent
+					cssRgbaToRgba(page?.themeSettings?.linkCardColor) ?? defaultTheme.color.primaryContent
 			},
 			typography: {
 				heading: {
-					fontFamily: primaryFont,
+					fontFamily: primaryFontAsset.font.family,
 					fontWeight: defaultTheme.typography.heading.fontWeight
 				},
-				text: { fontFamily: primaryFont, fontWeight: defaultTheme.typography.text.fontWeight }
+				text: {
+					fontFamily: primaryFontAsset.font.family,
+					fontWeight: defaultTheme.typography.text.fontWeight
+				}
 			},
 			radius: {
 				box: borderRadius,
@@ -313,25 +343,25 @@ function transformSocialLinks(
 	return contactIcons;
 }
 
-function createFontAsset(fontFamily: string): TFontAsset {
+function createFontAsset(fontFamily?: string): TFontAsset {
 	const fontMetadata = getFontMetadataByFamily(fontFamily) ?? fontMetadataMap.inter;
 
 	return {
 		id: createId('asset'),
 		type: 'font',
 		hash: getFontHash({
-			family: fontFamily,
+			family: fontMetadata.font.family,
 			weight: 400,
 			style: 'normal'
 		}),
 		contentType: 'font/woff2', // Google Fonts serves woff2
-		fileName: `${fontFamily.toLowerCase().replace(/\s+/g, '-')}.woff2`,
+		fileName: `${fontMetadata.font.family.toLowerCase().replace(/\s+/g, '-')}.woff2`,
 		storage: {
 			type: 'url',
 			url: `https://fonts.googleapis.com/css2?family=${fontMetadata.googleFont}&display=swap`
 		},
 		font: {
-			family: fontFamily,
+			family: fontMetadata.font.family,
 			weight: 400,
 			style: 'normal'
 		}

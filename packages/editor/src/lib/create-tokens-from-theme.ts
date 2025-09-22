@@ -1,6 +1,6 @@
 import { themeMetadata, TTheme } from '../environment';
 import { TToken } from '../types';
-import { hexToRgba } from './color';
+import { hexToRgba, isRgba } from './color';
 
 export function createTokensFromTheme(theme: TTheme): TToken[] {
 	const { color, typography, gap = 24, size = {}, radius, effects } = theme;
@@ -13,26 +13,38 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 
 	// Convert colors
 	const rgbaColors = {
-		base100: hexToRgba(color.base100),
-		base200: hexToRgba(color.base200),
-		base300: hexToRgba(color.base300),
-		baseContent: hexToRgba(color.baseContent),
-		primary: hexToRgba(color.primary),
-		primaryContent: hexToRgba(color.primaryContent),
-		secondary: hexToRgba(color.secondary),
-		secondaryContent: hexToRgba(color.secondaryContent),
-		neutral: hexToRgba(color.neutral),
-		neutralContent: hexToRgba(color.neutralContent),
-		accent: hexToRgba(color.accent),
-		accentContent: hexToRgba(color.accentContent),
-		info: hexToRgba(color.info),
-		infoContent: hexToRgba(color.infoContent),
-		success: hexToRgba(color.success),
-		successContent: hexToRgba(color.successContent),
-		warning: hexToRgba(color.warning),
-		warningContent: hexToRgba(color.warningContent),
-		error: hexToRgba(color.error),
-		errorContent: hexToRgba(color.errorContent)
+		base100: isRgba(color.base100) ? color.base100 : hexToRgba(color.base100),
+		base200: isRgba(color.base200) ? color.base200 : hexToRgba(color.base200),
+		base300: isRgba(color.base300) ? color.base300 : hexToRgba(color.base300),
+		baseContent: isRgba(color.baseContent) ? color.baseContent : hexToRgba(color.baseContent),
+		primary: isRgba(color.primary) ? color.primary : hexToRgba(color.primary),
+		primaryContent: isRgba(color.primaryContent)
+			? color.primaryContent
+			: hexToRgba(color.primaryContent),
+		secondary: isRgba(color.secondary) ? color.secondary : hexToRgba(color.secondary),
+		secondaryContent: isRgba(color.secondaryContent)
+			? color.secondaryContent
+			: hexToRgba(color.secondaryContent),
+		neutral: isRgba(color.neutral) ? color.neutral : hexToRgba(color.neutral),
+		neutralContent: isRgba(color.neutralContent)
+			? color.neutralContent
+			: hexToRgba(color.neutralContent),
+		accent: isRgba(color.accent) ? color.accent : hexToRgba(color.accent),
+		accentContent: isRgba(color.accentContent)
+			? color.accentContent
+			: hexToRgba(color.accentContent),
+		info: isRgba(color.info) ? color.info : hexToRgba(color.info),
+		infoContent: isRgba(color.infoContent) ? color.infoContent : hexToRgba(color.infoContent),
+		success: isRgba(color.success) ? color.success : hexToRgba(color.success),
+		successContent: isRgba(color.successContent)
+			? color.successContent
+			: hexToRgba(color.successContent),
+		warning: isRgba(color.warning) ? color.warning : hexToRgba(color.warning),
+		warningContent: isRgba(color.warningContent)
+			? color.warningContent
+			: hexToRgba(color.warningContent),
+		error: isRgba(color.error) ? color.error : hexToRgba(color.error),
+		errorContent: isRgba(color.errorContent) ? color.errorContent : hexToRgba(color.errorContent)
 	};
 
 	// Calculate semantic sizes
