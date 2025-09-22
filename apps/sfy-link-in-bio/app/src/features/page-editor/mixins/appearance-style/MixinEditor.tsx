@@ -28,39 +28,13 @@ export const AppearanceStyleMixinEditor = (props: TAppearanceStyleMixinEditorPro
 			if (!isResolveAppearanceOk) {
 				return undefined;
 			}
-
 			const [isResolvedVisibleOk, , resolvedVisible] = resolveTokenRef(resolvedAppearance.visible, {
 				tokenMap: editor.tokenMap._v
 			});
 			if (!isResolvedVisibleOk) {
 				return undefined;
 			}
-
 			return resolvedVisible;
-		},
-		[editor]
-	);
-	const borderRadius = useCompute(
-		state,
-		({ value }) => {
-			const [isResolveAppearanceOk, , resolvedAppearance] = resolveTokenRef(value, {
-				tokenMap: editor.tokenMap._v
-			});
-			if (!isResolveAppearanceOk) {
-				return undefined;
-			}
-
-			const [isResolvedBorderRadiusOk, , resolvedBorderRadius] = resolveTokenRef(
-				resolvedAppearance.borderRadius,
-				{
-					tokenMap: editor.tokenMap._v
-				}
-			);
-			if (!isResolvedBorderRadiusOk) {
-				return undefined;
-			}
-
-			return resolvedBorderRadius;
 		},
 		[editor]
 	);
@@ -68,9 +42,7 @@ export const AppearanceStyleMixinEditor = (props: TAppearanceStyleMixinEditorPro
 	const opacityState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return resolveTokenRef(baseValue, {
-					tokenMap: editor.tokenMap._v
-				}).unwrap().opacity;
+				return mapTokenRef(baseValue, 'opacity');
 			}
 			return baseValue.opacity;
 		},
@@ -84,12 +56,10 @@ export const AppearanceStyleMixinEditor = (props: TAppearanceStyleMixinEditorPro
 	const borderRadiusState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return resolveTokenRef(baseValue, {
-					tokenMap: editor.tokenMap._v
-				}).unwrap().borderRadius;
+				return mapTokenRef(baseValue, 'borderRadius') as TRef<number>;
 			}
 			if (isTokenRef(baseValue.borderRadius)) {
-				return baseValue.borderRadius;
+				return baseValue.borderRadius as TRef<number>;
 			}
 			return baseValue.borderRadius ?? undefined;
 		},
@@ -100,6 +70,8 @@ export const AppearanceStyleMixinEditor = (props: TAppearanceStyleMixinEditorPro
 			baseState._notify(notifyOptions);
 		}
 	});
+
+	const hasBorderRadius = useCompute(borderRadiusState, ({ value }) => value != null);
 
 	// =========================================================================
 	// Events
@@ -171,7 +143,7 @@ export const AppearanceStyleMixinEditor = (props: TAppearanceStyleMixinEditorPro
 					onNavigateToToken={handleNavigateToToken}
 					disabledTokenLink={disabledTokenLink}
 				/>
-				{borderRadius != null && (
+				{hasBorderRadius && (
 					<TokenTextInput
 						label="Border Radius"
 						type="number"
@@ -179,7 +151,7 @@ export const AppearanceStyleMixinEditor = (props: TAppearanceStyleMixinEditorPro
 						min={0}
 						max={999}
 						step={4}
-						state={borderRadiusState as TState<TRef<number>, any>}
+						state={borderRadiusState}
 						tokenMap={editor.tokenMap}
 						onLinkToken={() => mapTokenRef(ref, 'borderRadius') as TRef<number>}
 						onNavigateToToken={handleNavigateToToken}

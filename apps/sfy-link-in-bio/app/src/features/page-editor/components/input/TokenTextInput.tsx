@@ -5,6 +5,7 @@ import { TState } from 'feature-state';
 import React from 'react';
 import { LinkIcon, LinkOffIcon } from '@/components';
 import { cn } from '@/lib';
+import { resolveTokenRef } from '../../lib';
 import { TokenActionOverlay } from './TokenActionOverlay';
 
 export const TokenTextInput = <GRefValue extends TRef<string | number> | undefined>(
@@ -32,15 +33,18 @@ export const TokenTextInput = <GRefValue extends TRef<string | number> | undefin
 	const resolvedValue = useCombinedCompute(
 		[state, tokenMap],
 		([stateCx, tokenMapCx]) => {
-			const rawValue = isTokenRef(stateCx.value)
-				? tokenMapCx?.value?.[stateCx.value.key]?.value
-				: stateCx.value;
-			if (rawValue == null) {
+			if (stateCx.value == null) {
+				return undefined;
+			}
+			const [isRawValueOk, , rawValue] = resolveTokenRef(stateCx.value, {
+				tokenMap: tokenMapCx?.value
+			});
+			if (!isRawValueOk) {
 				return undefined;
 			}
 			return mapToDisplayValue != null
 				? mapToDisplayValue(rawValue as TUnreferenceTop<GRefValue>)
-				: rawValue;
+				: (rawValue as TUnreferenceTop<GRefValue>);
 		},
 		[mapToDisplayValue]
 	);
@@ -101,11 +105,13 @@ export const TokenTextInput = <GRefValue extends TRef<string | number> | undefin
 		// Unlink token
 		if (isLinked) {
 			const result = onUnlinkToken?.();
-			if (isPreventDefault(result)) {
+			if (isPreventDefault(result) || state._v == null) {
 				return;
 			}
-			const tokenValue = isTokenRef(result) ? tokenMap?._v?.[result.key]?.value : undefined;
-			if (tokenValue != null) {
+			const [isResolvedTokenOk, , tokenValue] = resolveTokenRef(state._v, {
+				tokenMap: tokenMap?._v
+			});
+			if (isResolvedTokenOk) {
 				state.set(tokenValue as GRefValue);
 			}
 			return;

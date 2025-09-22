@@ -1,4 +1,4 @@
-import { isTokenRef, TRef, TTokenRef, TUnreferenceTop } from '@repo/editor';
+import { isTokenRef, TRef, TToken, TTokenPaths, TTokenRef, TUnreferenceTop } from '@repo/editor';
 
 /**
  * Packs a mixin value back to a token reference if all properties reference the same token.
@@ -7,29 +7,30 @@ import { isTokenRef, TRef, TTokenRef, TUnreferenceTop } from '@repo/editor';
  * @param value - The mixin value to pack
  * @param properties - Array of property names to check for token references
  */
-export function packTokenRef<T extends Record<string, unknown>>(
-	value: TUnreferenceTop<TRef<T>>,
-	properties: readonly (keyof T)[]
-): TRef<T> {
+export function packTokenRef<
+	GTokenValue extends TToken['value'],
+	GToken extends Extract<TToken, { value: GTokenValue }>,
+	GPath extends TTokenPaths<GToken>
+>(value: TUnreferenceTop<TRef<GTokenValue>>, properties: readonly GPath[]): TRef<GTokenValue> {
 	// Find the first token reference to use as the base
 	let baseTokenRef: TTokenRef | null = null;
 
 	for (const key of properties) {
-		const propValue = value[key];
+		const propValue = value?.[key];
 		if (isTokenRef(propValue)) {
 			if (baseTokenRef == null) {
 				baseTokenRef = propValue;
 			}
-			// Different token keys found, can't pack
-			else if (propValue.key !== baseTokenRef.key) {
-				return value as TRef<T>;
+			// Different token type found, can't pack
+			else if (propValue.tokenType !== baseTokenRef.tokenType) {
+				return value;
 			}
 		}
 		// Non-token reference found, can't pack
 		else {
-			return value as TRef<T>;
+			return value;
 		}
 	}
 
-	return baseTokenRef as TRef<T>;
+	return baseTokenRef as TRef<GTokenValue>;
 }

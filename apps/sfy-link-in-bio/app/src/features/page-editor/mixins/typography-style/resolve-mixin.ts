@@ -1,22 +1,17 @@
-import {
-	TLetterSpacing,
-	TLineHeight,
-	TMixinTokenSet,
-	TTypographyStyleMixin,
-	TTypographyStyleToken
-} from '@repo/editor';
+import { TLetterSpacing, TLineHeight, TTypographyStyleMixin } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
+import * as v from 'valibot';
 import { AppError } from '@/lib';
 import { resolveTokenRef, TMixinResolveContext } from '../../lib';
 import { TResolvedTypographyStyleMixin } from './types';
 
-export function resolveTypographyStyleMixin<GTokenSet extends TMixinTokenSet>(
+export function resolveTypographyStyleMixin(
 	typography: TTypographyStyleMixin['value'],
-	cx: TMixinResolveContext<TTypographyStyleToken['value'], GTokenSet>
+	cx: TMixinResolveContext
 ): TResult<TResolvedTypographyStyleMixin['value'], AppError> {
 	const [isResolvedTypographyOk, resolvedTypographyErr, resolvedTypography] = resolveTokenRef(
 		typography,
-		{ mixin: { tokenSet: cx.mixinTokenSet, mapToTokenValue: cx.mapToMixinTokenValue } }
+		{ tokenMap: cx.tokenMap }
 	);
 	if (!isResolvedTypographyOk) {
 		return Err(resolvedTypographyErr.wrapWith('#ERR_RESOLVE_TYPOGRAPHY'));
@@ -25,14 +20,7 @@ export function resolveTypographyStyleMixin<GTokenSet extends TMixinTokenSet>(
 	const [isResolvedFontOk, resolvedFontErr, resolvedFont] = resolveTokenRef(
 		resolvedTypography.font,
 		{
-			mixin: {
-				tokenSet: cx.mixinTokenSet,
-				mapToTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.font
-			},
-			variable: {
-				tokenMap: cx.variableTokenMap,
-				expectedType: 'string'
-			}
+			tokenMap: cx.tokenMap
 		}
 	);
 	if (!isResolvedFontOk) {
@@ -41,14 +29,8 @@ export function resolveTypographyStyleMixin<GTokenSet extends TMixinTokenSet>(
 	const [isResolvedFontSizeOk, resolvedFontSizeErr, resolvedFontSize] = resolveTokenRef(
 		resolvedTypography.fontSize,
 		{
-			mixin: {
-				tokenSet: cx.mixinTokenSet,
-				mapToTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.fontSize
-			},
-			variable: {
-				tokenMap: cx.variableTokenMap,
-				expectedType: 'number'
-			}
+			tokenMap: cx.tokenMap,
+			schema: v.number()
 		}
 	);
 	if (!isResolvedFontSizeOk) {
@@ -59,30 +41,16 @@ export function resolveTypographyStyleMixin<GTokenSet extends TMixinTokenSet>(
 		resolvedTextAlignHorizontalErr,
 		resolvedTextAlignHorizontal
 	] = resolveTokenRef(resolvedTypography.textAlignHorizontal, {
-		mixin: {
-			tokenSet: cx.mixinTokenSet,
-			mapToTokenValue: (ref, tokenSet) =>
-				cx.mapToMixinTokenValue(ref, tokenSet)?.textAlignHorizontal
-		},
-		variable: {
-			tokenMap: cx.variableTokenMap,
-			expectedType: 'string'
-		}
+		tokenMap: cx.tokenMap,
+		schema: v.union([v.literal('start'), v.literal('center'), v.literal('end')])
 	});
 	if (!isResolvedTextAlignHorizontalOk) {
 		return Err(resolvedTextAlignHorizontalErr.wrapWith('#ERR_RESOLVE_TEXT_ALIGN_HORIZONTAL'));
 	}
 	const [isResolvedTextAlignVerticalOk, resolvedTextAlignVerticalErr, resolvedTextAlignVertical] =
 		resolveTokenRef(resolvedTypography.textAlignVertical, {
-			mixin: {
-				tokenSet: cx.mixinTokenSet,
-				mapToTokenValue: (ref, tokenSet) =>
-					cx.mapToMixinTokenValue(ref, tokenSet)?.textAlignVertical
-			},
-			variable: {
-				tokenMap: cx.variableTokenMap,
-				expectedType: 'string'
-			}
+			tokenMap: cx.tokenMap,
+			schema: v.union([v.literal('start'), v.literal('center'), v.literal('end')])
 		});
 	if (!isResolvedTextAlignVerticalOk) {
 		return Err(resolvedTextAlignVerticalErr.wrapWith('#ERR_RESOLVE_TEXT_ALIGN_VERTICAL'));
@@ -90,14 +58,7 @@ export function resolveTypographyStyleMixin<GTokenSet extends TMixinTokenSet>(
 	const [isResolvedLineHeightOk, resolvedLineHeightErr, resolvedLineHeight] = resolveTokenRef(
 		resolvedTypography.lineHeight,
 		{
-			mixin: {
-				tokenSet: cx.mixinTokenSet,
-				mapToTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.lineHeight
-			},
-			variable: {
-				tokenMap: cx.variableTokenMap,
-				expectedType: 'string'
-			}
+			tokenMap: cx.tokenMap
 		}
 	);
 	if (!isResolvedLineHeightOk) {
@@ -105,14 +66,7 @@ export function resolveTypographyStyleMixin<GTokenSet extends TMixinTokenSet>(
 	}
 	const [isResolvedLetterSpacingOk, resolvedLetterSpacingErr, resolvedLetterSpacing] =
 		resolveTokenRef(resolvedTypography.letterSpacing, {
-			mixin: {
-				tokenSet: cx.mixinTokenSet,
-				mapToTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.letterSpacing
-			},
-			variable: {
-				tokenMap: cx.variableTokenMap,
-				expectedType: 'string'
-			}
+			tokenMap: cx.tokenMap
 		});
 	if (!isResolvedLetterSpacingOk) {
 		return Err(resolvedLetterSpacingErr.wrapWith('#ERR_RESOLVE_LETTER_SPACING'));

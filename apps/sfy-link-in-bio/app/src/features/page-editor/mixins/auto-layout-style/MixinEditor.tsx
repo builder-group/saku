@@ -27,7 +27,6 @@ export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorPro
 			if (!isResolveAutoLayoutOk) {
 				return undefined;
 			}
-
 			const [isResolvedHorizontalGapOk, , resolvedHorizontalGap] = resolveTokenRef(
 				resolvedAutoLayout.horizontalGap,
 				{
@@ -37,7 +36,6 @@ export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorPro
 			if (!isResolvedHorizontalGapOk) {
 				return undefined;
 			}
-
 			return resolvedHorizontalGap;
 		},
 		[editor]
@@ -51,7 +49,6 @@ export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorPro
 			if (!isResolveAutoLayoutOk) {
 				return undefined;
 			}
-
 			const [isResolvedVerticalGapOk, , resolvedVerticalGap] = resolveTokenRef(
 				resolvedAutoLayout.verticalGap,
 				{
@@ -61,7 +58,6 @@ export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorPro
 			if (!isResolvedVerticalGapOk) {
 				return undefined;
 			}
-
 			return resolvedVerticalGap;
 		},
 		[editor]
@@ -86,9 +82,7 @@ export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorPro
 	const verticalPaddingState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return resolveTokenRef(baseValue, {
-					tokenMap: editor.tokenMap._v
-				}).unwrap().verticalPadding;
+				return mapTokenRef(baseValue, 'verticalPadding');
 			}
 			return baseValue.verticalPadding;
 		},
@@ -102,12 +96,10 @@ export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorPro
 	const horizontalGapState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return resolveTokenRef(baseValue, {
-					tokenMap: editor.tokenMap._v
-				}).unwrap().horizontalGap;
+				return mapTokenRef(baseValue, 'horizontalGap') as TRef<number>;
 			}
 			if (isTokenRef(baseValue.horizontalGap)) {
-				return baseValue.horizontalGap;
+				return baseValue.horizontalGap as TRef<number>;
 			}
 			return baseValue.horizontalGap ?? undefined;
 		},
@@ -121,12 +113,10 @@ export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorPro
 	const verticalGapState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return resolveTokenRef(baseValue, {
-					tokenMap: editor.tokenMap._v
-				}).unwrap().verticalGap;
+				return mapTokenRef(baseValue, 'verticalGap') as TRef<number>;
 			}
 			if (isTokenRef(baseValue.verticalGap)) {
-				return baseValue.verticalGap;
+				return baseValue.verticalGap as TRef<number>;
 			}
 			return baseValue.verticalGap ?? undefined;
 		},

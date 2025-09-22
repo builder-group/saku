@@ -26,7 +26,7 @@ export const TextStyleMixinEditor = (props: TTextStyleMixinEditorProps) => {
 					tokenMap: editor.tokenMap._v
 				}).unwrap().appearance;
 			}
-			return baseValue?.appearance;
+			return baseValue.appearance;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
 			const unpackedBaseValue = unpackTextTokenRef(baseState._v);
@@ -42,7 +42,7 @@ export const TextStyleMixinEditor = (props: TTextStyleMixinEditorProps) => {
 					tokenMap: editor.tokenMap._v
 				}).unwrap().typography;
 			}
-			return baseValue?.typography;
+			return baseValue.typography;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
 			const unpackedBaseValue = unpackTextTokenRef(baseState._v);
@@ -58,7 +58,7 @@ export const TextStyleMixinEditor = (props: TTextStyleMixinEditorProps) => {
 					tokenMap: editor.tokenMap._v
 				}).unwrap().fill;
 			}
-			return baseValue?.fill;
+			return baseValue.fill;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
 			const unpackedBaseValue = unpackTextTokenRef(baseState._v);
@@ -74,7 +74,7 @@ export const TextStyleMixinEditor = (props: TTextStyleMixinEditorProps) => {
 					tokenMap: editor.tokenMap._v
 				}).unwrap().stroke;
 			}
-			return baseValue?.stroke;
+			return baseValue.stroke;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
 			const unpackedBaseValue = unpackTextTokenRef(baseState._v);
@@ -90,7 +90,7 @@ export const TextStyleMixinEditor = (props: TTextStyleMixinEditorProps) => {
 					tokenMap: editor.tokenMap._v
 				}).unwrap().shadow;
 			}
-			return baseValue?.shadow;
+			return baseValue.shadow;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
 			const unpackedBaseValue = unpackTextTokenRef(baseState._v);

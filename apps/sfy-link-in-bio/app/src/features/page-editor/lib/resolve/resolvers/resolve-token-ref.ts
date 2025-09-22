@@ -3,9 +3,10 @@ import { Err, Ok, TResult } from 'tuple-result';
 import { safeParse, type BaseIssue, type BaseSchema } from 'valibot';
 import { AppError } from '@/lib';
 
+// TODO: Add support for resolving nested token refs meaning if path is nested ref
 export function resolveTokenRef<GTokenValue>(
 	sourceValue: TRef<GTokenValue>,
-	options: TResolveTokenRefOptions<GTokenValue>
+	options: TResolveTokenRefOptions<GTokenValue> = {}
 ): TResult<GTokenValue, AppError> {
 	if (!isTokenRef(sourceValue)) {
 		return Ok(sourceValue);
@@ -59,7 +60,7 @@ export function resolveTokenRef<GTokenValue>(
 }
 
 export interface TResolveTokenRefOptions<GTokenValue> {
-	tokenMap: Record<TToken['key'], TToken>;
+	tokenMap?: Record<TToken['key'], TToken>;
 	schema?: BaseSchema<GTokenValue, unknown, BaseIssue<unknown>>;
 }
 

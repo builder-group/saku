@@ -1,10 +1,12 @@
 import {
 	fontMetadata,
 	isTokenRef,
-	TMixinTokenSet,
+	mapTokenRef,
+	tokenRef,
 	TRef,
+	TTokenRef,
 	TTypographyStyleMixin,
-	TTypographyStyleToken
+	TUnreferenceTop
 } from '@repo/editor';
 import { Text } from '@shopify/polaris';
 import { TState } from 'feature-state';
@@ -14,10 +16,8 @@ import { TokenSelectInput, TokenTextInput } from '../../components';
 import { TPageEditor } from '../../lib';
 import { packTypographyTokenRef, unpackTypographyTokenRef } from './pack-mixin';
 
-export const TypographyStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
-	props: TTypographyStyleMixinEditorProps<GTokenSet>
-) => {
-	const { state, tokenSet, tokenRefKey, mapToToken, disabledTokenLink = false, editor } = props;
+export const TypographyStyleMixinEditor = (props: TTypographyStyleMixinEditorProps) => {
+	const { state, ref, disabledTokenLink = false, editor } = props;
 
 	const fontOptions = React.useMemo(() => {
 		return fontMetadata.map((font) => ({
@@ -36,10 +36,10 @@ export const TypographyStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 	const fontFamilyState = useMapState(state, {
 		map(baseValue): TRef<string> {
 			if (isTokenRef(baseValue)) {
-				return baseValue;
+				return mapTokenRef(baseValue, 'font.family');
 			}
 			if (isTokenRef(baseValue.font)) {
-				return baseValue.font;
+				return mapTokenRef(baseValue.font, 'family');
 			}
 			return baseValue.font.family;
 		},
@@ -47,7 +47,7 @@ export const TypographyStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 			const unpackedBaseValue = unpackTypographyTokenRef(baseState._v);
 
 			if (isTokenRef(mappedValue)) {
-				unpackedBaseValue.font = mappedValue;
+				unpackedBaseValue.font = tokenRef(mappedValue.key, mappedValue.tokenType, 'font');
 			} else {
 				const font = editor.registerFontFamily(mappedValue as string);
 				if (font != null) {
@@ -62,7 +62,7 @@ export const TypographyStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 	const fontSizeState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return baseValue;
+				return mapTokenRef(baseValue, 'fontSize');
 			}
 			return baseValue.fontSize;
 		},
@@ -76,7 +76,7 @@ export const TypographyStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 	const textAlignHorizontalState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return baseValue;
+				return mapTokenRef(baseValue, 'textAlignHorizontal');
 			}
 			return baseValue.textAlignHorizontal;
 		},
@@ -165,11 +165,9 @@ export const TypographyStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 	);
 };
 
-interface TTypographyStyleMixinEditorProps<GTokenSet extends TMixinTokenSet> {
+interface TTypographyStyleMixinEditorProps {
 	state: TState<TTypographyStyleMixin['value'], any>;
-	tokenSet?: TState<GTokenSet, any>;
-	tokenRefKey?: string;
-	mapToToken?: (ref: string, tokenSet?: GTokenSet) => TTypographyStyleToken['value'] | undefined;
+	ref: TTokenRef<TUnreferenceTop<TTypographyStyleMixin['value']>>;
 	disabledTokenLink?: boolean;
 	editor: TPageEditor;
 }
