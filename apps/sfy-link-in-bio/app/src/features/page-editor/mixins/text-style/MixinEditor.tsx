@@ -38,7 +38,9 @@ export const TextStyleMixinEditor = (props: TTextStyleMixinEditorProps) => {
 	const typographyState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return baseValue;
+				return resolveTokenRef(baseValue, {
+					tokenMap: editor.tokenMap._v
+				}).unwrap().typography;
 			}
 			return baseValue?.typography;
 		},
@@ -52,7 +54,9 @@ export const TextStyleMixinEditor = (props: TTextStyleMixinEditorProps) => {
 	const fillState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return baseValue;
+				return resolveTokenRef(baseValue, {
+					tokenMap: editor.tokenMap._v
+				}).unwrap().fill;
 			}
 			return baseValue?.fill;
 		},
@@ -66,7 +70,9 @@ export const TextStyleMixinEditor = (props: TTextStyleMixinEditorProps) => {
 	const strokeState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return baseValue;
+				return resolveTokenRef(baseValue, {
+					tokenMap: editor.tokenMap._v
+				}).unwrap().stroke;
 			}
 			return baseValue?.stroke;
 		},
@@ -80,7 +86,9 @@ export const TextStyleMixinEditor = (props: TTextStyleMixinEditorProps) => {
 	const shadowState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return baseValue;
+				return resolveTokenRef(baseValue, {
+					tokenMap: editor.tokenMap._v
+				}).unwrap().shadow;
 			}
 			return baseValue?.shadow;
 		},

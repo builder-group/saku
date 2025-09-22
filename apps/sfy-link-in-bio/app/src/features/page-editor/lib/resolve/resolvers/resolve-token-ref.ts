@@ -3,7 +3,7 @@ import { Err, Ok, TResult } from 'tuple-result';
 import { safeParse, type BaseIssue, type BaseSchema } from 'valibot';
 import { AppError } from '@/lib';
 
-export function resolveTokenRef<GTokenValue extends TToken['value']>(
+export function resolveTokenRef<GTokenValue>(
 	sourceValue: TRef<GTokenValue>,
 	options: TResolveTokenRefOptions<GTokenValue>
 ): TResult<GTokenValue, AppError> {
@@ -58,7 +58,7 @@ export function resolveTokenRef<GTokenValue extends TToken['value']>(
 	return Ok(resolvedValue as GTokenValue);
 }
 
-export interface TResolveTokenRefOptions<GTokenValue extends TToken['value']> {
+export interface TResolveTokenRefOptions<GTokenValue> {
 	tokenMap: Record<TToken['key'], TToken>;
 	schema?: BaseSchema<GTokenValue, unknown, BaseIssue<unknown>>;
 }

@@ -55,8 +55,7 @@ export function resolveAppearanceStyleMixin(
 		opacity: resolvedOpacity,
 		borderRadius: resolvedBorderRadius ?? undefined,
 		styles: {
-			// Elements are visible by default, so we only need to explicitly hide them
-			display: resolvedVisible ? undefined : 'none',
+			display: resolvedVisible ? undefined : 'none', // Elements are visible by default, so we only need to explicitly hide them
 			opacity: `${resolvedOpacity * 100}%`,
 			borderRadius: resolvedBorderRadius != null ? `${resolvedBorderRadius}px` : undefined
 		}

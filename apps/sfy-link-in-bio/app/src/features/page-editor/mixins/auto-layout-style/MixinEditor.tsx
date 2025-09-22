@@ -1,8 +1,10 @@
 import {
 	isTokenRef,
+	mapTokenRef,
 	TAutoLayoutStyleMixin,
-	TAutoLayoutStyleToken,
-	TMixinTokenSet
+	TRef,
+	TTokenRef,
+	TUnreferenceTop
 } from '@repo/editor';
 import { Text } from '@shopify/polaris';
 import { useCompute } from 'feature-react';
@@ -10,31 +12,67 @@ import { TState } from 'feature-state';
 import React from 'react';
 import { useMapState } from '@/hooks';
 import { TokenTextInput } from '../../components';
-import { TPageEditor } from '../../lib';
+import { resolveTokenRef, TPageEditor } from '../../lib';
 import { packAutoLayoutTokenRef, unpackAutoLayoutTokenRef } from './pack-mixin';
 
-export const AutoLayoutStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
-	props: TAutoLayoutStyleMixinEditorProps<GTokenSet>
-) => {
-	const { state, tokenSet, tokenRefKey, mapToToken, disabledTokenLink = false, editor } = props;
+export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorProps) => {
+	const { state, ref, disabledTokenLink = false, editor } = props;
 
 	const horizontalGap = useCompute(
 		state,
-		({ value }) =>
-			isTokenRef(value) ? mapToToken?.(value.key, tokenSet?._v)?.horizontalGap : undefined,
-		[mapToToken, tokenSet]
+		({ value }) => {
+			const [isResolveAutoLayoutOk, , resolvedAutoLayout] = resolveTokenRef(value, {
+				tokenMap: editor.tokenMap._v
+			});
+			if (!isResolveAutoLayoutOk) {
+				return undefined;
+			}
+
+			const [isResolvedHorizontalGapOk, , resolvedHorizontalGap] = resolveTokenRef(
+				resolvedAutoLayout.horizontalGap,
+				{
+					tokenMap: editor.tokenMap._v
+				}
+			);
+			if (!isResolvedHorizontalGapOk) {
+				return undefined;
+			}
+
+			return resolvedHorizontalGap;
+		},
+		[editor]
 	);
 	const verticalGap = useCompute(
 		state,
-		({ value }) =>
-			isTokenRef(value) ? mapToToken?.(value.key, tokenSet?._v)?.verticalGap : undefined,
-		[mapToToken, tokenSet]
+		({ value }) => {
+			const [isResolveAutoLayoutOk, , resolvedAutoLayout] = resolveTokenRef(value, {
+				tokenMap: editor.tokenMap._v
+			});
+			if (!isResolveAutoLayoutOk) {
+				return undefined;
+			}
+
+			const [isResolvedVerticalGapOk, , resolvedVerticalGap] = resolveTokenRef(
+				resolvedAutoLayout.verticalGap,
+				{
+					tokenMap: editor.tokenMap._v
+				}
+			);
+			if (!isResolvedVerticalGapOk) {
+				return undefined;
+			}
+
+			return resolvedVerticalGap;
+		},
+		[editor]
 	);
 
 	const horizontalPaddingState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return baseValue;
+				return resolveTokenRef(baseValue, {
+					tokenMap: editor.tokenMap._v
+				}).unwrap().horizontalPadding;
 			}
 			return baseValue.horizontalPadding;
 		},
@@ -48,7 +86,9 @@ export const AutoLayoutStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 	const verticalPaddingState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return baseValue;
+				return resolveTokenRef(baseValue, {
+					tokenMap: editor.tokenMap._v
+				}).unwrap().verticalPadding;
 			}
 			return baseValue.verticalPadding;
 		},
@@ -62,7 +102,9 @@ export const AutoLayoutStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 	const horizontalGapState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return baseValue;
+				return resolveTokenRef(baseValue, {
+					tokenMap: editor.tokenMap._v
+				}).unwrap().horizontalGap;
 			}
 			if (isTokenRef(baseValue.horizontalGap)) {
 				return baseValue.horizontalGap;
@@ -79,7 +121,9 @@ export const AutoLayoutStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 	const verticalGapState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return baseValue;
+				return resolveTokenRef(baseValue, {
+					tokenMap: editor.tokenMap._v
+				}).unwrap().verticalGap;
 			}
 			if (isTokenRef(baseValue.verticalGap)) {
 				return baseValue.verticalGap;
@@ -122,11 +166,8 @@ export const AutoLayoutStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 					max={96}
 					step={4}
 					state={horizontalPaddingState}
-					tokenSet={tokenSet}
-					tokenRefKey={tokenRefKey}
-					mapToTokenValue={(tokenRef, tokenSet) =>
-						mapToToken?.(tokenRef, tokenSet)?.horizontalPadding
-					}
+					tokenMap={editor.tokenMap}
+					onLinkToken={() => mapTokenRef(ref, 'horizontalPadding')}
 					onNavigateToToken={handleNavigateToToken}
 					disabledTokenLink={disabledTokenLink}
 				/>
@@ -138,11 +179,8 @@ export const AutoLayoutStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 					max={96}
 					step={4}
 					state={verticalPaddingState}
-					tokenSet={tokenSet}
-					tokenRefKey={tokenRefKey}
-					mapToTokenValue={(tokenRef, tokenSet) =>
-						mapToToken?.(tokenRef, tokenSet)?.verticalPadding
-					}
+					tokenMap={editor.tokenMap}
+					onLinkToken={() => mapTokenRef(ref, 'verticalPadding')}
 					onNavigateToToken={handleNavigateToToken}
 					disabledTokenLink={disabledTokenLink}
 				/>
@@ -157,12 +195,9 @@ export const AutoLayoutStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 							min={0}
 							max={96}
 							step={4}
-							state={horizontalGapState}
-							tokenSet={tokenSet}
-							tokenRefKey={tokenRefKey}
-							mapToTokenValue={(tokenRef, tokenSet) =>
-								mapToToken?.(tokenRef, tokenSet)?.horizontalGap ?? undefined
-							}
+							state={horizontalGapState as TState<TRef<number>, any>}
+							tokenMap={editor.tokenMap}
+							onLinkToken={() => mapTokenRef(ref, 'horizontalGap') as TRef<number>}
 							onNavigateToToken={handleNavigateToToken}
 							disabledTokenLink={disabledTokenLink}
 						/>
@@ -175,12 +210,9 @@ export const AutoLayoutStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 							min={0}
 							max={96}
 							step={4}
-							state={verticalGapState}
-							tokenSet={tokenSet}
-							tokenRefKey={tokenRefKey}
-							mapToTokenValue={(tokenRef, tokenSet) =>
-								mapToToken?.(tokenRef, tokenSet)?.verticalGap ?? undefined
-							}
+							state={verticalGapState as TState<TRef<number>, any>}
+							tokenMap={editor.tokenMap}
+							onLinkToken={() => mapTokenRef(ref, 'verticalGap') as TRef<number>}
 							onNavigateToToken={handleNavigateToToken}
 							disabledTokenLink={disabledTokenLink}
 						/>
@@ -191,11 +223,9 @@ export const AutoLayoutStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 	);
 };
 
-interface TAutoLayoutStyleMixinEditorProps<GTokenSet extends TMixinTokenSet> {
+interface TAutoLayoutStyleMixinEditorProps {
 	state: TState<TAutoLayoutStyleMixin['value'], any>;
-	tokenSet?: TState<GTokenSet, any>;
-	tokenRefKey?: string;
-	mapToToken?: (ref: string, tokenSet?: GTokenSet) => TAutoLayoutStyleToken['value'] | undefined;
+	ref: TTokenRef<TUnreferenceTop<TAutoLayoutStyleMixin['value']>>;
 	disabledTokenLink?: boolean;
 	editor: TPageEditor;
 }

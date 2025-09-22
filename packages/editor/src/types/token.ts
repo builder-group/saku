@@ -12,7 +12,7 @@ import {
 	TTextStyleMixin,
 	TTypographyStyleMixin
 } from './mixin';
-import { TRef, TUnreference, TUnreferenceTop } from './ref';
+import { TRef, TUnreferenceTop } from './ref';
 import { TFont, TPaint } from './utils';
 
 export interface TBaseToken {
@@ -129,7 +129,7 @@ export type TMixinToken =
 
 export interface TAutoLayoutStyleToken extends TBaseToken {
 	type: 'auto-layout';
-	value: TUnreference<TAutoLayoutStyleMixin['value']>;
+	value: TUnreferenceTop<TAutoLayoutStyleMixin['value']>;
 }
 
 export interface TAppearanceStyleToken extends TBaseToken {

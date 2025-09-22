@@ -4,7 +4,6 @@ import { TToken } from '../types';
 import { EditorError } from './EditorError';
 
 export function reconstructThemeFromTokens(tokens: TToken[]): TResult<TTheme, EditorError> {
-	// Helper to get token value with type safety
 	const getValue = <GType extends TToken['type']>(
 		tokenType: GType,
 		key: string,

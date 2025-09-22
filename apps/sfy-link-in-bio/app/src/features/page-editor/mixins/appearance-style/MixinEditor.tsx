@@ -35,6 +35,7 @@ export const AppearanceStyleMixinEditor = (props: TAppearanceStyleMixinEditorPro
 			if (!isResolvedVisibleOk) {
 				return undefined;
 			}
+
 			return resolvedVisible;
 		},
 		[editor]
@@ -58,6 +59,7 @@ export const AppearanceStyleMixinEditor = (props: TAppearanceStyleMixinEditorPro
 			if (!isResolvedBorderRadiusOk) {
 				return undefined;
 			}
+
 			return resolvedBorderRadius;
 		},
 		[editor]
