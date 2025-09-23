@@ -1,8 +1,9 @@
 import {
 	isTokenRef,
-	TMixinTokenSet,
+	mapTokenRef,
 	TProductDetailsStyleMixin,
-	TProductDetailsStyleToken
+	TTokenRef,
+	TUnreferenceTop
 } from '@repo/editor';
 import { Text } from '@shopify/polaris';
 import { TState } from 'feature-state';
@@ -17,17 +18,15 @@ import { StrokeStyleMixinEditor } from '../stroke-style';
 import { TextStyleMixinEditor } from '../text-style';
 import { packProductDetailsTokenRef, unpackProductDetailsTokenRef } from './pack-mixin';
 
-export const ProductDetailsStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
-	props: TProductDetailsStyleMixinEditorProps<GTokenSet>
-) => {
-	const { state, tokenSet, tokenRefKey, mapToToken, disabledTokenLink = false, editor } = props;
+export const ProductDetailsStyleMixinEditor = (props: TProductDetailsStyleMixinEditorProps) => {
+	const { state, ref, disabledTokenLink = false, editor } = props;
 
 	const appearanceState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return baseValue;
+				return mapTokenRef(baseValue, 'appearance');
 			}
-			return baseValue?.appearance;
+			return baseValue.appearance;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
 			const unpackedBaseValue = unpackProductDetailsTokenRef(baseState._v);
@@ -39,9 +38,9 @@ export const ProductDetailsStyleMixinEditor = <GTokenSet extends TMixinTokenSet>
 	const fillState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return baseValue;
+				return mapTokenRef(baseValue, 'fill');
 			}
-			return baseValue?.fill;
+			return baseValue.fill;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
 			const unpackedBaseValue = unpackProductDetailsTokenRef(baseState._v);
@@ -53,9 +52,9 @@ export const ProductDetailsStyleMixinEditor = <GTokenSet extends TMixinTokenSet>
 	const strokeState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return baseValue;
+				return mapTokenRef(baseValue, 'stroke');
 			}
-			return baseValue?.stroke;
+			return baseValue.stroke;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
 			const unpackedBaseValue = unpackProductDetailsTokenRef(baseState._v);
@@ -67,9 +66,9 @@ export const ProductDetailsStyleMixinEditor = <GTokenSet extends TMixinTokenSet>
 	const shadowState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return baseValue;
+				return mapTokenRef(baseValue, 'shadow');
 			}
-			return baseValue?.shadow;
+			return baseValue.shadow;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
 			const unpackedBaseValue = unpackProductDetailsTokenRef(baseState._v);
@@ -81,9 +80,9 @@ export const ProductDetailsStyleMixinEditor = <GTokenSet extends TMixinTokenSet>
 	const textXlState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return baseValue;
+				return mapTokenRef(baseValue, 'textXl');
 			}
-			return baseValue?.textXl;
+			return baseValue.textXl;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
 			const unpackedBaseValue = unpackProductDetailsTokenRef(baseState._v);
@@ -95,9 +94,9 @@ export const ProductDetailsStyleMixinEditor = <GTokenSet extends TMixinTokenSet>
 	const textState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return baseValue;
+				return mapTokenRef(baseValue, 'text');
 			}
-			return baseValue?.text;
+			return baseValue.text;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
 			const unpackedBaseValue = unpackProductDetailsTokenRef(baseState._v);
@@ -109,9 +108,9 @@ export const ProductDetailsStyleMixinEditor = <GTokenSet extends TMixinTokenSet>
 	const buttonPrimaryState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return baseValue;
+				return mapTokenRef(baseValue, 'buttonPrimary');
 			}
-			return baseValue?.buttonPrimary;
+			return baseValue.buttonPrimary;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
 			const unpackedBaseValue = unpackProductDetailsTokenRef(baseState._v);
@@ -123,9 +122,9 @@ export const ProductDetailsStyleMixinEditor = <GTokenSet extends TMixinTokenSet>
 	const imageState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return baseValue;
+				return mapTokenRef(baseValue, 'image');
 			}
-			return baseValue?.image;
+			return baseValue.image;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
 			const unpackedBaseValue = unpackProductDetailsTokenRef(baseState._v);
@@ -139,36 +138,28 @@ export const ProductDetailsStyleMixinEditor = <GTokenSet extends TMixinTokenSet>
 		<>
 			<AppearanceStyleMixinEditor
 				state={appearanceState}
-				tokenSet={tokenSet}
-				tokenRefKey={tokenRefKey}
-				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.appearance}
+				ref={mapTokenRef(ref, 'appearance')}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 			/>
 			<div className="h-px bg-neutral-200" />
 			<FillStyleMixinEditor
 				state={fillState}
-				tokenSet={tokenSet}
-				tokenRefKey={tokenRefKey}
-				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.fill}
+				ref={mapTokenRef(ref, 'fill')}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 			/>
 			<div className="h-px bg-neutral-200" />
 			<StrokeStyleMixinEditor
 				state={strokeState}
-				tokenSet={tokenSet}
-				tokenRefKey={tokenRefKey}
-				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.stroke}
+				ref={mapTokenRef(ref, 'stroke')}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 			/>
 			<div className="h-px bg-neutral-200" />
 			<ShadowStyleMixinEditor
 				state={shadowState}
-				tokenSet={tokenSet}
-				tokenRefKey={tokenRefKey}
-				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.shadow}
+				ref={mapTokenRef(ref, 'shadow')}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 				disabledSpread
@@ -180,9 +171,7 @@ export const ProductDetailsStyleMixinEditor = <GTokenSet extends TMixinTokenSet>
 			</div>
 			<TextStyleMixinEditor
 				state={textXlState}
-				tokenSet={tokenSet}
-				tokenRefKey={tokenRefKey}
-				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.textXl}
+				ref={mapTokenRef(ref, 'textXl')}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 			/>
@@ -193,9 +182,7 @@ export const ProductDetailsStyleMixinEditor = <GTokenSet extends TMixinTokenSet>
 			</div>
 			<TextStyleMixinEditor
 				state={textState}
-				tokenSet={tokenSet}
-				tokenRefKey={tokenRefKey}
-				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.text}
+				ref={mapTokenRef(ref, 'text')}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 			/>
@@ -206,9 +193,7 @@ export const ProductDetailsStyleMixinEditor = <GTokenSet extends TMixinTokenSet>
 			</div>
 			<ButtonStyleMixinEditor
 				state={buttonPrimaryState}
-				tokenSet={tokenSet}
-				tokenRefKey={tokenRefKey}
-				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.buttonPrimary}
+				ref={mapTokenRef(ref, 'buttonPrimary')}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 			/>
@@ -219,9 +204,7 @@ export const ProductDetailsStyleMixinEditor = <GTokenSet extends TMixinTokenSet>
 			</div>
 			<ImageStyleMixinEditor
 				state={imageState}
-				tokenSet={tokenSet}
-				tokenRefKey={tokenRefKey}
-				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.image}
+				ref={mapTokenRef(ref, 'image')}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 			/>
@@ -229,14 +212,9 @@ export const ProductDetailsStyleMixinEditor = <GTokenSet extends TMixinTokenSet>
 	);
 };
 
-interface TProductDetailsStyleMixinEditorProps<GTokenSet extends TMixinTokenSet> {
+interface TProductDetailsStyleMixinEditorProps {
 	state: TState<TProductDetailsStyleMixin['value'], any>;
-	tokenSet?: TState<GTokenSet, any>;
-	tokenRefKey?: string;
-	mapToToken?: (
-		ref: string,
-		tokenSet?: GTokenSet
-	) => TProductDetailsStyleToken['value'] | undefined;
+	ref: TTokenRef<TUnreferenceTop<TProductDetailsStyleMixin['value']>>;
 	disabledTokenLink?: boolean;
 	editor: TPageEditor;
 }

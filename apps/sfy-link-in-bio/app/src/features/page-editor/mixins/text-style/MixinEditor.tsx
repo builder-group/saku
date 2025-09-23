@@ -111,18 +111,14 @@ export const TextStyleMixinEditor = (props: TTextStyleMixinEditorProps) => {
 			<div className="h-px bg-neutral-200" />
 			<TypographyStyleMixinEditor
 				state={typographyState}
-				tokenSet={tokenSet}
-				tokenRefKey={tokenRefKey}
-				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.typography}
+				ref={mapTokenRef(ref, 'typography')}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 			/>
 			<div className="h-px bg-neutral-200" />
 			<FillStyleMixinEditor
 				state={fillState}
-				tokenSet={tokenSet}
-				tokenRefKey={tokenRefKey}
-				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.fill}
+				ref={mapTokenRef(ref, 'fill')}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 				allowedPaintTypes={['solid']}
@@ -130,18 +126,14 @@ export const TextStyleMixinEditor = (props: TTextStyleMixinEditorProps) => {
 			<div className="h-px bg-neutral-200" />
 			<StrokeStyleMixinEditor
 				state={strokeState}
-				tokenSet={tokenSet}
-				tokenRefKey={tokenRefKey}
-				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.stroke}
+				ref={mapTokenRef(ref, 'stroke')}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 			/>
 			<div className="h-px bg-neutral-200" />
 			<ShadowStyleMixinEditor
 				state={shadowState}
-				tokenSet={tokenSet}
-				tokenRefKey={tokenRefKey}
-				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.shadow}
+				ref={mapTokenRef(ref, 'shadow')}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 				disabledSpread // HTML text doesn't support shadow spread

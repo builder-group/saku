@@ -57,15 +57,15 @@ export type TGetTokenValue<GToken extends TToken, GPath extends string> = TGet<
 >;
 
 type TGet<T, P extends string> = P extends `${infer K}.${infer Rest}`
-	? K extends keyof T
-		? T[K] extends TRef<infer U>
+	? K extends keyof NonNullable<T>
+		? NonNullable<T>[K] extends TRef<infer U>
 			? TGet<U, Rest> // Unwrap TRef<U> to U and continue path traversal
-			: TGet<T[K], Rest> // Continue with the property value as-is
+			: TGet<NonNullable<T>[K], Rest> // Continue with the property value as-is
 		: never
-	: P extends keyof T
-		? T[P] extends TRef<infer U>
+	: P extends keyof NonNullable<T>
+		? NonNullable<T>[P] extends TRef<infer U>
 			? U // Return the unwrapped value from TRef<U>
-			: T[P] // Return the property value as-is
+			: NonNullable<T>[P] // Return the property value as-is
 		: never;
 
 // =========================================================================

@@ -1,4 +1,10 @@
-import { isTokenRef, TBadgeStyleMixin, TBadgeStyleToken, TMixinTokenSet } from '@repo/editor';
+import {
+	isTokenRef,
+	mapTokenRef,
+	TBadgeStyleMixin,
+	TTokenRef,
+	TUnreferenceTop
+} from '@repo/editor';
 import { Text } from '@shopify/polaris';
 import { TState } from 'feature-state';
 import { useMapState } from '@/hooks';
@@ -10,17 +16,15 @@ import { StrokeStyleMixinEditor } from '../stroke-style';
 import { TextStyleMixinEditor } from '../text-style';
 import { packBadgeTokenRef, unpackBadgeTokenRef } from './pack-mixin';
 
-export const BadgeStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
-	props: TBadgeStyleMixinEditorProps<GTokenSet>
-) => {
-	const { state, tokenSet, tokenRefKey, mapToToken, disabledTokenLink = false, editor } = props;
+export const BadgeStyleMixinEditor = (props: TBadgeStyleMixinEditorProps) => {
+	const { state, ref, disabledTokenLink = false, editor } = props;
 
 	const appearanceState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return baseValue;
+				return mapTokenRef(baseValue, 'appearance');
 			}
-			return baseValue?.appearance;
+			return baseValue.appearance;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
 			const unpackedBaseValue = unpackBadgeTokenRef(baseState._v);
@@ -32,9 +36,9 @@ export const BadgeStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 	const fillState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return baseValue;
+				return mapTokenRef(baseValue, 'fill');
 			}
-			return baseValue?.fill;
+			return baseValue.fill;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
 			const unpackedBaseValue = unpackBadgeTokenRef(baseState._v);
@@ -46,9 +50,9 @@ export const BadgeStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 	const strokeState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return baseValue;
+				return mapTokenRef(baseValue, 'stroke');
 			}
-			return baseValue?.stroke;
+			return baseValue.stroke;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
 			const unpackedBaseValue = unpackBadgeTokenRef(baseState._v);
@@ -60,9 +64,9 @@ export const BadgeStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 	const shadowState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return baseValue;
+				return mapTokenRef(baseValue, 'shadow');
 			}
-			return baseValue?.shadow;
+			return baseValue.shadow;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
 			const unpackedBaseValue = unpackBadgeTokenRef(baseState._v);
@@ -74,9 +78,9 @@ export const BadgeStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 	const textState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return baseValue;
+				return mapTokenRef(baseValue, 'text');
 			}
-			return baseValue?.text;
+			return baseValue.text;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
 			const unpackedBaseValue = unpackBadgeTokenRef(baseState._v);
@@ -90,36 +94,28 @@ export const BadgeStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 		<>
 			<AppearanceStyleMixinEditor
 				state={appearanceState}
-				tokenSet={tokenSet}
-				tokenRefKey={tokenRefKey}
-				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.appearance}
+				ref={mapTokenRef(ref, 'appearance')}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 			/>
 			<div className="h-px bg-neutral-200" />
 			<FillStyleMixinEditor
 				state={fillState}
-				tokenSet={tokenSet}
-				tokenRefKey={tokenRefKey}
-				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.fill}
+				ref={mapTokenRef(ref, 'fill')}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 			/>
 			<div className="h-px bg-neutral-200" />
 			<StrokeStyleMixinEditor
 				state={strokeState}
-				tokenSet={tokenSet}
-				tokenRefKey={tokenRefKey}
-				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.stroke}
+				ref={mapTokenRef(ref, 'stroke')}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 			/>
 			<div className="h-px bg-neutral-200" />
 			<ShadowStyleMixinEditor
 				state={shadowState}
-				tokenSet={tokenSet}
-				tokenRefKey={tokenRefKey}
-				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.shadow}
+				ref={mapTokenRef(ref, 'shadow')}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 			/>
@@ -130,9 +126,7 @@ export const BadgeStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 			</div>
 			<TextStyleMixinEditor
 				state={textState}
-				tokenSet={tokenSet}
-				tokenRefKey={tokenRefKey}
-				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.text}
+				ref={mapTokenRef(ref, 'text')}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 			/>
@@ -140,11 +134,9 @@ export const BadgeStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 	);
 };
 
-interface TBadgeStyleMixinEditorProps<GTokenSet extends TMixinTokenSet> {
+interface TBadgeStyleMixinEditorProps {
 	state: TState<TBadgeStyleMixin['value'], any>;
-	tokenSet?: TState<GTokenSet, any>;
-	tokenRefKey?: string;
-	mapToToken?: (ref: string, tokenSet?: GTokenSet) => TBadgeStyleToken['value'] | undefined;
+	ref: TTokenRef<TUnreferenceTop<TBadgeStyleMixin['value']>>;
 	disabledTokenLink?: boolean;
 	editor: TPageEditor;
 }

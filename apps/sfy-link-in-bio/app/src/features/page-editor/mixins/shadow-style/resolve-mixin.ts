@@ -1,15 +1,15 @@
-import { TMixinTokenSet, TShadowStyleMixin, TShadowStyleToken } from '@repo/editor';
+import { TShadowStyleMixin } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
 import { resolveColor, resolveTokenRef, TMixinResolveContext } from '../../lib';
 import { TResolvedShadowStyleMixin } from './types';
 
-export function resolveShadowStyleMixin<GTokenSet extends TMixinTokenSet>(
+export function resolveShadowStyleMixin(
 	shadow: TShadowStyleMixin['value'],
-	cx: TMixinResolveContext<TShadowStyleToken['value'], GTokenSet>
+	cx: TMixinResolveContext
 ): TResult<TResolvedShadowStyleMixin['value'], AppError> {
 	const [isResolvedShadowOk, resolvedShadowErr, resolvedShadow] = resolveTokenRef(shadow, {
-		mixin: { tokenSet: cx.mixinTokenSet, mapToTokenValue: cx.mapToMixinTokenValue }
+		tokenMap: cx.tokenMap
 	});
 	if (!isResolvedShadowOk) {
 		return Err(resolvedShadowErr.wrapWith('#ERR_RESOLVE_SHADOW'));

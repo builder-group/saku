@@ -66,9 +66,7 @@ export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorPro
 	const horizontalPaddingState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return resolveTokenRef(baseValue, {
-					tokenMap: editor.tokenMap._v
-				}).unwrap().horizontalPadding;
+				return mapTokenRef(baseValue, 'horizontalPadding');
 			}
 			return baseValue.horizontalPadding;
 		},
