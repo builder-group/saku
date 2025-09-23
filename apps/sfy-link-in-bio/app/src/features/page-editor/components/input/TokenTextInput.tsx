@@ -6,6 +6,7 @@ import React from 'react';
 import { LinkIcon, LinkOffIcon } from '@/components';
 import { cn } from '@/lib';
 import { resolveTokenRef } from '../../lib';
+import { isPreventDefault, TPreventDefault } from './prevent-default';
 import { TokenActionOverlay } from './TokenActionOverlay';
 
 export const TokenTextInput = <GRefValue extends TRef<string | number> | undefined>(
@@ -36,15 +37,15 @@ export const TokenTextInput = <GRefValue extends TRef<string | number> | undefin
 			if (stateCx.value == null) {
 				return undefined;
 			}
-			const [isRawValueOk, , rawValue] = resolveTokenRef(stateCx.value, {
+			const [isResolvedValue, , resolvedValue] = resolveTokenRef(stateCx.value, {
 				tokenMap: tokenMapCx?.value
 			});
-			if (!isRawValueOk) {
+			if (!isResolvedValue) {
 				return undefined;
 			}
 			return mapToDisplayValue != null
-				? mapToDisplayValue(rawValue as TUnreferenceTop<GRefValue>)
-				: (rawValue as TUnreferenceTop<GRefValue>);
+				? mapToDisplayValue(resolvedValue as TUnreferenceTop<GRefValue>)
+				: (resolvedValue as TUnreferenceTop<GRefValue>);
 		},
 		[mapToDisplayValue]
 	);
@@ -192,20 +193,11 @@ export interface TTokenTextInputProps<GRefValue extends TRef<string | number> | 
 	mapToValue?: (displayValue: TUnreferenceTop<GRefValue>) => GRefValue;
 
 	tokenMap?: TState<Record<TToken['key'], TToken>, any>;
-	onLinkToken?: () => GRefValue | undefined | { preventDefault: true };
-	onUnlinkToken?: () => void | { preventDefault: true };
+	onLinkToken?: () => GRefValue | undefined | TPreventDefault;
+	onUnlinkToken?: () => void | TPreventDefault;
 	onNavigateToToken?: () => void;
 	disabledTokenLink?: boolean;
 
 	label: string;
 	className?: string;
-}
-
-function isPreventDefault(result: unknown): result is { preventDefault: true } {
-	return (
-		result != null &&
-		typeof result === 'object' &&
-		'preventDefault' in result &&
-		result.preventDefault === true
-	);
 }

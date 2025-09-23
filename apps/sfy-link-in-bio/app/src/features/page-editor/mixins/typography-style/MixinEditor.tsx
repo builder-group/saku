@@ -113,9 +113,8 @@ export const TypographyStyleMixinEditor = (props: TTypographyStyleMixinEditorPro
 						label="Font Family"
 						options={fontOptions}
 						state={fontFamilyState}
-						tokenSet={tokenSet}
-						tokenRefKey={tokenRefKey}
-						mapToTokenValue={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.font?.family}
+						tokenMap={editor.tokenMap}
+						onLinkToken={() => mapTokenRef(ref, 'font.family')}
 						onNavigateToToken={handleNavigateToToken}
 						disabledTokenLink={disabledTokenLink}
 					/>
@@ -127,9 +126,8 @@ export const TypographyStyleMixinEditor = (props: TTypographyStyleMixinEditorPro
 						max={96}
 						step={2}
 						state={fontSizeState}
-						tokenSet={tokenSet}
-						tokenRefKey={tokenRefKey}
-						mapToTokenValue={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.fontSize}
+						tokenMap={editor.tokenMap}
+						onLinkToken={() => mapTokenRef(ref, 'fontSize')}
 						onNavigateToToken={handleNavigateToToken}
 						disabledTokenLink={disabledTokenLink}
 					/>
@@ -139,11 +137,8 @@ export const TypographyStyleMixinEditor = (props: TTypographyStyleMixinEditorPro
 						label="Horizontal Text Align"
 						options={textAlignOptions}
 						state={textAlignHorizontalState}
-						tokenSet={tokenSet}
-						tokenRefKey={tokenRefKey}
-						mapToTokenValue={(tokenRef, tokenSet) =>
-							mapToToken?.(tokenRef, tokenSet)?.textAlignHorizontal
-						}
+						tokenMap={editor.tokenMap}
+						onLinkToken={() => mapTokenRef(ref, 'textAlignHorizontal')}
 						onNavigateToToken={handleNavigateToToken}
 						disabledTokenLink={disabledTokenLink}
 					/>
@@ -151,11 +146,8 @@ export const TypographyStyleMixinEditor = (props: TTypographyStyleMixinEditorPro
 						label="Vertical Text Align"
 						options={textAlignOptions}
 						state={textAlignVerticalState}
-						tokenSet={tokenSet}
-						tokenRefKey={tokenRefKey}
-						mapToTokenValue={(tokenRef, tokenSet) =>
-							mapToToken?.(tokenRef, tokenSet)?.textAlignVertical
-						}
+						tokenMap={editor.tokenMap}
+						onLinkToken={() => mapTokenRef(ref, 'textAlignVertical')}
 						onNavigateToToken={handleNavigateToToken}
 						disabledTokenLink={disabledTokenLink}
 					/> */}
