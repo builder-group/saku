@@ -106,13 +106,13 @@ export const TokenTextInput = <GRefValue extends TRef<string | number> | undefin
 		// Unlink token
 		if (isLinked) {
 			const result = onUnlinkToken?.();
-			if (isPreventDefault(result) || state._v == null) {
+			if (isPreventDefault(result)) {
 				return;
 			}
 			const [isResolvedTokenOk, , tokenValue] = resolveTokenRef(state._v, {
 				tokenMap: tokenMap?._v
 			});
-			if (isResolvedTokenOk) {
+			if (isResolvedTokenOk && tokenValue != null) {
 				state.set(tokenValue as GRefValue);
 			}
 			return;
@@ -193,7 +193,7 @@ export interface TTokenTextInputProps<GRefValue extends TRef<string | number> | 
 	mapToValue?: (displayValue: TUnreferenceTop<GRefValue>) => GRefValue;
 
 	tokenMap?: TState<Record<TToken['key'], TToken>, any>;
-	onLinkToken?: () => GRefValue | undefined | TPreventDefault;
+	onLinkToken?: () => GRefValue | TPreventDefault;
 	onUnlinkToken?: () => void | TPreventDefault;
 	onNavigateToToken?: () => void;
 	disabledTokenLink?: boolean;

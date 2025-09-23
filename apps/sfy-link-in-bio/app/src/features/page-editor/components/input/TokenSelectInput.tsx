@@ -69,13 +69,13 @@ export const TokenSelectInput = <GRefValue extends TRef<string> | undefined>(
 		// Unlink token
 		if (isLinked) {
 			const result = onUnlinkToken?.();
-			if (isPreventDefault(result) || state._v == null) {
+			if (isPreventDefault(result)) {
 				return;
 			}
 			const [isResolvedTokenOk, , tokenValue] = resolveTokenRef(state._v, {
 				tokenMap: tokenMap?._v
 			});
-			if (isResolvedTokenOk) {
+			if (isResolvedTokenOk && tokenValue != null) {
 				state.set(tokenValue as GRefValue);
 			}
 			return;
@@ -152,7 +152,7 @@ export interface TTokenSelectInputProps<GRefValue extends TRef<string> | undefin
 	state: TState<GRefValue, any>;
 
 	tokenMap?: TState<Record<TToken['key'], TToken>, any>;
-	onLinkToken?: () => GRefValue | undefined | TPreventDefault;
+	onLinkToken?: () => GRefValue | TPreventDefault;
 	onUnlinkToken?: () => void | TPreventDefault;
 	onNavigateToToken?: () => void;
 	disabledTokenLink?: boolean;

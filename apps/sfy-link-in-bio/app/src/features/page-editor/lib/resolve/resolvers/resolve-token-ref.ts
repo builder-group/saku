@@ -6,8 +6,16 @@ import { AppError } from '@/lib';
 // TODO: Add support for resolving nested token refs meaning if path is nested ref
 export function resolveTokenRef<GTokenValue>(
 	sourceValue: TRef<GTokenValue>,
+	options?: TResolveTokenRefOptions<GTokenValue>
+): TResult<GTokenValue, AppError>;
+export function resolveTokenRef<GTokenValue>(
+	sourceValue: TRef<GTokenValue> | undefined,
+	options?: TResolveTokenRefOptions<GTokenValue>
+): TResult<GTokenValue | undefined, AppError>;
+export function resolveTokenRef<GTokenValue>(
+	sourceValue: TRef<GTokenValue> | undefined,
 	options: TResolveTokenRefOptions<GTokenValue> = {}
-): TResult<GTokenValue, AppError> {
+): TResult<GTokenValue | undefined, AppError> {
 	if (!isTokenRef(sourceValue)) {
 		return Ok(sourceValue);
 	}

@@ -5,10 +5,9 @@ import {
 	isValidHex,
 	rgbaToHex,
 	rgbaToHsba,
-	TMixinTokenSet,
-	tokenRef,
 	TPaint,
-	TRef
+	TRef,
+	TToken
 } from '@repo/editor';
 import {
 	ColorPicker,
@@ -22,24 +21,21 @@ import {
 import { useCombinedCompute, useCompute } from 'feature-react/state';
 import { TState } from 'feature-state';
 import React from 'react';
+import { unwrapOrUndefined } from 'tuple-result';
 import { ImageUploadField, LinkIcon, LinkOffIcon, TImageUploadEvent } from '@/components';
-import { TPageEditor } from '@/features/page-editor';
+import { resolveTokenRef, TPageEditor } from '@/features/page-editor';
 import { cn } from '@/lib';
+import { isPreventDefault, TPreventDefault } from './prevent-default';
 import { TokenActionOverlay } from './TokenActionOverlay';
 
-export const TokenPaintInput = <
-	GValue extends TPaint,
-	GRefValue extends TRef<GValue> | undefined,
-	GMixinTokenSet extends TMixinTokenSet
->(
-	props: TTokenPaintInputProps<GValue, GRefValue, GMixinTokenSet>
+export const TokenPaintInput = <GRefValue extends TRef<TPaint> | undefined>(
+	props: TTokenPaintInputProps<GRefValue>
 ) => {
 	const {
 		state,
-		tokenSet,
-		tokenRefKey = 'default',
-		mapToTokenValue,
-		onLinkChange,
+		tokenMap,
+		onLinkToken,
+		onUnlinkToken,
 		onNavigateToToken,
 		disabledTokenLink = false,
 		editor,
@@ -86,13 +82,20 @@ export const TokenPaintInput = <
 	const [displayValue, setDisplayValue] = React.useState('');
 	const lastChangeFromText = React.useRef(false);
 	const resolvedValue = useCombinedCompute(
-		[state, tokenSet],
-		([stateCx, tokenSetCx]) => {
-			return isTokenRef(stateCx.value)
-				? mapToTokenValue?.(stateCx.value.key, tokenSetCx?.value)
-				: (stateCx.value as GValue);
+		[state, tokenMap],
+		([stateCx, tokenMapCx]) => {
+			if (stateCx.value == null) {
+				return undefined;
+			}
+			const [isResolvedValue, , resolvedValue] = resolveTokenRef(stateCx.value, {
+				tokenMap: tokenMapCx?.value
+			});
+			if (!isResolvedValue) {
+				return undefined;
+			}
+			return resolvedValue;
 		},
-		[mapToTokenValue]
+		[]
 	);
 	const isLinked = useCompute(state, ({ value }) => isTokenRef(value));
 	const isError = React.useMemo(() => {
@@ -226,22 +229,30 @@ export const TokenPaintInput = <
 	);
 
 	const handleToggleTokenLink = React.useCallback(() => {
-		const { preventDefault } = onLinkChange?.(isLinked) ?? {};
-		if (preventDefault) {
+		// Unlink token
+		if (isLinked) {
+			const result = onUnlinkToken?.();
+			if (isPreventDefault(result)) {
+				return;
+			}
+			const [isResolvedTokenOk, , tokenValue] = resolveTokenRef(state._v, {
+				tokenMap: tokenMap?._v
+			});
+			if (isResolvedTokenOk && tokenValue != null) {
+				state.set(tokenValue as GRefValue);
+			}
 			return;
 		}
 
-		if (isLinked) {
-			const tokenValue = isTokenRef(state._v)
-				? mapToTokenValue?.(state._v.key, tokenSet?._v)
-				: undefined;
-			if (tokenValue != null) {
-				state.set(tokenValue as GRefValue);
-			}
-		} else {
-			state.set(tokenRef('mixin', tokenRefKey) as GRefValue);
+		// Link token
+		const result = onLinkToken?.();
+		if (isPreventDefault(result)) {
+			return;
 		}
-	}, [onLinkChange, isLinked, state, mapToTokenValue, tokenSet, tokenRefKey]);
+		if (isTokenRef(result)) {
+			state.set(result as GRefValue);
+		}
+	}, [onLinkToken, onUnlinkToken, isLinked, state, tokenMap]);
 
 	const togglePopoverActive = React.useCallback(() => {
 		if (!isLinked) {
@@ -281,7 +292,11 @@ export const TokenPaintInput = <
 			setSelectedTabIndex(newSelectedTabIndex);
 
 			// Apply cached value if available, otherwise use token value or default
-			const tokenValue = mapToTokenValue?.('default', tokenSet?._v);
+			const tokenValue = unwrapOrUndefined(
+				resolveTokenRef(state._v, {
+					tokenMap: tokenMap?._v
+				})
+			);
 			switch (tabs[newSelectedTabIndex]?.id) {
 				case 'solid':
 					handleValueChange(
@@ -307,7 +322,7 @@ export const TokenPaintInput = <
 				// do nothing
 			}
 		},
-		[handleValueChange, mapToTokenValue, resolvedValue, selectedTabIndex, tabs, tokenSet]
+		[handleValueChange, resolvedValue, selectedTabIndex, state, tabs, tokenMap]
 	);
 
 	// =========================================================================
@@ -450,20 +465,16 @@ export const TokenPaintInput = <
 	);
 };
 
-export interface TTokenPaintInputProps<
-	GValue extends TPaint,
-	GRefValue extends TRef<GValue> | undefined,
-	GMixinTokenSet extends TMixinTokenSet
-> extends Omit<
+export interface TTokenPaintInputProps<GRefValue extends TRef<TPaint> | undefined>
+	extends Omit<
 		TextFieldProps,
 		'label' | 'labelHidden' | 'value' | 'onChange' | 'onFocus' | 'prefix' | 'autoComplete' | 'error'
 	> {
 	state: TState<GRefValue, any>;
 
-	tokenSet?: TState<GMixinTokenSet, any>;
-	tokenRefKey?: string;
-	mapToTokenValue?: (key: string, tokenSet?: GMixinTokenSet) => GValue | undefined;
-	onLinkChange?: (isLinked: boolean) => { preventDefault: boolean } | void;
+	tokenMap?: TState<Record<TToken['key'], TToken>, any>;
+	onLinkToken?: () => GRefValue | TPreventDefault;
+	onUnlinkToken?: () => void | TPreventDefault;
 	onNavigateToToken?: () => void;
 	disabledTokenLink?: boolean;
 
