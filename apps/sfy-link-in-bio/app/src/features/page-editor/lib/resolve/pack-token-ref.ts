@@ -15,14 +15,23 @@ export function packTokenRef<
 	value: TUnreferenceTop<TRef<GTokenValue, GToken>>,
 	properties: readonly GPath[]
 ): TRef<GTokenValue, GToken> {
-	// Find the first token reference to use as the base
 	let baseTokenRef: TTokenRef | null = null;
 
 	for (const key of properties) {
 		const propValue = value?.[key];
 		if (isTokenRef(propValue)) {
+			// Use the first token reference to use as the base
 			if (baseTokenRef == null) {
-				baseTokenRef = propValue;
+				// Remove specific property key to get parent token path: "appearance.opacity" -> "appearance", "opacity" -> undefined
+				const pathParts = propValue.path?.split('.') ?? [];
+				const keyIndex = pathParts.lastIndexOf(propValue.key);
+				const newPath = keyIndex > 0 ? pathParts.slice(0, keyIndex).join('.') : undefined;
+				baseTokenRef = {
+					type: 'token',
+					key: propValue.key,
+					tokenType: propValue.tokenType,
+					path: newPath as GPath
+				};
 			}
 			// Different token type found, can't pack
 			else if (propValue.tokenType !== baseTokenRef.tokenType) {
