@@ -286,7 +286,11 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 			value: {
 				visible: true,
 				opacity: 1,
-				borderRadius: radius.box
+				borderRadius: {
+					type: 'token',
+					key: 'radius.box',
+					tokenType: 'number'
+				}
 			}
 		},
 		{
