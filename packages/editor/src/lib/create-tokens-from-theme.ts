@@ -721,48 +721,9 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 					shadow: null
 				},
 				buttonPrimary: {
-					appearance: {
-						visible: true,
-						opacity: 1,
-						borderRadius: radius.field
-					},
-					fill: {
-						paint: {
-							type: 'solid',
-							color: rgbaColors.primary
-						},
-						opacity: 1
-					},
-					stroke: null,
-					shadow: null,
-					text: {
-						appearance: {
-							visible: true,
-							opacity: 1,
-							borderRadius: null
-						},
-						typography: {
-							font: {
-								family: typography.text.fontFamily,
-								weight: typography.text.fontWeight,
-								style: 'normal'
-							},
-							fontSize: textSizes.md,
-							textAlignHorizontal: 'center',
-							textAlignVertical: 'center',
-							lineHeight: { type: 'auto' },
-							letterSpacing: { type: 'auto' }
-						},
-						fill: {
-							paint: {
-								type: 'solid',
-								color: rgbaColors.primaryContent
-							},
-							opacity: 1
-						},
-						stroke: null,
-						shadow: null
-					}
+					type: 'token',
+					key: 'button.primary',
+					tokenType: 'button'
 				},
 				image: {
 					appearance: {

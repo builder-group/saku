@@ -3,7 +3,6 @@ import { Err, Ok, TResult } from 'tuple-result';
 import { safeParse, type BaseIssue, type BaseSchema } from 'valibot';
 import { AppError } from '@/lib';
 
-// TODO: Add support for resolving nested token refs meaning if path is nested ref
 export function resolveTokenRef<GTokenValue>(
 	sourceValue: TRef<GTokenValue>,
 	options?: TResolveTokenRefOptions<GTokenValue>
@@ -34,18 +33,18 @@ export function resolveTokenRef<GTokenValue>(
 		);
 	}
 
-	// Handle path-based token reference
+	// Handle path-based token reference or direct value
 	let resolvedValue: unknown;
 	if (sourceValue.path != null) {
-		const pathValue = getNestedProperty(token.value, sourceValue.path);
-		if (pathValue === undefined) {
+		const pathResult = getNestedProperty(token.value, sourceValue.path, tokenMap);
+		if (pathResult.isErr()) {
 			return Err(
 				new AppError('#ERR_PATH_NOT_FOUND', {
 					detail: `Path '${sourceValue.path}' not found in token: ${sourceValue.key}`
 				})
 			);
 		}
-		resolvedValue = pathValue;
+		resolvedValue = pathResult.value;
 	} else {
 		resolvedValue = token.value;
 	}
@@ -72,11 +71,39 @@ export interface TResolveTokenRefOptions<GTokenValue> {
 	schema?: BaseSchema<GTokenValue, unknown, BaseIssue<unknown>>;
 }
 
-function getNestedProperty(obj: unknown, path: string): unknown {
-	return path.split('.').reduce((current: unknown, key: string) => {
-		if (current != null && typeof current === 'object' && key in current) {
-			return (current as Record<string, unknown>)[key];
+function getNestedProperty(
+	obj: unknown,
+	path: string,
+	tokenMap?: Record<TToken['key'], TToken>
+): TResult<unknown, AppError> {
+	const pathParts = path.split('.');
+	let current: unknown = obj;
+
+	for (const key of pathParts) {
+		// Check if current value is a token reference and resolve it
+		if (isTokenRef(current)) {
+			const [isResolvedOk, resolvedErr, resolved] = resolveTokenRef(current, { tokenMap });
+			if (!isResolvedOk) {
+				return Err(
+					resolvedErr.wrapWith('#ERR_PATH_NOT_FOUND', {
+						detail: `Path '${path}' not found - failed at key: ${key}`
+					})
+				);
+			}
+			current = resolved;
 		}
-		return undefined;
-	}, obj);
+
+		// Navigate to the next property
+		if (current != null && typeof current === 'object' && key in current) {
+			current = (current as Record<string, unknown>)[key];
+		} else {
+			return Err(
+				new AppError('#ERR_PATH_NOT_FOUND', {
+					detail: `Path '${path}' not found - failed at key: ${key}`
+				})
+			);
+		}
+	}
+
+	return Ok(current);
 }

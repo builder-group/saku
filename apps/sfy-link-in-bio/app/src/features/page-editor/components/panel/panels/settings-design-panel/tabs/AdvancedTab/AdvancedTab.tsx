@@ -285,7 +285,6 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 						>
 							<ProductDetailsStyleMixinEditor
 								state={state as TState<TProductDetailsStyleMixin['value'], []>}
-								disabledTokenLink
 								editor={editor}
 							/>
 						</AccordionSection>
