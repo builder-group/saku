@@ -122,7 +122,7 @@ export const TokenSelectInput = <GRefValue extends TRef<string> | undefined>(
 				<Text as="span" variant="bodySm" tone="subdued">
 					{label}
 				</Text>
-				{!disabledTokenLink && (
+				{!disabledTokenLink && (onLinkToken != null || isLinked) && (
 					<button
 						type="button"
 						onClick={handleToggleTokenLink}

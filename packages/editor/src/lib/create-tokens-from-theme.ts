@@ -298,9 +298,9 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 			key: 'typography.default',
 			value: {
 				font: {
-					family: typography.text.fontFamily,
-					weight: typography.text.fontWeight,
-					style: 'normal'
+					type: 'token',
+					key: 'font.text',
+					tokenType: 'font'
 				},
 				fontSize: textSizes.md,
 				textAlignHorizontal: 'center',
@@ -356,9 +356,9 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 				},
 				typography: {
 					font: {
-						family: typography.text.fontFamily,
-						weight: typography.text.fontWeight,
-						style: 'normal'
+						type: 'token',
+						key: 'font.text',
+						tokenType: 'font'
 					},
 					fontSize: textSizes.md,
 					textAlignHorizontal: 'center',
@@ -388,9 +388,9 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 				},
 				typography: {
 					font: {
-						family: typography.heading.fontFamily,
-						weight: typography.heading.fontWeight,
-						style: 'normal'
+						type: 'token',
+						key: 'font.heading',
+						tokenType: 'font'
 					},
 					fontSize: textSizes.lg,
 					textAlignHorizontal: 'center',
@@ -420,9 +420,9 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 				},
 				typography: {
 					font: {
-						family: typography.text.fontFamily,
-						weight: typography.text.fontWeight,
-						style: 'normal'
+						type: 'token',
+						key: 'font.text',
+						tokenType: 'font'
 					},
 					fontSize: textSizes.sm,
 					textAlignHorizontal: 'center',
@@ -467,9 +467,9 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 					},
 					typography: {
 						font: {
-							family: typography.text.fontFamily,
-							weight: typography.text.fontWeight,
-							style: 'normal'
+							type: 'token',
+							key: 'font.text',
+							tokenType: 'font'
 						},
 						fontSize: textSizes.md,
 						textAlignHorizontal: 'center',
@@ -515,9 +515,9 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 					},
 					typography: {
 						font: {
-							family: typography.text.fontFamily,
-							weight: typography.text.fontWeight,
-							style: 'normal'
+							type: 'token',
+							key: 'font.text',
+							tokenType: 'font'
 						},
 						fontSize: textSizes.md,
 						textAlignHorizontal: 'center',
@@ -563,9 +563,9 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 					},
 					typography: {
 						font: {
-							family: typography.text.fontFamily,
-							weight: typography.text.fontWeight,
-							style: 'normal'
+							type: 'token',
+							key: 'font.text',
+							tokenType: 'font'
 						},
 						fontSize: textSizes.sm,
 						textAlignHorizontal: 'center',
@@ -611,9 +611,9 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 					},
 					typography: {
 						font: {
-							family: typography.text.fontFamily,
-							weight: typography.text.fontWeight,
-							style: 'normal'
+							type: 'token',
+							key: 'font.text',
+							tokenType: 'font'
 						},
 						fontSize: textSizes.sm,
 						textAlignHorizontal: 'center',
@@ -672,9 +672,9 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 					},
 					typography: {
 						font: {
-							family: typography.heading.fontFamily,
-							weight: typography.heading.fontWeight,
-							style: 'normal'
+							type: 'token',
+							key: 'font.heading',
+							tokenType: 'font'
 						},
 						fontSize: textSizes.xl,
 						textAlignHorizontal: 'start',
@@ -700,9 +700,9 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 					},
 					typography: {
 						font: {
-							family: typography.text.fontFamily,
-							weight: typography.text.fontWeight,
-							style: 'normal'
+							type: 'token',
+							key: 'font.text',
+							tokenType: 'font'
 						},
 						fontSize: textSizes.md,
 						textAlignHorizontal: 'start',

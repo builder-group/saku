@@ -25,7 +25,7 @@ export function resolveTokenRef<GTokenValue>(
 	}
 
 	const token = tokenMap[sourceValue.key];
-	if (token == null) {
+	if (token === undefined) {
 		return Err(
 			new AppError('#ERR_TOKEN_NOT_FOUND', {
 				detail: `Token not found: ${sourceValue.key}`
@@ -33,8 +33,9 @@ export function resolveTokenRef<GTokenValue>(
 		);
 	}
 
-	// Handle path-based token reference or direct value
 	let resolvedValue: unknown;
+
+	// Handle path-based token reference or direct value
 	if (sourceValue.path != null) {
 		const pathResult = getNestedProperty(token.value, sourceValue.path, tokenMap);
 		if (pathResult.isErr()) {
@@ -47,6 +48,20 @@ export function resolveTokenRef<GTokenValue>(
 		resolvedValue = pathResult.value;
 	} else {
 		resolvedValue = token.value;
+	}
+
+	// If the resolved value is still a token reference, resolve it
+	if (isTokenRef(resolvedValue)) {
+		const [isNestedResolvedValueOk, nestedResolvedValueErr, nestedResolvedValue] = resolveTokenRef(
+			resolvedValue,
+			{
+				tokenMap
+			}
+		);
+		if (!isNestedResolvedValueOk) {
+			return Err(nestedResolvedValueErr.wrapWith('#ERR_RESOLVE_NESTED_TOKEN_REF'));
+		}
+		resolvedValue = nestedResolvedValue;
 	}
 
 	// Validate the resolved value if schema is provided

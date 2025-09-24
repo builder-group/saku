@@ -223,7 +223,7 @@ export const TokenColorInput = <GRefValue extends TRef<TRgba> | undefined>(
 				<Text as="span" variant="bodySm" tone="subdued">
 					{label}
 				</Text>
-				{!disabledTokenLink && (
+				{!disabledTokenLink && (onLinkToken != null || isLinked) && (
 					<button
 						type="button"
 						onClick={handleToggleTokenLink}
