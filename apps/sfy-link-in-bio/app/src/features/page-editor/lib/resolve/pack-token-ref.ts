@@ -20,21 +20,24 @@ export function packTokenRef<
 	for (const key of properties) {
 		const propValue = value?.[key];
 		if (isTokenRef(propValue)) {
+			const basePathStr = propValue.path?.split('.').slice(0, -1).join('.');
+			const basePath = !basePathStr ? undefined : basePathStr;
+
 			// Use the first token reference to use as the base
 			if (baseTokenRef == null) {
-				// Remove specific property key to get parent token path: "appearance.opacity" -> "appearance", "opacity" -> undefined
-				const pathParts = propValue.path?.split('.') ?? [];
-				const keyIndex = pathParts.lastIndexOf(propValue.key);
-				const newPath = keyIndex > 0 ? pathParts.slice(0, keyIndex).join('.') : undefined;
 				baseTokenRef = {
 					type: 'token',
 					key: propValue.key,
 					tokenType: propValue.tokenType,
-					path: newPath as GPath
+					path: basePath as GPath
 				};
 			}
 			// Different token type found, can't pack
 			else if (propValue.tokenType !== baseTokenRef.tokenType) {
+				return value;
+			}
+			// Different base path found, can't pack
+			else if (basePath !== baseTokenRef.path) {
 				return value;
 			}
 		}

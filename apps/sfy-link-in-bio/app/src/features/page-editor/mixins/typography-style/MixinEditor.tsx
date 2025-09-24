@@ -1,9 +1,10 @@
 import {
-	tokenRef as createTokenRef,
 	fontMetadata,
 	isTokenRef,
 	mapTokenRef,
+	TFontToken,
 	TRef,
+	TTokenPaths,
 	TTokenRef,
 	TTypographyStyleMixin,
 	TUnreferenceTop
@@ -47,7 +48,12 @@ export const TypographyStyleMixinEditor = (props: TTypographyStyleMixinEditorPro
 			const unpackedBaseValue = unpackTypographyTokenRef(baseState._v);
 
 			if (isTokenRef(mappedValue)) {
-				unpackedBaseValue.font = createTokenRef(mappedValue.key, mappedValue.tokenType, 'font');
+				unpackedBaseValue.font = {
+					type: 'token',
+					key: mappedValue.key,
+					tokenType: mappedValue.tokenType,
+					path: mappedValue?.path?.replace('.family', '') as TTokenPaths<TFontToken>
+				};
 			} else {
 				const font = editor.registerFontFamily(mappedValue as string);
 				if (font != null) {
