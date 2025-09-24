@@ -11,7 +11,7 @@ import { TokenActionOverlay, TokenPaintInput, TTokenPaintInputPaintType } from '
 import { resolveTokenRef, TPageEditor } from '../../lib';
 
 export const FillStyleMixinEditor = (props: TFillStyleMixinEditorProps) => {
-	const { state, ref, disabledTokenLink = false, editor, allowedPaintTypes } = props;
+	const { state, tokenRef, disabledTokenLink = false, editor, allowedPaintTypes } = props;
 
 	const isLinked = useCompute(state, ({ value }) => isTokenRef(value), []);
 	const isSet = useCompute(
@@ -79,10 +79,10 @@ export const FillStyleMixinEditor = (props: TFillStyleMixinEditorProps) => {
 				state._notify();
 			}
 		} else {
-			state._v = ref;
+			state._v = tokenRef;
 			state._notify();
 		}
-	}, [isLinked, state, editor, ref]);
+	}, [isLinked, state, editor, tokenRef]);
 
 	const handleNavigateToToken = React.useCallback(() => {
 		editor.switchView('settings');
@@ -162,7 +162,7 @@ export const FillStyleMixinEditor = (props: TFillStyleMixinEditorProps) => {
 
 interface TFillStyleMixinEditorProps {
 	state: TState<TFillStyleMixin['value'], any>;
-	ref: TTokenRef<TUnreferenceTop<TFillStyleMixin['value']>>;
+	tokenRef: TTokenRef<TUnreferenceTop<TFillStyleMixin['value']>>;
 	disabledTokenLink?: boolean;
 	editor: TPageEditor;
 	allowedPaintTypes?: TTokenPaintInputPaintType[];

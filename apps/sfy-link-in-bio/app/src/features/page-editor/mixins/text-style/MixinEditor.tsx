@@ -17,7 +17,7 @@ import { TypographyStyleMixinEditor } from '../typography-style';
 import { packTextTokenRef, unpackTextTokenRef } from './pack-mixin';
 
 export const TextStyleMixinEditor = (props: TTextStyleMixinEditorProps) => {
-	const { state, ref, disabledTokenLink = false, editor } = props;
+	const { state, tokenRef, disabledTokenLink = false, editor } = props;
 
 	const appearanceState = useMapState(state, {
 		map(baseValue) {
@@ -104,21 +104,21 @@ export const TextStyleMixinEditor = (props: TTextStyleMixinEditorProps) => {
 		<>
 			<AppearanceStyleMixinEditor
 				state={appearanceState}
-				ref={mapTokenRef(ref, 'appearance')}
+				tokenRef={mapTokenRef(tokenRef, 'appearance')}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 			/>
 			<div className="h-px bg-neutral-200" />
 			<TypographyStyleMixinEditor
 				state={typographyState}
-				ref={mapTokenRef(ref, 'typography')}
+				tokenRef={mapTokenRef(tokenRef, 'typography')}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 			/>
 			<div className="h-px bg-neutral-200" />
 			<FillStyleMixinEditor
 				state={fillState}
-				ref={mapTokenRef(ref, 'fill')}
+				tokenRef={mapTokenRef(tokenRef, 'fill')}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 				allowedPaintTypes={['solid']}
@@ -126,14 +126,14 @@ export const TextStyleMixinEditor = (props: TTextStyleMixinEditorProps) => {
 			<div className="h-px bg-neutral-200" />
 			<StrokeStyleMixinEditor
 				state={strokeState}
-				ref={mapTokenRef(ref, 'stroke')}
+				tokenRef={mapTokenRef(tokenRef, 'stroke')}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 			/>
 			<div className="h-px bg-neutral-200" />
 			<ShadowStyleMixinEditor
 				state={shadowState}
-				ref={mapTokenRef(ref, 'shadow')}
+				tokenRef={mapTokenRef(tokenRef, 'shadow')}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 				disabledSpread // HTML text doesn't support shadow spread
@@ -144,7 +144,7 @@ export const TextStyleMixinEditor = (props: TTextStyleMixinEditorProps) => {
 
 interface TTextStyleMixinEditorProps {
 	state: TState<TTextStyleMixin['value'], any>;
-	ref: TTokenRef<TUnreferenceTop<TTextStyleToken['value']>>;
+	tokenRef: TTokenRef<TUnreferenceTop<TTextStyleToken['value']>>;
 	disabledTokenLink?: boolean;
 	editor: TPageEditor;
 }

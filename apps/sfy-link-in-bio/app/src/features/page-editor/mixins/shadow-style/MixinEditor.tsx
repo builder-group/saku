@@ -17,7 +17,7 @@ import { TokenActionOverlay, TokenColorInput, TokenTextInput } from '../../compo
 import { resolveTokenRef, TPageEditor } from '../../lib';
 
 export const ShadowStyleMixinEditor = (props: TShadowStyleMixinEditorProps) => {
-	const { state, ref, disabledTokenLink = false, editor, disabledSpread = false } = props;
+	const { state, tokenRef, disabledTokenLink = false, editor, disabledSpread = false } = props;
 
 	const isLinked = useCompute(state, ({ value }) => isTokenRef(value), []);
 	const isSet = useCompute(
@@ -161,10 +161,10 @@ export const ShadowStyleMixinEditor = (props: TShadowStyleMixinEditorProps) => {
 				state._notify();
 			}
 		} else {
-			state._v = ref;
+			state._v = tokenRef;
 			state._notify();
 		}
-	}, [isLinked, state, editor, ref]);
+	}, [isLinked, state, editor, tokenRef]);
 
 	const handleNavigateToToken = React.useCallback(() => {
 		editor.switchView('settings');
@@ -334,7 +334,7 @@ export const ShadowStyleMixinEditor = (props: TShadowStyleMixinEditorProps) => {
 
 interface TShadowStyleMixinEditorProps {
 	state: TState<TShadowStyleMixin['value'], any>;
-	ref: TTokenRef<TUnreferenceTop<TShadowStyleMixin['value']>>;
+	tokenRef: TTokenRef<TUnreferenceTop<TShadowStyleMixin['value']>>;
 	disabledTokenLink?: boolean;
 	editor: TPageEditor;
 	disabledSpread?: boolean;

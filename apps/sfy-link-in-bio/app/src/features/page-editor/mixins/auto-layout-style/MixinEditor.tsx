@@ -16,7 +16,7 @@ import { TPageEditor } from '../../lib';
 import { packAutoLayoutTokenRef, unpackAutoLayoutTokenRef } from './pack-mixin';
 
 export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorProps) => {
-	const { state, ref, disabledTokenLink = false, editor } = props;
+	const { state, tokenRef, disabledTokenLink = false, editor } = props;
 
 	const horizontalPaddingState = useMapState(state, {
 		map(baseValue) {
@@ -113,7 +113,7 @@ export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorPro
 					step={4}
 					state={horizontalPaddingState}
 					tokenMap={editor.tokenMap}
-					onLinkToken={() => mapTokenRef(ref, 'horizontalPadding')}
+					onLinkToken={() => mapTokenRef(tokenRef, 'horizontalPadding')}
 					onNavigateToToken={handleNavigateToToken}
 					disabledTokenLink={disabledTokenLink}
 				/>
@@ -126,7 +126,7 @@ export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorPro
 					step={4}
 					state={verticalPaddingState}
 					tokenMap={editor.tokenMap}
-					onLinkToken={() => mapTokenRef(ref, 'verticalPadding')}
+					onLinkToken={() => mapTokenRef(tokenRef, 'verticalPadding')}
 					onNavigateToToken={handleNavigateToToken}
 					disabledTokenLink={disabledTokenLink}
 				/>
@@ -143,7 +143,7 @@ export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorPro
 							step={4}
 							state={horizontalGapState as TState<TRef<number>, any>}
 							tokenMap={editor.tokenMap}
-							onLinkToken={() => mapTokenRef(ref, 'horizontalGap') as TRef<number>}
+							onLinkToken={() => mapTokenRef(tokenRef, 'horizontalGap') as TRef<number>}
 							onNavigateToToken={handleNavigateToToken}
 							disabledTokenLink={disabledTokenLink}
 						/>
@@ -158,7 +158,7 @@ export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorPro
 							step={4}
 							state={verticalGapState as TState<TRef<number>, any>}
 							tokenMap={editor.tokenMap}
-							onLinkToken={() => mapTokenRef(ref, 'verticalGap') as TRef<number>}
+							onLinkToken={() => mapTokenRef(tokenRef, 'verticalGap') as TRef<number>}
 							onNavigateToToken={handleNavigateToToken}
 							disabledTokenLink={disabledTokenLink}
 						/>
@@ -171,7 +171,7 @@ export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorPro
 
 interface TAutoLayoutStyleMixinEditorProps {
 	state: TState<TAutoLayoutStyleMixin['value'], any>;
-	ref: TTokenRef<TUnreferenceTop<TAutoLayoutStyleMixin['value']>>;
+	tokenRef: TTokenRef<TUnreferenceTop<TAutoLayoutStyleMixin['value']>>;
 	disabledTokenLink?: boolean;
 	editor: TPageEditor;
 }

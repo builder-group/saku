@@ -19,7 +19,7 @@ import { TextStyleMixinEditor } from '../text-style';
 import { packProductDetailsTokenRef, unpackProductDetailsTokenRef } from './pack-mixin';
 
 export const ProductDetailsStyleMixinEditor = (props: TProductDetailsStyleMixinEditorProps) => {
-	const { state, ref, disabledTokenLink = false, editor } = props;
+	const { state, tokenRef, disabledTokenLink = false, editor } = props;
 
 	const appearanceState = useMapState(state, {
 		map(baseValue) {
@@ -138,28 +138,28 @@ export const ProductDetailsStyleMixinEditor = (props: TProductDetailsStyleMixinE
 		<>
 			<AppearanceStyleMixinEditor
 				state={appearanceState}
-				ref={mapTokenRef(ref, 'appearance')}
+				tokenRef={mapTokenRef(tokenRef, 'appearance')}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 			/>
 			<div className="h-px bg-neutral-200" />
 			<FillStyleMixinEditor
 				state={fillState}
-				ref={mapTokenRef(ref, 'fill')}
+				tokenRef={mapTokenRef(tokenRef, 'fill')}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 			/>
 			<div className="h-px bg-neutral-200" />
 			<StrokeStyleMixinEditor
 				state={strokeState}
-				ref={mapTokenRef(ref, 'stroke')}
+				tokenRef={mapTokenRef(tokenRef, 'stroke')}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 			/>
 			<div className="h-px bg-neutral-200" />
 			<ShadowStyleMixinEditor
 				state={shadowState}
-				ref={mapTokenRef(ref, 'shadow')}
+				tokenRef={mapTokenRef(tokenRef, 'shadow')}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 				disabledSpread
@@ -171,7 +171,7 @@ export const ProductDetailsStyleMixinEditor = (props: TProductDetailsStyleMixinE
 			</div>
 			<TextStyleMixinEditor
 				state={textXlState}
-				ref={mapTokenRef(ref, 'textXl')}
+				tokenRef={mapTokenRef(tokenRef, 'textXl')}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 			/>
@@ -182,7 +182,7 @@ export const ProductDetailsStyleMixinEditor = (props: TProductDetailsStyleMixinE
 			</div>
 			<TextStyleMixinEditor
 				state={textState}
-				ref={mapTokenRef(ref, 'text')}
+				tokenRef={mapTokenRef(tokenRef, 'text')}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 			/>
@@ -193,7 +193,7 @@ export const ProductDetailsStyleMixinEditor = (props: TProductDetailsStyleMixinE
 			</div>
 			<ButtonStyleMixinEditor
 				state={buttonPrimaryState}
-				ref={mapTokenRef(ref, 'buttonPrimary')}
+				tokenRef={mapTokenRef(tokenRef, 'buttonPrimary')}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 			/>
@@ -204,7 +204,7 @@ export const ProductDetailsStyleMixinEditor = (props: TProductDetailsStyleMixinE
 			</div>
 			<ImageStyleMixinEditor
 				state={imageState}
-				ref={mapTokenRef(ref, 'image')}
+				tokenRef={mapTokenRef(tokenRef, 'image')}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 			/>
@@ -214,7 +214,7 @@ export const ProductDetailsStyleMixinEditor = (props: TProductDetailsStyleMixinE
 
 interface TProductDetailsStyleMixinEditorProps {
 	state: TState<TProductDetailsStyleMixin['value'], any>;
-	ref: TTokenRef<TUnreferenceTop<TProductDetailsStyleMixin['value']>>;
+	tokenRef: TTokenRef<TUnreferenceTop<TProductDetailsStyleMixin['value']>>;
 	disabledTokenLink?: boolean;
 	editor: TPageEditor;
 }

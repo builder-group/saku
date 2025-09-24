@@ -17,7 +17,7 @@ import { TextStyleMixinEditor } from '../text-style';
 import { packBadgeTokenRef, unpackBadgeTokenRef } from './pack-mixin';
 
 export const BadgeStyleMixinEditor = (props: TBadgeStyleMixinEditorProps) => {
-	const { state, ref, disabledTokenLink = false, editor } = props;
+	const { state, tokenRef, disabledTokenLink = false, editor } = props;
 
 	const appearanceState = useMapState(state, {
 		map(baseValue) {
@@ -94,28 +94,28 @@ export const BadgeStyleMixinEditor = (props: TBadgeStyleMixinEditorProps) => {
 		<>
 			<AppearanceStyleMixinEditor
 				state={appearanceState}
-				ref={mapTokenRef(ref, 'appearance')}
+				tokenRef={mapTokenRef(tokenRef, 'appearance')}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 			/>
 			<div className="h-px bg-neutral-200" />
 			<FillStyleMixinEditor
 				state={fillState}
-				ref={mapTokenRef(ref, 'fill')}
+				tokenRef={mapTokenRef(tokenRef, 'fill')}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 			/>
 			<div className="h-px bg-neutral-200" />
 			<StrokeStyleMixinEditor
 				state={strokeState}
-				ref={mapTokenRef(ref, 'stroke')}
+				tokenRef={mapTokenRef(tokenRef, 'stroke')}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 			/>
 			<div className="h-px bg-neutral-200" />
 			<ShadowStyleMixinEditor
 				state={shadowState}
-				ref={mapTokenRef(ref, 'shadow')}
+				tokenRef={mapTokenRef(tokenRef, 'shadow')}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 			/>
@@ -126,7 +126,7 @@ export const BadgeStyleMixinEditor = (props: TBadgeStyleMixinEditorProps) => {
 			</div>
 			<TextStyleMixinEditor
 				state={textState}
-				ref={mapTokenRef(ref, 'text')}
+				tokenRef={mapTokenRef(tokenRef, 'text')}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 			/>
@@ -136,7 +136,7 @@ export const BadgeStyleMixinEditor = (props: TBadgeStyleMixinEditorProps) => {
 
 interface TBadgeStyleMixinEditorProps {
 	state: TState<TBadgeStyleMixin['value'], any>;
-	ref: TTokenRef<TUnreferenceTop<TBadgeStyleMixin['value']>>;
+	tokenRef: TTokenRef<TUnreferenceTop<TBadgeStyleMixin['value']>>;
 	disabledTokenLink?: boolean;
 	editor: TPageEditor;
 }

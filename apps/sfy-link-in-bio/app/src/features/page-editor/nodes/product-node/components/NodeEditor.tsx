@@ -387,31 +387,31 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 				>
 					<AutoLayoutStyleMixinEditor
 						state={autoLayoutState}
-						ref={tokenRef('default', 'auto-layout')}
+						tokenRef={tokenRef('default', 'auto-layout')}
 						editor={editor}
 					/>
 					<div className="h-px bg-neutral-200" />
 					<AppearanceStyleMixinEditor
 						state={appearanceState}
-						ref={tokenRef('default', 'appearance')}
+						tokenRef={tokenRef('default', 'appearance')}
 						editor={editor}
 					/>
 					<div className="h-px bg-neutral-200" />
 					<FillStyleMixinEditor
 						state={fillState}
-						ref={tokenRef('default', 'fill')}
+						tokenRef={tokenRef('default', 'fill')}
 						editor={editor}
 					/>
 					<div className="h-px bg-neutral-200" />
 					<StrokeStyleMixinEditor
 						state={strokeState}
-						ref={tokenRef('default', 'stroke')}
+						tokenRef={tokenRef('default', 'stroke')}
 						editor={editor}
 					/>
 					<div className="h-px bg-neutral-200" />
 					<ShadowStyleMixinEditor
 						state={shadowState}
-						ref={tokenRef('default', 'shadow')}
+						tokenRef={tokenRef('default', 'shadow')}
 						editor={editor}
 					/>
 				</AccordionSection>
@@ -424,7 +424,7 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 				>
 					<TextStyleMixinEditor
 						state={textState}
-						ref={tokenRef('default', 'text')}
+						tokenRef={tokenRef('default', 'text')}
 						editor={editor}
 					/>
 				</AccordionSection>
@@ -436,7 +436,7 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 				>
 					<ButtonStyleMixinEditor
 						state={buttonPrimaryState}
-						ref={tokenRef('primary', 'button')}
+						tokenRef={tokenRef('primary', 'button')}
 						editor={editor}
 					/>
 				</AccordionSection>
@@ -448,7 +448,7 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 				>
 					<BadgeStyleMixinEditor
 						state={badgePrimaryState}
-						ref={tokenRef('primary', 'badge')}
+						tokenRef={tokenRef('primary', 'badge')}
 						editor={editor}
 					/>
 				</AccordionSection>
@@ -460,7 +460,7 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 				>
 					<BadgeStyleMixinEditor
 						state={badgeNeutralState}
-						ref={tokenRef('neutral', 'badge')}
+						tokenRef={tokenRef('neutral', 'badge')}
 						editor={editor}
 					/>
 				</AccordionSection>
@@ -472,7 +472,7 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 				>
 					<ImageStyleMixinEditor
 						state={imageState}
-						ref={tokenRef('default', 'image')}
+						tokenRef={tokenRef('default', 'image')}
 						editor={editor}
 					/>
 				</AccordionSection>
@@ -484,7 +484,7 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 				>
 					<ProductDetailsStyleMixinEditor
 						state={productDetailsState}
-						ref={tokenRef('default', 'product-details')}
+						tokenRef={tokenRef('default', 'product-details')}
 						editor={editor}
 					/>
 				</AccordionSection>

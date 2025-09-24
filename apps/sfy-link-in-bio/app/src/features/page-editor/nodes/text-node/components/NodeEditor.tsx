@@ -76,31 +76,31 @@ export const TextNodeEditor: React.FC<TNodeEditorComponentProps<TTextNode>> = (p
 				>
 					<AutoLayoutStyleMixinEditor
 						state={autoLayoutState}
-						ref={tokenRef('default', 'auto-layout')}
+						tokenRef={tokenRef('default', 'auto-layout')}
 						editor={editor}
 					/>
 					<div className="h-px bg-neutral-200" />
 					<AppearanceStyleMixinEditor
 						state={appearanceState}
-						ref={tokenRef('default', 'appearance')}
+						tokenRef={tokenRef('default', 'appearance')}
 						editor={editor}
 					/>
 					<div className="h-px bg-neutral-200" />
 					<FillStyleMixinEditor
 						state={fillState}
-						ref={tokenRef('default', 'fill')}
+						tokenRef={tokenRef('default', 'fill')}
 						editor={editor}
 					/>
 					<div className="h-px bg-neutral-200" />
 					<StrokeStyleMixinEditor
 						state={strokeState}
-						ref={tokenRef('default', 'stroke')}
+						tokenRef={tokenRef('default', 'stroke')}
 						editor={editor}
 					/>
 					<div className="h-px bg-neutral-200" />
 					<ShadowStyleMixinEditor
 						state={shadowState}
-						ref={tokenRef('default', 'shadow')}
+						tokenRef={tokenRef('default', 'shadow')}
 						editor={editor}
 					/>
 				</AccordionSection>
@@ -112,7 +112,7 @@ export const TextNodeEditor: React.FC<TNodeEditorComponentProps<TTextNode>> = (p
 				>
 					<TextStyleMixinEditor
 						state={textState}
-						ref={tokenRef('default', 'text')}
+						tokenRef={tokenRef('default', 'text')}
 						editor={editor}
 					/>
 				</AccordionSection>

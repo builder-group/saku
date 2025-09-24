@@ -23,21 +23,21 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TFlatPageNode>> 
 		<>
 			<AutoLayoutStyleMixinEditor
 				state={autoLayoutState}
-				ref={tokenRef('default', 'auto-layout')}
+				tokenRef={tokenRef('default', 'auto-layout')}
 				disabledTokenLink
 				editor={editor}
 			/>
 			<div className="h-px bg-neutral-200" />
 			<AppearanceStyleMixinEditor
 				state={appearanceState}
-				ref={tokenRef('default', 'appearance')}
+				tokenRef={tokenRef('default', 'appearance')}
 				disabledTokenLink
 				editor={editor}
 			/>
 			<div className="h-px bg-neutral-200" />
 			<FillStyleMixinEditor
 				state={fillState}
-				ref={tokenRef('default', 'fill')}
+				tokenRef={tokenRef('default', 'fill')}
 				disabledTokenLink
 				editor={editor}
 			/>
