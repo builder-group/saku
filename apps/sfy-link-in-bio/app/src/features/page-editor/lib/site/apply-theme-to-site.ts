@@ -5,6 +5,7 @@ import {
 	getFontHash,
 	getFontMetadataByFamily,
 	isTokenRef,
+	mapTokenRef,
 	TFlatSite,
 	TTheme
 } from '@repo/editor';
@@ -53,16 +54,7 @@ export function applyThemeToSite(site: TFlatSite, theme: TTheme): TFlatSite {
 	// Apply theme tokens (theme tokens take precedence)
 	const themeTokens = createTokensFromTheme(theme);
 	themeTokens.forEach((token) => {
-		switch (token.type) {
-			case 'variable': {
-				site.tokens[`variable.${token.key}`] = token;
-				break;
-			}
-			case 'mixin': {
-				site.tokens[`mixin.${token.mixinKey}.${token.key}`] = token as any;
-				break;
-			}
-		}
+		site.tokens[token.key] = token;
 	});
 
 	// Update root node with theme background and gap
@@ -74,7 +66,9 @@ export function applyThemeToSite(site: TFlatSite, theme: TTheme): TFlatSite {
 				...rootNode.autoLayout,
 				verticalGap:
 					theme.gap ??
-					(isTokenRef(rootNode.autoLayout) ? rootNode.autoLayout : rootNode.autoLayout.verticalGap)
+					(isTokenRef(rootNode.autoLayout)
+						? mapTokenRef(rootNode.autoLayout, 'verticalGap')
+						: rootNode.autoLayout.verticalGap)
 			},
 			fill: {
 				paint: {
