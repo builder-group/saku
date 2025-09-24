@@ -1,4 +1,4 @@
-import { TFlatPageNode, tokenRef } from '@repo/editor';
+import { TFlatPageNode } from '@repo/editor';
 import React from 'react';
 import { useNodeProperty } from '../../../hooks';
 import { TNodeEditorComponentProps } from '../../../lib';
@@ -21,26 +21,11 @@ export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TFlatPageNode>> 
 
 	return (
 		<>
-			<AutoLayoutStyleMixinEditor
-				state={autoLayoutState}
-				tokenRef={tokenRef('default', 'auto-layout')}
-				disabledTokenLink
-				editor={editor}
-			/>
+			<AutoLayoutStyleMixinEditor state={autoLayoutState} disabledTokenLink editor={editor} />
 			<div className="h-px bg-neutral-200" />
-			<AppearanceStyleMixinEditor
-				state={appearanceState}
-				tokenRef={tokenRef('default', 'appearance')}
-				disabledTokenLink
-				editor={editor}
-			/>
+			<AppearanceStyleMixinEditor state={appearanceState} disabledTokenLink editor={editor} />
 			<div className="h-px bg-neutral-200" />
-			<FillStyleMixinEditor
-				state={fillState}
-				tokenRef={tokenRef('default', 'fill')}
-				disabledTokenLink
-				editor={editor}
-			/>
+			<FillStyleMixinEditor state={fillState} disabledTokenLink editor={editor} />
 		</>
 	);
 };

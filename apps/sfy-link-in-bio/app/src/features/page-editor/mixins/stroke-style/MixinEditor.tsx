@@ -17,7 +17,7 @@ import { TokenActionOverlay, TokenColorInput, TokenTextInput } from '../../compo
 import { resolveTokenRef, TPageEditor } from '../../lib';
 
 export const StrokeStyleMixinEditor = (props: TStrokeStyleMixinEditorProps) => {
-	const { state, tokenRef, disabledTokenLink = false, editor } = props;
+	const { state, onLinkToken, disabledTokenLink = false, editor } = props;
 
 	const isLinked = useCompute(state, ({ value }) => isTokenRef(value), []);
 	const isSet = useCompute(
@@ -101,10 +101,13 @@ export const StrokeStyleMixinEditor = (props: TStrokeStyleMixinEditorProps) => {
 				state._notify();
 			}
 		} else {
-			state._v = tokenRef;
-			state._notify();
+			const tokenRef = onLinkToken?.();
+			if (tokenRef != null) {
+				state._v = tokenRef;
+				state._notify();
+			}
 		}
-	}, [isLinked, state, editor, tokenRef]);
+	}, [isLinked, state, editor, onLinkToken]);
 
 	const handleNavigateToToken = React.useCallback(() => {
 		editor.switchView('settings');
@@ -209,7 +212,7 @@ export const StrokeStyleMixinEditor = (props: TStrokeStyleMixinEditorProps) => {
 
 interface TStrokeStyleMixinEditorProps {
 	state: TState<TStrokeStyleMixin['value'], any>;
-	tokenRef: TTokenRef<TUnreferenceTop<TStrokeStyleMixin['value']>>;
+	onLinkToken?: () => TTokenRef<TUnreferenceTop<TStrokeStyleMixin['value']>>;
 	disabledTokenLink?: boolean;
 	editor: TPageEditor;
 }

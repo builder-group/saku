@@ -76,31 +76,31 @@ export const TextNodeEditor: React.FC<TNodeEditorComponentProps<TTextNode>> = (p
 				>
 					<AutoLayoutStyleMixinEditor
 						state={autoLayoutState}
-						tokenRef={tokenRef('default', 'auto-layout')}
+						onLinkToken={() => tokenRef('default', 'auto-layout')}
 						editor={editor}
 					/>
 					<div className="h-px bg-neutral-200" />
 					<AppearanceStyleMixinEditor
 						state={appearanceState}
-						tokenRef={tokenRef('default', 'appearance')}
+						onLinkToken={() => tokenRef('default', 'appearance')}
 						editor={editor}
 					/>
 					<div className="h-px bg-neutral-200" />
 					<FillStyleMixinEditor
 						state={fillState}
-						tokenRef={tokenRef('default', 'fill')}
+						onLinkToken={() => tokenRef('default', 'fill')}
 						editor={editor}
 					/>
 					<div className="h-px bg-neutral-200" />
 					<StrokeStyleMixinEditor
 						state={strokeState}
-						tokenRef={tokenRef('default', 'stroke')}
+						onLinkToken={() => tokenRef('default', 'stroke')}
 						editor={editor}
 					/>
 					<div className="h-px bg-neutral-200" />
 					<ShadowStyleMixinEditor
 						state={shadowState}
-						tokenRef={tokenRef('default', 'shadow')}
+						onLinkToken={() => tokenRef('default', 'shadow')}
 						editor={editor}
 					/>
 				</AccordionSection>
@@ -112,7 +112,7 @@ export const TextNodeEditor: React.FC<TNodeEditorComponentProps<TTextNode>> = (p
 				>
 					<TextStyleMixinEditor
 						state={textState}
-						tokenRef={tokenRef('default', 'text')}
+						onLinkToken={() => tokenRef('default', 'text')}
 						editor={editor}
 					/>
 				</AccordionSection>

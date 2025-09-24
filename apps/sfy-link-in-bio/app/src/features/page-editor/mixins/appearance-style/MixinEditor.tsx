@@ -20,7 +20,7 @@ import { packAppearanceTokenRef, unpackAppearanceTokenRef } from './pack-mixin';
 export const AppearanceStyleMixinEditor = (props: TAppearanceStyleMixinEditorProps) => {
 	const {
 		state,
-		tokenRef,
+		onLinkToken,
 		disabledTokenLink = false,
 		disabledVisibilityToggle = false,
 		editor
@@ -100,11 +100,15 @@ export const AppearanceStyleMixinEditor = (props: TAppearanceStyleMixinEditorPro
 		const nextVisible = isTokenRef(unpackedAppearance.visible)
 			? !resolvedVisible
 			: !unpackedAppearance.visible;
-		unpackedAppearance.visible =
-			nextVisible === resolvedVisible ? mapTokenRef(tokenRef, 'visible') : nextVisible;
+		if (onLinkToken != null) {
+			unpackedAppearance.visible =
+				nextVisible === resolvedVisible ? mapTokenRef(onLinkToken(), 'visible') : nextVisible;
+		} else {
+			unpackedAppearance.visible = nextVisible;
+		}
 		state._v = packAppearanceTokenRef(unpackedAppearance);
 		state._notify();
-	}, [editor, tokenRef, state]);
+	}, [editor, onLinkToken, state]);
 
 	const handleNavigateToToken = React.useCallback(() => {
 		editor.switchView('settings');
@@ -150,7 +154,9 @@ export const AppearanceStyleMixinEditor = (props: TAppearanceStyleMixinEditorPro
 					mapToDisplayValue={(value) => Math.round(value * 100)}
 					mapToValue={(displayValue) => displayValue / 100}
 					tokenMap={editor.tokenMap}
-					onLinkToken={() => mapTokenRef(tokenRef, 'opacity')}
+					onLinkToken={
+						onLinkToken != null ? () => mapTokenRef(onLinkToken(), 'opacity') : undefined
+					}
 					onNavigateToToken={handleNavigateToToken}
 					disabledTokenLink={disabledTokenLink}
 				/>
@@ -164,7 +170,11 @@ export const AppearanceStyleMixinEditor = (props: TAppearanceStyleMixinEditorPro
 						step={4}
 						state={borderRadiusState}
 						tokenMap={editor.tokenMap}
-						onLinkToken={() => mapTokenRef(tokenRef, 'borderRadius') as TRef<number>}
+						onLinkToken={
+							onLinkToken != null
+								? () => mapTokenRef(onLinkToken(), 'borderRadius') as TRef<number>
+								: undefined
+						}
 						onNavigateToToken={handleNavigateToToken}
 						disabledTokenLink={disabledTokenLink}
 					/>
@@ -176,7 +186,7 @@ export const AppearanceStyleMixinEditor = (props: TAppearanceStyleMixinEditorPro
 
 interface TAppearanceStyleMixinEditorProps {
 	state: TState<TAppearanceStyleMixin['value'], any>;
-	tokenRef: TTokenRef<TUnreferenceTop<TAppearanceStyleMixin['value']>>;
+	onLinkToken?: () => TTokenRef<TUnreferenceTop<TAppearanceStyleMixin['value']>>;
 	disabledTokenLink?: boolean;
 	disabledVisibilityToggle?: boolean;
 	editor: TPageEditor;

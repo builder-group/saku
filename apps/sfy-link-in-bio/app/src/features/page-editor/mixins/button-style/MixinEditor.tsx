@@ -17,7 +17,7 @@ import { TextStyleMixinEditor } from '../text-style';
 import { packButtonTokenRef, unpackButtonTokenRef } from './pack-mixin';
 
 export const ButtonStyleMixinEditor = (props: TButtonStyleMixinEditorProps) => {
-	const { state, tokenRef, disabledTokenLink = false, editor } = props;
+	const { state, onLinkToken, disabledTokenLink = false, editor } = props;
 
 	const appearanceState = useMapState(state, {
 		map(baseValue) {
@@ -94,28 +94,30 @@ export const ButtonStyleMixinEditor = (props: TButtonStyleMixinEditorProps) => {
 		<>
 			<AppearanceStyleMixinEditor
 				state={appearanceState}
-				tokenRef={mapTokenRef(tokenRef, 'appearance')}
+				onLinkToken={
+					onLinkToken != null ? () => mapTokenRef(onLinkToken(), 'appearance') : undefined
+				}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 			/>
 			<div className="h-px bg-neutral-200" />
 			<FillStyleMixinEditor
 				state={fillState}
-				tokenRef={mapTokenRef(tokenRef, 'fill')}
+				onLinkToken={onLinkToken != null ? () => mapTokenRef(onLinkToken(), 'fill') : undefined}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 			/>
 			<div className="h-px bg-neutral-200" />
 			<StrokeStyleMixinEditor
 				state={strokeState}
-				tokenRef={mapTokenRef(tokenRef, 'stroke')}
+				onLinkToken={onLinkToken != null ? () => mapTokenRef(onLinkToken(), 'stroke') : undefined}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 			/>
 			<div className="h-px bg-neutral-200" />
 			<ShadowStyleMixinEditor
 				state={shadowState}
-				tokenRef={mapTokenRef(tokenRef, 'shadow')}
+				onLinkToken={onLinkToken != null ? () => mapTokenRef(onLinkToken(), 'shadow') : undefined}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 				disabledSpread
@@ -127,7 +129,7 @@ export const ButtonStyleMixinEditor = (props: TButtonStyleMixinEditorProps) => {
 			</div>
 			<TextStyleMixinEditor
 				state={textState}
-				tokenRef={mapTokenRef(tokenRef, 'text')}
+				onLinkToken={onLinkToken != null ? () => mapTokenRef(onLinkToken(), 'text') : undefined}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 			/>
@@ -137,7 +139,7 @@ export const ButtonStyleMixinEditor = (props: TButtonStyleMixinEditorProps) => {
 
 interface TButtonStyleMixinEditorProps {
 	state: TState<TButtonStyleMixin['value'], any>;
-	tokenRef: TTokenRef<TUnreferenceTop<TButtonStyleMixin['value']>>;
+	onLinkToken?: () => TTokenRef<TUnreferenceTop<TButtonStyleMixin['value']>>;
 	disabledTokenLink?: boolean;
 	editor: TPageEditor;
 }

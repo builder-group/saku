@@ -17,7 +17,7 @@ import { TPageEditor } from '../../lib';
 import { packTypographyTokenRef, unpackTypographyTokenRef } from './pack-mixin';
 
 export const TypographyStyleMixinEditor = (props: TTypographyStyleMixinEditorProps) => {
-	const { state, tokenRef, disabledTokenLink = false, editor } = props;
+	const { state, onLinkToken, disabledTokenLink = false, editor } = props;
 
 	const fontOptions = React.useMemo(() => {
 		return fontMetadata.map((font) => ({
@@ -114,7 +114,9 @@ export const TypographyStyleMixinEditor = (props: TTypographyStyleMixinEditorPro
 						options={fontOptions}
 						state={fontFamilyState}
 						tokenMap={editor.tokenMap}
-						onLinkToken={() => mapTokenRef(tokenRef, 'font.family')}
+						onLinkToken={
+							onLinkToken != null ? () => mapTokenRef(onLinkToken(), 'font.family') : undefined
+						}
 						onNavigateToToken={handleNavigateToToken}
 						disabledTokenLink={disabledTokenLink}
 					/>
@@ -127,7 +129,9 @@ export const TypographyStyleMixinEditor = (props: TTypographyStyleMixinEditorPro
 						step={2}
 						state={fontSizeState}
 						tokenMap={editor.tokenMap}
-						onLinkToken={() => mapTokenRef(tokenRef, 'fontSize')}
+						onLinkToken={
+							onLinkToken != null ? () => mapTokenRef(onLinkToken(), 'fontSize') : undefined
+						}
 						onNavigateToToken={handleNavigateToToken}
 						disabledTokenLink={disabledTokenLink}
 					/>
@@ -138,7 +142,11 @@ export const TypographyStyleMixinEditor = (props: TTypographyStyleMixinEditorPro
 						options={textAlignOptions}
 						state={textAlignHorizontalState}
 						tokenMap={editor.tokenMap}
-						onLinkToken={() => mapTokenRef(tokenRef, 'textAlignHorizontal')}
+						onLinkToken={
+							onLinkToken != null
+								? () => mapTokenRef(onLinkToken(), 'textAlignHorizontal')
+								: undefined
+						}
 						onNavigateToToken={handleNavigateToToken}
 						disabledTokenLink={disabledTokenLink}
 					/>
@@ -159,7 +167,7 @@ export const TypographyStyleMixinEditor = (props: TTypographyStyleMixinEditorPro
 
 interface TTypographyStyleMixinEditorProps {
 	state: TState<TTypographyStyleMixin['value'], any>;
-	tokenRef: TTokenRef<TUnreferenceTop<TTypographyStyleMixin['value']>>;
+	onLinkToken?: () => TTokenRef<TUnreferenceTop<TTypographyStyleMixin['value']>>;
 	disabledTokenLink?: boolean;
 	editor: TPageEditor;
 }
