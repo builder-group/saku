@@ -10,6 +10,7 @@ import { Button, Text } from '@shopify/polaris';
 import { useCompute } from 'feature-react';
 import { TState } from 'feature-state';
 import React from 'react';
+import { unwrapOrUndefined } from 'tuple-result';
 import { PolarisHideIcon, PolarisViewIcon } from '@/components';
 import { useMapState } from '@/hooks';
 import { TokenTextInput } from '../../components';
@@ -77,7 +78,11 @@ export const AppearanceStyleMixinEditor = (props: TAppearanceStyleMixinEditorPro
 		}
 	});
 
-	const hasBorderRadius = useCompute(borderRadiusState, ({ value }) => value != null);
+	const hasBorderRadius = useCompute(
+		borderRadiusState,
+		({ value }) =>
+			unwrapOrUndefined(resolveTokenRef(value, { tokenMap: editor.tokenMap._v })) != null
+	);
 
 	// =========================================================================
 	// Events

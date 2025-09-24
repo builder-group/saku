@@ -8,7 +8,7 @@ import {
 } from '@repo/editor';
 import { TState } from 'feature-state';
 import { useMapState } from '@/hooks';
-import { resolveTokenRef, TPageEditor } from '../../lib';
+import { TPageEditor } from '../../lib';
 import { AppearanceStyleMixinEditor } from '../appearance-style';
 import { FillStyleMixinEditor } from '../fill-style';
 import { ShadowStyleMixinEditor } from '../shadow-style';
@@ -22,9 +22,7 @@ export const TextStyleMixinEditor = (props: TTextStyleMixinEditorProps) => {
 	const appearanceState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return resolveTokenRef(baseValue, {
-					tokenMap: editor.tokenMap._v
-				}).unwrap().appearance;
+				return mapTokenRef(baseValue, 'appearance');
 			}
 			return baseValue.appearance;
 		},
@@ -38,9 +36,7 @@ export const TextStyleMixinEditor = (props: TTextStyleMixinEditorProps) => {
 	const typographyState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return resolveTokenRef(baseValue, {
-					tokenMap: editor.tokenMap._v
-				}).unwrap().typography;
+				return mapTokenRef(baseValue, 'typography');
 			}
 			return baseValue.typography;
 		},
@@ -54,9 +50,7 @@ export const TextStyleMixinEditor = (props: TTextStyleMixinEditorProps) => {
 	const fillState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return resolveTokenRef(baseValue, {
-					tokenMap: editor.tokenMap._v
-				}).unwrap().fill;
+				return mapTokenRef(baseValue, 'fill');
 			}
 			return baseValue.fill;
 		},
@@ -70,9 +64,7 @@ export const TextStyleMixinEditor = (props: TTextStyleMixinEditorProps) => {
 	const strokeState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return resolveTokenRef(baseValue, {
-					tokenMap: editor.tokenMap._v
-				}).unwrap().stroke;
+				return mapTokenRef(baseValue, 'stroke');
 			}
 			return baseValue.stroke;
 		},
@@ -86,9 +78,7 @@ export const TextStyleMixinEditor = (props: TTextStyleMixinEditorProps) => {
 	const shadowState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return resolveTokenRef(baseValue, {
-					tokenMap: editor.tokenMap._v
-				}).unwrap().shadow;
+				return mapTokenRef(baseValue, 'shadow');
 			}
 			return baseValue.shadow;
 		},

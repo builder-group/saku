@@ -10,9 +10,10 @@ import { Text } from '@shopify/polaris';
 import { useCompute } from 'feature-react';
 import { TState } from 'feature-state';
 import React from 'react';
+import { unwrapOrUndefined } from 'tuple-result';
 import { useMapState } from '@/hooks';
 import { TokenTextInput } from '../../components';
-import { TPageEditor } from '../../lib';
+import { resolveTokenRef, TPageEditor } from '../../lib';
 import { packAutoLayoutTokenRef, unpackAutoLayoutTokenRef } from './pack-mixin';
 
 export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorProps) => {
@@ -81,8 +82,16 @@ export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorPro
 		}
 	});
 
-	const hasHorizontalGap = useCompute(horizontalGapState, ({ value }) => value != null);
-	const hasVerticalGap = useCompute(verticalGapState, ({ value }) => value != null);
+	const hasHorizontalGap = useCompute(
+		horizontalGapState,
+		({ value }) =>
+			unwrapOrUndefined(resolveTokenRef(value, { tokenMap: editor.tokenMap._v })) != null
+	);
+	const hasVerticalGap = useCompute(
+		verticalGapState,
+		({ value }) =>
+			unwrapOrUndefined(resolveTokenRef(value, { tokenMap: editor.tokenMap._v })) != null
+	);
 
 	// =========================================================================
 	// Events
