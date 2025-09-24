@@ -1,5 +1,5 @@
 import { notEmpty } from '@blgc/utils';
-import { TProductNode } from '@repo/editor';
+import { tokenRef, TProductNode } from '@repo/editor';
 import { Button, IndexTable, Scrollable, Text, useIndexResourceState } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react/state';
 import React from 'react';
@@ -387,41 +387,31 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 				>
 					<AutoLayoutStyleMixinEditor
 						state={autoLayoutState}
-						tokenSet={editor.mixinTokenMap.autoLayout}
-						tokenRefKey={'default'}
-						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
+						ref={tokenRef('default', 'auto-layout')}
 						editor={editor}
 					/>
 					<div className="h-px bg-neutral-200" />
 					<AppearanceStyleMixinEditor
 						state={appearanceState}
-						tokenSet={editor.mixinTokenMap.appearance}
-						tokenRefKey={'default'}
-						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
+						ref={tokenRef('default', 'appearance')}
 						editor={editor}
 					/>
 					<div className="h-px bg-neutral-200" />
 					<FillStyleMixinEditor
 						state={fillState}
-						tokenSet={editor.mixinTokenMap.fill}
-						tokenRefKey={'default'}
-						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
+						ref={tokenRef('default', 'fill')}
 						editor={editor}
 					/>
 					<div className="h-px bg-neutral-200" />
 					<StrokeStyleMixinEditor
 						state={strokeState}
-						tokenSet={editor.mixinTokenMap.stroke}
-						tokenRefKey={'default'}
-						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
+						ref={tokenRef('default', 'stroke')}
 						editor={editor}
 					/>
 					<div className="h-px bg-neutral-200" />
 					<ShadowStyleMixinEditor
 						state={shadowState}
-						tokenSet={editor.mixinTokenMap.shadow}
-						tokenRefKey={'default'}
-						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
+						ref={tokenRef('default', 'shadow')}
 						editor={editor}
 					/>
 				</AccordionSection>
@@ -434,9 +424,7 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 				>
 					<TextStyleMixinEditor
 						state={textState}
-						tokenSet={editor.mixinTokenMap.text}
-						tokenRefKey={'default'}
-						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
+						ref={tokenRef('default', 'text')}
 						editor={editor}
 					/>
 				</AccordionSection>
@@ -448,9 +436,7 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 				>
 					<ButtonStyleMixinEditor
 						state={buttonPrimaryState}
-						tokenSet={editor.mixinTokenMap.button}
-						tokenRefKey={'primary'}
-						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
+						ref={tokenRef('primary', 'button')}
 						editor={editor}
 					/>
 				</AccordionSection>
@@ -462,9 +448,7 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 				>
 					<BadgeStyleMixinEditor
 						state={badgePrimaryState}
-						tokenSet={editor.mixinTokenMap.badge}
-						tokenRefKey={'primary'}
-						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
+						ref={tokenRef('primary', 'badge')}
 						editor={editor}
 					/>
 				</AccordionSection>
@@ -476,9 +460,7 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 				>
 					<BadgeStyleMixinEditor
 						state={badgeNeutralState}
-						tokenSet={editor.mixinTokenMap.badge}
-						tokenRefKey={'neutral'}
-						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
+						ref={tokenRef('neutral', 'badge')}
 						editor={editor}
 					/>
 				</AccordionSection>
@@ -490,9 +472,7 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 				>
 					<ImageStyleMixinEditor
 						state={imageState}
-						tokenSet={editor.mixinTokenMap.image}
-						tokenRefKey={'default'}
-						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
+						ref={tokenRef('default', 'image')}
 						editor={editor}
 					/>
 				</AccordionSection>
@@ -504,9 +484,7 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 				>
 					<ProductDetailsStyleMixinEditor
 						state={productDetailsState}
-						tokenSet={editor.mixinTokenMap.productDetails}
-						tokenRefKey={'default'}
-						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
+						ref={tokenRef('default', 'product-details')}
 						editor={editor}
 					/>
 				</AccordionSection>

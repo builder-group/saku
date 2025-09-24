@@ -2,7 +2,6 @@ import { TLinkNode } from '@repo/editor';
 import { useCombinedCompute } from 'feature-react';
 import React from 'react';
 import { logger } from '@/environment';
-import { useTokenSetNotifier } from '../../../hooks';
 import { EditorSiteResolveContext, TNodeProps } from '../../../lib';
 import { resolveLinkNode } from '../resolve-node';
 import { ResolvedLinkNode } from './ResolvedNode';
@@ -10,17 +9,7 @@ import { ResolvedLinkNode } from './ResolvedNode';
 export const LinkNode = React.forwardRef<HTMLDivElement, TNodeProps<TLinkNode>>((props, ref) => {
 	const { nodeState, editor, ...divProps } = props;
 
-	const tokenSetNotifier = useTokenSetNotifier(editor, [
-		'autoLayout',
-		'appearance',
-		'fill',
-		'stroke',
-		'shadow',
-		'text',
-		'image'
-	]);
-
-	const node = useCombinedCompute([nodeState, tokenSetNotifier], ([{ value }]) => {
+	const node = useCombinedCompute([nodeState, editor.tokenMap], ([{ value }]) => {
 		const result = resolveLinkNode(value, {
 			site: new EditorSiteResolveContext(editor)
 		});

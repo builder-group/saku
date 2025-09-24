@@ -5,6 +5,7 @@ import {
 	parseUrl,
 	TAboutNode,
 	TEmailAction,
+	tokenRef,
 	TPhoneAction,
 	TSocialAction
 } from '@repo/editor';
@@ -330,41 +331,31 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 				>
 					<AutoLayoutStyleMixinEditor
 						state={autoLayoutState}
-						tokenSet={editor.mixinTokenMap.autoLayout}
-						tokenRefKey={'default'}
-						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
+						ref={tokenRef('default', 'auto-layout')}
 						editor={editor}
 					/>
 					<div className="h-px bg-neutral-200" />
 					<AppearanceStyleMixinEditor
 						state={appearanceState}
-						tokenSet={editor.mixinTokenMap.appearance}
-						tokenRefKey={'default'}
-						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
+						ref={tokenRef('default', 'appearance')}
 						editor={editor}
 					/>
 					<div className="h-px bg-neutral-200" />
 					<FillStyleMixinEditor
 						state={fillState}
-						tokenSet={editor.mixinTokenMap.fill}
-						tokenRefKey={'default'}
-						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
+						ref={tokenRef('default', 'fill')}
 						editor={editor}
 					/>
 					<div className="h-px bg-neutral-200" />
 					<StrokeStyleMixinEditor
 						state={strokeState}
-						tokenSet={editor.mixinTokenMap.stroke}
-						tokenRefKey={'default'}
-						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
+						ref={tokenRef('default', 'stroke')}
 						editor={editor}
 					/>
 					<div className="h-px bg-neutral-200" />
 					<ShadowStyleMixinEditor
 						state={shadowState}
-						tokenSet={editor.mixinTokenMap.shadow}
-						tokenRefKey={'default'}
-						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
+						ref={tokenRef('default', 'shadow')}
 						editor={editor}
 					/>
 				</AccordionSection>
@@ -374,13 +365,7 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 					size="tight"
 					defaultOpen={true}
 				>
-					<TextStyleMixinEditor
-						state={textXlState}
-						tokenSet={editor.mixinTokenMap.text}
-						tokenRefKey={'xl'}
-						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
-						editor={editor}
-					/>
+					<TextStyleMixinEditor state={textXlState} ref={tokenRef('xl', 'text')} editor={editor} />
 				</AccordionSection>
 				<AccordionSection
 					title="Bio Text"
@@ -390,9 +375,7 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 				>
 					<TextStyleMixinEditor
 						state={textState}
-						tokenSet={editor.mixinTokenMap.text}
-						tokenRefKey={'default'}
-						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
+						ref={tokenRef('default', 'text')}
 						editor={editor}
 					/>
 				</AccordionSection>
@@ -404,9 +387,7 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 				>
 					<ImageStyleMixinEditor
 						state={imageState}
-						tokenSet={editor.mixinTokenMap.image}
-						tokenRefKey={'default'}
-						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
+						ref={tokenRef('default', 'image')}
 						editor={editor}
 					/>
 				</AccordionSection>

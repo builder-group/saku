@@ -8,10 +8,7 @@ import { applyTheme } from '../apply-theme';
 
 export const ThemeTab: React.FC<TThemeTabProps> = (props) => {
 	const { editor } = props;
-	const currentThemeKey = useCompute(
-		editor.variableTokenMap,
-		({ value }) => value['theme.key']?.value
-	);
+	const currentThemeKey = useCompute(editor.tokenMap, ({ value }) => value['theme.key']?.value);
 
 	return (
 		<div className="grid grid-cols-2 gap-3 p-4">

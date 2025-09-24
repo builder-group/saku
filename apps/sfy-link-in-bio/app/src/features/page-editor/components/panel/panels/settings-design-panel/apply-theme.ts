@@ -6,14 +6,12 @@ import {
 	linkNodeMetadata,
 	TAboutNode,
 	TLinkNode,
-	TMixinToken,
 	TTheme
 } from '@repo/editor';
-import { createState } from 'feature-state';
 import { TNodeState, TPageEditor } from '../../../../lib';
 
 export function applyTheme(theme: TTheme, editor: TPageEditor) {
-	const prevThemeKey = editor.variableTokenMap._v['theme.key']?.value;
+	const prevThemeKey = editor.tokenMap._v['theme.key']?.value;
 
 	// Reset LinkPop node styles to ensure they are all linked to the design tokens
 	if (prevThemeKey === 'linkpop') {
@@ -39,32 +37,10 @@ export function applyTheme(theme: TTheme, editor: TPageEditor) {
 
 	// Apply tokens for elements (cards, text, buttons)
 	const tokens = createTokensFromTheme(theme);
-	const toNotifyMixinKeys = new Set<TMixinToken['mixinKey']>();
-	let notifyVariableTokenMap = false;
 	tokens.forEach((token) => {
-		switch (token.type) {
-			case 'mixin': {
-				if (editor.mixinTokenMap[token.mixinKey] == null) {
-					editor.mixinTokenMap[token.mixinKey] = createState({});
-				}
-				// @ts-expect-error - we ensure object exists above
-				editor.mixinTokenMap[token.mixinKey]._v[token.key] = token;
-				toNotifyMixinKeys.add(token.mixinKey);
-				break;
-			}
-			case 'variable': {
-				editor.variableTokenMap._v[token.key] = token;
-				notifyVariableTokenMap = true;
-				break;
-			}
-		}
+		editor.tokenMap._v[token.key] = token;
 	});
-	toNotifyMixinKeys.forEach((key) => {
-		editor.mixinTokenMap[key]?._notify();
-	});
-	if (notifyVariableTokenMap) {
-		editor.variableTokenMap?._notify();
-	}
+	editor.tokenMap._notify();
 
 	// Register fonts
 	editor.registerFontFamily(theme.typography.heading.fontFamily);

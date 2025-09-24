@@ -1,4 +1,4 @@
-import { TTextNode } from '@repo/editor';
+import { tokenRef, TTextNode } from '@repo/editor';
 import { Text, TextField } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react/state';
 import React from 'react';
@@ -76,41 +76,31 @@ export const TextNodeEditor: React.FC<TNodeEditorComponentProps<TTextNode>> = (p
 				>
 					<AutoLayoutStyleMixinEditor
 						state={autoLayoutState}
-						tokenSet={editor.mixinTokenMap.autoLayout}
-						tokenRefKey={'default'}
-						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
+						ref={tokenRef('default', 'auto-layout')}
 						editor={editor}
 					/>
 					<div className="h-px bg-neutral-200" />
 					<AppearanceStyleMixinEditor
 						state={appearanceState}
-						tokenSet={editor.mixinTokenMap.appearance}
-						tokenRefKey={'default'}
-						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
+						ref={tokenRef('default', 'appearance')}
 						editor={editor}
 					/>
 					<div className="h-px bg-neutral-200" />
 					<FillStyleMixinEditor
 						state={fillState}
-						tokenSet={editor.mixinTokenMap.fill}
-						tokenRefKey={'default'}
-						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
+						ref={tokenRef('default', 'fill')}
 						editor={editor}
 					/>
 					<div className="h-px bg-neutral-200" />
 					<StrokeStyleMixinEditor
 						state={strokeState}
-						tokenSet={editor.mixinTokenMap.stroke}
-						tokenRefKey={'default'}
-						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
+						ref={tokenRef('default', 'stroke')}
 						editor={editor}
 					/>
 					<div className="h-px bg-neutral-200" />
 					<ShadowStyleMixinEditor
 						state={shadowState}
-						tokenSet={editor.mixinTokenMap.shadow}
-						tokenRefKey={'default'}
-						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
+						ref={tokenRef('default', 'shadow')}
 						editor={editor}
 					/>
 				</AccordionSection>
@@ -122,9 +112,7 @@ export const TextNodeEditor: React.FC<TNodeEditorComponentProps<TTextNode>> = (p
 				>
 					<TextStyleMixinEditor
 						state={textState}
-						tokenSet={editor.mixinTokenMap.text}
-						tokenRefKey={'default'}
-						mapToToken={(tokenRef, tokenSet) => tokenSet?.[tokenRef]?.value}
+						ref={tokenRef('default', 'text')}
 						editor={editor}
 					/>
 				</AccordionSection>

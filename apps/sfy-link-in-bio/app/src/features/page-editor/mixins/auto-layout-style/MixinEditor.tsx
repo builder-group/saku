@@ -12,56 +12,11 @@ import { TState } from 'feature-state';
 import React from 'react';
 import { useMapState } from '@/hooks';
 import { TokenTextInput } from '../../components';
-import { resolveTokenRef, TPageEditor } from '../../lib';
+import { TPageEditor } from '../../lib';
 import { packAutoLayoutTokenRef, unpackAutoLayoutTokenRef } from './pack-mixin';
 
 export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorProps) => {
 	const { state, ref, disabledTokenLink = false, editor } = props;
-
-	const horizontalGap = useCompute(
-		state,
-		({ value }) => {
-			const [isResolveAutoLayoutOk, , resolvedAutoLayout] = resolveTokenRef(value, {
-				tokenMap: editor.tokenMap._v
-			});
-			if (!isResolveAutoLayoutOk) {
-				return undefined;
-			}
-			const [isResolvedHorizontalGapOk, , resolvedHorizontalGap] = resolveTokenRef(
-				resolvedAutoLayout.horizontalGap,
-				{
-					tokenMap: editor.tokenMap._v
-				}
-			);
-			if (!isResolvedHorizontalGapOk) {
-				return undefined;
-			}
-			return resolvedHorizontalGap;
-		},
-		[editor]
-	);
-	const verticalGap = useCompute(
-		state,
-		({ value }) => {
-			const [isResolveAutoLayoutOk, , resolvedAutoLayout] = resolveTokenRef(value, {
-				tokenMap: editor.tokenMap._v
-			});
-			if (!isResolveAutoLayoutOk) {
-				return undefined;
-			}
-			const [isResolvedVerticalGapOk, , resolvedVerticalGap] = resolveTokenRef(
-				resolvedAutoLayout.verticalGap,
-				{
-					tokenMap: editor.tokenMap._v
-				}
-			);
-			if (!isResolvedVerticalGapOk) {
-				return undefined;
-			}
-			return resolvedVerticalGap;
-		},
-		[editor]
-	);
 
 	const horizontalPaddingState = useMapState(state, {
 		map(baseValue) {
@@ -126,6 +81,9 @@ export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorPro
 		}
 	});
 
+	const hasHorizontalGap = useCompute(horizontalGapState, ({ value }) => value != null);
+	const hasVerticalGap = useCompute(verticalGapState, ({ value }) => value != null);
+
 	// =========================================================================
 	// Events
 	// =========================================================================
@@ -173,9 +131,9 @@ export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorPro
 					disabledTokenLink={disabledTokenLink}
 				/>
 			</div>
-			{(horizontalGap != null || verticalGap != null) && (
+			{(hasHorizontalGap || hasVerticalGap) && (
 				<div className="grid grid-cols-2 gap-3">
-					{horizontalGap != null && (
+					{hasHorizontalGap && (
 						<TokenTextInput
 							label="Gap (Horizontal)"
 							type="number"
@@ -190,7 +148,7 @@ export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorPro
 							disabledTokenLink={disabledTokenLink}
 						/>
 					)}
-					{verticalGap != null && (
+					{hasVerticalGap && (
 						<TokenTextInput
 							label="Gap (Vertical)"
 							type="number"

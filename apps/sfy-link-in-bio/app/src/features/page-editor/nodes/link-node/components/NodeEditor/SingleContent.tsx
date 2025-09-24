@@ -135,8 +135,16 @@ export const SingleContent: React.FC<TSingleContentProps> = (props) => {
 					const unpackedTextSm = unpackTextTokenRef(cx.node._v.textSm);
 					const unpackedTextTypography = unpackTypographyTokenRef(unpackedText.typography);
 					const unpackedTextSmTypography = unpackTypographyTokenRef(unpackedTextSm.typography);
-					unpackedTextTypography.textAlignHorizontal = tokenRef('mixin', 'default');
-					unpackedTextSmTypography.textAlignHorizontal = tokenRef('mixin', 'sm');
+					unpackedTextTypography.textAlignHorizontal = tokenRef(
+						'default',
+						'text',
+						'typography.textAlignHorizontal'
+					);
+					unpackedTextSmTypography.textAlignHorizontal = tokenRef(
+						'sm',
+						'text',
+						'typography.textAlignHorizontal'
+					);
 					unpackedText.typography = packTypographyTokenRef(unpackedTextTypography);
 					unpackedTextSm.typography = packTypographyTokenRef(unpackedTextSmTypography);
 					cx.node._v.text = packTextTokenRef(unpackedText);

@@ -11,7 +11,10 @@ export function packTokenRef<
 	GTokenValue extends TToken['value'],
 	GToken extends Extract<TToken, { value: GTokenValue }>,
 	GPath extends TTokenPaths<GToken>
->(value: TUnreferenceTop<TRef<GTokenValue>>, properties: readonly GPath[]): TRef<GTokenValue> {
+>(
+	value: TUnreferenceTop<TRef<GTokenValue, GToken>>,
+	properties: readonly GPath[]
+): TRef<GTokenValue, GToken> {
 	// Find the first token reference to use as the base
 	let baseTokenRef: TTokenRef | null = null;
 
@@ -32,5 +35,5 @@ export function packTokenRef<
 		}
 	}
 
-	return baseTokenRef as TRef<GTokenValue>;
+	return baseTokenRef as TRef<GTokenValue, GToken>;
 }
