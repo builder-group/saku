@@ -88,6 +88,7 @@ export const AppearanceStyleMixinEditor = (props: TAppearanceStyleMixinEditorPro
 	// Events
 	// =========================================================================
 
+	// TODO: Doesn't pack if its the same value as parent
 	const handleToggleVisibility = React.useCallback(() => {
 		const unpackedAppearance = unpackAppearanceTokenRef(state._v);
 		const [isResolvedVisibleOk, , resolvedVisible] = resolveTokenRef(unpackedAppearance.visible, {

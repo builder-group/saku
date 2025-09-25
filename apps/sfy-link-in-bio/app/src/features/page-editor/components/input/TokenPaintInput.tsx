@@ -26,7 +26,7 @@ import { ImageUploadField, LinkIcon, LinkOffIcon, TImageUploadEvent } from '@/co
 import { resolveTokenRef, TPageEditor } from '@/features/page-editor';
 import { cn } from '@/lib';
 import { isPreventDefault, TPreventDefault } from './prevent-default';
-import { TokenActionOverlay } from './TokenActionOverlay';
+import { TokenActionOverlay, TokenKeyTooltip } from './TokenActionOverlay';
 
 export const TokenPaintInput = <GRefValue extends TRef<TPaint> | undefined>(
 	props: TTokenPaintInputProps<GRefValue>
@@ -456,6 +456,9 @@ export const TokenPaintInput = <GRefValue extends TRef<TPaint> | undefined>(
 				{isLinked && !disabledTokenLink && (
 					<TokenActionOverlay
 						variant={'full-overlay'}
+						tooltipContent={
+							isTokenRef(state._v) ? <TokenKeyTooltip tokenKey={state._v.key} /> : undefined
+						}
 						onUnlink={handleToggleTokenLink}
 						onNavigateToToken={onNavigateToToken}
 					/>

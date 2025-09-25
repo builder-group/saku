@@ -10,6 +10,7 @@ import {
 	TStrokeStyleMixin,
 	TTextStyleMixin
 } from '@repo/editor';
+import { Banner } from '@shopify/polaris';
 import { TState } from 'feature-state';
 import React from 'react';
 import { AccordionSection } from '@/components';
@@ -53,6 +54,16 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 
 	return (
 		<>
+			<div className="p-2">
+				<Banner tone="info">
+					Only use these advanced settings if the basic design options aren't enough.
+					<br />
+					<br />
+					Here you can customize design tokens that can be linked to layers throughout your page for
+					consistent styling.
+				</Banner>
+			</div>
+
 			{/* Page Section */}
 			<AccordionSection title="Page" collapsibleClassName="px-0 space-y-3" defaultOpen={true}>
 				<PageNodeEditor nodeState={editor.getRootNode()} editor={editor} />

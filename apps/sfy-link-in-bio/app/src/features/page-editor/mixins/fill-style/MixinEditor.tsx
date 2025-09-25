@@ -7,7 +7,12 @@ import React from 'react';
 import { unwrapOrUndefined } from 'tuple-result';
 import { Badge, LinkIcon, LinkOffIcon, PolarisMinusIcon, PolarisPlusIcon } from '@/components';
 import { useMapState } from '@/hooks';
-import { TokenActionOverlay, TokenPaintInput, TTokenPaintInputPaintType } from '../../components';
+import {
+	TokenActionOverlay,
+	TokenKeyTooltip,
+	TokenPaintInput,
+	TTokenPaintInputPaintType
+} from '../../components';
 import { resolveTokenRef, TPageEditor } from '../../lib';
 
 export const FillStyleMixinEditor = (props: TFillStyleMixinEditorProps) => {
@@ -124,6 +129,9 @@ export const FillStyleMixinEditor = (props: TFillStyleMixinEditorProps) => {
 								Linked
 								<TokenActionOverlay
 									variant={'full-overlay'}
+									tooltipContent={
+										isTokenRef(state._v) ? <TokenKeyTooltip tokenKey={state._v.key} /> : undefined
+									}
 									onUnlink={handleToggleTokenLink}
 									onNavigateToToken={handleNavigateToToken}
 								/>

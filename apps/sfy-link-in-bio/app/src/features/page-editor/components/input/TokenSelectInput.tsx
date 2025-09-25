@@ -7,7 +7,7 @@ import { LinkIcon, LinkOffIcon } from '@/components';
 import { cn } from '@/lib';
 import { resolveTokenRef } from '../../lib';
 import { isPreventDefault, TPreventDefault } from './prevent-default';
-import { TokenActionOverlay } from './TokenActionOverlay';
+import { TokenActionOverlay, TokenKeyTooltip } from './TokenActionOverlay';
 
 export const TokenSelectInput = <GRefValue extends TRef<string> | undefined>(
 	props: TTokenSelectInputProps<GRefValue>
@@ -138,6 +138,9 @@ export const TokenSelectInput = <GRefValue extends TRef<string> | undefined>(
 				{isLinked && !disabledTokenLink && (
 					<TokenActionOverlay
 						variant={'full-overlay'}
+						tooltipContent={
+							isTokenRef(state._v) ? <TokenKeyTooltip tokenKey={state._v.key} /> : undefined
+						}
 						onUnlink={handleToggleTokenLink}
 						onNavigateToToken={onNavigateToToken}
 					/>

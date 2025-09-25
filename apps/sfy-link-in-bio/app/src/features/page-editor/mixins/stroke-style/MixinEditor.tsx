@@ -13,7 +13,12 @@ import React from 'react';
 import { unwrapOrUndefined } from 'tuple-result';
 import { Badge, LinkIcon, LinkOffIcon, PolarisMinusIcon, PolarisPlusIcon } from '@/components';
 import { useMapState } from '@/hooks';
-import { TokenActionOverlay, TokenColorInput, TokenTextInput } from '../../components';
+import {
+	TokenActionOverlay,
+	TokenColorInput,
+	TokenKeyTooltip,
+	TokenTextInput
+} from '../../components';
 import { resolveTokenRef, TPageEditor } from '../../lib';
 
 export const StrokeStyleMixinEditor = (props: TStrokeStyleMixinEditorProps) => {
@@ -146,6 +151,9 @@ export const StrokeStyleMixinEditor = (props: TStrokeStyleMixinEditorProps) => {
 								Linked
 								<TokenActionOverlay
 									variant={'full-overlay'}
+									tooltipContent={
+										isTokenRef(state._v) ? <TokenKeyTooltip tokenKey={state._v.key} /> : undefined
+									}
 									onUnlink={handleToggleTokenLink}
 									onNavigateToToken={handleNavigateToToken}
 								/>
