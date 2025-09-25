@@ -10,7 +10,9 @@ export const HandleStep: React.FC<THandleStepProps> = (props) => {
 	const { onboardingContext } = props;
 
 	const initialHandle = useCompute(onboardingContext.stepr.current, ({ value: currentStep }) => {
-		return currentStep.type === 'handle' && currentStep.handle ? currentStep.handle : 'bio';
+		return currentStep.type === 'handle' && currentStep.handle
+			? currentStep.handle
+			: onboardingContext.config.defaultHandle.handle;
 	});
 	const [handle, setHandle] = React.useState(initialHandle);
 	const [isLoading, setIsLoading] = React.useState(false);
@@ -87,7 +89,7 @@ export const HandleStep: React.FC<THandleStepProps> = (props) => {
 		<StepLayout
 			icon={<LinkIcon className="size-4" />}
 			title="Choose your page handle"
-			description="This will be the URL where your bio page will be accessible"
+			description="This will be the URL path for your bio page"
 			contentClassName="flex flex-col gap-6"
 		>
 			<div className="flex">
@@ -105,7 +107,7 @@ export const HandleStep: React.FC<THandleStepProps> = (props) => {
 						type="text"
 						value={handle}
 						onChange={handleChange}
-						placeholder="bio"
+						placeholder={onboardingContext.defaultHandle.handle}
 						className="relative z-20 w-full appearance-none border-none bg-transparent px-3 py-2 leading-[var(--p-font-line-height-500)] text-[var(--p-color-text)] outline-none placeholder:text-[var(--p-color-text-subdued)]"
 						autoComplete="off"
 						spellCheck="false"

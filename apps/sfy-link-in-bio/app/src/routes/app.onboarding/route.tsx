@@ -30,7 +30,7 @@ import {
 
 const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 	Success: ({ data }) => {
-		const { shop, presets } = data;
+		const { shop, defaultHandle, presets } = data;
 		const navigate = useNavigate();
 		const [searchParams] = useSearchParams();
 		const shopifyBridge = useAppBridge();
@@ -44,6 +44,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 			return createOnboardingContext({
 				shopify: shopifyBridge,
 				shopId: shop,
+				defaultHandle,
 				presets,
 				crisp: crisp ?? undefined
 			});
@@ -176,8 +177,24 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 	}
 	const shopOverview = shopOverviewResult.value.data;
 
+	// Check handle availability
+	const handle = 'bio';
+	const handleAvailabilityResult = await coreApiClient.get('/v1/shopify/redirect/availability', {
+		queryParams: {
+			path: `/${handle}`
+		},
+		headers: {
+			Authorization: `Bearer ${sessionToken}`
+		}
+	});
+
 	return Ok({
 		shop: session.shop,
+		defaultHandle: {
+			handle,
+			isAvailable:
+				handleAvailabilityResult.isOk() && handleAvailabilityResult.value.data.isAvailable
+		},
 		presets: [
 			{
 				id: 'blank',
@@ -208,6 +225,7 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 
 interface TSuccessLoaderData {
 	shop: string;
+	defaultHandle: { handle: string; isAvailable: boolean };
 	presets: TSitePreset[];
 }
 

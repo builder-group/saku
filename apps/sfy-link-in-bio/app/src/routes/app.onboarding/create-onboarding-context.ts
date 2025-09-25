@@ -9,12 +9,13 @@ import { createShopifyTokenMiddleware, createStepr, Crisp, type TStepr } from '@
 export function createOnboardingContext(
 	config: TCreateOnboardingContextConfig
 ): TOnboardingContext {
-	const { shopify, shopId, presets, crisp } = config;
+	const { shopify, shopId, defaultHandle, presets, crisp } = config;
 
 	return {
 		id: shortId(),
 		shopify,
 		shopId,
+		defaultHandle,
 		stepr: createStepr<TOnboardingStep>({ initialStep: { type: 'welcome' } }),
 		presets: presets.reduce(
 			(acc, preset) => {
@@ -37,7 +38,19 @@ export function createOnboardingContext(
 
 			// Note: Skip explicit account connection since it feels unnecessary and was only required for Shopify Sales Channel compliance
 			// this.stepr.goTo({ type: 'account-connection' });
-			this.stepr.goTo({ type: 'handle' });
+
+			// Skip handle step if default handle is available to reduce onboarding friction
+			// and most users will use the default anyway
+			if (defaultHandle.isAvailable) {
+				this.stepr.current.set({
+					type: 'handle',
+					handle: defaultHandle.handle,
+					shouldOverrideRedirect: false
+				});
+				this.stepr.goTo({ type: 'site-creation-options' });
+			} else {
+				this.stepr.goTo({ type: 'handle' });
+			}
 		},
 
 		continueFromAccountConnection() {
@@ -195,8 +208,10 @@ export function createOnboardingContext(
 			applyThemeToSite(preset.content, selectedTheme);
 
 			// Get the handle and override flag from the handle step
-			const { handle = 'bio', shouldOverrideRedirect = false } =
-				this.stepr.getVisited('handle') ?? {};
+			const {
+				handle = this.defaultHandle.handle,
+				shouldOverrideRedirect = this.defaultHandle.isAvailable
+			} = this.stepr.getVisited('handle') ?? {};
 
 			const result = await coreApiClient.post(
 				'/v1/shopify/site',
@@ -270,6 +285,7 @@ export function createOnboardingContext(
 export interface TCreateOnboardingContextConfig {
 	shopify: ShopifyGlobal;
 	shopId: string;
+	defaultHandle: { handle: string; isAvailable: boolean };
 	presets: TSitePreset[];
 	crisp?: Crisp;
 }
@@ -278,6 +294,7 @@ export interface TOnboardingContext {
 	id: string;
 	shopify: ShopifyGlobal;
 	shopId: string;
+	defaultHandle: { handle: string; isAvailable: boolean };
 	stepr: TStepr<TOnboardingStep>;
 	presets: Record<string, TSitePreset>;
 
