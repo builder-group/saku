@@ -12,7 +12,7 @@ export const HandleStep: React.FC<THandleStepProps> = (props) => {
 	const initialHandle = useCompute(onboardingContext.stepr.current, ({ value: currentStep }) => {
 		return currentStep.type === 'handle' && currentStep.handle
 			? currentStep.handle
-			: onboardingContext.config.defaultHandle.handle;
+			: onboardingContext.defaultHandle.handle;
 	});
 	const [handle, setHandle] = React.useState(initialHandle);
 	const [isLoading, setIsLoading] = React.useState(false);
