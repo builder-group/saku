@@ -84,14 +84,14 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 			textXl:
 				fontColor != null
 					? {
-							appearance: tokenRef('mixin', 'xl'),
+							appearance: tokenRef('xl', 'text', 'appearance'),
 							typography: {
-								font: tokenRef('mixin', 'xl'),
-								fontSize: tokenRef('mixin', 'xl'),
+								font: tokenRef('xl', 'text', 'typography.font'),
+								fontSize: tokenRef('xl', 'text', 'typography.fontSize'),
 								textAlignHorizontal: 'center',
 								textAlignVertical: 'center',
-								lineHeight: tokenRef('mixin', 'xl'),
-								letterSpacing: tokenRef('mixin', 'xl')
+								lineHeight: tokenRef('xl', 'text', 'typography.lineHeight'),
+								letterSpacing: tokenRef('xl', 'text', 'typography.letterSpacing')
 							},
 							fill: {
 								paint: {
@@ -100,21 +100,21 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 								},
 								opacity: 1
 							},
-							stroke: tokenRef('mixin', 'xl'),
-							shadow: tokenRef('mixin', 'xl')
+							stroke: tokenRef('xl', 'text', 'stroke'),
+							shadow: tokenRef('xl', 'text', 'shadow')
 						}
 					: aboutNodeMetadata.default.textXl,
 			text:
 				fontColor != null
 					? {
-							appearance: tokenRef('mixin', 'default'),
+							appearance: tokenRef('default', 'text', 'appearance'),
 							typography: {
-								font: tokenRef('mixin', 'default'),
-								fontSize: tokenRef('mixin', 'default'),
+								font: tokenRef('default', 'text', 'typography.font'),
+								fontSize: tokenRef('default', 'text', 'typography.fontSize'),
 								textAlignHorizontal: 'center',
 								textAlignVertical: 'center',
-								lineHeight: tokenRef('mixin', 'default'),
-								letterSpacing: tokenRef('mixin', 'default')
+								lineHeight: tokenRef('default', 'text', 'typography.lineHeight'),
+								letterSpacing: tokenRef('default', 'text', 'typography.letterSpacing')
 							},
 							fill: {
 								paint: {
@@ -123,18 +123,18 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 								},
 								opacity: 1
 							},
-							stroke: tokenRef('mixin', 'default'),
-							shadow: tokenRef('mixin', 'default')
+							stroke: tokenRef('default', 'text', 'stroke'),
+							shadow: tokenRef('default', 'text', 'shadow')
 						}
 					: aboutNodeMetadata.default.text,
 			image: {
 				appearance: {
 					visible: true,
-					opacity: tokenRef('mixin', 'default'),
+					opacity: tokenRef('default', 'image', 'appearance.opacity'),
 					borderRadius: 48
 				},
-				stroke: tokenRef('mixin', 'default'),
-				shadow: tokenRef('mixin', 'default')
+				stroke: tokenRef('default', 'image', 'stroke'),
+				shadow: tokenRef('default', 'image', 'shadow')
 			}
 		};
 		children.push(aboutNode);

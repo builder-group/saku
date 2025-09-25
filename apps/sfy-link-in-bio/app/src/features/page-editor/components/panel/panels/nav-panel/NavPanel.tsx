@@ -44,8 +44,8 @@ export const NavPanel: React.FC<TNavPanelProps> = (props) => {
 	// =========================================================================
 
 	const handleSwitchView = React.useCallback(
-		(view: TViewType) => {
-			editor.switchView(view);
+		(viewType: TViewType) => {
+			editor.switchView({ type: viewType });
 		},
 		[editor]
 	);

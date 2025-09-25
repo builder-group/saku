@@ -1,15 +1,15 @@
-import { TFillStyleMixin, TFillStyleToken, TMixinTokenSet } from '@repo/editor';
+import { TFillStyleMixin } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
 import { resolvePaint, resolveTokenRef, TMixinResolveContext } from '../../lib';
 import { TResolvedFillStyleMixin } from './types';
 
-export function resolveFillStyleMixin<GTokenSet extends TMixinTokenSet>(
+export function resolveFillStyleMixin(
 	fill: TFillStyleMixin['value'],
-	cx: TMixinResolveContext<TFillStyleToken['value'], GTokenSet>
+	cx: TMixinResolveContext
 ): TResult<TResolvedFillStyleMixin['value'], AppError> {
 	const [isResolvedFillOk, resolvedFillErr, resolvedFill] = resolveTokenRef(fill, {
-		mixin: { tokenSet: cx.mixinTokenSet, mapToTokenValue: cx.mapToMixinTokenValue }
+		tokenMap: cx.tokenMap
 	});
 	if (!isResolvedFillOk) {
 		return Err(resolvedFillErr.wrapWith('#ERR_RESOLVE_FILL'));

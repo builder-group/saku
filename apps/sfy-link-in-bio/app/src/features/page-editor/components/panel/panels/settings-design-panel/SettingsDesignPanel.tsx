@@ -1,5 +1,5 @@
 import { Tabs } from '@shopify/polaris';
-import { useCompute } from 'feature-react/state';
+import { useCompute, useFeatureState } from 'feature-react/state';
 import React from 'react';
 import { ResizablePanel } from '@/components';
 import { useEditorBreakpoint } from '../../../../hooks';
@@ -11,7 +11,7 @@ export const SettingsDesignPanel: React.FC<TSettingsDesignPanelProps> = (props) 
 	const { editor, order } = props;
 
 	const isMd = useEditorBreakpoint(editor, 'md');
-	const [tabIndex, setTabIndex] = React.useState(0);
+	const tabIndex = useFeatureState(editor.activeDesignSettingsTab);
 
 	// TODO: Figure out better solution
 	// https://github.com/bvaughn/react-resizable-panels/issues/46
@@ -50,9 +50,12 @@ export const SettingsDesignPanel: React.FC<TSettingsDesignPanelProps> = (props) 
 	// Events
 	// =========================================================================
 
-	const handleTabChange = React.useCallback((tabIndex: number) => {
-		setTabIndex(tabIndex);
-	}, []);
+	const handleTabChange = React.useCallback(
+		(tabIndex: number) => {
+			editor.activeDesignSettingsTab.set(tabIndex);
+		},
+		[editor]
+	);
 
 	// =========================================================================
 	// UI

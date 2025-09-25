@@ -1,4 +1,10 @@
-import { isTokenRef, TImageStyleMixin, TImageStyleToken, TMixinTokenSet } from '@repo/editor';
+import {
+	isTokenRef,
+	mapTokenRef,
+	TImageStyleMixin,
+	TTokenRef,
+	TUnreferenceTop
+} from '@repo/editor';
 import { TState } from 'feature-state';
 import { useMapState } from '@/hooks';
 import { TPageEditor } from '../../lib';
@@ -7,17 +13,15 @@ import { ShadowStyleMixinEditor } from '../shadow-style';
 import { StrokeStyleMixinEditor } from '../stroke-style';
 import { packImageTokenRef, unpackImageTokenRef } from './pack-mixin';
 
-export const ImageStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
-	props: TImageStyleMixinEditorProps<GTokenSet>
-) => {
-	const { state, tokenSet, tokenRefKey, mapToToken, disabledTokenLink = false, editor } = props;
+export const ImageStyleMixinEditor = (props: TImageStyleMixinEditorProps) => {
+	const { state, onLinkToken, disabledTokenLink = false, editor } = props;
 
 	const appearanceState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return baseValue;
+				return mapTokenRef(baseValue, 'appearance');
 			}
-			return baseValue?.appearance;
+			return baseValue.appearance;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
 			const unpackedBaseValue = unpackImageTokenRef(baseState._v);
@@ -29,9 +33,9 @@ export const ImageStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 	const strokeState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return baseValue;
+				return mapTokenRef(baseValue, 'stroke');
 			}
-			return baseValue?.stroke;
+			return baseValue.stroke;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
 			const unpackedBaseValue = unpackImageTokenRef(baseState._v);
@@ -43,9 +47,9 @@ export const ImageStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 	const shadowState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return baseValue;
+				return mapTokenRef(baseValue, 'shadow');
 			}
-			return baseValue?.shadow;
+			return baseValue.shadow;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
 			const unpackedBaseValue = unpackImageTokenRef(baseState._v);
@@ -59,9 +63,9 @@ export const ImageStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 		<>
 			<AppearanceStyleMixinEditor
 				state={appearanceState}
-				tokenSet={tokenSet}
-				tokenRefKey={tokenRefKey}
-				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.appearance}
+				onLinkToken={
+					onLinkToken != null ? () => mapTokenRef(onLinkToken(), 'appearance') : undefined
+				}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 			/>
@@ -69,18 +73,14 @@ export const ImageStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 
 			<StrokeStyleMixinEditor
 				state={strokeState}
-				tokenSet={tokenSet}
-				tokenRefKey={tokenRefKey}
-				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.stroke}
+				onLinkToken={onLinkToken != null ? () => mapTokenRef(onLinkToken(), 'stroke') : undefined}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 			/>
 			<div className="h-px bg-neutral-200" />
 			<ShadowStyleMixinEditor
 				state={shadowState}
-				tokenSet={tokenSet}
-				tokenRefKey={tokenRefKey}
-				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.shadow}
+				onLinkToken={onLinkToken != null ? () => mapTokenRef(onLinkToken(), 'shadow') : undefined}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 				disabledSpread
@@ -89,11 +89,9 @@ export const ImageStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 	);
 };
 
-interface TImageStyleMixinEditorProps<GTokenSet extends TMixinTokenSet> {
+interface TImageStyleMixinEditorProps {
 	state: TState<TImageStyleMixin['value'], any>;
-	tokenSet?: TState<GTokenSet, any>;
-	tokenRefKey?: string;
-	mapToToken?: (ref: string, tokenSet?: GTokenSet) => TImageStyleToken['value'] | undefined;
+	onLinkToken?: () => TTokenRef<TUnreferenceTop<TImageStyleMixin['value']>>;
 	disabledTokenLink?: boolean;
 	editor: TPageEditor;
 }

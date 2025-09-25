@@ -1,4 +1,10 @@
-import { isTokenRef, TButtonStyleMixin, TButtonStyleToken, TMixinTokenSet } from '@repo/editor';
+import {
+	isTokenRef,
+	mapTokenRef,
+	TButtonStyleMixin,
+	TTokenRef,
+	TUnreferenceTop
+} from '@repo/editor';
 import { Text } from '@shopify/polaris';
 import { TState } from 'feature-state';
 import { useMapState } from '@/hooks';
@@ -10,17 +16,15 @@ import { StrokeStyleMixinEditor } from '../stroke-style';
 import { TextStyleMixinEditor } from '../text-style';
 import { packButtonTokenRef, unpackButtonTokenRef } from './pack-mixin';
 
-export const ButtonStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
-	props: TButtonStyleMixinEditorProps<GTokenSet>
-) => {
-	const { state, tokenSet, tokenRefKey, mapToToken, disabledTokenLink = false, editor } = props;
+export const ButtonStyleMixinEditor = (props: TButtonStyleMixinEditorProps) => {
+	const { state, onLinkToken, disabledTokenLink = false, editor } = props;
 
 	const appearanceState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return baseValue;
+				return mapTokenRef(baseValue, 'appearance');
 			}
-			return baseValue?.appearance;
+			return baseValue.appearance;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
 			const unpackedBaseValue = unpackButtonTokenRef(baseState._v);
@@ -32,9 +36,9 @@ export const ButtonStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 	const fillState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return baseValue;
+				return mapTokenRef(baseValue, 'fill');
 			}
-			return baseValue?.fill;
+			return baseValue.fill;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
 			const unpackedBaseValue = unpackButtonTokenRef(baseState._v);
@@ -46,9 +50,9 @@ export const ButtonStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 	const strokeState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return baseValue;
+				return mapTokenRef(baseValue, 'stroke');
 			}
-			return baseValue?.stroke;
+			return baseValue.stroke;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
 			const unpackedBaseValue = unpackButtonTokenRef(baseState._v);
@@ -60,9 +64,9 @@ export const ButtonStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 	const shadowState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return baseValue;
+				return mapTokenRef(baseValue, 'shadow');
 			}
-			return baseValue?.shadow;
+			return baseValue.shadow;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
 			const unpackedBaseValue = unpackButtonTokenRef(baseState._v);
@@ -74,9 +78,9 @@ export const ButtonStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 	const textState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return baseValue;
+				return mapTokenRef(baseValue, 'text');
 			}
-			return baseValue?.text;
+			return baseValue.text;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
 			const unpackedBaseValue = unpackButtonTokenRef(baseState._v);
@@ -90,36 +94,30 @@ export const ButtonStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 		<>
 			<AppearanceStyleMixinEditor
 				state={appearanceState}
-				tokenSet={tokenSet}
-				tokenRefKey={tokenRefKey}
-				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.appearance}
+				onLinkToken={
+					onLinkToken != null ? () => mapTokenRef(onLinkToken(), 'appearance') : undefined
+				}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 			/>
 			<div className="h-px bg-neutral-200" />
 			<FillStyleMixinEditor
 				state={fillState}
-				tokenSet={tokenSet}
-				tokenRefKey={tokenRefKey}
-				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.fill}
+				onLinkToken={onLinkToken != null ? () => mapTokenRef(onLinkToken(), 'fill') : undefined}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 			/>
 			<div className="h-px bg-neutral-200" />
 			<StrokeStyleMixinEditor
 				state={strokeState}
-				tokenSet={tokenSet}
-				tokenRefKey={tokenRefKey}
-				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.stroke}
+				onLinkToken={onLinkToken != null ? () => mapTokenRef(onLinkToken(), 'stroke') : undefined}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 			/>
 			<div className="h-px bg-neutral-200" />
 			<ShadowStyleMixinEditor
 				state={shadowState}
-				tokenSet={tokenSet}
-				tokenRefKey={tokenRefKey}
-				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.shadow}
+				onLinkToken={onLinkToken != null ? () => mapTokenRef(onLinkToken(), 'shadow') : undefined}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 				disabledSpread
@@ -131,9 +129,7 @@ export const ButtonStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 			</div>
 			<TextStyleMixinEditor
 				state={textState}
-				tokenSet={tokenSet}
-				tokenRefKey={tokenRefKey}
-				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.text}
+				onLinkToken={onLinkToken != null ? () => mapTokenRef(onLinkToken(), 'text') : undefined}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 			/>
@@ -141,11 +137,9 @@ export const ButtonStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 	);
 };
 
-interface TButtonStyleMixinEditorProps<GTokenSet extends TMixinTokenSet> {
+interface TButtonStyleMixinEditorProps {
 	state: TState<TButtonStyleMixin['value'], any>;
-	tokenSet?: TState<GTokenSet, any>;
-	tokenRefKey?: string;
-	mapToToken?: (ref: string, tokenSet?: GTokenSet) => TButtonStyleToken['value'] | undefined;
+	onLinkToken?: () => TTokenRef<TUnreferenceTop<TButtonStyleMixin['value']>>;
 	disabledTokenLink?: boolean;
 	editor: TPageEditor;
 }

@@ -1,24 +1,21 @@
-import { isTokenRef, TMixinTokenSet, tokenRef, TRef } from '@repo/editor';
+import { isTokenRef, TRef, TToken } from '@repo/editor';
 import { Text, Tooltip } from '@shopify/polaris';
 import { useCombinedCompute, useCompute } from 'feature-react/state';
 import { TState } from 'feature-state';
 import React from 'react';
 import { Knob, LinkIcon, LinkOffIcon, TKnobProps } from '@/components';
 import { cn } from '@/lib';
+import { resolveTokenRef } from '../../lib';
+import { isPreventDefault, TPreventDefault } from './prevent-default';
 
-export const TokenToggleInput = <
-	GValue extends boolean,
-	GRefValue extends TRef<GValue> | undefined,
-	GMixinTokenSet extends TMixinTokenSet
->(
-	props: TTokenToggleInputProps<GValue, GRefValue, GMixinTokenSet>
+export const TokenToggleInput = <GRefValue extends TRef<boolean> | undefined>(
+	props: TTokenToggleInputProps<GRefValue>
 ) => {
 	const {
 		state,
-		tokenSet,
-		tokenRefKey = 'default',
-		mapToTokenValue,
-		onLinkChange,
+		tokenMap,
+		onLinkToken,
+		onUnlinkToken,
 		disabledTokenLink = false,
 		label,
 		disabled,
@@ -28,13 +25,20 @@ export const TokenToggleInput = <
 
 	const [displayValue, setDisplayValue] = React.useState<boolean>(false);
 	const resolvedValue = useCombinedCompute(
-		[state, tokenSet],
-		([stateCx, tokenSetCx]) => {
-			return isTokenRef(stateCx.value)
-				? mapToTokenValue(stateCx.value.key, tokenSetCx?.value)
-				: (stateCx.value as GValue);
+		[state, tokenMap],
+		([stateCx, tokenMapCx]) => {
+			if (stateCx.value == null) {
+				return undefined;
+			}
+			const [isResolvedValue, , resolvedValue] = resolveTokenRef(stateCx.value, {
+				tokenMap: tokenMapCx?.value
+			});
+			if (!isResolvedValue) {
+				return undefined;
+			}
+			return resolvedValue;
 		},
-		[mapToTokenValue]
+		[]
 	);
 	const isLinked = useCompute(state, ({ value }) => isTokenRef(value));
 
@@ -52,22 +56,30 @@ export const TokenToggleInput = <
 	}, [displayValue, isLinked, state]);
 
 	const handleToggleTokenLink = React.useCallback(() => {
-		const { preventDefault } = onLinkChange?.(isLinked) ?? {};
-		if (preventDefault) {
+		// Unlink token
+		if (isLinked) {
+			const result = onUnlinkToken?.();
+			if (isPreventDefault(result)) {
+				return;
+			}
+			const [isResolvedTokenOk, , tokenValue] = resolveTokenRef(state._v, {
+				tokenMap: tokenMap?._v
+			});
+			if (isResolvedTokenOk && tokenValue != null) {
+				state.set(tokenValue as GRefValue);
+			}
 			return;
 		}
 
-		if (isLinked) {
-			const tokenValue = isTokenRef(state._v)
-				? mapToTokenValue(state._v.key, tokenSet?._v)
-				: undefined;
-			if (tokenValue != null) {
-				state.set(tokenValue as GRefValue);
-			}
-		} else {
-			state.set(tokenRef('mixin', tokenRefKey) as GRefValue);
+		// Link token
+		const result = onLinkToken?.();
+		if (isPreventDefault(result)) {
+			return;
 		}
-	}, [onLinkChange, isLinked, state, mapToTokenValue, tokenSet, tokenRefKey]);
+		if (isTokenRef(result)) {
+			state.set(result as GRefValue);
+		}
+	}, [onLinkToken, onUnlinkToken, isLinked, state, tokenMap]);
 
 	// =========================================================================
 	// Effects
@@ -96,7 +108,7 @@ export const TokenToggleInput = <
 				<Text as="span" variant="bodySm" tone="subdued">
 					{label}
 				</Text>
-				{!disabledTokenLink && (
+				{!disabledTokenLink && (onLinkToken != null || isLinked) && (
 					<button
 						type="button"
 						onClick={handleToggleTokenLink}
@@ -129,17 +141,14 @@ export const TokenToggleInput = <
 	);
 };
 
-export interface TTokenToggleInputProps<
-	GValue extends boolean,
-	GRefValue extends TRef<GValue> | undefined,
-	GMixinTokenSet extends TMixinTokenSet
-> extends Omit<TKnobProps, 'selected' | 'onClick'> {
+export interface TTokenToggleInputProps<GRefValue extends TRef<boolean> | undefined>
+	extends Omit<TKnobProps, 'selected' | 'onClick'> {
 	state: TState<GRefValue, any>;
 
-	tokenSet?: TState<GMixinTokenSet, any>;
-	tokenRefKey?: string;
-	mapToTokenValue: (key: string, tokenSet?: GMixinTokenSet) => GValue | undefined;
-	onLinkChange?: (isLinked: boolean) => { preventDefault: boolean } | void;
+	tokenMap?: TState<Record<TToken['key'], TToken>, any>;
+	onLinkToken?: () => GRefValue | TPreventDefault;
+	onUnlinkToken?: () => void | TPreventDefault;
+	onNavigateToToken?: () => void;
 	disabledTokenLink?: boolean;
 
 	label: string;

@@ -5,10 +5,9 @@ import {
 	isValidHex,
 	rgbaToHex,
 	rgbaToHsba,
-	TMixinTokenSet,
-	tokenRef,
 	TRef,
-	TRgba
+	TRgba,
+	TToken
 } from '@repo/editor';
 import { ColorPicker, HSBAColor, Popover, Text, TextField, TextFieldProps } from '@shopify/polaris';
 import { useCombinedCompute, useCompute } from 'feature-react/state';
@@ -16,21 +15,18 @@ import { TState } from 'feature-state';
 import React from 'react';
 import { LinkIcon, LinkOffIcon } from '@/components';
 import { cn } from '@/lib';
-import { TokenActionOverlay } from './TokenActionOverlay';
+import { resolveTokenRef } from '../../lib';
+import { isPreventDefault, TPreventDefault } from './prevent-default';
+import { TokenActionOverlay, TokenKeyTooltip } from './TokenActionOverlay';
 
-export const TokenColorInput = <
-	GValue extends TRgba,
-	GRefValue extends TRef<GValue> | undefined,
-	GMixinTokenSet extends TMixinTokenSet
->(
-	props: TTokenColorInputProps<GValue, GRefValue, GMixinTokenSet>
+export const TokenColorInput = <GRefValue extends TRef<TRgba> | undefined>(
+	props: TTokenColorInputProps<GRefValue>
 ) => {
 	const {
 		state,
-		tokenSet,
-		tokenRefKey = 'default',
-		mapToTokenValue,
-		onLinkChange,
+		tokenMap,
+		onLinkToken,
+		onUnlinkToken,
 		onNavigateToToken,
 		disabledTokenLink = false,
 		label,
@@ -44,13 +40,20 @@ export const TokenColorInput = <
 	const [displayValue, setDisplayValue] = React.useState('');
 	const lastChangeFromText = React.useRef(false);
 	const resolvedValue = useCombinedCompute(
-		[state, tokenSet],
-		([stateCx, tokenSetCx]) => {
-			return isTokenRef(stateCx.value)
-				? mapToTokenValue?.(stateCx.value.key, tokenSetCx?.value)
-				: (stateCx.value as GValue);
+		[state, tokenMap],
+		([stateCx, tokenMapCx]) => {
+			if (stateCx.value == null) {
+				return undefined;
+			}
+			const [isResolvedValue, , resolvedValue] = resolveTokenRef(stateCx.value, {
+				tokenMap: tokenMapCx?.value
+			});
+			if (!isResolvedValue) {
+				return undefined;
+			}
+			return resolvedValue;
 		},
-		[mapToTokenValue],
+		[],
 		{
 			isEqual(a, b) {
 				return a?.r === b?.r && a?.g === b?.g && a?.b === b?.b && a?.a === b?.a;
@@ -123,22 +126,30 @@ export const TokenColorInput = <
 	);
 
 	const handleToggleTokenLink = React.useCallback(() => {
-		const { preventDefault } = onLinkChange?.(isLinked) ?? {};
-		if (preventDefault) {
+		// Unlink token
+		if (isLinked) {
+			const result = onUnlinkToken?.();
+			if (isPreventDefault(result)) {
+				return;
+			}
+			const [isResolvedTokenOk, , tokenValue] = resolveTokenRef(state._v, {
+				tokenMap: tokenMap?._v
+			});
+			if (isResolvedTokenOk && tokenValue != null) {
+				state.set(tokenValue as GRefValue);
+			}
 			return;
 		}
 
-		if (isLinked) {
-			const tokenValue = isTokenRef(state._v)
-				? mapToTokenValue?.(state._v.key, tokenSet?._v)
-				: undefined;
-			if (tokenValue != null) {
-				state.set(tokenValue as GRefValue);
-			}
-		} else {
-			state.set(tokenRef('mixin', tokenRefKey) as GRefValue);
+		// Link token
+		const result = onLinkToken?.();
+		if (isPreventDefault(result)) {
+			return;
 		}
-	}, [onLinkChange, isLinked, state, mapToTokenValue, tokenSet, tokenRefKey]);
+		if (isTokenRef(result)) {
+			state.set(result as GRefValue);
+		}
+	}, [onLinkToken, onUnlinkToken, isLinked, state, tokenMap]);
 
 	const togglePopoverActive = React.useCallback(() => {
 		if (!isLinked) {
@@ -212,7 +223,7 @@ export const TokenColorInput = <
 				<Text as="span" variant="bodySm" tone="subdued">
 					{label}
 				</Text>
-				{!disabledTokenLink && (
+				{!disabledTokenLink && (onLinkToken != null || isLinked) && (
 					<button
 						type="button"
 						onClick={handleToggleTokenLink}
@@ -228,6 +239,9 @@ export const TokenColorInput = <
 				{isLinked && !disabledTokenLink && (
 					<TokenActionOverlay
 						variant={'full-overlay'}
+						tooltipContent={
+							isTokenRef(state._v) ? <TokenKeyTooltip tokenKey={state._v.key} /> : undefined
+						}
 						onUnlink={handleToggleTokenLink}
 						onNavigateToToken={onNavigateToToken}
 					/>
@@ -237,20 +251,16 @@ export const TokenColorInput = <
 	);
 };
 
-export interface TTokenColorInputProps<
-	GValue extends TRgba,
-	GRefValue extends TRef<GValue> | undefined,
-	GMixinTokenSet extends TMixinTokenSet
-> extends Omit<
+export interface TTokenColorInputProps<GRefValue extends TRef<TRgba> | undefined>
+	extends Omit<
 		TextFieldProps,
 		'label' | 'labelHidden' | 'value' | 'onChange' | 'onFocus' | 'prefix' | 'autoComplete' | 'error'
 	> {
 	state: TState<GRefValue, any>;
 
-	tokenSet?: TState<GMixinTokenSet, any>;
-	tokenRefKey?: string;
-	mapToTokenValue?: (key: string, tokenSet?: GMixinTokenSet) => GValue | undefined;
-	onLinkChange?: (isLinked: boolean) => { preventDefault: boolean } | void;
+	tokenMap?: TState<Record<TToken['key'], TToken>, any>;
+	onLinkToken?: () => GRefValue | TPreventDefault;
+	onUnlinkToken?: () => void | TPreventDefault;
 	onNavigateToToken?: () => void;
 	disabledTokenLink?: boolean;
 

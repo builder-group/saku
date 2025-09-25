@@ -13,14 +13,10 @@ import {
 	TImageAsset,
 	TIntegration,
 	TIntegrationId,
-	TMixinToken,
-	TMixinTokenKey,
 	TNodeId,
 	toHierarchical,
 	TSite,
-	TTokenMap,
-	TVariableToken,
-	TVariableTokenKey
+	TToken
 } from '@repo/editor';
 import { ShopifyGlobal } from '@shopify/app-bridge-react';
 import { FetchError, NetworkError, RequestError } from 'feature-fetch';
@@ -76,39 +72,11 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 
 		assetsMap: site.content.assets,
 		integrationsMap: site.content.integrations,
-		mixinTokenMap: (() => {
-			const mixinGroups: Record<string, Record<string, TMixinToken>> = {};
-
-			// Iterate through flat tokens and group mixin tokens
-			Object.values(site.content.tokens).forEach((token) => {
-				if (token.type === 'mixin') {
-					if (mixinGroups[token.mixinKey] == null) {
-						mixinGroups[token.mixinKey] = {};
-					}
-					// @ts-expect-error - we ensure object exists above
-					mixinGroups[token.mixinKey][token.key] = token;
-				}
-			});
-
-			// Create state for each mixin group
-			return Object.fromEntries(
-				Object.entries(mixinGroups).map(([mixinKey, tokens]) => [mixinKey, createState(tokens)])
-			);
-		})(),
-		variableTokenMap: createState(
-			(() => {
-				const variables: Record<string, TVariableToken> = {};
-				Object.values(site.content.tokens).forEach((token) => {
-					if (token.type === 'variable') {
-						variables[token.key] = token;
-					}
-				});
-				return variables;
-			})()
-		),
+		tokenMap: createState(site.content.tokens),
 
 		activeView: createState('layers' as TViewType),
-		activeSettingsSection: createState<TSettingsSectionType | null>('design'),
+		activeSettingsSection: createState<TSettingsSectionType>('design'),
+		activeDesignSettingsTab: createState(0),
 
 		isReady: createState(false),
 		isDraggingLayer: createState(false),
@@ -132,13 +100,30 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 		canvasContainerRef: React.createRef<HTMLDivElement>(),
 
 		switchView(view) {
-			this.activeView.set(view);
+			switch (view.type) {
+				case 'settings': {
+					this.activeView.set('settings');
+					this.switchSettingsView(view.view ?? { type: 'design' });
+					break;
+				}
+				default: {
+					this.activeView.set(view.type);
+				}
+			}
 			this.unselectNode();
-			this.switchSettingsSection('design');
 		},
 
-		switchSettingsSection(section) {
-			this.activeSettingsSection.set(section);
+		switchSettingsView(view) {
+			switch (view.type) {
+				case 'design': {
+					this.activeSettingsSection.set(view.type);
+					this.activeDesignSettingsTab.set(view.tab ?? 0);
+					break;
+				}
+				default: {
+					this.activeSettingsSection.set(view.type);
+				}
+			}
 		},
 
 		getRootNode() {
@@ -679,23 +664,7 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 				),
 				assets: deepCopy(this.assetsMap),
 				integrations: deepCopy(this.integrationsMap),
-				tokens: (() => {
-					const flatTokens: TTokenMap = {};
-
-					// Add mixin tokens with mixin.mixinKey.key format
-					Object.entries(this.mixinTokenMap).forEach(([mixinKey, state]) => {
-						Object.values(state._v).forEach((token) => {
-							flatTokens[`mixin.${mixinKey}.${token.key}` as TMixinTokenKey] = token;
-						});
-					});
-
-					// Add variable tokens with variable.key format
-					Object.values(this.variableTokenMap._v).forEach((token) => {
-						flatTokens[`variable.${token.key}` as TVariableTokenKey] = token;
-					});
-
-					return flatTokens;
-				})()
+				tokens: deepCopy(this.tokenMap._v)
 			} satisfies TFlatSite;
 		}
 	};
@@ -730,11 +699,11 @@ export interface TPageEditor {
 
 	assetsMap: Record<TAssetHash, TAsset>;
 	integrationsMap: Record<TIntegrationId, TIntegration>;
-	mixinTokenMap: TMixinTokenGroupMap;
-	variableTokenMap: TState<Record<string, TVariableToken>, []>;
+	tokenMap: TState<Record<TToken['key'], TToken>, []>;
 
 	activeView: TState<TViewType, []>;
-	activeSettingsSection: TState<TSettingsSectionType | null, []>;
+	activeSettingsSection: TState<TSettingsSectionType, []>;
+	activeDesignSettingsTab: TState<number, []>;
 
 	isReady: TState<boolean, []>;
 	isDraggingLayer: TState<boolean, []>;
@@ -747,8 +716,8 @@ export interface TPageEditor {
 	canvasRef: React.RefObject<HTMLDivElement>;
 	canvasContainerRef: React.RefObject<HTMLDivElement>;
 
-	switchView: (view: TViewType) => void;
-	switchSettingsSection: (section: TSettingsSectionType | null) => void;
+	switchView: (view: TSwitchView) => void;
+	switchSettingsView: (view: TSwitchSettingsView) => void;
 
 	getRootNode: () => TNodeState<TFlatPageNode>;
 	addNode: (node: TFlatNode, parentId?: TNodeId, index?: number) => TNodeId;
@@ -793,11 +762,20 @@ export interface TBoundingRect {
 	right: number;
 }
 
-export type TMixinTokenGroupMap<GToken extends TMixinToken = TMixinToken> = {
-	[K in GToken['mixinKey']]?: TMixinTokenSetState<Extract<GToken, { mixinKey: K }>>;
-};
+type TSwitchView =
+	| {
+			type: 'layers' | 'preview';
+	  }
+	| {
+			type: 'settings';
+			view?: TSwitchSettingsView;
+	  };
 
-export type TMixinTokenSetState<GToken extends TMixinToken = TMixinToken> = TState<
-	Record<string, GToken>,
-	[]
->;
+type TSwitchSettingsView =
+	| {
+			type: 'metadata' | 'assets' | 'integrations';
+	  }
+	| {
+			type: 'design';
+			tab?: number;
+	  };

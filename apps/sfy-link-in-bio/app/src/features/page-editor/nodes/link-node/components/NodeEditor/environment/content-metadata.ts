@@ -36,8 +36,12 @@ export const contentMetadataMap = {
 				description: cx.common.description
 			};
 			const unpackedAutoLayout = unpackAutoLayoutTokenRef(cx.node._v.autoLayout);
-			unpackedAutoLayout.horizontalPadding = tokenRef('mixin', 'default');
-			unpackedAutoLayout.verticalPadding = tokenRef('mixin', 'default');
+			unpackedAutoLayout.horizontalPadding = tokenRef(
+				'default',
+				'auto-layout',
+				'horizontalPadding'
+			);
+			unpackedAutoLayout.verticalPadding = tokenRef('default', 'auto-layout', 'verticalPadding');
 			cx.node._v.autoLayout = packAutoLayoutTokenRef(unpackedAutoLayout);
 			cx.node._notify();
 			return Ok(undefined);

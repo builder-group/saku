@@ -2,7 +2,6 @@ import { TAboutNode } from '@repo/editor';
 import { useCombinedCompute } from 'feature-react';
 import React from 'react';
 import { logger } from '@/environment';
-import { useTokenSetNotifier } from '../../../hooks';
 import { EditorSiteResolveContext, TNodeProps } from '../../../lib';
 import { resolveAboutNode } from '../resolve-node';
 import { ResolvedAboutNode } from './ResolvedNode';
@@ -10,17 +9,7 @@ import { ResolvedAboutNode } from './ResolvedNode';
 export const AboutNode = React.forwardRef<HTMLDivElement, TNodeProps<TAboutNode>>((props, ref) => {
 	const { nodeState, editor, ...divProps } = props;
 
-	const tokenSetNotifier = useTokenSetNotifier(editor, [
-		'autoLayout',
-		'appearance',
-		'fill',
-		'stroke',
-		'shadow',
-		'text',
-		'image'
-	]);
-
-	const node = useCombinedCompute([nodeState, tokenSetNotifier], ([{ value }]) => {
+	const node = useCombinedCompute([nodeState, editor.tokenMap], ([{ value }]) => {
 		const result = resolveAboutNode(value, {
 			site: new EditorSiteResolveContext(editor)
 		});

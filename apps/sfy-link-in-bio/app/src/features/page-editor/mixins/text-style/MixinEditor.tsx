@@ -1,4 +1,11 @@
-import { isTokenRef, TMixinTokenSet, TTextStyleMixin, TTextStyleToken } from '@repo/editor';
+import {
+	isTokenRef,
+	mapTokenRef,
+	TTextStyleMixin,
+	TTextStyleToken,
+	TTokenRef,
+	TUnreferenceTop
+} from '@repo/editor';
 import { TState } from 'feature-state';
 import { useMapState } from '@/hooks';
 import { TPageEditor } from '../../lib';
@@ -9,17 +16,15 @@ import { StrokeStyleMixinEditor } from '../stroke-style';
 import { TypographyStyleMixinEditor } from '../typography-style';
 import { packTextTokenRef, unpackTextTokenRef } from './pack-mixin';
 
-export const TextStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
-	props: TTextStyleMixinEditorProps<GTokenSet>
-) => {
-	const { state, tokenSet, tokenRefKey, mapToToken, disabledTokenLink = false, editor } = props;
+export const TextStyleMixinEditor = (props: TTextStyleMixinEditorProps) => {
+	const { state, onLinkToken, disabledTokenLink = false, editor } = props;
 
 	const appearanceState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return baseValue;
+				return mapTokenRef(baseValue, 'appearance');
 			}
-			return baseValue?.appearance;
+			return baseValue.appearance;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
 			const unpackedBaseValue = unpackTextTokenRef(baseState._v);
@@ -31,9 +36,9 @@ export const TextStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 	const typographyState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return baseValue;
+				return mapTokenRef(baseValue, 'typography');
 			}
-			return baseValue?.typography;
+			return baseValue.typography;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
 			const unpackedBaseValue = unpackTextTokenRef(baseState._v);
@@ -45,9 +50,9 @@ export const TextStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 	const fillState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return baseValue;
+				return mapTokenRef(baseValue, 'fill');
 			}
-			return baseValue?.fill;
+			return baseValue.fill;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
 			const unpackedBaseValue = unpackTextTokenRef(baseState._v);
@@ -59,9 +64,9 @@ export const TextStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 	const strokeState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return baseValue;
+				return mapTokenRef(baseValue, 'stroke');
 			}
-			return baseValue?.stroke;
+			return baseValue.stroke;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
 			const unpackedBaseValue = unpackTextTokenRef(baseState._v);
@@ -73,9 +78,9 @@ export const TextStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 	const shadowState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return baseValue;
+				return mapTokenRef(baseValue, 'shadow');
 			}
-			return baseValue?.shadow;
+			return baseValue.shadow;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
 			const unpackedBaseValue = unpackTextTokenRef(baseState._v);
@@ -89,27 +94,25 @@ export const TextStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 		<>
 			<AppearanceStyleMixinEditor
 				state={appearanceState}
-				tokenSet={tokenSet}
-				tokenRefKey={tokenRefKey}
-				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.appearance}
+				onLinkToken={
+					onLinkToken != null ? () => mapTokenRef(onLinkToken(), 'appearance') : undefined
+				}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 			/>
 			<div className="h-px bg-neutral-200" />
 			<TypographyStyleMixinEditor
 				state={typographyState}
-				tokenSet={tokenSet}
-				tokenRefKey={tokenRefKey}
-				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.typography}
+				onLinkToken={
+					onLinkToken != null ? () => mapTokenRef(onLinkToken(), 'typography') : undefined
+				}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 			/>
 			<div className="h-px bg-neutral-200" />
 			<FillStyleMixinEditor
 				state={fillState}
-				tokenSet={tokenSet}
-				tokenRefKey={tokenRefKey}
-				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.fill}
+				onLinkToken={onLinkToken != null ? () => mapTokenRef(onLinkToken(), 'fill') : undefined}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 				allowedPaintTypes={['solid']}
@@ -117,18 +120,14 @@ export const TextStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 			<div className="h-px bg-neutral-200" />
 			<StrokeStyleMixinEditor
 				state={strokeState}
-				tokenSet={tokenSet}
-				tokenRefKey={tokenRefKey}
-				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.stroke}
+				onLinkToken={onLinkToken != null ? () => mapTokenRef(onLinkToken(), 'stroke') : undefined}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 			/>
 			<div className="h-px bg-neutral-200" />
 			<ShadowStyleMixinEditor
 				state={shadowState}
-				tokenSet={tokenSet}
-				tokenRefKey={tokenRefKey}
-				mapToToken={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.shadow}
+				onLinkToken={onLinkToken != null ? () => mapTokenRef(onLinkToken(), 'shadow') : undefined}
 				disabledTokenLink={disabledTokenLink}
 				editor={editor}
 				disabledSpread // HTML text doesn't support shadow spread
@@ -137,11 +136,9 @@ export const TextStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 	);
 };
 
-interface TTextStyleMixinEditorProps<GTokenSet extends TMixinTokenSet> {
+interface TTextStyleMixinEditorProps {
 	state: TState<TTextStyleMixin['value'], any>;
-	tokenSet?: TState<GTokenSet, any>;
-	tokenRefKey?: string;
-	mapToToken?: (ref: string, tokenSet?: GTokenSet) => TTextStyleToken['value'] | undefined;
+	onLinkToken?: () => TTokenRef<TUnreferenceTop<TTextStyleToken['value']>>;
 	disabledTokenLink?: boolean;
 	editor: TPageEditor;
 }

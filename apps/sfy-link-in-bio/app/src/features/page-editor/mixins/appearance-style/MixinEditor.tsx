@@ -1,28 +1,26 @@
 import {
 	isTokenRef,
+	mapTokenRef,
 	TAppearanceStyleMixin,
-	TAppearanceStyleToken,
-	TMixinTokenSet,
-	tokenRef
+	TRef,
+	TTokenRef,
+	TUnreferenceTop
 } from '@repo/editor';
 import { Button, Text } from '@shopify/polaris';
 import { useCompute } from 'feature-react';
 import { TState } from 'feature-state';
 import React from 'react';
+import { unwrapOrUndefined } from 'tuple-result';
 import { PolarisHideIcon, PolarisViewIcon } from '@/components';
 import { useMapState } from '@/hooks';
 import { TokenTextInput } from '../../components';
-import { TPageEditor } from '../../lib';
+import { resolveTokenRef, TPageEditor } from '../../lib';
 import { packAppearanceTokenRef, unpackAppearanceTokenRef } from './pack-mixin';
 
-export const AppearanceStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
-	props: TAppearanceStyleMixinEditorProps<GTokenSet>
-) => {
+export const AppearanceStyleMixinEditor = (props: TAppearanceStyleMixinEditorProps) => {
 	const {
 		state,
-		tokenSet,
-		tokenRefKey = 'default',
-		mapToToken,
+		onLinkToken,
 		disabledTokenLink = false,
 		disabledVisibilityToggle = false,
 		editor
@@ -31,28 +29,27 @@ export const AppearanceStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 	const visible = useCompute(
 		state,
 		({ value }) => {
-			if (isTokenRef(value) || isTokenRef(value.visible)) {
-				return mapToToken?.(tokenRefKey, tokenSet?._v)?.visible;
+			const [isResolveAppearanceOk, , resolvedAppearance] = resolveTokenRef(value, {
+				tokenMap: editor.tokenMap._v
+			});
+			if (!isResolveAppearanceOk) {
+				return undefined;
 			}
-			return value?.visible;
-		},
-		[mapToToken, tokenSet]
-	);
-	const borderRadius = useCompute(
-		state,
-		({ value }) => {
-			if (isTokenRef(value) || isTokenRef(value.borderRadius)) {
-				return mapToToken?.(tokenRefKey, tokenSet?._v)?.borderRadius;
+			const [isResolvedVisibleOk, , resolvedVisible] = resolveTokenRef(resolvedAppearance.visible, {
+				tokenMap: editor.tokenMap._v
+			});
+			if (!isResolvedVisibleOk) {
+				return undefined;
 			}
-			return value?.borderRadius;
+			return resolvedVisible;
 		},
-		[mapToToken, tokenSet]
+		[editor]
 	);
 
 	const opacityState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return baseValue;
+				return mapTokenRef(baseValue, 'opacity');
 			}
 			return baseValue.opacity;
 		},
@@ -66,10 +63,10 @@ export const AppearanceStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 	const borderRadiusState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return baseValue;
+				return mapTokenRef(baseValue, 'borderRadius') as TRef<number>;
 			}
 			if (isTokenRef(baseValue.borderRadius)) {
-				return baseValue.borderRadius;
+				return baseValue.borderRadius as TRef<number>;
 			}
 			return baseValue.borderRadius ?? undefined;
 		},
@@ -81,24 +78,41 @@ export const AppearanceStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 		}
 	});
 
+	const hasBorderRadius = useCompute(
+		borderRadiusState,
+		({ value }) =>
+			unwrapOrUndefined(resolveTokenRef(value, { tokenMap: editor.tokenMap._v })) != null
+	);
+
 	// =========================================================================
 	// Events
 	// =========================================================================
 
+	// TODO: Doesn't pack if its the same value as parent
 	const handleToggleVisibility = React.useCallback(() => {
 		const unpackedAppearance = unpackAppearanceTokenRef(state._v);
-		const tokenValue = mapToToken?.(tokenRefKey, tokenSet?._v);
+		const [isResolvedVisibleOk, , resolvedVisible] = resolveTokenRef(unpackedAppearance.visible, {
+			tokenMap: editor.tokenMap._v
+		});
+		if (!isResolvedVisibleOk) {
+			return;
+		}
+
 		const nextVisible = isTokenRef(unpackedAppearance.visible)
-			? !tokenValue?.visible
+			? !resolvedVisible
 			: !unpackedAppearance.visible;
-		unpackedAppearance.visible =
-			nextVisible === tokenValue?.visible ? tokenRef('mixin', tokenRefKey) : nextVisible;
+		if (onLinkToken != null) {
+			unpackedAppearance.visible =
+				nextVisible === resolvedVisible ? mapTokenRef(onLinkToken(), 'visible') : nextVisible;
+		} else {
+			unpackedAppearance.visible = nextVisible;
+		}
 		state._v = packAppearanceTokenRef(unpackedAppearance);
 		state._notify();
-	}, [mapToToken, state, tokenRefKey, tokenSet]);
+	}, [editor, onLinkToken, state]);
 
 	const handleNavigateToToken = React.useCallback(() => {
-		editor.switchView('settings');
+		editor.switchView({ type: 'settings', view: { type: 'design', tab: 2 } });
 	}, [editor]);
 
 	// =========================================================================
@@ -138,15 +152,16 @@ export const AppearanceStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 					max={100}
 					step={5}
 					state={opacityState}
-					tokenSet={tokenSet}
-					tokenRefKey={tokenRefKey}
-					mapToTokenValue={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.opacity}
-					mapToDisplay={(value) => Math.round(value * 100)}
-					mapToInternal={(displayValue) => displayValue / 100}
+					mapToDisplayValue={(value) => Math.round(value * 100)}
+					mapToValue={(displayValue) => displayValue / 100}
+					tokenMap={editor.tokenMap}
+					onLinkToken={
+						onLinkToken != null ? () => mapTokenRef(onLinkToken(), 'opacity') : undefined
+					}
 					onNavigateToToken={handleNavigateToToken}
 					disabledTokenLink={disabledTokenLink}
 				/>
-				{borderRadius != null && (
+				{hasBorderRadius && (
 					<TokenTextInput
 						label="Border Radius"
 						type="number"
@@ -155,10 +170,11 @@ export const AppearanceStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 						max={999}
 						step={4}
 						state={borderRadiusState}
-						tokenSet={tokenSet}
-						tokenRefKey={tokenRefKey}
-						mapToTokenValue={(tokenRef, tokenSet) =>
-							mapToToken?.(tokenRef, tokenSet)?.borderRadius ?? undefined
+						tokenMap={editor.tokenMap}
+						onLinkToken={
+							onLinkToken != null
+								? () => mapTokenRef(onLinkToken(), 'borderRadius') as TRef<number>
+								: undefined
 						}
 						onNavigateToToken={handleNavigateToToken}
 						disabledTokenLink={disabledTokenLink}
@@ -169,11 +185,9 @@ export const AppearanceStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 	);
 };
 
-interface TAppearanceStyleMixinEditorProps<GTokenSet extends TMixinTokenSet> {
+interface TAppearanceStyleMixinEditorProps {
 	state: TState<TAppearanceStyleMixin['value'], any>;
-	tokenSet?: TState<GTokenSet, any>;
-	tokenRefKey?: string;
-	mapToToken?: (ref: string, tokenSet?: GTokenSet) => TAppearanceStyleToken['value'] | undefined;
+	onLinkToken?: () => TTokenRef<TUnreferenceTop<TAppearanceStyleMixin['value']>>;
 	disabledTokenLink?: boolean;
 	disabledVisibilityToggle?: boolean;
 	editor: TPageEditor;

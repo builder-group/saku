@@ -1,4 +1,4 @@
-import { TButtonStyleMixin, TButtonStyleToken, TMixinTokenSet } from '@repo/editor';
+import { TButtonStyleMixin } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
 import { resolveTokenRef, TMixinResolveContext } from '../../lib';
@@ -9,61 +9,46 @@ import { resolveStrokeStyleMixin } from '../stroke-style';
 import { resolveTextStyleMixin } from '../text-style';
 import { TResolvedButtonStyleMixin } from './types';
 
-export function resolveButtonStyleMixin<GTokenSet extends TMixinTokenSet>(
+export function resolveButtonStyleMixin(
 	button: TButtonStyleMixin['value'],
-	cx: TMixinResolveContext<TButtonStyleToken['value'], GTokenSet>
+	cx: TMixinResolveContext
 ): TResult<TResolvedButtonStyleMixin['value'], AppError> {
 	const [isResolvedButtonOk, resolvedButtonErr, resolvedButton] = resolveTokenRef(button, {
-		mixin: { tokenSet: cx.mixinTokenSet, mapToTokenValue: cx.mapToMixinTokenValue }
+		tokenMap: cx.tokenMap
 	});
 	if (!isResolvedButtonOk) {
 		return Err(resolvedButtonErr.wrapWith('#ERR_RESOLVE_BUTTON_STYLE'));
 	}
 
 	const [isResolvedAppearanceOk, resolvedAppearanceErr, resolvedAppearance] =
-		resolveAppearanceStyleMixin(resolvedButton.appearance, {
-			...cx,
-			mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.appearance
-		});
+		resolveAppearanceStyleMixin(resolvedButton.appearance, cx);
 	if (!isResolvedAppearanceOk) {
 		return Err(resolvedAppearanceErr.wrapWith('#ERR_RESOLVE_APPEARANCE_STYLE'));
 	}
 	const [isResolvedFillOk, resolvedFillErr, resolvedFill] = resolveFillStyleMixin(
 		resolvedButton.fill,
-		{
-			...cx,
-			mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.fill
-		}
+		cx
 	);
 	if (!isResolvedFillOk) {
 		return Err(resolvedFillErr.wrapWith('#ERR_RESOLVE_FILL_STYLE'));
 	}
 	const [isResolvedStrokeOk, resolvedStrokeErr, resolvedStroke] = resolveStrokeStyleMixin(
 		resolvedButton.stroke,
-		{
-			...cx,
-			mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.stroke
-		}
+		cx
 	);
 	if (!isResolvedStrokeOk) {
 		return Err(resolvedStrokeErr.wrapWith('#ERR_RESOLVE_STROKE_STYLE'));
 	}
 	const [isResolvedShadowOk, resolvedShadowErr, resolvedShadow] = resolveShadowStyleMixin(
 		resolvedButton.shadow,
-		{
-			...cx,
-			mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.shadow
-		}
+		cx
 	);
 	if (!isResolvedShadowOk) {
 		return Err(resolvedShadowErr.wrapWith('#ERR_RESOLVE_SHADOW_STYLE'));
 	}
 	const [isResolvedTextOk, resolvedTextErr, resolvedText] = resolveTextStyleMixin(
 		resolvedButton.text,
-		{
-			...cx,
-			mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.text
-		}
+		cx
 	);
 	if (!isResolvedTextOk) {
 		return Err(resolvedTextErr.wrapWith('#ERR_RESOLVE_TEXT_STYLE'));

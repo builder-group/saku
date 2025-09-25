@@ -1,6 +1,7 @@
 import { TFlatNode } from '@repo/editor';
 import { useCompute } from 'feature-react';
 import React from 'react';
+import { unwrapOrUndefined } from 'tuple-result';
 import { useBoundingRectObserver } from '@/hooks';
 import { EditorSiteResolveContext, nodeRegistry, TNodeProps } from '../../lib';
 import { resolveAppearanceStyleMixin } from '../../mixins';
@@ -18,12 +19,14 @@ export const Node: React.FC<TNodeProps<TFlatNode>> = (props) => {
 	);
 
 	const isVisible = useCompute(nodeState, ({ value }) => {
-		return resolveAppearanceStyleMixin(value.appearance, {
-			node: { site: new EditorSiteResolveContext(editor) },
-			mixinTokenSet: editor.mixinTokenMap.appearance?._v,
-			mapToMixinTokenValue: (ref, tokenSet) => tokenSet?.[ref]?.value,
-			variableTokenMap: editor.variableTokenMap._v
-		}).unwrap().visible;
+		return (
+			unwrapOrUndefined(
+				resolveAppearanceStyleMixin(value.appearance, {
+					node: { site: new EditorSiteResolveContext(editor) },
+					tokenMap: editor.tokenMap._v
+				})
+			)?.visible ?? false
+		);
 	});
 
 	const NodeComponent = React.useMemo(

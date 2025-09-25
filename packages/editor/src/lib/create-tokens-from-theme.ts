@@ -66,218 +66,213 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 	return [
 		// Theme metadata
 		{
-			type: 'variable',
+			type: 'string',
 			key: 'theme.key',
 			value: theme.key
 		},
 		{
-			type: 'variable',
+			type: 'string',
 			key: 'theme.name',
 			value: theme.name
 		},
 
 		// Color tokens
 		{
-			type: 'variable',
+			type: 'color',
 			key: 'color.base100',
 			value: rgbaColors.base100
 		},
 		{
-			type: 'variable',
+			type: 'color',
 			key: 'color.base200',
 			value: rgbaColors.base200
 		},
 		{
-			type: 'variable',
+			type: 'color',
 			key: 'color.base300',
 			value: rgbaColors.base300
 		},
 		{
-			type: 'variable',
+			type: 'color',
 			key: 'color.baseContent',
 			value: rgbaColors.baseContent
 		},
 		{
-			type: 'variable',
+			type: 'color',
 			key: 'color.primary',
 			value: rgbaColors.primary
 		},
 		{
-			type: 'variable',
+			type: 'color',
 			key: 'color.primaryContent',
 			value: rgbaColors.primaryContent
 		},
 		{
-			type: 'variable',
+			type: 'color',
 			key: 'color.secondary',
 			value: rgbaColors.secondary
 		},
 		{
-			type: 'variable',
+			type: 'color',
 			key: 'color.secondaryContent',
 			value: rgbaColors.secondaryContent
 		},
 		{
-			type: 'variable',
+			type: 'color',
 			key: 'color.neutral',
 			value: rgbaColors.neutral
 		},
 		{
-			type: 'variable',
+			type: 'color',
 			key: 'color.neutralContent',
 			value: rgbaColors.neutralContent
 		},
 		{
-			type: 'variable',
+			type: 'color',
 			key: 'color.accent',
 			value: rgbaColors.accent
 		},
 		{
-			type: 'variable',
+			type: 'color',
 			key: 'color.accentContent',
 			value: rgbaColors.accentContent
 		},
 		{
-			type: 'variable',
+			type: 'color',
 			key: 'color.info',
 			value: rgbaColors.info
 		},
 		{
-			type: 'variable',
+			type: 'color',
 			key: 'color.infoContent',
 			value: rgbaColors.infoContent
 		},
 		{
-			type: 'variable',
+			type: 'color',
 			key: 'color.success',
 			value: rgbaColors.success
 		},
 		{
-			type: 'variable',
+			type: 'color',
 			key: 'color.successContent',
 			value: rgbaColors.successContent
 		},
 		{
-			type: 'variable',
+			type: 'color',
 			key: 'color.warning',
 			value: rgbaColors.warning
 		},
 		{
-			type: 'variable',
+			type: 'color',
 			key: 'color.warningContent',
 			value: rgbaColors.warningContent
 		},
 		{
-			type: 'variable',
+			type: 'color',
 			key: 'color.error',
 			value: rgbaColors.error
 		},
 		{
-			type: 'variable',
+			type: 'color',
 			key: 'color.errorContent',
 			value: rgbaColors.errorContent
 		},
 
-		// Typography tokens
+		// Font tokens
 		{
-			type: 'variable',
-			key: 'typography.heading.fontFamily',
-			value: typography.heading.fontFamily
+			type: 'font',
+			key: 'font.heading',
+			value: {
+				family: typography.heading.fontFamily,
+				weight: typography.heading.fontWeight
+			}
 		},
 		{
-			type: 'variable',
-			key: 'typography.heading.fontWeight',
-			value: typography.heading.fontWeight
-		},
-		{
-			type: 'variable',
-			key: 'typography.text.fontFamily',
-			value: typography.text.fontFamily
-		},
-		{
-			type: 'variable',
-			key: 'typography.text.fontWeight',
-			value: typography.text.fontWeight
+			type: 'font',
+			key: 'font.text',
+			value: {
+				family: typography.text.fontFamily,
+				weight: typography.text.fontWeight
+			}
 		},
 
 		// Spacing tokens
 		{
-			type: 'variable',
+			type: 'number',
 			key: 'spacing.gap',
 			value: gap
 		},
 
 		// Size tokens
 		{
-			type: 'variable',
+			type: 'number',
 			key: 'size.text',
 			value: textSize
 		},
 		{
-			type: 'variable',
+			type: 'number',
 			key: 'size.box',
 			value: boxSize
 		},
 		{
-			type: 'variable',
+			type: 'number',
 			key: 'size.field',
 			value: size.field ?? themeMetadata.size.box.get(0)
 		},
 		{
-			type: 'variable',
+			type: 'number',
 			key: 'size.selector',
 			value: size.selector ?? themeMetadata.size.box.get(0)
 		},
 
 		// Radius tokens
 		{
-			type: 'variable',
+			type: 'number',
 			key: 'radius.box',
 			value: radius.box
 		},
 		{
-			type: 'variable',
+			type: 'number',
 			key: 'radius.field',
 			value: radius.field
 		},
 		{
-			type: 'variable',
+			type: 'number',
 			key: 'radius.selector',
 			value: radius.selector
 		},
 
 		// Effects tokens
 		{
-			type: 'variable',
+			type: 'number',
 			key: 'effects.stroke.width',
 			value: effects?.stroke?.width ?? 0
 		},
 		{
-			type: 'variable',
+			type: 'number',
 			key: 'effects.shadow.blur',
 			value: effects?.shadow?.blur ?? 0
 		},
 		{
-			type: 'variable',
+			type: 'number',
 			key: 'effects.shadow.offsetX',
 			value: effects?.shadow?.offsetX ?? 0
 		},
 		{
-			type: 'variable',
+			type: 'number',
 			key: 'effects.shadow.offsetY',
 			value: effects?.shadow?.offsetY ?? 0
 		},
 		{
-			type: 'variable',
+			type: 'number',
 			key: 'effects.shadow.spread',
 			value: effects?.shadow?.spread ?? 0
 		},
 
 		// Mixin tokens (component style definitions)
 		{
-			type: 'mixin',
-			key: 'default',
-			mixinKey: 'autoLayout',
+			type: 'auto-layout',
+			key: 'auto-layout.default',
 			value: {
 				horizontalPadding: boxSizes.lg,
 				verticalPadding: boxSizes.lg,
@@ -286,24 +281,26 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 			}
 		},
 		{
-			type: 'mixin',
-			key: 'default',
-			mixinKey: 'appearance',
+			type: 'appearance',
+			key: 'appearance.default',
 			value: {
 				visible: true,
 				opacity: 1,
-				borderRadius: radius.box
+				borderRadius: {
+					type: 'token',
+					key: 'radius.box',
+					tokenType: 'number'
+				}
 			}
 		},
 		{
-			type: 'mixin',
-			key: 'default',
-			mixinKey: 'typography',
+			type: 'typography',
+			key: 'typography.default',
 			value: {
 				font: {
-					family: typography.text.fontFamily,
-					weight: typography.text.fontWeight,
-					style: 'normal'
+					type: 'token',
+					key: 'font.text',
+					tokenType: 'font'
 				},
 				fontSize: textSizes.md,
 				textAlignHorizontal: 'center',
@@ -313,9 +310,8 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 			}
 		},
 		{
-			type: 'mixin',
-			key: 'default',
-			mixinKey: 'fill',
+			type: 'fill',
+			key: 'fill.default',
 			value: {
 				paint: {
 					type: 'solid',
@@ -325,9 +321,8 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 			}
 		},
 		{
-			type: 'mixin',
-			key: 'default',
-			mixinKey: 'stroke',
+			type: 'stroke',
+			key: 'stroke.default',
 			value:
 				effects?.stroke != null
 					? {
@@ -337,9 +332,8 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 					: null
 		},
 		{
-			type: 'mixin',
-			key: 'default',
-			mixinKey: 'shadow',
+			type: 'shadow',
+			key: 'shadow.default',
 			value:
 				effects?.shadow != null
 					? {
@@ -352,9 +346,8 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 					: null
 		},
 		{
-			type: 'mixin',
-			key: 'default',
-			mixinKey: 'text',
+			type: 'text',
+			key: 'text.default',
 			value: {
 				appearance: {
 					visible: true,
@@ -363,9 +356,9 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 				},
 				typography: {
 					font: {
-						family: typography.text.fontFamily,
-						weight: typography.text.fontWeight,
-						style: 'normal'
+						type: 'token',
+						key: 'font.text',
+						tokenType: 'font'
 					},
 					fontSize: textSizes.md,
 					textAlignHorizontal: 'center',
@@ -385,9 +378,8 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 			}
 		},
 		{
-			type: 'mixin',
-			key: 'xl',
-			mixinKey: 'text',
+			type: 'text',
+			key: 'text.xl',
 			value: {
 				appearance: {
 					visible: true,
@@ -396,9 +388,9 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 				},
 				typography: {
 					font: {
-						family: typography.heading.fontFamily,
-						weight: typography.heading.fontWeight,
-						style: 'normal'
+						type: 'token',
+						key: 'font.heading',
+						tokenType: 'font'
 					},
 					fontSize: textSizes.lg,
 					textAlignHorizontal: 'center',
@@ -418,9 +410,8 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 			}
 		},
 		{
-			type: 'mixin',
-			key: 'sm',
-			mixinKey: 'text',
+			type: 'text',
+			key: 'text.sm',
 			value: {
 				appearance: {
 					visible: true,
@@ -429,9 +420,9 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 				},
 				typography: {
 					font: {
-						family: typography.text.fontFamily,
-						weight: typography.text.fontWeight,
-						style: 'normal'
+						type: 'token',
+						key: 'font.text',
+						tokenType: 'font'
 					},
 					fontSize: textSizes.sm,
 					textAlignHorizontal: 'center',
@@ -451,9 +442,8 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 			}
 		},
 		{
-			type: 'mixin',
-			key: 'primary',
-			mixinKey: 'button',
+			type: 'button',
+			key: 'button.primary',
 			value: {
 				appearance: {
 					visible: true,
@@ -477,9 +467,9 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 					},
 					typography: {
 						font: {
-							family: typography.text.fontFamily,
-							weight: typography.text.fontWeight,
-							style: 'normal'
+							type: 'token',
+							key: 'font.text',
+							tokenType: 'font'
 						},
 						fontSize: textSizes.md,
 						textAlignHorizontal: 'center',
@@ -500,9 +490,8 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 			}
 		},
 		{
-			type: 'mixin',
-			key: 'neutral',
-			mixinKey: 'button',
+			type: 'button',
+			key: 'button.neutral',
 			value: {
 				appearance: {
 					visible: true,
@@ -526,9 +515,9 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 					},
 					typography: {
 						font: {
-							family: typography.text.fontFamily,
-							weight: typography.text.fontWeight,
-							style: 'normal'
+							type: 'token',
+							key: 'font.text',
+							tokenType: 'font'
 						},
 						fontSize: textSizes.md,
 						textAlignHorizontal: 'center',
@@ -549,9 +538,8 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 			}
 		},
 		{
-			type: 'mixin',
-			key: 'primary',
-			mixinKey: 'badge',
+			type: 'badge',
+			key: 'badge.primary',
 			value: {
 				appearance: {
 					visible: true,
@@ -575,9 +563,9 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 					},
 					typography: {
 						font: {
-							family: typography.text.fontFamily,
-							weight: typography.text.fontWeight,
-							style: 'normal'
+							type: 'token',
+							key: 'font.text',
+							tokenType: 'font'
 						},
 						fontSize: textSizes.sm,
 						textAlignHorizontal: 'center',
@@ -598,9 +586,8 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 			}
 		},
 		{
-			type: 'mixin',
-			key: 'neutral',
-			mixinKey: 'badge',
+			type: 'badge',
+			key: 'badge.neutral',
 			value: {
 				appearance: {
 					visible: true,
@@ -624,9 +611,9 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 					},
 					typography: {
 						font: {
-							family: typography.text.fontFamily,
-							weight: typography.text.fontWeight,
-							style: 'normal'
+							type: 'token',
+							key: 'font.text',
+							tokenType: 'font'
 						},
 						fontSize: textSizes.sm,
 						textAlignHorizontal: 'center',
@@ -647,9 +634,8 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 			}
 		},
 		{
-			type: 'mixin',
-			key: 'default',
-			mixinKey: 'image',
+			type: 'image',
+			key: 'image.default',
 			value: {
 				appearance: {
 					visible: true,
@@ -661,9 +647,8 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 			}
 		},
 		{
-			type: 'mixin',
-			key: 'default',
-			mixinKey: 'productDetails',
+			type: 'product-details',
+			key: 'product-details.default',
 			value: {
 				appearance: {
 					visible: true,
@@ -687,9 +672,9 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 					},
 					typography: {
 						font: {
-							family: typography.heading.fontFamily,
-							weight: typography.heading.fontWeight,
-							style: 'normal'
+							type: 'token',
+							key: 'font.heading',
+							tokenType: 'font'
 						},
 						fontSize: textSizes.xl,
 						textAlignHorizontal: 'start',
@@ -715,9 +700,9 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 					},
 					typography: {
 						font: {
-							family: typography.text.fontFamily,
-							weight: typography.text.fontWeight,
-							style: 'normal'
+							type: 'token',
+							key: 'font.text',
+							tokenType: 'font'
 						},
 						fontSize: textSizes.md,
 						textAlignHorizontal: 'start',
@@ -736,48 +721,9 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 					shadow: null
 				},
 				buttonPrimary: {
-					appearance: {
-						visible: true,
-						opacity: 1,
-						borderRadius: radius.field
-					},
-					fill: {
-						paint: {
-							type: 'solid',
-							color: rgbaColors.primary
-						},
-						opacity: 1
-					},
-					stroke: null,
-					shadow: null,
-					text: {
-						appearance: {
-							visible: true,
-							opacity: 1,
-							borderRadius: null
-						},
-						typography: {
-							font: {
-								family: typography.text.fontFamily,
-								weight: typography.text.fontWeight,
-								style: 'normal'
-							},
-							fontSize: textSizes.md,
-							textAlignHorizontal: 'center',
-							textAlignVertical: 'center',
-							lineHeight: { type: 'auto' },
-							letterSpacing: { type: 'auto' }
-						},
-						fill: {
-							paint: {
-								type: 'solid',
-								color: rgbaColors.primaryContent
-							},
-							opacity: 1
-						},
-						stroke: null,
-						shadow: null
-					}
+					type: 'token',
+					key: 'button.primary',
+					tokenType: 'button'
 				},
 				image: {
 					appearance: {

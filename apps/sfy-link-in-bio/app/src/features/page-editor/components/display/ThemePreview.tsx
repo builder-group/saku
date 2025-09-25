@@ -54,7 +54,9 @@ export const ThemePreview: React.FC<TThemePreviewProps> = (props) => {
 						backgroundColor: rgbaToHex(color.base100),
 						borderRadius: `${radius.box}px`,
 						border:
-							effects?.stroke != null ? `${effects.stroke.width}px solid ${color.accent}` : 'none',
+							effects?.stroke != null
+								? `${effects.stroke.width}px solid ${rgbaToHex(color.accent)}`
+								: 'none',
 						boxShadow:
 							effects?.shadow != null
 								? `${effects.shadow.offsetX}px ${effects.shadow.offsetY}px ${effects.shadow.blur}px ${effects.shadow.spread}px rgba(${color.primary.r}, ${color.primary.g}, ${color.primary.b}, 0.15)`

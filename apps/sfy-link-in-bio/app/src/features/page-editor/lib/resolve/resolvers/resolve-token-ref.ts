@@ -1,71 +1,124 @@
-import { isTokenRef, TMixinTokenSet, TRef, TVariableToken } from '@repo/editor';
+import { isTokenRef, TRef, TToken } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
+import { safeParse, type BaseIssue, type BaseSchema } from 'valibot';
 import { AppError } from '@/lib';
 
-export function resolveTokenRef<GValue, GMixinTokenSet extends TMixinTokenSet>(
-	sourceValue: TRef<GValue>,
-	options: TResolveTokenRefOptions<GValue, GMixinTokenSet>
-): TResult<GValue, AppError> {
+export function resolveTokenRef<GTokenValue>(
+	sourceValue: TRef<GTokenValue>,
+	options?: TResolveTokenRefOptions<GTokenValue>
+): TResult<GTokenValue, AppError>;
+export function resolveTokenRef<GTokenValue>(
+	sourceValue: TRef<GTokenValue> | undefined,
+	options?: TResolveTokenRefOptions<GTokenValue>
+): TResult<GTokenValue | undefined, AppError>;
+export function resolveTokenRef<GTokenValue>(
+	sourceValue: TRef<GTokenValue> | undefined,
+	options: TResolveTokenRefOptions<GTokenValue> = {}
+): TResult<GTokenValue | undefined, AppError> {
 	if (!isTokenRef(sourceValue)) {
 		return Ok(sourceValue);
 	}
 
-	// Resolve mixin token
-	if (sourceValue.tokenType === 'mixin' && options.mixin != null) {
-		const { tokenSet, mapToTokenValue } = options.mixin;
-		if (tokenSet == null) {
-			return Err(new AppError('#ERR_TOKEN_SET_NOT_FOUND'));
-		}
-
-		const tokenValue = mapToTokenValue(sourceValue.key, tokenSet);
-		if (tokenValue === undefined) {
-			return Err(
-				new AppError('#ERR_TOKEN_NOT_FOUND', {
-					detail: `Mixin token value not found: ${sourceValue.key}`
-				})
-			);
-		}
-
-		return Ok(tokenValue);
+	const { tokenMap, schema } = options;
+	if (tokenMap == null) {
+		return Err(new AppError('#ERR_TOKEN_MAP_NOT_FOUND'));
 	}
 
-	// Resolve variable token
-	if (sourceValue.tokenType === 'variable' && options.variable != null) {
-		const { tokenMap, expectedType } = options.variable;
-		if (tokenMap == null) {
-			return Err(new AppError('#ERR_TOKEN_MAP_NOT_FOUND'));
-		}
-
-		const token = tokenMap[sourceValue.key];
-		if (token == null) {
-			return Err(
-				new AppError('#ERR_TOKEN_NOT_FOUND', {
-					detail: `Variable token not found: ${sourceValue.key}`
-				})
-			);
-		}
-
-		if (expectedType != null && typeof token.value !== expectedType) {
-			return Err(
-				new AppError('#ERR_TOKEN_TYPE_MISMATCH', {
-					detail: `Source token type mismatch: ${token.type} !== ${expectedType}`
-				})
-			);
-		}
-
-		return Ok(token.value as GValue);
+	const token = tokenMap[sourceValue.key];
+	if (token === undefined) {
+		return Err(
+			new AppError('#ERR_TOKEN_NOT_FOUND', {
+				detail: `Token not found: ${sourceValue.key}`
+			})
+		);
 	}
 
-	return Err(new AppError('#ERR_TOKEN_REF_NOT_FOUND'));
+	let resolvedValue: unknown;
+
+	// Handle path-based token reference or direct value
+	if (sourceValue.path != null) {
+		const pathResult = getNestedProperty(token.value, sourceValue.path, tokenMap);
+		if (pathResult.isErr()) {
+			return Err(
+				new AppError('#ERR_PATH_NOT_FOUND', {
+					detail: `Path '${sourceValue.path}' not found in token: ${sourceValue.key}`
+				})
+			);
+		}
+		resolvedValue = pathResult.value;
+	} else {
+		resolvedValue = token.value;
+	}
+
+	// If the resolved value is still a token reference, resolve it
+	if (isTokenRef(resolvedValue)) {
+		const [isNestedResolvedValueOk, nestedResolvedValueErr, nestedResolvedValue] = resolveTokenRef(
+			resolvedValue,
+			{
+				tokenMap
+			}
+		);
+		if (!isNestedResolvedValueOk) {
+			return Err(nestedResolvedValueErr.wrapWith('#ERR_RESOLVE_NESTED_TOKEN_REF'));
+		}
+		resolvedValue = nestedResolvedValue;
+	}
+
+	// Validate the resolved value if schema is provided
+	if (schema != null) {
+		const result = safeParse(schema, resolvedValue);
+		if (!result.success) {
+			const issues = result.issues.map((issue) => issue.message).join(', ');
+			return Err(
+				new AppError('#ERR_INVALID_TOKEN_VALUE', {
+					detail: `Token value validation failed for: ${sourceValue.key}${sourceValue.path != null ? `.${sourceValue.path}` : ''} - ${issues}`
+				})
+			);
+		}
+		resolvedValue = result.output;
+	}
+
+	return Ok(resolvedValue as GTokenValue);
 }
 
-export interface TResolveTokenRefOptions<GValue, GMixinTokenSet extends TMixinTokenSet> {
-	mixin?: {
-		tokenSet: GMixinTokenSet | undefined | null;
-		mapToTokenValue: (key: string, tokenSet?: GMixinTokenSet) => GValue | undefined;
-	};
-	variable?: {
-		tokenMap: Record<string, TVariableToken> | undefined | null;
-		expectedType?: 'string' | 'number' | 'boolean';
-	};
+export interface TResolveTokenRefOptions<GTokenValue> {
+	tokenMap?: Record<TToken['key'], TToken>;
+	schema?: BaseSchema<GTokenValue, unknown, BaseIssue<unknown>>;
+}
+
+function getNestedProperty(
+	obj: unknown,
+	path: string,
+	tokenMap?: Record<TToken['key'], TToken>
+): TResult<unknown, AppError> {
+	const pathParts = path.split('.');
+	let current: unknown = obj;
+
+	for (const key of pathParts) {
+		// Check if current value is a token reference and resolve it
+		if (isTokenRef(current)) {
+			const [isResolvedOk, resolvedErr, resolved] = resolveTokenRef(current, { tokenMap });
+			if (!isResolvedOk) {
+				return Err(
+					resolvedErr.wrapWith('#ERR_PATH_NOT_FOUND', {
+						detail: `Path '${path}' not found - failed at key: ${key}`
+					})
+				);
+			}
+			current = resolved;
+		}
+
+		// Navigate to the next property
+		if (current != null && typeof current === 'object' && key in current) {
+			current = (current as Record<string, unknown>)[key];
+		} else {
+			return Err(
+				new AppError('#ERR_PATH_NOT_FOUND', {
+					detail: `Path '${path}' not found - failed at key: ${key}`
+				})
+			);
+		}
+	}
+
+	return Ok(current);
 }

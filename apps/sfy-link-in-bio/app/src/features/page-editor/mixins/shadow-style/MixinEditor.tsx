@@ -1,49 +1,41 @@
 import { deepCopy } from '@blgc/utils';
 import {
 	isTokenRef,
-	TMixinTokenSet,
-	tokenRef,
+	mapTokenRef,
 	TShadowStyleMixin,
-	TShadowStyleToken
+	TTokenRef,
+	TUnreferenceTop
 } from '@repo/editor';
 import { Button, Text } from '@shopify/polaris';
 import { useCompute } from 'feature-react';
 import { TState } from 'feature-state';
 import React from 'react';
+import { unwrapOrUndefined } from 'tuple-result';
 import { Badge, LinkIcon, LinkOffIcon, PolarisMinusIcon, PolarisPlusIcon } from '@/components';
 import { useMapState } from '@/hooks';
-import { TokenActionOverlay, TokenColorInput, TokenTextInput } from '../../components';
-import { TPageEditor } from '../../lib';
+import {
+	TokenActionOverlay,
+	TokenColorInput,
+	TokenKeyTooltip,
+	TokenTextInput
+} from '../../components';
+import { resolveTokenRef, TPageEditor } from '../../lib';
 
-export const ShadowStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
-	props: TShadowStyleMixinEditorProps<GTokenSet>
-) => {
-	const {
-		state,
-		tokenSet,
-		tokenRefKey = 'default',
-		mapToToken,
-		disabledTokenLink = false,
-		editor,
-		disabledSpread = false
-	} = props;
+export const ShadowStyleMixinEditor = (props: TShadowStyleMixinEditorProps) => {
+	const { state, onLinkToken, disabledTokenLink = false, editor, disabledSpread = false } = props;
 
 	const isLinked = useCompute(state, ({ value }) => isTokenRef(value), []);
 	const isSet = useCompute(
 		state,
-		({ value }) => {
-			if (isTokenRef(value)) {
-				return mapToToken?.(tokenRefKey, tokenSet?._v) != null;
-			}
-			return value != null;
-		},
-		[]
+		({ value }) =>
+			unwrapOrUndefined(resolveTokenRef(value, { tokenMap: editor.tokenMap._v })) != null,
+		[editor]
 	);
 
 	const colorState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return baseValue;
+				return mapTokenRef(baseValue, 'color');
 			}
 			return baseValue?.color;
 		},
@@ -62,7 +54,7 @@ export const ShadowStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 	const blurState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return baseValue;
+				return mapTokenRef(baseValue, 'blur');
 			}
 			return baseValue?.blur;
 		},
@@ -81,7 +73,7 @@ export const ShadowStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 	const spreadState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return baseValue;
+				return mapTokenRef(baseValue, 'spread');
 			}
 			return baseValue?.spread;
 		},
@@ -100,7 +92,7 @@ export const ShadowStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 	const offsetXState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return baseValue;
+				return mapTokenRef(baseValue, 'offsetX');
 			}
 			return baseValue?.offsetX;
 		},
@@ -119,7 +111,7 @@ export const ShadowStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 	const offsetYState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return baseValue;
+				return mapTokenRef(baseValue, 'offsetY');
 			}
 			return baseValue?.offsetY;
 		},
@@ -141,19 +133,23 @@ export const ShadowStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 	// =========================================================================
 
 	const handleAddShadow = React.useCallback(() => {
-		const tokenValue = mapToToken?.(tokenRefKey, tokenSet?._v);
-		state._v =
-			tokenValue != null
-				? deepCopy(tokenValue)
-				: {
-						color: { r: 0, g: 0, b: 0, a: 0.1 },
-						offsetX: 0,
-						offsetY: 4,
-						blur: 6,
-						spread: disabledSpread ? 0 : -1
-					};
-		state._notify();
-	}, [mapToToken, tokenSet, state, disabledSpread, tokenRefKey]);
+		const [isResolvedTokenOk, , resolvedToken] = resolveTokenRef(state._v, {
+			tokenMap: editor.tokenMap._v
+		});
+		if (isResolvedTokenOk) {
+			state._v =
+				resolvedToken != null
+					? deepCopy(resolvedToken)
+					: {
+							color: { r: 0, g: 0, b: 0, a: 0.1 },
+							offsetX: 0,
+							offsetY: 4,
+							blur: 6,
+							spread: disabledSpread ? 0 : -1
+						};
+			state._notify();
+		}
+	}, [editor, state, disabledSpread]);
 
 	const handleRemoveShadow = React.useCallback(() => {
 		state._v = null;
@@ -162,19 +158,24 @@ export const ShadowStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 
 	const handleToggleTokenLink = React.useCallback(() => {
 		if (isLinked) {
-			const tokenValue = mapToToken?.(tokenRefKey, tokenSet?._v);
-			if (tokenValue !== undefined) {
-				state._v = deepCopy(tokenValue);
+			const [isResolvedTokenOk, , resolvedToken] = resolveTokenRef(state._v, {
+				tokenMap: editor.tokenMap._v
+			});
+			if (isResolvedTokenOk) {
+				state._v = deepCopy(resolvedToken);
 				state._notify();
 			}
 		} else {
-			state._v = tokenRef('mixin', tokenRefKey);
-			state._notify();
+			const tokenRef = onLinkToken?.();
+			if (tokenRef != null) {
+				state._v = tokenRef;
+				state._notify();
+			}
 		}
-	}, [isLinked, state, mapToToken, tokenSet, tokenRefKey]);
+	}, [isLinked, state, editor, onLinkToken]);
 
 	const handleNavigateToToken = React.useCallback(() => {
-		editor.switchView('settings');
+		editor.switchView({ type: 'settings', view: { type: 'design', tab: 2 } });
 	}, [editor]);
 
 	// =========================================================================
@@ -210,6 +211,9 @@ export const ShadowStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 								Linked
 								<TokenActionOverlay
 									variant={'full-overlay'}
+									tooltipContent={
+										isTokenRef(state._v) ? <TokenKeyTooltip tokenKey={state._v.key} /> : undefined
+									}
 									onUnlink={handleToggleTokenLink}
 									onNavigateToToken={handleNavigateToToken}
 								/>
@@ -236,10 +240,12 @@ export const ShadowStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 					<TokenColorInput
 						label="Color"
 						state={colorState}
-						tokenSet={tokenSet}
-						tokenRefKey={tokenRefKey}
-						mapToTokenValue={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.color}
-						onLinkChange={() => {
+						tokenMap={editor.tokenMap}
+						onLinkToken={() => {
+							handleToggleTokenLink();
+							return { preventDefault: true };
+						}}
+						onUnlinkToken={() => {
 							handleToggleTokenLink();
 							return { preventDefault: true };
 						}}
@@ -255,12 +261,12 @@ export const ShadowStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 							max={96}
 							step={4}
 							state={blurState}
-							tokenSet={tokenSet}
-							tokenRefKey={tokenRefKey}
-							mapToTokenValue={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.blur}
-							mapToDisplay={(value) => value}
-							mapToInternal={(displayValue) => displayValue}
-							onLinkChange={() => {
+							tokenMap={editor.tokenMap}
+							onLinkToken={() => {
+								handleToggleTokenLink();
+								return { preventDefault: true };
+							}}
+							onUnlinkToken={() => {
 								handleToggleTokenLink();
 								return { preventDefault: true };
 							}}
@@ -275,12 +281,12 @@ export const ShadowStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 							max={48}
 							step={4}
 							state={spreadState}
-							tokenSet={tokenSet}
-							tokenRefKey={tokenRefKey}
-							mapToTokenValue={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.spread}
-							mapToDisplay={(value) => value}
-							mapToInternal={(displayValue) => displayValue}
-							onLinkChange={() => {
+							tokenMap={editor.tokenMap}
+							onLinkToken={() => {
+								handleToggleTokenLink();
+								return { preventDefault: true };
+							}}
+							onUnlinkToken={() => {
 								handleToggleTokenLink();
 								return { preventDefault: true };
 							}}
@@ -298,12 +304,12 @@ export const ShadowStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 							max={96}
 							step={4}
 							state={offsetXState}
-							tokenSet={tokenSet}
-							tokenRefKey={tokenRefKey}
-							mapToTokenValue={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.offsetX}
-							mapToDisplay={(value) => value}
-							mapToInternal={(displayValue) => displayValue}
-							onLinkChange={() => {
+							tokenMap={editor.tokenMap}
+							onLinkToken={() => {
+								handleToggleTokenLink();
+								return { preventDefault: true };
+							}}
+							onUnlinkToken={() => {
 								handleToggleTokenLink();
 								return { preventDefault: true };
 							}}
@@ -318,12 +324,12 @@ export const ShadowStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 							max={96}
 							step={4}
 							state={offsetYState}
-							tokenSet={tokenSet}
-							tokenRefKey={tokenRefKey}
-							mapToTokenValue={(tokenRef, tokenSet) => mapToToken?.(tokenRef, tokenSet)?.offsetY}
-							mapToDisplay={(value) => value}
-							mapToInternal={(displayValue) => displayValue}
-							onLinkChange={() => {
+							tokenMap={editor.tokenMap}
+							onLinkToken={() => {
+								handleToggleTokenLink();
+								return { preventDefault: true };
+							}}
+							onUnlinkToken={() => {
 								handleToggleTokenLink();
 								return { preventDefault: true };
 							}}
@@ -337,11 +343,9 @@ export const ShadowStyleMixinEditor = <GTokenSet extends TMixinTokenSet>(
 	);
 };
 
-interface TShadowStyleMixinEditorProps<GTokenSet extends TMixinTokenSet> {
+interface TShadowStyleMixinEditorProps {
 	state: TState<TShadowStyleMixin['value'], any>;
-	tokenSet?: TState<GTokenSet, any>;
-	tokenRefKey?: string;
-	mapToToken?: (ref: string, tokenSet?: GTokenSet) => TShadowStyleToken['value'] | undefined;
+	onLinkToken?: () => TTokenRef<TUnreferenceTop<TShadowStyleMixin['value']>>;
 	disabledTokenLink?: boolean;
 	editor: TPageEditor;
 	disabledSpread?: boolean;

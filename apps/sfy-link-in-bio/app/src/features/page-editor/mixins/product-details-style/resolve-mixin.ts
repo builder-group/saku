@@ -1,4 +1,4 @@
-import { TMixinTokenSet, TProductDetailsStyleMixin, TProductDetailsStyleToken } from '@repo/editor';
+import { TProductDetailsStyleMixin } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
 import { resolveTokenRef, TMixinResolveContext } from '../../lib';
@@ -11,90 +11,66 @@ import { resolveStrokeStyleMixin } from '../stroke-style';
 import { resolveTextStyleMixin } from '../text-style';
 import { TResolvedProductDetailsStyleMixin } from './types';
 
-export function resolveProductDetailsStyleMixin<GTokenSet extends TMixinTokenSet>(
+export function resolveProductDetailsStyleMixin(
 	productDetails: TProductDetailsStyleMixin['value'],
-	cx: TMixinResolveContext<TProductDetailsStyleToken['value'], GTokenSet>
+	cx: TMixinResolveContext
 ): TResult<TResolvedProductDetailsStyleMixin['value'], AppError> {
 	const [isResolvedProductDetailsOk, resolvedProductDetailsErr, resolvedProductDetails] =
 		resolveTokenRef(productDetails, {
-			mixin: { tokenSet: cx.mixinTokenSet, mapToTokenValue: cx.mapToMixinTokenValue }
+			tokenMap: cx.tokenMap
 		});
 	if (!isResolvedProductDetailsOk) {
 		return Err(resolvedProductDetailsErr.wrapWith('#ERR_RESOLVE_PRODUCT_DETAILS_STYLE'));
 	}
 
 	const [isResolvedAppearanceOk, resolvedAppearanceErr, resolvedAppearance] =
-		resolveAppearanceStyleMixin(resolvedProductDetails.appearance, {
-			...cx,
-			mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.appearance
-		});
+		resolveAppearanceStyleMixin(resolvedProductDetails.appearance, cx);
 	if (!isResolvedAppearanceOk) {
 		return Err(resolvedAppearanceErr.wrapWith('#ERR_RESOLVE_APPEARANCE_STYLE'));
 	}
 	const [isResolvedFillOk, resolvedFillErr, resolvedFill] = resolveFillStyleMixin(
 		resolvedProductDetails.fill,
-		{
-			...cx,
-			mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.fill
-		}
+		cx
 	);
 	if (!isResolvedFillOk) {
 		return Err(resolvedFillErr.wrapWith('#ERR_RESOLVE_FILL_STYLE'));
 	}
 	const [isResolvedStrokeOk, resolvedStrokeErr, resolvedStroke] = resolveStrokeStyleMixin(
 		resolvedProductDetails.stroke,
-		{
-			...cx,
-			mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.stroke
-		}
+		cx
 	);
 	if (!isResolvedStrokeOk) {
 		return Err(resolvedStrokeErr.wrapWith('#ERR_RESOLVE_STROKE_STYLE'));
 	}
 	const [isResolvedShadowOk, resolvedShadowErr, resolvedShadow] = resolveShadowStyleMixin(
 		resolvedProductDetails.shadow,
-		{
-			...cx,
-			mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.shadow
-		}
+		cx
 	);
 	if (!isResolvedShadowOk) {
 		return Err(resolvedShadowErr.wrapWith('#ERR_RESOLVE_SHADOW_STYLE'));
 	}
 	const [isResolvedXlTextOk, resolvedXlTextErr, resolvedXlText] = resolveTextStyleMixin(
 		resolvedProductDetails.textXl,
-		{
-			...cx,
-			mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.textXl
-		}
+		cx
 	);
 	if (!isResolvedXlTextOk) {
 		return Err(resolvedXlTextErr.wrapWith('#ERR_RESOLVE_XL_TEXT_STYLE'));
 	}
 	const [isResolvedTextOk, resolvedTextErr, resolvedText] = resolveTextStyleMixin(
 		resolvedProductDetails.text,
-		{
-			...cx,
-			mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.text
-		}
+		cx
 	);
 	if (!isResolvedTextOk) {
 		return Err(resolvedTextErr.wrapWith('#ERR_RESOLVE_TEXT_STYLE'));
 	}
 	const [isResolvedPrimaryButtonOk, resolvedPrimaryButtonErr, resolvedPrimaryButton] =
-		resolveButtonStyleMixin(resolvedProductDetails.buttonPrimary, {
-			...cx,
-			mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.buttonPrimary
-		});
+		resolveButtonStyleMixin(resolvedProductDetails.buttonPrimary, cx);
 	if (!isResolvedPrimaryButtonOk) {
 		return Err(resolvedPrimaryButtonErr.wrapWith('#ERR_RESOLVE_PRIMARY_BUTTON_STYLE'));
 	}
 	const [isResolvedImageOk, resolvedImageErr, resolvedImage] = resolveImageStyleMixin(
 		resolvedProductDetails.image,
-		{
-			...cx,
-			mapToMixinTokenValue: (ref, tokenSet) => cx.mapToMixinTokenValue(ref, tokenSet)?.image
-		}
+		cx
 	);
 	if (!isResolvedImageOk) {
 		return Err(resolvedImageErr.wrapWith('#ERR_RESOLVE_IMAGE_STYLE'));

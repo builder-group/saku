@@ -2,7 +2,6 @@ import { TMediaNode } from '@repo/editor';
 import { useCombinedCompute } from 'feature-react';
 import React from 'react';
 import { logger } from '@/environment';
-import { useTokenSetNotifier } from '../../../hooks';
 import { EditorSiteResolveContext, TNodeProps } from '../../../lib';
 import { resolveMediaNode } from '../resolve-node';
 import { ResolvedMediaNode } from './ResolvedNode';
@@ -10,16 +9,7 @@ import { ResolvedMediaNode } from './ResolvedNode';
 export const MediaNode = React.forwardRef<HTMLDivElement, TNodeProps<TMediaNode>>((props, ref) => {
 	const { nodeState, editor, ...divProps } = props;
 
-	const tokenSetNotifier = useTokenSetNotifier(editor, [
-		'autoLayout',
-		'appearance',
-		'fill',
-		'stroke',
-		'shadow',
-		'image'
-	]);
-
-	const node = useCombinedCompute([nodeState, tokenSetNotifier], ([{ value }]) => {
+	const node = useCombinedCompute([nodeState, editor.tokenMap], ([{ value }]) => {
 		const result = resolveMediaNode(value, {
 			site: new EditorSiteResolveContext(editor)
 		});
