@@ -3,8 +3,7 @@ import { boundary } from '@shopify/shopify-app-react-router/server';
 import { useFeatureState } from 'feature-react';
 import React from 'react';
 import { Err, Ok } from 'tuple-result';
-import { shopify, shopifyConfig } from '@/.server/environment';
-import { getSessionTokenFromRequest, redirectWithAuth } from '@/.server/lib';
+import { AppContext, shopifyConfig } from '@/.server/environment';
 import {
 	ClipboardButton,
 	FeedbackSection,
@@ -13,7 +12,7 @@ import {
 	QuickHelpSection,
 	SitePreview
 } from '@/components';
-import { appConfig, coreApiClient, logger } from '@/environment';
+import { appConfig, coreApiClient } from '@/environment';
 import { createShopifyTokenMiddleware, resultLoader, withResultLoader } from '@/lib';
 import { usePageEditorModal } from '@/routes/app.modal.page-editor.$/PageEditorModal';
 import { THeadersFunction } from '@/types';
@@ -244,79 +243,60 @@ export const headers: THeadersFunction = (headersArgs) => {
 	return boundary.headers(headersArgs);
 };
 
-export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async ({ request }) => {
-	const { session } = await shopify.authenticate.admin(request);
+export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(
+	async ({ request, context }) => {
+		const {
+			workspace,
+			shopify: {
+				sessionToken,
+				admin: { session }
+			}
+		} = context.get(AppContext);
 
-	const sessionToken = getSessionTokenFromRequest(request);
-	if (sessionToken == null) {
-		return Err({
-			code: '#ERR_UNAUTHORIZED' as const,
-			message: 'Unauthorized'
+		const url = new URL(request.url);
+		const shouldOpenEditor = url.searchParams.get('openEditor') === 'true';
+
+		// Fetch sites
+		const sitesResult = await coreApiClient.get('/v1/shopify/site', {
+			requestMiddlewares: [createShopifyTokenMiddleware(sessionToken)]
+		});
+		if (sitesResult.isErr()) {
+			return Err({
+				code: '#ERR_SERVER_ERROR' as const,
+				message: 'Failed to fetch site data'
+			}).toArray();
+		}
+
+		const site =
+			sitesResult.value.data.map((site) => ({
+				id: site.id,
+				handle: site.handle,
+				url: `${shopifyConfig.url(session.shop)}/${site.handle}`,
+				proxyUrl: `${shopifyConfig.proxy.url(session.shop)}/${site.handle}`,
+				displayName: site.displayName,
+				updatedAt: site.updatedAt
+			}))[0] ?? null;
+		if (site == null) {
+			return Err({
+				code: '#ERR_NOT_FOUND' as const,
+				message: 'No site found'
+			}).toArray();
+		}
+
+		return Ok({
+			site: {
+				id: site.id,
+				handle: site.handle,
+				url: site.url,
+				platformUrl: `https://saku.so/w/${workspace.handle}/${site.handle}`,
+				proxyUrl: site.proxyUrl,
+				displayName: site.displayName,
+				updatedAt: site.updatedAt
+			},
+			shouldOpenEditor
 		}).toArray();
 	}
-
-	const url = new URL(request.url);
-	const shouldOpenEditor = url.searchParams.get('openEditor') === 'true';
-
-	// 1. Check workspace onboarding status
-	const workspaceResult = await coreApiClient.get('/v1/shopify/workspace', {
-		requestMiddlewares: [createShopifyTokenMiddleware(sessionToken)]
-	});
-	if (workspaceResult.isErr()) {
-		logger.error('Failed to fetch workspace', workspaceResult.error);
-		return Err({
-			code: '#ERR_SERVER_ERROR' as const,
-			message: 'Failed to fetch workspace data'
-		}).toArray();
-	}
-
-	const workspace = workspaceResult.value.data;
-
-	// 2. Check if onboarding is needed
-	if (workspace.onboardingCompletedAt == null) {
-		throw redirectWithAuth(request, '/app/onboarding');
-	}
-
-	// 3. Onboarding complete - fetch sites
-	const sitesResult = await coreApiClient.get('/v1/shopify/site', {
-		requestMiddlewares: [createShopifyTokenMiddleware(sessionToken)]
-	});
-	if (sitesResult.isErr()) {
-		return Err({
-			code: '#ERR_SERVER_ERROR' as const,
-			message: 'Failed to fetch site data'
-		}).toArray();
-	}
-
-	const site =
-		sitesResult.value.data.map((site) => ({
-			id: site.id,
-			handle: site.handle,
-			url: `${shopifyConfig.url(session.shop)}/${site.handle}`,
-			proxyUrl: `${shopifyConfig.proxy.url(session.shop)}/${site.handle}`,
-			displayName: site.displayName,
-			updatedAt: site.updatedAt
-		}))[0] ?? null;
-	if (site == null) {
-		return Err({
-			code: '#ERR_NOT_FOUND' as const,
-			message: 'No site found'
-		}).toArray();
-	}
-
-	return Ok({
-		site: {
-			id: site.id,
-			handle: site.handle,
-			url: site.url,
-			platformUrl: `https://saku.so/w/${workspace.handle}/${site.handle}`,
-			proxyUrl: site.proxyUrl,
-			displayName: site.displayName,
-			updatedAt: site.updatedAt
-		},
-		shouldOpenEditor
-	}).toArray();
-});
+);
 
 interface TErrorLoaderData {
 	code: `#ERR_${string}`;

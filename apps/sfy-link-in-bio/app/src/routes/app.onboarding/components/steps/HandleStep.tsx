@@ -88,7 +88,7 @@ export const HandleStep: React.FC<THandleStepProps> = (props) => {
 	return (
 		<StepLayout
 			icon={<LinkIcon className="size-4" />}
-			title="Choose your page handle"
+			title="Choose page handle"
 			description="This will be the URL path for your bio page"
 			contentClassName="flex flex-col gap-6"
 		>

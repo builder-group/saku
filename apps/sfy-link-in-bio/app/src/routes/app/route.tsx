@@ -1,19 +1,31 @@
-import { shortId } from '@blgc/utils';
+import { shortId, sleep } from '@blgc/utils';
 import polarisStyles from '@shopify/polaris/build/esm/styles.css?url';
 import polarisTranslations from '@shopify/polaris/locales/en.json';
 import { boundary } from '@shopify/shopify-app-react-router/server';
 import React from 'react';
-import { Link, Outlet, useLoaderData, useLocation, useRouteError } from 'react-router';
+import {
+	Link,
+	MiddlewareFunction,
+	Outlet,
+	redirect,
+	useLoaderData,
+	useLocation,
+	useRouteError
+} from 'react-router';
 import { unwrapOr } from 'tuple-result';
-import { shopify, shopifyConfig } from '@/.server/environment';
-import { getSessionTokenFromRequest } from '@/.server/lib';
+import { AppContext, shopify, shopifyConfig } from '@/.server/environment';
+import { getSessionTokenFromRequest, redirectWithAuth } from '@/.server/lib';
 import {
 	EmbeddedAppProvider,
 	TEmbeddedAppProviderI18n,
 	TEmbeddedAppProviderUserContext
 } from '@/components';
-import { appConfig } from '@/environment';
-import { checkOnboardingStatus, createDisplayNameFromShop } from '@/lib';
+import { appConfig, coreApiClient, logger } from '@/environment';
+import {
+	checkOnboardingStatus,
+	createDisplayNameFromShop,
+	createShopifyTokenMiddleware
+} from '@/lib';
 import { THeadersFunction, TLoaderFunction } from '@/types';
 
 const Page: React.FC = () => {
@@ -100,3 +112,53 @@ interface TLoaderData {
 	userContext: TEmbeddedAppProviderUserContext;
 	completedOnboarding: boolean;
 }
+
+export const middleware: MiddlewareFunction[] = [
+	async ({ request, context }) => {
+		const url = new URL(request.url);
+		const shopifyAdminCx = await shopify.authenticate.admin(request);
+
+		// Extract session token from request
+		const sessionToken = getSessionTokenFromRequest(request);
+		if (sessionToken == null) {
+			logger.error('[app-middleware] No session token provided');
+			throw redirect('/auth/login');
+		}
+
+		// Try to get workspace
+		const [isWorkspaceOk, workspaceErr, workspaceResponse] = await coreApiClient.get(
+			'/v1/shopify/workspace',
+			{
+				requestMiddlewares: [createShopifyTokenMiddleware(sessionToken)]
+			}
+		);
+		if (!isWorkspaceOk) {
+			logger.error('[app-middleware] Could not get workspace', workspaceErr);
+
+			// Check redirect count to prevent infinite loops
+			const redirectCount = parseInt(url.searchParams.get('redirect_count') ?? '0', 10);
+			if (redirectCount >= 5) {
+				logger.error('[app-middleware] Max redirect attempts reached, redirecting to login');
+				throw redirect('/auth/login');
+			}
+
+			// Redirect to /app to retry - workspace might still be creating in background
+			const redirectUrl = new URL('/app', url.origin);
+			redirectUrl.searchParams.set('redirect_count', String(redirectCount + 1));
+			await sleep(Math.min(Math.pow(2, redirectCount) * 500, 4000)); // Exponential backoff: 500ms, 1s, 2s, 4s
+			throw redirect(redirectUrl.pathname + redirectUrl.search);
+		}
+		const workspace = workspaceResponse.data;
+
+		// Redirect to onboarding if not completed and not already on onboarding route
+		if (!url.pathname.endsWith('/app/onboarding') && workspace.onboardingCompletedAt == null) {
+			logger.error('[app-middleware] Onboarding not complete');
+			throw redirectWithAuth(request, '/app/onboarding');
+		}
+
+		context.set(AppContext, {
+			workspace,
+			shopify: { sessionToken, admin: shopifyAdminCx }
+		});
+	}
+];

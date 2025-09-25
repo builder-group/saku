@@ -5,7 +5,7 @@ import { Modal, TitleBar, useAppBridge } from '@shopify/app-bridge-react';
 import { Button, Text } from '@shopify/polaris';
 import React from 'react';
 import { Err, Ok } from 'tuple-result';
-import { shopify } from '@/.server/environment';
+import { AppContext } from '@/.server/environment';
 import { AccordionSection, PolarisArrowLeftIcon, PricingCard, useCrisp } from '@/components';
 import { appConfig } from '@/environment';
 import { getMantleClient, isMantleError, resultLoader, withResultLoader } from '@/lib';
@@ -284,8 +284,12 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 
 export default Page;
 
-export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async ({ request }) => {
-	const { session } = await shopify.authenticate.admin(request);
+export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async ({ context }) => {
+	const {
+		shopify: {
+			admin: { session }
+		}
+	} = context.get(AppContext);
 	const customerApiToken = session.additionalData?.mantleApiToken;
 	if (customerApiToken == null) {
 		return Err({

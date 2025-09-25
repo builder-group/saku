@@ -5,12 +5,11 @@ import { boundary } from '@shopify/shopify-app-react-router/server';
 import React from 'react';
 import { ShouldRevalidateFunction, useNavigate, useSearchParams } from 'react-router';
 import { Err, Ok } from 'tuple-result';
-import { shopify } from '@/.server/environment';
-import { getSessionTokenFromRequest, redirectWithAuth } from '@/.server/lib';
+import { AppContext } from '@/.server/environment';
 import { useCrisp } from '@/components';
 import { appConfig, coreApiClient } from '@/environment';
 import { blankPreset } from '@/features/page-editor/.server';
-import { createShopifyTokenMiddleware, resultLoader, withResultLoader } from '@/lib';
+import { resultLoader, withResultLoader } from '@/lib';
 import { THeadersFunction } from '@/types';
 import {
 	AccountConnectionStep,
@@ -48,7 +47,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 				presets,
 				crisp: crisp ?? undefined
 			});
-		}, [shopifyBridge, shop, presets, crisp]);
+		}, [shopifyBridge, shop, defaultHandle, presets, crisp]);
 
 		const [stepType, setStepType] = React.useState<TOnboardingStep['type']>('welcome');
 
@@ -144,24 +143,13 @@ export const shouldRevalidate: ShouldRevalidateFunction = () => {
 	return false;
 };
 
-export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async ({ request }) => {
-	const { session } = await shopify.authenticate.admin(request);
-
-	const sessionToken = getSessionTokenFromRequest(request);
-	if (sessionToken == null) {
-		return Err({
-			code: '#ERR_UNAUTHORIZED' as const,
-			message: 'Unauthorized'
-		}).toArray();
-	}
-
-	// Check if already onboarded
-	const workspaceResult = await coreApiClient.get('/v1/shopify/workspace', {
-		requestMiddlewares: [createShopifyTokenMiddleware(sessionToken)]
-	});
-	if (workspaceResult.isOk() && workspaceResult.value.data.onboardingCompletedAt != null) {
-		throw redirectWithAuth(request, '/app');
-	}
+export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async ({ context }) => {
+	const {
+		shopify: {
+			sessionToken,
+			admin: { session }
+		}
+	} = context.get(AppContext);
 
 	// Fetch shop overview to customize onboarding experience
 	const shopOverviewResult = await coreApiClient.get('/v1/shopify/shop/overview', {

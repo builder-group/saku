@@ -4,7 +4,7 @@ import { Text } from '@shopify/polaris';
 import { boundary } from '@shopify/shopify-app-react-router/server';
 import React from 'react';
 import { Err, Ok } from 'tuple-result';
-import { shopify, shopifyConfig } from '@/.server/environment';
+import { AppContext, shopifyConfig } from '@/.server/environment';
 import { coreApiClient } from '@/environment';
 import { createPageEditor, PageEditor } from '@/features/page-editor';
 import { createHandleFromShop, resultLoader, withResultLoader } from '@/lib';
@@ -51,42 +51,49 @@ export const headers: THeadersFunction = (headersArgs) => {
 	return boundary.headers(headersArgs);
 };
 
-export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async ({ request }) => {
-	const { session } = await shopify.authenticate.admin(request);
-	const { shop } = session;
-	const url = new URL(request.url);
-	const siteId = url.searchParams.get('siteId');
-	if (siteId == null) {
-		return Err({
-			code: '#ERR_BAD_REQUEST' as const,
-			message: 'No siteId provided in URL'
+export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(
+	async ({ request, context }) => {
+		const {
+			shopify: {
+				admin: {
+					session: { shop }
+				}
+			}
+		} = context.get(AppContext);
+		const url = new URL(request.url);
+		const siteId = url.searchParams.get('siteId');
+		if (siteId == null) {
+			return Err({
+				code: '#ERR_BAD_REQUEST' as const,
+				message: 'No siteId provided in URL'
+			}).toArray();
+		}
+
+		const siteResult = await coreApiClient.get('/v1/site/{siteId}', {
+			pathParams: {
+				siteId
+			}
+		});
+		if (siteResult.isErr()) {
+			return Err({
+				code: '#ERR_SERVER_ERROR' as const,
+				message: siteResult.error.message ?? 'Unknown error occurred'
+			}).toArray();
+		}
+		const site = siteResult.value.data;
+		const flatSite = site.content as unknown as TFlatSite;
+
+		return Ok({
+			site: {
+				id: site.id,
+				handle: site.handle,
+				url: `${shopifyConfig.proxy.url(shop)}/${site.handle}`,
+				platformUrl: `https://saku.so/w/${createHandleFromShop(shop)}/${site.handle}`,
+				content: flatSite
+			}
 		}).toArray();
 	}
-
-	const siteResult = await coreApiClient.get('/v1/site/{siteId}', {
-		pathParams: {
-			siteId
-		}
-	});
-	if (siteResult.isErr()) {
-		return Err({
-			code: '#ERR_SERVER_ERROR' as const,
-			message: siteResult.error.message ?? 'Unknown error occurred'
-		}).toArray();
-	}
-	const site = siteResult.value.data;
-	const flatSite = site.content as unknown as TFlatSite;
-
-	return Ok({
-		site: {
-			id: site.id,
-			handle: site.handle,
-			url: `${shopifyConfig.proxy.url(shop)}/${site.handle}`,
-			platformUrl: `https://saku.so/w/${createHandleFromShop(shop)}/${site.handle}`,
-			content: flatSite
-		}
-	}).toArray();
-});
+);
 
 interface TErrorLoaderData {
 	code: `#ERR_${string}`;
