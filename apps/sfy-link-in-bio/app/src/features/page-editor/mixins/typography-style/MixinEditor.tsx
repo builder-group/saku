@@ -55,7 +55,7 @@ export const TypographyStyleMixinEditor = (props: TTypographyStyleMixinEditorPro
 					path: mappedValue?.path?.replace('.family', '') as TTokenPaths<TFontToken>
 				};
 			} else {
-				const font = editor.registerFontFamily(mappedValue as string);
+				const font = editor.registerFont({ family: mappedValue });
 				if (font != null) {
 					unpackedBaseValue.font = font;
 				}

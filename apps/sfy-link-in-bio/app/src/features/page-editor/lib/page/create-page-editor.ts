@@ -25,7 +25,7 @@ import React from 'react';
 import { appConfig, coreApiClient, logger } from '@/environment';
 import { createShopifyTokenMiddleware, requestReview, TBreakpoint } from '@/lib';
 import { TSettingsSectionType, TViewType } from '../../environment';
-import { createNodeState, getNodeAssetHashes, nodeMetadataRegistry, TNodeState } from '../node';
+import { createNodeState, nodeAssetHashRegistry, nodeMetadataRegistry, TNodeState } from '../node';
 import { createPageContext, TPageContext } from './create-page-context';
 
 export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
@@ -397,24 +397,24 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 			return copyNodeRecursive(nodeId, nodeState.parentId, nodeIndex + 1);
 		},
 
-		registerFontFamily(fontFamily) {
-			const fontMetadata = getFontMetadataByFamily(fontFamily);
+		registerFont(font) {
+			const fontMetadata = getFontMetadataByFamily(font.family);
 			if (fontMetadata == null) {
 				return null;
 			}
 
-			// Skip non-google fonts (like system fonts)
+			// Skip non-google fonts (for now)
 			if (fontMetadata.googleFont == null) {
 				return null;
 			}
 
 			// Check if font already registered
-			const hash = getFontHash(fontMetadata.font);
+			const hash = getFontHash(font);
 			if (this.assetsMap[hash] != null) {
-				return fontMetadata.font as TFont;
+				return font;
 			}
 
-			// Register the font
+			// Register & load the font
 			this.assetsMap[hash] = {
 				id: createId('asset'),
 				type: 'font',
@@ -424,12 +424,11 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 					type: 'url',
 					url: `https://fonts.googleapis.com/css2?family=${fontMetadata.googleFont}&display=swap`
 				},
-				font: fontMetadata.font
+				font
 			};
-
 			this.loadFont(hash);
 
-			return fontMetadata.font as TFont;
+			return font;
 		},
 
 		getImageAsset(hash) {
@@ -510,13 +509,26 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 		},
 
 		cleanupAssets() {
-			// Get all asset hashes used by nodes
-			const usedHashes = Object.values(this.nodeMap).reduce((acc, nodeState) => {
-				const node = nodeState._v;
-				const hashes = getNodeAssetHashes(node);
-				hashes.forEach((hash) => acc.add(hash));
-				return acc;
-			}, new Set<TAssetHash>());
+			const usedHashes = new Set<TAssetHash>();
+
+			// Loop through all nodes to collect asset hashes
+			for (const nodeState of Object.values(this.nodeMap)) {
+				nodeAssetHashRegistry[nodeState._v.type]?.(nodeState._v as any).forEach((hash) =>
+					usedHashes.add(hash)
+				);
+			}
+
+			// Loop through all tokens to collect font hashes
+			for (const token of Object.values(this.tokenMap._v)) {
+				switch (token.type) {
+					case 'font': {
+						usedHashes.add(getFontHash(token.value));
+						break;
+					}
+					default:
+					// do nothing
+				}
+			}
 
 			// Find unused assets
 			const assetsToRemove: TAssetHash[] = [];
@@ -533,7 +545,7 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 				// Remove from assets map
 				delete this.assetsMap[hash];
 
-				// Remove from DOM if it's a font
+				// Remove from DOM if its a font
 				if (asset?.type === 'font') {
 					const linkElement = document.querySelector(`link[data-font-id="${hash}"]`);
 					if (linkElement != null) {
@@ -734,7 +746,7 @@ export interface TPageEditor {
 	copyNode: (nodeId: TNodeId) => TNodeId | null;
 
 	getFontAsset: (hash: TAssetHash | undefined | null) => TFontAsset | null;
-	registerFontFamily: (fontFamily: string) => TFont | null;
+	registerFont: (font: TFont) => TFont | null;
 	loadFont: (fontOrHash: TFont | TAssetHash) => void;
 	loadFonts: () => void;
 

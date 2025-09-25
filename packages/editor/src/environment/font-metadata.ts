@@ -5,19 +5,19 @@ export const fontMetadataMap = {
 		name: 'Inter',
 		font: { family: 'Inter', weight: 400, style: 'normal' },
 		category: 'sans-serif',
-		googleFont: 'Inter:wght@400;500;600;700'
+		googleFont: 'Inter:wght@400;700'
 	} satisfies TFontMetadata,
 	roboto: {
 		name: 'Roboto',
 		font: { family: 'Roboto', weight: 400, style: 'normal' },
 		category: 'sans-serif',
-		googleFont: 'Roboto:wght@400;500;700'
+		googleFont: 'Roboto:wght@400;700'
 	} satisfies TFontMetadata,
 	openSans: {
 		name: 'Open Sans',
 		font: { family: 'Open Sans', weight: 400, style: 'normal' },
 		category: 'sans-serif',
-		googleFont: 'Open+Sans:wght@400;600;700'
+		googleFont: 'Open+Sans:wght@400;700'
 	} satisfies TFontMetadata,
 	lato: {
 		name: 'Lato',
@@ -29,13 +29,13 @@ export const fontMetadataMap = {
 		name: 'Montserrat',
 		font: { family: 'Montserrat', weight: 400, style: 'normal' },
 		category: 'sans-serif',
-		googleFont: 'Montserrat:wght@400;600;700'
+		googleFont: 'Montserrat:wght@400;700'
 	} satisfies TFontMetadata,
 	poppins: {
 		name: 'Poppins',
 		font: { family: 'Poppins', weight: 400, style: 'normal' },
 		category: 'sans-serif',
-		googleFont: 'Poppins:wght@400;500;600;700'
+		googleFont: 'Poppins:wght@400;700'
 	} satisfies TFontMetadata,
 	playfairDisplay: {
 		name: 'Playfair Display',
@@ -65,7 +65,7 @@ export const fontMetadataMap = {
 		name: 'Cairo',
 		font: { family: 'Cairo', weight: 400, style: 'normal' },
 		category: 'sans-serif',
-		googleFont: 'Cairo:wght@400;600;700'
+		googleFont: 'Cairo:wght@400;700'
 	} satisfies TFontMetadata,
 	karla: {
 		name: 'Karla',
@@ -83,7 +83,7 @@ export const fontMetadataMap = {
 		name: 'Mulish',
 		font: { family: 'Mulish', weight: 400, style: 'normal' },
 		category: 'sans-serif',
-		googleFont: 'Mulish:wght@400;600;700'
+		googleFont: 'Mulish:wght@400;700'
 	} satisfies TFontMetadata,
 	vollkorn: {
 		name: 'Vollkorn',

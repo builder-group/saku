@@ -51,7 +51,7 @@ export const themes: TTheme[] = [
 			errorContent: hexToRgba('#ffffff')
 		},
 		typography: {
-			heading: { fontFamily: 'Inter', fontWeight: 600 },
+			heading: { fontFamily: 'Inter', fontWeight: 700 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
 		radius: { box: 12, field: 8, selector: 6 },
@@ -85,7 +85,7 @@ export const themes: TTheme[] = [
 			errorContent: hexToRgba('#ffffff')
 		},
 		typography: {
-			heading: { fontFamily: 'Inter', fontWeight: 600 },
+			heading: { fontFamily: 'Inter', fontWeight: 700 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
 		radius: { box: 12, field: 8, selector: 6 },
@@ -119,7 +119,7 @@ export const themes: TTheme[] = [
 			errorContent: hexToRgba('#ffffff')
 		},
 		typography: {
-			heading: { fontFamily: 'Poppins', fontWeight: 600 },
+			heading: { fontFamily: 'Poppins', fontWeight: 700 },
 			text: { fontFamily: 'Open Sans', fontWeight: 400 }
 		},
 		radius: { box: 20, field: 16, selector: 12 },
@@ -159,7 +159,7 @@ export const themes: TTheme[] = [
 			errorContent: hexToRgba('#ffffff')
 		},
 		typography: {
-			heading: { fontFamily: 'Montserrat', fontWeight: 600 },
+			heading: { fontFamily: 'Montserrat', fontWeight: 700 },
 			text: { fontFamily: 'Lato', fontWeight: 400 }
 		},
 		radius: { box: 16, field: 12, selector: 8 },
@@ -199,7 +199,7 @@ export const themes: TTheme[] = [
 			errorContent: hexToRgba('#ffffff')
 		},
 		typography: {
-			heading: { fontFamily: 'Karla', fontWeight: 600 },
+			heading: { fontFamily: 'Karla', fontWeight: 700 },
 			text: { fontFamily: 'Karla', fontWeight: 400 }
 		},
 		radius: { box: 16, field: 12, selector: 8 },
@@ -233,7 +233,7 @@ export const themes: TTheme[] = [
 			errorContent: hexToRgba('#ffffff')
 		},
 		typography: {
-			heading: { fontFamily: 'Roboto', fontWeight: 600 },
+			heading: { fontFamily: 'Roboto', fontWeight: 700 },
 			text: { fontFamily: 'Roboto', fontWeight: 400 }
 		},
 		radius: { box: 8, field: 6, selector: 4 },
@@ -273,7 +273,7 @@ export const themes: TTheme[] = [
 			errorContent: hexToRgba('#2d1b69')
 		},
 		typography: {
-			heading: { fontFamily: 'B612', fontWeight: 600 },
+			heading: { fontFamily: 'B612', fontWeight: 700 },
 			text: { fontFamily: 'B612', fontWeight: 400 }
 		},
 		size: {
@@ -317,7 +317,7 @@ export const themes: TTheme[] = [
 			errorContent: hexToRgba('#2d1b69')
 		},
 		typography: {
-			heading: { fontFamily: 'Playfair Display', fontWeight: 600 },
+			heading: { fontFamily: 'Playfair Display', fontWeight: 700 },
 			text: { fontFamily: 'Lora', fontWeight: 400 }
 		},
 		size: {
@@ -361,7 +361,7 @@ export const themes: TTheme[] = [
 			errorContent: hexToRgba('#000000')
 		},
 		typography: {
-			heading: { fontFamily: 'B612', fontWeight: 600 },
+			heading: { fontFamily: 'B612', fontWeight: 700 },
 			text: { fontFamily: 'B612', fontWeight: 400 }
 		},
 		radius: { box: 0, field: 0, selector: 0 },
@@ -401,7 +401,7 @@ export const themes: TTheme[] = [
 			errorContent: hexToRgba('#ffffff')
 		},
 		typography: {
-			heading: { fontFamily: 'Playfair Display', fontWeight: 600 },
+			heading: { fontFamily: 'Playfair Display', fontWeight: 700 },
 			text: { fontFamily: 'Lora', fontWeight: 400 }
 		},
 		radius: { box: 20, field: 16, selector: 12 },
@@ -441,7 +441,7 @@ export const themes: TTheme[] = [
 			errorContent: hexToRgba('#ffffff')
 		},
 		typography: {
-			heading: { fontFamily: 'BioRhyme', fontWeight: 600 },
+			heading: { fontFamily: 'BioRhyme', fontWeight: 700 },
 			text: { fontFamily: 'BioRhyme', fontWeight: 400 }
 		},
 		size: {
@@ -485,7 +485,7 @@ export const themes: TTheme[] = [
 			errorContent: hexToRgba('#ffffff')
 		},
 		typography: {
-			heading: { fontFamily: 'Inter', fontWeight: 600 },
+			heading: { fontFamily: 'Inter', fontWeight: 700 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
 		size: {
@@ -529,7 +529,7 @@ export const themes: TTheme[] = [
 			errorContent: hexToRgba('#ffffff')
 		},
 		typography: {
-			heading: { fontFamily: 'Inter', fontWeight: 600 },
+			heading: { fontFamily: 'Inter', fontWeight: 700 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
 		size: {
@@ -573,7 +573,7 @@ export const themes: TTheme[] = [
 			errorContent: hexToRgba('#ffffff')
 		},
 		typography: {
-			heading: { fontFamily: 'Inter', fontWeight: 600 },
+			heading: { fontFamily: 'Inter', fontWeight: 700 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
 		size: {
@@ -617,7 +617,7 @@ export const themes: TTheme[] = [
 			errorContent: hexToRgba('#ffffff')
 		},
 		typography: {
-			heading: { fontFamily: 'Cairo', fontWeight: 600 },
+			heading: { fontFamily: 'Cairo', fontWeight: 700 },
 			text: { fontFamily: 'Cairo', fontWeight: 400 }
 		},
 		radius: { box: 0, field: 0, selector: 0 },
@@ -651,7 +651,7 @@ export const themes: TTheme[] = [
 			errorContent: hexToRgba('#7f1d1d')
 		},
 		typography: {
-			heading: { fontFamily: 'Mulish', fontWeight: 600 },
+			heading: { fontFamily: 'Mulish', fontWeight: 700 },
 			text: { fontFamily: 'Mulish', fontWeight: 400 }
 		},
 		radius: { box: 20, field: 16, selector: 12 },
@@ -685,7 +685,7 @@ export const themes: TTheme[] = [
 			errorContent: hexToRgba('#ffffff')
 		},
 		typography: {
-			heading: { fontFamily: 'Vollkorn', fontWeight: 600 },
+			heading: { fontFamily: 'Vollkorn', fontWeight: 700 },
 			text: { fontFamily: 'Vollkorn', fontWeight: 400 }
 		},
 		size: {
@@ -729,7 +729,7 @@ export const themes: TTheme[] = [
 			errorContent: hexToRgba('#ffffff')
 		},
 		typography: {
-			heading: { fontFamily: 'system-ui', fontWeight: 600 },
+			heading: { fontFamily: 'system-ui', fontWeight: 700 },
 			text: { fontFamily: 'system-ui', fontWeight: 400 }
 		},
 		radius: { box: 0, field: 0, selector: 0 },
@@ -769,7 +769,7 @@ export const themes: TTheme[] = [
 			errorContent: hexToRgba('#000000')
 		},
 		typography: {
-			heading: { fontFamily: 'Inter', fontWeight: 600 },
+			heading: { fontFamily: 'Inter', fontWeight: 700 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
 		radius: { box: 8, field: 6, selector: 4 },
@@ -809,7 +809,7 @@ export const themes: TTheme[] = [
 			errorContent: hexToRgba('#ffffff')
 		},
 		typography: {
-			heading: { fontFamily: 'Playfair Display', fontWeight: 600 },
+			heading: { fontFamily: 'Playfair Display', fontWeight: 700 },
 			text: { fontFamily: 'Lora', fontWeight: 400 }
 		},
 		size: {
@@ -853,7 +853,7 @@ export const themes: TTheme[] = [
 			errorContent: hexToRgba('#282a36')
 		},
 		typography: {
-			heading: { fontFamily: 'BioRhyme', fontWeight: 600 },
+			heading: { fontFamily: 'BioRhyme', fontWeight: 700 },
 			text: { fontFamily: 'BioRhyme', fontWeight: 400 }
 		},
 		size: {
@@ -897,7 +897,7 @@ export const themes: TTheme[] = [
 			errorContent: hexToRgba('#ffffff')
 		},
 		typography: {
-			heading: { fontFamily: 'Inter', fontWeight: 600 },
+			heading: { fontFamily: 'Inter', fontWeight: 700 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
 		size: {
@@ -941,7 +941,7 @@ export const themes: TTheme[] = [
 			errorContent: hexToRgba('#ffffff')
 		},
 		typography: {
-			heading: { fontFamily: 'Inter', fontWeight: 600 },
+			heading: { fontFamily: 'Inter', fontWeight: 700 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
 		size: {
@@ -979,7 +979,7 @@ export const themes: TTheme[] = [
 			errorContent: hexToRgba('#ffffff')
 		},
 		typography: {
-			heading: { fontFamily: 'Inter', fontWeight: 600 },
+			heading: { fontFamily: 'Inter', fontWeight: 700 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
 		radius: { box: 6, field: 4, selector: 2 },
@@ -1019,7 +1019,7 @@ export const themes: TTheme[] = [
 			errorContent: hexToRgba('#000000')
 		},
 		typography: {
-			heading: { fontFamily: 'B612', fontWeight: 600 },
+			heading: { fontFamily: 'B612', fontWeight: 700 },
 			text: { fontFamily: 'B612', fontWeight: 400 }
 		},
 		size: {
@@ -1057,7 +1057,7 @@ export const themes: TTheme[] = [
 			errorContent: hexToRgba('#ffffff')
 		},
 		typography: {
-			heading: { fontFamily: 'Inter', fontWeight: 600 },
+			heading: { fontFamily: 'Inter', fontWeight: 700 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
 		size: {
@@ -1101,7 +1101,7 @@ export const themes: TTheme[] = [
 			errorContent: hexToRgba('#0f172a')
 		},
 		typography: {
-			heading: { fontFamily: 'Inter', fontWeight: 600 },
+			heading: { fontFamily: 'Inter', fontWeight: 700 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
 		size: {
@@ -1145,7 +1145,7 @@ export const themes: TTheme[] = [
 			errorContent: hexToRgba('#1a1a1a')
 		},
 		typography: {
-			heading: { fontFamily: 'Inter', fontWeight: 600 },
+			heading: { fontFamily: 'Inter', fontWeight: 700 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
 		size: {
@@ -1189,7 +1189,7 @@ export const themes: TTheme[] = [
 			errorContent: hexToRgba('#ffffff')
 		},
 		typography: {
-			heading: { fontFamily: 'Inter', fontWeight: 600 },
+			heading: { fontFamily: 'Inter', fontWeight: 700 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
 		size: {
@@ -1233,7 +1233,7 @@ export const themes: TTheme[] = [
 			errorContent: hexToRgba('#1f2937')
 		},
 		typography: {
-			heading: { fontFamily: 'Inter', fontWeight: 600 },
+			heading: { fontFamily: 'Inter', fontWeight: 700 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
 		radius: { box: 12, field: 8, selector: 6 },
@@ -1273,7 +1273,7 @@ export const themes: TTheme[] = [
 			errorContent: hexToRgba('#2e3440')
 		},
 		typography: {
-			heading: { fontFamily: 'Inter', fontWeight: 600 },
+			heading: { fontFamily: 'Inter', fontWeight: 700 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
 		radius: { box: 12, field: 8, selector: 6 },
@@ -1313,7 +1313,7 @@ export const themes: TTheme[] = [
 			errorContent: hexToRgba('#ffffff')
 		},
 		typography: {
-			heading: { fontFamily: 'Inter', fontWeight: 600 },
+			heading: { fontFamily: 'Inter', fontWeight: 700 },
 			text: { fontFamily: 'Inter', fontWeight: 400 }
 		},
 		size: {

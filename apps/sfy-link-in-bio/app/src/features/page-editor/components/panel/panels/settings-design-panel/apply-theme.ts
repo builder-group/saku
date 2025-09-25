@@ -43,8 +43,14 @@ export function applyTheme(theme: TTheme, editor: TPageEditor) {
 	editor.tokenMap._notify();
 
 	// Register fonts
-	editor.registerFontFamily(theme.typography.heading.fontFamily);
-	editor.registerFontFamily(theme.typography.text.fontFamily);
+	editor.registerFont({
+		family: theme.typography.heading.fontFamily,
+		weight: theme.typography.heading.fontWeight
+	});
+	editor.registerFont({
+		family: theme.typography.text.fontFamily,
+		weight: theme.typography.text.fontWeight
+	});
 
 	// Apply page background directly to the root node
 	const rootNode = editor.getRootNode();
