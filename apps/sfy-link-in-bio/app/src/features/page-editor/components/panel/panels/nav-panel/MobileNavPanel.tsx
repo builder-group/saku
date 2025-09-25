@@ -14,8 +14,8 @@ export const MobileNavPanel: React.FC<TMobileNavPanelProps> = (props) => {
 	// =========================================================================
 
 	const handleSwitchView = React.useCallback(
-		(view: TViewType) => {
-			editor.switchView(view);
+		(viewType: TViewType) => {
+			editor.switchView({ type: viewType });
 		},
 		[editor]
 	);

@@ -13,7 +13,7 @@ export const PanelHeader: React.FC<TPanelHeaderProps> = (props) => {
 	// =========================================================================
 
 	const handlePreview = React.useCallback(() => {
-		editor.switchView('preview');
+		editor.switchView({ type: 'preview' });
 	}, [editor]);
 
 	// =========================================================================

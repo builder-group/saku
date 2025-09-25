@@ -68,9 +68,9 @@ export const SettingsNavPanel: React.FC<TSettingsNavPanelProps> = (props) => {
 
 	const handleSectionSelect = React.useCallback(
 		(section: TSettingsSectionType) => {
-			editor.switchSettingsSection(section === selectedSection ? null : section);
+			editor.switchSettingsView({ type: section });
 		},
-		[editor, selectedSection]
+		[editor]
 	);
 
 	const handleToggleCollapse = React.useCallback(() => {

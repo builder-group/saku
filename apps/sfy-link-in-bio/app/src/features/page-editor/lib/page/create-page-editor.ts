@@ -75,7 +75,8 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 		tokenMap: createState(site.content.tokens),
 
 		activeView: createState('layers' as TViewType),
-		activeSettingsSection: createState<TSettingsSectionType | null>('design'),
+		activeSettingsSection: createState<TSettingsSectionType>('design'),
+		activeDesignSettingsTab: createState(0),
 
 		isReady: createState(false),
 		isDraggingLayer: createState(false),
@@ -99,13 +100,30 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 		canvasContainerRef: React.createRef<HTMLDivElement>(),
 
 		switchView(view) {
-			this.activeView.set(view);
+			switch (view.type) {
+				case 'settings': {
+					this.activeView.set('settings');
+					this.switchSettingsView(view.view ?? { type: 'design' });
+					break;
+				}
+				default: {
+					this.activeView.set(view.type);
+				}
+			}
 			this.unselectNode();
-			this.switchSettingsSection('design');
 		},
 
-		switchSettingsSection(section) {
-			this.activeSettingsSection.set(section);
+		switchSettingsView(view) {
+			switch (view.type) {
+				case 'design': {
+					this.activeSettingsSection.set(view.type);
+					this.activeDesignSettingsTab.set(view.tab ?? 0);
+					break;
+				}
+				default: {
+					this.activeSettingsSection.set(view.type);
+				}
+			}
 		},
 
 		getRootNode() {
@@ -684,7 +702,8 @@ export interface TPageEditor {
 	tokenMap: TState<Record<TToken['key'], TToken>, []>;
 
 	activeView: TState<TViewType, []>;
-	activeSettingsSection: TState<TSettingsSectionType | null, []>;
+	activeSettingsSection: TState<TSettingsSectionType, []>;
+	activeDesignSettingsTab: TState<number, []>;
 
 	isReady: TState<boolean, []>;
 	isDraggingLayer: TState<boolean, []>;
@@ -697,8 +716,8 @@ export interface TPageEditor {
 	canvasRef: React.RefObject<HTMLDivElement>;
 	canvasContainerRef: React.RefObject<HTMLDivElement>;
 
-	switchView: (view: TViewType) => void;
-	switchSettingsSection: (section: TSettingsSectionType | null) => void;
+	switchView: (view: TSwitchView) => void;
+	switchSettingsView: (view: TSwitchSettingsView) => void;
 
 	getRootNode: () => TNodeState<TFlatPageNode>;
 	addNode: (node: TFlatNode, parentId?: TNodeId, index?: number) => TNodeId;
@@ -742,3 +761,21 @@ export interface TBoundingRect {
 	bottom: number;
 	right: number;
 }
+
+type TSwitchView =
+	| {
+			type: 'layers' | 'preview';
+	  }
+	| {
+			type: 'settings';
+			view?: TSwitchSettingsView;
+	  };
+
+type TSwitchSettingsView =
+	| {
+			type: 'metadata' | 'assets' | 'integrations';
+	  }
+	| {
+			type: 'design';
+			tab?: number;
+	  };

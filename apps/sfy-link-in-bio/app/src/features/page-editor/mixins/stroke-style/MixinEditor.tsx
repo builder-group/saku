@@ -115,7 +115,7 @@ export const StrokeStyleMixinEditor = (props: TStrokeStyleMixinEditorProps) => {
 	}, [isLinked, state, editor, onLinkToken]);
 
 	const handleNavigateToToken = React.useCallback(() => {
-		editor.switchView('settings');
+		editor.switchView({ type: 'settings', view: { type: 'design', tab: 2 } });
 	}, [editor]);
 
 	// =========================================================================
