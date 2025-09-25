@@ -45,13 +45,16 @@ type TFillMixin = TBaseMixin<'fill', { fills: TPaint[]; blendMode: string }>;
 type TLayoutMixin = TBaseMixin<'layout', { padding: number; width: number | 'auto' }>;
 
 // Nodes compose mixins for their specific needs
-type TProductNode = TNode<'product', [
-  TIdMixin,              // id: string
-  TVisibleMixin,        // visible: boolean  
-  TProductContentMixin, // content: { product: TProduct }
-  TFillMixin,           // fill: { fills: TPaint[]; blendMode: string }
-  TLayoutMixin          // layout: { padding: number; width: number | 'auto' }
-]>;
+type TProductNode = TNode<
+	'product',
+	[
+		TIdMixin, // id: string
+		TVisibleMixin, // visible: boolean
+		TProductContentMixin, // content: { product: TProduct }
+		TFillMixin, // fill: { fills: TPaint[]; blendMode: string }
+		TLayoutMixin // layout: { padding: number; width: number | 'auto' }
+	]
+>;
 ```
 
 ### Why mixed approach (flat core + abstracted specialized) instead of all flat or all abstracted?
@@ -66,27 +69,33 @@ type TProductNode = TNode<'product', [
 
 ```typescript
 // Simple node: Use flat core properties
-type TRectangleNode = TNode<'rectangle', [
-  TIdMixin,
-  TAppearanceStyleMixin,    // visible, opacity, borderRadius
-  TFillStyleMixin,          // fill paint and opacity
-  TStrokeStyleMixin,        // stroke width and color
-  TShadowStyleMixin         // shadow properties
-]>;
+type TRectangleNode = TNode<
+	'rectangle',
+	[
+		TIdMixin,
+		TAppearanceStyleMixin, // visible, opacity, borderRadius
+		TFillStyleMixin, // fill paint and opacity
+		TStrokeStyleMixin, // stroke width and color
+		TShadowStyleMixin // shadow properties
+	]
+>;
 
 // Complex node: Mix flat core + abstracted specialized
-type TProductNode = TNode<'product', [
-  TIdMixin,
-  // Core properties (flat - no conflicts)
-  TAppearanceStyleMixin,    // visible, opacity, borderRadius
-  TFillStyleMixin,          // fill paint and opacity
-  TStrokeStyleMixin,        // stroke width and color
-  TShadowStyleMixin,        // shadow properties
-  TAutoLayoutStyleMixin,        // basic padding/width
-  // Specialized properties (abstracted to avoid conflicts)
-  TTextStyleMixin,          // typography: { font, fontSize, textColor }
-  TCtaStyleMixin            // CTA-specific styling
-]>;
+type TProductNode = TNode<
+	'product',
+	[
+		TIdMixin,
+		// Core properties (flat - no conflicts)
+		TAppearanceStyleMixin, // visible, opacity, borderRadius
+		TFillStyleMixin, // fill paint and opacity
+		TStrokeStyleMixin, // stroke width and color
+		TShadowStyleMixin, // shadow properties
+		TAutoLayoutStyleMixin, // basic padding/width
+		// Specialized properties (abstracted to avoid conflicts)
+		TTextStyleMixin, // typography: { font, fontSize, textColor }
+		TCtaStyleMixin // CTA-specific styling
+	]
+>;
 
 // In ECS: Core properties become separate components, specialized become composite
 // components.Appearance[entityId] = { visible, opacity, borderRadius }
@@ -106,7 +115,7 @@ type TProductNode = TNode<'product', [
 // Phase 1: Start simple
 LinkNode: { content: { type: 'single', url: '...' } }
 
-// Phase 2: Add specialized variants  
+// Phase 2: Add specialized variants
 LinkNode: { content: { type: 'instagram', username: '...' } }
 LinkNode: { content: { type: 'multi', title: '...', links: [...] } }
 
@@ -128,9 +137,9 @@ LinkNode: { content: { type: 'carousel', autoplay: true, links: [...] } }
 
 ```typescript
 // Single link: Style at layer level (default Linktree style)
-LinkNode: { 
-  fill: { paint: 'blue' }, 
-  stroke: { width: 1 }, 
+LinkNode: {
+  fill: { paint: 'blue' },
+  stroke: { width: 1 },
   shadow: { blur: 4 },
   content: { type: 'single', url: '...' } // Node IS the card
 }
@@ -150,7 +159,7 @@ LinkNode: {
 }
 
 // Flat design: Remove layer styling
-LinkNode: { 
+LinkNode: {
   fill: null, stroke: null, shadow: null,
   content: { type: 'single', url: '...' } // Flat appearance
 }
