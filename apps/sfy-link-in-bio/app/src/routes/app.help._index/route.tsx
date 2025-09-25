@@ -76,9 +76,9 @@ const Page: React.FC = () => {
 				<div className="overflow-hidden rounded-lg border border-neutral-200">
 					<s-clickable
 						padding="small-100"
-						href="https://youtu.be/5CUtoSWYQ7U"
+						href={appConfig.help.walkthroughVideo}
 						target="_blank"
-						accessibilityLabel="Watch quick walkthrough video in new tab"
+						accessibilityLabel="Watch quick walkthrough video"
 					>
 						<div className="grid grid-cols-[1fr_auto] items-center gap-4">
 							<div>

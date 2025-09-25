@@ -33,6 +33,9 @@ export const appConfig = {
 	distribution: {
 		shopify: 'https://apps.shopify.com/saku-bio-link'
 	},
+	help: {
+		walkthroughVideo: 'https://youtu.be/5CUtoSWYQ7U'
+	},
 	support: {
 		email: 'support@saku.so'
 	},

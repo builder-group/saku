@@ -92,7 +92,7 @@ export const HandleStep: React.FC<THandleStepProps> = (props) => {
 			description="This will be the URL path for your bio page"
 			contentClassName="flex flex-col gap-6"
 		>
-			<div className="flex">
+			<div className="flex flex-row">
 				<div className="flex items-center rounded-l-[var(--p-border-radius-200)] border-y border-l border-[var(--p-color-input-border)] bg-neutral-100 px-3 text-[var(--p-color-text-subdued)]">
 					{isTruncated ? (
 						<Tooltip content={onboardingContext.shopId}>

@@ -1,6 +1,7 @@
 import { Button, Text } from '@shopify/polaris';
 import React from 'react';
 import { LogoIcon } from '@/components';
+import { appConfig } from '@/environment';
 import type { TOnboardingContext } from '../../create-onboarding-context';
 
 export const WelcomeStep: React.FC<TWelcomeStepProps> = (props) => {
@@ -34,9 +35,18 @@ export const WelcomeStep: React.FC<TWelcomeStepProps> = (props) => {
 				</Text>
 			</div>
 
-			<div className="mt-10 w-full">
+			<div className="mt-10 flex w-full flex-col gap-2">
 				<Button variant="primary" size="large" fullWidth onClick={handleGetStarted}>
 					Get started
+				</Button>
+				<Button
+					variant="secondary"
+					size="large"
+					fullWidth
+					url={appConfig.help.walkthroughVideo}
+					target="_blank"
+				>
+					Watch Demo
 				</Button>
 			</div>
 		</div>
