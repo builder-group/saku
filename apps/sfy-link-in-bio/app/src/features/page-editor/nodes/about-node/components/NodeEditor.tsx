@@ -18,7 +18,6 @@ import {
 	JsonPreview,
 	type TImageUploadEvent
 } from '@/components';
-import { appConfig } from '@/environment';
 import { useNodeProperty } from '../../../hooks';
 import { TNodeEditorComponentProps } from '../../../lib';
 import {
@@ -398,7 +397,7 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 			</AccordionSection>
 
 			{/* Debug Section */}
-			{appConfig.env === 'development' && (
+			{editor.isPartnerDevelopment() && (
 				<AccordionSection title="Debug" collapsibleClassName="px-0 space-y-3">
 					<div className="space-y-1 px-4">
 						<Text as="span" variant="bodySm" tone="subdued">
