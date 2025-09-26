@@ -177,7 +177,7 @@ export const MediaNodeEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = 
 			</AccordionSection>
 
 			{/* Debug Section */}
-			{editor.isPartnerDevelopment() && (
+			{editor.isDebug() && (
 				<AccordionSection title="Debug" collapsibleClassName="px-0 space-y-3">
 					<div className="space-y-1 px-4">
 						<Text as="span" variant="bodySm" tone="subdued">

@@ -564,6 +564,10 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 			return shopifyIntegration?.isPartnerDevelopment ?? false;
 		},
 
+		isDebug() {
+			return this.isPartnerDevelopment() || appConfig.env === 'development';
+		},
+
 		async publish() {
 			// Clean up unused assets before saving
 			this.cleanupAssets();
@@ -753,6 +757,7 @@ export interface TPageEditor {
 	cleanupAssets: () => TAssetHash[];
 
 	isPartnerDevelopment: () => boolean;
+	isDebug: () => boolean;
 
 	publish: () => Promise<boolean>;
 
