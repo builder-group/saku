@@ -120,7 +120,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 					</Button>
 					<Button
 						variant="secondary"
-						url={`mailto:${appConfig.support.email}`}
+						url={`mailto:${appConfig.help.email}`}
 						target="_blank"
 						external
 					>

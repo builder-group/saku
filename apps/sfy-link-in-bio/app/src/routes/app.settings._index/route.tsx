@@ -100,7 +100,7 @@ const Page: React.FC = () => {
 									<s-heading>Discord Community</s-heading>
 									<s-paragraph color="subdued">Join our community for help and updates</s-paragraph>
 								</div>
-								<s-button variant="secondary" href={appConfig.social.discord} target="_blank">
+								<s-button variant="secondary" href={appConfig.help.discord} target="_blank">
 									Join
 								</s-button>
 							</div>

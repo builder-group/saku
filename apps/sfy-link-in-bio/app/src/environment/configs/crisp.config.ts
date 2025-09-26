@@ -3,6 +3,7 @@ import { validateEnvVar } from 'validatenv';
 import { vValidator } from 'validation-adapters/valibot';
 
 export const crispConfig = {
+	autoResponse: true,
 	websiteToken: validateEnvVar(
 		{
 			envKey: 'VITE_CRISP_TOKEN',

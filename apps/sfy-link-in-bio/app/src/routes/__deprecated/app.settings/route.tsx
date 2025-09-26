@@ -134,10 +134,10 @@ export const loader: TLoaderFunction<TLoaderData> = async () => {
 	const env = {
 		version: appConfig.version,
 		social: {
-			discord: appConfig.social.discord
+			discord: appConfig.help.discord
 		},
 		support: {
-			email: appConfig.support.email
+			email: appConfig.help.email
 		}
 	};
 

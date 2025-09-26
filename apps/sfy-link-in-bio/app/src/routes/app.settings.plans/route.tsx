@@ -207,7 +207,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 									<s-heading>Discord Community</s-heading>
 									<s-paragraph color="subdued">Join our community for help and updates</s-paragraph>
 								</div>
-								<s-button variant="secondary" href={appConfig.social.discord} target="_blank">
+								<s-button variant="secondary" href={appConfig.help.discord} target="_blank">
 									Join
 								</s-button>
 							</div>
@@ -217,11 +217,11 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 							<div className="grid grid-cols-[1fr_auto] items-center gap-4 p-4">
 								<div>
 									<s-heading>Email Support</s-heading>
-									<s-paragraph color="subdued">{appConfig.support.email}</s-paragraph>
+									<s-paragraph color="subdued">{appConfig.help.email}</s-paragraph>
 								</div>
 								<s-button
 									variant="secondary"
-									href={`mailto:${appConfig.support.email}`}
+									href={`mailto:${appConfig.help.email}`}
 									target="_blank"
 								>
 									Contact

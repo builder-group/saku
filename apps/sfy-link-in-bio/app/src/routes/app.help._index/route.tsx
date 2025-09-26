@@ -48,7 +48,7 @@ const Page: React.FC = () => {
 							<s-heading>Discord Community</s-heading>
 							<s-paragraph color="subdued">Join our community for help and updates</s-paragraph>
 						</div>
-						<s-button variant="secondary" href={appConfig.social.discord} target="_blank">
+						<s-button variant="secondary" href={appConfig.help.discord} target="_blank">
 							Join
 						</s-button>
 					</div>
@@ -58,13 +58,9 @@ const Page: React.FC = () => {
 					<div className="grid grid-cols-[1fr_auto] items-center gap-4 p-4">
 						<div>
 							<s-heading>Email Support</s-heading>
-							<s-paragraph color="subdued">{appConfig.support.email}</s-paragraph>
+							<s-paragraph color="subdued">{appConfig.help.email}</s-paragraph>
 						</div>
-						<s-button
-							variant="secondary"
-							href={`mailto:${appConfig.support.email}`}
-							target="_blank"
-						>
+						<s-button variant="secondary" href={`mailto:${appConfig.help.email}`} target="_blank">
 							Contact
 						</s-button>
 					</div>
@@ -186,7 +182,7 @@ const Page: React.FC = () => {
 				<div className="overflow-hidden rounded-lg border border-neutral-200">
 					<s-clickable
 						padding="small-100"
-						href={appConfig.legal.privacy}
+						href={appConfig.help.legal.privacy}
 						target="_blank"
 						accessibilityLabel="View privacy policy in new tab"
 					>
@@ -205,7 +201,7 @@ const Page: React.FC = () => {
 					</div>
 					<s-clickable
 						padding="small-100"
-						href={appConfig.legal.terms}
+						href={appConfig.help.legal.terms}
 						target="_blank"
 						accessibilityLabel="View terms of service in new tab"
 					>

@@ -27,27 +27,22 @@ export const appConfig = {
 	env,
 	packageVersion,
 	version: `v${packageVersion}${env.slice(0, 1)}`,
-	social: {
-		discord: 'https://discord.com/invite/w4xE3bSjhQ'
-	},
 	distribution: {
 		shopify: 'https://apps.shopify.com/saku-bio-link'
 	},
 	help: {
-		walkthroughVideo: 'https://youtu.be/5CUtoSWYQ7U'
-	},
-	support: {
-		email: 'support@saku.so'
-	},
-	legal: {
-		privacy: `https://sfy-link-in-bio-app.saku.so/legal/privacy-policy`,
-		terms: `https://sfy-link-in-bio-app.saku.so/legal/terms-of-service`
+		walkthroughVideo: 'https://youtu.be/5CUtoSWYQ7U',
+		discord: 'https://discord.com/invite/w4xE3bSjhQ',
+		email: 'support@saku.so',
+		legal: {
+			privacy: `https://sfy-link-in-bio-app.saku.so/legal/privacy-policy`,
+			terms: `https://sfy-link-in-bio-app.saku.so/legal/terms-of-service`
+		}
 	},
 	featureFlags: {
 		posthog: env === 'production',
-		crisp: true,
-		crispAutoResponse: true,
 		mantle: true,
-		requestReview: env === 'production'
+		crisp: true,
+		review: true
 	}
 };

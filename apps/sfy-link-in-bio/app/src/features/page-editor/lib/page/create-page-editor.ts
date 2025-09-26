@@ -590,11 +590,7 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 					}
 				});
 
-				// Request review if not partner development
-				// because partner development stores have no Shopify review rate limit
-				if (!this.isPartnerDevelopment()) {
-					await requestReview(this.shopify);
-				}
+				await requestReview(this.shopify);
 
 				return true;
 			} else {
@@ -649,10 +645,7 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 						const body = encodeURIComponent(
 							`Error details:\nCode: ${errorDetails.code}\nMessage: ${errorDetails.message}\nDescription: ${errorDetails.description ?? 'N/A'}\nThrowable: ${errorDetails.throwable ?? 'N/A'}\nTimestamp: ${timestamp}`
 						);
-						window.open(
-							`mailto:${appConfig.support.email}?subject=${subject}&body=${body}`,
-							'_blank'
-						);
+						window.open(`mailto:${appConfig.help.email}?subject=${subject}&body=${body}`, '_blank');
 					}
 				});
 

@@ -62,7 +62,7 @@ export const CrispProvider: React.FC<TCrispProviderProps> = (props) => {
 				}
 
 				// Set up auto-response when no operator is online
-				if (!disabledCallbacks && appConfig.featureFlags.crispAutoResponse) {
+				if (!disabledCallbacks && crispConfig.autoResponse) {
 					unsubscribeCallbacks.push(
 						crisp.onMessageSent((message) => {
 							if (!message.is_me || crisp.isSupportOnline()) {
@@ -83,7 +83,7 @@ export const CrispProvider: React.FC<TCrispProviderProps> = (props) => {
 							setTimeout(() => {
 								crisp.showMessageAsOperator(
 									'text',
-									`Thanks for your message! Our team is currently offline, but we'll get back to you as soon as possible. You can also reach us via email at ${appConfig.support.email}.`
+									`Thanks for your message! Our team is currently offline, but we'll get back to you as soon as possible. You can also reach us via email at ${appConfig.help.email}.`
 								);
 							}, 1000);
 						})
