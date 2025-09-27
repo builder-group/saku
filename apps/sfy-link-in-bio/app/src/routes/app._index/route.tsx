@@ -5,12 +5,12 @@ import React from 'react';
 import { Err, Ok, unwrapOrUndefined } from 'tuple-result';
 import { AppContext, shopifyConfig } from '@/.server/environment';
 import {
+	BioUrlSection,
 	FeedbackSection,
 	IframeContent,
 	PolarisViewIcon,
 	QuickHelpSection,
-	SitePreview,
-	UrlSection
+	SitePreview
 } from '@/components';
 import { appConfig, coreApiClient } from '@/environment';
 import { createShopifyTokenMiddleware, resultLoader, withResultLoader } from '@/lib';
@@ -152,7 +152,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 
 						<Layout.Section variant="oneThird">
 							<div className="flex flex-col gap-5">
-								<UrlSection
+								<BioUrlSection
 									primaryUrl={site.primaryUrl}
 									platformUrl={site.platformUrl}
 									title="Your Bio Link"

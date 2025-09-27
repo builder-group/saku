@@ -3,7 +3,7 @@ import React from 'react';
 import { PolarisChevronDownIcon } from '@/components/display';
 import { ClipboardButton } from '@/components/input';
 
-export const UrlSection: React.FC<TUrlSectionProps> = (props) => {
+export const BioUrlSection: React.FC<TBioUrlSectionProps> = (props) => {
 	const { primaryUrl, platformUrl, title = 'Your Bio Link' } = props;
 
 	const [selectedUrl, setSelectedUrl] = React.useState<'primary' | 'platform'>('primary');
@@ -35,8 +35,8 @@ export const UrlSection: React.FC<TUrlSectionProps> = (props) => {
 								onChange={handleUrlTypeChange}
 								className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
 							>
-								<option value="primary">Shopify Domain</option>
-								<option value="platform">Platform Domain</option>
+								<option value="primary">Shopify</option>
+								<option value="platform">Platform</option>
 							</select>
 							<s-badge tone="neutral">
 								<div className="flex items-center gap-1">
@@ -61,7 +61,7 @@ export const UrlSection: React.FC<TUrlSectionProps> = (props) => {
 	);
 };
 
-interface TUrlSectionProps {
+interface TBioUrlSectionProps {
 	primaryUrl: string;
 	platformUrl: string;
 	title?: string;
