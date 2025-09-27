@@ -4752,8 +4752,8 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * List external groups in an organization
-         * @description Lists external groups available in an organization. You can query the groups using the `display_name` parameter, only groups with a `group_name` containing the text provided in the `display_name` parameter will be returned.  You can also limit your page results using the `per_page` parameter. GitHub Enterprise Server generates a url-encoded `page` token using a cursor value for where the next page begins. For more information on cursor pagination, see "[Offset and Cursor Pagination explained](https://dev.to/jackmarchant/offset-and-cursor-pagination-explained-b89)."
+         * List external groups available to an organization
+         * @description Lists external groups provisioned on the enterprise that are available to an organization. You can query the groups using the `display_name` parameter, only groups with a `group_name` containing the text provided in the `display_name` parameter will be returned.  You can also limit your page results using the `per_page` parameter. GitHub Enterprise Server generates a url-encoded `page` token using a cursor value for where the next page begins. For more information on cursor pagination, see "[Offset and Cursor Pagination explained](https://dev.to/jackmarchant/offset-and-cursor-pagination-explained-b89)."
          *
          *     You can manage team membership with your identity provider using Enterprise Managed Users for GitHub Enterprise Cloud. For more information, see "[GitHub's products](https://docs.github.com/enterprise-server@3.15/github/getting-started-with-github/githubs-products)" in the GitHub Help documentation.
          */
@@ -6056,7 +6056,7 @@ export interface paths {
          * @description Lists organization repositories with all of their custom property values.
          *     Organization members can read these properties.
          */
-        get: operations["orgs/list-custom-properties-values-for-repos"];
+        get: operations["orgs/custom-properties-for-repos-get-organization-values"];
         put?: never;
         post?: never;
         delete?: never;
@@ -6075,7 +6075,7 @@ export interface paths {
          *       - An administrator for the organization.
          *       - A user, or a user on a team, with the fine-grained permission of `custom_properties_org_values_editor` in the organization.
          */
-        patch: operations["orgs/create-or-update-custom-properties-values-for-repos"];
+        patch: operations["orgs/custom-properties-for-repos-create-or-update-organization-values"];
         trace?: never;
     };
     "/orgs/{org}/public_members": {
@@ -13116,7 +13116,7 @@ export interface paths {
          * @description Gets all custom property values that are set for a repository.
          *     Users with read access to the repository can use this endpoint.
          */
-        get: operations["repos/get-custom-properties-values"];
+        get: operations["repos/custom-properties-for-repos-get-repository-values"];
         put?: never;
         post?: never;
         delete?: never;
@@ -13129,7 +13129,7 @@ export interface paths {
          *
          *     Repository admins and other users with the repository-level "edit custom property values" fine-grained permission can use this endpoint.
          */
-        patch: operations["repos/create-or-update-custom-properties-values"];
+        patch: operations["repos/custom-properties-for-repos-create-or-update-repository-values"];
         trace?: never;
     };
     "/repos/{owner}/{repo}/pulls": {
@@ -17577,7 +17577,15 @@ export interface components {
             members_url?: string;
             repositories_url?: string;
             parent?: unknown;
+            type?: string;
+            organization_id?: number;
+            enterprise_id?: number;
         };
+        /**
+         * @description The [distinguished name](https://www.ldap.com/ldap-dns-and-rdns) (DN) of the LDAP entry to map to a team.
+         * @example cn=Enterprise Ops,ou=teams,dc=github,dc=com
+         */
+        "ldap-dn": string;
         /**
          * Ldap Private User
          * @description Ldap Private User
@@ -20100,6 +20108,7 @@ export interface components {
             most_recent_instance: components["schemas"]["code-scanning-alert-instance"];
             repository: components["schemas"]["simple-repository"];
             dismissal_approved_by?: components["schemas"]["nullable-simple-user"];
+            assignees?: components["schemas"]["simple-user"][];
         };
         /** Enterprise Security Analysis Settings */
         "enterprise-security-analysis-settings": {
@@ -23243,6 +23252,21 @@ export interface components {
              * @example uid=example,ou=users,dc=github,dc=com
              */
             ldap_dn?: string;
+            /**
+             * @description The ownership type of the team
+             * @enum {string}
+             */
+            type: "enterprise" | "organization";
+            /**
+             * @description Unique identifier of the organization to which this team belongs
+             * @example 37
+             */
+            organization_id?: number;
+            /**
+             * @description Unique identifier of the enterprise to which this team belongs
+             * @example 42
+             */
+            enterprise_id?: number;
         } | null;
         /**
          * A Role Assignment for a Team
@@ -23281,6 +23305,21 @@ export interface components {
             /** Format: uri */
             repositories_url: string;
             parent: components["schemas"]["nullable-team-simple"];
+            /**
+             * @description The ownership type of the team
+             * @enum {string}
+             */
+            type: "enterprise" | "organization";
+            /**
+             * @description Unique identifier of the organization to which this team belongs
+             * @example 37
+             */
+            organization_id?: number;
+            /**
+             * @description Unique identifier of the enterprise to which this team belongs
+             * @example 42
+             */
+            enterprise_id?: number;
         };
         /**
          * Team Simple
@@ -23344,6 +23383,21 @@ export interface components {
              * @example uid=example,ou=users,dc=github,dc=com
              */
             ldap_dn?: string;
+            /**
+             * @description The ownership type of the team
+             * @enum {string}
+             */
+            type: "enterprise" | "organization";
+            /**
+             * @description Unique identifier of the organization to which this team belongs
+             * @example 37
+             */
+            organization_id?: number;
+            /**
+             * @description Unique identifier of the enterprise to which this team belongs
+             * @example 42
+             */
+            enterprise_id?: number;
         };
         /**
          * A Role Assignment for a User
@@ -25050,6 +25104,21 @@ export interface components {
             members_url: string;
             /** Format: uri */
             repositories_url: string;
+            /**
+             * @description The ownership type of the team
+             * @enum {string}
+             */
+            type: "enterprise" | "organization";
+            /**
+             * @description Unique identifier of the organization to which this team belongs
+             * @example 37
+             */
+            organization_id?: number;
+            /**
+             * @description Unique identifier of the enterprise to which this team belongs
+             * @example 42
+             */
+            enterprise_id?: number;
             parent: components["schemas"]["nullable-team-simple"];
         };
         /**
@@ -25256,11 +25325,22 @@ export interface components {
              */
             updated_at: string;
             organization: components["schemas"]["team-organization"];
+            ldap_dn?: components["schemas"]["ldap-dn"];
             /**
-             * @description Distinguished Name (DN) that team maps to within LDAP environment
-             * @example uid=example,ou=users,dc=github,dc=com
+             * @description The ownership type of the team
+             * @enum {string}
              */
-            ldap_dn?: string;
+            type: "enterprise" | "organization";
+            /**
+             * @description Unique identifier of the organization to which this team belongs
+             * @example 37
+             */
+            organization_id?: number;
+            /**
+             * @description Unique identifier of the enterprise to which this team belongs
+             * @example 42
+             */
+            enterprise_id?: number;
         };
         /**
          * Team Discussion
@@ -27505,6 +27585,7 @@ export interface components {
             tool: components["schemas"]["code-scanning-analysis-tool"];
             most_recent_instance: components["schemas"]["code-scanning-alert-instance"];
             dismissal_approved_by?: components["schemas"]["nullable-simple-user"];
+            assignees?: components["schemas"]["simple-user"][];
         };
         "code-scanning-alert-rule": {
             /** @description A unique identifier for the rule used to detect the alert. */
@@ -27549,6 +27630,7 @@ export interface components {
             tool: components["schemas"]["code-scanning-analysis-tool"];
             most_recent_instance: components["schemas"]["code-scanning-alert-instance"];
             dismissal_approved_by?: components["schemas"]["nullable-simple-user"];
+            assignees?: components["schemas"]["simple-user"][];
         };
         /**
          * @description Sets the state of the code scanning alert. You must provide `dismissed_reason` when you set the state to `dismissed`.
@@ -35104,6 +35186,21 @@ export interface components {
                  * @description URL for the team
                  */
                 url: string;
+                /**
+                 * @description The ownership type of the team
+                 * @enum {string}
+                 */
+                type: "enterprise" | "organization";
+                /**
+                 * @description Unique identifier of the organization to which this team belongs
+                 * @example 37
+                 */
+                organization_id?: number;
+                /**
+                 * @description Unique identifier of the enterprise to which this team belongs
+                 * @example 42
+                 */
+                enterprise_id?: number;
             } | null;
             /** @description Permission that the team will have for its repositories */
             permission?: string;
@@ -35119,6 +35216,21 @@ export interface components {
              * @description URL for the team
              */
             url?: string;
+            /**
+             * @description The ownership type of the team
+             * @enum {string}
+             */
+            type?: "enterprise" | "organization";
+            /**
+             * @description Unique identifier of the organization to which this team belongs
+             * @example 37
+             */
+            organization_id?: number;
+            /**
+             * @description Unique identifier of the enterprise to which this team belongs
+             * @example 42
+             */
+            enterprise_id?: number;
         };
         /**
          * Repository
@@ -38271,6 +38383,21 @@ export interface components {
                  * @description URL for the team
                  */
                 url: string;
+                /**
+                 * @description The ownership type of the team
+                 * @enum {string}
+                 */
+                type: "enterprise" | "organization";
+                /**
+                 * @description Unique identifier of the organization to which this team belongs
+                 * @example 37
+                 */
+                organization_id?: number;
+                /**
+                 * @description Unique identifier of the enterprise to which this team belongs
+                 * @example 42
+                 */
+                enterprise_id?: number;
             } | null;
             /** @description Permission that the team will have for its repositories */
             permission?: string;
@@ -38289,6 +38416,21 @@ export interface components {
              * @description URL for the team
              */
             url?: string;
+            /**
+             * @description The ownership type of the team
+             * @enum {string}
+             */
+            type?: "enterprise" | "organization";
+            /**
+             * @description Unique identifier of the organization to which this team belongs
+             * @example 37
+             */
+            organization_id?: number;
+            /**
+             * @description Unique identifier of the enterprise to which this team belongs
+             * @example 42
+             */
+            enterprise_id?: number;
         };
         /** branch protection configuration disabled event */
         "webhook-branch-protection-configuration-disabled": {
@@ -39270,6 +39412,7 @@ export interface components {
             action: "appeared_in_branch";
             /** @description The code scanning alert involved in the event. */
             alert: {
+                assignees?: components["schemas"]["simple-user"][];
                 /**
                  * Format: date-time
                  * @description The time that the alert was created in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ.`
@@ -39400,6 +39543,7 @@ export interface components {
             action: "closed_by_user";
             /** @description The code scanning alert involved in the event. */
             alert: {
+                assignees?: components["schemas"]["simple-user"][];
                 /**
                  * Format: date-time
                  * @description The time that the alert was created in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ.`
@@ -39657,6 +39801,7 @@ export interface components {
                 /** Format: uri */
                 url: string;
                 dismissal_approved_by?: unknown;
+                assignees?: components["schemas"]["simple-user"][];
             };
             commit_oid: components["schemas"]["webhooks_code_scanning_commit_oid"];
             enterprise?: components["schemas"]["enterprise-webhooks"];
@@ -39672,6 +39817,7 @@ export interface components {
             action: "fixed";
             /** @description The code scanning alert involved in the event. */
             alert: {
+                assignees?: components["schemas"]["simple-user"][];
                 /**
                  * Format: date-time
                  * @description The time that the alert was created in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ.`
@@ -39811,6 +39957,7 @@ export interface components {
             action: "reopened";
             /** @description The code scanning alert involved in the event. */
             alert: {
+                assignees?: components["schemas"]["simple-user"][];
                 /**
                  * Format: date-time
                  * @description The time that the alert was created in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ.`
@@ -39907,6 +40054,7 @@ export interface components {
             action: "reopened_by_user";
             /** @description The code scanning alert involved in the event. */
             alert: {
+                assignees?: components["schemas"]["simple-user"][];
                 /**
                  * Format: date-time
                  * @description The time that the alert was created in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ.`
@@ -83280,6 +83428,8 @@ export interface components {
         /** @description Set to `true` to use advanced search.
          *     Example: `http://api.github.com/search/issues?q={query}&advanced_search=true` */
         "issues-advanced-search": string;
+        /** @description The type of search to perform. Set to `semantic` to perform a semantic search. */
+        "search-type": "semantic";
         /** @description The unique identifier of the GPG key. */
         "gpg-key-id": number;
         /** @description Only show repositories updated after the given time. This is a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: `YYYY-MM-DDTHH:MM:SSZ`. */
@@ -83583,8 +83733,7 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
-                    /** @description The [distinguished name](https://www.ldap.com/ldap-dns-and-rdns) (DN) of the LDAP entry to map to a team. */
-                    ldap_dn: string;
+                    ldap_dn: components["schemas"]["ldap-dn"];
                 };
             };
         };
@@ -94604,7 +94753,7 @@ export interface operations {
             404: components["responses"]["not_found"];
         };
     };
-    "orgs/list-custom-properties-values-for-repos": {
+    "orgs/custom-properties-for-repos-get-organization-values": {
         parameters: {
             query?: {
                 /** @description The number of results per page (max 100). For more information, see "[Using pagination in the REST API](https://docs.github.com/enterprise-server@3.15/rest/using-the-rest-api/using-pagination-in-the-rest-api)." */
@@ -94637,7 +94786,7 @@ export interface operations {
             404: components["responses"]["not_found"];
         };
     };
-    "orgs/create-or-update-custom-properties-values-for-repos": {
+    "orgs/custom-properties-for-repos-create-or-update-organization-values": {
         parameters: {
             query?: never;
             header?: never;
@@ -108663,7 +108812,7 @@ export interface operations {
             422: components["responses"]["validation_failed_simple"];
         };
     };
-    "repos/get-custom-properties-values": {
+    "repos/custom-properties-for-repos-get-repository-values": {
         parameters: {
             query?: never;
             header?: never;
@@ -108690,7 +108839,7 @@ export interface operations {
             404: components["responses"]["not_found"];
         };
     };
-    "repos/create-or-update-custom-properties-values": {
+    "repos/custom-properties-for-repos-create-or-update-repository-values": {
         parameters: {
             query?: never;
             header?: never;
@@ -112431,6 +112580,8 @@ export interface operations {
                 /** @description Set to `true` to use advanced search.
                  *     Example: `http://api.github.com/search/issues?q={query}&advanced_search=true` */
                 advanced_search?: components["parameters"]["issues-advanced-search"];
+                /** @description The type of search to perform. Set to `semantic` to perform a semantic search. */
+                search_type?: components["parameters"]["search-type"];
             };
             header?: never;
             path?: never;

@@ -211,6 +211,32 @@ export const GetShopPlanRoute = createRoute({
 	}
 });
 
+export const GetShopPrimaryUrlRoute = createRoute({
+	method: 'get',
+	path: '/v1/shopify/shop/primary-url',
+	tags: ['shopify', 'shop'],
+	summary: 'Get shop primary URL information',
+	operationId: 'getShopPrimaryUrl',
+	responses: {
+		200: JsonSuccessResponse(
+			z
+				.object({
+					id: z.string().openapi({ example: 'gid://shopify/Shop/123456789' }),
+					primaryDomain: z
+						.object({
+							host: z.string().openapi({ example: 'my-awesome-store.com' }),
+							url: z.url().openapi({ example: 'https://my-awesome-store.com' })
+						})
+						.nullable()
+				})
+				.openapi('ShopPrimaryUrlDto')
+		),
+		400: BadRequestResponse,
+		404: NotFoundResponse,
+		500: InternalServerErrorResponse
+	}
+});
+
 export const ResetShopSettingsRoute = createRoute({
 	method: 'post',
 	path: '/v1/shopify/shop/reset',

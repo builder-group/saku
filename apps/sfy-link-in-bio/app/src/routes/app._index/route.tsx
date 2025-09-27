@@ -1,16 +1,16 @@
-import { Button, ButtonGroup, Layout, Spinner, Text, TextField } from '@shopify/polaris';
+import { Button, ButtonGroup, Layout, Spinner, Text } from '@shopify/polaris';
 import { boundary } from '@shopify/shopify-app-react-router/server';
 import { useFeatureState } from 'feature-react';
 import React from 'react';
-import { Err, Ok } from 'tuple-result';
+import { Err, Ok, unwrapOrUndefined } from 'tuple-result';
 import { AppContext, shopifyConfig } from '@/.server/environment';
 import {
-	ClipboardButton,
 	FeedbackSection,
 	IframeContent,
 	PolarisViewIcon,
 	QuickHelpSection,
-	SitePreview
+	SitePreview,
+	UrlSection
 } from '@/components';
 import { appConfig, coreApiClient } from '@/environment';
 import { createShopifyTokenMiddleware, resultLoader, withResultLoader } from '@/lib';
@@ -102,7 +102,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 							{/* Bio Preview Section */}
 							<s-section>
 								<SitePreview
-									url={site.url}
+									url={site.primaryUrl}
 									content={<IframeContent url={site.platformUrl} disableScroll={true} />}
 								/>
 
@@ -138,7 +138,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 										<Button
 											icon={PolarisViewIcon}
 											variant="secondary"
-											url={site.url}
+											url={site.primaryUrl}
 											target="_blank"
 											accessibilityLabel="Visit your Link In Bio page"
 										/>
@@ -152,52 +152,11 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 
 						<Layout.Section variant="oneThird">
 							<div className="flex flex-col gap-5">
-								{/* Your Link Section */}
-								<s-section>
-									<div className="space-y-3">
-										<div className="flex items-center justify-between">
-											<Text as="h2" variant="headingMd">
-												Your Bio Link
-											</Text>
-											<s-badge tone="success">Current</s-badge>
-										</div>
-
-										{/* <Text as="p" tone="subdued">
-											Hosted on your Shopify store domain.
-										</Text> */}
-
-										<TextField
-											label=""
-											value={site.url}
-											readOnly
-											autoComplete="off"
-											connectedRight={<ClipboardButton textToCopy={site.url} />}
-										/>
-									</div>
-								</s-section>
-								{/* Your Platform Link Section */}
-								{/* <s-section>
-									<div className="flex flex-col gap-3">
-										<div className="flex items-center justify-between">
-											<Text as="h2" variant="headingMd">
-												Your External Link
-											</Text>
-											<s-badge tone="success">Current</s-badge>
-										</div>
-
-										<Text as="p" tone="subdued">
-											Hosted on an independent domain outside Shopify.
-										</Text>
-
-										<TextField
-											label=""
-											value={platformUrl}
-											readOnly
-											autoComplete="off"
-											connectedRight={<ClipboardButton textToCopy={platformUrl} />}
-										/>
-									</div>
-								</s-section> */}
+								<UrlSection
+									primaryUrl={site.primaryUrl}
+									platformUrl={site.platformUrl}
+									title="Your Bio Link"
+								/>
 								<FeedbackSection
 									email={appConfig.help.email}
 									reviewUrl={appConfig.distribution.shopify}
@@ -256,23 +215,34 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(
 		const url = new URL(request.url);
 		const shouldOpenEditor = url.searchParams.get('openEditor') === 'true';
 
-		// Fetch sites
-		const sitesResult = await coreApiClient.get('/v1/shopify/site', {
+		// Get sites
+		const [isSitesOk, , sitesResponse] = await coreApiClient.get('/v1/shopify/site', {
 			requestMiddlewares: [createShopifyTokenMiddleware(sessionToken)]
 		});
-		if (sitesResult.isErr()) {
+		if (!isSitesOk) {
 			return Err({
 				code: '#ERR_SERVER_ERROR' as const,
 				message: 'Failed to fetch site data'
 			}).toArray();
 		}
 
+		// Get shop primary URL
+		const primaryUrlResponse = unwrapOrUndefined(
+			await coreApiClient.get('/v1/shopify/shop/primary-url', {
+				requestMiddlewares: [createShopifyTokenMiddleware(sessionToken)]
+			})
+		);
+		const primaryUrl = primaryUrlResponse?.data.primaryDomain?.url;
+
 		const site =
-			sitesResult.value.data.map((site) => ({
+			sitesResponse.data.map((site) => ({
 				id: site.id,
 				handle: site.handle,
-				url: `${shopifyConfig.url(session.shop)}/${site.handle}`,
-				proxyUrl: `${shopifyConfig.proxy.url(session.shop)}/${site.handle}`,
+				primaryUrl:
+					primaryUrl != null
+						? `${primaryUrl}/${site.handle}`
+						: `${shopifyConfig.url(session.shop)}/${site.handle}`,
+				platformUrl: `https://saku.so/w/${workspace.handle}/${site.handle}`,
 				displayName: site.displayName,
 				updatedAt: site.updatedAt
 			}))[0] ?? null;
@@ -284,15 +254,7 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(
 		}
 
 		return Ok({
-			site: {
-				id: site.id,
-				handle: site.handle,
-				url: site.url,
-				platformUrl: `https://saku.so/w/${workspace.handle}/${site.handle}`,
-				proxyUrl: site.proxyUrl,
-				displayName: site.displayName,
-				updatedAt: site.updatedAt
-			},
+			site,
 			shouldOpenEditor
 		}).toArray();
 	}
@@ -307,9 +269,8 @@ interface TSuccessLoaderData {
 	site: {
 		id: string;
 		handle: string;
-		url: string;
+		primaryUrl: string;
 		platformUrl: string;
-		proxyUrl: string;
 		displayName?: string;
 		updatedAt: string;
 	};

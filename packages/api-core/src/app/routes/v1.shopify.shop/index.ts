@@ -8,9 +8,15 @@ import {
 	getShopPlan,
 	verifyShopifySession
 } from '@/lib';
+import { getShopPrimaryUrl } from '@/lib/gql/shopify-admin/queries/shop-primary-url';
 import { getMainTheme, getParsedThemeSettingsData } from '@/lib/shopify';
 import { extractThemeDataFromSettings } from '@/lib/shopify/theme/extract-theme-data';
-import { GetShopOverviewRoute, GetShopPlanRoute, ResetShopSettingsRoute } from './schema';
+import {
+	GetShopOverviewRoute,
+	GetShopPlanRoute,
+	GetShopPrimaryUrlRoute,
+	ResetShopSettingsRoute
+} from './schema';
 
 router.openapi(GetShopOverviewRoute, async (c) => {
 	const { shopId } = (await verifyShopifySession(c)).unwrap();
@@ -127,6 +133,32 @@ router.openapi(GetShopPlanRoute, async (c) => {
 		{
 			id: shopPlan.id,
 			plan: shopPlan.plan
+		},
+		200
+	);
+});
+
+router.openapi(GetShopPrimaryUrlRoute, async (c) => {
+	const { shopId } = (await verifyShopifySession(c)).unwrap();
+
+	const accessToken = (await getShopifyOfflineAccessToken(shopId)).unwrap();
+
+	// Get shop primary URL
+	const shopPrimaryUrlResult = await getShopPrimaryUrl({
+		shopId,
+		accessToken
+	});
+	if (shopPrimaryUrlResult.isErr()) {
+		throw new AppError('#ERR_SHOP_PRIMARY_URL_FETCH_FAILED', 500, {
+			title: 'Failed to fetch shop primary URL',
+			detail: shopPrimaryUrlResult.error.message
+		});
+	}
+
+	return c.json(
+		{
+			id: shopPrimaryUrlResult.value.id,
+			primaryDomain: shopPrimaryUrlResult.value.primaryDomain
 		},
 		200
 	);

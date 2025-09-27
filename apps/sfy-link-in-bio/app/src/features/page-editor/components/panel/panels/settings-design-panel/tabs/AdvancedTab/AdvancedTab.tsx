@@ -56,9 +56,6 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 		<>
 			<div className="p-2">
 				<Banner tone="info">
-					Only use these advanced settings if the basic design options aren't enough.
-					<br />
-					<br />
 					Here you can customize design tokens that can be linked to layers throughout your page for
 					consistent styling.
 				</Banner>

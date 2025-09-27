@@ -141,6 +141,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/shopify/shop/primary-url": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get shop primary URL information */
+        get: operations["getShopPrimaryUrl"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/shopify/shop/reset": {
         parameters: {
             query?: never;
@@ -763,6 +780,19 @@ export interface components {
                 /** @example true */
                 isShopifyPlus: boolean;
             };
+        };
+        ShopPrimaryUrlDto: {
+            /** @example gid://shopify/Shop/123456789 */
+            id: string;
+            primaryDomain: {
+                /** @example my-awesome-store.com */
+                host: string;
+                /**
+                 * Format: uri
+                 * @example https://my-awesome-store.com
+                 */
+                url: string;
+            } | null;
         };
         ResetShopSettingsDto: {
             /** @example Shop settings reset successfully */
@@ -1403,6 +1433,53 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ShopPlanDto"];
+                };
+            };
+            /** @description Bad request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppErrorDto"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppErrorDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppErrorDto"];
+                };
+            };
+        };
+    };
+    getShopPrimaryUrl: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ShopPrimaryUrlDto"];
                 };
             };
             /** @description Bad request */
