@@ -1,7 +1,6 @@
 import { TBaseContentVariant, TBaseMixin, TBaseNode, TIdMixin, TRichContent } from '@repo/editor';
 import { TResolvedAsset } from '../../lib';
 import {
-	TResolvedAccentBadgeStyleMixin,
 	TResolvedAppearanceStyleMixin,
 	TResolvedAutoLayoutStyleMixin,
 	TResolvedFillStyleMixin,
@@ -9,6 +8,7 @@ import {
 	TResolvedNeutralBadgeStyleMixin,
 	TResolvedPrimaryButtonStyleMixin,
 	TResolvedProductDetailsStyleMixin,
+	TResolvedSecondaryBadgeStyleMixin,
 	TResolvedShadowStyleMixin,
 	TResolvedStrokeStyleMixin,
 	TResolvedTextStyleMixin
@@ -27,7 +27,7 @@ export type TResolvedProductNode<
 		TResolvedShadowStyleMixin,
 		TResolvedTextStyleMixin,
 		TResolvedPrimaryButtonStyleMixin,
-		TResolvedAccentBadgeStyleMixin,
+		TResolvedSecondaryBadgeStyleMixin,
 		TResolvedNeutralBadgeStyleMixin,
 		TResolvedImageStyleMixin,
 		TResolvedProductDetailsStyleMixin

@@ -44,24 +44,24 @@ export const ThemeEditor: React.FC<TThemeEditorProps> = (props) => {
 			}));
 		}
 	});
-	// const secondaryColorState = useMapState(themeState, {
-	// 	map: (theme) => theme.color.secondary,
-	// 	sync: (baseState, value) => {
-	// 		baseState.set((theme) => ({
-	// 			...theme,
-	// 			color: { ...theme.color, secondary: value }
-	// 		}));
-	// 	}
-	// });
-	// const secondaryContentColorState = useMapState(themeState, {
-	// 	map: (theme) => theme.color.secondaryContent,
-	// 	sync: (baseState, value) => {
-	// 		baseState.set((theme) => ({
-	// 			...theme,
-	// 			color: { ...theme.color, secondaryContent: value }
-	// 		}));
-	// 	}
-	// });
+	const secondaryColorState = useMapState(themeState, {
+		map: (theme) => theme.color.secondary,
+		sync: (baseState, value) => {
+			baseState.set((theme) => ({
+				...theme,
+				color: { ...theme.color, secondary: value }
+			}));
+		}
+	});
+	const secondaryContentColorState = useMapState(themeState, {
+		map: (theme) => theme.color.secondaryContent,
+		sync: (baseState, value) => {
+			baseState.set((theme) => ({
+				...theme,
+				color: { ...theme.color, secondaryContent: value }
+			}));
+		}
+	});
 	const accentColorState = useMapState(themeState, {
 		map: (theme) => theme.color.accent,
 		sync: (baseState, value) => {
@@ -305,12 +305,12 @@ export const ThemeEditor: React.FC<TThemeEditorProps> = (props) => {
 					state={primaryContentColorState}
 					disabledTokenLink={true}
 				/>
-				{/* <TokenColorInput label="Secondary" state={secondaryColorState} disabledTokenLink={true} />
+				<TokenColorInput label="Secondary" state={secondaryColorState} disabledTokenLink={true} />
 				<TokenColorInput
 					label="Secondary Content"
 					state={secondaryContentColorState}
 					disabledTokenLink={true}
-				/> */}
+				/>
 				<TokenColorInput label="Accent" state={accentColorState} disabledTokenLink={true} />
 				<TokenColorInput
 					label="Accent Content"

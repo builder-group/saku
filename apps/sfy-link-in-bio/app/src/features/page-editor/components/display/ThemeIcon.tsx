@@ -16,21 +16,21 @@ export const ThemeIcon: React.FC<TThemeIconProps> = (props) => {
 				style={{
 					backgroundColor: rgbaToHex(theme.color.base100Content)
 				}}
-				title="Primary"
+				title="Base 100 Content"
 			/>
 			<div
 				className="size-1.5 rounded-full"
 				style={{
 					backgroundColor: rgbaToHex(theme.color.primary)
 				}}
-				title="Secondary"
+				title="Primary"
 			/>
 			<div
 				className="size-1.5 rounded-full"
 				style={{
-					backgroundColor: rgbaToHex(theme.color.neutral)
+					backgroundColor: rgbaToHex(theme.color.secondary)
 				}}
-				title="Neutral"
+				title="Secondary"
 			/>
 			<div
 				className="size-1.5 rounded-full"

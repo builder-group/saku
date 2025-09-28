@@ -67,6 +67,13 @@ export function reconstructThemeFromTokens(tokens: TToken[]): TResult<TTheme, Ed
 	if (!isBase300Ok) {
 		return Err(base300Err.wrapWith('#ERR_RECONSTRUCT_COLOR_BASE300'));
 	}
+	const [isBase300ContentOk, base300ContentErr, base300Content] = getValue(
+		'color',
+		'color.base300Content'
+	);
+	if (!isBase300ContentOk) {
+		return Err(base300ContentErr.wrapWith('#ERR_RECONSTRUCT_COLOR_BASE300_CONTENT'));
+	}
 	const [isPrimaryOk, primaryErr, primary] = getValue('color', 'color.primary');
 	if (!isPrimaryOk) {
 		return Err(primaryErr.wrapWith('#ERR_RECONSTRUCT_COLOR_PRIMARY'));
@@ -242,6 +249,7 @@ export function reconstructThemeFromTokens(tokens: TToken[]): TResult<TTheme, Ed
 			base200,
 			base200Content,
 			base300,
+			base300Content,
 			primary,
 			primaryContent,
 			secondary,

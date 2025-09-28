@@ -4,8 +4,8 @@ import {
 	TAboutNodeMixin,
 	TAppearanceStyleMixin,
 	TAutoLayoutStyleMixin,
-	TBadgeAccentStyleMixin,
 	TBadgeNeutralStyleMixin,
+	TBadgeSecondaryStyleMixin,
 	TBaseMixin,
 	TButtonPrimaryStyleMixin,
 	TChildrenMixin,
@@ -129,7 +129,7 @@ export type TProductNode<GContent extends TProductNodeContent = TProductNodeCont
 		TShadowStyleMixin,
 		TTextStyleMixin,
 		TButtonPrimaryStyleMixin,
-		TBadgeAccentStyleMixin,
+		TBadgeSecondaryStyleMixin,
 		TBadgeNeutralStyleMixin,
 		TImageStyleMixin,
 		TProductDetailsStyleMixin

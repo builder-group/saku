@@ -22,6 +22,9 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 			? color.base200Content
 			: hexToRgba(color.base200Content),
 		base300: isRgba(color.base300) ? color.base300 : hexToRgba(color.base300),
+		base300Content: isRgba(color.base300Content)
+			? color.base300Content
+			: hexToRgba(color.base300Content),
 		primary: isRgba(color.primary) ? color.primary : hexToRgba(color.primary),
 		primaryContent: isRgba(color.primaryContent)
 			? color.primaryContent
@@ -106,6 +109,11 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 			type: 'color',
 			key: 'color.base300',
 			value: rgbaColors.base300
+		},
+		{
+			type: 'color',
+			key: 'color.base300Content',
+			value: rgbaColors.base300Content
 		},
 		{
 			type: 'color',
@@ -549,7 +557,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 		},
 		{
 			type: 'badge',
-			key: 'badge.accent',
+			key: 'badge.secondary',
 			value: {
 				appearance: {
 					visible: true,
@@ -559,7 +567,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 				fill: {
 					paint: {
 						type: 'solid',
-						color: rgbaColors.accent
+						color: rgbaColors.secondary
 					},
 					opacity: 1
 				},
@@ -586,7 +594,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 					fill: {
 						paint: {
 							type: 'solid',
-							color: rgbaColors.accentContent
+							color: rgbaColors.secondaryContent
 						},
 						opacity: 1
 					},
