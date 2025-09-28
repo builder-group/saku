@@ -58,3 +58,6 @@ uri = "/api/v1/webhook/shopify/shop/redact"
 
 [pos]
 embedded = false
+
+[build]
+automatically_update_urls_on_dev = true
