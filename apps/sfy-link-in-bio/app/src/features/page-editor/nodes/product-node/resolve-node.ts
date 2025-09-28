@@ -97,29 +97,29 @@ export function resolveProductNode(
 	if (!isResolvedTextOk) {
 		return Err(resolvedTextErr.wrapWith('#ERR_RESOLVE_TEXT_STYLE'));
 	}
-	const [isResolvedPrimaryButtonOk, resolvedPrimaryButtonErr, resolvedPrimaryButton] =
+	const [isResolvedButtonPrimaryOk, resolvedButtonPrimaryErr, resolvedButtonPrimary] =
 		resolveButtonStyleMixin(buttonPrimary, {
 			node: cx,
 			tokenMap: cx.site.getTokenMap()
 		});
-	if (!isResolvedPrimaryButtonOk) {
-		return Err(resolvedPrimaryButtonErr.wrapWith('#ERR_RESOLVE_BUTTON_STYLE'));
+	if (!isResolvedButtonPrimaryOk) {
+		return Err(resolvedButtonPrimaryErr.wrapWith('#ERR_RESOLVE_BUTTON_PRIMARY_STYLE'));
 	}
-	const [isResolvedSecondaryBadgeOk, resolvedSecondaryBadgeErr, resolvedSecondaryBadge] =
+	const [isResolvedBadgeSecondaryOk, resolvedBadgeSecondaryErr, resolvedBadgeSecondary] =
 		resolveBadgeStyleMixin(badgeSecondary, {
 			node: cx,
 			tokenMap: cx.site.getTokenMap()
 		});
-	if (!isResolvedSecondaryBadgeOk) {
-		return Err(resolvedSecondaryBadgeErr.wrapWith('#ERR_RESOLVE_SECONDARY_BADGE_STYLE'));
+	if (!isResolvedBadgeSecondaryOk) {
+		return Err(resolvedBadgeSecondaryErr.wrapWith('#ERR_RESOLVE_BADGE_SECONDARY_STYLE'));
 	}
-	const [isResolvedNeutralBadgeOk, resolvedNeutralBadgeErr, resolvedNeutralBadge] =
+	const [isResolvedBadgeNeutralOk, resolvedBadgeNeutralErr, resolvedBadgeNeutral] =
 		resolveBadgeStyleMixin(badgeNeutral, {
 			node: cx,
 			tokenMap: cx.site.getTokenMap()
 		});
-	if (!isResolvedNeutralBadgeOk) {
-		return Err(resolvedNeutralBadgeErr.wrapWith('#ERR_RESOLVE_NEUTRAL_BADGE_STYLE'));
+	if (!isResolvedBadgeNeutralOk) {
+		return Err(resolvedBadgeNeutralErr.wrapWith('#ERR_RESOLVE_BADGE_NEUTRAL_STYLE'));
 	}
 	const [isResolvedImageOk, resolvedImageErr, resolvedImage] = resolveImageStyleMixin(image, {
 		node: cx,
@@ -154,9 +154,9 @@ export function resolveProductNode(
 		stroke: resolvedStroke,
 		shadow: resolvedShadow,
 		text: resolvedText,
-		buttonPrimary: resolvedPrimaryButton,
-		badgeSecondary: resolvedSecondaryBadge,
-		badgeNeutral: resolvedNeutralBadge,
+		buttonPrimary: resolvedButtonPrimary,
+		badgeSecondary: resolvedBadgeSecondary,
+		badgeNeutral: resolvedBadgeNeutral,
 		image: {
 			...resolvedImage,
 			appearance: {

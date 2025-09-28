@@ -3,12 +3,12 @@ import { TResolvedAsset } from '../../lib';
 import {
 	TResolvedAppearanceStyleMixin,
 	TResolvedAutoLayoutStyleMixin,
+	TResolvedBadgeNeutralStyleMixin,
+	TResolvedBadgeSecondaryStyleMixin,
+	TResolvedButtonPrimaryStyleMixin,
 	TResolvedFillStyleMixin,
 	TResolvedImageStyleMixin,
-	TResolvedNeutralBadgeStyleMixin,
-	TResolvedPrimaryButtonStyleMixin,
 	TResolvedProductDetailsStyleMixin,
-	TResolvedSecondaryBadgeStyleMixin,
 	TResolvedShadowStyleMixin,
 	TResolvedStrokeStyleMixin,
 	TResolvedTextStyleMixin
@@ -26,9 +26,9 @@ export type TResolvedProductNode<
 		TResolvedStrokeStyleMixin,
 		TResolvedShadowStyleMixin,
 		TResolvedTextStyleMixin,
-		TResolvedPrimaryButtonStyleMixin,
-		TResolvedSecondaryBadgeStyleMixin,
-		TResolvedNeutralBadgeStyleMixin,
+		TResolvedButtonPrimaryStyleMixin,
+		TResolvedBadgeSecondaryStyleMixin,
+		TResolvedBadgeNeutralStyleMixin,
 		TResolvedImageStyleMixin,
 		TResolvedProductDetailsStyleMixin
 	]

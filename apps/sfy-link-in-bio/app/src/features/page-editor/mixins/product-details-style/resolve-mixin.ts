@@ -49,12 +49,12 @@ export function resolveProductDetailsStyleMixin(
 	if (!isResolvedShadowOk) {
 		return Err(resolvedShadowErr.wrapWith('#ERR_RESOLVE_SHADOW_STYLE'));
 	}
-	const [isResolvedXlTextOk, resolvedXlTextErr, resolvedXlText] = resolveTextStyleMixin(
+	const [isResolvedTextXlOk, resolvedTextXlErr, resolvedTextXl] = resolveTextStyleMixin(
 		resolvedProductDetails.textXl,
 		cx
 	);
-	if (!isResolvedXlTextOk) {
-		return Err(resolvedXlTextErr.wrapWith('#ERR_RESOLVE_XL_TEXT_STYLE'));
+	if (!isResolvedTextXlOk) {
+		return Err(resolvedTextXlErr.wrapWith('#ERR_RESOLVE_TEXT_XL_STYLE'));
 	}
 	const [isResolvedTextOk, resolvedTextErr, resolvedText] = resolveTextStyleMixin(
 		resolvedProductDetails.text,
@@ -63,10 +63,10 @@ export function resolveProductDetailsStyleMixin(
 	if (!isResolvedTextOk) {
 		return Err(resolvedTextErr.wrapWith('#ERR_RESOLVE_TEXT_STYLE'));
 	}
-	const [isResolvedPrimaryButtonOk, resolvedPrimaryButtonErr, resolvedPrimaryButton] =
+	const [isResolvedButtonPrimaryOk, resolvedButtonPrimaryErr, resolvedButtonPrimary] =
 		resolveButtonStyleMixin(resolvedProductDetails.buttonPrimary, cx);
-	if (!isResolvedPrimaryButtonOk) {
-		return Err(resolvedPrimaryButtonErr.wrapWith('#ERR_RESOLVE_PRIMARY_BUTTON_STYLE'));
+	if (!isResolvedButtonPrimaryOk) {
+		return Err(resolvedButtonPrimaryErr.wrapWith('#ERR_RESOLVE_BUTTON_PRIMARY_STYLE'));
 	}
 	const [isResolvedImageOk, resolvedImageErr, resolvedImage] = resolveImageStyleMixin(
 		resolvedProductDetails.image,
@@ -81,9 +81,9 @@ export function resolveProductDetailsStyleMixin(
 		fill: resolvedFill,
 		stroke: resolvedStroke,
 		shadow: resolvedShadow,
-		textXl: resolvedXlText,
+		textXl: resolvedTextXl,
 		text: resolvedText,
-		buttonPrimary: resolvedPrimaryButton,
+		buttonPrimary: resolvedButtonPrimary,
 		image: resolvedImage,
 		styles: {
 			...resolvedAppearance.styles,

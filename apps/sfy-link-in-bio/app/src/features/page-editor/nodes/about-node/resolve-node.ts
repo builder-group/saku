@@ -70,12 +70,12 @@ export function resolveAboutNode(
 	if (!isResolvedShadowOk) {
 		return Err(resolvedShadowErr.wrapWith('#ERR_RESOLVE_SHADOW_STYLE'));
 	}
-	const [isResolvedXlTextOk, resolvedXlTextErr, resolvedXlText] = resolveTextStyleMixin(textXl, {
+	const [isResolvedTextXlOk, resolvedTextXlErr, resolvedTextXl] = resolveTextStyleMixin(textXl, {
 		node: cx,
 		tokenMap: cx.site.getTokenMap()
 	});
-	if (!isResolvedXlTextOk) {
-		return Err(resolvedXlTextErr.wrapWith('#ERR_RESOLVE_XL_TEXT_STYLE'));
+	if (!isResolvedTextXlOk) {
+		return Err(resolvedTextXlErr.wrapWith('#ERR_RESOLVE_TEXT_XL_STYLE'));
 	}
 	const [isResolvedTextOk, resolvedTextErr, resolvedText] = resolveTextStyleMixin(text, {
 		node: cx,
@@ -100,7 +100,7 @@ export function resolveAboutNode(
 		fill: resolvedFill,
 		stroke: resolvedStroke,
 		shadow: resolvedShadow,
-		textXl: resolvedXlText,
+		textXl: resolvedTextXl,
 		text: resolvedText,
 		image: resolvedImage
 	});
