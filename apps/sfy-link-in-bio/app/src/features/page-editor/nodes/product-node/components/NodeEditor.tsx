@@ -125,7 +125,7 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 	const shadowState = useNodeProperty(nodeState, 'shadow');
 	const textState = useNodeProperty(nodeState, 'text');
 	const buttonPrimaryState = useNodeProperty(nodeState, 'buttonPrimary');
-	const badgePrimaryState = useNodeProperty(nodeState, 'badgePrimary');
+	const badgeAccentState = useNodeProperty(nodeState, 'badgeAccent');
 	const badgeNeutralState = useNodeProperty(nodeState, 'badgeNeutral');
 	const imageState = useNodeProperty(nodeState, 'image');
 	const productDetailsState = useNodeProperty(nodeState, 'productDetails');
@@ -446,8 +446,8 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 					defaultOpen={true}
 				>
 					<BadgeStyleMixinEditor
-						state={badgePrimaryState}
-						onLinkToken={() => tokenRef('primary', 'badge')}
+						state={badgeAccentState}
+						onLinkToken={() => tokenRef('accent', 'badge')}
 						editor={editor}
 					/>
 				</AccordionSection>

@@ -543,7 +543,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 		},
 		{
 			type: 'badge',
-			key: 'badge.primary',
+			key: 'badge.accent',
 			value: {
 				appearance: {
 					visible: true,

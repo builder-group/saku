@@ -30,7 +30,7 @@ export function resolveProductNode(
 		shadow,
 		text,
 		buttonPrimary,
-		badgePrimary,
+		badgeAccent,
 		badgeNeutral,
 		image,
 		productDetails,
@@ -105,13 +105,13 @@ export function resolveProductNode(
 	if (!isResolvedPrimaryButtonOk) {
 		return Err(resolvedPrimaryButtonErr.wrapWith('#ERR_RESOLVE_BUTTON_STYLE'));
 	}
-	const [isResolvedPrimaryBadgeOk, resolvedPrimaryBadgeErr, resolvedPrimaryBadge] =
-		resolveBadgeStyleMixin(badgePrimary, {
+	const [isResolvedAccentBadgeOk, resolvedAccentBadgeErr, resolvedAccentBadge] =
+		resolveBadgeStyleMixin(badgeAccent, {
 			node: cx,
 			tokenMap: cx.site.getTokenMap()
 		});
-	if (!isResolvedPrimaryBadgeOk) {
-		return Err(resolvedPrimaryBadgeErr.wrapWith('#ERR_RESOLVE_PRIMARY_BADGE_STYLE'));
+	if (!isResolvedAccentBadgeOk) {
+		return Err(resolvedAccentBadgeErr.wrapWith('#ERR_RESOLVE_ACCENT_BADGE_STYLE'));
 	}
 	const [isResolvedNeutralBadgeOk, resolvedNeutralBadgeErr, resolvedNeutralBadge] =
 		resolveBadgeStyleMixin(badgeNeutral, {
@@ -155,7 +155,7 @@ export function resolveProductNode(
 		shadow: resolvedShadow,
 		text: resolvedText,
 		buttonPrimary: resolvedPrimaryButton,
-		badgePrimary: resolvedPrimaryBadge,
+		badgeAccent: resolvedAccentBadge,
 		badgeNeutral: resolvedNeutralBadge,
 		image: {
 			...resolvedImage,

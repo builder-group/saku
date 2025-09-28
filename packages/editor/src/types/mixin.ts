@@ -387,7 +387,7 @@ export type TBadgeStyleMixin = TBaseMixin<
 		text: TTextStyleMixin['value'];
 	}>
 >;
-export type TBadgePrimaryStyleMixin = TBaseMixin<'badgePrimary', TBadgeStyleMixin['value']>;
+export type TBadgeAccentStyleMixin = TBaseMixin<'badgeAccent', TBadgeStyleMixin['value']>;
 export type TBadgeNeutralStyleMixin = TBaseMixin<'badgeNeutral', TBadgeStyleMixin['value']>;
 
 export type TImageStyleMixin = TBaseMixin<

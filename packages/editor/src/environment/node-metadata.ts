@@ -172,7 +172,7 @@ export const productNodeMetadata: TNodeMetadata<'product'> = {
 			shadow: tokenRef('default', 'text', 'shadow')
 		},
 		buttonPrimary: tokenRef('primary', 'button'),
-		badgePrimary: tokenRef('primary', 'badge'),
+		badgeAccent: tokenRef('accent', 'badge'),
 		badgeNeutral: tokenRef('neutral', 'badge'),
 		image: {
 			appearance: {

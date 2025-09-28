@@ -19,8 +19,8 @@ export type TResolvedBadgeStyleMixin = TBaseMixin<
 			Partial<NonNullable<TResolvedShadowStyleMixin['value']>['styles']>;
 	}
 >;
-export type TResolvedPrimaryBadgeStyleMixin = TBaseMixin<
-	'badgePrimary',
+export type TResolvedAccentBadgeStyleMixin = TBaseMixin<
+	'badgeAccent',
 	TResolvedBadgeStyleMixin['value']
 >;
 export type TResolvedNeutralBadgeStyleMixin = TBaseMixin<
