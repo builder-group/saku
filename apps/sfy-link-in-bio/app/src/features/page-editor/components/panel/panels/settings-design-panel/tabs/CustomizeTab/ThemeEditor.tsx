@@ -11,7 +11,6 @@ import { applyTheme } from '../../apply-theme';
 export const ThemeEditor: React.FC<TThemeEditorProps> = (props) => {
 	const { theme, editor } = props;
 
-	// Create theme state for editing
 	const themeState = useMemoCleanup(() => {
 		const state = createState(theme);
 		const unsubscribe = state.listen(({ value }) => {
@@ -19,7 +18,6 @@ export const ThemeEditor: React.FC<TThemeEditorProps> = (props) => {
 		});
 		return [state, () => unsubscribe()];
 	}, [theme, editor]);
-
 	const fontOptions = React.useMemo(() => {
 		return fontMetadata.map((font) => ({
 			label: font.name,
@@ -27,7 +25,7 @@ export const ThemeEditor: React.FC<TThemeEditorProps> = (props) => {
 		}));
 	}, []);
 
-	// Map theme state to individual property states
+	// Color states
 	const primaryColorState = useMapState(themeState, {
 		map: (theme) => theme.color.primary,
 		sync: (baseState, value) => {
@@ -37,67 +35,6 @@ export const ThemeEditor: React.FC<TThemeEditorProps> = (props) => {
 			}));
 		}
 	});
-
-	const secondaryColorState = useMapState(themeState, {
-		map: (theme) => theme.color.secondary,
-		sync: (baseState, value) => {
-			baseState.set((theme) => ({
-				...theme,
-				color: { ...theme.color, secondary: value }
-			}));
-		}
-	});
-
-	const accentColorState = useMapState(themeState, {
-		map: (theme) => theme.color.accent,
-		sync: (baseState, value) => {
-			baseState.set((theme) => ({
-				...theme,
-				color: { ...theme.color, accent: value }
-			}));
-		}
-	});
-
-	const base100ColorState = useMapState(themeState, {
-		map: (theme) => theme.color.base100,
-		sync: (baseState, value) => {
-			baseState.set((theme) => ({
-				...theme,
-				color: { ...theme.color, base100: value }
-			}));
-		}
-	});
-
-	const base200ColorState = useMapState(themeState, {
-		map: (theme) => theme.color.base200,
-		sync: (baseState, value) => {
-			baseState.set((theme) => ({
-				...theme,
-				color: { ...theme.color, base200: value }
-			}));
-		}
-	});
-
-	const base300ColorState = useMapState(themeState, {
-		map: (theme) => theme.color.base300,
-		sync: (baseState, value) => {
-			baseState.set((theme) => ({
-				...theme,
-				color: { ...theme.color, base300: value }
-			}));
-		}
-	});
-
-	const baseContentColorState = useMapState(themeState, {
-		map: (theme) => theme.color.baseContent,
-		sync: (baseState, value) => {
-			baseState.set((theme) => ({
-				...theme,
-				color: { ...theme.color, baseContent: value }
-			}));
-		}
-	});
-
 	const primaryContentColorState = useMapState(themeState, {
 		map: (theme) => theme.color.primaryContent,
 		sync: (baseState, value) => {
@@ -107,7 +44,15 @@ export const ThemeEditor: React.FC<TThemeEditorProps> = (props) => {
 			}));
 		}
 	});
-
+	const secondaryColorState = useMapState(themeState, {
+		map: (theme) => theme.color.secondary,
+		sync: (baseState, value) => {
+			baseState.set((theme) => ({
+				...theme,
+				color: { ...theme.color, secondary: value }
+			}));
+		}
+	});
 	const secondaryContentColorState = useMapState(themeState, {
 		map: (theme) => theme.color.secondaryContent,
 		sync: (baseState, value) => {
@@ -117,7 +62,15 @@ export const ThemeEditor: React.FC<TThemeEditorProps> = (props) => {
 			}));
 		}
 	});
-
+	const accentColorState = useMapState(themeState, {
+		map: (theme) => theme.color.accent,
+		sync: (baseState, value) => {
+			baseState.set((theme) => ({
+				...theme,
+				color: { ...theme.color, accent: value }
+			}));
+		}
+	});
 	const accentContentColorState = useMapState(themeState, {
 		map: (theme) => theme.color.accentContent,
 		sync: (baseState, value) => {
@@ -127,7 +80,62 @@ export const ThemeEditor: React.FC<TThemeEditorProps> = (props) => {
 			}));
 		}
 	});
+	const base100ColorState = useMapState(themeState, {
+		map: (theme) => theme.color.base100,
+		sync: (baseState, value) => {
+			baseState.set((theme) => ({
+				...theme,
+				color: { ...theme.color, base100: value }
+			}));
+		}
+	});
+	const base100ContentColorState = useMapState(themeState, {
+		map: (theme) => theme.color.base100Content,
+		sync: (baseState, value) => {
+			baseState.set((theme) => ({
+				...theme,
+				color: { ...theme.color, base100Content: value }
+			}));
+		}
+	});
+	const base200ColorState = useMapState(themeState, {
+		map: (theme) => theme.color.base200,
+		sync: (baseState, value) => {
+			baseState.set((theme) => ({
+				...theme,
+				color: { ...theme.color, base200: value }
+			}));
+		}
+	});
+	const base200ContentColorState = useMapState(themeState, {
+		map: (theme) => theme.color.base200Content,
+		sync: (baseState, value) => {
+			baseState.set((theme) => ({
+				...theme,
+				color: { ...theme.color, base200Content: value }
+			}));
+		}
+	});
+	const neutralColorState = useMapState(themeState, {
+		map: (theme) => theme.color.neutral,
+		sync: (baseState, value) => {
+			baseState.set((theme) => ({
+				...theme,
+				color: { ...theme.color, neutral: value }
+			}));
+		}
+	});
+	const neutralContentColorState = useMapState(themeState, {
+		map: (theme) => theme.color.neutralContent,
+		sync: (baseState, value) => {
+			baseState.set((theme) => ({
+				...theme,
+				color: { ...theme.color, neutralContent: value }
+			}));
+		}
+	});
 
+	// Typography states
 	const headingFontState = useMapState(themeState, {
 		map: (theme) => theme.typography.heading.fontFamily,
 		sync: (baseState, value) => {
@@ -140,7 +148,6 @@ export const ThemeEditor: React.FC<TThemeEditorProps> = (props) => {
 			}));
 		}
 	});
-
 	const textFontState = useMapState(themeState, {
 		map: (theme) => theme.typography.text.fontFamily,
 		sync: (baseState, value) => {
@@ -154,6 +161,7 @@ export const ThemeEditor: React.FC<TThemeEditorProps> = (props) => {
 		}
 	});
 
+	// Spacing & Sizing states
 	const gapState = useMapState(themeState, {
 		map: (theme) => theme.gap,
 		sync: (baseState, value) => {
@@ -163,7 +171,6 @@ export const ThemeEditor: React.FC<TThemeEditorProps> = (props) => {
 			}));
 		}
 	});
-
 	const textSizeState = useMapState(themeState, {
 		map: (theme) => theme.size?.text ?? 1,
 		sync: (baseState, value) => {
@@ -173,7 +180,6 @@ export const ThemeEditor: React.FC<TThemeEditorProps> = (props) => {
 			}));
 		}
 	});
-
 	const boxSizeState = useMapState(themeState, {
 		map: (theme) => theme.size?.box ?? 1,
 		sync: (baseState, value) => {
@@ -183,7 +189,6 @@ export const ThemeEditor: React.FC<TThemeEditorProps> = (props) => {
 			}));
 		}
 	});
-
 	const boxRadiusState = useMapState(themeState, {
 		map: (theme) => theme.radius.box,
 		sync: (baseState, value) => {
@@ -213,7 +218,6 @@ export const ThemeEditor: React.FC<TThemeEditorProps> = (props) => {
 			}));
 		}
 	});
-
 	const shadowOffsetXState = useMapState(themeState, {
 		map: (theme) => theme.effects?.shadow?.offsetX ?? 0,
 		sync: (baseState, value) => {
@@ -232,7 +236,6 @@ export const ThemeEditor: React.FC<TThemeEditorProps> = (props) => {
 			}));
 		}
 	});
-
 	const shadowOffsetYState = useMapState(themeState, {
 		map: (theme) => theme.effects?.shadow?.offsetY ?? 0,
 		sync: (baseState, value) => {
@@ -251,7 +254,6 @@ export const ThemeEditor: React.FC<TThemeEditorProps> = (props) => {
 			}));
 		}
 	});
-
 	const shadowSpreadState = useMapState(themeState, {
 		map: (theme) => theme.effects?.shadow?.spread ?? 0,
 		sync: (baseState, value) => {
@@ -270,7 +272,6 @@ export const ThemeEditor: React.FC<TThemeEditorProps> = (props) => {
 			}));
 		}
 	});
-
 	const strokeWidthState = useMapState(themeState, {
 		map: (theme) => theme.effects?.stroke?.width ?? 0,
 		sync: (baseState, value) => {
@@ -316,12 +317,22 @@ export const ThemeEditor: React.FC<TThemeEditorProps> = (props) => {
 					state={accentContentColorState}
 					disabledTokenLink={true}
 				/>
-				<TokenColorInput label="Base 100" state={base100ColorState} disabledTokenLink={true} />
-				<TokenColorInput label="Base 200" state={base200ColorState} disabledTokenLink={true} />
-				<TokenColorInput label="Base 300" state={base300ColorState} disabledTokenLink={true} />
+				<TokenColorInput label="Neutral" state={neutralColorState} disabledTokenLink={true} />
 				<TokenColorInput
-					label="Base Content"
-					state={baseContentColorState}
+					label="Neutral Content"
+					state={neutralContentColorState}
+					disabledTokenLink={true}
+				/>
+				<TokenColorInput label="Base 100" state={base100ColorState} disabledTokenLink={true} />
+				<TokenColorInput
+					label="Base 100 Content"
+					state={base100ContentColorState}
+					disabledTokenLink={true}
+				/>
+				<TokenColorInput label="Base 200" state={base200ColorState} disabledTokenLink={true} />
+				<TokenColorInput
+					label="Base 200 Content"
+					state={base200ContentColorState}
 					disabledTokenLink={true}
 				/>
 			</AccordionSection>

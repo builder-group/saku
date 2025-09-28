@@ -45,17 +45,23 @@ export function reconstructThemeFromTokens(tokens: TToken[]): TResult<TTheme, Ed
 	if (!isBase100Ok) {
 		return Err(base100Err.wrapWith('#ERR_RECONSTRUCT_COLOR_BASE100'));
 	}
+	const [isBase100ContentOk, base100ContentErr, base100Content] = getValue(
+		'color',
+		'color.base100Content'
+	);
+	if (!isBase100ContentOk) {
+		return Err(base100ContentErr.wrapWith('#ERR_RECONSTRUCT_COLOR_BASE100_CONTENT'));
+	}
 	const [isBase200Ok, base200Err, base200] = getValue('color', 'color.base200');
 	if (!isBase200Ok) {
 		return Err(base200Err.wrapWith('#ERR_RECONSTRUCT_COLOR_BASE200'));
 	}
-	const [isBase300Ok, base300Err, base300] = getValue('color', 'color.base300');
-	if (!isBase300Ok) {
-		return Err(base300Err.wrapWith('#ERR_RECONSTRUCT_COLOR_BASE300'));
-	}
-	const [isBaseContentOk, baseContentErr, baseContent] = getValue('color', 'color.baseContent');
-	if (!isBaseContentOk) {
-		return Err(baseContentErr.wrapWith('#ERR_RECONSTRUCT_COLOR_BASE_CONTENT'));
+	const [isBase200ContentOk, base200ContentErr, base200Content] = getValue(
+		'color',
+		'color.base200Content'
+	);
+	if (!isBase200ContentOk) {
+		return Err(base200ContentErr.wrapWith('#ERR_RECONSTRUCT_COLOR_BASE200_CONTENT'));
 	}
 	const [isPrimaryOk, primaryErr, primary] = getValue('color', 'color.primary');
 	if (!isPrimaryOk) {
@@ -228,9 +234,9 @@ export function reconstructThemeFromTokens(tokens: TToken[]): TResult<TTheme, Ed
 		name,
 		color: {
 			base100,
+			base100Content,
 			base200,
-			base300,
-			baseContent,
+			base200Content,
 			primary,
 			primaryContent,
 			secondary,
