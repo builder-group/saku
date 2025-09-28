@@ -25,10 +25,10 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 		primaryContent: isRgba(color.primaryContent)
 			? color.primaryContent
 			: hexToRgba(color.primaryContent),
-		// secondary: isRgba(color.secondary) ? color.secondary : hexToRgba(color.secondary),
-		// secondaryContent: isRgba(color.secondaryContent)
-		// 	? color.secondaryContent
-		// 	: hexToRgba(color.secondaryContent),
+		secondary: isRgba(color.secondary) ? color.secondary : hexToRgba(color.secondary),
+		secondaryContent: isRgba(color.secondaryContent)
+			? color.secondaryContent
+			: hexToRgba(color.secondaryContent),
 		neutral: isRgba(color.neutral) ? color.neutral : hexToRgba(color.neutral),
 		neutralContent: isRgba(color.neutralContent)
 			? color.neutralContent
@@ -111,16 +111,16 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 			key: 'color.primaryContent',
 			value: rgbaColors.primaryContent
 		},
-		// {
-		// 	type: 'color',
-		// 	key: 'color.secondary',
-		// 	value: rgbaColors.secondary
-		// },
-		// {
-		// 	type: 'color',
-		// 	key: 'color.secondaryContent',
-		// 	value: rgbaColors.secondaryContent
-		// },
+		{
+			type: 'color',
+			key: 'color.secondary',
+			value: rgbaColors.secondary
+		},
+		{
+			type: 'color',
+			key: 'color.secondaryContent',
+			value: rgbaColors.secondaryContent
+		},
 		{
 			type: 'color',
 			key: 'color.neutral',
