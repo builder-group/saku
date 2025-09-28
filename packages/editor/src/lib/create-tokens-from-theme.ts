@@ -21,6 +21,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 		base200Content: isRgba(color.base200Content)
 			? color.base200Content
 			: hexToRgba(color.base200Content),
+		base300: isRgba(color.base300) ? color.base300 : hexToRgba(color.base300),
 		primary: isRgba(color.primary) ? color.primary : hexToRgba(color.primary),
 		primaryContent: isRgba(color.primaryContent)
 			? color.primaryContent
@@ -100,6 +101,11 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 			type: 'color',
 			key: 'color.base200Content',
 			value: rgbaColors.base200Content
+		},
+		{
+			type: 'color',
+			key: 'color.base300',
+			value: rgbaColors.base300
 		},
 		{
 			type: 'color',
