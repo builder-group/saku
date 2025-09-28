@@ -66,7 +66,7 @@ export const ThemePreview: React.FC<TThemePreviewProps> = (props) => {
 					{/* Typography preview */}
 					<h2
 						style={{
-							color: rgbaToHex(color.baseContent),
+							color: rgbaToHex(color.base100Content),
 							fontFamily: typography.heading.fontFamily,
 							fontSize: '20px',
 							fontWeight: typography.heading.fontWeight,

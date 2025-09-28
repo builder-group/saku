@@ -14,7 +14,7 @@ export const ThemeIcon: React.FC<TThemeIconProps> = (props) => {
 			<div
 				className="size-1.5 rounded-full"
 				style={{
-					backgroundColor: rgbaToHex(theme.color.baseContent)
+					backgroundColor: rgbaToHex(theme.color.base100Content)
 				}}
 				title="Primary"
 			/>
@@ -28,7 +28,7 @@ export const ThemeIcon: React.FC<TThemeIconProps> = (props) => {
 			<div
 				className="size-1.5 rounded-full"
 				style={{
-					backgroundColor: rgbaToHex(theme.color.secondary)
+					backgroundColor: rgbaToHex(theme.color.neutral)
 				}}
 				title="Neutral"
 			/>

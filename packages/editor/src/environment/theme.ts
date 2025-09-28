@@ -35,8 +35,8 @@ export const themes: TTheme[] = [
 			base200Content: hexToRgba('#1e293b'),
 			primary: hexToRgba('#3b82f6'),
 			primaryContent: hexToRgba('#ffffff'),
-			secondary: hexToRgba('#8b5cf6'),
-			secondaryContent: hexToRgba('#ffffff'),
+			// secondary: hexToRgba('#8b5cf6'),
+			// secondaryContent: hexToRgba('#ffffff'),
 			neutral: hexToRgba('#64748b'),
 			neutralContent: hexToRgba('#ffffff'),
 			accent: hexToRgba('#e2e8f0'),
@@ -69,8 +69,8 @@ export const themes: TTheme[] = [
 			base200Content: hexToRgba('#f1f5f9'),
 			primary: hexToRgba('#6366f1'),
 			primaryContent: hexToRgba('#ffffff'),
-			secondary: hexToRgba('#a855f7'),
-			secondaryContent: hexToRgba('#ffffff'),
+			// secondary: hexToRgba('#a855f7'),
+			// secondaryContent: hexToRgba('#ffffff'),
 			neutral: hexToRgba('#94a3b8'),
 			neutralContent: hexToRgba('#0f172a'),
 			accent: hexToRgba('#334155'),
@@ -103,8 +103,8 @@ export const themes: TTheme[] = [
 			base200Content: hexToRgba('#581c87'),
 			primary: hexToRgba('#ec4899'),
 			primaryContent: hexToRgba('#ffffff'),
-			secondary: hexToRgba('#f59e0b'),
-			secondaryContent: hexToRgba('#ffffff'),
+			// secondary: hexToRgba('#f59e0b'),
+			// secondaryContent: hexToRgba('#ffffff'),
 			accent: hexToRgba('#fbbf24'),
 			accentContent: hexToRgba('#92400e'),
 			neutral: hexToRgba('#581c87'),
@@ -143,8 +143,8 @@ export const themes: TTheme[] = [
 			base200Content: hexToRgba('#451a03'),
 			primary: hexToRgba('#d97706'),
 			primaryContent: hexToRgba('#ffffff'),
-			secondary: hexToRgba('#fbbf24'),
-			secondaryContent: hexToRgba('#451a03'),
+			// secondary: hexToRgba('#fbbf24'),
+			// secondaryContent: hexToRgba('#451a03'),
 			accent: hexToRgba('#f59e0b'),
 			accentContent: hexToRgba('#451a03'),
 			neutral: hexToRgba('#451a03'),
@@ -183,8 +183,8 @@ export const themes: TTheme[] = [
 			base200Content: hexToRgba('#14532d'),
 			primary: hexToRgba('#059669'),
 			primaryContent: hexToRgba('#ffffff'),
-			secondary: hexToRgba('#10b981'),
-			secondaryContent: hexToRgba('#ffffff'),
+			// secondary: hexToRgba('#10b981'),
+			// secondaryContent: hexToRgba('#ffffff'),
 			accent: hexToRgba('#34d399'),
 			accentContent: hexToRgba('#064e3b'),
 			neutral: hexToRgba('#14532d'),
@@ -217,8 +217,8 @@ export const themes: TTheme[] = [
 			base200Content: hexToRgba('#1e293b'),
 			primary: hexToRgba('#1e40af'),
 			primaryContent: hexToRgba('#ffffff'),
-			secondary: hexToRgba('#475569'),
-			secondaryContent: hexToRgba('#ffffff'),
+			// secondary: hexToRgba('#475569'),
+			// secondaryContent: hexToRgba('#ffffff'),
 			accent: hexToRgba('#64748b'),
 			accentContent: hexToRgba('#ffffff'),
 			neutral: hexToRgba('#1e293b'),
@@ -257,8 +257,8 @@ export const themes: TTheme[] = [
 			base200Content: hexToRgba('#ffffff'),
 			primary: hexToRgba('#e779c1'),
 			primaryContent: hexToRgba('#2d1b69'),
-			secondary: hexToRgba('#58c7f3'),
-			secondaryContent: hexToRgba('#2d1b69'),
+			// secondary: hexToRgba('#58c7f3'),
+			// secondaryContent: hexToRgba('#2d1b69'),
 			accent: hexToRgba('#f3cc30'),
 			accentContent: hexToRgba('#2d1b69'),
 			neutral: hexToRgba('#ffffff'),
@@ -301,8 +301,8 @@ export const themes: TTheme[] = [
 			base200Content: hexToRgba('#2d1b69'),
 			primary: hexToRgba('#ef9995'),
 			primaryContent: hexToRgba('#2d1b69'),
-			secondary: hexToRgba('#a991f7'),
-			secondaryContent: hexToRgba('#2d1b69'),
+			// secondary: hexToRgba('#a991f7'),
+			// secondaryContent: hexToRgba('#2d1b69'),
 			accent: hexToRgba('#dc8850'),
 			accentContent: hexToRgba('#2d1b69'),
 			neutral: hexToRgba('#2d1b69'),
@@ -345,8 +345,8 @@ export const themes: TTheme[] = [
 			base200Content: hexToRgba('#000000'),
 			primary: hexToRgba('#FF0066'),
 			primaryContent: hexToRgba('#000000'),
-			secondary: hexToRgba('#00FFFF'),
-			secondaryContent: hexToRgba('#000000'),
+			// secondary: hexToRgba('#00FFFF'),
+			// secondaryContent: hexToRgba('#000000'),
 			accent: hexToRgba('#FF00FF'),
 			accentContent: hexToRgba('#000000'),
 			neutral: hexToRgba('#6600FF'),
@@ -385,8 +385,8 @@ export const themes: TTheme[] = [
 			base200Content: hexToRgba('#7f1d1d'),
 			primary: hexToRgba('#dc2626'),
 			primaryContent: hexToRgba('#ffffff'),
-			secondary: hexToRgba('#f472b6'),
-			secondaryContent: hexToRgba('#ffffff'),
+			// secondary: hexToRgba('#f472b6'),
+			// secondaryContent: hexToRgba('#ffffff'),
 			accent: hexToRgba('#ec4899'),
 			accentContent: hexToRgba('#ffffff'),
 			neutral: hexToRgba('#7f1d1d'),
@@ -425,8 +425,8 @@ export const themes: TTheme[] = [
 			base200Content: hexToRgba('#fbbf24'),
 			primary: hexToRgba('#f59e0b'),
 			primaryContent: hexToRgba('#1f2937'),
-			secondary: hexToRgba('#dc2626'),
-			secondaryContent: hexToRgba('#ffffff'),
+			// secondary: hexToRgba('#dc2626'),
+			// secondaryContent: hexToRgba('#ffffff'),
 			accent: hexToRgba('#7c3aed'),
 			accentContent: hexToRgba('#ffffff'),
 			neutral: hexToRgba('#fbbf24'),
@@ -469,8 +469,8 @@ export const themes: TTheme[] = [
 			base200Content: hexToRgba('#14532d'),
 			primary: hexToRgba('#059669'),
 			primaryContent: hexToRgba('#ffffff'),
-			secondary: hexToRgba('#f59e0b'),
-			secondaryContent: hexToRgba('#ffffff'),
+			// secondary: hexToRgba('#f59e0b'),
+			// secondaryContent: hexToRgba('#ffffff'),
 			accent: hexToRgba('#10b981'),
 			accentContent: hexToRgba('#064e3b'),
 			neutral: hexToRgba('#14532d'),
@@ -513,8 +513,8 @@ export const themes: TTheme[] = [
 			base200Content: hexToRgba('#f0fdf4'),
 			primary: hexToRgba('#059669'),
 			primaryContent: hexToRgba('#ffffff'),
-			secondary: hexToRgba('#10b981'),
-			secondaryContent: hexToRgba('#ffffff'),
+			// secondary: hexToRgba('#10b981'),
+			// secondaryContent: hexToRgba('#ffffff'),
 			accent: hexToRgba('#34d399'),
 			accentContent: hexToRgba('#064e3b'),
 			neutral: hexToRgba('#f0fdf4'),
@@ -557,8 +557,8 @@ export const themes: TTheme[] = [
 			base200Content: hexToRgba('#0c4a6e'),
 			primary: hexToRgba('#0284c7'),
 			primaryContent: hexToRgba('#ffffff'),
-			secondary: hexToRgba('#06b6d4'),
-			secondaryContent: hexToRgba('#ffffff'),
+			// secondary: hexToRgba('#06b6d4'),
+			// secondaryContent: hexToRgba('#ffffff'),
 			accent: hexToRgba('#0891b2'),
 			accentContent: hexToRgba('#ffffff'),
 			neutral: hexToRgba('#0c4a6e'),
@@ -601,8 +601,8 @@ export const themes: TTheme[] = [
 			base200Content: hexToRgba('#000000'),
 			primary: hexToRgba('#000000'),
 			primaryContent: hexToRgba('#ffffff'),
-			secondary: hexToRgba('#7f7f7f'),
-			secondaryContent: hexToRgba('#ffffff'),
+			// secondary: hexToRgba('#7f7f7f'),
+			// secondaryContent: hexToRgba('#ffffff'),
 			accent: hexToRgba('#7f7f7f'),
 			accentContent: hexToRgba('#ffffff'),
 			neutral: hexToRgba('#000000'),
@@ -635,8 +635,8 @@ export const themes: TTheme[] = [
 			base200Content: hexToRgba('#374151'),
 			primary: hexToRgba('#f3e8ff'),
 			primaryContent: hexToRgba('#581c87'),
-			secondary: hexToRgba('#fef3c7'),
-			secondaryContent: hexToRgba('#92400e'),
+			// secondary: hexToRgba('#fef3c7'),
+			// secondaryContent: hexToRgba('#92400e'),
 			accent: hexToRgba('#dbeafe'),
 			accentContent: hexToRgba('#1e40af'),
 			neutral: hexToRgba('#374151'),
@@ -669,8 +669,8 @@ export const themes: TTheme[] = [
 			base200Content: hexToRgba('#1e1b4b'),
 			primary: hexToRgba('#7c3aed'),
 			primaryContent: hexToRgba('#ffffff'),
-			secondary: hexToRgba('#ec4899'),
-			secondaryContent: hexToRgba('#ffffff'),
+			// secondary: hexToRgba('#ec4899'),
+			// secondaryContent: hexToRgba('#ffffff'),
 			accent: hexToRgba('#a855f7'),
 			accentContent: hexToRgba('#ffffff'),
 			neutral: hexToRgba('#1e1b4b'),
@@ -713,8 +713,8 @@ export const themes: TTheme[] = [
 			base200Content: hexToRgba('#000000'),
 			primary: hexToRgba('#000000'),
 			primaryContent: hexToRgba('#ffffff'),
-			secondary: hexToRgba('#000000'),
-			secondaryContent: hexToRgba('#ffffff'),
+			// secondary: hexToRgba('#000000'),
+			// secondaryContent: hexToRgba('#ffffff'),
 			accent: hexToRgba('#000000'),
 			accentContent: hexToRgba('#ffffff'),
 			neutral: hexToRgba('#000000'),
@@ -753,8 +753,8 @@ export const themes: TTheme[] = [
 			base200Content: hexToRgba('#ffffff'),
 			primary: hexToRgba('#ffffff'),
 			primaryContent: hexToRgba('#000000'),
-			secondary: hexToRgba('#ffffff'),
-			secondaryContent: hexToRgba('#000000'),
+			// secondary: hexToRgba('#ffffff'),
+			// secondaryContent: hexToRgba('#000000'),
 			accent: hexToRgba('#ffffff'),
 			accentContent: hexToRgba('#000000'),
 			neutral: hexToRgba('#ffffff'),
@@ -793,8 +793,8 @@ export const themes: TTheme[] = [
 			base200Content: hexToRgba('#1f2937'),
 			primary: hexToRgba('#000000'),
 			primaryContent: hexToRgba('#ffffff'),
-			secondary: hexToRgba('#1f2937'),
-			secondaryContent: hexToRgba('#ffffff'),
+			// secondary: hexToRgba('#1f2937'),
+			// secondaryContent: hexToRgba('#ffffff'),
 			accent: hexToRgba('#1f2937'),
 			accentContent: hexToRgba('#ffffff'),
 			neutral: hexToRgba('#1f2937'),
@@ -837,8 +837,8 @@ export const themes: TTheme[] = [
 			base200Content: hexToRgba('#f8f8f2'),
 			primary: hexToRgba('#bd93f9'),
 			primaryContent: hexToRgba('#282a36'),
-			secondary: hexToRgba('#ff79c6'),
-			secondaryContent: hexToRgba('#282a36'),
+			// secondary: hexToRgba('#ff79c6'),
+			// secondaryContent: hexToRgba('#282a36'),
 			accent: hexToRgba('#ffb86c'),
 			accentContent: hexToRgba('#282a36'),
 			neutral: hexToRgba('#f8f8f2'),
@@ -881,8 +881,8 @@ export const themes: TTheme[] = [
 			base200Content: hexToRgba('#1f2937'),
 			primary: hexToRgba('#0ea5e9'),
 			primaryContent: hexToRgba('#ffffff'),
-			secondary: hexToRgba('#ec4899'),
-			secondaryContent: hexToRgba('#ffffff'),
+			// secondary: hexToRgba('#ec4899'),
+			// secondaryContent: hexToRgba('#ffffff'),
 			accent: hexToRgba('#f59e0b'),
 			accentContent: hexToRgba('#ffffff'),
 			neutral: hexToRgba('#1f2937'),
@@ -925,8 +925,8 @@ export const themes: TTheme[] = [
 			base200Content: hexToRgba('#7c2d12'),
 			primary: hexToRgba('#ea580c'),
 			primaryContent: hexToRgba('#ffffff'),
-			secondary: hexToRgba('#dc2626'),
-			secondaryContent: hexToRgba('#ffffff'),
+			// secondary: hexToRgba('#dc2626'),
+			// secondaryContent: hexToRgba('#ffffff'),
 			accent: hexToRgba('#f59e0b'),
 			accentContent: hexToRgba('#ffffff'),
 			neutral: hexToRgba('#7c2d12'),
@@ -963,8 +963,8 @@ export const themes: TTheme[] = [
 			base200Content: hexToRgba('#1e293b'),
 			primary: hexToRgba('#1e40af'),
 			primaryContent: hexToRgba('#ffffff'),
-			secondary: hexToRgba('#475569'),
-			secondaryContent: hexToRgba('#ffffff'),
+			// secondary: hexToRgba('#475569'),
+			// secondaryContent: hexToRgba('#ffffff'),
 			accent: hexToRgba('#64748b'),
 			accentContent: hexToRgba('#ffffff'),
 			neutral: hexToRgba('#1e293b'),
@@ -1003,8 +1003,8 @@ export const themes: TTheme[] = [
 			base200Content: hexToRgba('#00ff00'),
 			primary: hexToRgba('#00ff00'),
 			primaryContent: hexToRgba('#000000'),
-			secondary: hexToRgba('#ff00ff'),
-			secondaryContent: hexToRgba('#000000'),
+			// secondary: hexToRgba('#ff00ff'),
+			// secondaryContent: hexToRgba('#000000'),
 			accent: hexToRgba('#ffff00'),
 			accentContent: hexToRgba('#000000'),
 			neutral: hexToRgba('#00ff00'),
@@ -1041,8 +1041,8 @@ export const themes: TTheme[] = [
 			base200Content: hexToRgba('#451a03'),
 			primary: hexToRgba('#65a30d'),
 			primaryContent: hexToRgba('#ffffff'),
-			secondary: hexToRgba('#fbbf24'),
-			secondaryContent: hexToRgba('#451a03'),
+			// secondary: hexToRgba('#fbbf24'),
+			// secondaryContent: hexToRgba('#451a03'),
 			accent: hexToRgba('#f59e0b'),
 			accentContent: hexToRgba('#451a03'),
 			neutral: hexToRgba('#451a03'),
@@ -1085,8 +1085,8 @@ export const themes: TTheme[] = [
 			base200Content: hexToRgba('#f1f5f9'),
 			primary: hexToRgba('#38bdf8'),
 			primaryContent: hexToRgba('#0f172a'),
-			secondary: hexToRgba('#818cf8'),
-			secondaryContent: hexToRgba('#0f172a'),
+			// secondary: hexToRgba('#818cf8'),
+			// secondaryContent: hexToRgba('#0f172a'),
 			accent: hexToRgba('#f472b6'),
 			accentContent: hexToRgba('#0f172a'),
 			neutral: hexToRgba('#f1f5f9'),
@@ -1129,8 +1129,8 @@ export const themes: TTheme[] = [
 			base200Content: hexToRgba('#f5f5f4'),
 			primary: hexToRgba('#db924b'),
 			primaryContent: hexToRgba('#1a1a1a'),
-			secondary: hexToRgba('#263e3f'),
-			secondaryContent: hexToRgba('#f5f5f4'),
+			// secondary: hexToRgba('#263e3f'),
+			// secondaryContent: hexToRgba('#f5f5f4'),
 			accent: hexToRgba('#f0b323'),
 			accentContent: hexToRgba('#1a1a1a'),
 			neutral: hexToRgba('#f5f5f4'),
@@ -1173,8 +1173,8 @@ export const themes: TTheme[] = [
 			base200Content: hexToRgba('#0c4a6e'),
 			primary: hexToRgba('#0284c7'),
 			primaryContent: hexToRgba('#ffffff'),
-			secondary: hexToRgba('#6366f1'),
-			secondaryContent: hexToRgba('#ffffff'),
+			// secondary: hexToRgba('#6366f1'),
+			// secondaryContent: hexToRgba('#ffffff'),
 			accent: hexToRgba('#ec4899'),
 			accentContent: hexToRgba('#ffffff'),
 			neutral: hexToRgba('#0c4a6e'),
@@ -1217,8 +1217,8 @@ export const themes: TTheme[] = [
 			base200Content: hexToRgba('#f9fafb'),
 			primary: hexToRgba('#f59e0b'),
 			primaryContent: hexToRgba('#1f2937'),
-			secondary: hexToRgba('#ef4444'),
-			secondaryContent: hexToRgba('#ffffff'),
+			// secondary: hexToRgba('#ef4444'),
+			// secondaryContent: hexToRgba('#ffffff'),
 			accent: hexToRgba('#10b981'),
 			accentContent: hexToRgba('#1f2937'),
 			neutral: hexToRgba('#f9fafb'),
@@ -1257,8 +1257,8 @@ export const themes: TTheme[] = [
 			base200Content: hexToRgba('#eceff4'),
 			primary: hexToRgba('#88c0d0'),
 			primaryContent: hexToRgba('#2e3440'),
-			secondary: hexToRgba('#81a1c1'),
-			secondaryContent: hexToRgba('#2e3440'),
+			// secondary: hexToRgba('#81a1c1'),
+			// secondaryContent: hexToRgba('#2e3440'),
 			accent: hexToRgba('#8fbcbb'),
 			accentContent: hexToRgba('#2e3440'),
 			neutral: hexToRgba('#eceff4'),
@@ -1297,8 +1297,8 @@ export const themes: TTheme[] = [
 			base200Content: hexToRgba('#ffffff'),
 			primary: hexToRgba('#f97316'),
 			primaryContent: hexToRgba('#ffffff'),
-			secondary: hexToRgba('#f59e0b'),
-			secondaryContent: hexToRgba('#ffffff'),
+			// secondary: hexToRgba('#f59e0b'),
+			// secondaryContent: hexToRgba('#ffffff'),
 			accent: hexToRgba('#ec4899'),
 			accentContent: hexToRgba('#ffffff'),
 			neutral: hexToRgba('#ffffff'),
@@ -1336,30 +1336,37 @@ export const themes: TTheme[] = [
 export interface TTheme {
 	key: string;
 	name: string;
-
 	color: {
+		// base100/base100Content → Secondary surfaces (cards, widgets) for depth
 		base100: TRgba;
 		base100Content: TRgba;
+		// base200/base200Content → Page-level background and text
 		base200: TRgba;
 		base200Content: TRgba;
+		// primary/primaryContent → Primary buttons and main actions
 		primary: TRgba;
 		primaryContent: TRgba;
-		secondary: TRgba;
-		secondaryContent: TRgba;
+		// secondary: TRgba;
+		// secondaryContent: TRgba;
+		// neutral/neutralContent → Secondary buttons, badges, and subtle elements
 		neutral: TRgba;
 		neutralContent: TRgba;
+		// accent/accentContent → Border colors and decorative elements
 		accent: TRgba;
 		accentContent: TRgba;
+		// info/infoContent → Informational messages and notifications
 		info: TRgba;
 		infoContent: TRgba;
+		// success/successContent → Success states and positive feedback
 		success: TRgba;
 		successContent: TRgba;
+		// warning/warningContent → Warning states and caution messages
 		warning: TRgba;
 		warningContent: TRgba;
+		// error/errorContent → Error states and negative feedback
 		error: TRgba;
 		errorContent: TRgba;
 	};
-
 	typography: {
 		heading: {
 			fontFamily: string;
@@ -1370,22 +1377,18 @@ export interface TTheme {
 			fontWeight: 300 | 400 | 500;
 		};
 	};
-
 	gap?: number; // spacing between elements, in px
-
 	size?: {
 		text?: number; // text size multiplier (1 = default)
 		box?: number; // card, modal, alert, etc. size multiplier (1 = default)
 		field?: number; // input, select, tab, etc. size multiplier (1 = default)
 		selector?: number; // checkbox, toggle, badge, etc. size multiplier (1 = default)
 	};
-
 	radius: {
 		box: number; // card, modal, alert, etc. in px
 		field: number; // input, select, tab, etc. in px
 		selector: number; // checkbox, toggle, badge, etc. in px
 	};
-
 	effects?: {
 		shadow?: {
 			blur: number; // in px

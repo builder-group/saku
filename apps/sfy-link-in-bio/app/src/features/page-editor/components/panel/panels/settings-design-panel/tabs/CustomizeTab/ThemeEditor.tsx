@@ -44,24 +44,24 @@ export const ThemeEditor: React.FC<TThemeEditorProps> = (props) => {
 			}));
 		}
 	});
-	const secondaryColorState = useMapState(themeState, {
-		map: (theme) => theme.color.secondary,
-		sync: (baseState, value) => {
-			baseState.set((theme) => ({
-				...theme,
-				color: { ...theme.color, secondary: value }
-			}));
-		}
-	});
-	const secondaryContentColorState = useMapState(themeState, {
-		map: (theme) => theme.color.secondaryContent,
-		sync: (baseState, value) => {
-			baseState.set((theme) => ({
-				...theme,
-				color: { ...theme.color, secondaryContent: value }
-			}));
-		}
-	});
+	// const secondaryColorState = useMapState(themeState, {
+	// 	map: (theme) => theme.color.secondary,
+	// 	sync: (baseState, value) => {
+	// 		baseState.set((theme) => ({
+	// 			...theme,
+	// 			color: { ...theme.color, secondary: value }
+	// 		}));
+	// 	}
+	// });
+	// const secondaryContentColorState = useMapState(themeState, {
+	// 	map: (theme) => theme.color.secondaryContent,
+	// 	sync: (baseState, value) => {
+	// 		baseState.set((theme) => ({
+	// 			...theme,
+	// 			color: { ...theme.color, secondaryContent: value }
+	// 		}));
+	// 	}
+	// });
 	const accentColorState = useMapState(themeState, {
 		map: (theme) => theme.color.accent,
 		sync: (baseState, value) => {
@@ -77,6 +77,24 @@ export const ThemeEditor: React.FC<TThemeEditorProps> = (props) => {
 			baseState.set((theme) => ({
 				...theme,
 				color: { ...theme.color, accentContent: value }
+			}));
+		}
+	});
+	const neutralColorState = useMapState(themeState, {
+		map: (theme) => theme.color.neutral,
+		sync: (baseState, value) => {
+			baseState.set((theme) => ({
+				...theme,
+				color: { ...theme.color, neutral: value }
+			}));
+		}
+	});
+	const neutralContentColorState = useMapState(themeState, {
+		map: (theme) => theme.color.neutralContent,
+		sync: (baseState, value) => {
+			baseState.set((theme) => ({
+				...theme,
+				color: { ...theme.color, neutralContent: value }
 			}));
 		}
 	});
@@ -113,24 +131,6 @@ export const ThemeEditor: React.FC<TThemeEditorProps> = (props) => {
 			baseState.set((theme) => ({
 				...theme,
 				color: { ...theme.color, base200Content: value }
-			}));
-		}
-	});
-	const neutralColorState = useMapState(themeState, {
-		map: (theme) => theme.color.neutral,
-		sync: (baseState, value) => {
-			baseState.set((theme) => ({
-				...theme,
-				color: { ...theme.color, neutral: value }
-			}));
-		}
-	});
-	const neutralContentColorState = useMapState(themeState, {
-		map: (theme) => theme.color.neutralContent,
-		sync: (baseState, value) => {
-			baseState.set((theme) => ({
-				...theme,
-				color: { ...theme.color, neutralContent: value }
 			}));
 		}
 	});
@@ -305,12 +305,12 @@ export const ThemeEditor: React.FC<TThemeEditorProps> = (props) => {
 					state={primaryContentColorState}
 					disabledTokenLink={true}
 				/>
-				<TokenColorInput label="Secondary" state={secondaryColorState} disabledTokenLink={true} />
+				{/* <TokenColorInput label="Secondary" state={secondaryColorState} disabledTokenLink={true} />
 				<TokenColorInput
 					label="Secondary Content"
 					state={secondaryContentColorState}
 					disabledTokenLink={true}
-				/>
+				/> */}
 				<TokenColorInput label="Accent" state={accentColorState} disabledTokenLink={true} />
 				<TokenColorInput
 					label="Accent Content"
@@ -323,15 +323,15 @@ export const ThemeEditor: React.FC<TThemeEditorProps> = (props) => {
 					state={neutralContentColorState}
 					disabledTokenLink={true}
 				/>
-				<TokenColorInput label="Base 100" state={base100ColorState} disabledTokenLink={true} />
+				<TokenColorInput label="Surface" state={base100ColorState} disabledTokenLink={true} />
 				<TokenColorInput
-					label="Base 100 Content"
+					label="Surface Content"
 					state={base100ContentColorState}
 					disabledTokenLink={true}
 				/>
-				<TokenColorInput label="Base 200" state={base200ColorState} disabledTokenLink={true} />
+				<TokenColorInput label="Background" state={base200ColorState} disabledTokenLink={true} />
 				<TokenColorInput
-					label="Base 200 Content"
+					label="Background Content"
 					state={base200ContentColorState}
 					disabledTokenLink={true}
 				/>

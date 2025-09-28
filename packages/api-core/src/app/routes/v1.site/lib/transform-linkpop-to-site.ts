@@ -292,9 +292,12 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 			color: {
 				...defaultTheme.color,
 				base100: cssRgbaToRgba(page?.themeSettings?.linkCardColor) ?? defaultTheme.color.base100,
+				base100Content:
+					cssRgbaToRgba(page?.themeSettings?.linkCardFontColor) ??
+					defaultTheme.color.base100Content,
 				base200: cssRgbaToRgba(page?.themeSettings?.backgroundColor) ?? defaultTheme.color.base200,
-				baseContent:
-					cssRgbaToRgba(page?.themeSettings?.linkCardFontColor) ?? defaultTheme.color.baseContent,
+				base200Content:
+					cssRgbaToRgba(page?.themeSettings?.fontColor) ?? defaultTheme.color.base200Content,
 				primary:
 					cssRgbaToRgba(page?.themeSettings?.linkCardFontColor) ?? defaultTheme.color.primary,
 				primaryContent:

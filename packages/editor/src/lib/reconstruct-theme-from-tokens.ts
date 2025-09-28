@@ -74,17 +74,17 @@ export function reconstructThemeFromTokens(tokens: TToken[]): TResult<TTheme, Ed
 	if (!isPrimaryContentOk) {
 		return Err(primaryContentErr.wrapWith('#ERR_RECONSTRUCT_COLOR_PRIMARY_CONTENT'));
 	}
-	const [isSecondaryOk, secondaryErr, secondary] = getValue('color', 'color.secondary');
-	if (!isSecondaryOk) {
-		return Err(secondaryErr.wrapWith('#ERR_RECONSTRUCT_COLOR_SECONDARY'));
-	}
-	const [isSecondaryContentOk, secondaryContentErr, secondaryContent] = getValue(
-		'color',
-		'color.secondaryContent'
-	);
-	if (!isSecondaryContentOk) {
-		return Err(secondaryContentErr.wrapWith('#ERR_RECONSTRUCT_COLOR_SECONDARY_CONTENT'));
-	}
+	// const [isSecondaryOk, secondaryErr, secondary] = getValue('color', 'color.secondary');
+	// if (!isSecondaryOk) {
+	// 	return Err(secondaryErr.wrapWith('#ERR_RECONSTRUCT_COLOR_SECONDARY'));
+	// }
+	// const [isSecondaryContentOk, secondaryContentErr, secondaryContent] = getValue(
+	// 	'color',
+	// 	'color.secondaryContent'
+	// );
+	// if (!isSecondaryContentOk) {
+	// 	return Err(secondaryContentErr.wrapWith('#ERR_RECONSTRUCT_COLOR_SECONDARY_CONTENT'));
+	// }
 	const [isNeutralOk, neutralErr, neutral] = getValue('color', 'color.neutral');
 	if (!isNeutralOk) {
 		return Err(neutralErr.wrapWith('#ERR_RECONSTRUCT_COLOR_NEUTRAL'));
@@ -239,8 +239,8 @@ export function reconstructThemeFromTokens(tokens: TToken[]): TResult<TTheme, Ed
 			base200Content,
 			primary,
 			primaryContent,
-			secondary,
-			secondaryContent,
+			// secondary,
+			// secondaryContent,
 			neutral,
 			neutralContent,
 			accent,
