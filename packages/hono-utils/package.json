@@ -39,7 +39,7 @@
 		"@oslojs/encoding": "^1.1.0",
 		"arctic": "^3.7.0",
 		"feature-fetch": "^0.0.51",
-		"hono": "^4.9.8",
+		"hono": "^4.9.9",
 		"jose": "^6.1.0",
 		"zod": "4.1.11"
 	},
