@@ -2,54 +2,43 @@
 
 client_id = "ea99bf002074f933c82c6ae0ac0a83a9"
 name = "Saku Link In Bio"
-handle = "saku-link-in-bio"
 application_url = "https://sfy-link-in-bio-app.saku.so"
 embedded = true
-
-[access_scopes]
-# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = """
-read_files,
-write_files,
-read_online_store_navigation,
-write_online_store_navigation,
-read_products,
-read_themes,
-unauthenticated_read_checkouts,
-unauthenticated_write_checkouts,
-unauthenticated_read_metaobjects,
-unauthenticated_read_product_listings
-"""
-
-[auth]
-redirect_urls = [
-    "https://sfy-link-in-bio-app.saku.so/auth/callback",
-    "https://sfy-link-in-bio-app.saku.so/auth/shopify/callback",
-    "https://sfy-link-in-bio-app.saku.so/api/auth/callback",
-]
+handle = "saku-link-in-bio"
 
 [webhooks]
 api_version = "2025-07"
 
-[[webhooks.subscriptions]]
-topics = ["app/uninstalled"]
-uri = "/api/v1/webhook/shopify/app/uninstalled"
+  [[webhooks.subscriptions]]
+  topics = [ "app/scopes_update" ]
+  uri = "/api/v1/webhook/shopify/app/scopes_update"
 
-[[webhooks.subscriptions]]
-topics = ["app/scopes_update"]
-uri = "/api/v1/webhook/shopify/app/scopes_update"
+  [[webhooks.subscriptions]]
+  uri = "/api/v1/webhook/shopify/customers/data_request"
+  compliance_topics = [ "customers/data_request" ]
 
-[[webhooks.subscriptions]]
-compliance_topics = ["customers/data_request"]
-uri = "/api/v1/webhook/shopify/customers/data_request"
+  [[webhooks.subscriptions]]
+  uri = "/api/v1/webhook/shopify/customers/redact"
+  compliance_topics = [ "customers/redact" ]
 
-[[webhooks.subscriptions]]
-compliance_topics = ["customers/redact"]
-uri = "/api/v1/webhook/shopify/customers/redact"
+  [[webhooks.subscriptions]]
+  uri = "/api/v1/webhook/shopify/shop/redact"
+  compliance_topics = [ "shop/redact" ]
 
-[[webhooks.subscriptions]]
-compliance_topics = ["shop/redact"]
-uri = "/api/v1/webhook/shopify/shop/redact"
+  [[webhooks.subscriptions]]
+  topics = [ "app/uninstalled" ]
+  uri = "/api/v1/webhook/shopify/app/uninstalled"
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "read_files,read_online_store_navigation,read_products,read_themes,unauthenticated_read_checkouts,unauthenticated_read_metaobjects,unauthenticated_read_product_listings,unauthenticated_write_checkouts,write_files,write_online_store_navigation"
+
+[auth]
+redirect_urls = [
+  "https://sfy-link-in-bio-app.saku.so/auth/callback",
+  "https://sfy-link-in-bio-app.saku.so/auth/shopify/callback",
+  "https://sfy-link-in-bio-app.saku.so/api/auth/callback"
+]
 
 [app_proxy]
 url = "https://sfy-link-in-bio-app.saku.so/a/saku"
@@ -58,6 +47,3 @@ prefix = "a"
 
 [pos]
 embedded = false
-
-[build]
-automatically_update_urls_on_dev = true
