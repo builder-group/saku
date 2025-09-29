@@ -179,7 +179,7 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 
 	return Ok({
 		shopId: session.shop,
-		primaryDomain: shopOverview.shop.primaryDomain?.url.replace(/^https?:\/\//, '') ?? session.shop,
+		primaryDomain: shopOverview.shop.primaryDomain?.host ?? session.shop,
 		defaultHandle: {
 			handle,
 			isAvailable:
