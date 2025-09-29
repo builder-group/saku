@@ -29,7 +29,7 @@ import {
 
 const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 	Success: ({ data }) => {
-		const { shop, defaultHandle, presets } = data;
+		const { shopId, primaryDomain, defaultHandle, presets } = data;
 		const navigate = useNavigate();
 		const [searchParams] = useSearchParams();
 		const shopifyBridge = useAppBridge();
@@ -42,12 +42,13 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 		const onboardingContext = React.useMemo<TOnboardingContext>(() => {
 			return createOnboardingContext({
 				shopify: shopifyBridge,
-				shopId: shop,
+				shopId,
+				primaryDomain,
 				defaultHandle,
 				presets,
 				crisp: crisp ?? undefined
 			});
-		}, [shopifyBridge, shop, defaultHandle, presets, crisp]);
+		}, [shopifyBridge, shopId, primaryDomain, defaultHandle, presets, crisp]);
 
 		const [stepType, setStepType] = React.useState<TOnboardingStep['type']>('welcome');
 
@@ -177,7 +178,8 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 	});
 
 	return Ok({
-		shop: session.shop,
+		shopId: session.shop,
+		primaryDomain: shopOverview.shop.primaryDomain?.url.replace(/^https?:\/\//, '') ?? session.shop,
 		defaultHandle: {
 			handle,
 			isAvailable:
@@ -212,7 +214,8 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 });
 
 interface TSuccessLoaderData {
-	shop: string;
+	shopId: string;
+	primaryDomain: string;
 	defaultHandle: { handle: string; isAvailable: boolean };
 	presets: TSitePreset[];
 }

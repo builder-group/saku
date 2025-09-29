@@ -25,12 +25,12 @@ export const HandleStep: React.FC<THandleStepProps> = (props) => {
 		return handle.trim() && handle.length > 0;
 	}, [handle]);
 
-	const { text: truncatedShop, isTruncated } = React.useMemo(() => {
-		return truncate(onboardingContext.shopId, {
+	const { text: truncatedPrimaryDomain, isTruncated } = React.useMemo(() => {
+		return truncate(onboardingContext.primaryDomain, {
 			maxLength: 20,
 			mode: 'center'
 		});
-	}, [onboardingContext.shopId]);
+	}, [onboardingContext.primaryDomain]);
 
 	// =========================================================================
 	// Events
@@ -95,11 +95,11 @@ export const HandleStep: React.FC<THandleStepProps> = (props) => {
 			<div className="flex flex-row">
 				<div className="flex items-center rounded-l-[var(--p-border-radius-200)] border-y border-l border-[var(--p-color-input-border)] bg-neutral-100 px-3 text-[var(--p-color-text-subdued)]">
 					{isTruncated ? (
-						<Tooltip content={onboardingContext.shopId}>
-							<span>{truncatedShop}/</span>
+						<Tooltip content={onboardingContext.primaryDomain}>
+							<span>{truncatedPrimaryDomain}/</span>
 						</Tooltip>
 					) : (
-						<span>{truncatedShop}/</span>
+						<span>{truncatedPrimaryDomain}/</span>
 					)}
 				</div>
 				<div className="relative flex flex-1 items-center">

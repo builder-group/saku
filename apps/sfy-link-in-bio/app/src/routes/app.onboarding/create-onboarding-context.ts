@@ -9,12 +9,13 @@ import { createShopifyTokenMiddleware, createStepr, Crisp, type TStepr } from '@
 export function createOnboardingContext(
 	config: TCreateOnboardingContextConfig
 ): TOnboardingContext {
-	const { shopify, shopId, defaultHandle, presets, crisp } = config;
+	const { shopify, shopId, primaryDomain, defaultHandle, presets, crisp } = config;
 
 	return {
 		id: shortId(),
 		shopify,
 		shopId,
+		primaryDomain,
 		defaultHandle,
 		stepr: createStepr<TOnboardingStep>({ initialStep: { type: 'welcome' } }),
 		presets: presets.reduce(
@@ -285,6 +286,7 @@ export function createOnboardingContext(
 export interface TCreateOnboardingContextConfig {
 	shopify: ShopifyGlobal;
 	shopId: string;
+	primaryDomain: string;
 	defaultHandle: { handle: string; isAvailable: boolean };
 	presets: TSitePreset[];
 	crisp?: Crisp;
@@ -294,6 +296,7 @@ export interface TOnboardingContext {
 	id: string;
 	shopify: ShopifyGlobal;
 	shopId: string;
+	primaryDomain: string;
 	defaultHandle: { handle: string; isAvailable: boolean };
 	stepr: TStepr<TOnboardingStep>;
 	presets: Record<string, TSitePreset>;
