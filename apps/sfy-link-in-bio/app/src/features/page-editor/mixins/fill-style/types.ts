@@ -5,6 +5,7 @@ export type TResolvedFillStyleMixin = TBaseMixin<
 	'fill',
 	{
 		paint: TResolvedPaint;
+		opacity: number;
 		// Computed CSS styles
 		styles: {
 			backgroundColor?: React.CSSProperties['backgroundColor'];

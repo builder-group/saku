@@ -312,8 +312,8 @@ export type TTypographyStyleMixin = TBaseMixin<
 export type TFillStyleMixin = TBaseMixin<
 	'fill',
 	TRef<{
-		paint: TPaint;
-		opacity: number; // Note: Only really needed when we support multiple fills - currently same as appearance opacity
+		paint: TRef<TPaint>;
+		opacity: TRef<number>;
 	} | null>
 >;
 

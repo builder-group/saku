@@ -14,6 +14,7 @@ import {
 	TTokenPaintInputPaintType
 } from '../../components';
 import { resolveTokenRef, TPageEditor } from '../../lib';
+import { packFillTokenRef, unpackFillTokenRef } from './pack-mixin';
 
 export const FillStyleMixinEditor = (props: TFillStyleMixinEditorProps) => {
 	const { state, onLinkToken, disabledTokenLink = false, editor, allowedPaintTypes } = props;
@@ -34,15 +35,13 @@ export const FillStyleMixinEditor = (props: TFillStyleMixinEditorProps) => {
 			return baseValue?.paint;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
-			if (
-				baseState._v != null &&
-				!isTokenRef(baseState._v) &&
-				mappedValue != null &&
-				!isTokenRef(mappedValue)
-			) {
-				baseState._v.paint = mappedValue;
-				baseState._notify(notifyOptions);
+			const unpackedBaseValue = unpackFillTokenRef(baseState._v);
+			if (unpackedBaseValue == null || mappedValue == null) {
+				return;
 			}
+			unpackedBaseValue.paint = mappedValue;
+			baseState._v = packFillTokenRef(unpackedBaseValue);
+			baseState._notify(notifyOptions);
 		}
 	});
 
