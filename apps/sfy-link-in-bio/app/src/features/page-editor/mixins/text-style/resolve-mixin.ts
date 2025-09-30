@@ -63,11 +63,11 @@ export function resolveTextStyleMixin(
 			...resolvedTypography.styles,
 			color: resolvedFill?.paint.type === 'solid' ? resolvedFill?.paint.color : undefined,
 			WebkitTextStroke: resolvedStroke?.width
-				? `${resolvedStroke.width}px ${resolvedStroke.color}`
+				? `${resolvedStroke.width}px ${resolvedStroke.paint.color}`
 				: undefined,
 			textShadow:
 				resolvedShadow != null
-					? `${resolvedShadow.offsetX}px ${resolvedShadow.offsetY}px ${resolvedShadow.blur}px ${resolvedShadow.color}`
+					? `${resolvedShadow.offsetX}px ${resolvedShadow.offsetY}px ${resolvedShadow.blur}px ${resolvedShadow.paint.color}`
 					: undefined
 		}
 	});

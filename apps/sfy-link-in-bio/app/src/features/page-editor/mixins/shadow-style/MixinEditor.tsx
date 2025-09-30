@@ -15,11 +15,12 @@ import { Badge, LinkIcon, LinkOffIcon, PolarisMinusIcon, PolarisPlusIcon } from 
 import { useMapState } from '@/hooks';
 import {
 	TokenActionOverlay,
-	TokenColorInput,
 	TokenKeyTooltip,
+	TokenPaintInput,
 	TokenTextInput
 } from '../../components';
 import { resolveTokenRef, TPageEditor } from '../../lib';
+import { packShadowTokenRef, unpackShadowTokenRef } from './pack-mixin';
 
 export const ShadowStyleMixinEditor = (props: TShadowStyleMixinEditorProps) => {
 	const { state, onLinkToken, disabledTokenLink = false, editor, disabledSpread = false } = props;
@@ -32,23 +33,21 @@ export const ShadowStyleMixinEditor = (props: TShadowStyleMixinEditorProps) => {
 		[editor]
 	);
 
-	const colorState = useMapState(state, {
+	const paintState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return mapTokenRef(baseValue, 'color');
+				return mapTokenRef(baseValue, 'paint');
 			}
-			return baseValue?.color;
+			return baseValue?.paint;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
-			if (
-				baseState._v != null &&
-				!isTokenRef(baseState._v) &&
-				mappedValue != null &&
-				!isTokenRef(mappedValue)
-			) {
-				baseState._v.color = mappedValue;
-				baseState._notify(notifyOptions);
+			const unpackedBaseValue = unpackShadowTokenRef(baseState._v);
+			if (unpackedBaseValue == null || mappedValue == null) {
+				return;
 			}
+			unpackedBaseValue.paint = mappedValue;
+			baseState._v = packShadowTokenRef(unpackedBaseValue);
+			baseState._notify(notifyOptions);
 		}
 	});
 	const blurState = useMapState(state, {
@@ -59,15 +58,13 @@ export const ShadowStyleMixinEditor = (props: TShadowStyleMixinEditorProps) => {
 			return baseValue?.blur;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
-			if (
-				baseState._v != null &&
-				!isTokenRef(baseState._v) &&
-				mappedValue != null &&
-				!isTokenRef(mappedValue)
-			) {
-				baseState._v.blur = mappedValue;
-				baseState._notify(notifyOptions);
+			const unpackedBaseValue = unpackShadowTokenRef(baseState._v);
+			if (unpackedBaseValue == null || mappedValue == null) {
+				return;
 			}
+			unpackedBaseValue.blur = mappedValue;
+			baseState._v = packShadowTokenRef(unpackedBaseValue);
+			baseState._notify(notifyOptions);
 		}
 	});
 	const spreadState = useMapState(state, {
@@ -78,15 +75,13 @@ export const ShadowStyleMixinEditor = (props: TShadowStyleMixinEditorProps) => {
 			return baseValue?.spread;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
-			if (
-				baseState._v != null &&
-				!isTokenRef(baseState._v) &&
-				mappedValue != null &&
-				!isTokenRef(mappedValue)
-			) {
-				baseState._v.spread = mappedValue;
-				baseState._notify(notifyOptions);
+			const unpackedBaseValue = unpackShadowTokenRef(baseState._v);
+			if (unpackedBaseValue == null || mappedValue == null) {
+				return;
 			}
+			unpackedBaseValue.spread = mappedValue;
+			baseState._v = packShadowTokenRef(unpackedBaseValue);
+			baseState._notify(notifyOptions);
 		}
 	});
 	const offsetXState = useMapState(state, {
@@ -97,15 +92,13 @@ export const ShadowStyleMixinEditor = (props: TShadowStyleMixinEditorProps) => {
 			return baseValue?.offsetX;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
-			if (
-				baseState._v != null &&
-				!isTokenRef(baseState._v) &&
-				mappedValue != null &&
-				!isTokenRef(mappedValue)
-			) {
-				baseState._v.offsetX = mappedValue;
-				baseState._notify(notifyOptions);
+			const unpackedBaseValue = unpackShadowTokenRef(baseState._v);
+			if (unpackedBaseValue == null || mappedValue == null) {
+				return;
 			}
+			unpackedBaseValue.offsetX = mappedValue;
+			baseState._v = packShadowTokenRef(unpackedBaseValue);
+			baseState._notify(notifyOptions);
 		}
 	});
 	const offsetYState = useMapState(state, {
@@ -116,15 +109,13 @@ export const ShadowStyleMixinEditor = (props: TShadowStyleMixinEditorProps) => {
 			return baseValue?.offsetY;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
-			if (
-				baseState._v != null &&
-				!isTokenRef(baseState._v) &&
-				mappedValue != null &&
-				!isTokenRef(mappedValue)
-			) {
-				baseState._v.offsetY = mappedValue;
-				baseState._notify(notifyOptions);
+			const unpackedBaseValue = unpackShadowTokenRef(baseState._v);
+			if (unpackedBaseValue == null || mappedValue == null) {
+				return;
 			}
+			unpackedBaseValue.offsetY = mappedValue;
+			baseState._v = packShadowTokenRef(unpackedBaseValue);
+			baseState._notify(notifyOptions);
 		}
 	});
 
@@ -141,7 +132,7 @@ export const ShadowStyleMixinEditor = (props: TShadowStyleMixinEditorProps) => {
 				resolvedToken != null
 					? deepCopy(resolvedToken)
 					: {
-							color: { r: 0, g: 0, b: 0, a: 0.1 },
+							paint: { type: 'solid', color: { r: 0, g: 0, b: 0, a: 0.1 } },
 							offsetX: 0,
 							offsetY: 4,
 							blur: 6,
@@ -237,9 +228,9 @@ export const ShadowStyleMixinEditor = (props: TShadowStyleMixinEditorProps) => {
 
 			{isSet && (
 				<div className="space-y-3">
-					<TokenColorInput
-						label="Color"
-						state={colorState}
+					<TokenPaintInput
+						label="Paint"
+						state={paintState}
 						tokenMap={editor.tokenMap}
 						onLinkToken={() => {
 							handleToggleTokenLink();
@@ -251,6 +242,8 @@ export const ShadowStyleMixinEditor = (props: TShadowStyleMixinEditorProps) => {
 						}}
 						onNavigateToToken={handleNavigateToToken}
 						disabledTokenLink={disabledTokenLink}
+						editor={editor}
+						allowedPaintTypes={['solid']}
 					/>
 					<div className="grid grid-cols-2 gap-3">
 						<TokenTextInput

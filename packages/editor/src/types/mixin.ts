@@ -13,6 +13,7 @@ import {
 	TPhoneAction,
 	TRichContent,
 	TSocialAction,
+	TSolidPaint,
 	TTextAlign
 } from './utils';
 
@@ -320,19 +321,19 @@ export type TFillStyleMixin = TBaseMixin<
 export type TStrokeStyleMixin = TBaseMixin<
 	'stroke',
 	TRef<{
-		width: number;
-		color: TRgba;
+		width: TRef<number>;
+		paint: TRef<TSolidPaint>;
 	} | null>
 >;
 
 export type TShadowStyleMixin = TBaseMixin<
 	'shadow',
 	TRef<{
-		color: TRgba;
-		offsetX: number;
-		offsetY: number;
-		blur: number;
-		spread: number;
+		paint: TRef<TSolidPaint>;
+		offsetX: TRef<number>;
+		offsetY: TRef<number>;
+		blur: TRef<number>;
+		spread: TRef<number>;
 	} | null>
 >;
 

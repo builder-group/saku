@@ -1,10 +1,10 @@
 import { TBaseMixin } from '@repo/editor';
-import { TResolvedColor } from '../../lib';
+import { TResolvedSolidPaint } from '../../lib';
 
 export type TResolvedShadowStyleMixin = TBaseMixin<
 	'shadow',
 	{
-		color: TResolvedColor;
+		paint: TResolvedSolidPaint;
 		offsetX: number;
 		offsetY: number;
 		blur: number;

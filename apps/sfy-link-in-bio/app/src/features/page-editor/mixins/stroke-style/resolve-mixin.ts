@@ -1,7 +1,7 @@
 import { TStrokeStyleMixin } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
-import { resolveColor, resolveTokenRef, TMixinResolveContext } from '../../lib';
+import { resolveSolidPaint, resolveTokenRef, TMixinResolveContext } from '../../lib';
 import { TResolvedStrokeStyleMixin } from './types';
 
 export function resolveStrokeStyleMixin(
@@ -14,18 +14,32 @@ export function resolveStrokeStyleMixin(
 	if (!isResolvedStorkeOk) {
 		return Err(resolvedStorkeErr.wrapWith('#ERR_RESOLVE_STROKE'));
 	}
-
 	if (resolvedStroke == null) {
 		return Ok(null);
 	}
 
-	const resolvedColor = resolveColor(resolvedStroke.color);
+	const [isResolvedPaintOk, resolvedPaintErr, paint] = resolveTokenRef(resolvedStroke.paint, {
+		tokenMap: cx.tokenMap
+	});
+	if (!isResolvedPaintOk) {
+		return Err(resolvedPaintErr.wrapWith('#ERR_RESOLVE_PAINT'));
+	}
+	const resolvedPaint = resolveSolidPaint(paint);
+	const [isResolvedWidthOk, resolvedWidthErr, resolvedWidth] = resolveTokenRef(
+		resolvedStroke.width,
+		{
+			tokenMap: cx.tokenMap
+		}
+	);
+	if (!isResolvedWidthOk) {
+		return Err(resolvedWidthErr.wrapWith('#ERR_RESOLVE_WIDTH'));
+	}
 
 	return Ok({
-		width: resolvedStroke.width,
-		color: resolvedColor,
+		width: resolvedWidth,
+		paint: resolvedPaint,
 		styles: {
-			border: `${resolvedStroke.width}px solid ${resolvedColor}`
+			border: `${resolvedWidth}px solid ${resolvedPaint.color}`
 		}
 	});
 }

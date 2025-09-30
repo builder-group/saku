@@ -299,7 +299,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 			value:
 				effects?.stroke != null
 					? {
-							color: color.accent,
+							paint: { type: 'solid', color: color.accent },
 							width: effects.stroke.width
 						}
 					: null
@@ -310,7 +310,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 			value:
 				effects?.shadow != null
 					? {
-							color: { ...color.base200Content, a: 0.1 },
+							paint: { type: 'solid', color: { ...color.base200Content, a: 0.1 } },
 							offsetX: effects.shadow.offsetX,
 							offsetY: effects.shadow.offsetY,
 							blur: effects.shadow.blur,
