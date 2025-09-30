@@ -84,14 +84,14 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 			textXl:
 				fontColor != null
 					? {
-							appearance: tokenRef('xl', 'text', 'appearance'),
+							appearance: tokenRef('text.xl', 'text', 'appearance'),
 							typography: {
-								font: tokenRef('xl', 'text', 'typography.font'),
-								fontSize: tokenRef('xl', 'text', 'typography.fontSize'),
+								font: tokenRef('text.xl', 'text', 'typography.font'),
+								fontSize: tokenRef('text.xl', 'text', 'typography.fontSize'),
 								textAlignHorizontal: 'center',
 								textAlignVertical: 'center',
-								lineHeight: tokenRef('xl', 'text', 'typography.lineHeight'),
-								letterSpacing: tokenRef('xl', 'text', 'typography.letterSpacing')
+								lineHeight: tokenRef('text.xl', 'text', 'typography.lineHeight'),
+								letterSpacing: tokenRef('text.xl', 'text', 'typography.letterSpacing')
 							},
 							fill: {
 								paint: {
@@ -100,21 +100,21 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 								},
 								opacity: 1
 							},
-							stroke: tokenRef('xl', 'text', 'stroke'),
-							shadow: tokenRef('xl', 'text', 'shadow')
+							stroke: tokenRef('text.xl', 'text', 'stroke'),
+							shadow: tokenRef('text.xl', 'text', 'shadow')
 						}
 					: aboutNodeMetadata.default.textXl,
 			text:
 				fontColor != null
 					? {
-							appearance: tokenRef('default', 'text', 'appearance'),
+							appearance: tokenRef('text.default', 'text', 'appearance'),
 							typography: {
-								font: tokenRef('default', 'text', 'typography.font'),
-								fontSize: tokenRef('default', 'text', 'typography.fontSize'),
+								font: tokenRef('text.default', 'text', 'typography.font'),
+								fontSize: tokenRef('text.default', 'text', 'typography.fontSize'),
 								textAlignHorizontal: 'center',
 								textAlignVertical: 'center',
-								lineHeight: tokenRef('default', 'text', 'typography.lineHeight'),
-								letterSpacing: tokenRef('default', 'text', 'typography.letterSpacing')
+								lineHeight: tokenRef('text.default', 'text', 'typography.lineHeight'),
+								letterSpacing: tokenRef('text.default', 'text', 'typography.letterSpacing')
 							},
 							fill: {
 								paint: {
@@ -123,18 +123,18 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 								},
 								opacity: 1
 							},
-							stroke: tokenRef('default', 'text', 'stroke'),
-							shadow: tokenRef('default', 'text', 'shadow')
+							stroke: tokenRef('text.default', 'text', 'stroke'),
+							shadow: tokenRef('text.default', 'text', 'shadow')
 						}
 					: aboutNodeMetadata.default.text,
 			image: {
 				appearance: {
 					visible: true,
-					opacity: tokenRef('default', 'image', 'appearance.opacity'),
+					opacity: tokenRef('image.default', 'image', 'appearance.opacity'),
 					borderRadius: 48
 				},
-				stroke: tokenRef('default', 'image', 'stroke'),
-				shadow: tokenRef('default', 'image', 'shadow')
+				stroke: tokenRef('image.default', 'image', 'stroke'),
+				shadow: tokenRef('image.default', 'image', 'shadow')
 			}
 		};
 		children.push(aboutNode);
