@@ -231,7 +231,7 @@ export const ShadowStyleMixinEditor = (props: TShadowStyleMixinEditorProps) => {
 			<div className="flex items-center justify-between">
 				<div className="flex items-center gap-2">
 					{/* Mixin-level inheritance button */}
-					{!disabledTokenLink && (
+					{!disabledTokenLink && syncedTokenLink && (
 						<button
 							type="button"
 							onClick={handleToggleTokenLink}

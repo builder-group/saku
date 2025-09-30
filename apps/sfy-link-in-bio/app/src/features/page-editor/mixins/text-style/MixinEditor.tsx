@@ -17,7 +17,7 @@ import { TypographyStyleMixinEditor } from '../typography-style';
 import { packTextTokenRef, unpackTextTokenRef } from './pack-mixin';
 
 export const TextStyleMixinEditor = (props: TTextStyleMixinEditorProps) => {
-	const { state, onLinkToken, disabledTokenLink = false, editor } = props;
+	const { state, onLinkToken, disabledTokenLink = false, syncedTokenLink = true, editor } = props;
 
 	const appearanceState = useMapState(state, {
 		map(baseValue) {
@@ -114,6 +114,7 @@ export const TextStyleMixinEditor = (props: TTextStyleMixinEditorProps) => {
 				state={fillState}
 				onLinkToken={onLinkToken != null ? () => mapTokenRef(onLinkToken(), 'fill') : undefined}
 				disabledTokenLink={disabledTokenLink}
+				syncedTokenLink={syncedTokenLink}
 				editor={editor}
 				allowedPaintTypes={['solid']}
 			/>
@@ -122,6 +123,7 @@ export const TextStyleMixinEditor = (props: TTextStyleMixinEditorProps) => {
 				state={strokeState}
 				onLinkToken={onLinkToken != null ? () => mapTokenRef(onLinkToken(), 'stroke') : undefined}
 				disabledTokenLink={disabledTokenLink}
+				syncedTokenLink={syncedTokenLink}
 				editor={editor}
 			/>
 			<div className="h-px bg-neutral-200" />
@@ -129,6 +131,7 @@ export const TextStyleMixinEditor = (props: TTextStyleMixinEditorProps) => {
 				state={shadowState}
 				onLinkToken={onLinkToken != null ? () => mapTokenRef(onLinkToken(), 'shadow') : undefined}
 				disabledTokenLink={disabledTokenLink}
+				syncedTokenLink={syncedTokenLink}
 				editor={editor}
 				disabledSpread // HTML text doesn't support shadow spread
 			/>
@@ -140,5 +143,6 @@ interface TTextStyleMixinEditorProps {
 	state: TState<TTextStyleMixin['value'], any>;
 	onLinkToken?: () => TTokenRef<TUnreferenceTop<TTextStyleToken['value']>>;
 	disabledTokenLink?: boolean;
+	syncedTokenLink?: boolean;
 	editor: TPageEditor;
 }

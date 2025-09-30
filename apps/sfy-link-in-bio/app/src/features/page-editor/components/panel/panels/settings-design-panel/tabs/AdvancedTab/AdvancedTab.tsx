@@ -183,6 +183,7 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 						>
 							<ButtonStyleMixinEditor
 								state={state as TState<TButtonStyleMixin['value'], []>}
+								syncedTokenLink={false}
 								editor={editor}
 							/>
 						</AccordionSection>
@@ -203,6 +204,7 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 						>
 							<BadgeStyleMixinEditor
 								state={state as TState<TBadgeStyleMixin['value'], []>}
+								syncedTokenLink={false}
 								editor={editor}
 							/>
 						</AccordionSection>
@@ -223,6 +225,7 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 						>
 							<TextStyleMixinEditor
 								state={state as TState<TTextStyleMixin['value'], []>}
+								syncedTokenLink={false}
 								editor={editor}
 							/>
 						</AccordionSection>
@@ -243,6 +246,7 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 						>
 							<ImageStyleMixinEditor
 								state={state as TState<TImageStyleMixin['value'], []>}
+								syncedTokenLink={false}
 								editor={editor}
 							/>
 						</AccordionSection>
@@ -263,6 +267,7 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 						>
 							<ProductDetailsStyleMixinEditor
 								state={state as TState<TProductDetailsStyleMixin['value'], []>}
+								syncedTokenLink={false}
 								editor={editor}
 							/>
 						</AccordionSection>

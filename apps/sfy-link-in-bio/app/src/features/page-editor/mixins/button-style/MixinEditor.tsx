@@ -17,7 +17,7 @@ import { TextStyleMixinEditor } from '../text-style';
 import { packButtonTokenRef, unpackButtonTokenRef } from './pack-mixin';
 
 export const ButtonStyleMixinEditor = (props: TButtonStyleMixinEditorProps) => {
-	const { state, onLinkToken, disabledTokenLink = false, editor } = props;
+	const { state, onLinkToken, disabledTokenLink = false, syncedTokenLink = true, editor } = props;
 
 	const appearanceState = useMapState(state, {
 		map(baseValue) {
@@ -105,6 +105,7 @@ export const ButtonStyleMixinEditor = (props: TButtonStyleMixinEditorProps) => {
 				state={fillState}
 				onLinkToken={onLinkToken != null ? () => mapTokenRef(onLinkToken(), 'fill') : undefined}
 				disabledTokenLink={disabledTokenLink}
+				syncedTokenLink={syncedTokenLink}
 				editor={editor}
 			/>
 			<div className="h-px bg-neutral-200" />
@@ -112,6 +113,7 @@ export const ButtonStyleMixinEditor = (props: TButtonStyleMixinEditorProps) => {
 				state={strokeState}
 				onLinkToken={onLinkToken != null ? () => mapTokenRef(onLinkToken(), 'stroke') : undefined}
 				disabledTokenLink={disabledTokenLink}
+				syncedTokenLink={syncedTokenLink}
 				editor={editor}
 			/>
 			<div className="h-px bg-neutral-200" />
@@ -119,6 +121,7 @@ export const ButtonStyleMixinEditor = (props: TButtonStyleMixinEditorProps) => {
 				state={shadowState}
 				onLinkToken={onLinkToken != null ? () => mapTokenRef(onLinkToken(), 'shadow') : undefined}
 				disabledTokenLink={disabledTokenLink}
+				syncedTokenLink={syncedTokenLink}
 				editor={editor}
 				disabledSpread
 			/>
@@ -131,6 +134,7 @@ export const ButtonStyleMixinEditor = (props: TButtonStyleMixinEditorProps) => {
 				state={textState}
 				onLinkToken={onLinkToken != null ? () => mapTokenRef(onLinkToken(), 'text') : undefined}
 				disabledTokenLink={disabledTokenLink}
+				syncedTokenLink={syncedTokenLink}
 				editor={editor}
 			/>
 		</>
@@ -141,5 +145,6 @@ interface TButtonStyleMixinEditorProps {
 	state: TState<TButtonStyleMixin['value'], any>;
 	onLinkToken?: () => TTokenRef<TUnreferenceTop<TButtonStyleMixin['value']>>;
 	disabledTokenLink?: boolean;
+	syncedTokenLink?: boolean;
 	editor: TPageEditor;
 }

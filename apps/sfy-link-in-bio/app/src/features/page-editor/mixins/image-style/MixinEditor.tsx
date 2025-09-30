@@ -14,7 +14,7 @@ import { StrokeStyleMixinEditor } from '../stroke-style';
 import { packImageTokenRef, unpackImageTokenRef } from './pack-mixin';
 
 export const ImageStyleMixinEditor = (props: TImageStyleMixinEditorProps) => {
-	const { state, onLinkToken, disabledTokenLink = false, editor } = props;
+	const { state, onLinkToken, disabledTokenLink = false, syncedTokenLink = true, editor } = props;
 
 	const appearanceState = useMapState(state, {
 		map(baseValue) {
@@ -70,11 +70,11 @@ export const ImageStyleMixinEditor = (props: TImageStyleMixinEditorProps) => {
 				editor={editor}
 			/>
 			<div className="h-px bg-neutral-200" />
-
 			<StrokeStyleMixinEditor
 				state={strokeState}
 				onLinkToken={onLinkToken != null ? () => mapTokenRef(onLinkToken(), 'stroke') : undefined}
 				disabledTokenLink={disabledTokenLink}
+				syncedTokenLink={syncedTokenLink}
 				editor={editor}
 			/>
 			<div className="h-px bg-neutral-200" />
@@ -82,6 +82,7 @@ export const ImageStyleMixinEditor = (props: TImageStyleMixinEditorProps) => {
 				state={shadowState}
 				onLinkToken={onLinkToken != null ? () => mapTokenRef(onLinkToken(), 'shadow') : undefined}
 				disabledTokenLink={disabledTokenLink}
+				syncedTokenLink={syncedTokenLink}
 				editor={editor}
 				disabledSpread
 			/>
@@ -93,5 +94,6 @@ interface TImageStyleMixinEditorProps {
 	state: TState<TImageStyleMixin['value'], any>;
 	onLinkToken?: () => TTokenRef<TUnreferenceTop<TImageStyleMixin['value']>>;
 	disabledTokenLink?: boolean;
+	syncedTokenLink?: boolean;
 	editor: TPageEditor;
 }
