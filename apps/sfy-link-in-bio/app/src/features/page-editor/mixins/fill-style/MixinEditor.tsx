@@ -17,7 +17,14 @@ import { resolveTokenRef, TPageEditor } from '../../lib';
 import { packFillTokenRef, unpackFillTokenRef } from './pack-mixin';
 
 export const FillStyleMixinEditor = (props: TFillStyleMixinEditorProps) => {
-	const { state, onLinkToken, disabledTokenLink = false, editor, allowedPaintTypes } = props;
+	const {
+		state,
+		onLinkToken,
+		disabledTokenLink = false,
+		syncedTokenLink = true,
+		editor,
+		allowedPaintTypes
+	} = props;
 
 	const isLinked = useCompute(state, ({ value }) => isTokenRef(value), []);
 	const isSet = useCompute(
@@ -78,10 +85,35 @@ export const FillStyleMixinEditor = (props: TFillStyleMixinEditorProps) => {
 			const [isResolvedTokenOk, , resolvedToken] = resolveTokenRef(state._v, {
 				tokenMap: editor.tokenMap._v
 			});
-			if (isResolvedTokenOk) {
-				state._v = deepCopy(resolvedToken);
-				state._notify();
+			if (!isResolvedTokenOk) {
+				return;
 			}
+
+			if (resolvedToken == null) {
+				state._v = null;
+				state._notify();
+				return;
+			}
+
+			// Resolve individual properties
+			const [isResolvedPaintOk, , resolvedPaint] = resolveTokenRef(resolvedToken.paint, {
+				tokenMap: editor.tokenMap._v
+			});
+			if (!isResolvedPaintOk) {
+				return;
+			}
+			const [isResolvedOpacityOk, , resolvedOpacity] = resolveTokenRef(resolvedToken.opacity, {
+				tokenMap: editor.tokenMap._v
+			});
+			if (!isResolvedOpacityOk) {
+				return;
+			}
+
+			state._v = {
+				paint: resolvedPaint,
+				opacity: resolvedOpacity
+			};
+			state._notify();
 		} else {
 			const tokenRef = onLinkToken?.();
 			if (tokenRef != null) {
@@ -152,14 +184,24 @@ export const FillStyleMixinEditor = (props: TFillStyleMixinEditorProps) => {
 					label="Paint"
 					state={paintState}
 					tokenMap={editor.tokenMap}
-					onLinkToken={() => {
-						handleToggleTokenLink();
-						return { preventDefault: true };
-					}}
-					onUnlinkToken={() => {
-						handleToggleTokenLink();
-						return { preventDefault: true };
-					}}
+					onLinkToken={
+						syncedTokenLink
+							? () => {
+									handleToggleTokenLink();
+									return { preventDefault: true };
+								}
+							: onLinkToken != null
+								? () => mapTokenRef(onLinkToken(), 'paint')
+								: undefined
+					}
+					onUnlinkToken={
+						syncedTokenLink
+							? () => {
+									handleToggleTokenLink();
+									return { preventDefault: true };
+								}
+							: undefined
+					}
 					onNavigateToToken={handleNavigateToToken}
 					disabledTokenLink={disabledTokenLink}
 					editor={editor}
@@ -174,6 +216,7 @@ interface TFillStyleMixinEditorProps {
 	state: TState<TFillStyleMixin['value'], any>;
 	onLinkToken?: () => TTokenRef<TUnreferenceTop<TFillStyleMixin['value']>>;
 	disabledTokenLink?: boolean;
+	syncedTokenLink?: boolean;
 	editor: TPageEditor;
 	allowedPaintTypes?: TTokenPaintInputPaintType[];
 }

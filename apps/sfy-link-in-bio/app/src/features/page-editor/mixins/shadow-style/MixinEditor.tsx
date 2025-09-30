@@ -23,7 +23,14 @@ import { resolveTokenRef, TPageEditor } from '../../lib';
 import { packShadowTokenRef, unpackShadowTokenRef } from './pack-mixin';
 
 export const ShadowStyleMixinEditor = (props: TShadowStyleMixinEditorProps) => {
-	const { state, onLinkToken, disabledTokenLink = false, editor, disabledSpread = false } = props;
+	const {
+		state,
+		onLinkToken,
+		disabledTokenLink = false,
+		syncedTokenLink = true,
+		editor,
+		disabledSpread = false
+	} = props;
 
 	const isLinked = useCompute(state, ({ value }) => isTokenRef(value), []);
 	const isSet = useCompute(
@@ -152,10 +159,56 @@ export const ShadowStyleMixinEditor = (props: TShadowStyleMixinEditorProps) => {
 			const [isResolvedTokenOk, , resolvedToken] = resolveTokenRef(state._v, {
 				tokenMap: editor.tokenMap._v
 			});
-			if (isResolvedTokenOk) {
-				state._v = deepCopy(resolvedToken);
-				state._notify();
+			if (!isResolvedTokenOk) {
+				return;
 			}
+
+			if (resolvedToken == null) {
+				state._v = null;
+				state._notify();
+				return;
+			}
+
+			// Resolve individual properties
+			const [isResolvedPaintOk, , resolvedPaint] = resolveTokenRef(resolvedToken.paint, {
+				tokenMap: editor.tokenMap._v
+			});
+			if (!isResolvedPaintOk) {
+				return;
+			}
+			const [isResolvedOffsetXOk, , resolvedOffsetX] = resolveTokenRef(resolvedToken.offsetX, {
+				tokenMap: editor.tokenMap._v
+			});
+			if (!isResolvedOffsetXOk) {
+				return;
+			}
+			const [isResolvedOffsetYOk, , resolvedOffsetY] = resolveTokenRef(resolvedToken.offsetY, {
+				tokenMap: editor.tokenMap._v
+			});
+			if (!isResolvedOffsetYOk) {
+				return;
+			}
+			const [isResolvedBlurOk, , resolvedBlur] = resolveTokenRef(resolvedToken.blur, {
+				tokenMap: editor.tokenMap._v
+			});
+			if (!isResolvedBlurOk) {
+				return;
+			}
+			const [isResolvedSpreadOk, , resolvedSpread] = resolveTokenRef(resolvedToken.spread, {
+				tokenMap: editor.tokenMap._v
+			});
+			if (!isResolvedSpreadOk) {
+				return;
+			}
+
+			state._v = {
+				paint: resolvedPaint,
+				offsetX: resolvedOffsetX,
+				offsetY: resolvedOffsetY,
+				blur: resolvedBlur,
+				spread: resolvedSpread
+			};
+			state._notify();
 		} else {
 			const tokenRef = onLinkToken?.();
 			if (tokenRef != null) {
@@ -232,14 +285,24 @@ export const ShadowStyleMixinEditor = (props: TShadowStyleMixinEditorProps) => {
 						label="Paint"
 						state={paintState}
 						tokenMap={editor.tokenMap}
-						onLinkToken={() => {
-							handleToggleTokenLink();
-							return { preventDefault: true };
-						}}
-						onUnlinkToken={() => {
-							handleToggleTokenLink();
-							return { preventDefault: true };
-						}}
+						onLinkToken={
+							syncedTokenLink
+								? () => {
+										handleToggleTokenLink();
+										return { preventDefault: true };
+									}
+								: onLinkToken != null
+									? () => mapTokenRef(onLinkToken(), 'paint')
+									: undefined
+						}
+						onUnlinkToken={
+							syncedTokenLink
+								? () => {
+										handleToggleTokenLink();
+										return { preventDefault: true };
+									}
+								: undefined
+						}
 						onNavigateToToken={handleNavigateToToken}
 						disabledTokenLink={disabledTokenLink}
 						editor={editor}
@@ -255,14 +318,24 @@ export const ShadowStyleMixinEditor = (props: TShadowStyleMixinEditorProps) => {
 							step={4}
 							state={blurState}
 							tokenMap={editor.tokenMap}
-							onLinkToken={() => {
-								handleToggleTokenLink();
-								return { preventDefault: true };
-							}}
-							onUnlinkToken={() => {
-								handleToggleTokenLink();
-								return { preventDefault: true };
-							}}
+							onLinkToken={
+								syncedTokenLink
+									? () => {
+											handleToggleTokenLink();
+											return { preventDefault: true };
+										}
+									: onLinkToken != null
+										? () => mapTokenRef(onLinkToken(), 'blur')
+										: undefined
+							}
+							onUnlinkToken={
+								syncedTokenLink
+									? () => {
+											handleToggleTokenLink();
+											return { preventDefault: true };
+										}
+									: undefined
+							}
 							onNavigateToToken={handleNavigateToToken}
 							disabledTokenLink={disabledTokenLink}
 						/>
@@ -275,14 +348,24 @@ export const ShadowStyleMixinEditor = (props: TShadowStyleMixinEditorProps) => {
 							step={4}
 							state={spreadState}
 							tokenMap={editor.tokenMap}
-							onLinkToken={() => {
-								handleToggleTokenLink();
-								return { preventDefault: true };
-							}}
-							onUnlinkToken={() => {
-								handleToggleTokenLink();
-								return { preventDefault: true };
-							}}
+							onLinkToken={
+								syncedTokenLink
+									? () => {
+											handleToggleTokenLink();
+											return { preventDefault: true };
+										}
+									: onLinkToken != null
+										? () => mapTokenRef(onLinkToken(), 'spread')
+										: undefined
+							}
+							onUnlinkToken={
+								syncedTokenLink
+									? () => {
+											handleToggleTokenLink();
+											return { preventDefault: true };
+										}
+									: undefined
+							}
 							onNavigateToToken={handleNavigateToToken}
 							disabledTokenLink={disabledTokenLink}
 							disabled={disabledSpread}
@@ -298,14 +381,24 @@ export const ShadowStyleMixinEditor = (props: TShadowStyleMixinEditorProps) => {
 							step={4}
 							state={offsetXState}
 							tokenMap={editor.tokenMap}
-							onLinkToken={() => {
-								handleToggleTokenLink();
-								return { preventDefault: true };
-							}}
-							onUnlinkToken={() => {
-								handleToggleTokenLink();
-								return { preventDefault: true };
-							}}
+							onLinkToken={
+								syncedTokenLink
+									? () => {
+											handleToggleTokenLink();
+											return { preventDefault: true };
+										}
+									: onLinkToken != null
+										? () => mapTokenRef(onLinkToken(), 'offsetX')
+										: undefined
+							}
+							onUnlinkToken={
+								syncedTokenLink
+									? () => {
+											handleToggleTokenLink();
+											return { preventDefault: true };
+										}
+									: undefined
+							}
 							onNavigateToToken={handleNavigateToToken}
 							disabledTokenLink={disabledTokenLink}
 						/>
@@ -318,14 +411,24 @@ export const ShadowStyleMixinEditor = (props: TShadowStyleMixinEditorProps) => {
 							step={4}
 							state={offsetYState}
 							tokenMap={editor.tokenMap}
-							onLinkToken={() => {
-								handleToggleTokenLink();
-								return { preventDefault: true };
-							}}
-							onUnlinkToken={() => {
-								handleToggleTokenLink();
-								return { preventDefault: true };
-							}}
+							onLinkToken={
+								syncedTokenLink
+									? () => {
+											handleToggleTokenLink();
+											return { preventDefault: true };
+										}
+									: onLinkToken != null
+										? () => mapTokenRef(onLinkToken(), 'offsetY')
+										: undefined
+							}
+							onUnlinkToken={
+								syncedTokenLink
+									? () => {
+											handleToggleTokenLink();
+											return { preventDefault: true };
+										}
+									: undefined
+							}
 							onNavigateToToken={handleNavigateToToken}
 							disabledTokenLink={disabledTokenLink}
 						/>
@@ -340,6 +443,7 @@ interface TShadowStyleMixinEditorProps {
 	state: TState<TShadowStyleMixin['value'], any>;
 	onLinkToken?: () => TTokenRef<TUnreferenceTop<TShadowStyleMixin['value']>>;
 	disabledTokenLink?: boolean;
+	syncedTokenLink?: boolean;
 	editor: TPageEditor;
 	disabledSpread?: boolean;
 }

@@ -120,6 +120,7 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 						>
 							<FillStyleMixinEditor
 								state={state as TState<TFillStyleMixin['value'], []>}
+								syncedTokenLink={false}
 								editor={editor}
 							/>
 						</AccordionSection>
@@ -140,6 +141,7 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 						>
 							<StrokeStyleMixinEditor
 								state={state as TState<TStrokeStyleMixin['value'], []>}
+								syncedTokenLink={false}
 								editor={editor}
 							/>
 						</AccordionSection>
@@ -160,6 +162,7 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 						>
 							<ShadowStyleMixinEditor
 								state={state as TState<TShadowStyleMixin['value'], []>}
+								syncedTokenLink={false}
 								editor={editor}
 							/>
 						</AccordionSection>
