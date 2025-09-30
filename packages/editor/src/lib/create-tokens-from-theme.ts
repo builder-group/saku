@@ -1,5 +1,6 @@
 import { themeMetadata, TTheme } from '../environment';
 import { TToken } from '../types';
+import { tokenRef } from './token-ref';
 
 export function createTokensFromTheme(theme: TTheme): TToken[] {
 	const { color, typography, gap = 24, size = {}, radius, effects } = theme;
@@ -271,8 +272,8 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 			type: 'auto-layout',
 			key: 'auto-layout.default',
 			value: {
-				horizontalPadding: { type: 'token', key: 'size.box.lg', tokenType: 'number' },
-				verticalPadding: { type: 'token', key: 'size.box.lg', tokenType: 'number' },
+				horizontalPadding: tokenRef('size.box.lg', 'number'),
+				verticalPadding: tokenRef('size.box.lg', 'number'),
 				horizontalGap: null,
 				verticalGap: null
 			}
@@ -283,23 +284,15 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 			value: {
 				visible: true,
 				opacity: 1,
-				borderRadius: {
-					type: 'token',
-					key: 'radius.box',
-					tokenType: 'number'
-				}
+				borderRadius: tokenRef('radius.box', 'number')
 			}
 		},
 		{
 			type: 'typography',
 			key: 'typography.default',
 			value: {
-				font: {
-					type: 'token',
-					key: 'font.text',
-					tokenType: 'font'
-				},
-				fontSize: { type: 'token', key: 'size.text.md', tokenType: 'number' },
+				font: tokenRef('font.text', 'font'),
+				fontSize: tokenRef('size.text.md', 'number'),
 				textAlignHorizontal: 'center',
 				textAlignVertical: 'center',
 				lineHeight: { type: 'auto' },
@@ -310,7 +303,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 			type: 'fill',
 			key: 'fill.default',
 			value: {
-				paint: { type: 'token', key: 'paint.base100', tokenType: 'paint' },
+				paint: tokenRef('paint.base100', 'solid-paint'),
 				opacity: 1
 			}
 		},
@@ -320,8 +313,8 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 			value:
 				effects?.stroke != null
 					? {
-							paint: { type: 'token', key: 'paint.accent', tokenType: 'paint' },
-							width: effects.stroke.width
+							paint: tokenRef('paint.accent', 'solid-paint'),
+							width: tokenRef('effects.stroke.width', 'number')
 						}
 					: null
 		},
@@ -332,10 +325,10 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 				effects?.shadow != null
 					? {
 							paint: { type: 'solid', color: { ...color.base200Content, a: 0.1 } },
-							offsetX: effects.shadow.offsetX,
-							offsetY: effects.shadow.offsetY,
-							blur: effects.shadow.blur,
-							spread: effects.shadow.spread
+							offsetX: tokenRef('effects.shadow.offsetX', 'number'),
+							offsetY: tokenRef('effects.shadow.offsetY', 'number'),
+							blur: tokenRef('effects.shadow.blur', 'number'),
+							spread: tokenRef('effects.shadow.spread', 'number')
 						}
 					: null
 		},
@@ -349,23 +342,15 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 					borderRadius: null
 				},
 				typography: {
-					font: {
-						type: 'token',
-						key: 'font.text',
-						tokenType: 'font'
-					},
-					fontSize: { type: 'token', key: 'size.text.md', tokenType: 'number' },
+					font: tokenRef('font.text', 'font'),
+					fontSize: tokenRef('size.text.md', 'number'),
 					textAlignHorizontal: 'center',
 					textAlignVertical: 'center',
 					lineHeight: { type: 'auto' },
 					letterSpacing: { type: 'auto' }
 				},
 				fill: {
-					paint: {
-						type: 'token',
-						key: 'paint.base100.content',
-						tokenType: 'paint'
-					},
+					paint: tokenRef('paint.base100.content', 'solid-paint'),
 					opacity: 1
 				},
 				stroke: null,
@@ -382,23 +367,15 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 					borderRadius: null
 				},
 				typography: {
-					font: {
-						type: 'token',
-						key: 'font.heading',
-						tokenType: 'font'
-					},
-					fontSize: { type: 'token', key: 'size.text.lg', tokenType: 'number' },
+					font: tokenRef('font.heading', 'font'),
+					fontSize: tokenRef('size.text.lg', 'number'),
 					textAlignHorizontal: 'center',
 					textAlignVertical: 'center',
 					lineHeight: { type: 'auto' },
 					letterSpacing: { type: 'auto' }
 				},
 				fill: {
-					paint: {
-						type: 'token',
-						key: 'paint.base100.content',
-						tokenType: 'paint'
-					},
+					paint: tokenRef('paint.base100.content', 'solid-paint'),
 					opacity: 1
 				},
 				stroke: null,
@@ -415,23 +392,15 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 					borderRadius: null
 				},
 				typography: {
-					font: {
-						type: 'token',
-						key: 'font.text',
-						tokenType: 'font'
-					},
-					fontSize: { type: 'token', key: 'size.text.sm', tokenType: 'number' },
+					font: tokenRef('font.text', 'font'),
+					fontSize: tokenRef('size.text.sm', 'number'),
 					textAlignHorizontal: 'center',
 					textAlignVertical: 'center',
 					lineHeight: { type: 'auto' },
 					letterSpacing: { type: 'auto' }
 				},
 				fill: {
-					paint: {
-						type: 'token',
-						key: 'paint.base100.content',
-						tokenType: 'paint'
-					},
+					paint: tokenRef('paint.base100.content', 'solid-paint'),
 					opacity: 1
 				},
 				stroke: null,
@@ -445,14 +414,10 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 				appearance: {
 					visible: true,
 					opacity: 1,
-					borderRadius: { type: 'token', key: 'radius.field', tokenType: 'number' }
+					borderRadius: tokenRef('radius.field', 'number')
 				},
 				fill: {
-					paint: {
-						type: 'token',
-						key: 'paint.primary',
-						tokenType: 'paint'
-					},
+					paint: tokenRef('paint.primary', 'solid-paint'),
 					opacity: 1
 				},
 				stroke: null,
@@ -464,23 +429,15 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 						borderRadius: null
 					},
 					typography: {
-						font: {
-							type: 'token',
-							key: 'font.text',
-							tokenType: 'font'
-						},
-						fontSize: { type: 'token', key: 'size.text.md', tokenType: 'number' },
+						font: tokenRef('font.text', 'font'),
+						fontSize: tokenRef('size.text.md', 'number'),
 						textAlignHorizontal: 'center',
 						textAlignVertical: 'center',
 						lineHeight: { type: 'auto' },
 						letterSpacing: { type: 'auto' }
 					},
 					fill: {
-						paint: {
-							type: 'token',
-							key: 'paint.primary.content',
-							tokenType: 'paint'
-						},
+						paint: tokenRef('paint.primary.content', 'solid-paint'),
 						opacity: 1
 					},
 					stroke: null,
@@ -495,14 +452,10 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 				appearance: {
 					visible: true,
 					opacity: 1,
-					borderRadius: { type: 'token', key: 'radius.field', tokenType: 'number' }
+					borderRadius: tokenRef('radius.field', 'number')
 				},
 				fill: {
-					paint: {
-						type: 'token',
-						key: 'paint.neutral',
-						tokenType: 'paint'
-					},
+					paint: tokenRef('paint.neutral', 'solid-paint'),
 					opacity: 1
 				},
 				stroke: null,
@@ -514,23 +467,15 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 						borderRadius: null
 					},
 					typography: {
-						font: {
-							type: 'token',
-							key: 'font.text',
-							tokenType: 'font'
-						},
-						fontSize: { type: 'token', key: 'size.text.md', tokenType: 'number' },
+						font: tokenRef('font.text', 'font'),
+						fontSize: tokenRef('size.text.md', 'number'),
 						textAlignHorizontal: 'center',
 						textAlignVertical: 'center',
 						lineHeight: { type: 'auto' },
 						letterSpacing: { type: 'auto' }
 					},
 					fill: {
-						paint: {
-							type: 'token',
-							key: 'paint.neutral.content',
-							tokenType: 'paint'
-						},
+						paint: tokenRef('paint.neutral.content', 'solid-paint'),
 						opacity: 1
 					},
 					stroke: null,
@@ -545,14 +490,10 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 				appearance: {
 					visible: true,
 					opacity: 1,
-					borderRadius: { type: 'token', key: 'radius.selector', tokenType: 'number' }
+					borderRadius: tokenRef('radius.selector', 'number')
 				},
 				fill: {
-					paint: {
-						type: 'token',
-						key: 'paint.secondary',
-						tokenType: 'paint'
-					},
+					paint: tokenRef('paint.secondary', 'solid-paint'),
 					opacity: 1
 				},
 				stroke: null,
@@ -564,23 +505,15 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 						borderRadius: null
 					},
 					typography: {
-						font: {
-							type: 'token',
-							key: 'font.text',
-							tokenType: 'font'
-						},
-						fontSize: { type: 'token', key: 'size.text.sm', tokenType: 'number' },
+						font: tokenRef('font.text', 'font'),
+						fontSize: tokenRef('size.text.sm', 'number'),
 						textAlignHorizontal: 'center',
 						textAlignVertical: 'center',
 						lineHeight: { type: 'auto' },
 						letterSpacing: { type: 'auto' }
 					},
 					fill: {
-						paint: {
-							type: 'token',
-							key: 'paint.secondary.content',
-							tokenType: 'paint'
-						},
+						paint: tokenRef('paint.secondary.content', 'solid-paint'),
 						opacity: 1
 					},
 					stroke: null,
@@ -595,14 +528,10 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 				appearance: {
 					visible: true,
 					opacity: 1,
-					borderRadius: { type: 'token', key: 'radius.selector', tokenType: 'number' }
+					borderRadius: tokenRef('radius.selector', 'number')
 				},
 				fill: {
-					paint: {
-						type: 'token',
-						key: 'paint.neutral',
-						tokenType: 'paint'
-					},
+					paint: tokenRef('paint.neutral', 'solid-paint'),
 					opacity: 1
 				},
 				stroke: null,
@@ -614,23 +543,15 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 						borderRadius: null
 					},
 					typography: {
-						font: {
-							type: 'token',
-							key: 'font.text',
-							tokenType: 'font'
-						},
-						fontSize: { type: 'token', key: 'size.text.sm', tokenType: 'number' },
+						font: tokenRef('font.text', 'font'),
+						fontSize: tokenRef('size.text.sm', 'number'),
 						textAlignHorizontal: 'center',
 						textAlignVertical: 'center',
 						lineHeight: { type: 'auto' },
 						letterSpacing: { type: 'auto' }
 					},
 					fill: {
-						paint: {
-							type: 'token',
-							key: 'paint.neutral.content',
-							tokenType: 'paint'
-						},
+						paint: tokenRef('paint.neutral.content', 'solid-paint'),
 						opacity: 1
 					},
 					stroke: null,
@@ -645,7 +566,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 				appearance: {
 					visible: true,
 					opacity: 1,
-					borderRadius: { type: 'token', key: 'radius.box', tokenType: 'number' }
+					borderRadius: tokenRef('radius.box', 'number')
 				},
 				stroke: null,
 				shadow: null
@@ -658,14 +579,10 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 				appearance: {
 					visible: true,
 					opacity: 1,
-					borderRadius: { type: 'token', key: 'radius.box', tokenType: 'number' }
+					borderRadius: tokenRef('radius.box', 'number')
 				},
 				fill: {
-					paint: {
-						type: 'token',
-						key: 'paint.base100',
-						tokenType: 'paint'
-					},
+					paint: tokenRef('paint.base100', 'solid-paint'),
 					opacity: 1
 				},
 				stroke: null,
@@ -677,23 +594,15 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 						borderRadius: null
 					},
 					typography: {
-						font: {
-							type: 'token',
-							key: 'font.heading',
-							tokenType: 'font'
-						},
-						fontSize: { type: 'token', key: 'size.text.xl', tokenType: 'number' },
+						font: tokenRef('font.heading', 'font'),
+						fontSize: tokenRef('size.text.xl', 'number'),
 						textAlignHorizontal: 'start',
 						textAlignVertical: 'center',
 						lineHeight: { type: 'auto' },
 						letterSpacing: { type: 'auto' }
 					},
 					fill: {
-						paint: {
-							type: 'token',
-							key: 'paint.base100.content',
-							tokenType: 'paint'
-						},
+						paint: tokenRef('paint.base100.content', 'solid-paint'),
 						opacity: 1
 					},
 					stroke: null,
@@ -706,38 +615,26 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 						borderRadius: null
 					},
 					typography: {
-						font: {
-							type: 'token',
-							key: 'font.text',
-							tokenType: 'font'
-						},
-						fontSize: { type: 'token', key: 'size.text.md', tokenType: 'number' },
+						font: tokenRef('font.text', 'font'),
+						fontSize: tokenRef('size.text.md', 'number'),
 						textAlignHorizontal: 'start',
 						textAlignVertical: 'center',
 						lineHeight: { type: 'auto' },
 						letterSpacing: { type: 'auto' }
 					},
 					fill: {
-						paint: {
-							type: 'token',
-							key: 'paint.base100.content',
-							tokenType: 'paint'
-						},
+						paint: tokenRef('paint.base100.content', 'solid-paint'),
 						opacity: 1
 					},
 					stroke: null,
 					shadow: null
 				},
-				buttonPrimary: {
-					type: 'token',
-					key: 'button.primary',
-					tokenType: 'button'
-				},
+				buttonPrimary: tokenRef('button.primary', 'button'),
 				image: {
 					appearance: {
 						visible: true,
 						opacity: 1,
-						borderRadius: { type: 'token', key: 'radius.box', tokenType: 'number' }
+						borderRadius: tokenRef('radius.box', 'number')
 					},
 					stroke: null,
 					shadow: null
