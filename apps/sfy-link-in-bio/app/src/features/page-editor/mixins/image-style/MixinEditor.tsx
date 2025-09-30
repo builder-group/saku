@@ -84,7 +84,6 @@ export const ImageStyleMixinEditor = (props: TImageStyleMixinEditorProps) => {
 				disabledTokenLink={disabledTokenLink}
 				syncedTokenLink={syncedTokenLink}
 				editor={editor}
-				disabledSpread
 			/>
 		</>
 	);

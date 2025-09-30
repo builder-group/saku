@@ -167,7 +167,6 @@ export const ProductDetailsStyleMixinEditor = (props: TProductDetailsStyleMixinE
 				disabledTokenLink={disabledTokenLink}
 				syncedTokenLink={syncedTokenLink}
 				editor={editor}
-				disabledSpread
 			/>
 			<div className="border-t border-b border-neutral-200 bg-neutral-50 px-4 py-1">
 				<Text as="span" variant="headingXs">
