@@ -25,112 +25,112 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 
 		// Color tokens
 		{
-			type: 'paint',
+			type: 'solid-paint',
 			key: 'paint.base100',
 			value: { type: 'solid', color: color.base100 }
 		},
 		{
-			type: 'paint',
+			type: 'solid-paint',
 			key: 'paint.base100.content',
 			value: { type: 'solid', color: color.base100Content }
 		},
 		{
-			type: 'paint',
+			type: 'solid-paint',
 			key: 'paint.base200',
 			value: { type: 'solid', color: color.base200 }
 		},
 		{
-			type: 'paint',
+			type: 'solid-paint',
 			key: 'paint.base200.content',
 			value: { type: 'solid', color: color.base200Content }
 		},
 		{
-			type: 'paint',
+			type: 'solid-paint',
 			key: 'paint.base300',
 			value: { type: 'solid', color: color.base300 }
 		},
 		{
-			type: 'paint',
+			type: 'solid-paint',
 			key: 'paint.base300.content',
 			value: { type: 'solid', color: color.base300Content }
 		},
 		{
-			type: 'paint',
+			type: 'solid-paint',
 			key: 'paint.primary',
 			value: { type: 'solid', color: color.primary }
 		},
 		{
-			type: 'paint',
+			type: 'solid-paint',
 			key: 'paint.primary.content',
 			value: { type: 'solid', color: color.primaryContent }
 		},
 		{
-			type: 'paint',
+			type: 'solid-paint',
 			key: 'paint.secondary',
 			value: { type: 'solid', color: color.secondary }
 		},
 		{
-			type: 'paint',
+			type: 'solid-paint',
 			key: 'paint.secondary.content',
 			value: { type: 'solid', color: color.secondaryContent }
 		},
 		{
-			type: 'paint',
+			type: 'solid-paint',
 			key: 'paint.neutral',
 			value: { type: 'solid', color: color.neutral }
 		},
 		{
-			type: 'paint',
+			type: 'solid-paint',
 			key: 'paint.neutral.content',
 			value: { type: 'solid', color: color.neutralContent }
 		},
 		{
-			type: 'paint',
+			type: 'solid-paint',
 			key: 'paint.accent',
 			value: { type: 'solid', color: color.accent }
 		},
 		{
-			type: 'paint',
+			type: 'solid-paint',
 			key: 'paint.accent.content',
 			value: { type: 'solid', color: color.accentContent }
 		},
 		{
-			type: 'paint',
+			type: 'solid-paint',
 			key: 'paint.info',
 			value: { type: 'solid', color: color.info }
 		},
 		{
-			type: 'paint',
+			type: 'solid-paint',
 			key: 'paint.info.content',
 			value: { type: 'solid', color: color.infoContent }
 		},
 		{
-			type: 'paint',
+			type: 'solid-paint',
 			key: 'paint.success',
 			value: { type: 'solid', color: color.success }
 		},
 		{
-			type: 'paint',
+			type: 'solid-paint',
 			key: 'paint.success.content',
 			value: { type: 'solid', color: color.successContent }
 		},
 		{
-			type: 'paint',
+			type: 'solid-paint',
 			key: 'paint.warning',
 			value: { type: 'solid', color: color.warning }
 		},
 		{
-			type: 'paint',
+			type: 'solid-paint',
 			key: 'paint.warning.content',
 			value: { type: 'solid', color: color.warningContent }
 		},
 		{
-			type: 'paint',
+			type: 'solid-paint',
 			key: 'paint.error',
 			value: { type: 'solid', color: color.error }
 		},
 		{
-			type: 'paint',
+			type: 'solid-paint',
 			key: 'paint.error.content',
 			value: { type: 'solid', color: color.errorContent }
 		},

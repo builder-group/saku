@@ -40,121 +40,151 @@ export function reconstructThemeFromTokens(tokens: TToken[]): TResult<TTheme, Ed
 		return Err(nameErr.wrapWith('#ERR_RECONSTRUCT_THEME_NAME'));
 	}
 
-	// Get color properties
-	const [isBase100Ok, base100Err, base100] = getValue('color', 'color.base100');
-	if (!isBase100Ok) {
-		return Err(base100Err.wrapWith('#ERR_RECONSTRUCT_COLOR_BASE100'));
-	}
-	const [isBase100ContentOk, base100ContentErr, base100Content] = getValue(
-		'color',
-		'color.base100Content'
+	// Get paint properties
+	const [isBase100PaintOk, base100PaintErr, base100Paint] = getValue(
+		'solid-paint',
+		'paint.base100'
 	);
-	if (!isBase100ContentOk) {
-		return Err(base100ContentErr.wrapWith('#ERR_RECONSTRUCT_COLOR_BASE100_CONTENT'));
+	if (!isBase100PaintOk) {
+		return Err(base100PaintErr.wrapWith('#ERR_RECONSTRUCT_COLOR_BASE100'));
 	}
-	const [isBase200Ok, base200Err, base200] = getValue('color', 'color.base200');
-	if (!isBase200Ok) {
-		return Err(base200Err.wrapWith('#ERR_RECONSTRUCT_COLOR_BASE200'));
-	}
-	const [isBase200ContentOk, base200ContentErr, base200Content] = getValue(
-		'color',
-		'color.base200Content'
+	const [isBase100ContentPaintOk, base100ContentPaintErr, base100ContentPaint] = getValue(
+		'solid-paint',
+		'paint.base100.content'
 	);
-	if (!isBase200ContentOk) {
-		return Err(base200ContentErr.wrapWith('#ERR_RECONSTRUCT_COLOR_BASE200_CONTENT'));
+	if (!isBase100ContentPaintOk) {
+		return Err(base100ContentPaintErr.wrapWith('#ERR_RECONSTRUCT_COLOR_BASE100_CONTENT'));
 	}
-	const [isBase300Ok, base300Err, base300] = getValue('color', 'color.base300');
-	if (!isBase300Ok) {
-		return Err(base300Err.wrapWith('#ERR_RECONSTRUCT_COLOR_BASE300'));
-	}
-	const [isBase300ContentOk, base300ContentErr, base300Content] = getValue(
-		'color',
-		'color.base300Content'
+	const [isBase200PaintOk, base200PaintErr, base200Paint] = getValue(
+		'solid-paint',
+		'paint.base200'
 	);
-	if (!isBase300ContentOk) {
-		return Err(base300ContentErr.wrapWith('#ERR_RECONSTRUCT_COLOR_BASE300_CONTENT'));
+	if (!isBase200PaintOk) {
+		return Err(base200PaintErr.wrapWith('#ERR_RECONSTRUCT_COLOR_BASE200'));
 	}
-	const [isPrimaryOk, primaryErr, primary] = getValue('color', 'color.primary');
-	if (!isPrimaryOk) {
-		return Err(primaryErr.wrapWith('#ERR_RECONSTRUCT_COLOR_PRIMARY'));
-	}
-	const [isPrimaryContentOk, primaryContentErr, primaryContent] = getValue(
-		'color',
-		'color.primaryContent'
+	const [isBase200ContentPaintOk, base200ContentPaintErr, base200ContentPaint] = getValue(
+		'solid-paint',
+		'paint.base200.content'
 	);
-	if (!isPrimaryContentOk) {
-		return Err(primaryContentErr.wrapWith('#ERR_RECONSTRUCT_COLOR_PRIMARY_CONTENT'));
+	if (!isBase200ContentPaintOk) {
+		return Err(base200ContentPaintErr.wrapWith('#ERR_RECONSTRUCT_COLOR_BASE200_CONTENT'));
 	}
-	const [isSecondaryOk, secondaryErr, secondary] = getValue('color', 'color.secondary');
-	if (!isSecondaryOk) {
-		return Err(secondaryErr.wrapWith('#ERR_RECONSTRUCT_COLOR_SECONDARY'));
-	}
-	const [isSecondaryContentOk, secondaryContentErr, secondaryContent] = getValue(
-		'color',
-		'color.secondaryContent'
+	const [isBase300PaintOk, base300PaintErr, base300Paint] = getValue(
+		'solid-paint',
+		'paint.base300'
 	);
-	if (!isSecondaryContentOk) {
-		return Err(secondaryContentErr.wrapWith('#ERR_RECONSTRUCT_COLOR_SECONDARY_CONTENT'));
+	if (!isBase300PaintOk) {
+		return Err(base300PaintErr.wrapWith('#ERR_RECONSTRUCT_COLOR_BASE300'));
 	}
-	const [isNeutralOk, neutralErr, neutral] = getValue('color', 'color.neutral');
-	if (!isNeutralOk) {
-		return Err(neutralErr.wrapWith('#ERR_RECONSTRUCT_COLOR_NEUTRAL'));
-	}
-	const [isNeutralContentOk, neutralContentErr, neutralContent] = getValue(
-		'color',
-		'color.neutralContent'
+	const [isBase300ContentPaintOk, base300ContentPaintErr, base300ContentPaint] = getValue(
+		'solid-paint',
+		'paint.base300.content'
 	);
-	if (!isNeutralContentOk) {
-		return Err(neutralContentErr.wrapWith('#ERR_RECONSTRUCT_COLOR_NEUTRAL_CONTENT'));
+	if (!isBase300ContentPaintOk) {
+		return Err(base300ContentPaintErr.wrapWith('#ERR_RECONSTRUCT_COLOR_BASE300_CONTENT'));
 	}
-	const [isAccentOk, accentErr, accent] = getValue('color', 'color.accent');
-	if (!isAccentOk) {
-		return Err(accentErr.wrapWith('#ERR_RECONSTRUCT_COLOR_ACCENT'));
-	}
-	const [isAccentContentOk, accentContentErr, accentContent] = getValue(
-		'color',
-		'color.accentContent'
+	const [isPrimaryPaintOk, primaryPaintErr, primaryPaint] = getValue(
+		'solid-paint',
+		'paint.primary'
 	);
-	if (!isAccentContentOk) {
-		return Err(accentContentErr.wrapWith('#ERR_RECONSTRUCT_COLOR_ACCENT_CONTENT'));
+	if (!isPrimaryPaintOk) {
+		return Err(primaryPaintErr.wrapWith('#ERR_RECONSTRUCT_COLOR_PRIMARY'));
 	}
-	const [isInfoOk, infoErr, info] = getValue('color', 'color.info');
-	if (!isInfoOk) {
-		return Err(infoErr.wrapWith('#ERR_RECONSTRUCT_COLOR_INFO'));
-	}
-	const [isInfoContentOk, infoContentErr, infoContent] = getValue('color', 'color.infoContent');
-	if (!isInfoContentOk) {
-		return Err(infoContentErr.wrapWith('#ERR_RECONSTRUCT_COLOR_INFO_CONTENT'));
-	}
-	const [isSuccessOk, successErr, success] = getValue('color', 'color.success');
-	if (!isSuccessOk) {
-		return Err(successErr.wrapWith('#ERR_RECONSTRUCT_COLOR_SUCCESS'));
-	}
-	const [isSuccessContentOk, successContentErr, successContent] = getValue(
-		'color',
-		'color.successContent'
+	const [isPrimaryContentPaintOk, primaryContentPaintErr, primaryContentPaint] = getValue(
+		'solid-paint',
+		'paint.primary.content'
 	);
-	if (!isSuccessContentOk) {
-		return Err(successContentErr.wrapWith('#ERR_RECONSTRUCT_COLOR_SUCCESS_CONTENT'));
+	if (!isPrimaryContentPaintOk) {
+		return Err(primaryContentPaintErr.wrapWith('#ERR_RECONSTRUCT_COLOR_PRIMARY_CONTENT'));
 	}
-	const [isWarningOk, warningErr, warning] = getValue('color', 'color.warning');
-	if (!isWarningOk) {
-		return Err(warningErr.wrapWith('#ERR_RECONSTRUCT_COLOR_WARNING'));
-	}
-	const [isWarningContentOk, warningContentErr, warningContent] = getValue(
-		'color',
-		'color.warningContent'
+	const [isSecondaryPaintOk, secondaryPaintErr, secondaryPaint] = getValue(
+		'solid-paint',
+		'paint.secondary'
 	);
-	if (!isWarningContentOk) {
-		return Err(warningContentErr.wrapWith('#ERR_RECONSTRUCT_COLOR_WARNING_CONTENT'));
+	if (!isSecondaryPaintOk) {
+		return Err(secondaryPaintErr.wrapWith('#ERR_RECONSTRUCT_COLOR_SECONDARY'));
 	}
-	const [isErrorOk, errorErr, error] = getValue('color', 'color.error');
-	if (!isErrorOk) {
-		return Err(errorErr.wrapWith('#ERR_RECONSTRUCT_COLOR_ERROR'));
+	const [isSecondaryContentPaintOk, secondaryContentPaintErr, secondaryContentPaint] = getValue(
+		'solid-paint',
+		'paint.secondary.content'
+	);
+	if (!isSecondaryContentPaintOk) {
+		return Err(secondaryContentPaintErr.wrapWith('#ERR_RECONSTRUCT_COLOR_SECONDARY_CONTENT'));
 	}
-	const [isErrorContentOk, errorContentErr, errorContent] = getValue('color', 'color.errorContent');
-	if (!isErrorContentOk) {
-		return Err(errorContentErr.wrapWith('#ERR_RECONSTRUCT_COLOR_ERROR_CONTENT'));
+	const [isNeutralPaintOk, neutralPaintErr, neutralPaint] = getValue(
+		'solid-paint',
+		'paint.neutral'
+	);
+	if (!isNeutralPaintOk) {
+		return Err(neutralPaintErr.wrapWith('#ERR_RECONSTRUCT_COLOR_NEUTRAL'));
+	}
+	const [isNeutralContentPaintOk, neutralContentPaintErr, neutralContentPaint] = getValue(
+		'solid-paint',
+		'paint.neutral.content'
+	);
+	if (!isNeutralContentPaintOk) {
+		return Err(neutralContentPaintErr.wrapWith('#ERR_RECONSTRUCT_COLOR_NEUTRAL_CONTENT'));
+	}
+	const [isAccentPaintOk, accentPaintErr, accentPaint] = getValue('solid-paint', 'paint.accent');
+	if (!isAccentPaintOk) {
+		return Err(accentPaintErr.wrapWith('#ERR_RECONSTRUCT_COLOR_ACCENT'));
+	}
+	const [isAccentContentPaintOk, accentContentPaintErr, accentContentPaint] = getValue(
+		'solid-paint',
+		'paint.accent.content'
+	);
+	if (!isAccentContentPaintOk) {
+		return Err(accentContentPaintErr.wrapWith('#ERR_RECONSTRUCT_COLOR_ACCENT_CONTENT'));
+	}
+	const [isInfoPaintOk, infoPaintErr, infoPaint] = getValue('solid-paint', 'paint.info');
+	if (!isInfoPaintOk) {
+		return Err(infoPaintErr.wrapWith('#ERR_RECONSTRUCT_COLOR_INFO'));
+	}
+	const [isInfoContentPaintOk, infoContentPaintErr, infoContentPaint] = getValue(
+		'solid-paint',
+		'paint.info.content'
+	);
+	if (!isInfoContentPaintOk) {
+		return Err(infoContentPaintErr.wrapWith('#ERR_RECONSTRUCT_COLOR_INFO_CONTENT'));
+	}
+	const [isSuccessPaintOk, successPaintErr, successPaint] = getValue(
+		'solid-paint',
+		'paint.success'
+	);
+	if (!isSuccessPaintOk) {
+		return Err(successPaintErr.wrapWith('#ERR_RECONSTRUCT_COLOR_SUCCESS'));
+	}
+	const [isSuccessContentPaintOk, successContentPaintErr, successContentPaint] = getValue(
+		'solid-paint',
+		'paint.success.content'
+	);
+	if (!isSuccessContentPaintOk) {
+		return Err(successContentPaintErr.wrapWith('#ERR_RECONSTRUCT_COLOR_SUCCESS_CONTENT'));
+	}
+	const [isWarningPaintOk, warningPaintErr, warningPaint] = getValue(
+		'solid-paint',
+		'paint.warning'
+	);
+	if (!isWarningPaintOk) {
+		return Err(warningPaintErr.wrapWith('#ERR_RECONSTRUCT_COLOR_WARNING'));
+	}
+	const [isWarningContentPaintOk, warningContentPaintErr, warningContentPaint] = getValue(
+		'solid-paint',
+		'paint.warning.content'
+	);
+	if (!isWarningContentPaintOk) {
+		return Err(warningContentPaintErr.wrapWith('#ERR_RECONSTRUCT_COLOR_WARNING_CONTENT'));
+	}
+	const [isErrorPaintOk, errorPaintErr, errorPaint] = getValue('solid-paint', 'paint.error');
+	if (!isErrorPaintOk) {
+		return Err(errorPaintErr.wrapWith('#ERR_RECONSTRUCT_COLOR_ERROR'));
+	}
+	const [isErrorContentPaintOk, errorContentPaintErr, errorContentPaint] = getValue(
+		'solid-paint',
+		'paint.error.content'
+	);
+	if (!isErrorContentPaintOk) {
+		return Err(errorContentPaintErr.wrapWith('#ERR_RECONSTRUCT_COLOR_ERROR_CONTENT'));
 	}
 
 	// Get font properties
@@ -244,28 +274,28 @@ export function reconstructThemeFromTokens(tokens: TToken[]): TResult<TTheme, Ed
 		key,
 		name,
 		color: {
-			base100,
-			base100Content,
-			base200,
-			base200Content,
-			base300,
-			base300Content,
-			primary,
-			primaryContent,
-			secondary,
-			secondaryContent,
-			neutral,
-			neutralContent,
-			accent,
-			accentContent,
-			info,
-			infoContent,
-			success,
-			successContent,
-			warning,
-			warningContent,
-			error,
-			errorContent
+			base100: base100Paint.color,
+			base100Content: base100ContentPaint.color,
+			base200: base200Paint.color,
+			base200Content: base200ContentPaint.color,
+			base300: base300Paint.color,
+			base300Content: base300ContentPaint.color,
+			primary: primaryPaint.color,
+			primaryContent: primaryContentPaint.color,
+			secondary: secondaryPaint.color,
+			secondaryContent: secondaryContentPaint.color,
+			neutral: neutralPaint.color,
+			neutralContent: neutralContentPaint.color,
+			accent: accentPaint.color,
+			accentContent: accentContentPaint.color,
+			info: infoPaint.color,
+			infoContent: infoContentPaint.color,
+			success: successPaint.color,
+			successContent: successContentPaint.color,
+			warning: warningPaint.color,
+			warningContent: warningContentPaint.color,
+			error: errorPaint.color,
+			errorContent: errorContentPaint.color
 		},
 		typography: {
 			heading: {
