@@ -310,7 +310,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 			type: 'fill',
 			key: 'fill.default',
 			value: {
-				paint: { type: 'token', key: 'paint.base100.content', tokenType: 'paint' },
+				paint: { type: 'token', key: 'paint.base100', tokenType: 'paint' },
 				opacity: 1
 			}
 		},
