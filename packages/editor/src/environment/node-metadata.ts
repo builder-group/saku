@@ -31,7 +31,10 @@ export const aboutNodeMetadata: TNodeMetadata<'about'> = {
 				lineHeight: tokenRef('text.xl', 'text', 'typography.lineHeight'),
 				letterSpacing: tokenRef('text.xl', 'text', 'typography.letterSpacing')
 			},
-			fill: tokenRef('text.xl', 'text', 'fill'),
+			fill: {
+				paint: tokenRef('paint.base200.content', 'solid-paint'),
+				opacity: tokenRef('text.xl', 'text', 'fill.opacity')
+			},
 			stroke: tokenRef('text.xl', 'text', 'stroke'),
 			shadow: tokenRef('text.xl', 'text', 'shadow')
 		},
@@ -45,7 +48,10 @@ export const aboutNodeMetadata: TNodeMetadata<'about'> = {
 				lineHeight: tokenRef('text.default', 'text', 'typography.lineHeight'),
 				letterSpacing: tokenRef('text.default', 'text', 'typography.letterSpacing')
 			},
-			fill: tokenRef('text.default', 'text', 'fill'),
+			fill: {
+				paint: tokenRef('paint.base200.content', 'solid-paint'),
+				opacity: tokenRef('text.xl', 'text', 'fill.opacity')
+			},
 			stroke: tokenRef('text.default', 'text', 'stroke'),
 			shadow: tokenRef('text.default', 'text', 'shadow')
 		},

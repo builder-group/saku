@@ -69,7 +69,6 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 			profilePictureHash = imageAsset.hash;
 		}
 
-		const fontColor = cssRgbaToRgba(page.themeSettings?.fontColor);
 		const aboutNode: TAboutNode = {
 			id: createId('node'),
 			type: 'about',
@@ -81,52 +80,6 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 				profilePicture: profilePictureHash,
 				contactIcons: transformSocialLinks(page.socialMediaAccounts ?? [])
 			},
-			textXl:
-				fontColor != null
-					? {
-							appearance: tokenRef('text.xl', 'text', 'appearance'),
-							typography: {
-								font: tokenRef('text.xl', 'text', 'typography.font'),
-								fontSize: tokenRef('text.xl', 'text', 'typography.fontSize'),
-								textAlignHorizontal: 'center',
-								textAlignVertical: 'center',
-								lineHeight: tokenRef('text.xl', 'text', 'typography.lineHeight'),
-								letterSpacing: tokenRef('text.xl', 'text', 'typography.letterSpacing')
-							},
-							fill: {
-								paint: {
-									type: 'solid',
-									color: fontColor
-								},
-								opacity: 1
-							},
-							stroke: tokenRef('text.xl', 'text', 'stroke'),
-							shadow: tokenRef('text.xl', 'text', 'shadow')
-						}
-					: aboutNodeMetadata.default.textXl,
-			text:
-				fontColor != null
-					? {
-							appearance: tokenRef('text.default', 'text', 'appearance'),
-							typography: {
-								font: tokenRef('text.default', 'text', 'typography.font'),
-								fontSize: tokenRef('text.default', 'text', 'typography.fontSize'),
-								textAlignHorizontal: 'center',
-								textAlignVertical: 'center',
-								lineHeight: tokenRef('text.default', 'text', 'typography.lineHeight'),
-								letterSpacing: tokenRef('text.default', 'text', 'typography.letterSpacing')
-							},
-							fill: {
-								paint: {
-									type: 'solid',
-									color: fontColor
-								},
-								opacity: 1
-							},
-							stroke: tokenRef('text.default', 'text', 'stroke'),
-							shadow: tokenRef('text.default', 'text', 'shadow')
-						}
-					: aboutNodeMetadata.default.text,
 			image: {
 				appearance: {
 					visible: true,
