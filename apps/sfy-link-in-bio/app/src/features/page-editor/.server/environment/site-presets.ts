@@ -3,7 +3,7 @@ import {
 	aboutNodeMetadata,
 	contactMetadataMap,
 	createId,
-	createTokensFromTheme,
+	createThemeTokens,
 	fontMetadataMap,
 	getFontHash,
 	getFontMetadataByFamily,
@@ -14,6 +14,7 @@ import {
 	TContactIcon,
 	textNodeMetadata,
 	TId,
+	tokenRef,
 	TProductNode,
 	TSite,
 	TTheme,
@@ -246,7 +247,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 			autoLayout: {
 				horizontalPadding: 24,
 				verticalPadding: 48,
-				verticalGap: 24,
+				verticalGap: tokenRef('spacing.gap', 'number'),
 				horizontalGap: null
 			},
 			appearance: {
@@ -254,15 +255,12 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 				opacity: 1,
 				borderRadius: null
 			},
-			fill:
-				theme != null
-					? {
-							paint: theme.paint.base200,
-							opacity: 1
-						}
-					: null
+			fill: {
+				paint: tokenRef('paint.base200', 'paint'),
+				opacity: 1
+			}
 		},
-		tokens: theme != null ? createTokensFromTheme(theme) : []
+		tokens: theme != null ? createThemeTokens(theme) : []
 	};
 }
 

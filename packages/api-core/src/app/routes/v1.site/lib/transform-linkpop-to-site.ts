@@ -2,7 +2,7 @@ import { shortId } from '@blgc/utils';
 import {
 	aboutNodeMetadata,
 	createId,
-	createTokensFromTheme,
+	createThemeTokens,
 	cssRgbaToRgba,
 	extractSpotifyId,
 	extractYouTubeId,
@@ -226,7 +226,7 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 			autoLayout: {
 				horizontalPadding: 24,
 				verticalPadding: 48,
-				verticalGap: 24,
+				verticalGap: tokenRef('spacing.gap', 'number'),
 				horizontalGap: null
 			},
 			appearance: {
@@ -235,11 +235,11 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 				borderRadius: 0
 			},
 			fill: {
-				paint: backgroundPaint,
+				paint: tokenRef('paint.base200', 'paint'),
 				opacity: 1
 			}
 		},
-		tokens: createTokensFromTheme({
+		tokens: createThemeTokens({
 			...defaultTheme,
 			key: 'linkpop',
 			name: 'LinkPop Import',
@@ -249,7 +249,7 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 				base100Content:
 					cssRgbaToPaint(page?.themeSettings?.linkCardFontColor) ??
 					defaultTheme.paint.base100Content,
-				base200: cssRgbaToPaint(page?.themeSettings?.backgroundColor) ?? defaultTheme.paint.base200,
+				base200: backgroundPaint ?? defaultTheme.paint.base200,
 				base200Content:
 					cssRgbaToPaint(page?.themeSettings?.fontColor) ?? defaultTheme.paint.base200Content,
 				primary:

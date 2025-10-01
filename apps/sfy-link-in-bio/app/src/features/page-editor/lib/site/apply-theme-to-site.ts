@@ -1,21 +1,13 @@
 import {
 	createId,
-	createTokensFromTheme,
+	createThemeTokens,
 	fontMetadataMap,
 	getFontHash,
 	getFontMetadataByFamily,
-	isTokenRef,
-	mapTokenRef,
 	TFlatSite,
 	TTheme
 } from '@repo/editor';
 
-/**
- * Applies a theme to an existing flat site by:
- * 1. Adding theme font assets to the site
- * 2. Applying theme tokens to the site
- * 3. Updating the root node's background color and gap
- */
 export function applyThemeToSite(site: TFlatSite, theme: TTheme): TFlatSite {
 	// Add theme fonts to assets if they don't already exist
 	const headingFontMetadata =
@@ -51,31 +43,11 @@ export function applyThemeToSite(site: TFlatSite, theme: TTheme): TFlatSite {
 		};
 	}
 
-	// Apply theme tokens (theme tokens take precedence)
-	const themeTokens = createTokensFromTheme(theme);
+	// Apply theme tokens
+	const themeTokens = createThemeTokens(theme);
 	themeTokens.forEach((token) => {
 		site.tokens[token.key] = token;
 	});
-
-	// Update root node with theme background and gap
-	const rootNode = site.nodes[site.rootId];
-	if (rootNode != null && rootNode.type === 'page') {
-		site.nodes[site.rootId] = {
-			...rootNode,
-			autoLayout: {
-				...rootNode.autoLayout,
-				verticalGap:
-					theme.gap ??
-					(isTokenRef(rootNode.autoLayout)
-						? mapTokenRef(rootNode.autoLayout, 'verticalGap')
-						: rootNode.autoLayout.verticalGap)
-			},
-			fill: {
-				paint: theme.paint.base200,
-				opacity: 1
-			}
-		};
-	}
 
 	return site;
 }

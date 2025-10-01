@@ -1,5 +1,5 @@
 export * from './color';
-export * from './create-tokens-from-theme';
+export * from './create-theme-tokens';
 export * from './EditorError';
 export * from './get-font-hash';
 export * from './hex-to-paint';

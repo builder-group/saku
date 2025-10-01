@@ -1,6 +1,6 @@
 import {
 	aboutNodeMetadata,
-	createTokensFromTheme,
+	createThemeOverrideTokens,
 	linkNodeMetadata,
 	TAboutNode,
 	TLinkNode,
@@ -33,9 +33,9 @@ export function applyTheme(theme: TTheme, editor: TPageEditor) {
 		}
 	}
 
-	// Apply tokens for elements (cards, text, buttons)
-	const tokens = createTokensFromTheme(theme);
-	tokens.forEach((token) => {
+	// Apply theme override tokens
+	const themeOverrideTokens = createThemeOverrideTokens(theme);
+	themeOverrideTokens.forEach((token) => {
 		editor.tokenMap._v[token.key] = token;
 	});
 	editor.tokenMap._notify();
@@ -49,18 +49,4 @@ export function applyTheme(theme: TTheme, editor: TPageEditor) {
 		family: theme.typography.text.fontFamily,
 		weight: theme.typography.text.fontWeight
 	});
-
-	// Apply page background directly to the root node
-	const rootNode = editor.getRootNode();
-	rootNode.set((node) => ({
-		...node,
-		autoLayout: {
-			...node.autoLayout,
-			verticalGap: theme.gap ?? 24
-		},
-		fill: {
-			paint: theme.paint.base200,
-			opacity: 1
-		}
-	}));
 }
