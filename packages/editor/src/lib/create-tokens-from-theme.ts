@@ -313,7 +313,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 			value:
 				effects?.stroke != null
 					? {
-							paint: tokenRef('paint.base200.content', 'paint.solid'),
+							paint: tokenRef('paint.accent', 'paint.solid'),
 							width: tokenRef('effects.stroke.width', 'number')
 						}
 					: null

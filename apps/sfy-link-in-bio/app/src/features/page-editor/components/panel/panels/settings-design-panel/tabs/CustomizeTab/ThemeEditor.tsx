@@ -360,28 +360,28 @@ export const ThemeEditor: React.FC<TThemeEditorProps> = (props) => {
 					state={base100PaintState}
 					disabledTokenLink={true}
 					editor={editor}
-					allowedPaintTypes={['solid']}
+					allowedPaintTypes={['solid', 'image']}
 				/>
 				<TokenPaintInput
 					label="Surface Content"
 					state={base100ContentPaintState}
 					disabledTokenLink={true}
 					editor={editor}
-					allowedPaintTypes={['solid', 'image']}
+					allowedPaintTypes={['solid']}
 				/>
 				<TokenPaintInput
 					label="Background"
 					state={base200PaintState}
 					disabledTokenLink={true}
 					editor={editor}
-					allowedPaintTypes={['solid']}
+					allowedPaintTypes={['solid', 'image']}
 				/>
 				<TokenPaintInput
 					label="Background Content"
 					state={base200ContentPaintState}
 					disabledTokenLink={true}
 					editor={editor}
-					allowedPaintTypes={['solid', 'image']}
+					allowedPaintTypes={['solid']}
 				/>
 			</AccordionSection>
 

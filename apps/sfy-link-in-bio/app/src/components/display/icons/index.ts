@@ -21,6 +21,7 @@ export * from './YouTubeIcon';
 
 // Third Party Icons
 export {
+	AlertTriangleIcon as PolarisAlertTriangleIcon,
 	AppsIcon as PolarisAppsIcon,
 	ArrowLeftIcon as PolarisArrowLeftIcon,
 	ChatIcon as PolarisChatIcon,
