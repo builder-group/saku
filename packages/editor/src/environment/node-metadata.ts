@@ -32,7 +32,7 @@ export const aboutNodeMetadata: TNodeMetadata<'about'> = {
 				letterSpacing: tokenRef('text.xl', 'text', 'typography.letterSpacing')
 			},
 			fill: {
-				paint: tokenRef('paint.base200.content', 'solid-paint'),
+				paint: tokenRef('paint.base200.content', 'paint.solid'),
 				opacity: tokenRef('text.xl', 'text', 'fill.opacity')
 			},
 			stroke: tokenRef('text.xl', 'text', 'stroke'),
@@ -49,7 +49,7 @@ export const aboutNodeMetadata: TNodeMetadata<'about'> = {
 				letterSpacing: tokenRef('text.default', 'text', 'typography.letterSpacing')
 			},
 			fill: {
-				paint: tokenRef('paint.base200.content', 'solid-paint'),
+				paint: tokenRef('paint.base200.content', 'paint.solid'),
 				opacity: tokenRef('text.xl', 'text', 'fill.opacity')
 			},
 			stroke: tokenRef('text.default', 'text', 'stroke'),

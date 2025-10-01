@@ -24,6 +24,7 @@ import {
 	tokenRef,
 	TPaint,
 	TSite,
+	TSolidPaint,
 	TTextNode,
 	TTheme
 } from '@repo/editor';
@@ -242,19 +243,19 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 			...defaultTheme,
 			key: 'linkpop',
 			name: 'LinkPop Import',
-			color: {
-				...defaultTheme.color,
-				base100: cssRgbaToRgba(page?.themeSettings?.linkCardColor) ?? defaultTheme.color.base100,
+			paint: {
+				...defaultTheme.paint,
+				base100: cssRgbaToPaint(page?.themeSettings?.linkCardColor) ?? defaultTheme.paint.base100,
 				base100Content:
-					cssRgbaToRgba(page?.themeSettings?.linkCardFontColor) ??
-					defaultTheme.color.base100Content,
-				base200: cssRgbaToRgba(page?.themeSettings?.backgroundColor) ?? defaultTheme.color.base200,
+					cssRgbaToPaint(page?.themeSettings?.linkCardFontColor) ??
+					defaultTheme.paint.base100Content,
+				base200: cssRgbaToPaint(page?.themeSettings?.backgroundColor) ?? defaultTheme.paint.base200,
 				base200Content:
-					cssRgbaToRgba(page?.themeSettings?.fontColor) ?? defaultTheme.color.base200Content,
+					cssRgbaToPaint(page?.themeSettings?.fontColor) ?? defaultTheme.paint.base200Content,
 				primary:
-					cssRgbaToRgba(page?.themeSettings?.linkCardFontColor) ?? defaultTheme.color.primary,
+					cssRgbaToPaint(page?.themeSettings?.linkCardFontColor) ?? defaultTheme.paint.primary,
 				primaryContent:
-					cssRgbaToRgba(page?.themeSettings?.linkCardColor) ?? defaultTheme.color.primaryContent
+					cssRgbaToPaint(page?.themeSettings?.linkCardColor) ?? defaultTheme.paint.primaryContent
 			},
 			typography: {
 				heading: {
@@ -367,4 +368,16 @@ function getBorderRadiusFromShape(shape: string | null | undefined): number {
 		default:
 			return 8; // Default fallback
 	}
+}
+
+function cssRgbaToPaint(cssRgba?: string): TSolidPaint | undefined {
+	const rgba = cssRgbaToRgba(cssRgba);
+	if (rgba == null) {
+		return undefined;
+	}
+
+	return {
+		type: 'solid',
+		color: rgba
+	};
 }

@@ -19,7 +19,7 @@ export function resolveTokenRef<GTokenValue>(
 		return Ok(sourceValue);
 	}
 
-	const { tokenMap, schema } = options;
+	const { tokenMap, expectedSchema, expectedType } = options;
 	if (tokenMap == null) {
 		return Err(new AppError('#ERR_TOKEN_MAP_NOT_FOUND'));
 	}
@@ -29,6 +29,20 @@ export function resolveTokenRef<GTokenValue>(
 		return Err(
 			new AppError('#ERR_TOKEN_NOT_FOUND', {
 				detail: `Token not found: ${sourceValue.key}`
+			})
+		);
+	}
+
+	// Check if the token type matches or is a subset if expected type is provided
+	// e.g. 'paint.solid' is valid for expected type 'paint' since its a subset
+	if (
+		expectedType != null &&
+		token.type !== expectedType &&
+		!token.type.startsWith(`${expectedType}.`)
+	) {
+		return Err(
+			new AppError('#ERR_TOKEN_TYPE_MISMATCH', {
+				detail: `Token ${sourceValue.key} has type '${token.type}' but expected '${expectedType}'`
 			})
 		);
 	}
@@ -64,9 +78,9 @@ export function resolveTokenRef<GTokenValue>(
 		resolvedValue = nestedResolvedValue;
 	}
 
-	// Validate the resolved value if schema is provided
-	if (schema != null) {
-		const result = safeParse(schema, resolvedValue);
+	// Validate the resolved value if expected schema is provided
+	if (expectedSchema != null) {
+		const result = safeParse(expectedSchema, resolvedValue);
 		if (!result.success) {
 			const issues = result.issues.map((issue) => issue.message).join(', ');
 			return Err(
@@ -83,7 +97,8 @@ export function resolveTokenRef<GTokenValue>(
 
 export interface TResolveTokenRefOptions<GTokenValue> {
 	tokenMap?: Record<TToken['key'], TToken>;
-	schema?: BaseSchema<GTokenValue, unknown, BaseIssue<unknown>>;
+	expectedSchema?: BaseSchema<GTokenValue, unknown, BaseIssue<unknown>>;
+	expectedType?: TToken['type'];
 }
 
 function getNestedProperty(

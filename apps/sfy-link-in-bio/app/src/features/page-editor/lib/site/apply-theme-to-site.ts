@@ -71,10 +71,7 @@ export function applyThemeToSite(site: TFlatSite, theme: TTheme): TFlatSite {
 						: rootNode.autoLayout.verticalGap)
 			},
 			fill: {
-				paint: {
-					type: 'solid' as const,
-					color: theme.color.base200
-				},
+				paint: theme.paint.base200,
 				opacity: 1
 			}
 		};

@@ -30,7 +30,7 @@ export function resolveTypographyStyleMixin(
 		resolvedTypography.fontSize,
 		{
 			tokenMap: cx.tokenMap,
-			schema: v.number()
+			expectedSchema: v.number()
 		}
 	);
 	if (!isResolvedFontSizeOk) {
@@ -42,7 +42,7 @@ export function resolveTypographyStyleMixin(
 		resolvedTextAlignHorizontal
 	] = resolveTokenRef(resolvedTypography.textAlignHorizontal, {
 		tokenMap: cx.tokenMap,
-		schema: v.union([v.literal('start'), v.literal('center'), v.literal('end')])
+		expectedSchema: v.union([v.literal('start'), v.literal('center'), v.literal('end')])
 	});
 	if (!isResolvedTextAlignHorizontalOk) {
 		return Err(resolvedTextAlignHorizontalErr.wrapWith('#ERR_RESOLVE_TEXT_ALIGN_HORIZONTAL'));
@@ -50,7 +50,7 @@ export function resolveTypographyStyleMixin(
 	const [isResolvedTextAlignVerticalOk, resolvedTextAlignVerticalErr, resolvedTextAlignVertical] =
 		resolveTokenRef(resolvedTypography.textAlignVertical, {
 			tokenMap: cx.tokenMap,
-			schema: v.union([v.literal('start'), v.literal('center'), v.literal('end')])
+			expectedSchema: v.union([v.literal('start'), v.literal('center'), v.literal('end')])
 		});
 	if (!isResolvedTextAlignVerticalOk) {
 		return Err(resolvedTextAlignVerticalErr.wrapWith('#ERR_RESOLVE_TEXT_ALIGN_VERTICAL'));

@@ -2,6 +2,7 @@ export * from './color';
 export * from './create-tokens-from-theme';
 export * from './EditorError';
 export * from './get-font-hash';
+export * from './hex-to-paint';
 export * from './id';
 export * from './is-token-ref';
 export * from './parse-url';

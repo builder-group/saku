@@ -5,7 +5,7 @@ import React from 'react';
 import { AccordionSection } from '@/components';
 import { useMapState, useMemoCleanup } from '@/hooks';
 import { TPageEditor } from '../../../../../../lib';
-import { TokenColorInput, TokenSelectInput, TokenTextInput } from '../../../../../input';
+import { TokenPaintInput, TokenSelectInput, TokenTextInput } from '../../../../../input';
 import { applyTheme } from '../../apply-theme';
 
 export const ThemeEditor: React.FC<TThemeEditorProps> = (props) => {
@@ -26,111 +26,111 @@ export const ThemeEditor: React.FC<TThemeEditorProps> = (props) => {
 	}, []);
 
 	// Color states
-	const primaryColorState = useMapState(themeState, {
-		map: (theme) => theme.color.primary,
+	const primaryPaintState = useMapState(themeState, {
+		map: (theme) => theme.paint.primary,
 		sync: (baseState, value) => {
 			baseState.set((theme) => ({
 				...theme,
-				color: { ...theme.color, primary: value }
+				paint: { ...theme.paint, primary: value }
 			}));
 		}
 	});
-	const primaryContentColorState = useMapState(themeState, {
-		map: (theme) => theme.color.primaryContent,
+	const primaryContentPaintState = useMapState(themeState, {
+		map: (theme) => theme.paint.primaryContent,
 		sync: (baseState, value) => {
 			baseState.set((theme) => ({
 				...theme,
-				color: { ...theme.color, primaryContent: value }
+				paint: { ...theme.paint, primaryContent: value }
 			}));
 		}
 	});
-	const secondaryColorState = useMapState(themeState, {
-		map: (theme) => theme.color.secondary,
+	const secondaryPaintState = useMapState(themeState, {
+		map: (theme) => theme.paint.secondary,
 		sync: (baseState, value) => {
 			baseState.set((theme) => ({
 				...theme,
-				color: { ...theme.color, secondary: value }
+				paint: { ...theme.paint, secondary: value }
 			}));
 		}
 	});
-	const secondaryContentColorState = useMapState(themeState, {
-		map: (theme) => theme.color.secondaryContent,
+	const secondaryContentPaintState = useMapState(themeState, {
+		map: (theme) => theme.paint.secondaryContent,
 		sync: (baseState, value) => {
 			baseState.set((theme) => ({
 				...theme,
-				color: { ...theme.color, secondaryContent: value }
+				paint: { ...theme.paint, secondaryContent: value }
 			}));
 		}
 	});
-	const accentColorState = useMapState(themeState, {
-		map: (theme) => theme.color.accent,
+	const accentPaintState = useMapState(themeState, {
+		map: (theme) => theme.paint.accent,
 		sync: (baseState, value) => {
 			baseState.set((theme) => ({
 				...theme,
-				color: { ...theme.color, accent: value }
+				paint: { ...theme.paint, accent: value }
 			}));
 		}
 	});
-	const accentContentColorState = useMapState(themeState, {
-		map: (theme) => theme.color.accentContent,
+	const accentContentPaintState = useMapState(themeState, {
+		map: (theme) => theme.paint.accentContent,
 		sync: (baseState, value) => {
 			baseState.set((theme) => ({
 				...theme,
-				color: { ...theme.color, accentContent: value }
+				paint: { ...theme.paint, accentContent: value }
 			}));
 		}
 	});
-	const neutralColorState = useMapState(themeState, {
-		map: (theme) => theme.color.neutral,
+	const neutralPaintState = useMapState(themeState, {
+		map: (theme) => theme.paint.neutral,
 		sync: (baseState, value) => {
 			baseState.set((theme) => ({
 				...theme,
-				color: { ...theme.color, neutral: value }
+				paint: { ...theme.paint, neutral: value }
 			}));
 		}
 	});
-	const neutralContentColorState = useMapState(themeState, {
-		map: (theme) => theme.color.neutralContent,
+	const neutralContentPaintState = useMapState(themeState, {
+		map: (theme) => theme.paint.neutralContent,
 		sync: (baseState, value) => {
 			baseState.set((theme) => ({
 				...theme,
-				color: { ...theme.color, neutralContent: value }
+				paint: { ...theme.paint, neutralContent: value }
 			}));
 		}
 	});
-	const base100ColorState = useMapState(themeState, {
-		map: (theme) => theme.color.base100,
+	const base100PaintState = useMapState(themeState, {
+		map: (theme) => theme.paint.base100,
 		sync: (baseState, value) => {
 			baseState.set((theme) => ({
 				...theme,
-				color: { ...theme.color, base100: value }
+				paint: { ...theme.paint, base100: value }
 			}));
 		}
 	});
-	const base100ContentColorState = useMapState(themeState, {
-		map: (theme) => theme.color.base100Content,
+	const base100ContentPaintState = useMapState(themeState, {
+		map: (theme) => theme.paint.base100Content,
 		sync: (baseState, value) => {
 			baseState.set((theme) => ({
 				...theme,
-				color: { ...theme.color, base100Content: value }
+				paint: { ...theme.paint, base100Content: value }
 			}));
 		}
 	});
-	const base200ColorState = useMapState(themeState, {
-		map: (theme) => theme.color.base200,
+	const base200PaintState = useMapState(themeState, {
+		map: (theme) => theme.paint.base200,
 		sync: (baseState, value) => {
 			baseState.set((theme) => ({
 				...theme,
-				color: { ...theme.color, base200: value }
+				paint: { ...theme.paint, base200: value }
 			}));
 		}
 	});
-	const base200ContentColorState = useMapState(themeState, {
-		map: (theme) => theme.color.base200Content,
+	const base200ContentPaintState = useMapState(themeState, {
+		map: (theme) => theme.paint.base200Content,
 		sync: (baseState, value) => {
 			baseState.set((theme) => ({
 				...theme,
-				color: { ...theme.color, base200Content: value }
+				paint: { ...theme.paint, base200Content: value }
 			}));
 		}
 	});
@@ -299,41 +299,89 @@ export const ThemeEditor: React.FC<TThemeEditorProps> = (props) => {
 				defaultOpen={true}
 				collapsibleClassName="grid grid-cols-2 gap-3"
 			>
-				<TokenColorInput label="Primary" state={primaryColorState} disabledTokenLink={true} />
-				<TokenColorInput
+				<TokenPaintInput
+					label="Primary"
+					state={primaryPaintState}
+					disabledTokenLink={true}
+					editor={editor}
+					allowedPaintTypes={['solid']}
+				/>
+				<TokenPaintInput
 					label="Primary Content"
-					state={primaryContentColorState}
+					state={primaryContentPaintState}
 					disabledTokenLink={true}
+					editor={editor}
+					allowedPaintTypes={['solid']}
 				/>
-				<TokenColorInput label="Secondary" state={secondaryColorState} disabledTokenLink={true} />
-				<TokenColorInput
+				<TokenPaintInput
+					label="Secondary"
+					state={secondaryPaintState}
+					disabledTokenLink={true}
+					editor={editor}
+					allowedPaintTypes={['solid']}
+				/>
+				<TokenPaintInput
 					label="Secondary Content"
-					state={secondaryContentColorState}
+					state={secondaryContentPaintState}
 					disabledTokenLink={true}
+					editor={editor}
+					allowedPaintTypes={['solid']}
 				/>
-				<TokenColorInput label="Accent" state={accentColorState} disabledTokenLink={true} />
-				<TokenColorInput
+				<TokenPaintInput
+					label="Accent"
+					state={accentPaintState}
+					disabledTokenLink={true}
+					editor={editor}
+					allowedPaintTypes={['solid']}
+				/>
+				<TokenPaintInput
 					label="Accent Content"
-					state={accentContentColorState}
+					state={accentContentPaintState}
 					disabledTokenLink={true}
+					editor={editor}
+					allowedPaintTypes={['solid']}
 				/>
-				<TokenColorInput label="Neutral" state={neutralColorState} disabledTokenLink={true} />
-				<TokenColorInput
+				<TokenPaintInput
+					label="Neutral"
+					state={neutralPaintState}
+					disabledTokenLink={true}
+					editor={editor}
+					allowedPaintTypes={['solid']}
+				/>
+				<TokenPaintInput
 					label="Neutral Content"
-					state={neutralContentColorState}
+					state={neutralContentPaintState}
 					disabledTokenLink={true}
+					editor={editor}
+					allowedPaintTypes={['solid']}
 				/>
-				<TokenColorInput label="Surface" state={base100ColorState} disabledTokenLink={true} />
-				<TokenColorInput
+				<TokenPaintInput
+					label="Surface"
+					state={base100PaintState}
+					disabledTokenLink={true}
+					editor={editor}
+					allowedPaintTypes={['solid']}
+				/>
+				<TokenPaintInput
 					label="Surface Content"
-					state={base100ContentColorState}
+					state={base100ContentPaintState}
 					disabledTokenLink={true}
+					editor={editor}
+					allowedPaintTypes={['solid', 'image']}
 				/>
-				<TokenColorInput label="Background" state={base200ColorState} disabledTokenLink={true} />
-				<TokenColorInput
-					label="Background Content"
-					state={base200ContentColorState}
+				<TokenPaintInput
+					label="Background"
+					state={base200PaintState}
 					disabledTokenLink={true}
+					editor={editor}
+					allowedPaintTypes={['solid']}
+				/>
+				<TokenPaintInput
+					label="Background Content"
+					state={base200ContentPaintState}
+					disabledTokenLink={true}
+					editor={editor}
+					allowedPaintTypes={['solid', 'image']}
 				/>
 			</AccordionSection>
 

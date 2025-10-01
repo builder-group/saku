@@ -23,7 +23,7 @@ export function resolveAppearanceStyleMixin(
 		resolvedAppearance.visible,
 		{
 			tokenMap: cx.tokenMap,
-			schema: v.boolean()
+			expectedSchema: v.boolean()
 		}
 	);
 	if (!isResolvedVisibleOk) {
@@ -33,7 +33,7 @@ export function resolveAppearanceStyleMixin(
 		resolvedAppearance.opacity,
 		{
 			tokenMap: cx.tokenMap,
-			schema: v.number()
+			expectedSchema: v.number()
 		}
 	);
 	if (!isResolvedOpacityOk) {
@@ -43,7 +43,7 @@ export function resolveAppearanceStyleMixin(
 		resolvedAppearance.borderRadius,
 		{
 			tokenMap: cx.tokenMap,
-			schema: v.nullable(v.number())
+			expectedSchema: v.nullable(v.number())
 		}
 	);
 	if (!isResolvedBorderRadiusOk) {

@@ -3,7 +3,7 @@ import React from 'react';
 
 export const ThemePreview: React.FC<TThemePreviewProps> = (props) => {
 	const {
-		theme: { color, typography, radius, effects }
+		theme: { paint, typography, radius, effects }
 	} = props;
 
 	const headingFontMetadata = React.useMemo(
@@ -42,7 +42,8 @@ export const ThemePreview: React.FC<TThemePreviewProps> = (props) => {
 			<div
 				className="flex items-center justify-center rounded-lg border p-1"
 				style={{
-					backgroundColor: rgbaToHex(color.base200),
+					backgroundColor:
+						paint.base200.type === 'solid' ? rgbaToHex(paint.base200.color) : '#000000',
 					borderColor: 'rgba(0,0,0,0.1)',
 					minHeight: '80px'
 				}}
@@ -51,22 +52,23 @@ export const ThemePreview: React.FC<TThemePreviewProps> = (props) => {
 				<div
 					className="flex flex-wrap items-center justify-center gap-1 rounded p-2"
 					style={{
-						backgroundColor: rgbaToHex(color.base100),
+						backgroundColor:
+							paint.base100.type === 'solid' ? rgbaToHex(paint.base100.color) : '#000000',
 						borderRadius: `${radius.box}px`,
 						border:
 							effects?.stroke != null
-								? `${effects.stroke.width}px solid ${rgbaToHex(color.accent)}`
+								? `${effects.stroke.width}px solid ${rgbaToHex(paint.accent.color)}`
 								: 'none',
 						boxShadow:
 							effects?.shadow != null
-								? `${effects.shadow.offsetX}px ${effects.shadow.offsetY}px ${effects.shadow.blur}px ${effects.shadow.spread}px rgba(${color.primary.r}, ${color.primary.g}, ${color.primary.b}, 0.15)`
+								? `${effects.shadow.offsetX}px ${effects.shadow.offsetY}px ${effects.shadow.blur}px ${effects.shadow.spread}px rgba(${paint.primary.color.r}, ${paint.primary.color.g}, ${paint.primary.color.b}, 0.15)`
 								: 'none'
 					}}
 				>
 					{/* Typography preview */}
 					<h2
 						style={{
-							color: rgbaToHex(color.base100Content),
+							color: rgbaToHex(paint.base100Content.color),
 							fontFamily: typography.heading.fontFamily,
 							fontSize: '20px',
 							fontWeight: typography.heading.fontWeight,
@@ -81,8 +83,8 @@ export const ThemePreview: React.FC<TThemePreviewProps> = (props) => {
 					<div
 						className="rounded px-3 py-1 text-sm font-medium"
 						style={{
-							backgroundColor: rgbaToHex(color.primary),
-							color: rgbaToHex(color.primaryContent),
+							backgroundColor: rgbaToHex(paint.primary.color),
+							color: rgbaToHex(paint.primaryContent.color),
 							fontFamily: typography.text.fontFamily,
 							fontWeight: typography.text.fontWeight,
 							borderRadius: `${radius.field}px`

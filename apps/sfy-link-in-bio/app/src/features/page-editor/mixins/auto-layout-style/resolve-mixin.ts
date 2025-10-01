@@ -20,7 +20,7 @@ export function resolveAutoLayoutStyleMixin(
 	const [isResolvedHorizontalPaddingOk, resolvedHorizontalPaddingErr, resolvedHorizontalPadding] =
 		resolveTokenRef(resolvedAutoLayout.horizontalPadding, {
 			tokenMap: cx.tokenMap,
-			schema: v.number()
+			expectedSchema: v.number()
 		});
 	if (!isResolvedHorizontalPaddingOk) {
 		return Err(resolvedHorizontalPaddingErr.wrapWith('#ERR_RESOLVE_HORIZONTAL_PADDING'));
@@ -28,7 +28,7 @@ export function resolveAutoLayoutStyleMixin(
 	const [isResolvedVerticalPaddingOk, resolvedVerticalPaddingErr, resolvedVerticalPadding] =
 		resolveTokenRef(resolvedAutoLayout.verticalPadding, {
 			tokenMap: cx.tokenMap,
-			schema: v.number()
+			expectedSchema: v.number()
 		});
 	if (!isResolvedVerticalPaddingOk) {
 		return Err(resolvedVerticalPaddingErr.wrapWith('#ERR_RESOLVE_VERTICAL_PADDING'));
@@ -36,7 +36,7 @@ export function resolveAutoLayoutStyleMixin(
 	const [isResolvedHorizontalGapOk, resolvedHorizontalGapErr, resolvedHorizontalGap] =
 		resolveTokenRef(resolvedAutoLayout.horizontalGap, {
 			tokenMap: cx.tokenMap,
-			schema: v.nullable(v.number())
+			expectedSchema: v.nullable(v.number())
 		});
 	if (!isResolvedHorizontalGapOk) {
 		return Err(resolvedHorizontalGapErr.wrapWith('#ERR_RESOLVE_HORIZONTAL_GAP'));
@@ -45,7 +45,7 @@ export function resolveAutoLayoutStyleMixin(
 		resolvedAutoLayout.verticalGap,
 		{
 			tokenMap: cx.tokenMap,
-			schema: v.nullable(v.number())
+			expectedSchema: v.nullable(v.number())
 		}
 	);
 	if (!isResolvedVerticalGapOk) {

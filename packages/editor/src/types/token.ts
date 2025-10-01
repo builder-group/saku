@@ -107,7 +107,7 @@ export interface TPaintToken extends TBaseToken {
 }
 
 export interface TSolidPaintToken extends TBaseToken {
-	type: 'solid-paint';
+	type: 'paint.solid';
 	value: TSolidPaint;
 }
 

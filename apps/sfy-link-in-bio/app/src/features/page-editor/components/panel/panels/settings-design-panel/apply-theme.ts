@@ -1,8 +1,6 @@
 import {
 	aboutNodeMetadata,
 	createTokensFromTheme,
-	hexToRgba,
-	isRgba,
 	linkNodeMetadata,
 	TAboutNode,
 	TLinkNode,
@@ -61,10 +59,7 @@ export function applyTheme(theme: TTheme, editor: TPageEditor) {
 			verticalGap: theme.gap ?? 24
 		},
 		fill: {
-			paint: {
-				type: 'solid',
-				color: isRgba(theme.color.base200) ? theme.color.base200 : hexToRgba(theme.color.base200)
-			},
+			paint: theme.paint.base200,
 			opacity: 1
 		}
 	}));

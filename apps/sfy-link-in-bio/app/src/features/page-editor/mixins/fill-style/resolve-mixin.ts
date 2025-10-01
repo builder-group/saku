@@ -30,7 +30,7 @@ export function resolveFillStyleMixin(
 		resolvedFill.opacity,
 		{
 			tokenMap: cx.tokenMap,
-			schema: v.number()
+			expectedSchema: v.number()
 		}
 	);
 	if (!isResolvedOpacityOk) {

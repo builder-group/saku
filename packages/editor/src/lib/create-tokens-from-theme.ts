@@ -3,7 +3,7 @@ import { TToken } from '../types';
 import { tokenRef } from './token-ref';
 
 export function createTokensFromTheme(theme: TTheme): TToken[] {
-	const { color, typography, gap = 24, size = {}, radius, effects } = theme;
+	const { paint, typography, gap = 24, size = {}, radius, effects } = theme;
 	const {
 		text: textSize = themeMetadata.size.text.get(0),
 		box: boxSize = themeMetadata.size.box.get(0)
@@ -24,116 +24,116 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 			value: theme.name
 		},
 
-		// Color tokens
+		// Paint tokens
 		{
-			type: 'solid-paint',
+			type: 'paint',
 			key: 'paint.base100',
-			value: { type: 'solid', color: color.base100 }
+			value: paint.base100
 		},
 		{
-			type: 'solid-paint',
+			type: 'paint.solid',
 			key: 'paint.base100.content',
-			value: { type: 'solid', color: color.base100Content }
+			value: paint.base100Content
 		},
 		{
-			type: 'solid-paint',
+			type: 'paint',
 			key: 'paint.base200',
-			value: { type: 'solid', color: color.base200 }
+			value: paint.base200
 		},
 		{
-			type: 'solid-paint',
+			type: 'paint.solid',
 			key: 'paint.base200.content',
-			value: { type: 'solid', color: color.base200Content }
+			value: paint.base200Content
 		},
 		{
-			type: 'solid-paint',
+			type: 'paint',
 			key: 'paint.base300',
-			value: { type: 'solid', color: color.base300 }
+			value: paint.base300
 		},
 		{
-			type: 'solid-paint',
+			type: 'paint.solid',
 			key: 'paint.base300.content',
-			value: { type: 'solid', color: color.base300Content }
+			value: paint.base300Content
 		},
 		{
-			type: 'solid-paint',
+			type: 'paint.solid',
 			key: 'paint.primary',
-			value: { type: 'solid', color: color.primary }
+			value: paint.primary
 		},
 		{
-			type: 'solid-paint',
+			type: 'paint.solid',
 			key: 'paint.primary.content',
-			value: { type: 'solid', color: color.primaryContent }
+			value: paint.primaryContent
 		},
 		{
-			type: 'solid-paint',
+			type: 'paint.solid',
 			key: 'paint.secondary',
-			value: { type: 'solid', color: color.secondary }
+			value: paint.secondary
 		},
 		{
-			type: 'solid-paint',
+			type: 'paint.solid',
 			key: 'paint.secondary.content',
-			value: { type: 'solid', color: color.secondaryContent }
+			value: paint.secondaryContent
 		},
 		{
-			type: 'solid-paint',
+			type: 'paint.solid',
 			key: 'paint.neutral',
-			value: { type: 'solid', color: color.neutral }
+			value: paint.neutral
 		},
 		{
-			type: 'solid-paint',
+			type: 'paint.solid',
 			key: 'paint.neutral.content',
-			value: { type: 'solid', color: color.neutralContent }
+			value: paint.neutralContent
 		},
 		{
-			type: 'solid-paint',
+			type: 'paint.solid',
 			key: 'paint.accent',
-			value: { type: 'solid', color: color.accent }
+			value: paint.accent
 		},
 		{
-			type: 'solid-paint',
+			type: 'paint.solid',
 			key: 'paint.accent.content',
-			value: { type: 'solid', color: color.accentContent }
+			value: paint.accentContent
 		},
 		{
-			type: 'solid-paint',
+			type: 'paint.solid',
 			key: 'paint.info',
-			value: { type: 'solid', color: color.info }
+			value: paint.info
 		},
 		{
-			type: 'solid-paint',
+			type: 'paint.solid',
 			key: 'paint.info.content',
-			value: { type: 'solid', color: color.infoContent }
+			value: paint.infoContent
 		},
 		{
-			type: 'solid-paint',
+			type: 'paint.solid',
 			key: 'paint.success',
-			value: { type: 'solid', color: color.success }
+			value: paint.success
 		},
 		{
-			type: 'solid-paint',
+			type: 'paint.solid',
 			key: 'paint.success.content',
-			value: { type: 'solid', color: color.successContent }
+			value: paint.successContent
 		},
 		{
-			type: 'solid-paint',
+			type: 'paint.solid',
 			key: 'paint.warning',
-			value: { type: 'solid', color: color.warning }
+			value: paint.warning
 		},
 		{
-			type: 'solid-paint',
+			type: 'paint.solid',
 			key: 'paint.warning.content',
-			value: { type: 'solid', color: color.warningContent }
+			value: paint.warningContent
 		},
 		{
-			type: 'solid-paint',
+			type: 'paint.solid',
 			key: 'paint.error',
-			value: { type: 'solid', color: color.error }
+			value: paint.error
 		},
 		{
-			type: 'solid-paint',
+			type: 'paint.solid',
 			key: 'paint.error.content',
-			value: { type: 'solid', color: color.errorContent }
+			value: paint.errorContent
 		},
 
 		// Font tokens
@@ -303,7 +303,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 			type: 'fill',
 			key: 'fill.default',
 			value: {
-				paint: tokenRef('paint.base100', 'solid-paint'),
+				paint: tokenRef('paint.base100', 'paint'),
 				opacity: 1
 			}
 		},
@@ -313,7 +313,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 			value:
 				effects?.stroke != null
 					? {
-							paint: tokenRef('paint.accent', 'solid-paint'),
+							paint: tokenRef('paint.base200.content', 'paint.solid'),
 							width: tokenRef('effects.stroke.width', 'number')
 						}
 					: null
@@ -324,7 +324,13 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 			value:
 				effects?.shadow != null
 					? {
-							paint: { type: 'solid', color: { ...color.base200Content, a: 0.1 } },
+							paint: {
+								type: 'solid',
+								color: {
+									...paint.base200Content.color,
+									a: 0.1
+								}
+							},
 							offsetX: tokenRef('effects.shadow.offsetX', 'number'),
 							offsetY: tokenRef('effects.shadow.offsetY', 'number'),
 							blur: tokenRef('effects.shadow.blur', 'number'),
@@ -350,7 +356,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 					letterSpacing: { type: 'auto' }
 				},
 				fill: {
-					paint: tokenRef('paint.base100.content', 'solid-paint'),
+					paint: tokenRef('paint.base100.content', 'paint'),
 					opacity: 1
 				},
 				stroke: null,
@@ -375,7 +381,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 					letterSpacing: { type: 'auto' }
 				},
 				fill: {
-					paint: tokenRef('paint.base100.content', 'solid-paint'),
+					paint: tokenRef('paint.base100.content', 'paint'),
 					opacity: 1
 				},
 				stroke: null,
@@ -400,7 +406,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 					letterSpacing: { type: 'auto' }
 				},
 				fill: {
-					paint: tokenRef('paint.base100.content', 'solid-paint'),
+					paint: tokenRef('paint.base100.content', 'paint'),
 					opacity: 1
 				},
 				stroke: null,
@@ -417,7 +423,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 					borderRadius: tokenRef('radius.field', 'number')
 				},
 				fill: {
-					paint: tokenRef('paint.primary', 'solid-paint'),
+					paint: tokenRef('paint.primary', 'paint'),
 					opacity: 1
 				},
 				stroke: null,
@@ -437,7 +443,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 						letterSpacing: { type: 'auto' }
 					},
 					fill: {
-						paint: tokenRef('paint.primary.content', 'solid-paint'),
+						paint: tokenRef('paint.primary.content', 'paint'),
 						opacity: 1
 					},
 					stroke: null,
@@ -455,7 +461,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 					borderRadius: tokenRef('radius.field', 'number')
 				},
 				fill: {
-					paint: tokenRef('paint.neutral', 'solid-paint'),
+					paint: tokenRef('paint.neutral', 'paint'),
 					opacity: 1
 				},
 				stroke: null,
@@ -475,7 +481,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 						letterSpacing: { type: 'auto' }
 					},
 					fill: {
-						paint: tokenRef('paint.neutral.content', 'solid-paint'),
+						paint: tokenRef('paint.neutral.content', 'paint'),
 						opacity: 1
 					},
 					stroke: null,
@@ -493,7 +499,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 					borderRadius: tokenRef('radius.selector', 'number')
 				},
 				fill: {
-					paint: tokenRef('paint.secondary', 'solid-paint'),
+					paint: tokenRef('paint.secondary', 'paint'),
 					opacity: 1
 				},
 				stroke: null,
@@ -513,7 +519,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 						letterSpacing: { type: 'auto' }
 					},
 					fill: {
-						paint: tokenRef('paint.secondary.content', 'solid-paint'),
+						paint: tokenRef('paint.secondary.content', 'paint'),
 						opacity: 1
 					},
 					stroke: null,
@@ -531,7 +537,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 					borderRadius: tokenRef('radius.selector', 'number')
 				},
 				fill: {
-					paint: tokenRef('paint.neutral', 'solid-paint'),
+					paint: tokenRef('paint.neutral', 'paint'),
 					opacity: 1
 				},
 				stroke: null,
@@ -551,7 +557,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 						letterSpacing: { type: 'auto' }
 					},
 					fill: {
-						paint: tokenRef('paint.neutral.content', 'solid-paint'),
+						paint: tokenRef('paint.neutral.content', 'paint'),
 						opacity: 1
 					},
 					stroke: null,
@@ -582,7 +588,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 					borderRadius: tokenRef('radius.box', 'number')
 				},
 				fill: {
-					paint: tokenRef('paint.base100', 'solid-paint'),
+					paint: tokenRef('paint.base100', 'paint'),
 					opacity: 1
 				},
 				stroke: null,
@@ -602,7 +608,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 						letterSpacing: { type: 'auto' }
 					},
 					fill: {
-						paint: tokenRef('paint.base100.content', 'solid-paint'),
+						paint: tokenRef('paint.base100.content', 'paint'),
 						opacity: 1
 					},
 					stroke: null,
@@ -623,7 +629,7 @@ export function createTokensFromTheme(theme: TTheme): TToken[] {
 						letterSpacing: { type: 'auto' }
 					},
 					fill: {
-						paint: tokenRef('paint.base100.content', 'solid-paint'),
+						paint: tokenRef('paint.base100.content', 'paint'),
 						opacity: 1
 					},
 					stroke: null,

@@ -257,10 +257,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 			fill:
 				theme != null
 					? {
-							paint: {
-								type: 'solid',
-								color: theme.color.base200
-							},
+							paint: theme.paint.base200,
 							opacity: 1
 						}
 					: null
