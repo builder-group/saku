@@ -22,9 +22,9 @@ export const TokenTextInput = <GRefValue extends TRef<string | number> | undefin
 		onNavigateToToken,
 		disabledTokenLink = false,
 		label,
+		disabled = false,
 		min,
 		max,
-		readOnly,
 		type,
 		className,
 		...textProps
@@ -150,7 +150,7 @@ export const TokenTextInput = <GRefValue extends TRef<string | number> | undefin
 			labelHidden
 			value={displayValue}
 			onChange={handleTextChange}
-			readOnly={isLinked || readOnly}
+			disabled={isLinked || disabled}
 			{...(type === 'number' ? { min, max } : {})}
 		/>
 	);
@@ -164,8 +164,14 @@ export const TokenTextInput = <GRefValue extends TRef<string | number> | undefin
 				{!disabledTokenLink && (onLinkToken != null || isLinked) && (
 					<button
 						type="button"
-						onClick={handleToggleTokenLink}
-						className="flex cursor-pointer items-center justify-center opacity-60 transition-opacity hover:opacity-100"
+						onClick={disabled ? undefined : handleToggleTokenLink}
+						disabled={disabled}
+						className={cn(
+							'flex items-center justify-center transition-opacity',
+							disabled
+								? 'cursor-not-allowed opacity-30'
+								: 'cursor-pointer opacity-60 hover:opacity-100'
+						)}
 						title={isLinked ? `Unlink` : `Link`}
 					>
 						{isLinked ? <LinkOffIcon className="h-3 w-3" /> : <LinkIcon className="h-3 w-3" />}
@@ -182,6 +188,7 @@ export const TokenTextInput = <GRefValue extends TRef<string | number> | undefin
 						}
 						onUnlink={handleToggleTokenLink}
 						onNavigateToToken={onNavigateToToken}
+						disabled={disabled}
 					/>
 				)}
 			</div>
@@ -202,5 +209,6 @@ export interface TTokenTextInputProps<GRefValue extends TRef<string | number> | 
 	disabledTokenLink?: boolean;
 
 	label: string;
+	disabled?: boolean;
 	className?: string;
 }

@@ -55,11 +55,9 @@ export const SettingsDesignPanel: React.FC<TSettingsDesignPanelProps> = (props) 
 
 	const handleTabChange = React.useCallback(
 		(tabIndex: number) => {
-			if (!tabs[tabIndex]?.disabled) {
-				editor.activeDesignSettingsTab.set(tabIndex);
-			}
+			editor.activeDesignSettingsTab.set(tabIndex);
 		},
-		[editor, tabs]
+		[editor]
 	);
 
 	// =========================================================================

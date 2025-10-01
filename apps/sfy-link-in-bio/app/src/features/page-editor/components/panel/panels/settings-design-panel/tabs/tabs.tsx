@@ -31,8 +31,7 @@ export function getTabs(plan: TCurrentPlan): TabProps[] {
 							</Tooltip>
 						) as unknown as string)
 					: 'Advanced',
-			panelID: 'advanced',
-			disabled: plan.key === 'free'
+			panelID: 'advanced'
 		}
 	];
 }
