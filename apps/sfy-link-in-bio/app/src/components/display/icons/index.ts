@@ -1,6 +1,7 @@
 // Custom Icons
 export * from './BlueskyIcon';
 export * from './CalIcon';
+export * from './CrownIcon';
 export * from './DiscordIcon';
 export * from './FacebookIcon';
 export * from './GithubIcon';
