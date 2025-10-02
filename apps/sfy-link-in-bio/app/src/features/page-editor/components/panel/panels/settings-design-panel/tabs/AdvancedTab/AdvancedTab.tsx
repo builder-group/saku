@@ -96,6 +96,7 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 						>
 							<AutoLayoutStyleMixinEditor
 								state={state as TState<TAutoLayoutStyleMixin['value'], []>}
+								disabled={currentPlan.key !== 'awesome'}
 								editor={editor}
 							/>
 						</AccordionSection>
@@ -117,6 +118,7 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 							<AppearanceStyleMixinEditor
 								state={state as TState<TAppearanceStyleMixin['value'], []>}
 								editor={editor}
+								disabled={currentPlan.key !== 'awesome'}
 								disabledVisibilityToggle
 							/>
 						</AccordionSection>
