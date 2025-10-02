@@ -1,8 +1,8 @@
-import { TAutoLayoutStyleMixin } from '@repo/editor';
+import { resolveTokenRef, TAutoLayoutStyleMixin } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import * as v from 'valibot';
 import { AppError } from '@/lib';
-import { resolveTokenRef, TMixinResolveContext } from '../../lib';
+import { TMixinResolveContext } from '../../lib';
 import { TResolvedAutoLayoutStyleMixin } from './types';
 
 export function resolveAutoLayoutStyleMixin(
@@ -14,7 +14,9 @@ export function resolveAutoLayoutStyleMixin(
 		{ tokenMap: cx.tokenMap }
 	);
 	if (!isResolvedAutoLayoutOk) {
-		return Err(resolvedAutoLayoutErr.wrapWith('#ERR_RESOLVE_AUTO_LAYOUT'));
+		return Err(
+			AppError.fromEditorError(resolvedAutoLayoutErr).wrapWith('#ERR_RESOLVE_AUTO_LAYOUT')
+		);
 	}
 
 	const [isResolvedHorizontalPaddingOk, resolvedHorizontalPaddingErr, resolvedHorizontalPadding] =
@@ -23,7 +25,11 @@ export function resolveAutoLayoutStyleMixin(
 			expectedSchema: v.number()
 		});
 	if (!isResolvedHorizontalPaddingOk) {
-		return Err(resolvedHorizontalPaddingErr.wrapWith('#ERR_RESOLVE_HORIZONTAL_PADDING'));
+		return Err(
+			AppError.fromEditorError(resolvedHorizontalPaddingErr).wrapWith(
+				'#ERR_RESOLVE_HORIZONTAL_PADDING'
+			)
+		);
 	}
 	const [isResolvedVerticalPaddingOk, resolvedVerticalPaddingErr, resolvedVerticalPadding] =
 		resolveTokenRef(resolvedAutoLayout.verticalPadding, {
@@ -31,7 +37,9 @@ export function resolveAutoLayoutStyleMixin(
 			expectedSchema: v.number()
 		});
 	if (!isResolvedVerticalPaddingOk) {
-		return Err(resolvedVerticalPaddingErr.wrapWith('#ERR_RESOLVE_VERTICAL_PADDING'));
+		return Err(
+			AppError.fromEditorError(resolvedVerticalPaddingErr).wrapWith('#ERR_RESOLVE_VERTICAL_PADDING')
+		);
 	}
 	const [isResolvedHorizontalGapOk, resolvedHorizontalGapErr, resolvedHorizontalGap] =
 		resolveTokenRef(resolvedAutoLayout.horizontalGap, {
@@ -39,7 +47,9 @@ export function resolveAutoLayoutStyleMixin(
 			expectedSchema: v.nullable(v.number())
 		});
 	if (!isResolvedHorizontalGapOk) {
-		return Err(resolvedHorizontalGapErr.wrapWith('#ERR_RESOLVE_HORIZONTAL_GAP'));
+		return Err(
+			AppError.fromEditorError(resolvedHorizontalGapErr).wrapWith('#ERR_RESOLVE_HORIZONTAL_GAP')
+		);
 	}
 	const [isResolvedVerticalGapOk, resolvedVerticalGapErr, resolvedVerticalGap] = resolveTokenRef(
 		resolvedAutoLayout.verticalGap,
@@ -49,7 +59,9 @@ export function resolveAutoLayoutStyleMixin(
 		}
 	);
 	if (!isResolvedVerticalGapOk) {
-		return Err(resolvedVerticalGapErr.wrapWith('#ERR_RESOLVE_VERTICAL_GAP'));
+		return Err(
+			AppError.fromEditorError(resolvedVerticalGapErr).wrapWith('#ERR_RESOLVE_VERTICAL_GAP')
+		);
 	}
 
 	return Ok({

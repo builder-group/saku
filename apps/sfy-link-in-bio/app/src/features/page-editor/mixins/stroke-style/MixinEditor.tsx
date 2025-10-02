@@ -2,6 +2,7 @@ import { deepCopy } from '@blgc/utils';
 import {
 	isTokenRef,
 	mapTokenRef,
+	resolveTokenRef,
 	TStrokeStyleMixin,
 	TTokenRef,
 	TUnreferenceTop
@@ -19,7 +20,7 @@ import {
 	TokenPaintInput,
 	TokenTextInput
 } from '../../components';
-import { resolveTokenRef, TPageEditor } from '../../lib';
+import { TPageEditor } from '../../lib';
 import { packStrokeTokenRef, unpackStrokeTokenRef } from './pack-mixin';
 
 export const StrokeStyleMixinEditor = (props: TStrokeStyleMixinEditorProps) => {

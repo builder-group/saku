@@ -3,6 +3,7 @@ import {
 	hsbaToRgba,
 	isTokenRef,
 	isValidHex,
+	resolveTokenRef,
 	rgbaToHex,
 	rgbaToHsba,
 	TRef,
@@ -15,7 +16,6 @@ import { TState } from 'feature-state';
 import React from 'react';
 import { LinkIcon, LinkOffIcon } from '@/components';
 import { cn } from '@/lib';
-import { resolveTokenRef } from '../../lib';
 import { isPreventDefault, TPreventDefault } from './prevent-default';
 import { TokenActionOverlay, TokenKeyTooltip } from './TokenActionOverlay';
 

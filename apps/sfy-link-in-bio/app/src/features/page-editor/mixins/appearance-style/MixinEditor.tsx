@@ -1,6 +1,7 @@
 import {
 	isTokenRef,
 	mapTokenRef,
+	resolveTokenRef,
 	TAppearanceStyleMixin,
 	TRef,
 	TTokenRef,
@@ -14,7 +15,7 @@ import { unwrapOrUndefined } from 'tuple-result';
 import { PolarisHideIcon, PolarisViewIcon } from '@/components';
 import { useMapState } from '@/hooks';
 import { TokenTextInput } from '../../components';
-import { resolveTokenRef, TPageEditor } from '../../lib';
+import { TPageEditor } from '../../lib';
 import { packAppearanceTokenRef, unpackAppearanceTokenRef } from './pack-mixin';
 
 export const AppearanceStyleMixinEditor = (props: TAppearanceStyleMixinEditorProps) => {

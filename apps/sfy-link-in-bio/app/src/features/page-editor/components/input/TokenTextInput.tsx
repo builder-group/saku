@@ -1,11 +1,10 @@
-import { isTokenRef, TRef, TToken, TUnreferenceTop } from '@repo/editor';
+import { isTokenRef, resolveTokenRef, TRef, TToken, TUnreferenceTop } from '@repo/editor';
 import { Text, TextField, TextFieldProps } from '@shopify/polaris';
 import { useCombinedCompute, useCompute } from 'feature-react/state';
 import { TState } from 'feature-state';
 import React from 'react';
 import { LinkIcon, LinkOffIcon } from '@/components';
 import { cn } from '@/lib';
-import { resolveTokenRef } from '../../lib';
 import { isPreventDefault, TPreventDefault } from './prevent-default';
 import { TokenActionOverlay, TokenKeyTooltip } from './TokenActionOverlay';
 

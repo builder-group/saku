@@ -1,8 +1,8 @@
-import { TLetterSpacing, TLineHeight, TTypographyStyleMixin } from '@repo/editor';
+import { resolveTokenRef, TLetterSpacing, TLineHeight, TTypographyStyleMixin } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import * as v from 'valibot';
 import { AppError } from '@/lib';
-import { resolveTokenRef, TMixinResolveContext } from '../../lib';
+import { TMixinResolveContext } from '../../lib';
 import { TResolvedTypographyStyleMixin } from './types';
 
 export function resolveTypographyStyleMixin(
@@ -14,7 +14,7 @@ export function resolveTypographyStyleMixin(
 		{ tokenMap: cx.tokenMap }
 	);
 	if (!isResolvedTypographyOk) {
-		return Err(resolvedTypographyErr.wrapWith('#ERR_RESOLVE_TYPOGRAPHY'));
+		return Err(AppError.fromEditorError(resolvedTypographyErr).wrapWith('#ERR_RESOLVE_TYPOGRAPHY'));
 	}
 
 	const [isResolvedFontOk, resolvedFontErr, resolvedFont] = resolveTokenRef(
@@ -24,7 +24,7 @@ export function resolveTypographyStyleMixin(
 		}
 	);
 	if (!isResolvedFontOk) {
-		return Err(resolvedFontErr.wrapWith('#ERR_RESOLVE_FONT'));
+		return Err(AppError.fromEditorError(resolvedFontErr).wrapWith('#ERR_RESOLVE_FONT'));
 	}
 	const [isResolvedFontSizeOk, resolvedFontSizeErr, resolvedFontSize] = resolveTokenRef(
 		resolvedTypography.fontSize,
@@ -34,7 +34,7 @@ export function resolveTypographyStyleMixin(
 		}
 	);
 	if (!isResolvedFontSizeOk) {
-		return Err(resolvedFontSizeErr.wrapWith('#ERR_RESOLVE_FONT_SIZE'));
+		return Err(AppError.fromEditorError(resolvedFontSizeErr).wrapWith('#ERR_RESOLVE_FONT_SIZE'));
 	}
 	const [
 		isResolvedTextAlignHorizontalOk,
@@ -45,7 +45,11 @@ export function resolveTypographyStyleMixin(
 		expectedSchema: v.union([v.literal('start'), v.literal('center'), v.literal('end')])
 	});
 	if (!isResolvedTextAlignHorizontalOk) {
-		return Err(resolvedTextAlignHorizontalErr.wrapWith('#ERR_RESOLVE_TEXT_ALIGN_HORIZONTAL'));
+		return Err(
+			AppError.fromEditorError(resolvedTextAlignHorizontalErr).wrapWith(
+				'#ERR_RESOLVE_TEXT_ALIGN_HORIZONTAL'
+			)
+		);
 	}
 	const [isResolvedTextAlignVerticalOk, resolvedTextAlignVerticalErr, resolvedTextAlignVertical] =
 		resolveTokenRef(resolvedTypography.textAlignVertical, {
@@ -53,7 +57,11 @@ export function resolveTypographyStyleMixin(
 			expectedSchema: v.union([v.literal('start'), v.literal('center'), v.literal('end')])
 		});
 	if (!isResolvedTextAlignVerticalOk) {
-		return Err(resolvedTextAlignVerticalErr.wrapWith('#ERR_RESOLVE_TEXT_ALIGN_VERTICAL'));
+		return Err(
+			AppError.fromEditorError(resolvedTextAlignVerticalErr).wrapWith(
+				'#ERR_RESOLVE_TEXT_ALIGN_VERTICAL'
+			)
+		);
 	}
 	const [isResolvedLineHeightOk, resolvedLineHeightErr, resolvedLineHeight] = resolveTokenRef(
 		resolvedTypography.lineHeight,
@@ -62,14 +70,18 @@ export function resolveTypographyStyleMixin(
 		}
 	);
 	if (!isResolvedLineHeightOk) {
-		return Err(resolvedLineHeightErr.wrapWith('#ERR_RESOLVE_LINE_HEIGHT'));
+		return Err(
+			AppError.fromEditorError(resolvedLineHeightErr).wrapWith('#ERR_RESOLVE_LINE_HEIGHT')
+		);
 	}
 	const [isResolvedLetterSpacingOk, resolvedLetterSpacingErr, resolvedLetterSpacing] =
 		resolveTokenRef(resolvedTypography.letterSpacing, {
 			tokenMap: cx.tokenMap
 		});
 	if (!isResolvedLetterSpacingOk) {
-		return Err(resolvedLetterSpacingErr.wrapWith('#ERR_RESOLVE_LETTER_SPACING'));
+		return Err(
+			AppError.fromEditorError(resolvedLetterSpacingErr).wrapWith('#ERR_RESOLVE_LETTER_SPACING')
+		);
 	}
 
 	return Ok({

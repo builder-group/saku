@@ -1,7 +1,7 @@
-import { TProductDetailsStyleMixin } from '@repo/editor';
+import { resolveTokenRef, TProductDetailsStyleMixin } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
-import { resolveTokenRef, TMixinResolveContext } from '../../lib';
+import { TMixinResolveContext } from '../../lib';
 import { resolveAppearanceStyleMixin } from '../appearance-style';
 import { resolveButtonStyleMixin } from '../button-style';
 import { resolveFillStyleMixin } from '../fill-style';
@@ -20,7 +20,11 @@ export function resolveProductDetailsStyleMixin(
 			tokenMap: cx.tokenMap
 		});
 	if (!isResolvedProductDetailsOk) {
-		return Err(resolvedProductDetailsErr.wrapWith('#ERR_RESOLVE_PRODUCT_DETAILS_STYLE'));
+		return Err(
+			AppError.fromEditorError(resolvedProductDetailsErr).wrapWith(
+				'#ERR_RESOLVE_PRODUCT_DETAILS_STYLE'
+			)
+		);
 	}
 
 	const [isResolvedAppearanceOk, resolvedAppearanceErr, resolvedAppearance] =

@@ -3,6 +3,7 @@ import {
 	hsbaToRgba,
 	isTokenRef,
 	isValidHex,
+	resolveTokenRef,
 	rgbaToHex,
 	rgbaToHsba,
 	TPaint,
@@ -23,7 +24,7 @@ import { TState } from 'feature-state';
 import React from 'react';
 import { unwrapOrUndefined } from 'tuple-result';
 import { ImageUploadField, LinkIcon, LinkOffIcon, TImageUploadEvent } from '@/components';
-import { resolveTokenRef, TPageEditor } from '@/features/page-editor';
+import { TPageEditor } from '@/features/page-editor';
 import { cn } from '@/lib';
 import { isPreventDefault, TPreventDefault } from './prevent-default';
 import { TokenActionOverlay, TokenKeyTooltip } from './TokenActionOverlay';

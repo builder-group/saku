@@ -1,6 +1,7 @@
 import {
 	isTokenRef,
 	mapTokenRef,
+	resolveTokenRef,
 	TAutoLayoutStyleMixin,
 	TRef,
 	TTokenRef,
@@ -13,7 +14,7 @@ import React from 'react';
 import { unwrapOrUndefined } from 'tuple-result';
 import { useMapState } from '@/hooks';
 import { TokenTextInput } from '../../components';
-import { resolveTokenRef, TPageEditor } from '../../lib';
+import { TPageEditor } from '../../lib';
 import { packAutoLayoutTokenRef, unpackAutoLayoutTokenRef } from './pack-mixin';
 
 export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorProps) => {

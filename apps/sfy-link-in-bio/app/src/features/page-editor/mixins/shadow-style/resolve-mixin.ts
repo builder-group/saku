@@ -1,7 +1,7 @@
-import { TShadowStyleMixin } from '@repo/editor';
+import { resolveTokenRef, TShadowStyleMixin } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
-import { resolveSolidPaint, resolveTokenRef, TMixinResolveContext } from '../../lib';
+import { resolveSolidPaint, TMixinResolveContext } from '../../lib';
 import { TResolvedShadowStyleMixin } from './types';
 
 export function resolveShadowStyleMixin(
@@ -12,7 +12,7 @@ export function resolveShadowStyleMixin(
 		tokenMap: cx.tokenMap
 	});
 	if (!isResolvedShadowOk) {
-		return Err(resolvedShadowErr.wrapWith('#ERR_RESOLVE_SHADOW'));
+		return Err(AppError.fromEditorError(resolvedShadowErr).wrapWith('#ERR_RESOLVE_SHADOW'));
 	}
 	if (resolvedShadow == null) {
 		return Ok(null);
@@ -22,7 +22,7 @@ export function resolveShadowStyleMixin(
 		tokenMap: cx.tokenMap
 	});
 	if (!isResolvedPaintOk) {
-		return Err(resolvedPaintErr.wrapWith('#ERR_RESOLVE_PAINT'));
+		return Err(AppError.fromEditorError(resolvedPaintErr).wrapWith('#ERR_RESOLVE_PAINT'));
 	}
 	const resolvedPaint = resolveSolidPaint(paint);
 	const [isResolvedOffsetXOk, resolvedOffsetXErr, resolvedOffsetX] = resolveTokenRef(
@@ -32,7 +32,7 @@ export function resolveShadowStyleMixin(
 		}
 	);
 	if (!isResolvedOffsetXOk) {
-		return Err(resolvedOffsetXErr.wrapWith('#ERR_RESOLVE_OFFSET_X'));
+		return Err(AppError.fromEditorError(resolvedOffsetXErr).wrapWith('#ERR_RESOLVE_OFFSET_X'));
 	}
 	const [isResolvedOffsetYOk, resolvedOffsetYErr, resolvedOffsetY] = resolveTokenRef(
 		resolvedShadow.offsetY,
@@ -41,13 +41,13 @@ export function resolveShadowStyleMixin(
 		}
 	);
 	if (!isResolvedOffsetYOk) {
-		return Err(resolvedOffsetYErr.wrapWith('#ERR_RESOLVE_OFFSET_Y'));
+		return Err(AppError.fromEditorError(resolvedOffsetYErr).wrapWith('#ERR_RESOLVE_OFFSET_Y'));
 	}
 	const [isResolvedBlurOk, resolvedBlurErr, resolvedBlur] = resolveTokenRef(resolvedShadow.blur, {
 		tokenMap: cx.tokenMap
 	});
 	if (!isResolvedBlurOk) {
-		return Err(resolvedBlurErr.wrapWith('#ERR_RESOLVE_BLUR'));
+		return Err(AppError.fromEditorError(resolvedBlurErr).wrapWith('#ERR_RESOLVE_BLUR'));
 	}
 	const [isResolvedSpreadOk, resolvedSpreadErr, resolvedSpread] = resolveTokenRef(
 		resolvedShadow.spread,
@@ -56,7 +56,7 @@ export function resolveShadowStyleMixin(
 		}
 	);
 	if (!isResolvedSpreadOk) {
-		return Err(resolvedSpreadErr.wrapWith('#ERR_RESOLVE_SPREAD'));
+		return Err(AppError.fromEditorError(resolvedSpreadErr).wrapWith('#ERR_RESOLVE_SPREAD'));
 	}
 
 	return Ok({

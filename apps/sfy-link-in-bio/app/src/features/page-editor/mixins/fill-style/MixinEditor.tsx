@@ -1,5 +1,12 @@
 import { deepCopy } from '@blgc/utils';
-import { isTokenRef, mapTokenRef, TFillStyleMixin, TTokenRef, TUnreferenceTop } from '@repo/editor';
+import {
+	isTokenRef,
+	mapTokenRef,
+	resolveTokenRef,
+	TFillStyleMixin,
+	TTokenRef,
+	TUnreferenceTop
+} from '@repo/editor';
 import { Button, Text } from '@shopify/polaris';
 import { useCompute } from 'feature-react';
 import { TState } from 'feature-state';
@@ -13,7 +20,7 @@ import {
 	TokenPaintInput,
 	TTokenPaintInputPaintType
 } from '../../components';
-import { resolveTokenRef, TPageEditor } from '../../lib';
+import { TPageEditor } from '../../lib';
 import { packFillTokenRef, unpackFillTokenRef } from './pack-mixin';
 
 export const FillStyleMixinEditor = (props: TFillStyleMixinEditorProps) => {

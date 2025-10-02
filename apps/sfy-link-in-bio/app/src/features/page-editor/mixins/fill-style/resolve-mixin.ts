@@ -1,8 +1,8 @@
-import { TFillStyleMixin } from '@repo/editor';
+import { resolveTokenRef, TFillStyleMixin } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import * as v from 'valibot';
 import { AppError } from '@/lib';
-import { resolvePaint, resolveTokenRef, TMixinResolveContext } from '../../lib';
+import { resolvePaint, TMixinResolveContext } from '../../lib';
 import { TResolvedFillStyleMixin } from './types';
 
 export function resolveFillStyleMixin(
@@ -13,7 +13,7 @@ export function resolveFillStyleMixin(
 		tokenMap: cx.tokenMap
 	});
 	if (!isResolvedFillOk) {
-		return Err(resolvedFillErr.wrapWith('#ERR_RESOLVE_FILL'));
+		return Err(AppError.fromEditorError(resolvedFillErr).wrapWith('#ERR_RESOLVE_FILL'));
 	}
 	if (resolvedFill == null) {
 		return Ok(null);
@@ -23,7 +23,7 @@ export function resolveFillStyleMixin(
 		tokenMap: cx.tokenMap
 	});
 	if (!isResolvedPaintOk) {
-		return Err(resolvedPaintErr.wrapWith('#ERR_RESOLVE_PAINT'));
+		return Err(AppError.fromEditorError(resolvedPaintErr).wrapWith('#ERR_RESOLVE_PAINT'));
 	}
 	const resolvedPaint = resolvePaint(paint, cx.node.site);
 	const [isResolvedOpacityOk, resolvedOpacityErr, resolvedOpacity] = resolveTokenRef(
@@ -34,7 +34,7 @@ export function resolveFillStyleMixin(
 		}
 	);
 	if (!isResolvedOpacityOk) {
-		return Err(resolvedOpacityErr.wrapWith('#ERR_RESOLVE_OPACITY'));
+		return Err(AppError.fromEditorError(resolvedOpacityErr).wrapWith('#ERR_RESOLVE_OPACITY'));
 	}
 
 	const styles: {

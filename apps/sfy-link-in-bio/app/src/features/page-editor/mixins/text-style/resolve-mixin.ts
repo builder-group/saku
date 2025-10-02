@@ -1,7 +1,7 @@
-import { TTextStyleMixin } from '@repo/editor';
+import { resolveTokenRef, TTextStyleMixin } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
-import { resolveTokenRef, TMixinResolveContext } from '../../lib';
+import { TMixinResolveContext } from '../../lib';
 import { resolveAppearanceStyleMixin } from '../appearance-style';
 import { resolveFillStyleMixin } from '../fill-style';
 import { resolveShadowStyleMixin } from '../shadow-style';
@@ -17,7 +17,7 @@ export function resolveTextStyleMixin(
 		tokenMap: cx.tokenMap
 	});
 	if (!isResolvedTextOk) {
-		return Err(resolvedTextErr.wrapWith('#ERR_RESOLVE_TEXT_STYLE'));
+		return Err(AppError.fromEditorError(resolvedTextErr).wrapWith('#ERR_RESOLVE_TEXT_STYLE'));
 	}
 
 	const [isResolvedAppearanceOk, resolvedAppearanceErr, resolvedAppearance] =

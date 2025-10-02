@@ -1,7 +1,7 @@
-import { TBadgeStyleMixin } from '@repo/editor';
+import { resolveTokenRef, TBadgeStyleMixin } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
-import { resolveTokenRef, TMixinResolveContext } from '../../lib';
+import { TMixinResolveContext } from '../../lib';
 import { resolveAppearanceStyleMixin } from '../appearance-style';
 import { resolveFillStyleMixin } from '../fill-style';
 import { resolveShadowStyleMixin } from '../shadow-style';
@@ -17,7 +17,7 @@ export function resolveBadgeStyleMixin(
 		tokenMap: cx.tokenMap
 	});
 	if (!isResolvedBadgeOk) {
-		return Err(resolvedBadgeErr.wrapWith('#ERR_RESOLVE_BADGE_STYLE'));
+		return Err(AppError.fromEditorError(resolvedBadgeErr).wrapWith('#ERR_RESOLVE_BADGE_STYLE'));
 	}
 
 	const [isResolvedAppearanceOk, resolvedAppearanceErr, resolvedAppearance] =

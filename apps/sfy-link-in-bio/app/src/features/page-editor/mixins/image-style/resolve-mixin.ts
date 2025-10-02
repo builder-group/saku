@@ -1,7 +1,7 @@
-import { TImageStyleMixin } from '@repo/editor';
+import { resolveTokenRef, TImageStyleMixin } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
-import { resolveTokenRef, TMixinResolveContext } from '../../lib';
+import { TMixinResolveContext } from '../../lib';
 import { resolveAppearanceStyleMixin } from '../appearance-style';
 import { resolveShadowStyleMixin } from '../shadow-style';
 import { resolveStrokeStyleMixin } from '../stroke-style';
@@ -15,7 +15,7 @@ export function resolveImageStyleMixin(
 		tokenMap: cx.tokenMap
 	});
 	if (!isResolvedImageOk) {
-		return Err(resolvedImageErr.wrapWith('#ERR_RESOLVE_IMAGE_STYLE'));
+		return Err(AppError.fromEditorError(resolvedImageErr).wrapWith('#ERR_RESOLVE_IMAGE_STYLE'));
 	}
 
 	const [isResolvedAppearanceOk, resolvedAppearanceErr, resolvedAppearance] =
