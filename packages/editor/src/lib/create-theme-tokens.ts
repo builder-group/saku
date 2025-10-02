@@ -360,9 +360,9 @@ export function createThemeOverrideTokens(theme: TTheme): TToken[] {
 	const { paint, typography, gap = 24, size = {}, radius, effects } = theme;
 	const {
 		text: textSize = themeMetadata.size.text.get(0),
-		box: boxSize = themeMetadata.size.box.get(0)
-		// field: fieldSize = themeMetadata.size.box.get(0),
-		// selector: selectorSize = themeMetadata.size.box.get(0)
+		box: boxSize = themeMetadata.size.box.get(0),
+		field: fieldSize = themeMetadata.size.box.get(0),
+		selector: selectorSize = themeMetadata.size.box.get(0)
 	} = size;
 
 	return [
@@ -575,6 +575,16 @@ export function createThemeOverrideTokens(theme: TTheme): TToken[] {
 			type: 'number',
 			key: 'size.box.xl',
 			value: boxSize * themeMetadata.size.box.xl
+		},
+		{
+			type: 'number',
+			key: 'size.field',
+			value: fieldSize
+		},
+		{
+			type: 'number',
+			key: 'size.selector',
+			value: selectorSize
 		},
 
 		// Radius tokens

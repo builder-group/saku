@@ -5,7 +5,7 @@ import { PolarisAlertTriangleIcon } from '@/components';
 export const ThemeUnavailable: React.FC = () => {
 	return (
 		<div className="flex h-full flex-col p-6 text-left">
-			<div className="bg-warning-100 mb-4 flex h-12 w-12 items-center justify-center rounded-lg">
+			<div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-neutral-100">
 				<Icon source={PolarisAlertTriangleIcon} />
 			</div>
 			<div className="mb-2">
