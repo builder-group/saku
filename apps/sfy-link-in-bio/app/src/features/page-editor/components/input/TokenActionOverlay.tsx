@@ -38,13 +38,8 @@ export const TokenActionOverlay: React.FC<TTokenActionOverlayProps> = (props) =>
 
 						<button
 							type="button"
-							onClick={disabled ? undefined : onNavigateToToken}
-							className={cn(
-								'flex flex-1 items-center justify-center gap-1 text-xs transition-colors',
-								disabled
-									? 'cursor-not-allowed bg-gray-100 text-gray-400'
-									: 'cursor-pointer bg-blue-100 text-blue-700 hover:bg-blue-200'
-							)}
+							onClick={onNavigateToToken}
+							className="flex flex-1 cursor-pointer items-center justify-center gap-1 bg-blue-100 text-xs text-blue-700 transition-colors hover:bg-blue-200"
 						>
 							Token
 							<ArrowRightIcon className="h-3 w-3" />
@@ -72,13 +67,8 @@ export const TokenActionOverlay: React.FC<TTokenActionOverlayProps> = (props) =>
 								<div className="w-px bg-gray-300" />
 								<button
 									type="button"
-									onClick={disabled ? undefined : onNavigateToToken}
-									className={cn(
-										'flex items-center gap-1 px-2 py-1 text-xs transition-colors',
-										disabled
-											? 'cursor-not-allowed bg-gray-100 text-gray-400'
-											: 'cursor-pointer bg-blue-100 text-blue-700 hover:bg-blue-200'
-									)}
+									onClick={onNavigateToToken}
+									className="flex cursor-pointer items-center gap-1 bg-blue-100 px-2 py-1 text-xs text-blue-700 transition-colors hover:bg-blue-200"
 								>
 									Token
 									<ArrowRightIcon className="h-3 w-3" />
@@ -98,7 +88,7 @@ export const TokenActionOverlay: React.FC<TTokenActionOverlayProps> = (props) =>
 									'transition-colors',
 									disabled
 										? 'cursor-not-allowed opacity-50'
-										: 'cursor-pointer hover:bg-[rgba(255,184,0,1)] hover:text-[rgba(37,26,0,1)]'
+										: 'cursor-pointer hover:bg-orange-200 hover:text-orange-700'
 								)}
 							>
 								<LinkOffIcon className="h-3 w-3" />
@@ -108,13 +98,8 @@ export const TokenActionOverlay: React.FC<TTokenActionOverlayProps> = (props) =>
 						<Badge asChild variant="info">
 							<button
 								type="button"
-								onClick={disabled ? undefined : onNavigateToToken}
-								className={cn(
-									'transition-colors',
-									disabled
-										? 'cursor-not-allowed opacity-50'
-										: 'cursor-pointer hover:bg-[rgba(145,208,255,1)] hover:text-[rgba(0,33,51,1)]'
-								)}
+								onClick={onNavigateToToken}
+								className="cursor-pointer transition-colors hover:bg-blue-200 hover:text-blue-700"
 							>
 								Token
 								<ArrowRightIcon className="h-3 w-3" />
