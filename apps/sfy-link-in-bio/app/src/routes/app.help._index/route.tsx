@@ -18,10 +18,11 @@ const Page: React.FC = () => {
 	return (
 		<s-page inlineSize="small">
 			<ui-title-bar title="Help & Resources"></ui-title-bar>
+			<div className="h-4" />
 
-			{/* Back Button - Show when coming from settings */}
+			{/* Back Button */}
 			{fromSettings && (
-				<div className="flex w-full items-start py-4 pl-3">
+				<div className="flex w-full items-start pb-4 pl-3">
 					<Button url="/app/settings" variant="tertiary" icon={PolarisArrowLeftIcon}>
 						Back to Settings
 					</Button>

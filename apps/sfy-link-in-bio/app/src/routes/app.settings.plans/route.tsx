@@ -4,6 +4,7 @@ import { useMantle } from '@heymantle/react';
 import { Modal, TitleBar, useAppBridge } from '@shopify/app-bridge-react';
 import { Button, Text } from '@shopify/polaris';
 import React from 'react';
+import { useSearchParams } from 'react-router';
 import { Err, Ok } from 'tuple-result';
 import { AppContext } from '@/.server/environment';
 import { AccordionSection, PolarisArrowLeftIcon, PricingCard, useCrisp } from '@/components';
@@ -15,6 +16,12 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 		const { client } = useMantle();
 		const crisp = useCrisp();
 		const shopifyBridge = useAppBridge();
+
+		const [searchParams] = useSearchParams();
+		const fromSettings = React.useMemo(
+			() => searchParams.get('from') === 'settings',
+			[searchParams]
+		);
 
 		const [plans, setPlans] = React.useState(data.plans);
 		const [pendingDowngrade, setPendingDowngrade] = React.useState<TPlan | null>(null);
@@ -112,13 +119,16 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 			<>
 				<s-page inlineSize="small">
 					<ui-title-bar title="Select a Plan"></ui-title-bar>
+					<div className="h-4" />
 
 					{/* Back Button */}
-					<div className="flex w-full items-start py-4 pl-3">
-						<Button url="/app/settings" variant="tertiary" icon={PolarisArrowLeftIcon}>
-							Back to Settings
-						</Button>
-					</div>
+					{fromSettings && (
+						<div className="flex w-full items-start pb-4 pl-3">
+							<Button url="/app/settings" variant="tertiary" icon={PolarisArrowLeftIcon}>
+								Back to Settings
+							</Button>
+						</div>
+					)}
 
 					{/* Plans */}
 					<div className="mb-4 flex flex-col gap-6 md:flex-row md:justify-center">
@@ -253,33 +263,44 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 			</>
 		);
 	},
-	Error: ({ error }) => (
-		<s-page inlineSize="small">
-			<ui-title-bar title="Select a Plan"></ui-title-bar>
+	Error: ({ error }) => {
+		const [searchParams] = useSearchParams();
+		const fromSettings = React.useMemo(
+			() => searchParams.get('from') === 'settings',
+			[searchParams]
+		);
 
-			{/* Back Button */}
-			<div className="flex w-full items-start py-4 pl-3">
-				<Button url="/app/settings" variant="tertiary" icon={PolarisArrowLeftIcon}>
-					Back to Settings
-				</Button>
-			</div>
+		return (
+			<s-page inlineSize="small">
+				<ui-title-bar title="Select a Plan"></ui-title-bar>
+				<div className="h-4" />
 
-			{/* Error State */}
-			<s-section heading="Unable to Load Plans">
-				<div className="p-4">
-					<div className="space-y-4">
-						<s-paragraph color="subdued">
-							We're having trouble loading the available plans. Please try again or contact support
-							if the issue persists.
-						</s-paragraph>
-						<s-button variant="primary" onClick={() => window.location.reload()}>
-							Try Again
-						</s-button>
+				{/* Back Button */}
+				{fromSettings && (
+					<div className="flex w-full items-start pb-4 pl-3">
+						<Button url="/app/settings" variant="tertiary" icon={PolarisArrowLeftIcon}>
+							Back to Settings
+						</Button>
 					</div>
-				</div>
-			</s-section>
-		</s-page>
-	)
+				)}
+
+				{/* Error State */}
+				<s-section heading="Unable to Load Plans">
+					<div className="p-4">
+						<div className="space-y-4">
+							<s-paragraph color="subdued">
+								We're having trouble loading the available plans. Please try again or contact
+								support if the issue persists.
+							</s-paragraph>
+							<s-button variant="primary" onClick={() => window.location.reload()}>
+								Try Again
+							</s-button>
+						</div>
+					</div>
+				</s-section>
+			</s-page>
+		);
+	}
 });
 
 export default Page;

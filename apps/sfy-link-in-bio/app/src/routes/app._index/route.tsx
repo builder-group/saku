@@ -79,8 +79,6 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 
 		return (
 			<>
-				<EditorModal />
-
 				<s-page>
 					<ui-title-bar title="Saku Link In Bio">
 						{/* <button variant="primary" onClick={handleCustomizeBio}>
@@ -96,6 +94,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 							Visit
 						</button> */}
 					</ui-title-bar>
+					<div className="h-4" />
 
 					<Layout>
 						<Layout.Section>
@@ -166,6 +165,8 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 						</Layout.Section>
 					</Layout>
 				</s-page>
+
+				<EditorModal />
 			</>
 		);
 	},
