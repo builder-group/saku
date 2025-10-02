@@ -19,7 +19,7 @@ export const TokenSelectInput = <GRefValue extends TRef<string> | undefined>(
 		onNavigateToToken,
 		disabledTokenLink = false,
 		label,
-		disabled,
+		disabled = false,
 		className,
 		...selectProps
 	} = props;
@@ -49,7 +49,7 @@ export const TokenSelectInput = <GRefValue extends TRef<string> | undefined>(
 
 	const handleChange = React.useCallback(
 		(newValue: string) => {
-			if (isLinked) {
+			if (isLinked || disabled) {
 				return;
 			}
 
@@ -61,10 +61,14 @@ export const TokenSelectInput = <GRefValue extends TRef<string> | undefined>(
 			setDisplayValue(newValue);
 			state.set(newValue as GRefValue);
 		},
-		[isLinked, state]
+		[isLinked, disabled, state]
 	);
 
 	const handleToggleTokenLink = React.useCallback(() => {
+		if (disabled) {
+			return;
+		}
+
 		// Unlink token
 		if (isLinked) {
 			const result = onUnlinkToken?.();
@@ -88,7 +92,7 @@ export const TokenSelectInput = <GRefValue extends TRef<string> | undefined>(
 		if (isTokenRef(result)) {
 			state.set(result as GRefValue);
 		}
-	}, [onLinkToken, onUnlinkToken, isLinked, state, tokenMap]);
+	}, [disabled, isLinked, onLinkToken, onUnlinkToken, state, tokenMap]);
 
 	// =========================================================================
 	// Effects
@@ -125,7 +129,13 @@ export const TokenSelectInput = <GRefValue extends TRef<string> | undefined>(
 					<button
 						type="button"
 						onClick={handleToggleTokenLink}
-						className="flex cursor-pointer items-center justify-center opacity-60 transition-opacity hover:opacity-100"
+						disabled={disabled}
+						className={cn(
+							'flex items-center justify-center transition-opacity',
+							disabled
+								? 'cursor-not-allowed opacity-30'
+								: 'cursor-pointer opacity-60 hover:opacity-100'
+						)}
 						title={isLinked ? `Unlink` : `Link`}
 					>
 						{isLinked ? <LinkOffIcon className="h-3 w-3" /> : <LinkIcon className="h-3 w-3" />}
@@ -142,6 +152,7 @@ export const TokenSelectInput = <GRefValue extends TRef<string> | undefined>(
 						}
 						onUnlink={handleToggleTokenLink}
 						onNavigateToToken={onNavigateToToken}
+						disabled={disabled}
 					/>
 				)}
 			</div>
@@ -160,5 +171,6 @@ export interface TTokenSelectInputProps<GRefValue extends TRef<string> | undefin
 	disabledTokenLink?: boolean;
 
 	label: string;
+	disabled?: boolean;
 	className?: string;
 }
