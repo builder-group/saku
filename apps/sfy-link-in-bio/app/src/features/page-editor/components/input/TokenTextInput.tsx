@@ -72,7 +72,7 @@ export const TokenTextInput = <GRefValue extends TRef<string | number> | undefin
 
 	const handleTextChange = React.useCallback(
 		(newValue: string) => {
-			if (isLinked) {
+			if (isLinked || disabled) {
 				return;
 			}
 
@@ -99,10 +99,14 @@ export const TokenTextInput = <GRefValue extends TRef<string | number> | undefin
 			setDisplayValue(newValue);
 			handleValueChange(newValue as GRefValue);
 		},
-		[isLinked, type, handleValueChange, min, max]
+		[isLinked, disabled, type, handleValueChange, min, max]
 	);
 
 	const handleToggleTokenLink = React.useCallback(() => {
+		if (disabled) {
+			return;
+		}
+
 		// Unlink token
 		if (isLinked) {
 			const result = onUnlinkToken?.();
@@ -126,7 +130,7 @@ export const TokenTextInput = <GRefValue extends TRef<string | number> | undefin
 		if (isTokenRef(result)) {
 			state.set(result as GRefValue);
 		}
-	}, [onLinkToken, onUnlinkToken, isLinked, state, tokenMap]);
+	}, [disabled, isLinked, onLinkToken, onUnlinkToken, state, tokenMap]);
 
 	// =========================================================================
 	// Effects
@@ -164,7 +168,7 @@ export const TokenTextInput = <GRefValue extends TRef<string | number> | undefin
 				{!disabledTokenLink && (onLinkToken != null || isLinked) && (
 					<button
 						type="button"
-						onClick={disabled ? undefined : handleToggleTokenLink}
+						onClick={handleToggleTokenLink}
 						disabled={disabled}
 						className={cn(
 							'flex items-center justify-center transition-opacity',
