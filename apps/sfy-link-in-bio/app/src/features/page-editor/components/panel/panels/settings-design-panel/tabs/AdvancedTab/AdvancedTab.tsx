@@ -38,10 +38,14 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 	const { editor } = props;
 	const currentPlan = useCurrentPlan();
 
-	const showInfoBannerState = React.useMemo(
-		() => withLocalStorage(createState(true), 'sfy-saku-link-in-bio_show-info-banner'),
-		[]
-	);
+	const showInfoBannerState = React.useMemo(() => {
+		const state = withLocalStorage(
+			createState(true),
+			'sfy-saku-link-in-bio_advanced-tab_show-info-banner'
+		);
+		state.persist();
+		return state;
+	}, []);
 	const showInfoBanner = useFeatureState(showInfoBannerState);
 
 	const autoLayoutTokens = useTokensByType('auto-layout', editor.tokenMap);
