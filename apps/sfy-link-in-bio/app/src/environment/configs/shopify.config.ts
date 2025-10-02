@@ -9,6 +9,6 @@ export const shopifyClientConfig = {
 	review: {
 		cooldownDays: 60,
 		maxRequestsPerYear: 3,
-		storageKey: 'shopify_saku-link-in-bio_review-requests'
+		storageKey: 'sfy-saku-link-in-bio_review-requests'
 	}
 };

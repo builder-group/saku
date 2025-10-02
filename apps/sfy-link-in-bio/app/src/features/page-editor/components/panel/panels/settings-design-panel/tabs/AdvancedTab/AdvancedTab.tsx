@@ -11,10 +11,12 @@ import {
 	TTextStyleMixin
 } from '@repo/editor';
 import { Banner, Button, Text } from '@shopify/polaris';
-import { TState } from 'feature-state';
+import { useFeatureState, withLocalStorage } from 'feature-react';
+import { createState, TState } from 'feature-state';
 import React from 'react';
 import { AccordionSection, CrownIcon } from '@/components';
 import { useCurrentPlan } from '@/hooks';
+import { cn } from '@/lib';
 import { TPageEditor } from '../../../../../../lib';
 import {
 	AppearanceStyleMixinEditor,
@@ -34,6 +36,12 @@ import { useTokensByType } from './use-tokens-by-type';
 export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 	const { editor } = props;
 	const currentPlan = useCurrentPlan();
+
+	const showInfoBannerState = React.useMemo(
+		() => withLocalStorage(createState(true), 'sfy-saku-link-in-bio_show-info-banner'),
+		[]
+	);
+	const showInfoBanner = useFeatureState(showInfoBannerState);
 
 	const autoLayoutTokens = useTokensByType('auto-layout', editor.tokenMap);
 	const appearanceTokens = useTokensByType('appearance', editor.tokenMap);
@@ -55,13 +63,20 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 	// =========================================================================
 
 	return (
-		<div className="relative h-full">
-			<div className="p-2">
-				<Banner tone="info">
-					Here you can customize design tokens that can be linked to layers throughout your page for
-					consistent styling.
-				</Banner>
-			</div>
+		<div
+			className={cn(
+				'relative h-full',
+				currentPlan.key !== 'awesome' ? 'overflow-y-hidden' : 'overflow-y-auto'
+			)}
+		>
+			{showInfoBanner && (
+				<div className="p-2">
+					<Banner tone="info" onDismiss={() => showInfoBannerState.set(false)}>
+						Here you can customize design tokens that can be linked to layers throughout your page
+						for consistent styling.
+					</Banner>
+				</div>
+			)}
 
 			{/* Page Section */}
 			<AccordionSection title="Page" collapsibleClassName="px-0 space-y-3" defaultOpen={true}>
