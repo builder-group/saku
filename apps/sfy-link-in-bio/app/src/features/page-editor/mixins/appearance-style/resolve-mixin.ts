@@ -1,8 +1,8 @@
-import { TAppearanceStyleMixin } from '@repo/editor';
+import { resolveTokenRef, TAppearanceStyleMixin } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import * as v from 'valibot';
 import { AppError } from '@/lib';
-import { resolveTokenRef, TMixinResolveContext } from '../../lib';
+import { TMixinResolveContext } from '../../lib';
 import { TResolvedAppearanceStyleMixin } from './types';
 
 export function resolveAppearanceStyleMixin(
@@ -16,38 +16,40 @@ export function resolveAppearanceStyleMixin(
 		}
 	);
 	if (!isResolvedAppearanceOk) {
-		return Err(resolvedAppearanceErr.wrapWith('#ERR_RESOLVE_APPEARANCE'));
+		return Err(AppError.fromEditorError(resolvedAppearanceErr).wrapWith('#ERR_RESOLVE_APPEARANCE'));
 	}
 
 	const [isResolvedVisibleOk, resolvedVisibleErr, resolvedVisible] = resolveTokenRef(
 		resolvedAppearance.visible,
 		{
 			tokenMap: cx.tokenMap,
-			schema: v.boolean()
+			expectedSchema: v.boolean()
 		}
 	);
 	if (!isResolvedVisibleOk) {
-		return Err(resolvedVisibleErr.wrapWith('#ERR_RESOLVE_VISIBLE'));
+		return Err(AppError.fromEditorError(resolvedVisibleErr).wrapWith('#ERR_RESOLVE_VISIBLE'));
 	}
 	const [isResolvedOpacityOk, resolvedOpacityErr, resolvedOpacity] = resolveTokenRef(
 		resolvedAppearance.opacity,
 		{
 			tokenMap: cx.tokenMap,
-			schema: v.number()
+			expectedSchema: v.number()
 		}
 	);
 	if (!isResolvedOpacityOk) {
-		return Err(resolvedOpacityErr.wrapWith('#ERR_RESOLVE_OPACITY'));
+		return Err(AppError.fromEditorError(resolvedOpacityErr).wrapWith('#ERR_RESOLVE_OPACITY'));
 	}
 	const [isResolvedBorderRadiusOk, resolvedBorderRadiusErr, resolvedBorderRadius] = resolveTokenRef(
 		resolvedAppearance.borderRadius,
 		{
 			tokenMap: cx.tokenMap,
-			schema: v.nullable(v.number())
+			expectedSchema: v.nullable(v.number())
 		}
 	);
 	if (!isResolvedBorderRadiusOk) {
-		return Err(resolvedBorderRadiusErr.wrapWith('#ERR_RESOLVE_BORDER_RADIUS'));
+		return Err(
+			AppError.fromEditorError(resolvedBorderRadiusErr).wrapWith('#ERR_RESOLVE_BORDER_RADIUS')
+		);
 	}
 
 	return Ok({

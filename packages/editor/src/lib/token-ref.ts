@@ -9,7 +9,7 @@ export function tokenRef<
 	tokenType: GTokenType,
 	path?: GPath
 ): TTokenRef<GPath extends string ? TGetTokenValue<GToken, GPath> : GToken['value']> {
-	return { type: 'token', key: `${tokenType}.${key}`, tokenType, path } as TTokenRef<
+	return { type: 'token', key, tokenType, path } as TTokenRef<
 		GPath extends string ? TGetTokenValue<GToken, GPath> : GToken['value']
 	>;
 }

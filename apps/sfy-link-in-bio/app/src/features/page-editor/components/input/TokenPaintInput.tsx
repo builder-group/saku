@@ -3,6 +3,7 @@ import {
 	hsbaToRgba,
 	isTokenRef,
 	isValidHex,
+	resolveTokenRef,
 	rgbaToHex,
 	rgbaToHsba,
 	TPaint,
@@ -23,7 +24,7 @@ import { TState } from 'feature-state';
 import React from 'react';
 import { unwrapOrUndefined } from 'tuple-result';
 import { ImageUploadField, LinkIcon, LinkOffIcon, TImageUploadEvent } from '@/components';
-import { resolveTokenRef, TPageEditor } from '@/features/page-editor';
+import { TPageEditor } from '@/features/page-editor';
 import { cn } from '@/lib';
 import { isPreventDefault, TPreventDefault } from './prevent-default';
 import { TokenActionOverlay, TokenKeyTooltip } from './TokenActionOverlay';
@@ -41,7 +42,7 @@ export const TokenPaintInput = <GRefValue extends TRef<TPaint> | undefined>(
 		editor,
 		allowedPaintTypes = ['solid', 'image'],
 		label,
-		readOnly,
+		disabled = false,
 		className,
 		...textFieldProps
 	} = props;
@@ -101,9 +102,6 @@ export const TokenPaintInput = <GRefValue extends TRef<TPaint> | undefined>(
 	const isError = React.useMemo(() => {
 		return displayValue !== '' && displayValue !== 'Image' && !isValidHex(displayValue);
 	}, [displayValue]);
-	const isReadOnly = React.useMemo(() => {
-		return resolvedValue?.type === 'image';
-	}, [resolvedValue]);
 
 	const pickerColor = React.useMemo(() => {
 		if (resolvedValue?.type !== 'solid') {
@@ -151,7 +149,7 @@ export const TokenPaintInput = <GRefValue extends TRef<TPaint> | undefined>(
 
 	const handleTextChange = React.useCallback(
 		(newValue: string) => {
-			if (isLinked) {
+			if (isLinked || disabled) {
 				return;
 			}
 
@@ -160,25 +158,32 @@ export const TokenPaintInput = <GRefValue extends TRef<TPaint> | undefined>(
 				return;
 			}
 
-			// Always enforce # prefix for non-empty values
-			const normalizedValue = newValue.startsWith('#') ? newValue : `#${newValue}`;
-			if (isValidHex(normalizedValue)) {
-				handleValueChange(
-					{
-						type: 'solid',
-						color: hexToRgba(normalizedValue)
-					} as GRefValue,
-					true
-				);
+			switch (resolvedValue?.type) {
+				case 'solid': {
+					// Enforce # prefix
+					const normalizedValue = newValue.startsWith('#') ? newValue : `#${newValue}`;
+					if (isValidHex(normalizedValue)) {
+						handleValueChange(
+							{
+								type: 'solid',
+								color: hexToRgba(normalizedValue)
+							} as GRefValue,
+							true
+						);
+					}
+					setDisplayValue(normalizedValue);
+					break;
+				}
+				default:
+				// do nothing
 			}
-			setDisplayValue(normalizedValue);
 		},
-		[handleValueChange, isLinked]
+		[disabled, handleValueChange, isLinked, resolvedValue?.type]
 	);
 
 	const handleColorChange = React.useCallback(
 		(hsba: HSBAColor) => {
-			if (isLinked) {
+			if (isLinked || disabled) {
 				return;
 			}
 
@@ -190,12 +195,12 @@ export const TokenPaintInput = <GRefValue extends TRef<TPaint> | undefined>(
 				false
 			);
 		},
-		[handleValueChange, isLinked]
+		[disabled, handleValueChange, isLinked]
 	);
 
 	const handleImageChange = React.useCallback(
 		(event: TImageUploadEvent) => {
-			if (isLinked) {
+			if (isLinked || disabled) {
 				return;
 			}
 
@@ -225,10 +230,14 @@ export const TokenPaintInput = <GRefValue extends TRef<TPaint> | undefined>(
 				}
 			}
 		},
-		[handleValueChange, isLinked, editor]
+		[isLinked, disabled, editor, handleValueChange]
 	);
 
 	const handleToggleTokenLink = React.useCallback(() => {
+		if (disabled) {
+			return;
+		}
+
 		// Unlink token
 		if (isLinked) {
 			const result = onUnlinkToken?.();
@@ -252,26 +261,30 @@ export const TokenPaintInput = <GRefValue extends TRef<TPaint> | undefined>(
 		if (isTokenRef(result)) {
 			state.set(result as GRefValue);
 		}
-	}, [onLinkToken, onUnlinkToken, isLinked, state, tokenMap]);
+	}, [disabled, isLinked, onLinkToken, onUnlinkToken, state, tokenMap]);
 
 	const togglePopoverActive = React.useCallback(() => {
-		if (!isLinked) {
-			setIsPopoverActive((active) => {
-				const newActive = !active;
-				if (!newActive) {
-					// Clear cache when popover closes
-					tabValueCache.current = {};
-				}
-				return newActive;
-			});
+		if (isLinked || disabled) {
+			return;
 		}
-	}, [isLinked]);
+
+		setIsPopoverActive((active) => {
+			const newActive = !active;
+			if (!newActive) {
+				// Clear cache when popover closes
+				tabValueCache.current = {};
+			}
+			return newActive;
+		});
+	}, [disabled, isLinked]);
 
 	const handleFocus = React.useCallback(() => {
-		if (!isLinked) {
-			setIsPopoverActive(true);
+		if (isLinked || disabled) {
+			return;
 		}
-	}, [isLinked]);
+
+		setIsPopoverActive(true);
+	}, [isLinked, disabled]);
 
 	const handleTabChange = React.useCallback(
 		(newSelectedTabIndex: number) => {
@@ -368,20 +381,22 @@ export const TokenPaintInput = <GRefValue extends TRef<TPaint> | undefined>(
 				<div className="relative">
 					<TextField
 						{...textFieldProps}
+						type="text"
 						label={label}
 						labelHidden
 						value={displayValue}
 						onChange={handleTextChange}
 						onFocus={handleFocus}
-						readOnly={isLinked || isReadOnly || readOnly}
+						disabled={isLinked || disabled}
 						prefix={
 							resolvedValue?.type === 'solid' ? (
 								<button
 									type="button"
 									onClick={togglePopoverActive}
+									disabled={isLinked || disabled}
 									className={cn(
 										'-ml-1 flex h-5 w-5 items-center justify-center rounded-full border border-neutral-200',
-										isLinked ? 'cursor-default' : 'cursor-pointer'
+										isLinked || disabled ? 'cursor-default' : 'cursor-pointer'
 									)}
 									style={{ backgroundColor: rgbaToHex(resolvedValue.color) }}
 								/>
@@ -389,9 +404,10 @@ export const TokenPaintInput = <GRefValue extends TRef<TPaint> | undefined>(
 								<button
 									type="button"
 									onClick={togglePopoverActive}
+									disabled={isLinked || disabled}
 									className={cn(
 										'-ml-1 flex h-5 w-5 items-center justify-center overflow-hidden rounded border border-neutral-200',
-										isLinked ? 'cursor-default' : 'cursor-pointer'
+										isLinked || disabled ? 'cursor-default' : 'cursor-pointer'
 									)}
 								>
 									<img
@@ -420,7 +436,7 @@ export const TokenPaintInput = <GRefValue extends TRef<TPaint> | undefined>(
 								tabs={tabs}
 								selected={selectedTabIndex}
 								onSelect={handleTabChange}
-								disabled={isLinked}
+								disabled={isLinked || disabled}
 							/>
 						</div>
 						{currentTabId === 'solid' ? ColorTab : currentTabId === 'image' ? ImageTab : null}
@@ -444,7 +460,13 @@ export const TokenPaintInput = <GRefValue extends TRef<TPaint> | undefined>(
 					<button
 						type="button"
 						onClick={handleToggleTokenLink}
-						className="flex cursor-pointer items-center justify-center opacity-60 transition-opacity hover:opacity-100"
+						disabled={disabled}
+						className={cn(
+							'flex items-center justify-center transition-opacity',
+							disabled
+								? 'cursor-not-allowed opacity-30'
+								: 'cursor-pointer opacity-60 hover:opacity-100'
+						)}
 						title={isLinked ? `Unlink` : `Link`}
 					>
 						{isLinked ? <LinkOffIcon className="h-3 w-3" /> : <LinkIcon className="h-3 w-3" />}
@@ -461,6 +483,7 @@ export const TokenPaintInput = <GRefValue extends TRef<TPaint> | undefined>(
 						}
 						onUnlink={handleToggleTokenLink}
 						onNavigateToToken={onNavigateToToken}
+						disabled={disabled}
 					/>
 				)}
 			</div>
@@ -485,6 +508,7 @@ export interface TTokenPaintInputProps<GRefValue extends TRef<TPaint> | undefine
 	allowedPaintTypes?: TTokenPaintInputPaintType[];
 
 	label: string;
+	disabled?: boolean;
 	className?: string;
 }
 

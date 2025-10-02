@@ -11,7 +11,7 @@ import {
 import { restrictToParentElement } from '@dnd-kit/modifiers';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { TNodeId } from '@repo/editor';
-import { Icon, Text } from '@shopify/polaris';
+import { Icon, Text, Tooltip } from '@shopify/polaris';
 import { useCompute, useListener } from 'feature-react/state';
 import React from 'react';
 import { ImperativePanelHandle } from 'react-resizable-panels';
@@ -187,16 +187,30 @@ export const LayersPanel: React.FC<TLayersPanelProps> = (props) => {
 											<Text as="p" variant="bodyMd">
 												Watermark
 											</Text>
-											{currentPlan.key === 'awesome' && (
-												<div className="ml-auto flex gap-1">
+											<div className="ml-auto flex gap-1">
+												{currentPlan.key === 'awesome' ? (
 													<button
 														className="cursor-pointer rounded-lg p-0.5 hover:bg-neutral-200 hover:text-red-500"
 														onClick={handleRemoveWatermark}
 													>
 														<Icon source={PolarisDeleteIcon} />
 													</button>
-												</div>
-											)}
+												) : (
+													<Tooltip
+														content="Watermark removal is only available on Awesome plan and above"
+														width="wide"
+														preferredPosition="above"
+													>
+														<button
+															className="cursor-not-allowed rounded-lg p-0.5 opacity-50"
+															disabled
+															type="button"
+														>
+															<Icon source={PolarisDeleteIcon} />
+														</button>
+													</Tooltip>
+												)}
+											</div>
 										</div>
 									)}
 								</div>

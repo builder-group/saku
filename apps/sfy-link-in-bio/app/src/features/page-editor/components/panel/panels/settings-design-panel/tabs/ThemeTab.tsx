@@ -2,13 +2,16 @@ import { themes } from '@repo/editor';
 import { Text } from '@shopify/polaris';
 import { useCompute } from 'feature-react';
 import React from 'react';
+import { useCurrentPlan } from '@/hooks';
 import { TPageEditor } from '../../../../../lib';
 import { ThemeIcon, ThemePreview } from '../../../../display';
 import { applyTheme } from '../apply-theme';
 
 export const ThemeTab: React.FC<TThemeTabProps> = (props) => {
 	const { editor } = props;
+
 	const currentThemeKey = useCompute(editor.tokenMap, ({ value }) => value['theme.key']?.value);
+	const currentPlan = useCurrentPlan();
 
 	return (
 		<div className="grid grid-cols-2 gap-3 p-4">

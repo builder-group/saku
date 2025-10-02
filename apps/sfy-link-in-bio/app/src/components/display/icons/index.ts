@@ -1,6 +1,7 @@
 // Custom Icons
 export * from './BlueskyIcon';
 export * from './CalIcon';
+export * from './CrownIcon';
 export * from './DiscordIcon';
 export * from './FacebookIcon';
 export * from './GithubIcon';
@@ -21,8 +22,10 @@ export * from './YouTubeIcon';
 
 // Third Party Icons
 export {
+	AlertTriangleIcon as PolarisAlertTriangleIcon,
 	AppsIcon as PolarisAppsIcon,
 	ArrowLeftIcon as PolarisArrowLeftIcon,
+	ArrowDiagonalIcon as PolarisArrowUpRightIcon,
 	ChatIcon as PolarisChatIcon,
 	CheckIcon as PolarisCheckIcon,
 	ChevronDownIcon as PolarisChevronDownIcon,

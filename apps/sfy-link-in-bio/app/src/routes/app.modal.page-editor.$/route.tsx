@@ -13,15 +13,16 @@ import styles from './styles.css?url';
 
 const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 	Success: ({ data }) => {
-		const { site } = data;
+		const { site, shopId } = data;
 		const shopify = useAppBridge();
 
 		const editor = React.useMemo(() => {
 			return createPageEditor({
 				site,
+				shopId,
 				shopify
 			});
-		}, [site, shopify]);
+		}, [site, shopId, shopify]);
 
 		return (
 			<div className="flex min-h-screen w-full">
@@ -90,7 +91,8 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(
 				url: `${shopifyConfig.proxy.url(shop)}/${site.handle}`,
 				platformUrl: `https://saku.so/w/${createHandleFromShop(shop)}/${site.handle}`,
 				content: flatSite
-			}
+			},
+			shopId: shop
 		}).toArray();
 	}
 );
@@ -108,4 +110,5 @@ interface TSuccessLoaderData {
 		platformUrl: string;
 		content: TFlatSite;
 	};
+	shopId: string;
 }

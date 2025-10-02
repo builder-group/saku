@@ -17,7 +17,14 @@ import { TextStyleMixinEditor } from '../text-style';
 import { packBadgeTokenRef, unpackBadgeTokenRef } from './pack-mixin';
 
 export const BadgeStyleMixinEditor = (props: TBadgeStyleMixinEditorProps) => {
-	const { state, onLinkToken, disabledTokenLink = false, editor } = props;
+	const {
+		state,
+		onLinkToken,
+		disabledTokenLink = false,
+		syncedTokenLink = true,
+		disabled = false,
+		editor
+	} = props;
 
 	const appearanceState = useMapState(state, {
 		map(baseValue) {
@@ -98,6 +105,7 @@ export const BadgeStyleMixinEditor = (props: TBadgeStyleMixinEditorProps) => {
 					onLinkToken != null ? () => mapTokenRef(onLinkToken(), 'appearance') : undefined
 				}
 				disabledTokenLink={disabledTokenLink}
+				disabled={disabled}
 				editor={editor}
 			/>
 			<div className="h-px bg-neutral-200" />
@@ -105,6 +113,8 @@ export const BadgeStyleMixinEditor = (props: TBadgeStyleMixinEditorProps) => {
 				state={fillState}
 				onLinkToken={onLinkToken != null ? () => mapTokenRef(onLinkToken(), 'fill') : undefined}
 				disabledTokenLink={disabledTokenLink}
+				syncedTokenLink={syncedTokenLink}
+				disabled={disabled}
 				editor={editor}
 			/>
 			<div className="h-px bg-neutral-200" />
@@ -112,6 +122,8 @@ export const BadgeStyleMixinEditor = (props: TBadgeStyleMixinEditorProps) => {
 				state={strokeState}
 				onLinkToken={onLinkToken != null ? () => mapTokenRef(onLinkToken(), 'stroke') : undefined}
 				disabledTokenLink={disabledTokenLink}
+				syncedTokenLink={syncedTokenLink}
+				disabled={disabled}
 				editor={editor}
 			/>
 			<div className="h-px bg-neutral-200" />
@@ -119,6 +131,8 @@ export const BadgeStyleMixinEditor = (props: TBadgeStyleMixinEditorProps) => {
 				state={shadowState}
 				onLinkToken={onLinkToken != null ? () => mapTokenRef(onLinkToken(), 'shadow') : undefined}
 				disabledTokenLink={disabledTokenLink}
+				syncedTokenLink={syncedTokenLink}
+				disabled={disabled}
 				editor={editor}
 			/>
 			<div className="border-t border-b border-neutral-200 bg-neutral-50 px-4 py-1">
@@ -130,6 +144,8 @@ export const BadgeStyleMixinEditor = (props: TBadgeStyleMixinEditorProps) => {
 				state={textState}
 				onLinkToken={onLinkToken != null ? () => mapTokenRef(onLinkToken(), 'text') : undefined}
 				disabledTokenLink={disabledTokenLink}
+				syncedTokenLink={syncedTokenLink}
+				disabled={disabled}
 				editor={editor}
 			/>
 		</>
@@ -140,5 +156,7 @@ interface TBadgeStyleMixinEditorProps {
 	state: TState<TBadgeStyleMixin['value'], any>;
 	onLinkToken?: () => TTokenRef<TUnreferenceTop<TBadgeStyleMixin['value']>>;
 	disabledTokenLink?: boolean;
+	syncedTokenLink?: boolean;
+	disabled?: boolean;
 	editor: TPageEditor;
 }

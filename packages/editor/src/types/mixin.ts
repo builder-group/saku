@@ -13,6 +13,7 @@ import {
 	TPhoneAction,
 	TRichContent,
 	TSocialAction,
+	TSolidPaint,
 	TTextAlign
 } from './utils';
 
@@ -312,27 +313,27 @@ export type TTypographyStyleMixin = TBaseMixin<
 export type TFillStyleMixin = TBaseMixin<
 	'fill',
 	TRef<{
-		paint: TPaint;
-		opacity: number; // Note: Only really needed when we support multiple fills - currently same as appearance opacity
+		paint: TRef<TPaint>;
+		opacity: TRef<number>;
 	} | null>
 >;
 
 export type TStrokeStyleMixin = TBaseMixin<
 	'stroke',
 	TRef<{
-		width: number;
-		color: TRgba;
+		width: TRef<number>;
+		paint: TRef<TSolidPaint>;
 	} | null>
 >;
 
 export type TShadowStyleMixin = TBaseMixin<
 	'shadow',
 	TRef<{
-		color: TRgba;
-		offsetX: number;
-		offsetY: number;
-		blur: number;
-		spread: number;
+		paint: TRef<TSolidPaint>;
+		offsetX: TRef<number>;
+		offsetY: TRef<number>;
+		blur: TRef<number>;
+		spread: TRef<number>;
 	} | null>
 >;
 
@@ -387,7 +388,7 @@ export type TBadgeStyleMixin = TBaseMixin<
 		text: TTextStyleMixin['value'];
 	}>
 >;
-export type TBadgePrimaryStyleMixin = TBaseMixin<'badgePrimary', TBadgeStyleMixin['value']>;
+export type TBadgeSecondaryStyleMixin = TBaseMixin<'badgeSecondary', TBadgeStyleMixin['value']>;
 export type TBadgeNeutralStyleMixin = TBaseMixin<'badgeNeutral', TBadgeStyleMixin['value']>;
 
 export type TImageStyleMixin = TBaseMixin<

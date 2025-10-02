@@ -19,7 +19,14 @@ import { TextStyleMixinEditor } from '../text-style';
 import { packProductDetailsTokenRef, unpackProductDetailsTokenRef } from './pack-mixin';
 
 export const ProductDetailsStyleMixinEditor = (props: TProductDetailsStyleMixinEditorProps) => {
-	const { state, onLinkToken, disabledTokenLink = false, editor } = props;
+	const {
+		state,
+		onLinkToken,
+		disabledTokenLink = false,
+		syncedTokenLink = true,
+		disabled = false,
+		editor
+	} = props;
 
 	const appearanceState = useMapState(state, {
 		map(baseValue) {
@@ -142,6 +149,7 @@ export const ProductDetailsStyleMixinEditor = (props: TProductDetailsStyleMixinE
 					onLinkToken != null ? () => mapTokenRef(onLinkToken(), 'appearance') : undefined
 				}
 				disabledTokenLink={disabledTokenLink}
+				disabled={disabled}
 				editor={editor}
 			/>
 			<div className="h-px bg-neutral-200" />
@@ -149,6 +157,8 @@ export const ProductDetailsStyleMixinEditor = (props: TProductDetailsStyleMixinE
 				state={fillState}
 				onLinkToken={onLinkToken != null ? () => mapTokenRef(onLinkToken(), 'fill') : undefined}
 				disabledTokenLink={disabledTokenLink}
+				syncedTokenLink={syncedTokenLink}
+				disabled={disabled}
 				editor={editor}
 			/>
 			<div className="h-px bg-neutral-200" />
@@ -156,6 +166,8 @@ export const ProductDetailsStyleMixinEditor = (props: TProductDetailsStyleMixinE
 				state={strokeState}
 				onLinkToken={onLinkToken != null ? () => mapTokenRef(onLinkToken(), 'stroke') : undefined}
 				disabledTokenLink={disabledTokenLink}
+				syncedTokenLink={syncedTokenLink}
+				disabled={disabled}
 				editor={editor}
 			/>
 			<div className="h-px bg-neutral-200" />
@@ -163,8 +175,9 @@ export const ProductDetailsStyleMixinEditor = (props: TProductDetailsStyleMixinE
 				state={shadowState}
 				onLinkToken={onLinkToken != null ? () => mapTokenRef(onLinkToken(), 'shadow') : undefined}
 				disabledTokenLink={disabledTokenLink}
+				syncedTokenLink={syncedTokenLink}
+				disabled={disabled}
 				editor={editor}
-				disabledSpread
 			/>
 			<div className="border-t border-b border-neutral-200 bg-neutral-50 px-4 py-1">
 				<Text as="span" variant="headingXs">
@@ -175,6 +188,8 @@ export const ProductDetailsStyleMixinEditor = (props: TProductDetailsStyleMixinE
 				state={textXlState}
 				onLinkToken={onLinkToken != null ? () => mapTokenRef(onLinkToken(), 'textXl') : undefined}
 				disabledTokenLink={disabledTokenLink}
+				syncedTokenLink={syncedTokenLink}
+				disabled={disabled}
 				editor={editor}
 			/>
 			<div className="border-t border-b border-neutral-200 bg-neutral-50 px-4 py-1">
@@ -186,6 +201,8 @@ export const ProductDetailsStyleMixinEditor = (props: TProductDetailsStyleMixinE
 				state={textState}
 				onLinkToken={onLinkToken != null ? () => mapTokenRef(onLinkToken(), 'text') : undefined}
 				disabledTokenLink={disabledTokenLink}
+				syncedTokenLink={syncedTokenLink}
+				disabled={disabled}
 				editor={editor}
 			/>
 			<div className="border-t border-b border-neutral-200 bg-neutral-50 px-4 py-1">
@@ -199,6 +216,8 @@ export const ProductDetailsStyleMixinEditor = (props: TProductDetailsStyleMixinE
 					onLinkToken != null ? () => mapTokenRef(onLinkToken(), 'buttonPrimary') : undefined
 				}
 				disabledTokenLink={disabledTokenLink}
+				syncedTokenLink={syncedTokenLink}
+				disabled={disabled}
 				editor={editor}
 			/>
 			<div className="border-t border-b border-neutral-200 bg-neutral-50 px-4 py-1">
@@ -210,6 +229,8 @@ export const ProductDetailsStyleMixinEditor = (props: TProductDetailsStyleMixinE
 				state={imageState}
 				onLinkToken={onLinkToken != null ? () => mapTokenRef(onLinkToken(), 'image') : undefined}
 				disabledTokenLink={disabledTokenLink}
+				syncedTokenLink={syncedTokenLink}
+				disabled={disabled}
 				editor={editor}
 			/>
 		</>
@@ -220,5 +241,7 @@ interface TProductDetailsStyleMixinEditorProps {
 	state: TState<TProductDetailsStyleMixin['value'], any>;
 	onLinkToken?: () => TTokenRef<TUnreferenceTop<TProductDetailsStyleMixin['value']>>;
 	disabledTokenLink?: boolean;
+	syncedTokenLink?: boolean;
+	disabled?: boolean;
 	editor: TPageEditor;
 }

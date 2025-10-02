@@ -1,9 +1,20 @@
 import { Tooltip } from '@shopify/polaris';
 import React from 'react';
 import { ArrowRightIcon, Badge, LinkOffIcon } from '@/components';
+import { cn } from '@/lib';
 
 export const TokenActionOverlay: React.FC<TTokenActionOverlayProps> = (props) => {
-	const { variant = 'badge', tooltipContent, onUnlink, onNavigateToToken } = props;
+	const {
+		variant = 'badge',
+		tooltipContent,
+		onUnlink,
+		onNavigateToToken,
+		disabled = false
+	} = props;
+
+	// Note: We don't use the `disabled` attribute on buttons because it prevents hover events,
+	// which would break the overlay's `group-hover:flex` behavior. Instead, we conditionally
+	// set onClick handlers and use visual styling to indicate the disabled state.
 
 	const content = React.useCallback(() => {
 		switch (variant) {
@@ -12,8 +23,13 @@ export const TokenActionOverlay: React.FC<TTokenActionOverlayProps> = (props) =>
 					<div className="absolute inset-0 z-50 hidden overflow-hidden rounded-lg group-hover:flex">
 						<button
 							type="button"
-							onClick={onUnlink}
-							className="flex flex-1 cursor-pointer items-center justify-center gap-1 bg-orange-100 text-xs text-orange-700 transition-colors hover:bg-orange-200"
+							onClick={disabled ? undefined : onUnlink}
+							className={cn(
+								'flex flex-1 items-center justify-center gap-1 text-xs transition-colors',
+								disabled
+									? 'cursor-not-allowed bg-gray-100 text-gray-400'
+									: 'cursor-pointer bg-orange-100 text-orange-700 hover:bg-orange-200'
+							)}
 						>
 							<LinkOffIcon className="h-3 w-3" />
 							Unlink
@@ -37,8 +53,13 @@ export const TokenActionOverlay: React.FC<TTokenActionOverlayProps> = (props) =>
 							<div className="flex">
 								<button
 									type="button"
-									onClick={onUnlink}
-									className="flex cursor-pointer items-center gap-1 bg-orange-100 px-2 py-1 text-xs text-orange-700 transition-colors hover:bg-orange-200"
+									onClick={disabled ? undefined : onUnlink}
+									className={cn(
+										'flex items-center gap-1 px-2 py-1 text-xs transition-colors',
+										disabled
+											? 'cursor-not-allowed bg-gray-100 text-gray-400'
+											: 'cursor-pointer bg-orange-100 text-orange-700 hover:bg-orange-200'
+									)}
 								>
 									<LinkOffIcon className="h-3 w-3" />
 									Unlink
@@ -62,8 +83,13 @@ export const TokenActionOverlay: React.FC<TTokenActionOverlayProps> = (props) =>
 						<Badge asChild variant="warning">
 							<button
 								type="button"
-								onClick={onUnlink}
-								className="cursor-pointer transition-colors hover:bg-[rgba(255,184,0,1)] hover:text-[rgba(37,26,0,1)]"
+								onClick={disabled ? undefined : onUnlink}
+								className={cn(
+									'transition-colors',
+									disabled
+										? 'cursor-not-allowed opacity-50'
+										: 'cursor-pointer hover:bg-orange-200 hover:text-orange-700'
+								)}
 							>
 								<LinkOffIcon className="h-3 w-3" />
 								Unlink
@@ -73,7 +99,7 @@ export const TokenActionOverlay: React.FC<TTokenActionOverlayProps> = (props) =>
 							<button
 								type="button"
 								onClick={onNavigateToToken}
-								className="cursor-pointer transition-colors hover:bg-[rgba(145,208,255,1)] hover:text-[rgba(0,33,51,1)]"
+								className="cursor-pointer transition-colors hover:bg-blue-200 hover:text-blue-700"
 							>
 								Token
 								<ArrowRightIcon className="h-3 w-3" />
@@ -84,7 +110,7 @@ export const TokenActionOverlay: React.FC<TTokenActionOverlayProps> = (props) =>
 			default:
 				return null;
 		}
-	}, [variant, onUnlink, onNavigateToToken]);
+	}, [variant, onUnlink, onNavigateToToken, disabled]);
 
 	return tooltipContent != null ? (
 		<Tooltip content={tooltipContent} width="wide" preferredPosition="below">
@@ -100,6 +126,7 @@ interface TTokenActionOverlayProps {
 	tooltipContent?: React.ReactNode;
 	onUnlink?: () => void;
 	onNavigateToToken?: () => void;
+	disabled?: boolean;
 }
 
 export const TokenKeyTooltip: React.FC<TTokenKeyTooltipProps> = (props) => {

@@ -1,20 +1,26 @@
 import { reconstructThemeFromTokens } from '@repo/editor';
 import React from 'react';
+import { logger } from '@/environment';
 import { TPageEditor } from '../../../../../../lib';
 import { ThemeEditor } from './ThemeEditor';
-import { ThemePlaceholder } from './ThemePlaceholder';
+import { ThemeUnavailable } from './ThemeUnavailable';
 
 export const CustomizeTab: React.FC<TCustomizeTabProps> = (props) => {
 	const { editor } = props;
 
 	const currentTheme = React.useMemo(() => {
 		const variableTokens = Object.values(editor.tokenMap._v);
-		const result = reconstructThemeFromTokens(variableTokens);
-		return result.isOk() ? result.value : null;
+		const [isReconstructedThemeOk, reconstructedThemeErr, reconstructedTheme] =
+			reconstructThemeFromTokens(variableTokens);
+		if (!isReconstructedThemeOk) {
+			logger.error('Failed to reconstruct theme from tokens', reconstructedThemeErr);
+			return null;
+		}
+		return reconstructedTheme;
 	}, [editor]);
 
 	if (currentTheme == null) {
-		return <ThemePlaceholder />;
+		return <ThemeUnavailable />;
 	}
 
 	return <ThemeEditor theme={currentTheme} editor={editor} />;

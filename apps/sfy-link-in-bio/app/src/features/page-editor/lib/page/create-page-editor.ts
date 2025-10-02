@@ -22,15 +22,14 @@ import { ShopifyGlobal } from '@shopify/app-bridge-react';
 import { FetchError, NetworkError, RequestError } from 'feature-fetch';
 import { createState, TState } from 'feature-state';
 import React from 'react';
-import { appConfig, coreApiClient, logger } from '@/environment';
+import { appConfig, coreApiClient } from '@/environment';
 import { createShopifyTokenMiddleware, requestReview, TBreakpoint } from '@/lib';
 import { TSettingsSectionType, TViewType } from '../../environment';
 import { createNodeState, nodeAssetHashRegistry, nodeMetadataRegistry, TNodeState } from '../node';
 import { createPageContext, TPageContext } from './create-page-context';
 
 export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
-	const { shopify, site } = config;
-	logger.info('createPageEditor', { config });
+	const { site, shopId, shopify } = config;
 
 	return {
 		id: shortId(),
@@ -41,6 +40,7 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 			url: site.url,
 			platformUrl: site.platformUrl
 		},
+		shopId,
 		pageContext: createPageContext({
 			siteId: site.id,
 			integrations: Object.values(site.content.integrations)
@@ -657,6 +657,10 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 			}
 		},
 
+		async closeModal() {
+			await this.shopify.modal.hide(`editor-modal-${this.site.id}`);
+		},
+
 		toSite() {
 			return toHierarchical(this.toFlatSite());
 		},
@@ -680,7 +684,6 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 }
 
 export interface TCreatePageEditorConfig {
-	shopify: ShopifyGlobal;
 	site: {
 		id: string;
 		handle: string;
@@ -688,6 +691,8 @@ export interface TCreatePageEditorConfig {
 		platformUrl: string;
 		content: TFlatSite;
 	};
+	shopId: string;
+	shopify: ShopifyGlobal;
 }
 
 export interface TPageEditor {
@@ -699,6 +704,7 @@ export interface TPageEditor {
 		url: string;
 		platformUrl: string;
 	};
+	shopId: string;
 	pageContext: TPageContext;
 
 	rootNodeId: TNodeId;
@@ -760,6 +766,8 @@ export interface TPageEditor {
 	isDebug: () => boolean;
 
 	publish: () => Promise<boolean>;
+
+	closeModal: () => Promise<void>;
 
 	toSite: () => TSite;
 	toFlatSite: () => TFlatSite;

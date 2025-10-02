@@ -18,7 +18,7 @@ import { TPageEditor } from '../../lib';
 import { packTypographyTokenRef, unpackTypographyTokenRef } from './pack-mixin';
 
 export const TypographyStyleMixinEditor = (props: TTypographyStyleMixinEditorProps) => {
-	const { state, onLinkToken, disabledTokenLink = false, editor } = props;
+	const { state, onLinkToken, disabledTokenLink = false, disabled = false, editor } = props;
 
 	const fontOptions = React.useMemo(() => {
 		return fontMetadata.map((font) => ({
@@ -125,6 +125,7 @@ export const TypographyStyleMixinEditor = (props: TTypographyStyleMixinEditorPro
 						}
 						onNavigateToToken={handleNavigateToToken}
 						disabledTokenLink={disabledTokenLink}
+						disabled={disabled}
 					/>
 					<TokenTextInput
 						label="Font Size"
@@ -140,6 +141,7 @@ export const TypographyStyleMixinEditor = (props: TTypographyStyleMixinEditorPro
 						}
 						onNavigateToToken={handleNavigateToToken}
 						disabledTokenLink={disabledTokenLink}
+						disabled={disabled}
 					/>
 				</div>
 				<div className="grid grid-cols-2 gap-3">
@@ -155,16 +157,8 @@ export const TypographyStyleMixinEditor = (props: TTypographyStyleMixinEditorPro
 						}
 						onNavigateToToken={handleNavigateToToken}
 						disabledTokenLink={disabledTokenLink}
+						disabled={disabled}
 					/>
-					{/* <TokenSelectInput
-						label="Vertical Text Align"
-						options={textAlignOptions}
-						state={textAlignVerticalState}
-						tokenMap={editor.tokenMap}
-						onLinkToken={() => mapTokenRef(ref, 'textAlignVertical')}
-						onNavigateToToken={handleNavigateToToken}
-						disabledTokenLink={disabledTokenLink}
-					/> */}
 				</div>
 			</div>
 		</div>
@@ -175,5 +169,6 @@ interface TTypographyStyleMixinEditorProps {
 	state: TState<TTypographyStyleMixin['value'], any>;
 	onLinkToken?: () => TTokenRef<TUnreferenceTop<TTypographyStyleMixin['value']>>;
 	disabledTokenLink?: boolean;
+	disabled?: boolean;
 	editor: TPageEditor;
 }

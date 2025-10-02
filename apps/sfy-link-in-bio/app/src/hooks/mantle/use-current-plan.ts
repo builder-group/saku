@@ -25,7 +25,7 @@ export function useCurrentPlan(): TCurrentPlan {
 	}, [subscription?.plan]);
 }
 
-interface TCurrentPlan {
+export interface TCurrentPlan {
 	id: string;
 	key: 'free' | 'awesome';
 	customFields: Record<string, unknown>;

@@ -2,16 +2,19 @@ import { Tabs } from '@shopify/polaris';
 import { useCompute, useFeatureState } from 'feature-react/state';
 import React from 'react';
 import { ResizablePanel } from '@/components';
+import { useCurrentPlan } from '@/hooks';
 import { useEditorBreakpoint } from '../../../../hooks';
 import { TPageEditor } from '../../../../lib';
 import { PanelHeader } from '../../PanelHeader';
-import { AdvancedTab, CustomizeTab, tabs, ThemeTab } from './tabs';
+import { AdvancedTab, CustomizeTab, getTabs, ThemeTab } from './tabs';
 
 export const SettingsDesignPanel: React.FC<TSettingsDesignPanelProps> = (props) => {
 	const { editor, order } = props;
 
 	const isMd = useEditorBreakpoint(editor, 'md');
 	const tabIndex = useFeatureState(editor.activeDesignSettingsTab);
+	const currentPlan = useCurrentPlan();
+	const tabs = React.useMemo(() => getTabs(currentPlan), [currentPlan]);
 
 	// TODO: Figure out better solution
 	// https://github.com/bvaughn/react-resizable-panels/issues/46

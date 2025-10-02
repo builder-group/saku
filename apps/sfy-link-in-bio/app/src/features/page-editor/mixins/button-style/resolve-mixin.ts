@@ -1,7 +1,7 @@
-import { TButtonStyleMixin } from '@repo/editor';
+import { resolveTokenRef, TButtonStyleMixin } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
-import { resolveTokenRef, TMixinResolveContext } from '../../lib';
+import { TMixinResolveContext } from '../../lib';
 import { resolveAppearanceStyleMixin } from '../appearance-style';
 import { resolveFillStyleMixin } from '../fill-style';
 import { resolveShadowStyleMixin } from '../shadow-style';
@@ -17,7 +17,7 @@ export function resolveButtonStyleMixin(
 		tokenMap: cx.tokenMap
 	});
 	if (!isResolvedButtonOk) {
-		return Err(resolvedButtonErr.wrapWith('#ERR_RESOLVE_BUTTON_STYLE'));
+		return Err(AppError.fromEditorError(resolvedButtonErr).wrapWith('#ERR_RESOLVE_BUTTON_STYLE'));
 	}
 
 	const [isResolvedAppearanceOk, resolvedAppearanceErr, resolvedAppearance] =

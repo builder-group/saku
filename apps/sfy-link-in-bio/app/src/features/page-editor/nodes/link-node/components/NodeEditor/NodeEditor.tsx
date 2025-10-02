@@ -182,31 +182,31 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 				>
 					<AutoLayoutStyleMixinEditor
 						state={autoLayoutState}
-						onLinkToken={() => tokenRef('default', 'auto-layout')}
+						onLinkToken={() => tokenRef('auto-layout.default', 'auto-layout')}
 						editor={editor}
 					/>
 					<div className="h-px bg-neutral-200" />
 					<AppearanceStyleMixinEditor
 						state={appearanceState}
-						onLinkToken={() => tokenRef('default', 'appearance')}
+						onLinkToken={() => tokenRef('appearance.default', 'appearance')}
 						editor={editor}
 					/>
 					<div className="h-px bg-neutral-200" />
 					<FillStyleMixinEditor
 						state={fillState}
-						onLinkToken={() => tokenRef('default', 'fill')}
+						onLinkToken={() => tokenRef('fill.default', 'fill')}
 						editor={editor}
 					/>
 					<div className="h-px bg-neutral-200" />
 					<StrokeStyleMixinEditor
 						state={strokeState}
-						onLinkToken={() => tokenRef('default', 'stroke')}
+						onLinkToken={() => tokenRef('stroke.default', 'stroke')}
 						editor={editor}
 					/>
 					<div className="h-px bg-neutral-200" />
 					<ShadowStyleMixinEditor
 						state={shadowState}
-						onLinkToken={() => tokenRef('default', 'shadow')}
+						onLinkToken={() => tokenRef('shadow.default', 'shadow')}
 						editor={editor}
 					/>
 				</AccordionSection>
@@ -220,7 +220,7 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 					>
 						<TextStyleMixinEditor
 							state={textState}
-							onLinkToken={() => tokenRef('default', 'text')}
+							onLinkToken={() => tokenRef('text.default', 'text')}
 							editor={editor}
 						/>
 					</AccordionSection>
@@ -234,7 +234,7 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 					>
 						<TextStyleMixinEditor
 							state={textSmState}
-							onLinkToken={() => tokenRef('sm', 'text')}
+							onLinkToken={() => tokenRef('text.sm', 'text')}
 							editor={editor}
 						/>
 					</AccordionSection>
@@ -248,7 +248,7 @@ export const LinkNodeEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (p
 					>
 						<ImageStyleMixinEditor
 							state={imageState}
-							onLinkToken={() => tokenRef('default', 'image')}
+							onLinkToken={() => tokenRef('image.default', 'image')}
 							editor={editor}
 						/>
 					</AccordionSection>

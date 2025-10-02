@@ -2,6 +2,7 @@ import { deepCopy } from '@blgc/utils';
 import {
 	isTokenRef,
 	mapTokenRef,
+	resolveTokenRef,
 	TStrokeStyleMixin,
 	TTokenRef,
 	TUnreferenceTop
@@ -13,16 +14,25 @@ import React from 'react';
 import { unwrapOrUndefined } from 'tuple-result';
 import { Badge, LinkIcon, LinkOffIcon, PolarisMinusIcon, PolarisPlusIcon } from '@/components';
 import { useMapState } from '@/hooks';
+import { cn } from '@/lib';
 import {
 	TokenActionOverlay,
-	TokenColorInput,
 	TokenKeyTooltip,
+	TokenPaintInput,
 	TokenTextInput
 } from '../../components';
-import { resolveTokenRef, TPageEditor } from '../../lib';
+import { TPageEditor } from '../../lib';
+import { packStrokeTokenRef, unpackStrokeTokenRef } from './pack-mixin';
 
 export const StrokeStyleMixinEditor = (props: TStrokeStyleMixinEditorProps) => {
-	const { state, onLinkToken, disabledTokenLink = false, editor } = props;
+	const {
+		state,
+		onLinkToken,
+		disabledTokenLink = false,
+		syncedTokenLink = true,
+		disabled = false,
+		editor
+	} = props;
 
 	const isLinked = useCompute(state, ({ value }) => isTokenRef(value), []);
 	const isSet = useCompute(
@@ -32,23 +42,21 @@ export const StrokeStyleMixinEditor = (props: TStrokeStyleMixinEditorProps) => {
 		[editor]
 	);
 
-	const colorState = useMapState(state, {
+	const paintState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return mapTokenRef(baseValue, 'color');
+				return mapTokenRef(baseValue, 'paint');
 			}
-			return baseValue?.color;
+			return baseValue?.paint;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
-			if (
-				baseState._v != null &&
-				!isTokenRef(baseState._v) &&
-				mappedValue != null &&
-				!isTokenRef(mappedValue)
-			) {
-				baseState._v.color = mappedValue;
-				baseState._notify(notifyOptions);
+			const unpackedBaseValue = unpackStrokeTokenRef(baseState._v);
+			if (unpackedBaseValue == null || mappedValue == null) {
+				return;
 			}
+			unpackedBaseValue.paint = mappedValue;
+			baseState._v = packStrokeTokenRef(unpackedBaseValue);
+			baseState._notify(notifyOptions);
 		}
 	});
 	const widthState = useMapState(state, {
@@ -59,15 +67,13 @@ export const StrokeStyleMixinEditor = (props: TStrokeStyleMixinEditorProps) => {
 			return baseValue?.width;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
-			if (
-				baseState._v != null &&
-				!isTokenRef(baseState._v) &&
-				mappedValue != null &&
-				!isTokenRef(mappedValue)
-			) {
-				baseState._v.width = mappedValue;
-				baseState._notify(notifyOptions);
+			const unpackedBaseValue = unpackStrokeTokenRef(baseState._v);
+			if (unpackedBaseValue == null || mappedValue == null) {
+				return;
 			}
+			unpackedBaseValue.width = mappedValue;
+			baseState._v = packStrokeTokenRef(unpackedBaseValue);
+			baseState._notify(notifyOptions);
 		}
 	});
 
@@ -76,6 +82,10 @@ export const StrokeStyleMixinEditor = (props: TStrokeStyleMixinEditorProps) => {
 	// =========================================================================
 
 	const handleAddStroke = React.useCallback(() => {
+		if (disabled) {
+			return;
+		}
+
 		const [isResolvedTokenOk, , resolvedToken] = resolveTokenRef(state._v, {
 			tokenMap: editor.tokenMap._v
 		});
@@ -84,27 +94,60 @@ export const StrokeStyleMixinEditor = (props: TStrokeStyleMixinEditorProps) => {
 				resolvedToken != null
 					? deepCopy(resolvedToken)
 					: {
-							color: { r: 0, g: 0, b: 0, a: 1 },
+							paint: { type: 'solid', color: { r: 0, g: 0, b: 0, a: 1 } },
 							width: 1
 						};
 			state._notify();
 		}
-	}, [editor, state]);
+	}, [disabled, editor, state]);
 
 	const handleRemoveStroke = React.useCallback(() => {
+		if (disabled) {
+			return;
+		}
+
 		state._v = null;
 		state._notify();
-	}, [state]);
+	}, [disabled, state]);
 
 	const handleToggleTokenLink = React.useCallback(() => {
+		if (disabled) {
+			return;
+		}
+
 		if (isLinked) {
 			const [isResolvedTokenOk, , resolvedToken] = resolveTokenRef(state._v, {
 				tokenMap: editor.tokenMap._v
 			});
-			if (isResolvedTokenOk) {
-				state._v = deepCopy(resolvedToken);
-				state._notify();
+			if (!isResolvedTokenOk) {
+				return;
 			}
+
+			if (resolvedToken == null) {
+				state._v = null;
+				state._notify();
+				return;
+			}
+
+			// Resolve individual properties
+			const [isResolvedPaintOk, , resolvedPaint] = resolveTokenRef(resolvedToken.paint, {
+				tokenMap: editor.tokenMap._v
+			});
+			if (!isResolvedPaintOk) {
+				return;
+			}
+			const [isResolvedWidthOk, , resolvedWidth] = resolveTokenRef(resolvedToken.width, {
+				tokenMap: editor.tokenMap._v
+			});
+			if (!isResolvedWidthOk) {
+				return;
+			}
+
+			state._v = {
+				paint: resolvedPaint,
+				width: resolvedWidth
+			};
+			state._notify();
 		} else {
 			const tokenRef = onLinkToken?.();
 			if (tokenRef != null) {
@@ -112,7 +155,7 @@ export const StrokeStyleMixinEditor = (props: TStrokeStyleMixinEditorProps) => {
 				state._notify();
 			}
 		}
-	}, [isLinked, state, editor, onLinkToken]);
+	}, [disabled, isLinked, state, editor, onLinkToken]);
 
 	const handleNavigateToToken = React.useCallback(() => {
 		editor.switchView({ type: 'settings', view: { type: 'design', tab: 2 } });
@@ -127,11 +170,17 @@ export const StrokeStyleMixinEditor = (props: TStrokeStyleMixinEditorProps) => {
 			<div className="flex items-center justify-between">
 				<div className="flex items-center gap-2">
 					{/* Mixin-level inheritance button */}
-					{!disabledTokenLink && (
+					{!disabledTokenLink && syncedTokenLink && (
 						<button
 							type="button"
 							onClick={handleToggleTokenLink}
-							className="flex cursor-pointer items-center justify-center opacity-60 transition-opacity hover:opacity-100"
+							disabled={disabled}
+							className={cn(
+								'flex items-center justify-center transition-opacity',
+								disabled
+									? 'cursor-not-allowed opacity-30'
+									: 'cursor-pointer opacity-60 hover:opacity-100'
+							)}
 							title={isLinked ? 'Unlink' : 'Link'}
 						>
 							{isLinked ? (
@@ -156,6 +205,7 @@ export const StrokeStyleMixinEditor = (props: TStrokeStyleMixinEditorProps) => {
 									}
 									onUnlink={handleToggleTokenLink}
 									onNavigateToToken={handleNavigateToToken}
+									disabled={disabled}
 								/>
 							</Badge>
 						)}
@@ -167,30 +217,50 @@ export const StrokeStyleMixinEditor = (props: TStrokeStyleMixinEditorProps) => {
 					<Button
 						icon={PolarisMinusIcon}
 						onClick={handleRemoveStroke}
+						disabled={disabled}
 						variant="plain"
 						size="micro"
 					/>
 				) : (
-					<Button icon={PolarisPlusIcon} onClick={handleAddStroke} variant="plain" size="micro" />
+					<Button
+						icon={PolarisPlusIcon}
+						onClick={handleAddStroke}
+						disabled={disabled}
+						variant="plain"
+						size="micro"
+					/>
 				)}
 			</div>
 
 			{isSet && (
 				<div className="grid grid-cols-2 gap-3">
-					<TokenColorInput
-						label="Color"
-						state={colorState}
+					<TokenPaintInput
+						label="Paint"
+						state={paintState}
 						tokenMap={editor.tokenMap}
-						onLinkToken={() => {
-							handleToggleTokenLink();
-							return { preventDefault: true };
-						}}
-						onUnlinkToken={() => {
-							handleToggleTokenLink();
-							return { preventDefault: true };
-						}}
+						onLinkToken={
+							syncedTokenLink
+								? () => {
+										handleToggleTokenLink();
+										return { preventDefault: true };
+									}
+								: onLinkToken != null
+									? () => mapTokenRef(onLinkToken(), 'paint')
+									: undefined
+						}
+						onUnlinkToken={
+							syncedTokenLink
+								? () => {
+										handleToggleTokenLink();
+										return { preventDefault: true };
+									}
+								: undefined
+						}
 						onNavigateToToken={handleNavigateToToken}
 						disabledTokenLink={disabledTokenLink}
+						editor={editor}
+						allowedPaintTypes={['solid']}
+						disabled={disabled}
 					/>
 					<TokenTextInput
 						label="Width"
@@ -201,16 +271,27 @@ export const StrokeStyleMixinEditor = (props: TStrokeStyleMixinEditorProps) => {
 						step={1}
 						state={widthState}
 						tokenMap={editor.tokenMap}
-						onLinkToken={() => {
-							handleToggleTokenLink();
-							return { preventDefault: true };
-						}}
-						onUnlinkToken={() => {
-							handleToggleTokenLink();
-							return { preventDefault: true };
-						}}
+						onLinkToken={
+							syncedTokenLink
+								? () => {
+										handleToggleTokenLink();
+										return { preventDefault: true };
+									}
+								: onLinkToken != null
+									? () => mapTokenRef(onLinkToken(), 'width')
+									: undefined
+						}
+						onUnlinkToken={
+							syncedTokenLink
+								? () => {
+										handleToggleTokenLink();
+										return { preventDefault: true };
+									}
+								: undefined
+						}
 						onNavigateToToken={handleNavigateToToken}
 						disabledTokenLink={disabledTokenLink}
+						disabled={disabled}
 					/>
 				</div>
 			)}
@@ -222,5 +303,7 @@ interface TStrokeStyleMixinEditorProps {
 	state: TState<TStrokeStyleMixin['value'], any>;
 	onLinkToken?: () => TTokenRef<TUnreferenceTop<TStrokeStyleMixin['value']>>;
 	disabledTokenLink?: boolean;
+	syncedTokenLink?: boolean;
+	disabled?: boolean;
 	editor: TPageEditor;
 }

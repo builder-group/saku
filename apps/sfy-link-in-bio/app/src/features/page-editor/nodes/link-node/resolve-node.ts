@@ -117,12 +117,12 @@ export function resolveLinkNode(
 	if (!isResolvedTextOk) {
 		return Err(resolvedTextErr.wrapWith('#ERR_RESOLVE_TEXT_STYLE'));
 	}
-	const [isResolvedSmTextOk, resolvedSmTextErr, resolvedSmText] = resolveTextStyleMixin(textSm, {
+	const [isResolvedTextSmOk, resolvedTextSmErr, resolvedTextSm] = resolveTextStyleMixin(textSm, {
 		node: cx,
 		tokenMap: cx.site.getTokenMap()
 	});
-	if (!isResolvedSmTextOk) {
-		return Err(resolvedSmTextErr.wrapWith('#ERR_RESOLVE_SM_TEXT_STYLE'));
+	if (!isResolvedTextSmOk) {
+		return Err(resolvedTextSmErr.wrapWith('#ERR_RESOLVE_TEXT_SM_STYLE'));
 	}
 	const [isResolvedImageOk, resolvedImageErr, resolvedImage] = resolveImageStyleMixin(image, {
 		node: cx,
@@ -153,7 +153,7 @@ export function resolveLinkNode(
 		stroke: resolvedStroke,
 		shadow: resolvedShadow,
 		text: resolvedText,
-		textSm: resolvedSmText,
+		textSm: resolvedTextSm,
 		image: {
 			...resolvedImage,
 			appearance: {

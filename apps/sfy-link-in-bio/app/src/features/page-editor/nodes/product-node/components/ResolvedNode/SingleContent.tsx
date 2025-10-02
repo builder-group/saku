@@ -16,7 +16,7 @@ export const SingleContent: React.FC<TSingleContentProps> = (props) => {
 		shadow,
 		text,
 		buttonPrimary,
-		badgePrimary,
+		badgeSecondary,
 		badgeNeutral,
 		image
 	} = node;
@@ -161,8 +161,8 @@ export const SingleContent: React.FC<TSingleContentProps> = (props) => {
 						<div className="flex flex-wrap items-center gap-2">
 							{/* Price Badge */}
 							{selectedVariant?.price && (
-								<div className="px-2 py-0.5" style={badgePrimary.styles}>
-									<div style={badgePrimary.text.styles}>
+								<div className="px-2 py-0.5" style={badgeSecondary.styles}>
+									<div style={badgeSecondary.text.styles}>
 										{getCurrencySymbol(selectedVariant.price.currencyCode)}
 										{selectedVariant.price.amount}
 									</div>

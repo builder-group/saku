@@ -1,6 +1,7 @@
 import {
 	isTokenRef,
 	mapTokenRef,
+	resolveTokenRef,
 	TAppearanceStyleMixin,
 	TRef,
 	TTokenRef,
@@ -14,7 +15,7 @@ import { unwrapOrUndefined } from 'tuple-result';
 import { PolarisHideIcon, PolarisViewIcon } from '@/components';
 import { useMapState } from '@/hooks';
 import { TokenTextInput } from '../../components';
-import { resolveTokenRef, TPageEditor } from '../../lib';
+import { TPageEditor } from '../../lib';
 import { packAppearanceTokenRef, unpackAppearanceTokenRef } from './pack-mixin';
 
 export const AppearanceStyleMixinEditor = (props: TAppearanceStyleMixinEditorProps) => {
@@ -23,6 +24,7 @@ export const AppearanceStyleMixinEditor = (props: TAppearanceStyleMixinEditorPro
 		onLinkToken,
 		disabledTokenLink = false,
 		disabledVisibilityToggle = false,
+		disabled = false,
 		editor
 	} = props;
 
@@ -88,8 +90,11 @@ export const AppearanceStyleMixinEditor = (props: TAppearanceStyleMixinEditorPro
 	// Events
 	// =========================================================================
 
-	// TODO: Doesn't pack if its the same value as parent
 	const handleToggleVisibility = React.useCallback(() => {
+		if (disabled) {
+			return;
+		}
+
 		const unpackedAppearance = unpackAppearanceTokenRef(state._v);
 		const [isResolvedVisibleOk, , resolvedVisible] = resolveTokenRef(unpackedAppearance.visible, {
 			tokenMap: editor.tokenMap._v
@@ -98,18 +103,31 @@ export const AppearanceStyleMixinEditor = (props: TAppearanceStyleMixinEditorPro
 			return;
 		}
 
-		const nextVisible = isTokenRef(unpackedAppearance.visible)
-			? !resolvedVisible
-			: !unpackedAppearance.visible;
-		if (onLinkToken != null) {
+		const nextVisible = !resolvedVisible;
+
+		// If current value isn't a token ref, check if the new value matches the to link token value.
+		// If it matches, use the token ref instead of hardcoding to maintain consistency.
+		// Note: We skip this check if its already a token ref because we are toggling the resolved value.
+		if (onLinkToken != null && !isTokenRef(unpackedAppearance.visible)) {
+			const tokenRef = mapTokenRef(onLinkToken(), 'visible');
+			const resolvedTokenRefVisible = unwrapOrUndefined(
+				resolveTokenRef(tokenRef, {
+					tokenMap: editor.tokenMap._v
+				})
+			);
 			unpackedAppearance.visible =
-				nextVisible === resolvedVisible ? mapTokenRef(onLinkToken(), 'visible') : nextVisible;
-		} else {
+				resolvedTokenRefVisible != null && nextVisible === resolvedTokenRefVisible
+					? tokenRef
+					: nextVisible;
+		}
+		// Otherwise, just set the new value
+		else {
 			unpackedAppearance.visible = nextVisible;
 		}
+
 		state._v = packAppearanceTokenRef(unpackedAppearance);
 		state._notify();
-	}, [editor, onLinkToken, state]);
+	}, [disabled, editor, onLinkToken, state]);
 
 	const handleNavigateToToken = React.useCallback(() => {
 		editor.switchView({ type: 'settings', view: { type: 'design', tab: 2 } });
@@ -131,6 +149,7 @@ export const AppearanceStyleMixinEditor = (props: TAppearanceStyleMixinEditorPro
 						<Button
 							icon={PolarisViewIcon}
 							onClick={handleToggleVisibility}
+							disabled={disabled}
 							variant="plain"
 							size="micro"
 						/>
@@ -138,6 +157,7 @@ export const AppearanceStyleMixinEditor = (props: TAppearanceStyleMixinEditorPro
 						<Button
 							icon={PolarisHideIcon}
 							onClick={handleToggleVisibility}
+							disabled={disabled}
 							variant="plain"
 							size="micro"
 						/>
@@ -160,6 +180,7 @@ export const AppearanceStyleMixinEditor = (props: TAppearanceStyleMixinEditorPro
 					}
 					onNavigateToToken={handleNavigateToToken}
 					disabledTokenLink={disabledTokenLink}
+					disabled={disabled}
 				/>
 				{hasBorderRadius && (
 					<TokenTextInput
@@ -178,6 +199,7 @@ export const AppearanceStyleMixinEditor = (props: TAppearanceStyleMixinEditorPro
 						}
 						onNavigateToToken={handleNavigateToToken}
 						disabledTokenLink={disabledTokenLink}
+						disabled={disabled}
 					/>
 				)}
 			</div>
@@ -190,5 +212,6 @@ interface TAppearanceStyleMixinEditorProps {
 	onLinkToken?: () => TTokenRef<TUnreferenceTop<TAppearanceStyleMixin['value']>>;
 	disabledTokenLink?: boolean;
 	disabledVisibilityToggle?: boolean;
+	disabled?: boolean;
 	editor: TPageEditor;
 }

@@ -2,7 +2,7 @@ import { shortId } from '@blgc/utils';
 import {
 	aboutNodeMetadata,
 	createId,
-	createTokensFromTheme,
+	createThemeTokens,
 	cssRgbaToRgba,
 	extractSpotifyId,
 	extractYouTubeId,
@@ -24,6 +24,7 @@ import {
 	tokenRef,
 	TPaint,
 	TSite,
+	TSolidPaint,
 	TTextNode,
 	TTheme
 } from '@repo/editor';
@@ -69,7 +70,6 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 			profilePictureHash = imageAsset.hash;
 		}
 
-		const fontColor = cssRgbaToRgba(page.themeSettings?.fontColor);
 		const aboutNode: TAboutNode = {
 			id: createId('node'),
 			type: 'about',
@@ -81,60 +81,14 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 				profilePicture: profilePictureHash,
 				contactIcons: transformSocialLinks(page.socialMediaAccounts ?? [])
 			},
-			textXl:
-				fontColor != null
-					? {
-							appearance: tokenRef('xl', 'text', 'appearance'),
-							typography: {
-								font: tokenRef('xl', 'text', 'typography.font'),
-								fontSize: tokenRef('xl', 'text', 'typography.fontSize'),
-								textAlignHorizontal: 'center',
-								textAlignVertical: 'center',
-								lineHeight: tokenRef('xl', 'text', 'typography.lineHeight'),
-								letterSpacing: tokenRef('xl', 'text', 'typography.letterSpacing')
-							},
-							fill: {
-								paint: {
-									type: 'solid',
-									color: fontColor
-								},
-								opacity: 1
-							},
-							stroke: tokenRef('xl', 'text', 'stroke'),
-							shadow: tokenRef('xl', 'text', 'shadow')
-						}
-					: aboutNodeMetadata.default.textXl,
-			text:
-				fontColor != null
-					? {
-							appearance: tokenRef('default', 'text', 'appearance'),
-							typography: {
-								font: tokenRef('default', 'text', 'typography.font'),
-								fontSize: tokenRef('default', 'text', 'typography.fontSize'),
-								textAlignHorizontal: 'center',
-								textAlignVertical: 'center',
-								lineHeight: tokenRef('default', 'text', 'typography.lineHeight'),
-								letterSpacing: tokenRef('default', 'text', 'typography.letterSpacing')
-							},
-							fill: {
-								paint: {
-									type: 'solid',
-									color: fontColor
-								},
-								opacity: 1
-							},
-							stroke: tokenRef('default', 'text', 'stroke'),
-							shadow: tokenRef('default', 'text', 'shadow')
-						}
-					: aboutNodeMetadata.default.text,
 			image: {
 				appearance: {
 					visible: true,
-					opacity: tokenRef('default', 'image', 'appearance.opacity'),
+					opacity: tokenRef('image.default', 'image', 'appearance.opacity'),
 					borderRadius: 48
 				},
-				stroke: tokenRef('default', 'image', 'stroke'),
-				shadow: tokenRef('default', 'image', 'shadow')
+				stroke: tokenRef('image.default', 'image', 'stroke'),
+				shadow: tokenRef('image.default', 'image', 'shadow')
 			}
 		};
 		children.push(aboutNode);
@@ -272,7 +226,7 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 			autoLayout: {
 				horizontalPadding: 24,
 				verticalPadding: 48,
-				verticalGap: 24,
+				verticalGap: tokenRef('spacing.gap', 'number'),
 				horizontalGap: null
 			},
 			appearance: {
@@ -281,24 +235,27 @@ export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
 				borderRadius: 0
 			},
 			fill: {
-				paint: backgroundPaint,
+				paint: tokenRef('paint.base200', 'paint'),
 				opacity: 1
 			}
 		},
-		tokens: createTokensFromTheme({
+		tokens: createThemeTokens({
 			...defaultTheme,
 			key: 'linkpop',
 			name: 'LinkPop Import',
-			color: {
-				...defaultTheme.color,
-				base100: cssRgbaToRgba(page?.themeSettings?.linkCardColor) ?? defaultTheme.color.base100,
-				base200: cssRgbaToRgba(page?.themeSettings?.backgroundColor) ?? defaultTheme.color.base200,
-				baseContent:
-					cssRgbaToRgba(page?.themeSettings?.linkCardFontColor) ?? defaultTheme.color.baseContent,
+			paint: {
+				...defaultTheme.paint,
+				base100: cssRgbaToPaint(page?.themeSettings?.linkCardColor) ?? defaultTheme.paint.base100,
+				base100Content:
+					cssRgbaToPaint(page?.themeSettings?.linkCardFontColor) ??
+					defaultTheme.paint.base100Content,
+				base200: backgroundPaint ?? defaultTheme.paint.base200,
+				base200Content:
+					cssRgbaToPaint(page?.themeSettings?.fontColor) ?? defaultTheme.paint.base200Content,
 				primary:
-					cssRgbaToRgba(page?.themeSettings?.linkCardFontColor) ?? defaultTheme.color.primary,
+					cssRgbaToPaint(page?.themeSettings?.linkCardFontColor) ?? defaultTheme.paint.primary,
 				primaryContent:
-					cssRgbaToRgba(page?.themeSettings?.linkCardColor) ?? defaultTheme.color.primaryContent
+					cssRgbaToPaint(page?.themeSettings?.linkCardColor) ?? defaultTheme.paint.primaryContent
 			},
 			typography: {
 				heading: {
@@ -411,4 +368,16 @@ function getBorderRadiusFromShape(shape: string | null | undefined): number {
 		default:
 			return 8; // Default fallback
 	}
+}
+
+function cssRgbaToPaint(cssRgba?: string): TSolidPaint | undefined {
+	const rgba = cssRgbaToRgba(cssRgba);
+	if (rgba == null) {
+		return undefined;
+	}
+
+	return {
+		type: 'solid',
+		color: rgba
+	};
 }

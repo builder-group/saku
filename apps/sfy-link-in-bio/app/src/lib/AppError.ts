@@ -1,3 +1,5 @@
+import { EditorError } from '@repo/editor';
+
 export class AppError extends Error {
 	public readonly code: TErrorCode;
 	public readonly detail?: string;
@@ -48,6 +50,14 @@ export class AppError extends Error {
 			detail: dto.detail,
 			errors: dto.errors,
 			errorStack: dto.errorStack?.map((errorDto) => AppError.fromAppErrorDto(errorDto)) ?? []
+		});
+	}
+
+	public static fromEditorError(error: EditorError): AppError {
+		return new AppError(error.code, {
+			detail: error.detail,
+			errors: error.errors,
+			errorStack: error.errorStack.map((error) => AppError.fromEditorError(error))
 		});
 	}
 }

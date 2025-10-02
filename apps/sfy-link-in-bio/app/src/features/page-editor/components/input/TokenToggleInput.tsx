@@ -1,12 +1,12 @@
-import { isTokenRef, TRef, TToken } from '@repo/editor';
+import { isTokenRef, resolveTokenRef, TRef, TToken } from '@repo/editor';
 import { Text, Tooltip } from '@shopify/polaris';
 import { useCombinedCompute, useCompute } from 'feature-react/state';
 import { TState } from 'feature-state';
 import React from 'react';
-import { Knob, LinkIcon, LinkOffIcon, TKnobProps } from '@/components';
+import { Badge, Knob, LinkIcon, LinkOffIcon, TKnobProps } from '@/components';
 import { cn } from '@/lib';
-import { resolveTokenRef } from '../../lib';
 import { isPreventDefault, TPreventDefault } from './prevent-default';
+import { TokenActionOverlay, TokenKeyTooltip } from './TokenActionOverlay';
 
 export const TokenToggleInput = <GRefValue extends TRef<boolean> | undefined>(
 	props: TTokenToggleInputProps<GRefValue>
@@ -16,9 +16,10 @@ export const TokenToggleInput = <GRefValue extends TRef<boolean> | undefined>(
 		tokenMap,
 		onLinkToken,
 		onUnlinkToken,
+		onNavigateToToken,
 		disabledTokenLink = false,
 		label,
-		disabled,
+		disabled = false,
 		className,
 		...knobProps
 	} = props;
@@ -47,15 +48,19 @@ export const TokenToggleInput = <GRefValue extends TRef<boolean> | undefined>(
 	// =========================================================================
 
 	const handleToggle = React.useCallback(() => {
-		if (isLinked) {
+		if (isLinked || disabled) {
 			return;
 		}
 
 		setDisplayValue(!displayValue);
 		state.set((value) => !value as GRefValue);
-	}, [displayValue, isLinked, state]);
+	}, [displayValue, isLinked, disabled, state]);
 
 	const handleToggleTokenLink = React.useCallback(() => {
+		if (disabled) {
+			return;
+		}
+
 		// Unlink token
 		if (isLinked) {
 			const result = onUnlinkToken?.();
@@ -79,7 +84,7 @@ export const TokenToggleInput = <GRefValue extends TRef<boolean> | undefined>(
 		if (isTokenRef(result)) {
 			state.set(result as GRefValue);
 		}
-	}, [onLinkToken, onUnlinkToken, isLinked, state, tokenMap]);
+	}, [disabled, isLinked, onLinkToken, onUnlinkToken, state, tokenMap]);
 
 	// =========================================================================
 	// Effects
@@ -96,6 +101,7 @@ export const TokenToggleInput = <GRefValue extends TRef<boolean> | undefined>(
 	const InputComponent = (
 		<Knob
 			{...knobProps}
+			ariaLabel={label}
 			selected={displayValue}
 			onClick={handleToggle}
 			disabled={isLinked || disabled}
@@ -105,14 +111,36 @@ export const TokenToggleInput = <GRefValue extends TRef<boolean> | undefined>(
 	return (
 		<div className={cn('space-y-1', className)}>
 			<div className="flex items-center justify-between">
-				<Text as="span" variant="bodySm" tone="subdued">
-					{label}
-				</Text>
+				<div className="flex items-center gap-2">
+					<Text as="span" variant="bodySm" tone="subdued">
+						{label}
+					</Text>
+					{isLinked && !disabledTokenLink && (
+						<Badge className="group relative hover:w-32">
+							Linked
+							<TokenActionOverlay
+								variant={'full-overlay'}
+								tooltipContent={
+									isTokenRef(state._v) ? <TokenKeyTooltip tokenKey={state._v.key} /> : undefined
+								}
+								onUnlink={handleToggleTokenLink}
+								onNavigateToToken={onNavigateToToken}
+								disabled={disabled}
+							/>
+						</Badge>
+					)}
+				</div>
 				{!disabledTokenLink && (onLinkToken != null || isLinked) && (
 					<button
 						type="button"
 						onClick={handleToggleTokenLink}
-						className="flex cursor-pointer items-center justify-center opacity-60 transition-opacity hover:opacity-100"
+						disabled={disabled}
+						className={cn(
+							'flex items-center justify-center transition-opacity',
+							disabled
+								? 'cursor-not-allowed opacity-30'
+								: 'cursor-pointer opacity-60 hover:opacity-100'
+						)}
 						title={isLinked ? 'Unlink' : 'Link'}
 					>
 						{isLinked ? <LinkOffIcon className="h-3 w-3" /> : <LinkIcon className="h-3 w-3" />}
@@ -142,7 +170,7 @@ export const TokenToggleInput = <GRefValue extends TRef<boolean> | undefined>(
 };
 
 export interface TTokenToggleInputProps<GRefValue extends TRef<boolean> | undefined>
-	extends Omit<TKnobProps, 'selected' | 'onClick'> {
+	extends Omit<TKnobProps, 'ariaLabel' | 'selected' | 'onClick'> {
 	state: TState<GRefValue, any>;
 
 	tokenMap?: TState<Record<TToken['key'], TToken>, any>;
@@ -152,5 +180,6 @@ export interface TTokenToggleInputProps<GRefValue extends TRef<boolean> | undefi
 	disabledTokenLink?: boolean;
 
 	label: string;
+	disabled?: boolean;
 	className?: string;
 }

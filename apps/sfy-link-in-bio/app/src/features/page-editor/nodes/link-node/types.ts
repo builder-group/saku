@@ -6,8 +6,8 @@ import {
 	TResolvedFillStyleMixin,
 	TResolvedImageStyleMixin,
 	TResolvedShadowStyleMixin,
-	TResolvedSmTextStyleMixin,
 	TResolvedStrokeStyleMixin,
+	TResolvedTextSmStyleMixin,
 	TResolvedTextStyleMixin
 } from '../../mixins';
 
@@ -23,7 +23,7 @@ export type TResolvedLinkNode<
 		TResolvedStrokeStyleMixin,
 		TResolvedShadowStyleMixin,
 		TResolvedTextStyleMixin,
-		TResolvedSmTextStyleMixin,
+		TResolvedTextSmStyleMixin,
 		TResolvedImageStyleMixin
 	]
 >;

@@ -3,6 +3,7 @@ import {
 	hsbaToRgba,
 	isTokenRef,
 	isValidHex,
+	resolveTokenRef,
 	rgbaToHex,
 	rgbaToHsba,
 	TRef,
@@ -15,7 +16,6 @@ import { TState } from 'feature-state';
 import React from 'react';
 import { LinkIcon, LinkOffIcon } from '@/components';
 import { cn } from '@/lib';
-import { resolveTokenRef } from '../../lib';
 import { isPreventDefault, TPreventDefault } from './prevent-default';
 import { TokenActionOverlay, TokenKeyTooltip } from './TokenActionOverlay';
 
@@ -30,7 +30,7 @@ export const TokenColorInput = <GRefValue extends TRef<TRgba> | undefined>(
 		onNavigateToToken,
 		disabledTokenLink = false,
 		label,
-		readOnly,
+		disabled = false,
 		className,
 		...textFieldProps
 	} = props;
@@ -95,7 +95,7 @@ export const TokenColorInput = <GRefValue extends TRef<TRgba> | undefined>(
 
 	const handleTextChange = React.useCallback(
 		(newValue: string) => {
-			if (isLinked) {
+			if (isLinked || disabled) {
 				return;
 			}
 
@@ -111,21 +111,25 @@ export const TokenColorInput = <GRefValue extends TRef<TRgba> | undefined>(
 			}
 			setDisplayValue(normalizedValue);
 		},
-		[handleValueChange, isLinked]
+		[disabled, handleValueChange, isLinked]
 	);
 
 	const handleColorChange = React.useCallback(
 		(hsba: HSBAColor) => {
-			if (isLinked) {
+			if (isLinked || disabled) {
 				return;
 			}
 
 			handleValueChange(hsbaToRgba(hsba) as GRefValue, false);
 		},
-		[handleValueChange, isLinked]
+		[disabled, handleValueChange, isLinked]
 	);
 
 	const handleToggleTokenLink = React.useCallback(() => {
+		if (disabled) {
+			return;
+		}
+
 		// Unlink token
 		if (isLinked) {
 			const result = onUnlinkToken?.();
@@ -149,19 +153,23 @@ export const TokenColorInput = <GRefValue extends TRef<TRgba> | undefined>(
 		if (isTokenRef(result)) {
 			state.set(result as GRefValue);
 		}
-	}, [onLinkToken, onUnlinkToken, isLinked, state, tokenMap]);
+	}, [disabled, onLinkToken, onUnlinkToken, isLinked, state, tokenMap]);
 
 	const togglePopoverActive = React.useCallback(() => {
-		if (!isLinked) {
-			setIsPopoverActive((active) => !active);
+		if (isLinked || disabled) {
+			return;
 		}
-	}, [isLinked]);
+
+		setIsPopoverActive((active) => !active);
+	}, [isLinked, disabled]);
 
 	const handleFocus = React.useCallback(() => {
-		if (!isLinked) {
-			setIsPopoverActive(true);
+		if (isLinked || disabled) {
+			return;
 		}
-	}, [isLinked]);
+
+		setIsPopoverActive(true);
+	}, [disabled, isLinked]);
 
 	// =========================================================================
 	// Effects
@@ -185,19 +193,21 @@ export const TokenColorInput = <GRefValue extends TRef<TRgba> | undefined>(
 				<div className="relative">
 					<TextField
 						{...textFieldProps}
+						type="text"
 						label={label}
 						labelHidden
 						value={displayValue}
 						onChange={handleTextChange}
 						onFocus={handleFocus}
-						readOnly={isLinked || readOnly}
+						disabled={isLinked || disabled}
 						prefix={
 							<button
 								type="button"
 								onClick={togglePopoverActive}
+								disabled={isLinked || disabled}
 								className={cn(
 									'-ml-1 flex h-5 w-5 items-center justify-center rounded-full border border-neutral-200',
-									isLinked ? 'cursor-default' : 'cursor-pointer'
+									isLinked || disabled ? 'cursor-default' : 'cursor-pointer'
 								)}
 								style={{ backgroundColor: rgbaToHex(resolvedValue ?? { r: 0, g: 0, b: 0, a: 1 }) }}
 							/>
@@ -226,8 +236,13 @@ export const TokenColorInput = <GRefValue extends TRef<TRgba> | undefined>(
 				{!disabledTokenLink && (onLinkToken != null || isLinked) && (
 					<button
 						type="button"
-						onClick={handleToggleTokenLink}
-						className="flex cursor-pointer items-center justify-center opacity-60 transition-opacity hover:opacity-100"
+						disabled={disabled}
+						className={cn(
+							'flex items-center justify-center transition-opacity',
+							disabled
+								? 'cursor-not-allowed opacity-30'
+								: 'cursor-pointer opacity-60 hover:opacity-100'
+						)}
 						title={isLinked ? `Unlink` : `Link`}
 					>
 						{isLinked ? <LinkOffIcon className="h-3 w-3" /> : <LinkIcon className="h-3 w-3" />}
@@ -244,6 +259,7 @@ export const TokenColorInput = <GRefValue extends TRef<TRgba> | undefined>(
 						}
 						onUnlink={handleToggleTokenLink}
 						onNavigateToToken={onNavigateToToken}
+						disabled={disabled}
 					/>
 				)}
 			</div>
@@ -265,5 +281,6 @@ export interface TTokenColorInputProps<GRefValue extends TRef<TRgba> | undefined
 	disabledTokenLink?: boolean;
 
 	label: string;
+	disabled?: boolean;
 	className?: string;
 }

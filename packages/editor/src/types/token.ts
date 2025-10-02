@@ -13,7 +13,7 @@ import {
 	TTypographyStyleMixin
 } from './mixin';
 import { TRef, TUnreferenceTop } from './ref';
-import { TFont, TPaint } from './utils';
+import { TFont, TPaint, TSolidPaint } from './utils';
 
 export interface TBaseToken {
 	type: string;
@@ -78,6 +78,7 @@ export type TAtomicToken =
 	| TBooleanToken
 	| TColorToken
 	| TPaintToken
+	| TSolidPaintToken
 	| TFontToken;
 
 export interface TStringToken extends TBaseToken {
@@ -103,6 +104,11 @@ export interface TColorToken extends TBaseToken {
 export interface TPaintToken extends TBaseToken {
 	type: 'paint';
 	value: TPaint;
+}
+
+export interface TSolidPaintToken extends TBaseToken {
+	type: 'paint.solid';
+	value: TSolidPaint;
 }
 
 export interface TFontToken extends TBaseToken {
