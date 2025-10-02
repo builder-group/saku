@@ -15,6 +15,7 @@ import { useFeatureState, withLocalStorage } from 'feature-react';
 import { createState, TState } from 'feature-state';
 import React from 'react';
 import { AccordionSection, CrownIcon } from '@/components';
+import { shopifyClientConfig } from '@/environment';
 import { useCurrentPlan } from '@/hooks';
 import { cn } from '@/lib';
 import { TPageEditor } from '../../../../../../lib';
@@ -327,7 +328,12 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 								</Text>
 							</div>
 							<div className="mt-4">
-								<Button variant="primary" size="medium" url={'/app/settings/plans'}>
+								<Button
+									variant="primary"
+									size="medium"
+									url={`${shopifyClientConfig.shop.adminUrl(editor.shopId)}/settings/plans`}
+									target="_blank"
+								>
 									Upgrade to Awesome
 								</Button>
 							</div>

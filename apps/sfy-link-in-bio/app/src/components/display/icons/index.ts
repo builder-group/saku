@@ -25,6 +25,7 @@ export {
 	AlertTriangleIcon as PolarisAlertTriangleIcon,
 	AppsIcon as PolarisAppsIcon,
 	ArrowLeftIcon as PolarisArrowLeftIcon,
+	ArrowDiagonalIcon as PolarisArrowUpRightIcon,
 	ChatIcon as PolarisChatIcon,
 	CheckIcon as PolarisCheckIcon,
 	ChevronDownIcon as PolarisChevronDownIcon,
