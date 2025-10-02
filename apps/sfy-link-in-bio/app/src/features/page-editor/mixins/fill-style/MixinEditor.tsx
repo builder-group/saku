@@ -14,6 +14,7 @@ import React from 'react';
 import { unwrapOrUndefined } from 'tuple-result';
 import { Badge, LinkIcon, LinkOffIcon, PolarisMinusIcon, PolarisPlusIcon } from '@/components';
 import { useMapState } from '@/hooks';
+import { cn } from '@/lib';
 import {
 	TokenActionOverlay,
 	TokenKeyTooltip,
@@ -29,8 +30,9 @@ export const FillStyleMixinEditor = (props: TFillStyleMixinEditorProps) => {
 		onLinkToken,
 		disabledTokenLink = false,
 		syncedTokenLink = true,
-		editor,
-		allowedPaintTypes
+		disabled = false,
+		allowedPaintTypes,
+		editor
 	} = props;
 
 	const isLinked = useCompute(state, ({ value }) => isTokenRef(value), []);
@@ -64,6 +66,10 @@ export const FillStyleMixinEditor = (props: TFillStyleMixinEditorProps) => {
 	// =========================================================================
 
 	const handleAddFill = React.useCallback(() => {
+		if (disabled) {
+			return;
+		}
+
 		const [isResolvedTokenOk, , resolvedToken] = resolveTokenRef(state._v, {
 			tokenMap: editor.tokenMap._v
 		});
@@ -80,14 +86,22 @@ export const FillStyleMixinEditor = (props: TFillStyleMixinEditorProps) => {
 						};
 			state._notify();
 		}
-	}, [editor, state]);
+	}, [disabled, editor, state]);
 
 	const handleRemoveFill = React.useCallback(() => {
+		if (disabled) {
+			return;
+		}
+
 		state._v = null;
 		state._notify();
-	}, [state]);
+	}, [state, disabled]);
 
 	const handleToggleTokenLink = React.useCallback(() => {
+		if (disabled) {
+			return;
+		}
+
 		if (isLinked) {
 			const [isResolvedTokenOk, , resolvedToken] = resolveTokenRef(state._v, {
 				tokenMap: editor.tokenMap._v
@@ -128,7 +142,7 @@ export const FillStyleMixinEditor = (props: TFillStyleMixinEditorProps) => {
 				state._notify();
 			}
 		}
-	}, [isLinked, state, editor, onLinkToken]);
+	}, [disabled, isLinked, state, editor, onLinkToken]);
 
 	const handleNavigateToToken = React.useCallback(() => {
 		editor.switchView({ type: 'settings', view: { type: 'design', tab: 2 } });
@@ -147,7 +161,13 @@ export const FillStyleMixinEditor = (props: TFillStyleMixinEditorProps) => {
 						<button
 							type="button"
 							onClick={handleToggleTokenLink}
-							className="flex cursor-pointer items-center justify-center opacity-60 transition-opacity hover:opacity-100"
+							disabled={disabled}
+							className={cn(
+								'flex items-center justify-center transition-opacity',
+								disabled
+									? 'cursor-not-allowed opacity-30'
+									: 'cursor-pointer opacity-60 hover:opacity-100'
+							)}
 							title={isLinked ? 'Unlink' : 'Link'}
 						>
 							{isLinked ? (
@@ -172,6 +192,7 @@ export const FillStyleMixinEditor = (props: TFillStyleMixinEditorProps) => {
 									}
 									onUnlink={handleToggleTokenLink}
 									onNavigateToToken={handleNavigateToToken}
+									disabled={disabled}
 								/>
 							</Badge>
 						)}
@@ -180,9 +201,21 @@ export const FillStyleMixinEditor = (props: TFillStyleMixinEditorProps) => {
 
 				{/* Add/Remove fill buttons */}
 				{isSet ? (
-					<Button icon={PolarisMinusIcon} onClick={handleRemoveFill} variant="plain" size="micro" />
+					<Button
+						icon={PolarisMinusIcon}
+						onClick={handleRemoveFill}
+						disabled={disabled}
+						variant="plain"
+						size="micro"
+					/>
 				) : (
-					<Button icon={PolarisPlusIcon} onClick={handleAddFill} variant="plain" size="micro" />
+					<Button
+						icon={PolarisPlusIcon}
+						onClick={handleAddFill}
+						disabled={disabled}
+						variant="plain"
+						size="micro"
+					/>
 				)}
 			</div>
 
@@ -213,6 +246,7 @@ export const FillStyleMixinEditor = (props: TFillStyleMixinEditorProps) => {
 					disabledTokenLink={disabledTokenLink}
 					editor={editor}
 					allowedPaintTypes={allowedPaintTypes}
+					disabled={disabled}
 				/>
 			)}
 		</div>
@@ -224,6 +258,7 @@ interface TFillStyleMixinEditorProps {
 	onLinkToken?: () => TTokenRef<TUnreferenceTop<TFillStyleMixin['value']>>;
 	disabledTokenLink?: boolean;
 	syncedTokenLink?: boolean;
-	editor: TPageEditor;
+	disabled?: boolean;
 	allowedPaintTypes?: TTokenPaintInputPaintType[];
+	editor: TPageEditor;
 }

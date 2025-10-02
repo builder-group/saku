@@ -14,6 +14,7 @@ import React from 'react';
 import { unwrapOrUndefined } from 'tuple-result';
 import { Badge, LinkIcon, LinkOffIcon, PolarisMinusIcon, PolarisPlusIcon } from '@/components';
 import { useMapState } from '@/hooks';
+import { cn } from '@/lib';
 import {
 	TokenActionOverlay,
 	TokenKeyTooltip,
@@ -24,7 +25,14 @@ import { TPageEditor } from '../../lib';
 import { packStrokeTokenRef, unpackStrokeTokenRef } from './pack-mixin';
 
 export const StrokeStyleMixinEditor = (props: TStrokeStyleMixinEditorProps) => {
-	const { state, onLinkToken, disabledTokenLink = false, syncedTokenLink = true, editor } = props;
+	const {
+		state,
+		onLinkToken,
+		disabledTokenLink = false,
+		syncedTokenLink = true,
+		disabled = false,
+		editor
+	} = props;
 
 	const isLinked = useCompute(state, ({ value }) => isTokenRef(value), []);
 	const isSet = useCompute(
@@ -74,6 +82,10 @@ export const StrokeStyleMixinEditor = (props: TStrokeStyleMixinEditorProps) => {
 	// =========================================================================
 
 	const handleAddStroke = React.useCallback(() => {
+		if (disabled) {
+			return;
+		}
+
 		const [isResolvedTokenOk, , resolvedToken] = resolveTokenRef(state._v, {
 			tokenMap: editor.tokenMap._v
 		});
@@ -87,14 +99,22 @@ export const StrokeStyleMixinEditor = (props: TStrokeStyleMixinEditorProps) => {
 						};
 			state._notify();
 		}
-	}, [editor, state]);
+	}, [disabled, editor, state]);
 
 	const handleRemoveStroke = React.useCallback(() => {
+		if (disabled) {
+			return;
+		}
+
 		state._v = null;
 		state._notify();
-	}, [state]);
+	}, [disabled, state]);
 
 	const handleToggleTokenLink = React.useCallback(() => {
+		if (disabled) {
+			return;
+		}
+
 		if (isLinked) {
 			const [isResolvedTokenOk, , resolvedToken] = resolveTokenRef(state._v, {
 				tokenMap: editor.tokenMap._v
@@ -135,7 +155,7 @@ export const StrokeStyleMixinEditor = (props: TStrokeStyleMixinEditorProps) => {
 				state._notify();
 			}
 		}
-	}, [isLinked, state, editor, onLinkToken]);
+	}, [disabled, isLinked, state, editor, onLinkToken]);
 
 	const handleNavigateToToken = React.useCallback(() => {
 		editor.switchView({ type: 'settings', view: { type: 'design', tab: 2 } });
@@ -154,7 +174,13 @@ export const StrokeStyleMixinEditor = (props: TStrokeStyleMixinEditorProps) => {
 						<button
 							type="button"
 							onClick={handleToggleTokenLink}
-							className="flex cursor-pointer items-center justify-center opacity-60 transition-opacity hover:opacity-100"
+							disabled={disabled}
+							className={cn(
+								'flex items-center justify-center transition-opacity',
+								disabled
+									? 'cursor-not-allowed opacity-30'
+									: 'cursor-pointer opacity-60 hover:opacity-100'
+							)}
 							title={isLinked ? 'Unlink' : 'Link'}
 						>
 							{isLinked ? (
@@ -179,6 +205,7 @@ export const StrokeStyleMixinEditor = (props: TStrokeStyleMixinEditorProps) => {
 									}
 									onUnlink={handleToggleTokenLink}
 									onNavigateToToken={handleNavigateToToken}
+									disabled={disabled}
 								/>
 							</Badge>
 						)}
@@ -190,11 +217,18 @@ export const StrokeStyleMixinEditor = (props: TStrokeStyleMixinEditorProps) => {
 					<Button
 						icon={PolarisMinusIcon}
 						onClick={handleRemoveStroke}
+						disabled={disabled}
 						variant="plain"
 						size="micro"
 					/>
 				) : (
-					<Button icon={PolarisPlusIcon} onClick={handleAddStroke} variant="plain" size="micro" />
+					<Button
+						icon={PolarisPlusIcon}
+						onClick={handleAddStroke}
+						disabled={disabled}
+						variant="plain"
+						size="micro"
+					/>
 				)}
 			</div>
 
@@ -226,6 +260,7 @@ export const StrokeStyleMixinEditor = (props: TStrokeStyleMixinEditorProps) => {
 						disabledTokenLink={disabledTokenLink}
 						editor={editor}
 						allowedPaintTypes={['solid']}
+						disabled={disabled}
 					/>
 					<TokenTextInput
 						label="Width"
@@ -256,6 +291,7 @@ export const StrokeStyleMixinEditor = (props: TStrokeStyleMixinEditorProps) => {
 						}
 						onNavigateToToken={handleNavigateToToken}
 						disabledTokenLink={disabledTokenLink}
+						disabled={disabled}
 					/>
 				</div>
 			)}
@@ -268,5 +304,6 @@ interface TStrokeStyleMixinEditorProps {
 	onLinkToken?: () => TTokenRef<TUnreferenceTop<TStrokeStyleMixin['value']>>;
 	disabledTokenLink?: boolean;
 	syncedTokenLink?: boolean;
+	disabled?: boolean;
 	editor: TPageEditor;
 }

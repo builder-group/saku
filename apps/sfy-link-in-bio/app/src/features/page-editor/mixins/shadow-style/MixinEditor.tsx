@@ -14,6 +14,7 @@ import React from 'react';
 import { unwrapOrUndefined } from 'tuple-result';
 import { Badge, LinkIcon, LinkOffIcon, PolarisMinusIcon, PolarisPlusIcon } from '@/components';
 import { useMapState } from '@/hooks';
+import { cn } from '@/lib';
 import {
 	TokenActionOverlay,
 	TokenKeyTooltip,
@@ -29,8 +30,9 @@ export const ShadowStyleMixinEditor = (props: TShadowStyleMixinEditorProps) => {
 		onLinkToken,
 		disabledTokenLink = false,
 		syncedTokenLink = true,
-		editor,
-		disabledSpread = false
+		disabled = false,
+		disabledSpread = false,
+		editor
 	} = props;
 
 	const isLinked = useCompute(state, ({ value }) => isTokenRef(value), []);
@@ -132,6 +134,10 @@ export const ShadowStyleMixinEditor = (props: TShadowStyleMixinEditorProps) => {
 	// =========================================================================
 
 	const handleAddShadow = React.useCallback(() => {
+		if (disabled) {
+			return;
+		}
+
 		const [isResolvedTokenOk, , resolvedToken] = resolveTokenRef(state._v, {
 			tokenMap: editor.tokenMap._v
 		});
@@ -148,14 +154,22 @@ export const ShadowStyleMixinEditor = (props: TShadowStyleMixinEditorProps) => {
 						};
 			state._notify();
 		}
-	}, [editor, state, disabledSpread]);
+	}, [disabled, state, editor, disabledSpread]);
 
 	const handleRemoveShadow = React.useCallback(() => {
+		if (disabled) {
+			return;
+		}
+
 		state._v = null;
 		state._notify();
-	}, [state]);
+	}, [disabled, state]);
 
 	const handleToggleTokenLink = React.useCallback(() => {
+		if (disabled) {
+			return;
+		}
+
 		if (isLinked) {
 			const [isResolvedTokenOk, , resolvedToken] = resolveTokenRef(state._v, {
 				tokenMap: editor.tokenMap._v
@@ -217,7 +231,7 @@ export const ShadowStyleMixinEditor = (props: TShadowStyleMixinEditorProps) => {
 				state._notify();
 			}
 		}
-	}, [isLinked, state, editor, onLinkToken]);
+	}, [disabled, isLinked, state, editor, onLinkToken]);
 
 	const handleNavigateToToken = React.useCallback(() => {
 		editor.switchView({ type: 'settings', view: { type: 'design', tab: 2 } });
@@ -236,7 +250,13 @@ export const ShadowStyleMixinEditor = (props: TShadowStyleMixinEditorProps) => {
 						<button
 							type="button"
 							onClick={handleToggleTokenLink}
-							className="flex cursor-pointer items-center justify-center opacity-60 transition-opacity hover:opacity-100"
+							disabled={disabled}
+							className={cn(
+								'flex items-center justify-center transition-opacity',
+								disabled
+									? 'cursor-not-allowed opacity-30'
+									: 'cursor-pointer opacity-60 hover:opacity-100'
+							)}
 							title={isLinked ? 'Unlink' : 'Link'}
 						>
 							{isLinked ? (
@@ -261,6 +281,7 @@ export const ShadowStyleMixinEditor = (props: TShadowStyleMixinEditorProps) => {
 									}
 									onUnlink={handleToggleTokenLink}
 									onNavigateToToken={handleNavigateToToken}
+									disabled={disabled}
 								/>
 							</Badge>
 						)}
@@ -272,11 +293,18 @@ export const ShadowStyleMixinEditor = (props: TShadowStyleMixinEditorProps) => {
 					<Button
 						icon={PolarisMinusIcon}
 						onClick={handleRemoveShadow}
+						disabled={disabled}
 						variant="plain"
 						size="micro"
 					/>
 				) : (
-					<Button icon={PolarisPlusIcon} onClick={handleAddShadow} variant="plain" size="micro" />
+					<Button
+						icon={PolarisPlusIcon}
+						onClick={handleAddShadow}
+						disabled={disabled}
+						variant="plain"
+						size="micro"
+					/>
 				)}
 			</div>
 
@@ -308,6 +336,7 @@ export const ShadowStyleMixinEditor = (props: TShadowStyleMixinEditorProps) => {
 						disabledTokenLink={disabledTokenLink}
 						editor={editor}
 						allowedPaintTypes={['solid']}
+						disabled={disabled}
 					/>
 					<div className="grid grid-cols-2 gap-3">
 						<TokenTextInput
@@ -339,6 +368,7 @@ export const ShadowStyleMixinEditor = (props: TShadowStyleMixinEditorProps) => {
 							}
 							onNavigateToToken={handleNavigateToToken}
 							disabledTokenLink={disabledTokenLink}
+							disabled={disabled}
 						/>
 						<TokenTextInput
 							label="Spread"
@@ -369,7 +399,7 @@ export const ShadowStyleMixinEditor = (props: TShadowStyleMixinEditorProps) => {
 							}
 							onNavigateToToken={handleNavigateToToken}
 							disabledTokenLink={disabledTokenLink}
-							disabled={disabledSpread}
+							disabled={disabled || disabledSpread}
 						/>
 					</div>
 					<div className="grid grid-cols-2 gap-3">
@@ -402,6 +432,7 @@ export const ShadowStyleMixinEditor = (props: TShadowStyleMixinEditorProps) => {
 							}
 							onNavigateToToken={handleNavigateToToken}
 							disabledTokenLink={disabledTokenLink}
+							disabled={disabled}
 						/>
 						<TokenTextInput
 							label="Offset Y"
@@ -432,6 +463,7 @@ export const ShadowStyleMixinEditor = (props: TShadowStyleMixinEditorProps) => {
 							}
 							onNavigateToToken={handleNavigateToToken}
 							disabledTokenLink={disabledTokenLink}
+							disabled={disabled}
 						/>
 					</div>
 				</div>
@@ -445,6 +477,7 @@ interface TShadowStyleMixinEditorProps {
 	onLinkToken?: () => TTokenRef<TUnreferenceTop<TShadowStyleMixin['value']>>;
 	disabledTokenLink?: boolean;
 	syncedTokenLink?: boolean;
-	editor: TPageEditor;
+	disabled?: boolean;
 	disabledSpread?: boolean;
+	editor: TPageEditor;
 }

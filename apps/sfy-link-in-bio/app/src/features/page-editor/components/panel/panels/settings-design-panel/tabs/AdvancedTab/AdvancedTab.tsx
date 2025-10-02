@@ -117,9 +117,9 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 						>
 							<AppearanceStyleMixinEditor
 								state={state as TState<TAppearanceStyleMixin['value'], []>}
-								editor={editor}
-								disabled={currentPlan.key !== 'awesome'}
 								disabledVisibilityToggle
+								disabled={currentPlan.key !== 'awesome'}
+								editor={editor}
 							/>
 						</AccordionSection>
 					))}
@@ -140,6 +140,7 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 							<FillStyleMixinEditor
 								state={state as TState<TFillStyleMixin['value'], []>}
 								syncedTokenLink={false}
+								disabled={currentPlan.key !== 'awesome'}
 								editor={editor}
 							/>
 						</AccordionSection>
@@ -161,6 +162,7 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 							<StrokeStyleMixinEditor
 								state={state as TState<TStrokeStyleMixin['value'], []>}
 								syncedTokenLink={false}
+								disabled={currentPlan.key !== 'awesome'}
 								editor={editor}
 							/>
 						</AccordionSection>
@@ -182,6 +184,7 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 							<ShadowStyleMixinEditor
 								state={state as TState<TShadowStyleMixin['value'], []>}
 								syncedTokenLink={false}
+								disabled={currentPlan.key !== 'awesome'}
 								editor={editor}
 							/>
 						</AccordionSection>
@@ -203,6 +206,7 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 							<ButtonStyleMixinEditor
 								state={state as TState<TButtonStyleMixin['value'], []>}
 								syncedTokenLink={false}
+								disabled={currentPlan.key !== 'awesome'}
 								editor={editor}
 							/>
 						</AccordionSection>
@@ -224,6 +228,7 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 							<BadgeStyleMixinEditor
 								state={state as TState<TBadgeStyleMixin['value'], []>}
 								syncedTokenLink={false}
+								disabled={currentPlan.key !== 'awesome'}
 								editor={editor}
 							/>
 						</AccordionSection>
@@ -245,6 +250,7 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 							<TextStyleMixinEditor
 								state={state as TState<TTextStyleMixin['value'], []>}
 								syncedTokenLink={false}
+								disabled={currentPlan.key !== 'awesome'}
 								editor={editor}
 							/>
 						</AccordionSection>
@@ -266,6 +272,7 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 							<ImageStyleMixinEditor
 								state={state as TState<TImageStyleMixin['value'], []>}
 								syncedTokenLink={false}
+								disabled={currentPlan.key !== 'awesome'}
 								editor={editor}
 							/>
 						</AccordionSection>
@@ -287,6 +294,7 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 							<ProductDetailsStyleMixinEditor
 								state={state as TState<TProductDetailsStyleMixin['value'], []>}
 								syncedTokenLink={false}
+								disabled={currentPlan.key !== 'awesome'}
 								editor={editor}
 							/>
 						</AccordionSection>

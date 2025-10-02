@@ -91,6 +91,10 @@ export const AppearanceStyleMixinEditor = (props: TAppearanceStyleMixinEditorPro
 	// =========================================================================
 
 	const handleToggleVisibility = React.useCallback(() => {
+		if (disabled) {
+			return;
+		}
+
 		const unpackedAppearance = unpackAppearanceTokenRef(state._v);
 		const [isResolvedVisibleOk, , resolvedVisible] = resolveTokenRef(unpackedAppearance.visible, {
 			tokenMap: editor.tokenMap._v
@@ -123,7 +127,7 @@ export const AppearanceStyleMixinEditor = (props: TAppearanceStyleMixinEditorPro
 
 		state._v = packAppearanceTokenRef(unpackedAppearance);
 		state._notify();
-	}, [editor, onLinkToken, state]);
+	}, [disabled, editor, onLinkToken, state]);
 
 	const handleNavigateToToken = React.useCallback(() => {
 		editor.switchView({ type: 'settings', view: { type: 'design', tab: 2 } });
@@ -145,17 +149,17 @@ export const AppearanceStyleMixinEditor = (props: TAppearanceStyleMixinEditorPro
 						<Button
 							icon={PolarisViewIcon}
 							onClick={handleToggleVisibility}
+							disabled={disabled}
 							variant="plain"
 							size="micro"
-							disabled={disabled}
 						/>
 					) : (
 						<Button
 							icon={PolarisHideIcon}
 							onClick={handleToggleVisibility}
+							disabled={disabled}
 							variant="plain"
 							size="micro"
-							disabled={disabled}
 						/>
 					))}
 			</div>
