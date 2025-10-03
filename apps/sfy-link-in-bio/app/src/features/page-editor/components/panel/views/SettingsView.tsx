@@ -3,7 +3,7 @@ import React from 'react';
 import { ResizableHandle } from '@/components';
 import { useEditorBreakpoint } from '../../../hooks';
 import { TPageEditor } from '../../../lib';
-import { SettingsNavPanel, SettingsPlaceholderPanel } from '../panels';
+import { SettingsGeneralPanel, SettingsNavPanel, SettingsPlaceholderPanel } from '../panels';
 import { SettingsAssetsView } from './SettingsAssetsView';
 import { SettingsDesignView } from './SettingsDesignView';
 import { SettingsIntegrationsView } from './SettingsIntegrationsView';
@@ -23,6 +23,8 @@ const View: React.FC<TViewProps> & { panelCount: number } = (props) => {
 			return <SettingsAssetsView editor={editor} order={order} />;
 		case 'integrations':
 			return <SettingsIntegrationsView editor={editor} order={order} />;
+		case 'general':
+			return <SettingsGeneralPanel editor={editor} order={order} />;
 		default:
 			return <SettingsPlaceholderPanel order={order} />;
 	}

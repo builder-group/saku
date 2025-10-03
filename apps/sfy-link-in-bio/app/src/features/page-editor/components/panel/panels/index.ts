@@ -8,6 +8,7 @@ export * from './node-inspector-panel';
 export * from './preview-panel';
 export * from './settings-assets-panel';
 export * from './settings-design-panel';
+export * from './settings-general-panel';
 export * from './settings-integrations-panel';
 export * from './settings-metadata-panel';
 export * from './settings-nav-panel';

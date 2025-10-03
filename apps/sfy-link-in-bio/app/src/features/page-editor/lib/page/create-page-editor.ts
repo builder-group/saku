@@ -791,7 +791,7 @@ type TSwitchView =
 
 type TSwitchSettingsView =
 	| {
-			type: 'metadata' | 'assets' | 'integrations';
+			type: 'general' | 'metadata' | 'assets' | 'integrations';
 	  }
 	| {
 			type: 'design';
