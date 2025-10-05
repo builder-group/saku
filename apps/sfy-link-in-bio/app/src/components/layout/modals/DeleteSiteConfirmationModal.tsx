@@ -4,6 +4,7 @@ import { NetworkError, RequestError } from 'feature-fetch';
 import React from 'react';
 import { coreApiClient } from '@/environment';
 import { createShopifyTokenMiddleware } from '@/lib';
+import { PageEditorModal } from './PageEditorModal';
 
 export const DeleteSiteConfirmationModal: React.FC<TDeleteSiteConfirmationModalProps> & {
 	modalId: string;
@@ -82,8 +83,7 @@ export const DeleteSiteConfirmationModal: React.FC<TDeleteSiteConfirmationModalP
 		}
 
 		shopifyBridge.toast.show('Site deleted successfully');
-		// Close the editor modal after successful deletion
-		await shopifyBridge.modal.hide(`editor-modal-${siteId}`);
+		await shopifyBridge.modal.hide(PageEditorModal.modalId(siteId));
 		setIsDeleting(false);
 	}, [siteId, shopifyBridge]);
 
@@ -109,17 +109,15 @@ export const DeleteSiteConfirmationModal: React.FC<TDeleteSiteConfirmationModalP
 					onClick={handleConfirmDelete}
 					disabled={isDeleting}
 					loading={isDeleting}
+					tone="critical"
 				>
 					Delete Site
 				</button>
-				<button onClick={handleCancelDelete} disabled={isDeleting}>
-					Cancel
-				</button>
+				<button onClick={handleCancelDelete}>Cancel</button>
 			</TitleBar>
 		</Modal>
 	);
 };
-
 DeleteSiteConfirmationModal.modalId = 'delete-site-confirmation-modal';
 
 interface TDeleteSiteConfirmationModalProps {

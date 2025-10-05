@@ -4,7 +4,9 @@ import { createState, TState } from 'feature-state';
 import React from 'react';
 import { DeleteSiteConfirmationModal } from './DeleteSiteConfirmationModal';
 
-export const PageEditorModal: React.FC<TPageEditorModalProps> = (props) => {
+export const PageEditorModal: React.FC<TPageEditorModalProps> & {
+	modalId: (siteId: string) => string;
+} = (props) => {
 	const { siteId, title, isOpenState, onShow, onHide } = props;
 	const isOpen = useFeatureState(isOpenState);
 
@@ -16,7 +18,7 @@ export const PageEditorModal: React.FC<TPageEditorModalProps> = (props) => {
 	return (
 		<>
 			<Modal
-				id={`editor-modal-${siteId}`}
+				id={PageEditorModal.modalId(siteId)}
 				src={`/app/modal/page-editor?siteId=${siteId}`} // https://shopify.dev/docs/api/app-bridge/using-modals-in-your-app#modals-with-a-route
 				open={isOpen}
 				onHide={handleHide}
@@ -31,6 +33,7 @@ export const PageEditorModal: React.FC<TPageEditorModalProps> = (props) => {
 		</>
 	);
 };
+PageEditorModal.modalId = (siteId: string) => `editor-modal-${siteId}`;
 
 interface TPageEditorModalProps {
 	siteId: string;
