@@ -10,11 +10,11 @@ import {
 	IframeContent,
 	PolarisViewIcon,
 	QuickHelpSection,
-	SitePreview
+	SitePreview,
+	usePageEditorModal
 } from '@/components';
 import { appConfig, coreApiClient } from '@/environment';
 import { createShopifyTokenMiddleware, resultLoader, withResultLoader } from '@/lib';
-import { usePageEditorModal } from '@/routes/app.modal.page-editor.$/PageEditorModal';
 import { THeadersFunction } from '@/types';
 
 const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({

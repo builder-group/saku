@@ -1,7 +1,13 @@
 import { Text } from '@shopify/polaris';
 import { useCompute, useFeatureState } from 'feature-react';
 import React from 'react';
-import { CopyIdSection, DeleteSiteSection, FormSection, ResizablePanel } from '@/components';
+import {
+	CopyIdSection,
+	DeleteSiteConfirmationModal,
+	DeleteSiteSection,
+	FormSection,
+	ResizablePanel
+} from '@/components';
 import { useEditorBreakpoint } from '../../../../hooks';
 import { TPageEditor } from '../../../../lib';
 import { PanelHeader } from '../../PanelHeader';
@@ -58,10 +64,6 @@ export const SettingsGeneralPanel: React.FC<TSettingsGeneralPanelProps> = (props
 		[editor]
 	);
 
-	const handleSiteDelete = React.useCallback(async () => {
-		await editor.deleteSite();
-	}, [editor]);
-
 	// =========================================================================
 	// UI
 	// =========================================================================
@@ -109,10 +111,8 @@ export const SettingsGeneralPanel: React.FC<TSettingsGeneralPanelProps> = (props
 						<DeleteSiteSection
 							title="Delete Site"
 							description="Permanently delete your site. This action cannot be undone - please proceed with caution."
-							modalTitle="Delete Site"
-							modalDescription="This will permanently delete your site and all associated data. This action cannot be undone. Are you sure you want to continue?"
 							buttonText="Delete Site"
-							onDelete={handleSiteDelete}
+							modalId={DeleteSiteConfirmationModal.modalId}
 						/>
 					</div>
 				</div>

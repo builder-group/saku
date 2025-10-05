@@ -780,68 +780,6 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 			return true;
 		},
 
-		async deleteSite() {
-			const [isDeleteOk, deleteErr] = await coreApiClient.del('/v1/shopify/site/{siteId}', {
-				pathParams: {
-					siteId: this.site.id
-				},
-				requestMiddlewares: [createShopifyTokenMiddleware(this.shopify)]
-			});
-
-			if (!isDeleteOk) {
-				// Handle network errors
-				if (deleteErr instanceof NetworkError) {
-					this.shopify.toast.show(
-						'Network connection issue. Please check your internet and try again.',
-						{
-							isError: true,
-							duration: 5000
-						}
-					);
-					return false;
-				}
-
-				// Handle request errors
-				if (deleteErr instanceof RequestError) {
-					switch (deleteErr.status) {
-						case 409:
-							this.shopify.toast.show(
-								'Cannot delete the last site in your workspace. At least one site must remain.',
-								{
-									isError: true,
-									duration: 5000
-								}
-							);
-							return false;
-						case 404:
-							this.shopify.toast.show('Site not found.', {
-								isError: true,
-								duration: 5000
-							});
-							return false;
-						case 429:
-							this.shopify.toast.show('Too many requests. Please wait a moment and try again.', {
-								isError: true,
-								duration: 5000
-							});
-							return false;
-					}
-				}
-
-				// Handle all other errors
-				this.shopify.toast.show('Failed to delete site', {
-					isError: true,
-					duration: 5000
-				});
-
-				return false;
-			}
-
-			this.shopify.toast.show('Site deleted successfully');
-			await this.closeModal();
-			return true;
-		},
-
 		async closeModal() {
 			await this.shopify.modal.hide(`editor-modal-${this.site.id}`);
 		},
@@ -962,7 +900,6 @@ export interface TPageEditor {
 	publishSite: () => Promise<boolean>;
 	updateSiteHandle: (handle: string) => Promise<boolean>;
 	updateSiteDisplayName: (displayName: string) => Promise<boolean>;
-	deleteSite: () => Promise<boolean>;
 
 	closeModal: () => Promise<void>;
 
