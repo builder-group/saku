@@ -3,7 +3,8 @@ import { Button } from '@shopify/polaris';
 import React from 'react';
 import { PolarisClipboardCheckIcon, PolarisClipboardIcon } from '../display';
 
-export const ClipboardButton: React.FC<TProps> = ({ textToCopy, ...buttonProps }) => {
+export const ClipboardButton: React.FC<TProps> = (props) => {
+	const { textToCopy, variant, ...buttonProps } = props;
 	const [isCopied, setIsCopied] = React.useState(false);
 	const [isDisabled, setIsDisabled] = React.useState(false);
 	const shopify = useAppBridge();
@@ -40,10 +41,12 @@ export const ClipboardButton: React.FC<TProps> = ({ textToCopy, ...buttonProps }
 			icon={isCopied ? PolarisClipboardCheckIcon : PolarisClipboardIcon}
 			onClick={handleCopyToClipboard}
 			disabled={isDisabled || buttonProps.disabled}
+			variant={variant}
 		/>
 	);
 };
 
 interface TProps extends Omit<React.ComponentProps<typeof Button>, 'onClick' | 'icon'> {
 	textToCopy: string;
+	variant?: 'plain';
 }

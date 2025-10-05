@@ -1,7 +1,7 @@
 import { Text } from '@shopify/polaris';
 import { useCompute, useFeatureState } from 'feature-react';
 import React from 'react';
-import { FormSection, ResizablePanel } from '@/components';
+import { CopyIdSection, FormSection, ResizablePanel } from '@/components';
 import { useEditorBreakpoint } from '../../../../hooks';
 import { TPageEditor } from '../../../../lib';
 import { PanelHeader } from '../../PanelHeader';
@@ -96,8 +96,14 @@ export const SettingsGeneralPanel: React.FC<TSettingsGeneralPanelProps> = (props
 							onSubmit={handleSiteHandleUpdate}
 							maxLength={50}
 						/>
+						<CopyIdSection
+							id={editor.site.id}
+							title="Site ID"
+							description="Unique ID of your site on Saku."
+							helpText="Used to identify your site when interacting with the Saku API."
+						/>
 
-						{/* TODO: Add more sections - Id (just copy) - Delete Site */}
+						{/* TODO:  Delete Site */}
 					</div>
 				</div>
 			</div>
