@@ -3,9 +3,10 @@ import React from 'react';
 import { ResizableHandle } from '@/components';
 import { useEditorBreakpoint } from '../../../hooks';
 import { TPageEditor } from '../../../lib';
-import { SettingsGeneralPanel, SettingsNavPanel, SettingsPlaceholderPanel } from '../panels';
+import { SettingsNavPanel, SettingsPlaceholderPanel } from '../panels';
 import { SettingsAssetsView } from './SettingsAssetsView';
 import { SettingsDesignView } from './SettingsDesignView';
+import { SettingsGeneralView } from './SettingsGeneralView';
 import { SettingsIntegrationsView } from './SettingsIntegrationsView';
 import { SettingsMetadataView } from './SettingsMetadataView';
 
@@ -16,7 +17,7 @@ const View: React.FC<TViewProps> & { panelCount: number } = (props) => {
 
 	switch (activeView) {
 		case 'general':
-			return <SettingsGeneralPanel editor={editor} order={order} />;
+			return <SettingsGeneralView editor={editor} order={order} />;
 		case 'design':
 			return <SettingsDesignView editor={editor} order={order} />;
 		case 'metadata':
@@ -30,6 +31,7 @@ const View: React.FC<TViewProps> & { panelCount: number } = (props) => {
 	}
 };
 View.panelCount = Math.max(
+	SettingsGeneralView.panelCount,
 	SettingsDesignView.panelCount,
 	SettingsMetadataView.panelCount,
 	SettingsAssetsView.panelCount,
