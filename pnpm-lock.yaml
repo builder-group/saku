@@ -9727,7 +9727,7 @@ snapshots:
     dependencies:
       '@types/node': 24.6.2
       tapable: 2.3.0
-      webpack: 5.102.0(esbuild@0.25.0)
+      webpack: 5.102.0(esbuild@0.25.10)
     transitivePeerDependencies:
       - '@swc/core'
       - esbuild
@@ -13955,16 +13955,16 @@ snapshots:
       minizlib: 3.1.0
       yallist: 5.0.0
 
-  terser-webpack-plugin@5.3.14(esbuild@0.25.0)(webpack@5.102.0(esbuild@0.25.10)):
+  terser-webpack-plugin@5.3.14(esbuild@0.25.10)(webpack@5.102.0(esbuild@0.25.0)):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       jest-worker: 27.5.1
       schema-utils: 4.3.3
       serialize-javascript: 6.0.2
       terser: 5.44.0
-      webpack: 5.102.0(esbuild@0.25.0)
+      webpack: 5.102.0(esbuild@0.25.10)
     optionalDependencies:
-      esbuild: 0.25.0
+      esbuild: 0.25.10
 
   terser@5.44.0:
     dependencies:
@@ -14376,7 +14376,7 @@ snapshots:
 
   webpack-sources@3.3.3: {}
 
-  webpack@5.102.0(esbuild@0.25.0):
+  webpack@5.102.0(esbuild@0.25.10):
     dependencies:
       '@types/eslint-scope': 3.7.7
       '@types/estree': 1.0.8
@@ -14400,7 +14400,7 @@ snapshots:
       neo-async: 2.6.2
       schema-utils: 4.3.3
       tapable: 2.3.0
-      terser-webpack-plugin: 5.3.14(esbuild@0.25.0)(webpack@5.102.0(esbuild@0.25.10))
+      terser-webpack-plugin: 5.3.14(esbuild@0.25.10)(webpack@5.102.0(esbuild@0.25.0))
       watchpack: 2.4.4
       webpack-sources: 3.3.3
     transitivePeerDependencies:

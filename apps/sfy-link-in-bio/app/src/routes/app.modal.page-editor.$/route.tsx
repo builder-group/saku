@@ -88,8 +88,9 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(
 			site: {
 				id: site.id,
 				handle: site.handle,
-				url: `${shopifyConfig.proxy.url(shop)}/${site.handle}`,
-				platformUrl: `https://saku.so/w/${createHandleFromShop(shop)}/${site.handle}`,
+				displayName: site.displayName,
+				baseUrl: `${shopifyConfig.proxy.url(shop)}`,
+				platformBaseUrl: `https://saku.so/w/${createHandleFromShop(shop)}`,
 				content: flatSite
 			},
 			shopId: shop
@@ -106,8 +107,9 @@ interface TSuccessLoaderData {
 	site: {
 		id: string;
 		handle: string;
-		url: string;
-		platformUrl: string;
+		displayName?: string;
+		baseUrl: string;
+		platformBaseUrl: string;
 		content: TFlatSite;
 	};
 	shopId: string;
