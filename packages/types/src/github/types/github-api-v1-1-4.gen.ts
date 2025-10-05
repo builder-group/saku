@@ -83428,8 +83428,6 @@ export interface components {
         /** @description Set to `true` to use advanced search.
          *     Example: `http://api.github.com/search/issues?q={query}&advanced_search=true` */
         "issues-advanced-search": string;
-        /** @description The type of search to perform. Set to `semantic` to perform a semantic search. */
-        "search-type": "semantic";
         /** @description The unique identifier of the GPG key. */
         "gpg-key-id": number;
         /** @description Only show repositories updated after the given time. This is a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: `YYYY-MM-DDTHH:MM:SSZ`. */
@@ -112580,8 +112578,6 @@ export interface operations {
                 /** @description Set to `true` to use advanced search.
                  *     Example: `http://api.github.com/search/issues?q={query}&advanced_search=true` */
                 advanced_search?: components["parameters"]["issues-advanced-search"];
-                /** @description The type of search to perform. Set to `semantic` to perform a semantic search. */
-                search_type?: components["parameters"]["search-type"];
             };
             header?: never;
             path?: never;

@@ -1,6 +1,6 @@
 import { createId, TFlatSite, TShopifyIntegration } from '@repo/editor';
 import { AppError } from '@repo/hono-utils';
-import { and, eq, isNull } from 'drizzle-orm';
+import { and, eq, isNull, ne } from 'drizzle-orm';
 import { unwrapOrNull } from 'tuple-result';
 import { router } from '@/app/router';
 import {
@@ -26,7 +26,7 @@ import {
 	CreateShopifySiteRoute,
 	GetShopifySiteByShopAndHandleRoute,
 	GetShopifySitesRoute,
-	UpdateShopifySiteContentRoute
+	UpdateShopifySiteRoute
 } from './schema';
 
 router.openapi(GetShopifySitesRoute, async (c) => {
@@ -275,16 +275,17 @@ router.openapi(CreateShopifySiteRoute, async (c) => {
 	);
 });
 
-router.openapi(UpdateShopifySiteContentRoute, async (c) => {
+router.openapi(UpdateShopifySiteRoute, async (c) => {
 	const { shopId } = (await verifyShopifySession(c)).unwrap();
 	const { siteId } = c.req.valid('param');
-	const { content: rawContent } = c.req.valid('json');
-	const content: TFlatSite = rawContent as TFlatSite;
+	const body = c.req.valid('json');
 
-	// Check if site exists and belongs to a workspace connected to this Shopify shop
-	const [existingSite] = await db
+	// Find site connected to a workspace connected to this Shopify shop
+	const [site] = await db
 		.select({
-			id: siteTable.id
+			id: siteTable.id,
+			workspaceId: siteTable.workspaceId,
+			handle: siteTable.handle
 		})
 		.from(siteTable)
 		.innerJoin(
@@ -297,30 +298,57 @@ router.openapi(UpdateShopifySiteContentRoute, async (c) => {
 		)
 		.where(eq(siteTable.id, siteId))
 		.limit(1);
-
-	if (existingSite == null) {
+	if (site == null) {
 		throw new AppError('#ERR_SITE_NOT_FOUND', 404, {
 			title: 'Site not found',
 			detail: `Site with ID ${siteId} was not found or you don't have access to it`
 		});
 	}
 
-	// Check if user is allowed to update hasWatermark in page node
-	const currentPlan = await getCurrentPlan(shopId);
-	const rootNode = content.nodes[content.rootId];
-	if (
-		rootNode != null &&
-		rootNode.type === 'page' &&
-		!rootNode.content.hasWatermark &&
-		currentPlan.key !== 'awesome'
-	) {
-		rootNode.content.hasWatermark = true;
+	// Check if handle is already taken by a different site in the same workspace (if handle is being updated)
+	if (body.handle != null && body.handle !== site.handle) {
+		const [siteWithHandle] = await db
+			.select({ id: siteTable.id })
+			.from(siteTable)
+			.where(
+				and(
+					eq(siteTable.workspaceId, site.workspaceId),
+					eq(siteTable.handle, body.handle),
+					ne(siteTable.id, siteId)
+				)
+			)
+			.limit(1);
+
+		if (siteWithHandle != null) {
+			throw new AppError('#ERR_SITE_HANDLE_TAKEN', 409, {
+				title: 'Handle already taken',
+				detail: `The handle "${body.handle}" is already used by another site in this workspace`
+			});
+		}
 	}
 
-	const [site] = await db
+	// Check if user is allowed to update hasWatermark in page node (if content is being updated)
+	const content = body.content as TFlatSite | undefined;
+	if (content != null) {
+		const currentPlan = await getCurrentPlan(shopId);
+		const rootNode = content.nodes[content.rootId];
+		if (
+			rootNode != null &&
+			rootNode.type === 'page' &&
+			!rootNode.content.hasWatermark &&
+			currentPlan.key !== 'awesome'
+		) {
+			rootNode.content.hasWatermark = true;
+		}
+	}
+
+	// Update site
+	const [updatedSite] = await db
 		.update(siteTable)
 		.set({
-			content,
+			...(body.handle != null && { handle: body.handle }),
+			...(body.displayName != null && { displayName: body.displayName }),
+			...(content != null && { content }),
 			updatedAt: new Date()
 		})
 		.where(eq(siteTable.id, siteId))
@@ -333,23 +361,22 @@ router.openapi(UpdateShopifySiteContentRoute, async (c) => {
 			createdAt: siteTable.createdAt,
 			updatedAt: siteTable.updatedAt
 		});
-
-	if (site == null) {
+	if (updatedSite == null) {
 		throw new AppError('#ERR_SITE_UPDATE_FAILED', 500, {
 			title: 'Update failed',
-			detail: 'Failed to update site content'
+			detail: 'Failed to update site'
 		});
 	}
 
 	return c.json(
 		{
-			id: site.id,
-			workspaceId: site.workspaceId,
-			handle: site.handle,
-			displayName: site.displayName ?? undefined,
-			content: site.content as TFlatSiteContentDto,
-			createdAt: site.createdAt.toISOString(),
-			updatedAt: site.updatedAt.toISOString()
+			id: updatedSite.id,
+			workspaceId: updatedSite.workspaceId,
+			handle: updatedSite.handle,
+			displayName: updatedSite.displayName ?? undefined,
+			content: updatedSite.content as TFlatSiteContentDto,
+			createdAt: updatedSite.createdAt.toISOString(),
+			updatedAt: updatedSite.updatedAt.toISOString()
 		},
 		200
 	);

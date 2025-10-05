@@ -572,8 +572,8 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 			// Clean up unused assets before saving
 			this.cleanupAssets();
 
-			const result = await coreApiClient.put(
-				'/v1/shopify/site/{siteId}/content',
+			const result = await coreApiClient.patch(
+				'/v1/shopify/site/{siteId}',
 				{
 					content: this.toFlatSite() as any
 				},

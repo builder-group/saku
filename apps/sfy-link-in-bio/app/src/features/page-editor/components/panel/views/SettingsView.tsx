@@ -15,6 +15,8 @@ const View: React.FC<TViewProps> & { panelCount: number } = (props) => {
 	const activeView = useFeatureState(editor.activeSettingsSection);
 
 	switch (activeView) {
+		case 'general':
+			return <SettingsGeneralPanel editor={editor} order={order} />;
 		case 'design':
 			return <SettingsDesignView editor={editor} order={order} />;
 		case 'metadata':
@@ -23,8 +25,6 @@ const View: React.FC<TViewProps> & { panelCount: number } = (props) => {
 			return <SettingsAssetsView editor={editor} order={order} />;
 		case 'integrations':
 			return <SettingsIntegrationsView editor={editor} order={order} />;
-		case 'general':
-			return <SettingsGeneralPanel editor={editor} order={order} />;
 		default:
 			return <SettingsPlaceholderPanel order={order} />;
 	}

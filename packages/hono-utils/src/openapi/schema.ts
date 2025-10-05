@@ -103,6 +103,7 @@ export function ErrorResponse(description: string = 'Error response'): TResponse
 export const BadRequestResponse = ErrorResponse('Bad request');
 export const UnauthorizedResponse = ErrorResponse('Unauthorized');
 export const NotFoundResponse = ErrorResponse('Resource not found');
+export const ConflictResponse = ErrorResponse('Conflict');
 export const InternalServerErrorResponse = ErrorResponse('Internal server error');
 
 export interface TResponseConfigWithContent<GContent extends ZodContentObject>
