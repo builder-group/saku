@@ -58,6 +58,10 @@ export const SettingsGeneralPanel: React.FC<TSettingsGeneralPanelProps> = (props
 		[editor]
 	);
 
+	const handleSiteDelete = React.useCallback(async () => {
+		await editor.deleteSite();
+	}, [editor]);
+
 	// =========================================================================
 	// UI
 	// =========================================================================
@@ -108,9 +112,7 @@ export const SettingsGeneralPanel: React.FC<TSettingsGeneralPanelProps> = (props
 							modalTitle="Delete Site"
 							modalDescription="This will permanently delete your site and all associated data. This action cannot be undone. Are you sure you want to continue?"
 							buttonText="Delete Site"
-							onDelete={async () => {
-								// TODO:
-							}}
+							onDelete={handleSiteDelete}
 						/>
 					</div>
 				</div>

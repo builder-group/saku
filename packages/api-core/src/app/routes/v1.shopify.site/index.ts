@@ -24,6 +24,7 @@ import {
 import { TFlatSiteContentDto } from '../v1.site/schema';
 import {
 	CreateShopifySiteRoute,
+	DeleteShopifySiteRoute,
 	GetShopifySiteByShopAndHandleRoute,
 	GetShopifySitesRoute,
 	UpdateShopifySiteRoute
@@ -380,4 +381,53 @@ router.openapi(UpdateShopifySiteRoute, async (c) => {
 		},
 		200
 	);
+});
+
+router.openapi(DeleteShopifySiteRoute, async (c) => {
+	const { shopId } = (await verifyShopifySession(c)).unwrap();
+	const { siteId } = c.req.valid('param');
+
+	// Find site connected to a workspace connected to this Shopify shop
+	const [site] = await db
+		.select({
+			id: siteTable.id,
+			workspaceId: siteTable.workspaceId,
+			handle: siteTable.handle
+		})
+		.from(siteTable)
+		.innerJoin(
+			workspaceAccountTable,
+			and(
+				eq(workspaceAccountTable.workspaceId, siteTable.workspaceId),
+				eq(workspaceAccountTable.provider, 'shopify'),
+				eq(workspaceAccountTable.providerAccountId, shopId)
+			)
+		)
+		.where(eq(siteTable.id, siteId))
+		.limit(1);
+	if (site == null) {
+		throw new AppError('#ERR_SITE_NOT_FOUND', 404, {
+			title: 'Site not found',
+			detail: `Site with ID ${siteId} was not found or you don't have access to it`
+		});
+	}
+
+	// Prevent deletion if this is the last site
+	const sites = await db
+		.select({
+			id: siteTable.id
+		})
+		.from(siteTable)
+		.where(eq(siteTable.workspaceId, site.workspaceId));
+	if (sites.length <= 1) {
+		throw new AppError('#ERR_CANNOT_DELETE_LAST_SITE', 409, {
+			title: 'Cannot delete last site',
+			detail: 'You cannot delete the last site in your workspace. At least one site must remain.'
+		});
+	}
+
+	// Delete the site
+	await db.delete(siteTable).where(eq(siteTable.id, siteId));
+
+	return c.body(null, 204);
 });

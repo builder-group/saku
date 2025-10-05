@@ -133,3 +133,27 @@ export const UpdateShopifySiteRoute = createRoute({
 		409: ConflictResponse
 	}
 });
+
+export const DeleteShopifySiteRoute = createRoute({
+	method: 'delete',
+	path: '/v1/shopify/site/{siteId}',
+	tags: ['shopify', 'site'],
+	summary: 'Delete site',
+	operationId: 'deleteShopifySite',
+	request: {
+		params: z.object({
+			siteId: z.uuid().openapi({
+				example: '123e4567-e89b-12d3',
+				description: 'Site ID'
+			})
+		})
+	},
+	responses: {
+		204: {
+			description: 'Site deleted successfully'
+		},
+		400: BadRequestResponse,
+		404: NotFoundResponse,
+		409: ConflictResponse
+	}
+});
