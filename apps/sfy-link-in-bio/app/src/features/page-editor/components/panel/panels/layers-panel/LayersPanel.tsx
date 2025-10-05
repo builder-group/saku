@@ -199,7 +199,7 @@ export const LayersPanel: React.FC<TLayersPanelProps> = (props) => {
 													<Tooltip
 														content="Watermark removal is only available on Awesome plan and above"
 														width="wide"
-														preferredPosition="above"
+														preferredPosition="below"
 													>
 														<button
 															className="cursor-not-allowed rounded-lg p-0.5 opacity-50"

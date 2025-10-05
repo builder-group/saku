@@ -51,7 +51,7 @@ export const FormSection: React.FC<TFormSectionProps> = (props) => {
 	return (
 		<form
 			onSubmit={handleSubmit}
-			className="overflow-hidden rounded-lg border border-gray-300 bg-white"
+			className="overflow-hidden rounded-lg border border-neutral-300 bg-white"
 		>
 			<div className="space-y-5 p-5 sm:p-8">
 				<div className="space-y-3">
@@ -80,7 +80,7 @@ export const FormSection: React.FC<TFormSectionProps> = (props) => {
 				</div>
 			</div>
 
-			<div className="flex items-center justify-between gap-4 border-t border-gray-300 bg-gray-50 px-5 py-3 sm:px-8">
+			<div className="flex items-center justify-between gap-4 border-t border-neutral-300 bg-neutral-50 px-5 py-3 sm:px-8">
 				{helpText != null && (
 					<div>
 						<Text as="p" variant="bodySm" tone="subdued">

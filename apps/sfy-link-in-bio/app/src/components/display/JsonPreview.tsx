@@ -11,7 +11,7 @@ export const JsonPreview: React.FC<TJsonPreviewProps> = ({ data, className = '' 
 
 	return (
 		<div className={`relative ${className}`}>
-			<pre className="max-h-96 overflow-auto rounded bg-gray-50 p-3 text-xs">{jsonString}</pre>
+			<pre className="max-h-96 overflow-auto rounded bg-neutral-50 p-3 text-xs">{jsonString}</pre>
 			<div className="absolute top-2 right-2">
 				<ClipboardButton textToCopy={jsonString} size="micro" variant="tertiary" />
 			</div>

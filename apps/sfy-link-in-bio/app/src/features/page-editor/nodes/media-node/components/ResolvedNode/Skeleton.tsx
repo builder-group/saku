@@ -17,7 +17,7 @@ export const Skeleton: React.FC<TSkeletonProps> = (props) => {
 			}}
 		>
 			<div
-				className="flex aspect-[16/9] w-full animate-pulse bg-gray-300"
+				className="flex aspect-[16/9] w-full animate-pulse bg-neutral-300"
 				style={{ borderRadius: image.appearance.styles.borderRadius }}
 			></div>
 		</div>

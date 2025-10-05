@@ -80,7 +80,7 @@ export const ThemeStep: React.FC<TThemeStepProps> = (props) => {
 								className={`group cursor-pointer rounded-lg border p-3 transition-all hover:shadow-sm ${
 									isSelected
 										? 'border-blue-500 bg-blue-50'
-										: 'border-gray-200 hover:border-gray-300'
+										: 'border-neutral-200 hover:border-neutral-300'
 								}`}
 								onClick={() => handleThemeSelect(theme)}
 							>

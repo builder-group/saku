@@ -22,7 +22,9 @@ export const ThemeTab: React.FC<TThemeTabProps> = (props) => {
 					<div
 						key={theme.key}
 						className={`group cursor-pointer rounded-lg border p-3 transition-all hover:shadow-sm ${
-							isSelected ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'
+							isSelected
+								? 'border-blue-500 bg-blue-50'
+								: 'border-neutral-200 hover:border-neutral-300'
 						}`}
 						onClick={() => applyTheme(theme, editor)}
 					>

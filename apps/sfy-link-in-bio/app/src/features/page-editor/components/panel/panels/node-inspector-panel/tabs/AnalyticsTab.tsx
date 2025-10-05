@@ -7,7 +7,7 @@ export const AnalyticsTab: React.FC<TAnalyticsTabProps> = (props) => {
 
 	return (
 		<div className="space-y-4 p-4">
-			<div className="rounded-lg bg-gray-50 p-4">
+			<div className="rounded-lg bg-neutral-50 p-4">
 				<Text as="p" variant="bodyMd" tone="subdued">
 					📊 Coming Soon:
 				</Text>

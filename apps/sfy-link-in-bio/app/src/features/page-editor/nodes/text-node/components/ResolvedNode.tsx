@@ -125,17 +125,17 @@ const createMdxComponents = (baseFontSize: number): Record<string, React.Compone
 	a: (props) => <a className="text-blue-600 underline hover:text-blue-800" {...props} />,
 	blockquote: (props) => (
 		<blockquote
-			className="my-4 border-l-4 border-gray-300 pl-4 text-gray-600 italic first:mt-0 last:mb-0"
+			className="my-4 border-l-4 border-neutral-300 pl-4 text-gray-600 italic first:mt-0 last:mb-0"
 			{...props}
 		/>
 	),
 	hr: (props) => <hr className="my-6 border-neutral-200 first:mt-0 last:mb-0" {...props} />,
 	code: (props) => (
-		<code className="rounded bg-gray-100 px-1 py-0.5 font-mono text-sm" {...props} />
+		<code className="rounded bg-neutral-100 px-1 py-0.5 font-mono text-sm" {...props} />
 	),
 	pre: (props) => (
 		<pre
-			className="my-4 overflow-x-auto rounded bg-gray-900 p-3 text-gray-100 first:mt-0 last:mb-0"
+			className="my-4 overflow-x-auto rounded bg-neutral-900 p-3 text-gray-100 first:mt-0 last:mb-0"
 			{...props}
 		/>
 	),

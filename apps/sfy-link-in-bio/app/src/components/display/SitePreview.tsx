@@ -14,9 +14,9 @@ export const SitePreview: React.FC<TSitePreviewProps> = (props) => {
 		>
 			{/* Desktop Preview */}
 			<div className="absolute top-0 left-0 w-[calc(100%-2rem)] md:w-[calc(100%-4rem)]">
-				<div className="rounded-xl bg-gray-800 p-1 pb-3 shadow-xl md:p-2 md:pb-5">
+				<div className="rounded-xl bg-neutral-800 p-1 pb-3 shadow-xl md:p-2 md:pb-5">
 					{/* Browser Chrome */}
-					<div className="flex h-7 items-center rounded-t-lg bg-gray-100 px-2">
+					<div className="flex h-7 items-center rounded-t-lg bg-neutral-100 px-2">
 						{/* Traffic Lights */}
 						<div className="mr-4 flex gap-1.5">
 							<div className="h-2.5 w-2.5 rounded-full bg-red-500" />
@@ -59,7 +59,7 @@ export const SitePreview: React.FC<TSitePreviewProps> = (props) => {
 
 			{/* Mobile Preview */}
 			<div className="absolute top-8 right-0 w-32 md:top-12 md:w-44">
-				<div className="rounded-3xl bg-gray-800 p-1 shadow-xl md:p-2">
+				<div className="rounded-3xl bg-neutral-800 p-1 shadow-xl md:p-2">
 					{/* Screen */}
 					<div className="relative h-48 overflow-hidden rounded-[1.25rem] bg-white md:h-80 md:rounded-2xl">
 						<div
@@ -75,7 +75,7 @@ export const SitePreview: React.FC<TSitePreviewProps> = (props) => {
 
 					{/* Home Indicator */}
 					<div className="flex justify-center pt-2">
-						<div className="h-1 w-8 rounded-full bg-gray-300" />
+						<div className="h-1 w-8 rounded-full bg-neutral-300" />
 					</div>
 				</div>
 			</div>

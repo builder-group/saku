@@ -10,7 +10,7 @@ export const WindowSize: React.FC = () => {
 			<span>
 				{windowSize?.width.toLocaleString()} x {windowSize?.height.toLocaleString()}
 			</span>
-			<div className="h-4 w-px bg-gray-800" />
+			<div className="h-4 w-px bg-neutral-800" />
 			<span className="sm:hidden">XS</span>
 			<span className="hidden sm:inline md:hidden">SM</span>
 			<span className="hidden md:inline lg:hidden">MD</span>

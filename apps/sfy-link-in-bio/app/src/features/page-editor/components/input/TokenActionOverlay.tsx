@@ -27,7 +27,7 @@ export const TokenActionOverlay: React.FC<TTokenActionOverlayProps> = (props) =>
 							className={cn(
 								'flex flex-1 items-center justify-center gap-1 text-xs transition-colors',
 								disabled
-									? 'cursor-not-allowed bg-gray-100 text-gray-400'
+									? 'cursor-not-allowed bg-neutral-100 text-gray-400'
 									: 'cursor-pointer bg-orange-100 text-orange-700 hover:bg-orange-200'
 							)}
 						>
@@ -57,14 +57,14 @@ export const TokenActionOverlay: React.FC<TTokenActionOverlayProps> = (props) =>
 									className={cn(
 										'flex items-center gap-1 px-2 py-1 text-xs transition-colors',
 										disabled
-											? 'cursor-not-allowed bg-gray-100 text-gray-400'
+											? 'cursor-not-allowed bg-neutral-100 text-gray-400'
 											: 'cursor-pointer bg-orange-100 text-orange-700 hover:bg-orange-200'
 									)}
 								>
 									<LinkOffIcon className="h-3 w-3" />
 									Unlink
 								</button>
-								<div className="w-px bg-gray-300" />
+								<div className="w-px bg-neutral-300" />
 								<button
 									type="button"
 									onClick={onNavigateToToken}
@@ -135,7 +135,7 @@ export const TokenKeyTooltip: React.FC<TTokenKeyTooltipProps> = (props) => {
 	return (
 		<div className="flex items-center gap-1">
 			<span>Token:</span>
-			<code className="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-xs whitespace-nowrap text-gray-800">
+			<code className="rounded bg-neutral-100 px-1.5 py-0.5 font-mono text-xs whitespace-nowrap text-gray-800">
 				{tokenKey}
 			</code>
 		</div>

@@ -1,7 +1,7 @@
 import { Text } from '@shopify/polaris';
 import { useCompute, useFeatureState } from 'feature-react';
 import React from 'react';
-import { CopyIdSection, FormSection, ResizablePanel } from '@/components';
+import { CopyIdSection, DeleteSiteSection, FormSection, ResizablePanel } from '@/components';
 import { useEditorBreakpoint } from '../../../../hooks';
 import { TPageEditor } from '../../../../lib';
 import { PanelHeader } from '../../PanelHeader';
@@ -76,7 +76,7 @@ export const SettingsGeneralPanel: React.FC<TSettingsGeneralPanelProps> = (props
 					</Text>
 				</PanelHeader>
 
-				<div className="flex-1 p-4">
+				<div className="h-full flex-1 overflow-y-auto p-4">
 					<div className="mx-auto w-full max-w-screen-xl space-y-6">
 						<FormSection
 							title="Site Name"
@@ -102,8 +102,16 @@ export const SettingsGeneralPanel: React.FC<TSettingsGeneralPanelProps> = (props
 							description="Unique ID of your site on Saku."
 							helpText="Used to identify your site when interacting with the Saku API."
 						/>
-
-						{/* TODO:  Delete Site */}
+						<DeleteSiteSection
+							title="Delete Site"
+							description="Permanently delete your site. This action cannot be undone - please proceed with caution."
+							modalTitle="Delete Site"
+							modalDescription="This will permanently delete your site and all associated data. This action cannot be undone. Are you sure you want to continue?"
+							buttonText="Delete Site"
+							onDelete={async () => {
+								// TODO:
+							}}
+						/>
 					</div>
 				</div>
 			</div>
