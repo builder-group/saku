@@ -26,7 +26,7 @@ export const DeleteSiteSection: React.FC<TDeleteSiteSectionProps> = (props) => {
 					break;
 			}
 		}, []),
-		communicationMethod: 'localStorage'
+		inMaxModal: true
 	});
 
 	// =========================================================================

@@ -10,7 +10,7 @@ export function useModalCommunication<
 	modalId: string,
 	options: TModalCommunicationOptions<GParentToModalPayload> = {}
 ): TModalCommunicationReturn<GModalToParentPayload> {
-	const { onParentMessage, communicationMethod = 'postMessage' } = options;
+	const { onParentMessage } = options;
 
 	const sendToParent = React.useCallback(
 		(payload: GModalToParentPayload) => {
@@ -21,88 +21,37 @@ export function useModalCommunication<
 				modalId
 			};
 
-			switch (communicationMethod) {
-				// Use localStorage for cross-iframe communication
-				// Use this when modal and parent are in different iframes
-				case 'localStorage': {
-					const storageKey = `modal-message-${modalId}`;
-					localStorage.setItem(storageKey, JSON.stringify(message));
-					break;
-				}
-
-				// Use postMessage for same-window communication
-				// Use this when modal and parent are in the same window/iframe
-				case 'postMessage': {
-					window.postMessage(message, window.location.origin);
-					break;
-				}
-			}
+			// logger.info('[useModalCommunication] sending message to parent', { message });
+			window.postMessage(message, window.location.origin);
 		},
-		[modalId, communicationMethod]
+		[modalId]
 	);
 
 	React.useEffect(() => {
-		switch (communicationMethod) {
-			// Listen for localStorage events (cross-iframe communication)
-			case 'localStorage': {
-				const handleStorageEvent = (event: StorageEvent) => {
-					if (event.key === `parent-message-${modalId}` && event.newValue != null) {
-						try {
-							const message = JSON.parse(event.newValue);
-							if (message.type === 'parent-to-modal' && message.modalId === modalId) {
-								onParentMessage?.(message.payload);
-							}
-						} catch {
-							// Ignore parsing errors
-						}
-					}
-				};
-
-				window.addEventListener('storage', handleStorageEvent);
-				return () => window.removeEventListener('storage', handleStorageEvent);
+		const handleMessage = (event: MessageEvent<TParentToModalMessage<GParentToModalPayload>>) => {
+			// logger.info('[useModalCommunication] received message from parent', { event });
+			if (
+				event.origin !== window.location.origin ||
+				event.data?.type !== 'parent-to-modal' ||
+				event.data.modalId !== modalId
+			) {
+				return;
 			}
 
-			// Listen for postMessage events (same-window communication)
-			case 'postMessage': {
-				const handleMessage = (
-					event: MessageEvent<TParentToModalMessage<GParentToModalPayload>>
-				) => {
-					if (
-						event.origin !== window.location.origin ||
-						event.data?.type !== 'parent-to-modal' ||
-						event.data.modalId !== modalId
-					) {
-						return;
-					}
+			onParentMessage?.(event.data.payload);
+		};
 
-					onParentMessage?.(event.data.payload);
-				};
-
-				window.addEventListener('message', handleMessage);
-				return () => {
-					window.removeEventListener('message', handleMessage);
-				};
-			}
-		}
-	}, [modalId, onParentMessage, communicationMethod]);
+		window.addEventListener('message', handleMessage);
+		return () => {
+			window.removeEventListener('message', handleMessage);
+		};
+	}, [modalId, onParentMessage]);
 
 	return { sendToParent };
 }
 
 interface TModalCommunicationOptions<GParentToModalPayload> {
 	onParentMessage?: (payload: GParentToModalPayload) => void;
-	/**
-	 * Communication method to use for modal-parent communication.
-	 *
-	 * - 'postMessage' (default): Use for app ↔ iframe communication
-	 * - 'localStorage': **Required** for iframe ↔ iframe communication within the same app
-	 *
-	 * **Why localStorage for cross-iframe?**
-	 * `postMessage` works fine for app ↔ iframe communication, but seems to fail for iframe ↔ iframe
-	 * communication within the same app (e.g., Page Editor iframe → Delete Modal iframe).
-	 * localStorage events work reliably across all iframes within the same origin.
-	 */
-	communicationMethod?: TModalCommunicationMethod;
 }
 
 interface TModalCommunicationReturn<GModalToParentPayload> {
@@ -119,7 +68,7 @@ export function useParentCommunication<
 	modalId: string,
 	options: TParentCommunicationOptions<GModalToParentPayload> = {}
 ): TParentCommunicationReturn<GParentToModalPayload> {
-	const { onModalMessage, communicationMethod = 'postMessage' } = options;
+	const { onModalMessage, inMaxModal = false } = options;
 
 	const sendToModal = React.useCallback(
 		(payload: GParentToModalPayload) => {
@@ -130,88 +79,46 @@ export function useParentCommunication<
 				modalId
 			};
 
-			switch (communicationMethod) {
-				// Use localStorage for cross-iframe communication
-				// Use this when modal and parent are in different iframes
-				case 'localStorage': {
-					const storageKey = `parent-message-${modalId}`;
-					localStorage.setItem(storageKey, JSON.stringify(message));
-					break;
-				}
-
-				// Use postMessage for same-window communication
-				// Use this when modal and parent are in the same window/iframe
-				case 'postMessage': {
-					window.postMessage(message, window.location.origin);
-					break;
-				}
-			}
+			// logger.info('[useParentCommunication] sending message to modal', { message });
+			window.postMessage(message, window.location.origin);
 		},
-		[modalId, communicationMethod]
+		[modalId]
 	);
 
 	React.useEffect(() => {
-		switch (communicationMethod) {
-			// Listen for localStorage events (cross-iframe communication)
-			case 'localStorage': {
-				const handleStorageEvent = (event: StorageEvent) => {
-					if (event.key === `modal-message-${modalId}` && event.newValue != null) {
-						try {
-							const message = JSON.parse(event.newValue);
-							if (message.type === 'modal-to-parent' && message.modalId === modalId) {
-								onModalMessage?.(message.payload);
-							}
-						} catch {
-							// Ignore parsing errors
-						}
-					}
-				};
-
-				window.addEventListener('storage', handleStorageEvent);
-				return () => window.removeEventListener('storage', handleStorageEvent);
+		const handleMessage = (event: MessageEvent<TModalToParentMessage<GModalToParentPayload>>) => {
+			// logger.info('[useParentCommunication] received message from modal', { event });
+			if (
+				event.origin !== window.location.origin ||
+				event.data?.type !== 'modal-to-parent' ||
+				event.data.modalId !== modalId
+			) {
+				return;
 			}
 
-			// Listen for postMessage events (same-window communication)
-			case 'postMessage': {
-				const handleMessage = (
-					event: MessageEvent<TModalToParentMessage<GModalToParentPayload>>
-				) => {
-					if (
-						event.origin !== window.location.origin ||
-						event.data?.type !== 'modal-to-parent' ||
-						event.data.modalId !== modalId
-					) {
-						return;
-					}
+			onModalMessage?.(event.data.payload);
+		};
 
-					onModalMessage?.(event.data.payload);
-				};
-
-				window.addEventListener('message', handleMessage);
-				return () => {
-					window.removeEventListener('message', handleMessage);
-				};
-			}
+		if (inMaxModal) {
+			// Listen on window.opener because modals opened from max modal are at the same level as the max modal in the app and not inside the max modal
+			window.opener.addEventListener('message', handleMessage);
+			return () => {
+				window.opener.removeEventListener('message', handleMessage);
+			};
+		} else {
+			window.addEventListener('message', handleMessage);
+			return () => {
+				window.removeEventListener('message', handleMessage);
+			};
 		}
-	}, [modalId, onModalMessage, communicationMethod]);
+	}, [modalId, onModalMessage, inMaxModal]);
 
 	return { sendToModal };
 }
 
 interface TParentCommunicationOptions<GModalToParentPayload> {
 	onModalMessage?: (payload: GModalToParentPayload) => void;
-	/**
-	 * Communication method to use for modal-parent communication.
-	 *
-	 * - 'postMessage' (default): Use for app ↔ iframe communication
-	 * - 'localStorage': **Required** for iframe ↔ iframe communication within the same app
-	 *
-	 * **Why localStorage for cross-iframe?**
-	 * `postMessage` works fine for app ↔ iframe communication, but seems to fail for iframe ↔ iframe
-	 * communication within the same app (e.g., Page Editor iframe → Delete Modal iframe).
-	 * localStorage events work reliably across all iframes within the same origin.
-	 */
-	communicationMethod?: TModalCommunicationMethod;
+	inMaxModal?: boolean;
 }
 
 interface TParentCommunicationReturn<GParentToModalPayload> {
@@ -234,5 +141,3 @@ interface TParentToModalMessage<GParentToModalPayload = unknown> extends TBaseMe
 	type: 'parent-to-modal';
 	payload: GParentToModalPayload;
 }
-
-export type TModalCommunicationMethod = 'postMessage' | 'localStorage';

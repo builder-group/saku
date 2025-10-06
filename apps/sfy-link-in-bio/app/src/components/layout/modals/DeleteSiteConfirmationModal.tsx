@@ -15,10 +15,7 @@ export const DeleteSiteConfirmationModal: React.FC<TDeleteSiteConfirmationModalP
 	const shopifyBridge = useAppBridge();
 	const [isDeleting, setIsDeleting] = React.useState(false);
 	const { sendToParent } = useModalCommunication<TDeleteSiteModalToParent>(
-		DeleteSiteConfirmationModal.modalId,
-		{
-			communicationMethod: 'localStorage'
-		}
+		DeleteSiteConfirmationModal.modalId
 	);
 
 	// =========================================================================
