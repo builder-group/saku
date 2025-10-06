@@ -80,9 +80,15 @@ export function useParentCommunication<
 			};
 
 			// logger.info('[useParentCommunication] sending message to modal', { message });
-			window.postMessage(message, window.location.origin);
+			if (inMaxModal) {
+				// Note: Use window.opener because Shopify doesn't support modals inside modals and thus all modals are siblings, not children
+				// https://github.com/Shopify/shopify-app-bridge/issues/420
+				window.opener.postMessage(message, window.location.origin);
+			} else {
+				window.postMessage(message, window.location.origin);
+			}
 		},
-		[modalId]
+		[modalId, inMaxModal]
 	);
 
 	React.useEffect(() => {
@@ -100,7 +106,8 @@ export function useParentCommunication<
 		};
 
 		if (inMaxModal) {
-			// Listen on window.opener because modals opened from max modal are at the same level as the max modal in the app and not inside the max modal
+			// Note: Use window.opener because Shopify doesn't support modals inside modals and thus all modals are siblings, not children
+			// https://github.com/Shopify/shopify-app-bridge/issues/420
 			window.opener.addEventListener('message', handleMessage);
 			return () => {
 				window.opener.removeEventListener('message', handleMessage);

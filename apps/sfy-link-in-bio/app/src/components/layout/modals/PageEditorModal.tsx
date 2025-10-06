@@ -28,7 +28,7 @@ export const PageEditorModal: React.FC<TPageEditorModalProps> & {
 				<TitleBar title={title} />
 			</Modal>
 
-			{/* All modals shown inside a Max Modal must be defined at the same level as the Max Modal, not nested within other modals. Shopify App Bridge doesn't support opening a modal from within another modal. See: https://github.com/Shopify/shopify-app-bridge/issues/420 */}
+			{/* Shopify doesn't support modals inside modals and thus all modals required inside a Max Modal must be defined at the same level as the Max Modal. See: https://github.com/Shopify/shopify-app-bridge/issues/420 */}
 			<DeleteSiteConfirmationModal siteId={siteId} />
 		</>
 	);
