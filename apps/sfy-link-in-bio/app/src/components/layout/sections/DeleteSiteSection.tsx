@@ -1,19 +1,41 @@
 import { useAppBridge } from '@shopify/app-bridge-react';
 import { Button, Text } from '@shopify/polaris';
 import React from 'react';
+import { useParentCommunication } from '@/hooks';
+import { DeleteSiteConfirmationModal, TDeleteSiteModalToParent } from '../modals';
 
 export const DeleteSiteSection: React.FC<TDeleteSiteSectionProps> = (props) => {
-	const { title, description, buttonText = 'Delete Site', modalId } = props;
+	const { title, description, buttonText = 'Delete Site' } = props;
 
 	const shopifyBridge = useAppBridge();
+	const [deleteState, setDeleteState] = React.useState<'idle' | 'loading' | 'success' | 'error'>(
+		'idle'
+	);
+
+	useParentCommunication<TDeleteSiteModalToParent>(DeleteSiteConfirmationModal.modalId, {
+		onModalMessage: React.useCallback((message: TDeleteSiteModalToParent) => {
+			switch (message.type) {
+				case 'DELETE_STARTED':
+					setDeleteState('loading');
+					break;
+				case 'DELETE_SUCCESS':
+					setDeleteState('success');
+					break;
+				case 'DELETE_ERROR':
+					setDeleteState('error');
+					break;
+			}
+		}, [])
+	});
 
 	// =========================================================================
 	// Events
 	// =========================================================================
 
 	const handleDeleteClick = React.useCallback(() => {
-		shopifyBridge.modal.show(modalId);
-	}, [shopifyBridge, modalId]);
+		setDeleteState('idle');
+		shopifyBridge.modal.show(DeleteSiteConfirmationModal.modalId);
+	}, [shopifyBridge]);
 
 	// =========================================================================
 	// UI
@@ -38,8 +60,13 @@ export const DeleteSiteSection: React.FC<TDeleteSiteSectionProps> = (props) => {
 
 			<div className="flex items-center justify-end border-t border-red-500 bg-neutral-50 px-5 py-3 sm:px-8">
 				<div className="flex-shrink-0">
-					<Button tone="critical" onClick={handleDeleteClick}>
-						{buttonText}
+					<Button
+						tone="critical"
+						onClick={handleDeleteClick}
+						loading={deleteState === 'loading'}
+						disabled={deleteState === 'loading'}
+					>
+						{deleteState === 'loading' ? 'Deleting...' : buttonText}
 					</Button>
 				</div>
 			</div>
@@ -51,5 +78,4 @@ interface TDeleteSiteSectionProps {
 	title: string;
 	description: string;
 	buttonText?: string;
-	modalId: string;
 }

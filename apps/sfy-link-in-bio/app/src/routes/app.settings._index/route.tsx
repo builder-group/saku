@@ -18,30 +18,19 @@ const Page: React.FC = () => {
 	);
 
 	useParentCommunication<TResetWorkspaceModalToParent>(ResetWorkspaceConfirmationModal.modalId, {
-		onModalMessage: React.useCallback(
-			(message: TResetWorkspaceModalToParent) => {
-				switch (message.type) {
-					case 'RESET_STARTED':
-						setResetState('loading');
-						break;
-					case 'RESET_SUCCESS':
-						setResetState('success');
-						shopifyBridge.toast.show('Settings reset successfully!', {
-							isError: false,
-							duration: 3000
-						});
-						break;
-					case 'RESET_ERROR':
-						setResetState('error');
-						shopifyBridge.toast.show('Failed to reset settings. Please try again.', {
-							isError: true,
-							duration: 5000
-						});
-						break;
-				}
-			},
-			[shopifyBridge]
-		)
+		onModalMessage: React.useCallback((message: TResetWorkspaceModalToParent) => {
+			switch (message.type) {
+				case 'RESET_STARTED':
+					setResetState('loading');
+					break;
+				case 'RESET_SUCCESS':
+					setResetState('success');
+					break;
+				case 'RESET_ERROR':
+					setResetState('error');
+					break;
+			}
+		}, [])
 	});
 
 	// =========================================================================

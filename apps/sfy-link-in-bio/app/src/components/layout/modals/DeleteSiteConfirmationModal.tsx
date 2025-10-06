@@ -3,6 +3,7 @@ import { Text } from '@shopify/polaris';
 import { NetworkError, RequestError } from 'feature-fetch';
 import React from 'react';
 import { coreApiClient } from '@/environment';
+import { useModalCommunication } from '@/hooks';
 import { createShopifyTokenMiddleware } from '@/lib';
 import { PageEditorModal } from './PageEditorModal';
 
@@ -13,6 +14,9 @@ export const DeleteSiteConfirmationModal: React.FC<TDeleteSiteConfirmationModalP
 
 	const shopifyBridge = useAppBridge();
 	const [isDeleting, setIsDeleting] = React.useState(false);
+	const { sendToParent } = useModalCommunication<TDeleteSiteModalToParent>(
+		DeleteSiteConfirmationModal.modalId
+	);
 
 	// =========================================================================
 	// Events
@@ -20,6 +24,7 @@ export const DeleteSiteConfirmationModal: React.FC<TDeleteSiteConfirmationModalP
 
 	const handleConfirmDelete = React.useCallback(async () => {
 		setIsDeleting(true);
+		sendToParent({ type: 'DELETE_STARTED' });
 
 		const [isDeleteOk, deleteErr] = await coreApiClient.del('/v1/shopify/site/{siteId}', {
 			pathParams: {
@@ -38,6 +43,7 @@ export const DeleteSiteConfirmationModal: React.FC<TDeleteSiteConfirmationModalP
 						duration: 5000
 					}
 				);
+				sendToParent({ type: 'DELETE_ERROR', error: deleteErr });
 				setIsDeleting(false);
 				return;
 			}
@@ -53,6 +59,7 @@ export const DeleteSiteConfirmationModal: React.FC<TDeleteSiteConfirmationModalP
 								duration: 5000
 							}
 						);
+						sendToParent({ type: 'DELETE_ERROR', error: deleteErr });
 						setIsDeleting(false);
 						return;
 					case 404:
@@ -60,6 +67,7 @@ export const DeleteSiteConfirmationModal: React.FC<TDeleteSiteConfirmationModalP
 							isError: true,
 							duration: 5000
 						});
+						sendToParent({ type: 'DELETE_ERROR', error: deleteErr });
 						setIsDeleting(false);
 						return;
 					case 429:
@@ -67,6 +75,7 @@ export const DeleteSiteConfirmationModal: React.FC<TDeleteSiteConfirmationModalP
 							isError: true,
 							duration: 5000
 						});
+						sendToParent({ type: 'DELETE_ERROR', error: deleteErr });
 						setIsDeleting(false);
 						return;
 				}
@@ -77,17 +86,19 @@ export const DeleteSiteConfirmationModal: React.FC<TDeleteSiteConfirmationModalP
 				isError: true,
 				duration: 5000
 			});
-
+			sendToParent({ type: 'DELETE_ERROR', error: deleteErr });
 			setIsDeleting(false);
 			return;
 		}
 
+		// Success - redirect to app home
+		sendToParent({ type: 'DELETE_SUCCESS' });
 		shopifyBridge.toast.show('Site deleted successfully');
 		await shopifyBridge.modal.hide(PageEditorModal.modalId(siteId));
 		setIsDeleting(false);
-	}, [siteId, shopifyBridge]);
+	}, [siteId, shopifyBridge, sendToParent]);
 
-	const handleCancelDelete = React.useCallback(() => {
+	const handleCancel = React.useCallback(() => {
 		shopifyBridge.modal.hide(DeleteSiteConfirmationModal.modalId);
 	}, [shopifyBridge]);
 
@@ -113,12 +124,17 @@ export const DeleteSiteConfirmationModal: React.FC<TDeleteSiteConfirmationModalP
 				>
 					{isDeleting ? 'Deleting...' : 'Delete Site'}
 				</button>
-				<button onClick={handleCancelDelete}>Cancel</button>
+				<button onClick={handleCancel}>Cancel</button>
 			</TitleBar>
 		</Modal>
 	);
 };
 DeleteSiteConfirmationModal.modalId = 'delete-site-confirmation-modal';
+
+export type TDeleteSiteModalToParent =
+	| { type: 'DELETE_STARTED' }
+	| { type: 'DELETE_SUCCESS' }
+	| { type: 'DELETE_ERROR'; error: unknown };
 
 interface TDeleteSiteConfirmationModalProps {
 	siteId: string;

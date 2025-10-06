@@ -2,7 +2,7 @@ import { Modal, TitleBar, useAppBridge } from '@shopify/app-bridge-react';
 import { Text } from '@shopify/polaris';
 import React from 'react';
 import { useNavigate } from 'react-router';
-import { coreApiClient, logger } from '@/environment';
+import { coreApiClient } from '@/environment';
 import { useModalCommunication } from '@/hooks';
 import { createShopifyTokenMiddleware } from '@/lib';
 
@@ -29,21 +29,20 @@ export const ResetWorkspaceConfirmationModal: React.FC & {
 		});
 
 		if (!isResetOk) {
-			logger.error('Failed to reset settings:', resetErr);
-			sendToParent({ type: 'RESET_ERROR', error: resetErr });
-
 			shopifyBridge.toast.show('Failed to reset settings. Please try again.', {
 				isError: true,
 				duration: 5000
 			});
+			sendToParent({ type: 'RESET_ERROR', error: resetErr });
 			setIsResetting(false);
 			return;
 		}
 
 		// Success - redirect to onboarding
 		sendToParent({ type: 'RESET_SUCCESS' });
+		shopifyBridge.toast.show('Settings reset successfully!');
+		await navigate('/app/onboarding');
 		setIsResetting(false);
-		navigate('/app/onboarding');
 	}, [shopifyBridge, navigate, sendToParent]);
 
 	const handleCancel = React.useCallback(() => {

@@ -1,13 +1,7 @@
 import { Text } from '@shopify/polaris';
 import { useCompute, useFeatureState } from 'feature-react';
 import React from 'react';
-import {
-	CopyIdSection,
-	DeleteSiteConfirmationModal,
-	DeleteSiteSection,
-	FormSection,
-	ResizablePanel
-} from '@/components';
+import { CopyIdSection, DeleteSiteSection, FormSection, ResizablePanel } from '@/components';
 import { useEditorBreakpoint } from '../../../../hooks';
 import { TPageEditor } from '../../../../lib';
 import { PanelHeader } from '../../PanelHeader';
@@ -112,7 +106,6 @@ export const SettingsGeneralPanel: React.FC<TSettingsGeneralPanelProps> = (props
 							title="Delete Site"
 							description="Permanently delete your site. This action cannot be undone - please proceed with caution."
 							buttonText="Delete Site"
-							modalId={DeleteSiteConfirmationModal.modalId}
 						/>
 					</div>
 				</div>
