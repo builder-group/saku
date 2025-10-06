@@ -22,12 +22,12 @@ export const MetadataPreviewPanel: React.FC<TMetadataPreviewPanelProps> = (props
 
 	const hostname = React.useMemo(() => {
 		try {
-			const url = new URL(editor.site.url);
+			const url = new URL(editor.getSiteUrl());
 			return url.hostname;
 		} catch {
 			return 'saku.com';
 		}
-	}, [editor.site.url]);
+	}, [editor]);
 
 	// =========================================================================
 	// Events

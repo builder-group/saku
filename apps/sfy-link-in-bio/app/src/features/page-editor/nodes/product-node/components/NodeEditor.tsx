@@ -283,10 +283,10 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 															<img
 																src={productImages[0].url}
 																alt={productImages[0].fileName}
-																className="h-10 w-10 flex-shrink-0 rounded-md bg-gray-100 object-cover"
+																className="h-10 w-10 flex-shrink-0 rounded-md bg-neutral-100 object-cover"
 															/>
 														) : (
-															<div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-md bg-gray-100 text-xs text-gray-400">
+															<div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-md bg-neutral-100 text-xs text-gray-400">
 																N/A
 															</div>
 														)}
@@ -334,10 +334,10 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 															<img
 																src={row.image.url}
 																alt={row.image.fileName}
-																className="h-10 w-10 flex-shrink-0 rounded-md bg-gray-100 object-cover"
+																className="h-10 w-10 flex-shrink-0 rounded-md bg-neutral-100 object-cover"
 															/>
 														) : (
-															<div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-md bg-gray-100 text-xs text-gray-400">
+															<div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-md bg-neutral-100 text-xs text-gray-400">
 																N/A
 															</div>
 														)}

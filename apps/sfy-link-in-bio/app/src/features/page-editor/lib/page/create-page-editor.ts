@@ -35,10 +35,11 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 		id: shortId(),
 		site: {
 			id: site.id,
-			handle: site.handle,
+			handle: createState(site.handle),
+			displayName: createState(site.displayName),
 			version: site.content.version,
-			url: site.url,
-			platformUrl: site.platformUrl
+			baseUrl: site.baseUrl,
+			platformBaseUrl: site.platformBaseUrl
 		},
 		shopId,
 		pageContext: createPageContext({
@@ -568,12 +569,12 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 			return this.isPartnerDevelopment() || appConfig.env === 'development';
 		},
 
-		async publish() {
+		async publishSite() {
 			// Clean up unused assets before saving
 			this.cleanupAssets();
 
-			const result = await coreApiClient.put(
-				'/v1/shopify/site/{siteId}/content',
+			const [isUpdateOk, updateErr] = await coreApiClient.patch(
+				'/v1/shopify/site/{siteId}',
 				{
 					content: this.toFlatSite() as any
 				},
@@ -585,24 +586,11 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 				}
 			);
 
-			const isPublished = result.isOk();
-			if (isPublished) {
-				this.shopify.toast.show('Published', {
-					action: 'View site',
-					onAction: () => {
-						window.open(this.site.url, '_blank');
-					}
-				});
-
-				await requestReview(this.shopify);
-
-				return true;
-			} else {
-				const error = result.error;
+			if (!isUpdateOk) {
 				const timestamp = new Date().toISOString();
 
 				// Handle network errors
-				if (error instanceof NetworkError) {
+				if (updateErr instanceof NetworkError) {
 					this.shopify.toast.show(
 						'Network connection issue. Please check your internet and try again.',
 						{
@@ -614,8 +602,8 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 				}
 
 				// Handle request errors
-				if (error instanceof RequestError) {
-					switch (error.status) {
+				if (updateErr instanceof RequestError) {
+					switch (updateErr.status) {
 						case 429:
 							this.shopify.toast.show('Too many requests. Please wait a moment and try again.', {
 								isError: true,
@@ -634,12 +622,12 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 					}
 				}
 
-				// For all other errors, provide detailed error information
+				// Handle all other errors
 				const errorDetails = {
-					code: error?.code ?? '#ERR_UNKNOWN',
-					message: error?.message ?? 'An unknown error occurred',
-					description: error instanceof FetchError ? error.message : undefined,
-					throwable: error instanceof FetchError ? error.throwable?.message : undefined
+					code: updateErr.code ?? '#ERR_UNKNOWN',
+					message: updateErr.message ?? 'An unknown error occurred',
+					description: updateErr instanceof FetchError ? updateErr.message : undefined,
+					throwable: updateErr instanceof FetchError ? updateErr.throwable?.message : undefined
 				};
 				this.shopify.toast.show('Failed to publish', {
 					isError: true,
@@ -655,10 +643,152 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 
 				return false;
 			}
+
+			this.shopify.toast.show('Published', {
+				action: 'View site',
+				onAction: () => {
+					window.open(this.getSiteUrl(), '_blank');
+				}
+			});
+			await requestReview(this.shopify);
+			return true;
+		},
+
+		async updateSiteHandle(handle) {
+			const [isUpdateOk, updateErr] = await coreApiClient.patch(
+				'/v1/shopify/site/{siteId}',
+				{ handle },
+				{
+					pathParams: {
+						siteId: this.site.id
+					},
+					requestMiddlewares: [createShopifyTokenMiddleware(this.shopify)]
+				}
+			);
+
+			if (!isUpdateOk) {
+				// Handle network errors
+				if (updateErr instanceof NetworkError) {
+					this.shopify.toast.show(
+						'Network connection issue. Please check your internet and try again.',
+						{
+							isError: true,
+							duration: 5000
+						}
+					);
+					return false;
+				}
+
+				// Handle request errors
+				if (updateErr instanceof RequestError) {
+					switch (updateErr.status) {
+						case 409:
+							this.shopify.toast.show(
+								'This handle is already taken. Please choose a different one.',
+								{
+									isError: true,
+									duration: 5000
+								}
+							);
+							return false;
+						case 400:
+							this.shopify.toast.show(
+								'Invalid handle format. Use only lowercase letters, numbers, and dashes.',
+								{
+									isError: true,
+									duration: 5000
+								}
+							);
+							return false;
+						case 429:
+							this.shopify.toast.show('Too many requests. Please wait a moment and try again.', {
+								isError: true,
+								duration: 5000
+							});
+							return false;
+					}
+				}
+
+				// Handle all other errors
+				this.shopify.toast.show('Failed to update handle', {
+					isError: true,
+					duration: 5000
+				});
+
+				return false;
+			}
+
+			this.site.handle.set(handle);
+			this.shopify.toast.show('Handle updated successfully');
+			return true;
+		},
+
+		async updateSiteDisplayName(displayName) {
+			const [isUpdateOk, updateErr] = await coreApiClient.patch(
+				'/v1/shopify/site/{siteId}',
+				{ displayName },
+				{
+					pathParams: {
+						siteId: this.site.id
+					},
+					requestMiddlewares: [createShopifyTokenMiddleware(this.shopify)]
+				}
+			);
+
+			if (!isUpdateOk) {
+				// Handle network errors
+				if (updateErr instanceof NetworkError) {
+					this.shopify.toast.show(
+						'Network connection issue. Please check your internet and try again.',
+						{
+							isError: true,
+							duration: 5000
+						}
+					);
+					return false;
+				}
+
+				// Handle request errors
+				if (updateErr instanceof RequestError) {
+					switch (updateErr.status) {
+						case 400:
+							this.shopify.toast.show('Display name is too long. Maximum 32 characters.', {
+								isError: true,
+								duration: 5000
+							});
+							return false;
+						case 429:
+							this.shopify.toast.show('Too many requests. Please wait a moment and try again.', {
+								isError: true,
+								duration: 5000
+							});
+							return false;
+					}
+				}
+
+				// Handle all other errors
+				this.shopify.toast.show('Failed to update name', {
+					isError: true,
+					duration: 5000
+				});
+
+				return false;
+			}
+
+			this.site.displayName.set(displayName);
+			this.shopify.toast.show('Name updated successfully');
+			return true;
 		},
 
 		async closeModal() {
 			await this.shopify.modal.hide(`editor-modal-${this.site.id}`);
+		},
+
+		getSiteUrl() {
+			return `${this.site.baseUrl}/${this.site.handle._v}`;
+		},
+		getSitePlatformUrl() {
+			return `${this.site.platformBaseUrl}/${this.site.handle._v}`;
 		},
 
 		toSite() {
@@ -687,8 +817,9 @@ export interface TCreatePageEditorConfig {
 	site: {
 		id: string;
 		handle: string;
-		url: string;
-		platformUrl: string;
+		displayName?: string;
+		baseUrl: string;
+		platformBaseUrl: string;
 		content: TFlatSite;
 	};
 	shopId: string;
@@ -699,10 +830,11 @@ export interface TPageEditor {
 	id: string;
 	site: {
 		id: string;
-		handle: string;
 		version: TFlatSite['version'];
-		url: string;
-		platformUrl: string;
+		handle: TState<string, []>;
+		displayName: TState<string | undefined, []>;
+		baseUrl: string;
+		platformBaseUrl: string;
 	};
 	shopId: string;
 	pageContext: TPageContext;
@@ -765,9 +897,14 @@ export interface TPageEditor {
 	isPartnerDevelopment: () => boolean;
 	isDebug: () => boolean;
 
-	publish: () => Promise<boolean>;
+	publishSite: () => Promise<boolean>;
+	updateSiteHandle: (handle: string) => Promise<boolean>;
+	updateSiteDisplayName: (displayName: string) => Promise<boolean>;
 
 	closeModal: () => Promise<void>;
+
+	getSiteUrl: () => string;
+	getSitePlatformUrl: () => string;
 
 	toSite: () => TSite;
 	toFlatSite: () => TFlatSite;
@@ -791,7 +928,7 @@ type TSwitchView =
 
 type TSwitchSettingsView =
 	| {
-			type: 'metadata' | 'assets' | 'integrations';
+			type: 'general' | 'metadata' | 'assets' | 'integrations';
 	  }
 	| {
 			type: 'design';

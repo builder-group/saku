@@ -1,4 +1,8 @@
 export const settingsMetadataMap = {
+	general: {
+		type: 'general',
+		label: 'General'
+	} satisfies TSettingsMetadata,
 	design: {
 		type: 'design',
 		label: 'Design'

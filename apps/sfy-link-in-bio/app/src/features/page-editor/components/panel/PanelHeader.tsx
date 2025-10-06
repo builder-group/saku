@@ -6,7 +6,10 @@ export const PanelHeader: React.FC<TPanelHeaderProps> = (props) => {
 
 	return (
 		<div
-			className={cn('flex h-12 items-center border-b border-neutral-200 bg-white px-6', className)}
+			className={cn(
+				'flex min-h-12 items-center border-b border-neutral-200 bg-white px-6',
+				className
+			)}
 			{...divProps}
 		>
 			{children}

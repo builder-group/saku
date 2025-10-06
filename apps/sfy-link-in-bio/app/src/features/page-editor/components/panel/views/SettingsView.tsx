@@ -6,6 +6,7 @@ import { TPageEditor } from '../../../lib';
 import { SettingsNavPanel, SettingsPlaceholderPanel } from '../panels';
 import { SettingsAssetsView } from './SettingsAssetsView';
 import { SettingsDesignView } from './SettingsDesignView';
+import { SettingsGeneralView } from './SettingsGeneralView';
 import { SettingsIntegrationsView } from './SettingsIntegrationsView';
 import { SettingsMetadataView } from './SettingsMetadataView';
 
@@ -15,6 +16,8 @@ const View: React.FC<TViewProps> & { panelCount: number } = (props) => {
 	const activeView = useFeatureState(editor.activeSettingsSection);
 
 	switch (activeView) {
+		case 'general':
+			return <SettingsGeneralView editor={editor} order={order} />;
 		case 'design':
 			return <SettingsDesignView editor={editor} order={order} />;
 		case 'metadata':
@@ -28,6 +31,7 @@ const View: React.FC<TViewProps> & { panelCount: number } = (props) => {
 	}
 };
 View.panelCount = Math.max(
+	SettingsGeneralView.panelCount,
 	SettingsDesignView.panelCount,
 	SettingsMetadataView.panelCount,
 	SettingsAssetsView.panelCount,

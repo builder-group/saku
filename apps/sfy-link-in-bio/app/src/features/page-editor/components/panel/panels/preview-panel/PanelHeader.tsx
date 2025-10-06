@@ -48,7 +48,7 @@ export const PanelHeader: React.FC<TPanelHeaderProps> = (props) => {
 	}, [cx]);
 
 	const handleViewProductionSite = React.useCallback(() => {
-		window.open(cx.editor.site.url, '_blank');
+		window.open(cx.editor.getSiteUrl(), '_blank');
 	}, [cx]);
 
 	// =========================================================================

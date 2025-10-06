@@ -2,8 +2,11 @@ import { Modal, TitleBar } from '@shopify/app-bridge-react';
 import { useFeatureState } from 'feature-react/state';
 import { createState, TState } from 'feature-state';
 import React from 'react';
+import { DeleteSiteConfirmationModal } from './DeleteSiteConfirmationModal';
 
-export const PageEditorModal: React.FC<TPageEditorModalProps> = (props) => {
+export const PageEditorModal: React.FC<TPageEditorModalProps> & {
+	modalId: (siteId: string) => string;
+} = (props) => {
 	const { siteId, title, isOpenState, onShow, onHide } = props;
 	const isOpen = useFeatureState(isOpenState);
 
@@ -13,18 +16,24 @@ export const PageEditorModal: React.FC<TPageEditorModalProps> = (props) => {
 	}, [isOpenState, onHide]);
 
 	return (
-		<Modal
-			id={`editor-modal-${siteId}`}
-			src={`/app/modal/page-editor?siteId=${siteId}`} // https://shopify.dev/docs/api/app-bridge/using-modals-in-your-app#modals-with-a-route
-			open={isOpen}
-			onHide={handleHide}
-			onShow={onShow}
-			variant="max"
-		>
-			<TitleBar title={title} />
-		</Modal>
+		<>
+			<Modal
+				id={PageEditorModal.modalId(siteId)}
+				src={`/app/modal/page-editor?siteId=${siteId}`} // https://shopify.dev/docs/api/app-bridge/using-modals-in-your-app#modals-with-a-route
+				open={isOpen}
+				onHide={handleHide}
+				onShow={onShow}
+				variant="max"
+			>
+				<TitleBar title={title} />
+			</Modal>
+
+			{/* All modals shown inside a Max Modal must be defined at the same level as the Max Modal, not nested within other modals. Shopify App Bridge doesn't support opening a modal from within another modal. See: https://github.com/Shopify/shopify-app-bridge/issues/420 */}
+			<DeleteSiteConfirmationModal siteId={siteId} />
+		</>
 	);
 };
+PageEditorModal.modalId = (siteId: string) => `editor-modal-${siteId}`;
 
 interface TPageEditorModalProps {
 	siteId: string;

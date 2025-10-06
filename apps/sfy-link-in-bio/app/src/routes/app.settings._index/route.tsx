@@ -1,46 +1,46 @@
 import { shortId } from '@blgc/utils';
-import { Modal, TitleBar, useAppBridge } from '@shopify/app-bridge-react';
-import { Text } from '@shopify/polaris';
+import { useAppBridge } from '@shopify/app-bridge-react';
 import React from 'react';
-import { useNavigate } from 'react-router';
-import { useCrisp } from '@/components';
-import { appConfig, coreApiClient, logger } from '@/environment';
-import { createShopifyTokenMiddleware } from '@/lib';
+import {
+	ResetWorkspaceConfirmationModal,
+	TResetWorkspaceModalToParent,
+	useCrisp
+} from '@/components';
+import { appConfig } from '@/environment';
+import { useParentCommunication } from '@/hooks';
 
 // https://shopify.dev/docs/api/app-home/patterns/settings
 const Page: React.FC = () => {
 	const crisp = useCrisp();
 	const shopifyBridge = useAppBridge();
-	const navigate = useNavigate();
-	const [isResetting, setIsResetting] = React.useState(false);
+	const [resetState, setResetState] = React.useState<'idle' | 'loading' | 'success' | 'error'>(
+		'idle'
+	);
+
+	useParentCommunication<TResetWorkspaceModalToParent>(ResetWorkspaceConfirmationModal.modalId, {
+		onModalMessage: React.useCallback((message: TResetWorkspaceModalToParent) => {
+			switch (message.type) {
+				case 'RESET_STARTED':
+					setResetState('loading');
+					break;
+				case 'RESET_SUCCESS':
+					setResetState('success');
+					break;
+				case 'RESET_ERROR':
+					setResetState('error');
+					break;
+			}
+		}, [])
+	});
 
 	// =========================================================================
 	// Events
 	// =========================================================================
 
 	const handleResetSettings = React.useCallback(() => {
-		shopifyBridge.modal.show('reset-confirmation-modal');
+		setResetState('idle');
+		shopifyBridge.modal.show(ResetWorkspaceConfirmationModal.modalId);
 	}, [shopifyBridge]);
-
-	const handleConfirmReset = React.useCallback(async () => {
-		setIsResetting(true);
-
-		const result = await coreApiClient.post('/v1/shopify/shop/reset', undefined, {
-			requestMiddlewares: [createShopifyTokenMiddleware(shopifyBridge)]
-		});
-		if (result.isErr()) {
-			logger.error('Failed to reset settings:', result.error);
-			shopifyBridge.toast.show('Failed to reset settings. Please try again.', {
-				isError: true,
-				duration: 5000
-			});
-			setIsResetting(false);
-			return;
-		}
-
-		// Success - redirect to onboarding
-		navigate('/app/onboarding');
-	}, [shopifyBridge, navigate]);
 
 	const handleStartChat = React.useCallback(() => {
 		crisp?.openChat();
@@ -139,39 +139,17 @@ const Page: React.FC = () => {
 							<s-button
 								tone="critical"
 								onClick={handleResetSettings}
-								loading={isResetting}
-								disabled={isResetting}
+								loading={resetState === 'loading'}
+								disabled={resetState === 'loading'}
 							>
-								Reset
+								{resetState === 'loading' ? 'Resetting...' : 'Reset'}
 							</s-button>
 						</div>
 					</div>
 				</s-section>
 			</s-page>
 
-			{/* Reset Confirmation Modal */}
-			<Modal id="reset-confirmation-modal">
-				<div className="p-4">
-					<Text variant="bodyMd" as="p">
-						This will permanently delete all your bio pages, settings, and data. You&apos;ll need to
-						go through the setup process again. This action cannot be undone.
-					</Text>
-				</div>
-				<TitleBar title="Reset app settings">
-					<button
-						variant="primary"
-						tone="critical"
-						onClick={handleConfirmReset}
-						disabled={isResetting}
-						loading={isResetting}
-					>
-						Reset settings
-					</button>
-					<button onClick={() => shopifyBridge.modal.hide('reset-confirmation-modal')}>
-						Cancel
-					</button>
-				</TitleBar>
-			</Modal>
+			<ResetWorkspaceConfirmationModal />
 		</>
 	);
 };

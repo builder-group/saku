@@ -103,7 +103,7 @@ export const ProductDetailsModal: React.FC<TProductDetailsModalProps> = (props) 
 			>
 				{/* Modal Header */}
 				<form method="dialog">
-					<button className="btn btn-sm btn-circle absolute top-4 right-4 z-50 bg-gray-100 text-gray-700 hover:bg-gray-200">
+					<button className="btn btn-sm btn-circle absolute top-4 right-4 z-50 bg-neutral-100 text-gray-700 hover:bg-neutral-200">
 						✕
 					</button>
 				</form>
@@ -115,7 +115,7 @@ export const ProductDetailsModal: React.FC<TProductDetailsModalProps> = (props) 
 						<div className="space-y-4">
 							{/* Main Image */}
 							<div
-								className="aspect-square w-full overflow-hidden bg-gray-100"
+								className="aspect-square w-full overflow-hidden bg-neutral-100"
 								style={{
 									...image.appearance.styles,
 									...image.stroke?.styles,
@@ -138,7 +138,7 @@ export const ProductDetailsModal: React.FC<TProductDetailsModalProps> = (props) 
 										<button
 											key={index}
 											onClick={() => setSelectedImageIndex(index)}
-											className={`aspect-square overflow-hidden rounded-md bg-gray-100 ${
+											className={`aspect-square overflow-hidden rounded-md bg-neutral-100 ${
 												index === selectedImageIndex
 													? 'ring-primary ring-2 ring-offset-2'
 													: 'hover:opacity-75'

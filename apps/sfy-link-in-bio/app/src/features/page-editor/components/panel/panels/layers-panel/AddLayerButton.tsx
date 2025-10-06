@@ -18,7 +18,7 @@ export const AddLayerButton: React.FC<TAddLayerButtonProps> = (props) => {
 					className={cn(
 						'mt-2 flex h-[34px] items-center gap-2 rounded-lg px-2 text-[#005BD3]',
 						isDragging && 'opacity-50',
-						!isDragging && 'cursor-pointer hover:bg-gray-50'
+						!isDragging && 'cursor-pointer hover:bg-neutral-50'
 					)}
 				>
 					<div>

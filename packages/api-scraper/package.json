@@ -34,7 +34,7 @@
 	},
 	"dependencies": {
 		"@blgc/utils": "^0.0.59",
-		"feature-fetch": "^0.0.51",
+		"feature-fetch": "^0.0.52",
 		"xml-tokenizer": "^0.0.42"
 	},
 	"devDependencies": {

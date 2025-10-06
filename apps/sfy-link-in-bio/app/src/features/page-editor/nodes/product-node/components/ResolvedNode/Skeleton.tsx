@@ -18,12 +18,12 @@ export const Skeleton: React.FC<TSkeletonProps> = (props) => {
 			}}
 		>
 			<div
-				className="h-12 w-12 flex-shrink-0 animate-pulse bg-gray-300"
+				className="h-12 w-12 flex-shrink-0 animate-pulse bg-neutral-300"
 				style={{ borderRadius: appearance.styles.borderRadius }}
 			></div>
 			<div className="flex min-w-0 flex-grow flex-col gap-1">
-				<div className="h-4 w-32 animate-pulse bg-gray-300"></div>
-				<div className="h-3 w-16 animate-pulse bg-gray-300"></div>
+				<div className="h-4 w-32 animate-pulse bg-neutral-300"></div>
+				<div className="h-3 w-16 animate-pulse bg-neutral-300"></div>
 			</div>
 		</div>
 	);

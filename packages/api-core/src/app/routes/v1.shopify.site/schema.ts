@@ -1,5 +1,10 @@
 import { createRoute, z } from '@hono/zod-openapi';
-import { BadRequestResponse, JsonSuccessResponse, NotFoundResponse } from '@repo/hono-utils';
+import {
+	BadRequestResponse,
+	ConflictResponse,
+	JsonSuccessResponse,
+	NotFoundResponse
+} from '@repo/hono-utils';
 import { SFlatSiteContentDto, SSiteDto, SSiteSummaryDto } from '../v1.site/schema';
 
 export const GetShopifySitesRoute = createRoute({
@@ -83,12 +88,12 @@ export const CreateShopifySiteRoute = createRoute({
 	}
 });
 
-export const UpdateShopifySiteContentRoute = createRoute({
-	method: 'put',
-	path: '/v1/shopify/site/{siteId}/content',
+export const UpdateShopifySiteRoute = createRoute({
+	method: 'patch',
+	path: '/v1/shopify/site/{siteId}',
 	tags: ['shopify', 'site'],
-	summary: 'Update site content',
-	operationId: 'updateShopifySiteContent',
+	summary: 'Update site',
+	operationId: 'updateShopifySite',
 	request: {
 		params: z.object({
 			siteId: z.uuid().openapi({
@@ -100,7 +105,22 @@ export const UpdateShopifySiteContentRoute = createRoute({
 			content: {
 				'application/json': {
 					schema: z.object({
-						content: SFlatSiteContentDto
+						handle: z
+							.string()
+							.regex(
+								/^[a-z0-9-]+$/,
+								'Handle must only contain lowercase letters, numbers, and dashes'
+							)
+							.min(1, 'Handle must be at least 1 character')
+							.max(50, 'Handle must be at most 50 characters')
+							.optional()
+							.openapi({ example: 'bio', description: 'Site handle/slug' }),
+						displayName: z
+							.string()
+							.max(32, 'Display name must be at most 32 characters')
+							.optional()
+							.openapi({ example: 'My Bio Site', description: 'Human-friendly site name' }),
+						content: SFlatSiteContentDto.optional()
 					})
 				}
 			}
@@ -109,6 +129,31 @@ export const UpdateShopifySiteContentRoute = createRoute({
 	responses: {
 		200: JsonSuccessResponse(SSiteDto),
 		400: BadRequestResponse,
-		404: NotFoundResponse
+		404: NotFoundResponse,
+		409: ConflictResponse
+	}
+});
+
+export const DeleteShopifySiteRoute = createRoute({
+	method: 'delete',
+	path: '/v1/shopify/site/{siteId}',
+	tags: ['shopify', 'site'],
+	summary: 'Delete site',
+	operationId: 'deleteShopifySite',
+	request: {
+		params: z.object({
+			siteId: z.uuid().openapi({
+				example: '123e4567-e89b-12d3',
+				description: 'Site ID'
+			})
+		})
+	},
+	responses: {
+		204: {
+			description: 'Site deleted successfully'
+		},
+		400: BadRequestResponse,
+		404: NotFoundResponse,
+		409: ConflictResponse
 	}
 });

@@ -11,7 +11,7 @@ export const PublishButton: React.FC<TPublishButtonProps> = (props) => {
 
 	const handlePublish = React.useCallback(async () => {
 		setIsPublishing(true);
-		const isPublished = await editor.publish();
+		const isPublished = await editor.publishSite();
 		if (isPublished) {
 			triggerConfetti();
 		}

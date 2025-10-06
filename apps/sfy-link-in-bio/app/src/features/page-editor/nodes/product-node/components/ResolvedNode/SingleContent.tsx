@@ -140,7 +140,10 @@ export const SingleContent: React.FC<TSingleContentProps> = (props) => {
 			>
 				{/* Product Image */}
 				{productImage != null && (
-					<div className="h-12 w-12 flex-shrink-0 overflow-hidden bg-gray-100" style={image.styles}>
+					<div
+						className="h-12 w-12 flex-shrink-0 overflow-hidden bg-neutral-100"
+						style={image.styles}
+					>
 						<img
 							src={productImage.src}
 							alt={product.title}

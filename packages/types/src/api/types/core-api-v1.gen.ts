@@ -213,7 +213,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/v1/shopify/site/{siteId}/content": {
+    "/v1/shopify/site/{siteId}": {
         parameters: {
             query?: never;
             header?: never;
@@ -221,13 +221,14 @@ export interface paths {
             cookie?: never;
         };
         get?: never;
-        /** Update site content */
-        put: operations["updateShopifySiteContent"];
+        put?: never;
         post?: never;
-        delete?: never;
+        /** Delete site */
+        delete: operations["deleteShopifySite"];
         options?: never;
         head?: never;
-        patch?: never;
+        /** Update site */
+        patch: operations["updateShopifySite"];
         trace?: never;
     };
     "/v1/shopify/ugc/files": {
@@ -279,7 +280,8 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        patch?: never;
+        /** Update workspace info */
+        patch: operations["updateShopifyWorkspace"];
         trace?: never;
     };
     "/v1/site/{siteId}": {
@@ -1671,7 +1673,55 @@ export interface operations {
             };
         };
     };
-    updateShopifySiteContent: {
+    deleteShopifySite: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Site ID */
+                siteId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Site deleted successfully */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Bad request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppErrorDto"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppErrorDto"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppErrorDto"];
+                };
+            };
+        };
+    };
+    updateShopifySite: {
         parameters: {
             query?: never;
             header?: never;
@@ -1684,7 +1734,17 @@ export interface operations {
         requestBody?: {
             content: {
                 "application/json": {
-                    content: components["schemas"]["FlatSiteContentDto"];
+                    /**
+                     * @description Site handle/slug
+                     * @example bio
+                     */
+                    handle?: string;
+                    /**
+                     * @description Human-friendly site name
+                     * @example My Bio Site
+                     */
+                    displayName?: string;
+                    content?: components["schemas"]["FlatSiteContentDto"];
                 };
             };
         };
@@ -1709,6 +1769,15 @@ export interface operations {
             };
             /** @description Resource not found */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppErrorDto"];
+                };
+            };
+            /** @description Conflict */
+            409: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -1940,6 +2009,67 @@ export interface operations {
             };
             /** @description Resource not found */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppErrorDto"];
+                };
+            };
+        };
+    };
+    updateShopifyWorkspace: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": {
+                    /** @example my-awesome-store */
+                    handle?: string;
+                    /** @example My Awesome Store */
+                    displayName?: string;
+                    /**
+                     * Format: uri
+                     * @example https://cdn.shopify.com/logo.png
+                     */
+                    image?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkspaceDto"];
+                };
+            };
+            /** @description Bad request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppErrorDto"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppErrorDto"];
+                };
+            };
+            /** @description Conflict */
+            409: {
                 headers: {
                     [name: string]: unknown;
                 };
