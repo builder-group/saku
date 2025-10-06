@@ -25,7 +25,8 @@ export const DeleteSiteSection: React.FC<TDeleteSiteSectionProps> = (props) => {
 					setDeleteState('error');
 					break;
 			}
-		}, [])
+		}, []),
+		communicationMethod: 'localStorage'
 	});
 
 	// =========================================================================
