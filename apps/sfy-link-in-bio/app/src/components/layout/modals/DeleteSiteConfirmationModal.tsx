@@ -106,12 +106,12 @@ export const DeleteSiteConfirmationModal: React.FC<TDeleteSiteConfirmationModalP
 			<TitleBar title="Delete Site">
 				<button
 					variant="primary"
+					tone="critical"
 					onClick={handleConfirmDelete}
 					disabled={isDeleting}
 					loading={isDeleting}
-					tone="critical"
 				>
-					Delete Site
+					{isDeleting ? 'Deleting...' : 'Delete Site'}
 				</button>
 				<button onClick={handleCancelDelete}>Cancel</button>
 			</TitleBar>
