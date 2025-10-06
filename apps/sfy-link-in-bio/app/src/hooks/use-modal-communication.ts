@@ -94,13 +94,13 @@ interface TModalCommunicationOptions<GParentToModalPayload> {
 	/**
 	 * Communication method to use for modal-parent communication.
 	 *
-	 * - 'postMessage' (default): Use when modal and parent are in the same window/iframe
-	 * - 'localStorage': **Required** when modal and parent are in different iframes (but still same domain)
+	 * - 'postMessage' (default): Use for app ↔ iframe communication
+	 * - 'localStorage': **Required** for iframe ↔ iframe communication within the same app
 	 *
-	 * e.g. 'localStorage' is required when:
-	 * - Page Editor Modal (iframe) → Delete Confirmation Modal (main app frame)
-	 * - Shopify App Bridge doesn't allow nested modals, so confirmation modals
-	 *   must be rendered at the same level as the page editor modal, not inside it
+	 * **Why localStorage for cross-iframe?**
+	 * `postMessage` works fine for app ↔ iframe communication, but seems to fail for iframe ↔ iframe
+	 * communication within the same app (e.g., Page Editor iframe → Delete Modal iframe).
+	 * localStorage events work reliably across all iframes within the same origin.
 	 */
 	communicationMethod?: TModalCommunicationMethod;
 }
@@ -203,13 +203,13 @@ interface TParentCommunicationOptions<GModalToParentPayload> {
 	/**
 	 * Communication method to use for modal-parent communication.
 	 *
-	 * - 'postMessage' (default): Use when modal and parent are in the same window/iframe
-	 * - 'localStorage': **Required** when modal and parent are in different iframes (but still same domain)
+	 * - 'postMessage' (default): Use for app ↔ iframe communication
+	 * - 'localStorage': **Required** for iframe ↔ iframe communication within the same app
 	 *
-	 * e.g. 'localStorage' is required when:
-	 * - Page Editor Modal (iframe) → Delete Confirmation Modal (main app frame)
-	 * - Shopify App Bridge doesn't allow nested modals, so confirmation modals
-	 *   must be rendered at the same level as the page editor modal, not inside it
+	 * **Why localStorage for cross-iframe?**
+	 * `postMessage` works fine for app ↔ iframe communication, but seems to fail for iframe ↔ iframe
+	 * communication within the same app (e.g., Page Editor iframe → Delete Modal iframe).
+	 * localStorage events work reliably across all iframes within the same origin.
 	 */
 	communicationMethod?: TModalCommunicationMethod;
 }
