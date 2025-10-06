@@ -1,4 +1,4 @@
-import { Button, ButtonGroup, Layout, Spinner, Text } from '@shopify/polaris';
+import { Button, ButtonGroup, Spinner, Text } from '@shopify/polaris';
 import { boundary } from '@shopify/shopify-app-react-router/server';
 import { useFeatureState } from 'feature-react';
 import React from 'react';
@@ -94,10 +94,9 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 							Visit
 						</button> */}
 					</ui-title-bar>
-					<div className="h-4" />
 
-					<Layout>
-						<Layout.Section>
+					<div className="mt-4 grid grid-cols-1 gap-4 bg-[var(--p-color-bg)] lg:grid-cols-3">
+						<div className="lg:col-span-2">
 							{/* Bio Preview Section */}
 							<s-section>
 								<SitePreview
@@ -147,23 +146,27 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 									</div>
 								</div>
 							</s-section>
-						</Layout.Section>
+						</div>
 
-						<Layout.Section variant="oneThird">
-							<div className="flex flex-col gap-5">
+						<div className="space-y-5">
+							<div>
 								<BioUrlSection
 									primaryUrl={site.primaryUrl}
 									platformUrl={site.platformUrl}
 									title="Your Bio Link"
 								/>
+							</div>
+							<div>
 								<FeedbackSection
 									email={appConfig.help.email}
 									reviewUrl={appConfig.distribution.shopify}
 								/>
+							</div>
+							<div>
 								<QuickHelpSection />
 							</div>
-						</Layout.Section>
-					</Layout>
+						</div>
+					</div>
 				</s-page>
 
 				<EditorModal />

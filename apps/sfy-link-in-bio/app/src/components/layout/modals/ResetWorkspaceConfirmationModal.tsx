@@ -1,57 +1,11 @@
-import { Modal, TitleBar, useAppBridge } from '@shopify/app-bridge-react';
+import { Modal, TitleBar } from '@shopify/app-bridge-react';
 import { Text } from '@shopify/polaris';
 import React from 'react';
-import { useNavigate } from 'react-router';
-import { coreApiClient } from '@/environment';
-import { useModalCommunication } from '@/hooks';
-import { createShopifyTokenMiddleware } from '@/lib';
 
-export const ResetWorkspaceConfirmationModal: React.FC & {
+export const ResetWorkspaceConfirmationModal: React.FC<TResetWorkspaceConfirmationModalProps> & {
 	modalId: string;
-} = () => {
-	const shopifyBridge = useAppBridge();
-	const navigate = useNavigate();
-	const [isResetting, setIsResetting] = React.useState(false);
-	const { sendToParent } = useModalCommunication<TResetWorkspaceModalToParent>(
-		ResetWorkspaceConfirmationModal.modalId
-	);
-
-	// =========================================================================
-	// Events
-	// =========================================================================
-
-	const handleConfirmReset = React.useCallback(async () => {
-		setIsResetting(true);
-		sendToParent({ type: 'RESET_STARTED' });
-
-		const [isResetOk, resetErr] = await coreApiClient.post('/v1/shopify/shop/reset', undefined, {
-			requestMiddlewares: [createShopifyTokenMiddleware(shopifyBridge)]
-		});
-
-		if (!isResetOk) {
-			shopifyBridge.toast.show('Failed to reset settings. Please try again.', {
-				isError: true,
-				duration: 5000
-			});
-			sendToParent({ type: 'RESET_ERROR', error: resetErr });
-			setIsResetting(false);
-			return;
-		}
-
-		// Success - redirect to onboarding
-		sendToParent({ type: 'RESET_SUCCESS' });
-		shopifyBridge.toast.show('Settings reset successfully!');
-		await navigate('/app/onboarding');
-		setIsResetting(false);
-	}, [shopifyBridge, navigate, sendToParent]);
-
-	const handleCancel = React.useCallback(() => {
-		shopifyBridge.modal.hide(ResetWorkspaceConfirmationModal.modalId);
-	}, [shopifyBridge]);
-
-	// =========================================================================
-	// UI
-	// =========================================================================
+} = (props) => {
+	const { handleConfirm, handleCancel, isResetting } = props;
 
 	return (
 		<Modal id={ResetWorkspaceConfirmationModal.modalId}>
@@ -65,7 +19,7 @@ export const ResetWorkspaceConfirmationModal: React.FC & {
 				<button
 					variant="primary"
 					tone="critical"
-					onClick={handleConfirmReset}
+					onClick={handleConfirm}
 					disabled={isResetting}
 					loading={isResetting}
 				>
@@ -78,7 +32,8 @@ export const ResetWorkspaceConfirmationModal: React.FC & {
 };
 ResetWorkspaceConfirmationModal.modalId = 'reset-workspace-confirmation-modal';
 
-export type TResetWorkspaceModalToParent =
-	| { type: 'RESET_STARTED' }
-	| { type: 'RESET_SUCCESS' }
-	| { type: 'RESET_ERROR'; error: unknown };
+interface TResetWorkspaceConfirmationModalProps {
+	handleConfirm: () => void;
+	handleCancel: () => void;
+	isResetting: boolean;
+}
