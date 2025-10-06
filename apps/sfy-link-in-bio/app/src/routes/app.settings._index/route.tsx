@@ -1,19 +1,55 @@
 import { shortId } from '@blgc/utils';
 import { useAppBridge } from '@shopify/app-bridge-react';
 import React from 'react';
-import { ResetWorkspaceConfirmationModal, useCrisp } from '@/components';
+import {
+	ResetWorkspaceConfirmationModal,
+	TResetWorkspaceModalToParent,
+	useCrisp
+} from '@/components';
 import { appConfig } from '@/environment';
+import { useParentCommunication } from '@/hooks';
 
 // https://shopify.dev/docs/api/app-home/patterns/settings
 const Page: React.FC = () => {
 	const crisp = useCrisp();
 	const shopifyBridge = useAppBridge();
+	const [resetState, setResetState] = React.useState<'idle' | 'loading' | 'success' | 'error'>(
+		'idle'
+	);
+
+	useParentCommunication<TResetWorkspaceModalToParent>(ResetWorkspaceConfirmationModal.modalId, {
+		onModalMessage: React.useCallback(
+			(message: TResetWorkspaceModalToParent) => {
+				switch (message.type) {
+					case 'RESET_STARTED':
+						setResetState('loading');
+						break;
+					case 'RESET_SUCCESS':
+						setResetState('success');
+						shopifyBridge.toast.show('Settings reset successfully!', {
+							isError: false,
+							duration: 3000
+						});
+						break;
+					case 'RESET_ERROR':
+						setResetState('error');
+						shopifyBridge.toast.show('Failed to reset settings. Please try again.', {
+							isError: true,
+							duration: 5000
+						});
+						break;
+				}
+			},
+			[shopifyBridge]
+		)
+	});
 
 	// =========================================================================
 	// Events
 	// =========================================================================
 
 	const handleResetSettings = React.useCallback(() => {
+		setResetState('idle');
 		shopifyBridge.modal.show(ResetWorkspaceConfirmationModal.modalId);
 	}, [shopifyBridge]);
 
@@ -111,8 +147,13 @@ const Page: React.FC = () => {
 									Reset all settings to their default values. This action cannot be undone.
 								</s-paragraph>
 							</div>
-							<s-button tone="critical" onClick={handleResetSettings}>
-								Reset
+							<s-button
+								tone="critical"
+								onClick={handleResetSettings}
+								loading={resetState === 'loading'}
+								disabled={resetState === 'loading'}
+							>
+								{resetState === 'loading' ? 'Resetting...' : 'Reset'}
 							</s-button>
 						</div>
 					</div>

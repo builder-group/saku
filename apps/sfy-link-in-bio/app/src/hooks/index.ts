@@ -4,3 +4,4 @@ export * from './mantle';
 export * from './posthog';
 export * from './react-router';
 export * from './use-map-state';
+export * from './use-modal-communication';
