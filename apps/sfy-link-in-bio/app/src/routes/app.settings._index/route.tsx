@@ -62,7 +62,7 @@ const Page: React.FC = () => {
 			<s-page inlineSize="small">
 				<ui-title-bar title="Settings"></ui-title-bar>
 
-				<div className="mt-4 grid grid-cols-1 gap-4 bg-[var(--p-color-bg)]">
+				<div className="my-4 grid grid-cols-1 gap-4 bg-[var(--p-color-bg)]">
 					{/* Account */}
 					<s-section heading="Account">
 						<div className="overflow-hidden rounded-lg border border-neutral-200">

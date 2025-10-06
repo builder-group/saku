@@ -126,7 +126,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 				<s-page inlineSize="small">
 					<ui-title-bar title="Select a Plan"></ui-title-bar>
 
-					<div className="mt-4 grid grid-cols-1 gap-4 bg-[var(--p-color-bg)]">
+					<div className="my-4 grid grid-cols-1 gap-4 bg-[var(--p-color-bg)]">
 						{/* Back Button */}
 						{fromSettings && (
 							<div className="flex w-full items-start pl-3">
@@ -270,7 +270,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 			<s-page inlineSize="small">
 				<ui-title-bar title="Select a Plan"></ui-title-bar>
 
-				<div className="mt-4 grid grid-cols-1 gap-4 bg-[var(--p-color-bg)]">
+				<div className="my-4 grid grid-cols-1 gap-4 bg-[var(--p-color-bg)]">
 					{/* Back Button */}
 					{fromSettings && (
 						<div className="flex w-full items-start pl-3">

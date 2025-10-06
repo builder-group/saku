@@ -95,7 +95,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 						</button> */}
 					</ui-title-bar>
 
-					<div className="mt-4 grid grid-cols-1 gap-4 bg-[var(--p-color-bg)] lg:grid-cols-3">
+					<div className="my-4 grid grid-cols-1 gap-4 bg-[var(--p-color-bg)] lg:grid-cols-3">
 						<div className="lg:col-span-2">
 							{/* Bio Preview Section */}
 							<s-section>
