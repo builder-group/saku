@@ -26,7 +26,10 @@ export const PageEditorModal: React.FC<TPageEditorModalProps> & {
 				id={PageEditorModal.modalId(cx.siteId)}
 				src={`/app/modal/page-editor?siteId=${cx.siteId}`} // https://shopify.dev/docs/api/app-bridge/using-modals-in-your-app#modals-with-a-route
 				open={isOpen}
-				onHide={() => cx.isOpen.set(false)}
+				onHide={() => {
+					cx.isOpen.set(false);
+					cx._hooks.onHide?.();
+				}}
 				onShow={() => cx.isOpen.set(true)}
 				variant="max"
 			>
@@ -45,9 +48,12 @@ interface TPageEditorModalProps {
 }
 
 export function usePageEditorModal(options: TUsePageEditorModalOptions = {}) {
-	const { siteId, title } = options;
+	const { siteId, title, onHide } = options;
 	const cx = React.useMemo<TPageEditorModalCx>(() => {
 		return {
+			_hooks: {
+				onHide
+			},
 			siteId,
 			title,
 			isOpen: createState(false),
@@ -57,7 +63,7 @@ export function usePageEditorModal(options: TUsePageEditorModalOptions = {}) {
 				this.isOpen.set(true);
 			}
 		};
-	}, [siteId, title]);
+	}, [onHide, siteId, title]);
 
 	const ModalCallback = React.useCallback(() => {
 		return <PageEditorModal cx={cx} />;
@@ -75,9 +81,13 @@ export function usePageEditorModal(options: TUsePageEditorModalOptions = {}) {
 interface TUsePageEditorModalOptions {
 	siteId?: string;
 	title?: string;
+	onHide?: () => void;
 }
 
 interface TPageEditorModalCx {
+	_hooks: {
+		onHide?: () => void;
+	};
 	siteId?: string;
 	title?: string;
 	isOpen: TState<boolean, []>;

@@ -49,10 +49,17 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 			[sites]
 		);
 
-		const { cx: pageEditorModalCx, Modal: PageEditorModal } = usePageEditorModal();
+		const { cx: pageEditorModalCx, Modal: PageEditorModal } = usePageEditorModal({
+			onHide: React.useCallback(() => {
+				// Reload loader data to reflect any changes made in the editor
+				// (e.g. site handle, display name updates)
+				revalidator.revalidate();
+			}, [revalidator])
+		});
 		const { cx: deleteSiteModalCx, Modal: DeleteSiteModal } = useDeleteSiteModal({
 			onDeleteSuccess: React.useCallback(() => {
-				revalidator.revalidate(); // Reload data from loader
+				// Reload loader data to remove the deleted site from the sites list
+				revalidator.revalidate();
 			}, [revalidator])
 		});
 
