@@ -43,7 +43,7 @@ export const SettingsNavPanel: React.FC<TSettingsNavPanelProps> = (props) => {
 			const height = rect.bottom - rect.top;
 			const toPercent = (pixels: number) => (pixels / (height > 0 ? height : 15)) * 100;
 			return {
-				collapsedSize: toPercent(45), // ~ 3
+				collapsedSize: toPercent(48), // ~ 3
 				minSize: toPercent(150), // ~ 10
 				defaultSize: toPercent(225), // ~ 15
 				maxSize: toPercent(450) // ~ 30
