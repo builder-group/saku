@@ -1,4 +1,5 @@
 import { shortId } from '@blgc/utils';
+import { TFlatSite, themes, TTheme } from '@repo/editor';
 import { useAppBridge } from '@shopify/app-bridge-react';
 import { Button, ButtonGroup, Icon, Spinner, Text } from '@shopify/polaris';
 import { boundary } from '@shopify/shopify-app-react-router/server';
@@ -20,6 +21,7 @@ import {
 	usePageEditorModal
 } from '@/components';
 import { appConfig, coreApiClient } from '@/environment';
+import { applyThemeToSite } from '@/features/page-editor';
 import { useCurrentPlan } from '@/hooks';
 import {
 	AppError,
@@ -41,24 +43,31 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 			() => [sites[0] as TLoaderDataSite, sites.slice(1)],
 			[sites]
 		);
-		const { Modal: PageEditorModal, isOpenState: isEditorOpenState } = usePageEditorModal({
+		const {
+			Modal: PageEditorModal,
+			isOpenState: isEditorOpenState,
+			openModal
+		} = usePageEditorModal({
 			siteId: site.id,
 			title: `${site.displayName} (/${site.handle})`
 		});
 		const isEditorOpen = useFeatureState(isEditorOpenState);
 		const [isLoadingEditor, setIsLoadingEditor] = React.useState(shouldOpenEditor);
-		const [isCreatingBio, setIsCreatingBio] = React.useState(false);
+		const [isCreatingSite, setIsCreatingSite] = React.useState(false);
 
 		// =========================================================================
 		// Events
 		// =========================================================================
 
-		const handleCustomizeBio = React.useCallback(() => {
-			isEditorOpenState.set(true);
-		}, [isEditorOpenState]);
+		const handleCustomizeSite = React.useCallback(
+			(siteToEdit: TLoaderDataSite) => {
+				openModal(siteToEdit.id, `${siteToEdit.displayName} (/${siteToEdit.handle})`);
+			},
+			[openModal]
+		);
 
-		const handleCreateBioPage = React.useCallback(async () => {
-			setIsCreatingBio(true);
+		const handleCreateSite = React.useCallback(async () => {
+			setIsCreatingSite(true);
 
 			try {
 				const handle = `bio-${sites.length + 1}-${shortId()}`;
@@ -81,13 +90,18 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 				}
 				const blankPreset = blankPresetResponse.data;
 
+				const siteContent = applyThemeToSite(
+					blankPreset.content as unknown as TFlatSite,
+					themes[0] as TTheme
+				);
+
 				// Create the site
 				const [isCreateOk, createErr, createResponse] = await coreApiClient.post(
 					'/v1/shopify/site',
 					{
 						handle,
 						displayName,
-						content: blankPreset.content,
+						content: siteContent as any,
 						createRedirect: true,
 						overrideRedirect: false
 					},
@@ -96,42 +110,40 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 					}
 				);
 				if (!isCreateOk) {
-					// Handle request errors
-					if (createErr instanceof RequestError) {
-						switch (createErr.status) {
-							case 409:
-								shopifyBridge.toast.show(`A site with the handle '${handle}' already exists.`, {
+					const status = createErr instanceof RequestError ? createErr.status : undefined;
+					switch (status) {
+						case 409:
+							shopifyBridge.toast.show(`A site with the handle '${handle}' already exists.`, {
+								isError: true,
+								duration: 5000
+							});
+							break;
+						case 403:
+							shopifyBridge.toast.show(
+								'You can only create one site with your current plan. Upgrade to Awesome plan to create multiple sites.',
+								{
 									isError: true,
 									duration: 5000
-								});
-								return;
-							case 403:
-								shopifyBridge.toast.show(
-									'You can only create one site with your current plan. Upgrade to Awesome plan to create multiple sites.',
-									{
-										isError: true,
-										duration: 5000
-									}
-								);
-								return;
-						}
+								}
+							);
+							break;
+						default:
+							showShopifyAppErrorToast(
+								'Failed to create bio page.',
+								AppError.fromFetchError(createErr),
+								shopifyBridge
+							);
 					}
-
-					// Handle all other errors
-					showShopifyAppErrorToast(
-						'Failed to create bio page.',
-						AppError.fromFetchError(createErr),
-						shopifyBridge
-					);
 					return;
 				}
 				const newSite = createResponse.data;
 
-				// TODO:
+				// Open the modal with the new site
+				openModal(newSite.id, `${newSite.displayName} (/${newSite.handle})`);
 			} finally {
-				setIsCreatingBio(false);
+				setIsCreatingSite(false);
 			}
-		}, [sites.length, shopifyBridge]);
+		}, [sites.length, shopifyBridge, openModal]);
 
 		// =========================================================================
 		// Effects
@@ -224,7 +236,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 												target="_blank"
 												accessibilityLabel="Visit your Link In Bio page"
 											/>
-											<Button variant="primary" onClick={handleCustomizeBio}>
+											<Button variant="primary" onClick={() => handleCustomizeSite(site)}>
 												Customize
 											</Button>
 										</div>
@@ -242,11 +254,11 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 										{otherSites.length > 0 && (
 											<Button
 												variant="primary"
-												onClick={handleCreateBioPage}
-												loading={isCreatingBio}
-												disabled={isCreatingBio}
+												onClick={handleCreateSite}
+												loading={isCreatingSite}
+												disabled={isCreatingSite}
 											>
-												{isCreatingBio ? 'Creating...' : 'New'}
+												{isCreatingSite ? 'Creating...' : 'New'}
 											</Button>
 										)}
 									</div>
@@ -286,10 +298,12 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 																/>
 															}
 															site={siteItem}
-															onCustomize={handleCustomizeBio}
+															onCustomize={() => handleCustomizeSite(siteItem)}
 														/>
 													</div>
-													{index < sites.length - 1 && <div className="border-b border-gray-200" />}
+													{index < otherSites.length - 1 && (
+														<div className="border-b border-gray-200" />
+													)}
 												</div>
 											))}
 										</div>
@@ -310,11 +324,11 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 												</div>
 												<Button
 													variant="primary"
-													onClick={handleCreateBioPage}
-													loading={isCreatingBio}
-													disabled={isCreatingBio}
+													onClick={handleCreateSite}
+													loading={isCreatingSite}
+													disabled={isCreatingSite}
 												>
-													{isCreatingBio ? 'Creating...' : 'Create Bio Page'}
+													{isCreatingSite ? 'Creating...' : 'Create Bio Page'}
 												</Button>
 											</div>
 										</div>

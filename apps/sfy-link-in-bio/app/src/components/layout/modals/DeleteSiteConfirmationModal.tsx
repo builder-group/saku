@@ -34,37 +34,31 @@ export const DeleteSiteConfirmationModal: React.FC<TDeleteSiteConfirmationModalP
 		});
 
 		if (!isDeleteOk) {
-			// Handle request errors
-			if (deleteErr instanceof RequestError) {
-				switch (deleteErr.status) {
-					case 409:
-						shopifyBridge.toast.show(
-							'Cannot delete the last site in your workspace. At least one site must remain.',
-							{
-								isError: true,
-								duration: 5000
-							}
-						);
-						sendToParent({ type: 'DELETE_ERROR', error: deleteErr });
-						setIsDeleting(false);
-						return;
-					case 404:
-						shopifyBridge.toast.show('Site not found.', {
+			const status = deleteErr instanceof RequestError ? deleteErr.status : undefined;
+			switch (status) {
+				case 409:
+					shopifyBridge.toast.show(
+						'Cannot delete the last site in your workspace. At least one site must remain.',
+						{
 							isError: true,
 							duration: 5000
-						});
-						sendToParent({ type: 'DELETE_ERROR', error: deleteErr });
-						setIsDeleting(false);
-						return;
-				}
+						}
+					);
+					break;
+				case 404:
+					shopifyBridge.toast.show('Site not found.', {
+						isError: true,
+						duration: 5000
+					});
+					break;
+				default:
+					showShopifyAppErrorToast(
+						'Failed to delete site.',
+						AppError.fromFetchError(deleteErr),
+						shopifyBridge
+					);
 			}
 
-			// Handle all other errors
-			showShopifyAppErrorToast(
-				'Failed to delete site.',
-				AppError.fromFetchError(deleteErr),
-				shopifyBridge
-			);
 			sendToParent({ type: 'DELETE_ERROR', error: deleteErr });
 			setIsDeleting(false);
 			return;

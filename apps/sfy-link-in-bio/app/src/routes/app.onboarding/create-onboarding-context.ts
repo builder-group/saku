@@ -128,41 +128,40 @@ export function createOnboardingContext(
 		async continueFromLinkpopUrl(handle) {
 			const fullUrl = `https://linkpop.com/${handle.trim()}`;
 
-			const result = await coreApiClient.get('/v1/site/parse/external', {
-				queryParams: {
-					url: fullUrl
-				},
-				requestMiddlewares: [createShopifyTokenMiddleware(this.shopify)]
-			});
-			if (result.isErr()) {
-				// Check if it's a LinkPop parsing error
-				if (
-					result.error.code === '#ERR_LINKPOP_DATA_NOT_FOUND' ||
-					result.error.code === '#ERR_EXTERNAL_HTML'
-				) {
-					return Err({
-						message: 'Could not find your LinkPop page. Please check the handle and try again.',
-						isNotFound: true
-					});
+			const [isParseOk, parseErr, parseResponse] = await coreApiClient.get(
+				'/v1/site/parse/external',
+				{
+					queryParams: {
+						url: fullUrl
+					},
+					requestMiddlewares: [createShopifyTokenMiddleware(this.shopify)]
 				}
-				return Err({
-					message: 'Failed to parse your LinkPop page.',
-					isNotFound: false
-				});
+			);
+			if (!isParseOk) {
+				switch (parseErr.code) {
+					case '#ERR_LINKPOP_DATA_NOT_FOUND':
+					case '#ERR_EXTERNAL_HTML':
+						return Err({
+							message: 'Could not find your LinkPop page. Please check the handle and try again.',
+							isNotFound: true
+						});
+					default:
+						return Err({
+							message: 'Failed to parse your LinkPop page.',
+							isNotFound: false
+						});
+				}
 			}
 
-			// Store the handle
 			this.stepr.current.set({
 				type: 'linkpop-url',
 				handle: handle.trim()
 			});
-
 			this.stepr.goTo({
 				type: 'linkpop-preview',
 				url: fullUrl,
-				site: result.value.data.content as unknown as TFlatSite
+				site: parseResponse.data.content as unknown as TFlatSite
 			});
-
 			return Ok(undefined);
 		},
 
@@ -176,7 +175,7 @@ export function createOnboardingContext(
 			const { handle = 'bio', shouldOverrideRedirect = false } =
 				this.stepr.getVisited('handle') ?? {};
 
-			const createResult = await coreApiClient.post(
+			const [isCreateOk] = await coreApiClient.post(
 				'/v1/shopify/site',
 				{
 					handle,
@@ -189,7 +188,7 @@ export function createOnboardingContext(
 					requestMiddlewares: [createShopifyTokenMiddleware(this.shopify)]
 				}
 			);
-			if (createResult.isErr()) {
+			if (!isCreateOk) {
 				return Err('Failed to create your bio page.');
 			}
 
@@ -206,7 +205,7 @@ export function createOnboardingContext(
 			if (preset == null) {
 				return Err('Could not find blank preset');
 			}
-			applyThemeToSite(preset.content, selectedTheme);
+			const siteContent = applyThemeToSite(preset.content, selectedTheme);
 
 			// Get the handle and override flag from the handle step
 			const {
@@ -219,7 +218,7 @@ export function createOnboardingContext(
 				{
 					handle,
 					displayName: 'My Bio Page',
-					content: preset.content as any,
+					content: siteContent as any,
 					createRedirect: true,
 					overrideRedirect: shouldOverrideRedirect
 				},
@@ -227,7 +226,6 @@ export function createOnboardingContext(
 					requestMiddlewares: [createShopifyTokenMiddleware(this.shopify)]
 				}
 			);
-
 			if (result.isErr()) {
 				return Err('Failed to create your bio page.');
 			}

@@ -623,36 +623,33 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 				}
 			);
 			if (!isUpdateOk) {
-				// Handle request errors
-				if (updateErr instanceof RequestError) {
-					switch (updateErr.status) {
-						case 409:
-							this.shopify.toast.show(
-								'This handle is already taken. Please choose a different one.',
-								{
-									isError: true,
-									duration: 5000
-								}
-							);
-							return false;
-						case 400:
-							this.shopify.toast.show(
-								'Invalid handle format. Use only lowercase letters, numbers, and dashes.',
-								{
-									isError: true,
-									duration: 5000
-								}
-							);
-							return false;
-					}
+				const status = updateErr instanceof RequestError ? updateErr.status : undefined;
+				switch (status) {
+					case 409:
+						this.shopify.toast.show(
+							'This handle is already taken. Please choose a different one.',
+							{
+								isError: true,
+								duration: 5000
+							}
+						);
+						break;
+					case 400:
+						this.shopify.toast.show(
+							'Invalid handle format. Use only lowercase letters, numbers, and dashes.',
+							{
+								isError: true,
+								duration: 5000
+							}
+						);
+						break;
+					default:
+						showShopifyAppErrorToast(
+							'Failed to update handle.',
+							AppError.fromFetchError(updateErr),
+							this.shopify
+						);
 				}
-
-				// Handle all other errors
-				showShopifyAppErrorToast(
-					'Failed to update handle.',
-					AppError.fromFetchError(updateErr),
-					this.shopify
-				);
 
 				return false;
 			}
@@ -674,24 +671,21 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 				}
 			);
 			if (!isUpdateOk) {
-				// Handle request errors
-				if (updateErr instanceof RequestError) {
-					switch (updateErr.status) {
-						case 400:
-							this.shopify.toast.show('Display name is too long. Maximum 32 characters.', {
-								isError: true,
-								duration: 5000
-							});
-							return false;
-					}
+				const status = updateErr instanceof RequestError ? updateErr.status : undefined;
+				switch (status) {
+					case 400:
+						this.shopify.toast.show('Display name is too long. Maximum 32 characters.', {
+							isError: true,
+							duration: 5000
+						});
+						break;
+					default:
+						showShopifyAppErrorToast(
+							'Failed to update name.',
+							AppError.fromFetchError(updateErr),
+							this.shopify
+						);
 				}
-
-				// Handle all other errors
-				showShopifyAppErrorToast(
-					'Failed to update name.',
-					AppError.fromFetchError(updateErr),
-					this.shopify
-				);
 
 				return false;
 			}

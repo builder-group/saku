@@ -44,27 +44,40 @@ interface TPageEditorModalProps {
 }
 
 export function usePageEditorModal(config: TUsePageEditorModalConfig) {
-	const { siteId, title, onShow, onHide } = config;
+	const { siteId: initialSiteId, title: initialTitle, onShow, onHide } = config;
 	const isOpenState = React.useMemo(() => createState(false), []);
+	const [currentSiteMetadata, setCurrentSiteMetadata] = React.useState({
+		siteId: initialSiteId,
+		title: initialTitle
+	});
+
+	const openModal = React.useCallback(
+		(siteId: string, title: string) => {
+			setCurrentSiteMetadata({ siteId, title });
+			isOpenState.set(true);
+		},
+		[isOpenState]
+	);
 
 	const ModalCallback = React.useCallback(() => {
 		return (
 			<PageEditorModal
-				siteId={siteId}
-				title={title}
+				siteId={currentSiteMetadata.siteId}
+				title={currentSiteMetadata.title}
 				isOpenState={isOpenState}
 				onShow={onShow}
 				onHide={onHide}
 			/>
 		);
-	}, [isOpenState, onHide, onShow, siteId, title]);
+	}, [isOpenState, onHide, onShow, currentSiteMetadata]);
 
 	return React.useMemo(
 		() => ({
 			Modal: ModalCallback,
-			isOpenState
+			isOpenState,
+			openModal
 		}),
-		[ModalCallback, isOpenState]
+		[ModalCallback, isOpenState, openModal]
 	);
 }
 
