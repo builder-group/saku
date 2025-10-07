@@ -6,6 +6,7 @@ import { Err, Ok, unwrapOrUndefined } from 'tuple-result';
 import { AppContext, shopifyConfig } from '@/.server/environment';
 import {
 	BioUrlSection,
+	CrownIcon,
 	FeedbackSection,
 	IframeContent,
 	PolarisMenuVerticalIcon,
@@ -16,6 +17,7 @@ import {
 	usePageEditorModal
 } from '@/components';
 import { appConfig, coreApiClient } from '@/environment';
+import { useCurrentPlan } from '@/hooks';
 import { createShopifyTokenMiddleware, resultLoader, withResultLoader } from '@/lib';
 import { THeadersFunction } from '@/types';
 import { SiteActionsPopover } from './SiteActionsPopover';
@@ -23,8 +25,8 @@ import { SiteActionsPopover } from './SiteActionsPopover';
 const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 	Success: ({ data }) => {
 		const { sites, shouldOpenEditor } = data;
+		const currentPlan = useCurrentPlan();
 
-		const [isLoadingEditor, setIsLoadingEditor] = React.useState(shouldOpenEditor);
 		const [site, otherSites] = React.useMemo(
 			() => [sites[0] as TLoaderDataSite, sites.slice(1)],
 			[sites]
@@ -34,6 +36,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 			title: `${site.displayName} (/${site.handle})`
 		});
 		const isEditorOpen = useFeatureState(isEditorOpenState);
+		const [isLoadingEditor, setIsLoadingEditor] = React.useState(shouldOpenEditor);
 
 		// =========================================================================
 		// Events
@@ -143,17 +146,12 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 							</div>
 
 							{/* Bio Pages List Section */}
-							<div>
+							<div className="relative overflow-hidden rounded-xl">
 								<s-section>
 									<div className="mb-4 flex items-center justify-between">
-										<div>
-											<Text as="h2" variant="headingMd">
-												Bio Pages
-											</Text>
-											<Text as="p" variant="bodyMd" tone="subdued">
-												Manage all your bio pages.
-											</Text>
-										</div>
+										<Text as="h2" variant="headingMd">
+											Bio Pages
+										</Text>
 										{otherSites.length > 0 && <Button variant="primary">New</Button>}
 									</div>
 
@@ -205,12 +203,10 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 												<div className="flex h-12 w-12 items-center justify-center rounded-lg bg-neutral-100">
 													<Icon source={PolarisPageIcon} />
 												</div>
-												<div>
+												<div className="flex flex-col items-center gap-2 text-balance">
 													<Text variant="headingMd" as="h3">
 														Create additional Bio Page
 													</Text>
-												</div>
-												<div className="text-balance">
 													<Text variant="bodyMd" tone="subdued" as="p">
 														Create additional bio pages to organize your links and content for
 														different purposes or audiences.
@@ -221,6 +217,41 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 										</div>
 									)}
 								</s-section>
+
+								{/* Upgrade Overlay */}
+								{currentPlan.key !== 'awesome' && (
+									<div className="absolute inset-0 z-50 flex h-full items-center justify-center">
+										<div
+											className="absolute inset-0"
+											style={{
+												background:
+													'linear-gradient(to bottom, transparent 0%, rgba(230,247,255,0.4) 20%, rgba(242,230,255,0.6) 40%, rgba(255,230,240,0.8) 60%, rgba(255,230,240,0.95) 100%)'
+											}}
+										/>
+										<div className="relative z-10 mx-8 max-w-sm text-center">
+											<div className="flex flex-col items-center gap-4 rounded-lg bg-white/20 p-6 text-balance backdrop-blur-sm">
+												<CrownIcon className="h-6 w-6" />
+												<div className="flex flex-col items-center gap-2">
+													<Text
+														as="h3"
+														variant="headingMd"
+														fontWeight="semibold"
+														alignment="center"
+													>
+														Multiple Bio Pages
+													</Text>
+													<Text as="p" variant="bodyMd" tone="subdued" alignment="center">
+														Want to create multiple bio pages for different purposes or audiences?
+														Upgrade to Awesome plan to unlock unlimited bio pages.
+													</Text>
+												</div>
+												<Button variant="primary" size="medium" url={'/app/settings/plans'}>
+													Upgrade to Awesome
+												</Button>
+											</div>
+										</div>
+									</div>
+								)}
 							</div>
 						</div>
 

@@ -318,29 +318,25 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 						}}
 					/>
 					<div className="relative z-10 mx-8 max-w-sm text-center">
-						<div className="rounded-lg bg-white/20 p-6 backdrop-blur-sm">
-							<div className="mb-4 flex justify-center">
-								<CrownIcon className="h-6 w-6" />
-							</div>
-							<Text as="h3" variant="headingMd" fontWeight="semibold" alignment="center">
-								Advanced Design Options
-							</Text>
-							<div className="mt-2">
+						<div className="flex flex-col items-center gap-4 rounded-lg bg-white/20 p-6 text-balance backdrop-blur-sm">
+							<CrownIcon className="h-6 w-6" />
+							<div className="flex flex-col items-center gap-2">
+								<Text as="h3" variant="headingMd" fontWeight="semibold" alignment="center">
+									Advanced Design Options
+								</Text>
 								<Text as="p" variant="bodyMd" tone="subdued" alignment="center">
 									Want to customize design tokens, advanced styling, and create consistent design
 									systems? Upgrade to Awesome plan to unlock powerful design tools.
 								</Text>
 							</div>
-							<div className="mt-4">
-								<Button
-									variant="primary"
-									size="medium"
-									url={`${shopifyClientConfig.shop.adminUrl(editor.shopId)}/settings/plans`}
-									target="_blank"
-								>
-									Upgrade to Awesome
-								</Button>
-							</div>
+							<Button
+								variant="primary"
+								size="medium"
+								url={`${shopifyClientConfig.shop.adminUrl(editor.shopId)}/settings/plans`}
+								target="_blank"
+							>
+								Upgrade to Awesome
+							</Button>
 						</div>
 					</div>
 				</div>
