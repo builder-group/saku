@@ -6,6 +6,7 @@ import { boundary } from '@shopify/shopify-app-react-router/server';
 import { RequestError } from 'feature-fetch';
 import { useFeatureState } from 'feature-react';
 import React from 'react';
+import { useRevalidator } from 'react-router';
 import { Err, Ok, unwrapOrUndefined } from 'tuple-result';
 import { AppContext, shopifyConfig } from '@/.server/environment';
 import {
@@ -26,6 +27,7 @@ import { applyThemeToSite } from '@/features/page-editor';
 import { useCurrentPlan } from '@/hooks';
 import {
 	AppError,
+	cn,
 	createShopifyTokenMiddleware,
 	resultLoader,
 	showShopifyAppErrorToast,
@@ -37,6 +39,8 @@ import { SiteActionsPopover } from './SiteActionsPopover';
 const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 	Success: ({ data }) => {
 		const { sites, shouldOpenEditor } = data;
+
+		const revalidator = useRevalidator();
 		const currentPlan = useCurrentPlan();
 		const shopifyBridge = useAppBridge();
 
@@ -46,7 +50,11 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 		);
 
 		const { cx: pageEditorModalCx, Modal: PageEditorModal } = usePageEditorModal();
-		const { cx: deleteSiteModalCx, Modal: DeleteSiteModal } = useDeleteSiteModal();
+		const { cx: deleteSiteModalCx, Modal: DeleteSiteModal } = useDeleteSiteModal({
+			onDeleteSuccess: React.useCallback(() => {
+				revalidator.revalidate(); // Reload data from loader
+			}, [revalidator])
+		});
 
 		const isPageEditorOpen = useFeatureState(pageEditorModalCx.isOpen);
 		const [isLoadingEditor, setIsLoadingEditor] = React.useState(shouldOpenEditor);
@@ -259,66 +267,68 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 									</div>
 
 									{otherSites.length > 0 ? (
-										otherSites.map((siteItem, index) => (
-											<div key={siteItem.id}>
-												<div
-													className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-gray-50"
-													onClick={() =>
-														pageEditorModalCx.open(
-															siteItem.id,
-															`${siteItem.displayName} (/${siteItem.handle})`
-														)
-													}
-												>
-													{/* Small Thumbnail */}
-													<div className="flex h-16 w-24 items-center justify-center rounded-md bg-neutral-200 px-3">
-														<Text as="span" variant="bodyMd" tone="subdued" truncate>
-															/{siteItem.handle}
-														</Text>
-													</div>
+										<div className={cn(currentPlan.key !== 'awesome' && 'min-h-64')}>
+											{otherSites.map((siteItem, index) => (
+												<div key={siteItem.id}>
+													<div
+														className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-gray-50"
+														onClick={() =>
+															pageEditorModalCx.open(
+																siteItem.id,
+																`${siteItem.displayName} (/${siteItem.handle})`
+															)
+														}
+													>
+														{/* Small Thumbnail */}
+														<div className="flex h-16 w-24 items-center justify-center rounded-md bg-neutral-200 px-3">
+															<Text as="span" variant="bodyMd" tone="subdued" truncate>
+																/{siteItem.handle}
+															</Text>
+														</div>
 
-													{/* Content */}
-													<div className="flex flex-1 flex-col items-start gap-1">
-														<Text as="h3" variant="headingMd">
-															{siteItem.displayName ?? siteItem.handle}
-														</Text>
-														<Text as="p" variant="bodyMd" tone="subdued">
-															Last Updated:{' '}
-															{siteItem.updatedAt != null
-																? new Date(siteItem.updatedAt).toLocaleDateString()
-																: 'Never'}
-														</Text>
-													</div>
+														{/* Content */}
+														<div className="flex flex-1 flex-col items-start gap-1">
+															<Text as="h3" variant="headingMd">
+																{siteItem.displayName ?? siteItem.handle}
+															</Text>
+															<Text as="p" variant="bodyMd" tone="subdued">
+																Last Updated:{' '}
+																{siteItem.updatedAt != null
+																	? new Date(siteItem.updatedAt).toLocaleDateString()
+																	: 'Never'}
+															</Text>
+														</div>
 
-													{/* Action Popover */}
-													<div onClick={(e) => e.stopPropagation()}>
-														<SiteActionsPopover
-															activator={
-																<Button
-																	icon={PolarisMenuVerticalIcon}
-																	variant="plain"
-																	accessibilityLabel="Bio page actions"
-																/>
-															}
-															site={siteItem}
-															onCustomize={() =>
-																pageEditorModalCx.open(
-																	siteItem.id,
-																	`${siteItem.displayName} (/${siteItem.handle})`
-																)
-															}
-															onRemove={() => deleteSiteModalCx.open(siteItem.id)}
-														/>
+														{/* Action Popover */}
+														<div onClick={(e) => e.stopPropagation()}>
+															<SiteActionsPopover
+																activator={
+																	<Button
+																		icon={PolarisMenuVerticalIcon}
+																		variant="plain"
+																		accessibilityLabel="Bio page actions"
+																	/>
+																}
+																site={siteItem}
+																onCustomize={() =>
+																	pageEditorModalCx.open(
+																		siteItem.id,
+																		`${siteItem.displayName} (/${siteItem.handle})`
+																	)
+																}
+																onRemove={() => deleteSiteModalCx.open(siteItem.id)}
+															/>
+														</div>
 													</div>
+													{index < otherSites.length - 1 && (
+														<div className="border-b border-gray-200" />
+													)}
 												</div>
-												{index < otherSites.length - 1 && (
-													<div className="border-b border-gray-200" />
-												)}
-											</div>
-										))
+											))}
+										</div>
 									) : (
 										<div className="flex min-h-64 items-center justify-center">
-											<div className="flex flex-col items-center gap-4 text-center">
+											<div className="flex max-w-md flex-col items-center gap-4 text-center">
 												<div className="flex h-12 w-12 items-center justify-center rounded-lg bg-neutral-100">
 													<Icon source={PolarisPageIcon} />
 												</div>

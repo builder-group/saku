@@ -66,12 +66,14 @@ export const DeleteSiteConfirmationModal: React.FC<TDeleteSiteConfirmationModalP
 			}
 
 			sendToParent({ type: 'DELETE_ERROR', error: deleteErr });
+			cx._hooks.onDeleteError?.(AppError.fromFetchError(deleteErr));
 			cx.isDeleting.set(false);
 			return;
 		}
 
-		sendToParent({ type: 'DELETE_SUCCESS' });
 		shopifyBridge.toast.show('Site deleted successfully');
+		sendToParent({ type: 'DELETE_SUCCESS' });
+		cx._hooks.onDeleteSuccess?.();
 		cx.isOpen.set(false);
 		cx.isDeleting.set(false);
 	}, [sendToParent, shopifyBridge, cx]);
@@ -120,10 +122,14 @@ interface TDeleteSiteConfirmationModalProps {
 }
 
 export function useDeleteSiteModal(options: TUseDeleteSiteModalOptions = {}) {
-	const { siteId: defaultSiteId } = options;
+	const { siteId, onDeleteSuccess, onDeleteError } = options;
 	const cx = React.useMemo<TDeleteSiteModalCx>(() => {
 		return {
-			siteId: defaultSiteId,
+			_hooks: {
+				onDeleteSuccess,
+				onDeleteError
+			},
+			siteId,
 			isOpen: createState(false),
 			isDeleting: createState(false),
 			open(siteId?: string) {
@@ -131,7 +137,7 @@ export function useDeleteSiteModal(options: TUseDeleteSiteModalOptions = {}) {
 				this.isOpen.set(true);
 			}
 		};
-	}, [defaultSiteId]);
+	}, [onDeleteSuccess, onDeleteError, siteId]);
 
 	const ModalCallback = React.useCallback(() => {
 		return <DeleteSiteConfirmationModal cx={cx} />;
@@ -148,9 +154,15 @@ export function useDeleteSiteModal(options: TUseDeleteSiteModalOptions = {}) {
 
 interface TUseDeleteSiteModalOptions {
 	siteId?: string;
+	onDeleteSuccess?: () => void;
+	onDeleteError?: (error: AppError) => void;
 }
 
 interface TDeleteSiteModalCx {
+	_hooks: {
+		onDeleteSuccess?: () => void;
+		onDeleteError?: (error: AppError) => void;
+	};
 	siteId?: string;
 	isOpen: TState<boolean, []>;
 	isDeleting: TState<boolean, []>;

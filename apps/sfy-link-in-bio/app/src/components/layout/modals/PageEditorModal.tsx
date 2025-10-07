@@ -45,11 +45,11 @@ interface TPageEditorModalProps {
 }
 
 export function usePageEditorModal(options: TUsePageEditorModalOptions = {}) {
-	const { siteId: defaultSiteId, title: defaultTitle } = options;
+	const { siteId, title } = options;
 	const cx = React.useMemo<TPageEditorModalCx>(() => {
 		return {
-			siteId: defaultSiteId,
-			title: defaultTitle,
+			siteId,
+			title,
 			isOpen: createState(false),
 			open(siteId?: string, title?: string) {
 				this.siteId = siteId;
@@ -57,7 +57,7 @@ export function usePageEditorModal(options: TUsePageEditorModalOptions = {}) {
 				this.isOpen.set(true);
 			}
 		};
-	}, [defaultSiteId, defaultTitle]);
+	}, [siteId, title]);
 
 	const ModalCallback = React.useCallback(() => {
 		return <PageEditorModal cx={cx} />;
