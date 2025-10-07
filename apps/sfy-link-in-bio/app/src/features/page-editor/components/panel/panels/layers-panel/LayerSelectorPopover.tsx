@@ -67,26 +67,24 @@ export const LayerSelectorPopover: React.FC<TLayerSelectorPopoverProps> = (props
 			autofocusTarget="first-node"
 			onClose={togglePopover}
 		>
-			<div className="p-2" style={{ width: popoverWidth }}>
-				<div className="flex flex-col gap-2">
-					{nodeMetadata
-						.filter((nodeMetadata) => !nodeMetadata.internal)
-						.filter((nodeMetadata) => !nodeMetadata.hidden)
-						.map((nodeMetadata) => (
-							<div
-								key={nodeMetadata.type}
-								className="flex h-8 cursor-pointer items-center gap-2 rounded-lg px-2 hover:bg-neutral-50"
-								onClick={() => handleLayerSelect(nodeMetadata.type)}
-							>
-								<div>
-									<Icon source={nodeMetadata.icon} />
-								</div>
-								<Text as="span" variant="bodyMd">
-									{nodeMetadata.label}
-								</Text>
+			<div className="flex flex-col gap-2 p-2" style={{ width: popoverWidth }}>
+				{nodeMetadata
+					.filter((nodeMetadata) => !nodeMetadata.internal)
+					.filter((nodeMetadata) => !nodeMetadata.hidden)
+					.map((nodeMetadata) => (
+						<button
+							key={nodeMetadata.type}
+							className="flex h-8 cursor-pointer items-center gap-2 rounded-lg px-2 hover:bg-neutral-50"
+							onClick={() => handleLayerSelect(nodeMetadata.type)}
+						>
+							<div>
+								<Icon source={nodeMetadata.icon} />
 							</div>
-						))}
-				</div>
+							<Text as="span" variant="bodyMd">
+								{nodeMetadata.label}
+							</Text>
+						</button>
+					))}
 			</div>
 		</Popover>
 	);

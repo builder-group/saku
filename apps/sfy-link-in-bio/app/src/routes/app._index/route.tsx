@@ -1,4 +1,4 @@
-import { Button, ButtonGroup, Spinner, Text } from '@shopify/polaris';
+import { Button, ButtonGroup, Icon, Spinner, Text } from '@shopify/polaris';
 import { boundary } from '@shopify/shopify-app-react-router/server';
 import { useFeatureState } from 'feature-react';
 import React from 'react';
@@ -8,6 +8,8 @@ import {
 	BioUrlSection,
 	FeedbackSection,
 	IframeContent,
+	PolarisMenuVerticalIcon,
+	PolarisPageIcon,
 	PolarisViewIcon,
 	QuickHelpSection,
 	SitePreview,
@@ -16,16 +18,22 @@ import {
 import { appConfig, coreApiClient } from '@/environment';
 import { createShopifyTokenMiddleware, resultLoader, withResultLoader } from '@/lib';
 import { THeadersFunction } from '@/types';
+import { SiteActionsPopover } from './SiteActionsPopover';
 
 const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 	Success: ({ data }) => {
-		const { site, shouldOpenEditor } = data;
-		const { Modal: EditorModal, isOpenState: isEditorOpenState } = usePageEditorModal({
+		const { sites, shouldOpenEditor } = data;
+
+		const [isLoadingEditor, setIsLoadingEditor] = React.useState(shouldOpenEditor);
+		const [site, otherSites] = React.useMemo(
+			() => [sites[0] as TLoaderDataSite, sites.slice(1)],
+			[sites]
+		);
+		const { Modal: PageEditorModal, isOpenState: isEditorOpenState } = usePageEditorModal({
 			siteId: site.id,
 			title: `${site.displayName} (/${site.handle})`
 		});
 		const isEditorOpen = useFeatureState(isEditorOpenState);
-		const [isLoadingEditor, setIsLoadingEditor] = React.useState(shouldOpenEditor);
 
 		// =========================================================================
 		// Events
@@ -80,75 +88,143 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 		return (
 			<>
 				<s-page>
-					<ui-title-bar title="Saku Link In Bio">
-						{/* <button variant="primary" onClick={handleCustomizeBio}>
-							Customize
-						</button>
-						<button
-							onClick={() => {
-								// TitleBar buttons in embedded apps can't use <a> tags - browser blocks them
-								// window.open() with noopener,noreferrer bypasses iframe security restrictions
-								window.open(site.url, '_blank', 'noopener,noreferrer');
-							}}
-						>
-							Visit
-						</button> */}
-					</ui-title-bar>
+					<ui-title-bar title="Saku Link In Bio" />
 
 					<div className="my-4 grid grid-cols-1 gap-4 bg-[var(--p-color-bg)] lg:grid-cols-3">
-						<div className="lg:col-span-2">
+						<div className="space-y-4 lg:col-span-2">
 							{/* Bio Preview Section */}
-							<s-section>
-								<SitePreview
-									url={site.primaryUrl}
-									content={<IframeContent url={site.platformUrl} disableScroll={true} />}
-								/>
-
-								{/* Theme List Item */}
-								<div className="mt-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-									<div className="flex items-center gap-3">
-										{/* Small Thumbnail */}
-										<div className="flex h-16 w-24 items-center justify-center rounded-md bg-neutral-200 px-3">
-											<Text as="span" variant="bodyMd" tone="subdued" truncate>
-												/{site.handle}
-											</Text>
-										</div>
-
-										{/* Content */}
-										<div className="flex flex-col items-start gap-1">
-											<div className="flex flex-wrap items-center gap-2">
-												<Text as="h3" variant="headingMd">
-													{site.displayName ?? site.handle}
+							<div>
+								<s-section>
+									<SitePreview
+										url={site.primaryUrl}
+										content={<IframeContent url={site.platformUrl} disableScroll={true} />}
+									/>
+									<div className="mt-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+										<div className="flex items-center gap-3">
+											{/* Small Thumbnail */}
+											<div className="flex h-16 w-24 items-center justify-center rounded-md bg-neutral-200 px-3">
+												<Text as="span" variant="bodyMd" tone="subdued" truncate>
+													/{site.handle}
 												</Text>
-												<s-badge tone="success">Current</s-badge>
 											</div>
-											<Text as="p" variant="bodyMd" tone="subdued">
-												Last Updated:{' '}
-												{site.updatedAt != null
-													? new Date(site.updatedAt).toLocaleDateString()
-													: 'Never'}
-											</Text>
+
+											{/* Content */}
+											<div className="flex flex-col items-start gap-1">
+												<div className="flex flex-wrap items-center gap-2">
+													<Text as="h3" variant="headingMd">
+														{site.displayName ?? site.handle}
+													</Text>
+													<s-badge tone="success">Current</s-badge>
+												</div>
+												<Text as="p" variant="bodyMd" tone="subdued">
+													Last Updated:{' '}
+													{site.updatedAt != null
+														? new Date(site.updatedAt).toLocaleDateString()
+														: 'Never'}
+												</Text>
+											</div>
+										</div>
+
+										{/* Action Buttons */}
+										<div className="flex items-center gap-2">
+											<Button
+												icon={PolarisViewIcon}
+												variant="secondary"
+												url={site.primaryUrl}
+												target="_blank"
+												accessibilityLabel="Visit your Link In Bio page"
+											/>
+											<Button variant="primary" onClick={handleCustomizeBio}>
+												Customize
+											</Button>
 										</div>
 									</div>
+								</s-section>
+							</div>
 
-									{/* Action Buttons */}
-									<div className="flex items-center gap-2">
-										<Button
-											icon={PolarisViewIcon}
-											variant="secondary"
-											url={site.primaryUrl}
-											target="_blank"
-											accessibilityLabel="Visit your Link In Bio page"
-										/>
-										<Button variant="primary" onClick={handleCustomizeBio}>
-											Customize
-										</Button>
+							{/* Bio Pages List Section */}
+							<div>
+								<s-section>
+									<div className="mb-4 flex items-center justify-between">
+										<div>
+											<Text as="h2" variant="headingMd">
+												Bio Pages
+											</Text>
+											<Text as="p" variant="bodyMd" tone="subdued">
+												Manage all your bio pages.
+											</Text>
+										</div>
+										{otherSites.length > 0 && <Button variant="primary">New</Button>}
 									</div>
-								</div>
-							</s-section>
+
+									{otherSites.length > 0 ? (
+										<div>
+											{otherSites.map((siteItem, index) => (
+												<div key={siteItem.id}>
+													<div className="flex items-center gap-3 py-3 pr-3">
+														{/* Small Thumbnail */}
+														<div className="flex h-16 w-24 items-center justify-center rounded-md bg-neutral-200 px-3">
+															<Text as="span" variant="bodyMd" tone="subdued" truncate>
+																/{siteItem.handle}
+															</Text>
+														</div>
+
+														{/* Content */}
+														<div className="flex flex-1 flex-col items-start gap-1">
+															<Text as="h3" variant="headingMd">
+																{siteItem.displayName ?? siteItem.handle}
+															</Text>
+															<Text as="p" variant="bodyMd" tone="subdued">
+																Last Updated:{' '}
+																{siteItem.updatedAt != null
+																	? new Date(siteItem.updatedAt).toLocaleDateString()
+																	: 'Never'}
+															</Text>
+														</div>
+
+														{/* Action Popover */}
+														<SiteActionsPopover
+															activator={
+																<Button
+																	icon={PolarisMenuVerticalIcon}
+																	variant="plain"
+																	accessibilityLabel="Bio page actions"
+																/>
+															}
+															site={siteItem}
+															onCustomize={handleCustomizeBio}
+														/>
+													</div>
+													{index < sites.length - 1 && <div className="border-b border-gray-200" />}
+												</div>
+											))}
+										</div>
+									) : (
+										<div className="flex h-64 items-center justify-center">
+											<div className="flex flex-col items-center gap-4 text-center">
+												<div className="flex h-12 w-12 items-center justify-center rounded-lg bg-neutral-100">
+													<Icon source={PolarisPageIcon} />
+												</div>
+												<div>
+													<Text variant="headingMd" as="h3">
+														Create additional Bio Page
+													</Text>
+												</div>
+												<div className="text-balance">
+													<Text variant="bodyMd" tone="subdued" as="p">
+														Create additional bio pages to organize your links and content for
+														different purposes or audiences.
+													</Text>
+												</div>
+												<Button variant="primary">Create Bio Page</Button>
+											</div>
+										</div>
+									)}
+								</s-section>
+							</div>
 						</div>
 
-						<div className="space-y-5">
+						<div className="space-y-4">
 							<div>
 								<BioUrlSection
 									primaryUrl={site.primaryUrl}
@@ -169,7 +245,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 					</div>
 				</s-page>
 
-				<EditorModal />
+				<PageEditorModal />
 			</>
 		);
 	},
@@ -238,19 +314,18 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(
 		);
 		const primaryUrl = primaryUrlResponse?.data.primaryDomain?.url;
 
-		const site =
-			sitesResponse.data.map((site) => ({
-				id: site.id,
-				handle: site.handle,
-				primaryUrl:
-					primaryUrl != null
-						? `${primaryUrl}/${site.handle}`
-						: `${shopifyConfig.url(session.shop)}/${site.handle}`,
-				platformUrl: `https://saku.so/w/${workspace.handle}/${site.handle}`,
-				displayName: site.displayName,
-				updatedAt: site.updatedAt
-			}))[0] ?? null;
-		if (site == null) {
+		const sites: TLoaderDataSite[] = sitesResponse.data.map((site) => ({
+			id: site.id,
+			handle: site.handle,
+			primaryUrl:
+				primaryUrl != null
+					? `${primaryUrl}/${site.handle}`
+					: `${shopifyConfig.url(session.shop)}/${site.handle}`,
+			platformUrl: `https://saku.so/w/${workspace.handle}/${site.handle}`,
+			displayName: site.displayName,
+			updatedAt: site.updatedAt
+		}));
+		if (!sites.length) {
 			return Err({
 				code: '#ERR_NOT_FOUND' as const,
 				message: 'No site found'
@@ -258,7 +333,7 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(
 		}
 
 		return Ok({
-			site,
+			sites,
 			shouldOpenEditor
 		}).toArray();
 	}
@@ -270,13 +345,15 @@ interface TErrorLoaderData {
 }
 
 interface TSuccessLoaderData {
-	site: {
-		id: string;
-		handle: string;
-		primaryUrl: string;
-		platformUrl: string;
-		displayName?: string;
-		updatedAt: string;
-	};
+	sites: TLoaderDataSite[];
 	shouldOpenEditor: boolean;
+}
+
+interface TLoaderDataSite {
+	id: string;
+	handle: string;
+	primaryUrl: string;
+	platformUrl: string;
+	displayName?: string;
+	updatedAt: string;
 }
