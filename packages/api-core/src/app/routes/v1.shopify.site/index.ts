@@ -170,6 +170,22 @@ router.openapi(CreateShopifySiteRoute, async (c) => {
 		});
 	}
 
+	// Check plan restrictions for site creation
+	const currentPlan = await getCurrentPlan(shopId);
+	const existingSites = await db
+		.select({
+			id: siteTable.id
+		})
+		.from(siteTable)
+		.where(eq(siteTable.workspaceId, workspace.id));
+	if (existingSites.length >= 1 && currentPlan.key !== 'awesome') {
+		throw new AppError('#ERR_PLAN_RESTRICTION', 403, {
+			title: 'Plan restriction',
+			detail:
+				'You can only create one site with your current plan. Upgrade to Awesome plan to create multiple sites.'
+		});
+	}
+
 	// Create URL redirect if requested
 	let redirectId: string | null = null;
 	if (createRedirect) {

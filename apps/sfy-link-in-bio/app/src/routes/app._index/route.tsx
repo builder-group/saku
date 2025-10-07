@@ -105,6 +105,15 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 									duration: 5000
 								});
 								return;
+							case 403:
+								shopifyBridge.toast.show(
+									'You can only create one site with your current plan. Upgrade to Awesome plan to create multiple sites.',
+									{
+										isError: true,
+										duration: 5000
+									}
+								);
+								return;
 						}
 					}
 
