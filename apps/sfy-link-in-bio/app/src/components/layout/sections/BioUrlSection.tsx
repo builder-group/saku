@@ -45,7 +45,7 @@ export const BioUrlSection: React.FC<TBioUrlSectionProps> = (props) => {
 								</div>
 							</s-badge>
 						</div>
-						<s-badge tone="success">Current</s-badge>
+						<s-badge tone="success">Main</s-badge>
 					</div>
 				</div>
 

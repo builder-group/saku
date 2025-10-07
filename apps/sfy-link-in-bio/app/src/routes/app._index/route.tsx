@@ -74,7 +74,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 		// UI
 		// =========================================================================
 
-		// Show loading state when opening editor from onboarding
+		// Show loading state when opening editor (e.g. from onboarding)
 		if (isLoadingEditor) {
 			return (
 				<div className="flex h-screen items-center justify-center">
@@ -117,7 +117,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 													<Text as="h3" variant="headingMd">
 														{site.displayName ?? site.handle}
 													</Text>
-													<s-badge tone="success">Current</s-badge>
+													<s-badge tone="success">Main</s-badge>
 												</div>
 												<Text as="p" variant="bodyMd" tone="subdued">
 													Last Updated:{' '}
@@ -146,7 +146,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 							</div>
 
 							{/* Bio Pages List Section */}
-							<div className="relative overflow-hidden rounded-xl">
+							<div className="relative">
 								<s-section>
 									<div className="mb-4 flex items-center justify-between">
 										<Text as="h2" variant="headingMd">
@@ -220,7 +220,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 
 								{/* Upgrade Overlay */}
 								{currentPlan.key !== 'awesome' && (
-									<div className="absolute inset-0 z-50 flex h-full items-center justify-center">
+									<div className="absolute inset-0 z-50 flex h-full items-center justify-center overflow-hidden rounded-xl">
 										<div
 											className="absolute inset-0"
 											style={{
