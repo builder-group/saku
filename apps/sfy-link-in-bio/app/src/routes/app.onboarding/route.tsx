@@ -1,4 +1,4 @@
-import { toFlatSite } from '@repo/editor';
+import { TFlatSite } from '@repo/editor';
 import { useAppBridge } from '@shopify/app-bridge-react';
 import { Button, ButtonGroup, Text } from '@shopify/polaris';
 import { boundary } from '@shopify/shopify-app-react-router/server';
@@ -8,8 +8,7 @@ import { Err, Ok } from 'tuple-result';
 import { AppContext } from '@/.server/environment';
 import { useCrisp } from '@/components';
 import { appConfig, coreApiClient } from '@/environment';
-import { blankPreset } from '@/features/page-editor/.server';
-import { resultLoader, withResultLoader } from '@/lib';
+import { createShopifyTokenMiddleware, resultLoader, withResultLoader } from '@/lib';
 import { THeadersFunction } from '@/types';
 import {
 	AccountConnectionStep,
@@ -152,62 +151,57 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 		}
 	} = context.get(AppContext);
 
-	// Fetch shop overview to customize onboarding experience
-	const shopOverviewResult = await coreApiClient.get('/v1/shopify/shop/overview', {
-		headers: {
-			Authorization: `Bearer ${sessionToken}`
-		}
-	});
-	if (shopOverviewResult.isErr()) {
-		return Err({
-			code: '#ERR_SERVER_ERROR' as const,
-			message: 'Failed to fetch shop overview'
-		}).toArray();
-	}
-	const shopOverview = shopOverviewResult.value.data;
-
 	// Check handle availability
 	const handle = 'bio';
-	const handleAvailabilityResult = await coreApiClient.get('/v1/shopify/redirect/availability', {
-		queryParams: {
-			path: `/${handle}`
-		},
-		headers: {
-			Authorization: `Bearer ${sessionToken}`
+	const [isHandleAvailabilityOk, , handleAvailabilityResponse] = await coreApiClient.get(
+		'/v1/shopify/redirect/availability',
+		{
+			queryParams: {
+				path: `/${handle}`
+			},
+			requestMiddlewares: [createShopifyTokenMiddleware(sessionToken)]
 		}
-	});
+	);
+	const isHandleAvailable = isHandleAvailabilityOk && handleAvailabilityResponse.data.isAvailable;
+
+	// Fetch blank preset
+	const [isBlankPresetOk, , blankPresetResponse] = await coreApiClient.get(
+		'/v1/shopify/site/preset/blank',
+		{
+			requestMiddlewares: [createShopifyTokenMiddleware(sessionToken)]
+		}
+	);
+	if (!isBlankPresetOk) {
+		return Err({
+			code: '#ERR_SERVER_ERROR' as const,
+			message: 'Failed to fetch blank preset'
+		}).toArray();
+	}
+	const blankPreset = blankPresetResponse.data;
+
+	// Fetch primary domain
+	const [isPrimaryUrlOk, , primaryUrlResponse] = await coreApiClient.get(
+		'/v1/shopify/shop/primary-url',
+		{
+			requestMiddlewares: [createShopifyTokenMiddleware(sessionToken)]
+		}
+	);
+	const primaryDomain = isPrimaryUrlOk
+		? (primaryUrlResponse.data.primaryDomain?.host ?? session.shop)
+		: session.shop;
 
 	return Ok({
 		shopId: session.shop,
-		primaryDomain: shopOverview.shop.primaryDomain?.host ?? session.shop,
+		primaryDomain,
 		defaultHandle: {
 			handle,
-			isAvailable:
-				handleAvailabilityResult.isOk() && handleAvailabilityResult.value.data.isAvailable
+			isAvailable: isHandleAvailable
 		},
 		presets: [
 			{
-				id: 'blank',
-				label: 'Blank template',
-				content: toFlatSite(
-					blankPreset({
-						shopId: session.shop,
-						name: shopOverview.shop.name,
-						profilePicture: shopOverview.theme.logo,
-						socialLinks: shopOverview.socialLinks,
-						featuredProduct: shopOverview.recommendedProducts?.[0]
-						// colors: {
-						// 	primary: shopOverview.theme.colors.primary,
-						// 	background: shopOverview.theme.colors.background,
-						// 	surface: '#FFFFFF'
-						// },
-						// fonts: {
-						// 	heading: { family: shopOverview.theme.typography.headingFont?.family },
-						// 	body: { family: shopOverview.theme.typography.bodyFont?.family }
-						// },
-						// radius: shopOverview.theme.layout.borderRadius
-					})
-				)
+				id: blankPreset.id,
+				label: blankPreset.label,
+				content: blankPreset.content as unknown as TFlatSite
 			}
 		]
 	}).toArray();

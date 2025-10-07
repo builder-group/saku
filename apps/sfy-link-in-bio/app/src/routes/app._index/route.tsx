@@ -1,3 +1,5 @@
+import { shortId } from '@blgc/utils';
+import { useAppBridge } from '@shopify/app-bridge-react';
 import { Button, ButtonGroup, Icon, Spinner, Text } from '@shopify/polaris';
 import { boundary } from '@shopify/shopify-app-react-router/server';
 import { useFeatureState } from 'feature-react';
@@ -26,6 +28,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 	Success: ({ data }) => {
 		const { sites, shouldOpenEditor } = data;
 		const currentPlan = useCurrentPlan();
+		const shopifyBridge = useAppBridge();
 
 		const [site, otherSites] = React.useMemo(
 			() => [sites[0] as TLoaderDataSite, sites.slice(1)],
@@ -37,6 +40,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 		});
 		const isEditorOpen = useFeatureState(isEditorOpenState);
 		const [isLoadingEditor, setIsLoadingEditor] = React.useState(shouldOpenEditor);
+		const [isCreatingBio, setIsCreatingBio] = React.useState(false);
 
 		// =========================================================================
 		// Events
@@ -45,6 +49,52 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 		const handleCustomizeBio = React.useCallback(() => {
 			isEditorOpenState.set(true);
 		}, [isEditorOpenState]);
+
+		const handleCreateBioPage = React.useCallback(async () => {
+			setIsCreatingBio(true);
+
+			try {
+				const handle = `bio-${sites.length + 1}-${shortId()}`;
+				const displayName = `My Bio Page ${sites.length + 1}`;
+
+				// Fetch blank preset
+				const [isBlankPresetOk, , blankPresetResponse] = await coreApiClient.get(
+					'/v1/shopify/site/preset/blank',
+					{
+						requestMiddlewares: [createShopifyTokenMiddleware(shopifyBridge)]
+					}
+				);
+				if (!isBlankPresetOk) {
+					// TODO:
+					return;
+				}
+				const blankPreset = blankPresetResponse.data;
+
+				// Create the site
+				const [isCreateOk, , createResponse] = await coreApiClient.post(
+					'/v1/shopify/site',
+					{
+						handle,
+						displayName,
+						content: blankPreset.content,
+						createRedirect: true,
+						overrideRedirect: false
+					},
+					{
+						requestMiddlewares: [createShopifyTokenMiddleware(shopifyBridge)]
+					}
+				);
+				if (!isCreateOk) {
+					// TODO:
+					return;
+				}
+				const newSite = createResponse.data;
+
+				// TODO:
+			} finally {
+				setIsCreatingBio(false);
+			}
+		}, [sites.length, shopifyBridge]);
 
 		// =========================================================================
 		// Effects
@@ -152,7 +202,16 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 										<Text as="h2" variant="headingMd">
 											Bio Pages
 										</Text>
-										{otherSites.length > 0 && <Button variant="primary">New</Button>}
+										{otherSites.length > 0 && (
+											<Button
+												variant="primary"
+												onClick={handleCreateBioPage}
+												loading={isCreatingBio}
+												disabled={isCreatingBio}
+											>
+												{isCreatingBio ? 'Creating...' : 'New'}
+											</Button>
+										)}
 									</div>
 
 									{otherSites.length > 0 ? (
@@ -212,7 +271,14 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 														different purposes or audiences.
 													</Text>
 												</div>
-												<Button variant="primary">Create Bio Page</Button>
+												<Button
+													variant="primary"
+													onClick={handleCreateBioPage}
+													loading={isCreatingBio}
+													disabled={isCreatingBio}
+												>
+													{isCreatingBio ? 'Creating...' : 'Create Bio Page'}
+												</Button>
 											</div>
 										</div>
 									)}

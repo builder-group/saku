@@ -231,6 +231,26 @@ export interface paths {
         patch: operations["updateShopifySite"];
         trace?: never;
     };
+    "/v1/shopify/site/preset/blank": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get a blank site preset with shop data
+         * @description Returns a blank site preset populated with shop information including theme, social links, and recommended products
+         */
+        get: operations["getBlankPreset"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/shopify/ugc/files": {
         parameters: {
             query?: never;
@@ -1778,6 +1798,56 @@ export interface operations {
             };
             /** @description Conflict */
             409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppErrorDto"];
+                };
+            };
+        };
+    };
+    getBlankPreset: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * @description Preset identifier
+                         * @example blank-preset
+                         */
+                        id: string;
+                        /**
+                         * @description Human-readable preset name
+                         * @example Blank Preset
+                         */
+                        label: string;
+                        content: components["schemas"]["FlatSiteContentDto"];
+                    };
+                };
+            };
+            /** @description Bad request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppErrorDto"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };

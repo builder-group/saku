@@ -18027,7 +18027,7 @@ export interface components {
              */
             organization_custom_org_roles?: "read" | "write";
             /**
-             * @description The level of permission to grant the access token for custom property management.
+             * @description The level of permission to grant the access token for repository custom properties management at the organization level.
              * @enum {string}
              */
             organization_custom_properties?: "read" | "write" | "admin";
@@ -92170,8 +92170,8 @@ export interface operations {
                      * @enum {string}
                      */
                     visibility: "all" | "private" | "selected";
-                    /** @description An array of repository ids that can access the organization secret. You can only provide a list of repository ids when the `visibility` is set to `selected`. You can manage the list of selected repositories using the [List selected repositories for an organization secret](https://docs.github.com/enterprise-server@3.15/rest/dependabot/secrets#list-selected-repositories-for-an-organization-secret), [Set selected repositories for an organization secret](https://docs.github.com/enterprise-server@3.15/rest/dependabot/secrets#set-selected-repositories-for-an-organization-secret), and [Remove selected repository from an organization secret](https://docs.github.com/enterprise-server@3.15/rest/dependabot/secrets#remove-selected-repository-from-an-organization-secret) endpoints. */
-                    selected_repository_ids?: string[];
+                    /** @description An array of repository ids that can access the organization secret. You can only provide a list of repository ids when the `visibility` is set to `selected`. You can manage the list of selected repositories using the [List selected repositories for an organization secret](https://docs.github.com/enterprise-server@3.15/rest/dependabot/secrets#list-selected-repositories-for-an-organization-secret), [Set selected repositories for an organization secret](https://docs.github.com/enterprise-server@3.15/rest/dependabot/secrets#set-selected-repositories-for-an-organization-secret), and [Remove selected repository from an organization secret](https://docs.github.com/enterprise-server@3.15/rest/dependabot/secrets#remove-selected-repository-from-an-organization-secret) endpoints. Use integers when possible, as strings are supported only to maintain backwards compatibility and may be removed in the future. */
+                    selected_repository_ids?: (number | string)[];
                 };
             };
         };

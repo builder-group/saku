@@ -1,4 +1,4 @@
-import { createId, TFlatSite, TShopifyIntegration } from '@repo/editor';
+import { createId, TFlatSite, toFlatSite, TShopifyIntegration } from '@repo/editor';
 import { AppError } from '@repo/hono-utils';
 import { and, eq, isNull, ne } from 'drizzle-orm';
 import { unwrapOrNull } from 'tuple-result';
@@ -14,8 +14,13 @@ import {
 import {
 	deleteShopifyUrlRedirect,
 	deleteUrlRedirect,
+	extractThemeDataFromSettings,
 	getCurrentPlan,
+	getMainTheme,
+	getParsedThemeSettingsData,
+	getRecommendedProducts,
 	getShopifyOfflineAccessToken,
+	getShopInfo,
 	getShopPlan,
 	getStorefrontToken,
 	refreshIntegrations,
@@ -26,10 +31,12 @@ import { TFlatSiteContentDto } from '../v1.site/schema';
 import {
 	CreateShopifySiteRoute,
 	DeleteShopifySiteRoute,
+	GetBlankPresetRoute,
 	GetShopifySiteByShopAndHandleRoute,
 	GetShopifySitesRoute,
 	UpdateShopifySiteRoute
 } from './schema';
+import { blankPreset } from './site-presets';
 
 router.openapi(GetShopifySitesRoute, async (c) => {
 	const { shopId } = (await verifyShopifySession(c)).unwrap();
@@ -463,4 +470,87 @@ router.openapi(DeleteShopifySiteRoute, async (c) => {
 	}
 
 	return c.body(null, 204);
+});
+
+router.openapi(GetBlankPresetRoute, async (c) => {
+	const { shopId } = (await verifyShopifySession(c)).unwrap();
+	const accessToken = (await getShopifyOfflineAccessToken(shopId)).unwrap();
+
+	// Get shop info
+	const [isShopInfoOk, shopInfoErr, shopInfo] = await getShopInfo({
+		shopId,
+		accessToken
+	});
+	if (!isShopInfoOk) {
+		throw new AppError('#ERR_SHOP_INFO_FETCH_FAILED', 500, {
+			title: 'Failed to fetch shop info',
+			detail: shopInfoErr.message
+		});
+	}
+
+	// Get main theme
+	const mainThemeResult = await getMainTheme({
+		shopId,
+		accessToken
+	});
+	if (mainThemeResult.isErr()) {
+		throw new AppError('#ERR_THEME_FETCH_FAILED', 500, {
+			title: 'Failed to fetch theme',
+			detail: mainThemeResult.error.message
+		});
+	}
+	const theme = mainThemeResult.value;
+
+	// Get main theme settings
+	const [isThemeSettingsOk, themeSettingsErr, themeSettings] = await getParsedThemeSettingsData(
+		theme.id,
+		{
+			shopId,
+			accessToken
+		}
+	);
+	if (!isThemeSettingsOk) {
+		throw new AppError('#ERR_THEME_SETTINGS_FETCH_FAILED', 500, {
+			title: 'Failed to fetch theme settings',
+			detail: themeSettingsErr.message
+		});
+	}
+	const themeData = await extractThemeDataFromSettings(themeSettings.settingsData, {
+		shopId,
+		accessToken
+	});
+
+	// Get recommended products
+	const [isRecommendedProductsOk, recommendedProductsErr, recommendedProducts] =
+		await getRecommendedProducts(
+			{ first: 1 },
+			{
+				shopId,
+				accessToken
+			}
+		);
+	if (!isRecommendedProductsOk) {
+		throw new AppError('#ERR_RECOMMENDED_PRODUCTS_FETCH_FAILED', 500, {
+			title: 'Failed to fetch recommended products',
+			detail: recommendedProductsErr.message
+		});
+	}
+
+	// Create blank preset
+	const site = blankPreset({
+		shopId,
+		name: shopInfo.name,
+		profilePicture: themeData.logo,
+		socialLinks: themeData.socialLinks,
+		featuredProduct: recommendedProducts.products[0] ?? undefined
+	});
+
+	return c.json(
+		{
+			id: 'blank-preset',
+			label: 'Blank Preset',
+			content: toFlatSite(site) as TFlatSiteContentDto
+		},
+		200
+	);
 });

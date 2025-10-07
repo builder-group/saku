@@ -157,3 +157,26 @@ export const DeleteShopifySiteRoute = createRoute({
 		409: ConflictResponse
 	}
 });
+
+export const GetBlankPresetRoute = createRoute({
+	method: 'get',
+	path: '/v1/shopify/site/preset/blank',
+	tags: ['shopify', 'site'],
+	summary: 'Get a blank site preset with shop data',
+	operationId: 'getBlankPreset',
+	description:
+		'Returns a blank site preset populated with shop information including theme, social links, and recommended products',
+	responses: {
+		200: JsonSuccessResponse(
+			z.object({
+				id: z.string().openapi({ example: 'blank-preset', description: 'Preset identifier' }),
+				label: z
+					.string()
+					.openapi({ example: 'Blank Preset', description: 'Human-readable preset name' }),
+				content: SFlatSiteContentDto
+			})
+		),
+		400: BadRequestResponse,
+		404: NotFoundResponse
+	}
+});

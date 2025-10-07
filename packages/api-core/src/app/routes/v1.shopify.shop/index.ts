@@ -2,15 +2,16 @@ import { AppError } from '@repo/hono-utils';
 import { router } from '@/app/router';
 import {
 	cleanupShopData,
+	extractThemeDataFromSettings,
+	getMainTheme,
+	getParsedThemeSettingsData,
 	getRecommendedProducts,
 	getShopifyOfflineAccessToken,
 	getShopInfo,
 	getShopPlan,
+	getShopPrimaryUrl,
 	verifyShopifySession
 } from '@/lib';
-import { getShopPrimaryUrl } from '@/lib/gql/shopify-admin/queries/shop-primary-url';
-import { getMainTheme, getParsedThemeSettingsData } from '@/lib/shopify';
-import { extractThemeDataFromSettings } from '@/lib/shopify/theme/extract-theme-data';
 import {
 	GetShopOverviewRoute,
 	GetShopPlanRoute,
