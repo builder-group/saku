@@ -1,3 +1,7 @@
 @import 'tailwindcss';
 @plugin "@tailwindcss/typography";
-@plugin "daisyui";
+@plugin "daisyui" {
+	/* Disable 'rootcolor' to not mess with Shopify 's-page' */
+	/* https://github.com/saadeghi/daisyui/blob/master/packages/daisyui/src/base/rootcolor.css */
+	exclude: rootcolor;
+}
