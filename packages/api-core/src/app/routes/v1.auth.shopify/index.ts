@@ -37,7 +37,7 @@ router.openapi(DeleteSessionRoute, async (c) => {
 
 	await deleteShopifySession(sessionId);
 
-	return c.body(null, 204);
+	return c.json({ success: true }, 200);
 });
 
 router.openapi(GetSessionByShopRoute, async (c) => {

@@ -103,6 +103,7 @@ export const SettingsGeneralPanel: React.FC<TSettingsGeneralPanelProps> = (props
 							helpText="Used to identify your site when interacting with the Saku API."
 						/>
 						<DeleteSiteSection
+							siteId={editor.site.id}
 							title="Delete Site"
 							description="Permanently delete your site. This action cannot be undone - please proceed with caution."
 							buttonText="Delete Site"

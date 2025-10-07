@@ -149,9 +149,7 @@ export const DeleteShopifySiteRoute = createRoute({
 		})
 	},
 	responses: {
-		204: {
-			description: 'Site deleted successfully'
-		},
+		200: JsonSuccessResponse(z.object({ success: z.boolean() })),
 		400: BadRequestResponse,
 		404: NotFoundResponse,
 		409: ConflictResponse

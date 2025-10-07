@@ -2,30 +2,34 @@ import { useAppBridge } from '@shopify/app-bridge-react';
 import { Button, Text } from '@shopify/polaris';
 import React from 'react';
 import { useParentCommunication } from '@/hooks';
-import { RemoteDeleteSiteConfirmationModal, TDeleteSiteModalToParent } from '../modals';
+import { DeleteSiteConfirmationModal, PageEditorModal, TDeleteSiteModalToParent } from '../modals';
 
 export const DeleteSiteSection: React.FC<TDeleteSiteSectionProps> = (props) => {
-	const { title, description, buttonText = 'Delete Site' } = props;
+	const { siteId, title, description, buttonText = 'Delete Site' } = props;
 
 	const shopifyBridge = useAppBridge();
 	const [deleteState, setDeleteState] = React.useState<'idle' | 'loading' | 'success' | 'error'>(
 		'idle'
 	);
 
-	useParentCommunication<TDeleteSiteModalToParent>(RemoteDeleteSiteConfirmationModal.modalId, {
-		onModalMessage: React.useCallback((message: TDeleteSiteModalToParent) => {
-			switch (message.type) {
-				case 'DELETE_STARTED':
-					setDeleteState('loading');
-					break;
-				case 'DELETE_SUCCESS':
-					setDeleteState('success');
-					break;
-				case 'DELETE_ERROR':
-					setDeleteState('error');
-					break;
-			}
-		}, []),
+	useParentCommunication<TDeleteSiteModalToParent>(DeleteSiteConfirmationModal.modalId(siteId), {
+		onModalMessage: React.useCallback(
+			(message: TDeleteSiteModalToParent) => {
+				switch (message.type) {
+					case 'DELETE_STARTED':
+						setDeleteState('loading');
+						break;
+					case 'DELETE_SUCCESS':
+						shopifyBridge.modal.hide(PageEditorModal.modalId(siteId));
+						setDeleteState('success');
+						break;
+					case 'DELETE_ERROR':
+						setDeleteState('error');
+						break;
+				}
+			},
+			[shopifyBridge, siteId]
+		),
 		inMaxModal: true
 	});
 
@@ -35,8 +39,8 @@ export const DeleteSiteSection: React.FC<TDeleteSiteSectionProps> = (props) => {
 
 	const handleDeleteClick = React.useCallback(() => {
 		setDeleteState('idle');
-		shopifyBridge.modal.show(RemoteDeleteSiteConfirmationModal.modalId);
-	}, [shopifyBridge]);
+		shopifyBridge.modal.show(DeleteSiteConfirmationModal.modalId(siteId));
+	}, [shopifyBridge, siteId]);
 
 	// =========================================================================
 	// UI
@@ -76,6 +80,7 @@ export const DeleteSiteSection: React.FC<TDeleteSiteSectionProps> = (props) => {
 };
 
 interface TDeleteSiteSectionProps {
+	siteId: string;
 	title: string;
 	description: string;
 	buttonText?: string;

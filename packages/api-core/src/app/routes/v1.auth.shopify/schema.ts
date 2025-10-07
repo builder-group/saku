@@ -97,9 +97,7 @@ export const DeleteSessionRoute = createRoute({
 		})
 	},
 	responses: {
-		204: {
-			description: 'Session deleted successfully'
-		},
+		200: JsonSuccessResponse(z.object({ success: z.boolean() })),
 		404: NotFoundResponse,
 		500: InternalServerErrorResponse
 	}

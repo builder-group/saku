@@ -485,7 +485,7 @@ router.openapi(DeleteShopifySiteRoute, async (c) => {
 		logger.warn('Failed to delete redirect after site deletion:', deleteResult.error);
 	}
 
-	return c.body(null, 204);
+	return c.json({ success: true }, 200);
 });
 
 router.openapi(GetBlankPresetRoute, async (c) => {

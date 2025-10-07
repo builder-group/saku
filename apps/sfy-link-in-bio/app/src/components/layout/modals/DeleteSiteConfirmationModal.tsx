@@ -5,36 +5,40 @@ import { useFeatureState } from 'feature-react/state';
 import { createState, TState } from 'feature-state';
 import React from 'react';
 import { coreApiClient } from '@/environment';
+import { useModalCommunication } from '@/hooks';
 import { AppError, createShopifyTokenMiddleware, showShopifyAppErrorToast } from '@/lib';
 
 export const DeleteSiteConfirmationModal: React.FC<TDeleteSiteConfirmationModalProps> & {
 	modalId: (siteId: string) => string;
 } = (props) => {
-	const { siteId, isOpenState, onShow, onHide } = props;
-	const isOpen = useFeatureState(isOpenState);
+	const { cx } = props;
 
 	const shopifyBridge = useAppBridge();
-	const [isDeleting, setIsDeleting] = React.useState(false);
+	const isOpen = useFeatureState(cx.isOpen);
+	const isDeleting = useFeatureState(cx.isDeleting);
+
+	const { sendToParent } = useModalCommunication<TDeleteSiteModalToParent>(
+		DeleteSiteConfirmationModal.modalId(cx.siteId ?? 'unknown')
+	);
 
 	// =========================================================================
 	// Events
 	// =========================================================================
 
-	const handleHide = React.useCallback(() => {
-		isOpenState.set(false);
-		onHide?.();
-	}, [isOpenState, onHide]);
-
 	const handleConfirmDelete = React.useCallback(async () => {
-		setIsDeleting(true);
+		if (cx.siteId == null) {
+			return;
+		}
+
+		cx.isDeleting.set(true);
+		sendToParent({ type: 'DELETE_STARTED' });
 
 		const [isDeleteOk, deleteErr] = await coreApiClient.del('/v1/shopify/site/{siteId}', {
 			pathParams: {
-				siteId
+				siteId: cx.siteId
 			},
 			requestMiddlewares: [createShopifyTokenMiddleware(shopifyBridge)]
 		});
-
 		if (!isDeleteOk) {
 			const status = deleteErr instanceof RequestError ? deleteErr.status : undefined;
 			switch (status) {
@@ -61,29 +65,31 @@ export const DeleteSiteConfirmationModal: React.FC<TDeleteSiteConfirmationModalP
 					);
 			}
 
-			setIsDeleting(false);
+			sendToParent({ type: 'DELETE_ERROR', error: deleteErr });
+			cx.isDeleting.set(false);
 			return;
 		}
 
+		sendToParent({ type: 'DELETE_SUCCESS' });
 		shopifyBridge.toast.show('Site deleted successfully');
-		isOpenState.set(false);
-		setIsDeleting(false);
-	}, [siteId, shopifyBridge, isOpenState]);
-
-	const handleCancel = React.useCallback(() => {
-		isOpenState.set(false);
-	}, [isOpenState]);
+		cx.isOpen.set(false);
+		cx.isDeleting.set(false);
+	}, [sendToParent, shopifyBridge, cx]);
 
 	// =========================================================================
 	// UI
 	// =========================================================================
 
+	if (cx.siteId == null) {
+		return null;
+	}
+
 	return (
 		<Modal
-			id={DeleteSiteConfirmationModal.modalId(siteId)}
+			id={DeleteSiteConfirmationModal.modalId(cx.siteId)}
 			open={isOpen}
-			onHide={handleHide}
-			onShow={onShow}
+			onHide={() => cx.isOpen.set(false)}
+			onShow={() => cx.isOpen.set(true)}
 		>
 			<div className="p-4">
 				<Text variant="bodyMd" as="p">
@@ -101,7 +107,7 @@ export const DeleteSiteConfirmationModal: React.FC<TDeleteSiteConfirmationModalP
 				>
 					{isDeleting ? 'Deleting...' : 'Delete Site'}
 				</button>
-				<button onClick={handleCancel}>Cancel</button>
+				<button onClick={() => cx.isOpen.set(false)}>Cancel</button>
 			</TitleBar>
 		</Modal>
 	);
@@ -110,51 +116,48 @@ DeleteSiteConfirmationModal.modalId = (siteId: string) =>
 	`delete-site-confirmation-modal-${siteId}`;
 
 interface TDeleteSiteConfirmationModalProps {
-	siteId: string;
-	isOpenState: TState<boolean, []>;
-	onShow?: () => void;
-	onHide?: () => void;
+	cx: TDeleteSiteModalCx;
 }
 
 export function useDeleteSiteModal(options: TUseDeleteSiteModalOptions = {}) {
-	const { onShow, onHide } = options;
-	const isOpenState = React.useMemo(() => createState(false), []);
-	const [modalProps, setModalProps] = React.useState<{ siteId: string } | null>(null);
-
-	const openModal = React.useCallback(
-		(siteId: string) => {
-			setModalProps({ siteId });
-			isOpenState.set(true);
-		},
-		[isOpenState]
-	);
+	const { siteId: defaultSiteId } = options;
+	const cx = React.useMemo<TDeleteSiteModalCx>(() => {
+		return {
+			siteId: defaultSiteId,
+			isOpen: createState(false),
+			isDeleting: createState(false),
+			open(siteId?: string) {
+				this.siteId = siteId;
+				this.isOpen.set(true);
+			}
+		};
+	}, [defaultSiteId]);
 
 	const ModalCallback = React.useCallback(() => {
-		if (modalProps == null) {
-			return;
-		}
-
-		return (
-			<DeleteSiteConfirmationModal
-				{...modalProps}
-				isOpenState={isOpenState}
-				onShow={onShow}
-				onHide={onHide}
-			/>
-		);
-	}, [isOpenState, onHide, onShow, modalProps]);
+		return <DeleteSiteConfirmationModal cx={cx} />;
+	}, [cx]);
 
 	return React.useMemo(
 		() => ({
-			Modal: ModalCallback,
-			isOpenState,
-			openModal
+			cx,
+			Modal: ModalCallback
 		}),
-		[ModalCallback, isOpenState, openModal]
+		[cx, ModalCallback]
 	);
 }
 
 interface TUseDeleteSiteModalOptions {
-	onShow?: TDeleteSiteConfirmationModalProps['onShow'];
-	onHide?: TDeleteSiteConfirmationModalProps['onHide'];
+	siteId?: string;
 }
+
+interface TDeleteSiteModalCx {
+	siteId?: string;
+	isOpen: TState<boolean, []>;
+	isDeleting: TState<boolean, []>;
+	open: (siteId: string) => void;
+}
+
+export type TDeleteSiteModalToParent =
+	| { type: 'DELETE_STARTED' }
+	| { type: 'DELETE_SUCCESS' }
+	| { type: 'DELETE_ERROR'; error: unknown };

@@ -44,13 +44,11 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 			() => [sites[0] as TLoaderDataSite, sites.slice(1)],
 			[sites]
 		);
-		const {
-			Modal: PageEditorModal,
-			isOpenState: isEditorOpenState,
-			openModal: openEditorModal
-		} = usePageEditorModal();
-		const { Modal: DeleteSiteModal, openModal: openDeleteModal } = useDeleteSiteModal();
-		const isEditorOpen = useFeatureState(isEditorOpenState);
+
+		const { cx: pageEditorModalCx, Modal: PageEditorModal } = usePageEditorModal();
+		const { cx: deleteSiteModalCx, Modal: DeleteSiteModal } = useDeleteSiteModal();
+
+		const isPageEditorOpen = useFeatureState(pageEditorModalCx.isOpen);
 		const [isLoadingEditor, setIsLoadingEditor] = React.useState(shouldOpenEditor);
 		const [isCreatingSite, setIsCreatingSite] = React.useState(false);
 
@@ -131,11 +129,11 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 				const newSite = createResponse.data;
 
 				// Open the modal with the new site
-				openEditorModal(newSite.id, `${newSite.displayName} (/${newSite.handle})`);
+				pageEditorModalCx.open(newSite.id, `${newSite.displayName} (/${newSite.handle})`);
 			} finally {
 				setIsCreatingSite(false);
 			}
-		}, [sites.length, shopifyBridge, openEditorModal]);
+		}, [sites.length, shopifyBridge, pageEditorModalCx]);
 
 		// =========================================================================
 		// Effects
@@ -150,16 +148,16 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 				window.history.replaceState({}, '', `${url.pathname}${url.search}`);
 
 				// Open the editor
-				isEditorOpenState.set(true);
+				pageEditorModalCx.open(site.id, `${site.displayName} (/${site.handle})`);
 			}
-		}, [shouldOpenEditor, isEditorOpenState]);
+		}, [shouldOpenEditor, pageEditorModalCx, site]);
 
 		// Stop loading when editor opens
 		React.useEffect(() => {
-			if (isEditorOpen && isLoadingEditor) {
+			if (isPageEditorOpen && isLoadingEditor) {
 				setIsLoadingEditor(false);
 			}
-		}, [isEditorOpen, isLoadingEditor]);
+		}, [isPageEditorOpen, isLoadingEditor]);
 
 		// =========================================================================
 		// UI
@@ -231,7 +229,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 											<Button
 												variant="primary"
 												onClick={() =>
-													openEditorModal(site.id, `${site.displayName} (/${site.handle})`)
+													pageEditorModalCx.open(site.id, `${site.displayName} (/${site.handle})`)
 												}
 											>
 												Customize
@@ -266,7 +264,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 												<div
 													className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-gray-50"
 													onClick={() =>
-														openEditorModal(
+														pageEditorModalCx.open(
 															siteItem.id,
 															`${siteItem.displayName} (/${siteItem.handle})`
 														)
@@ -304,12 +302,12 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 															}
 															site={siteItem}
 															onCustomize={() =>
-																openEditorModal(
+																pageEditorModalCx.open(
 																	siteItem.id,
 																	`${siteItem.displayName} (/${siteItem.handle})`
 																)
 															}
-															onRemove={() => openDeleteModal(siteItem.id)}
+															onRemove={() => deleteSiteModalCx.open(siteItem.id)}
 														/>
 													</div>
 												</div>
