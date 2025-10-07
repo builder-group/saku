@@ -6,20 +6,12 @@ import { logger } from '@/environment';
 export const errorHandler: hono.ErrorHandler = async (err, c) => {
 	// Handle app error
 	if (err instanceof AppError) {
+		const logThrowable =
+			err.status === 500 ||
+			(err.code === '#ERR_VALIDATION_FAILED' && c.req.path.includes('/webhook/'));
 		logger.error(
-			...[
-				`[AppError] ${err.message}`,
-				// Include validation errors only for webhook requests,
-				// because we must accept webhooks,
-				// so if validation fails, it's our issue and we need context to debug
-				...(err.code === '#ERR_VALIDATION_FAILED' && c.req.path.includes('/webhook/')
-					? [
-							{
-								errors: JSON.stringify(err.errors)
-							}
-						]
-					: [])
-			]
+			`[AppError] ${err.message}`,
+			...(logThrowable ? [{ throwable: JSON.stringify(err) }] : [])
 		);
 
 		return honoUtilsErrorHandler(err, c);
@@ -28,7 +20,7 @@ export const errorHandler: hono.ErrorHandler = async (err, c) => {
 	// Handle database error and mask it as internal server error
 	if (err instanceof DatabaseError) {
 		logger.error(`[DatabaseError] ${err.message}`, {
-			throwable: err
+			throwable: JSON.stringify(err)
 		});
 		return honoUtilsErrorHandler(
 			new AppError('#ERR_INTERNAL_SERVER_ERROR', 500, {
@@ -43,7 +35,7 @@ export const errorHandler: hono.ErrorHandler = async (err, c) => {
 		// Handle database error and mask it as internal server error
 		if (err.message.startsWith('Failed query:')) {
 			logger.error(`[DatabaseError] ${err.message}`, {
-				throwable: err
+				throwable: JSON.stringify(err)
 			});
 			return honoUtilsErrorHandler(
 				new AppError('#ERR_INTERNAL_SERVER_ERROR', 500, {
@@ -53,9 +45,9 @@ export const errorHandler: hono.ErrorHandler = async (err, c) => {
 			);
 		}
 
-		// Handle generic error
+		// Handle unknown error
 		logger.error(`[Error] ${err.message}`, {
-			throwable: err
+			throwable: JSON.stringify(err)
 		});
 		return honoUtilsErrorHandler(err, c);
 	}

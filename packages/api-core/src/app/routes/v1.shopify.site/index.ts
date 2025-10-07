@@ -12,13 +12,14 @@ import {
 	workspaceTable
 } from '@/environment';
 import {
-	createShopifyUrlRedirect,
+	deleteShopifyUrlRedirect,
 	deleteUrlRedirect,
 	getCurrentPlan,
 	getShopifyOfflineAccessToken,
 	getShopPlan,
 	getStorefrontToken,
 	refreshIntegrations,
+	updateShopifyUrlRedirect,
 	verifyShopifySession
 } from '@/lib';
 import { TFlatSiteContentDto } from '../v1.site/schema';
@@ -165,7 +166,7 @@ router.openapi(CreateShopifySiteRoute, async (c) => {
 	// Create URL redirect if requested
 	let redirectId: string | null = null;
 	if (createRedirect) {
-		const redirectResult = await createShopifyUrlRedirect(
+		const redirectResult = await updateShopifyUrlRedirect(
 			`/${handle}` as `/${string}`,
 			`${shopifyConfig.proxy.path}/${handle}` as `/${string}`,
 			{
@@ -176,11 +177,15 @@ router.openapi(CreateShopifySiteRoute, async (c) => {
 		);
 		if (redirectResult.isErr()) {
 			if (redirectResult.error.code === '#ERR_REDIRECT_PATH_TAKEN' && !overrideRedirect) {
-				throw redirectResult.error;
+				throw new AppError('#ERR_REDIRECT_PATH_TAKEN', 409, {
+					title: 'Path already taken',
+					detail: `The path (${handle}) you are trying to use is already taken. Please try a different path.`
+				});
 			}
 			throw new AppError('#ERR_REDIRECT_CREATE_FAILED', 500, {
 				title: 'Failed to create redirect',
-				detail: 'Could not create URL redirect for the site'
+				detail: 'Could not create URL redirect for the site',
+				throwable: redirectResult.error
 			});
 		}
 		redirectId = redirectResult.value.id;
@@ -243,7 +248,7 @@ router.openapi(CreateShopifySiteRoute, async (c) => {
 		if (redirectId != null) {
 			const deleteResult = await deleteUrlRedirect({ id: redirectId }, { shopId, accessToken });
 			if (deleteResult.isErr()) {
-				logger.error('Failed to clean up redirect after site creation failed:', deleteResult.error);
+				logger.warn('Failed to clean up redirect after site creation failed:', deleteResult.error);
 			}
 		}
 
@@ -319,7 +324,6 @@ router.openapi(UpdateShopifySiteRoute, async (c) => {
 				)
 			)
 			.limit(1);
-
 		if (siteWithHandle != null) {
 			throw new AppError('#ERR_SITE_HANDLE_TAKEN', 409, {
 				title: 'Handle already taken',
@@ -369,6 +373,23 @@ router.openapi(UpdateShopifySiteRoute, async (c) => {
 		});
 	}
 
+	// Update redirect (if handle was updated)
+	if (updatedSite.handle !== site.handle) {
+		const accessToken = (await getShopifyOfflineAccessToken(shopId)).unwrap();
+		const result = await updateShopifyUrlRedirect(
+			`/${updatedSite.handle}` as `/${string}`,
+			`${shopifyConfig.proxy.path}/${updatedSite.handle}` as `/${string}`,
+			{ shopId, accessToken, oldPath: `/${site.handle}` as `/${string}` }
+		);
+		if (result.isErr()) {
+			throw new AppError('#ERR_REDIRECT_UPDATE_FAILED', 500, {
+				title: 'Failed to update redirect',
+				detail: 'Could not update URL redirect for the site',
+				throwable: result.error
+			});
+		}
+	}
+
 	return c.json(
 		{
 			id: updatedSite.id,
@@ -386,6 +407,8 @@ router.openapi(UpdateShopifySiteRoute, async (c) => {
 router.openapi(DeleteShopifySiteRoute, async (c) => {
 	const { shopId } = (await verifyShopifySession(c)).unwrap();
 	const { siteId } = c.req.valid('param');
+
+	const accessToken = (await getShopifyOfflineAccessToken(shopId)).unwrap();
 
 	// Find site connected to a workspace connected to this Shopify shop
 	const [site] = await db
@@ -428,6 +451,16 @@ router.openapi(DeleteShopifySiteRoute, async (c) => {
 
 	// Delete the site
 	await db.delete(siteTable).where(eq(siteTable.id, siteId));
+
+	// Try to delete the associated redirect
+	const deleteResult = await deleteShopifyUrlRedirect({
+		path: `/${site.handle}` as `/${string}`,
+		shopId,
+		accessToken
+	});
+	if (deleteResult.isErr()) {
+		logger.warn('Failed to delete redirect after site deletion:', deleteResult.error);
+	}
 
 	return c.body(null, 204);
 });

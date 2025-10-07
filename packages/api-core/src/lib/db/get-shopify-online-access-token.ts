@@ -56,5 +56,5 @@ interface TGetShopifyOnlineAccessTokenOptions {
 	 * If provided, returns the online token for this specific user.
 	 * If not provided, returns any valid online token.
 	 */
-	userId?: number;
+	userId?: string;
 }
