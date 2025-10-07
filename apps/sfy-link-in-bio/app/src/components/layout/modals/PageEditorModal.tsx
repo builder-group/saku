@@ -2,7 +2,7 @@ import { Modal, TitleBar } from '@shopify/app-bridge-react';
 import { useFeatureState } from 'feature-react/state';
 import { createState, TState } from 'feature-state';
 import React from 'react';
-import { DeleteSiteConfirmationModal } from './DeleteSiteConfirmationModal';
+import { RemoteDeleteSiteConfirmationModal } from './RemoteDeleteSiteConfirmationModal';
 
 export const PageEditorModal: React.FC<TPageEditorModalProps> & {
 	modalId: (siteId: string) => string;
@@ -29,7 +29,7 @@ export const PageEditorModal: React.FC<TPageEditorModalProps> & {
 			</Modal>
 
 			{/* Shopify doesn't support modals inside modals and thus all modals required inside a Max Modal must be defined at the same level as the Max Modal. See: https://github.com/Shopify/shopify-app-bridge/issues/420 */}
-			<DeleteSiteConfirmationModal siteId={siteId} />
+			<RemoteDeleteSiteConfirmationModal siteId={siteId} />
 		</>
 	);
 };
@@ -43,33 +43,30 @@ interface TPageEditorModalProps {
 	onHide?: () => void;
 }
 
-export function usePageEditorModal(config: TUsePageEditorModalConfig) {
-	const { siteId: initialSiteId, title: initialTitle, onShow, onHide } = config;
+export function usePageEditorModal(options: TUsePageEditorModalOptions = {}) {
+	const { onShow, onHide } = options;
 	const isOpenState = React.useMemo(() => createState(false), []);
-	const [currentSiteMetadata, setCurrentSiteMetadata] = React.useState({
-		siteId: initialSiteId,
-		title: initialTitle
-	});
+	const [modalProps, setModalProps] = React.useState<{ siteId: string; title: string } | null>(
+		null
+	);
 
 	const openModal = React.useCallback(
 		(siteId: string, title: string) => {
-			setCurrentSiteMetadata({ siteId, title });
+			setModalProps({ siteId, title });
 			isOpenState.set(true);
 		},
 		[isOpenState]
 	);
 
 	const ModalCallback = React.useCallback(() => {
+		if (modalProps == null) {
+			return;
+		}
+
 		return (
-			<PageEditorModal
-				siteId={currentSiteMetadata.siteId}
-				title={currentSiteMetadata.title}
-				isOpenState={isOpenState}
-				onShow={onShow}
-				onHide={onHide}
-			/>
+			<PageEditorModal {...modalProps} isOpenState={isOpenState} onShow={onShow} onHide={onHide} />
 		);
-	}, [isOpenState, onHide, onShow, currentSiteMetadata]);
+	}, [isOpenState, onHide, onShow, modalProps]);
 
 	return React.useMemo(
 		() => ({
@@ -81,9 +78,7 @@ export function usePageEditorModal(config: TUsePageEditorModalConfig) {
 	);
 }
 
-interface TUsePageEditorModalConfig {
-	siteId: TPageEditorModalProps['siteId'];
-	title: TPageEditorModalProps['title'];
+interface TUsePageEditorModalOptions {
 	onShow?: TPageEditorModalProps['onShow'];
 	onHide?: TPageEditorModalProps['onHide'];
 }

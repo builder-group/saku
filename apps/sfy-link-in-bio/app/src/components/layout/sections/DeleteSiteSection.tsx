@@ -2,7 +2,7 @@ import { useAppBridge } from '@shopify/app-bridge-react';
 import { Button, Text } from '@shopify/polaris';
 import React from 'react';
 import { useParentCommunication } from '@/hooks';
-import { DeleteSiteConfirmationModal, TDeleteSiteModalToParent } from '../modals';
+import { RemoteDeleteSiteConfirmationModal, TDeleteSiteModalToParent } from '../modals';
 
 export const DeleteSiteSection: React.FC<TDeleteSiteSectionProps> = (props) => {
 	const { title, description, buttonText = 'Delete Site' } = props;
@@ -12,7 +12,7 @@ export const DeleteSiteSection: React.FC<TDeleteSiteSectionProps> = (props) => {
 		'idle'
 	);
 
-	useParentCommunication<TDeleteSiteModalToParent>(DeleteSiteConfirmationModal.modalId, {
+	useParentCommunication<TDeleteSiteModalToParent>(RemoteDeleteSiteConfirmationModal.modalId, {
 		onModalMessage: React.useCallback((message: TDeleteSiteModalToParent) => {
 			switch (message.type) {
 				case 'DELETE_STARTED':
@@ -35,7 +35,7 @@ export const DeleteSiteSection: React.FC<TDeleteSiteSectionProps> = (props) => {
 
 	const handleDeleteClick = React.useCallback(() => {
 		setDeleteState('idle');
-		shopifyBridge.modal.show(DeleteSiteConfirmationModal.modalId);
+		shopifyBridge.modal.show(RemoteDeleteSiteConfirmationModal.modalId);
 	}, [shopifyBridge]);
 
 	// =========================================================================

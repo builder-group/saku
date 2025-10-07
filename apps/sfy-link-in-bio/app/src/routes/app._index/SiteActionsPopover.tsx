@@ -2,7 +2,7 @@ import { Popover, Text } from '@shopify/polaris';
 import React from 'react';
 
 export const SiteActionsPopover: React.FC<TSiteActionsPopoverProps> = (props) => {
-	const { activator, site, onCustomize } = props;
+	const { activator, site, onCustomize, onRemove } = props;
 	const [popoverActive, setPopoverActive] = React.useState(false);
 
 	// =========================================================================
@@ -22,6 +22,11 @@ export const SiteActionsPopover: React.FC<TSiteActionsPopoverProps> = (props) =>
 		onCustomize();
 		setPopoverActive(false);
 	}, [onCustomize]);
+
+	const handleDelete = React.useCallback(() => {
+		onRemove();
+		setPopoverActive(false);
+	}, [onRemove]);
 
 	// =========================================================================
 	// UI
@@ -55,6 +60,14 @@ export const SiteActionsPopover: React.FC<TSiteActionsPopoverProps> = (props) =>
 						Customize
 					</Text>
 				</button>
+				<button
+					className="flex h-8 cursor-pointer items-center gap-2 rounded-lg px-2 hover:bg-red-50"
+					onClick={handleDelete}
+				>
+					<Text as="span" variant="bodyMd" tone="critical">
+						Delete
+					</Text>
+				</button>
 			</div>
 		</Popover>
 	);
@@ -66,4 +79,5 @@ interface TSiteActionsPopoverProps {
 		primaryUrl: string;
 	};
 	onCustomize: () => void;
+	onRemove: () => void;
 }

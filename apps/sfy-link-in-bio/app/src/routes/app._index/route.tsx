@@ -18,6 +18,7 @@ import {
 	PolarisViewIcon,
 	QuickHelpSection,
 	SitePreview,
+	useDeleteSiteModal,
 	usePageEditorModal
 } from '@/components';
 import { appConfig, coreApiClient } from '@/environment';
@@ -46,11 +47,9 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 		const {
 			Modal: PageEditorModal,
 			isOpenState: isEditorOpenState,
-			openModal
-		} = usePageEditorModal({
-			siteId: site.id,
-			title: `${site.displayName} (/${site.handle})`
-		});
+			openModal: openEditorModal
+		} = usePageEditorModal();
+		const { Modal: DeleteSiteModal, openModal: openDeleteModal } = useDeleteSiteModal();
 		const isEditorOpen = useFeatureState(isEditorOpenState);
 		const [isLoadingEditor, setIsLoadingEditor] = React.useState(shouldOpenEditor);
 		const [isCreatingSite, setIsCreatingSite] = React.useState(false);
@@ -58,13 +57,6 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 		// =========================================================================
 		// Events
 		// =========================================================================
-
-		const handleCustomizeSite = React.useCallback(
-			(siteToEdit: TLoaderDataSite) => {
-				openModal(siteToEdit.id, `${siteToEdit.displayName} (/${siteToEdit.handle})`);
-			},
-			[openModal]
-		);
 
 		const handleCreateSite = React.useCallback(async () => {
 			setIsCreatingSite(true);
@@ -139,11 +131,11 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 				const newSite = createResponse.data;
 
 				// Open the modal with the new site
-				openModal(newSite.id, `${newSite.displayName} (/${newSite.handle})`);
+				openEditorModal(newSite.id, `${newSite.displayName} (/${newSite.handle})`);
 			} finally {
 				setIsCreatingSite(false);
 			}
-		}, [sites.length, shopifyBridge, openModal]);
+		}, [sites.length, shopifyBridge, openEditorModal]);
 
 		// =========================================================================
 		// Effects
@@ -236,7 +228,12 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 												target="_blank"
 												accessibilityLabel="Visit your Link In Bio page"
 											/>
-											<Button variant="primary" onClick={() => handleCustomizeSite(site)}>
+											<Button
+												variant="primary"
+												onClick={() =>
+													openEditorModal(site.id, `${site.displayName} (/${site.handle})`)
+												}
+											>
 												Customize
 											</Button>
 										</div>
@@ -246,8 +243,8 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 
 							{/* Bio Pages List Section */}
 							<div className="relative">
-								<s-section>
-									<div className="mb-4 flex items-center justify-between">
+								<s-section padding="none">
+									<div className="flex items-center justify-between p-4">
 										<Text as="h2" variant="headingMd">
 											Bio Pages
 										</Text>
@@ -258,37 +255,45 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 												loading={isCreatingSite}
 												disabled={isCreatingSite}
 											>
-												{isCreatingSite ? 'Creating...' : 'New'}
+												New
 											</Button>
 										)}
 									</div>
 
 									{otherSites.length > 0 ? (
-										<div>
-											{otherSites.map((siteItem, index) => (
-												<div key={siteItem.id}>
-													<div className="flex items-center gap-3 py-3 pr-3">
-														{/* Small Thumbnail */}
-														<div className="flex h-16 w-24 items-center justify-center rounded-md bg-neutral-200 px-3">
-															<Text as="span" variant="bodyMd" tone="subdued" truncate>
-																/{siteItem.handle}
-															</Text>
-														</div>
+										otherSites.map((siteItem, index) => (
+											<div key={siteItem.id}>
+												<div
+													className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-gray-50"
+													onClick={() =>
+														openEditorModal(
+															siteItem.id,
+															`${siteItem.displayName} (/${siteItem.handle})`
+														)
+													}
+												>
+													{/* Small Thumbnail */}
+													<div className="flex h-16 w-24 items-center justify-center rounded-md bg-neutral-200 px-3">
+														<Text as="span" variant="bodyMd" tone="subdued" truncate>
+															/{siteItem.handle}
+														</Text>
+													</div>
 
-														{/* Content */}
-														<div className="flex flex-1 flex-col items-start gap-1">
-															<Text as="h3" variant="headingMd">
-																{siteItem.displayName ?? siteItem.handle}
-															</Text>
-															<Text as="p" variant="bodyMd" tone="subdued">
-																Last Updated:{' '}
-																{siteItem.updatedAt != null
-																	? new Date(siteItem.updatedAt).toLocaleDateString()
-																	: 'Never'}
-															</Text>
-														</div>
+													{/* Content */}
+													<div className="flex flex-1 flex-col items-start gap-1">
+														<Text as="h3" variant="headingMd">
+															{siteItem.displayName ?? siteItem.handle}
+														</Text>
+														<Text as="p" variant="bodyMd" tone="subdued">
+															Last Updated:{' '}
+															{siteItem.updatedAt != null
+																? new Date(siteItem.updatedAt).toLocaleDateString()
+																: 'Never'}
+														</Text>
+													</div>
 
-														{/* Action Popover */}
+													{/* Action Popover */}
+													<div onClick={(e) => e.stopPropagation()}>
 														<SiteActionsPopover
 															activator={
 																<Button
@@ -298,17 +303,23 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 																/>
 															}
 															site={siteItem}
-															onCustomize={() => handleCustomizeSite(siteItem)}
+															onCustomize={() =>
+																openEditorModal(
+																	siteItem.id,
+																	`${siteItem.displayName} (/${siteItem.handle})`
+																)
+															}
+															onRemove={() => openDeleteModal(siteItem.id)}
 														/>
 													</div>
-													{index < otherSites.length - 1 && (
-														<div className="border-b border-gray-200" />
-													)}
 												</div>
-											))}
-										</div>
+												{index < otherSites.length - 1 && (
+													<div className="border-b border-gray-200" />
+												)}
+											</div>
+										))
 									) : (
-										<div className="flex h-64 items-center justify-center">
+										<div className="flex min-h-64 items-center justify-center">
 											<div className="flex flex-col items-center gap-4 text-center">
 												<div className="flex h-12 w-12 items-center justify-center rounded-lg bg-neutral-100">
 													<Icon source={PolarisPageIcon} />
@@ -328,7 +339,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 													loading={isCreatingSite}
 													disabled={isCreatingSite}
 												>
-													{isCreatingSite ? 'Creating...' : 'Create Bio Page'}
+													Create Bio Page
 												</Button>
 											</div>
 										</div>
@@ -394,6 +405,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 				</s-page>
 
 				<PageEditorModal />
+				<DeleteSiteModal />
 			</>
 		);
 	},
