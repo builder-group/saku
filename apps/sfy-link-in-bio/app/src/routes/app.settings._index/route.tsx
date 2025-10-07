@@ -4,7 +4,7 @@ import React from 'react';
 import { useNavigate } from 'react-router';
 import { ResetWorkspaceConfirmationModal, useCrisp } from '@/components';
 import { appConfig, coreApiClient } from '@/environment';
-import { createShopifyTokenMiddleware } from '../../lib';
+import { AppError, createShopifyTokenMiddleware, showShopifyAppErrorToast } from '@/lib';
 
 // https://shopify.dev/docs/api/app-home/patterns/settings
 const Page: React.FC = () => {
@@ -24,15 +24,15 @@ const Page: React.FC = () => {
 	const handleConfirmReset = React.useCallback(async () => {
 		setIsResetting(true);
 
-		const [isResetOk] = await coreApiClient.post('/v1/shopify/shop/reset', undefined, {
+		const [isResetOk, resetErr] = await coreApiClient.post('/v1/shopify/shop/reset', undefined, {
 			requestMiddlewares: [createShopifyTokenMiddleware(shopifyBridge)]
 		});
-
 		if (!isResetOk) {
-			shopifyBridge.toast.show('Failed to reset settings. Please try again.', {
-				isError: true,
-				duration: 5000
-			});
+			showShopifyAppErrorToast(
+				'Failed to reset settings.',
+				AppError.fromFetchError(resetErr),
+				shopifyBridge
+			);
 			setIsResetting(false);
 			return;
 		}

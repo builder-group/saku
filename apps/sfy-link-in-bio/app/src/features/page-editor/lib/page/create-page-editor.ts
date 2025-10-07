@@ -19,11 +19,17 @@ import {
 	TToken
 } from '@repo/editor';
 import { ShopifyGlobal } from '@shopify/app-bridge-react';
-import { FetchError, NetworkError, RequestError } from 'feature-fetch';
+import { RequestError } from 'feature-fetch';
 import { createState, TState } from 'feature-state';
 import React from 'react';
 import { appConfig, coreApiClient } from '@/environment';
-import { createShopifyTokenMiddleware, requestReview, TBreakpoint } from '@/lib';
+import {
+	AppError,
+	createShopifyTokenMiddleware,
+	requestReview,
+	showShopifyAppErrorToast,
+	TBreakpoint
+} from '@/lib';
 import { TSettingsSectionType, TViewType } from '../../environment';
 import { createNodeState, nodeAssetHashRegistry, nodeMetadataRegistry, TNodeState } from '../node';
 import { createPageContext, TPageContext } from './create-page-context';
@@ -585,61 +591,12 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 					requestMiddlewares: [createShopifyTokenMiddleware(this.shopify)]
 				}
 			);
-
 			if (!isUpdateOk) {
-				const timestamp = new Date().toISOString();
-
-				// Handle network errors
-				if (updateErr instanceof NetworkError) {
-					this.shopify.toast.show(
-						'Network connection issue. Please check your internet and try again.',
-						{
-							isError: true,
-							duration: 5000
-						}
-					);
-					return false;
-				}
-
-				// Handle request errors
-				if (updateErr instanceof RequestError) {
-					switch (updateErr.status) {
-						case 429:
-							this.shopify.toast.show('Too many requests. Please wait a moment and try again.', {
-								isError: true,
-								duration: 5000
-							});
-							return false;
-						case 503:
-							this.shopify.toast.show(
-								'Service is temporarily unavailable. Please try again later.',
-								{
-									isError: true,
-									duration: 5000
-								}
-							);
-							return false;
-					}
-				}
-
-				// Handle all other errors
-				const errorDetails = {
-					code: updateErr.code ?? '#ERR_UNKNOWN',
-					message: updateErr.message ?? 'An unknown error occurred',
-					description: updateErr instanceof FetchError ? updateErr.message : undefined,
-					throwable: updateErr instanceof FetchError ? updateErr.throwable?.message : undefined
-				};
-				this.shopify.toast.show('Failed to publish', {
-					isError: true,
-					action: 'Contact support',
-					onAction: () => {
-						const subject = encodeURIComponent(`Publishing Error: ${errorDetails.code}`);
-						const body = encodeURIComponent(
-							`Error details:\nCode: ${errorDetails.code}\nMessage: ${errorDetails.message}\nDescription: ${errorDetails.description ?? 'N/A'}\nThrowable: ${errorDetails.throwable ?? 'N/A'}\nTimestamp: ${timestamp}`
-						);
-						window.open(`mailto:${appConfig.help.email}?subject=${subject}&body=${body}`, '_blank');
-					}
-				});
+				showShopifyAppErrorToast(
+					'Failed to publish site.',
+					AppError.fromFetchError(updateErr),
+					this.shopify
+				);
 
 				return false;
 			}
@@ -665,20 +622,7 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 					requestMiddlewares: [createShopifyTokenMiddleware(this.shopify)]
 				}
 			);
-
 			if (!isUpdateOk) {
-				// Handle network errors
-				if (updateErr instanceof NetworkError) {
-					this.shopify.toast.show(
-						'Network connection issue. Please check your internet and try again.',
-						{
-							isError: true,
-							duration: 5000
-						}
-					);
-					return false;
-				}
-
 				// Handle request errors
 				if (updateErr instanceof RequestError) {
 					switch (updateErr.status) {
@@ -700,20 +644,15 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 								}
 							);
 							return false;
-						case 429:
-							this.shopify.toast.show('Too many requests. Please wait a moment and try again.', {
-								isError: true,
-								duration: 5000
-							});
-							return false;
 					}
 				}
 
 				// Handle all other errors
-				this.shopify.toast.show('Failed to update handle', {
-					isError: true,
-					duration: 5000
-				});
+				showShopifyAppErrorToast(
+					'Failed to update handle.',
+					AppError.fromFetchError(updateErr),
+					this.shopify
+				);
 
 				return false;
 			}
@@ -734,20 +673,7 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 					requestMiddlewares: [createShopifyTokenMiddleware(this.shopify)]
 				}
 			);
-
 			if (!isUpdateOk) {
-				// Handle network errors
-				if (updateErr instanceof NetworkError) {
-					this.shopify.toast.show(
-						'Network connection issue. Please check your internet and try again.',
-						{
-							isError: true,
-							duration: 5000
-						}
-					);
-					return false;
-				}
-
 				// Handle request errors
 				if (updateErr instanceof RequestError) {
 					switch (updateErr.status) {
@@ -757,20 +683,15 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 								duration: 5000
 							});
 							return false;
-						case 429:
-							this.shopify.toast.show('Too many requests. Please wait a moment and try again.', {
-								isError: true,
-								duration: 5000
-							});
-							return false;
 					}
 				}
 
 				// Handle all other errors
-				this.shopify.toast.show('Failed to update name', {
-					isError: true,
-					duration: 5000
-				});
+				showShopifyAppErrorToast(
+					'Failed to update name.',
+					AppError.fromFetchError(updateErr),
+					this.shopify
+				);
 
 				return false;
 			}

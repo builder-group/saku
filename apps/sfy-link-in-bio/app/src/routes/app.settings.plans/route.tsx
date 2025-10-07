@@ -15,7 +15,14 @@ import {
 	useCrisp
 } from '@/components';
 import { appConfig } from '@/environment';
-import { getMantleClient, isMantleError, resultLoader, withResultLoader } from '@/lib';
+import {
+	AppError,
+	getMantleClient,
+	isMantleError,
+	resultLoader,
+	showShopifyAppErrorToast,
+	withResultLoader
+} from '@/lib';
 
 const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 	Success: ({ data }) => {
@@ -53,10 +60,15 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 						returnUrl: '/app/settings/plans'
 					});
 					if (isMantleError(subscription)) {
-						shopifyBridge.toast.show('Unable to change plan. Please try again.', {
-							isError: true,
-							duration: 5000
-						});
+						showShopifyAppErrorToast(
+							'Failed to change plan.',
+							AppError.fromFetchError(
+								new AppError('#ERR_MANTLE_ERROR', {
+									detail: `${subscription.error}: ${subscription.details}`
+								})
+							),
+							shopifyBridge
+						);
 						return;
 					}
 

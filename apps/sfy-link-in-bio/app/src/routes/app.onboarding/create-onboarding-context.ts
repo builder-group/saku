@@ -78,7 +78,7 @@ export function createOnboardingContext(
 			});
 			if (availabilityResult.isErr()) {
 				return Err({
-					message: 'Failed to check handle availability. Please try again.',
+					message: 'Failed to check handle availability.',
 					canOverrideRedirect: false
 				});
 			}
@@ -146,7 +146,7 @@ export function createOnboardingContext(
 					});
 				}
 				return Err({
-					message: 'Failed to parse your LinkPop page. Please try again.',
+					message: 'Failed to parse your LinkPop page.',
 					isNotFound: false
 				});
 			}
@@ -190,7 +190,7 @@ export function createOnboardingContext(
 				}
 			);
 			if (createResult.isErr()) {
-				return Err('Failed to create your bio page. Please try again.');
+				return Err('Failed to create your bio page.');
 			}
 
 			return Ok(undefined);
@@ -229,7 +229,7 @@ export function createOnboardingContext(
 			);
 
 			if (result.isErr()) {
-				return Err('Failed to create your bio page. Please try again.');
+				return Err('Failed to create your bio page.');
 			}
 
 			return Ok(undefined);

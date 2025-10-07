@@ -1,10 +1,10 @@
 import { Modal, TitleBar, useAppBridge } from '@shopify/app-bridge-react';
 import { Text } from '@shopify/polaris';
-import { NetworkError, RequestError } from 'feature-fetch';
+import { RequestError } from 'feature-fetch';
 import React from 'react';
 import { coreApiClient } from '@/environment';
 import { useModalCommunication } from '@/hooks';
-import { createShopifyTokenMiddleware } from '@/lib';
+import { AppError, createShopifyTokenMiddleware, showShopifyAppErrorToast } from '@/lib';
 import { PageEditorModal } from './PageEditorModal';
 
 export const DeleteSiteConfirmationModal: React.FC<TDeleteSiteConfirmationModalProps> & {
@@ -34,20 +34,6 @@ export const DeleteSiteConfirmationModal: React.FC<TDeleteSiteConfirmationModalP
 		});
 
 		if (!isDeleteOk) {
-			// Handle network errors
-			if (deleteErr instanceof NetworkError) {
-				shopifyBridge.toast.show(
-					'Network connection issue. Please check your internet and try again.',
-					{
-						isError: true,
-						duration: 5000
-					}
-				);
-				sendToParent({ type: 'DELETE_ERROR', error: deleteErr });
-				setIsDeleting(false);
-				return;
-			}
-
 			// Handle request errors
 			if (deleteErr instanceof RequestError) {
 				switch (deleteErr.status) {
@@ -70,22 +56,15 @@ export const DeleteSiteConfirmationModal: React.FC<TDeleteSiteConfirmationModalP
 						sendToParent({ type: 'DELETE_ERROR', error: deleteErr });
 						setIsDeleting(false);
 						return;
-					case 429:
-						shopifyBridge.toast.show('Too many requests. Please wait a moment and try again.', {
-							isError: true,
-							duration: 5000
-						});
-						sendToParent({ type: 'DELETE_ERROR', error: deleteErr });
-						setIsDeleting(false);
-						return;
 				}
 			}
 
 			// Handle all other errors
-			shopifyBridge.toast.show('Failed to delete site', {
-				isError: true,
-				duration: 5000
-			});
+			showShopifyAppErrorToast(
+				'Failed to delete site.',
+				AppError.fromFetchError(deleteErr),
+				shopifyBridge
+			);
 			sendToParent({ type: 'DELETE_ERROR', error: deleteErr });
 			setIsDeleting(false);
 			return;

@@ -1,4 +1,5 @@
 import { EditorError } from '@repo/editor';
+import { FetchError } from 'feature-fetch';
 
 export class AppError extends Error {
 	public readonly code: TErrorCode;
@@ -58,6 +59,13 @@ export class AppError extends Error {
 			detail: error.detail,
 			errors: error.errors,
 			errorStack: error.errorStack.map((error) => AppError.fromEditorError(error))
+		});
+	}
+
+	public static fromFetchError(error: FetchError): AppError {
+		return new AppError(error.code, {
+			detail: error.message,
+			throwable: error.throwable
 		});
 	}
 }

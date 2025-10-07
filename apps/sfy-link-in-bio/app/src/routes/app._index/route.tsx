@@ -2,6 +2,7 @@ import { shortId } from '@blgc/utils';
 import { useAppBridge } from '@shopify/app-bridge-react';
 import { Button, ButtonGroup, Icon, Spinner, Text } from '@shopify/polaris';
 import { boundary } from '@shopify/shopify-app-react-router/server';
+import { RequestError } from 'feature-fetch';
 import { useFeatureState } from 'feature-react';
 import React from 'react';
 import { Err, Ok, unwrapOrUndefined } from 'tuple-result';
@@ -20,7 +21,13 @@ import {
 } from '@/components';
 import { appConfig, coreApiClient } from '@/environment';
 import { useCurrentPlan } from '@/hooks';
-import { createShopifyTokenMiddleware, resultLoader, withResultLoader } from '@/lib';
+import {
+	AppError,
+	createShopifyTokenMiddleware,
+	resultLoader,
+	showShopifyAppErrorToast,
+	withResultLoader
+} from '@/lib';
 import { THeadersFunction } from '@/types';
 import { SiteActionsPopover } from './SiteActionsPopover';
 
@@ -58,20 +65,24 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 				const displayName = `My Bio Page ${sites.length + 1}`;
 
 				// Fetch blank preset
-				const [isBlankPresetOk, , blankPresetResponse] = await coreApiClient.get(
+				const [isBlankPresetOk, blankPresetErr, blankPresetResponse] = await coreApiClient.get(
 					'/v1/shopify/site/preset/blank',
 					{
 						requestMiddlewares: [createShopifyTokenMiddleware(shopifyBridge)]
 					}
 				);
 				if (!isBlankPresetOk) {
-					// TODO:
+					showShopifyAppErrorToast(
+						'Failed to create bio page.',
+						AppError.fromFetchError(blankPresetErr),
+						shopifyBridge
+					);
 					return;
 				}
 				const blankPreset = blankPresetResponse.data;
 
 				// Create the site
-				const [isCreateOk, , createResponse] = await coreApiClient.post(
+				const [isCreateOk, createErr, createResponse] = await coreApiClient.post(
 					'/v1/shopify/site',
 					{
 						handle,
@@ -85,7 +96,24 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 					}
 				);
 				if (!isCreateOk) {
-					// TODO:
+					// Handle request errors
+					if (createErr instanceof RequestError) {
+						switch (createErr.status) {
+							case 409:
+								shopifyBridge.toast.show(`A site with the handle '${handle}' already exists.`, {
+									isError: true,
+									duration: 5000
+								});
+								return;
+						}
+					}
+
+					// Handle all other errors
+					showShopifyAppErrorToast(
+						'Failed to create bio page.',
+						AppError.fromFetchError(createErr),
+						shopifyBridge
+					);
 					return;
 				}
 				const newSite = createResponse.data;
