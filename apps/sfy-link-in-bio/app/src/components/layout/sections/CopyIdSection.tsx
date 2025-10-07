@@ -25,7 +25,7 @@ export const CopyIdSection: React.FC<TCopyIdSectionProps> = (props) => {
 
 				<div className="relative max-w-md">
 					<TextField label="" value={id} readOnly autoComplete="off" />
-					<div className="absolute top-0 right-2 z-50 flex h-full items-center">
+					<div className="absolute top-0 right-0 z-50 flex h-full items-center rounded-r-lg bg-[#F2F2F2] pr-2">
 						<ClipboardButton textToCopy={id} size="micro" variant="tertiary" />
 					</div>
 				</div>

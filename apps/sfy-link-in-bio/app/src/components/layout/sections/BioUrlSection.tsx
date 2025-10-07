@@ -49,13 +49,12 @@ export const BioUrlSection: React.FC<TBioUrlSectionProps> = (props) => {
 					</div>
 				</div>
 
-				<TextField
-					label=""
-					value={currentUrl}
-					readOnly
-					autoComplete="off"
-					connectedRight={<ClipboardButton textToCopy={currentUrl} />}
-				/>
+				<div className="relative max-w-md">
+					<TextField label="" value={currentUrl} readOnly autoComplete="off" />
+					<div className="absolute top-0 right-0 z-50 flex h-full items-center rounded-r-lg bg-[#F2F2F2] pr-2">
+						<ClipboardButton textToCopy={currentUrl} size="micro" variant="tertiary" />
+					</div>
+				</div>
 			</div>
 		</s-section>
 	);
