@@ -1,6 +1,7 @@
 export * from './color';
 export * from './create-theme-tokens';
 export * from './EditorError';
+export * from './get-asset-binary';
 export * from './get-font-hash';
 export * from './hex-to-paint';
 export * from './id';

@@ -28,6 +28,7 @@ import {
 	verifyShopifySession
 } from '@/lib';
 import { TFlatSiteContentDto } from '../v1.site/schema';
+import { uploadSiteAssets } from './lib';
 import {
 	CreateShopifySiteRoute,
 	DeleteShopifySiteRoute,
@@ -127,7 +128,8 @@ router.openapi(CreateShopifySiteRoute, async (c) => {
 		displayName,
 		content: rawContent,
 		createRedirect = true,
-		overrideRedirect = false
+		overrideRedirect = false,
+		uploadAssets = false
 	} = c.req.valid('json');
 	const content: TFlatSite = rawContent as TFlatSite;
 
@@ -243,6 +245,32 @@ router.openapi(CreateShopifySiteRoute, async (c) => {
 				isShopifyPlus: shopPlan?.plan.isShopifyPlus ?? false
 			};
 			content.integrations[integrationId] = shopifyIntegration;
+		}
+	}
+
+	// Upload assets to Shopify if requested
+	if (uploadAssets) {
+		const [isUploadSiteAssetsOk, uploadSiteAssetsErr, uploadedAssets] = await uploadSiteAssets(
+			content,
+			{ shopId, accessToken, toUploadAssetTypes: ['image'] }
+		);
+		if (!isUploadSiteAssetsOk) {
+			throw new AppError('#ERR_ASSETS_UPLOAD_FAILED', 500, {
+				title: 'Asset upload failed',
+				detail: 'Failed to upload site assets to Shopify',
+				throwable: uploadSiteAssetsErr
+			});
+		}
+
+		// Update content with Shopify asset URLs
+		for (const uploadedAsset of uploadedAssets) {
+			const asset = content.assets[uploadedAsset.originalHash];
+			if (asset != null) {
+				asset.storage = {
+					type: 'url',
+					url: uploadedAsset.resourceUrl
+				};
+			}
 		}
 	}
 

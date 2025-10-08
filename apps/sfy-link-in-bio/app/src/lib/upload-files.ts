@@ -10,67 +10,65 @@ export async function uploadFiles(
 	const { files, contentType, shopify } = config;
 	const idToken = await shopify.idToken();
 
-	// 1. Create staged upload targets
-	const createFilesResult = await coreApiClient.post(
-		'/v1/shopify/ugc/files',
-		{
-			files: files.map((file) => ({
-				filename: file.name,
-				mimeType: file.type,
-				fileSize: file.size,
-				contentType
-			}))
-		},
-		{
-			requestMiddlewares: [createShopifyTokenMiddleware(idToken)]
-		}
-	);
-	if (createFilesResult.isErr()) {
+	if (!files.length) {
+		return Ok([]);
+	}
+
+	// Create staged upload targets
+	const [isCreateUploadTargetsOk, createUploadTargetsErr, createUploadTargetsResponse] =
+		await coreApiClient.post(
+			'/v1/shopify/ugc/files',
+			{
+				files: files.map((file) => ({
+					filename: file.name,
+					mimeType: file.type,
+					fileSize: file.size,
+					contentType
+				}))
+			},
+			{
+				requestMiddlewares: [createShopifyTokenMiddleware(idToken)]
+			}
+		);
+	if (!isCreateUploadTargetsOk) {
 		return Err({
-			code: '#ERR_CREATE_UPLOAD_TARGET',
-			message: `Failed to create upload targets: ${createFilesResult.error.message}`
+			code: '#ERR_CREATE_UPLOAD_TARGETS',
+			message: `Failed to create staged upload targets: ${createUploadTargetsErr.message}`
 		});
 	}
 
-	const createdFiles = createFilesResult.value.data.files;
-	if (!createdFiles?.length || createdFiles.length !== files.length) {
+	const uploadTargets = createUploadTargetsResponse.data.files;
+	if (uploadTargets.length !== files.length) {
 		return Err({
-			code: '#ERR_NO_UPLOAD_TARGET',
-			message: 'No upload targets returned or mismatch in number of files'
+			code: '#ERR_CREATE_UPLOAD_TARGETS_MISMATCH',
+			message: 'Failed to create all staged upload targets'
 		});
 	}
 
-	// 2. Upload all files to Google Cloud Storage
-	const uploadPromises = createdFiles.map(async (createdFile, index) => {
-		if (createdFile?.uploadTarget == null) {
-			throw new Error('Missing upload target');
+	// Upload each asset to its staged target
+	const uploadPromises = uploadTargets.map(async ({ uploadTarget, uploadId }, index) => {
+		const file = files[index];
+		if (file == null) {
+			throw new Error('Missing file');
 		}
-
-		const { uploadTarget, uploadId } = createdFile;
-		const resourceUrl = uploadTarget.resourceUrl;
 
 		const formData = new FormData();
 		uploadTarget.parameters.forEach((param) => {
 			formData.append(param.name, param.value);
 		});
-
-		const file = files[index];
-		if (file == null) {
-			throw new Error('File not found at index ' + index);
-		}
 		formData.append('file', file);
 
-		const uploadResult = await fetchClient.post(uploadTarget.url, formData, {
+		const [isUploadOk, uploadErr] = await fetchClient.post(uploadTarget.url, formData, {
 			parseAs: 'text'
 		});
-		if (uploadResult.isErr()) {
-			throw new Error(`Failed to upload file: ${uploadResult.error.message}`);
+		if (!isUploadOk) {
+			throw new Error(`Failed to upload file: ${uploadErr.message}`);
 		}
 
 		return {
 			uploadId,
-			resourceUrl,
-			filename: file.name
+			file,
+			target: uploadTarget
 		};
 	});
 
@@ -79,19 +77,20 @@ export async function uploadFiles(
 		uploadedFiles = await Promise.all(uploadPromises);
 	} catch (error) {
 		return Err({
-			code: '#ERR_UPLOAD_FILE',
-			message: error instanceof Error ? error.message : 'Failed to upload files'
+			code: '#ERR_UPLOAD_FILES',
+			message:
+				error instanceof Error ? error.message : 'Failed to upload files to staged upload targets'
 		});
 	}
 
-	// 3. Submit all uploaded files to Shopify
-	const submitResult = await coreApiClient.post(
+	// Submit all uploaded files to Shopify
+	const [isSubmitFilesOk, submitFilesErr, submitFilesResponse] = await coreApiClient.post(
 		'/v1/shopify/ugc/files/submit',
 		{
-			files: uploadedFiles.map((file) => ({
-				uploadId: file.uploadId,
-				filename: file.filename,
-				resourceUrl: file.resourceUrl,
+			files: uploadedFiles.map((uploadedFile) => ({
+				uploadId: uploadedFile.uploadId,
+				filename: uploadedFile.file.name,
+				resourceUrl: uploadedFile.target.resourceUrl,
 				contentType
 			}))
 		},
@@ -99,42 +98,31 @@ export async function uploadFiles(
 			requestMiddlewares: [createShopifyTokenMiddleware(idToken)]
 		}
 	);
-	if (submitResult.isErr()) {
+	if (!isSubmitFilesOk) {
 		return Err({
-			code: '#ERR_SUBMIT_FILE',
-			message: `Failed to submit files: ${submitResult.error.message}`
+			code: '#ERR_SUBMIT_FILES',
+			message: `Failed to submit files: ${submitFilesErr.message}`
 		});
 	}
 
-	const submittedFiles = submitResult.value.data.files;
-	if (!submittedFiles?.length || submittedFiles.length !== uploadedFiles.length) {
+	const submittedFiles = submitFilesResponse.data.files;
+	if (submittedFiles.length !== uploadedFiles.length) {
 		return Err({
-			code: '#ERR_NO_FILE_DATA',
-			message: 'No file data returned'
+			code: '#ERR_SUBMIT_FILES_MISMATCH',
+			message: 'Failed to submit all files'
 		});
 	}
 
-	// Check if any files failed to process
-	const failedFiles = submittedFiles.filter((file) => file.status === 'ERROR');
-	if (failedFiles.length > 0) {
-		return Err({
-			code: '#ERR_PROCESS_FILE',
-			message:
-				failedFiles
-					.map((file) => file.error)
-					.filter(Boolean)
-					.join(', ') || 'Failed to process files'
-		});
-	}
-
-	// Return all successfully processed files
 	return Ok(
-		submittedFiles
-			.filter((file) => file.status === 'SUCCESS')
-			.map((file, index) => ({
+		submittedFiles.map((file, index) => {
+			const uploadedFile = uploadedFiles[index] as {
+				target: { resourceUrl: string };
+			};
+			return {
 				id: file.id,
-				resourceUrl: uploadedFiles[index]?.resourceUrl ?? ''
-			}))
+				resourceUrl: uploadedFile.target.resourceUrl
+			};
+		})
 	);
 }
 

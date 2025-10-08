@@ -75,6 +75,10 @@ export const CreateShopifySiteRoute = createRoute({
 							example: false,
 							description:
 								'If true and createRedirect is true, will override any existing redirect with the same path'
+						}),
+						uploadAssets: z.coerce.boolean().optional().openapi({
+							example: false,
+							description: 'Whether to upload site assets (like images) to Shopify media library'
 						})
 					})
 				}

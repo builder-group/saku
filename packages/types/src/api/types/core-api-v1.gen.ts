@@ -876,28 +876,6 @@ export interface components {
             updatedAt: string;
             content: components["schemas"]["FlatSiteContentDto"];
         };
-        SubmitUploadedFileSuccessDto: {
-            /**
-             * @description discriminator enum property added by openapi-typescript
-             * @enum {string}
-             */
-            status: "SUCCESS";
-            /** @example gid://shopify/MediaImage/12345678 */
-            id: string;
-            /** @example ugc_abc123def456 */
-            uploadId: string;
-        };
-        SubmitUploadedFileErrorDto: {
-            /**
-             * @description discriminator enum property added by openapi-typescript
-             * @enum {string}
-             */
-            status: "ERROR";
-            /** @example Failed to process file */
-            error: string;
-            /** @example ugc_abc123def456 */
-            uploadId: string;
-        };
         MediaFileDto: {
             /** @example gid://shopify/MediaImage/12345678 */
             id: string;
@@ -966,6 +944,21 @@ export interface components {
         };
         NodeDto: {
             [key: string]: unknown;
+        };
+        ParsedExternalSite: {
+            /** @enum {string} */
+            provider: "linkpop";
+            /** @example johndoe */
+            handle: string;
+            content: components["schemas"]["FlatSiteContentDto"];
+        } | {
+            /** @enum {string} */
+            provider: "saku";
+            /** @example saku-demo */
+            workspaceHandle: string;
+            /** @example bio */
+            siteHandle: string;
+            content: components["schemas"]["FlatSiteContentDto"];
         };
         Rgba: {
             /**
@@ -1172,12 +1165,16 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Session deleted successfully */
-            204: {
+            /** @description Successful response */
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": {
+                        success: boolean;
+                    };
+                };
             };
             /** @description Resource not found */
             404: {
@@ -1622,6 +1619,11 @@ export interface operations {
                      * @example false
                      */
                     overrideRedirect?: boolean | null;
+                    /**
+                     * @description Whether to upload site assets (like images) to Shopify media library
+                     * @example false
+                     */
+                    uploadAssets?: boolean | null;
                 };
             };
         };
@@ -1705,12 +1707,16 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Site deleted successfully */
-            204: {
+            /** @description Successful response */
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": {
+                        success: boolean;
+                    };
+                };
             };
             /** @description Bad request */
             400: {
@@ -2035,7 +2041,12 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        files: (components["schemas"]["SubmitUploadedFileSuccessDto"] | components["schemas"]["SubmitUploadedFileErrorDto"])[];
+                        files: {
+                            /** @example gid://shopify/MediaImage/12345678 */
+                            id: string;
+                            /** @example ugc_abc123def456 */
+                            uploadId: string;
+                        }[];
                     };
                 };
             };
@@ -2287,13 +2298,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        /** @example linkpop */
-                        provider: string;
-                        /** @example johndoe */
-                        handle: string;
-                        content: components["schemas"]["FlatSiteContentDto"];
-                    };
+                    "application/json": components["schemas"]["ParsedExternalSite"];
                 };
             };
             /** @description Bad request */

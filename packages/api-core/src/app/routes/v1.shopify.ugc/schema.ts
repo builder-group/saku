@@ -5,10 +5,6 @@ import {
 	JsonSuccessResponse
 } from '@repo/hono-utils';
 
-// =========================================================================
-// Create Upload Targets Route
-// =========================================================================
-
 export const CreateUploadTargetsRoute = createRoute({
 	method: 'post',
 	path: '/v1/shopify/ugc/files',
@@ -65,36 +61,6 @@ export const CreateUploadTargetsRoute = createRoute({
 	}
 });
 
-// =========================================================================
-// Submit Uploaded Files Route
-// =========================================================================
-
-const SSubmitUploadedFileSuccessDto = z
-	.object({
-		status: z.literal('SUCCESS'),
-		id: z.string().openapi({
-			example: 'gid://shopify/MediaImage/12345678'
-		}),
-		uploadId: z.string().openapi({
-			example: 'ugc_abc123def456'
-		})
-	})
-	.openapi('SubmitUploadedFileSuccessDto');
-export type TSubmitUploadedFileSuccessDto = z.infer<typeof SSubmitUploadedFileSuccessDto>;
-
-const SSubmitUploadedFileErrorDto = z
-	.object({
-		status: z.literal('ERROR'),
-		error: z.string().openapi({
-			example: 'Failed to process file'
-		}),
-		uploadId: z.string().openapi({
-			example: 'ugc_abc123def456'
-		})
-	})
-	.openapi('SubmitUploadedFileErrorDto');
-export type TSubmitUploadedFileErrorDto = z.infer<typeof SSubmitUploadedFileErrorDto>;
-
 export const SubmitUploadedFilesRoute = createRoute({
 	method: 'post',
 	path: '/v1/shopify/ugc/files/submit',
@@ -127,10 +93,14 @@ export const SubmitUploadedFilesRoute = createRoute({
 		200: JsonSuccessResponse(
 			z.object({
 				files: z.array(
-					z.discriminatedUnion('status', [
-						SSubmitUploadedFileSuccessDto,
-						SSubmitUploadedFileErrorDto
-					])
+					z.object({
+						id: z.string().openapi({
+							example: 'gid://shopify/MediaImage/12345678'
+						}),
+						uploadId: z.string().openapi({
+							example: 'ugc_abc123def456'
+						})
+					})
 				)
 			})
 		),
@@ -138,10 +108,6 @@ export const SubmitUploadedFilesRoute = createRoute({
 		500: InternalServerErrorResponse
 	}
 });
-
-// =========================================================================
-// List Media Files Route
-// =========================================================================
 
 export const ListMediaFilesRoute = createRoute({
 	method: 'get',

@@ -455,12 +455,24 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 			const assetId = createId('asset');
 			const hash = assetId; // Temporary workaround until proper content hashing
 
+			const pathname = new URL(url).pathname.toLowerCase();
+			let contentType: TImageAsset['contentType'] = 'image/jpeg';
+			if (pathname.endsWith('.png')) {
+				contentType = 'image/png';
+			} else if (pathname.endsWith('.gif')) {
+				contentType = 'image/gif';
+			} else if (pathname.endsWith('.webp')) {
+				contentType = 'image/webp';
+			} else if (pathname.endsWith('.svg')) {
+				contentType = 'image/svg+xml';
+			}
+
 			// Register the image
 			this.assetsMap[hash] = {
 				id: assetId,
 				type: 'image',
 				hash,
-				contentType: 'image/jpeg', // TODO:
+				contentType,
 				storage: {
 					type: 'url',
 					url

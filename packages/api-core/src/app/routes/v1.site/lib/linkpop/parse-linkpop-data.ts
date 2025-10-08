@@ -326,9 +326,10 @@ function createFontAsset(fontFamily?: string): TFontAsset {
 }
 
 function createImageAssetFromUrl(url: string): TImageAsset {
-	const hash: TAssetHash = shortId() as TAssetHash; // TODO: Re-upload the image to Shopify CDN
-	const pathname = new URL(url).pathname.toLowerCase();
+	const assetId = createId('asset');
+	const hash = assetId; // Temporary workaround until proper content hashing
 
+	const pathname = new URL(url).pathname.toLowerCase();
 	let contentType: TImageAsset['contentType'] = 'image/jpeg';
 	if (pathname.endsWith('.png')) {
 		contentType = 'image/png';
@@ -341,15 +342,15 @@ function createImageAssetFromUrl(url: string): TImageAsset {
 	}
 
 	return {
-		id: createId('asset'),
+		id: assetId,
 		type: 'image',
 		hash,
 		contentType,
-		fileName: pathname.split('/').pop() || `image-${hash}`,
 		storage: {
 			type: 'url',
 			url
-		}
+		},
+		fileName: pathname.split('/').pop() || `image-${hash}`
 	};
 }
 

@@ -8,7 +8,7 @@ export async function parseSakuSite(url: URL): Promise<TSakuSiteData> {
 
 	// Parse saku.so URL format: /w/{workspaceHandle}/{siteHandle}
 	const pathParts = pathname.split('/').filter(Boolean);
-	if (pathParts.length !== 3 || pathParts[0] !== 'w') {
+	if (pathParts.length < 3 || pathParts[0] !== 'w') {
 		throw new AppError('#ERR_INVALID_SAKU_URL_FORMAT', 400, {
 			title: 'Invalid Saku URL format',
 			detail: 'Saku URLs must follow the format: https://saku.so/w/{workspaceHandle}/{siteHandle}'
