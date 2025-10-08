@@ -96,7 +96,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 					setIsChangingPlan(false);
 				}
 			},
-			[client, shopifyBridge]
+			[client, shopifyBridge, shouldTestCharge]
 		);
 
 		const handleSelectPlan = React.useCallback(

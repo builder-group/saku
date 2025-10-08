@@ -6,7 +6,7 @@ import { boundary } from '@shopify/shopify-app-react-router/server';
 import { RequestError } from 'feature-fetch';
 import { useFeatureState } from 'feature-react';
 import React from 'react';
-import { useRevalidator } from 'react-router';
+import { useRevalidator, useSearchParams } from 'react-router';
 import { Err, Ok, unwrapOrUndefined } from 'tuple-result';
 import { AppContext, shopifyConfig } from '@/.server/environment';
 import {
@@ -38,11 +38,12 @@ import { SiteActionsPopover } from './SiteActionsPopover';
 
 const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 	Success: ({ data }) => {
-		const { sites, shouldOpenEditor } = data;
+		const { sites } = data;
 
 		const revalidator = useRevalidator();
 		const currentPlan = useCurrentPlan();
 		const shopifyBridge = useAppBridge();
+		const [searchParams, setSearchParams] = useSearchParams();
 
 		const [site, otherSites] = React.useMemo(
 			() => [sites[0] as TLoaderDataSite, sites.slice(1)],
@@ -64,6 +65,10 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 		});
 
 		const isPageEditorOpen = useFeatureState(pageEditorModalCx.isOpen);
+		const shouldOpenEditor = React.useMemo(
+			() => searchParams.get('openEditor') === 'true',
+			[searchParams]
+		);
 		const [isLoadingEditor, setIsLoadingEditor] = React.useState(shouldOpenEditor);
 		const [isCreatingSite, setIsCreatingSite] = React.useState(false);
 
@@ -106,7 +111,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 					{
 						handle,
 						displayName,
-						content: siteContent as any,
+						content: siteContent as unknown as Record<string, unknown>,
 						createRedirect: true,
 						overrideRedirect: false
 					},
@@ -158,14 +163,15 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 		React.useEffect(() => {
 			if (shouldOpenEditor) {
 				// Clean up URL first (to not get stuck in a "openEditor=true" loop)
-				const url = new URL(window.location.href);
-				url.searchParams.delete('openEditor');
-				window.history.replaceState({}, '', `${url.pathname}${url.search}`);
+				setSearchParams((searchParams) => {
+					searchParams.delete('openEditor');
+					return searchParams;
+				});
 
 				// Open the editor
 				pageEditorModalCx.open(site.id, `${site.displayName} (/${site.handle})`);
 			}
-		}, [shouldOpenEditor, pageEditorModalCx, site]);
+		}, [shouldOpenEditor, setSearchParams, pageEditorModalCx, site]);
 
 		// Stop loading when editor opens
 		React.useEffect(() => {
@@ -457,62 +463,56 @@ export const headers: THeadersFunction = (headersArgs) => {
 	return boundary.headers(headersArgs);
 };
 
-export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(
-	async ({ request, context }) => {
-		const {
-			workspace,
-			shopify: {
-				sessionToken,
-				admin: { session }
-			}
-		} = context.get(AppContext);
-
-		const url = new URL(request.url);
-		const shouldOpenEditor = url.searchParams.get('openEditor') === 'true';
-
-		// Get sites
-		const [isSitesOk, , sitesResponse] = await coreApiClient.get('/v1/shopify/site', {
-			requestMiddlewares: [createShopifyTokenMiddleware(sessionToken)]
-		});
-		if (!isSitesOk) {
-			return Err({
-				code: '#ERR_SERVER_ERROR' as const,
-				message: 'Failed to fetch site data'
-			}).toArray();
+export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async ({ context }) => {
+	const {
+		workspace,
+		shopify: {
+			sessionToken,
+			admin: { session }
 		}
+	} = context.get(AppContext);
 
-		// Get shop primary URL
-		const primaryUrlResponse = unwrapOrUndefined(
-			await coreApiClient.get('/v1/shopify/shop/primary-url', {
-				requestMiddlewares: [createShopifyTokenMiddleware(sessionToken)]
-			})
-		);
-		const primaryUrl = primaryUrlResponse?.data.primaryDomain?.url;
-
-		const sites: TLoaderDataSite[] = sitesResponse.data.map((site) => ({
-			id: site.id,
-			handle: site.handle,
-			primaryUrl:
-				primaryUrl != null
-					? `${primaryUrl}/${site.handle}`
-					: `${shopifyConfig.url(session.shop)}/${site.handle}`,
-			platformUrl: `https://saku.so/w/${workspace.handle}/${site.handle}`,
-			displayName: site.displayName,
-			updatedAt: site.updatedAt
-		}));
-		if (!sites.length) {
-			return Err({
-				code: '#ERR_NOT_FOUND' as const,
-				message: 'No site found'
-			}).toArray();
-		}
-
-		return Ok({
-			sites,
-			shouldOpenEditor
+	// Get sites
+	const [isSitesOk, , sitesResponse] = await coreApiClient.get('/v1/shopify/site', {
+		requestMiddlewares: [createShopifyTokenMiddleware(sessionToken)]
+	});
+	if (!isSitesOk) {
+		return Err({
+			code: '#ERR_SERVER_ERROR' as const,
+			message: 'Failed to fetch site data'
 		}).toArray();
 	}
-);
+
+	// Get shop primary URL
+	const primaryUrlResponse = unwrapOrUndefined(
+		await coreApiClient.get('/v1/shopify/shop/primary-url', {
+			requestMiddlewares: [createShopifyTokenMiddleware(sessionToken)]
+		})
+	);
+	const primaryUrl = primaryUrlResponse?.data.primaryDomain?.url;
+
+	const sites: TLoaderDataSite[] = sitesResponse.data.map((site) => ({
+		id: site.id,
+		handle: site.handle,
+		primaryUrl:
+			primaryUrl != null
+				? `${primaryUrl}/${site.handle}`
+				: `${shopifyConfig.url(session.shop)}/${site.handle}`,
+		platformUrl: `https://saku.so/w/${workspace.handle}/${site.handle}`,
+		displayName: site.displayName,
+		updatedAt: site.updatedAt
+	}));
+	if (!sites.length) {
+		return Err({
+			code: '#ERR_NOT_FOUND' as const,
+			message: 'No site found'
+		}).toArray();
+	}
+
+	return Ok({
+		sites
+	}).toArray();
+});
 
 interface TErrorLoaderData {
 	code: `#ERR_${string}`;
@@ -521,7 +521,6 @@ interface TErrorLoaderData {
 
 interface TSuccessLoaderData {
 	sites: TLoaderDataSite[];
-	shouldOpenEditor: boolean;
 }
 
 interface TLoaderDataSite {

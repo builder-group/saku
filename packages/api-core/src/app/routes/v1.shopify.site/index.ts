@@ -591,7 +591,7 @@ router.openapi(GetBlankPresetRoute, async (c) => {
 
 	return c.json(
 		{
-			id: 'blank-preset',
+			id: 'blank',
 			label: 'Blank Preset',
 			content: toFlatSite(site) as TFlatSiteContentDto
 		},

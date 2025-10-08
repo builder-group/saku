@@ -194,7 +194,7 @@ export function createOnboardingContext(
 				{
 					handle,
 					displayName: 'My Bio Page',
-					content: currentStep.site as any,
+					content: currentStep.site as unknown as Record<string, unknown>,
 					createRedirect: true,
 					overrideRedirect: shouldOverrideRedirect,
 					uploadAssets: true
@@ -233,7 +233,7 @@ export function createOnboardingContext(
 				{
 					handle,
 					displayName: 'My Bio Page',
-					content: siteContent as any,
+					content: siteContent as unknown as Record<string, unknown>,
 					createRedirect: true,
 					overrideRedirect: shouldOverrideRedirect,
 					uploadAssets: false
