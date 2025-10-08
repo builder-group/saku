@@ -21,9 +21,9 @@ export const SettingsGeneralPanel: React.FC<TSettingsGeneralPanelProps> = (props
 			// Desktop (horizontal layout): Resizable based on width
 			if (isMd) {
 				const width = rect.right - rect.left;
-				const toPercent = (pixels: number) => (pixels / (width > 0 ? width : 15)) * 100;
+				const toPercent = (pixels: number) => (pixels / width) * 100;
 				return {
-					minSize: toPercent(405) // ~ 27
+					minSize: toPercent(405)
 				};
 			}
 

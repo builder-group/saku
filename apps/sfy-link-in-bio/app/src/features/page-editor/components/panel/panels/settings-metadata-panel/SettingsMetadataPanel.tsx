@@ -57,11 +57,11 @@ export const SettingsMetadataPanel: React.FC<TSettingsMetadataPanelProps> = (pro
 			// Desktop (horizontal layout): Resizable based on width
 			if (isMd) {
 				const width = rect.right - rect.left;
-				const toPercent = (pixels: number) => (pixels / (width > 0 ? width : 15)) * 100;
+				const toPercent = (pixels: number) => (pixels / width) * 100;
 				return {
-					minSize: toPercent(300), // ~ 20
-					defaultSize: toPercent(405), // ~ 27
-					maxSize: toPercent(525) // ~ 35
+					minSize: toPercent(300),
+					defaultSize: toPercent(405),
+					maxSize: toPercent(525)
 				};
 			}
 

@@ -5,7 +5,7 @@ import { cn } from '@/lib';
 import { TViewType, viewMetadata } from '../../../../environment';
 import { TPageEditor } from '../../../../lib';
 
-export const MobileNavPanel: React.FC<TMobileNavPanelProps> = (props) => {
+export const MobileNavPanel: React.FC<TMobileNavPanelProps> & { height: number } = (props) => {
 	const { editor } = props;
 	const activeView = useFeatureState(editor.activeView);
 
@@ -25,7 +25,10 @@ export const MobileNavPanel: React.FC<TMobileNavPanelProps> = (props) => {
 	// =========================================================================
 
 	return (
-		<nav className="flex h-15 flex-row justify-between gap-1 bg-white p-2 pr-24">
+		<nav
+			className="flex flex-row justify-between gap-1 bg-white p-2 pr-24"
+			style={{ height: MobileNavPanel.height }}
+		>
 			{viewMetadata.map((item, index) => {
 				return (
 					<button
@@ -45,6 +48,7 @@ export const MobileNavPanel: React.FC<TMobileNavPanelProps> = (props) => {
 		</nav>
 	);
 };
+MobileNavPanel.height = 60;
 
 interface TMobileNavPanelProps {
 	editor: TPageEditor;

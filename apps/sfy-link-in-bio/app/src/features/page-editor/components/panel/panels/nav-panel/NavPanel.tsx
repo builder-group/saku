@@ -18,12 +18,12 @@ export const NavPanel: React.FC<TNavPanelProps> = (props) => {
 		editor.boundingRect,
 		({ value: rect }) => {
 			const width = rect.right - rect.left;
-			const toPercent = (pixels: number) => (pixels / (width > 0 ? width : 15)) * 100;
+			const toPercent = (pixels: number) => (pixels / width) * 100;
 			return {
-				collapsedSize: toPercent(60), // ~ 4
-				minSize: toPercent(120), // ~ 8
-				defaultSize: toPercent(60), // ~ 4
-				maxSize: toPercent(180) // ~ 12
+				collapsedSize: toPercent(60),
+				minSize: toPercent(120),
+				defaultSize: toPercent(60),
+				maxSize: toPercent(180)
 			};
 		},
 		[],

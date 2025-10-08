@@ -32,21 +32,21 @@ export const NodeInspectorPanel: React.FC<TNodeInspectorPanelProps> = (props) =>
 			// Desktop (horizontal layout): Resizable based on width
 			if (isMd) {
 				const width = rect.right - rect.left;
-				const toPercent = (pixels: number) => (pixels / (width > 0 ? width : 15)) * 100;
+				const toPercent = (pixels: number) => (pixels / width) * 100;
 				return {
-					minSize: toPercent(300), // ~ 20
-					defaultSize: toPercent(375), // ~ 25
-					maxSize: toPercent(450) // ~ 30
+					minSize: toPercent(300),
+					defaultSize: toPercent(375),
+					maxSize: toPercent(450)
 				};
 			}
 
 			// Mobile (vertical layout): Resizable based on height
 			const height = rect.bottom - rect.top;
-			const toPercent = (pixels: number) => (pixels / (height > 0 ? height : 15)) * 100;
+			const toPercent = (pixels: number) => (pixels / height) * 100;
 			return {
-				minSize: toPercent(45), // ~ 3
-				defaultSize: toPercent(450), // ~ 30
-				maxSize: toPercent(450) // ~ 30
+				minSize: toPercent(45),
+				defaultSize: toPercent(450),
+				maxSize: toPercent(450)
 			};
 		},
 		[isMd],

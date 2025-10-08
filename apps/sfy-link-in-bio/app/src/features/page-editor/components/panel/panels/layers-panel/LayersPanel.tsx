@@ -20,6 +20,7 @@ import { mq, useCurrentPlan, useMediaQuery } from '@/hooks';
 import { cn } from '@/lib';
 import { useEditorBreakpoint } from '../../../../hooks';
 import { TPageEditor } from '../../../../lib';
+import { MobileNavPanel } from '../nav-panel';
 import { AddLayerButton } from './AddLayerButton';
 import { LayerItem } from './LayerItem';
 import { PanelHeader } from './PanelHeader';
@@ -62,23 +63,23 @@ export const LayersPanel: React.FC<TLayersPanelProps> = (props) => {
 			// Desktop (horizontal layout): Resizable based on width
 			if (isMd) {
 				const width = rect.right - rect.left;
-				const toPercent = (pixels: number) => (pixels / (width > 0 ? width : 15)) * 100;
+				const toPercent = (pixels: number) => (pixels / width) * 100;
 				return {
 					collapsedSize: undefined,
-					minSize: toPercent(150), // ~ 10
-					defaultSize: toPercent(225), // ~ 15
-					maxSize: toPercent(300) // ~ 20
+					minSize: toPercent(150),
+					defaultSize: toPercent(225),
+					maxSize: toPercent(300)
 				};
 			}
 
-			// Mobile (vertical layout): Fixed height for navbar with icons
-			const height = rect.bottom - rect.top;
-			const toPercent = (pixels: number) => (pixels / (height > 0 ? height : 15)) * 100;
+			// Mobile (vertical layout): Resizable based on height
+			const height = rect.bottom - rect.top - MobileNavPanel.height;
+			const toPercent = (pixels: number) => (pixels / height) * 100;
 			return {
-				collapsedSize: toPercent(48), // ~ 3
-				minSize: toPercent(120), // ~ 8
-				defaultSize: toPercent(225), // ~ 15
-				maxSize: toPercent(600) // ~ 40
+				collapsedSize: toPercent(47),
+				minSize: toPercent(120),
+				defaultSize: toPercent(225),
+				maxSize: toPercent(600)
 			};
 		},
 		[isMd],
