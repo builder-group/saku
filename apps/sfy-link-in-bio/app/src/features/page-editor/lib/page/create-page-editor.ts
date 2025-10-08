@@ -544,6 +544,12 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 						usedHashes.add(getFontHash(token.value));
 						break;
 					}
+					case 'paint': {
+						if (token.value.type === 'image' && token.value.hash != null) {
+							usedHashes.add(token.value.hash);
+						}
+						break;
+					}
 					default:
 					// do nothing
 				}
