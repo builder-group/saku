@@ -1937,11 +1937,6 @@ export interface operations {
                         mimeType: string;
                         /** @example 1024000 */
                         fileSize: number;
-                        /**
-                         * @example IMAGE
-                         * @enum {string}
-                         */
-                        contentType: "IMAGE" | "VIDEO" | "FILE";
                     }[];
                 };
             };
@@ -2024,11 +2019,8 @@ export interface operations {
                         resourceUrl: string;
                         /** @example product-1.jpg */
                         filename: string;
-                        /**
-                         * @example IMAGE
-                         * @enum {string}
-                         */
-                        contentType: "IMAGE" | "VIDEO" | "FILE";
+                        /** @example image/jpeg */
+                        mimeType: string;
                     }[];
                 };
             };

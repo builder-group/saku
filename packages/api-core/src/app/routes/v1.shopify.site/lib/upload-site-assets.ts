@@ -5,7 +5,7 @@ import { fetchClient } from '@/environment';
 import {
 	createFiles,
 	createStagedUploads,
-	mapContentTypeToResource,
+	mapMimeTypeToResource,
 	TStagedUploadsCreateSuccess
 } from '@/lib';
 
@@ -28,7 +28,7 @@ export async function uploadSiteAssets(
 			assets.map((asset) => ({
 				filename: asset.fileName ?? `asset-${asset.hash}`,
 				mimeType: asset.contentType,
-				resource: mapContentTypeToResource(asset.contentType),
+				resource: mapMimeTypeToResource(asset.contentType),
 				fileSize: asset.size?.toString()
 			})),
 			{ shopId, accessToken }
@@ -98,7 +98,7 @@ export async function uploadSiteAssets(
 					asset.type === 'image'
 						? ((asset as TImageAsset).altText ?? asset.fileName ?? `Asset ${asset.hash}`)
 						: (asset.fileName ?? `Asset ${asset.hash}`),
-				contentType: mapContentTypeToResource(asset.contentType),
+				contentType: mapMimeTypeToResource(asset.contentType),
 				originalSource: target.resourceUrl
 			};
 		}),

@@ -6,7 +6,7 @@ import {
 	createStagedUploads,
 	getFiles,
 	getShopifyOfflineAccessToken,
-	mapContentTypeToResource,
+	mapMimeTypeToResource,
 	TFileCreateSuccess,
 	verifyShopifySession
 } from '@/lib';
@@ -23,7 +23,7 @@ router.openapi(CreateUploadTargetsRoute, async (c) => {
 			files.map((file) => ({
 				filename: file.filename,
 				mimeType: file.mimeType,
-				resource: mapContentTypeToResource(file.contentType),
+				resource: mapMimeTypeToResource(file.mimeType),
 				fileSize: file.fileSize.toString()
 			})),
 			{ shopId, accessToken }
@@ -63,7 +63,7 @@ router.openapi(SubmitUploadedFilesRoute, async (c) => {
 			files.map((file) => ({
 				filename: file.filename,
 				alt: file.filename,
-				contentType: mapContentTypeToResource(file.contentType),
+				contentType: mapMimeTypeToResource(file.mimeType),
 				originalSource: file.resourceUrl
 			})),
 			{ shopId, accessToken }

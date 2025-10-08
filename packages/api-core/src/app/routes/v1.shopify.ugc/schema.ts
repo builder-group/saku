@@ -21,8 +21,7 @@ export const CreateUploadTargetsRoute = createRoute({
 								z.object({
 									filename: z.string().min(1).openapi({ example: 'product-image.jpg' }),
 									mimeType: z.string().min(1).openapi({ example: 'image/jpeg' }),
-									fileSize: z.number().int().positive().openapi({ example: 1024000 }),
-									contentType: z.enum(['IMAGE', 'VIDEO', 'FILE']).openapi({ example: 'IMAGE' })
+									fileSize: z.number().int().positive().openapi({ example: 1024000 })
 								})
 							)
 							.min(1)
@@ -80,7 +79,7 @@ export const SubmitUploadedFilesRoute = createRoute({
 										example: 'https://cdn.shopify.com/s/files/1/0123/4567/files/product-1.jpg'
 									}),
 									filename: z.string().min(1).openapi({ example: 'product-1.jpg' }),
-									contentType: z.enum(['IMAGE', 'VIDEO', 'FILE']).openapi({ example: 'IMAGE' })
+									mimeType: z.string().min(1).openapi({ example: 'image/jpeg' })
 								})
 							)
 							.min(1)

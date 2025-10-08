@@ -7,7 +7,7 @@ import { createShopifyTokenMiddleware } from './middleware';
 export async function uploadFiles(
 	config: TUploadFilesConfig
 ): Promise<TResult<TUploadFilesSuccess, TError>> {
-	const { files, contentType, shopify } = config;
+	const { files, shopify } = config;
 	const idToken = await shopify.idToken();
 
 	if (!files.length) {
@@ -22,8 +22,7 @@ export async function uploadFiles(
 				files: files.map((file) => ({
 					filename: file.name,
 					mimeType: file.type,
-					fileSize: file.size,
-					contentType
+					fileSize: file.size
 				}))
 			},
 			{
@@ -91,7 +90,7 @@ export async function uploadFiles(
 				uploadId: uploadedFile.uploadId,
 				filename: uploadedFile.file.name,
 				resourceUrl: uploadedFile.target.resourceUrl,
-				contentType
+				mimeType: uploadedFile.file.type
 			}))
 		},
 		{
@@ -128,7 +127,6 @@ export async function uploadFiles(
 
 export interface TUploadFilesConfig {
 	files: File[];
-	contentType: 'IMAGE' | 'VIDEO' | 'FILE';
 	shopify: ShopifyGlobal;
 }
 

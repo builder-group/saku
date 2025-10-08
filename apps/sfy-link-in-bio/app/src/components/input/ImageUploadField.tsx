@@ -27,7 +27,6 @@ export const ImageUploadField: React.FC<TImageUploadFieldProps> = (props) => {
 
 			const result = await uploadFiles({
 				files: [file],
-				contentType: 'IMAGE',
 				shopify
 			});
 			if (result.isErr()) {

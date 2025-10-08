@@ -38,7 +38,7 @@ const Page: React.FC = () => {
 		}
 
 		// Success - redirect to onboarding
-		shopifyBridge.toast.show('Settings reset successfully!');
+		shopifyBridge.toast.show('Settings reset successfully! Redirecting to onboarding...');
 		await navigate('/app/onboarding');
 		shopifyBridge.modal.hide(ResetWorkspaceConfirmationModal.modalId);
 		setIsResetting(false);

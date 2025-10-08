@@ -6,6 +6,7 @@ export * from './create-shopify-admin-app-url';
 export * from './delete-url-redirect';
 export * from './get-storefront-token';
 export * from './is-url-redirect-path-reserved';
+export * from './map-mime-type-to-resource';
 export * from './remove-app-proxy-redirects';
 export * from './theme';
 export * from './update-url-redirect';

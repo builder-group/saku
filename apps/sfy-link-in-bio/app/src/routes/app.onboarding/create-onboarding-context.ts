@@ -182,7 +182,8 @@ export function createOnboardingContext(
 					displayName: 'My Bio Page',
 					content: currentStep.site as any,
 					createRedirect: true,
-					overrideRedirect: shouldOverrideRedirect
+					overrideRedirect: shouldOverrideRedirect,
+					uploadAssets: true
 				},
 				{
 					requestMiddlewares: [createShopifyTokenMiddleware(this.shopify)]
@@ -220,7 +221,8 @@ export function createOnboardingContext(
 					displayName: 'My Bio Page',
 					content: siteContent as any,
 					createRedirect: true,
-					overrideRedirect: shouldOverrideRedirect
+					overrideRedirect: shouldOverrideRedirect,
+					uploadAssets: false
 				},
 				{
 					requestMiddlewares: [createShopifyTokenMiddleware(this.shopify)]
