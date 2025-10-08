@@ -5,7 +5,7 @@ import { useAppBridge } from '@shopify/app-bridge-react';
 import { Button } from '@shopify/polaris';
 import React from 'react';
 import { useSearchParams } from 'react-router';
-import { Err, Ok } from 'tuple-result';
+import { Err, Ok, unwrapOrNull } from 'tuple-result';
 import { AppContext } from '@/.server/environment';
 import {
 	AccordionSection,
@@ -14,9 +14,10 @@ import {
 	PricingCard,
 	useCrisp
 } from '@/components';
-import { appConfig } from '@/environment';
+import { appConfig, coreApiClient } from '@/environment';
 import {
 	AppError,
+	createShopifyTokenMiddleware,
 	getMantleClient,
 	isMantleError,
 	resultLoader,
@@ -26,6 +27,7 @@ import {
 
 const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 	Success: ({ data }) => {
+		const { shouldTestCharge } = data;
 		const { client } = useMantle();
 		const crisp = useCrisp();
 		const shopifyBridge = useAppBridge();
@@ -57,7 +59,11 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 						planId: plan.id,
 						trialDays: plan.trialDays,
 						discountId: discount?.id,
-						returnUrl: '/app/settings/plans'
+						returnUrl: '/app/settings/plans',
+						// @ts-expect-error -- Supported by API but not client
+						// https://appapi.heymantle.dev/reference/post_subscriptions
+						// https://github.com/Hey-Mantle/mantle-client/blob/main/src/index.ts
+						test: shouldTestCharge
 					});
 					if (isMantleError(subscription)) {
 						showShopifyAppErrorToast(
@@ -317,6 +323,7 @@ export default Page;
 export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async ({ context }) => {
 	const {
 		shopify: {
+			sessionToken,
 			admin: { session }
 		}
 	} = context.get(AppContext);
@@ -328,6 +335,13 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 		}).toArray();
 	}
 
+	const isPartnerDevelopment =
+		unwrapOrNull(
+			await coreApiClient.get('/v1/shopify/shop/plan', {
+				requestMiddlewares: [createShopifyTokenMiddleware(sessionToken)]
+			})
+		)?.data.plan.isPartnerDevelopment ?? false;
+
 	const mantleClient = getMantleClient(customerApiToken);
 	const mantleCustomer = await mantleClient.getCustomer();
 	if (isMantleError(mantleCustomer)) {
@@ -338,61 +352,60 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 	}
 
 	// Map Mantle plans to our display format
-	const mappedPlans = mantleCustomer.plans.map((mantlePlan) => {
-		const isCurrentPlan = mantleCustomer.subscription?.plan?.id === mantlePlan.id;
-		const planName = mantlePlan.name.toLowerCase();
+	const plans = mantleCustomer.plans
+		.map((mantlePlan) => {
+			const isCurrentPlan = mantleCustomer.subscription?.plan?.id === mantlePlan.id;
+			const planName = mantlePlan.name.toLowerCase();
 
-		// Enrich plans with data that can not be stored in Mantle
-		let features: TFeature[] = [];
-		let description: string = '';
-		switch (planName) {
-			case 'free':
-				description = 'Perfect for getting started';
-				features = [
-					{ description: 'Link-in-bio on your store domain', included: true },
-					{ description: 'Basic customization', included: true },
-					{ description: 'Analytics tracking', included: true },
-					{ description: 'No watermark', included: false },
-					{ description: 'Priority support', included: false },
-					{ description: 'Help sustain Saku', included: false }
-				];
-				break;
-			case 'awesome':
-				description = 'For growing businesses';
-				features = [
-					{ description: 'Link-in-bio on your store domain', included: true },
-					{ description: 'Advanced customization', included: true },
-					{ description: 'Analytics tracking', included: true },
-					{ description: 'No watermark', included: true },
-					{ description: 'Priority support', included: true },
-					{ description: 'Help sustain Saku', included: true }
-				];
-				break;
-			default:
-			// do nothing
-		}
+			// Enrich plans with data that can not be stored in Mantle
+			let features: TFeature[] = [];
+			let description: string = '';
+			switch (planName) {
+				case 'free':
+					description = 'Perfect for getting started';
+					features = [
+						{ description: 'Link-in-bio on your store domain', included: true },
+						{ description: 'Basic customization', included: true },
+						{ description: 'Analytics tracking', included: true },
+						{ description: 'No watermark', included: false },
+						{ description: 'Priority support', included: false },
+						{ description: 'Help sustain Saku', included: false }
+					];
+					break;
+				case 'awesome':
+					description = 'For growing businesses';
+					features = [
+						{ description: 'Link-in-bio on your store domain', included: true },
+						{ description: 'Advanced customization', included: true },
+						{ description: 'Analytics tracking', included: true },
+						{ description: 'No watermark', included: true },
+						{ description: 'Priority support', included: true },
+						{ description: 'Help sustain Saku', included: true }
+					];
+					break;
+				default:
+				// do nothing
+			}
 
-		return {
-			id: mantlePlan.id,
-			name: mantlePlan.name,
-			description,
-			price: new Intl.NumberFormat('en-US', {
-				style: 'currency',
-				currency: (mantlePlan.presentmentCurrencyCode as unknown as string) || 'USD'
-			}).format(mantlePlan.presentmentAmount),
-			priceAmount: mantlePlan.presentmentAmount,
-			trialDays: mantlePlan.trialDays,
-			features,
-			isRecommended: planName === 'awesome',
-			isCurrentPlan,
-			mantlePlan
-		};
-	});
+			return {
+				id: mantlePlan.id,
+				name: mantlePlan.name,
+				description,
+				price: new Intl.NumberFormat('en-US', {
+					style: 'currency',
+					currency: mantlePlan.presentmentCurrencyCode.toString()
+				}).format(mantlePlan.presentmentAmount),
+				priceAmount: mantlePlan.presentmentAmount,
+				trialDays: mantlePlan.trialDays,
+				features,
+				isRecommended: planName === 'awesome',
+				isCurrentPlan,
+				mantlePlan
+			};
+		})
+		.sort((a, b) => a.priceAmount - b.priceAmount);
 
-	// Sort plans by price (cheapest to most expensive)
-	const plans = mappedPlans.sort((a, b) => a.priceAmount - b.priceAmount);
-
-	return Ok({ plans }).toArray();
+	return Ok({ plans, shouldTestCharge: isPartnerDevelopment }).toArray();
 });
 
 interface TErrorLoaderData {
@@ -402,6 +415,7 @@ interface TErrorLoaderData {
 
 interface TSuccessLoaderData {
 	plans: TPlan[];
+	shouldTestCharge: boolean;
 }
 
 interface TPlan {
