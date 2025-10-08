@@ -30,7 +30,7 @@ import {
 } from '@repo/editor';
 import { TLinkPopData } from './parse-linkpop-html';
 
-export function transformLinkpopToSite(linkpopData: TLinkPopData): TSite {
+export function parseLinkpopData(linkpopData: TLinkPopData): TSite {
 	const children: (TAboutNode | TLinkNode | TTextNode)[] = [];
 	const assets: TAsset[] = [];
 	const page = linkpopData.page;

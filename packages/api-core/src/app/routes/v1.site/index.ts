@@ -1,15 +1,16 @@
-import { toFlatSite } from '@repo/editor';
+import { parseUrl } from '@repo/editor';
 import { AppError } from '@repo/hono-utils';
 import { and, eq, sql } from 'drizzle-orm';
 import { router } from '@/app/router';
 import { db, siteTable, workspaceTable } from '@/environment';
 import { refreshIntegrations, verifyAccessSecret } from '@/lib';
-import { fetchExternalHtml, parseLinkpopHtml, transformLinkpopToSite } from './lib';
+import { parseLinkpopSite, parseSakuSite } from './lib';
 import {
 	GetSiteByWorkspaceAndHandleRoute,
 	GetSiteRoute,
 	ParseExternalSiteRoute,
 	TFlatSiteContentDto,
+	TParsedExternalSite,
 	UpdateSiteNodeRoute
 } from './schema';
 
@@ -126,10 +127,8 @@ router.openapi(UpdateSiteNodeRoute, async (c) => {
 router.openapi(ParseExternalSiteRoute, async (c) => {
 	const { url: urlString } = c.req.valid('query');
 
-	let url: URL;
-	try {
-		url = new URL(urlString);
-	} catch (error) {
+	const url = parseUrl(urlString);
+	if (url == null) {
 		throw new AppError('#ERR_INVALID_URL_FORMAT', 400, {
 			title: 'Invalid URL format',
 			detail: 'The provided URL is not in a valid format'
@@ -137,30 +136,37 @@ router.openapi(ParseExternalSiteRoute, async (c) => {
 	}
 
 	const hostname = url.hostname.toLowerCase();
-	const pathname = url.pathname;
 
 	switch (hostname) {
 		case 'linkpop.com':
 		case 'www.linkpop.com': {
-			const handle = pathname.substring(1);
-			const html = await fetchExternalHtml(`https://linkpop.com/${handle}`);
-			const parsedData = await parseLinkpopHtml(html);
-			const site = transformLinkpopToSite(parsedData);
-
+			const { handle, content } = await parseLinkpopSite(url);
 			return c.json(
 				{
 					provider: 'linkpop',
-					handle: handle,
-					content: toFlatSite(site) as TFlatSiteContentDto
-				},
+					handle,
+					content: content as TFlatSiteContentDto
+				} satisfies TParsedExternalSite,
 				200
 			);
 		}
-
+		case 'saku.so':
+		case 'www.saku.so': {
+			const { workspaceHandle, siteHandle, content } = await parseSakuSite(url);
+			return c.json(
+				{
+					provider: 'saku',
+					workspaceHandle,
+					siteHandle,
+					content: content as TFlatSiteContentDto
+				} satisfies TParsedExternalSite,
+				200
+			);
+		}
 		default:
 			throw new AppError('#ERR_UNSUPPORTED_PROVIDER', 400, {
 				title: 'Unsupported provider',
-				detail: `Provider ${hostname} is not supported. Currently supported: linkpop.com`
+				detail: `Provider ${hostname} is not supported. Currently supported: linkpop.com, saku.so`
 			});
 	}
 });

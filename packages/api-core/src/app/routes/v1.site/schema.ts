@@ -109,6 +109,23 @@ export const UpdateSiteNodeRoute = createRoute({
 	}
 });
 
+export const SParsedExternalSite = z
+	.discriminatedUnion('provider', [
+		z.object({
+			provider: z.literal('linkpop'),
+			handle: z.string().openapi({ example: 'johndoe' }),
+			content: SFlatSiteContentDto
+		}),
+		z.object({
+			provider: z.literal('saku'),
+			workspaceHandle: z.string().openapi({ example: 'saku-demo' }),
+			siteHandle: z.string().openapi({ example: 'bio' }),
+			content: SFlatSiteContentDto
+		})
+	])
+	.openapi('ParsedExternalSite');
+export type TParsedExternalSite = z.infer<typeof SParsedExternalSite>;
+
 export const ParseExternalSiteRoute = createRoute({
 	method: 'get',
 	path: '/v1/site/parse/external',
@@ -124,13 +141,7 @@ export const ParseExternalSiteRoute = createRoute({
 		})
 	},
 	responses: {
-		200: JsonSuccessResponse(
-			z.object({
-				provider: z.string().openapi({ example: 'linkpop' }),
-				handle: z.string().openapi({ example: 'johndoe' }),
-				content: SFlatSiteContentDto
-			})
-		),
+		200: JsonSuccessResponse(SParsedExternalSite),
 		400: BadRequestResponse
 	}
 });
