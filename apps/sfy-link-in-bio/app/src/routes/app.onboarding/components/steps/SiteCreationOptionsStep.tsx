@@ -62,6 +62,10 @@ export const SiteCreationOptionsStep: React.FC<TSiteCreationOptionsStepProps> = 
 					{
 						value: 'linkpop',
 						label: 'Import from LinkPop'
+					},
+					{
+						value: 'saku',
+						label: 'Import from Saku'
 					}
 				]}
 				selected={selected}

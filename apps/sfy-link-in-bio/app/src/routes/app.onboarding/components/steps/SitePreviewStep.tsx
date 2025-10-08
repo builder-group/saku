@@ -13,12 +13,12 @@ import {
 import type { TOnboardingContext } from '../../create-onboarding-context';
 import { StepLayout } from '../StepLayout';
 
-export const LinkpopPreviewStep: React.FC<TLinkpopPreviewStepProps> = (props) => {
+export const SitePreviewStep: React.FC<TSitePreviewStepProps> = (props) => {
 	const { onboardingContext } = props;
 	const navigate = useNavigate();
 
 	const resolvedSite = useCompute(onboardingContext.stepr.current, ({ value: currentStep }) => {
-		return currentStep.type === 'linkpop-preview' && currentStep.site
+		return currentStep.type === 'site-preview' && currentStep.site
 			? unwrapOrNull(resolveSite(new StaticSiteResolveContext(currentStep.site)))
 			: null;
 	});
@@ -44,7 +44,7 @@ export const LinkpopPreviewStep: React.FC<TLinkpopPreviewStepProps> = (props) =>
 		setIsLoading(true);
 		setError(null);
 
-		const result = await onboardingContext.continueFromLinkpopPreview();
+		const result = await onboardingContext.continueFromSitePreview();
 		if (result.isErr()) {
 			setError(result.error);
 			setIsLoading(false);
@@ -109,6 +109,6 @@ export const LinkpopPreviewStep: React.FC<TLinkpopPreviewStepProps> = (props) =>
 	);
 };
 
-interface TLinkpopPreviewStepProps {
+interface TSitePreviewStepProps {
 	onboardingContext: TOnboardingContext;
 }

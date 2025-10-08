@@ -13,9 +13,10 @@ import { THeadersFunction } from '@/types';
 import {
 	AccountConnectionStep,
 	HandleStep,
-	LinkpopPreviewStep,
 	LinkpopUrlStep,
+	SakuUrlStep,
 	SiteCreationOptionsStep,
+	SitePreviewStep,
 	ThemeStep,
 	WelcomeStep
 } from './components';
@@ -97,8 +98,10 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 				return <SiteCreationOptionsStep onboardingContext={onboardingContext} />;
 			case 'linkpop-url':
 				return <LinkpopUrlStep onboardingContext={onboardingContext} />;
-			case 'linkpop-preview':
-				return <LinkpopPreviewStep onboardingContext={onboardingContext} />;
+			case 'saku-url':
+				return <SakuUrlStep onboardingContext={onboardingContext} />;
+			case 'site-preview':
+				return <SitePreviewStep onboardingContext={onboardingContext} />;
 			case 'theme':
 				return <ThemeStep onboardingContext={onboardingContext} />;
 			default:

@@ -1,10 +1,12 @@
 import { shortId, sleep } from '@blgc/utils';
 import { TFlatSite, TTheme } from '@repo/editor';
 import type { ShopifyGlobal } from '@shopify/app-bridge-types';
+import { RequestError } from 'feature-fetch';
 import { Err, Ok, TResult } from 'tuple-result';
 import { coreApiClient } from '@/environment';
 import { applyThemeToSite } from '@/features/page-editor';
 import { createShopifyTokenMiddleware, createStepr, Crisp, type TStepr } from '@/lib';
+import { externalSiteProviderMap, TExternalSiteProvider } from './external-site-provider';
 
 export function createOnboardingContext(
 	config: TCreateOnboardingContextConfig
@@ -122,52 +124,64 @@ export function createOnboardingContext(
 					this.stepr.goTo({ type: 'linkpop-url' });
 					break;
 				}
+				case 'saku': {
+					this.stepr.goTo({ type: 'saku-url' });
+					break;
+				}
 			}
 		},
 
-		async continueFromLinkpopUrl(handle) {
-			const fullUrl = `https://linkpop.com/${handle.trim()}`;
-
+		async continueFromExternalSiteUrl(provider, url) {
 			const [isParseOk, parseErr, parseResponse] = await coreApiClient.get(
 				'/v1/site/parse/external',
 				{
 					queryParams: {
-						url: fullUrl
+						url: url.trim()
 					},
 					requestMiddlewares: [createShopifyTokenMiddleware(this.shopify)]
 				}
 			);
 			if (!isParseOk) {
-				switch (parseErr.code) {
-					case '#ERR_LINKPOP_DATA_NOT_FOUND':
-					case '#ERR_EXTERNAL_HTML':
+				const status = parseErr instanceof RequestError ? parseErr.status : undefined;
+				switch (status) {
+					case 404:
 						return Err({
-							message: 'Could not find your LinkPop page. Please check the handle and try again.',
+							message: `Could not find ${externalSiteProviderMap[provider].name} page. Please check the handle and try again.`,
 							isNotFound: true
 						});
 					default:
 						return Err({
-							message: 'Failed to parse your LinkPop page.',
+							message: `Failed to parse your ${externalSiteProviderMap[provider].name} page.`,
 							isNotFound: false
 						});
 				}
 			}
 
-			this.stepr.current.set({
-				type: 'linkpop-url',
-				handle: handle.trim()
-			});
+			switch (parseResponse.data.provider) {
+				case 'linkpop': {
+					this.stepr.goTo({ type: 'linkpop-url', handle: parseResponse.data.handle });
+					break;
+				}
+				case 'saku': {
+					this.stepr.current.set({
+						type: 'saku-url',
+						workspaceHandle: parseResponse.data.workspaceHandle,
+						siteHandle: parseResponse.data.siteHandle
+					});
+					break;
+				}
+			}
 			this.stepr.goTo({
-				type: 'linkpop-preview',
-				url: fullUrl,
+				type: 'site-preview',
+				url: url.trim(),
 				site: parseResponse.data.content as unknown as TFlatSite
 			});
 			return Ok(undefined);
 		},
 
-		async continueFromLinkpopPreview() {
+		async continueFromSitePreview() {
 			const currentStep = this.stepr.current.get();
-			if (currentStep.type !== 'linkpop-preview' || currentStep.site == null) {
+			if (currentStep.type !== 'site-preview') {
 				return Err('Invalid step');
 			}
 
@@ -309,8 +323,11 @@ export interface TOnboardingContext {
 		options?: { override?: boolean }
 	) => Promise<TResult<void, THandleStepError>>;
 	continueFromSiteCreationOptions: (option: TSiteCreationOption) => void;
-	continueFromLinkpopUrl: (handle: string) => Promise<TResult<void, TLinkpopStepError>>;
-	continueFromLinkpopPreview: () => Promise<TResult<void, string>>;
+	continueFromExternalSiteUrl: (
+		provider: TExternalSiteProvider,
+		url: string
+	) => Promise<TResult<void, TExternalSiteUrlStepError>>;
+	continueFromSitePreview: () => Promise<TResult<void, string>>;
 	continueFromTheme: (selectedTheme: TTheme) => Promise<TResult<void, string>>;
 	complete: () => Promise<void>;
 	goBack: () => void;
@@ -326,13 +343,14 @@ export type TOnboardingStep =
 	  }
 	| { type: 'site-creation-options'; selectedOption?: TSiteCreationOption }
 	| { type: 'linkpop-url'; handle?: string }
-	| { type: 'linkpop-preview'; url?: string; site?: TFlatSite }
+	| { type: 'saku-url'; workspaceHandle?: string; siteHandle?: string }
+	| { type: 'site-preview'; url?: string; site?: TFlatSite }
 	| {
 			type: 'theme';
 			selectedTheme?: TTheme;
 	  };
 
-export type TSiteCreationOption = 'create-new' | 'linkpop';
+export type TSiteCreationOption = 'create-new' | 'linkpop' | 'saku';
 
 export type TTemplate = 'blank';
 
@@ -341,7 +359,7 @@ export interface THandleStepError {
 	canOverrideRedirect: boolean;
 }
 
-export interface TLinkpopStepError {
+export interface TExternalSiteUrlStepError {
 	message: string;
 	isNotFound: boolean;
 }

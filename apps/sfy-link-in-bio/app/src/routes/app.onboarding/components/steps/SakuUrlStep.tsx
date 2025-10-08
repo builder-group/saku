@@ -6,11 +6,13 @@ import { LinkIcon } from '@/components';
 import type { TOnboardingContext } from '../../create-onboarding-context';
 import { StepLayout } from '../StepLayout';
 
-export const LinkpopUrlStep: React.FC<TLinkpopUrlStepProps> = (props) => {
+export const SakuUrlStep: React.FC<TSakuUrlStepProps> = (props) => {
 	const { onboardingContext } = props;
 
 	const initialHandle = useCompute(onboardingContext.stepr.current, ({ value: currentStep }) => {
-		return currentStep.type === 'linkpop-url' && currentStep.handle ? currentStep.handle : '';
+		return currentStep.type === 'saku-url' && currentStep.workspaceHandle && currentStep.siteHandle
+			? `${currentStep.workspaceHandle}/${currentStep.siteHandle}`
+			: '';
 	});
 	const [displayHandle, setDisplayHandle] = React.useState(initialHandle);
 	const [isLoading, setIsLoading] = React.useState(false);
@@ -31,17 +33,22 @@ export const LinkpopUrlStep: React.FC<TLinkpopUrlStepProps> = (props) => {
 		const pastedText = e.clipboardData.getData('text');
 
 		const url = parseUrl(pastedText);
-		if (url == null || url.hostname !== 'linkpop.com') {
+		if (url == null || url.hostname !== 'saku.so') {
 			return;
 		}
 
 		const pathSegments = url.pathname.split('/').filter(Boolean);
-		const handle = pathSegments[0];
-		if (handle == null) {
+		if (pathSegments.length < 3 || pathSegments[0] !== 'w') {
 			return;
 		}
 
-		setDisplayHandle(handle);
+		const workspaceHandle = pathSegments[1];
+		const siteHandle = pathSegments[2];
+		if (workspaceHandle == null || siteHandle == null) {
+			return;
+		}
+
+		setDisplayHandle(`${workspaceHandle}/${siteHandle}`);
 		e.preventDefault();
 	}, []);
 
@@ -49,18 +56,29 @@ export const LinkpopUrlStep: React.FC<TLinkpopUrlStepProps> = (props) => {
 		setIsLoading(true);
 		setError(null);
 
-		const handle = displayHandle.trim();
+		// Parse workspace/site from the handle input
+		const trimmedHandle = displayHandle.trim();
+		const parts = trimmedHandle.split('/');
+		if (parts.length !== 2) {
+			setError({
+				message: 'Please enter the format: workspace/site (e.g., saku-demo/bio)',
+				showFallback: false
+			});
+			setIsLoading(false);
+			return;
+		}
+		const [workspaceHandle, siteHandle] = parts;
 
 		const [isContinueOk, continueErr] = await onboardingContext.continueFromExternalSiteUrl(
-			'linkpop',
-			`https://linkpop.com/${handle}`
+			'saku',
+			`https://saku.so/w/${workspaceHandle}/${siteHandle}`
 		);
 		if (!isContinueOk) {
 			const newRetryCount = retryCount + 1;
 			setRetryCount(newRetryCount);
 			setError({
 				message: continueErr.message,
-				// Show fallback options after 3 attempts or LinkPop is not found (404)
+				// Show fallback options after 3 attempts or Saku site is not found (404)
 				showFallback: continueErr.isNotFound || newRetryCount >= 3
 			});
 			setIsLoading(false);
@@ -84,13 +102,13 @@ export const LinkpopUrlStep: React.FC<TLinkpopUrlStepProps> = (props) => {
 	return (
 		<StepLayout
 			icon={<LinkIcon className="size-4" />}
-			title="Import from LinkPop"
-			description="Enter your LinkPop handle to import your existing page"
+			title="Import from Saku"
+			description="Enter your Saku workspace and site handles to import your existing page"
 			contentClassName="flex flex-col gap-6"
 		>
 			<div className="flex">
 				<div className="flex items-center rounded-l-[var(--p-border-radius-200)] border-y border-l border-[var(--p-color-input-border)] bg-neutral-100 px-3 text-[var(--p-color-text-subdued)]">
-					linkpop.com/
+					saku.so/w/
 				</div>
 				<div className="relative flex flex-1 items-center">
 					<input
@@ -98,7 +116,7 @@ export const LinkpopUrlStep: React.FC<TLinkpopUrlStepProps> = (props) => {
 						value={displayHandle}
 						onChange={handleChange}
 						onPaste={handleUrlPaste}
-						placeholder="your-handle"
+						placeholder="workspace/site"
 						className="relative z-20 w-full appearance-none border-none bg-transparent px-3 py-2 leading-[var(--p-font-line-height-500)] text-[var(--p-color-text)] outline-none placeholder:text-[var(--p-color-text-subdued)]"
 						autoComplete="off"
 						spellCheck="false"
@@ -115,10 +133,10 @@ export const LinkpopUrlStep: React.FC<TLinkpopUrlStepProps> = (props) => {
 
 			{error?.showFallback && (
 				<Banner tone="warning">
-					<p className="text-left">LinkPop page not found. You can:</p>
+					<p className="text-left">Saku page not found. You can:</p>
 					<ul className="mt-2 list-inside list-disc text-left">
-						<li>Check the handle and try again</li>
-						<li>Use a different handle</li>
+						<li>Check the workspace/site format and try again</li>
+						<li>Use different handles</li>
 						<li>Start with a blank template</li>
 					</ul>
 				</Banner>
@@ -168,6 +186,6 @@ export const LinkpopUrlStep: React.FC<TLinkpopUrlStepProps> = (props) => {
 	);
 };
 
-interface TLinkpopUrlStepProps {
+interface TSakuUrlStepProps {
 	onboardingContext: TOnboardingContext;
 }
