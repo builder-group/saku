@@ -27,6 +27,7 @@ export const appConfig = {
 	env,
 	packageVersion,
 	version: `v${packageVersion}${env.slice(0, 1)}`,
+	localStorageKey: (key: string) => `sfy-saku-link-in-bio_${key}`,
 	distribution: {
 		shopify: 'https://apps.shopify.com/saku-bio-link'
 	},

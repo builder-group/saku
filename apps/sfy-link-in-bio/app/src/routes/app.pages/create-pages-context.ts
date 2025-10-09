@@ -2,9 +2,10 @@ import { shortId } from '@blgc/utils';
 import { TFlatSite, themes, TTheme } from '@repo/editor';
 import type { ShopifyGlobal } from '@shopify/app-bridge-types';
 import { RequestError } from 'feature-fetch';
-import { createState, TState } from 'feature-state';
+import { withLocalStorage } from 'feature-react';
+import { createState, TPersistFeature, TState } from 'feature-state';
 import { Err, Ok, TResult } from 'tuple-result';
-import { coreApiClient } from '@/environment';
+import { appConfig, coreApiClient } from '@/environment';
 import { applyThemeToSite } from '@/features/page-editor';
 import { AppError, createShopifyTokenMiddleware, showShopifyAppErrorToast } from '@/lib';
 
@@ -30,7 +31,10 @@ export function createPagesContext(config: TCreatePagesContextConfig): TPagesCon
 		queryValue: createState(''),
 		filters: createState<TFilters>(defaultAllView.filters),
 		sortSelected: createState(defaultAllView.sortSelected),
-		viewTabs: createState<TView[]>([defaultAllView]),
+		viewTabs: withLocalStorage(
+			createState<TView[]>([defaultAllView]),
+			appConfig.localStorageKey('pages_view-tabs')
+		),
 		selectedView: createState(0),
 
 		getMainSiteId() {
@@ -200,6 +204,9 @@ export function createPagesContext(config: TCreatePagesContextConfig): TPagesCon
 			this.selectView(this.viewTabs._v.length - 1);
 			return true;
 		},
+		async persistViews() {
+			return await this.viewTabs.persist();
+		},
 
 		clearFilters() {
 			this.filters.set({
@@ -306,7 +313,7 @@ export interface TPagesContext {
 	queryValue: TState<string, []>;
 	filters: TState<TFilters, []>;
 	sortSelected: TState<string[], []>;
-	viewTabs: TState<TView[], []>;
+	viewTabs: TState<TView[], [TPersistFeature]>;
 	selectedView: TState<number, []>;
 
 	getMainSiteId: () => string | null;
@@ -323,6 +330,7 @@ export interface TPagesContext {
 	deleteView: (index: number) => Promise<boolean>;
 	renameView: (index: number, newName: string) => Promise<boolean>;
 	duplicateView: (viewName: string) => Promise<boolean>;
+	persistViews: () => Promise<boolean>;
 
 	clearFilters: () => void;
 
