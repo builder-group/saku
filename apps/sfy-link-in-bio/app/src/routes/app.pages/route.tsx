@@ -26,7 +26,6 @@ import {
 	usePageEditorModal
 } from '@/components';
 import { appConfig, coreApiClient } from '@/environment';
-import { useCurrentPlan } from '@/hooks';
 import { createShopifyTokenMiddleware, resultLoader, withResultLoader } from '@/lib';
 import { THeadersFunction } from '@/types';
 import { createPagesContext, TTableSite } from './create-pages-context';
@@ -37,7 +36,6 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 		const { sites } = data;
 
 		const revalidator = useRevalidator();
-		const currentPlan = useCurrentPlan();
 		const shopifyBridge = useAppBridge();
 
 		const { cx: pageEditorModalCx, Modal: PageEditorModal } = usePageEditorModal({
@@ -67,27 +65,22 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 		const sortSelected = useFeatureState(cx.sortSelected);
 		const selectedView = useFeatureState(cx.selectedView);
 
-		const oldestSiteId = useCompute(cx.queryValue, () => cx.getOldestSiteId(), [cx]);
+		const mainSiteId = React.useMemo(() => cx.getMainSiteId(), [cx]);
 		const filteredSites = useCombinedCompute(
-			[cx.queryValue, cx.filterName, cx.filterSlug, cx.filterStatus, cx.sortSelected],
-			([
-				{ value: queryValue },
-				{ value: filterName },
-				{ value: filterSlug },
-				{ value: filterStatus },
-				{ value: sortSelected }
-			]) => cx.getFilteredSites({ queryValue, filterName, filterSlug, filterStatus, sortSelected }),
+			[cx.queryValue, cx.filters, cx.sortSelected],
+			([{ value: queryValue }, { value: filters }, { value: sortSelected }]) =>
+				cx.getFilteredSites({ queryValue, filters, sortSelected }),
 			[cx]
 		);
 
 		const tabs: TabProps[] = useCompute(
 			cx.viewTabs,
 			({ value }) =>
-				value.map((tab, index) => ({
-					content: tab,
+				value.map((view, index) => ({
+					content: view.name,
 					index,
 					onAction: () => {},
-					id: `${tab}-${index}`,
+					id: `${view.key}-${index}`,
 					isLocked: index === 0,
 					actions:
 						index === 0
@@ -110,17 +103,17 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 				})),
 			[cx]
 		);
-		const filters = useCombinedCompute(
-			[cx.filterName, cx.filterSlug, cx.filterStatus],
-			([{ value: filterName }, { value: filterSlug }, { value: filterStatus }]) => [
+		const filtersConfig = useCompute(
+			cx.filters,
+			({ value: currentFilters }) => [
 				{
 					key: 'name',
 					label: 'Name',
 					filter: (
 						<TextField
 							label="Name"
-							value={filterName}
-							onChange={(value) => cx.filterName.set(value)}
+							value={currentFilters.name}
+							onChange={(value) => cx.filters.set((f) => ({ ...f, name: value }))}
 							autoComplete="off"
 							labelHidden
 						/>
@@ -133,8 +126,8 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 					filter: (
 						<TextField
 							label="Slug"
-							value={filterSlug}
-							onChange={(value) => cx.filterSlug.set(value)}
+							value={currentFilters.slug}
+							onChange={(value) => cx.filters.set((f) => ({ ...f, slug: value }))}
 							autoComplete="off"
 							labelHidden
 						/>
@@ -149,39 +142,91 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 							title="Status"
 							titleHidden
 							choices={[{ label: 'Active', value: 'active' }]}
-							selected={filterStatus}
-							onChange={(value) => cx.filterStatus.set(value)}
+							selected={currentFilters.status}
+							onChange={(value) => cx.filters.set((f) => ({ ...f, status: value }))}
 							allowMultiple
 						/>
+					),
+					shortcut: true
+				},
+				{
+					key: 'created',
+					label: 'Created',
+					filter: (
+						<div className="flex gap-2">
+							<TextField
+								label="From"
+								type="date"
+								value={currentFilters.created?.start ?? ''}
+								onChange={(value) =>
+									cx.filters.set((f) => ({
+										...f,
+										created: {
+											start: value || undefined,
+											end: f.created?.end
+										}
+									}))
+								}
+								autoComplete="off"
+							/>
+							<TextField
+								label="To"
+								type="date"
+								value={currentFilters.created?.end ?? ''}
+								onChange={(value) =>
+									cx.filters.set((f) => ({
+										...f,
+										created: {
+											start: f.created?.start,
+											end: value || undefined
+										}
+									}))
+								}
+								autoComplete="off"
+							/>
+						</div>
 					),
 					shortcut: true
 				}
 			],
 			[cx]
 		);
-		const appliedFilters = useCombinedCompute(
-			[cx.filterName, cx.filterSlug, cx.filterStatus],
-			([{ value: filterName }, { value: filterSlug }, { value: filterStatus }]) => {
+		const appliedFilters = useCompute(
+			cx.filters,
+			({ value: currentFilters }) => {
 				const appliedFilters: IndexFiltersProps['appliedFilters'] = [];
-				if (filterName !== '') {
+				if (currentFilters.name !== '') {
 					appliedFilters.push({
 						key: 'name',
-						label: `Name: ${filterName}`,
-						onRemove: () => cx.filterName.set('')
+						label: `Name: ${currentFilters.name}`,
+						onRemove: () => cx.filters.set((f) => ({ ...f, name: '' }))
 					});
 				}
-				if (filterSlug !== '') {
+				if (currentFilters.slug !== '') {
 					appliedFilters.push({
 						key: 'slug',
-						label: `Slug: ${filterSlug}`,
-						onRemove: () => cx.filterSlug.set('')
+						label: `Slug: ${currentFilters.slug}`,
+						onRemove: () => cx.filters.set((f) => ({ ...f, slug: '' }))
 					});
 				}
-				if (filterStatus.length > 0) {
+				if (currentFilters.status.length > 0) {
 					appliedFilters.push({
 						key: 'status',
 						label: `Status: Active`,
-						onRemove: () => cx.filterStatus.set([])
+						onRemove: () => cx.filters.set((f) => ({ ...f, status: [] }))
+					});
+				}
+				if (currentFilters.created != null) {
+					const label =
+						currentFilters.created.start && currentFilters.created.end
+							? `Created: ${currentFilters.created.start} - ${currentFilters.created.end}`
+							: currentFilters.created.start
+								? `Created: From ${currentFilters.created.start}`
+								: `Created: Until ${currentFilters.created.end}`;
+					appliedFilters.push({
+						key: 'created',
+						label,
+						onRemove: () => cx.filters.set((f) => ({ ...f, created: null }))
 					});
 				}
 				return appliedFilters;
@@ -194,11 +239,24 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 				{ label: 'Name', value: 'name desc', directionLabel: 'Z-A' },
 				{ label: 'Slug', value: 'slug asc', directionLabel: 'A-Z' },
 				{ label: 'Slug', value: 'slug desc', directionLabel: 'Z-A' },
+				{ label: 'Created', value: 'created asc', directionLabel: 'Oldest first' },
+				{ label: 'Created', value: 'created desc', directionLabel: 'Newest first' },
 				{ label: 'Updated', value: 'updated asc', directionLabel: 'Oldest first' },
 				{ label: 'Updated', value: 'updated desc', directionLabel: 'Newest first' }
 			],
 			[]
 		);
+		const primaryAction: IndexFiltersProps['primaryAction'] = React.useMemo(() => {
+			return {
+				type: 'save',
+				onAction: async () => {
+					cx.saveView();
+					return true;
+				},
+				disabled: false,
+				loading: false
+			};
+		}, [cx]);
 
 		// =========================================================================
 		// Events
@@ -210,17 +268,6 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 				pageEditorModalCx.open(site.id, `${site.displayName} (/${site.handle})`);
 			}
 		}, [cx, pageEditorModalCx]);
-
-		const handleFiltersClearAll = React.useCallback(() => {
-			cx.clearAllFilters();
-		}, [cx]);
-
-		const handleCreateNewView = React.useCallback(
-			async (viewName: string) => {
-				return cx.createView(viewName);
-			},
-			[cx]
-		);
 
 		// =========================================================================
 		// UI
@@ -253,12 +300,13 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 									onQueryClear={() => cx.queryValue.set('')}
 									tabs={tabs}
 									selected={selectedView}
-									onSelect={(value) => cx.selectedView.set(value)}
+									onSelect={cx.selectView}
 									canCreateNewView
-									onCreateNewView={handleCreateNewView}
-									filters={filters}
+									onCreateNewView={cx.createView}
+									filters={filtersConfig}
 									appliedFilters={appliedFilters}
-									onClearAll={handleFiltersClearAll}
+									onClearAll={cx.clearFilters}
+									primaryAction={primaryAction}
 									mode={mode}
 									setMode={setMode}
 								/>
@@ -276,7 +324,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 									selectable={false}
 								>
 									{filteredSites.map((siteItem, index) => {
-										const isMain = siteItem.id === oldestSiteId;
+										const isMain = siteItem.id === mainSiteId;
 
 										return (
 											<IndexTable.Row

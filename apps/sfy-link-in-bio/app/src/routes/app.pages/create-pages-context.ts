@@ -11,23 +11,34 @@ import { AppError, createShopifyTokenMiddleware, showShopifyAppErrorToast } from
 export function createPagesContext(config: TCreatePagesContextConfig): TPagesContext {
 	const { sites, shopify } = config;
 
+	const defaultAllView: TView = {
+		name: 'All',
+		key: 'all',
+		filters: {
+			name: '',
+			slug: '',
+			status: [],
+			created: null
+		},
+		sortSelected: ['created desc']
+	};
+
 	return {
 		_shopify: shopify,
+		_sites: sites,
 		isCreatingSite: createState(false),
 		queryValue: createState(''),
-		filterName: createState(''),
-		filterSlug: createState(''),
-		filterStatus: createState<string[]>([]),
-		sortSelected: createState(['updated desc']),
-		viewTabs: createState(['All']),
+		filters: createState<TFilters>(defaultAllView.filters),
+		sortSelected: createState(defaultAllView.sortSelected),
+		viewTabs: createState<TView[]>([defaultAllView]),
 		selectedView: createState(0),
 
-		getOldestSiteId() {
-			if (!sites.length) {
+		getMainSiteId() {
+			if (!this._sites.length) {
 				return null;
 			}
 
-			return sites.reduce((oldest, site) => {
+			return this._sites.reduce((oldest, site) => {
 				return new Date(site.createdAt).getTime() < new Date(oldest.createdAt).getTime()
 					? site
 					: oldest;
@@ -36,12 +47,10 @@ export function createPagesContext(config: TCreatePagesContextConfig): TPagesCon
 		getFilteredSites(options = {}) {
 			const {
 				queryValue = this.queryValue._v,
-				filterName = this.filterName._v,
-				filterSlug = this.filterSlug._v,
-				filterStatus = this.filterStatus._v,
+				filters = this.filters._v,
 				sortSelected = this.sortSelected._v
 			} = options;
-			let filtered = sites;
+			let filtered = this._sites;
 
 			// Search query
 			if (queryValue.trim() !== '') {
@@ -54,8 +63,8 @@ export function createPagesContext(config: TCreatePagesContextConfig): TPagesCon
 			}
 
 			// Filter by name
-			if (filterName.trim() !== '') {
-				const query = filterName.toLowerCase();
+			if (filters.name.trim() !== '') {
+				const query = filters.name.toLowerCase();
 				filtered = filtered.filter((site) => {
 					const displayName = site.displayName?.toLowerCase() ?? '';
 					return displayName.includes(query);
@@ -63,18 +72,30 @@ export function createPagesContext(config: TCreatePagesContextConfig): TPagesCon
 			}
 
 			// Filter by slug
-			if (filterSlug.trim() !== '') {
-				const query = filterSlug.toLowerCase();
+			if (filters.slug.trim() !== '') {
+				const query = filters.slug.toLowerCase();
 				filtered = filtered.filter((site) => site.handle.toLowerCase().includes(query));
 			}
 
 			// Filter by status
-			if (filterStatus.length > 0) {
-				filtered = filtered.filter(() => filterStatus.includes('active'));
+			if (filters.status.length > 0) {
+				filtered = filtered.filter(() => filters.status.includes('active'));
+			}
+
+			// Filter by created date
+			if (filters.created != null) {
+				filtered = filtered.filter((site) => {
+					const createdTime = new Date(site.createdAt).getTime();
+					const startTime = filters.created?.start ? new Date(filters.created.start).getTime() : 0;
+					const endTime = filters.created?.end
+						? new Date(filters.created.end).getTime()
+						: Date.now();
+					return createdTime >= startTime && createdTime <= endTime;
+				});
 			}
 
 			// Sort
-			const [sortKey, sortDirection] = sortSelected[0]?.split(' ') ?? ['updated', 'desc'];
+			const [sortKey, sortDirection] = sortSelected[0]?.split(' ') ?? ['created', 'desc'];
 			const sorted = [...filtered].sort((a, b) => {
 				if (sortKey === 'name') {
 					const aName = a.displayName?.toLowerCase() ?? a.handle.toLowerCase();
@@ -86,6 +107,11 @@ export function createPagesContext(config: TCreatePagesContextConfig): TPagesCon
 						? a.handle.localeCompare(b.handle)
 						: b.handle.localeCompare(a.handle);
 				}
+				if (sortKey === 'created') {
+					const aTime = new Date(a.createdAt).getTime();
+					const bTime = new Date(b.createdAt).getTime();
+					return sortDirection === 'asc' ? aTime - bTime : bTime - aTime;
+				}
 				// Default: sort by updated
 				const aTime = new Date(a.updatedAt).getTime();
 				const bTime = new Date(b.updatedAt).getTime();
@@ -95,14 +121,47 @@ export function createPagesContext(config: TCreatePagesContextConfig): TPagesCon
 			return sorted;
 		},
 
-		clearAllFilters() {
-			this.filterName.set('');
-			this.filterSlug.set('');
-			this.filterStatus.set([]);
+		saveView() {
+			const currentView = this.viewTabs._v[this.selectedView._v];
+			if (currentView == null) {
+				return;
+			}
+
+			this.viewTabs._v[this.selectedView._v] = {
+				...currentView,
+				filters: { ...this.filters._v },
+				sortSelected: [...this.sortSelected._v]
+			};
+			this.viewTabs._notify();
+		},
+		loadView(viewIndex: number) {
+			const view = this.viewTabs._v[viewIndex];
+			if (view == null) {
+				return;
+			}
+
+			this.filters.set({ ...view.filters });
+			this.sortSelected.set([...view.sortSelected]);
+		},
+		selectView(viewIndex: number) {
+			this.selectedView.set(viewIndex);
+			this.loadView(viewIndex);
 		},
 		async createView(viewName) {
-			this.viewTabs.set((v) => [...v, viewName]);
+			const newView: TView = {
+				name: viewName,
+				key: viewName.toLowerCase().replace(/\s+/g, '-'),
+				filters: {
+					name: '',
+					slug: '',
+					status: [],
+					created: null
+				},
+				sortSelected: ['updated desc']
+			};
+			this.viewTabs.set((v) => [...v, newView]);
 			this.selectedView.set(this.viewTabs._v.length - 1);
+			this.loadView(this.viewTabs._v.length - 1);
 			return true;
 		},
 		async deleteView(index) {
@@ -110,24 +169,54 @@ export function createPagesContext(config: TCreatePagesContextConfig): TPagesCon
 			newViewTabs.splice(index, 1);
 			this.viewTabs.set(newViewTabs);
 			this.selectedView.set(0);
+			this.loadView(0);
 			return true;
 		},
 		async renameView(index, newName) {
-			this.viewTabs.set((v) => v.map((tab, idx) => (idx === index ? newName : tab)));
+			this.viewTabs.set((v) =>
+				v.map((tab, idx) =>
+					idx === index
+						? {
+								...tab,
+								name: newName,
+								key: newName.toLowerCase().replace(/\s+/g, '-')
+							}
+						: tab
+				)
+			);
 			return true;
 		},
 		async duplicateView(viewName) {
-			this.viewTabs.set((v) => [...v, viewName]);
+			const currentView = this.viewTabs._v[this.selectedView._v];
+			if (currentView == null) return false;
+
+			const duplicatedView: TView = {
+				name: viewName,
+				key: viewName.toLowerCase().replace(/\s+/g, '-'),
+				filters: { ...currentView.filters },
+				sortSelected: [...currentView.sortSelected]
+			};
+			this.viewTabs.set((v) => [...v, duplicatedView]);
 			this.selectedView.set(this.viewTabs._v.length - 1);
+			this.loadView(this.viewTabs._v.length - 1);
 			return true;
+		},
+
+		clearFilters() {
+			this.filters.set({
+				name: '',
+				slug: '',
+				status: [],
+				created: null
+			});
 		},
 
 		async createSite() {
 			this.isCreatingSite.set(true);
 
 			try {
-				const handle = `bio-${sites.length + 1}-${shortId()}`;
-				const displayName = `My Bio Page ${sites.length + 1}`;
+				const handle = `bio-${this._sites.length + 1}-${shortId()}`;
+				const displayName = `My Bio Page ${this._sites.length + 1}`;
 
 				// Fetch blank preset
 				const [isBlankPresetOk, blankPresetErr, blankPresetResponse] = await coreApiClient.get(
@@ -213,30 +302,30 @@ export interface TCreatePagesContextConfig {
 
 export interface TPagesContext {
 	_shopify: ShopifyGlobal;
+	_sites: TTableSite[];
 	isCreatingSite: TState<boolean, []>;
 	queryValue: TState<string, []>;
-	filterName: TState<string, []>;
-	filterSlug: TState<string, []>;
-	filterStatus: TState<string[], []>;
+	filters: TState<TFilters, []>;
 	sortSelected: TState<string[], []>;
-	viewTabs: TState<string[], []>;
+	viewTabs: TState<TView[], []>;
 	selectedView: TState<number, []>;
 
-	getOldestSiteId: () => string | null;
+	getMainSiteId: () => string | null;
 	getFilteredSites: (options?: {
 		queryValue?: string;
-		filterName?: string;
-		filterSlug?: string;
-		filterStatus?: string[];
+		filters?: TFilters;
 		sortSelected?: string[];
 	}) => TTableSite[];
 
-	clearAllFilters: () => void;
-
+	saveView: () => void;
+	loadView: (viewIndex: number) => void;
+	selectView: (viewIndex: number) => void;
 	createView: (viewName: string) => Promise<boolean>;
 	deleteView: (index: number) => Promise<boolean>;
 	renameView: (index: number, newName: string) => Promise<boolean>;
 	duplicateView: (viewName: string) => Promise<boolean>;
+
+	clearFilters: () => void;
 
 	createSite: () => Promise<
 		TResult<
@@ -258,4 +347,23 @@ export interface TTableSite {
 	displayName?: string;
 	updatedAt: string;
 	createdAt: string;
+}
+
+export interface TDateRange {
+	start?: string;
+	end?: string;
+}
+
+export interface TFilters {
+	name: string;
+	slug: string;
+	status: string[];
+	created: TDateRange | null;
+}
+
+export interface TView {
+	name: string;
+	key: string;
+	filters: TFilters;
+	sortSelected: string[];
 }
