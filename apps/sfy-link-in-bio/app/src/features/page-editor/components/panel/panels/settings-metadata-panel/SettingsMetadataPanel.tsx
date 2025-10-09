@@ -5,6 +5,7 @@ import { ImageUploadField, ResizablePanel, TImageUploadEvent } from '@/component
 import { useEditorBreakpoint } from '../../../../hooks';
 import { EditorSiteResolveContext, TPageEditor } from '../../../../lib';
 import { resolvePageMetadata } from '../../../../nodes';
+import { PublishButton } from '../../../input';
 import { PanelHeader } from '../../PanelHeader';
 
 export const SettingsMetadataPanel: React.FC<TSettingsMetadataPanelProps> = (props) => {
@@ -157,10 +158,11 @@ export const SettingsMetadataPanel: React.FC<TSettingsMetadataPanelProps> = (pro
 			maxSize={sizes.maxSize}
 		>
 			<div className="flex h-full flex-col bg-white">
-				<PanelHeader>
+				<PanelHeader className="justify-between">
 					<Text as="h2" variant="headingMd">
 						Metadata
 					</Text>
+					{!isMd && <PublishButton editor={editor} />}
 				</PanelHeader>
 				<div className="flex-1 overflow-auto">
 					<div className="space-y-4 p-4">

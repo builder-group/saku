@@ -3,6 +3,7 @@ import { Button, Text, TextField } from '@shopify/polaris';
 import { RequestError } from 'feature-fetch';
 import React from 'react';
 import { coreApiClient } from '@/environment';
+import { useConfetti } from '@/hooks';
 import { createShopifyTokenMiddleware } from '@/lib';
 import { TPageEditor } from '../../../../../lib';
 
@@ -14,6 +15,8 @@ export const OverrideWithExternalSiteSection: React.FC<TOverrideWithExternalSite
 	const [url, setUrl] = React.useState('');
 	const [isOverriding, setIsOverriding] = React.useState(false);
 	const [error, setError] = React.useState<string | null>(null);
+
+	const triggerConfetti = useConfetti();
 
 	const isOverrideDisabled = React.useMemo(() => {
 		return isOverriding || !url.trim();
@@ -56,10 +59,18 @@ export const OverrideWithExternalSiteSection: React.FC<TOverrideWithExternalSite
 			}
 
 			editor.overrideWith(parseResponse.data.content as unknown as TFlatSite);
-			editor.shopify.toast.show('Site overridden successfully');
+			editor.shopify.toast.show('Site overridden successfully', {
+				action: 'Publish',
+				onAction: async () => {
+					const isPublished = await editor.publishSite();
+					if (isPublished) {
+						triggerConfetti();
+					}
+				}
+			});
 			setIsOverriding(false);
 		},
-		[isOverrideDisabled, url, editor]
+		[isOverrideDisabled, url, editor, triggerConfetti]
 	);
 
 	const handleUrlChange = React.useCallback((newUrl: string) => {
