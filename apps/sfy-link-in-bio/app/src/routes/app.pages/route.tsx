@@ -153,7 +153,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 					key: 'created',
 					label: 'Created',
 					filter: (
-						<div className="flex gap-2">
+						<div className="flex flex-col gap-2">
 							<TextField
 								label="From"
 								type="date"
@@ -300,12 +300,12 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 									onQueryClear={() => cx.queryValue.set('')}
 									tabs={tabs}
 									selected={selectedView}
-									onSelect={cx.selectView}
+									onSelect={(viewIndex) => cx.selectView(viewIndex)}
 									canCreateNewView
-									onCreateNewView={cx.createView}
+									onCreateNewView={(viewName) => cx.createView(viewName)}
 									filters={filtersConfig}
 									appliedFilters={appliedFilters}
-									onClearAll={cx.clearFilters}
+									onClearAll={() => cx.clearFilters()}
 									primaryAction={primaryAction}
 									mode={mode}
 									setMode={setMode}
@@ -315,8 +315,8 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 									resourceName={{ singular: 'bio page', plural: 'bio pages' }}
 									itemCount={filteredSites.length}
 									headings={[
-										{ title: 'Page Name' },
-										{ title: 'Page Slug' },
+										{ title: 'Name' },
+										{ title: 'Slug' },
 										{ title: 'Status' },
 										{ title: 'Created' },
 										{ title: 'Updated' },
