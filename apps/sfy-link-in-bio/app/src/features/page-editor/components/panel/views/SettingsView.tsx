@@ -5,6 +5,7 @@ import { useEditorBreakpoint } from '../../../hooks';
 import { TPageEditor } from '../../../lib';
 import { SettingsNavPanel, SettingsPlaceholderPanel } from '../panels';
 import { SettingsAssetsView } from './SettingsAssetsView';
+import { SettingsDebugView } from './SettingsDebugView';
 import { SettingsDesignView } from './SettingsDesignView';
 import { SettingsGeneralView } from './SettingsGeneralView';
 import { SettingsIntegrationsView } from './SettingsIntegrationsView';
@@ -26,6 +27,8 @@ const View: React.FC<TViewProps> & { panelCount: number } = (props) => {
 			return <SettingsAssetsView editor={editor} order={order} />;
 		case 'integrations':
 			return <SettingsIntegrationsView editor={editor} order={order} />;
+		case 'debug':
+			return <SettingsDebugView editor={editor} order={order} />;
 		default:
 			return <SettingsPlaceholderPanel order={order} />;
 	}
@@ -35,7 +38,8 @@ View.panelCount = Math.max(
 	SettingsDesignView.panelCount,
 	SettingsMetadataView.panelCount,
 	SettingsAssetsView.panelCount,
-	SettingsIntegrationsView.panelCount
+	SettingsIntegrationsView.panelCount,
+	SettingsDebugView.panelCount
 );
 
 interface TViewProps {

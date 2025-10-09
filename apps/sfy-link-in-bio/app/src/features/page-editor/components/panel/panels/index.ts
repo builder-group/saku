@@ -7,6 +7,7 @@ export * from './nav-panel';
 export * from './node-inspector-panel';
 export * from './preview-panel';
 export * from './settings-assets-panel';
+export * from './settings-debug-panel';
 export * from './settings-design-panel';
 export * from './settings-general-panel';
 export * from './settings-integrations-panel';

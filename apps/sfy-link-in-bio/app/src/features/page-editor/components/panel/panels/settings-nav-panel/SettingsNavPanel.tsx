@@ -9,7 +9,11 @@ import {
 	ResizablePanel
 } from '@/components';
 import { cn } from '@/lib';
-import { settingsMetadata, TSettingsSectionType } from '../../../../environment';
+import {
+	ESettingsCondition,
+	settingsMetadata,
+	TSettingsSectionType
+} from '../../../../environment';
 import { useEditorBreakpoint } from '../../../../hooks';
 import { TPageEditor } from '../../../../lib';
 import { PanelHeader } from '../../PanelHeader';
@@ -22,6 +26,15 @@ export const SettingsNavPanel: React.FC<TSettingsNavPanelProps> = (props) => {
 	const [collapsed, setCollapsed] = React.useState(false);
 	const selectedSection = useFeatureState(editor.activeSettingsSection);
 	const panelRef = React.useRef<ImperativePanelHandle>(null);
+
+	const filteredSettingsMetadata = React.useMemo(() => {
+		return settingsMetadata.filter((section) => {
+			if (section.condition.has(ESettingsCondition.Debug)) {
+				return editor.isDebug();
+			}
+			return true;
+		});
+	}, [editor]);
 
 	// TODO: Figure out better solution
 	// https://github.com/bvaughn/react-resizable-panels/issues/46
@@ -75,8 +88,6 @@ export const SettingsNavPanel: React.FC<TSettingsNavPanelProps> = (props) => {
 	);
 
 	const handleToggleCollapse = React.useCallback(() => {
-		// TODO: Programmatic collapse/expand doesn't work rn
-		// https://github.com/bvaughn/react-resizable-panels/issues/515#issuecomment-3285269376
 		const panel = panelRef.current;
 		if (collapsed) {
 			panel?.expand();
@@ -120,7 +131,7 @@ export const SettingsNavPanel: React.FC<TSettingsNavPanelProps> = (props) => {
 					</div>
 				</PanelHeader>
 				<div className="flex flex-1 flex-col overflow-auto">
-					{settingsMetadata.map((section) => (
+					{filteredSettingsMetadata.map((section) => (
 						<div
 							key={section.type}
 							className={cn(

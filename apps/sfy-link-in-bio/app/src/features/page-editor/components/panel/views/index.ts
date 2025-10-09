@@ -2,6 +2,7 @@ export * from './DesignView';
 export * from './EditorView';
 export * from './PreviewView';
 export * from './SettingsAssetsView';
+export * from './SettingsDebugView';
 export * from './SettingsDesignView';
 export * from './SettingsGeneralView';
 export * from './SettingsIntegrationsView';
