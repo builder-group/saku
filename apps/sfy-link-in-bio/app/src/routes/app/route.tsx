@@ -54,6 +54,7 @@ const Page: React.FC = () => {
 					<Link to="/app" rel="home">
 						Home
 					</Link>
+					<Link to="/app/pages">Pages</Link>
 					<Link to="/app/settings">Settings</Link>
 					<Link to="/app/help">Help & Resources</Link>
 				</ui-nav-menu>
