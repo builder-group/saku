@@ -1,7 +1,6 @@
 import { Text, TextField } from '@shopify/polaris';
 import React from 'react';
-import { PolarisChevronDownIcon } from '@/components/display';
-import { ClipboardButton } from '@/components/input';
+import { Badge, ClipboardButton, PolarisChevronDownIcon } from '@/components';
 
 export const BioUrlSection: React.FC<TBioUrlSectionProps> = (props) => {
 	const { primaryUrl, platformUrl, title = 'Your Bio Link' } = props;
@@ -45,7 +44,7 @@ export const BioUrlSection: React.FC<TBioUrlSectionProps> = (props) => {
 								</div>
 							</s-badge>
 						</div>
-						<s-badge tone="success">Main</s-badge>
+						<Badge tone="magic">Main</Badge>
 					</div>
 				</div>
 

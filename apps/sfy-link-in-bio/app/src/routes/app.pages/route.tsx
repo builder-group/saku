@@ -1,6 +1,5 @@
 import { useAppBridge } from '@shopify/app-bridge-react';
 import {
-	Badge,
 	Button,
 	ButtonGroup,
 	ChoiceList,
@@ -20,12 +19,15 @@ import { useRevalidator } from 'react-router';
 import { Err, Ok, unwrapOrUndefined } from 'tuple-result';
 import { AppContext, shopifyConfig } from '@/.server/environment';
 import {
+	Badge,
+	CrownIcon,
 	PolarisMenuHorizontalIcon,
 	PolarisPageIcon,
 	useDeleteSiteModal,
 	usePageEditorModal
 } from '@/components';
 import { appConfig, coreApiClient } from '@/environment';
+import { useCurrentPlan } from '@/hooks';
 import { createShopifyTokenMiddleware, resultLoader, withResultLoader } from '@/lib';
 import { THeadersFunction } from '@/types';
 import { createPagesContext, TTableSite } from './create-pages-context';
@@ -35,6 +37,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 	Success: ({ data }) => {
 		const { sites } = data;
 
+		const currentPlan = useCurrentPlan();
 		const revalidator = useRevalidator();
 		const shopifyBridge = useAppBridge();
 
@@ -284,18 +287,18 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 		return (
 			<>
 				<s-page>
-					<ui-title-bar title="Saku Link In Bio">
+					<ui-title-bar title="Pages">
 						<button
 							variant="primary"
 							onClick={handleCreateSite}
 							loading={isCreatingSite}
-							disabled={isCreatingSite}
+							disabled={isCreatingSite || currentPlan.key !== 'awesome'}
 						>
 							{isCreatingSite ? 'Creating...' : 'Create page'}
 						</button>
 					</ui-title-bar>
 
-					<div className="my-4 space-y-4 lg:col-span-2">
+					<div className="my-4">
 						{sites.length > 0 ? (
 							<s-section padding="none">
 								<IndexFilters
@@ -352,7 +355,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 														<Text as="span" variant="bodyMd" fontWeight="semibold">
 															{siteItem.displayName ?? siteItem.handle}
 														</Text>
-														{isMain && <Badge tone="info">Main</Badge>}
+														{isMain && <Badge tone="magic">Main</Badge>}
 													</div>
 												</IndexTable.Cell>
 												<IndexTable.Cell>
@@ -361,7 +364,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 													</Text>
 												</IndexTable.Cell>
 												<IndexTable.Cell>
-													<Badge tone="success">Active</Badge>
+													<s-badge tone="success">Active</s-badge>
 												</IndexTable.Cell>
 												<IndexTable.Cell>
 													<Text as="span" variant="bodyMd">
@@ -435,6 +438,35 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 							</s-section>
 						)}
 					</div>
+
+					{currentPlan.key !== 'awesome' && (
+						<div className="absolute inset-0 z-50 flex h-full items-center justify-center overflow-hidden rounded-xl">
+							<div
+								className="absolute inset-0"
+								style={{
+									background:
+										'linear-gradient(to bottom, transparent 0%, rgba(230,247,255,0.4) 20%, rgba(242,230,255,0.6) 40%, rgba(255,230,240,0.8) 60%, rgba(255,230,240,0.95) 100%)'
+								}}
+							/>
+							<div className="relative z-10 mx-8 max-w-sm text-center">
+								<div className="flex flex-col items-center gap-4 rounded-lg bg-white/20 p-6 text-balance backdrop-blur-sm">
+									<CrownIcon className="h-6 w-6" />
+									<div className="flex flex-col items-center gap-2">
+										<Text as="h3" variant="headingMd" fontWeight="semibold" alignment="center">
+											Multiple Bio Pages
+										</Text>
+										<Text as="p" variant="bodyMd" tone="subdued" alignment="center">
+											Want to create multiple bio pages for different purposes or audiences? Upgrade
+											to Awesome plan to unlock unlimited bio pages.
+										</Text>
+									</div>
+									<Button variant="primary" size="medium" url={'/app/settings/plans'}>
+										Upgrade to Awesome
+									</Button>
+								</div>
+							</div>
+						</div>
+					)}
 				</s-page>
 
 				<PageEditorModal />

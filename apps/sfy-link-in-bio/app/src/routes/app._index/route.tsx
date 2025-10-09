@@ -6,15 +6,18 @@ import { useRevalidator, useSearchParams } from 'react-router';
 import { Err, Ok, unwrapOrUndefined } from 'tuple-result';
 import { AppContext, shopifyConfig } from '@/.server/environment';
 import {
+	Badge,
 	BioUrlSection,
 	FeedbackSection,
 	IframeContent,
+	PlanBadge,
 	PolarisViewIcon,
 	QuickHelpSection,
 	SitePreview,
 	usePageEditorModal
 } from '@/components';
 import { appConfig, coreApiClient } from '@/environment';
+import { useCurrentPlan } from '@/hooks';
 import { createShopifyTokenMiddleware, resultLoader, withResultLoader } from '@/lib';
 import { THeadersFunction } from '@/types';
 
@@ -22,6 +25,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 	Success: ({ data }) => {
 		const { site } = data;
 
+		const currentPlan = useCurrentPlan();
 		const revalidator = useRevalidator();
 		const [searchParams, setSearchParams] = useSearchParams();
 
@@ -86,7 +90,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 		return (
 			<>
 				<s-page>
-					<ui-title-bar title="Saku Link In Bio" />
+					<ui-title-bar title="Dashboard" />
 
 					<div className="my-4 grid grid-cols-1 gap-4 bg-[var(--p-color-bg)] lg:grid-cols-3">
 						<div className="space-y-4 lg:col-span-2">
@@ -112,7 +116,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 													<Text as="h3" variant="headingMd">
 														{site.displayName ?? site.handle}
 													</Text>
-													<s-badge tone="success">Main</s-badge>
+													<Badge tone="magic">Main</Badge>
 												</div>
 												<Text as="p" variant="bodyMd" tone="subdued">
 													Last Updated:{' '}
@@ -142,6 +146,31 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 											</Button>
 										</div>
 									</div>
+								</s-section>
+							</div>
+
+							<div>
+								<s-section padding="none">
+									<s-clickable
+										padding="large"
+										href="/app/pages"
+										accessibilityLabel="Manage all your bio pages"
+									>
+										<div className="grid grid-cols-[1fr_auto] items-center gap-4">
+											<div>
+												<div className="flex items-center gap-2">
+													<s-heading>Bio Pages</s-heading>
+													{currentPlan.key !== 'awesome' && (
+														<PlanBadge plan="awesome" showPlanName={false} />
+													)}
+												</div>
+												<s-paragraph color="subdued">
+													Create and manage multiple bio pages for different audiences
+												</s-paragraph>
+											</div>
+											<s-icon type="chevron-right"></s-icon>
+										</div>
+									</s-clickable>
 								</s-section>
 							</div>
 						</div>

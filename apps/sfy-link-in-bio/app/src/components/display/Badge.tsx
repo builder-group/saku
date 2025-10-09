@@ -4,10 +4,10 @@ import React from 'react';
 import { cn } from '@/lib';
 
 export const Badge = React.forwardRef<HTMLSpanElement, TBadgeProps>(
-	({ className, variant, asChild = false, ...props }, ref) => {
+	({ className, tone, asChild = false, ...props }, ref) => {
 		const Comp = asChild ? Slot : 'span';
 
-		return <Comp ref={ref} className={cn(badgeVariants({ variant }), className)} {...props} />;
+		return <Comp ref={ref} className={cn(badgeVariants({ tone: tone }), className)} {...props} />;
 	}
 );
 Badge.displayName = 'Badge';
@@ -22,8 +22,9 @@ const badgeVariants = cva(
 	'inline-flex items-center gap-1 rounded-[0.5rem] px-2 py-[0.125rem] text-xs font-[550] transition-colors',
 	{
 		variants: {
-			variant: {
+			tone: {
 				default: 'bg-[rgba(0,0,0,0.06)] text-[rgba(97,97,97,1)]',
+				neutral: 'bg-[rgba(0,0,0,0.06)] text-[rgba(97,97,97,1)]',
 				secondary: 'bg-[rgba(0,0,0,0.06)] text-[rgba(97,97,97,1)]',
 				success: 'bg-[rgba(175,254,191,1)] text-[rgba(1,75,64,1)]',
 				successStrong: 'bg-[rgba(4,123,93,1)] text-[rgba(250,255,251,1)]',
@@ -42,7 +43,7 @@ const badgeVariants = cva(
 			}
 		},
 		defaultVariants: {
-			variant: 'default'
+			tone: 'default'
 		}
 	}
 );
