@@ -21,7 +21,7 @@ export function createPagesContext(config: TCreatePagesContextConfig): TPagesCon
 			status: [],
 			created: null
 		},
-		sortSelected: ['created desc']
+		sortSelected: ['updated desc']
 	};
 
 	return {
@@ -99,7 +99,7 @@ export function createPagesContext(config: TCreatePagesContextConfig): TPagesCon
 			}
 
 			// Sort
-			const [sortKey, sortDirection] = sortSelected[0]?.split(' ') ?? ['created', 'desc'];
+			const [sortKey, sortDirection] = sortSelected[0]?.split(' ') ?? ['updated', 'desc'];
 			const sorted = [...filtered].sort((a, b) => {
 				switch (sortKey) {
 					case 'name': {
