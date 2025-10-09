@@ -4,8 +4,9 @@ import React from 'react';
 import { ResizablePanel } from '@/components';
 import { useEditorBreakpoint } from '../../../../hooks';
 import { TPageEditor } from '../../../../lib';
+import { PublishButton } from '../../../input';
 import { PanelHeader } from '../../PanelHeader';
-import { OverrideWithExternalSiteSection } from './OverrideWithExternalSiteSection';
+import { OverrideWithExternalSiteSection } from './sections';
 
 export const SettingsDebugPanel: React.FC<TSettingsDebugPanelProps> = (props) => {
 	const { editor, order } = props;
@@ -51,10 +52,11 @@ export const SettingsDebugPanel: React.FC<TSettingsDebugPanelProps> = (props) =>
 			className="relative"
 		>
 			<div className="flex h-full flex-col overflow-y-auto bg-white">
-				<PanelHeader>
+				<PanelHeader className="justify-between">
 					<Text as="h2" variant="headingMd">
 						Debug
 					</Text>
+					<PublishButton editor={editor} />
 				</PanelHeader>
 
 				<div className="h-full flex-1 overflow-y-auto p-4">

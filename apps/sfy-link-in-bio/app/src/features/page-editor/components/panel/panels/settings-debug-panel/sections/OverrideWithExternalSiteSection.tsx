@@ -3,8 +3,8 @@ import { Button, Text, TextField } from '@shopify/polaris';
 import { RequestError } from 'feature-fetch';
 import React from 'react';
 import { coreApiClient } from '@/environment';
-import { TPageEditor } from '@/features/page-editor';
 import { createShopifyTokenMiddleware } from '@/lib';
+import { TPageEditor } from '../../../../../lib';
 
 export const OverrideWithExternalSiteSection: React.FC<TOverrideWithExternalSiteSectionProps> = (
 	props
@@ -33,14 +33,11 @@ export const OverrideWithExternalSiteSection: React.FC<TOverrideWithExternalSite
 			setIsOverriding(true);
 			setError(null);
 
-			const trimmedUrl = url.trim();
-
-			// Parse external site using core API
 			const [isParseOk, parseErr, parseResponse] = await coreApiClient.get(
 				'/v1/site/parse/external',
 				{
 					queryParams: {
-						url: trimmedUrl
+						url: url.trim()
 					},
 					requestMiddlewares: [createShopifyTokenMiddleware(editor.shopify)]
 				}

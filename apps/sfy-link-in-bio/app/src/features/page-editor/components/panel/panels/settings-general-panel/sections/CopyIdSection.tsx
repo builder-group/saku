@@ -1,6 +1,6 @@
 import { Text, TextField } from '@shopify/polaris';
 import React from 'react';
-import { ClipboardButton } from '@/components/input';
+import { ClipboardButton } from '@/components';
 
 export const CopyIdSection: React.FC<TCopyIdSectionProps> = (props) => {
 	const { id, title, description, helpText } = props;

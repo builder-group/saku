@@ -4,10 +4,9 @@ import React from 'react';
 import { ResizablePanel } from '@/components';
 import { useEditorBreakpoint } from '../../../../hooks';
 import { TPageEditor } from '../../../../lib';
+import { PublishButton } from '../../../input';
 import { PanelHeader } from '../../PanelHeader';
-import { CopyIdSection } from './CopyIdSection';
-import { DeleteSiteSection } from './DeleteSiteSection';
-import { FormSection } from './FormSection';
+import { CopyIdSection, DeleteSiteSection, FormSection } from './sections';
 
 export const SettingsGeneralPanel: React.FC<TSettingsGeneralPanelProps> = (props) => {
 	const { editor, order } = props;
@@ -73,10 +72,11 @@ export const SettingsGeneralPanel: React.FC<TSettingsGeneralPanelProps> = (props
 			className="relative"
 		>
 			<div className="flex h-full flex-col overflow-y-auto bg-white">
-				<PanelHeader>
+				<PanelHeader className="justify-between">
 					<Text as="h2" variant="headingMd">
 						General
 					</Text>
+					<PublishButton editor={editor} />
 				</PanelHeader>
 
 				<div className="h-full flex-1 overflow-y-auto p-4">
