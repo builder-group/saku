@@ -80,7 +80,7 @@ export const TokenActionOverlay: React.FC<TTokenActionOverlayProps> = (props) =>
 			case 'separate-badges':
 				return (
 					<div className="absolute inset-y-0 right-0 z-50 hidden items-center gap-1 pr-2 group-hover:flex">
-						<Badge asChild variant="warning">
+						<Badge asChild tone="warning">
 							<button
 								type="button"
 								onClick={disabled ? undefined : onUnlink}
@@ -95,7 +95,7 @@ export const TokenActionOverlay: React.FC<TTokenActionOverlayProps> = (props) =>
 								Unlink
 							</button>
 						</Badge>
-						<Badge asChild variant="info">
+						<Badge asChild tone="info">
 							<button
 								type="button"
 								onClick={onNavigateToToken}

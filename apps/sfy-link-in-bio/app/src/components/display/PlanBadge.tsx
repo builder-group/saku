@@ -16,7 +16,7 @@ export const PlanBadge: React.FC<TPlanBadgeProps> = (props) => {
 
 	return (
 		<Badge
-			variant="default"
+			tone="default"
 			className={cn(
 				'bg-gradient-to-r from-[#E6F7FF] via-[#F2E6FF] to-[#FFE6F0]',
 				!showPlanName && 'px-0.5 py-0.5',

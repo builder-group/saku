@@ -31,7 +31,7 @@ export async function requestReview(shopify: ShopifyGlobal): Promise<boolean> {
 
 function getStoredReviewRequests(): number[] {
 	try {
-		const stored = localStorage.getItem(shopifyClientConfig.review.storageKey);
+		const stored = localStorage.getItem(shopifyClientConfig.review.localStorageKey);
 		return stored ? JSON.parse(stored) : [];
 	} catch {
 		return [];
@@ -47,7 +47,7 @@ function storeReviewRequest(timestamp: number): void {
 		const oneYearAgo = Date.now() - 365 * 24 * 60 * 60 * 1000;
 		const recent = requests.filter((req) => req > oneYearAgo);
 
-		localStorage.setItem(shopifyClientConfig.review.storageKey, JSON.stringify(recent));
+		localStorage.setItem(shopifyClientConfig.review.localStorageKey, JSON.stringify(recent));
 	} catch {
 		// do nothing
 	}
