@@ -1,3 +1,4 @@
+import { deepCopy } from '@blgc/utils';
 import { useAppBridge } from '@shopify/app-bridge-react';
 import {
 	Button,
@@ -92,15 +93,15 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 									{
 										type: 'rename',
 										onAction: () => {},
-										onPrimaryAction: (val) => cx.renameView(index, val)
+										onPrimaryAction: async (newName) => cx.renameView(index, newName)
 									},
 									{
 										type: 'duplicate',
-										onPrimaryAction: (viewName) => cx.duplicateView(viewName)
+										onPrimaryAction: async (duplicateName) => cx.duplicateView(index, duplicateName)
 									},
 									{
 										type: 'delete',
-										onPrimaryAction: () => cx.deleteView(index)
+										onPrimaryAction: async () => cx.deleteView(index)
 									}
 								]
 				})),
@@ -165,7 +166,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 									cx.filters.set((f) => ({
 										...f,
 										created: {
-											start: value || undefined,
+											start: value.length > 0 ? value : undefined,
 											end: f.created?.end
 										}
 									}))
@@ -181,7 +182,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 										...f,
 										created: {
 											start: f.created?.start,
-											end: value || undefined
+											end: value.length > 0 ? value : undefined
 										}
 									}))
 								}
@@ -221,9 +222,9 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 				}
 				if (currentFilters.created != null) {
 					const label =
-						currentFilters.created.start && currentFilters.created.end
+						currentFilters.created.start != null && currentFilters.created.end != null
 							? `Created: ${currentFilters.created.start} - ${currentFilters.created.end}`
-							: currentFilters.created.start
+							: currentFilters.created.start != null
 								? `Created: From ${currentFilters.created.start}`
 								: `Created: Until ${currentFilters.created.end}`;
 					appliedFilters.push({
@@ -250,12 +251,27 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 			[]
 		);
 		const primaryAction: IndexFiltersProps['primaryAction'] = React.useMemo(() => {
+			return selectedView === 0
+				? {
+						type: 'save-as',
+						onAction: async (name) =>
+							cx.createView(name, {
+								filters: deepCopy(cx.filters._v),
+								sortSelected: deepCopy(cx.sortSelected._v)
+							}),
+						disabled: false,
+						loading: false
+					}
+				: {
+						type: 'save',
+						onAction: async () => cx.saveToView(selectedView),
+						disabled: false,
+						loading: false
+					};
+		}, [cx, selectedView]);
+		const cancelAction: IndexFiltersProps['cancelAction'] = React.useMemo(() => {
 			return {
-				type: 'save',
-				onAction: async () => {
-					cx.saveView();
-					return true;
-				},
+				onAction: () => cx.cancelViewUpdate(),
 				disabled: false,
 				loading: false
 			};
@@ -311,19 +327,19 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 									onQueryClear={() => cx.queryValue.set('')}
 									tabs={tabs}
 									selected={selectedView}
-									onSelect={(viewIndex) => cx.selectView(viewIndex)}
+									onSelect={(index) => cx.selectView(index)}
 									canCreateNewView
-									onCreateNewView={(viewName) => cx.createView(viewName)}
+									onCreateNewView={async (name) => cx.createView(name)}
 									filters={filtersConfig}
 									appliedFilters={appliedFilters}
 									onClearAll={() => cx.clearFilters()}
 									primaryAction={primaryAction}
+									cancelAction={cancelAction}
 									mode={mode}
 									setMode={setMode}
 								/>
-
 								<IndexTable
-									resourceName={{ singular: 'bio page', plural: 'bio pages' }}
+									resourceName={{ singular: 'page', plural: 'pages' }}
 									itemCount={filteredSites.length}
 									headings={[
 										{ title: 'Name' },
@@ -431,7 +447,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 											loading={isCreatingSite}
 											disabled={isCreatingSite}
 										>
-											Create Bio Page
+											Create page
 										</Button>
 									</div>
 								</div>

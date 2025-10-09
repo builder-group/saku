@@ -1,4 +1,4 @@
-import { shortId } from '@blgc/utils';
+import { deepCopy, shortId } from '@blgc/utils';
 import { TFlatSite, themes, TTheme } from '@repo/editor';
 import type { ShopifyGlobal } from '@shopify/app-bridge-types';
 import { RequestError } from 'feature-fetch';
@@ -57,7 +57,7 @@ export function createPagesContext(config: TCreatePagesContextConfig): TPagesCon
 			let filtered = this._sites;
 
 			// Search query
-			if (queryValue.trim() !== '') {
+			if (queryValue.trim().length > 0) {
 				const query = queryValue.toLowerCase();
 				filtered = filtered.filter((site) => {
 					const displayName = site.displayName?.toLowerCase() ?? '';
@@ -67,7 +67,7 @@ export function createPagesContext(config: TCreatePagesContextConfig): TPagesCon
 			}
 
 			// Filter by name
-			if (filters.name.trim() !== '') {
+			if (filters.name.trim().length > 0) {
 				const query = filters.name.toLowerCase();
 				filtered = filtered.filter((site) => {
 					const displayName = site.displayName?.toLowerCase() ?? '';
@@ -76,7 +76,7 @@ export function createPagesContext(config: TCreatePagesContextConfig): TPagesCon
 			}
 
 			// Filter by slug
-			if (filters.slug.trim() !== '') {
+			if (filters.slug.trim().length > 0) {
 				const query = filters.slug.toLowerCase();
 				filtered = filtered.filter((site) => site.handle.toLowerCase().includes(query));
 			}
@@ -90,10 +90,10 @@ export function createPagesContext(config: TCreatePagesContextConfig): TPagesCon
 			if (filters.created != null) {
 				filtered = filtered.filter((site) => {
 					const createdTime = new Date(site.createdAt).getTime();
-					const startTime = filters.created?.start ? new Date(filters.created.start).getTime() : 0;
-					const endTime = filters.created?.end
-						? new Date(filters.created.end).getTime()
-						: Date.now();
+					const startTime =
+						filters.created?.start != null ? new Date(filters.created.start).getTime() : 0;
+					const endTime =
+						filters.created?.end != null ? new Date(filters.created.end).getTime() : Date.now();
 					return createdTime >= startTime && createdTime <= endTime;
 				});
 			}
@@ -101,80 +101,95 @@ export function createPagesContext(config: TCreatePagesContextConfig): TPagesCon
 			// Sort
 			const [sortKey, sortDirection] = sortSelected[0]?.split(' ') ?? ['created', 'desc'];
 			const sorted = [...filtered].sort((a, b) => {
-				if (sortKey === 'name') {
-					const aName = a.displayName?.toLowerCase() ?? a.handle.toLowerCase();
-					const bName = b.displayName?.toLowerCase() ?? b.handle.toLowerCase();
-					return sortDirection === 'asc' ? aName.localeCompare(bName) : bName.localeCompare(aName);
+				switch (sortKey) {
+					case 'name': {
+						const aName = a.displayName?.toLowerCase() ?? a.handle.toLowerCase();
+						const bName = b.displayName?.toLowerCase() ?? b.handle.toLowerCase();
+						return sortDirection === 'asc'
+							? aName.localeCompare(bName)
+							: bName.localeCompare(aName);
+					}
+					case 'slug': {
+						return sortDirection === 'asc'
+							? a.handle.localeCompare(b.handle)
+							: b.handle.localeCompare(a.handle);
+					}
+					case 'created': {
+						const aTime = new Date(a.createdAt).getTime();
+						const bTime = new Date(b.createdAt).getTime();
+						return sortDirection === 'asc' ? aTime - bTime : bTime - aTime;
+					}
+					// Default: sort by updated
+					default: {
+						const aTime = new Date(a.updatedAt).getTime();
+						const bTime = new Date(b.updatedAt).getTime();
+						return sortDirection === 'asc' ? aTime - bTime : bTime - aTime;
+					}
 				}
-				if (sortKey === 'slug') {
-					return sortDirection === 'asc'
-						? a.handle.localeCompare(b.handle)
-						: b.handle.localeCompare(a.handle);
-				}
-				if (sortKey === 'created') {
-					const aTime = new Date(a.createdAt).getTime();
-					const bTime = new Date(b.createdAt).getTime();
-					return sortDirection === 'asc' ? aTime - bTime : bTime - aTime;
-				}
-				// Default: sort by updated
-				const aTime = new Date(a.updatedAt).getTime();
-				const bTime = new Date(b.updatedAt).getTime();
-				return sortDirection === 'asc' ? aTime - bTime : bTime - aTime;
 			});
 
 			return sorted;
 		},
 
-		saveView() {
-			const currentView = this.viewTabs._v[this.selectedView._v];
-			if (currentView == null) {
-				return;
-			}
-
-			this.viewTabs._v[this.selectedView._v] = {
-				...currentView,
-				filters: { ...this.filters._v },
-				sortSelected: [...this.sortSelected._v]
-			};
-			this.viewTabs._notify();
-		},
-		loadView(viewIndex: number) {
-			const view = this.viewTabs._v[viewIndex];
+		loadView(index) {
+			const view = this.viewTabs._v[index];
 			if (view == null) {
-				return;
+				return false;
 			}
 
 			this.filters.set({ ...view.filters });
 			this.sortSelected.set([...view.sortSelected]);
+			return true;
 		},
-		selectView(viewIndex: number) {
-			this.selectedView.set(viewIndex);
-			this.loadView(viewIndex);
+		selectView(index) {
+			this.selectedView.set(index);
+			return this.loadView(index);
 		},
-		async createView(viewName) {
-			const newView: TView = {
-				name: viewName,
-				key: viewName.toLowerCase().replace(/\s+/g, '-'),
-				filters: {
+		saveToView(index) {
+			const currentView = this.viewTabs._v[index];
+			if (currentView == null) {
+				return false;
+			}
+
+			this.viewTabs._v[index] = {
+				...currentView,
+				filters: deepCopy(this.filters._v),
+				sortSelected: deepCopy(this.sortSelected._v)
+			};
+			this.viewTabs._notify();
+			return true;
+		},
+		cancelViewUpdate() {
+			return this.loadView(this.selectedView._v);
+		},
+		createView(name, options = {}) {
+			const {
+				filters = {
 					name: '',
 					slug: '',
 					status: [],
 					created: null
 				},
-				sortSelected: ['updated desc']
+				sortSelected = ['updated desc']
+			} = options;
+			const newView: TView = {
+				name,
+				key: name.toLowerCase().replace(/\s+/g, '-'),
+				filters,
+				sortSelected
 			};
 			this.viewTabs.set((v) => [...v, newView]);
 			this.selectView(this.viewTabs._v.length - 1);
 			return true;
 		},
-		async deleteView(index) {
+		deleteView(index) {
 			const newViewTabs = [...this.viewTabs._v];
 			newViewTabs.splice(index, 1);
 			this.viewTabs.set(newViewTabs);
 			this.selectView(0);
 			return true;
 		},
-		async renameView(index, newName) {
+		renameView(index, newName) {
 			this.viewTabs.set((v) =>
 				v.map((tab, idx) =>
 					idx === index
@@ -188,15 +203,15 @@ export function createPagesContext(config: TCreatePagesContextConfig): TPagesCon
 			);
 			return true;
 		},
-		async duplicateView(viewName) {
-			const currentView = this.viewTabs._v[this.selectedView._v];
+		duplicateView(index, duplicateName) {
+			const currentView = this.viewTabs._v[index];
 			if (currentView == null) {
 				return false;
 			}
 
 			const duplicatedView: TView = {
-				name: viewName,
-				key: viewName.toLowerCase().replace(/\s+/g, '-'),
+				name: duplicateName,
+				key: duplicateName.toLowerCase().replace(/\s+/g, '-'),
 				filters: { ...currentView.filters },
 				sortSelected: [...currentView.sortSelected]
 			};
@@ -323,13 +338,17 @@ export interface TPagesContext {
 		sortSelected?: string[];
 	}) => TTableSite[];
 
-	saveView: () => void;
-	loadView: (viewIndex: number) => void;
-	selectView: (viewIndex: number) => void;
-	createView: (viewName: string) => Promise<boolean>;
-	deleteView: (index: number) => Promise<boolean>;
-	renameView: (index: number, newName: string) => Promise<boolean>;
-	duplicateView: (viewName: string) => Promise<boolean>;
+	loadView: (index: number) => boolean;
+	selectView: (index: number) => boolean;
+	saveToView: (index: number) => boolean;
+	cancelViewUpdate: () => boolean;
+	createView: (
+		viewName: string,
+		options?: { filters?: TFilters; sortSelected?: string[] }
+	) => boolean;
+	deleteView: (index: number) => boolean;
+	renameView: (index: number, newName: string) => boolean;
+	duplicateView: (index: number, duplicateName: string) => boolean;
 	persistViews: () => Promise<boolean>;
 
 	clearFilters: () => void;
