@@ -160,16 +160,14 @@ export function createPagesContext(config: TCreatePagesContextConfig): TPagesCon
 				sortSelected: ['updated desc']
 			};
 			this.viewTabs.set((v) => [...v, newView]);
-			this.selectedView.set(this.viewTabs._v.length - 1);
-			this.loadView(this.viewTabs._v.length - 1);
+			this.selectView(this.viewTabs._v.length - 1);
 			return true;
 		},
 		async deleteView(index) {
 			const newViewTabs = [...this.viewTabs._v];
 			newViewTabs.splice(index, 1);
 			this.viewTabs.set(newViewTabs);
-			this.selectedView.set(0);
-			this.loadView(0);
+			this.selectView(0);
 			return true;
 		},
 		async renameView(index, newName) {
@@ -188,7 +186,9 @@ export function createPagesContext(config: TCreatePagesContextConfig): TPagesCon
 		},
 		async duplicateView(viewName) {
 			const currentView = this.viewTabs._v[this.selectedView._v];
-			if (currentView == null) return false;
+			if (currentView == null) {
+				return false;
+			}
 
 			const duplicatedView: TView = {
 				name: viewName,
@@ -197,8 +197,7 @@ export function createPagesContext(config: TCreatePagesContextConfig): TPagesCon
 				sortSelected: [...currentView.sortSelected]
 			};
 			this.viewTabs.set((v) => [...v, duplicatedView]);
-			this.selectedView.set(this.viewTabs._v.length - 1);
-			this.loadView(this.viewTabs._v.length - 1);
+			this.selectView(this.viewTabs._v.length - 1);
 			return true;
 		},
 

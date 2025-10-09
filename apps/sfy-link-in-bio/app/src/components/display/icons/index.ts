@@ -42,6 +42,7 @@ export {
 	ImageIcon as PolarisImageIcon,
 	LayoutSectionIcon as PolarisLayoutSectionIcon,
 	LiveIcon as PolarisLiveIcon,
+	MenuHorizontalIcon as PolarisMenuHorizontalIcon,
 	MenuVerticalIcon as PolarisMenuVerticalIcon,
 	MinusIcon as PolarisMinusIcon,
 	MobileIcon as PolarisMobileIcon,

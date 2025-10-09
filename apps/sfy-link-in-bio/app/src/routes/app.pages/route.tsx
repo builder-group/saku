@@ -20,7 +20,7 @@ import { useRevalidator } from 'react-router';
 import { Err, Ok, unwrapOrUndefined } from 'tuple-result';
 import { AppContext, shopifyConfig } from '@/.server/environment';
 import {
-	PolarisMenuVerticalIcon,
+	PolarisMenuHorizontalIcon,
 	PolarisPageIcon,
 	useDeleteSiteModal,
 	usePageEditorModal
@@ -318,8 +318,9 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 										{ title: 'Page Name' },
 										{ title: 'Page Slug' },
 										{ title: 'Status' },
+										{ title: 'Created' },
 										{ title: 'Updated' },
-										{ title: 'Actions' }
+										{ title: 'Actions', alignment: 'center' }
 									]}
 									selectable={false}
 								>
@@ -356,18 +357,28 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 												</IndexTable.Cell>
 												<IndexTable.Cell>
 													<Text as="span" variant="bodyMd">
+														{siteItem.createdAt != null
+															? new Date(siteItem.createdAt).toLocaleDateString()
+															: 'Never'}
+													</Text>
+												</IndexTable.Cell>
+												<IndexTable.Cell>
+													<Text as="span" variant="bodyMd">
 														{siteItem.updatedAt != null
 															? new Date(siteItem.updatedAt).toLocaleDateString()
 															: 'Never'}
 													</Text>
 												</IndexTable.Cell>
-												<IndexTable.Cell>
-													<div className="flex justify-end" onClick={(e) => e.stopPropagation()}>
+												<IndexTable.Cell flush>
+													<div
+														className="flex items-center justify-center pt-1"
+														onClick={(e) => e.stopPropagation()}
+													>
 														<SiteActionsPopover
 															activator={
 																<Button
-																	icon={PolarisMenuVerticalIcon}
-																	variant="plain"
+																	icon={PolarisMenuHorizontalIcon}
+																	variant="tertiary"
 																	accessibilityLabel="Bio page actions"
 																/>
 															}
