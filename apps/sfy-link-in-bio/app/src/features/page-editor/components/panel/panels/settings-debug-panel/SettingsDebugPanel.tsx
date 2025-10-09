@@ -5,6 +5,7 @@ import { ResizablePanel } from '@/components';
 import { useEditorBreakpoint } from '../../../../hooks';
 import { TPageEditor } from '../../../../lib';
 import { PanelHeader } from '../../PanelHeader';
+import { OverrideWithExternalSiteSection } from './OverrideWithExternalSiteSection';
 
 export const SettingsDebugPanel: React.FC<TSettingsDebugPanelProps> = (props) => {
 	const { editor, order } = props;
@@ -57,7 +58,14 @@ export const SettingsDebugPanel: React.FC<TSettingsDebugPanelProps> = (props) =>
 				</PanelHeader>
 
 				<div className="h-full flex-1 overflow-y-auto p-4">
-					<div className="mx-auto w-full max-w-screen-xl space-y-6">TODO</div>
+					<div className="mx-auto w-full max-w-screen-xl space-y-6">
+						<OverrideWithExternalSiteSection
+							title="Override with External Site"
+							description="Replace your current page content with content from an external site."
+							helpText="This will parse the external site and completely override your current page content."
+							editor={editor}
+						/>
+					</div>
 				</div>
 			</div>
 		</ResizablePanel>

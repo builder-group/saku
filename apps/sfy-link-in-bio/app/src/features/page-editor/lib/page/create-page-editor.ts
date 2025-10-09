@@ -724,6 +724,38 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 			return `${this.site.platformBaseUrl}/${this.site.handle._v}`;
 		},
 
+		overrideWith(flatSite: TFlatSite) {
+			this.site.version = flatSite.version;
+			this.rootNodeId = flatSite.rootId;
+
+			// Rebuild node map with new nodes
+			const parentMap = Object.values(flatSite.nodes).reduce(
+				(map, node) => {
+					if ('children' in node && node.children) {
+						node.children.forEach((childId) => {
+							map[childId] = node.id;
+						});
+					}
+					return map;
+				},
+				{} as Record<TNodeId, TNodeId>
+			);
+			this.nodeMap = Object.fromEntries(
+				Object.entries(flatSite.nodes).map(([id, node]) => [
+					id,
+					createNodeState(node, parentMap[id as TNodeId])
+				])
+			);
+
+			// Override assets, integrations, and tokens
+			this.assetsMap = deepCopy(flatSite.assets);
+			this.integrationsMap = deepCopy(flatSite.integrations);
+			this.tokenMap.set(deepCopy(flatSite.tokens));
+
+			this.unselectNode();
+			this.loadFonts();
+		},
+
 		toSite() {
 			return toHierarchical(this.toFlatSite());
 		},
@@ -838,6 +870,8 @@ export interface TPageEditor {
 
 	getSiteUrl: () => string;
 	getSitePlatformUrl: () => string;
+
+	overrideWith: (flatSite: TFlatSite) => void;
 
 	toSite: () => TSite;
 	toFlatSite: () => TFlatSite;

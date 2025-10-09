@@ -1,10 +1,13 @@
 import { Text } from '@shopify/polaris';
 import { useCompute, useFeatureState } from 'feature-react';
 import React from 'react';
-import { CopyIdSection, DeleteSiteSection, FormSection, ResizablePanel } from '@/components';
+import { ResizablePanel } from '@/components';
 import { useEditorBreakpoint } from '../../../../hooks';
 import { TPageEditor } from '../../../../lib';
 import { PanelHeader } from '../../PanelHeader';
+import { CopyIdSection } from './CopyIdSection';
+import { DeleteSiteSection } from './DeleteSiteSection';
+import { FormSection } from './FormSection';
 
 export const SettingsGeneralPanel: React.FC<TSettingsGeneralPanelProps> = (props) => {
 	const { editor, order } = props;

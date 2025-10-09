@@ -2,7 +2,11 @@ import { useAppBridge } from '@shopify/app-bridge-react';
 import { Button, Text } from '@shopify/polaris';
 import React from 'react';
 import { useParentCommunication } from '@/hooks';
-import { DeleteSiteConfirmationModal, PageEditorModal, TDeleteSiteModalToParent } from '../modals';
+import {
+	DeleteSiteConfirmationModal,
+	PageEditorModal,
+	TDeleteSiteModalToParent
+} from '../../../../../../components/layout/modals';
 
 export const DeleteSiteSection: React.FC<TDeleteSiteSectionProps> = (props) => {
 	const { siteId, title, description, buttonText = 'Delete Site' } = props;

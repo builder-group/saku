@@ -31,11 +31,8 @@ export const FormSection: React.FC<TFormSectionProps> = (props) => {
 			}
 
 			setIsSaving(true);
-			try {
-				await onSubmit(value);
-			} finally {
-				setIsSaving(false);
-			}
+			await onSubmit(value);
+			setIsSaving(false);
 		},
 		[isSaveDisabled, value, onSubmit]
 	);
