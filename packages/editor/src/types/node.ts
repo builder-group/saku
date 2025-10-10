@@ -39,24 +39,19 @@ export type TFlatNode =
 
 export type TNodeId = TId<'node'>;
 
-export type TBaseNode<GType extends string, GComposition extends TComposition<string, any>> = {
-	type: GType; // Node type (for routing)
-	composition: GComposition['key']; // Archetype/recipe (defines mixin set)
-} & TMergeMixins<GComposition['mixins']>;
-
-export interface TComposition<GKey extends string, GMixins extends TBaseMixin<any, any>[]> {
-	key: GKey;
-	mixins: GMixins;
-}
+export type TNodeComposition<GKey extends string, GMixins extends TBaseMixin<any, any>[]> = {
+	composition: GKey;
+} & Extract<GMixins[number], { key: 'node' }>['value'] &
+	Omit<TMergeMixins<GMixins>, 'node'>;
 
 // =========================================================================
 // Page Node
 // =========================================================================
 
-export type TPageNode = TBaseNode<'page', TDefaultPageComposition>;
-export type TFlatPageNode = TBaseNode<'page', TDefaultFlatPageComposition>;
+export type TPageNode = TDefaultPageComposition;
+export type TFlatPageNode = TDefaultFlatPageComposition;
 
-export type TDefaultPageComposition = TComposition<
+export type TDefaultPageComposition = TNodeComposition<
 	'default',
 	[
 		TIdMixin,
@@ -67,8 +62,7 @@ export type TDefaultPageComposition = TComposition<
 		TFillStyleMixin
 	]
 >;
-
-export type TDefaultFlatPageComposition = TComposition<
+export type TDefaultFlatPageComposition = TNodeComposition<
 	'default', // Use 'default' (instead of e.g. 'flat') to match variant naming across flat/regular contexts (e.g., 'elevated' would be 'elevated' in both)
 	[
 		TIdMixin,
@@ -98,9 +92,9 @@ export type TPageNodeMixin = TBaseMixin<
 // About Node
 // =========================================================================
 
-export type TAboutNode = TBaseNode<'about', TDefaultAboutComposition>;
+export type TAboutNode = TDefaultAboutComposition;
 
-export type TDefaultAboutComposition = TComposition<
+export type TDefaultAboutComposition = TNodeComposition<
 	TDefaultAboutContentMixin['value']['type'],
 	[
 		TIdMixin,
@@ -146,11 +140,11 @@ export interface TContactIcon {
 // =========================================================================
 
 export type TLinkNode =
-	| TBaseNode<'link', TSingleLinkComposition>
-	| TBaseNode<'link', TYouTubeEmbedLinkComposition>
-	| TBaseNode<'link', TSpotifyEmbedLinkComposition>;
+	| TSingleLinkComposition
+	| TYouTubeEmbedLinkComposition
+	| TSpotifyEmbedLinkComposition;
 
-export type TSingleLinkComposition = TComposition<
+export type TSingleLinkComposition = TNodeComposition<
 	TSingleLinkContentMixin['value']['type'],
 	[
 		TIdMixin,
@@ -166,8 +160,7 @@ export type TSingleLinkComposition = TComposition<
 		TImageStyleMixin
 	]
 >;
-
-export type TYouTubeEmbedLinkComposition = TComposition<
+export type TYouTubeEmbedLinkComposition = TNodeComposition<
 	TYouTubeEmbedLinkContentMixin['value']['type'],
 	[
 		TIdMixin,
@@ -179,8 +172,7 @@ export type TYouTubeEmbedLinkComposition = TComposition<
 		TShadowStyleMixin
 	]
 >;
-
-export type TSpotifyEmbedLinkComposition = TComposition<
+export type TSpotifyEmbedLinkComposition = TNodeComposition<
 	TSpotifyEmbedLinkContentMixin['value']['type'],
 	[
 		TIdMixin,
@@ -253,9 +245,9 @@ export type TSpotifyEmbedContentType = 'track' | 'album' | 'playlist' | 'artist'
 // Media Node
 // =========================================================================
 
-export type TMediaNode = TBaseNode<'media', TImageMediaComposition>;
+export type TMediaNode = TImageMediaComposition;
 
-export type TImageMediaComposition = TComposition<
+export type TImageMediaComposition = TNodeComposition<
 	TImageMediaContentMixin['value']['type'],
 	[
 		TIdMixin,
@@ -291,9 +283,9 @@ export type TImageMediaContentMixin = TBaseMixin<
 // Text Node
 // =========================================================================
 
-export type TTextNode = TBaseNode<'text', TDefaultTextComposition>;
+export type TTextNode = TDefaultTextComposition;
 
-export type TDefaultTextComposition = TComposition<
+export type TDefaultTextComposition = TNodeComposition<
 	TDefaultTextContentMixin['value']['type'],
 	[
 		TIdMixin,
@@ -327,9 +319,9 @@ export type TDefaultTextContentMixin = TBaseMixin<
 // Product Node
 // =========================================================================
 
-export type TProductNode = TBaseNode<'product', TSingleProductComposition>;
+export type TProductNode = TSingleProductComposition;
 
-export type TSingleProductComposition = TComposition<
+export type TSingleProductComposition = TNodeComposition<
 	TSingleProductContentMixin['value']['type'],
 	[
 		TIdMixin,

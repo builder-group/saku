@@ -6,9 +6,8 @@ export const aboutNodeMetadata: TNodeMetadata<'about'> = {
 	label: 'About',
 	compositions: {
 		default: {
-			node: {
-				type: 'about'
-			},
+			type: 'about',
+			composition: 'default',
 			content: {
 				type: 'default',
 				name: 'Your Name',
@@ -69,9 +68,8 @@ export const linkNodeMetadata: TNodeMetadata<'link'> = {
 	label: 'Link',
 	compositions: {
 		'single': {
-			node: {
-				type: 'link'
-			},
+			type: 'link',
+			composition: 'single',
 			content: {
 				type: 'single',
 				url: 'https://www.shopify.com/',
@@ -100,9 +98,8 @@ export const linkNodeMetadata: TNodeMetadata<'link'> = {
 			}
 		},
 		'youtube-embed': {
-			node: {
-				type: 'link'
-			},
+			type: 'link',
+			composition: 'youtube-embed',
 			content: {
 				type: 'youtube-embed',
 				url: 'https://www.youtube.com/watch?v=',
@@ -120,9 +117,8 @@ export const linkNodeMetadata: TNodeMetadata<'link'> = {
 			shadow: tokenRef('shadow.default', 'shadow')
 		},
 		'spotify-embed': {
-			node: {
-				type: 'link'
-			},
+			type: 'link',
+			composition: 'spotify-embed',
 			content: {
 				type: 'spotify-embed',
 				url: 'https://open.spotify.com/track/',
@@ -148,9 +144,8 @@ export const mediaNodeMetadata: TNodeMetadata<'media'> = {
 	label: 'Media',
 	compositions: {
 		image: {
-			node: {
-				type: 'media'
-			},
+			type: 'media',
+			composition: 'image',
 			content: {
 				type: 'image'
 			},
@@ -181,11 +176,10 @@ export const pageNodeMetadata: TNodeMetadata<'page'> = {
 	label: 'Page',
 	compositions: {
 		default: {
-			node: {
-				type: 'page',
-				metadata: {},
-				hasWatermark: true
-			},
+			type: 'page',
+			composition: 'default',
+			metadata: {},
+			hasWatermark: true,
 			children: [],
 			autoLayout: {
 				horizontalPadding: 24,
@@ -208,9 +202,8 @@ export const productNodeMetadata: TNodeMetadata<'product'> = {
 	label: 'Product',
 	compositions: {
 		single: {
-			node: {
-				type: 'product'
-			},
+			type: 'product',
+			composition: 'single',
 			content: {
 				type: 'single'
 			},
@@ -260,9 +253,8 @@ export const textNodeMetadata: TNodeMetadata<'text'> = {
 	label: 'Text',
 	compositions: {
 		default: {
-			node: {
-				type: 'text'
-			},
+			type: 'text',
+			composition: 'default',
 			content: {
 				type: 'default',
 				text: { type: 'markdown', value: 'Add your text here' }
@@ -297,7 +289,7 @@ export type TNodeMetadata<GType extends TFlatNode['type']> = {
 	compositions: {
 		[K in Extract<TFlatNode, { type: GType }>['composition']]: Omit<
 			Extract<TFlatNode, { type: GType; composition: K }>,
-			'id' | 'type' | 'composition'
+			'id'
 		>;
 	};
 };
