@@ -14,10 +14,7 @@ export const ResolvedMediaNode = React.forwardRef<
 	const renderContent = React.useCallback(() => {
 		switch (content.type) {
 			case 'image': {
-				if (node.content.media == null) {
-					return <Skeleton node={node} />;
-				}
-				return <ImageContent node={node} media={node.content.media} cx={cx} />;
+				return <ImageContent node={node} cx={cx} />;
 			}
 			default:
 				return <Skeleton node={node} />;

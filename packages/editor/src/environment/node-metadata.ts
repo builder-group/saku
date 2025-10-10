@@ -176,6 +176,7 @@ export const mediaNodeMetadata: TNodeMetadata<'media'> = {
 				verticalGap: null
 			},
 			appearance: tokenRef('appearance.default', 'appearance'),
+			fill: tokenRef('fill.default', 'fill'),
 			stroke: tokenRef('stroke.default', 'stroke'),
 			shadow: tokenRef('shadow.default', 'shadow'),
 			image: {

@@ -1,12 +1,16 @@
 import React from 'react';
 import { TResolvedNodeProps } from '../../../../lib';
-import { TResolvedImageMediaNodeContent, TResolvedMediaNode } from '../../types';
+import { TResolvedImageMediaNodeComposition } from '../../types';
+import { Skeleton } from './Skeleton';
 
 export const ImageContent: React.FC<TImageContentProps> = (props) => {
-	const {
-		node: { autoLayout, appearance, fill, stroke, shadow, image },
-		media
-	} = props;
+	const { node } = props;
+	const { autoLayout, appearance, fill, stroke, shadow, image } = node;
+
+	const media = node.content.media;
+	if (media == null) {
+		return <Skeleton node={node} />;
+	}
 
 	return (
 		<div
@@ -31,7 +35,6 @@ export const ImageContent: React.FC<TImageContentProps> = (props) => {
 };
 
 interface TImageContentProps {
-	node: TResolvedMediaNode<TResolvedImageMediaNodeContent>;
-	media: NonNullable<TResolvedImageMediaNodeContent['media']>;
-	cx: TResolvedNodeProps<TResolvedMediaNode<TResolvedImageMediaNodeContent>>['cx'];
+	node: TResolvedImageMediaNodeComposition;
+	cx: TResolvedNodeProps<TResolvedImageMediaNodeComposition>['cx'];
 }

@@ -259,6 +259,7 @@ export type TImageMediaNodeComposition = TNodeComposition<
 		TImageMediaNodeContentMixin,
 		TAutoLayoutStyleMixin,
 		TAppearanceStyleMixin,
+		TFillStyleMixin,
 		TStrokeStyleMixin,
 		TShadowStyleMixin,
 		TImageStyleMixin

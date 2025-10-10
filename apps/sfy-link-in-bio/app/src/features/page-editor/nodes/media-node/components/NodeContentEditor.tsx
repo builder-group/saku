@@ -3,7 +3,6 @@ import { InlineError, Select, Text } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react/state';
 import React from 'react';
 import { AccordionSection, ImageUploadField, JsonPreview, TImageUploadEvent } from '@/components';
-import { useNodeProperty } from '../../../hooks';
 import { TNodeEditorComponentProps } from '../../../lib';
 
 export const MediaNodeContentEditor: React.FC<TNodeEditorComponentProps<TMediaNode>> = (props) => {
@@ -11,9 +10,11 @@ export const MediaNodeContentEditor: React.FC<TNodeEditorComponentProps<TMediaNo
 	const { content } = useFeatureState(nodeState);
 
 	const [mediaImageError, setImageError] = React.useState<string | null>(null);
-	const [selectedMediaType, setSelectedMediaType] = React.useState<TMediaType>(() => {
-		return content.type ?? 'image';
-	});
+	const [selectedMediaType, setSelectedMediaType] = React.useState<TMediaNode['content']['type']>(
+		() => {
+			return content.type ?? 'image';
+		}
+	);
 
 	const mediaImage = React.useMemo(() => {
 		const asset = editor.getImageAsset(content.media?.hash);
@@ -27,19 +28,12 @@ export const MediaNodeContentEditor: React.FC<TNodeEditorComponentProps<TMediaNo
 		};
 	}, [content.media, editor]);
 
-	const autoLayoutState = useNodeProperty(nodeState, 'autoLayout');
-	const appearanceState = useNodeProperty(nodeState, 'appearance');
-	const fillState = useNodeProperty(nodeState, 'fill');
-	const strokeState = useNodeProperty(nodeState, 'stroke');
-	const shadowState = useNodeProperty(nodeState, 'shadow');
-	const imageState = useNodeProperty(nodeState, 'image');
-
 	// =========================================================================
 	// Events
 	// =========================================================================
 
 	const handleMediaTypeChange = React.useCallback(
-		(value: TMediaType) => {
+		(value: TMediaNode['content']['type']) => {
 			setSelectedMediaType(value);
 
 			// Clear existing media when changing type
@@ -129,5 +123,3 @@ export const MediaNodeContentEditor: React.FC<TNodeEditorComponentProps<TMediaNo
 		</>
 	);
 };
-
-type TMediaType = TMediaNode['content']['type'];
