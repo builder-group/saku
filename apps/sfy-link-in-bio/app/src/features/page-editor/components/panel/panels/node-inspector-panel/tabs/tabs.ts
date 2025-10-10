@@ -2,9 +2,14 @@ import { TabProps } from '@shopify/polaris';
 
 export const tabs = [
 	{
-		id: 'customize',
-		content: 'Customize',
-		panelID: 'customize'
+		id: 'content',
+		content: 'Content',
+		panelID: 'content'
+	},
+	{
+		id: 'style',
+		content: 'Style',
+		panelID: 'style'
 	},
 	{
 		id: 'analytics',

@@ -5,7 +5,6 @@ import {
 	parseUrl,
 	TAboutNode,
 	TEmailAction,
-	tokenRef,
 	TPhoneAction,
 	TSocialAction
 } from '@repo/editor';
@@ -18,19 +17,9 @@ import {
 	JsonPreview,
 	type TImageUploadEvent
 } from '@/components';
-import { useNodeProperty } from '../../../hooks';
 import { TNodeEditorComponentProps } from '../../../lib';
-import {
-	AppearanceStyleMixinEditor,
-	AutoLayoutStyleMixinEditor,
-	FillStyleMixinEditor,
-	ImageStyleMixinEditor,
-	ShadowStyleMixinEditor,
-	StrokeStyleMixinEditor,
-	TextStyleMixinEditor
-} from '../../../mixins';
 
-export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = (props) => {
+export const AboutNodeContentEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = (props) => {
 	const { nodeState, editor } = props;
 	const { content } = useFeatureState(nodeState);
 
@@ -72,15 +61,6 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 			return { key: key as keyof typeof contactMetadataMap, value, metadata };
 		});
 	}, [content.contactIcons]);
-
-	const autoLayoutState = useNodeProperty(nodeState, 'autoLayout');
-	const appearanceState = useNodeProperty(nodeState, 'appearance');
-	const fillState = useNodeProperty(nodeState, 'fill');
-	const strokeState = useNodeProperty(nodeState, 'stroke');
-	const shadowState = useNodeProperty(nodeState, 'shadow');
-	const textXlState = useNodeProperty(nodeState, 'textXl');
-	const textState = useNodeProperty(nodeState, 'text');
-	const imageState = useNodeProperty(nodeState, 'image');
 
 	// =========================================================================
 	// Events
@@ -227,61 +207,58 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 
 	return (
 		<>
-			{/* Content Section */}
-			<AccordionSection title="Content" defaultOpen={true}>
-				<div className="space-y-4">
-					{/* Avatar */}
-					<div className="space-y-1">
-						<Text as="span" variant="bodySm" tone="subdued">
-							Avatar
-						</Text>
-						<ImageUploadField
-							image={profilePictureImage}
-							onChange={handleProfilePictureChange}
-							onError={setProfilePictureImageError}
+			<div className="space-y-4 border-b border-neutral-200 px-4 py-3">
+				{/* Avatar */}
+				<div className="space-y-1">
+					<Text as="span" variant="bodySm" tone="subdued">
+						Avatar
+					</Text>
+					<ImageUploadField
+						image={profilePictureImage}
+						onChange={handleProfilePictureChange}
+						onError={setProfilePictureImageError}
+					/>
+					{profilePictureImageError != null && (
+						<InlineError
+							message={profilePictureImageError}
+							fieldID="profile-picture-upload-error"
 						/>
-						{profilePictureImageError != null && (
-							<InlineError
-								message={profilePictureImageError}
-								fieldID="profile-picture-upload-error"
-							/>
-						)}
-					</div>
-
-					{/* Name */}
-					<div className="space-y-1">
-						<Text as="span" variant="bodySm" tone="subdued">
-							Name
-						</Text>
-						<TextField
-							id="name-field"
-							label="Name"
-							labelHidden
-							value={content.name}
-							onChange={handleNameChange}
-							autoComplete="off"
-							placeholder="Enter your name"
-						/>
-					</div>
-
-					{/* Bio */}
-					<div className="space-y-1">
-						<Text as="span" variant="bodySm" tone="subdued">
-							Bio
-						</Text>
-						<TextField
-							id="bio-field"
-							label="Bio"
-							labelHidden
-							value={content.bio}
-							onChange={handleBioChange}
-							multiline={4}
-							autoComplete="off"
-							placeholder="Tell us about yourself"
-						/>
-					</div>
+					)}
 				</div>
-			</AccordionSection>
+
+				{/* Name */}
+				<div className="space-y-1">
+					<Text as="span" variant="bodySm" tone="subdued">
+						Name
+					</Text>
+					<TextField
+						id="name-field"
+						label="Name"
+						labelHidden
+						value={content.name}
+						onChange={handleNameChange}
+						autoComplete="off"
+						placeholder="Enter your name"
+					/>
+				</div>
+
+				{/* Bio */}
+				<div className="space-y-1">
+					<Text as="span" variant="bodySm" tone="subdued">
+						Bio
+					</Text>
+					<TextField
+						id="bio-field"
+						label="Bio"
+						labelHidden
+						value={content.bio}
+						onChange={handleBioChange}
+						multiline={4}
+						autoComplete="off"
+						placeholder="Tell us about yourself"
+					/>
+				</div>
+			</div>
 
 			{/* Contact Section */}
 			<AccordionSection title="Contact" defaultOpen={false}>
@@ -318,82 +295,6 @@ export const AboutNodeEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = 
 						);
 					})}
 				</div>
-			</AccordionSection>
-
-			{/* Design Section */}
-			<AccordionSection title="Design" collapsibleClassName="p-0 border-b-0">
-				<AccordionSection
-					title="Layer"
-					collapsibleClassName="px-0 space-y-3"
-					size="tight"
-					defaultOpen={true}
-				>
-					<AutoLayoutStyleMixinEditor
-						state={autoLayoutState}
-						onLinkToken={() => tokenRef('auto-layout.default', 'auto-layout')}
-						editor={editor}
-					/>
-					<div className="h-px bg-neutral-200" />
-					<AppearanceStyleMixinEditor
-						state={appearanceState}
-						onLinkToken={() => tokenRef('appearance.default', 'appearance')}
-						editor={editor}
-					/>
-					<div className="h-px bg-neutral-200" />
-					<FillStyleMixinEditor
-						state={fillState}
-						onLinkToken={() => tokenRef('fill.default', 'fill')}
-						editor={editor}
-					/>
-					<div className="h-px bg-neutral-200" />
-					<StrokeStyleMixinEditor
-						state={strokeState}
-						onLinkToken={() => tokenRef('stroke.default', 'stroke')}
-						editor={editor}
-					/>
-					<div className="h-px bg-neutral-200" />
-					<ShadowStyleMixinEditor
-						state={shadowState}
-						onLinkToken={() => tokenRef('shadow.default', 'shadow')}
-						editor={editor}
-					/>
-				</AccordionSection>
-				<AccordionSection
-					title="Name Text"
-					collapsibleClassName="px-0 space-y-3"
-					size="tight"
-					defaultOpen={true}
-				>
-					<TextStyleMixinEditor
-						state={textXlState}
-						onLinkToken={() => tokenRef('text.xl', 'text')}
-						editor={editor}
-					/>
-				</AccordionSection>
-				<AccordionSection
-					title="Bio Text"
-					collapsibleClassName="px-0 space-y-3"
-					size="tight"
-					defaultOpen={true}
-				>
-					<TextStyleMixinEditor
-						state={textState}
-						onLinkToken={() => tokenRef('text.default', 'text')}
-						editor={editor}
-					/>
-				</AccordionSection>
-				<AccordionSection
-					title="Avatar Image"
-					collapsibleClassName="px-0 space-y-3"
-					size="tight"
-					defaultOpen={true}
-				>
-					<ImageStyleMixinEditor
-						state={imageState}
-						onLinkToken={() => tokenRef('image.default', 'image')}
-						editor={editor}
-					/>
-				</AccordionSection>
 			</AccordionSection>
 
 			{/* Debug Section */}

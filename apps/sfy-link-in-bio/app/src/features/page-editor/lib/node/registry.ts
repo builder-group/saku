@@ -1,7 +1,8 @@
 import {
 	AboutNode,
-	AboutNodeEditor,
+	AboutNodeContentEditor,
 	aboutNodeMetadata,
+	AboutNodeStyleEditor,
 	getAboutNodeAssetHashes,
 	getLinkNodeAssetHashes,
 	getMediaNodeAssetHashes,
@@ -71,13 +72,24 @@ export const resolvedNodeRegistry = {
 	promised: ResolvedPromisedNode
 } as const;
 
-export const nodeEditorRegistry = {
+export const nodeContentEditorRegistry = {
 	site: null,
 	page: PageNodeEditor,
-	about: AboutNodeEditor,
+	about: AboutNodeContentEditor,
 	link: LinkNodeEditor,
 	media: MediaNodeEditor,
 	text: TextNodeEditor,
 	product: ProductNodeEditor,
+	promised: null
+} as const;
+
+export const nodeStyleEditorRegistry = {
+	site: null,
+	page: null,
+	about: AboutNodeStyleEditor,
+	link: null,
+	media: null,
+	text: null,
+	product: null,
 	promised: null
 } as const;
