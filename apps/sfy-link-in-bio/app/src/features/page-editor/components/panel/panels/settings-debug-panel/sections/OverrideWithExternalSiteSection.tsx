@@ -58,7 +58,9 @@ export const OverrideWithExternalSiteSection: React.FC<TOverrideWithExternalSite
 				return;
 			}
 
-			editor.overrideWith(parseResponse.data.content as unknown as TFlatSite);
+			editor.overrideWith(parseResponse.data.content as unknown as TFlatSite, {
+				keepShopIntegration: true
+			});
 			editor.shopify.toast.show('Site overridden successfully', {
 				action: 'Publish',
 				onAction: async () => {

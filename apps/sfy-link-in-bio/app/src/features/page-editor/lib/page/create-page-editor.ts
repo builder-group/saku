@@ -724,12 +724,14 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 			return `${this.site.platformBaseUrl}/${this.site.handle._v}`;
 		},
 
-		overrideWith(flatSite: TFlatSite) {
-			this.site.version = flatSite.version;
-			this.rootNodeId = flatSite.rootId;
+		overrideWith(site, options = {}) {
+			const { keepShopIntegration = true } = options;
+
+			this.site.version = site.version;
+			this.rootNodeId = site.rootId;
 
 			// Rebuild node map with new nodes
-			const parentMap = Object.values(flatSite.nodes).reduce(
+			const parentMap = Object.values(site.nodes).reduce(
 				(map, node) => {
 					if ('children' in node && node.children) {
 						node.children.forEach((childId) => {
@@ -741,16 +743,26 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 				{} as Record<TNodeId, TNodeId>
 			);
 			this.nodeMap = Object.fromEntries(
-				Object.entries(flatSite.nodes).map(([id, node]) => [
+				Object.entries(site.nodes).map(([id, node]) => [
 					id,
 					createNodeState(node, parentMap[id as TNodeId])
 				])
 			);
 
-			// Override assets, integrations, and tokens
-			this.assetsMap = deepCopy(flatSite.assets);
-			this.integrationsMap = deepCopy(flatSite.integrations);
-			this.tokenMap.set(deepCopy(flatSite.tokens));
+			// Override integrations map
+			if (keepShopIntegration) {
+				const shopIntegration = Object.values(this.integrationsMap).find(
+					(integration) => integration.type === 'shopify' && integration.shopId === this.shopId
+				);
+				if (shopIntegration != null) {
+					site.integrations[shopIntegration.id] = shopIntegration;
+				}
+			}
+			this.integrationsMap = site.integrations;
+
+			// Override assets and tokens maps
+			this.assetsMap = site.assets;
+			this.tokenMap.set(site.tokens);
 
 			this.unselectNode();
 			this.loadFonts();
@@ -871,7 +883,7 @@ export interface TPageEditor {
 	getSiteUrl: () => string;
 	getSitePlatformUrl: () => string;
 
-	overrideWith: (flatSite: TFlatSite) => void;
+	overrideWith: (site: TFlatSite, options?: { keepShopIntegration?: boolean }) => void;
 
 	toSite: () => TSite;
 	toFlatSite: () => TFlatSite;
