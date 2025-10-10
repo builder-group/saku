@@ -23,6 +23,7 @@ export function getLinkNodeAssetHashes(node: TLinkNode): TAssetHash[] {
 
 	// Font asset (if not linked)
 	if (
+		'text' in node &&
 		!isTokenRef(node.text) &&
 		!isTokenRef(node.text.typography) &&
 		!isTokenRef(node.text.typography.font)
@@ -31,7 +32,12 @@ export function getLinkNodeAssetHashes(node: TLinkNode): TAssetHash[] {
 	}
 
 	// Fill asset (if not linked)
-	if (!isTokenRef(node.fill) && node.fill?.paint.type === 'image' && node.fill.paint.hash != null) {
+	if (
+		'fill' in node &&
+		!isTokenRef(node.fill) &&
+		node.fill?.paint.type === 'image' &&
+		node.fill.paint.hash != null
+	) {
 		hashes.push(node.fill.paint.hash);
 	}
 

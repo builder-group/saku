@@ -1,9 +1,9 @@
-import { TLinkNode, tokenRef } from '@repo/editor';
+import { tokenRef, TSingleLinkNodeComposition } from '@repo/editor';
 import { useCompute } from 'feature-react';
 import React from 'react';
 import { AccordionSection } from '@/components';
-import { useNodeProperty } from '../../../hooks';
-import { TNodeEditorComponentProps } from '../../../lib';
+import { useNodeProperty } from '../../../../hooks';
+import { TNodeEditorComponentProps } from '../../../../lib';
 import {
 	AppearanceStyleMixinEditor,
 	AutoLayoutStyleMixinEditor,
@@ -12,50 +12,18 @@ import {
 	ShadowStyleMixinEditor,
 	StrokeStyleMixinEditor,
 	TextStyleMixinEditor
-} from '../../../mixins';
+} from '../../../../mixins';
 
-export const LinkNodeStyleEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (props) => {
+export const SingleLinkStyleEditor: React.FC<
+	TNodeEditorComponentProps<TSingleLinkNodeComposition>
+> = (props) => {
 	const { nodeState, editor } = props;
 
-	const hasTextStyle = useCompute(nodeState, ({ value }) => {
-		switch (value.content.type) {
-			case 'single':
-				return true;
-			default:
-				return false;
-		}
-	});
-	const hasSmTextStyle = useCompute(nodeState, ({ value }) => {
-		switch (value.content.type) {
-			case 'single':
-				return true;
-			default:
-				return false;
-		}
-	});
 	const imageStyle = useCompute(nodeState, ({ value }) => {
-		switch (value.content.type) {
-			case 'single':
-				return {
-					enabled: value.content.favicon != null || value.content.userFavicon != null,
-					title: 'Favicon Image'
-				};
-			case 'youtube-embed':
-				return {
-					enabled: true,
-					title: 'Embed'
-				};
-			case 'spotify-embed':
-				return {
-					enabled: true,
-					title: 'Embed'
-				};
-			default:
-				return {
-					enabled: false,
-					title: ''
-				};
-		}
+		return {
+			enabled: value.content.favicon != null || value.content.userFavicon != null,
+			title: 'Favicon Image'
+		};
 	});
 
 	const autoLayoutState = useNodeProperty(nodeState, 'autoLayout');
@@ -106,34 +74,32 @@ export const LinkNodeStyleEditor: React.FC<TNodeEditorComponentProps<TLinkNode>>
 				/>
 			</AccordionSection>
 
-			{hasTextStyle && (
-				<AccordionSection
-					title="Title Text"
-					collapsibleClassName="px-0 space-y-3"
-					size="tight"
-					defaultOpen={true}
-				>
-					<TextStyleMixinEditor
-						state={textState}
-						onLinkToken={() => tokenRef('text.default', 'text')}
-						editor={editor}
-					/>
-				</AccordionSection>
-			)}
-			{hasSmTextStyle && (
-				<AccordionSection
-					title="Description Text"
-					collapsibleClassName="px-0 space-y-3"
-					size="tight"
-					defaultOpen={true}
-				>
-					<TextStyleMixinEditor
-						state={textSmState}
-						onLinkToken={() => tokenRef('text.sm', 'text')}
-						editor={editor}
-					/>
-				</AccordionSection>
-			)}
+			<AccordionSection
+				title="Title Text"
+				collapsibleClassName="px-0 space-y-3"
+				size="tight"
+				defaultOpen={true}
+			>
+				<TextStyleMixinEditor
+					state={textState}
+					onLinkToken={() => tokenRef('text.default', 'text')}
+					editor={editor}
+				/>
+			</AccordionSection>
+
+			<AccordionSection
+				title="Description Text"
+				collapsibleClassName="px-0 space-y-3"
+				size="tight"
+				defaultOpen={true}
+			>
+				<TextStyleMixinEditor
+					state={textSmState}
+					onLinkToken={() => tokenRef('text.sm', 'text')}
+					editor={editor}
+				/>
+			</AccordionSection>
+
 			{imageStyle.enabled && (
 				<AccordionSection
 					title={imageStyle.title}

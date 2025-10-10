@@ -11,7 +11,7 @@ import {
 	resolveStrokeStyleMixin,
 	resolveTextStyleMixin
 } from '../../mixins';
-import { TResolvedAboutNode, TResolvedDefaultAboutContentMixin } from './types';
+import { TResolvedAboutNode, TResolvedDefaultAboutNodeContentMixin } from './types';
 
 export function resolveAboutNode(
 	node: TAboutNode,
@@ -21,7 +21,7 @@ export function resolveAboutNode(
 		node;
 
 	// Resolve content
-	let resolvedContent: TResolvedDefaultAboutContentMixin['value'];
+	let resolvedContent: TResolvedDefaultAboutNodeContentMixin['value'];
 	switch (content.type) {
 		case 'default': {
 			resolvedContent = {

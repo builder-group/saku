@@ -2,7 +2,7 @@ import {
 	createYouTubeUrl,
 	extractYouTubeId,
 	TYouTubeEmbedContentType,
-	TYouTubeEmbedLinkNodeContent
+	TYouTubeEmbedLinkNodeComposition
 } from '@repo/editor';
 import { Select, Text, TextField } from '@shopify/polaris';
 import { useCompute, useFeatureState, useListener } from 'feature-react/state';
@@ -203,6 +203,6 @@ export const YoutubeEmbedContent: React.FC<TYoutubeEmbedContentProps> = (props) 
 };
 
 interface TYoutubeEmbedContentProps {
-	cx: TNodeEditorContext<TYouTubeEmbedLinkNodeContent>;
+	cx: TNodeEditorContext<TYouTubeEmbedLinkNodeComposition>;
 	className: string;
 }

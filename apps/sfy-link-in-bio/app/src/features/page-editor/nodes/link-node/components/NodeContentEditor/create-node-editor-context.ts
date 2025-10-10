@@ -1,4 +1,4 @@
-import { parseUrl, TLinkNode, TLinkNodeContent } from '@repo/editor';
+import { parseUrl, TLinkNode } from '@repo/editor';
 import type { ShopifyGlobal } from '@shopify/app-bridge-types';
 import { createState, TState } from 'feature-state';
 import { Err, Ok, TResult } from 'tuple-result';
@@ -7,9 +7,9 @@ import { TNodeState, TPageEditor } from '../../../../lib';
 import { contentMetadataMap, contentTypePriority, TContentType } from './environment';
 import { getApplicableContent } from './lib';
 
-export function createNodeEditorContext<GContent extends TLinkNodeContent>(
-	config: TCreateNodeEditorContextConfig<GContent>
-): TNodeEditorContext<GContent> {
+export function createNodeEditorContext<GNode extends TLinkNode>(
+	config: TCreateNodeEditorContextConfig<GNode>
+): TNodeEditorContext<GNode> {
 	const { node, editor, shopify } = config;
 
 	return {
@@ -21,7 +21,7 @@ export function createNodeEditorContext<GContent extends TLinkNodeContent>(
 		isChangingContentType: createState(false),
 		isEnhancing: createState(false),
 
-		async updateContentType(this: TNodeEditorContext<GContent>, contentType) {
+		async updateContentType(this: TNodeEditorContext<GNode>, contentType) {
 			this.isChangingContentType.set(true);
 			this.selectedContentType.set(contentType);
 
@@ -60,7 +60,7 @@ export function createNodeEditorContext<GContent extends TLinkNodeContent>(
 			return Ok(undefined);
 		},
 
-		async updateUrlAndEnhance(this: TNodeEditorContext<GContent>, newUrl: string) {
+		async updateUrlAndEnhance(this: TNodeEditorContext<GNode>, newUrl: string) {
 			if (newUrl === this.node._v.content.url) {
 				return Ok(undefined);
 			}
@@ -104,7 +104,7 @@ export function createNodeEditorContext<GContent extends TLinkNodeContent>(
 			return Ok(undefined);
 		},
 
-		getBestContentType(this: TNodeEditorContext<GContent>, applicableTypes) {
+		getBestContentType(this: TNodeEditorContext<GNode>, applicableTypes) {
 			for (const type of contentTypePriority) {
 				if (applicableTypes.includes(type)) {
 					return type;
@@ -115,7 +115,7 @@ export function createNodeEditorContext<GContent extends TLinkNodeContent>(
 		},
 
 		async enhanceContent(
-			this: TNodeEditorContext<GContent>,
+			this: TNodeEditorContext<GNode>,
 			contentType = this.selectedContentType._v
 		) {
 			const metadata = contentMetadataMap[contentType];
@@ -137,14 +137,14 @@ export function createNodeEditorContext<GContent extends TLinkNodeContent>(
 	};
 }
 
-export interface TCreateNodeEditorContextConfig<GContent extends TLinkNodeContent> {
-	node: TNodeState<TLinkNode<GContent>>;
+export interface TCreateNodeEditorContextConfig<GNode extends TLinkNode> {
+	node: TNodeState<GNode>;
 	editor: TPageEditor;
 	shopify: ShopifyGlobal;
 }
 
-export interface TNodeEditorContext<GContent extends TLinkNodeContent> {
-	node: TNodeState<TLinkNode<GContent>>;
+export interface TNodeEditorContext<GNode extends TLinkNode> {
+	node: TNodeState<GNode>;
 	editor: TPageEditor;
 	shopify: ShopifyGlobal;
 	selectedContentType: TState<TContentType, []>;

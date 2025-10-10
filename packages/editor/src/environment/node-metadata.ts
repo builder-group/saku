@@ -113,8 +113,18 @@ export const linkNodeMetadata: TNodeMetadata<'link'> = {
 				verticalGap: null
 			},
 			appearance: tokenRef('appearance.default', 'appearance'),
+			fill: tokenRef('fill.default', 'fill'),
 			stroke: tokenRef('stroke.default', 'stroke'),
-			shadow: tokenRef('shadow.default', 'shadow')
+			shadow: tokenRef('shadow.default', 'shadow'),
+			image: {
+				appearance: {
+					visible: true,
+					opacity: tokenRef('image.default', 'image', 'appearance.opacity'),
+					borderRadius: null
+				},
+				stroke: tokenRef('image.default', 'image', 'stroke'),
+				shadow: tokenRef('image.default', 'image', 'shadow')
+			}
 		},
 		'spotify-embed': {
 			type: 'link',
@@ -133,8 +143,18 @@ export const linkNodeMetadata: TNodeMetadata<'link'> = {
 				verticalGap: null
 			},
 			appearance: tokenRef('appearance.default', 'appearance'),
+			fill: tokenRef('fill.default', 'fill'),
 			stroke: tokenRef('stroke.default', 'stroke'),
-			shadow: tokenRef('shadow.default', 'shadow')
+			shadow: tokenRef('shadow.default', 'shadow'),
+			image: {
+				appearance: {
+					visible: true,
+					opacity: tokenRef('image.default', 'image', 'appearance.opacity'),
+					borderRadius: null
+				},
+				stroke: tokenRef('image.default', 'image', 'stroke'),
+				shadow: tokenRef('image.default', 'image', 'shadow')
+			}
 		}
 	}
 };

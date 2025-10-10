@@ -12,12 +12,6 @@ export type TMergeMixins<GMixins extends TBaseMixin<any, any>[]> = {
 	[K in GMixins[number]['key']]: Extract<GMixins[number], { key: K }>['value'];
 };
 
-export type TReplaceWithMixins<GBase, GMixins extends TBaseMixin<any, any>[]> = Omit<
-	GBase,
-	GMixins[number]['key']
-> &
-	TMergeMixins<[...GMixins]>;
-
 // =========================================================================
 // Common
 // =========================================================================
@@ -156,6 +150,15 @@ export type TBadgeNeutralStyleMixin = TBaseMixin<'badgeNeutral', TBadgeStyleMixi
 
 export type TImageStyleMixin = TBaseMixin<
 	'image',
+	TRef<{
+		appearance: TAppearanceStyleMixin['value'];
+		stroke: TStrokeStyleMixin['value'];
+		shadow: TShadowStyleMixin['value'];
+	}>
+>;
+
+export type TEmbedStyleMixin = TBaseMixin<
+	'embed',
 	TRef<{
 		appearance: TAppearanceStyleMixin['value'];
 		stroke: TStrokeStyleMixin['value'];

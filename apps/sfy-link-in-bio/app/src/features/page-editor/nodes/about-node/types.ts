@@ -17,14 +17,14 @@ import {
 	TResolvedTextXlStyleMixin
 } from '../../mixins';
 
-export type TResolvedAboutNode = TResolvedDefaultAboutComposition;
+export type TResolvedAboutNode = TResolvedDefaultAboutNodeComposition;
 
-export type TResolvedDefaultAboutComposition = TNodeComposition<
-	TResolvedDefaultAboutContentMixin['value']['type'],
+export type TResolvedDefaultAboutNodeComposition = TNodeComposition<
+	TResolvedDefaultAboutNodeContentMixin['value']['type'],
 	[
 		TIdMixin,
 		TAboutNodeMixin,
-		TResolvedDefaultAboutContentMixin,
+		TResolvedDefaultAboutNodeContentMixin,
 		TResolvedAutoLayoutStyleMixin,
 		TResolvedAppearanceStyleMixin,
 		TResolvedFillStyleMixin,
@@ -36,7 +36,7 @@ export type TResolvedDefaultAboutComposition = TNodeComposition<
 	]
 >;
 
-export type TResolvedDefaultAboutContentMixin = TBaseMixin<
+export type TResolvedDefaultAboutNodeContentMixin = TBaseMixin<
 	'content',
 	{
 		type: 'default';

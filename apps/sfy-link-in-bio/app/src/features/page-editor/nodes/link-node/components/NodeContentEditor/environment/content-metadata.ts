@@ -3,11 +3,10 @@ import {
 	extractSpotifyId,
 	extractYouTubeId,
 	TLinkNode,
-	TLinkNodeContent,
 	tokenRef,
-	TSingleLinkNodeContent,
-	TSpotifyEmbedLinkNodeContent,
-	TYouTubeEmbedLinkNodeContent
+	TSingleLinkNodeComposition,
+	TSpotifyEmbedLinkNodeComposition,
+	TYouTubeEmbedLinkNodeComposition
 } from '@repo/editor';
 import { ShopifyGlobal } from '@shopify/app-bridge-react';
 import { Err, Ok, type TResult } from 'tuple-result';
@@ -75,7 +74,7 @@ export const contentMetadataMap = {
 			cx.node._notify();
 			return Ok(undefined);
 		}
-	} satisfies TContentMetadata<TSingleLinkNodeContent>,
+	} satisfies TContentMetadata<TSingleLinkNodeComposition>,
 	'youtube-embed': {
 		type: 'youtube-embed',
 		label: 'YouTube Embed',
@@ -127,7 +126,7 @@ export const contentMetadataMap = {
 
 			return Ok(undefined);
 		}
-	} satisfies TContentMetadata<TYouTubeEmbedLinkNodeContent>,
+	} satisfies TContentMetadata<TYouTubeEmbedLinkNodeComposition>,
 	'spotify-embed': {
 		type: 'spotify-embed',
 		label: 'Spotify Embed',
@@ -197,7 +196,7 @@ export const contentMetadataMap = {
 
 			return Ok(undefined);
 		}
-	} satisfies TContentMetadata<TSpotifyEmbedLinkNodeContent>
+	} satisfies TContentMetadata<TSpotifyEmbedLinkNodeComposition>
 };
 
 export const contentMetadata = Object.values(contentMetadataMap);
@@ -207,8 +206,8 @@ export const contentTypePriority: TContentType[] = ['youtube-embed', 'spotify-em
 
 export type TContentType = keyof typeof contentMetadataMap;
 
-export interface TContentMetadata<GContent extends TLinkNodeContent = TLinkNodeContent> {
-	type: GContent['type'];
+export interface TContentMetadata<GNode extends TLinkNode> {
+	type: GNode['composition'];
 	label: string;
 	isApplicable: (url: string) => boolean;
 	/**
@@ -219,7 +218,7 @@ export interface TContentMetadata<GContent extends TLinkNodeContent = TLinkNodeC
 		common: TCommonContentFields;
 		editor: TPageEditor;
 		shopify: ShopifyGlobal;
-		node: TNodeState<TLinkNode<GContent>>;
+		node: TNodeState<GNode>;
 	}) => Promise<TResult<void, AppError>>;
 	/**
 	 * Optional method to enhance the content with additional data after creation or url change
@@ -228,12 +227,12 @@ export interface TContentMetadata<GContent extends TLinkNodeContent = TLinkNodeC
 		url: string;
 		editor: TPageEditor;
 		shopify: ShopifyGlobal;
-		node: TNodeState<TLinkNode<GContent>>;
+		node: TNodeState<GNode>;
 	}) => Promise<TResult<void, AppError>>;
 	/**
 	 * Extracts common fields from a content of this type
 	 */
-	extractCommonFields: (content: GContent) => TCommonContentFields;
+	extractCommonFields: (content: GNode['content']) => TCommonContentFields;
 }
 
 interface TCommonContentFields {

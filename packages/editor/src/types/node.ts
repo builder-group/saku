@@ -92,14 +92,14 @@ export type TPageNodeMixin = TBaseMixin<
 // About Node
 // =========================================================================
 
-export type TAboutNode = TDefaultAboutComposition;
+export type TAboutNode = TDefaultAboutNodeComposition;
 
-export type TDefaultAboutComposition = TNodeComposition<
-	TDefaultAboutContentMixin['value']['type'],
+export type TDefaultAboutNodeComposition = TNodeComposition<
+	TDefaultAboutNodeContentMixin['value']['type'],
 	[
 		TIdMixin,
 		TAboutNodeMixin,
-		TDefaultAboutContentMixin,
+		TDefaultAboutNodeContentMixin,
 		TAutoLayoutStyleMixin,
 		TAppearanceStyleMixin,
 		TFillStyleMixin,
@@ -118,7 +118,7 @@ export type TAboutNodeMixin = TBaseMixin<
 	}
 >;
 
-export type TDefaultAboutContentMixin = TBaseMixin<
+export type TDefaultAboutNodeContentMixin = TBaseMixin<
 	'content',
 	{
 		type: 'default';
@@ -140,16 +140,16 @@ export interface TContactIcon {
 // =========================================================================
 
 export type TLinkNode =
-	| TSingleLinkComposition
-	| TYouTubeEmbedLinkComposition
-	| TSpotifyEmbedLinkComposition;
+	| TSingleLinkNodeComposition
+	| TYouTubeEmbedLinkNodeComposition
+	| TSpotifyEmbedLinkNodeComposition;
 
-export type TSingleLinkComposition = TNodeComposition<
-	TSingleLinkContentMixin['value']['type'],
+export type TSingleLinkNodeComposition = TNodeComposition<
+	TSingleLinkNodeContentMixin['value']['type'],
 	[
 		TIdMixin,
 		TLinkNodeMixin,
-		TSingleLinkContentMixin,
+		TSingleLinkNodeContentMixin,
 		TAutoLayoutStyleMixin,
 		TAppearanceStyleMixin,
 		TFillStyleMixin,
@@ -160,28 +160,32 @@ export type TSingleLinkComposition = TNodeComposition<
 		TImageStyleMixin
 	]
 >;
-export type TYouTubeEmbedLinkComposition = TNodeComposition<
-	TYouTubeEmbedLinkContentMixin['value']['type'],
+export type TYouTubeEmbedLinkNodeComposition = TNodeComposition<
+	TYouTubeEmbedLinkNodeContentMixin['value']['type'],
 	[
 		TIdMixin,
 		TLinkNodeMixin,
-		TYouTubeEmbedLinkContentMixin,
+		TYouTubeEmbedLinkNodeContentMixin,
 		TAutoLayoutStyleMixin,
 		TAppearanceStyleMixin,
+		TFillStyleMixin,
 		TStrokeStyleMixin,
-		TShadowStyleMixin
+		TShadowStyleMixin,
+		TImageStyleMixin // TODO: Replace with TEmbedStyleMixin
 	]
 >;
-export type TSpotifyEmbedLinkComposition = TNodeComposition<
-	TSpotifyEmbedLinkContentMixin['value']['type'],
+export type TSpotifyEmbedLinkNodeComposition = TNodeComposition<
+	TSpotifyEmbedLinkNodeContentMixin['value']['type'],
 	[
 		TIdMixin,
 		TLinkNodeMixin,
-		TSpotifyEmbedLinkContentMixin,
+		TSpotifyEmbedLinkNodeContentMixin,
 		TAutoLayoutStyleMixin,
 		TAppearanceStyleMixin,
+		TFillStyleMixin,
 		TStrokeStyleMixin,
-		TShadowStyleMixin
+		TShadowStyleMixin,
+		TImageStyleMixin // TODO: Replace with TEmbedStyleMixin
 	]
 >;
 
@@ -192,7 +196,7 @@ export type TLinkNodeMixin = TBaseMixin<
 	}
 >;
 
-export type TSingleLinkContentMixin = TBaseMixin<
+export type TSingleLinkNodeContentMixin = TBaseMixin<
 	'content',
 	{
 		type: 'single';
@@ -208,7 +212,7 @@ export type TSingleLinkContentMixin = TBaseMixin<
 	}
 >;
 
-export type TYouTubeEmbedLinkContentMixin = TBaseMixin<
+export type TYouTubeEmbedLinkNodeContentMixin = TBaseMixin<
 	'content',
 	{
 		type: 'youtube-embed';
@@ -220,7 +224,7 @@ export type TYouTubeEmbedLinkContentMixin = TBaseMixin<
 
 export type TYouTubeEmbedContentType = 'video' | 'playlist';
 
-export type TSpotifyEmbedLinkContentMixin = TBaseMixin<
+export type TSpotifyEmbedLinkNodeContentMixin = TBaseMixin<
 	'content',
 	{
 		type: 'spotify-embed';
@@ -245,14 +249,14 @@ export type TSpotifyEmbedContentType = 'track' | 'album' | 'playlist' | 'artist'
 // Media Node
 // =========================================================================
 
-export type TMediaNode = TImageMediaComposition;
+export type TMediaNode = TImageMediaNodeComposition;
 
-export type TImageMediaComposition = TNodeComposition<
-	TImageMediaContentMixin['value']['type'],
+export type TImageMediaNodeComposition = TNodeComposition<
+	TImageMediaNodeContentMixin['value']['type'],
 	[
 		TIdMixin,
 		TMediaNodeMixin,
-		TImageMediaContentMixin,
+		TImageMediaNodeContentMixin,
 		TAutoLayoutStyleMixin,
 		TAppearanceStyleMixin,
 		TStrokeStyleMixin,
@@ -268,7 +272,7 @@ export type TMediaNodeMixin = TBaseMixin<
 	}
 >;
 
-export type TImageMediaContentMixin = TBaseMixin<
+export type TImageMediaNodeContentMixin = TBaseMixin<
 	'content',
 	{
 		type: 'image';
@@ -283,14 +287,14 @@ export type TImageMediaContentMixin = TBaseMixin<
 // Text Node
 // =========================================================================
 
-export type TTextNode = TDefaultTextComposition;
+export type TTextNode = TDefaultTextNodeComposition;
 
-export type TDefaultTextComposition = TNodeComposition<
-	TDefaultTextContentMixin['value']['type'],
+export type TDefaultTextNodeComposition = TNodeComposition<
+	TDefaultTextNodeContentMixin['value']['type'],
 	[
 		TIdMixin,
 		TTextNodeMixin,
-		TDefaultTextContentMixin,
+		TDefaultTextNodeContentMixin,
 		TAutoLayoutStyleMixin,
 		TAppearanceStyleMixin,
 		TFillStyleMixin,
@@ -307,7 +311,7 @@ export type TTextNodeMixin = TBaseMixin<
 	}
 >;
 
-export type TDefaultTextContentMixin = TBaseMixin<
+export type TDefaultTextNodeContentMixin = TBaseMixin<
 	'content',
 	{
 		type: 'default';
@@ -319,14 +323,14 @@ export type TDefaultTextContentMixin = TBaseMixin<
 // Product Node
 // =========================================================================
 
-export type TProductNode = TSingleProductComposition;
+export type TProductNode = TSingleProductNodeComposition;
 
-export type TSingleProductComposition = TNodeComposition<
-	TSingleProductContentMixin['value']['type'],
+export type TSingleProductNodeComposition = TNodeComposition<
+	TSingleProductNodeContentMixin['value']['type'],
 	[
 		TIdMixin,
 		TProductNodeMixin,
-		TSingleProductContentMixin,
+		TSingleProductNodeContentMixin,
 		TAutoLayoutStyleMixin,
 		TAppearanceStyleMixin,
 		TFillStyleMixin,
@@ -348,7 +352,7 @@ export type TProductNodeMixin = TBaseMixin<
 	}
 >;
 
-export type TSingleProductContentMixin = TBaseMixin<
+export type TSingleProductNodeContentMixin = TBaseMixin<
 	'content',
 	{
 		type: 'single';
