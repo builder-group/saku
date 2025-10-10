@@ -10,11 +10,7 @@ import {
 	resolveShadowStyleMixin,
 	resolveStrokeStyleMixin
 } from '../../mixins';
-import {
-	TResolvedImageMediaNodeContent,
-	TResolvedMediaNode,
-	TResolvedMediaNodeContent
-} from './types';
+import { TResolvedImageMediaNodeContentMixin, TResolvedMediaNode } from './types';
 
 export function resolveMediaNode(
 	node: TMediaNode,
@@ -23,10 +19,10 @@ export function resolveMediaNode(
 	const { content, autoLayout, appearance, fill, stroke, shadow, image, ...rest } = node;
 
 	// Resolve content
-	let resolvedContent: TResolvedMediaNodeContent;
+	let resolvedContent: TResolvedImageMediaNodeContentMixin['value'];
 	switch (content.type) {
 		case 'image': {
-			let resolvedMedia: TResolvedImageMediaNodeContent['media'] | undefined;
+			let resolvedMedia: TResolvedImageMediaNodeContentMixin['value']['media'] | undefined;
 			if (content.media != null) {
 				const resolvedAsset = resolveAsset(content.media?.hash, cx.site);
 				if (resolvedAsset != null) {

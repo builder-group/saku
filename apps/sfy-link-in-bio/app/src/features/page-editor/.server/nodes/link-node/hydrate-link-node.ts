@@ -15,6 +15,7 @@ export function hydrateLinkNode(
 
 	return Ok({
 		type: 'promised',
+		composition: 'default',
 		id: node.id,
 		cached: resolvedLinkNode,
 		next: (async () => {
@@ -40,7 +41,7 @@ export function hydrateLinkNode(
 				{
 					content,
 					...rest
-				},
+				} as TLinkNode,
 				cx
 			).unwrap();
 		})()

@@ -1,4 +1,10 @@
-import { TBaseContentVariant, TBaseMixin, TBaseNode, TContactIcon, TIdMixin } from '@repo/editor';
+import {
+	TAboutNodeMixin,
+	TBaseMixin,
+	TContactIcon,
+	TIdMixin,
+	TNodeComposition
+} from '@repo/editor';
 import { TResolvedAsset } from '../../lib';
 import {
 	TResolvedAppearanceStyleMixin,
@@ -11,12 +17,14 @@ import {
 	TResolvedTextXlStyleMixin
 } from '../../mixins';
 
-export type TResolvedAboutNode<
-	GContent extends TResolvedAboutNodeContent = TResolvedAboutNodeContent
-> = TBaseNode<
-	TResolvedAboutNodeMixin<GContent>,
+export type TResolvedAboutNode = TResolvedDefaultAboutNodeComposition;
+
+export type TResolvedDefaultAboutNodeComposition = TNodeComposition<
+	TResolvedDefaultAboutNodeContentMixin['value']['type'],
 	[
 		TIdMixin,
+		TAboutNodeMixin,
+		TResolvedDefaultAboutNodeContentMixin,
 		TResolvedAutoLayoutStyleMixin,
 		TResolvedAppearanceStyleMixin,
 		TResolvedFillStyleMixin,
@@ -28,22 +36,13 @@ export type TResolvedAboutNode<
 	]
 >;
 
-export type TResolvedAboutNodeMixin<
-	GContent extends TResolvedAboutNodeContent = TResolvedAboutNodeContent
-> = TBaseMixin<
-	'node',
+export type TResolvedDefaultAboutNodeContentMixin = TBaseMixin<
+	'content',
 	{
-		type: 'about';
-		content: GContent;
+		type: 'default';
+		name: string;
+		bio?: string;
+		profilePicture?: TResolvedAsset;
+		contactIcons: TContactIcon[];
 	}
 >;
-
-export type TResolvedAboutNodeContent = TResolvedDefaultAboutNodeContent;
-
-export interface TResolvedDefaultAboutNodeContent extends TBaseContentVariant {
-	type: 'default';
-	name: string;
-	bio?: string;
-	profilePicture?: TResolvedAsset;
-	contactIcons: TContactIcon[];
-}

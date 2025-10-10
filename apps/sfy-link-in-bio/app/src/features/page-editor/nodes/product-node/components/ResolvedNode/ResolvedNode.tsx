@@ -22,7 +22,7 @@ export const ResolvedProductNode = React.forwardRef<
 			default:
 				return <Skeleton node={node} />;
 		}
-	}, [content.type, node, cx]);
+	}, [content, node, cx]);
 
 	return (
 		<div ref={ref} {...divProps} className="w-full max-w-md">

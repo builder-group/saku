@@ -1,4 +1,4 @@
-import { TBaseContentVariant, TBaseMixin, TBaseNode, TIdMixin, TRichContent } from '@repo/editor';
+import { TBaseMixin, TIdMixin, TNodeComposition, TRichContent, TTextNodeMixin } from '@repo/editor';
 import {
 	TResolvedAppearanceStyleMixin,
 	TResolvedAutoLayoutStyleMixin,
@@ -8,12 +8,14 @@ import {
 	TResolvedTextStyleMixin
 } from '../../mixins';
 
-export type TResolvedTextNode<
-	GContent extends TResolvedTextNodeContent = TResolvedTextNodeContent
-> = TBaseNode<
-	TResolvedTextNodeMixin<GContent>,
+export type TResolvedTextNode = TResolvedDefaultTextNodeComposition;
+
+export type TResolvedDefaultTextNodeComposition = TNodeComposition<
+	TResolvedDefaultTextNodeContentMixin['value']['type'],
 	[
 		TIdMixin,
+		TTextNodeMixin,
+		TResolvedDefaultTextNodeContentMixin,
 		TResolvedAutoLayoutStyleMixin,
 		TResolvedAppearanceStyleMixin,
 		TResolvedFillStyleMixin,
@@ -23,19 +25,10 @@ export type TResolvedTextNode<
 	]
 >;
 
-export type TResolvedTextNodeMixin<
-	GContent extends TResolvedTextNodeContent = TResolvedTextNodeContent
-> = TBaseMixin<
-	'node',
+export type TResolvedDefaultTextNodeContentMixin = TBaseMixin<
+	'content',
 	{
-		type: 'text';
-		content: GContent;
+		type: 'default';
+		text: TRichContent;
 	}
 >;
-
-export type TResolvedTextNodeContent = TResolvedDefaultTextNodeContent;
-
-export interface TResolvedDefaultTextNodeContent extends TBaseContentVariant {
-	type: 'default';
-	text: TRichContent;
-}

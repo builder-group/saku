@@ -1,4 +1,4 @@
-import { TFlatNode } from '@repo/editor';
+import { TNodeMetadata as TEditorNodeMetadata, TFlatNode } from '@repo/editor';
 import { IconSource } from '@shopify/polaris';
 import { TResolvedNode } from '../../types';
 import { TPageContext, TPageEditor } from '../page';
@@ -11,10 +11,13 @@ export type TNodeMetadata<GType extends TFlatNode['type']> = {
 	| {
 			internal: false;
 			icon: IconSource;
-			label: string;
-			default: Omit<Extract<TFlatNode, { type: GType }>, 'id' | 'type'>;
+			label: TEditorNodeMetadata<GType>['label'];
+			default: Omit<Extract<TFlatNode, { type: GType }>, 'id'>;
 	  }
-	| { internal: true; default: Omit<Extract<TFlatNode, { type: GType }>, 'id' | 'type'> }
+	| {
+			internal: true;
+			default: Omit<Extract<TFlatNode, { type: GType }>, 'id'>;
+	  }
 );
 
 export interface TResolvedNodeProps<GResolvedNode extends TResolvedNode>

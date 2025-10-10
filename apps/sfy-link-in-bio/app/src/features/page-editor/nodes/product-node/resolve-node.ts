@@ -15,7 +15,11 @@ import {
 	resolveStrokeStyleMixin,
 	resolveTextStyleMixin
 } from '../../mixins';
-import { TResolvedProduct, TResolvedProductNode, TResolvedProductNodeContent } from './types';
+import {
+	TResolvedProduct,
+	TResolvedProductNode,
+	TResolvedSingleProductNodeContentMixin
+} from './types';
 
 export function resolveProductNode(
 	node: TProductNode,
@@ -38,7 +42,7 @@ export function resolveProductNode(
 	} = node;
 
 	// Resolve content
-	let resolvedContent: TResolvedProductNodeContent;
+	let resolvedContent: TResolvedSingleProductNodeContentMixin['value'];
 	switch (content.type) {
 		case 'single': {
 			let resolvedProduct: TResolvedProduct | undefined;

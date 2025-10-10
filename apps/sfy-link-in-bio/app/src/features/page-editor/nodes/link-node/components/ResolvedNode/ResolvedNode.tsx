@@ -2,9 +2,9 @@ import React from 'react';
 import { TResolvedNodeProps } from '../../../../lib';
 import {
 	TResolvedLinkNode,
-	TResolvedSingleLinkNodeContent,
-	TResolvedSpotifyEmbedLinkNodeContent,
-	TResolvedYouTubeEmbedLinkNodeContent
+	TResolvedSingleLinkNodeComposition,
+	TResolvedSpotifyEmbedLinkNodeComposition,
+	TResolvedYouTubeEmbedLinkNodeComposition
 } from '../../types';
 import { DefaultContent } from './SingleContent';
 import { SpotifyEmbedContent } from './SpotifyEmbedContent';
@@ -20,25 +20,14 @@ export const ResolvedLinkNode = React.forwardRef<
 	const renderContent = React.useCallback(() => {
 		switch (content.type) {
 			case 'single':
-				return (
-					<DefaultContent
-						node={node as TResolvedLinkNode<TResolvedSingleLinkNodeContent>}
-						cx={cx}
-					/>
-				);
+				return <DefaultContent node={node as TResolvedSingleLinkNodeComposition} cx={cx} />;
 			case 'youtube-embed':
 				return (
-					<YouTubeEmbedContent
-						node={node as TResolvedLinkNode<TResolvedYouTubeEmbedLinkNodeContent>}
-						cx={cx}
-					/>
+					<YouTubeEmbedContent node={node as TResolvedYouTubeEmbedLinkNodeComposition} cx={cx} />
 				);
 			case 'spotify-embed':
 				return (
-					<SpotifyEmbedContent
-						node={node as TResolvedLinkNode<TResolvedSpotifyEmbedLinkNodeContent>}
-						cx={cx}
-					/>
+					<SpotifyEmbedContent node={node as TResolvedSpotifyEmbedLinkNodeComposition} cx={cx} />
 				);
 			default:
 				return null;

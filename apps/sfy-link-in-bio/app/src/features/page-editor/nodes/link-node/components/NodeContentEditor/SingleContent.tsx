@@ -1,4 +1,4 @@
-import { tokenRef, TSingleLinkNodeContent } from '@repo/editor';
+import { tokenRef, TSingleLinkNodeComposition } from '@repo/editor';
 import { Button, InlineError, Text, TextField } from '@shopify/polaris';
 import { useCompute, useFeatureState, useSubscriber } from 'feature-react/state';
 import React from 'react';
@@ -314,6 +314,6 @@ export const SingleContent: React.FC<TSingleContentProps> = (props) => {
 };
 
 interface TSingleContentProps {
-	cx: TNodeEditorContext<TSingleLinkNodeContent>;
+	cx: TNodeEditorContext<TSingleLinkNodeComposition>;
 	className: string;
 }

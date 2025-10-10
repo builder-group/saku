@@ -39,7 +39,7 @@ export const LayersPanel: React.FC<TLayersPanelProps> = (props) => {
 		};
 	});
 	const hasWatermark = useCompute(editor.getRootNode(), ({ value }) => {
-		return value.content.hasWatermark;
+		return value.hasWatermark;
 	});
 	const currentPlan = useCurrentPlan();
 	const panelRef = React.useRef<ImperativePanelHandle>(null);
@@ -120,7 +120,7 @@ export const LayersPanel: React.FC<TLayersPanelProps> = (props) => {
 
 	const handleRemoveWatermark = React.useCallback(() => {
 		const rootNode = editor.getRootNode();
-		rootNode._v.content.hasWatermark = false;
+		rootNode._v.hasWatermark = false;
 		rootNode._notify();
 	}, [editor]);
 

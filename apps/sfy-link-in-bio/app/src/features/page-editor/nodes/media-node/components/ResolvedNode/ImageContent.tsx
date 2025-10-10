@@ -1,6 +1,9 @@
 import React from 'react';
 import { TResolvedNodeProps } from '../../../../lib';
-import { TResolvedImageMediaNodeContent, TResolvedMediaNode } from '../../types';
+import {
+	TResolvedImageMediaNodeComposition,
+	TResolvedImageMediaNodeContentMixin
+} from '../../types';
 
 export const ImageContent: React.FC<TImageContentProps> = (props) => {
 	const {
@@ -31,7 +34,7 @@ export const ImageContent: React.FC<TImageContentProps> = (props) => {
 };
 
 interface TImageContentProps {
-	node: TResolvedMediaNode<TResolvedImageMediaNodeContent>;
-	media: NonNullable<TResolvedImageMediaNodeContent['media']>;
-	cx: TResolvedNodeProps<TResolvedMediaNode<TResolvedImageMediaNodeContent>>['cx'];
+	node: TResolvedImageMediaNodeComposition;
+	media: NonNullable<TResolvedImageMediaNodeContentMixin['value']['media']>;
+	cx: TResolvedNodeProps<TResolvedImageMediaNodeComposition>['cx'];
 }

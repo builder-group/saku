@@ -1,4 +1,11 @@
-import { createSpotifyEmbedUrl, createYouTubeEmbedUrl, TLinkNode } from '@repo/editor';
+import {
+	createSpotifyEmbedUrl,
+	createYouTubeEmbedUrl,
+	TLinkNode,
+	TSingleLinkNodeComposition,
+	TSpotifyEmbedLinkNodeComposition,
+	TYouTubeEmbedLinkNodeComposition
+} from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError, computeInnerBorderRadius } from '@/lib';
 import { resolveAsset, resolveColor, TNodeResolveContext } from '../../lib';
@@ -11,66 +18,52 @@ import {
 	resolveStrokeStyleMixin,
 	resolveTextStyleMixin
 } from '../../mixins';
-import { TResolvedLinkNode, TResolvedLinkNodeContent } from './types';
+import {
+	TResolvedLinkNode,
+	TResolvedSingleLinkNodeComposition,
+	TResolvedSingleLinkNodeContentMixin,
+	TResolvedSpotifyEmbedLinkNodeComposition,
+	TResolvedSpotifyEmbedLinkNodeContentMixin,
+	TResolvedYouTubeEmbedLinkNodeComposition,
+	TResolvedYouTubeEmbedLinkNodeContentMixin
+} from './types';
 
 export function resolveLinkNode(
 	node: TLinkNode,
 	cx: TNodeResolveContext
 ): TResult<TResolvedLinkNode, AppError> {
+	switch (node.composition) {
+		case 'single':
+			return resolveSingleLinkComposition(node, cx);
+		case 'youtube-embed':
+			return resolveYouTubeEmbedLinkComposition(node, cx);
+		case 'spotify-embed':
+			return resolveSpotifyEmbedLinkComposition(node, cx);
+		default:
+			return Err(
+				new AppError('#ERR_UNKNOWN_LINK_NODE_COMPOSITION', {
+					detail: `Unknown link node composition`
+				})
+			);
+	}
+}
+
+export function resolveSingleLinkComposition(
+	node: TSingleLinkNodeComposition,
+	cx: TNodeResolveContext
+): TResult<TResolvedSingleLinkNodeComposition, AppError> {
 	const { content, autoLayout, appearance, fill, stroke, shadow, text, textSm, image, ...rest } =
 		node;
 
 	// Resolve content
-	let resolvedContent: TResolvedLinkNodeContent;
-	switch (content.type) {
-		case 'single': {
-			const favicon = content.userFavicon !== undefined ? content.userFavicon : content.favicon;
-			resolvedContent = {
-				type: 'single',
-				url: content.url,
-				title: content.userTitle ?? content.title,
-				description: content.userDescription ?? content.description,
-				favicon: favicon != null ? resolveAsset(favicon, cx.site) : undefined
-			};
-			break;
-		}
-		case 'youtube-embed': {
-			resolvedContent = {
-				type: 'youtube-embed',
-				url: content.url,
-				embedUrl: createYouTubeEmbedUrl(content.contentType, content.contentId)
-			};
-			break;
-		}
-		case 'spotify-embed': {
-			resolvedContent = {
-				type: 'spotify-embed',
-				url: content.url,
-				embedUrl: createSpotifyEmbedUrl(content.contentType, content.contentId),
-				height: content.height,
-				theme:
-					content.theme != null
-						? {
-								backgroundBase:
-									content.theme.backgroundBase != null
-										? resolveColor(content.theme.backgroundBase)
-										: undefined,
-								backgroundTinted:
-									content.theme.backgroundTinted != null
-										? resolveColor(content.theme.backgroundTinted)
-										: undefined,
-								textBase:
-									content.theme.textBase != null ? resolveColor(content.theme.textBase) : undefined,
-								textSubdued:
-									content.theme.textSubdued != null
-										? resolveColor(content.theme.textSubdued)
-										: undefined
-							}
-						: undefined
-			};
-			break;
-		}
-	}
+	const favicon = content.userFavicon !== undefined ? content.userFavicon : content.favicon;
+	const resolvedContent: TResolvedSingleLinkNodeContentMixin['value'] = {
+		type: 'single',
+		url: content.url,
+		title: content.userTitle ?? content.title,
+		description: content.userDescription ?? content.description,
+		favicon: favicon != null ? resolveAsset(favicon, cx.site) : undefined
+	};
 
 	// Resolve styles
 	const [isResolvedAutoLayoutOk, resolvedAutoLayoutErr, resolvedAutoLayout] =
@@ -134,9 +127,102 @@ export function resolveLinkNode(
 
 	const imageBorderRadius =
 		resolvedImage.appearance.borderRadius ??
-		((content.type === 'spotify-embed' || content.type === 'youtube-embed') &&
-		resolvedAutoLayout.verticalPadding === 0 &&
-		resolvedAutoLayout.horizontalPadding === 0
+		computeInnerBorderRadius(
+			resolvedAppearance.borderRadius ?? 0,
+			resolvedAutoLayout.verticalPadding,
+			resolvedAutoLayout.horizontalPadding
+		);
+
+	return Ok({
+		...rest,
+		content: resolvedContent,
+		autoLayout: resolvedAutoLayout,
+		appearance: resolvedAppearance,
+		fill: resolvedFill,
+		stroke: resolvedStroke,
+		shadow: resolvedShadow,
+		text: resolvedText,
+		textSm: resolvedTextSm,
+		image: {
+			...resolvedImage,
+			appearance: {
+				...resolvedImage.appearance,
+				borderRadius: imageBorderRadius,
+				styles: {
+					...resolvedImage.appearance.styles,
+					borderRadius: `${imageBorderRadius}px`
+				}
+			},
+			styles: {
+				...resolvedImage.styles,
+				borderRadius: `${imageBorderRadius}px`
+			}
+		}
+	});
+}
+
+export function resolveYouTubeEmbedLinkComposition(
+	node: TYouTubeEmbedLinkNodeComposition,
+	cx: TNodeResolveContext
+): TResult<TResolvedYouTubeEmbedLinkNodeComposition, AppError> {
+	const { content, autoLayout, appearance, fill, stroke, shadow, image, ...rest } = node;
+
+	// Resolve content
+	const resolvedContent: TResolvedYouTubeEmbedLinkNodeContentMixin['value'] = {
+		type: 'youtube-embed',
+		url: content.url,
+		embedUrl: createYouTubeEmbedUrl(content.contentType, content.contentId)
+	};
+
+	// Resolve styles
+	const [isResolvedAutoLayoutOk, resolvedAutoLayoutErr, resolvedAutoLayout] =
+		resolveAutoLayoutStyleMixin(autoLayout, {
+			node: cx,
+			tokenMap: cx.site.getTokenMap()
+		});
+	if (!isResolvedAutoLayoutOk) {
+		return Err(resolvedAutoLayoutErr.wrapWith('#ERR_RESOLVE_AUTO_LAYOUT_STYLE'));
+	}
+	const [isResolvedAppearanceOk, resolvedAppearanceErr, resolvedAppearance] =
+		resolveAppearanceStyleMixin(appearance, {
+			node: cx,
+			tokenMap: cx.site.getTokenMap()
+		});
+	if (!isResolvedAppearanceOk) {
+		return Err(resolvedAppearanceErr.wrapWith('#ERR_RESOLVE_APPEARANCE_STYLE'));
+	}
+	const [isResolvedFillOk, resolvedFillErr, resolvedFill] = resolveFillStyleMixin(fill, {
+		node: cx,
+		tokenMap: cx.site.getTokenMap()
+	});
+	if (!isResolvedFillOk) {
+		return Err(resolvedFillErr.wrapWith('#ERR_RESOLVE_FILL_STYLE'));
+	}
+	const [isResolvedStrokeOk, resolvedStrokeErr, resolvedStroke] = resolveStrokeStyleMixin(stroke, {
+		node: cx,
+		tokenMap: cx.site.getTokenMap()
+	});
+	if (!isResolvedStrokeOk) {
+		return Err(resolvedStrokeErr.wrapWith('#ERR_RESOLVE_STROKE_STYLE'));
+	}
+	const [isResolvedShadowOk, resolvedShadowErr, resolvedShadow] = resolveShadowStyleMixin(shadow, {
+		node: cx,
+		tokenMap: cx.site.getTokenMap()
+	});
+	if (!isResolvedShadowOk) {
+		return Err(resolvedShadowErr.wrapWith('#ERR_RESOLVE_SHADOW_STYLE'));
+	}
+	const [isResolvedImageOk, resolvedImageErr, resolvedImage] = resolveImageStyleMixin(image, {
+		node: cx,
+		tokenMap: cx.site.getTokenMap()
+	});
+	if (!isResolvedImageOk) {
+		return Err(resolvedImageErr.wrapWith('#ERR_RESOLVE_IMAGE_STYLE'));
+	}
+
+	const imageBorderRadius =
+		resolvedImage.appearance.borderRadius ??
+		(resolvedAutoLayout.verticalPadding === 0 && resolvedAutoLayout.horizontalPadding === 0
 			? 0 // If no padding let overflow hidden handle it
 			: computeInnerBorderRadius(
 					resolvedAppearance.borderRadius ?? 0,
@@ -152,8 +238,121 @@ export function resolveLinkNode(
 		fill: resolvedFill,
 		stroke: resolvedStroke,
 		shadow: resolvedShadow,
-		text: resolvedText,
-		textSm: resolvedTextSm,
+		image: {
+			...resolvedImage,
+			appearance: {
+				...resolvedImage.appearance,
+				borderRadius: imageBorderRadius,
+				styles: {
+					...resolvedImage.appearance.styles,
+					borderRadius: `${imageBorderRadius}px`
+				}
+			},
+			styles: {
+				...resolvedImage.styles,
+				borderRadius: `${imageBorderRadius}px`
+			}
+		}
+	});
+}
+
+export function resolveSpotifyEmbedLinkComposition(
+	node: TSpotifyEmbedLinkNodeComposition,
+	cx: TNodeResolveContext
+): TResult<TResolvedSpotifyEmbedLinkNodeComposition, AppError> {
+	const { content, autoLayout, appearance, fill, stroke, shadow, image, ...rest } = node;
+
+	// Resolve content
+	const resolvedContent: TResolvedSpotifyEmbedLinkNodeContentMixin['value'] = {
+		type: 'spotify-embed',
+		url: content.url,
+		embedUrl: createSpotifyEmbedUrl(content.contentType, content.contentId),
+		height: content.height,
+		theme:
+			content.theme != null
+				? {
+						backgroundBase:
+							content.theme.backgroundBase != null
+								? resolveColor(content.theme.backgroundBase)
+								: undefined,
+						backgroundTinted:
+							content.theme.backgroundTinted != null
+								? resolveColor(content.theme.backgroundTinted)
+								: undefined,
+						textBase:
+							content.theme.textBase != null ? resolveColor(content.theme.textBase) : undefined,
+						textSubdued:
+							content.theme.textSubdued != null
+								? resolveColor(content.theme.textSubdued)
+								: undefined
+					}
+				: undefined
+	};
+
+	// Resolve styles
+	const [isResolvedAutoLayoutOk, resolvedAutoLayoutErr, resolvedAutoLayout] =
+		resolveAutoLayoutStyleMixin(autoLayout, {
+			node: cx,
+			tokenMap: cx.site.getTokenMap()
+		});
+	if (!isResolvedAutoLayoutOk) {
+		return Err(resolvedAutoLayoutErr.wrapWith('#ERR_RESOLVE_AUTO_LAYOUT_STYLE'));
+	}
+	const [isResolvedAppearanceOk, resolvedAppearanceErr, resolvedAppearance] =
+		resolveAppearanceStyleMixin(appearance, {
+			node: cx,
+			tokenMap: cx.site.getTokenMap()
+		});
+	if (!isResolvedAppearanceOk) {
+		return Err(resolvedAppearanceErr.wrapWith('#ERR_RESOLVE_APPEARANCE_STYLE'));
+	}
+	const [isResolvedFillOk, resolvedFillErr, resolvedFill] = resolveFillStyleMixin(fill, {
+		node: cx,
+		tokenMap: cx.site.getTokenMap()
+	});
+	if (!isResolvedFillOk) {
+		return Err(resolvedFillErr.wrapWith('#ERR_RESOLVE_FILL_STYLE'));
+	}
+	const [isResolvedStrokeOk, resolvedStrokeErr, resolvedStroke] = resolveStrokeStyleMixin(stroke, {
+		node: cx,
+		tokenMap: cx.site.getTokenMap()
+	});
+	if (!isResolvedStrokeOk) {
+		return Err(resolvedStrokeErr.wrapWith('#ERR_RESOLVE_STROKE_STYLE'));
+	}
+	const [isResolvedShadowOk, resolvedShadowErr, resolvedShadow] = resolveShadowStyleMixin(shadow, {
+		node: cx,
+		tokenMap: cx.site.getTokenMap()
+	});
+	if (!isResolvedShadowOk) {
+		return Err(resolvedShadowErr.wrapWith('#ERR_RESOLVE_SHADOW_STYLE'));
+	}
+	const [isResolvedImageOk, resolvedImageErr, resolvedImage] = resolveImageStyleMixin(image, {
+		node: cx,
+		tokenMap: cx.site.getTokenMap()
+	});
+	if (!isResolvedImageOk) {
+		return Err(resolvedImageErr.wrapWith('#ERR_RESOLVE_IMAGE_STYLE'));
+	}
+
+	const imageBorderRadius =
+		resolvedImage.appearance.borderRadius ??
+		(resolvedAutoLayout.verticalPadding === 0 && resolvedAutoLayout.horizontalPadding === 0
+			? 0 // If no padding let overflow hidden handle it
+			: computeInnerBorderRadius(
+					resolvedAppearance.borderRadius ?? 0,
+					resolvedAutoLayout.verticalPadding,
+					resolvedAutoLayout.horizontalPadding
+				));
+
+	return Ok({
+		...rest,
+		content: resolvedContent,
+		autoLayout: resolvedAutoLayout,
+		appearance: resolvedAppearance,
+		fill: resolvedFill,
+		stroke: resolvedStroke,
+		shadow: resolvedShadow,
 		image: {
 			...resolvedImage,
 			appearance: {

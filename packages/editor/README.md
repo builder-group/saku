@@ -2,11 +2,27 @@
 
 ## ❓ FAQ
 
-### Why do nodes have a `content` property?
+### Why composition-based nodes instead of content variants?
 
-- Universal/editor properties (`id`, `type`, `name`, `visible`, `transform`, etc.) always stay flat at the top level
-- If a property could be a mixin (shared by multiple node types, ECS-style), keep it flat
-- Only put data in `content` if it's just for rendering that specific node type
+- **True ECS principles**: Content is just another component/mixin, not special
+- **Explicit & type-safe**: `composition` explicitly defines which mixins exist
+- **Flexible composition**: Easy to mix content variants with different style sets
+- **Clear discrimination**: `type` = what it is, `composition` = how it's built
+
+```ts
+// Composition-based approach
+type TLinkNode =
+	| TSingleLinkNodeComposition // { composition: 'single', content: {...}, text: {...}, image: {...} }
+	| TYouTubeEmbedLinkNodeComposition // { composition: 'youtube-embed', content: {...}, text: {...} }
+	| TSpotifyEmbedLinkNodeComposition; // { composition: 'spotify-embed', content: {...}, text: {...} }
+
+// Type-safe discrimination
+if (node.type === 'link' && node.composition === 'single') {
+	node.content.url; // ✅ TypeScript knows content variant is 'single'
+	node.image; // ✅ TypeScript knows image mixin exists
+	node.buttonPrimary; // ❌ Type error - single composition doesn't have this
+}
+```
 
 ### Why flat key-value structure instead of nested tree?
 
@@ -39,18 +55,18 @@
 
 #### How does the mixin system work?
 
-```typescript
+```ts
 // Each mixin has a unique key and value
 type TFillMixin = TBaseMixin<'fill', { fills: TPaint[]; blendMode: string }>;
 type TLayoutMixin = TBaseMixin<'layout', { padding: number; width: number | 'auto' }>;
 
-// Nodes compose mixins for their specific needs
-type TProductNode = TNode<
-	'product',
+// Compositions define mixin recipes
+type TSingleLinkNodeComposition = TNodeComposition<
+	'single',
 	[
 		TIdMixin, // id: string
-		TVisibleMixin, // visible: boolean
-		TProductContentMixin, // content: { product: TProduct }
+		TLinkNodeMixin, // type: 'link'
+		TSingleLinkContentMixin, // content: { type: 'single', url: string }
 		TFillMixin, // fill: { fills: TPaint[]; blendMode: string }
 		TLayoutMixin // layout: { padding: number; width: number | 'auto' }
 	]
@@ -65,67 +81,6 @@ type TProductNode = TNode<
 - **Semantic grouping**: UI elements like "text" and "CTA" are meaningful design concepts that belong together
 - **ECS component overhead**: With SoA ECS, flat approach would require separate components (`TextFill`, `CtaFill`, ..) since entities can't have the same component multiple times
 
-#### When to use flat vs abstracted mixins?
-
-```typescript
-// Simple node: Use flat core properties
-type TRectangleNode = TNode<
-	'rectangle',
-	[
-		TIdMixin,
-		TAppearanceStyleMixin, // visible, opacity, borderRadius
-		TFillStyleMixin, // fill paint and opacity
-		TStrokeStyleMixin, // stroke width and color
-		TShadowStyleMixin // shadow properties
-	]
->;
-
-// Complex node: Mix flat core + abstracted specialized
-type TProductNode = TNode<
-	'product',
-	[
-		TIdMixin,
-		// Core properties (flat - no conflicts)
-		TAppearanceStyleMixin, // visible, opacity, borderRadius
-		TFillStyleMixin, // fill paint and opacity
-		TStrokeStyleMixin, // stroke width and color
-		TShadowStyleMixin, // shadow properties
-		TAutoLayoutStyleMixin, // basic padding/width
-		// Specialized properties (abstracted to avoid conflicts)
-		TTextStyleMixin, // typography: { font, fontSize, textColor }
-		TCtaStyleMixin // CTA-specific styling
-	]
->;
-
-// In ECS: Core properties become separate components, specialized become composite
-// components.Appearance[entityId] = { visible, opacity, borderRadius }
-// components.Text[entityId] = { typography: { font, fontSize, textColor } }
-```
-
-### Why do all nodes use a variant-based content structure?
-
-- **Start simple, grow complex**: Begin with basic variants (`'default'`, `'single'`) and add advanced variants later without breaking changes
-- **Progressive enhancement**: Users start with simple functionality and can upgrade to more complex variants when needed
-- **Future-proof architecture**: Easy to add specialized variants (multi-link, Instagram embed, product grid) without restructuring existing nodes
-- **Consistent user experience**: Single node type with clear variant choices vs. confusing array of different node types
-
-#### Examples of variant evolution:
-
-```typescript
-// Phase 1: Start simple
-LinkNode: { content: { type: 'single', url: '...' } }
-
-// Phase 2: Add specialized variants
-LinkNode: { content: { type: 'instagram', username: '...' } }
-LinkNode: { content: { type: 'multi', title: '...', links: [...] } }
-
-// Phase 3: Add advanced presentation variants
-LinkNode: { content: { type: 'grid', columns: 2, links: [...] } }
-LinkNode: { content: { type: 'carousel', autoplay: true, links: [...] } }
-
-// Users upgrade variants, not node types
-```
-
 ### Why don't nodes have card styling by default?
 
 - **Default = Linktree style**: Everything is styled at the node layer level (card-like appearance)
@@ -135,7 +90,7 @@ LinkNode: { content: { type: 'carousel', autoplay: true, links: [...] } }
 
 #### When do we use card styling vs layer styling?
 
-```typescript
+```ts
 // Single link: Style at layer level (default Linktree style)
 LinkNode: {
   fill: { paint: 'blue' },
@@ -167,32 +122,21 @@ LinkNode: {
 
 ### What are tokens?
 
-- **Design tokens for mixins**: Named presets for mixins (e.g., `text`, `button`, `fill`, `appearance`) stored at the site level (e.g., `tokens.text.default`).
-- **How nodes use tokens**: A mixin is EITHER a token ref (mixin-level) OR a value object. In value mode, individual properties may use token refs for granular overrides. Its not possible to mix a mixin-level token ref with property values.
-- **Why tokens**: Global consistency, simple theming/templates, and no schema churn. Local overrides remain possible when needed.
+- **Design tokens**: Named presets stored at the site level
+- **How nodes use tokens**: Mixins can reference tokens via `TRef<Value, Token>` - either a token ref or direct value
+- **Why tokens**: Global consistency, simple theming/templates, and no schema churn. Local overrides remain possible when needed
 
 Example usage:
 
-```typescript
-// Site-level tokens (simplified)
+```ts
+// Site-level tokens
 tokens: {
-  text: { default: { /* TTextStyle */ } },
-  button: { default: { /* TButtonStyle */ },ctaPrimary: { /* TButtonStyle */ }, ctaSecondary: { /* TButtonStyle */ } },
-  fill: { default: { /* TFillStyle */ } },
+  text: { default: { /* TTextStyleMixin */ } },
+  fill: { default: { /* TFillStyleMixin */ } },
   appearance: { default: { visible: true, opacity: 1 } }
 }
 
-// Node references
-// 1) Ref mode (mixin-level)
-text: { type: 'token', ref: 'default' }
-button: { type: 'token', ref: 'ctaPrimary' }
-fill: { type: 'token', ref: 'default' }
-
-// 2) Value mode with property-level token ref (no mixin-level ref here)
-text: {
-  typography: { fontSize: { type: 'token', ref: 'displayLg' } },
-  fill: { type: 'token', ref: 'default' },
-  stroke: null,
-  shadow: null
-}
+// Token ref
+text: { type: 'token', key: 'text.default', tokenType: 'text' }
+fill: { type: 'token', key: 'fill.default', tokenType: 'fill' }
 ```

@@ -1,4 +1,4 @@
-import { TBaseContentVariant, TBaseMixin, TBaseNode, TIdMixin } from '@repo/editor';
+import { TBaseMixin, TIdMixin, TNodeComposition } from '@repo/editor';
 import {
 	TResolvedAppearanceStyleMixin,
 	TResolvedAutoLayoutStyleMixin,
@@ -6,12 +6,13 @@ import {
 	TResolvedFillStyleMixin
 } from '../../mixins';
 
-export type TResolvedPageNode<
-	GContent extends TResolvedPageNodeContent = TResolvedPageNodeContent
-> = TBaseNode<
-	TResolvedPageNodeMixin<GContent>,
+export type TResolvedPageNode = TResolvedDefaultPageNodeComposition;
+
+export type TResolvedDefaultPageNodeComposition = TNodeComposition<
+	'default',
 	[
 		TIdMixin,
+		TResolvedPageNodeMixin,
 		TResolvedChildrenMixin,
 		TResolvedAutoLayoutStyleMixin,
 		TResolvedAppearanceStyleMixin,
@@ -19,25 +20,16 @@ export type TResolvedPageNode<
 	]
 >;
 
-export type TResolvedPageNodeMixin<
-	GContent extends TResolvedPageNodeContent = TResolvedPageNodeContent
-> = TBaseMixin<
+export type TResolvedPageNodeMixin = TBaseMixin<
 	'node',
 	{
 		type: 'page';
-		content: GContent;
 		metadata: {
 			title: string;
 			description: string;
 			favicon: string;
 			image?: string;
 		};
+		hasWatermark: boolean;
 	}
 >;
-
-export type TResolvedPageNodeContent = TResolvedDefaultPageNodeContent;
-
-export interface TResolvedDefaultPageNodeContent extends TBaseContentVariant {
-	type: 'default';
-	hasWatermark: boolean;
-}
