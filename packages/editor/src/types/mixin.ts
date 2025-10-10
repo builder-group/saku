@@ -1,21 +1,7 @@
-import { TRgba } from '../lib';
 import { TNode, TNodeId } from './node';
 import { TRef } from './ref';
 import { TAutoLayoutStyleToken } from './token';
-import {
-	TAssetHash,
-	TEmailAction,
-	TFont,
-	TIntegrationId,
-	TLetterSpacing,
-	TLineHeight,
-	TPaint,
-	TPhoneAction,
-	TRichContent,
-	TSocialAction,
-	TSolidPaint,
-	TTextAlign
-} from './utils';
+import { TFont, TLetterSpacing, TLineHeight, TPaint, TSolidPaint, TTextAlign } from './utils';
 
 export interface TBaseMixin<GKey extends string, GValue> {
 	key: GKey;
@@ -33,7 +19,7 @@ export type TReplaceWithMixins<GBase, GMixins extends TBaseMixin<any, any>[]> = 
 	TMergeMixins<[...GMixins]>;
 
 // =========================================================================
-// Common Mixins
+// Common
 // =========================================================================
 
 export type TIdMixin = TBaseMixin<'id', TNodeId>;
@@ -41,231 +27,8 @@ export type TChildrenMixin = TBaseMixin<'children', TNode[]>;
 export type TFlatChildrenMixin = TBaseMixin<'children', TNodeId[]>;
 
 // =========================================================================
-// Node Mixins
+// Primitive Style
 // =========================================================================
-
-export interface TBaseContentVariant {
-	type: string;
-}
-
-export type TNodeMixin =
-	| TPageNodeMixin
-	| TAboutNodeMixin
-	| TLinkNodeMixin
-	| TMediaNodeMixin
-	| TTextNodeMixin
-	| TProductNodeMixin;
-
-export type TPageNodeMixin<GContent extends TPageNodeContent = TPageNodeContent> = TBaseMixin<
-	'node',
-	{
-		type: 'page';
-		content: GContent;
-		metadata: {
-			title?: string;
-			description?: string;
-			favicon?: TAssetHash;
-			image?: TAssetHash;
-		};
-	}
->;
-
-export type TPageNodeContent = TDefaultPageNodeContent;
-
-export interface TDefaultPageNodeContent extends TBaseContentVariant {
-	type: 'default';
-	hasWatermark: boolean;
-}
-
-export type TAboutNodeMixin<GContent extends TAboutNodeContent = TAboutNodeContent> = TBaseMixin<
-	'node',
-	{
-		type: 'about';
-		content: GContent;
-	}
->;
-
-export type TAboutNodeContent = TDefaultAboutNodeContent;
-
-export interface TDefaultAboutNodeContent extends TBaseContentVariant {
-	type: 'default';
-	name: string;
-	bio?: string;
-	profilePicture?: TAssetHash;
-	contactIcons: TContactIcon[];
-}
-
-export interface TContactIcon {
-	id: string;
-	action: TEmailAction | TPhoneAction | TSocialAction;
-	title?: string;
-}
-
-// export interface THeroAboutNodeVariant extends TBaseNodeVariant {
-// 	type: 'hero'; // big headline → description → small profile picture
-// 	headline: string;
-// 	description?: string;
-// 	name?: string;
-// 	profilePicture?: TAssetHash;
-// 	callToAction?: {
-// 		label: string;
-// 		action: TAction;
-// 	};
-// }
-
-export type TLinkNodeMixin<GContent extends TLinkNodeContent = TLinkNodeContent> = TBaseMixin<
-	'node',
-	{
-		type: 'link';
-		content: GContent;
-	}
->;
-
-export type TLinkNodeContent =
-	| TSingleLinkNodeContent
-	| TYouTubeEmbedLinkNodeContent
-	| TSpotifyEmbedLinkNodeContent;
-
-export interface TSingleLinkNodeContent extends TBaseContentVariant {
-	type: 'single';
-	url: string;
-	// User overrides (take priority)
-	userTitle?: string;
-	userDescription?: string;
-	userFavicon?: TAssetHash | null; // null = explicitly removed, undefined = not set
-	// Source metadata (fallback)
-	title?: string;
-	description?: string;
-	favicon?: TAssetHash;
-}
-
-export interface TYouTubeEmbedLinkNodeContent extends TBaseContentVariant {
-	type: 'youtube-embed';
-	url: string;
-	contentType: TYouTubeEmbedContentType;
-	contentId: string;
-}
-export type TYouTubeEmbedContentType = 'video' | 'playlist';
-
-export interface TSpotifyEmbedLinkNodeContent extends TBaseContentVariant {
-	type: 'spotify-embed';
-	url: string;
-	contentType: TSpotifyEmbedContentType;
-	contentId: string;
-	height: number; // normal = 352px, compact = 152px
-	theme?: TSpotifyEmbedTheme;
-}
-
-export interface TSpotifyEmbedTheme {
-	backgroundBase?: TRgba;
-	backgroundTinted?: TRgba;
-	textBase?: TRgba;
-	textSubdued?: TRgba;
-}
-export type TSpotifyEmbedContentType = 'track' | 'album' | 'playlist' | 'artist';
-
-// export interface TMultiLinkNodeContent extends TBaseContentVariant {
-// 	type: 'multi';
-// 	title?: string;
-// 	links: {
-// 		url: string;
-// 		title?: string;
-// 		description?: string;
-// 		favicon?: TAssetHash;
-// 	}[];
-// }
-
-export type TMediaNodeMixin<GContent extends TMediaNodeContent = TMediaNodeContent> = TBaseMixin<
-	'node',
-	{
-		type: 'media';
-		content: GContent;
-	}
->;
-
-export type TMediaNodeContent = TImageMediaNodeContent;
-
-export interface TImageMediaNodeContent extends TBaseContentVariant {
-	type: 'image';
-	media?: {
-		hash: TAssetHash;
-		altText?: string;
-	};
-}
-
-// export interface TVideoMediaNodeVariant extends TBaseNodeVariant {
-// 	type: 'video';
-// 	media?: {
-// 		hash: TAssetHash;
-// 		autoplay?: boolean;
-// 		muted?: boolean;
-// 		controls?: boolean;
-// 	};
-// }
-
-export type TTextNodeMixin<GContent extends TTextNodeContent = TTextNodeContent> = TBaseMixin<
-	'node',
-	{
-		type: 'text';
-		content: GContent;
-	}
->;
-
-export type TTextNodeContent = TDefaultTextNodeContent;
-
-export interface TDefaultTextNodeContent extends TBaseContentVariant {
-	type: 'default';
-	text: TRichContent;
-}
-
-export type TProductNodeMixin<GContent extends TProductNodeContent = TProductNodeContent> =
-	TBaseMixin<
-		'node',
-		{
-			type: 'product';
-			content: GContent;
-		}
-	>;
-
-export type TProductNodeContent = TSingleProductNodeContent;
-
-export interface TSingleProductNodeContent extends TBaseContentVariant {
-	type: 'single';
-	product?: TProduct;
-	integrationId?: TIntegrationId;
-}
-
-export interface TProduct {
-	id: string;
-	title: string;
-	description?: TRichContent;
-	images: TAssetHash[];
-	options: { name: string; values: string[] }[];
-	variants: {
-		id: string;
-		title: string;
-		price: { amount: string; currencyCode: string };
-		image?: TAssetHash;
-		selectedOptions: { name: string; value: string }[];
-	}[];
-}
-
-// =========================================================================
-// Style Mixins
-// =========================================================================
-
-export type TStyleMixin =
-	| TAutoLayoutStyleMixin
-	| TAppearanceStyleMixin
-	| TTypographyStyleMixin
-	| TFillStyleMixin
-	| TStrokeStyleMixin
-	| TShadowStyleMixin
-	| TTextStyleMixin
-	| TButtonStyleMixin
-	| TBadgeStyleMixin
-	| TImageStyleMixin
-	| TProductDetailsStyleMixin;
 
 // export type TLayoutStyleMixin = TBaseMixin<
 // 	'layout',
@@ -338,7 +101,7 @@ export type TShadowStyleMixin = TBaseMixin<
 >;
 
 // =========================================================================
-// Composed Style Mixins
+// Composed Style
 // =========================================================================
 
 export type TCardStyleMixin = TBaseMixin<
