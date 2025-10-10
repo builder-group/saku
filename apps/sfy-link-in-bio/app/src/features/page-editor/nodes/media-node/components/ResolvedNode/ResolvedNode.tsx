@@ -14,12 +14,15 @@ export const ResolvedMediaNode = React.forwardRef<
 	const renderContent = React.useCallback(() => {
 		switch (content.type) {
 			case 'image': {
-				return <ImageContent node={node} cx={cx} />;
+				if (content.media == null) {
+					return <Skeleton node={node} />;
+				}
+				return <ImageContent node={node} media={content.media} cx={cx} />;
 			}
 			default:
 				return <Skeleton node={node} />;
 		}
-	}, [content.type, node, cx]);
+	}, [content, node, cx]);
 
 	return (
 		<div ref={ref} {...divProps} className="w-full max-w-md">

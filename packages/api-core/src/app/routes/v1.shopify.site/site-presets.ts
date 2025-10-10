@@ -12,10 +12,14 @@ import {
 	mediaNodeMetadata,
 	productNodeMetadata,
 	TContactIcon,
+	TDefaultAboutNodeComposition,
+	TDefaultTextNodeComposition,
 	textNodeMetadata,
 	TId,
+	TImageMediaNodeComposition,
 	tokenRef,
 	TProductNode,
+	TSingleLinkNodeComposition,
 	TSite,
 	TTheme,
 	type TFontAsset,
@@ -94,9 +98,8 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 		}
 
 		productNode = {
+			...productNodeMetadata.compositions.single,
 			id: createId('node'),
-			type: 'product',
-			...productNodeMetadata.default,
 			content: {
 				type: 'single',
 				product: {
@@ -192,17 +195,14 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 		integrations: [],
 		root: {
 			type: 'page',
+			composition: 'default',
 			id: createId('node'),
-			content: {
-				type: 'default',
-				hasWatermark: true
-			},
 			metadata: {},
+			hasWatermark: true,
 			children: [
 				{
+					...aboutNodeMetadata.compositions.default,
 					id: createId('node'),
-					type: 'about',
-					...aboutNodeMetadata.default,
 					content: {
 						type: 'default',
 						name,
@@ -210,31 +210,28 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 						profilePicture: profilePictureAssetHashId,
 						contactIcons: contactIcons
 					}
-				},
+				} satisfies TDefaultAboutNodeComposition,
 				{
+					...linkNodeMetadata.compositions.single,
 					id: createId('node'),
-					type: 'link',
-					...linkNodeMetadata.default,
 					content: {
 						type: 'single',
 						url: `https://${shopId}`,
 						userTitle: '🛒 Visit our Shopify store'
 					}
-				},
+				} satisfies TSingleLinkNodeComposition,
 				...(productNode != null ? [productNode] : []),
 				{
+					...textNodeMetadata.compositions.default,
 					id: createId('node'),
-					type: 'text',
-					...textNodeMetadata.default,
 					content: {
 						type: 'default',
 						text: { type: 'markdown', value: '✨ Thanks for visiting!' }
 					}
-				},
+				} satisfies TDefaultTextNodeComposition,
 				{
+					...mediaNodeMetadata.compositions.image,
 					id: createId('node'),
-					type: 'media',
-					...mediaNodeMetadata.default,
 					content: {
 						type: 'image',
 						media: {
@@ -242,7 +239,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 							altText: 'Welcome GIF'
 						}
 					}
-				}
+				} satisfies TImageMediaNodeComposition
 			],
 			autoLayout: {
 				horizontalPadding: 24,

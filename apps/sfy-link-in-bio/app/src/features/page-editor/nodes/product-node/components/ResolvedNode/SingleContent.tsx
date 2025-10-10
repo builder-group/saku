@@ -3,7 +3,10 @@ import { ChevronDownIcon } from '@/components';
 import { logger } from '@/environment';
 import { getCurrencySymbol } from '../../../../environment';
 import { TResolvedNodeProps } from '../../../../lib';
-import { TResolvedProductNode, TResolvedSingleProductNodeContent } from '../../types';
+import {
+	TResolvedSingleProductNodeComposition,
+	TResolvedSingleProductNodeContentMixin
+} from '../../types';
 import { useProductDetailsModal } from './ProductDetailsModal';
 
 export const SingleContent: React.FC<TSingleContentProps> = (props) => {
@@ -252,7 +255,7 @@ export const SingleContent: React.FC<TSingleContentProps> = (props) => {
 };
 
 interface TSingleContentProps {
-	node: TResolvedProductNode<TResolvedSingleProductNodeContent>;
-	product: NonNullable<TResolvedSingleProductNodeContent['product']>;
-	cx: TResolvedNodeProps<TResolvedProductNode<TResolvedSingleProductNodeContent>>['cx'];
+	node: TResolvedSingleProductNodeComposition;
+	product: NonNullable<TResolvedSingleProductNodeContentMixin['value']['product']>;
+	cx: TResolvedNodeProps<TResolvedSingleProductNodeComposition>['cx'];
 }

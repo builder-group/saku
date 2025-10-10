@@ -16,6 +16,8 @@ import {
 	TAsset,
 	TAssetHash,
 	TContactIcon,
+	TDefaultAboutNodeComposition,
+	TDefaultTextNodeComposition,
 	textNodeMetadata,
 	TFontAsset,
 	themes,
@@ -23,10 +25,13 @@ import {
 	TLinkNode,
 	tokenRef,
 	TPaint,
+	TSingleLinkNodeComposition,
 	TSite,
 	TSolidPaint,
+	TSpotifyEmbedLinkNodeComposition,
 	TTextNode,
-	TTheme
+	TTheme,
+	TYouTubeEmbedLinkNodeComposition
 } from '@repo/editor';
 import { TLinkPopData } from './parse-linkpop-html';
 
@@ -70,10 +75,9 @@ export function parseLinkpopData(linkpopData: TLinkPopData): TSite {
 			profilePictureHash = imageAsset.hash;
 		}
 
-		const aboutNode: TAboutNode = {
+		const aboutNode: TDefaultAboutNodeComposition = {
+			...aboutNodeMetadata.compositions.default,
 			id: createId('node'),
-			type: 'about',
-			...aboutNodeMetadata.default,
 			content: {
 				type: 'default',
 				name: page.title ?? 'Your Name',
@@ -111,8 +115,8 @@ export function parseLinkpopData(linkpopData: TLinkPopData): TSite {
 
 				// Determine variant based on __typename
 				let content: TLinkNode['content'];
-				let autoLayout: TLinkNode['autoLayout'] = linkNodeMetadata.default.autoLayout;
-				let appearance: TLinkNode['appearance'] = linkNodeMetadata.default.appearance;
+				let autoLayout: TLinkNode['autoLayout'] = linkNodeMetadata.compositions.single.autoLayout;
+				let appearance: TLinkNode['appearance'] = linkNodeMetadata.compositions.single.appearance;
 
 				switch (link.__typename) {
 					case 'YouTubeVideoLink':
@@ -126,12 +130,12 @@ export function parseLinkpopData(linkpopData: TLinkPopData): TSite {
 								contentId: youtubeData.id
 							};
 							autoLayout = {
-								...linkNodeMetadata.default.autoLayout,
+								...linkNodeMetadata.compositions.single.autoLayout,
 								horizontalPadding: 0,
 								verticalPadding: 0
 							};
 							appearance = {
-								...linkNodeMetadata.default.appearance,
+								...linkNodeMetadata.compositions.single.appearance,
 								borderRadius: Math.min(borderRadius, 40)
 							};
 						} else {
@@ -158,12 +162,12 @@ export function parseLinkpopData(linkpopData: TLinkPopData): TSite {
 								height: 352 // Default to normal height
 							};
 							autoLayout = {
-								...linkNodeMetadata.default.autoLayout,
+								...linkNodeMetadata.compositions.single.autoLayout,
 								horizontalPadding: 0,
 								verticalPadding: 0
 							};
 							appearance = {
-								...linkNodeMetadata.default.appearance,
+								...linkNodeMetadata.compositions.single.appearance,
 								borderRadius: Math.min(borderRadius, 40)
 							};
 						} else {
@@ -186,25 +190,45 @@ export function parseLinkpopData(linkpopData: TLinkPopData): TSite {
 				}
 
 				// Create link node for links with URLs
-				children.push({
-					id: createId('node'),
-					type: 'link',
-					...linkNodeMetadata.default,
-					content,
-					autoLayout,
-					appearance
-				} satisfies TLinkNode);
+				switch (content.type) {
+					case 'single':
+						children.push({
+							...linkNodeMetadata.compositions.single,
+							id: createId('node'),
+							content,
+							autoLayout,
+							appearance
+						} satisfies TSingleLinkNodeComposition);
+						break;
+					case 'youtube-embed':
+						children.push({
+							...linkNodeMetadata.compositions['youtube-embed'],
+							id: createId('node'),
+							content,
+							autoLayout,
+							appearance
+						} satisfies TYouTubeEmbedLinkNodeComposition);
+						break;
+					case 'spotify-embed':
+						children.push({
+							...linkNodeMetadata.compositions['spotify-embed'],
+							id: createId('node'),
+							content,
+							autoLayout,
+							appearance
+						} satisfies TSpotifyEmbedLinkNodeComposition);
+						break;
+				}
 			} else {
 				// Create text node for links without URLs
 				children.push({
+					...textNodeMetadata.compositions.default,
 					id: createId('node'),
-					type: 'text',
-					...textNodeMetadata.default,
 					content: {
 						type: 'default',
 						text: { type: 'markdown', value: link.title }
 					}
-				} satisfies TTextNode);
+				} satisfies TDefaultTextNodeComposition);
 			}
 		}
 	}
@@ -217,11 +241,9 @@ export function parseLinkpopData(linkpopData: TLinkPopData): TSite {
 		root: {
 			id: createId('node'),
 			type: 'page',
-			content: {
-				type: 'default',
-				hasWatermark: true
-			},
+			composition: 'default',
 			metadata: {},
+			hasWatermark: true,
 			children,
 			autoLayout: {
 				horizontalPadding: 24,

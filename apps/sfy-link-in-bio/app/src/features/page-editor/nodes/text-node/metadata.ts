@@ -7,5 +7,5 @@ export const textNodeMetadata: TNodeMetadata<'text'> = {
 	icon: PolarisLayoutSectionIcon,
 	label: editorTextNodeMetadatad.label,
 	internal: false,
-	default: editorTextNodeMetadatad.default
+	compositions: editorTextNodeMetadatad.compositions
 };

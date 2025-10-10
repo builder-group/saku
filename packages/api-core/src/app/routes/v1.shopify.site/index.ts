@@ -391,10 +391,10 @@ router.openapi(UpdateShopifySiteRoute, async (c) => {
 		if (
 			rootNode != null &&
 			rootNode.type === 'page' &&
-			!rootNode.content.hasWatermark &&
+			!rootNode.hasWatermark &&
 			currentPlan.key !== 'awesome'
 		) {
-			rootNode.content.hasWatermark = true;
+			rootNode.hasWatermark = true;
 		}
 	}
 
