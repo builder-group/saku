@@ -6,7 +6,7 @@ import { TResolvedPageNode } from '../types';
 
 export const ResolvedPageNode: React.FC<TResolvedNodeProps<TResolvedPageNode>> = (props) => {
 	const {
-		node: { content, children, autoLayout, appearance, fill },
+		node: { hasWatermark, children, autoLayout, appearance, fill },
 		cx,
 		...divProps
 	} = props;
@@ -31,7 +31,7 @@ export const ResolvedPageNode: React.FC<TResolvedNodeProps<TResolvedPageNode>> =
 			</div>
 
 			{/* Watermark */}
-			{content.hasWatermark && (
+			{hasWatermark && (
 				<div className="sticky bottom-0 w-full">
 					<a
 						href="https://saku.so"

@@ -37,7 +37,7 @@ export const PageNode = React.forwardRef<HTMLDivElement, TNodeProps<TFlatPageNod
 			return null;
 		}
 
-		const { content, autoLayout, appearance, fill } = node;
+		const { hasWatermark, autoLayout, appearance, fill } = node;
 
 		return (
 			<>
@@ -60,7 +60,7 @@ export const PageNode = React.forwardRef<HTMLDivElement, TNodeProps<TFlatPageNod
 				</div>
 
 				{/* Watermark */}
-				{content.hasWatermark && (
+				{hasWatermark && (
 					<div className="sticky bottom-0 w-full">
 						<a
 							href="https://saku.so"
