@@ -69,7 +69,7 @@ export type TDefaultPageComposition = TComposition<
 >;
 
 export type TDefaultFlatPageComposition = TComposition<
-	'flat',
+	'default', // Use 'default' (instead of e.g. 'flat') to match variant naming across flat/regular contexts (e.g., 'elevated' would be 'elevated' in both)
 	[
 		TIdMixin,
 		TPageNodeMixin,
