@@ -7,5 +7,5 @@ export const aboutNodeMetadata: TNodeMetadata<'about'> = {
 	icon: PolarisLayoutSectionIcon,
 	label: editorAboutNodeMetadata.label,
 	internal: false,
-	default: editorAboutNodeMetadata.default
+	compositions: editorAboutNodeMetadata.compositions
 };
