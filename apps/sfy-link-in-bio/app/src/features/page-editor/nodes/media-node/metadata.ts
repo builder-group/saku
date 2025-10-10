@@ -7,5 +7,5 @@ export const mediaNodeMetadata: TNodeMetadata<'media'> = {
 	icon: PolarisLayoutSectionIcon,
 	label: editorMediaNodeMetadata.label,
 	internal: false,
-	compositions: editorMediaNodeMetadata.compositions
+	default: editorMediaNodeMetadata.compositions.image
 };

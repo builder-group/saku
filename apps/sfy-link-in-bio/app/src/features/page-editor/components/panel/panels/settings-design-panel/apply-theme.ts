@@ -16,14 +16,16 @@ export function applyTheme(theme: TTheme, editor: TPageEditor) {
 		for (const node of Object.values(editor.nodeMap)) {
 			switch (node.type) {
 				case 'about': {
-					(node as TNodeState<TAboutNode>)._v.textXl = aboutNodeMetadata.default.textXl;
-					(node as TNodeState<TAboutNode>)._v.text = aboutNodeMetadata.default.text;
-					(node as TNodeState<TAboutNode>)._v.image = aboutNodeMetadata.default.image;
+					(node as TNodeState<TAboutNode>)._v.textXl =
+						aboutNodeMetadata.compositions.default.textXl;
+					(node as TNodeState<TAboutNode>)._v.text = aboutNodeMetadata.compositions.default.text;
+					(node as TNodeState<TAboutNode>)._v.image = aboutNodeMetadata.compositions.default.image;
 					node._notify();
 					break;
 				}
 				case 'link': {
-					(node as TNodeState<TLinkNode>)._v.appearance = linkNodeMetadata.default.appearance;
+					(node as TNodeState<TLinkNode>)._v.appearance =
+						linkNodeMetadata.compositions.single.appearance;
 					node._notify();
 					break;
 				}
