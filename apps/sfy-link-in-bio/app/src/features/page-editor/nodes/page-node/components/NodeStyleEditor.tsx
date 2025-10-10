@@ -8,7 +8,7 @@ import {
 	FillStyleMixinEditor
 } from '../../../mixins';
 
-export const PageNodeEditor: React.FC<TNodeEditorComponentProps<TFlatPageNode>> = (props) => {
+export const PageNodeStyleEditor: React.FC<TNodeEditorComponentProps<TFlatPageNode>> = (props) => {
 	const { nodeState, editor } = props;
 
 	const autoLayoutState = useNodeProperty(nodeState, 'autoLayout');
