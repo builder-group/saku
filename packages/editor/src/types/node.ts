@@ -2,7 +2,10 @@ import { TId, TRgba } from '../lib';
 import {
 	TAppearanceStyleMixin,
 	TAutoLayoutStyleMixin,
+	TBadgeNeutralStyleMixin,
+	TBadgeSecondaryStyleMixin,
 	TBaseMixin,
+	TButtonPrimaryStyleMixin,
 	TChildrenMixin,
 	TFillStyleMixin,
 	TFlatChildrenMixin,
@@ -12,7 +15,9 @@ import {
 	TProductDetailsStyleMixin,
 	TShadowStyleMixin,
 	TStrokeStyleMixin,
-	TTextStyleMixin
+	TTextSmStyleMixin,
+	TTextStyleMixin,
+	TTextXlStyleMixin
 } from './mixin';
 import {
 	TAssetHash,
@@ -106,6 +111,7 @@ export type TDefaultAboutComposition = TComposition<
 		TFillStyleMixin,
 		TStrokeStyleMixin,
 		TShadowStyleMixin,
+		TTextXlStyleMixin,
 		TTextStyleMixin,
 		TImageStyleMixin
 	]
@@ -156,6 +162,7 @@ export type TSingleLinkComposition = TComposition<
 		TStrokeStyleMixin,
 		TShadowStyleMixin,
 		TTextStyleMixin,
+		TTextSmStyleMixin,
 		TImageStyleMixin
 	]
 >;
@@ -257,7 +264,8 @@ export type TImageMediaComposition = TComposition<
 		TAutoLayoutStyleMixin,
 		TAppearanceStyleMixin,
 		TStrokeStyleMixin,
-		TShadowStyleMixin
+		TShadowStyleMixin,
+		TImageStyleMixin
 	]
 >;
 
@@ -332,6 +340,11 @@ export type TSingleProductComposition = TComposition<
 		TFillStyleMixin,
 		TStrokeStyleMixin,
 		TShadowStyleMixin,
+		TTextStyleMixin,
+		TButtonPrimaryStyleMixin,
+		TBadgeSecondaryStyleMixin,
+		TBadgeNeutralStyleMixin,
+		TImageStyleMixin,
 		TProductDetailsStyleMixin
 	]
 >;
