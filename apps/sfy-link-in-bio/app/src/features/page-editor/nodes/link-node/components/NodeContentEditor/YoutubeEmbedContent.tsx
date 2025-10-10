@@ -142,7 +142,7 @@ export const YoutubeEmbedContent: React.FC<TYoutubeEmbedContentProps> = (props) 
 	// =========================================================================
 
 	return (
-		<div className={cn('space-y-3 px-4', className)}>
+		<div className={cn('space-y-3 px-4 py-3', className)}>
 			<div>
 				<Text as="span" variant="headingXs" tone="subdued">
 					Content {isEnhancing && '(enhancing...)'}

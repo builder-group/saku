@@ -98,12 +98,12 @@ export const LinkNodeContentEditor: React.FC<TNodeEditorComponentProps<TLinkNode
 				/>
 			</div>
 
-			<div className="relative border-b border-neutral-200 py-3">
+			<div className="relative border-b border-neutral-200">
 				{isChangingContentType ? (
 					<ContentSkeleton className="z-10" />
 				) : (
 					<>
-						<PortalPulse isActive={cx.isEnhancing} className="-top-3 right-0 -bottom-3 left-0" />
+						<PortalPulse isActive={cx.isEnhancing} className="top-0 left-0" />
 						{renderVariantEditor()}
 					</>
 				)}
