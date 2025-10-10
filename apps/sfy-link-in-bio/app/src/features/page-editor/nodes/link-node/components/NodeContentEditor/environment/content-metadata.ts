@@ -27,6 +27,7 @@ export const contentMetadataMap = {
 			};
 		},
 		async createContent(cx) {
+			cx.node._v.composition = 'single';
 			cx.node._v.content = {
 				type: 'single',
 				url: cx.url,
@@ -98,6 +99,7 @@ export const contentMetadataMap = {
 				);
 			}
 
+			cx.node._v.composition = 'youtube-embed';
 			cx.node._v.content = {
 				type: 'youtube-embed',
 				url: cx.url,
@@ -150,6 +152,7 @@ export const contentMetadataMap = {
 				);
 			}
 
+			cx.node._v.composition = 'spotify-embed';
 			cx.node._v.content = {
 				type: 'spotify-embed',
 				url: cx.url,
