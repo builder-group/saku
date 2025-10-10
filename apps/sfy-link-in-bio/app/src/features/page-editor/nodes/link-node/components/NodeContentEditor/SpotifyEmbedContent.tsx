@@ -1,8 +1,8 @@
 import {
-	createYouTubeUrl,
-	extractYouTubeId,
-	TYouTubeEmbedContentType,
-	TYouTubeEmbedLinkNodeContent
+	createSpotifyUrl,
+	extractSpotifyId,
+	TSpotifyEmbedContentType,
+	TSpotifyEmbedLinkNodeContent
 } from '@repo/editor';
 import { Select, Text, TextField } from '@shopify/polaris';
 import { useCompute, useFeatureState, useListener } from 'feature-react/state';
@@ -10,38 +10,54 @@ import React from 'react';
 import { cn } from '@/lib';
 import { TNodeEditorContext } from './create-node-editor-context';
 
-export const YoutubeEmbedContent: React.FC<TYoutubeEmbedContentProps> = (props) => {
+export const SpotifyEmbedContent: React.FC<TSpotifyEmbedContentProps> = (props) => {
 	const { cx, className } = props;
 
 	const content = useCompute(cx.node, ({ value }) => value.content, [], { isEqual: false });
 	const isEnhancing = useFeatureState(cx.isEnhancing);
 
 	const [displayUrl, setDisplayUrl] = React.useState(content.url);
-
 	const contentTypeLabel = React.useMemo(() => {
 		switch (content.contentType) {
-			case 'video':
-				return 'Video';
+			case 'track':
+				return 'Track';
+			case 'album':
+				return 'Album';
 			case 'playlist':
 				return 'Playlist';
+			case 'artist':
+				return 'Artist';
 			default:
 				return 'Content';
 		}
 	}, [content.contentType]);
 	const contentIdPlaceholder = React.useMemo(() => {
 		switch (content.contentType) {
-			case 'video':
-				return 'dQw4w9WgXcQ';
+			case 'track':
+				return '6HhvbFrtFZ43d6qJCiZ7YX';
+			case 'album':
+				return '0D6MiyCCYPgyEeLKMU5PAM';
 			case 'playlist':
-				return 'PLFzsFUO-y0HAXM8e7CzDHI6fGmLVZjObn';
+				return '37i9dQZF1E36XFretM2CHY';
+			case 'artist':
+				return '2Aq0ejE2gV9qe4lvGeNQQC';
 			default:
 				return 'ID';
 		}
 	}, [content.contentType]);
 	const contentTypeOptions = React.useMemo(
 		() => [
-			{ label: 'Video', value: 'video' },
-			{ label: 'Playlist', value: 'playlist' }
+			{ label: 'Track', value: 'track' },
+			{ label: 'Album', value: 'album' },
+			{ label: 'Playlist', value: 'playlist' },
+			{ label: 'Artist', value: 'artist' }
+		],
+		[]
+	);
+	const heightOptions = React.useMemo(
+		() => [
+			{ label: 'Normal', value: '352' },
+			{ label: 'Compact', value: '152' }
 		],
 		[]
 	);
@@ -63,7 +79,7 @@ export const YoutubeEmbedContent: React.FC<TYoutubeEmbedContentProps> = (props) 
 	}, [cx, displayUrl]);
 
 	const handleContentTypeChange = React.useCallback(
-		(value: TYouTubeEmbedContentType) => {
+		(value: TSpotifyEmbedContentType) => {
 			cx.node._v.content.contentType = value;
 			cx.node._notify({ listenerContext: { source: 'content-type-change' } });
 		},
@@ -74,6 +90,14 @@ export const YoutubeEmbedContent: React.FC<TYoutubeEmbedContentProps> = (props) 
 		(value: string) => {
 			cx.node._v.content.contentId = value;
 			cx.node._notify({ listenerContext: { source: 'content-id-change' } });
+		},
+		[cx]
+	);
+
+	const handleHeightChange = React.useCallback(
+		(value: string) => {
+			cx.node._v.content.height = parseInt(value, 10);
+			cx.node._notify({ listenerContext: { source: 'height-change' } });
 		},
 		[cx]
 	);
@@ -100,34 +124,34 @@ export const YoutubeEmbedContent: React.FC<TYoutubeEmbedContentProps> = (props) 
 			switch (source) {
 				case 'content-id-change': {
 					if (embedVariant.contentId.trim().length > 0) {
-						cx.node._v.content.url = createYouTubeUrl(
+						cx.node._v.content.url = createSpotifyUrl(
 							embedVariant.contentType,
 							embedVariant.contentId.trim()
 						);
-						cx.node._notify({ listenerContext: { source: 'youtube-embed-listener' } });
+						cx.node._notify({ listenerContext: { source: 'spotify-embed-listener' } });
 					}
 					break;
 				}
 				case 'content-type-change': {
 					if (embedVariant.contentId.trim().length > 0) {
-						cx.node._v.content.url = createYouTubeUrl(
+						cx.node._v.content.url = createSpotifyUrl(
 							embedVariant.contentType,
 							embedVariant.contentId.trim()
 						);
-						cx.node._notify({ listenerContext: { source: 'youtube-embed-listener' } });
+						cx.node._notify({ listenerContext: { source: 'spotify-embed-listener' } });
 					}
 					break;
 				}
 				case 'url-change': {
-					const youtubeData = extractYouTubeId(node.content.url);
+					const spotifyData = extractSpotifyId(node.content.url);
 					if (
-						youtubeData != null &&
-						(youtubeData.id !== embedVariant.contentId ||
-							youtubeData.type !== embedVariant.contentType)
+						spotifyData != null &&
+						(spotifyData.id !== embedVariant.contentId ||
+							spotifyData.type !== embedVariant.contentType)
 					) {
-						embedVariant.contentType = youtubeData.type;
-						embedVariant.contentId = youtubeData.id;
-						cx.node._notify({ listenerContext: { source: 'youtube-embed-listener' } });
+						embedVariant.contentType = spotifyData.type;
+						embedVariant.contentId = spotifyData.id;
+						cx.node._notify({ listenerContext: { source: 'spotify-embed-listener' } });
 					}
 					setDisplayUrl(node.content.url);
 					break;
@@ -142,7 +166,7 @@ export const YoutubeEmbedContent: React.FC<TYoutubeEmbedContentProps> = (props) 
 	// =========================================================================
 
 	return (
-		<div className={cn('space-y-3 px-4', className)}>
+		<div className={cn('space-y-3 px-4 py-3', className)}>
 			<div>
 				<Text as="span" variant="headingXs" tone="subdued">
 					Content {isEnhancing && '(enhancing...)'}
@@ -173,7 +197,7 @@ export const YoutubeEmbedContent: React.FC<TYoutubeEmbedContentProps> = (props) 
 					Embed Type
 				</Text>
 				<Select
-					label="YouTube Type"
+					label="Spotify Type"
 					labelHidden
 					options={contentTypeOptions}
 					value={content.contentType}
@@ -185,11 +209,11 @@ export const YoutubeEmbedContent: React.FC<TYoutubeEmbedContentProps> = (props) 
 			{/* Content ID */}
 			<div className="space-y-1">
 				<Text as="span" variant="bodySm" tone="subdued">
-					{contentTypeLabel}
+					{contentTypeLabel} ID
 				</Text>
 				<TextField
 					id="content-id-field"
-					label={contentTypeLabel}
+					label={`${contentTypeLabel} ID`}
 					labelHidden
 					value={content.contentId}
 					onChange={handleContentIdChange}
@@ -198,11 +222,26 @@ export const YoutubeEmbedContent: React.FC<TYoutubeEmbedContentProps> = (props) 
 					disabled={isEnhancing}
 				/>
 			</div>
+
+			{/* Height */}
+			<div className="space-y-1">
+				<Text as="span" variant="bodySm" tone="subdued">
+					Height (px)
+				</Text>
+				<Select
+					label="Height"
+					labelHidden
+					options={heightOptions}
+					value={content.height.toString()}
+					onChange={handleHeightChange}
+					disabled={isEnhancing}
+				/>
+			</div>
 		</div>
 	);
 };
 
-interface TYoutubeEmbedContentProps {
-	cx: TNodeEditorContext<TYouTubeEmbedLinkNodeContent>;
+interface TSpotifyEmbedContentProps {
+	cx: TNodeEditorContext<TSpotifyEmbedLinkNodeContent>;
 	className: string;
 }

@@ -6,7 +6,7 @@ import { useEditorBreakpoint } from '../../../../hooks';
 import { TPageEditor } from '../../../../lib';
 import { PanelHeader } from '../../PanelHeader';
 import { Placeholder } from './Placeholder';
-import { AnalyticsTab, CustomizeTab, tabs } from './tabs';
+import { AnalyticsTab, ContentTab, StyleTab, tabs } from './tabs';
 
 export const NodeInspectorPanel: React.FC<TNodeInspectorPanelProps> = (props) => {
 	const { editor, order, withResizableHandle = false } = props;
@@ -111,8 +111,9 @@ export const NodeInspectorPanel: React.FC<TNodeInspectorPanelProps> = (props) =>
 						</PanelHeader>
 						{/* 96px bottom padding is to avoid blocking content with Live Chat overlay */}
 						<div className="flex-1 overflow-auto pb-24">
-							{tabIndex === 0 && <CustomizeTab nodeState={selectedNode} editor={editor} />}
-							{tabIndex === 1 && <AnalyticsTab nodeState={selectedNode} editor={editor} />}
+							{tabIndex === 0 && <ContentTab nodeState={selectedNode} editor={editor} />}
+							{tabIndex === 1 && <StyleTab nodeState={selectedNode} editor={editor} />}
+							{tabIndex === 2 && <AnalyticsTab nodeState={selectedNode} editor={editor} />}
 						</div>
 					</div>
 				) : (

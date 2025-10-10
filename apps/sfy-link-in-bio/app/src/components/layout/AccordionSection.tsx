@@ -75,7 +75,7 @@ export interface TAccordionSectionProps
 }
 
 const accordionVariants = cva(
-	'flex cursor-pointer items-center justify-between border-b border-neutral-200 px-4 py-3 hover:bg-neutral-50',
+	'flex cursor-pointer items-center justify-between border-b border-neutral-200  hover:bg-neutral-50',
 	{
 		variants: {
 			size: {

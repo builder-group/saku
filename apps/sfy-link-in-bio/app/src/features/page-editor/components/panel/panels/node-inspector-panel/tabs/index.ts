@@ -1,3 +1,4 @@
 export * from './AnalyticsTab';
-export * from './CustomizeTab';
+export * from './ContentTab';
+export * from './StyleTab';
 export * from './tabs';

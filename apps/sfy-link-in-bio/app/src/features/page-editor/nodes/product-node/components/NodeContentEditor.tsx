@@ -1,5 +1,5 @@
 import { notEmpty } from '@blgc/utils';
-import { tokenRef, TProductNode } from '@repo/editor';
+import { TProductNode } from '@repo/editor';
 import { Button, IndexTable, Scrollable, Text, useIndexResourceState } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react/state';
 import React from 'react';
@@ -10,22 +10,11 @@ import {
 	PolarisProductAddIcon
 } from '@/components';
 import { capitalizeFirstLetter, isProduct, mutateWithReferenceUpdate } from '@/lib';
-import { useNodeProperty } from '../../../hooks';
 import { TNodeEditorComponentProps } from '../../../lib';
-import {
-	AppearanceStyleMixinEditor,
-	AutoLayoutStyleMixinEditor,
-	BadgeStyleMixinEditor,
-	ButtonStyleMixinEditor,
-	FillStyleMixinEditor,
-	ImageStyleMixinEditor,
-	ProductDetailsStyleMixinEditor,
-	ShadowStyleMixinEditor,
-	StrokeStyleMixinEditor,
-	TextStyleMixinEditor
-} from '../../../mixins';
 
-export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>> = (props) => {
+export const ProductNodeContentEditor: React.FC<TNodeEditorComponentProps<TProductNode>> = (
+	props
+) => {
 	const { nodeState, editor } = props;
 	const { content } = useFeatureState(nodeState);
 
@@ -118,18 +107,6 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 		return false;
 	}, [selectedResources, variantRows.length]);
 
-	const autoLayoutState = useNodeProperty(nodeState, 'autoLayout');
-	const appearanceState = useNodeProperty(nodeState, 'appearance');
-	const fillState = useNodeProperty(nodeState, 'fill');
-	const strokeState = useNodeProperty(nodeState, 'stroke');
-	const shadowState = useNodeProperty(nodeState, 'shadow');
-	const textState = useNodeProperty(nodeState, 'text');
-	const buttonPrimaryState = useNodeProperty(nodeState, 'buttonPrimary');
-	const badgeSecondaryState = useNodeProperty(nodeState, 'badgeSecondary');
-	const badgeNeutralState = useNodeProperty(nodeState, 'badgeNeutral');
-	const imageState = useNodeProperty(nodeState, 'image');
-	const productDetailsState = useNodeProperty(nodeState, 'productDetails');
-
 	// =========================================================================
 	// Events
 	// =========================================================================
@@ -201,7 +178,7 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 				.filter(notEmpty)
 		};
 		nodeState._notify();
-	}, [editor, content.product, clearSelection, nodeState]);
+	}, [editor, clearSelection, nodeState]);
 
 	// =========================================================================
 	// UI
@@ -209,8 +186,7 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 
 	return (
 		<>
-			{/* Content Section */}
-			<AccordionSection title="Content" defaultOpen={true}>
+			<div className="space-y-4 border-b border-neutral-200 px-4 py-3">
 				<div className="space-y-4">
 					<div className="space-y-1">
 						<div className="flex items-center justify-between">
@@ -374,120 +350,7 @@ export const ProductNodeEditor: React.FC<TNodeEditorComponentProps<TProductNode>
 						)}
 					</div>
 				</div>
-			</AccordionSection>
-
-			{/* Design Section */}
-			<AccordionSection title="Design" collapsibleClassName="p-0 border-b-0">
-				<AccordionSection
-					title="Layer"
-					collapsibleClassName="px-0 space-y-3"
-					size="tight"
-					defaultOpen={true}
-				>
-					<AutoLayoutStyleMixinEditor
-						state={autoLayoutState}
-						onLinkToken={() => tokenRef('auto-layout.default', 'auto-layout')}
-						editor={editor}
-					/>
-					<div className="h-px bg-neutral-200" />
-					<AppearanceStyleMixinEditor
-						state={appearanceState}
-						onLinkToken={() => tokenRef('appearance.default', 'appearance')}
-						editor={editor}
-					/>
-					<div className="h-px bg-neutral-200" />
-					<FillStyleMixinEditor
-						state={fillState}
-						onLinkToken={() => tokenRef('fill.default', 'fill')}
-						editor={editor}
-					/>
-					<div className="h-px bg-neutral-200" />
-					<StrokeStyleMixinEditor
-						state={strokeState}
-						onLinkToken={() => tokenRef('stroke.default', 'stroke')}
-						editor={editor}
-					/>
-					<div className="h-px bg-neutral-200" />
-					<ShadowStyleMixinEditor
-						state={shadowState}
-						onLinkToken={() => tokenRef('shadow.default', 'shadow')}
-						editor={editor}
-					/>
-				</AccordionSection>
-
-				<AccordionSection
-					title="Product Title"
-					collapsibleClassName="px-0 space-y-3"
-					size="tight"
-					defaultOpen={true}
-				>
-					<TextStyleMixinEditor
-						state={textState}
-						onLinkToken={() => tokenRef('text.default', 'text')}
-						editor={editor}
-					/>
-				</AccordionSection>
-				<AccordionSection
-					title="Buy Button"
-					collapsibleClassName="px-0 space-y-3"
-					size="tight"
-					defaultOpen={true}
-				>
-					<ButtonStyleMixinEditor
-						state={buttonPrimaryState}
-						onLinkToken={() => tokenRef('button.primary', 'button')}
-						editor={editor}
-					/>
-				</AccordionSection>
-				<AccordionSection
-					title="Price Badge"
-					collapsibleClassName="px-0 space-y-3"
-					size="tight"
-					defaultOpen={true}
-				>
-					<BadgeStyleMixinEditor
-						state={badgeSecondaryState}
-						onLinkToken={() => tokenRef('badge.secondary', 'badge')}
-						editor={editor}
-					/>
-				</AccordionSection>
-				<AccordionSection
-					title="Variant Badge"
-					collapsibleClassName="px-0 space-y-3"
-					size="tight"
-					defaultOpen={true}
-				>
-					<BadgeStyleMixinEditor
-						state={badgeNeutralState}
-						onLinkToken={() => tokenRef('badge.neutral', 'badge')}
-						editor={editor}
-					/>
-				</AccordionSection>
-				<AccordionSection
-					title="Product Image"
-					collapsibleClassName="px-0 space-y-3"
-					size="tight"
-					defaultOpen={true}
-				>
-					<ImageStyleMixinEditor
-						state={imageState}
-						onLinkToken={() => tokenRef('image.default', 'image')}
-						editor={editor}
-					/>
-				</AccordionSection>
-				<AccordionSection
-					title="Product Details Modal"
-					collapsibleClassName="px-0 space-y-3"
-					size="tight"
-					defaultOpen={true}
-				>
-					<ProductDetailsStyleMixinEditor
-						state={productDetailsState}
-						onLinkToken={() => tokenRef('product-details.default', 'product-details')}
-						editor={editor}
-					/>
-				</AccordionSection>
-			</AccordionSection>
+			</div>
 
 			{/* Debug Section */}
 			{editor.isDebug() && (
