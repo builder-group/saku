@@ -50,7 +50,7 @@ export const aboutNodeMetadata: TNodeMetadata<'about'> = {
 			},
 			fill: {
 				paint: tokenRef('paint.base200.content', 'paint.solid'),
-				opacity: tokenRef('text.xl', 'text', 'fill.opacity')
+				opacity: tokenRef('text.default', 'text', 'fill.opacity')
 			},
 			stroke: tokenRef('text.default', 'text', 'stroke'),
 			shadow: tokenRef('text.default', 'text', 'shadow')
