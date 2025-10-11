@@ -1,7 +1,7 @@
 import React from 'react';
 import { TResolvedNodeProps } from '../../../../lib';
 import { TResolvedMediaNode } from '../../types';
-import { ImageContent } from './ImageContent';
+import { ClassicContent } from './ClassicContent';
 import { Skeleton } from './Skeleton';
 
 export const ResolvedMediaNode = React.forwardRef<
@@ -13,11 +13,11 @@ export const ResolvedMediaNode = React.forwardRef<
 
 	const renderContent = React.useCallback(() => {
 		switch (content.type) {
-			case 'image': {
+			case 'classic': {
 				if (content.media == null) {
 					return <Skeleton node={node} />;
 				}
-				return <ImageContent node={node} media={content.media} cx={cx} />;
+				return <ClassicContent node={node} media={content.media} cx={cx} />;
 			}
 			default:
 				return <Skeleton node={node} />;

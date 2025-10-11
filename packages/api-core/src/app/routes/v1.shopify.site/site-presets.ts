@@ -13,13 +13,13 @@ import {
 	productNodeMetadata,
 	TClassicAboutNodeBundle,
 	TClassicLinkNodeBundle,
+	TClassicMediaNodeBundle,
 	TContactIcon,
 	textNodeMetadata,
 	TId,
-	TImageMediaNodeBundle,
-	TMarkdownTextNodeBundle,
 	tokenRef,
 	TProductNode,
+	TRichTextNodeBundle,
 	TSite,
 	TTheme,
 	type TFontAsset,
@@ -222,24 +222,25 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 				} satisfies TClassicLinkNodeBundle,
 				...(productNode != null ? [productNode] : []),
 				{
-					...textNodeMetadata.bundleMap.markdown,
+					...textNodeMetadata.bundleMap.rich,
 					id: createId('node'),
 					content: {
-						type: 'markdown',
-						text: '✨ Thanks for visiting!'
+						type: 'rich',
+						text: { type: 'markdown', value: '✨ Thanks for visiting!' }
 					}
-				} satisfies TMarkdownTextNodeBundle,
+				} satisfies TRichTextNodeBundle,
 				{
-					...mediaNodeMetadata.bundleMap.image,
+					...mediaNodeMetadata.bundleMap.classic,
 					id: createId('node'),
 					content: {
-						type: 'image',
+						type: 'classic',
 						media: {
+							type: 'image',
 							hash: gifAssetHashId,
 							altText: 'Welcome GIF'
 						}
 					}
-				} satisfies TImageMediaNodeBundle
+				} satisfies TClassicMediaNodeBundle
 			],
 			autoLayout: {
 				horizontalPadding: 24,

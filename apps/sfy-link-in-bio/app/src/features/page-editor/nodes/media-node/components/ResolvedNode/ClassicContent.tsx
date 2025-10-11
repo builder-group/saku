@@ -1,8 +1,11 @@
 import React from 'react';
 import { TResolvedNodeProps } from '../../../../lib';
-import { TResolvedImageMediaNodeBundle, TResolvedImageMediaNodeContentMixin } from '../../types';
+import {
+	TResolvedClassicMediaNodeBundle,
+	TResolvedClassicMediaNodeContentMixin
+} from '../../types';
 
-export const ImageContent: React.FC<TImageContentProps> = (props) => {
+export const ClassicContent: React.FC<TClassicContentProps> = (props) => {
 	const {
 		node: { autoLayout, appearance, fill, stroke, shadow, image },
 		media
@@ -30,8 +33,8 @@ export const ImageContent: React.FC<TImageContentProps> = (props) => {
 	);
 };
 
-interface TImageContentProps {
-	node: TResolvedImageMediaNodeBundle;
-	media: NonNullable<TResolvedImageMediaNodeContentMixin['value']['media']>;
-	cx: TResolvedNodeProps<TResolvedImageMediaNodeBundle>['cx'];
+interface TClassicContentProps {
+	node: TResolvedClassicMediaNodeBundle;
+	media: NonNullable<TResolvedClassicMediaNodeContentMixin['value']['media']>;
+	cx: TResolvedNodeProps<TResolvedClassicMediaNodeBundle>['cx'];
 }

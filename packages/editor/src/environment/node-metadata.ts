@@ -163,11 +163,11 @@ export const mediaNodeMetadata: TNodeMetadata<'media'> = {
 	type: 'media',
 	label: 'Media',
 	bundleMap: {
-		image: {
+		classic: {
 			type: 'media',
-			bundle: 'image',
+			bundle: 'classic',
 			content: {
-				type: 'image'
+				type: 'classic'
 			},
 			autoLayout: {
 				horizontalPadding: 0,
@@ -273,12 +273,12 @@ export const textNodeMetadata: TNodeMetadata<'text'> = {
 	type: 'text',
 	label: 'Text',
 	bundleMap: {
-		markdown: {
+		rich: {
 			type: 'text',
-			bundle: 'markdown',
+			bundle: 'rich',
 			content: {
-				type: 'markdown',
-				text: 'Add your text here'
+				type: 'rich',
+				text: { type: 'markdown', value: 'Add your text here' }
 			},
 			autoLayout: {
 				horizontalPadding: tokenRef('auto-layout.default', 'auto-layout', 'horizontalPadding'),

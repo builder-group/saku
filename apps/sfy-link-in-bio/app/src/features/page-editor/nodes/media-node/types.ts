@@ -9,14 +9,14 @@ import {
 	TResolvedStrokeStyleMixin
 } from '../../mixins';
 
-export type TResolvedMediaNode = TResolvedImageMediaNodeBundle;
+export type TResolvedMediaNode = TResolvedClassicMediaNodeBundle;
 
-export type TResolvedImageMediaNodeBundle = TNodeBundle<
-	TResolvedImageMediaNodeContentMixin['value']['type'],
+export type TResolvedClassicMediaNodeBundle = TNodeBundle<
+	TResolvedClassicMediaNodeContentMixin['value']['type'],
 	[
 		TIdMixin,
 		TMediaNodeMixin,
-		TResolvedImageMediaNodeContentMixin,
+		TResolvedClassicMediaNodeContentMixin,
 		TResolvedAutoLayoutStyleMixin,
 		TResolvedAppearanceStyleMixin,
 		TResolvedFillStyleMixin,
@@ -26,11 +26,12 @@ export type TResolvedImageMediaNodeBundle = TNodeBundle<
 	]
 >;
 
-export type TResolvedImageMediaNodeContentMixin = TBaseMixin<
+export type TResolvedClassicMediaNodeContentMixin = TBaseMixin<
 	'content',
 	{
-		type: 'image';
+		type: 'classic';
 		media?: {
+			type: 'image' | 'video' | 'audio';
 			altText?: string;
 		} & TResolvedAsset;
 	}

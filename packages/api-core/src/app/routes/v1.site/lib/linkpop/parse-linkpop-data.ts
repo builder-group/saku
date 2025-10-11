@@ -23,9 +23,9 @@ import {
 	themes,
 	TImageAsset,
 	TLinkNode,
-	TMarkdownTextNodeBundle,
 	tokenRef,
 	TPaint,
+	TRichTextNodeBundle,
 	TSite,
 	TSolidPaint,
 	TSpotifyEmbedLinkNodeBundle,
@@ -222,13 +222,13 @@ export function parseLinkpopData(linkpopData: TLinkPopData): TSite {
 			} else {
 				// Create text node for links without URLs
 				children.push({
-					...textNodeMetadata.bundleMap.markdown,
+					...textNodeMetadata.bundleMap.rich,
 					id: createId('node'),
 					content: {
-						type: 'markdown',
-						text: link.title
+						type: 'rich',
+						text: { type: 'markdown', value: link.title }
 					}
-				} satisfies TMarkdownTextNodeBundle);
+				} satisfies TRichTextNodeBundle);
 			}
 		}
 	}

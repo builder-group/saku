@@ -253,14 +253,14 @@ export type TSpotifyEmbedContentType = 'track' | 'album' | 'playlist' | 'artist'
 // Media Node
 // =========================================================================
 
-export type TMediaNode = TImageMediaNodeBundle;
+export type TMediaNode = TClassicMediaNodeBundle;
 
-export type TImageMediaNodeBundle = TNodeBundle<
-	TImageMediaNodeContentMixin['value']['type'],
+export type TClassicMediaNodeBundle = TNodeBundle<
+	TClassicMediaNodeContentMixin['value']['type'],
 	[
 		TIdMixin,
 		TMediaNodeMixin,
-		TImageMediaNodeContentMixin,
+		TClassicMediaNodeContentMixin,
 		TAutoLayoutStyleMixin,
 		TAppearanceStyleMixin,
 		TFillStyleMixin,
@@ -277,11 +277,12 @@ export type TMediaNodeMixin = TBaseMixin<
 	}
 >;
 
-export type TImageMediaNodeContentMixin = TBaseMixin<
+export type TClassicMediaNodeContentMixin = TBaseMixin<
 	'content',
 	{
-		type: 'image';
+		type: 'classic';
 		media?: {
+			type: 'image' | 'video' | 'audio';
 			hash: TAssetHash;
 			altText?: string;
 		};
@@ -292,14 +293,14 @@ export type TImageMediaNodeContentMixin = TBaseMixin<
 // Text Node
 // =========================================================================
 
-export type TTextNode = TMarkdownTextNodeBundle;
+export type TTextNode = TRichTextNodeBundle;
 
-export type TMarkdownTextNodeBundle = TNodeBundle<
-	TMarkdownTextNodeContentMixin['value']['type'],
+export type TRichTextNodeBundle = TNodeBundle<
+	TRichTextNodeContentMixin['value']['type'],
 	[
 		TIdMixin,
 		TTextNodeMixin,
-		TMarkdownTextNodeContentMixin,
+		TRichTextNodeContentMixin,
 		TAutoLayoutStyleMixin,
 		TAppearanceStyleMixin,
 		TFillStyleMixin,
@@ -316,11 +317,11 @@ export type TTextNodeMixin = TBaseMixin<
 	}
 >;
 
-export type TMarkdownTextNodeContentMixin = TBaseMixin<
+export type TRichTextNodeContentMixin = TBaseMixin<
 	'content',
 	{
-		type: 'markdown';
-		text: string;
+		type: 'rich';
+		text: TRichContent;
 	}
 >;
 
