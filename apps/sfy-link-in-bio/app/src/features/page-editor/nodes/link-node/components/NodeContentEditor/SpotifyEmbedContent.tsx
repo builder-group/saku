@@ -226,7 +226,7 @@ export const SpotifyEmbedContent: React.FC<TSpotifyEmbedContentProps> = (props) 
 			{/* Height */}
 			<div className="space-y-1">
 				<Text as="span" variant="bodySm" tone="subdued">
-					Height (px)
+					Height
 				</Text>
 				<Select
 					label="Height"

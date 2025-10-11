@@ -85,11 +85,11 @@ export const LinkNodeContentEditor: React.FC<TNodeEditorComponentProps<TLinkNode
 		<>
 			<div className="space-y-1 border-b border-neutral-200 px-4 py-3">
 				<Text as="span" variant="bodySm" tone="subdued">
-					Content Type
+					Variant
 				</Text>
 				<Select
 					id="link-content-type-field"
-					label="Link content type"
+					label="Variant"
 					labelHidden
 					options={applicableBundleOptions}
 					value={selectedBundleType}
