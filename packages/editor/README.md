@@ -2,25 +2,25 @@
 
 ## ❓ FAQ
 
-### Why composition-based nodes instead of content variants?
+### Why bundle-based nodes instead of content variants?
 
 - **True ECS principles**: Content is just another component/mixin, not special
-- **Explicit & type-safe**: `composition` explicitly defines which mixins exist
-- **Flexible composition**: Easy to mix content variants with different style sets
-- **Clear discrimination**: `type` = what it is, `composition` = how it's built
+- **Explicit & type-safe**: `bundle` explicitly defines which mixins exist
+- **Flexible bundling**: Easy to mix content variants with different style sets
+- **Clear discrimination**: `type` = what it is, `bundle` = how it's built
 
 ```ts
-// Composition-based approach
+// Bundle-based approach
 type TLinkNode =
-	| TSingleLinkNodeComposition // { composition: 'single', content: {...}, text: {...}, image: {...} }
-	| TYouTubeEmbedLinkNodeComposition // { composition: 'youtube-embed', content: {...}, text: {...} }
-	| TSpotifyEmbedLinkNodeComposition; // { composition: 'spotify-embed', content: {...}, text: {...} }
+	| TSingleLinkNodeBundle // { bundle: 'single', content: {...}, text: {...}, image: {...} }
+	| TYouTubeEmbedLinkNodeBundle // { bundle: 'youtube-embed', content: {...}, text: {...} }
+	| TSpotifyEmbedLinkNodeBundle; // { bundle: 'spotify-embed', content: {...}, text: {...} }
 
 // Type-safe discrimination
-if (node.type === 'link' && node.composition === 'single') {
+if (node.type === 'link' && node.bundle === 'single') {
 	node.content.url; // ✅ TypeScript knows content variant is 'single'
 	node.image; // ✅ TypeScript knows image mixin exists
-	node.buttonPrimary; // ❌ Type error - single composition doesn't have this
+	node.buttonPrimary; // ❌ Type error - single bundle doesn't have this
 }
 ```
 
@@ -60,8 +60,8 @@ if (node.type === 'link' && node.composition === 'single') {
 type TFillMixin = TBaseMixin<'fill', { fills: TPaint[]; blendMode: string }>;
 type TLayoutMixin = TBaseMixin<'layout', { padding: number; width: number | 'auto' }>;
 
-// Compositions define mixin recipes
-type TSingleLinkNodeComposition = TNodeComposition<
+// Bundles define mixin recipes
+type TSingleLinkNodeBundle = TNodeBundle<
 	'single',
 	[
 		TIdMixin, // id: string

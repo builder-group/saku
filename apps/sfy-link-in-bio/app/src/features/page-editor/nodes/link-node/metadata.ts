@@ -7,5 +7,5 @@ export const linkNodeMetadata: TNodeMetadata<'link'> = {
 	icon: PolarisLayoutSectionIcon,
 	label: editorLinkNodeMetadata.label,
 	internal: false,
-	default: editorLinkNodeMetadata.compositions.single
+	defaultBundle: editorLinkNodeMetadata.bundleMap.single
 };

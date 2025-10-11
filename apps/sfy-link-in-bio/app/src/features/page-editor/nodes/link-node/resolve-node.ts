@@ -2,9 +2,9 @@ import {
 	createSpotifyEmbedUrl,
 	createYouTubeEmbedUrl,
 	TLinkNode,
-	TSingleLinkNodeComposition,
-	TSpotifyEmbedLinkNodeComposition,
-	TYouTubeEmbedLinkNodeComposition
+	TSingleLinkNodeBundle,
+	TSpotifyEmbedLinkNodeBundle,
+	TYouTubeEmbedLinkNodeBundle
 } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError, computeInnerBorderRadius } from '@/lib';
@@ -20,11 +20,11 @@ import {
 } from '../../mixins';
 import {
 	TResolvedLinkNode,
-	TResolvedSingleLinkNodeComposition,
+	TResolvedSingleLinkNodeBundle,
 	TResolvedSingleLinkNodeContentMixin,
-	TResolvedSpotifyEmbedLinkNodeComposition,
+	TResolvedSpotifyEmbedLinkNodeBundle,
 	TResolvedSpotifyEmbedLinkNodeContentMixin,
-	TResolvedYouTubeEmbedLinkNodeComposition,
+	TResolvedYouTubeEmbedLinkNodeBundle,
 	TResolvedYouTubeEmbedLinkNodeContentMixin
 } from './types';
 
@@ -32,26 +32,26 @@ export function resolveLinkNode(
 	node: TLinkNode,
 	cx: TNodeResolveContext
 ): TResult<TResolvedLinkNode, AppError> {
-	switch (node.composition) {
+	switch (node.bundle) {
 		case 'single':
-			return resolveSingleLinkComposition(node, cx);
+			return resolveSingleLinkNodeBundle(node, cx);
 		case 'youtube-embed':
-			return resolveYouTubeEmbedLinkComposition(node, cx);
+			return resolveYouTubeEmbedLinkNodeBundle(node, cx);
 		case 'spotify-embed':
-			return resolveSpotifyEmbedLinkComposition(node, cx);
+			return resolveSpotifyEmbedLinkNodeBundle(node, cx);
 		default:
 			return Err(
-				new AppError('#ERR_UNKNOWN_LINK_NODE_COMPOSITION', {
-					detail: `Unknown link node composition`
+				new AppError('#ERR_UNKNOWN_LINK_NODE_BUNDLE', {
+					detail: `Unknown link node bundle`
 				})
 			);
 	}
 }
 
-export function resolveSingleLinkComposition(
-	node: TSingleLinkNodeComposition,
+export function resolveSingleLinkNodeBundle(
+	node: TSingleLinkNodeBundle,
 	cx: TNodeResolveContext
-): TResult<TResolvedSingleLinkNodeComposition, AppError> {
+): TResult<TResolvedSingleLinkNodeBundle, AppError> {
 	const { content, autoLayout, appearance, fill, stroke, shadow, text, textSm, image, ...rest } =
 		node;
 
@@ -161,10 +161,10 @@ export function resolveSingleLinkComposition(
 	});
 }
 
-export function resolveYouTubeEmbedLinkComposition(
-	node: TYouTubeEmbedLinkNodeComposition,
+export function resolveYouTubeEmbedLinkNodeBundle(
+	node: TYouTubeEmbedLinkNodeBundle,
 	cx: TNodeResolveContext
-): TResult<TResolvedYouTubeEmbedLinkNodeComposition, AppError> {
+): TResult<TResolvedYouTubeEmbedLinkNodeBundle, AppError> {
 	const { content, autoLayout, appearance, fill, stroke, shadow, image, ...rest } = node;
 
 	// Resolve content
@@ -256,10 +256,10 @@ export function resolveYouTubeEmbedLinkComposition(
 	});
 }
 
-export function resolveSpotifyEmbedLinkComposition(
-	node: TSpotifyEmbedLinkNodeComposition,
+export function resolveSpotifyEmbedLinkNodeBundle(
+	node: TSpotifyEmbedLinkNodeBundle,
 	cx: TNodeResolveContext
-): TResult<TResolvedSpotifyEmbedLinkNodeComposition, AppError> {
+): TResult<TResolvedSpotifyEmbedLinkNodeBundle, AppError> {
 	const { content, autoLayout, appearance, fill, stroke, shadow, image, ...rest } = node;
 
 	// Resolve content

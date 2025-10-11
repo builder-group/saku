@@ -1,10 +1,4 @@
-import {
-	TAboutNodeMixin,
-	TBaseMixin,
-	TContactIcon,
-	TIdMixin,
-	TNodeComposition
-} from '@repo/editor';
+import { TAboutNodeMixin, TBaseMixin, TContactIcon, TIdMixin, TNodeBundle } from '@repo/editor';
 import { TResolvedAsset } from '../../lib';
 import {
 	TResolvedAppearanceStyleMixin,
@@ -17,9 +11,9 @@ import {
 	TResolvedTextXlStyleMixin
 } from '../../mixins';
 
-export type TResolvedAboutNode = TResolvedDefaultAboutNodeComposition;
+export type TResolvedAboutNode = TResolvedDefaultAboutNodeBundle;
 
-export type TResolvedDefaultAboutNodeComposition = TNodeComposition<
+export type TResolvedDefaultAboutNodeBundle = TNodeBundle<
 	TResolvedDefaultAboutNodeContentMixin['value']['type'],
 	[
 		TIdMixin,

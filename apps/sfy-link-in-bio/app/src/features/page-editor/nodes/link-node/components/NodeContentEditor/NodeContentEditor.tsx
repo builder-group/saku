@@ -1,8 +1,8 @@
 import {
 	TLinkNode,
-	TSingleLinkNodeComposition,
-	TSpotifyEmbedLinkNodeComposition,
-	TYouTubeEmbedLinkNodeComposition
+	TSingleLinkNodeBundle,
+	TSpotifyEmbedLinkNodeBundle,
+	TYouTubeEmbedLinkNodeBundle
 } from '@repo/editor';
 import { useAppBridge } from '@shopify/app-bridge-react';
 import { Select, Text } from '@shopify/polaris';
@@ -60,22 +60,19 @@ export const LinkNodeContentEditor: React.FC<TNodeEditorComponentProps<TLinkNode
 		switch (contentVariant) {
 			case 'single':
 				return (
-					<SingleContent
-						cx={cx as TNodeEditorContext<TSingleLinkNodeComposition>}
-						className="z-10"
-					/>
+					<SingleContent cx={cx as TNodeEditorContext<TSingleLinkNodeBundle>} className="z-10" />
 				);
 			case 'youtube-embed':
 				return (
 					<YoutubeEmbedContent
-						cx={cx as TNodeEditorContext<TYouTubeEmbedLinkNodeComposition>}
+						cx={cx as TNodeEditorContext<TYouTubeEmbedLinkNodeBundle>}
 						className="z-10"
 					/>
 				);
 			case 'spotify-embed':
 				return (
 					<SpotifyEmbedContent
-						cx={cx as TNodeEditorContext<TSpotifyEmbedLinkNodeComposition>}
+						cx={cx as TNodeEditorContext<TSpotifyEmbedLinkNodeBundle>}
 						className="z-10"
 					/>
 				);

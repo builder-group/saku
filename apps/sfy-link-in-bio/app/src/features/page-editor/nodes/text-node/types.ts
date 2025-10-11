@@ -1,4 +1,4 @@
-import { TBaseMixin, TIdMixin, TNodeComposition, TRichContent, TTextNodeMixin } from '@repo/editor';
+import { TBaseMixin, TIdMixin, TNodeBundle, TRichContent, TTextNodeMixin } from '@repo/editor';
 import {
 	TResolvedAppearanceStyleMixin,
 	TResolvedAutoLayoutStyleMixin,
@@ -8,9 +8,9 @@ import {
 	TResolvedTextStyleMixin
 } from '../../mixins';
 
-export type TResolvedTextNode = TResolvedDefaultTextNodeComposition;
+export type TResolvedTextNode = TResolvedDefaultTextNodeBundle;
 
-export type TResolvedDefaultTextNodeComposition = TNodeComposition<
+export type TResolvedDefaultTextNodeBundle = TNodeBundle<
 	TResolvedDefaultTextNodeContentMixin['value']['type'],
 	[
 		TIdMixin,

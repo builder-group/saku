@@ -1,10 +1,10 @@
-import { TBaseMixin, TIdMixin, TNodeComposition } from '@repo/editor';
+import { TBaseMixin, TIdMixin, TNodeBundle } from '@repo/editor';
 import { TResolvedNode } from '../../types';
 
 export type TResolvedPromisedNode<GNode extends TResolvedNode> =
-	TResolvedDefaultPromisedNodeComposition<GNode>;
+	TResolvedDefaultPromisedNodeBundle<GNode>;
 
-export type TResolvedDefaultPromisedNodeComposition<GNode extends TResolvedNode> = TNodeComposition<
+export type TResolvedDefaultPromisedNodeBundle<GNode extends TResolvedNode> = TNodeBundle<
 	'default',
 	[TIdMixin, TResolvedPromisedNodeMixin<GNode>]
 >;

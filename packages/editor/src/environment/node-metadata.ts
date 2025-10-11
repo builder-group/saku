@@ -4,10 +4,10 @@ import { TFlatNode } from '../types';
 export const aboutNodeMetadata: TNodeMetadata<'about'> = {
 	type: 'about',
 	label: 'About',
-	compositions: {
+	bundleMap: {
 		default: {
 			type: 'about',
-			composition: 'default',
+			bundle: 'default',
 			content: {
 				type: 'default',
 				name: 'Your Name',
@@ -66,10 +66,10 @@ export const aboutNodeMetadata: TNodeMetadata<'about'> = {
 export const linkNodeMetadata: TNodeMetadata<'link'> = {
 	type: 'link',
 	label: 'Link',
-	compositions: {
+	bundleMap: {
 		'single': {
 			type: 'link',
-			composition: 'single',
+			bundle: 'single',
 			content: {
 				type: 'single',
 				url: 'https://www.shopify.com/',
@@ -99,7 +99,7 @@ export const linkNodeMetadata: TNodeMetadata<'link'> = {
 		},
 		'youtube-embed': {
 			type: 'link',
-			composition: 'youtube-embed',
+			bundle: 'youtube-embed',
 			content: {
 				type: 'youtube-embed',
 				url: 'https://www.youtube.com/watch?v=',
@@ -128,7 +128,7 @@ export const linkNodeMetadata: TNodeMetadata<'link'> = {
 		},
 		'spotify-embed': {
 			type: 'link',
-			composition: 'spotify-embed',
+			bundle: 'spotify-embed',
 			content: {
 				type: 'spotify-embed',
 				url: 'https://open.spotify.com/track/',
@@ -162,10 +162,10 @@ export const linkNodeMetadata: TNodeMetadata<'link'> = {
 export const mediaNodeMetadata: TNodeMetadata<'media'> = {
 	type: 'media',
 	label: 'Media',
-	compositions: {
+	bundleMap: {
 		image: {
 			type: 'media',
-			composition: 'image',
+			bundle: 'image',
 			content: {
 				type: 'image'
 			},
@@ -195,10 +195,10 @@ export const mediaNodeMetadata: TNodeMetadata<'media'> = {
 export const pageNodeMetadata: TNodeMetadata<'page'> = {
 	type: 'page',
 	label: 'Page',
-	compositions: {
+	bundleMap: {
 		default: {
 			type: 'page',
-			composition: 'default',
+			bundle: 'default',
 			metadata: {},
 			hasWatermark: true,
 			children: [],
@@ -221,10 +221,10 @@ export const pageNodeMetadata: TNodeMetadata<'page'> = {
 export const productNodeMetadata: TNodeMetadata<'product'> = {
 	type: 'product',
 	label: 'Product',
-	compositions: {
+	bundleMap: {
 		single: {
 			type: 'product',
-			composition: 'single',
+			bundle: 'single',
 			content: {
 				type: 'single'
 			},
@@ -272,10 +272,10 @@ export const productNodeMetadata: TNodeMetadata<'product'> = {
 export const textNodeMetadata: TNodeMetadata<'text'> = {
 	type: 'text',
 	label: 'Text',
-	compositions: {
+	bundleMap: {
 		default: {
 			type: 'text',
-			composition: 'default',
+			bundle: 'default',
 			content: {
 				type: 'default',
 				text: { type: 'markdown', value: 'Add your text here' }
@@ -307,9 +307,9 @@ export const nodeMetadataMap = {
 export type TNodeMetadata<GType extends TFlatNode['type']> = {
 	type: GType;
 	label: string;
-	compositions: {
-		[K in Extract<TFlatNode, { type: GType }>['composition']]: Omit<
-			Extract<TFlatNode, { type: GType; composition: K }>,
+	bundleMap: {
+		[K in Extract<TFlatNode, { type: GType }>['bundle']]: Omit<
+			Extract<TFlatNode, { type: GType; bundle: K }>,
 			'id'
 		>;
 	};

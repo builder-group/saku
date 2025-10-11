@@ -39,8 +39,8 @@ export type TFlatNode =
 
 export type TNodeId = TId<'node'>;
 
-export type TNodeComposition<GKey extends string, GMixins extends TBaseMixin<any, any>[]> = {
-	composition: GKey;
+export type TNodeBundle<GType extends string, GMixins extends TBaseMixin<any, any>[]> = {
+	bundle: GType;
 } & Extract<GMixins[number], { key: 'node' }>['value'] &
 	Omit<TMergeMixins<GMixins>, 'node'>;
 
@@ -48,10 +48,10 @@ export type TNodeComposition<GKey extends string, GMixins extends TBaseMixin<any
 // Page Node
 // =========================================================================
 
-export type TPageNode = TDefaultPageComposition;
-export type TFlatPageNode = TDefaultFlatPageComposition;
+export type TPageNode = TDefaultPageBundle;
+export type TFlatPageNode = TDefaultFlatPageBundle;
 
-export type TDefaultPageComposition = TNodeComposition<
+export type TDefaultPageBundle = TNodeBundle<
 	'default',
 	[
 		TIdMixin,
@@ -62,7 +62,7 @@ export type TDefaultPageComposition = TNodeComposition<
 		TFillStyleMixin
 	]
 >;
-export type TDefaultFlatPageComposition = TNodeComposition<
+export type TDefaultFlatPageBundle = TNodeBundle<
 	'default', // Use 'default' (instead of e.g. 'flat') to match variant naming across flat/regular contexts (e.g., 'elevated' would be 'elevated' in both)
 	[
 		TIdMixin,
@@ -92,9 +92,9 @@ export type TPageNodeMixin = TBaseMixin<
 // About Node
 // =========================================================================
 
-export type TAboutNode = TDefaultAboutNodeComposition;
+export type TAboutNode = TDefaultAboutNodeBundle;
 
-export type TDefaultAboutNodeComposition = TNodeComposition<
+export type TDefaultAboutNodeBundle = TNodeBundle<
 	TDefaultAboutNodeContentMixin['value']['type'],
 	[
 		TIdMixin,
@@ -140,11 +140,11 @@ export interface TContactIcon {
 // =========================================================================
 
 export type TLinkNode =
-	| TSingleLinkNodeComposition
-	| TYouTubeEmbedLinkNodeComposition
-	| TSpotifyEmbedLinkNodeComposition;
+	| TSingleLinkNodeBundle
+	| TYouTubeEmbedLinkNodeBundle
+	| TSpotifyEmbedLinkNodeBundle;
 
-export type TSingleLinkNodeComposition = TNodeComposition<
+export type TSingleLinkNodeBundle = TNodeBundle<
 	TSingleLinkNodeContentMixin['value']['type'],
 	[
 		TIdMixin,
@@ -160,7 +160,7 @@ export type TSingleLinkNodeComposition = TNodeComposition<
 		TImageStyleMixin
 	]
 >;
-export type TYouTubeEmbedLinkNodeComposition = TNodeComposition<
+export type TYouTubeEmbedLinkNodeBundle = TNodeBundle<
 	TYouTubeEmbedLinkNodeContentMixin['value']['type'],
 	[
 		TIdMixin,
@@ -174,7 +174,7 @@ export type TYouTubeEmbedLinkNodeComposition = TNodeComposition<
 		TImageStyleMixin // TODO: Replace with TEmbedStyleMixin
 	]
 >;
-export type TSpotifyEmbedLinkNodeComposition = TNodeComposition<
+export type TSpotifyEmbedLinkNodeBundle = TNodeBundle<
 	TSpotifyEmbedLinkNodeContentMixin['value']['type'],
 	[
 		TIdMixin,
@@ -249,9 +249,9 @@ export type TSpotifyEmbedContentType = 'track' | 'album' | 'playlist' | 'artist'
 // Media Node
 // =========================================================================
 
-export type TMediaNode = TImageMediaNodeComposition;
+export type TMediaNode = TImageMediaNodeBundle;
 
-export type TImageMediaNodeComposition = TNodeComposition<
+export type TImageMediaNodeBundle = TNodeBundle<
 	TImageMediaNodeContentMixin['value']['type'],
 	[
 		TIdMixin,
@@ -288,9 +288,9 @@ export type TImageMediaNodeContentMixin = TBaseMixin<
 // Text Node
 // =========================================================================
 
-export type TTextNode = TDefaultTextNodeComposition;
+export type TTextNode = TDefaultTextNodeBundle;
 
-export type TDefaultTextNodeComposition = TNodeComposition<
+export type TDefaultTextNodeBundle = TNodeBundle<
 	TDefaultTextNodeContentMixin['value']['type'],
 	[
 		TIdMixin,
@@ -324,9 +324,9 @@ export type TDefaultTextNodeContentMixin = TBaseMixin<
 // Product Node
 // =========================================================================
 
-export type TProductNode = TSingleProductNodeComposition;
+export type TProductNode = TSingleProductNodeBundle;
 
-export type TSingleProductNodeComposition = TNodeComposition<
+export type TSingleProductNodeBundle = TNodeBundle<
 	TSingleProductNodeContentMixin['value']['type'],
 	[
 		TIdMixin,

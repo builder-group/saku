@@ -2,7 +2,7 @@ import {
 	createSpotifyUrl,
 	extractSpotifyId,
 	TSpotifyEmbedContentType,
-	TSpotifyEmbedLinkNodeComposition
+	TSpotifyEmbedLinkNodeBundle
 } from '@repo/editor';
 import { Select, Text, TextField } from '@shopify/polaris';
 import { useCompute, useFeatureState, useListener } from 'feature-react/state';
@@ -242,6 +242,6 @@ export const SpotifyEmbedContent: React.FC<TSpotifyEmbedContentProps> = (props) 
 };
 
 interface TSpotifyEmbedContentProps {
-	cx: TNodeEditorContext<TSpotifyEmbedLinkNodeComposition>;
+	cx: TNodeEditorContext<TSpotifyEmbedLinkNodeBundle>;
 	className: string;
 }

@@ -4,7 +4,7 @@ import { logger } from '@/environment';
 import { getCurrencySymbol } from '../../../../environment';
 import { TResolvedNodeProps } from '../../../../lib';
 import {
-	TResolvedSingleProductNodeComposition,
+	TResolvedSingleProductNodeBundle,
 	TResolvedSingleProductNodeContentMixin
 } from '../../types';
 import { useProductDetailsModal } from './ProductDetailsModal';
@@ -255,7 +255,7 @@ export const SingleContent: React.FC<TSingleContentProps> = (props) => {
 };
 
 interface TSingleContentProps {
-	node: TResolvedSingleProductNodeComposition;
+	node: TResolvedSingleProductNodeBundle;
 	product: NonNullable<TResolvedSingleProductNodeContentMixin['value']['product']>;
-	cx: TResolvedNodeProps<TResolvedSingleProductNodeComposition>['cx'];
+	cx: TResolvedNodeProps<TResolvedSingleProductNodeBundle>['cx'];
 }

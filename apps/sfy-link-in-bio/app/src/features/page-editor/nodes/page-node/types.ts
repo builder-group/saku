@@ -1,4 +1,4 @@
-import { TBaseMixin, TIdMixin, TNodeComposition } from '@repo/editor';
+import { TBaseMixin, TIdMixin, TNodeBundle } from '@repo/editor';
 import {
 	TResolvedAppearanceStyleMixin,
 	TResolvedAutoLayoutStyleMixin,
@@ -6,9 +6,9 @@ import {
 	TResolvedFillStyleMixin
 } from '../../mixins';
 
-export type TResolvedPageNode = TResolvedDefaultPageNodeComposition;
+export type TResolvedPageNode = TResolvedDefaultPageNodeBundle;
 
-export type TResolvedDefaultPageNodeComposition = TNodeComposition<
+export type TResolvedDefaultPageNodeBundle = TNodeBundle<
 	'default',
 	[
 		TIdMixin,

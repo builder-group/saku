@@ -12,14 +12,14 @@ import {
 	mediaNodeMetadata,
 	productNodeMetadata,
 	TContactIcon,
-	TDefaultAboutNodeComposition,
-	TDefaultTextNodeComposition,
+	TDefaultAboutNodeBundle,
+	TDefaultTextNodeBundle,
 	textNodeMetadata,
 	TId,
-	TImageMediaNodeComposition,
+	TImageMediaNodeBundle,
 	tokenRef,
 	TProductNode,
-	TSingleLinkNodeComposition,
+	TSingleLinkNodeBundle,
 	TSite,
 	TTheme,
 	type TFontAsset,
@@ -98,7 +98,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 		}
 
 		productNode = {
-			...productNodeMetadata.compositions.single,
+			...productNodeMetadata.bundleMap.single,
 			id: createId('node'),
 			content: {
 				type: 'single',
@@ -195,13 +195,13 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 		integrations: [],
 		root: {
 			type: 'page',
-			composition: 'default',
+			bundle: 'default',
 			id: createId('node'),
 			metadata: {},
 			hasWatermark: true,
 			children: [
 				{
-					...aboutNodeMetadata.compositions.default,
+					...aboutNodeMetadata.bundleMap.default,
 					id: createId('node'),
 					content: {
 						type: 'default',
@@ -210,27 +210,27 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 						profilePicture: profilePictureAssetHashId,
 						contactIcons: contactIcons
 					}
-				} satisfies TDefaultAboutNodeComposition,
+				} satisfies TDefaultAboutNodeBundle,
 				{
-					...linkNodeMetadata.compositions.single,
+					...linkNodeMetadata.bundleMap.single,
 					id: createId('node'),
 					content: {
 						type: 'single',
 						url: `https://${shopId}`,
 						userTitle: '🛒 Visit our Shopify store'
 					}
-				} satisfies TSingleLinkNodeComposition,
+				} satisfies TSingleLinkNodeBundle,
 				...(productNode != null ? [productNode] : []),
 				{
-					...textNodeMetadata.compositions.default,
+					...textNodeMetadata.bundleMap.default,
 					id: createId('node'),
 					content: {
 						type: 'default',
 						text: { type: 'markdown', value: '✨ Thanks for visiting!' }
 					}
-				} satisfies TDefaultTextNodeComposition,
+				} satisfies TDefaultTextNodeBundle,
 				{
-					...mediaNodeMetadata.compositions.image,
+					...mediaNodeMetadata.bundleMap.image,
 					id: createId('node'),
 					content: {
 						type: 'image',
@@ -239,7 +239,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 							altText: 'Welcome GIF'
 						}
 					}
-				} satisfies TImageMediaNodeComposition
+				} satisfies TImageMediaNodeBundle
 			],
 			autoLayout: {
 				horizontalPadding: 24,

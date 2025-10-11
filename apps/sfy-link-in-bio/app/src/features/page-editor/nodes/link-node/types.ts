@@ -1,4 +1,4 @@
-import { TBaseMixin, TIdMixin, TLinkNodeMixin, TNodeComposition } from '@repo/editor';
+import { TBaseMixin, TIdMixin, TLinkNodeMixin, TNodeBundle } from '@repo/editor';
 import { TResolvedAsset, TResolvedColor } from '../../lib';
 import {
 	TResolvedAppearanceStyleMixin,
@@ -12,11 +12,11 @@ import {
 } from '../../mixins';
 
 export type TResolvedLinkNode =
-	| TResolvedSingleLinkNodeComposition
-	| TResolvedYouTubeEmbedLinkNodeComposition
-	| TResolvedSpotifyEmbedLinkNodeComposition;
+	| TResolvedSingleLinkNodeBundle
+	| TResolvedYouTubeEmbedLinkNodeBundle
+	| TResolvedSpotifyEmbedLinkNodeBundle;
 
-export type TResolvedSingleLinkNodeComposition = TNodeComposition<
+export type TResolvedSingleLinkNodeBundle = TNodeBundle<
 	TResolvedSingleLinkNodeContentMixin['value']['type'],
 	[
 		TIdMixin,
@@ -33,7 +33,7 @@ export type TResolvedSingleLinkNodeComposition = TNodeComposition<
 	]
 >;
 
-export type TResolvedYouTubeEmbedLinkNodeComposition = TNodeComposition<
+export type TResolvedYouTubeEmbedLinkNodeBundle = TNodeBundle<
 	TResolvedYouTubeEmbedLinkNodeContentMixin['value']['type'],
 	[
 		TIdMixin,
@@ -48,7 +48,7 @@ export type TResolvedYouTubeEmbedLinkNodeComposition = TNodeComposition<
 	]
 >;
 
-export type TResolvedSpotifyEmbedLinkNodeComposition = TNodeComposition<
+export type TResolvedSpotifyEmbedLinkNodeBundle = TNodeBundle<
 	TResolvedSpotifyEmbedLinkNodeContentMixin['value']['type'],
 	[
 		TIdMixin,

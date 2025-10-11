@@ -1,4 +1,4 @@
-import { tokenRef, TSpotifyEmbedLinkNodeComposition } from '@repo/editor';
+import { tokenRef, TSpotifyEmbedLinkNodeBundle } from '@repo/editor';
 import React from 'react';
 import { AccordionSection } from '@/components';
 import { useNodeProperty } from '../../../../hooks';
@@ -13,7 +13,7 @@ import {
 } from '../../../../mixins';
 
 export const SpotifyEmbedStyleEditor: React.FC<
-	TNodeEditorComponentProps<TSpotifyEmbedLinkNodeComposition>
+	TNodeEditorComponentProps<TSpotifyEmbedLinkNodeBundle>
 > = (props) => {
 	const { nodeState, editor } = props;
 

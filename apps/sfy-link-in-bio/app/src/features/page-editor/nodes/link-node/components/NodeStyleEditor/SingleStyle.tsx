@@ -1,4 +1,4 @@
-import { tokenRef, TSingleLinkNodeComposition } from '@repo/editor';
+import { tokenRef, TSingleLinkNodeBundle } from '@repo/editor';
 import { useCompute } from 'feature-react';
 import React from 'react';
 import { AccordionSection } from '@/components';
@@ -14,9 +14,9 @@ import {
 	TextStyleMixinEditor
 } from '../../../../mixins';
 
-export const SingleLinkStyleEditor: React.FC<
-	TNodeEditorComponentProps<TSingleLinkNodeComposition>
-> = (props) => {
+export const SingleLinkStyleEditor: React.FC<TNodeEditorComponentProps<TSingleLinkNodeBundle>> = (
+	props
+) => {
 	const { nodeState, editor } = props;
 
 	const imageStyle = useCompute(nodeState, ({ value }) => {

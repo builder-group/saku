@@ -1,10 +1,4 @@
-import {
-	TBaseMixin,
-	TIdMixin,
-	TNodeComposition,
-	TProductNodeMixin,
-	TRichContent
-} from '@repo/editor';
+import { TBaseMixin, TIdMixin, TNodeBundle, TProductNodeMixin, TRichContent } from '@repo/editor';
 import { TResolvedAsset } from '../../lib';
 import {
 	TResolvedAppearanceStyleMixin,
@@ -20,9 +14,9 @@ import {
 	TResolvedTextStyleMixin
 } from '../../mixins';
 
-export type TResolvedProductNode = TResolvedSingleProductNodeComposition;
+export type TResolvedProductNode = TResolvedSingleProductNodeBundle;
 
-export type TResolvedSingleProductNodeComposition = TNodeComposition<
+export type TResolvedSingleProductNodeBundle = TNodeBundle<
 	TResolvedSingleProductNodeContentMixin['value']['type'],
 	[
 		TIdMixin,

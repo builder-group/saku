@@ -183,7 +183,7 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 			const nodeId = this.addNode(
 				{
 					id: createId('node'),
-					...deepCopy(nodeMetadata.default)
+					...deepCopy(nodeMetadata.defaultBundle)
 				} as TFlatNode,
 				parentId,
 				index

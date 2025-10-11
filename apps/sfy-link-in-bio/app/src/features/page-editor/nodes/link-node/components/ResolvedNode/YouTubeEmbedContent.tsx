@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { TResolvedNodeProps } from '../../../../lib';
-import { TResolvedYouTubeEmbedLinkNodeComposition } from '../../types';
+import { TResolvedYouTubeEmbedLinkNodeBundle } from '../../types';
 
 export const YouTubeEmbedContent: React.FC<TYouTubeEmbedContentProps> = (props) => {
 	const {
@@ -45,6 +45,6 @@ export const YouTubeEmbedContent: React.FC<TYouTubeEmbedContentProps> = (props) 
 };
 
 interface TYouTubeEmbedContentProps {
-	node: TResolvedYouTubeEmbedLinkNodeComposition;
-	cx: TResolvedNodeProps<TResolvedYouTubeEmbedLinkNodeComposition>['cx'];
+	node: TResolvedYouTubeEmbedLinkNodeBundle;
+	cx: TResolvedNodeProps<TResolvedYouTubeEmbedLinkNodeBundle>['cx'];
 }

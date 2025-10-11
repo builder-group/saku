@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { TResolvedNodeProps } from '../../../../lib';
-import { TResolvedSpotifyEmbedLinkNodeComposition } from '../../types';
+import { TResolvedSpotifyEmbedLinkNodeBundle } from '../../types';
 
 export const SpotifyEmbedContent: React.FC<TSpotifyEmbedContentProps> = (props) => {
 	const {
@@ -50,6 +50,6 @@ export const SpotifyEmbedContent: React.FC<TSpotifyEmbedContentProps> = (props) 
 };
 
 interface TSpotifyEmbedContentProps {
-	node: TResolvedSpotifyEmbedLinkNodeComposition;
-	cx: TResolvedNodeProps<TResolvedSpotifyEmbedLinkNodeComposition>['cx'];
+	node: TResolvedSpotifyEmbedLinkNodeBundle;
+	cx: TResolvedNodeProps<TResolvedSpotifyEmbedLinkNodeBundle>['cx'];
 }

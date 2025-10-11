@@ -1,6 +1,6 @@
 import React from 'react';
 import { TResolvedNodeProps } from '../../../../lib';
-import { TResolvedSingleLinkNodeComposition } from '../../types';
+import { TResolvedSingleLinkNodeBundle } from '../../types';
 
 export const DefaultContent: React.FC<TSingleContentProps> = (props) => {
 	const {
@@ -56,6 +56,6 @@ export const DefaultContent: React.FC<TSingleContentProps> = (props) => {
 };
 
 interface TSingleContentProps {
-	node: TResolvedSingleLinkNodeComposition;
-	cx: TResolvedNodeProps<TResolvedSingleLinkNodeComposition>['cx'];
+	node: TResolvedSingleLinkNodeBundle;
+	cx: TResolvedNodeProps<TResolvedSingleLinkNodeBundle>['cx'];
 }

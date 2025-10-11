@@ -1,4 +1,4 @@
-import { TBaseMixin, TIdMixin, TMediaNodeMixin, TNodeComposition } from '@repo/editor';
+import { TBaseMixin, TIdMixin, TMediaNodeMixin, TNodeBundle } from '@repo/editor';
 import { TResolvedAsset } from '../../lib';
 import {
 	TResolvedAppearanceStyleMixin,
@@ -9,9 +9,9 @@ import {
 	TResolvedStrokeStyleMixin
 } from '../../mixins';
 
-export type TResolvedMediaNode = TResolvedImageMediaNodeComposition;
+export type TResolvedMediaNode = TResolvedImageMediaNodeBundle;
 
-export type TResolvedImageMediaNodeComposition = TNodeComposition<
+export type TResolvedImageMediaNodeBundle = TNodeBundle<
 	TResolvedImageMediaNodeContentMixin['value']['type'],
 	[
 		TIdMixin,

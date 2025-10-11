@@ -1,4 +1,4 @@
-import { tokenRef, TYouTubeEmbedLinkNodeComposition } from '@repo/editor';
+import { tokenRef, TYouTubeEmbedLinkNodeBundle } from '@repo/editor';
 import React from 'react';
 import { AccordionSection } from '@/components';
 import { useNodeProperty } from '../../../../hooks';
@@ -13,7 +13,7 @@ import {
 } from '../../../../mixins';
 
 export const YouTubeEmbedStyleEditor: React.FC<
-	TNodeEditorComponentProps<TYouTubeEmbedLinkNodeComposition>
+	TNodeEditorComponentProps<TYouTubeEmbedLinkNodeBundle>
 > = (props) => {
 	const { nodeState, editor } = props;
 

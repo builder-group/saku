@@ -1,8 +1,8 @@
 import {
 	TLinkNode,
-	TSingleLinkNodeComposition,
-	TSpotifyEmbedLinkNodeComposition,
-	TYouTubeEmbedLinkNodeComposition
+	TSingleLinkNodeBundle,
+	TSpotifyEmbedLinkNodeBundle,
+	TYouTubeEmbedLinkNodeBundle
 } from '@repo/editor';
 import { useCompute } from 'feature-react';
 import React from 'react';
@@ -13,27 +13,27 @@ import { YouTubeEmbedStyleEditor } from './YoutubeEmbedStyle';
 
 export const LinkNodeStyleEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (props) => {
 	const { nodeState, ...rest } = props;
-	const composition = useCompute(nodeState, ({ value }) => value.composition);
+	const bundle = useCompute(nodeState, ({ value }) => value.bundle);
 
-	switch (composition) {
+	switch (bundle) {
 		case 'single':
 			return (
 				<SingleLinkStyleEditor
-					nodeState={nodeState as TNodeState<TSingleLinkNodeComposition>}
+					nodeState={nodeState as TNodeState<TSingleLinkNodeBundle>}
 					{...rest}
 				/>
 			);
 		case 'youtube-embed':
 			return (
 				<YouTubeEmbedStyleEditor
-					nodeState={nodeState as TNodeState<TYouTubeEmbedLinkNodeComposition>}
+					nodeState={nodeState as TNodeState<TYouTubeEmbedLinkNodeBundle>}
 					{...rest}
 				/>
 			);
 		case 'spotify-embed':
 			return (
 				<SpotifyEmbedStyleEditor
-					nodeState={nodeState as TNodeState<TSpotifyEmbedLinkNodeComposition>}
+					nodeState={nodeState as TNodeState<TSpotifyEmbedLinkNodeBundle>}
 					{...rest}
 				/>
 			);

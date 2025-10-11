@@ -18,7 +18,7 @@ export function hydrateProductNode(
 
 	return Ok({
 		type: 'promised',
-		composition: 'default',
+		bundle: 'default',
 		id: node.id,
 		cached: resolvedProductNode,
 		next: (async () => {

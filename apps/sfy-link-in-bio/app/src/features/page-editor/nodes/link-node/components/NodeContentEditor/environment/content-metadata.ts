@@ -4,9 +4,9 @@ import {
 	extractYouTubeId,
 	TLinkNode,
 	tokenRef,
-	TSingleLinkNodeComposition,
-	TSpotifyEmbedLinkNodeComposition,
-	TYouTubeEmbedLinkNodeComposition
+	TSingleLinkNodeBundle,
+	TSpotifyEmbedLinkNodeBundle,
+	TYouTubeEmbedLinkNodeBundle
 } from '@repo/editor';
 import { ShopifyGlobal } from '@shopify/app-bridge-react';
 import { Err, Ok, type TResult } from 'tuple-result';
@@ -14,6 +14,8 @@ import { AppError } from '@/lib';
 import { TNodeState, TPageEditor } from '../../../../../lib';
 import { packAutoLayoutTokenRef, unpackAutoLayoutTokenRef } from '../../../../../mixins';
 import { fetchSpotifyTheme, fetchUrlMetadata } from '../lib';
+
+// TODO: We update bundle without updating the mixins accordingly.. idk..
 
 export const contentMetadataMap = {
 	'single': {
@@ -27,7 +29,7 @@ export const contentMetadataMap = {
 			};
 		},
 		async createContent(cx) {
-			cx.node._v.composition = 'single';
+			cx.node._v.bundle = 'single';
 			cx.node._v.content = {
 				type: 'single',
 				url: cx.url,
@@ -75,7 +77,7 @@ export const contentMetadataMap = {
 			cx.node._notify();
 			return Ok(undefined);
 		}
-	} satisfies TContentMetadata<TSingleLinkNodeComposition>,
+	} satisfies TContentMetadata<TSingleLinkNodeBundle>,
 	'youtube-embed': {
 		type: 'youtube-embed',
 		label: 'YouTube Embed',
@@ -99,7 +101,7 @@ export const contentMetadataMap = {
 				);
 			}
 
-			cx.node._v.composition = 'youtube-embed';
+			cx.node._v.bundle = 'youtube-embed';
 			cx.node._v.content = {
 				type: 'youtube-embed',
 				url: cx.url,
@@ -128,7 +130,7 @@ export const contentMetadataMap = {
 
 			return Ok(undefined);
 		}
-	} satisfies TContentMetadata<TYouTubeEmbedLinkNodeComposition>,
+	} satisfies TContentMetadata<TYouTubeEmbedLinkNodeBundle>,
 	'spotify-embed': {
 		type: 'spotify-embed',
 		label: 'Spotify Embed',
@@ -152,7 +154,7 @@ export const contentMetadataMap = {
 				);
 			}
 
-			cx.node._v.composition = 'spotify-embed';
+			cx.node._v.bundle = 'spotify-embed';
 			cx.node._v.content = {
 				type: 'spotify-embed',
 				url: cx.url,
@@ -199,7 +201,7 @@ export const contentMetadataMap = {
 
 			return Ok(undefined);
 		}
-	} satisfies TContentMetadata<TSpotifyEmbedLinkNodeComposition>
+	} satisfies TContentMetadata<TSpotifyEmbedLinkNodeBundle>
 };
 
 export const contentMetadata = Object.values(contentMetadataMap);
@@ -210,7 +212,7 @@ export const contentTypePriority: TContentType[] = ['youtube-embed', 'spotify-em
 export type TContentType = keyof typeof contentMetadataMap;
 
 export interface TContentMetadata<GNode extends TLinkNode> {
-	type: GNode['composition'];
+	type: GNode['bundle'];
 	label: string;
 	isApplicable: (url: string) => boolean;
 	/**

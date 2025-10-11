@@ -12,11 +12,11 @@ export type TNodeMetadata<GType extends TFlatNode['type']> = {
 			internal: false;
 			icon: IconSource;
 			label: TEditorNodeMetadata<GType>['label'];
-			default: Omit<Extract<TFlatNode, { type: GType }>, 'id'>;
+			defaultBundle: Omit<Extract<TFlatNode, { type: GType }>, 'id'>;
 	  }
 	| {
 			internal: true;
-			default: Omit<Extract<TFlatNode, { type: GType }>, 'id'>;
+			defaultBundle: Omit<Extract<TFlatNode, { type: GType }>, 'id'>;
 	  }
 );
 
