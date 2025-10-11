@@ -2,10 +2,20 @@ import {
 	createSpotifyEmbedUrl,
 	extractSpotifyId,
 	extractYouTubeId,
+	linkNodeMetadata,
+	TAppearanceStyleMixin,
+	TAutoLayoutStyleMixin,
+	TFillStyleMixin,
+	TIdMixin,
+	TImageStyleMixin,
 	TLinkNode,
 	tokenRef,
+	TShadowStyleMixin,
 	TSingleLinkNodeBundle,
 	TSpotifyEmbedLinkNodeBundle,
+	TStrokeStyleMixin,
+	TTextSmStyleMixin,
+	TTextStyleMixin,
 	TYouTubeEmbedLinkNodeBundle
 } from '@repo/editor';
 import { ShopifyGlobal } from '@shopify/app-bridge-react';
@@ -15,41 +25,69 @@ import { TNodeState, TPageEditor } from '../../../../../lib';
 import { packAutoLayoutTokenRef, unpackAutoLayoutTokenRef } from '../../../../../mixins';
 import { fetchSpotifyTheme, fetchUrlMetadata } from '../lib';
 
-// TODO: We update bundle without updating the mixins accordingly.. idk..
-
 export const contentMetadataMap = {
 	'single': {
 		type: 'single',
 		label: 'Link Card',
 		isApplicable: () => true,
-		extractCommonFields(variant) {
+		extractCommonFields(node) {
 			return {
-				title: variant.title,
-				userTitle: variant.userTitle
+				id: node.id,
+				content: {
+					title: node.content.title,
+					userTitle: node.content.userTitle,
+					description: node.content.description
+				},
+				autoLayout: node.autoLayout,
+				appearance: node.appearance,
+				fill: node.fill,
+				stroke: node.stroke,
+				shadow: node.shadow,
+				text: node.text,
+				textSm: node.textSm,
+				image: node.image
 			};
 		},
 		async createContent(cx) {
-			cx.node._v.bundle = 'single';
-			cx.node._v.content = {
-				type: 'single',
-				url: cx.url,
-				title: cx.common.title,
-				userTitle: cx.common.userTitle,
-				description: cx.common.description
-			};
-			const unpackedAutoLayout = unpackAutoLayoutTokenRef(cx.node._v.autoLayout);
-			unpackedAutoLayout.horizontalPadding = tokenRef(
-				'auto-layout.default',
-				'auto-layout',
-				'horizontalPadding'
-			);
-			unpackedAutoLayout.verticalPadding = tokenRef(
-				'auto-layout.default',
-				'auto-layout',
-				'verticalPadding'
-			);
-			cx.node._v.autoLayout = packAutoLayoutTokenRef(unpackedAutoLayout);
-			cx.node._notify();
+			const defaults = linkNodeMetadata.bundleMap['single'];
+
+			let commonAutoLayout: TAutoLayoutStyleMixin['value'] | null = null;
+			if (cx.common.autoLayout != null) {
+				const unpackedAutoLayout = unpackAutoLayoutTokenRef(cx.common.autoLayout);
+				unpackedAutoLayout.horizontalPadding = tokenRef(
+					'auto-layout.default',
+					'auto-layout',
+					'horizontalPadding'
+				);
+				unpackedAutoLayout.verticalPadding = tokenRef(
+					'auto-layout.default',
+					'auto-layout',
+					'verticalPadding'
+				);
+				commonAutoLayout = packAutoLayoutTokenRef(unpackedAutoLayout);
+			}
+
+			cx.node.set({
+				id: cx.common.id,
+				bundle: 'single',
+				type: 'link',
+				content: {
+					type: 'single',
+					url: cx.url,
+					title: cx.common.content?.title ?? defaults.content.title,
+					userTitle: cx.common.content?.userTitle,
+					description: cx.common.content?.description
+				},
+				autoLayout: commonAutoLayout ?? defaults.autoLayout,
+				appearance: cx.common.appearance ?? defaults.appearance,
+				fill: cx.common.fill ?? defaults.fill,
+				stroke: cx.common.stroke ?? defaults.stroke,
+				shadow: cx.common.shadow ?? defaults.shadow,
+				text: cx.common.text ?? defaults.text,
+				textSm: cx.common.textSm ?? defaults.textSm,
+				image: cx.common.image ?? defaults.image
+			} satisfies TSingleLinkNodeBundle);
+
 			return Ok(undefined);
 		},
 		async enhanceContent(cx) {
@@ -67,12 +105,13 @@ export const contentMetadataMap = {
 				faviconHash = cx.editor.registerImage(metadata.favicon, 'favicon');
 			}
 
+			// Update fields with new metadata
 			const content = cx.node._v.content;
-
-			// Update all fields with new metadata (overwriting existing)
 			content.title = metadata.title;
 			content.description = metadata.description;
-			if (faviconHash != null) content.favicon = faviconHash;
+			if (faviconHash != null) {
+				content.favicon = faviconHash;
+			}
 
 			cx.node._notify();
 			return Ok(undefined);
@@ -88,8 +127,16 @@ export const contentMetadataMap = {
 			const youtubeData = extractYouTubeId(url);
 			return youtubeData != null;
 		},
-		extractCommonFields() {
-			return {};
+		extractCommonFields(node) {
+			return {
+				id: node.id,
+				autoLayout: node.autoLayout,
+				appearance: node.appearance,
+				fill: node.fill,
+				stroke: node.stroke,
+				shadow: node.shadow,
+				image: node.image
+			};
 		},
 		async createContent(cx) {
 			const youtubeData = extractYouTubeId(cx.url);
@@ -101,18 +148,34 @@ export const contentMetadataMap = {
 				);
 			}
 
-			cx.node._v.bundle = 'youtube-embed';
-			cx.node._v.content = {
-				type: 'youtube-embed',
-				url: cx.url,
-				contentType: youtubeData.type,
-				contentId: youtubeData.id
-			};
-			const unpackedAutoLayout = unpackAutoLayoutTokenRef(cx.node._v.autoLayout);
-			unpackedAutoLayout.horizontalPadding = 0;
-			unpackedAutoLayout.verticalPadding = 0;
-			cx.node._v.autoLayout = unpackedAutoLayout;
-			cx.node._notify();
+			const defaults = linkNodeMetadata.bundleMap['youtube-embed'];
+
+			let commonAutoLayout: TAutoLayoutStyleMixin['value'] | null = null;
+			if (cx.common.autoLayout != null) {
+				const unpackedAutoLayout = unpackAutoLayoutTokenRef(cx.common.autoLayout);
+				unpackedAutoLayout.horizontalPadding = 0;
+				unpackedAutoLayout.verticalPadding = 0;
+				commonAutoLayout = packAutoLayoutTokenRef(unpackedAutoLayout);
+			}
+
+			cx.node.set({
+				id: cx.common.id,
+				bundle: 'youtube-embed',
+				type: 'link',
+				content: {
+					type: 'youtube-embed',
+					url: cx.url,
+					contentType: youtubeData.type,
+					contentId: youtubeData.id
+				},
+				autoLayout: commonAutoLayout ?? defaults.autoLayout,
+				appearance: cx.common.appearance ?? defaults.appearance,
+				fill: cx.common.fill ?? defaults.fill,
+				stroke: cx.common.stroke ?? defaults.stroke,
+				shadow: cx.common.shadow ?? defaults.shadow,
+				image: cx.common.image ?? defaults.image
+			} satisfies TYouTubeEmbedLinkNodeBundle);
+
 			return Ok(undefined);
 		},
 		async enhanceContent(cx) {
@@ -141,8 +204,16 @@ export const contentMetadataMap = {
 			const spotifyData = extractSpotifyId(url);
 			return spotifyData != null;
 		},
-		extractCommonFields() {
-			return {};
+		extractCommonFields(node) {
+			return {
+				id: node.id,
+				autoLayout: node.autoLayout,
+				appearance: node.appearance,
+				fill: node.fill,
+				stroke: node.stroke,
+				shadow: node.shadow,
+				image: node.image
+			};
 		},
 		async createContent(cx) {
 			const spotifyData = extractSpotifyId(cx.url);
@@ -154,19 +225,35 @@ export const contentMetadataMap = {
 				);
 			}
 
-			cx.node._v.bundle = 'spotify-embed';
-			cx.node._v.content = {
-				type: 'spotify-embed',
-				url: cx.url,
-				contentType: spotifyData.type,
-				contentId: spotifyData.id,
-				height: 152 // Default to compact height
-			};
-			const unpackedAutoLayout = unpackAutoLayoutTokenRef(cx.node._v.autoLayout);
-			unpackedAutoLayout.horizontalPadding = 0;
-			unpackedAutoLayout.verticalPadding = 0;
-			cx.node._v.autoLayout = unpackedAutoLayout;
-			cx.node._notify();
+			const defaults = linkNodeMetadata.bundleMap['spotify-embed'];
+
+			let commonAutoLayout: TAutoLayoutStyleMixin['value'] | null = null;
+			if (cx.common.autoLayout != null) {
+				const unpackedAutoLayout = unpackAutoLayoutTokenRef(cx.common.autoLayout);
+				unpackedAutoLayout.horizontalPadding = 0;
+				unpackedAutoLayout.verticalPadding = 0;
+				commonAutoLayout = packAutoLayoutTokenRef(unpackedAutoLayout);
+			}
+
+			cx.node.set({
+				id: cx.common.id,
+				bundle: 'spotify-embed',
+				type: 'link',
+				content: {
+					type: 'spotify-embed',
+					url: cx.url,
+					contentType: spotifyData.type,
+					contentId: spotifyData.id,
+					height: 152 // Default to compact height
+				},
+				autoLayout: commonAutoLayout ?? defaults.autoLayout,
+				appearance: cx.common.appearance ?? defaults.appearance,
+				fill: cx.common.fill ?? defaults.fill,
+				stroke: cx.common.stroke ?? defaults.stroke,
+				shadow: cx.common.shadow ?? defaults.shadow,
+				image: cx.common.image ?? defaults.image
+			} satisfies TSpotifyEmbedLinkNodeBundle);
+
 			return Ok(undefined);
 		},
 		async enhanceContent(cx) {
@@ -216,11 +303,11 @@ export interface TContentMetadata<GNode extends TLinkNode> {
 	label: string;
 	isApplicable: (url: string) => boolean;
 	/**
-	 * Creates a new content, modifying the nodeState directly
+	 * Creates a new content, replacing the entire node with the new bundle
 	 */
 	createContent: (cx: {
 		url: string;
-		common: TCommonContentFields;
+		common: TCommonFields;
 		editor: TPageEditor;
 		shopify: ShopifyGlobal;
 		node: TNodeState<GNode>;
@@ -235,13 +322,24 @@ export interface TContentMetadata<GNode extends TLinkNode> {
 		node: TNodeState<GNode>;
 	}) => Promise<TResult<void, AppError>>;
 	/**
-	 * Extracts common fields from a content of this type
+	 * Extracts common fields from a node of this type
 	 */
-	extractCommonFields: (content: GNode['content']) => TCommonContentFields;
+	extractCommonFields: (node: GNode) => TCommonFields;
 }
 
-interface TCommonContentFields {
-	title?: string;
-	userTitle?: string;
-	description?: string;
+interface TCommonFields {
+	id: TIdMixin['value'];
+	content?: {
+		title?: string;
+		userTitle?: string;
+		description?: string;
+	};
+	autoLayout?: TAutoLayoutStyleMixin['value'];
+	appearance?: TAppearanceStyleMixin['value'];
+	fill?: TFillStyleMixin['value'];
+	stroke?: TStrokeStyleMixin['value'];
+	shadow?: TShadowStyleMixin['value'];
+	text?: TTextStyleMixin['value'];
+	textSm?: TTextSmStyleMixin['value'];
+	image?: TImageStyleMixin['value'];
 }

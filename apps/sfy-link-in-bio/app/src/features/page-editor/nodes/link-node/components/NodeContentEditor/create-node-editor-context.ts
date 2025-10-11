@@ -4,7 +4,12 @@ import { createState, TState } from 'feature-state';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
 import { TNodeState, TPageEditor } from '../../../../lib';
-import { contentMetadataMap, contentTypePriority, TContentType } from './environment';
+import {
+	contentMetadataMap,
+	contentTypePriority,
+	TContentMetadata,
+	TContentType
+} from './environment';
 import { getApplicableContent } from './lib';
 
 export function createNodeEditorContext<GNode extends TLinkNode>(
@@ -25,24 +30,17 @@ export function createNodeEditorContext<GNode extends TLinkNode>(
 			this.isChangingContentType.set(true);
 			this.selectedContentType.set(contentType);
 
+			const metadata = contentMetadataMap[this.node._v.content.type] as TContentMetadata<GNode>;
+			const targetMetadata = contentMetadataMap[contentType] as TContentMetadata<GNode>;
+
 			try {
-				const targetMetadata = contentMetadataMap[contentType];
-				if (targetMetadata == null) {
-					return Err(new AppError('#ERR_UNKNOWN_VARIANT_TYPE'));
-				}
-
-				const content = this.node._v.content;
-
-				// Extract common fields from current variant
-				const commonFields = contentMetadataMap[content.type].extractCommonFields(content as any);
-
 				// Create content
 				const contentResult = await targetMetadata.createContent({
-					url: content.url,
-					common: commonFields,
+					url: this.node._v.content.url,
+					common: metadata.extractCommonFields(this.node._v),
 					editor,
 					shopify,
-					node: this.node as any
+					node: this.node
 				});
 				if (contentResult.isErr()) {
 					return Err(new AppError('#ERR_FAILED_TO_CREATE_VARIANT'));
@@ -118,7 +116,7 @@ export function createNodeEditorContext<GNode extends TLinkNode>(
 			this: TNodeEditorContext<GNode>,
 			contentType = this.selectedContentType._v
 		) {
-			const metadata = contentMetadataMap[contentType];
+			const metadata = contentMetadataMap[contentType] as TContentMetadata<GNode>;
 			if (metadata?.enhanceContent == null) {
 				return Ok(undefined);
 			}
@@ -128,7 +126,7 @@ export function createNodeEditorContext<GNode extends TLinkNode>(
 				url: this.node._v.content.url,
 				editor,
 				shopify,
-				node: this.node as any
+				node: this.node
 			});
 			this.isEnhancing.set(false);
 

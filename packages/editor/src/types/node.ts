@@ -41,7 +41,11 @@ export type TNodeId = TId<'node'>;
 
 export type TNodeBundle<GType extends string, GMixins extends TBaseMixin<any, any>[]> = {
 	bundle: GType;
-} & Extract<GMixins[number], { key: 'node' }>['value'] &
+} &
+	// Note: Node mixin is merged at top level (e.g. `node.type` instead of `node.node.type`)
+	// to avoid unnecessary nesting. When parsing back to mixins, use destructuring in resolvers
+	// since type-safe extraction probably requires node-specific parsing logic anyway.
+	Extract<GMixins[number], { key: 'node' }>['value'] &
 	Omit<TMergeMixins<GMixins>, 'node'>;
 
 // =========================================================================
