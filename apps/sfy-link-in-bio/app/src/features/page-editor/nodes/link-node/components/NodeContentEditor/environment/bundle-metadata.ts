@@ -18,14 +18,13 @@ import {
 	TTextStyleMixin,
 	TYouTubeEmbedLinkNodeBundle
 } from '@repo/editor';
-import { ShopifyGlobal } from '@shopify/app-bridge-react';
 import { Err, Ok, type TResult } from 'tuple-result';
 import { AppError } from '@/lib';
 import { TNodeState, TPageEditor } from '../../../../../lib';
 import { packAutoLayoutTokenRef, unpackAutoLayoutTokenRef } from '../../../../../mixins';
 import { fetchSpotifyTheme, fetchUrlMetadata } from '../lib';
 
-export const contentMetadataMap = {
+export const bundleMetadataMap = {
 	'single': {
 		type: 'single',
 		label: 'Link Card',
@@ -48,7 +47,8 @@ export const contentMetadataMap = {
 				image: node.image
 			};
 		},
-		async createContent(cx) {
+		async update(cx) {
+			const url = cx.node._v.content.url;
 			const defaults = linkNodeMetadata.bundleMap['single'];
 
 			let commonAutoLayout: TAutoLayoutStyleMixin['value'] | null = null;
@@ -73,7 +73,7 @@ export const contentMetadataMap = {
 				type: 'link',
 				content: {
 					type: 'single',
-					url: cx.url,
+					url,
 					title: cx.common.content?.title ?? defaults.content.title,
 					userTitle: cx.common.content?.userTitle,
 					description: cx.common.content?.description
@@ -90,8 +90,9 @@ export const contentMetadataMap = {
 
 			return Ok(undefined);
 		},
-		async enhanceContent(cx) {
-			const metadata = await fetchUrlMetadata(cx.url, cx.shopify);
+		async enhance(cx) {
+			const url = cx.node._v.content.url;
+			const metadata = await fetchUrlMetadata(url, cx.editor.shopify);
 			if (metadata == null) {
 				return Err(
 					new AppError('#ERR_FAILED_TO_FETCH_URL_METADATA', {
@@ -116,7 +117,7 @@ export const contentMetadataMap = {
 			cx.node._notify();
 			return Ok(undefined);
 		}
-	} satisfies TContentMetadata<TSingleLinkNodeBundle>,
+	} satisfies TBundleMetadata<TSingleLinkNodeBundle>,
 	'youtube-embed': {
 		type: 'youtube-embed',
 		label: 'YouTube Embed',
@@ -138,8 +139,9 @@ export const contentMetadataMap = {
 				image: node.image
 			};
 		},
-		async createContent(cx) {
-			const youtubeData = extractYouTubeId(cx.url);
+		async update(cx) {
+			const url = cx.node._v.content.url;
+			const youtubeData = extractYouTubeId(url);
 			if (youtubeData == null) {
 				return Err(
 					new AppError('#ERR_INVALID_YOUTUBE_URL', {
@@ -164,7 +166,7 @@ export const contentMetadataMap = {
 				type: 'link',
 				content: {
 					type: 'youtube-embed',
-					url: cx.url,
+					url,
 					contentType: youtubeData.type,
 					contentId: youtubeData.id
 				},
@@ -178,8 +180,9 @@ export const contentMetadataMap = {
 
 			return Ok(undefined);
 		},
-		async enhanceContent(cx) {
-			const youtubeData = extractYouTubeId(cx.url);
+		async enhance(cx) {
+			const url = cx.node._v.content.url;
+			const youtubeData = extractYouTubeId(url);
 			if (youtubeData == null) {
 				return Ok(undefined);
 			}
@@ -193,7 +196,7 @@ export const contentMetadataMap = {
 
 			return Ok(undefined);
 		}
-	} satisfies TContentMetadata<TYouTubeEmbedLinkNodeBundle>,
+	} satisfies TBundleMetadata<TYouTubeEmbedLinkNodeBundle>,
 	'spotify-embed': {
 		type: 'spotify-embed',
 		label: 'Spotify Embed',
@@ -215,8 +218,9 @@ export const contentMetadataMap = {
 				image: node.image
 			};
 		},
-		async createContent(cx) {
-			const spotifyData = extractSpotifyId(cx.url);
+		async update(cx) {
+			const url = cx.node._v.content.url;
+			const spotifyData = extractSpotifyId(url);
 			if (spotifyData == null) {
 				return Err(
 					new AppError('#ERR_INVALID_SPOTIFY_URL', {
@@ -241,7 +245,7 @@ export const contentMetadataMap = {
 				type: 'link',
 				content: {
 					type: 'spotify-embed',
-					url: cx.url,
+					url,
 					contentType: spotifyData.type,
 					contentId: spotifyData.id,
 					height: 152 // Default to compact height
@@ -256,8 +260,9 @@ export const contentMetadataMap = {
 
 			return Ok(undefined);
 		},
-		async enhanceContent(cx) {
-			const spotifyData = extractSpotifyId(cx.url);
+		async enhance(cx) {
+			const url = cx.node._v.content.url;
+			const spotifyData = extractSpotifyId(url);
 			if (spotifyData == null) {
 				return Ok(undefined);
 			}
@@ -275,7 +280,7 @@ export const contentMetadataMap = {
 			// Fetch theme for the Spotify URL
 			const theme = await fetchSpotifyTheme(
 				createSpotifyEmbedUrl(content.contentType, content.contentId),
-				cx.shopify
+				cx.editor.shopify
 			);
 			if (theme != null) {
 				content.theme = theme;
@@ -288,41 +293,36 @@ export const contentMetadataMap = {
 
 			return Ok(undefined);
 		}
-	} satisfies TContentMetadata<TSpotifyEmbedLinkNodeBundle>
+	} satisfies TBundleMetadata<TSpotifyEmbedLinkNodeBundle>
 };
 
-export const contentMetadata = Object.values(contentMetadataMap);
+export const bundleMetadata = Object.values(bundleMetadataMap);
 
-// Content type priority for auto-switching (most specific to most generic)
-export const contentTypePriority: TContentType[] = ['youtube-embed', 'spotify-embed', 'single'];
+export const bundlePriority: TBundleType[] = ['youtube-embed', 'spotify-embed', 'single'];
 
-export type TContentType = keyof typeof contentMetadataMap;
+export type TBundleType = TLinkNode['bundle'];
 
-export interface TContentMetadata<GNode extends TLinkNode> {
+export interface TBundleMetadata<GNode extends TLinkNode> {
 	type: GNode['bundle'];
 	label: string;
 	isApplicable: (url: string) => boolean;
 	/**
-	 * Creates a new content, replacing the entire node with the new bundle
+	 * Creates a new node bundle, replacing the entire node with the new bundle
 	 */
-	createContent: (cx: {
-		url: string;
+	update: (cx: {
+		node: TNodeState<GNode>;
 		common: TCommonFields;
 		editor: TPageEditor;
-		shopify: ShopifyGlobal;
-		node: TNodeState<GNode>;
 	}) => Promise<TResult<void, AppError>>;
 	/**
-	 * Optional method to enhance the content with additional data after creation or url change
+	 * Optional method to enhance the node bundle with additional data after creation or url change
 	 */
-	enhanceContent?: (cx: {
-		url: string;
-		editor: TPageEditor;
-		shopify: ShopifyGlobal;
+	enhance?: (cx: {
 		node: TNodeState<GNode>;
+		editor: TPageEditor;
 	}) => Promise<TResult<void, AppError>>;
 	/**
-	 * Extracts common fields from a node of this type
+	 * Extracts common fields from a node bundle
 	 */
 	extractCommonFields: (node: GNode) => TCommonFields;
 }

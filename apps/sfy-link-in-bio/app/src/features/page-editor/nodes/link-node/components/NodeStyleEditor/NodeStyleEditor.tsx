@@ -13,9 +13,9 @@ import { YouTubeEmbedStyleEditor } from './YoutubeEmbedStyle';
 
 export const LinkNodeStyleEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (props) => {
 	const { nodeState, ...rest } = props;
-	const bundle = useCompute(nodeState, ({ value }) => value.bundle);
+	const bundleType = useCompute(nodeState, ({ value }) => value.bundle);
 
-	switch (bundle) {
+	switch (bundleType) {
 		case 'single':
 			return (
 				<SingleLinkStyleEditor

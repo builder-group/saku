@@ -8,13 +8,13 @@ import { Select, Text, TextField } from '@shopify/polaris';
 import { useCompute, useFeatureState, useListener } from 'feature-react/state';
 import React from 'react';
 import { cn } from '@/lib';
-import { TNodeEditorContext } from './create-node-editor-context';
+import { TNodeEditorContext } from './lib';
 
 export const YoutubeEmbedContent: React.FC<TYoutubeEmbedContentProps> = (props) => {
 	const { cx, className } = props;
 
 	const content = useCompute(cx.node, ({ value }) => value.content, [], { isEqual: false });
-	const isEnhancing = useFeatureState(cx.isEnhancing);
+	const isEnhancing = useFeatureState(cx.isEnhancingBundle);
 
 	const [displayUrl, setDisplayUrl] = React.useState(content.url);
 

@@ -1,1 +1,1 @@
-export * from './content-metadata';
+export * from './bundle-metadata';

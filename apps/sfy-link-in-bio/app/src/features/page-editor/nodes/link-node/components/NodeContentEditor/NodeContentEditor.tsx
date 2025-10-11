@@ -11,8 +11,8 @@ import React from 'react';
 import { AccordionSection, JsonPreview, PortalPulse } from '@/components';
 import { TNodeEditorComponentProps } from '../../../../lib';
 import { ContentSkeleton } from './ContentSkeleton';
-import { createNodeEditorContext, TNodeEditorContext } from './create-node-editor-context';
-import { contentMetadataMap, TContentType } from './environment';
+import { bundleMetadataMap } from './environment';
+import { createNodeEditorContext, TNodeEditorContext } from './lib';
 import { SingleContent } from './SingleContent';
 import { SpotifyEmbedContent } from './SpotifyEmbedContent';
 import { YoutubeEmbedContent } from './YoutubeEmbedContent';
@@ -22,28 +22,28 @@ export const LinkNodeContentEditor: React.FC<TNodeEditorComponentProps<TLinkNode
 	const shopify = useAppBridge();
 
 	const cx = React.useMemo(
-		() => createNodeEditorContext({ node: nodeState, editor, shopify }),
-		[nodeState, editor, shopify]
+		() => createNodeEditorContext({ node: nodeState, editor }),
+		[nodeState, editor]
 	);
 
-	const contentVariant = useCompute(cx.node, ({ value }) => value.content.type);
-	const applicableContentOptions = useCompute(cx.applicableContentTypes, ({ value }) =>
+	const bundleType = useCompute(cx.node, ({ value }) => value.bundle);
+	const applicableBundleOptions = useCompute(cx.applicableBundleTypes, ({ value }) =>
 		value.map((type) => ({
-			label: contentMetadataMap[type].label,
+			label: bundleMetadataMap[type].label,
 			value: type
 		}))
 	);
-	const isChangingContentType = useFeatureState(cx.isChangingContentType);
-	const isEnhancingVariant = useFeatureState(cx.isEnhancing);
-	const selectedContentType = useFeatureState(cx.selectedContentType);
+	const isSwitchingBundle = useFeatureState(cx.isSwitchingBundle);
+	const isEnhancingBundle = useFeatureState(cx.isEnhancingBundle);
+	const selectedBundleType = useFeatureState(cx.selectedBundleType);
 
 	// =========================================================================
 	// Events
 	// =========================================================================
 
-	const handleContentTypeChange = React.useCallback(
-		(value: TContentType) => {
-			cx.updateContentType(value).then((result) => {
+	const handleBundleTypeChange = React.useCallback(
+		(value: TLinkNode['bundle']) => {
+			cx.switchBundleType(value).then((result) => {
 				if (result.isErr()) {
 					shopify.toast.show('Failed to update variant type', { duration: 3000 });
 				}
@@ -56,8 +56,8 @@ export const LinkNodeContentEditor: React.FC<TNodeEditorComponentProps<TLinkNode
 	// UI
 	// =========================================================================
 
-	const renderVariantEditor = React.useCallback((): React.ReactElement | null => {
-		switch (contentVariant) {
+	const renderEditor = React.useCallback((): React.ReactElement | null => {
+		switch (bundleType) {
 			case 'single':
 				return (
 					<SingleContent cx={cx as TNodeEditorContext<TSingleLinkNodeBundle>} className="z-10" />
@@ -79,7 +79,7 @@ export const LinkNodeContentEditor: React.FC<TNodeEditorComponentProps<TLinkNode
 			default:
 				return null;
 		}
-	}, [contentVariant, cx]);
+	}, [bundleType, cx]);
 
 	return (
 		<>
@@ -91,20 +91,20 @@ export const LinkNodeContentEditor: React.FC<TNodeEditorComponentProps<TLinkNode
 					id="link-content-type-field"
 					label="Link content type"
 					labelHidden
-					options={applicableContentOptions}
-					value={selectedContentType}
-					onChange={handleContentTypeChange}
-					disabled={isChangingContentType || isEnhancingVariant}
+					options={applicableBundleOptions}
+					value={selectedBundleType}
+					onChange={handleBundleTypeChange}
+					disabled={isSwitchingBundle || isEnhancingBundle}
 				/>
 			</div>
 
 			<div className="relative border-b border-neutral-200">
-				{isChangingContentType ? (
+				{isSwitchingBundle ? (
 					<ContentSkeleton className="z-10" />
 				) : (
 					<>
-						<PortalPulse isActive={cx.isEnhancing} className="top-0 left-0" />
-						{renderVariantEditor()}
+						<PortalPulse isActive={cx.isEnhancingBundle} className="top-0 left-0" />
+						{renderEditor()}
 					</>
 				)}
 			</div>

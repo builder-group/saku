@@ -10,14 +10,13 @@ import {
 	unpackTextTokenRef,
 	unpackTypographyTokenRef
 } from '../../../../mixins';
-import { TNodeEditorContext } from './create-node-editor-context';
-import { fetchUrlMetadata } from './lib';
+import { fetchUrlMetadata, TNodeEditorContext } from './lib';
 
 export const SingleContent: React.FC<TSingleContentProps> = (props) => {
 	const { cx, className } = props;
 
 	const content = useCompute(cx.node, ({ value }) => value.content, [], { isEqual: false });
-	const isEnhancing = useFeatureState(cx.isEnhancing);
+	const isEnhancing = useFeatureState(cx.isEnhancingBundle);
 
 	const [displayUrl, setDisplayUrl] = React.useState(content.url);
 	const [faviconImageError, setFaviconImageError] = React.useState<string | null>(null);
