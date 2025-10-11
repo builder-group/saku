@@ -7,7 +7,7 @@ export const aboutNodeMetadata: TNodeMetadata<'about'> = {
 	bundleMap: {
 		classic: {
 			type: 'about',
-			bundle: 'classic',
+			bundleType: 'classic',
 			content: {
 				type: 'classic',
 				name: 'Your Name',
@@ -69,7 +69,7 @@ export const linkNodeMetadata: TNodeMetadata<'link'> = {
 	bundleMap: {
 		'classic': {
 			type: 'link',
-			bundle: 'classic',
+			bundleType: 'classic',
 			content: {
 				type: 'classic',
 				url: 'https://www.shopify.com/',
@@ -99,7 +99,7 @@ export const linkNodeMetadata: TNodeMetadata<'link'> = {
 		},
 		'youtube-embed': {
 			type: 'link',
-			bundle: 'youtube-embed',
+			bundleType: 'youtube-embed',
 			content: {
 				type: 'youtube-embed',
 				url: 'https://www.youtube.com/watch?v=',
@@ -128,7 +128,7 @@ export const linkNodeMetadata: TNodeMetadata<'link'> = {
 		},
 		'spotify-embed': {
 			type: 'link',
-			bundle: 'spotify-embed',
+			bundleType: 'spotify-embed',
 			content: {
 				type: 'spotify-embed',
 				url: 'https://open.spotify.com/track/',
@@ -165,7 +165,7 @@ export const mediaNodeMetadata: TNodeMetadata<'media'> = {
 	bundleMap: {
 		classic: {
 			type: 'media',
-			bundle: 'classic',
+			bundleType: 'classic',
 			content: {
 				type: 'classic'
 			},
@@ -198,7 +198,7 @@ export const pageNodeMetadata: TNodeMetadata<'page'> = {
 	bundleMap: {
 		classic: {
 			type: 'page',
-			bundle: 'classic',
+			bundleType: 'classic',
 			metadata: {},
 			hasWatermark: true,
 			children: [],
@@ -224,7 +224,7 @@ export const productNodeMetadata: TNodeMetadata<'product'> = {
 	bundleMap: {
 		classic: {
 			type: 'product',
-			bundle: 'classic',
+			bundleType: 'classic',
 			content: {
 				type: 'classic'
 			},
@@ -275,7 +275,7 @@ export const textNodeMetadata: TNodeMetadata<'text'> = {
 	bundleMap: {
 		rich: {
 			type: 'text',
-			bundle: 'rich',
+			bundleType: 'rich',
 			content: {
 				type: 'rich',
 				text: { type: 'markdown', value: 'Add your text here' }
@@ -308,8 +308,8 @@ export type TNodeMetadata<GType extends TFlatNode['type']> = {
 	type: GType;
 	label: string;
 	bundleMap: {
-		[K in Extract<TFlatNode, { type: GType }>['bundle']]: Omit<
-			Extract<TFlatNode, { type: GType; bundle: K }>,
+		[K in Extract<TFlatNode, { type: GType }>['bundleType']]: Omit<
+			Extract<TFlatNode, { type: GType; bundleType: K }>,
 			'id'
 		>;
 	};

@@ -69,7 +69,7 @@ export const bundleMetadataMap = {
 
 			cx.node.set({
 				id: cx.common.id,
-				bundle: 'classic',
+				bundleType: 'classic',
 				type: 'link',
 				content: {
 					type: 'classic',
@@ -162,7 +162,7 @@ export const bundleMetadataMap = {
 
 			cx.node.set({
 				id: cx.common.id,
-				bundle: 'youtube-embed',
+				bundleType: 'youtube-embed',
 				type: 'link',
 				content: {
 					type: 'youtube-embed',
@@ -241,7 +241,7 @@ export const bundleMetadataMap = {
 
 			cx.node.set({
 				id: cx.common.id,
-				bundle: 'spotify-embed',
+				bundleType: 'spotify-embed',
 				type: 'link',
 				content: {
 					type: 'spotify-embed',
@@ -300,10 +300,10 @@ export const bundleMetadata = Object.values(bundleMetadataMap);
 
 export const bundlePriority: TBundleType[] = ['youtube-embed', 'spotify-embed', 'classic'];
 
-export type TBundleType = TLinkNode['bundle'];
+export type TBundleType = TLinkNode['bundleType'];
 
 export interface TBundleMetadata<GNode extends TLinkNode> {
-	type: GNode['bundle'];
+	type: GNode['bundleType'];
 	label: string;
 	isApplicable: (url: string) => boolean;
 	/**

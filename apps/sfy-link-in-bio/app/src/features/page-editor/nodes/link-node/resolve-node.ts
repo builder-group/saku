@@ -32,7 +32,7 @@ export function resolveLinkNode(
 	node: TLinkNode,
 	cx: TNodeResolveContext
 ): TResult<TResolvedLinkNode, AppError> {
-	switch (node.bundle) {
+	switch (node.bundleType) {
 		case 'classic':
 			return resolveClassicLinkNodeBundle(node, cx);
 		case 'youtube-embed':

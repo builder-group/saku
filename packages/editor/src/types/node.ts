@@ -40,7 +40,7 @@ export type TFlatNode =
 export type TNodeId = TId<'node'>;
 
 export type TNodeBundle<GType extends string, GMixins extends TBaseMixin<any, any>[]> = {
-	bundle: GType;
+	bundleType: GType;
 } &
 	// Note: Node mixin is merged at top level (e.g. `node.type` instead of `node.node.type`)
 	// to avoid unnecessary nesting. When parsing back to mixins, use destructuring in resolvers

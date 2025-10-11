@@ -195,7 +195,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 		integrations: [],
 		root: {
 			type: 'page',
-			bundle: 'classic',
+			bundleType: 'classic',
 			id: createId('node'),
 			metadata: {},
 			hasWatermark: true,

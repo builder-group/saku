@@ -241,7 +241,7 @@ export function parseLinkpopData(linkpopData: TLinkPopData): TSite {
 		root: {
 			id: createId('node'),
 			type: 'page',
-			bundle: 'classic',
+			bundleType: 'classic',
 			metadata: {},
 			hasWatermark: true,
 			children,

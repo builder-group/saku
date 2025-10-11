@@ -13,7 +13,7 @@ import { YouTubeEmbedStyleEditor } from './YoutubeEmbedStyle';
 
 export const LinkNodeStyleEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (props) => {
 	const { nodeState, ...rest } = props;
-	const bundleType = useCompute(nodeState, ({ value }) => value.bundle);
+	const bundleType = useCompute(nodeState, ({ value }) => value.bundleType);
 
 	switch (bundleType) {
 		case 'classic':

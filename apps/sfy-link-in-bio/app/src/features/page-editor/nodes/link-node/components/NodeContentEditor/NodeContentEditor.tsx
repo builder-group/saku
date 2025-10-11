@@ -26,7 +26,7 @@ export const LinkNodeContentEditor: React.FC<TNodeEditorComponentProps<TLinkNode
 		[nodeState, editor]
 	);
 
-	const bundleType = useCompute(cx.node, ({ value }) => value.bundle);
+	const bundleType = useCompute(cx.node, ({ value }) => value.bundleType);
 	const applicableBundleOptions = useCompute(cx.applicableBundleTypes, ({ value }) =>
 		value.map((type) => ({
 			label: bundleMetadataMap[type].label,
@@ -42,7 +42,7 @@ export const LinkNodeContentEditor: React.FC<TNodeEditorComponentProps<TLinkNode
 	// =========================================================================
 
 	const handleBundleTypeChange = React.useCallback(
-		(value: TLinkNode['bundle']) => {
+		(value: TLinkNode['bundleType']) => {
 			cx.switchBundleType(value).then((result) => {
 				if (result.isErr()) {
 					shopify.toast.show('Failed to update variant type', { duration: 3000 });

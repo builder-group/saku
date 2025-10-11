@@ -15,7 +15,7 @@ export function hydrateLinkNode(
 
 	return Ok({
 		type: 'promised',
-		bundle: 'default',
+		bundleType: 'default',
 		id: node.id,
 		cached: resolvedLinkNode,
 		next: (async () => {
