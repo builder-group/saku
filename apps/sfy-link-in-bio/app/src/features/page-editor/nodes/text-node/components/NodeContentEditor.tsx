@@ -53,7 +53,7 @@ export const TextNodeContentEditor: React.FC<TNodeEditorComponentProps<TTextNode
 		<>
 			<div className="space-y-4 border-b border-neutral-200 px-4 py-3">
 				<div className="space-y-4">
-					{/* Format Selector */}
+					{/* Format */}
 					<div className="space-y-1">
 						<Text as="span" variant="bodySm" tone="subdued">
 							Format

@@ -9,10 +9,10 @@ export const MediaNodeContentEditor: React.FC<TNodeEditorComponentProps<TMediaNo
 	const { nodeState, editor } = props;
 	const { content } = useFeatureState(nodeState);
 
-	const [mediaImageError, setImageError] = React.useState<string | null>(null);
 	const [selectedMediaType, setSelectedMediaType] = React.useState<TMediaType>(() => {
 		return content.media?.type ?? 'image';
 	});
+	const mediaTypeOptions = React.useMemo(() => [{ label: 'Image', value: 'image' }], []);
 
 	const mediaImage = React.useMemo(() => {
 		const asset = editor.getImageAsset(content.media?.hash);
@@ -25,6 +25,7 @@ export const MediaNodeContentEditor: React.FC<TNodeEditorComponentProps<TMediaNo
 			fileName: asset.fileName
 		};
 	}, [content.media, editor]);
+	const [mediaImageError, setImageError] = React.useState<string | null>(null);
 
 	// =========================================================================
 	// Events
@@ -83,7 +84,7 @@ export const MediaNodeContentEditor: React.FC<TNodeEditorComponentProps<TMediaNo
 							id="media-type-field"
 							label="Media type"
 							labelHidden
-							options={[{ label: 'Image', value: 'image' }]}
+							options={mediaTypeOptions}
 							value={selectedMediaType}
 							onChange={handleMediaTypeChange}
 						/>
