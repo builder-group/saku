@@ -1,4 +1,4 @@
-import { TBaseMixin, TIdMixin, TNodeBundle, TRichContent, TTextNodeMixin } from '@repo/editor';
+import { TBaseMixin, TIdMixin, TNodeBundle, TTextNodeMixin } from '@repo/editor';
 import {
 	TResolvedAppearanceStyleMixin,
 	TResolvedAutoLayoutStyleMixin,
@@ -8,14 +8,14 @@ import {
 	TResolvedTextStyleMixin
 } from '../../mixins';
 
-export type TResolvedTextNode = TResolvedDefaultTextNodeBundle;
+export type TResolvedTextNode = TResolvedMarkdownTextNodeBundle;
 
-export type TResolvedDefaultTextNodeBundle = TNodeBundle<
-	TResolvedDefaultTextNodeContentMixin['value']['type'],
+export type TResolvedMarkdownTextNodeBundle = TNodeBundle<
+	TResolvedMarkdownTextNodeContentMixin['value']['type'],
 	[
 		TIdMixin,
 		TTextNodeMixin,
-		TResolvedDefaultTextNodeContentMixin,
+		TResolvedMarkdownTextNodeContentMixin,
 		TResolvedAutoLayoutStyleMixin,
 		TResolvedAppearanceStyleMixin,
 		TResolvedFillStyleMixin,
@@ -25,10 +25,10 @@ export type TResolvedDefaultTextNodeBundle = TNodeBundle<
 	]
 >;
 
-export type TResolvedDefaultTextNodeContentMixin = TBaseMixin<
+export type TResolvedMarkdownTextNodeContentMixin = TBaseMixin<
 	'content',
 	{
-		type: 'default';
-		text: TRichContent;
+		type: 'markdown';
+		text: string;
 	}
 >;

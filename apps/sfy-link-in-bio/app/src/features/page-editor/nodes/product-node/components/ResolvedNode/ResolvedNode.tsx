@@ -1,7 +1,7 @@
 import React from 'react';
 import { TResolvedNodeProps } from '../../../../lib';
 import { TResolvedProductNode } from '../../types';
-import { SingleContent } from './SingleContent';
+import { ClassicContent } from './ClassicContent';
 import { Skeleton } from './Skeleton';
 
 export const ResolvedProductNode = React.forwardRef<
@@ -13,11 +13,11 @@ export const ResolvedProductNode = React.forwardRef<
 
 	const renderContent = React.useCallback(() => {
 		switch (content.type) {
-			case 'single': {
+			case 'classic': {
 				if (node.content.product == null) {
 					return <Skeleton node={node} />;
 				}
-				return <SingleContent node={node} product={node.content.product} cx={cx} />;
+				return <ClassicContent node={node} product={node.content.product} cx={cx} />;
 			}
 			default:
 				return <Skeleton node={node} />;

@@ -11,14 +11,14 @@ import {
 	TResolvedTextXlStyleMixin
 } from '../../mixins';
 
-export type TResolvedAboutNode = TResolvedDefaultAboutNodeBundle;
+export type TResolvedAboutNode = TResolvedClassicAboutNodeBundle;
 
-export type TResolvedDefaultAboutNodeBundle = TNodeBundle<
-	TResolvedDefaultAboutNodeContentMixin['value']['type'],
+export type TResolvedClassicAboutNodeBundle = TNodeBundle<
+	TResolvedClassicAboutNodeContentMixin['value']['type'],
 	[
 		TIdMixin,
 		TAboutNodeMixin,
-		TResolvedDefaultAboutNodeContentMixin,
+		TResolvedClassicAboutNodeContentMixin,
 		TResolvedAutoLayoutStyleMixin,
 		TResolvedAppearanceStyleMixin,
 		TResolvedFillStyleMixin,
@@ -30,10 +30,10 @@ export type TResolvedDefaultAboutNodeBundle = TNodeBundle<
 	]
 >;
 
-export type TResolvedDefaultAboutNodeContentMixin = TBaseMixin<
+export type TResolvedClassicAboutNodeContentMixin = TBaseMixin<
 	'content',
 	{
-		type: 'default';
+		type: 'classic';
 		name: string;
 		bio?: string;
 		profilePicture?: TResolvedAsset;

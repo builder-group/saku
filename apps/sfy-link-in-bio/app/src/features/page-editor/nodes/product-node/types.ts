@@ -14,14 +14,14 @@ import {
 	TResolvedTextStyleMixin
 } from '../../mixins';
 
-export type TResolvedProductNode = TResolvedSingleProductNodeBundle;
+export type TResolvedProductNode = TResolvedClassicProductNodeBundle;
 
-export type TResolvedSingleProductNodeBundle = TNodeBundle<
-	TResolvedSingleProductNodeContentMixin['value']['type'],
+export type TResolvedClassicProductNodeBundle = TNodeBundle<
+	TResolvedClassicProductNodeContentMixin['value']['type'],
 	[
 		TIdMixin,
 		TProductNodeMixin,
-		TResolvedSingleProductNodeContentMixin,
+		TResolvedClassicProductNodeContentMixin,
 		TResolvedAutoLayoutStyleMixin,
 		TResolvedAppearanceStyleMixin,
 		TResolvedFillStyleMixin,
@@ -36,10 +36,10 @@ export type TResolvedSingleProductNodeBundle = TNodeBundle<
 	]
 >;
 
-export type TResolvedSingleProductNodeContentMixin = TBaseMixin<
+export type TResolvedClassicProductNodeContentMixin = TBaseMixin<
 	'content',
 	{
-		type: 'single';
+		type: 'classic';
 		product?: TResolvedProduct;
 	}
 >;

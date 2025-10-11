@@ -1,12 +1,12 @@
 import React from 'react';
 import { TResolvedNodeProps } from '../../../../lib';
 import {
+	TResolvedClassicLinkNodeBundle,
 	TResolvedLinkNode,
-	TResolvedSingleLinkNodeBundle,
 	TResolvedSpotifyEmbedLinkNodeBundle,
 	TResolvedYouTubeEmbedLinkNodeBundle
 } from '../../types';
-import { DefaultContent } from './SingleContent';
+import { ClassicContent } from './ClassicContent';
 import { SpotifyEmbedContent } from './SpotifyEmbedContent';
 import { YouTubeEmbedContent } from './YouTubeEmbedContent';
 
@@ -19,8 +19,8 @@ export const ResolvedLinkNode = React.forwardRef<
 
 	const renderContent = React.useCallback(() => {
 		switch (content.type) {
-			case 'single':
-				return <DefaultContent node={node as TResolvedSingleLinkNodeBundle} cx={cx} />;
+			case 'classic':
+				return <ClassicContent node={node as TResolvedClassicLinkNodeBundle} cx={cx} />;
 			case 'youtube-embed':
 				return <YouTubeEmbedContent node={node as TResolvedYouTubeEmbedLinkNodeBundle} cx={cx} />;
 			case 'spotify-embed':

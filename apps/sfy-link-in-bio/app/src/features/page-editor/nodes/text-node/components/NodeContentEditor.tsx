@@ -15,7 +15,7 @@ export const TextNodeContentEditor: React.FC<TNodeEditorComponentProps<TTextNode
 
 	const handleTextChange = React.useCallback(
 		(value: string) => {
-			nodeState._v.content.text = { type: 'markdown', value };
+			nodeState._v.content.text = value;
 			nodeState._notify();
 		},
 		[nodeState]
@@ -38,7 +38,7 @@ export const TextNodeContentEditor: React.FC<TNodeEditorComponentProps<TTextNode
 							id="text-field"
 							label="Text"
 							labelHidden
-							value={content.text.value}
+							value={content.text}
 							onChange={handleTextChange}
 							multiline={4}
 							autoComplete="off"

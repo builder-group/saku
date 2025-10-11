@@ -12,16 +12,16 @@ import {
 } from '../../mixins';
 
 export type TResolvedLinkNode =
-	| TResolvedSingleLinkNodeBundle
+	| TResolvedClassicLinkNodeBundle
 	| TResolvedYouTubeEmbedLinkNodeBundle
 	| TResolvedSpotifyEmbedLinkNodeBundle;
 
-export type TResolvedSingleLinkNodeBundle = TNodeBundle<
-	TResolvedSingleLinkNodeContentMixin['value']['type'],
+export type TResolvedClassicLinkNodeBundle = TNodeBundle<
+	TResolvedClassicLinkNodeContentMixin['value']['type'],
 	[
 		TIdMixin,
 		TLinkNodeMixin,
-		TResolvedSingleLinkNodeContentMixin,
+		TResolvedClassicLinkNodeContentMixin,
 		TResolvedAutoLayoutStyleMixin,
 		TResolvedAppearanceStyleMixin,
 		TResolvedFillStyleMixin,
@@ -63,10 +63,10 @@ export type TResolvedSpotifyEmbedLinkNodeBundle = TNodeBundle<
 	]
 >;
 
-export type TResolvedSingleLinkNodeContentMixin = TBaseMixin<
+export type TResolvedClassicLinkNodeContentMixin = TBaseMixin<
 	'content',
 	{
-		type: 'single';
+		type: 'classic';
 		url: string;
 		title?: string;
 		description?: string;

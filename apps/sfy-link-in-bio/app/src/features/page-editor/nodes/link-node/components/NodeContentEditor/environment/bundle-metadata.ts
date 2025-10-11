@@ -5,13 +5,13 @@ import {
 	linkNodeMetadata,
 	TAppearanceStyleMixin,
 	TAutoLayoutStyleMixin,
+	TClassicLinkNodeBundle,
 	TFillStyleMixin,
 	TIdMixin,
 	TImageStyleMixin,
 	TLinkNode,
 	tokenRef,
 	TShadowStyleMixin,
-	TSingleLinkNodeBundle,
 	TSpotifyEmbedLinkNodeBundle,
 	TStrokeStyleMixin,
 	TTextSmStyleMixin,
@@ -25,9 +25,9 @@ import { packAutoLayoutTokenRef, unpackAutoLayoutTokenRef } from '../../../../..
 import { fetchSpotifyTheme, fetchUrlMetadata } from '../lib';
 
 export const bundleMetadataMap = {
-	'single': {
-		type: 'single',
-		label: 'Link Card',
+	'classic': {
+		type: 'classic',
+		label: 'Classic',
 		isApplicable: () => true,
 		extractCommonFields(node) {
 			return {
@@ -49,7 +49,7 @@ export const bundleMetadataMap = {
 		},
 		async update(cx) {
 			const url = cx.node._v.content.url;
-			const defaults = linkNodeMetadata.bundleMap['single'];
+			const defaults = linkNodeMetadata.bundleMap['classic'];
 
 			let commonAutoLayout: TAutoLayoutStyleMixin['value'] | null = null;
 			if (cx.common.autoLayout != null) {
@@ -69,10 +69,10 @@ export const bundleMetadataMap = {
 
 			cx.node.set({
 				id: cx.common.id,
-				bundle: 'single',
+				bundle: 'classic',
 				type: 'link',
 				content: {
-					type: 'single',
+					type: 'classic',
 					url,
 					title: cx.common.content?.title ?? defaults.content.title,
 					userTitle: cx.common.content?.userTitle,
@@ -86,7 +86,7 @@ export const bundleMetadataMap = {
 				text: cx.common.text ?? defaults.text,
 				textSm: cx.common.textSm ?? defaults.textSm,
 				image: cx.common.image ?? defaults.image
-			} satisfies TSingleLinkNodeBundle);
+			} satisfies TClassicLinkNodeBundle);
 
 			return Ok(undefined);
 		},
@@ -117,7 +117,7 @@ export const bundleMetadataMap = {
 			cx.node._notify();
 			return Ok(undefined);
 		}
-	} satisfies TBundleMetadata<TSingleLinkNodeBundle>,
+	} satisfies TBundleMetadata<TClassicLinkNodeBundle>,
 	'youtube-embed': {
 		type: 'youtube-embed',
 		label: 'YouTube Embed',
@@ -298,7 +298,7 @@ export const bundleMetadataMap = {
 
 export const bundleMetadata = Object.values(bundleMetadataMap);
 
-export const bundlePriority: TBundleType[] = ['youtube-embed', 'spotify-embed', 'single'];
+export const bundlePriority: TBundleType[] = ['youtube-embed', 'spotify-embed', 'classic'];
 
 export type TBundleType = TLinkNode['bundle'];
 

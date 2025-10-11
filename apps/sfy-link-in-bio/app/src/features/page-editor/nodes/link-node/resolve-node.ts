@@ -1,8 +1,8 @@
 import {
 	createSpotifyEmbedUrl,
 	createYouTubeEmbedUrl,
+	TClassicLinkNodeBundle,
 	TLinkNode,
-	TSingleLinkNodeBundle,
 	TSpotifyEmbedLinkNodeBundle,
 	TYouTubeEmbedLinkNodeBundle
 } from '@repo/editor';
@@ -19,9 +19,9 @@ import {
 	resolveTextStyleMixin
 } from '../../mixins';
 import {
+	TResolvedClassicLinkNodeBundle,
+	TResolvedClassicLinkNodeContentMixin,
 	TResolvedLinkNode,
-	TResolvedSingleLinkNodeBundle,
-	TResolvedSingleLinkNodeContentMixin,
 	TResolvedSpotifyEmbedLinkNodeBundle,
 	TResolvedSpotifyEmbedLinkNodeContentMixin,
 	TResolvedYouTubeEmbedLinkNodeBundle,
@@ -33,8 +33,8 @@ export function resolveLinkNode(
 	cx: TNodeResolveContext
 ): TResult<TResolvedLinkNode, AppError> {
 	switch (node.bundle) {
-		case 'single':
-			return resolveSingleLinkNodeBundle(node, cx);
+		case 'classic':
+			return resolveClassicLinkNodeBundle(node, cx);
 		case 'youtube-embed':
 			return resolveYouTubeEmbedLinkNodeBundle(node, cx);
 		case 'spotify-embed':
@@ -48,17 +48,17 @@ export function resolveLinkNode(
 	}
 }
 
-export function resolveSingleLinkNodeBundle(
-	node: TSingleLinkNodeBundle,
+export function resolveClassicLinkNodeBundle(
+	node: TClassicLinkNodeBundle,
 	cx: TNodeResolveContext
-): TResult<TResolvedSingleLinkNodeBundle, AppError> {
+): TResult<TResolvedClassicLinkNodeBundle, AppError> {
 	const { content, autoLayout, appearance, fill, stroke, shadow, text, textSm, image, ...rest } =
 		node;
 
 	// Resolve content
 	const favicon = content.userFavicon !== undefined ? content.userFavicon : content.favicon;
-	const resolvedContent: TResolvedSingleLinkNodeContentMixin['value'] = {
-		type: 'single',
+	const resolvedContent: TResolvedClassicLinkNodeContentMixin['value'] = {
+		type: 'classic',
 		url: content.url,
 		title: content.userTitle ?? content.title,
 		description: content.userDescription ?? content.description,

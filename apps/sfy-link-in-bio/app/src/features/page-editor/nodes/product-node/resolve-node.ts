@@ -16,9 +16,9 @@ import {
 	resolveTextStyleMixin
 } from '../../mixins';
 import {
+	TResolvedClassicProductNodeContentMixin,
 	TResolvedProduct,
-	TResolvedProductNode,
-	TResolvedSingleProductNodeContentMixin
+	TResolvedProductNode
 } from './types';
 
 export function resolveProductNode(
@@ -42,9 +42,9 @@ export function resolveProductNode(
 	} = node;
 
 	// Resolve content
-	let resolvedContent: TResolvedSingleProductNodeContentMixin['value'];
+	let resolvedContent: TResolvedClassicProductNodeContentMixin['value'];
 	switch (content.type) {
-		case 'single': {
+		case 'classic': {
 			let resolvedProduct: TResolvedProduct | undefined;
 			if (content.product != null) {
 				resolvedProduct = resolveProduct(content.product, cx);

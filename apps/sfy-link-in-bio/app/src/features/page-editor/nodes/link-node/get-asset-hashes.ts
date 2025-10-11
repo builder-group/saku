@@ -8,7 +8,7 @@ export function getLinkNodeAssetHashes(node: TLinkNode): TAssetHash[] {
 
 	// Favicon asset
 	switch (node.content.type) {
-		case 'single': {
+		case 'classic': {
 			if (node.content.userFavicon != null) {
 				hashes.push(node.content.userFavicon);
 			}

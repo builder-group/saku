@@ -1,6 +1,6 @@
 import {
+	TClassicLinkNodeBundle,
 	TLinkNode,
-	TSingleLinkNodeBundle,
 	TSpotifyEmbedLinkNodeBundle,
 	TYouTubeEmbedLinkNodeBundle
 } from '@repo/editor';
@@ -10,12 +10,12 @@ import { useCompute, useFeatureState } from 'feature-react/state';
 import React from 'react';
 import { AccordionSection, JsonPreview, PortalPulse } from '@/components';
 import { TNodeEditorComponentProps } from '../../../../lib';
+import { ClassicContentEditor } from './ClassicContentEditor';
 import { ContentSkeleton } from './ContentSkeleton';
 import { bundleMetadataMap } from './environment';
 import { createNodeEditorContext, TNodeEditorContext } from './lib';
-import { SingleContent } from './SingleContent';
-import { SpotifyEmbedContent } from './SpotifyEmbedContent';
-import { YoutubeEmbedContent } from './YoutubeEmbedContent';
+import { SpotifyEmbedContentEditor } from './SpotifyEmbedContentEditor';
+import { YoutubeEmbedContentEditor } from './YoutubeEmbedContentEditor';
 
 export const LinkNodeContentEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (props) => {
 	const { nodeState, editor } = props;
@@ -58,20 +58,23 @@ export const LinkNodeContentEditor: React.FC<TNodeEditorComponentProps<TLinkNode
 
 	const renderEditor = React.useCallback((): React.ReactElement | null => {
 		switch (bundleType) {
-			case 'single':
+			case 'classic':
 				return (
-					<SingleContent cx={cx as TNodeEditorContext<TSingleLinkNodeBundle>} className="z-10" />
+					<ClassicContentEditor
+						cx={cx as TNodeEditorContext<TClassicLinkNodeBundle>}
+						className="z-10"
+					/>
 				);
 			case 'youtube-embed':
 				return (
-					<YoutubeEmbedContent
+					<YoutubeEmbedContentEditor
 						cx={cx as TNodeEditorContext<TYouTubeEmbedLinkNodeBundle>}
 						className="z-10"
 					/>
 				);
 			case 'spotify-embed':
 				return (
-					<SpotifyEmbedContent
+					<SpotifyEmbedContentEditor
 						cx={cx as TNodeEditorContext<TSpotifyEmbedLinkNodeBundle>}
 						className="z-10"
 					/>

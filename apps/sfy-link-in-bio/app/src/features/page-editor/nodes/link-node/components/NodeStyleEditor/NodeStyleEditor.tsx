@@ -1,13 +1,13 @@
 import {
+	TClassicLinkNodeBundle,
 	TLinkNode,
-	TSingleLinkNodeBundle,
 	TSpotifyEmbedLinkNodeBundle,
 	TYouTubeEmbedLinkNodeBundle
 } from '@repo/editor';
 import { useCompute } from 'feature-react';
 import React from 'react';
 import { TNodeEditorComponentProps, TNodeState } from '../../../../lib';
-import { SingleLinkStyleEditor } from './SingleStyle';
+import { ClassicStyleEditor } from './ClassicStyleEditor';
 import { SpotifyEmbedStyleEditor } from './SpotifyEmbedStyle';
 import { YouTubeEmbedStyleEditor } from './YoutubeEmbedStyle';
 
@@ -16,12 +16,9 @@ export const LinkNodeStyleEditor: React.FC<TNodeEditorComponentProps<TLinkNode>>
 	const bundleType = useCompute(nodeState, ({ value }) => value.bundle);
 
 	switch (bundleType) {
-		case 'single':
+		case 'classic':
 			return (
-				<SingleLinkStyleEditor
-					nodeState={nodeState as TNodeState<TSingleLinkNodeBundle>}
-					{...rest}
-				/>
+				<ClassicStyleEditor nodeState={nodeState as TNodeState<TClassicLinkNodeBundle>} {...rest} />
 			);
 		case 'youtube-embed':
 			return (

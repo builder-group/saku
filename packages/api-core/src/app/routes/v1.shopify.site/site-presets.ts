@@ -11,15 +11,15 @@ import {
 	linkNodeMetadata,
 	mediaNodeMetadata,
 	productNodeMetadata,
+	TClassicAboutNodeBundle,
+	TClassicLinkNodeBundle,
 	TContactIcon,
-	TDefaultAboutNodeBundle,
-	TDefaultTextNodeBundle,
 	textNodeMetadata,
 	TId,
 	TImageMediaNodeBundle,
+	TMarkdownTextNodeBundle,
 	tokenRef,
 	TProductNode,
-	TSingleLinkNodeBundle,
 	TSite,
 	TTheme,
 	type TFontAsset,
@@ -98,10 +98,10 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 		}
 
 		productNode = {
-			...productNodeMetadata.bundleMap.single,
+			...productNodeMetadata.bundleMap.classic,
 			id: createId('node'),
 			content: {
-				type: 'single',
+				type: 'classic',
 				product: {
 					id: featuredProduct.id,
 					title: featuredProduct.title,
@@ -195,40 +195,40 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 		integrations: [],
 		root: {
 			type: 'page',
-			bundle: 'default',
+			bundle: 'classic',
 			id: createId('node'),
 			metadata: {},
 			hasWatermark: true,
 			children: [
 				{
-					...aboutNodeMetadata.bundleMap.default,
+					...aboutNodeMetadata.bundleMap.classic,
 					id: createId('node'),
 					content: {
-						type: 'default',
+						type: 'classic',
 						name,
 						bio: 'Welcome to your new page! Add a short description about yourself or your brand.',
 						profilePicture: profilePictureAssetHashId,
 						contactIcons: contactIcons
 					}
-				} satisfies TDefaultAboutNodeBundle,
+				} satisfies TClassicAboutNodeBundle,
 				{
-					...linkNodeMetadata.bundleMap.single,
+					...linkNodeMetadata.bundleMap.classic,
 					id: createId('node'),
 					content: {
-						type: 'single',
+						type: 'classic',
 						url: `https://${shopId}`,
 						userTitle: '🛒 Visit our Shopify store'
 					}
-				} satisfies TSingleLinkNodeBundle,
+				} satisfies TClassicLinkNodeBundle,
 				...(productNode != null ? [productNode] : []),
 				{
-					...textNodeMetadata.bundleMap.default,
+					...textNodeMetadata.bundleMap.markdown,
 					id: createId('node'),
 					content: {
-						type: 'default',
-						text: { type: 'markdown', value: '✨ Thanks for visiting!' }
+						type: 'markdown',
+						text: '✨ Thanks for visiting!'
 					}
-				} satisfies TDefaultTextNodeBundle,
+				} satisfies TMarkdownTextNodeBundle,
 				{
 					...mediaNodeMetadata.bundleMap.image,
 					id: createId('node'),

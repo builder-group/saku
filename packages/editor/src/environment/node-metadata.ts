@@ -5,11 +5,11 @@ export const aboutNodeMetadata: TNodeMetadata<'about'> = {
 	type: 'about',
 	label: 'About',
 	bundleMap: {
-		default: {
+		classic: {
 			type: 'about',
-			bundle: 'default',
+			bundle: 'classic',
 			content: {
-				type: 'default',
+				type: 'classic',
 				name: 'Your Name',
 				bio: 'Tell us about yourself',
 				contactIcons: []
@@ -67,11 +67,11 @@ export const linkNodeMetadata: TNodeMetadata<'link'> = {
 	type: 'link',
 	label: 'Link',
 	bundleMap: {
-		'single': {
+		'classic': {
 			type: 'link',
-			bundle: 'single',
+			bundle: 'classic',
 			content: {
-				type: 'single',
+				type: 'classic',
 				url: 'https://www.shopify.com/',
 				title: 'Add your title here'
 			},
@@ -196,9 +196,9 @@ export const pageNodeMetadata: TNodeMetadata<'page'> = {
 	type: 'page',
 	label: 'Page',
 	bundleMap: {
-		default: {
+		classic: {
 			type: 'page',
-			bundle: 'default',
+			bundle: 'classic',
 			metadata: {},
 			hasWatermark: true,
 			children: [],
@@ -222,11 +222,11 @@ export const productNodeMetadata: TNodeMetadata<'product'> = {
 	type: 'product',
 	label: 'Product',
 	bundleMap: {
-		single: {
+		classic: {
 			type: 'product',
-			bundle: 'single',
+			bundle: 'classic',
 			content: {
-				type: 'single'
+				type: 'classic'
 			},
 			autoLayout: {
 				horizontalPadding: tokenRef('auto-layout.default', 'auto-layout', 'horizontalPadding'),
@@ -273,12 +273,12 @@ export const textNodeMetadata: TNodeMetadata<'text'> = {
 	type: 'text',
 	label: 'Text',
 	bundleMap: {
-		default: {
+		markdown: {
 			type: 'text',
-			bundle: 'default',
+			bundle: 'markdown',
 			content: {
-				type: 'default',
-				text: { type: 'markdown', value: 'Add your text here' }
+				type: 'markdown',
+				text: 'Add your text here'
 			},
 			autoLayout: {
 				horizontalPadding: tokenRef('auto-layout.default', 'auto-layout', 'horizontalPadding'),

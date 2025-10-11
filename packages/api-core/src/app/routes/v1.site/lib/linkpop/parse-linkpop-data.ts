@@ -15,17 +15,17 @@ import {
 	TAboutNode,
 	TAsset,
 	TAssetHash,
+	TClassicAboutNodeBundle,
+	TClassicLinkNodeBundle,
 	TContactIcon,
-	TDefaultAboutNodeBundle,
-	TDefaultTextNodeBundle,
 	textNodeMetadata,
 	TFontAsset,
 	themes,
 	TImageAsset,
 	TLinkNode,
+	TMarkdownTextNodeBundle,
 	tokenRef,
 	TPaint,
-	TSingleLinkNodeBundle,
 	TSite,
 	TSolidPaint,
 	TSpotifyEmbedLinkNodeBundle,
@@ -75,11 +75,11 @@ export function parseLinkpopData(linkpopData: TLinkPopData): TSite {
 			profilePictureHash = imageAsset.hash;
 		}
 
-		const aboutNode: TDefaultAboutNodeBundle = {
-			...aboutNodeMetadata.bundleMap.default,
+		const aboutNode: TClassicAboutNodeBundle = {
+			...aboutNodeMetadata.bundleMap.classic,
 			id: createId('node'),
 			content: {
-				type: 'default',
+				type: 'classic',
 				name: page.title ?? 'Your Name',
 				bio: page.bio,
 				profilePicture: profilePictureHash,
@@ -115,8 +115,8 @@ export function parseLinkpopData(linkpopData: TLinkPopData): TSite {
 
 				// Determine variant based on __typename
 				let content: TLinkNode['content'];
-				let autoLayout: TLinkNode['autoLayout'] = linkNodeMetadata.bundleMap.single.autoLayout;
-				let appearance: TLinkNode['appearance'] = linkNodeMetadata.bundleMap.single.appearance;
+				let autoLayout: TLinkNode['autoLayout'] = linkNodeMetadata.bundleMap.classic.autoLayout;
+				let appearance: TLinkNode['appearance'] = linkNodeMetadata.bundleMap.classic.appearance;
 
 				switch (link.__typename) {
 					case 'YouTubeVideoLink':
@@ -124,23 +124,23 @@ export function parseLinkpopData(linkpopData: TLinkPopData): TSite {
 						const youtubeData = extractYouTubeId(link.url);
 						if (youtubeData != null) {
 							content = {
-								type: 'youtube-embed' as const,
+								type: 'youtube-embed',
 								url: link.url,
 								contentType: youtubeData.type,
 								contentId: youtubeData.id
 							};
 							autoLayout = {
-								...linkNodeMetadata.bundleMap.single.autoLayout,
+								...linkNodeMetadata.bundleMap.classic.autoLayout,
 								horizontalPadding: 0,
 								verticalPadding: 0
 							};
 							appearance = {
-								...linkNodeMetadata.bundleMap.single.appearance,
+								...linkNodeMetadata.bundleMap.classic.appearance,
 								borderRadius: Math.min(borderRadius, 40)
 							};
 						} else {
 							content = {
-								type: 'single' as const,
+								type: 'classic',
 								url: link.url,
 								userTitle: link.title,
 								userFavicon: faviconHash
@@ -155,24 +155,24 @@ export function parseLinkpopData(linkpopData: TLinkPopData): TSite {
 						const spotifyData = extractSpotifyId(link.url);
 						if (spotifyData != null) {
 							content = {
-								type: 'spotify-embed' as const,
+								type: 'spotify-embed',
 								url: link.url,
 								contentType: spotifyData.type,
 								contentId: spotifyData.id,
 								height: 352 // Default to normal height
 							};
 							autoLayout = {
-								...linkNodeMetadata.bundleMap.single.autoLayout,
+								...linkNodeMetadata.bundleMap.classic.autoLayout,
 								horizontalPadding: 0,
 								verticalPadding: 0
 							};
 							appearance = {
-								...linkNodeMetadata.bundleMap.single.appearance,
+								...linkNodeMetadata.bundleMap.classic.appearance,
 								borderRadius: Math.min(borderRadius, 40)
 							};
 						} else {
 							content = {
-								type: 'single' as const,
+								type: 'classic',
 								url: link.url,
 								userTitle: link.title,
 								userFavicon: faviconHash
@@ -182,7 +182,7 @@ export function parseLinkpopData(linkpopData: TLinkPopData): TSite {
 					}
 					default:
 						content = {
-							type: 'single' as const,
+							type: 'classic',
 							url: link.url,
 							userTitle: link.title,
 							userFavicon: faviconHash
@@ -191,14 +191,14 @@ export function parseLinkpopData(linkpopData: TLinkPopData): TSite {
 
 				// Create link node for links with URLs
 				switch (content.type) {
-					case 'single':
+					case 'classic':
 						children.push({
-							...linkNodeMetadata.bundleMap.single,
+							...linkNodeMetadata.bundleMap.classic,
 							id: createId('node'),
 							content,
 							autoLayout,
 							appearance
-						} satisfies TSingleLinkNodeBundle);
+						} satisfies TClassicLinkNodeBundle);
 						break;
 					case 'youtube-embed':
 						children.push({
@@ -222,13 +222,13 @@ export function parseLinkpopData(linkpopData: TLinkPopData): TSite {
 			} else {
 				// Create text node for links without URLs
 				children.push({
-					...textNodeMetadata.bundleMap.default,
+					...textNodeMetadata.bundleMap.markdown,
 					id: createId('node'),
 					content: {
-						type: 'default',
-						text: { type: 'markdown', value: link.title }
+						type: 'markdown',
+						text: link.title
 					}
-				} satisfies TDefaultTextNodeBundle);
+				} satisfies TMarkdownTextNodeBundle);
 			}
 		}
 	}
@@ -241,7 +241,7 @@ export function parseLinkpopData(linkpopData: TLinkPopData): TSite {
 		root: {
 			id: createId('node'),
 			type: 'page',
-			bundle: 'default',
+			bundle: 'classic',
 			metadata: {},
 			hasWatermark: true,
 			children,

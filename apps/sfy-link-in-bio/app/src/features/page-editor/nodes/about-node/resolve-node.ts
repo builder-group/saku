@@ -11,7 +11,7 @@ import {
 	resolveStrokeStyleMixin,
 	resolveTextStyleMixin
 } from '../../mixins';
-import { TResolvedAboutNode, TResolvedDefaultAboutNodeContentMixin } from './types';
+import { TResolvedAboutNode, TResolvedClassicAboutNodeContentMixin } from './types';
 
 export function resolveAboutNode(
 	node: TAboutNode,
@@ -21,9 +21,9 @@ export function resolveAboutNode(
 		node;
 
 	// Resolve content
-	let resolvedContent: TResolvedDefaultAboutNodeContentMixin['value'];
+	let resolvedContent: TResolvedClassicAboutNodeContentMixin['value'];
 	switch (content.type) {
-		case 'default': {
+		case 'classic': {
 			resolvedContent = {
 				...content,
 				profilePicture:

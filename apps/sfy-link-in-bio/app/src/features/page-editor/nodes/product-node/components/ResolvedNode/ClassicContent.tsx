@@ -4,12 +4,12 @@ import { logger } from '@/environment';
 import { getCurrencySymbol } from '../../../../environment';
 import { TResolvedNodeProps } from '../../../../lib';
 import {
-	TResolvedSingleProductNodeBundle,
-	TResolvedSingleProductNodeContentMixin
+	TResolvedClassicProductNodeBundle,
+	TResolvedClassicProductNodeContentMixin
 } from '../../types';
 import { useProductDetailsModal } from './ProductDetailsModal';
 
-export const SingleContent: React.FC<TSingleContentProps> = (props) => {
+export const ClassicContent: React.FC<TClassicContentProps> = (props) => {
 	const { node, product, cx } = props;
 	const {
 		autoLayout,
@@ -254,8 +254,8 @@ export const SingleContent: React.FC<TSingleContentProps> = (props) => {
 	);
 };
 
-interface TSingleContentProps {
-	node: TResolvedSingleProductNodeBundle;
-	product: NonNullable<TResolvedSingleProductNodeContentMixin['value']['product']>;
-	cx: TResolvedNodeProps<TResolvedSingleProductNodeBundle>['cx'];
+interface TClassicContentProps {
+	node: TResolvedClassicProductNodeBundle;
+	product: NonNullable<TResolvedClassicProductNodeContentMixin['value']['product']>;
+	cx: TResolvedNodeProps<TResolvedClassicProductNodeBundle>['cx'];
 }

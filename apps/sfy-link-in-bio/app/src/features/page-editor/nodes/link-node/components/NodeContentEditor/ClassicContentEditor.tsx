@@ -1,4 +1,4 @@
-import { tokenRef, TSingleLinkNodeBundle } from '@repo/editor';
+import { TClassicLinkNodeBundle, tokenRef } from '@repo/editor';
 import { Button, InlineError, Text, TextField } from '@shopify/polaris';
 import { useCompute, useFeatureState, useSubscriber } from 'feature-react/state';
 import React from 'react';
@@ -12,7 +12,7 @@ import {
 } from '../../../../mixins';
 import { fetchUrlMetadata, TNodeEditorContext } from './lib';
 
-export const SingleContent: React.FC<TSingleContentProps> = (props) => {
+export const ClassicContentEditor: React.FC<TClassicContentEditorProps> = (props) => {
 	const { cx, className } = props;
 
 	const content = useCompute(cx.node, ({ value }) => value.content, [], { isEqual: false });
@@ -312,7 +312,7 @@ export const SingleContent: React.FC<TSingleContentProps> = (props) => {
 	);
 };
 
-interface TSingleContentProps {
-	cx: TNodeEditorContext<TSingleLinkNodeBundle>;
+interface TClassicContentEditorProps {
+	cx: TNodeEditorContext<TClassicLinkNodeBundle>;
 	className: string;
 }

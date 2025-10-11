@@ -1,8 +1,8 @@
 import React from 'react';
 import { TResolvedNodeProps } from '../../../../lib';
-import { TResolvedSingleLinkNodeBundle } from '../../types';
+import { TResolvedClassicLinkNodeBundle } from '../../types';
 
-export const DefaultContent: React.FC<TSingleContentProps> = (props) => {
+export const ClassicContent: React.FC<TSingleContentProps> = (props) => {
 	const {
 		node: { content, autoLayout, appearance, fill, stroke, shadow, text, textSm, image }
 	} = props;
@@ -56,6 +56,6 @@ export const DefaultContent: React.FC<TSingleContentProps> = (props) => {
 };
 
 interface TSingleContentProps {
-	node: TResolvedSingleLinkNodeBundle;
-	cx: TResolvedNodeProps<TResolvedSingleLinkNodeBundle>['cx'];
+	node: TResolvedClassicLinkNodeBundle;
+	cx: TResolvedNodeProps<TResolvedClassicLinkNodeBundle>['cx'];
 }

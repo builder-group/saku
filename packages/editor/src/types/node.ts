@@ -52,11 +52,11 @@ export type TNodeBundle<GType extends string, GMixins extends TBaseMixin<any, an
 // Page Node
 // =========================================================================
 
-export type TPageNode = TDefaultPageBundle;
-export type TFlatPageNode = TDefaultFlatPageBundle;
+export type TPageNode = TClassicPageNodeBundle;
+export type TFlatPageNode = TClassicFlatPageNodeBundle;
 
-export type TDefaultPageBundle = TNodeBundle<
-	'default',
+export type TClassicPageNodeBundle = TNodeBundle<
+	'classic',
 	[
 		TIdMixin,
 		TPageNodeMixin,
@@ -66,8 +66,8 @@ export type TDefaultPageBundle = TNodeBundle<
 		TFillStyleMixin
 	]
 >;
-export type TDefaultFlatPageBundle = TNodeBundle<
-	'default', // Use 'default' (instead of e.g. 'flat') to match variant naming across flat/regular contexts (e.g., 'elevated' would be 'elevated' in both)
+export type TClassicFlatPageNodeBundle = TNodeBundle<
+	'classic', // Use 'classic' (instead of e.g. 'flat-classic') to match variant naming across flat/regular contexts (e.g. 'bento' would be 'bento' in both)
 	[
 		TIdMixin,
 		TPageNodeMixin,
@@ -96,14 +96,14 @@ export type TPageNodeMixin = TBaseMixin<
 // About Node
 // =========================================================================
 
-export type TAboutNode = TDefaultAboutNodeBundle;
+export type TAboutNode = TClassicAboutNodeBundle;
 
-export type TDefaultAboutNodeBundle = TNodeBundle<
-	TDefaultAboutNodeContentMixin['value']['type'],
+export type TClassicAboutNodeBundle = TNodeBundle<
+	TClassicAboutNodeContentMixin['value']['type'],
 	[
 		TIdMixin,
 		TAboutNodeMixin,
-		TDefaultAboutNodeContentMixin,
+		TClassicAboutNodeContentMixin,
 		TAutoLayoutStyleMixin,
 		TAppearanceStyleMixin,
 		TFillStyleMixin,
@@ -122,10 +122,10 @@ export type TAboutNodeMixin = TBaseMixin<
 	}
 >;
 
-export type TDefaultAboutNodeContentMixin = TBaseMixin<
+export type TClassicAboutNodeContentMixin = TBaseMixin<
 	'content',
 	{
-		type: 'default';
+		type: 'classic';
 		name: string;
 		bio?: string;
 		profilePicture?: TAssetHash;
@@ -144,16 +144,16 @@ export interface TContactIcon {
 // =========================================================================
 
 export type TLinkNode =
-	| TSingleLinkNodeBundle
+	| TClassicLinkNodeBundle
 	| TYouTubeEmbedLinkNodeBundle
 	| TSpotifyEmbedLinkNodeBundle;
 
-export type TSingleLinkNodeBundle = TNodeBundle<
-	TSingleLinkNodeContentMixin['value']['type'],
+export type TClassicLinkNodeBundle = TNodeBundle<
+	TClassicLinkNodeContentMixin['value']['type'],
 	[
 		TIdMixin,
 		TLinkNodeMixin,
-		TSingleLinkNodeContentMixin,
+		TClassicLinkNodeContentMixin,
 		TAutoLayoutStyleMixin,
 		TAppearanceStyleMixin,
 		TFillStyleMixin,
@@ -200,10 +200,10 @@ export type TLinkNodeMixin = TBaseMixin<
 	}
 >;
 
-export type TSingleLinkNodeContentMixin = TBaseMixin<
+export type TClassicLinkNodeContentMixin = TBaseMixin<
 	'content',
 	{
-		type: 'single';
+		type: 'classic';
 		url: string;
 		// User overrides (take priority)
 		userTitle?: string;
@@ -292,14 +292,14 @@ export type TImageMediaNodeContentMixin = TBaseMixin<
 // Text Node
 // =========================================================================
 
-export type TTextNode = TDefaultTextNodeBundle;
+export type TTextNode = TMarkdownTextNodeBundle;
 
-export type TDefaultTextNodeBundle = TNodeBundle<
-	TDefaultTextNodeContentMixin['value']['type'],
+export type TMarkdownTextNodeBundle = TNodeBundle<
+	TMarkdownTextNodeContentMixin['value']['type'],
 	[
 		TIdMixin,
 		TTextNodeMixin,
-		TDefaultTextNodeContentMixin,
+		TMarkdownTextNodeContentMixin,
 		TAutoLayoutStyleMixin,
 		TAppearanceStyleMixin,
 		TFillStyleMixin,
@@ -316,11 +316,11 @@ export type TTextNodeMixin = TBaseMixin<
 	}
 >;
 
-export type TDefaultTextNodeContentMixin = TBaseMixin<
+export type TMarkdownTextNodeContentMixin = TBaseMixin<
 	'content',
 	{
-		type: 'default';
-		text: TRichContent;
+		type: 'markdown';
+		text: string;
 	}
 >;
 
@@ -328,14 +328,14 @@ export type TDefaultTextNodeContentMixin = TBaseMixin<
 // Product Node
 // =========================================================================
 
-export type TProductNode = TSingleProductNodeBundle;
+export type TProductNode = TClassicProductNodeBundle;
 
-export type TSingleProductNodeBundle = TNodeBundle<
-	TSingleProductNodeContentMixin['value']['type'],
+export type TClassicProductNodeBundle = TNodeBundle<
+	TClassicProductNodeContentMixin['value']['type'],
 	[
 		TIdMixin,
 		TProductNodeMixin,
-		TSingleProductNodeContentMixin,
+		TClassicProductNodeContentMixin,
 		TAutoLayoutStyleMixin,
 		TAppearanceStyleMixin,
 		TFillStyleMixin,
@@ -357,10 +357,10 @@ export type TProductNodeMixin = TBaseMixin<
 	}
 >;
 
-export type TSingleProductNodeContentMixin = TBaseMixin<
+export type TClassicProductNodeContentMixin = TBaseMixin<
 	'content',
 	{
-		type: 'single';
+		type: 'classic';
 		product?: TProduct;
 		integrationId?: TIntegrationId;
 	}

@@ -12,15 +12,15 @@
 ```ts
 // Bundle-based approach
 type TLinkNode =
-	| TSingleLinkNodeBundle // { bundle: 'single', content: {...}, text: {...}, image: {...} }
+	| TClassicLinkNodeBundle // { bundle: 'classic', content: {...}, text: {...}, image: {...} }
 	| TYouTubeEmbedLinkNodeBundle // { bundle: 'youtube-embed', content: {...}, text: {...} }
 	| TSpotifyEmbedLinkNodeBundle; // { bundle: 'spotify-embed', content: {...}, text: {...} }
 
 // Type-safe discrimination
-if (node.type === 'link' && node.bundle === 'single') {
-	node.content.url; // ✅ TypeScript knows content variant is 'single'
+if (node.type === 'link' && node.bundle === 'classic') {
+	node.content.url; // ✅ TypeScript knows content variant is 'classic'
 	node.image; // ✅ TypeScript knows image mixin exists
-	node.buttonPrimary; // ❌ Type error - single bundle doesn't have this
+	node.buttonPrimary; // ❌ Type error - classic bundle doesn't have this
 }
 ```
 
@@ -61,12 +61,12 @@ type TFillMixin = TBaseMixin<'fill', { fills: TPaint[]; blendMode: string }>;
 type TLayoutMixin = TBaseMixin<'layout', { padding: number; width: number | 'auto' }>;
 
 // Bundles define mixin recipes
-type TSingleLinkNodeBundle = TNodeBundle<
-	'single',
+type TClassicLinkNodeBundle = TNodeBundle<
+	'classic',
 	[
 		TIdMixin, // id: string
 		TLinkNodeMixin, // type: 'link'
-		TSingleLinkContentMixin, // content: { type: 'single', url: string }
+		TClassicLinkContentMixin, // content: { type: 'classic', url: string }
 		TFillMixin, // fill: { fills: TPaint[]; blendMode: string }
 		TLayoutMixin // layout: { padding: number; width: number | 'auto' }
 	]
@@ -91,12 +91,12 @@ type TSingleLinkNodeBundle = TNodeBundle<
 #### When do we use card styling vs layer styling?
 
 ```ts
-// Single link: Style at layer level (default Linktree style)
+// Classic link: Style at layer level (default Linktree style)
 LinkNode: {
   fill: { paint: 'blue' },
   stroke: { width: 1 },
   shadow: { blur: 4 },
-  content: { type: 'single', url: '...' } // Node IS the card
+  content: { type: 'classic', url: '...' } // Node IS the card
 }
 
 // Multiple links: Container + individual cards
@@ -115,8 +115,10 @@ LinkNode: {
 
 // Flat design: Remove layer styling
 LinkNode: {
-  fill: null, stroke: null, shadow: null,
-  content: { type: 'single', url: '...' } // Flat appearance
+  fill: null,
+  stroke: null,
+  shadow: null,
+  content: { type: 'classic', url: '...' } // Flat appearance
 }
 ```
 

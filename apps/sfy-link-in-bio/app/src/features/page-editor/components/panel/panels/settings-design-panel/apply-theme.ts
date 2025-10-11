@@ -16,15 +16,15 @@ export function applyTheme(theme: TTheme, editor: TPageEditor) {
 		for (const node of Object.values(editor.nodeMap)) {
 			switch (node.type) {
 				case 'about': {
-					(node as TNodeState<TAboutNode>)._v.textXl = aboutNodeMetadata.bundleMap.default.textXl;
-					(node as TNodeState<TAboutNode>)._v.text = aboutNodeMetadata.bundleMap.default.text;
-					(node as TNodeState<TAboutNode>)._v.image = aboutNodeMetadata.bundleMap.default.image;
+					(node as TNodeState<TAboutNode>)._v.textXl = aboutNodeMetadata.bundleMap.classic.textXl;
+					(node as TNodeState<TAboutNode>)._v.text = aboutNodeMetadata.bundleMap.classic.text;
+					(node as TNodeState<TAboutNode>)._v.image = aboutNodeMetadata.bundleMap.classic.image;
 					node._notify();
 					break;
 				}
 				case 'link': {
 					(node as TNodeState<TLinkNode>)._v.appearance =
-						linkNodeMetadata.bundleMap.single.appearance;
+						linkNodeMetadata.bundleMap.classic.appearance;
 					node._notify();
 					break;
 				}

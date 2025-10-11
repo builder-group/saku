@@ -6,10 +6,10 @@ import {
 	TResolvedFillStyleMixin
 } from '../../mixins';
 
-export type TResolvedPageNode = TResolvedDefaultPageNodeBundle;
+export type TResolvedPageNode = TResolvedClassicPageNodeBundle;
 
-export type TResolvedDefaultPageNodeBundle = TNodeBundle<
-	'default',
+export type TResolvedClassicPageNodeBundle = TNodeBundle<
+	'classic',
 	[
 		TIdMixin,
 		TResolvedPageNodeMixin,

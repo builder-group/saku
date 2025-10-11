@@ -4,5 +4,5 @@ import { TNodeMetadata } from '../../lib';
 export const pageNodeMetadata: TNodeMetadata<'page'> = {
 	type: 'page',
 	internal: true,
-	defaultBundle: editorPageNodeMetadata.bundleMap.default
+	defaultBundle: editorPageNodeMetadata.bundleMap.classic
 };
