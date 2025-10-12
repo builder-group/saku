@@ -1,5 +1,6 @@
 import {
 	TClassicLinkNodeBundle,
+	TFeaturedLinkNodeBundle,
 	TLinkNode,
 	TSpotifyEmbedLinkNodeBundle,
 	TYouTubeEmbedLinkNodeBundle
@@ -8,6 +9,7 @@ import { useCompute } from 'feature-react';
 import React from 'react';
 import { TNodeEditorComponentProps, TNodeState } from '../../../../lib';
 import { ClassicStyleEditor } from './ClassicStyleEditor';
+import { FeaturedStyleEditor } from './FeaturedStyleEditor';
 import { SpotifyEmbedStyleEditor } from './SpotifyEmbedStyle';
 import { YouTubeEmbedStyleEditor } from './YoutubeEmbedStyle';
 
@@ -19,6 +21,13 @@ export const LinkNodeStyleEditor: React.FC<TNodeEditorComponentProps<TLinkNode>>
 		case 'classic':
 			return (
 				<ClassicStyleEditor nodeState={nodeState as TNodeState<TClassicLinkNodeBundle>} {...rest} />
+			);
+		case 'featured':
+			return (
+				<FeaturedStyleEditor
+					nodeState={nodeState as TNodeState<TFeaturedLinkNodeBundle>}
+					{...rest}
+				/>
 			);
 		case 'youtube-embed':
 			return (

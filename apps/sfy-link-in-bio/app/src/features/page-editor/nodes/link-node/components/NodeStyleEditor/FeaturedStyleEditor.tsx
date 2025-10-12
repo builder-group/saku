@@ -1,4 +1,4 @@
-import { TClassicLinkNodeBundle, tokenRef } from '@repo/editor';
+import { TFeaturedLinkNodeBundle, tokenRef } from '@repo/editor';
 import { useCompute } from 'feature-react';
 import React from 'react';
 import { AccordionSection } from '@/components';
@@ -14,7 +14,7 @@ import {
 	TextStyleMixinEditor
 } from '../../../../mixins';
 
-export const ClassicStyleEditor: React.FC<TNodeEditorComponentProps<TClassicLinkNodeBundle>> = (
+export const FeaturedStyleEditor: React.FC<TNodeEditorComponentProps<TFeaturedLinkNodeBundle>> = (
 	props
 ) => {
 	const { nodeState, editor } = props;

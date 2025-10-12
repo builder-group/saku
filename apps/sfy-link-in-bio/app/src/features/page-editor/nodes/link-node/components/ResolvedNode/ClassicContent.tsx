@@ -23,13 +23,13 @@ export const ClassicContent: React.FC<TSingleContentProps> = (props) => {
 		>
 			<div className="flex min-h-12 w-full items-center gap-3">
 				{/* Site Icon */}
-				{content.favicon != null && (
+				{content.image != null && (
 					<div
 						className="h-12 w-12 flex-shrink-0 overflow-hidden bg-neutral-100"
 						style={image.styles}
 					>
 						<img
-							src={content.favicon.src}
+							src={content.image.src}
 							alt={content.title ?? 'Site Icon'}
 							className="h-full w-full object-cover"
 							draggable={false}

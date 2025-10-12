@@ -121,11 +121,11 @@ export type TPageNodeMixin = TBaseMixin<
 export type TAboutNode = TClassicAboutNodeBundle;
 
 export type TClassicAboutNodeBundle = TNodeBundle<
-	TClassicAboutNodeContentMixin['value']['type'],
+	'classic',
 	[
 		TIdMixin,
 		TAboutNodeMixin,
-		TClassicAboutNodeContentMixin,
+		TBasicAboutNodeContentMixin,
 		TAutoLayoutStyleMixin,
 		TAppearanceStyleMixin,
 		TFillStyleMixin,
@@ -144,10 +144,10 @@ export type TAboutNodeMixin = TBaseMixin<
 	}
 >;
 
-export type TClassicAboutNodeContentMixin = TBaseMixin<
+export type TBasicAboutNodeContentMixin = TBaseMixin<
 	'content',
 	{
-		type: 'classic';
+		type: 'basic';
 		name: string;
 		bio?: string;
 		profilePicture?: TAssetHash;
@@ -167,15 +167,16 @@ export interface TContactIcon {
 
 export type TLinkNode =
 	| TClassicLinkNodeBundle
+	| TFeaturedLinkNodeBundle
 	| TYouTubeEmbedLinkNodeBundle
 	| TSpotifyEmbedLinkNodeBundle;
 
 export type TClassicLinkNodeBundle = TNodeBundle<
-	TClassicLinkNodeContentMixin['value']['type'],
+	'classic',
 	[
 		TIdMixin,
 		TLinkNodeMixin,
-		TClassicLinkNodeContentMixin,
+		TBasicLinkNodeContentMixin,
 		TAutoLayoutStyleMixin,
 		TAppearanceStyleMixin,
 		TFillStyleMixin,
@@ -186,8 +187,26 @@ export type TClassicLinkNodeBundle = TNodeBundle<
 		TImageStyleMixin
 	]
 >;
+
+export type TFeaturedLinkNodeBundle = TNodeBundle<
+	'featured',
+	[
+		TIdMixin,
+		TLinkNodeMixin,
+		TBasicLinkNodeContentMixin,
+		TAutoLayoutStyleMixin,
+		TAppearanceStyleMixin,
+		TFillStyleMixin,
+		TStrokeStyleMixin,
+		TShadowStyleMixin,
+		TTextStyleMixin,
+		TTextSmStyleMixin,
+		TImageStyleMixin
+	]
+>;
+
 export type TYouTubeEmbedLinkNodeBundle = TNodeBundle<
-	TYouTubeEmbedLinkNodeContentMixin['value']['type'],
+	'youtube-embed',
 	[
 		TIdMixin,
 		TLinkNodeMixin,
@@ -200,8 +219,9 @@ export type TYouTubeEmbedLinkNodeBundle = TNodeBundle<
 		TImageStyleMixin // TODO: Replace with TEmbedStyleMixin
 	]
 >;
+
 export type TSpotifyEmbedLinkNodeBundle = TNodeBundle<
-	TSpotifyEmbedLinkNodeContentMixin['value']['type'],
+	'spotify-embed',
 	[
 		TIdMixin,
 		TLinkNodeMixin,
@@ -222,19 +242,19 @@ export type TLinkNodeMixin = TBaseMixin<
 	}
 >;
 
-export type TClassicLinkNodeContentMixin = TBaseMixin<
+export type TBasicLinkNodeContentMixin = TBaseMixin<
 	'content',
 	{
-		type: 'classic';
+		type: 'basic';
 		url: string;
 		// User overrides (take priority)
 		userTitle?: string;
 		userDescription?: string;
-		userFavicon?: TAssetHash | null; // null = explicitly removed, undefined = not set
+		userImage?: TAssetHash | null; // null = explicitly removed, undefined = not set
 		// Source metadata (fallback)
 		title?: string;
 		description?: string;
-		favicon?: TAssetHash;
+		image?: TAssetHash;
 	}
 >;
 
@@ -278,11 +298,11 @@ export type TSpotifyEmbedContentType = 'track' | 'album' | 'playlist' | 'artist'
 export type TMediaNode = TClassicMediaNodeBundle;
 
 export type TClassicMediaNodeBundle = TNodeBundle<
-	TClassicMediaNodeContentMixin['value']['type'],
+	'classic',
 	[
 		TIdMixin,
 		TMediaNodeMixin,
-		TClassicMediaNodeContentMixin,
+		TSingleMediaNodeContentMixin,
 		TAutoLayoutStyleMixin,
 		TAppearanceStyleMixin,
 		TFillStyleMixin,
@@ -299,10 +319,10 @@ export type TMediaNodeMixin = TBaseMixin<
 	}
 >;
 
-export type TClassicMediaNodeContentMixin = TBaseMixin<
+export type TSingleMediaNodeContentMixin = TBaseMixin<
 	'content',
 	{
-		type: 'classic';
+		type: 'single';
 		media?: {
 			type: 'image' | 'video' | 'audio';
 			hash: TAssetHash;
@@ -318,7 +338,7 @@ export type TClassicMediaNodeContentMixin = TBaseMixin<
 export type TTextNode = TRichTextNodeBundle;
 
 export type TRichTextNodeBundle = TNodeBundle<
-	TRichTextNodeContentMixin['value']['type'],
+	'rich',
 	[
 		TIdMixin,
 		TTextNodeMixin,
@@ -354,11 +374,11 @@ export type TRichTextNodeContentMixin = TBaseMixin<
 export type TProductNode = TClassicProductNodeBundle;
 
 export type TClassicProductNodeBundle = TNodeBundle<
-	TClassicProductNodeContentMixin['value']['type'],
+	'classic',
 	[
 		TIdMixin,
 		TProductNodeMixin,
-		TClassicProductNodeContentMixin,
+		TSingleProductNodeContentMixin,
 		TAutoLayoutStyleMixin,
 		TAppearanceStyleMixin,
 		TFillStyleMixin,
@@ -380,10 +400,10 @@ export type TProductNodeMixin = TBaseMixin<
 	}
 >;
 
-export type TClassicProductNodeContentMixin = TBaseMixin<
+export type TSingleProductNodeContentMixin = TBaseMixin<
 	'content',
 	{
-		type: 'classic';
+		type: 'single';
 		product?: TProduct;
 		integrationId?: TIntegrationId;
 	}

@@ -14,11 +14,11 @@ import {
 export type TResolvedAboutNode = TResolvedClassicAboutNodeBundle;
 
 export type TResolvedClassicAboutNodeBundle = TNodeBundle<
-	TResolvedClassicAboutNodeContentMixin['value']['type'],
+	'classic',
 	[
 		TIdMixin,
 		TAboutNodeMixin,
-		TResolvedClassicAboutNodeContentMixin,
+		TResolvedBasicAboutNodeContentMixin,
 		TResolvedAutoLayoutStyleMixin,
 		TResolvedAppearanceStyleMixin,
 		TResolvedFillStyleMixin,
@@ -30,10 +30,10 @@ export type TResolvedClassicAboutNodeBundle = TNodeBundle<
 	]
 >;
 
-export type TResolvedClassicAboutNodeContentMixin = TBaseMixin<
+export type TResolvedBasicAboutNodeContentMixin = TBaseMixin<
 	'content',
 	{
-		type: 'classic';
+		type: 'basic';
 		name: string;
 		bio?: string;
 		profilePicture?: TResolvedAsset;

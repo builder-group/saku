@@ -18,7 +18,8 @@ export async function fetchUrlMetadata(
 	return {
 		title: urlMetadata.title,
 		description: urlMetadata.description,
-		favicon: urlMetadata.icons?.favicon
+		favicon: urlMetadata.icons?.favicon,
+		ogImage: urlMetadata.media?.image
 	};
 }
 
@@ -26,4 +27,5 @@ export interface TUrlMetadata {
 	title?: string;
 	description?: string;
 	favicon?: string;
+	ogImage?: string;
 }

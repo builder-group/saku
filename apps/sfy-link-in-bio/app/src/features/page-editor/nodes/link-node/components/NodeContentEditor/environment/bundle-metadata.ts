@@ -6,6 +6,7 @@ import {
 	TAppearanceStyleMixin,
 	TAutoLayoutStyleMixin,
 	TClassicLinkNodeBundle,
+	TFeaturedLinkNodeBundle,
 	TFillStyleMixin,
 	TIdMixin,
 	TImageStyleMixin,
@@ -35,7 +36,8 @@ export const bundleMetadataMap = {
 				content: {
 					title: node.content.title,
 					userTitle: node.content.userTitle,
-					description: node.content.description
+					description: node.content.description,
+					userDescription: node.content.userDescription
 				},
 				autoLayout: node.autoLayout,
 				appearance: node.appearance,
@@ -72,11 +74,12 @@ export const bundleMetadataMap = {
 				bundleType: 'classic',
 				type: 'link',
 				content: {
-					type: 'classic',
+					type: 'basic',
 					url,
 					title: cx.common.content?.title ?? defaults.content.title,
 					userTitle: cx.common.content?.userTitle,
-					description: cx.common.content?.description
+					description: cx.common.content?.description,
+					userDescription: cx.common.content?.userDescription
 				},
 				autoLayout: commonAutoLayout ?? defaults.autoLayout,
 				appearance: cx.common.appearance ?? defaults.appearance,
@@ -101,23 +104,118 @@ export const bundleMetadataMap = {
 				);
 			}
 
-			let faviconHash: string | null = null;
+			let imageHash: string | null = null;
 			if (metadata.favicon != null) {
-				faviconHash = cx.editor.registerImage(metadata.favicon, 'favicon');
+				imageHash = cx.editor.registerImage(metadata.favicon, 'favicon');
 			}
 
 			// Update fields with new metadata
 			const content = cx.node._v.content;
 			content.title = metadata.title;
 			content.description = metadata.description;
-			if (faviconHash != null) {
-				content.favicon = faviconHash;
+			if (imageHash != null) {
+				content.image = imageHash;
 			}
 
 			cx.node._notify();
 			return Ok(undefined);
 		}
 	} satisfies TBundleMetadata<TClassicLinkNodeBundle>,
+	'featured': {
+		type: 'featured',
+		label: 'Featured',
+		isApplicable: () => true,
+		extractCommonFields(node) {
+			return {
+				id: node.id,
+				content: {
+					title: node.content.title,
+					userTitle: node.content.userTitle,
+					description: node.content.description,
+					userDescription: node.content.userDescription
+				},
+				autoLayout: node.autoLayout,
+				appearance: node.appearance,
+				fill: node.fill,
+				stroke: node.stroke,
+				shadow: node.shadow,
+				text: node.text,
+				textSm: node.textSm,
+				image: node.image
+			};
+		},
+		async update(cx) {
+			const url = cx.node._v.content.url;
+			const defaults = linkNodeMetadata.bundleMap['featured'];
+
+			let commonAutoLayout: TAutoLayoutStyleMixin['value'] | null = null;
+			if (cx.common.autoLayout != null) {
+				const unpackedAutoLayout = unpackAutoLayoutTokenRef(cx.common.autoLayout);
+				unpackedAutoLayout.horizontalPadding = tokenRef(
+					'auto-layout.default',
+					'auto-layout',
+					'horizontalPadding'
+				);
+				unpackedAutoLayout.verticalPadding = tokenRef(
+					'auto-layout.default',
+					'auto-layout',
+					'verticalPadding'
+				);
+				commonAutoLayout = packAutoLayoutTokenRef(unpackedAutoLayout);
+			}
+
+			cx.node.set({
+				id: cx.common.id,
+				bundleType: 'featured',
+				type: 'link',
+				content: {
+					type: 'basic',
+					url,
+					title: cx.common.content?.title ?? defaults.content.title,
+					userTitle: cx.common.content?.userTitle,
+					description: cx.common.content?.description,
+					userDescription: cx.common.content?.userDescription
+				},
+				autoLayout: commonAutoLayout ?? defaults.autoLayout,
+				appearance: cx.common.appearance ?? defaults.appearance,
+				fill: cx.common.fill ?? defaults.fill,
+				stroke: cx.common.stroke ?? defaults.stroke,
+				shadow: cx.common.shadow ?? defaults.shadow,
+				text: cx.common.text ?? defaults.text,
+				textSm: cx.common.textSm ?? defaults.textSm,
+				image: cx.common.image ?? defaults.image
+			} satisfies TFeaturedLinkNodeBundle);
+
+			return Ok(undefined);
+		},
+		async enhance(cx) {
+			const url = cx.node._v.content.url;
+			const metadata = await fetchUrlMetadata(url, cx.editor.shopify);
+			if (metadata == null) {
+				return Err(
+					new AppError('#ERR_FAILED_TO_FETCH_URL_METADATA', {
+						detail: 'Failed to fetch URL metadata'
+					})
+				);
+			}
+
+			let imageHash: string | null = null;
+			if (metadata.ogImage != null) {
+				imageHash = cx.editor.registerImage(metadata.ogImage, 'og-image');
+			}
+
+			// Update fields with new metadata
+			const content = cx.node._v.content;
+			content.title = metadata.title;
+			content.description = metadata.description;
+			if (imageHash != null) {
+				content.image = imageHash;
+			}
+
+			cx.node._notify();
+			return Ok(undefined);
+		}
+	} satisfies TBundleMetadata<TFeaturedLinkNodeBundle>,
 	'youtube-embed': {
 		type: 'youtube-embed',
 		label: 'YouTube Embed',
@@ -333,6 +431,7 @@ interface TCommonFields {
 		title?: string;
 		userTitle?: string;
 		description?: string;
+		userDescription?: string;
 	};
 	autoLayout?: TAutoLayoutStyleMixin['value'];
 	appearance?: TAppearanceStyleMixin['value'];

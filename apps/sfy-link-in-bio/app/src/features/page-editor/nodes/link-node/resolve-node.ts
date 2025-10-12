@@ -2,6 +2,7 @@ import {
 	createSpotifyEmbedUrl,
 	createYouTubeEmbedUrl,
 	TClassicLinkNodeBundle,
+	TFeaturedLinkNodeBundle,
 	TLinkNode,
 	TSpotifyEmbedLinkNodeBundle,
 	TYouTubeEmbedLinkNodeBundle
@@ -19,8 +20,9 @@ import {
 	resolveTextStyleMixin
 } from '../../mixins';
 import {
+	TResolvedBasicLinkNodeContentMixin,
 	TResolvedClassicLinkNodeBundle,
-	TResolvedClassicLinkNodeContentMixin,
+	TResolvedFeaturedLinkNodeBundle,
 	TResolvedLinkNode,
 	TResolvedSpotifyEmbedLinkNodeBundle,
 	TResolvedSpotifyEmbedLinkNodeContentMixin,
@@ -35,6 +37,8 @@ export function resolveLinkNode(
 	switch (node.bundleType) {
 		case 'classic':
 			return resolveClassicLinkNodeBundle(node, cx);
+		case 'featured':
+			return resolveFeaturedLinkNodeBundle(node, cx);
 		case 'youtube-embed':
 			return resolveYouTubeEmbedLinkNodeBundle(node, cx);
 		case 'spotify-embed':
@@ -56,13 +60,126 @@ export function resolveClassicLinkNodeBundle(
 		node;
 
 	// Resolve content
-	const favicon = content.userFavicon !== undefined ? content.userFavicon : content.favicon;
-	const resolvedContent: TResolvedClassicLinkNodeContentMixin['value'] = {
-		type: 'classic',
+	const contentImage = content.userImage !== undefined ? content.userImage : content.image;
+	const resolvedContent: TResolvedBasicLinkNodeContentMixin['value'] = {
+		type: 'basic',
 		url: content.url,
 		title: content.userTitle ?? content.title,
 		description: content.userDescription ?? content.description,
-		favicon: favicon != null ? resolveAsset(favicon, cx.site) : undefined
+		image: contentImage != null ? resolveAsset(contentImage, cx.site) : undefined
+	};
+
+	// Resolve styles
+	const [isResolvedAutoLayoutOk, resolvedAutoLayoutErr, resolvedAutoLayout] =
+		resolveAutoLayoutStyleMixin(autoLayout, {
+			node: cx,
+			tokenMap: cx.site.getTokenMap()
+		});
+	if (!isResolvedAutoLayoutOk) {
+		return Err(resolvedAutoLayoutErr.wrapWith('#ERR_RESOLVE_AUTO_LAYOUT_STYLE'));
+	}
+	const [isResolvedAppearanceOk, resolvedAppearanceErr, resolvedAppearance] =
+		resolveAppearanceStyleMixin(appearance, {
+			node: cx,
+			tokenMap: cx.site.getTokenMap()
+		});
+	if (!isResolvedAppearanceOk) {
+		return Err(resolvedAppearanceErr.wrapWith('#ERR_RESOLVE_APPEARANCE_STYLE'));
+	}
+	const [isResolvedFillOk, resolvedFillErr, resolvedFill] = resolveFillStyleMixin(fill, {
+		node: cx,
+		tokenMap: cx.site.getTokenMap()
+	});
+	if (!isResolvedFillOk) {
+		return Err(resolvedFillErr.wrapWith('#ERR_RESOLVE_FILL_STYLE'));
+	}
+	const [isResolvedStrokeOk, resolvedStrokeErr, resolvedStroke] = resolveStrokeStyleMixin(stroke, {
+		node: cx,
+		tokenMap: cx.site.getTokenMap()
+	});
+	if (!isResolvedStrokeOk) {
+		return Err(resolvedStrokeErr.wrapWith('#ERR_RESOLVE_STROKE_STYLE'));
+	}
+	const [isResolvedShadowOk, resolvedShadowErr, resolvedShadow] = resolveShadowStyleMixin(shadow, {
+		node: cx,
+		tokenMap: cx.site.getTokenMap()
+	});
+	if (!isResolvedShadowOk) {
+		return Err(resolvedShadowErr.wrapWith('#ERR_RESOLVE_SHADOW_STYLE'));
+	}
+	const [isResolvedTextOk, resolvedTextErr, resolvedText] = resolveTextStyleMixin(text, {
+		node: cx,
+		tokenMap: cx.site.getTokenMap()
+	});
+	if (!isResolvedTextOk) {
+		return Err(resolvedTextErr.wrapWith('#ERR_RESOLVE_TEXT_STYLE'));
+	}
+	const [isResolvedTextSmOk, resolvedTextSmErr, resolvedTextSm] = resolveTextStyleMixin(textSm, {
+		node: cx,
+		tokenMap: cx.site.getTokenMap()
+	});
+	if (!isResolvedTextSmOk) {
+		return Err(resolvedTextSmErr.wrapWith('#ERR_RESOLVE_TEXT_SM_STYLE'));
+	}
+	const [isResolvedImageOk, resolvedImageErr, resolvedImage] = resolveImageStyleMixin(image, {
+		node: cx,
+		tokenMap: cx.site.getTokenMap()
+	});
+	if (!isResolvedImageOk) {
+		return Err(resolvedImageErr.wrapWith('#ERR_RESOLVE_IMAGE_STYLE'));
+	}
+
+	const imageBorderRadius =
+		resolvedImage.appearance.borderRadius ??
+		computeInnerBorderRadius(
+			resolvedAppearance.borderRadius ?? 0,
+			resolvedAutoLayout.verticalPadding,
+			resolvedAutoLayout.horizontalPadding
+		);
+
+	return Ok({
+		...rest,
+		content: resolvedContent,
+		autoLayout: resolvedAutoLayout,
+		appearance: resolvedAppearance,
+		fill: resolvedFill,
+		stroke: resolvedStroke,
+		shadow: resolvedShadow,
+		text: resolvedText,
+		textSm: resolvedTextSm,
+		image: {
+			...resolvedImage,
+			appearance: {
+				...resolvedImage.appearance,
+				borderRadius: imageBorderRadius,
+				styles: {
+					...resolvedImage.appearance.styles,
+					borderRadius: `${imageBorderRadius}px`
+				}
+			},
+			styles: {
+				...resolvedImage.styles,
+				borderRadius: `${imageBorderRadius}px`
+			}
+		}
+	});
+}
+
+export function resolveFeaturedLinkNodeBundle(
+	node: TFeaturedLinkNodeBundle,
+	cx: TNodeResolveContext
+): TResult<TResolvedFeaturedLinkNodeBundle, AppError> {
+	const { content, autoLayout, appearance, fill, stroke, shadow, text, textSm, image, ...rest } =
+		node;
+
+	// Resolve content
+	const contentImage = content.userImage !== undefined ? content.userImage : content.image;
+	const resolvedContent: TResolvedBasicLinkNodeContentMixin['value'] = {
+		type: 'basic',
+		url: content.url,
+		title: content.userTitle ?? content.title,
+		description: content.userDescription ?? content.description,
+		image: contentImage != null ? resolveAsset(contentImage, cx.site) : undefined
 	};
 
 	// Resolve styles

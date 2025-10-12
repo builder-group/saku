@@ -9,7 +9,7 @@ export const aboutNodeMetadata: TNodeMetadata<'about'> = {
 			type: 'about',
 			bundleType: 'classic',
 			content: {
-				type: 'classic',
+				type: 'basic',
 				name: 'Your Name',
 				bio: 'Tell us about yourself',
 				contactIcons: []
@@ -71,7 +71,37 @@ export const linkNodeMetadata: TNodeMetadata<'link'> = {
 			type: 'link',
 			bundleType: 'classic',
 			content: {
-				type: 'classic',
+				type: 'basic',
+				url: 'https://www.shopify.com/',
+				title: 'Add your title here'
+			},
+			autoLayout: {
+				horizontalPadding: tokenRef('auto-layout.default', 'auto-layout', 'horizontalPadding'),
+				verticalPadding: tokenRef('auto-layout.default', 'auto-layout', 'verticalPadding'),
+				horizontalGap: null,
+				verticalGap: null
+			},
+			appearance: tokenRef('appearance.default', 'appearance'),
+			fill: tokenRef('fill.default', 'fill'),
+			stroke: tokenRef('stroke.default', 'stroke'),
+			shadow: tokenRef('shadow.default', 'shadow'),
+			text: tokenRef('text.default', 'text'),
+			textSm: tokenRef('text.sm', 'text'),
+			image: {
+				appearance: {
+					visible: true,
+					opacity: tokenRef('image.default', 'image', 'appearance.opacity'),
+					borderRadius: null
+				},
+				stroke: tokenRef('image.default', 'image', 'stroke'),
+				shadow: tokenRef('image.default', 'image', 'shadow')
+			}
+		},
+		'featured': {
+			type: 'link',
+			bundleType: 'featured',
+			content: {
+				type: 'basic',
 				url: 'https://www.shopify.com/',
 				title: 'Add your title here'
 			},
@@ -167,7 +197,7 @@ export const mediaNodeMetadata: TNodeMetadata<'media'> = {
 			type: 'media',
 			bundleType: 'classic',
 			content: {
-				type: 'classic'
+				type: 'single'
 			},
 			autoLayout: {
 				horizontalPadding: 0,
@@ -226,7 +256,7 @@ export const productNodeMetadata: TNodeMetadata<'product'> = {
 			type: 'product',
 			bundleType: 'classic',
 			content: {
-				type: 'classic'
+				type: 'single'
 			},
 			autoLayout: {
 				horizontalPadding: tokenRef('auto-layout.default', 'auto-layout', 'horizontalPadding'),

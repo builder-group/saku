@@ -6,14 +6,14 @@ import { getFontHash, isTokenRef, TAssetHash, TLinkNode } from '@repo/editor';
 export function getLinkNodeAssetHashes(node: TLinkNode): TAssetHash[] {
 	const hashes: TAssetHash[] = [];
 
-	// Favicon asset
+	// Image asset
 	switch (node.content.type) {
-		case 'classic': {
-			if (node.content.userFavicon != null) {
-				hashes.push(node.content.userFavicon);
+		case 'basic': {
+			if (node.content.userImage != null) {
+				hashes.push(node.content.userImage);
 			}
-			if (node.content.favicon != null) {
-				hashes.push(node.content.favicon);
+			if (node.content.image != null) {
+				hashes.push(node.content.image);
 			}
 			break;
 		}

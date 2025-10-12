@@ -1,4 +1,4 @@
-import { TClassicLinkNodeBundle, tokenRef } from '@repo/editor';
+import { TLinkNode, tokenRef } from '@repo/editor';
 import { Button, InlineError, Text, TextField } from '@shopify/polaris';
 import { useCompute, useFeatureState, useSubscriber } from 'feature-react/state';
 import React from 'react';
@@ -12,19 +12,23 @@ import {
 } from '../../../../mixins';
 import { fetchUrlMetadata, TNodeEditorContext } from './lib';
 
-export const ClassicContentEditor: React.FC<TClassicContentEditorProps> = (props) => {
+export const BasicContentEditor = <
+	GBundle extends Extract<TLinkNode, { content: { type: 'basic' } }>
+>(
+	props: TBasicContentEditorProps<GBundle>
+) => {
 	const { cx, className } = props;
 
 	const content = useCompute(cx.node, ({ value }) => value.content, [], { isEqual: false });
 	const isEnhancing = useFeatureState(cx.isEnhancingBundle);
 
 	const [displayUrl, setDisplayUrl] = React.useState(content.url);
-	const [faviconImageError, setFaviconImageError] = React.useState<string | null>(null);
+	const [imageError, setImageError] = React.useState<string | null>(null);
 	const [isFetchingUrlMetadata, setIsFetchingUrlMetadata] = React.useState(false);
 
-	const faviconImage = React.useMemo(() => {
+	const image = React.useMemo(() => {
 		const asset = cx.editor.getImageAsset(
-			content.userFavicon === undefined ? content.favicon : content.userFavicon
+			content.userImage === undefined ? content.image : content.userImage
 		);
 		if (asset == null || asset.storage.type !== 'url') {
 			return undefined;
@@ -34,7 +38,7 @@ export const ClassicContentEditor: React.FC<TClassicContentEditorProps> = (props
 			url: asset.storage.url,
 			fileName: asset.fileName
 		};
-	}, [content.userFavicon, content.favicon, cx]);
+	}, [content.userImage, content.image, cx]);
 
 	const titleValue = React.useMemo(() => {
 		return content.userTitle ?? content.title;
@@ -54,12 +58,12 @@ export const ClassicContentEditor: React.FC<TClassicContentEditorProps> = (props
 			content.userDescription !== content.description,
 		[content.userDescription, content.description]
 	);
-	const canResetFavicon = React.useMemo(
+	const canResetImage = React.useMemo(
 		() =>
-			content.favicon !== undefined &&
-			content.userFavicon !== undefined &&
-			content.userFavicon !== content.favicon,
-		[content.userFavicon, content.favicon]
+			content.image !== undefined &&
+			content.userImage !== undefined &&
+			content.userImage !== content.image,
+		[content.userImage, content.image]
 	);
 
 	// =========================================================================
@@ -104,13 +108,13 @@ export const ClassicContentEditor: React.FC<TClassicContentEditorProps> = (props
 		cx.node._notify();
 	}, [cx]);
 
-	const handleFaviconImageChange = React.useCallback(
+	const handleImageChange = React.useCallback(
 		(image: TImageUploadEvent) => {
 			switch (image.type) {
 				case 'Changed': {
-					const hash = cx.editor.registerImage(image.url, image.fileName ?? 'favicon');
+					const hash = cx.editor.registerImage(image.url, image.fileName);
 					if (hash != null) {
-						cx.node._v.content.userFavicon = hash;
+						cx.node._v.content.userImage = hash;
 
 						// Update text alignment
 						const unpackedText = unpackTextTokenRef(cx.node._v.text);
@@ -127,7 +131,7 @@ export const ClassicContentEditor: React.FC<TClassicContentEditorProps> = (props
 					break;
 				}
 				case 'Removed': {
-					cx.node._v.content.userFavicon = null;
+					cx.node._v.content.userImage = null;
 
 					// Update text alignment
 					const unpackedText = unpackTextTokenRef(cx.node._v.text);
@@ -157,11 +161,12 @@ export const ClassicContentEditor: React.FC<TClassicContentEditorProps> = (props
 		[cx]
 	);
 
-	const handleFaviconReset = React.useCallback(() => {
-		cx.node._v.content.userFavicon = undefined;
+	const handleImageReset = React.useCallback(() => {
+		cx.node._v.content.userImage = undefined;
 		cx.node._notify();
 	}, [cx]);
 
+	// TODO: Use enhance functionality?
 	const handleUrlFetch = React.useCallback(async () => {
 		setIsFetchingUrlMetadata(true);
 		try {
@@ -175,14 +180,14 @@ export const ClassicContentEditor: React.FC<TClassicContentEditorProps> = (props
 				return;
 			}
 
-			let faviconHash: string | null = null;
+			let imageHash: string | null = null;
 			if (metadata.favicon != null) {
-				faviconHash = cx.editor.registerImage(metadata.favicon, 'favicon');
+				imageHash = cx.editor.registerImage(metadata.favicon, 'favicon');
 			}
 
 			cx.node._v.content.title = metadata.title;
 			cx.node._v.content.description = metadata.description;
-			cx.node._v.content.favicon = faviconHash ?? undefined;
+			cx.node._v.content.image = imageHash ?? undefined;
 			cx.node._notify();
 		} finally {
 			setIsFetchingUrlMetadata(false);
@@ -287,32 +292,28 @@ export const ClassicContentEditor: React.FC<TClassicContentEditorProps> = (props
 				/>
 			</div>
 
-			{/* Favicon */}
+			{/* Image */}
 			<div className="space-y-1">
 				<div className="flex items-center justify-between">
 					<Text as="span" variant="bodySm" tone="subdued">
-						Favicon
+						Image
 					</Text>
-					{canResetFavicon && (
-						<Button variant="plain" size="micro" onClick={handleFaviconReset}>
+					{canResetImage && (
+						<Button variant="plain" size="micro" onClick={handleImageReset}>
 							Reset
 						</Button>
 					)}
 				</div>
-				<ImageUploadField
-					image={faviconImage}
-					onChange={handleFaviconImageChange}
-					onError={setFaviconImageError}
-				/>
-				{faviconImageError != null && (
-					<InlineError message={faviconImageError} fieldID="favicon-upload-error" />
-				)}
+				<ImageUploadField image={image} onChange={handleImageChange} onError={setImageError} />
+				{imageError != null && <InlineError message={imageError} fieldID="image-upload-error" />}
 			</div>
 		</div>
 	);
 };
 
-interface TClassicContentEditorProps {
-	cx: TNodeEditorContext<TClassicLinkNodeBundle>;
+interface TBasicContentEditorProps<
+	GBundle extends Extract<TLinkNode, { content: { type: 'basic' } }>
+> {
+	cx: TNodeEditorContext<GBundle>;
 	className: string;
 }

@@ -16,7 +16,7 @@ export function createNodeEditorContext<GNode extends TLinkNode>(
 		node,
 		editor,
 		shopify: editor.shopify,
-		selectedBundleType: createState<TBundleType>(node._v.content.type),
+		selectedBundleType: createState<TBundleType>(node._v.bundleType),
 		applicableBundleTypes: createState(getApplicableBundle(node._v.content.url)),
 		isSwitchingBundle: createState(false),
 		isEnhancingBundle: createState(false),
@@ -25,7 +25,7 @@ export function createNodeEditorContext<GNode extends TLinkNode>(
 			this.isSwitchingBundle.set(true);
 			this.selectedBundleType.set(bundleType);
 
-			const metadata = bundleMetadataMap[this.node._v.content.type] as TBundleMetadata<GNode>;
+			const metadata = bundleMetadataMap[this.node._v.bundleType] as TBundleMetadata<GNode>;
 			const nextMetadata = bundleMetadataMap[bundleType] as TBundleMetadata<GNode>;
 
 			try {

@@ -1,9 +1,6 @@
 import React from 'react';
 import { TResolvedNodeProps } from '../../../../lib';
-import {
-	TResolvedClassicMediaNodeBundle,
-	TResolvedClassicMediaNodeContentMixin
-} from '../../types';
+import { TResolvedClassicMediaNodeBundle, TResolvedSingleMediaNodeContentMixin } from '../../types';
 
 export const ClassicContent: React.FC<TClassicContentProps> = (props) => {
 	const {
@@ -35,6 +32,6 @@ export const ClassicContent: React.FC<TClassicContentProps> = (props) => {
 
 interface TClassicContentProps {
 	node: TResolvedClassicMediaNodeBundle;
-	media: NonNullable<TResolvedClassicMediaNodeContentMixin['value']['media']>;
+	media: NonNullable<TResolvedSingleMediaNodeContentMixin['value']['media']>;
 	cx: TResolvedNodeProps<TResolvedClassicMediaNodeBundle>['cx'];
 }

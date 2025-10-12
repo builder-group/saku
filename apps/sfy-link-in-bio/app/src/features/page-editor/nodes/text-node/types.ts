@@ -11,7 +11,7 @@ import {
 export type TResolvedTextNode = TResolvedRichTextNodeBundle;
 
 export type TResolvedRichTextNodeBundle = TNodeBundle<
-	TResolvedRichTextNodeContentMixin['value']['type'],
+	'rich',
 	[
 		TIdMixin,
 		TTextNodeMixin,

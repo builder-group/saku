@@ -9,20 +9,19 @@ export const ResolvedMediaNode = React.forwardRef<
 	TResolvedNodeProps<TResolvedMediaNode>
 >((props, ref) => {
 	const { node, cx, ...divProps } = props;
-	const { content } = node;
 
 	const renderContent = React.useCallback(() => {
-		switch (content.type) {
+		switch (node.bundleType) {
 			case 'classic': {
-				if (content.media == null) {
+				if (node.content.media == null) {
 					return <Skeleton node={node} />;
 				}
-				return <ClassicContent node={node} media={content.media} cx={cx} />;
+				return <ClassicContent node={node} media={node.content.media} cx={cx} />;
 			}
 			default:
 				return <Skeleton node={node} />;
 		}
-	}, [content, node, cx]);
+	}, [node, cx]);
 
 	return (
 		<div ref={ref} {...divProps} className="w-full max-w-md">

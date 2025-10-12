@@ -79,7 +79,7 @@ export function parseLinkpopData(linkpopData: TLinkPopData): TSite {
 			...aboutNodeMetadata.bundleMap.classic,
 			id: createId('node'),
 			content: {
-				type: 'classic',
+				type: 'basic',
 				name: page.title ?? 'Your Name',
 				bio: page.bio,
 				profilePicture: profilePictureHash,
@@ -105,12 +105,12 @@ export function parseLinkpopData(linkpopData: TLinkPopData): TSite {
 
 		for (const link of reversedLinks) {
 			if (link.url != null) {
-				// Create favicon asset if link has media
-				let faviconHash: TAssetHash | undefined;
+				// Create image asset if link has media
+				let imageHash: TAssetHash | undefined;
 				if (link.media?.url != null) {
-					const faviconAsset = createImageAssetFromUrl(link.media.url);
-					assets.push(faviconAsset);
-					faviconHash = faviconAsset.hash;
+					const imageAsset = createImageAssetFromUrl(link.media.url);
+					assets.push(imageAsset);
+					imageHash = imageAsset.hash;
 				}
 
 				// Determine variant based on __typename
@@ -140,10 +140,10 @@ export function parseLinkpopData(linkpopData: TLinkPopData): TSite {
 							};
 						} else {
 							content = {
-								type: 'classic',
+								type: 'basic',
 								url: link.url,
 								userTitle: link.title,
-								userFavicon: faviconHash
+								userImage: imageHash
 							};
 						}
 						break;
@@ -172,26 +172,26 @@ export function parseLinkpopData(linkpopData: TLinkPopData): TSite {
 							};
 						} else {
 							content = {
-								type: 'classic',
+								type: 'basic',
 								url: link.url,
 								userTitle: link.title,
-								userFavicon: faviconHash
+								userImage: imageHash
 							};
 						}
 						break;
 					}
 					default:
 						content = {
-							type: 'classic',
+							type: 'basic',
 							url: link.url,
 							userTitle: link.title,
-							userFavicon: faviconHash
+							userImage: imageHash
 						};
 				}
 
 				// Create link node for links with URLs
 				switch (content.type) {
-					case 'classic':
+					case 'basic':
 						children.push({
 							...linkNodeMetadata.bundleMap.classic,
 							id: createId('node'),

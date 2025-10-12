@@ -9,10 +9,9 @@ export const ResolvedProductNode = React.forwardRef<
 	TResolvedNodeProps<TResolvedProductNode>
 >((props, ref) => {
 	const { node, cx, ...divProps } = props;
-	const { content } = node;
 
 	const renderContent = React.useCallback(() => {
-		switch (content.type) {
+		switch (node.bundleType) {
 			case 'classic': {
 				if (node.content.product == null) {
 					return <Skeleton node={node} />;
@@ -22,7 +21,7 @@ export const ResolvedProductNode = React.forwardRef<
 			default:
 				return <Skeleton node={node} />;
 		}
-	}, [content, node, cx]);
+	}, [node, cx]);
 
 	return (
 		<div ref={ref} {...divProps} className="w-full max-w-md">

@@ -5,7 +5,7 @@ import { getCurrencySymbol } from '../../../../environment';
 import { TResolvedNodeProps } from '../../../../lib';
 import {
 	TResolvedClassicProductNodeBundle,
-	TResolvedClassicProductNodeContentMixin
+	TResolvedSingleProductNodeContentMixin
 } from '../../types';
 import { useProductDetailsModal } from './ProductDetailsModal';
 
@@ -256,6 +256,6 @@ export const ClassicContent: React.FC<TClassicContentProps> = (props) => {
 
 interface TClassicContentProps {
 	node: TResolvedClassicProductNodeBundle;
-	product: NonNullable<TResolvedClassicProductNodeContentMixin['value']['product']>;
+	product: NonNullable<TResolvedSingleProductNodeContentMixin['value']['product']>;
 	cx: TResolvedNodeProps<TResolvedClassicProductNodeBundle>['cx'];
 }

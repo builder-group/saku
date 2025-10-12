@@ -13,15 +13,33 @@ import {
 
 export type TResolvedLinkNode =
 	| TResolvedClassicLinkNodeBundle
+	| TResolvedFeaturedLinkNodeBundle
 	| TResolvedYouTubeEmbedLinkNodeBundle
 	| TResolvedSpotifyEmbedLinkNodeBundle;
 
 export type TResolvedClassicLinkNodeBundle = TNodeBundle<
-	TResolvedClassicLinkNodeContentMixin['value']['type'],
+	'classic',
 	[
 		TIdMixin,
 		TLinkNodeMixin,
-		TResolvedClassicLinkNodeContentMixin,
+		TResolvedBasicLinkNodeContentMixin,
+		TResolvedAutoLayoutStyleMixin,
+		TResolvedAppearanceStyleMixin,
+		TResolvedFillStyleMixin,
+		TResolvedStrokeStyleMixin,
+		TResolvedShadowStyleMixin,
+		TResolvedTextStyleMixin,
+		TResolvedTextSmStyleMixin,
+		TResolvedImageStyleMixin
+	]
+>;
+
+export type TResolvedFeaturedLinkNodeBundle = TNodeBundle<
+	'featured',
+	[
+		TIdMixin,
+		TLinkNodeMixin,
+		TResolvedBasicLinkNodeContentMixin,
 		TResolvedAutoLayoutStyleMixin,
 		TResolvedAppearanceStyleMixin,
 		TResolvedFillStyleMixin,
@@ -34,7 +52,7 @@ export type TResolvedClassicLinkNodeBundle = TNodeBundle<
 >;
 
 export type TResolvedYouTubeEmbedLinkNodeBundle = TNodeBundle<
-	TResolvedYouTubeEmbedLinkNodeContentMixin['value']['type'],
+	'youtube-embed',
 	[
 		TIdMixin,
 		TLinkNodeMixin,
@@ -49,7 +67,7 @@ export type TResolvedYouTubeEmbedLinkNodeBundle = TNodeBundle<
 >;
 
 export type TResolvedSpotifyEmbedLinkNodeBundle = TNodeBundle<
-	TResolvedSpotifyEmbedLinkNodeContentMixin['value']['type'],
+	'spotify-embed',
 	[
 		TIdMixin,
 		TLinkNodeMixin,
@@ -63,14 +81,14 @@ export type TResolvedSpotifyEmbedLinkNodeBundle = TNodeBundle<
 	]
 >;
 
-export type TResolvedClassicLinkNodeContentMixin = TBaseMixin<
+export type TResolvedBasicLinkNodeContentMixin = TBaseMixin<
 	'content',
 	{
-		type: 'classic';
+		type: 'basic';
 		url: string;
 		title?: string;
 		description?: string;
-		favicon?: TResolvedAsset;
+		image?: TResolvedAsset;
 	}
 >;
 

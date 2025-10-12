@@ -17,11 +17,11 @@ import {
 export type TResolvedProductNode = TResolvedClassicProductNodeBundle;
 
 export type TResolvedClassicProductNodeBundle = TNodeBundle<
-	TResolvedClassicProductNodeContentMixin['value']['type'],
+	'classic',
 	[
 		TIdMixin,
 		TProductNodeMixin,
-		TResolvedClassicProductNodeContentMixin,
+		TResolvedSingleProductNodeContentMixin,
 		TResolvedAutoLayoutStyleMixin,
 		TResolvedAppearanceStyleMixin,
 		TResolvedFillStyleMixin,
@@ -36,10 +36,10 @@ export type TResolvedClassicProductNodeBundle = TNodeBundle<
 	]
 >;
 
-export type TResolvedClassicProductNodeContentMixin = TBaseMixin<
+export type TResolvedSingleProductNodeContentMixin = TBaseMixin<
 	'content',
 	{
-		type: 'classic';
+		type: 'single';
 		product?: TResolvedProduct;
 	}
 >;

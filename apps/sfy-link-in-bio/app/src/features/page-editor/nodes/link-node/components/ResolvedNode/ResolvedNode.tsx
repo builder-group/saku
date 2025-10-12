@@ -2,11 +2,13 @@ import React from 'react';
 import { TResolvedNodeProps } from '../../../../lib';
 import {
 	TResolvedClassicLinkNodeBundle,
+	TResolvedFeaturedLinkNodeBundle,
 	TResolvedLinkNode,
 	TResolvedSpotifyEmbedLinkNodeBundle,
 	TResolvedYouTubeEmbedLinkNodeBundle
 } from '../../types';
 import { ClassicContent } from './ClassicContent';
+import { FeaturedContent } from './FeaturedContent';
 import { SpotifyEmbedContent } from './SpotifyEmbedContent';
 import { YouTubeEmbedContent } from './YouTubeEmbedContent';
 
@@ -15,12 +17,13 @@ export const ResolvedLinkNode = React.forwardRef<
 	TResolvedNodeProps<TResolvedLinkNode>
 >((props, ref) => {
 	const { node, cx, ...divProps } = props;
-	const { content } = node;
 
 	const renderContent = React.useCallback(() => {
-		switch (content.type) {
+		switch (node.bundleType) {
 			case 'classic':
 				return <ClassicContent node={node as TResolvedClassicLinkNodeBundle} cx={cx} />;
+			case 'featured':
+				return <FeaturedContent node={node as TResolvedFeaturedLinkNodeBundle} cx={cx} />;
 			case 'youtube-embed':
 				return <YouTubeEmbedContent node={node as TResolvedYouTubeEmbedLinkNodeBundle} cx={cx} />;
 			case 'spotify-embed':
@@ -28,7 +31,7 @@ export const ResolvedLinkNode = React.forwardRef<
 			default:
 				return null;
 		}
-	}, [content.type, node, cx]);
+	}, [node, cx]);
 
 	return (
 		<div {...divProps} ref={ref} className="w-full max-w-md">

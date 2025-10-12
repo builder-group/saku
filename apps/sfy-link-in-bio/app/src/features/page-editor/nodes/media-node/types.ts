@@ -12,11 +12,11 @@ import {
 export type TResolvedMediaNode = TResolvedClassicMediaNodeBundle;
 
 export type TResolvedClassicMediaNodeBundle = TNodeBundle<
-	TResolvedClassicMediaNodeContentMixin['value']['type'],
+	'classic',
 	[
 		TIdMixin,
 		TMediaNodeMixin,
-		TResolvedClassicMediaNodeContentMixin,
+		TResolvedSingleMediaNodeContentMixin,
 		TResolvedAutoLayoutStyleMixin,
 		TResolvedAppearanceStyleMixin,
 		TResolvedFillStyleMixin,
@@ -26,10 +26,10 @@ export type TResolvedClassicMediaNodeBundle = TNodeBundle<
 	]
 >;
 
-export type TResolvedClassicMediaNodeContentMixin = TBaseMixin<
+export type TResolvedSingleMediaNodeContentMixin = TBaseMixin<
 	'content',
 	{
-		type: 'classic';
+		type: 'single';
 		media?: {
 			type: 'image' | 'video' | 'audio';
 			altText?: string;

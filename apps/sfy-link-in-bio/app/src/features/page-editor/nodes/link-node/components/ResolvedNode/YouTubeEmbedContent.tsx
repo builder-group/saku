@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { TResolvedNodeProps } from '../../../../lib';
 import { TResolvedYouTubeEmbedLinkNodeBundle } from '../../types';
 
@@ -6,7 +6,7 @@ export const YouTubeEmbedContent: React.FC<TYouTubeEmbedContentProps> = (props) 
 	const {
 		node: { content, autoLayout, appearance, fill, stroke, shadow, image }
 	} = props;
-	const [isLoadingIframe, setIsLoadingIframe] = useState(true);
+	const [isLoadingIframe, setIsLoadingIframe] = React.useState(true);
 
 	return (
 		<div

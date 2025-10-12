@@ -101,7 +101,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 			...productNodeMetadata.bundleMap.classic,
 			id: createId('node'),
 			content: {
-				type: 'classic',
+				type: 'single',
 				product: {
 					id: featuredProduct.id,
 					title: featuredProduct.title,
@@ -204,7 +204,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					...aboutNodeMetadata.bundleMap.classic,
 					id: createId('node'),
 					content: {
-						type: 'classic',
+						type: 'basic',
 						name,
 						bio: 'Welcome to your new page! Add a short description about yourself or your brand.',
 						profilePicture: profilePictureAssetHashId,
@@ -215,7 +215,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					...linkNodeMetadata.bundleMap.classic,
 					id: createId('node'),
 					content: {
-						type: 'classic',
+						type: 'basic',
 						url: `https://${shopId}`,
 						userTitle: '🛒 Visit our Shopify store'
 					}
@@ -233,7 +233,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					...mediaNodeMetadata.bundleMap.classic,
 					id: createId('node'),
 					content: {
-						type: 'classic',
+						type: 'single',
 						media: {
 							type: 'image',
 							hash: gifAssetHashId,

@@ -1,16 +1,11 @@
-import {
-	TClassicLinkNodeBundle,
-	TLinkNode,
-	TSpotifyEmbedLinkNodeBundle,
-	TYouTubeEmbedLinkNodeBundle
-} from '@repo/editor';
+import { TLinkNode, TSpotifyEmbedLinkNodeBundle, TYouTubeEmbedLinkNodeBundle } from '@repo/editor';
 import { useAppBridge } from '@shopify/app-bridge-react';
 import { Select, Text } from '@shopify/polaris';
 import { useCompute, useFeatureState } from 'feature-react/state';
 import React from 'react';
 import { AccordionSection, JsonPreview, PortalPulse } from '@/components';
 import { TNodeEditorComponentProps } from '../../../../lib';
-import { ClassicContentEditor } from './ClassicContentEditor';
+import { BasicContentEditor } from './BasicContentEditor';
 import { ContentSkeleton } from './ContentSkeleton';
 import { bundleMetadataMap } from './environment';
 import { createNodeEditorContext, TNodeEditorContext } from './lib';
@@ -59,9 +54,10 @@ export const LinkNodeContentEditor: React.FC<TNodeEditorComponentProps<TLinkNode
 	const renderEditor = React.useCallback((): React.ReactElement | null => {
 		switch (bundleType) {
 			case 'classic':
+			case 'featured':
 				return (
-					<ClassicContentEditor
-						cx={cx as TNodeEditorContext<TClassicLinkNodeBundle>}
+					<BasicContentEditor
+						cx={cx as TNodeEditorContext<Extract<TLinkNode, { content: { type: 'basic' } }>>}
 						className="z-10"
 					/>
 				);
