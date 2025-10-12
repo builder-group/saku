@@ -39,13 +39,35 @@ export type TFlatNode =
 
 export type TNodeId = TId<'node'>;
 
+/**
+ * Node-specific bundle type for composing node mixins into complete node shapes.
+ * This is NOT a general-purpose bundle type - it's tailored for node architecture.
+ *
+ * @template GType - Bundle type discriminator (e.g., 'classic', 'youtube-embed')
+ * @template GMixins - Array of mixins that compose the bundle
+ *
+ * @remarks
+ * **Why bundleType exists:**
+ * - Discriminates complete bundle shapes, not just content variants
+ * - Enables component registry lookups: `registry[node.type][node.bundleType]`
+ * - Bundles can share content types but differ in style mixins
+ *
+ * **Why node mixin is merged at root:**
+ * - `node.type` is the primary discriminator, accessed constantly in switches/guards/registries
+ * - Avoids unnecessary nesting: `node.type` vs `node.node.type`
+ * - Treats `type` as the node's identity rather than just another composable mixin
+ *
+ * **Why bundleType is node-specific (not globally unique):**
+ * - This is TNodeBundle, not a general bundle type - scoping is specific to nodes
+ * - Bundle names are scoped to node types (e.g. 'classic' works for links, text, media)
+ * - Keeps names semantic rather than artificially prefixed (e.g., 'classic' vs 'node_link_classic')
+ *
+ * **Parsing back to mixins:**
+ * - Use destructuring in resolvers - node-specific parsing logic probably required anyway
+ */
 export type TNodeBundle<GType extends string, GMixins extends TBaseMixin<any, any>[]> = {
 	bundleType: GType;
-} &
-	// Note: Node mixin is merged at top level (e.g. `node.type` instead of `node.node.type`)
-	// to avoid unnecessary nesting. When parsing back to mixins, use destructuring in resolvers
-	// since type-safe extraction probably requires node-specific parsing logic anyway.
-	Extract<GMixins[number], { key: 'node' }>['value'] &
+} & Extract<GMixins[number], { key: 'node' }>['value'] &
 	Omit<TMergeMixins<GMixins>, 'node'>;
 
 // =========================================================================

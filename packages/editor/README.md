@@ -5,19 +5,20 @@
 ### Why bundle-based nodes instead of content variants?
 
 - **True ECS principles**: Content is just another component/mixin, not special
-- **Explicit & type-safe**: `bundle` explicitly defines which mixins exist
+- **Explicit & type-safe**: `bundleType` explicitly defines which mixins exist
 - **Flexible bundling**: Easy to mix content variants with different style sets
-- **Clear discrimination**: `type` = what it is, `bundle` = how it's built
+- **Clear discrimination**: `type` = what it is, `bundleType` = how it's built
+- **Component registry**: Bundles enable clean lookups: `registry[node.type][node.bundleType]`
 
 ```ts
 // Bundle-based approach
 type TLinkNode =
-	| TClassicLinkNodeBundle // { bundle: 'classic', content: {...}, text: {...}, image: {...} }
-	| TYouTubeEmbedLinkNodeBundle // { bundle: 'youtube-embed', content: {...}, text: {...} }
-	| TSpotifyEmbedLinkNodeBundle; // { bundle: 'spotify-embed', content: {...}, text: {...} }
+	| TClassicLinkNodeBundle      // { bundleType: 'classic', content: {...}, text: {...}, image: {...} }
+	| TYouTubeEmbedLinkNodeBundle // { bundleType: 'youtube-embed', content: {...}, text: {...} }
+	| TSpotifyEmbedLinkNodeBundle; // { bundleType: 'spotify-embed', content: {...}, text: {...} }
 
 // Type-safe discrimination
-if (node.type === 'link' && node.bundle === 'classic') {
+if (node.type === 'link' && node.bundleType === 'classic') {
 	node.content.url; // ✅ TypeScript knows content variant is 'classic'
 	node.image; // ✅ TypeScript knows image mixin exists
 	node.buttonPrimary; // ❌ Type error - classic bundle doesn't have this
