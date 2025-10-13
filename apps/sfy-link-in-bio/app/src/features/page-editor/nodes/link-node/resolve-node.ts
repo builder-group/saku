@@ -9,10 +9,11 @@ import {
 } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError, computeInnerBorderRadius } from '@/lib';
-import { resolveAsset, resolveColor, TNodeResolveContext } from '../../lib';
+import { resolveColor, TNodeResolveContext } from '../../lib';
 import {
 	resolveAppearanceStyleMixin,
 	resolveAutoLayoutStyleMixin,
+	resolveBasicLinkNodeContentMixin,
 	resolveFillStyleMixin,
 	resolveImageStyleMixin,
 	resolveShadowStyleMixin,
@@ -20,7 +21,6 @@ import {
 	resolveTextStyleMixin
 } from '../../mixins';
 import {
-	TResolvedBasicLinkNodeContentMixin,
 	TResolvedClassicLinkNodeBundle,
 	TResolvedFeaturedLinkNodeBundle,
 	TResolvedLinkNode,
@@ -60,14 +60,14 @@ export function resolveClassicLinkNodeBundle(
 		node;
 
 	// Resolve content
-	const contentImage = content.userImage !== undefined ? content.userImage : content.image;
-	const resolvedContent: TResolvedBasicLinkNodeContentMixin['value'] = {
-		type: 'basic',
-		url: content.url,
-		title: content.userTitle ?? content.title,
-		description: content.userDescription ?? content.description,
-		image: contentImage != null ? resolveAsset(contentImage, cx.site) : undefined
-	};
+	const [isResolvedContentOk, resolvedContentErr, resolvedContent] =
+		resolveBasicLinkNodeContentMixin(content, {
+			node: cx,
+			tokenMap: cx.site.getTokenMap()
+		});
+	if (!isResolvedContentOk) {
+		return Err(resolvedContentErr.wrapWith('#ERR_RESOLVE_BASIC_LINK_NODE_CONTENT'));
+	}
 
 	// Resolve styles
 	const [isResolvedAutoLayoutOk, resolvedAutoLayoutErr, resolvedAutoLayout] =
@@ -173,14 +173,14 @@ export function resolveFeaturedLinkNodeBundle(
 		node;
 
 	// Resolve content
-	const contentImage = content.userImage !== undefined ? content.userImage : content.image;
-	const resolvedContent: TResolvedBasicLinkNodeContentMixin['value'] = {
-		type: 'basic',
-		url: content.url,
-		title: content.userTitle ?? content.title,
-		description: content.userDescription ?? content.description,
-		image: contentImage != null ? resolveAsset(contentImage, cx.site) : undefined
-	};
+	const [isResolvedContentOk, resolvedContentErr, resolvedContent] =
+		resolveBasicLinkNodeContentMixin(content, {
+			node: cx,
+			tokenMap: cx.site.getTokenMap()
+		});
+	if (!isResolvedContentOk) {
+		return Err(resolvedContentErr.wrapWith('#ERR_RESOLVE_BASIC_LINK_NODE_CONTENT'));
+	}
 
 	// Resolve styles
 	const [isResolvedAutoLayoutOk, resolvedAutoLayoutErr, resolvedAutoLayout] =

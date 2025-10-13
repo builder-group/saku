@@ -1,13 +1,20 @@
-import { TLinkNode, TSpotifyEmbedLinkNodeBundle, TYouTubeEmbedLinkNodeBundle } from '@repo/editor';
+import {
+	TClassicLinkNodeBundle,
+	TFeaturedLinkNodeBundle,
+	TLinkNode,
+	TSpotifyEmbedLinkNodeBundle,
+	TYouTubeEmbedLinkNodeBundle
+} from '@repo/editor';
 import { useAppBridge } from '@shopify/app-bridge-react';
 import { Select, Text } from '@shopify/polaris';
 import { useCompute, useFeatureState } from 'feature-react/state';
 import React from 'react';
 import { AccordionSection, JsonPreview, PortalPulse } from '@/components';
 import { TNodeEditorComponentProps } from '../../../../lib';
-import { BasicContentEditor } from './BasicContentEditor';
+import { ClassicContentEditor } from './ClassicContentEditor';
 import { ContentSkeleton } from './ContentSkeleton';
 import { bundleMetadataMap } from './environment';
+import { FeaturedContentEditor } from './FeaturedContentEditor';
 import { createNodeEditorContext, TNodeEditorContext } from './lib';
 import { SpotifyEmbedContentEditor } from './SpotifyEmbedContentEditor';
 import { YoutubeEmbedContentEditor } from './YoutubeEmbedContentEditor';
@@ -54,10 +61,16 @@ export const LinkNodeContentEditor: React.FC<TNodeEditorComponentProps<TLinkNode
 	const renderEditor = React.useCallback((): React.ReactElement | null => {
 		switch (bundleType) {
 			case 'classic':
+				return (
+					<ClassicContentEditor
+						cx={cx as TNodeEditorContext<TClassicLinkNodeBundle>}
+						className="z-10"
+					/>
+				);
 			case 'featured':
 				return (
-					<BasicContentEditor
-						cx={cx as TNodeEditorContext<Extract<TLinkNode, { content: { type: 'basic' } }>>}
+					<FeaturedContentEditor
+						cx={cx as TNodeEditorContext<TFeaturedLinkNodeBundle>}
 						className="z-10"
 					/>
 				);

@@ -1,30 +1,22 @@
-import { TLinkNode, tokenRef } from '@repo/editor';
+import { TBasicLinkNodeContentMixin } from '@repo/editor';
+import { ShopifyGlobal } from '@shopify/app-bridge-react';
 import { Button, InlineError, Text, TextField } from '@shopify/polaris';
-import { useCompute, useFeatureState, useSubscriber } from 'feature-react/state';
+import { useFeatureState, useSubscriber } from 'feature-react';
+import { TState } from 'feature-state';
 import React from 'react';
-import { ImageUploadField, TImageUploadEvent } from '@/components';
-import { cn } from '@/lib';
-import {
-	packTextTokenRef,
-	packTypographyTokenRef,
-	unpackTextTokenRef,
-	unpackTypographyTokenRef
-} from '../../../../mixins';
-import { fetchUrlMetadata, TNodeEditorContext } from './lib';
+import { TResult } from 'tuple-result';
+import { AppError, cn } from '@/lib';
+import { ImageUploadField, TImageUploadEvent } from '../../../../components';
+import { TPageEditor } from '../../lib';
 
-export const BasicContentEditor = <
-	GBundle extends Extract<TLinkNode, { content: { type: 'basic' } }>
->(
-	props: TBasicContentEditorProps<GBundle>
-) => {
-	const { cx, className } = props;
+export const BasicLinkNodeContentMixinEditor = (props: TBasicLinkNodeContentMixinEditorProps) => {
+	const { state, cx, className } = props;
 
-	const content = useCompute(cx.node, ({ value }) => value.content, [], { isEqual: false });
+	const content = useFeatureState(state);
 	const isEnhancing = useFeatureState(cx.isEnhancingBundle);
 
 	const [displayUrl, setDisplayUrl] = React.useState(content.url);
 	const [imageError, setImageError] = React.useState<string | null>(null);
-	const [isFetchingUrlMetadata, setIsFetchingUrlMetadata] = React.useState(false);
 
 	const image = React.useMemo(() => {
 		const asset = cx.editor.getImageAsset(
@@ -84,29 +76,29 @@ export const BasicContentEditor = <
 
 	const handleTitleChange = React.useCallback(
 		(value: string) => {
-			cx.node._v.content.userTitle = value;
-			cx.node._notify();
+			state._v.userTitle = value;
+			state._notify();
 		},
-		[cx]
+		[state]
 	);
 
 	const handleTitleReset = React.useCallback(() => {
-		cx.node._v.content.userTitle = undefined;
-		cx.node._notify();
-	}, [cx]);
+		state._v.userTitle = undefined;
+		state._notify();
+	}, [state]);
 
 	const handleDescriptionChange = React.useCallback(
 		(value: string) => {
-			cx.node._v.content.userDescription = value;
-			cx.node._notify();
+			state._v.userDescription = value;
+			state._notify();
 		},
-		[cx]
+		[state]
 	);
 
 	const handleDescriptionReset = React.useCallback(() => {
-		cx.node._v.content.userDescription = undefined;
-		cx.node._notify();
-	}, [cx]);
+		state._v.userDescription = undefined;
+		state._notify();
+	}, [state]);
 
 	const handleImageChange = React.useCallback(
 		(image: TImageUploadEvent) => {
@@ -114,95 +106,35 @@ export const BasicContentEditor = <
 				case 'Changed': {
 					const hash = cx.editor.registerImage(image.url, image.fileName);
 					if (hash != null) {
-						cx.node._v.content.userImage = hash;
-
-						// Update text alignment
-						const unpackedText = unpackTextTokenRef(cx.node._v.text);
-						const unpackedTextSm = unpackTextTokenRef(cx.node._v.textSm);
-						const unpackedTextTypography = unpackTypographyTokenRef(unpackedText.typography);
-						const unpackedTextSmTypography = unpackTypographyTokenRef(unpackedTextSm.typography);
-						unpackedTextTypography.textAlignHorizontal = 'start';
-						unpackedTextSmTypography.textAlignHorizontal = 'start';
-						cx.node._v.text = unpackedText;
-						cx.node._v.textSm = unpackedTextSm;
-
-						cx.node._notify();
+						state._v.userImage = hash;
+						state._notify();
 					}
 					break;
 				}
 				case 'Removed': {
-					cx.node._v.content.userImage = null;
-
-					// Update text alignment
-					const unpackedText = unpackTextTokenRef(cx.node._v.text);
-					const unpackedTextSm = unpackTextTokenRef(cx.node._v.textSm);
-					const unpackedTextTypography = unpackTypographyTokenRef(unpackedText.typography);
-					const unpackedTextSmTypography = unpackTypographyTokenRef(unpackedTextSm.typography);
-					unpackedTextTypography.textAlignHorizontal = tokenRef(
-						'text.default',
-						'text',
-						'typography.textAlignHorizontal'
-					);
-					unpackedTextSmTypography.textAlignHorizontal = tokenRef(
-						'text.sm',
-						'text',
-						'typography.textAlignHorizontal'
-					);
-					unpackedText.typography = packTypographyTokenRef(unpackedTextTypography);
-					unpackedTextSm.typography = packTypographyTokenRef(unpackedTextSmTypography);
-					cx.node._v.text = packTextTokenRef(unpackedText);
-					cx.node._v.textSm = packTextTokenRef(unpackedTextSm);
-
-					cx.node._notify();
+					state._v.userImage = null;
+					state._notify();
 					break;
 				}
 			}
 		},
-		[cx]
+		[cx, state]
 	);
 
 	const handleImageReset = React.useCallback(() => {
-		cx.node._v.content.userImage = undefined;
-		cx.node._notify();
-	}, [cx]);
-
-	// TODO: Use enhance functionality?
-	const handleUrlFetch = React.useCallback(async () => {
-		setIsFetchingUrlMetadata(true);
-		try {
-			const metadata = await fetchUrlMetadata(content.url, cx.shopify);
-			if (metadata == null) {
-				cx.shopify.toast.show('Failed to fetch URL metadata', {
-					duration: 3000,
-					action: 'Retry',
-					onAction: handleUrlFetch
-				});
-				return;
-			}
-
-			let imageHash: string | null = null;
-			if (metadata.favicon != null) {
-				imageHash = cx.editor.registerImage(metadata.favicon, 'favicon');
-			}
-
-			cx.node._v.content.title = metadata.title;
-			cx.node._v.content.description = metadata.description;
-			cx.node._v.content.image = imageHash ?? undefined;
-			cx.node._notify();
-		} finally {
-			setIsFetchingUrlMetadata(false);
-		}
-	}, [cx, content]);
+		state._v.userImage = undefined;
+		state._notify();
+	}, [state]);
 
 	// =========================================================================
 	// Effects
 	// =========================================================================
 
 	useSubscriber(
-		cx.node,
+		state,
 		({ value, source }) => {
 			if (source !== 'apply-url-and-enhance') {
-				setDisplayUrl(value.content.url);
+				setDisplayUrl(value.url);
 			}
 		},
 		[cx]
@@ -221,10 +153,10 @@ export const BasicContentEditor = <
 				<Button
 					variant="plain"
 					size="micro"
-					onClick={handleUrlFetch}
-					disabled={isFetchingUrlMetadata || isEnhancing}
+					onClick={() => cx.enhanceBundle()}
+					disabled={isEnhancing}
 				>
-					{isFetchingUrlMetadata ? 'Fetching metadata...' : 'Fetch metadata'}
+					{isEnhancing ? 'Enhancing...' : 'Enhance'}
 				</Button>
 			</div>
 
@@ -311,9 +243,14 @@ export const BasicContentEditor = <
 	);
 };
 
-interface TBasicContentEditorProps<
-	GBundle extends Extract<TLinkNode, { content: { type: 'basic' } }>
-> {
-	cx: TNodeEditorContext<GBundle>;
-	className: string;
+interface TBasicLinkNodeContentMixinEditorProps {
+	state: TState<TBasicLinkNodeContentMixin['value'], any>;
+	cx: {
+		editor: TPageEditor;
+		isEnhancingBundle: TState<boolean, []>;
+		shopify: ShopifyGlobal;
+		updateUrlAndEnhance: (newUrl: string) => Promise<TResult<void, AppError>>;
+		enhanceBundle: () => Promise<TResult<void, AppError>>;
+	};
+	className?: string;
 }

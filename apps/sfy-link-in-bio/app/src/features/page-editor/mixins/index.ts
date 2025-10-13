@@ -1,6 +1,7 @@
 export * from './appearance-style';
 export * from './auto-layout-style';
 export * from './badge-style';
+export * from './basic-link-node-content';
 export * from './button-style';
 export * from './fill-style';
 export * from './flat-children';

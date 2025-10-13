@@ -1,8 +1,9 @@
 import { TBaseMixin, TIdMixin, TLinkNodeMixin, TNodeBundle } from '@repo/editor';
-import { TResolvedAsset, TResolvedColor } from '../../lib';
+import { TResolvedColor } from '../../lib';
 import {
 	TResolvedAppearanceStyleMixin,
 	TResolvedAutoLayoutStyleMixin,
+	TResolvedBasicLinkNodeContentMixin,
 	TResolvedFillStyleMixin,
 	TResolvedImageStyleMixin,
 	TResolvedShadowStyleMixin,
@@ -79,17 +80,6 @@ export type TResolvedSpotifyEmbedLinkNodeBundle = TNodeBundle<
 		TResolvedShadowStyleMixin,
 		TResolvedImageStyleMixin
 	]
->;
-
-export type TResolvedBasicLinkNodeContentMixin = TBaseMixin<
-	'content',
-	{
-		type: 'basic';
-		url: string;
-		title?: string;
-		description?: string;
-		image?: TResolvedAsset;
-	}
 >;
 
 export type TResolvedYouTubeEmbedLinkNodeContentMixin = TBaseMixin<
