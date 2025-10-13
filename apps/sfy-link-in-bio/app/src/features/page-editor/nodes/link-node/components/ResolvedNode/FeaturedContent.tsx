@@ -34,7 +34,7 @@ export const FeaturedContent: React.FC<TSingleContentProps> = (props) => {
 			)}
 
 			{/* Link Details */}
-			<div className="flex w-full min-w-0 flex-col gap-2 px-2 pb-2">
+			<div className="flex w-full min-w-0 flex-col gap-1 px-2 pb-2">
 				{content.title != null && (
 					<p className="truncate font-medium" style={text.styles}>
 						{content.title}
