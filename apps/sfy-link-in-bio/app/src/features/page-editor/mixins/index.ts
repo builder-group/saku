@@ -8,6 +8,7 @@ export * from './fill-style';
 export * from './flat-children';
 export * from './image-style';
 export * from './product-details-style';
+export * from './richt-text-node-content';
 export * from './shadow-style';
 export * from './single-media-node-content';
 export * from './single-product-node-content';

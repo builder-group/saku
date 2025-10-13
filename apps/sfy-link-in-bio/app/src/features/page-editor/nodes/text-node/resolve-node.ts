@@ -6,6 +6,7 @@ import {
 	resolveAppearanceStyleMixin,
 	resolveAutoLayoutStyleMixin,
 	resolveFillStyleMixin,
+	resolveRichTextNodeContentMixin,
 	resolveShadowStyleMixin,
 	resolveStrokeStyleMixin,
 	resolveTextStyleMixin
@@ -16,7 +17,17 @@ export function resolveTextNode(
 	node: TTextNode,
 	cx: TNodeResolveContext
 ): TResult<TResolvedTextNode, AppError> {
-	const { autoLayout, appearance, fill, stroke, shadow, text, ...rest } = node;
+	const { content, autoLayout, appearance, fill, stroke, shadow, text, ...rest } = node;
+
+	// Resolve content
+	const [isResolvedContentOk, resolvedContentErr, resolvedContent] =
+		resolveRichTextNodeContentMixin(content, {
+			node: cx,
+			tokenMap: cx.site.getTokenMap()
+		});
+	if (!isResolvedContentOk) {
+		return Err(resolvedContentErr.wrapWith('#ERR_RESOLVE_RICH_TEXT_NODE_CONTENT'));
+	}
 
 	// Resolve styles
 	const [isResolvedAutoLayoutOk, resolvedAutoLayoutErr, resolvedAutoLayout] =
@@ -66,6 +77,7 @@ export function resolveTextNode(
 
 	return Ok({
 		...rest,
+		content: resolvedContent,
 		autoLayout: resolvedAutoLayout,
 		appearance: resolvedAppearance,
 		fill: resolvedFill,

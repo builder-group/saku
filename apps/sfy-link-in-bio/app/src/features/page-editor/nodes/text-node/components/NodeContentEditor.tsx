@@ -1,49 +1,15 @@
-import { TRichContent, TTextNode } from '@repo/editor';
-import { Select, Text, TextField } from '@shopify/polaris';
-import { useFeatureState } from 'feature-react/state';
+import { TTextNode } from '@repo/editor';
+import { Text } from '@shopify/polaris';
 import React from 'react';
 import { AccordionSection, JsonPreview } from '@/components';
+import { useNodeProperty } from '../../../hooks';
 import { TNodeEditorComponentProps } from '../../../lib';
+import { RichTextNodeContentMixinEditor } from '../../../mixins';
 
 export const TextNodeContentEditor: React.FC<TNodeEditorComponentProps<TTextNode>> = (props) => {
 	const { nodeState, editor } = props;
-	const { content } = useFeatureState(nodeState);
 
-	const [selectedFormat, setSelectedFormat] = React.useState<TRichContent['type']>(
-		content.text.type
-	);
-	const formatOptions = React.useMemo(
-		() => [
-			{ label: 'Markdown', value: 'markdown' },
-			{ label: 'HTML', value: 'html' },
-			{ label: 'Plain Text', value: 'text' }
-		],
-		[]
-	);
-
-	// =========================================================================
-	// Events
-	// =========================================================================
-
-	const handleFormatChange = React.useCallback(
-		(value: string) => {
-			const newFormat = value as TRichContent['type'];
-			setSelectedFormat(newFormat);
-
-			// Update the text content with the new format
-			nodeState._v.content.text = { type: newFormat, value: content.text.value };
-			nodeState._notify();
-		},
-		[nodeState, content.text.value]
-	);
-
-	const handleTextChange = React.useCallback(
-		(value: string) => {
-			nodeState._v.content.text = { type: selectedFormat, value };
-			nodeState._notify();
-		},
-		[nodeState, selectedFormat]
-	);
+	const contentState = useNodeProperty(nodeState, 'content');
 
 	// =========================================================================
 	// UI
@@ -51,41 +17,7 @@ export const TextNodeContentEditor: React.FC<TNodeEditorComponentProps<TTextNode
 
 	return (
 		<>
-			<div className="space-y-4 border-b border-neutral-200 px-4 py-3">
-				<div className="space-y-4">
-					{/* Format */}
-					<div className="space-y-1">
-						<Text as="span" variant="bodySm" tone="subdued">
-							Format
-						</Text>
-						<Select
-							id="text-format-field"
-							label="Format"
-							labelHidden
-							options={formatOptions}
-							value={selectedFormat}
-							onChange={handleFormatChange}
-						/>
-					</div>
-
-					{/* Text */}
-					<div className="space-y-1">
-						<Text as="span" variant="bodySm" tone="subdued">
-							Text
-						</Text>
-						<TextField
-							id="text-field"
-							label="Text"
-							labelHidden
-							value={content.text.value}
-							onChange={handleTextChange}
-							multiline={4}
-							autoComplete="off"
-							placeholder="Add your text here"
-						/>
-					</div>
-				</div>
-			</div>
+			<RichTextNodeContentMixinEditor state={contentState} editor={editor} />
 
 			{/* Debug Section */}
 			{editor.isDebug() && (

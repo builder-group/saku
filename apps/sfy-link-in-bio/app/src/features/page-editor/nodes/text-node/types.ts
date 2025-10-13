@@ -1,8 +1,9 @@
-import { TBaseMixin, TIdMixin, TNodeBundle, TRichContent, TTextNodeMixin } from '@repo/editor';
+import { TIdMixin, TNodeBundle, TTextNodeMixin } from '@repo/editor';
 import {
 	TResolvedAppearanceStyleMixin,
 	TResolvedAutoLayoutStyleMixin,
 	TResolvedFillStyleMixin,
+	TResolvedRichTextNodeContentMixin,
 	TResolvedShadowStyleMixin,
 	TResolvedStrokeStyleMixin,
 	TResolvedTextStyleMixin
@@ -23,12 +24,4 @@ export type TResolvedRichTextNodeBundle = TNodeBundle<
 		TResolvedShadowStyleMixin,
 		TResolvedTextStyleMixin
 	]
->;
-
-export type TResolvedRichTextNodeContentMixin = TBaseMixin<
-	'content',
-	{
-		type: 'rich';
-		text: TRichContent;
-	}
 >;
