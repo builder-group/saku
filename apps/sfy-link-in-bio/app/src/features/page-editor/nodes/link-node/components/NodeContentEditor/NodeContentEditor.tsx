@@ -28,7 +28,6 @@ export const LinkNodeContentEditor: React.FC<TNodeEditorComponentProps<TLinkNode
 		[nodeState, editor]
 	);
 
-	const bundleType = useCompute(cx.node, ({ value }) => value.bundleType);
 	const applicableBundleOptions = useCompute(cx.applicableBundleTypes, ({ value }) =>
 		value.map((type) => ({
 			label: bundleMetadataMap[type].label,
@@ -58,8 +57,8 @@ export const LinkNodeContentEditor: React.FC<TNodeEditorComponentProps<TLinkNode
 	// UI
 	// =========================================================================
 
-	const renderEditor = React.useCallback((): React.ReactElement | null => {
-		switch (bundleType) {
+	const renderContentEditor = React.useCallback((): React.ReactElement | null => {
+		switch (cx.node._v.bundleType) {
 			case 'classic':
 				return (
 					<ClassicContentEditor
@@ -91,7 +90,7 @@ export const LinkNodeContentEditor: React.FC<TNodeEditorComponentProps<TLinkNode
 			default:
 				return null;
 		}
-	}, [bundleType, cx]);
+	}, [cx]);
 
 	return (
 		<>
@@ -116,7 +115,7 @@ export const LinkNodeContentEditor: React.FC<TNodeEditorComponentProps<TLinkNode
 				) : (
 					<>
 						<PortalPulse isActive={cx.isEnhancingBundle} className="top-0 left-0" />
-						{renderEditor()}
+						{renderContentEditor()}
 					</>
 				)}
 			</div>

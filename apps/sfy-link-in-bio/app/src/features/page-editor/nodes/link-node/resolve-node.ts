@@ -1,6 +1,4 @@
 import {
-	createSpotifyEmbedUrl,
-	createYouTubeEmbedUrl,
 	TClassicLinkNodeBundle,
 	TFeaturedLinkNodeBundle,
 	TLinkNode,
@@ -9,7 +7,7 @@ import {
 } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError, computeInnerBorderRadius } from '@/lib';
-import { resolveColor, TNodeResolveContext } from '../../lib';
+import { TNodeResolveContext } from '../../lib';
 import {
 	resolveAppearanceStyleMixin,
 	resolveAutoLayoutStyleMixin,
@@ -17,17 +15,17 @@ import {
 	resolveFillStyleMixin,
 	resolveImageStyleMixin,
 	resolveShadowStyleMixin,
+	resolveSpotifyEmbedLinkNodeContentMixin,
 	resolveStrokeStyleMixin,
-	resolveTextStyleMixin
+	resolveTextStyleMixin,
+	resolveYouTubeEmbedLinkNodeContentMixin
 } from '../../mixins';
 import {
 	TResolvedClassicLinkNodeBundle,
 	TResolvedFeaturedLinkNodeBundle,
 	TResolvedLinkNode,
 	TResolvedSpotifyEmbedLinkNodeBundle,
-	TResolvedSpotifyEmbedLinkNodeContentMixin,
-	TResolvedYouTubeEmbedLinkNodeBundle,
-	TResolvedYouTubeEmbedLinkNodeContentMixin
+	TResolvedYouTubeEmbedLinkNodeBundle
 } from './types';
 
 export function resolveLinkNode(
@@ -285,11 +283,14 @@ export function resolveYouTubeEmbedLinkNodeBundle(
 	const { content, autoLayout, appearance, fill, stroke, shadow, image, ...rest } = node;
 
 	// Resolve content
-	const resolvedContent: TResolvedYouTubeEmbedLinkNodeContentMixin['value'] = {
-		type: 'youtube-embed',
-		url: content.url,
-		embedUrl: createYouTubeEmbedUrl(content.contentType, content.contentId)
-	};
+	const [isResolvedContentOk, resolvedContentErr, resolvedContent] =
+		resolveYouTubeEmbedLinkNodeContentMixin(content, {
+			node: cx,
+			tokenMap: cx.site.getTokenMap()
+		});
+	if (!isResolvedContentOk) {
+		return Err(resolvedContentErr.wrapWith('#ERR_RESOLVE_YOUTUBE_EMBED_LINK_NODE_CONTENT'));
+	}
 
 	// Resolve styles
 	const [isResolvedAutoLayoutOk, resolvedAutoLayoutErr, resolvedAutoLayout] =
@@ -380,31 +381,14 @@ export function resolveSpotifyEmbedLinkNodeBundle(
 	const { content, autoLayout, appearance, fill, stroke, shadow, image, ...rest } = node;
 
 	// Resolve content
-	const resolvedContent: TResolvedSpotifyEmbedLinkNodeContentMixin['value'] = {
-		type: 'spotify-embed',
-		url: content.url,
-		embedUrl: createSpotifyEmbedUrl(content.contentType, content.contentId),
-		height: content.height,
-		theme:
-			content.theme != null
-				? {
-						backgroundBase:
-							content.theme.backgroundBase != null
-								? resolveColor(content.theme.backgroundBase)
-								: undefined,
-						backgroundTinted:
-							content.theme.backgroundTinted != null
-								? resolveColor(content.theme.backgroundTinted)
-								: undefined,
-						textBase:
-							content.theme.textBase != null ? resolveColor(content.theme.textBase) : undefined,
-						textSubdued:
-							content.theme.textSubdued != null
-								? resolveColor(content.theme.textSubdued)
-								: undefined
-					}
-				: undefined
-	};
+	const [isResolvedContentOk, resolvedContentErr, resolvedContent] =
+		resolveSpotifyEmbedLinkNodeContentMixin(content, {
+			node: cx,
+			tokenMap: cx.site.getTokenMap()
+		});
+	if (!isResolvedContentOk) {
+		return Err(resolvedContentErr.wrapWith('#ERR_RESOLVE_SPOTIFY_EMBED_LINK_NODE_CONTENT'));
+	}
 
 	// Resolve styles
 	const [isResolvedAutoLayoutOk, resolvedAutoLayoutErr, resolvedAutoLayout] =

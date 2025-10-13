@@ -8,14 +8,13 @@ export function resolveBasicLinkNodeContentMixin(
 	content: TBasicLinkNodeContentMixin['value'],
 	cx: TMixinResolveContext
 ): TResult<TResolvedBasicLinkNodeContentMixin['value'], AppError> {
-	const contentImage = content.userImage !== undefined ? content.userImage : content.image;
-	const resolvedContent: TResolvedBasicLinkNodeContentMixin['value'] = {
+	const image = content.userImage !== undefined ? content.userImage : content.image;
+
+	return Ok({
 		type: 'basic',
 		url: content.url,
 		title: content.userTitle ?? content.title,
 		description: content.userDescription ?? content.description,
-		image: contentImage != null ? resolveAsset(contentImage, cx.node.site) : undefined
-	};
-
-	return Ok(resolvedContent);
+		image: image != null ? resolveAsset(image, cx.node.site) : undefined
+	});
 }

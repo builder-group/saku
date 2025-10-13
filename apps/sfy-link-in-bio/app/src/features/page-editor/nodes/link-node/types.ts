@@ -1,5 +1,4 @@
-import { TBaseMixin, TIdMixin, TLinkNodeMixin, TNodeBundle } from '@repo/editor';
-import { TResolvedColor } from '../../lib';
+import { TIdMixin, TLinkNodeMixin, TNodeBundle } from '@repo/editor';
 import {
 	TResolvedAppearanceStyleMixin,
 	TResolvedAutoLayoutStyleMixin,
@@ -7,9 +6,11 @@ import {
 	TResolvedFillStyleMixin,
 	TResolvedImageStyleMixin,
 	TResolvedShadowStyleMixin,
+	TResolvedSpotifyEmbedLinkNodeContentMixin,
 	TResolvedStrokeStyleMixin,
 	TResolvedTextSmStyleMixin,
-	TResolvedTextStyleMixin
+	TResolvedTextStyleMixin,
+	TResolvedYouTubeEmbedLinkNodeContentMixin
 } from '../../mixins';
 
 export type TResolvedLinkNode =
@@ -81,30 +82,3 @@ export type TResolvedSpotifyEmbedLinkNodeBundle = TNodeBundle<
 		TResolvedImageStyleMixin
 	]
 >;
-
-export type TResolvedYouTubeEmbedLinkNodeContentMixin = TBaseMixin<
-	'content',
-	{
-		type: 'youtube-embed';
-		url: string;
-		embedUrl: string;
-	}
->;
-
-export type TResolvedSpotifyEmbedLinkNodeContentMixin = TBaseMixin<
-	'content',
-	{
-		type: 'spotify-embed';
-		url: string;
-		embedUrl: string;
-		height: number;
-		theme?: TResolvedSpotifyEmbedTheme;
-	}
->;
-
-export interface TResolvedSpotifyEmbedTheme {
-	backgroundBase?: TResolvedColor;
-	backgroundTinted?: TResolvedColor;
-	textBase?: TResolvedColor;
-	textSubdued?: TResolvedColor;
-}

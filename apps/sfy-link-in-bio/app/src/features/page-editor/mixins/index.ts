@@ -8,6 +8,8 @@ export * from './flat-children';
 export * from './image-style';
 export * from './product-details-style';
 export * from './shadow-style';
+export * from './spotify-embed-link-node-content';
 export * from './stroke-style';
 export * from './text-style';
 export * from './typography-style';
+export * from './youtube-embed-link-node-content';
