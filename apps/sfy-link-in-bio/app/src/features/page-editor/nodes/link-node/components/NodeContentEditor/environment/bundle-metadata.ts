@@ -37,7 +37,9 @@ export const bundleMetadataMap = {
 					title: node.content.title,
 					userTitle: node.content.userTitle,
 					description: node.content.description,
-					userDescription: node.content.userDescription
+					userDescription: node.content.userDescription,
+					image: node.content.image,
+					userImage: node.content.userImage
 				},
 				autoLayout: node.autoLayout,
 				appearance: node.appearance,
@@ -79,7 +81,8 @@ export const bundleMetadataMap = {
 					title: cx.common.content?.title ?? defaults.content.title,
 					userTitle: cx.common.content?.userTitle,
 					description: cx.common.content?.description,
-					userDescription: cx.common.content?.userDescription
+					userDescription: cx.common.content?.userDescription,
+					userImage: cx.common.content?.userImage
 				},
 				autoLayout: commonAutoLayout ?? defaults.autoLayout,
 				appearance: cx.common.appearance ?? defaults.appearance,
@@ -132,7 +135,9 @@ export const bundleMetadataMap = {
 					title: node.content.title,
 					userTitle: node.content.userTitle,
 					description: node.content.description,
-					userDescription: node.content.userDescription
+					userDescription: node.content.userDescription,
+					image: node.content.image,
+					userImage: node.content.userImage
 				},
 				autoLayout: node.autoLayout,
 				appearance: node.appearance,
@@ -174,7 +179,8 @@ export const bundleMetadataMap = {
 					title: cx.common.content?.title ?? defaults.content.title,
 					userTitle: cx.common.content?.userTitle,
 					description: cx.common.content?.description,
-					userDescription: cx.common.content?.userDescription
+					userDescription: cx.common.content?.userDescription,
+					userImage: cx.common.content?.userImage
 				},
 				autoLayout: commonAutoLayout ?? defaults.autoLayout,
 				appearance: cx.common.appearance ?? defaults.appearance,
@@ -432,6 +438,8 @@ interface TCommonFields {
 		userTitle?: string;
 		description?: string;
 		userDescription?: string;
+		image?: string;
+		userImage?: string | null;
 	};
 	autoLayout?: TAutoLayoutStyleMixin['value'];
 	appearance?: TAppearanceStyleMixin['value'];
