@@ -1,16 +1,17 @@
 import { TMediaNode } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError, computeInnerBorderRadius } from '@/lib';
-import { resolveAsset, TNodeResolveContext } from '../../lib';
+import { TNodeResolveContext } from '../../lib';
 import {
 	resolveAppearanceStyleMixin,
 	resolveAutoLayoutStyleMixin,
 	resolveFillStyleMixin,
 	resolveImageStyleMixin,
 	resolveShadowStyleMixin,
+	resolveSingleMediaNodeContentMixin,
 	resolveStrokeStyleMixin
 } from '../../mixins';
-import { TResolvedMediaNode, TResolvedSingleMediaNodeContentMixin } from './types';
+import { TResolvedMediaNode } from './types';
 
 export function resolveMediaNode(
 	node: TMediaNode,
@@ -19,25 +20,13 @@ export function resolveMediaNode(
 	const { content, autoLayout, appearance, fill, stroke, shadow, image, ...rest } = node;
 
 	// Resolve content
-	let resolvedContent: TResolvedSingleMediaNodeContentMixin['value'];
-	switch (content.type) {
-		case 'single': {
-			let resolvedMedia: TResolvedSingleMediaNodeContentMixin['value']['media'] | undefined;
-			if (content.media != null) {
-				const resolvedAsset = resolveAsset(content.media?.hash, cx.site);
-				if (resolvedAsset != null) {
-					resolvedMedia = {
-						...content.media,
-						src: resolvedAsset.src
-					};
-				}
-			}
-			resolvedContent = {
-				...content,
-				media: resolvedMedia
-			};
-			break;
-		}
+	const [isResolvedContentOk, resolvedContentErr, resolvedContent] =
+		resolveSingleMediaNodeContentMixin(content, {
+			node: cx,
+			tokenMap: cx.site.getTokenMap()
+		});
+	if (!isResolvedContentOk) {
+		return Err(resolvedContentErr.wrapWith('#ERR_RESOLVE_SINGLE_MEDIA_NODE_CONTENT'));
 	}
 
 	// Resolve styles

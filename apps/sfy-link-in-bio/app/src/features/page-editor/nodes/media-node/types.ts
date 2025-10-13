@@ -1,11 +1,11 @@
-import { TBaseMixin, TIdMixin, TMediaNodeMixin, TNodeBundle } from '@repo/editor';
-import { TResolvedAsset } from '../../lib';
+import { TIdMixin, TMediaNodeMixin, TNodeBundle } from '@repo/editor';
 import {
 	TResolvedAppearanceStyleMixin,
 	TResolvedAutoLayoutStyleMixin,
 	TResolvedFillStyleMixin,
 	TResolvedImageStyleMixin,
 	TResolvedShadowStyleMixin,
+	TResolvedSingleMediaNodeContentMixin,
 	TResolvedStrokeStyleMixin
 } from '../../mixins';
 
@@ -24,15 +24,4 @@ export type TResolvedClassicMediaNodeBundle = TNodeBundle<
 		TResolvedShadowStyleMixin,
 		TResolvedImageStyleMixin
 	]
->;
-
-export type TResolvedSingleMediaNodeContentMixin = TBaseMixin<
-	'content',
-	{
-		type: 'single';
-		media?: {
-			type: 'image' | 'video' | 'audio';
-			altText?: string;
-		} & TResolvedAsset;
-	}
 >;

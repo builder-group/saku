@@ -1,6 +1,7 @@
 import React from 'react';
 import { TResolvedNodeProps } from '../../../../lib';
-import { TResolvedClassicMediaNodeBundle, TResolvedSingleMediaNodeContentMixin } from '../../types';
+import { TResolvedSingleMediaNodeContentMixin } from '../../../../mixins';
+import { TResolvedClassicMediaNodeBundle } from '../../types';
 
 export const ClassicContent: React.FC<TClassicContentProps> = (props) => {
 	const {
