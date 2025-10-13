@@ -58,7 +58,7 @@ export const LinkNodeContentEditor: React.FC<TNodeEditorComponentProps<TLinkNode
 	// =========================================================================
 
 	const renderContentEditor = React.useCallback((): React.ReactElement | null => {
-		switch (cx.node._v.bundleType) {
+		switch (selectedBundleType) {
 			case 'classic':
 				return (
 					<ClassicContentEditor
@@ -90,7 +90,7 @@ export const LinkNodeContentEditor: React.FC<TNodeEditorComponentProps<TLinkNode
 			default:
 				return null;
 		}
-	}, [cx]);
+	}, [selectedBundleType, cx]);
 
 	return (
 		<>
