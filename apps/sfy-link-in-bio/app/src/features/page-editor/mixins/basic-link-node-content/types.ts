@@ -8,6 +8,6 @@ export type TResolvedBasicLinkNodeContentMixin = TBaseMixin<
 		url: string;
 		title?: string;
 		description?: string;
-		image?: TResolvedAsset;
+		thumbnail?: TResolvedAsset;
 	}
 >;

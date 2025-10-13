@@ -20,10 +20,8 @@ export const BasicAboutNodeContentMixinEditor = (props: TBasicAboutNodeContentMi
 
 	const content = useFeatureState(state);
 
-	const [profilePictureImageError, setProfilePictureImageError] = React.useState<string | null>(
-		null
-	);
-	const profilePictureImage = React.useMemo(() => {
+	const [profilePictureError, setProfilePictureError] = React.useState<string | null>(null);
+	const profilePicture = React.useMemo(() => {
 		const asset = editor.getImageAsset(content.profilePicture);
 		if (asset == null || asset.storage.type !== 'url') {
 			return undefined;
@@ -205,21 +203,18 @@ export const BasicAboutNodeContentMixinEditor = (props: TBasicAboutNodeContentMi
 	return (
 		<>
 			<div className="space-y-4 border-b border-neutral-200 px-4 py-3">
-				{/* Avatar */}
+				{/* Profile Picture */}
 				<div className="space-y-1">
 					<Text as="span" variant="bodySm" tone="subdued">
-						Avatar
+						Profile Picture
 					</Text>
 					<ImageUploadField
-						image={profilePictureImage}
+						image={profilePicture}
 						onChange={handleProfilePictureChange}
-						onError={setProfilePictureImageError}
+						onError={setProfilePictureError}
 					/>
-					{profilePictureImageError != null && (
-						<InlineError
-							message={profilePictureImageError}
-							fieldID="profile-picture-upload-error"
-						/>
+					{profilePictureError != null && (
+						<InlineError message={profilePictureError} fieldID="profile-picture-upload-error" />
 					)}
 				</div>
 

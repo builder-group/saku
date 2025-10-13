@@ -21,11 +21,11 @@ export const FeaturedContent: React.FC<TSingleContentProps> = (props) => {
 				...shadow?.styles
 			}}
 		>
-			{/* Featured Image */}
+			{/* Thumbnail */}
 			<div className="aspect-video w-full overflow-hidden bg-neutral-200" style={image.styles}>
-				{content.image != null ? (
+				{content.thumbnail != null ? (
 					<img
-						src={content.image.src}
+						src={content.thumbnail.src}
 						alt={content.title ?? 'Featured Image'}
 						className="h-full w-full object-cover"
 						draggable={false}

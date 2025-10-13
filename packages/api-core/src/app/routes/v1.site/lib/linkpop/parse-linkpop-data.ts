@@ -106,11 +106,11 @@ export function parseLinkpopData(linkpopData: TLinkPopData): TSite {
 		for (const link of reversedLinks) {
 			if (link.url != null) {
 				// Create image asset if link has media
-				let imageHash: TAssetHash | undefined;
+				let thumbnailHash: TAssetHash | undefined;
 				if (link.media?.url != null) {
-					const imageAsset = createImageAssetFromUrl(link.media.url);
-					assets.push(imageAsset);
-					imageHash = imageAsset.hash;
+					const thumbnailAsset = createImageAssetFromUrl(link.media.url);
+					assets.push(thumbnailAsset);
+					thumbnailHash = thumbnailAsset.hash;
 				}
 
 				// Determine variant based on __typename
@@ -143,7 +143,7 @@ export function parseLinkpopData(linkpopData: TLinkPopData): TSite {
 								type: 'basic',
 								url: link.url,
 								userTitle: link.title,
-								userImage: imageHash
+								userThumbnail: thumbnailHash
 							};
 						}
 						break;
@@ -175,7 +175,7 @@ export function parseLinkpopData(linkpopData: TLinkPopData): TSite {
 								type: 'basic',
 								url: link.url,
 								userTitle: link.title,
-								userImage: imageHash
+								userThumbnail: thumbnailHash
 							};
 						}
 						break;
@@ -185,7 +185,7 @@ export function parseLinkpopData(linkpopData: TLinkPopData): TSite {
 							type: 'basic',
 							url: link.url,
 							userTitle: link.title,
-							userImage: imageHash
+							userThumbnail: thumbnailHash
 						};
 				}
 

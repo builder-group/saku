@@ -8,15 +8,16 @@ export function resolveBasicLinkNodeContentMixin(
 	content: TBasicLinkNodeContentMixin['value'],
 	cx: TMixinResolveContext
 ): TResult<TResolvedBasicLinkNodeContentMixin['value'], AppError> {
-	const image = content.userImage !== undefined ? content.userImage : content.image;
+	const thumbnail = content.userThumbnail !== undefined ? content.userThumbnail : content.thumbnail;
+	const title = content.userTitle !== undefined ? content.userTitle : content.title;
+	const description =
+		content.userDescription !== undefined ? content.userDescription : content.description;
 
-	const title = content.userTitle ?? content.title;
-	const description = content.userDescription ?? content.description;
 	return Ok({
 		type: 'basic',
 		url: content.url,
 		title: title != null && title.length > 0 ? title : undefined,
 		description: description != null && description.length > 0 ? description : undefined,
-		image: image != null ? resolveAsset(image, cx.node.site) : undefined
+		thumbnail: thumbnail != null ? resolveAsset(thumbnail, cx.node.site) : undefined
 	});
 }

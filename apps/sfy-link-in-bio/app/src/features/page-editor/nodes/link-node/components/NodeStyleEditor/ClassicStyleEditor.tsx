@@ -19,12 +19,10 @@ export const ClassicStyleEditor: React.FC<TNodeEditorComponentProps<TClassicLink
 ) => {
 	const { nodeState, editor } = props;
 
-	const imageStyle = useCompute(nodeState, ({ value }) => {
-		return {
-			enabled: value.content.image != null || value.content.userImage != null,
-			title: 'Image'
-		};
-	});
+	const hasThumbnail = useCompute(
+		nodeState,
+		({ value }) => value.content.thumbnail != null || value.content.userThumbnail != null
+	);
 
 	const autoLayoutState = useNodeProperty(nodeState, 'autoLayout');
 	const appearanceState = useNodeProperty(nodeState, 'appearance');
@@ -100,9 +98,9 @@ export const ClassicStyleEditor: React.FC<TNodeEditorComponentProps<TClassicLink
 				/>
 			</AccordionSection>
 
-			{imageStyle.enabled && (
+			{hasThumbnail && (
 				<AccordionSection
-					title={imageStyle.title}
+					title="Thumbnail"
 					collapsibleClassName="px-0 space-y-3"
 					size="tight"
 					defaultOpen={true}

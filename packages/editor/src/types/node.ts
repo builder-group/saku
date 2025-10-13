@@ -250,11 +250,11 @@ export type TBasicLinkNodeContentMixin = TBaseMixin<
 		// User overrides (take priority)
 		userTitle?: string;
 		userDescription?: string;
-		userImage?: TAssetHash | null; // null = explicitly removed, undefined = not set
+		userThumbnail?: TAssetHash | null; // null = explicitly removed, undefined = not set
 		// Source metadata (fallback)
 		title?: string;
 		description?: string;
-		image?: TAssetHash;
+		thumbnail?: TAssetHash;
 	}
 >;
 

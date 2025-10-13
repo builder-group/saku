@@ -38,8 +38,8 @@ export const bundleMetadataMap = {
 					userTitle: node.content.userTitle,
 					description: node.content.description,
 					userDescription: node.content.userDescription,
-					image: node.content.image,
-					userImage: node.content.userImage
+					thumbnail: node.content.thumbnail,
+					userThumbnail: node.content.userThumbnail
 				},
 				autoLayout: node.autoLayout,
 				appearance: node.appearance,
@@ -82,7 +82,7 @@ export const bundleMetadataMap = {
 					userTitle: cx.common.content?.userTitle,
 					description: cx.common.content?.description,
 					userDescription: cx.common.content?.userDescription,
-					userImage: cx.common.content?.userImage
+					userThumbnail: cx.common.content?.userThumbnail
 				},
 				autoLayout: commonAutoLayout ?? defaults.autoLayout,
 				appearance: cx.common.appearance ?? defaults.appearance,
@@ -107,17 +107,17 @@ export const bundleMetadataMap = {
 				);
 			}
 
-			let imageHash: string | null = null;
+			let faviconHash: string | null = null;
 			if (metadata.favicon != null) {
-				imageHash = cx.editor.registerImage(metadata.favicon, 'favicon');
+				faviconHash = cx.editor.registerImage(metadata.favicon, 'favicon');
 			}
 
 			// Update fields with new metadata
 			const content = cx.node._v.content;
 			content.title = metadata.title;
 			content.description = metadata.description;
-			if (imageHash != null) {
-				content.image = imageHash;
+			if (faviconHash != null) {
+				content.thumbnail = faviconHash;
 			}
 
 			cx.node._notify();
@@ -136,8 +136,8 @@ export const bundleMetadataMap = {
 					userTitle: node.content.userTitle,
 					description: node.content.description,
 					userDescription: node.content.userDescription,
-					image: node.content.image,
-					userImage: node.content.userImage
+					thumbnail: node.content.thumbnail,
+					userThumbnail: node.content.userThumbnail
 				},
 				autoLayout: node.autoLayout,
 				appearance: node.appearance,
@@ -180,7 +180,7 @@ export const bundleMetadataMap = {
 					userTitle: cx.common.content?.userTitle,
 					description: cx.common.content?.description,
 					userDescription: cx.common.content?.userDescription,
-					userImage: cx.common.content?.userImage
+					userThumbnail: cx.common.content?.userThumbnail
 				},
 				autoLayout: commonAutoLayout ?? defaults.autoLayout,
 				appearance: cx.common.appearance ?? defaults.appearance,
@@ -205,17 +205,17 @@ export const bundleMetadataMap = {
 				);
 			}
 
-			let imageHash: string | null = null;
+			let ogImageHash: string | null = null;
 			if (metadata.ogImage != null) {
-				imageHash = cx.editor.registerImage(metadata.ogImage, 'og-image');
+				ogImageHash = cx.editor.registerImage(metadata.ogImage, 'og-image');
 			}
 
 			// Update fields with new metadata
 			const content = cx.node._v.content;
 			content.title = metadata.title;
 			content.description = metadata.description;
-			if (imageHash != null) {
-				content.image = imageHash;
+			if (ogImageHash != null) {
+				content.thumbnail = ogImageHash;
 			}
 
 			cx.node._notify();
@@ -438,8 +438,8 @@ interface TCommonFields {
 		userTitle?: string;
 		description?: string;
 		userDescription?: string;
-		image?: string;
-		userImage?: string | null;
+		thumbnail?: string;
+		userThumbnail?: string | null;
 	};
 	autoLayout?: TAutoLayoutStyleMixin['value'];
 	appearance?: TAppearanceStyleMixin['value'];

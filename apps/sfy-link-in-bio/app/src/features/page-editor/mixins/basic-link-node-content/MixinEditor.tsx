@@ -16,11 +16,11 @@ export const BasicLinkNodeContentMixinEditor = (props: TBasicLinkNodeContentMixi
 	const isEnhancing = useFeatureState(cx.isEnhancingBundle);
 
 	const [displayUrl, setDisplayUrl] = React.useState(content.url);
-	const [imageError, setImageError] = React.useState<string | null>(null);
 
-	const image = React.useMemo(() => {
+	const [thumbnailError, setThumbnailError] = React.useState<string | null>(null);
+	const thumbnail = React.useMemo(() => {
 		const asset = cx.editor.getImageAsset(
-			content.userImage === undefined ? content.image : content.userImage
+			content.userThumbnail === undefined ? content.thumbnail : content.userThumbnail
 		);
 		if (asset == null || asset.storage.type !== 'url') {
 			return undefined;
@@ -30,7 +30,7 @@ export const BasicLinkNodeContentMixinEditor = (props: TBasicLinkNodeContentMixi
 			url: asset.storage.url,
 			fileName: asset.fileName
 		};
-	}, [content.userImage, content.image, cx]);
+	}, [content.userThumbnail, content.thumbnail, cx]);
 
 	const titleValue = React.useMemo(() => {
 		return content.userTitle ?? content.title;
@@ -50,12 +50,12 @@ export const BasicLinkNodeContentMixinEditor = (props: TBasicLinkNodeContentMixi
 			content.userDescription !== content.description,
 		[content.userDescription, content.description]
 	);
-	const canResetImage = React.useMemo(
+	const canResetThumbnail = React.useMemo(
 		() =>
-			content.image !== undefined &&
-			content.userImage !== undefined &&
-			content.userImage !== content.image,
-		[content.userImage, content.image]
+			content.thumbnail !== undefined &&
+			content.userThumbnail !== undefined &&
+			content.userThumbnail !== content.thumbnail,
+		[content.userThumbnail, content.thumbnail]
 	);
 
 	// =========================================================================
@@ -100,19 +100,19 @@ export const BasicLinkNodeContentMixinEditor = (props: TBasicLinkNodeContentMixi
 		state._notify();
 	}, [state]);
 
-	const handleImageChange = React.useCallback(
-		(image: TImageUploadEvent) => {
-			switch (image.type) {
+	const handleThumbnailChange = React.useCallback(
+		(event: TImageUploadEvent) => {
+			switch (event.type) {
 				case 'Changed': {
-					const hash = cx.editor.registerImage(image.url, image.fileName);
+					const hash = cx.editor.registerImage(event.url, event.fileName);
 					if (hash != null) {
-						state._v.userImage = hash;
+						state._v.userThumbnail = hash;
 						state._notify();
 					}
 					break;
 				}
 				case 'Removed': {
-					state._v.userImage = null;
+					state._v.userThumbnail = null;
 					state._notify();
 					break;
 				}
@@ -121,8 +121,8 @@ export const BasicLinkNodeContentMixinEditor = (props: TBasicLinkNodeContentMixi
 		[cx, state]
 	);
 
-	const handleImageReset = React.useCallback(() => {
-		state._v.userImage = undefined;
+	const handleThumbnailReset = React.useCallback(() => {
+		state._v.userThumbnail = undefined;
 		state._notify();
 	}, [state]);
 
@@ -224,20 +224,26 @@ export const BasicLinkNodeContentMixinEditor = (props: TBasicLinkNodeContentMixi
 				/>
 			</div>
 
-			{/* Image */}
+			{/* Thumbnail */}
 			<div className="space-y-1">
 				<div className="flex items-center justify-between">
 					<Text as="span" variant="bodySm" tone="subdued">
-						Image
+						Thumbnail
 					</Text>
-					{canResetImage && (
-						<Button variant="plain" size="micro" onClick={handleImageReset}>
+					{canResetThumbnail && (
+						<Button variant="plain" size="micro" onClick={handleThumbnailReset}>
 							Reset
 						</Button>
 					)}
 				</div>
-				<ImageUploadField image={image} onChange={handleImageChange} onError={setImageError} />
-				{imageError != null && <InlineError message={imageError} fieldID="image-upload-error" />}
+				<ImageUploadField
+					image={thumbnail}
+					onChange={handleThumbnailChange}
+					onError={setThumbnailError}
+				/>
+				{thumbnailError != null && (
+					<InlineError message={thumbnailError} fieldID="thumbnail-upload-error" />
+				)}
 			</div>
 		</div>
 	);

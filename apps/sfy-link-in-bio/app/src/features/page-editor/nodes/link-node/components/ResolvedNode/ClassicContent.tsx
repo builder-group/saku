@@ -22,14 +22,14 @@ export const ClassicContent: React.FC<TSingleContentProps> = (props) => {
 			}}
 		>
 			<div className="flex min-h-12 w-full flex-row items-center gap-2">
-				{/* Featured Image */}
-				{content.image != null && (
+				{/* Thumbnail */}
+				{content.thumbnail != null && (
 					<div
 						className="h-12 w-12 flex-shrink-0 overflow-hidden bg-neutral-100"
 						style={image.styles}
 					>
 						<img
-							src={content.image.src}
+							src={content.thumbnail.src}
 							alt={content.title ?? 'Featured Image'}
 							className="h-full w-full object-cover"
 							draggable={false}
