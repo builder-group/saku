@@ -118,7 +118,7 @@ export type TPageNodeMixin = TBaseMixin<
 // About Node
 // =========================================================================
 
-export type TAboutNode = TClassicAboutNodeBundle;
+export type TAboutNode = TClassicAboutNodeBundle | THeroAboutNodeBundle;
 
 export type TClassicAboutNodeBundle = TNodeBundle<
 	'classic',

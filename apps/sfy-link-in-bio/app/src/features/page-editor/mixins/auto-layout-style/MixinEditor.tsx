@@ -13,12 +13,20 @@ import { TState } from 'feature-state';
 import React from 'react';
 import { unwrapOrUndefined } from 'tuple-result';
 import { useMapState } from '@/hooks';
+import { cn } from '@/lib';
 import { TokenTextInput } from '../../components';
 import { TPageEditor } from '../../lib';
 import { packAutoLayoutTokenRef, unpackAutoLayoutTokenRef } from './pack-mixin';
 
 export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorProps) => {
-	const { state, onLinkToken, disabledTokenLink = false, disabled = false, editor } = props;
+	const {
+		state,
+		onLinkToken,
+		disabledTokenLink = false,
+		disabled = false,
+		editor,
+		className
+	} = props;
 
 	const horizontalPaddingState = useMapState(state, {
 		map(baseValue) {
@@ -107,7 +115,7 @@ export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorPro
 	// =========================================================================
 
 	return (
-		<div className="space-y-3 px-4">
+		<div className={cn('space-y-3 px-4', className)}>
 			<div>
 				<Text as="span" variant="headingXs" tone="subdued">
 					Layout
@@ -201,4 +209,5 @@ interface TAutoLayoutStyleMixinEditorProps {
 	disabledTokenLink?: boolean;
 	disabled?: boolean;
 	editor: TPageEditor;
+	className?: string;
 }

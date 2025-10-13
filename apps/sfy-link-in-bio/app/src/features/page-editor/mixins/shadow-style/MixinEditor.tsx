@@ -32,7 +32,8 @@ export const ShadowStyleMixinEditor = (props: TShadowStyleMixinEditorProps) => {
 		syncedTokenLink = true,
 		disabled = false,
 		disabledSpread = false,
-		editor
+		editor,
+		className
 	} = props;
 
 	const isLinked = useCompute(state, ({ value }) => isTokenRef(value), []);
@@ -242,7 +243,7 @@ export const ShadowStyleMixinEditor = (props: TShadowStyleMixinEditorProps) => {
 	// =========================================================================
 
 	return (
-		<div className="space-y-3 px-4">
+		<div className={cn('space-y-3 px-4', className)}>
 			<div className="flex items-center justify-between">
 				<div className="flex items-center gap-2">
 					{/* Mixin-level inheritance button */}
@@ -480,4 +481,5 @@ interface TShadowStyleMixinEditorProps {
 	disabled?: boolean;
 	disabledSpread?: boolean;
 	editor: TPageEditor;
+	className?: string;
 }

@@ -13,12 +13,20 @@ import { Text } from '@shopify/polaris';
 import { TState } from 'feature-state';
 import React from 'react';
 import { useMapState } from '@/hooks';
+import { cn } from '@/lib';
 import { TokenSelectInput, TokenTextInput } from '../../components';
 import { TPageEditor } from '../../lib';
 import { packTypographyTokenRef, unpackTypographyTokenRef } from './pack-mixin';
 
 export const TypographyStyleMixinEditor = (props: TTypographyStyleMixinEditorProps) => {
-	const { state, onLinkToken, disabledTokenLink = false, disabled = false, editor } = props;
+	const {
+		state,
+		onLinkToken,
+		disabledTokenLink = false,
+		disabled = false,
+		editor,
+		className
+	} = props;
 
 	const fontOptions = React.useMemo(() => {
 		return fontMetadata.map((font) => ({
@@ -107,7 +115,7 @@ export const TypographyStyleMixinEditor = (props: TTypographyStyleMixinEditorPro
 	// =========================================================================
 
 	return (
-		<div className="space-y-3 px-4">
+		<div className={cn('space-y-3 px-4', className)}>
 			<div>
 				<Text as="span" variant="headingXs" tone="subdued">
 					Typography
@@ -171,4 +179,5 @@ interface TTypographyStyleMixinEditorProps {
 	disabledTokenLink?: boolean;
 	disabled?: boolean;
 	editor: TPageEditor;
+	className?: string;
 }

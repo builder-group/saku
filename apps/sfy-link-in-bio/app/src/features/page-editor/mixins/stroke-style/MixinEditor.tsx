@@ -31,7 +31,8 @@ export const StrokeStyleMixinEditor = (props: TStrokeStyleMixinEditorProps) => {
 		disabledTokenLink = false,
 		syncedTokenLink = true,
 		disabled = false,
-		editor
+		editor,
+		className
 	} = props;
 
 	const isLinked = useCompute(state, ({ value }) => isTokenRef(value), []);
@@ -166,7 +167,7 @@ export const StrokeStyleMixinEditor = (props: TStrokeStyleMixinEditorProps) => {
 	// =========================================================================
 
 	return (
-		<div className="space-y-3 px-4">
+		<div className={cn('space-y-3 px-4', className)}>
 			<div className="flex items-center justify-between">
 				<div className="flex items-center gap-2">
 					{/* Mixin-level inheritance button */}
@@ -306,4 +307,5 @@ interface TStrokeStyleMixinEditorProps {
 	syncedTokenLink?: boolean;
 	disabled?: boolean;
 	editor: TPageEditor;
+	className?: string;
 }

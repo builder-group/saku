@@ -16,5 +16,5 @@ export const YoutubeEmbedContentEditor: React.FC<TYoutubeEmbedContentEditorProps
 
 interface TYoutubeEmbedContentEditorProps {
 	cx: TNodeEditorContext<TYouTubeEmbedLinkNodeBundle>;
-	className: string;
+	className?: string;
 }

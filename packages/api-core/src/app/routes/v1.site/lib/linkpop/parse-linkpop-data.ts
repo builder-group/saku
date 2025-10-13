@@ -67,12 +67,12 @@ export function parseLinkpopData(linkpopData: TLinkPopData): TSite {
 
 	// Create about node if we have profile data
 	if (page?.title != null || page?.bio != null) {
-		// Create image asset for profile image if it exists
+		// Create image asset if page has an avatar
 		let avatarHash: string | undefined;
 		if (page?.media?.url != null) {
-			const imageAsset = createImageAssetFromUrl(page.media.url);
-			assets.push(imageAsset);
-			avatarHash = imageAsset.hash;
+			const avatarAsset = createImageAssetFromUrl(page.media.url);
+			assets.push(avatarAsset);
+			avatarHash = avatarAsset.hash;
 		}
 
 		const aboutNode: TClassicAboutNodeBundle = {

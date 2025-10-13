@@ -14,6 +14,7 @@ import React from 'react';
 import { unwrapOrUndefined } from 'tuple-result';
 import { PolarisHideIcon, PolarisViewIcon } from '@/components';
 import { useMapState } from '@/hooks';
+import { cn } from '@/lib';
 import { TokenTextInput } from '../../components';
 import { TPageEditor } from '../../lib';
 import { packAppearanceTokenRef, unpackAppearanceTokenRef } from './pack-mixin';
@@ -25,7 +26,8 @@ export const AppearanceStyleMixinEditor = (props: TAppearanceStyleMixinEditorPro
 		disabledTokenLink = false,
 		disabledVisibilityToggle = false,
 		disabled = false,
-		editor
+		editor,
+		className
 	} = props;
 
 	const visible = useCompute(
@@ -138,7 +140,7 @@ export const AppearanceStyleMixinEditor = (props: TAppearanceStyleMixinEditorPro
 	// =========================================================================
 
 	return (
-		<div className="space-y-3 px-4">
+		<div className={cn('space-y-3 px-4', className)}>
 			<div className="flex items-center justify-between">
 				<Text as="span" variant="headingXs" tone="subdued">
 					Appearance
@@ -214,4 +216,5 @@ interface TAppearanceStyleMixinEditorProps {
 	disabledVisibilityToggle?: boolean;
 	disabled?: boolean;
 	editor: TPageEditor;
+	className?: string;
 }

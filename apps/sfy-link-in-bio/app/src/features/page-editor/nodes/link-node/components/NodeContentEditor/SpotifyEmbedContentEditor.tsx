@@ -16,5 +16,5 @@ export const SpotifyEmbedContentEditor: React.FC<TSpotifyEmbedContentEditorProps
 
 interface TSpotifyEmbedContentEditorProps {
 	cx: TNodeEditorContext<TSpotifyEmbedLinkNodeBundle>;
-	className: string;
+	className?: string;
 }

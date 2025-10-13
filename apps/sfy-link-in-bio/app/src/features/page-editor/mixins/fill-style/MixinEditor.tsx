@@ -32,7 +32,8 @@ export const FillStyleMixinEditor = (props: TFillStyleMixinEditorProps) => {
 		syncedTokenLink = true,
 		disabled = false,
 		allowedPaintTypes,
-		editor
+		editor,
+		className
 	} = props;
 
 	const isLinked = useCompute(state, ({ value }) => isTokenRef(value), []);
@@ -153,7 +154,7 @@ export const FillStyleMixinEditor = (props: TFillStyleMixinEditorProps) => {
 	// =========================================================================
 
 	return (
-		<div className="space-y-3 px-4">
+		<div className={cn('space-y-3 px-4', className)}>
 			<div className="flex items-center justify-between">
 				<div className="flex items-center gap-2">
 					{/* Mixin-level inheritance button */}
@@ -261,4 +262,5 @@ interface TFillStyleMixinEditorProps {
 	disabled?: boolean;
 	allowedPaintTypes?: TTokenPaintInputPaintType[];
 	editor: TPageEditor;
+	className?: string;
 }

@@ -51,7 +51,7 @@ export const bundleMetadataMap = {
 				image: node.image
 			};
 		},
-		async update(cx) {
+		async switch(cx) {
 			const url = cx.node._v.content.url;
 			const defaults = linkNodeMetadata.bundleMap['classic'];
 
@@ -149,7 +149,7 @@ export const bundleMetadataMap = {
 				image: node.image
 			};
 		},
-		async update(cx) {
+		async switch(cx) {
 			const url = cx.node._v.content.url;
 			const defaults = linkNodeMetadata.bundleMap['featured'];
 
@@ -243,7 +243,7 @@ export const bundleMetadataMap = {
 				image: node.image
 			};
 		},
-		async update(cx) {
+		async switch(cx) {
 			const url = cx.node._v.content.url;
 			const youtubeData = extractYouTubeId(url);
 			if (youtubeData == null) {
@@ -322,7 +322,7 @@ export const bundleMetadataMap = {
 				image: node.image
 			};
 		},
-		async update(cx) {
+		async switch(cx) {
 			const url = cx.node._v.content.url;
 			const spotifyData = extractSpotifyId(url);
 			if (spotifyData == null) {
@@ -413,7 +413,7 @@ export interface TBundleMetadata<GNode extends TLinkNode> {
 	/**
 	 * Creates a new node bundle, replacing the entire node with the new bundle
 	 */
-	update: (cx: {
+	switch: (cx: {
 		node: TNodeState<GNode>;
 		common: TCommonFields;
 		editor: TPageEditor;

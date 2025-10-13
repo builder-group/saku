@@ -1,24 +1,16 @@
-import {
-	TClassicLinkNodeBundle,
-	TFeaturedLinkNodeBundle,
-	TLinkNode,
-	TSpotifyEmbedLinkNodeBundle,
-	TYouTubeEmbedLinkNodeBundle
-} from '@repo/editor';
+import { TAboutNode, TClassicAboutNodeBundle, THeroAboutNodeBundle } from '@repo/editor';
 import { Select, Text } from '@shopify/polaris';
-import { useCompute, useFeatureState } from 'feature-react/state';
+import { useCompute, useFeatureState } from 'feature-react';
 import React from 'react';
 import { AccordionSection, JsonPreview, PortalPulse } from '@/components';
 import { TNodeEditorComponentProps } from '../../../../lib';
+import { bundleMetadataMap } from './bundle-metadata';
 import { ClassicContentEditor } from './ClassicContentEditor';
 import { ContentSkeleton } from './ContentSkeleton';
-import { bundleMetadataMap } from './environment';
-import { FeaturedContentEditor } from './FeaturedContentEditor';
-import { createNodeEditorContext, TNodeEditorContext } from './lib';
-import { SpotifyEmbedContentEditor } from './SpotifyEmbedContentEditor';
-import { YoutubeEmbedContentEditor } from './YoutubeEmbedContentEditor';
+import { createNodeEditorContext, TNodeEditorContext } from './create-node-editor-context';
+import { HeroContentEditor } from './HeroContentEditor';
 
-export const LinkNodeContentEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (props) => {
+export const AboutNodeContentEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = (props) => {
 	const { nodeState, editor } = props;
 
 	const cx = React.useMemo(
@@ -41,7 +33,7 @@ export const LinkNodeContentEditor: React.FC<TNodeEditorComponentProps<TLinkNode
 	// =========================================================================
 
 	const handleBundleTypeChange = React.useCallback(
-		(value: TLinkNode['bundleType']) => {
+		(value: TAboutNode['bundleType']) => {
 			cx.switchBundleType(value).then((result) => {
 				if (result.isErr()) {
 					cx.shopify.toast.show('Failed to update variant type', { duration: 3000 });
@@ -58,17 +50,9 @@ export const LinkNodeContentEditor: React.FC<TNodeEditorComponentProps<TLinkNode
 	const renderContentEditor = React.useCallback((): React.ReactElement | null => {
 		switch (selectedBundleType) {
 			case 'classic':
-				return <ClassicContentEditor cx={cx as TNodeEditorContext<TClassicLinkNodeBundle>} />;
-			case 'featured':
-				return <FeaturedContentEditor cx={cx as TNodeEditorContext<TFeaturedLinkNodeBundle>} />;
-			case 'youtube-embed':
-				return (
-					<YoutubeEmbedContentEditor cx={cx as TNodeEditorContext<TYouTubeEmbedLinkNodeBundle>} />
-				);
-			case 'spotify-embed':
-				return (
-					<SpotifyEmbedContentEditor cx={cx as TNodeEditorContext<TSpotifyEmbedLinkNodeBundle>} />
-				);
+				return <ClassicContentEditor cx={cx as TNodeEditorContext<TClassicAboutNodeBundle>} />;
+			case 'hero':
+				return <HeroContentEditor cx={cx as TNodeEditorContext<THeroAboutNodeBundle>} />;
 			default:
 				return null;
 		}

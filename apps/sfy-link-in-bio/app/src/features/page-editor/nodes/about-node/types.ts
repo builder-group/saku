@@ -11,10 +11,27 @@ import {
 	TResolvedTextXlStyleMixin
 } from '../../mixins';
 
-export type TResolvedAboutNode = TResolvedClassicAboutNodeBundle;
+export type TResolvedAboutNode = TResolvedClassicAboutNodeBundle | TResolvedHeroAboutNodeBundle;
 
 export type TResolvedClassicAboutNodeBundle = TNodeBundle<
 	'classic',
+	[
+		TIdMixin,
+		TAboutNodeMixin,
+		TResolvedBasicAboutNodeContentMixin,
+		TResolvedAutoLayoutStyleMixin,
+		TResolvedAppearanceStyleMixin,
+		TResolvedFillStyleMixin,
+		TResolvedStrokeStyleMixin,
+		TResolvedShadowStyleMixin,
+		TResolvedTextXlStyleMixin,
+		TResolvedTextStyleMixin,
+		TResolvedImageStyleMixin
+	]
+>;
+
+export type TResolvedHeroAboutNodeBundle = TNodeBundle<
+	'hero',
 	[
 		TIdMixin,
 		TAboutNodeMixin,

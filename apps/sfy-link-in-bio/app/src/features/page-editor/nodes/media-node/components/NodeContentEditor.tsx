@@ -17,7 +17,11 @@ export const MediaNodeContentEditor: React.FC<TNodeEditorComponentProps<TMediaNo
 
 	return (
 		<>
-			<SingleMediaNodeContentMixinEditor state={contentState} editor={editor} />
+			<SingleMediaNodeContentMixinEditor
+				state={contentState}
+				editor={editor}
+				className="border-b border-neutral-200 py-3"
+			/>
 
 			{/* Debug Section */}
 			{editor.isDebug() && (

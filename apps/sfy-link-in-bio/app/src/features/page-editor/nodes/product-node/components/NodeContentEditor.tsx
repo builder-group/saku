@@ -19,7 +19,11 @@ export const ProductNodeContentEditor: React.FC<TNodeEditorComponentProps<TProdu
 
 	return (
 		<>
-			<SingleProductNodeContentMixinEditor state={contentState} editor={editor} />
+			<SingleProductNodeContentMixinEditor
+				state={contentState}
+				editor={editor}
+				className="border-b border-neutral-200 py-3"
+			/>
 
 			{/* Debug Section */}
 			{editor.isDebug() && (

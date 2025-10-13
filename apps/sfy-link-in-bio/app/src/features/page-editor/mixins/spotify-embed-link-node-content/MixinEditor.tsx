@@ -11,7 +11,6 @@ import { TState } from 'feature-state';
 import React from 'react';
 import { TResult } from 'tuple-result';
 import { AppError, cn } from '@/lib';
-import { TPageEditor } from '../../lib';
 
 export const SpotifyEmbedLinkNodeContentMixinEditor = (
 	props: TSpotifyEmbedLinkNodeContentMixinEditorProps
@@ -163,7 +162,7 @@ export const SpotifyEmbedLinkNodeContentMixinEditor = (
 	// =========================================================================
 
 	return (
-		<div className={cn('space-y-3 px-4 py-3', className)}>
+		<div className={cn('space-y-3 px-4', className)}>
 			<div>
 				<Text as="span" variant="headingXs" tone="subdued">
 					Content {isEnhancing && '(enhancing...)'}
@@ -241,7 +240,6 @@ export const SpotifyEmbedLinkNodeContentMixinEditor = (
 interface TSpotifyEmbedLinkNodeContentMixinEditorProps {
 	state: TState<TSpotifyEmbedLinkNodeContentMixin['value'], any>;
 	cx: {
-		editor: TPageEditor;
 		isEnhancingBundle: TState<boolean, []>;
 		shopify: ShopifyGlobal;
 		updateUrlAndEnhance: (newUrl: string) => Promise<TResult<void, AppError>>;

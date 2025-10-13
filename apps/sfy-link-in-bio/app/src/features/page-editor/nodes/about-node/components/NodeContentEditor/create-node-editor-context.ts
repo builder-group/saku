@@ -1,18 +1,12 @@
-import { parseUrl, TLinkNode } from '@repo/editor';
+import { TAboutNode } from '@repo/editor';
 import { ShopifyGlobal } from '@shopify/app-bridge-react';
 import { createState, TState } from 'feature-state';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
-import { TNodeState, TPageEditor } from '../../../../../lib';
-import {
-	bundleMetadata,
-	bundleMetadataMap,
-	bundlePriority,
-	TBundleMetadata,
-	TBundleType
-} from '../environment';
+import { TNodeState, TPageEditor } from '../../../../lib';
+import { bundleMetadata, bundleMetadataMap, TBundleMetadata, TBundleType } from './bundle-metadata';
 
-export function createNodeEditorContext<GNode extends TLinkNode>(
+export function createNodeEditorContext<GNode extends TAboutNode>(
 	config: TCreateNodeEditorContextConfig<GNode>
 ): TNodeEditorContext<GNode> {
 	const { node, editor } = config;
@@ -23,9 +17,7 @@ export function createNodeEditorContext<GNode extends TLinkNode>(
 		shopify: editor.shopify,
 		selectedBundleType: createState<TBundleType>(node._v.bundleType),
 		applicableBundleTypes: createState(
-			bundleMetadata
-				.filter((variant) => variant.isApplicable(node._v.content.url))
-				.map((variant) => variant.type)
+			bundleMetadata.filter((variant) => variant.isApplicable()).map((variant) => variant.type)
 		),
 		isSwitchingBundle: createState(false),
 		isEnhancingBundle: createState(false),
@@ -74,63 +66,16 @@ export function createNodeEditorContext<GNode extends TLinkNode>(
 			this.isEnhancingBundle.set(false);
 
 			return result;
-		},
-
-		async updateUrlAndEnhance(this: TNodeEditorContext<GNode>, newUrl) {
-			if (newUrl === this.node._v.content.url) {
-				return Ok(undefined);
-			}
-
-			const bundleType = this.selectedBundleType._v;
-
-			// Normalize url
-			let normalizedUrl = newUrl.trim();
-			if (normalizedUrl.length > 0 && !normalizedUrl.match(/^https?:\/\//)) {
-				normalizedUrl = `https://${normalizedUrl}`;
-			}
-
-			// Check if this is a major URL change
-			const current = parseUrl(this.node._v.content.url);
-			const updated = parseUrl(newUrl);
-			const isMajorChange = current?.hostname !== updated?.hostname;
-
-			// Update url in node
-			this.node._v.content.url = normalizedUrl;
-			this.node._notify({ listenerContext: { source: 'apply-url-and-enhance' } });
-
-			// Only switch bundles on major changes
-			if (isMajorChange) {
-				// Get applicable bundles for the new URL
-				const applicableBundles = bundleMetadata
-					.filter((variant) => variant.isApplicable(normalizedUrl))
-					.map((variant) => variant.type);
-				this.applicableBundleTypes.set(applicableBundles);
-
-				// Auto-switch to best applicable bundle (prioritize more specific types)
-				const bestVariant =
-					bundlePriority.find((type) => applicableBundles.includes(type)) ?? applicableBundles[0];
-				if (bestVariant != null && bestVariant !== bundleType) {
-					return await this.switchBundleType(bestVariant);
-				}
-			}
-
-			// Enhance bundle
-			const enhanceResult = await this.enhanceBundle(bundleType);
-			if (enhanceResult.isErr()) {
-				return enhanceResult;
-			}
-
-			return Ok(undefined);
 		}
 	};
 }
 
-export interface TCreateNodeEditorContextConfig<GNode extends TLinkNode> {
+export interface TCreateNodeEditorContextConfig<GNode extends TAboutNode> {
 	node: TNodeState<GNode>;
 	editor: TPageEditor;
 }
 
-export interface TNodeEditorContext<GNode extends TLinkNode> {
+export interface TNodeEditorContext<GNode extends TAboutNode> {
 	node: TNodeState<GNode>;
 	editor: TPageEditor;
 	shopify: ShopifyGlobal;
@@ -140,5 +85,4 @@ export interface TNodeEditorContext<GNode extends TLinkNode> {
 	isEnhancingBundle: TState<boolean, []>;
 	switchBundleType: (bundleType: TBundleType) => Promise<TResult<void, AppError>>;
 	enhanceBundle: (bundleType?: TBundleType) => Promise<TResult<void, AppError>>;
-	updateUrlAndEnhance: (newUrl: string) => Promise<TResult<void, AppError>>;
 }

@@ -14,5 +14,5 @@ export const FeaturedContentEditor: React.FC<TFeaturedContentEditorProps> = (pro
 
 interface TFeaturedContentEditorProps {
 	cx: TNodeEditorContext<TFeaturedLinkNodeBundle>;
-	className: string;
+	className?: string;
 }

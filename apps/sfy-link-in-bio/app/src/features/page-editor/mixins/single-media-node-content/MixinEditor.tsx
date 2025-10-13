@@ -4,13 +4,14 @@ import { useFeatureState } from 'feature-react';
 import { TState } from 'feature-state';
 import React from 'react';
 import { ImageUploadField, TImageUploadEvent } from '@/components';
+import { cn } from '@/lib';
 import { TPageEditor } from '../../lib';
 import { TResolvedMedia } from './types';
 
 export const SingleMediaNodeContentMixinEditor = (
 	props: TSingleMediaNodeContentMixinEditorProps
 ) => {
-	const { state, editor } = props;
+	const { state, editor, className } = props;
 
 	const content = useFeatureState(state);
 
@@ -77,40 +78,38 @@ export const SingleMediaNodeContentMixinEditor = (
 	// =========================================================================
 
 	return (
-		<div className="space-y-4 border-b border-neutral-200 px-4 py-3">
-			<div className="space-y-4">
-				{/* Media Type */}
+		<div className={cn('space-y-3 px-4', className)}>
+			{/* Media Type */}
+			<div className="space-y-1">
+				<Text as="span" variant="bodySm" tone="subdued">
+					Media type
+				</Text>
+				<Select
+					id="media-type-field"
+					label="Media type"
+					labelHidden
+					options={mediaTypeOptions}
+					value={selectedMediaType}
+					onChange={handleMediaTypeChange}
+				/>
+			</div>
+
+			{/* Image */}
+			{selectedMediaType === 'image' && (
 				<div className="space-y-1">
 					<Text as="span" variant="bodySm" tone="subdued">
-						Media type
+						Image
 					</Text>
-					<Select
-						id="media-type-field"
-						label="Media type"
-						labelHidden
-						options={mediaTypeOptions}
-						value={selectedMediaType}
-						onChange={handleMediaTypeChange}
+					<ImageUploadField
+						image={mediaImage}
+						onChange={handleMediaImageChange}
+						onError={setImageError}
 					/>
+					{mediaImageError != null && (
+						<InlineError message={mediaImageError} fieldID="media-upload-error" />
+					)}
 				</div>
-
-				{/* Image */}
-				{selectedMediaType === 'image' && (
-					<div className="space-y-1">
-						<Text as="span" variant="bodySm" tone="subdued">
-							Image
-						</Text>
-						<ImageUploadField
-							image={mediaImage}
-							onChange={handleMediaImageChange}
-							onError={setImageError}
-						/>
-						{mediaImageError != null && (
-							<InlineError message={mediaImageError} fieldID="media-upload-error" />
-						)}
-					</div>
-				)}
-			</div>
+			)}
 		</div>
 	);
 };
@@ -118,4 +117,5 @@ export const SingleMediaNodeContentMixinEditor = (
 interface TSingleMediaNodeContentMixinEditorProps {
 	state: TState<TSingleMediaNodeContentMixin['value'], any>;
 	editor: TPageEditor;
+	className?: string;
 }

@@ -12,11 +12,12 @@ import { InlineError, Text, TextField } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react';
 import { TState } from 'feature-state';
 import React from 'react';
-import { AccordionSection, ImageUploadField, TImageUploadEvent } from '@/components';
+import { ImageUploadField, TImageUploadEvent } from '@/components';
+import { cn } from '@/lib';
 import { TPageEditor } from '../../lib';
 
 export const BasicAboutNodeContentMixinEditor = (props: TBasicAboutNodeContentMixinEditorProps) => {
-	const { state, editor } = props;
+	const { state, editor, className } = props;
 
 	const content = useFeatureState(state);
 
@@ -201,94 +202,102 @@ export const BasicAboutNodeContentMixinEditor = (props: TBasicAboutNodeContentMi
 	// =========================================================================
 
 	return (
-		<>
-			<div className="space-y-4 border-b border-neutral-200 px-4 py-3">
-				{/* Avatar */}
-				<div className="space-y-1">
-					<Text as="span" variant="bodySm" tone="subdued">
-						Avatar
-					</Text>
-					<ImageUploadField image={avatar} onChange={handleAvatarChange} onError={setAvatarError} />
-					{avatarError != null && (
-						<InlineError message={avatarError} fieldID="profile-picture-upload-error" />
-					)}
-				</div>
-
-				{/* Name */}
-				<div className="space-y-1">
-					<Text as="span" variant="bodySm" tone="subdued">
-						Name
-					</Text>
-					<TextField
-						id="name-field"
-						label="Name"
-						labelHidden
-						value={content.name}
-						onChange={handleNameChange}
-						autoComplete="off"
-						placeholder="Enter your name"
-					/>
-				</div>
-
-				{/* Bio */}
-				<div className="space-y-1">
-					<Text as="span" variant="bodySm" tone="subdued">
-						Bio
-					</Text>
-					<TextField
-						id="bio-field"
-						label="Bio"
-						labelHidden
-						value={content.bio}
-						onChange={handleBioChange}
-						multiline={4}
-						autoComplete="off"
-						placeholder="Tell us about yourself"
-					/>
-				</div>
+		<div className={cn('space-y-3 px-4', className)}>
+			<div>
+				<Text as="span" variant="headingXs" tone="subdued">
+					Content
+				</Text>
 			</div>
 
-			{/* Contact Section */}
-			<AccordionSection title="Contact" defaultOpen={false}>
-				<div className="space-y-3">
-					{contactValues.map(({ key, value, metadata }) => {
-						return (
-							<div key={key} className="space-y-1">
-								<Text as="span" variant="bodySm" tone="subdued">
-									{metadata.label}
-								</Text>
-								<TextField
-									id={`${key}-field`}
-									label={metadata.label}
-									labelHidden
-									value={value}
-									onChange={(newValue) => {
-										switch (metadata.type) {
-											case 'social':
-												handleContactChange({
-													type: 'social',
-													key,
-													value: newValue,
-													provider: metadata.provider
-												});
-												break;
-											default:
-												handleContactChange({ type: metadata.type, key, value: newValue });
-										}
-									}}
-									autoComplete="off"
-									placeholder={metadata.placeholder}
-								/>
-							</div>
-						);
-					})}
-				</div>
-			</AccordionSection>
-		</>
+			{/* Avatar */}
+			<div className="space-y-1">
+				<Text as="span" variant="bodySm" tone="subdued">
+					Avatar
+				</Text>
+				<ImageUploadField image={avatar} onChange={handleAvatarChange} onError={setAvatarError} />
+				{avatarError != null && (
+					<InlineError message={avatarError} fieldID="profile-picture-upload-error" />
+				)}
+			</div>
+
+			{/* Name */}
+			<div className="space-y-1">
+				<Text as="span" variant="bodySm" tone="subdued">
+					Name
+				</Text>
+				<TextField
+					id="name-field"
+					label="Name"
+					labelHidden
+					value={content.name}
+					onChange={handleNameChange}
+					autoComplete="off"
+					placeholder="Enter your name"
+				/>
+			</div>
+
+			{/* Bio */}
+			<div className="space-y-1">
+				<Text as="span" variant="bodySm" tone="subdued">
+					Bio
+				</Text>
+				<TextField
+					id="bio-field"
+					label="Bio"
+					labelHidden
+					value={content.bio}
+					onChange={handleBioChange}
+					multiline={4}
+					autoComplete="off"
+					placeholder="Tell us about yourself"
+				/>
+			</div>
+
+			{/* Contact */}
+			<div>
+				<Text as="span" variant="headingXs" tone="subdued">
+					Contact
+				</Text>
+			</div>
+			<div className="space-y-3">
+				{contactValues.map(({ key, value, metadata }) => {
+					return (
+						<div key={key} className="space-y-1">
+							<Text as="span" variant="bodySm" tone="subdued">
+								{metadata.label}
+							</Text>
+							<TextField
+								id={`${key}-field`}
+								label={metadata.label}
+								labelHidden
+								value={value}
+								onChange={(newValue) => {
+									switch (metadata.type) {
+										case 'social':
+											handleContactChange({
+												type: 'social',
+												key,
+												value: newValue,
+												provider: metadata.provider
+											});
+											break;
+										default:
+											handleContactChange({ type: metadata.type, key, value: newValue });
+									}
+								}}
+								autoComplete="off"
+								placeholder={metadata.placeholder}
+							/>
+						</div>
+					);
+				})}
+			</div>
+		</div>
 	);
 };
 
 interface TBasicAboutNodeContentMixinEditorProps {
 	state: TState<TBasicAboutNodeContentMixin['value'], any>;
 	editor: TPageEditor;
+	className?: string;
 }

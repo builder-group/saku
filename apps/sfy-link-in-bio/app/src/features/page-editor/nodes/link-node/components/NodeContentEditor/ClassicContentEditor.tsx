@@ -14,5 +14,5 @@ export const ClassicContentEditor: React.FC<TClassicContentEditorProps> = (props
 
 interface TClassicContentEditorProps {
 	cx: TNodeEditorContext<TClassicLinkNodeBundle>;
-	className: string;
+	className?: string;
 }

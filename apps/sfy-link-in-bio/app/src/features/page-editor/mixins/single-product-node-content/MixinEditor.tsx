@@ -5,13 +5,14 @@ import { useFeatureState } from 'feature-react/state';
 import { TState } from 'feature-state';
 import React from 'react';
 import { PolarisDeleteIcon, PolarisProductAddIcon } from '@/components';
+import { cn } from '@/lib';
 import { capitalizeFirstLetter, isProduct, mutateWithReferenceUpdate } from '../../../../lib';
 import { TPageEditor } from '../../lib';
 
 export const SingleProductNodeContentMixinEditor = (
 	props: TSingleProductNodeContentMixinEditorProps
 ) => {
-	const { state, editor } = props;
+	const { state, editor, className } = props;
 
 	const content = useFeatureState(state);
 
@@ -179,29 +180,28 @@ export const SingleProductNodeContentMixinEditor = (
 	// =========================================================================
 
 	return (
-		<div className="space-y-4 border-b border-neutral-200 px-4 py-3">
-			<div className="space-y-4">
-				<div className="space-y-1">
-					<div className="flex items-center justify-between">
-						<Text as="span" variant="bodySm" tone="subdued">
-							Product
-						</Text>
-						{canChangeProduct && (
-							<Button variant="plain" size="micro" onClick={handleSelectProduct}>
-								Change Product
-							</Button>
-						)}
-					</div>
+		<div className={cn('space-y-3 px-4', className)}>
+			<div className="space-y-1">
+				<div className="flex items-center justify-between">
+					<Text as="span" variant="bodySm" tone="subdued">
+						Product
+					</Text>
+					{canChangeProduct && (
+						<Button variant="plain" size="micro" onClick={handleSelectProduct}>
+							Change Product
+						</Button>
+					)}
+				</div>
 
-					{content.product != null ? (
-						<div className="overflow-hidden rounded-md border border-neutral-200 bg-white">
-							<Scrollable
-								// Note: Using style because "Scrollable" doesn't consider Tailwind classes
-								style={{ maxHeight: 256 }}
-							>
-								<div className="h-full w-full overflow-hidden">
-									<style>
-										{`
+				{content.product != null ? (
+					<div className="overflow-hidden rounded-md border border-neutral-200 bg-white">
+						<Scrollable
+							// Note: Using style because "Scrollable" doesn't consider Tailwind classes
+							style={{ maxHeight: 256 }}
+						>
+							<div className="h-full w-full overflow-hidden">
+								<style>
+									{`
 												.Polaris-IndexTable__TableRow.Polaris-IndexTable__TableRow--subheader,
 												.Polaris-IndexTable__TableRow.Polaris-IndexTable__TableRow--subheader .Polaris-IndexTable__TableCell:first-child,
 												.Polaris-IndexTable__TableRow.Polaris-IndexTable__TableRow--subheader .Polaris-IndexTable__TableCell--first,
@@ -212,127 +212,121 @@ export const SingleProductNodeContentMixinEditor = (
 													border: 0 !important;
 												}
 											`}
-									</style>
-									<IndexTable
-										resourceName={resourceName}
-										itemCount={variantRows.length}
-										selectedItemsCount={allResourcesSelected ? 'All' : selectedResources.length}
-										onSelectionChange={handleSelectionChange}
-										headings={[{ title: '', hidden: true }]}
-										bulkActions={bulkActions}
-										condensed // Condensed because non condensed has buggy sticky table header
+								</style>
+								<IndexTable
+									resourceName={resourceName}
+									itemCount={variantRows.length}
+									selectedItemsCount={allResourcesSelected ? 'All' : selectedResources.length}
+									onSelectionChange={handleSelectionChange}
+									headings={[{ title: '', hidden: true }]}
+									bulkActions={bulkActions}
+									condensed // Condensed because non condensed has buggy sticky table header
+								>
+									{/* Product subheader at position 0 */}
+									<IndexTable.Row
+										rowType="subheader"
+										id="product-subheader"
+										position={0}
+										disabled={true}
 									>
-										{/* Product subheader at position 0 */}
+										<IndexTable.Cell colSpan={1} scope="colgroup" as="th" id="product-subheader">
+											Product
+										</IndexTable.Cell>
+									</IndexTable.Row>
+									{/* Product row as a disabled IndexTable.Row at position 1 */}
+									{content.product && (
 										<IndexTable.Row
-											rowType="subheader"
-											id="product-subheader"
-											position={0}
+											id={content.product.id}
+											key={content.product.id}
+											selected={false}
+											position={1}
 											disabled={true}
 										>
-											<IndexTable.Cell colSpan={1} scope="colgroup" as="th" id="product-subheader">
-												Product
+											<IndexTable.Cell className="flex w-full flex-row items-center gap-3 p-2">
+												{productImages[0] != null ? (
+													<img
+														src={productImages[0].url}
+														alt={productImages[0].fileName}
+														className="h-10 w-10 flex-shrink-0 rounded-md bg-neutral-100 object-cover"
+													/>
+												) : (
+													<div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-md bg-neutral-100 text-xs text-gray-400">
+														N/A
+													</div>
+												)}
+												<div className="flex flex-1 flex-col justify-center">
+													<div className="flex flex-row items-center justify-between">
+														<Text as="span" variant="bodyMd" fontWeight="semibold">
+															{content.product.title}
+														</Text>
+													</div>
+												</div>
 											</IndexTable.Cell>
 										</IndexTable.Row>
-										{/* Product row as a disabled IndexTable.Row at position 1 */}
-										{content.product && (
-											<IndexTable.Row
-												id={content.product.id}
-												key={content.product.id}
-												selected={false}
-												position={1}
-												disabled={true}
-											>
-												<IndexTable.Cell className="flex w-full flex-row items-center gap-3 p-2">
-													{productImages[0] != null ? (
-														<img
-															src={productImages[0].url}
-															alt={productImages[0].fileName}
-															className="h-10 w-10 flex-shrink-0 rounded-md bg-neutral-100 object-cover"
-														/>
-													) : (
-														<div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-md bg-neutral-100 text-xs text-gray-400">
-															N/A
-														</div>
-													)}
-													<div className="flex flex-1 flex-col justify-center">
-														<div className="flex flex-row items-center justify-between">
-															<Text as="span" variant="bodyMd" fontWeight="semibold">
-																{content.product.title}
-															</Text>
-														</div>
+									)}
+									{/* Subheader for variants at position 2 */}
+									{variantRows.length > 0 && (
+										<IndexTable.Row
+											rowType="subheader"
+											id="variants-subheader"
+											position={2}
+											selectionRange={[0, variantRows.length]}
+											selected={variantsSubheaderSelected}
+										>
+											<IndexTable.Cell colSpan={1} scope="colgroup" as="th" id="variants-subheader">
+												{variantRows.length > 1
+													? capitalizeFirstLetter(resourceName.plural)
+													: capitalizeFirstLetter(resourceName.singular)}
+											</IndexTable.Cell>
+										</IndexTable.Row>
+									)}
+									{/* Variant rows at positions 3+ */}
+									{variantRows.map((row, index) => (
+										<IndexTable.Row
+											id={row.id}
+											key={row.id}
+											selected={selectedResources.includes(row.id)}
+											position={3 + index}
+										>
+											<IndexTable.Cell className="flex w-full flex-row items-center gap-3 p-2">
+												{row.image != null ? (
+													<img
+														src={row.image.url}
+														alt={row.image.fileName}
+														className="h-10 w-10 flex-shrink-0 rounded-md bg-neutral-100 object-cover"
+													/>
+												) : (
+													<div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-md bg-neutral-100 text-xs text-gray-400">
+														N/A
 													</div>
-												</IndexTable.Cell>
-											</IndexTable.Row>
-										)}
-										{/* Subheader for variants at position 2 */}
-										{variantRows.length > 0 && (
-											<IndexTable.Row
-												rowType="subheader"
-												id="variants-subheader"
-												position={2}
-												selectionRange={[0, variantRows.length]}
-												selected={variantsSubheaderSelected}
-											>
-												<IndexTable.Cell
-													colSpan={1}
-													scope="colgroup"
-													as="th"
-													id="variants-subheader"
-												>
-													{variantRows.length > 1
-														? capitalizeFirstLetter(resourceName.plural)
-														: capitalizeFirstLetter(resourceName.singular)}
-												</IndexTable.Cell>
-											</IndexTable.Row>
-										)}
-										{/* Variant rows at positions 3+ */}
-										{variantRows.map((row, index) => (
-											<IndexTable.Row
-												id={row.id}
-												key={row.id}
-												selected={selectedResources.includes(row.id)}
-												position={3 + index}
-											>
-												<IndexTable.Cell className="flex w-full flex-row items-center gap-3 p-2">
-													{row.image != null ? (
-														<img
-															src={row.image.url}
-															alt={row.image.fileName}
-															className="h-10 w-10 flex-shrink-0 rounded-md bg-neutral-100 object-cover"
-														/>
-													) : (
-														<div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-md bg-neutral-100 text-xs text-gray-400">
-															N/A
-														</div>
-													)}
-													<div className="flex flex-1 flex-col justify-center">
-														<div className="flex flex-row items-center justify-between">
-															<Text as="span" variant="bodyMd" fontWeight="semibold">
-																{row.title}
-															</Text>
-															<Text as="span" variant="bodyMd" alignment="end">
-																{row.price}
-															</Text>
-														</div>
-														{row.variantTitle != null && (
-															<Text as="span" variant="bodySm" tone="subdued">
-																{row.variantTitle}
-															</Text>
-														)}
+												)}
+												<div className="flex flex-1 flex-col justify-center">
+													<div className="flex flex-row items-center justify-between">
+														<Text as="span" variant="bodyMd" fontWeight="semibold">
+															{row.title}
+														</Text>
+														<Text as="span" variant="bodyMd" alignment="end">
+															{row.price}
+														</Text>
 													</div>
-												</IndexTable.Cell>
-											</IndexTable.Row>
-										))}
-									</IndexTable>
-								</div>
-							</Scrollable>
-						</div>
-					) : (
-						<Button onClick={handleSelectProduct} variant="secondary" icon={PolarisProductAddIcon}>
-							Select Product
-						</Button>
-					)}
-				</div>
+													{row.variantTitle != null && (
+														<Text as="span" variant="bodySm" tone="subdued">
+															{row.variantTitle}
+														</Text>
+													)}
+												</div>
+											</IndexTable.Cell>
+										</IndexTable.Row>
+									))}
+								</IndexTable>
+							</div>
+						</Scrollable>
+					</div>
+				) : (
+					<Button onClick={handleSelectProduct} variant="secondary" icon={PolarisProductAddIcon}>
+						Select Product
+					</Button>
+				)}
 			</div>
 		</div>
 	);
@@ -341,6 +335,7 @@ export const SingleProductNodeContentMixinEditor = (
 interface TSingleProductNodeContentMixinEditorProps {
 	state: TState<TSingleProductNodeContentMixin['value'], any>;
 	editor: TPageEditor;
+	className?: string;
 }
 
 interface TProductVariantRow {

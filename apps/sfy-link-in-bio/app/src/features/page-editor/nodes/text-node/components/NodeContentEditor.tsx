@@ -17,7 +17,11 @@ export const TextNodeContentEditor: React.FC<TNodeEditorComponentProps<TTextNode
 
 	return (
 		<>
-			<RichTextNodeContentMixinEditor state={contentState} editor={editor} />
+			<RichTextNodeContentMixinEditor
+				state={contentState}
+				editor={editor}
+				className="border-b border-neutral-200 py-3"
+			/>
 
 			{/* Debug Section */}
 			{editor.isDebug() && (

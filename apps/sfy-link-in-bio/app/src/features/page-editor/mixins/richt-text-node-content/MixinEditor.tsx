@@ -3,10 +3,11 @@ import { Select, Text, TextField } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react';
 import { TState } from 'feature-state';
 import React from 'react';
+import { cn } from '@/lib';
 import { TPageEditor } from '../../lib';
 
 export const RichTextNodeContentMixinEditor = (props: TRichTextNodeContentMixinEditorProps) => {
-	const { state, editor } = props;
+	const { state, editor, className } = props;
 
 	const content = useFeatureState(state);
 
@@ -51,39 +52,37 @@ export const RichTextNodeContentMixinEditor = (props: TRichTextNodeContentMixinE
 	// =========================================================================
 
 	return (
-		<div className="space-y-4 border-b border-neutral-200 px-4 py-3">
-			<div className="space-y-4">
-				{/* Format */}
-				<div className="space-y-1">
-					<Text as="span" variant="bodySm" tone="subdued">
-						Format
-					</Text>
-					<Select
-						id="text-format-field"
-						label="Format"
-						labelHidden
-						options={formatOptions}
-						value={selectedFormat}
-						onChange={handleFormatChange}
-					/>
-				</div>
+		<div className={cn('space-y-3 px-4', className)}>
+			{/* Format */}
+			<div className="space-y-1">
+				<Text as="span" variant="bodySm" tone="subdued">
+					Format
+				</Text>
+				<Select
+					id="text-format-field"
+					label="Format"
+					labelHidden
+					options={formatOptions}
+					value={selectedFormat}
+					onChange={handleFormatChange}
+				/>
+			</div>
 
-				{/* Text */}
-				<div className="space-y-1">
-					<Text as="span" variant="bodySm" tone="subdued">
-						Text
-					</Text>
-					<TextField
-						id="text-field"
-						label="Text"
-						labelHidden
-						value={content.text.value}
-						onChange={handleTextChange}
-						multiline={4}
-						autoComplete="off"
-						placeholder="Add your text here"
-					/>
-				</div>
+			{/* Text */}
+			<div className="space-y-1">
+				<Text as="span" variant="bodySm" tone="subdued">
+					Text
+				</Text>
+				<TextField
+					id="text-field"
+					label="Text"
+					labelHidden
+					value={content.text.value}
+					onChange={handleTextChange}
+					multiline={4}
+					autoComplete="off"
+					placeholder="Add your text here"
+				/>
 			</div>
 		</div>
 	);
@@ -92,4 +91,5 @@ export const RichTextNodeContentMixinEditor = (props: TRichTextNodeContentMixinE
 interface TRichTextNodeContentMixinEditorProps {
 	state: TState<TRichTextNodeContentMixin['value'], any>;
 	editor: TPageEditor;
+	className?: string;
 }
