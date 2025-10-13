@@ -12,6 +12,7 @@ export const SingleMediaNodeContentMixinEditor = (
 	const { state, editor } = props;
 
 	const content = useFeatureState(state);
+
 	const [selectedMediaType, setSelectedMediaType] = React.useState<TMediaType>(() => {
 		return content.media?.type ?? 'image';
 	});

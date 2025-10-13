@@ -1,17 +1,18 @@
 import { TAboutNode } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
-import { resolveAsset, TNodeResolveContext } from '../../lib';
+import { TNodeResolveContext } from '../../lib';
 import {
 	resolveAppearanceStyleMixin,
 	resolveAutoLayoutStyleMixin,
+	resolveBasicAboutNodeContentMixin,
 	resolveFillStyleMixin,
 	resolveImageStyleMixin,
 	resolveShadowStyleMixin,
 	resolveStrokeStyleMixin,
 	resolveTextStyleMixin
 } from '../../mixins';
-import { TResolvedAboutNode, TResolvedBasicAboutNodeContentMixin } from './types';
+import { TResolvedAboutNode } from './types';
 
 export function resolveAboutNode(
 	node: TAboutNode,
@@ -21,15 +22,13 @@ export function resolveAboutNode(
 		node;
 
 	// Resolve content
-	let resolvedContent: TResolvedBasicAboutNodeContentMixin['value'];
-	switch (content.type) {
-		case 'basic': {
-			resolvedContent = {
-				...content,
-				profilePicture:
-					content.profilePicture != null ? resolveAsset(content.profilePicture, cx.site) : undefined
-			};
-		}
+	const [isResolvedContentOk, resolvedContentErr, resolvedContent] =
+		resolveBasicAboutNodeContentMixin(content, {
+			node: cx,
+			tokenMap: cx.site.getTokenMap()
+		});
+	if (!isResolvedContentOk) {
+		return Err(resolvedContentErr.wrapWith('#ERR_RESOLVE_BASIC_ABOUT_NODE_CONTENT'));
 	}
 
 	// Resolve styles

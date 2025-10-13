@@ -1,8 +1,8 @@
-import { TAboutNodeMixin, TBaseMixin, TContactIcon, TIdMixin, TNodeBundle } from '@repo/editor';
-import { TResolvedAsset } from '../../lib';
+import { TAboutNodeMixin, TIdMixin, TNodeBundle } from '@repo/editor';
 import {
 	TResolvedAppearanceStyleMixin,
 	TResolvedAutoLayoutStyleMixin,
+	TResolvedBasicAboutNodeContentMixin,
 	TResolvedFillStyleMixin,
 	TResolvedImageStyleMixin,
 	TResolvedShadowStyleMixin,
@@ -28,15 +28,4 @@ export type TResolvedClassicAboutNodeBundle = TNodeBundle<
 		TResolvedTextStyleMixin,
 		TResolvedImageStyleMixin
 	]
->;
-
-export type TResolvedBasicAboutNodeContentMixin = TBaseMixin<
-	'content',
-	{
-		type: 'basic';
-		name: string;
-		bio?: string;
-		profilePicture?: TResolvedAsset;
-		contactIcons: TContactIcon[];
-	}
 >;

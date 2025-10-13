@@ -33,5 +33,3 @@ export const MediaNodeContentEditor: React.FC<TNodeEditorComponentProps<TMediaNo
 		</>
 	);
 };
-
-type TMediaType = NonNullable<TMediaNode['content']['media']>['type'];
