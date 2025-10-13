@@ -10,11 +10,13 @@ export function resolveBasicLinkNodeContentMixin(
 ): TResult<TResolvedBasicLinkNodeContentMixin['value'], AppError> {
 	const image = content.userImage !== undefined ? content.userImage : content.image;
 
+	const title = content.userTitle ?? content.title;
+	const description = content.userDescription ?? content.description;
 	return Ok({
 		type: 'basic',
 		url: content.url,
-		title: content.userTitle ?? content.title,
-		description: content.userDescription ?? content.description,
+		title: title != null && title.length > 0 ? title : undefined,
+		description: description != null && description.length > 0 ? description : undefined,
 		image: image != null ? resolveAsset(image, cx.node.site) : undefined
 	});
 }
