@@ -1,8 +1,7 @@
-import { notEmpty } from '@blgc/utils';
-import { TProduct, TProductNode } from '@repo/editor';
+import { TProductNode } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError, computeInnerBorderRadius } from '@/lib';
-import { resolveAsset, TNodeResolveContext } from '../../lib';
+import { TNodeResolveContext } from '../../lib';
 import {
 	resolveAppearanceStyleMixin,
 	resolveAutoLayoutStyleMixin,
@@ -12,14 +11,11 @@ import {
 	resolveImageStyleMixin,
 	resolveProductDetailsStyleMixin,
 	resolveShadowStyleMixin,
+	resolveSingleProductNodeContentMixin,
 	resolveStrokeStyleMixin,
 	resolveTextStyleMixin
 } from '../../mixins';
-import {
-	TResolvedProduct,
-	TResolvedProductNode,
-	TResolvedSingleProductNodeContentMixin
-} from './types';
+import { TResolvedProductNode } from './types';
 
 export function resolveProductNode(
 	node: TProductNode,
@@ -42,18 +38,13 @@ export function resolveProductNode(
 	} = node;
 
 	// Resolve content
-	let resolvedContent: TResolvedSingleProductNodeContentMixin['value'];
-	switch (content.type) {
-		case 'single': {
-			let resolvedProduct: TResolvedProduct | undefined;
-			if (content.product != null) {
-				resolvedProduct = resolveProduct(content.product, cx);
-			}
-			resolvedContent = {
-				...content,
-				product: resolvedProduct
-			};
-		}
+	const [isResolvedContentOk, resolvedContentErr, resolvedContent] =
+		resolveSingleProductNodeContentMixin(content, {
+			node: cx,
+			tokenMap: cx.site.getTokenMap()
+		});
+	if (!isResolvedContentOk) {
+		return Err(resolvedContentErr.wrapWith('#ERR_RESOLVE_SINGLE_PRODUCT_NODE_CONTENT'));
 	}
 
 	// Resolve styles
@@ -178,22 +169,4 @@ export function resolveProductNode(
 		},
 		productDetails: resolvedProductDetails
 	});
-}
-
-export function resolveProduct(product: TProduct, cx: TNodeResolveContext): TResolvedProduct {
-	const variants = product.variants
-		.map((variant) => ({
-			...variant,
-			image: variant.image != null ? resolveAsset(variant.image, cx.site) : undefined
-		}))
-		.filter(notEmpty);
-
-	return {
-		id: product.id,
-		title: product.title,
-		description: product.description,
-		images: product.images.map((asset) => resolveAsset(asset, cx.site)).filter(notEmpty),
-		options: product.options,
-		variants
-	};
 }

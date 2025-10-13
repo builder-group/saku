@@ -5,9 +5,11 @@ export type TResolvedSingleMediaNodeContentMixin = TBaseMixin<
 	'content',
 	{
 		type: 'single';
-		media?: {
-			type: 'image' | 'video' | 'audio';
-			altText?: string;
-		} & TResolvedAsset;
+		media?: TResolvedMedia;
 	}
 >;
+
+export interface TResolvedMedia extends TResolvedAsset {
+	type: 'image' | 'video' | 'audio';
+	altText?: string;
+}

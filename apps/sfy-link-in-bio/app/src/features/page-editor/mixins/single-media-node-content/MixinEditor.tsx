@@ -1,10 +1,11 @@
-import { TMediaNode, TSingleMediaNodeContentMixin } from '@repo/editor';
+import { TSingleMediaNodeContentMixin } from '@repo/editor';
 import { InlineError, Select, Text } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react';
 import { TState } from 'feature-state';
 import React from 'react';
 import { ImageUploadField, TImageUploadEvent } from '@/components';
 import { TPageEditor } from '../../lib';
+import { TResolvedMedia } from './types';
 
 export const SingleMediaNodeContentMixinEditor = (
 	props: TSingleMediaNodeContentMixinEditorProps
@@ -13,7 +14,7 @@ export const SingleMediaNodeContentMixinEditor = (
 
 	const content = useFeatureState(state);
 
-	const [selectedMediaType, setSelectedMediaType] = React.useState<TMediaType>(() => {
+	const [selectedMediaType, setSelectedMediaType] = React.useState<TResolvedMedia['type']>(() => {
 		return content.media?.type ?? 'image';
 	});
 	const mediaTypeOptions = React.useMemo(() => [{ label: 'Image', value: 'image' }], []);
@@ -36,7 +37,7 @@ export const SingleMediaNodeContentMixinEditor = (
 	// =========================================================================
 
 	const handleMediaTypeChange = React.useCallback(
-		(value: TMediaType) => {
+		(value: TResolvedMedia['type']) => {
 			setSelectedMediaType(value);
 
 			// Clear existing media when changing type
@@ -118,5 +119,3 @@ interface TSingleMediaNodeContentMixinEditorProps {
 	state: TState<TSingleMediaNodeContentMixin['value'], any>;
 	editor: TPageEditor;
 }
-
-type TMediaType = NonNullable<TMediaNode['content']['media']>['type'];

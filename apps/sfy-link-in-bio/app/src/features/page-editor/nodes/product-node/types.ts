@@ -1,5 +1,4 @@
-import { TBaseMixin, TIdMixin, TNodeBundle, TProductNodeMixin, TRichContent } from '@repo/editor';
-import { TResolvedAsset } from '../../lib';
+import { TIdMixin, TNodeBundle, TProductNodeMixin } from '@repo/editor';
 import {
 	TResolvedAppearanceStyleMixin,
 	TResolvedAutoLayoutStyleMixin,
@@ -10,6 +9,7 @@ import {
 	TResolvedImageStyleMixin,
 	TResolvedProductDetailsStyleMixin,
 	TResolvedShadowStyleMixin,
+	TResolvedSingleProductNodeContentMixin,
 	TResolvedStrokeStyleMixin,
 	TResolvedTextStyleMixin
 } from '../../mixins';
@@ -35,26 +35,3 @@ export type TResolvedClassicProductNodeBundle = TNodeBundle<
 		TResolvedProductDetailsStyleMixin
 	]
 >;
-
-export type TResolvedSingleProductNodeContentMixin = TBaseMixin<
-	'content',
-	{
-		type: 'single';
-		product?: TResolvedProduct;
-	}
->;
-
-export interface TResolvedProduct {
-	id: string;
-	title: string;
-	description?: TRichContent;
-	images: TResolvedAsset[];
-	options: { name: string; values: string[] }[];
-	variants: {
-		id: string;
-		title: string;
-		price: { amount: string; currencyCode: string };
-		image?: TResolvedAsset;
-		selectedOptions: { name: string; value: string }[];
-	}[];
-}
