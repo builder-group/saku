@@ -3,10 +3,8 @@ import { ChevronDownIcon } from '@/components';
 import { logger } from '@/environment';
 import { getCurrencySymbol } from '../../../../environment';
 import { TResolvedNodeProps } from '../../../../lib';
-import {
-	TResolvedClassicProductNodeBundle,
-	TResolvedSingleProductNodeContentMixin
-} from '../../types';
+import { TResolvedSingleProductNodeContentMixin } from '../../../../mixins';
+import { TResolvedClassicProductNodeBundle } from '../../types';
 import { useProductDetailsModal } from './ProductDetailsModal';
 
 export const ClassicContent: React.FC<TClassicContentProps> = (props) => {
