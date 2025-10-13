@@ -27,10 +27,10 @@ export const ResolvedAboutNode = React.forwardRef<
 			>
 				<div className="flex flex-col items-center gap-4">
 					{/* Avatar */}
-					{content.profilePicture != null ? (
+					{content.avatar != null ? (
 						<div className="h-20 w-20 overflow-hidden" style={image.styles}>
 							<img
-								src={content.profilePicture.src}
+								src={content.avatar.src}
 								alt={content.name}
 								className="h-full w-full object-cover"
 								draggable={false}

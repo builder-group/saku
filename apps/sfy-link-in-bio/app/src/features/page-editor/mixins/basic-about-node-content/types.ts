@@ -7,7 +7,7 @@ export type TResolvedBasicAboutNodeContentMixin = TBaseMixin<
 		type: 'basic';
 		name: string;
 		bio?: string;
-		profilePicture?: TResolvedAsset;
+		avatar?: TResolvedAsset;
 		contactIcons: TContactIcon[];
 	}
 >;

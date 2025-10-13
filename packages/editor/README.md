@@ -42,7 +42,7 @@ if (node.type === 'link' && node.bundleType === 'classic') {
 
 - Same image with different `altText` needs separate records
 - Metadata updates shouldn't change asset identity
-- Cleaner references in nodes (`profilePicture: "asset_123"`)
+- Cleaner references in nodes (`image: "asset_123"`)
 - Content deduplication handled via `assetsByHash` lookup
 
 ### Why did we choose a mixin-based approach for nodes?

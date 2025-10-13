@@ -137,6 +137,23 @@ export type TClassicAboutNodeBundle = TNodeBundle<
 	]
 >;
 
+export type THeroAboutNodeBundle = TNodeBundle<
+	'hero',
+	[
+		TIdMixin,
+		TAboutNodeMixin,
+		TBasicAboutNodeContentMixin,
+		TAutoLayoutStyleMixin,
+		TAppearanceStyleMixin,
+		TFillStyleMixin,
+		TStrokeStyleMixin,
+		TShadowStyleMixin,
+		TTextXlStyleMixin,
+		TTextStyleMixin,
+		TImageStyleMixin
+	]
+>;
+
 export type TAboutNodeMixin = TBaseMixin<
 	'node',
 	{
@@ -150,7 +167,7 @@ export type TBasicAboutNodeContentMixin = TBaseMixin<
 		type: 'basic';
 		name: string;
 		bio?: string;
-		profilePicture?: TAssetHash;
+		avatar?: TAssetHash;
 		contactIcons: TContactIcon[];
 	}
 >;

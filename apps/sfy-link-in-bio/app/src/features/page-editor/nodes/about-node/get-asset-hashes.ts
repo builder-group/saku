@@ -6,9 +6,9 @@ import { getFontHash, isTokenRef, TAboutNode, TAssetHash } from '@repo/editor';
 export function getAboutNodeAssetHashes(node: TAboutNode): TAssetHash[] {
 	const hashes: TAssetHash[] = [];
 
-	// Profile picture asset
-	if (node.content.profilePicture != null) {
-		hashes.push(node.content.profilePicture);
+	// Avatar asset
+	if (node.content.avatar != null) {
+		hashes.push(node.content.avatar);
 	}
 
 	// Font asset (if not linked)

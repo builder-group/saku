@@ -584,7 +584,7 @@ router.openapi(GetBlankPresetRoute, async (c) => {
 	const site = blankPreset({
 		shopId,
 		name: shopInfo.name,
-		profilePicture: themeData.logo,
+		avatar: themeData.logo,
 		socialLinks: themeData.socialLinks,
 		featuredProduct: recommendedProducts.products[0] ?? undefined
 	});

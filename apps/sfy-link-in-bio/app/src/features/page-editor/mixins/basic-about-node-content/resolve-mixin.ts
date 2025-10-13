@@ -10,9 +10,6 @@ export function resolveBasicAboutNodeContentMixin(
 ): TResult<TResolvedBasicAboutNodeContentMixin['value'], AppError> {
 	return Ok({
 		...content,
-		profilePicture:
-			content.profilePicture != null
-				? resolveAsset(content.profilePicture, cx.node.site)
-				: undefined
+		avatar: content.avatar != null ? resolveAsset(content.avatar, cx.node.site) : undefined
 	});
 }

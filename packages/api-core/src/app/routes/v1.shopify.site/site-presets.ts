@@ -28,21 +28,21 @@ import {
 import { createHandleFromShop } from '@/lib';
 
 export function blankPreset(config: TBlankPresetConfig): TSite {
-	const { shopId, name, profilePicture, socialLinks, featuredProduct, theme } = config;
+	const { shopId, name, avatar, socialLinks, featuredProduct, theme } = config;
 
 	const assets: (TFontAsset | TImageAsset)[] = [];
 
-	let profilePictureAssetHashId: TId<'asset'> | undefined;
-	if (profilePicture != null) {
-		profilePictureAssetHashId = createId('asset');
+	let avatarAssetHashId: TId<'asset'> | undefined;
+	if (avatar != null) {
+		avatarAssetHashId = createId('asset');
 		assets.push({
-			id: profilePictureAssetHashId,
+			id: avatarAssetHashId,
 			type: 'image',
-			hash: profilePictureAssetHashId,
+			hash: avatarAssetHashId,
 			contentType: 'image/png',
 			storage: {
 				type: 'url',
-				url: profilePicture
+				url: avatar
 			}
 		});
 	}
@@ -207,7 +207,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 						type: 'basic',
 						name,
 						bio: 'Welcome to your new page! Add a short description about yourself or your brand.',
-						profilePicture: profilePictureAssetHashId,
+						avatar: avatarAssetHashId,
 						contactIcons: contactIcons
 					}
 				} satisfies TClassicAboutNodeBundle,
@@ -266,7 +266,7 @@ interface TBlankPresetConfig {
 	shopId: string;
 	name: string;
 	theme?: TTheme;
-	profilePicture?: string;
+	avatar?: string;
 	socialLinks?: {
 		platform: string;
 		url: string;

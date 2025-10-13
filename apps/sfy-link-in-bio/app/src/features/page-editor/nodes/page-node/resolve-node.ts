@@ -107,8 +107,8 @@ export function resolvePageMetadata(
 			if (description == null && aboutNode.content.bio != null) {
 				description = aboutNode.content.bio;
 			}
-			if (favicon == null && aboutNode.content.profilePicture != null) {
-				favicon = resolveAsset(aboutNode.content.profilePicture, cx.site)?.src;
+			if (favicon == null && aboutNode.content.avatar != null) {
+				favicon = resolveAsset(aboutNode.content.avatar, cx.site)?.src;
 			}
 		}
 	}

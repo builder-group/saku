@@ -20,9 +20,9 @@ export const BasicAboutNodeContentMixinEditor = (props: TBasicAboutNodeContentMi
 
 	const content = useFeatureState(state);
 
-	const [profilePictureError, setProfilePictureError] = React.useState<string | null>(null);
-	const profilePicture = React.useMemo(() => {
-		const asset = editor.getImageAsset(content.profilePicture);
+	const [avatarError, setAvatarError] = React.useState<string | null>(null);
+	const avatar = React.useMemo(() => {
+		const asset = editor.getImageAsset(content.avatar);
 		if (asset == null || asset.storage.type !== 'url') {
 			return undefined;
 		}
@@ -31,7 +31,7 @@ export const BasicAboutNodeContentMixinEditor = (props: TBasicAboutNodeContentMi
 			url: asset.storage.url,
 			fileName: asset.fileName
 		};
-	}, [content.profilePicture, editor]);
+	}, [content.avatar, editor]);
 
 	const contactValues = React.useMemo(() => {
 		return Object.entries(contactMetadataMap).map(([key, metadata]) => {
@@ -81,19 +81,19 @@ export const BasicAboutNodeContentMixinEditor = (props: TBasicAboutNodeContentMi
 		[state]
 	);
 
-	const handleProfilePictureChange = React.useCallback(
+	const handleAvatarChange = React.useCallback(
 		(event: TImageUploadEvent) => {
 			switch (event.type) {
 				case 'Changed': {
 					const hash = editor.registerImage(event.url, event.fileName);
 					if (hash != null) {
-						state._v.profilePicture = hash;
+						state._v.avatar = hash;
 						state._notify();
 					}
 					break;
 				}
 				case 'Removed': {
-					state._v.profilePicture = undefined;
+					state._v.avatar = undefined;
 					state._notify();
 					break;
 				}
@@ -203,18 +203,14 @@ export const BasicAboutNodeContentMixinEditor = (props: TBasicAboutNodeContentMi
 	return (
 		<>
 			<div className="space-y-4 border-b border-neutral-200 px-4 py-3">
-				{/* Profile Picture */}
+				{/* Avatar */}
 				<div className="space-y-1">
 					<Text as="span" variant="bodySm" tone="subdued">
-						Profile Picture
+						Avatar
 					</Text>
-					<ImageUploadField
-						image={profilePicture}
-						onChange={handleProfilePictureChange}
-						onError={setProfilePictureError}
-					/>
-					{profilePictureError != null && (
-						<InlineError message={profilePictureError} fieldID="profile-picture-upload-error" />
+					<ImageUploadField image={avatar} onChange={handleAvatarChange} onError={setAvatarError} />
+					{avatarError != null && (
+						<InlineError message={avatarError} fieldID="profile-picture-upload-error" />
 					)}
 				</div>
 
