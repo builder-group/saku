@@ -1,8 +1,8 @@
 import React from 'react';
 import { TResolvedNodeProps } from '../../../../lib';
-import { TResolvedSpotifyEmbedLinkNodeBundle } from '../../types';
+import { TResolvedYouTubeEmbedLinkNodeBundle } from '../../types';
 
-export const SpotifyEmbedContent: React.FC<TSpotifyEmbedContentProps> = (props) => {
+export const ResolvedYouTubeEmbedBundle: React.FC<TResolvedYouTubeEmbedBundleProps> = (props) => {
 	const {
 		node: { content, autoLayout, appearance, fill, stroke, shadow, image }
 	} = props;
@@ -24,32 +24,27 @@ export const SpotifyEmbedContent: React.FC<TSpotifyEmbedContentProps> = (props) 
 					className="absolute inset-0 animate-pulse"
 					style={{
 						...image.styles,
-						backgroundColor: content.theme?.backgroundBase || '#000000'
+						backgroundColor: '#000000'
 					}}
 				/>
 			)}
 			<iframe
 				src={content.embedUrl}
-				className="h-full w-full rounded-none"
-				title="Spotify embed"
-				width="100%"
-				height={content.height}
-				allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-				loading="lazy"
+				className="aspect-[16/9] h-full w-full rounded-none"
+				title="YouTube video player"
+				allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+				referrerPolicy="strict-origin-when-cross-origin"
+				allowFullScreen
 				onLoad={() => {
 					setIsLoadingIframe(false);
 				}}
-				style={{
-					...image.styles,
-					height: content.height,
-					backgroundColor: content.theme?.backgroundBase
-				}}
+				style={image.styles}
 			></iframe>
 		</div>
 	);
 };
 
-interface TSpotifyEmbedContentProps {
-	node: TResolvedSpotifyEmbedLinkNodeBundle;
-	cx: TResolvedNodeProps<TResolvedSpotifyEmbedLinkNodeBundle>['cx'];
+interface TResolvedYouTubeEmbedBundleProps {
+	node: TResolvedYouTubeEmbedLinkNodeBundle;
+	cx: TResolvedNodeProps<TResolvedYouTubeEmbedLinkNodeBundle>['cx'];
 }

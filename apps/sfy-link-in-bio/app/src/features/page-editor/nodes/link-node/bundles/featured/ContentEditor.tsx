@@ -2,9 +2,9 @@ import { TFeaturedLinkNodeBundle } from '@repo/editor';
 import React from 'react';
 import { useNodeProperty } from '../../../../hooks';
 import { BasicLinkNodeContentMixinEditor } from '../../../../mixins';
-import { TNodeEditorContext } from './lib';
+import { TNodeEditorContext } from '../../components/NodeContentEditor/lib';
 
-export const FeaturedContentEditor: React.FC<TFeaturedContentEditorProps> = (props) => {
+export const FeaturedBundleContentEditor: React.FC<TFeaturedBundleContentEditorProps> = (props) => {
 	const { cx, className } = props;
 
 	const contentState = useNodeProperty(cx.node, 'content');
@@ -12,7 +12,7 @@ export const FeaturedContentEditor: React.FC<TFeaturedContentEditorProps> = (pro
 	return <BasicLinkNodeContentMixinEditor state={contentState} cx={cx} className={className} />;
 };
 
-interface TFeaturedContentEditorProps {
+interface TFeaturedBundleContentEditorProps {
 	cx: TNodeEditorContext<TFeaturedLinkNodeBundle>;
 	className?: string;
 }

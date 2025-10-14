@@ -2,9 +2,11 @@ import { TYouTubeEmbedLinkNodeBundle } from '@repo/editor';
 import React from 'react';
 import { useNodeProperty } from '../../../../hooks';
 import { YouTubeEmbedLinkNodeContentMixinEditor } from '../../../../mixins';
-import { TNodeEditorContext } from './lib';
+import { TNodeEditorContext } from '../../components/NodeContentEditor/lib';
 
-export const YoutubeEmbedContentEditor: React.FC<TYoutubeEmbedContentEditorProps> = (props) => {
+export const YoutubeEmbedBundleContentEditor: React.FC<TYoutubeEmbedBundleContentEditorProps> = (
+	props
+) => {
 	const { cx, className } = props;
 
 	const contentState = useNodeProperty(cx.node, 'content');
@@ -14,7 +16,7 @@ export const YoutubeEmbedContentEditor: React.FC<TYoutubeEmbedContentEditorProps
 	);
 };
 
-interface TYoutubeEmbedContentEditorProps {
+interface TYoutubeEmbedBundleContentEditorProps {
 	cx: TNodeEditorContext<TYouTubeEmbedLinkNodeBundle>;
 	className?: string;
 }

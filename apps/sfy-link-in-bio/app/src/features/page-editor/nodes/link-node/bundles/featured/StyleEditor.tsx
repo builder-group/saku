@@ -14,9 +14,9 @@ import {
 	TextStyleMixinEditor
 } from '../../../../mixins';
 
-export const FeaturedStyleEditor: React.FC<TNodeEditorComponentProps<TFeaturedLinkNodeBundle>> = (
-	props
-) => {
+export const FeaturedBundleStyleEditor: React.FC<
+	TNodeEditorComponentProps<TFeaturedLinkNodeBundle>
+> = (props) => {
 	const { nodeState, editor } = props;
 
 	const hasThumbnail = useCompute(

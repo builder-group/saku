@@ -2,7 +2,7 @@ import React from 'react';
 import { TResolvedNodeProps } from '../../../../lib';
 import { TResolvedFeaturedLinkNodeBundle } from '../../types';
 
-export const FeaturedContent: React.FC<TSingleContentProps> = (props) => {
+export const ResolvedFeaturedBundle: React.FC<TResolvedFeaturedBundleProps> = (props) => {
 	const {
 		node: { content, autoLayout, appearance, fill, stroke, shadow, text, textSm, image }
 	} = props;
@@ -52,7 +52,7 @@ export const FeaturedContent: React.FC<TSingleContentProps> = (props) => {
 	);
 };
 
-interface TSingleContentProps {
+interface TResolvedFeaturedBundleProps {
 	node: TResolvedFeaturedLinkNodeBundle;
 	cx: TResolvedNodeProps<TResolvedFeaturedLinkNodeBundle>['cx'];
 }

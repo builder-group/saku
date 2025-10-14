@@ -14,9 +14,9 @@ import {
 	TextStyleMixinEditor
 } from '../../../../mixins';
 
-export const ClassicStyleEditor: React.FC<TNodeEditorComponentProps<TClassicLinkNodeBundle>> = (
-	props
-) => {
+export const ClassicBundleStyleEditor: React.FC<
+	TNodeEditorComponentProps<TClassicLinkNodeBundle>
+> = (props) => {
 	const { nodeState, editor } = props;
 
 	const hasThumbnail = useCompute(

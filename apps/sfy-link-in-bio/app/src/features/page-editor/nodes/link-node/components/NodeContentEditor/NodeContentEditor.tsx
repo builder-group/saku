@@ -10,13 +10,15 @@ import { useCompute, useFeatureState } from 'feature-react/state';
 import React from 'react';
 import { AccordionSection, JsonPreview, PortalPulse } from '@/components';
 import { TNodeEditorComponentProps } from '../../../../lib';
-import { ClassicContentEditor } from './ClassicContentEditor';
+import {
+	ClassicBundleContentEditor,
+	FeaturedBundleContentEditor,
+	SpotifyEmbedBundleContentEditor,
+	YoutubeEmbedBundleContentEditor
+} from '../../bundles';
 import { ContentSkeleton } from './ContentSkeleton';
 import { bundleMetadataMap } from './environment';
-import { FeaturedContentEditor } from './FeaturedContentEditor';
 import { createNodeEditorContext, TNodeEditorContext } from './lib';
-import { SpotifyEmbedContentEditor } from './SpotifyEmbedContentEditor';
-import { YoutubeEmbedContentEditor } from './YoutubeEmbedContentEditor';
 
 export const LinkNodeContentEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (props) => {
 	const { nodeState, editor } = props;
@@ -58,16 +60,22 @@ export const LinkNodeContentEditor: React.FC<TNodeEditorComponentProps<TLinkNode
 	const renderContentEditor = React.useCallback((): React.ReactElement | null => {
 		switch (selectedBundleType) {
 			case 'classic':
-				return <ClassicContentEditor cx={cx as TNodeEditorContext<TClassicLinkNodeBundle>} />;
+				return <ClassicBundleContentEditor cx={cx as TNodeEditorContext<TClassicLinkNodeBundle>} />;
 			case 'featured':
-				return <FeaturedContentEditor cx={cx as TNodeEditorContext<TFeaturedLinkNodeBundle>} />;
+				return (
+					<FeaturedBundleContentEditor cx={cx as TNodeEditorContext<TFeaturedLinkNodeBundle>} />
+				);
 			case 'youtube-embed':
 				return (
-					<YoutubeEmbedContentEditor cx={cx as TNodeEditorContext<TYouTubeEmbedLinkNodeBundle>} />
+					<YoutubeEmbedBundleContentEditor
+						cx={cx as TNodeEditorContext<TYouTubeEmbedLinkNodeBundle>}
+					/>
 				);
 			case 'spotify-embed':
 				return (
-					<SpotifyEmbedContentEditor cx={cx as TNodeEditorContext<TSpotifyEmbedLinkNodeBundle>} />
+					<SpotifyEmbedBundleContentEditor
+						cx={cx as TNodeEditorContext<TSpotifyEmbedLinkNodeBundle>}
+					/>
 				);
 			default:
 				return null;

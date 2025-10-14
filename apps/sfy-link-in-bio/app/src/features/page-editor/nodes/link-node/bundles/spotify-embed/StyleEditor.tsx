@@ -12,7 +12,7 @@ import {
 	StrokeStyleMixinEditor
 } from '../../../../mixins';
 
-export const SpotifyEmbedStyleEditor: React.FC<
+export const SpotifyEmbedBundleStyleEditor: React.FC<
 	TNodeEditorComponentProps<TSpotifyEmbedLinkNodeBundle>
 > = (props) => {
 	const { nodeState, editor } = props;

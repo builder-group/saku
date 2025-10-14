@@ -12,7 +12,7 @@ import {
 	StrokeStyleMixinEditor
 } from '../../../../mixins';
 
-export const YouTubeEmbedStyleEditor: React.FC<
+export const YouTubeEmbedBundleStyleEditor: React.FC<
 	TNodeEditorComponentProps<TYouTubeEmbedLinkNodeBundle>
 > = (props) => {
 	const { nodeState, editor } = props;

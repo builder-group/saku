@@ -2,9 +2,11 @@ import { TSpotifyEmbedLinkNodeBundle } from '@repo/editor';
 import React from 'react';
 import { useNodeProperty } from '../../../../hooks';
 import { SpotifyEmbedLinkNodeContentMixinEditor } from '../../../../mixins';
-import { TNodeEditorContext } from './lib';
+import { TNodeEditorContext } from '../../components/NodeContentEditor/lib';
 
-export const SpotifyEmbedContentEditor: React.FC<TSpotifyEmbedContentEditorProps> = (props) => {
+export const SpotifyEmbedBundleContentEditor: React.FC<TSpotifyEmbedBundleContentEditorProps> = (
+	props
+) => {
 	const { cx, className } = props;
 
 	const contentState = useNodeProperty(cx.node, 'content');
@@ -14,7 +16,7 @@ export const SpotifyEmbedContentEditor: React.FC<TSpotifyEmbedContentEditorProps
 	);
 };
 
-interface TSpotifyEmbedContentEditorProps {
+interface TSpotifyEmbedBundleContentEditorProps {
 	cx: TNodeEditorContext<TSpotifyEmbedLinkNodeBundle>;
 	className?: string;
 }

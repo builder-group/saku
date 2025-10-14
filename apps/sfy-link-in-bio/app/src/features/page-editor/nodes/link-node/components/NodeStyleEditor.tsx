@@ -7,11 +7,13 @@ import {
 } from '@repo/editor';
 import { useCompute } from 'feature-react';
 import React from 'react';
-import { TNodeEditorComponentProps, TNodeState } from '../../../../lib';
-import { ClassicStyleEditor } from './ClassicStyleEditor';
-import { FeaturedStyleEditor } from './FeaturedStyleEditor';
-import { SpotifyEmbedStyleEditor } from './SpotifyEmbedStyle';
-import { YouTubeEmbedStyleEditor } from './YoutubeEmbedStyle';
+import { TNodeEditorComponentProps, TNodeState } from '../../../lib';
+import {
+	ClassicBundleStyleEditor,
+	FeaturedBundleStyleEditor,
+	SpotifyEmbedBundleStyleEditor,
+	YouTubeEmbedBundleStyleEditor
+} from '../bundles';
 
 export const LinkNodeStyleEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (props) => {
 	const { nodeState, ...rest } = props;
@@ -20,25 +22,28 @@ export const LinkNodeStyleEditor: React.FC<TNodeEditorComponentProps<TLinkNode>>
 	switch (bundleType) {
 		case 'classic':
 			return (
-				<ClassicStyleEditor nodeState={nodeState as TNodeState<TClassicLinkNodeBundle>} {...rest} />
+				<ClassicBundleStyleEditor
+					nodeState={nodeState as TNodeState<TClassicLinkNodeBundle>}
+					{...rest}
+				/>
 			);
 		case 'featured':
 			return (
-				<FeaturedStyleEditor
+				<FeaturedBundleStyleEditor
 					nodeState={nodeState as TNodeState<TFeaturedLinkNodeBundle>}
 					{...rest}
 				/>
 			);
 		case 'youtube-embed':
 			return (
-				<YouTubeEmbedStyleEditor
+				<YouTubeEmbedBundleStyleEditor
 					nodeState={nodeState as TNodeState<TYouTubeEmbedLinkNodeBundle>}
 					{...rest}
 				/>
 			);
 		case 'spotify-embed':
 			return (
-				<SpotifyEmbedStyleEditor
+				<SpotifyEmbedBundleStyleEditor
 					nodeState={nodeState as TNodeState<TSpotifyEmbedLinkNodeBundle>}
 					{...rest}
 				/>
