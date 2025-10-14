@@ -3,8 +3,8 @@ import { ShopifyGlobal } from '@shopify/app-bridge-react';
 import { createState, TState } from 'feature-state';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
-import { TNodeState, TPageEditor } from '../../../../lib';
-import { bundleMetadata, bundleMetadataMap, TBundleMetadata, TBundleType } from './bundle-metadata';
+import { TNodeState, TPageEditor } from '../../../../../lib';
+import { bundleMetadataMap, TBundleMetadata, TBundleType } from '../environment/bundle-metadata';
 
 export function createNodeEditorContext<GNode extends TAboutNode>(
 	config: TCreateNodeEditorContextConfig<GNode>
@@ -16,11 +16,7 @@ export function createNodeEditorContext<GNode extends TAboutNode>(
 		editor,
 		shopify: editor.shopify,
 		selectedBundleType: createState<TBundleType>(node._v.bundleType),
-		applicableBundleTypes: createState(
-			bundleMetadata.filter((variant) => variant.isApplicable()).map((variant) => variant.type)
-		),
 		isSwitchingBundle: createState(false),
-		isEnhancingBundle: createState(false),
 
 		async switchBundleType(this: TNodeEditorContext<GNode>, bundleType) {
 			this.isSwitchingBundle.set(true);
@@ -43,29 +39,7 @@ export function createNodeEditorContext<GNode extends TAboutNode>(
 				this.isSwitchingBundle.set(false);
 			}
 
-			// Enhance node bundle
-			const enhanceResult = await this.enhanceBundle(bundleType);
-			if (enhanceResult.isErr()) {
-				return enhanceResult;
-			}
-
 			return Ok(undefined);
-		},
-
-		async enhanceBundle(this: TNodeEditorContext<GNode>, bundleType = this.selectedBundleType._v) {
-			const metadata = bundleMetadataMap[bundleType] as TBundleMetadata<GNode>;
-			if (typeof metadata?.enhance !== 'function') {
-				return Ok(undefined);
-			}
-
-			this.isEnhancingBundle.set(true);
-			const result = await metadata.enhance({
-				node: this.node,
-				editor
-			});
-			this.isEnhancingBundle.set(false);
-
-			return result;
 		}
 	};
 }
@@ -80,9 +54,6 @@ export interface TNodeEditorContext<GNode extends TAboutNode> {
 	editor: TPageEditor;
 	shopify: ShopifyGlobal;
 	selectedBundleType: TState<TBundleType, []>;
-	applicableBundleTypes: TState<TBundleType[], []>;
 	isSwitchingBundle: TState<boolean, []>;
-	isEnhancingBundle: TState<boolean, []>;
 	switchBundleType: (bundleType: TBundleType) => Promise<TResult<void, AppError>>;
-	enhanceBundle: (bundleType?: TBundleType) => Promise<TResult<void, AppError>>;
 }

@@ -1,14 +1,14 @@
 import { TAboutNode, TClassicAboutNodeBundle, THeroAboutNodeBundle } from '@repo/editor';
 import { Select, Text } from '@shopify/polaris';
-import { useCompute, useFeatureState } from 'feature-react';
+import { useFeatureState } from 'feature-react';
 import React from 'react';
-import { AccordionSection, JsonPreview, PortalPulse } from '@/components';
+import { AccordionSection, JsonPreview } from '@/components';
 import { TNodeEditorComponentProps } from '../../../../lib';
-import { bundleMetadataMap } from './bundle-metadata';
 import { ClassicContentEditor } from './ClassicContentEditor';
 import { ContentSkeleton } from './ContentSkeleton';
-import { createNodeEditorContext, TNodeEditorContext } from './create-node-editor-context';
+import { bundleMetadata } from './environment';
 import { HeroContentEditor } from './HeroContentEditor';
+import { createNodeEditorContext, TNodeEditorContext } from './lib/create-node-editor-context';
 
 export const AboutNodeContentEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = (props) => {
 	const { nodeState, editor } = props;
@@ -18,14 +18,13 @@ export const AboutNodeContentEditor: React.FC<TNodeEditorComponentProps<TAboutNo
 		[nodeState, editor]
 	);
 
-	const applicableBundleOptions = useCompute(cx.applicableBundleTypes, ({ value }) =>
-		value.map((type) => ({
-			label: bundleMetadataMap[type].label,
-			value: type
-		}))
-	);
+	const bundleOptions = React.useMemo(() => {
+		return bundleMetadata.map((metadata) => ({
+			label: metadata.label,
+			value: metadata.type
+		}));
+	}, []);
 	const isSwitchingBundle = useFeatureState(cx.isSwitchingBundle);
-	const isEnhancingBundle = useFeatureState(cx.isEnhancingBundle);
 	const selectedBundleType = useFeatureState(cx.selectedBundleType);
 
 	// =========================================================================
@@ -68,22 +67,15 @@ export const AboutNodeContentEditor: React.FC<TNodeEditorComponentProps<TAboutNo
 					id="link-content-type-field"
 					label="Variant"
 					labelHidden
-					options={applicableBundleOptions}
+					options={bundleOptions}
 					value={selectedBundleType}
 					onChange={handleBundleTypeChange}
-					disabled={isSwitchingBundle || isEnhancingBundle}
+					disabled={isSwitchingBundle}
 				/>
 			</div>
 
 			<div className="relative border-b border-neutral-200 py-3">
-				{isSwitchingBundle ? (
-					<ContentSkeleton />
-				) : (
-					<>
-						<PortalPulse isActive={cx.isEnhancingBundle} className="top-0 left-0" />
-						{renderContentEditor()}
-					</>
-				)}
+				{isSwitchingBundle ? <ContentSkeleton /> : renderContentEditor()}
 			</div>
 
 			{/* Debug Section */}

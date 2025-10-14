@@ -4,19 +4,19 @@ import { TResolvedNode } from '../../types';
 import { TPageContext, TPageEditor } from '../page';
 import { TNodeState } from './create-node-state';
 
-export type TNodeMetadata<GType extends TFlatNode['type']> = {
-	type: GType;
+export type TNodeMetadata<GNode extends TFlatNode> = {
+	type: GNode['type'];
 	hidden?: boolean;
 } & (
 	| {
 			internal: false;
 			icon: IconSource;
-			label: TEditorNodeMetadata<GType>['label'];
-			defaultBundle: Omit<Extract<TFlatNode, { type: GType }>, 'id'>;
+			label: TEditorNodeMetadata<GNode>['label'];
+			defaultBundle: Omit<GNode, 'id'>;
 	  }
 	| {
 			internal: true;
-			defaultBundle: Omit<Extract<TFlatNode, { type: GType }>, 'id'>;
+			defaultBundle: Omit<GNode, 'id'>;
 	  }
 );
 

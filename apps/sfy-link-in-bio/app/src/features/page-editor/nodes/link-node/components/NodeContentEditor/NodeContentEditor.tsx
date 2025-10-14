@@ -26,7 +26,7 @@ export const LinkNodeContentEditor: React.FC<TNodeEditorComponentProps<TLinkNode
 		[nodeState, editor]
 	);
 
-	const applicableBundleOptions = useCompute(cx.applicableBundleTypes, ({ value }) =>
+	const bundleOptions = useCompute(cx.applicableBundleTypes, ({ value }) =>
 		value.map((type) => ({
 			label: bundleMetadataMap[type].label,
 			value: type
@@ -84,7 +84,7 @@ export const LinkNodeContentEditor: React.FC<TNodeEditorComponentProps<TLinkNode
 					id="link-content-type-field"
 					label="Variant"
 					labelHidden
-					options={applicableBundleOptions}
+					options={bundleOptions}
 					value={selectedBundleType}
 					onChange={handleBundleTypeChange}
 					disabled={isSwitchingBundle || isEnhancingBundle}

@@ -1,8 +1,8 @@
-import { textNodeMetadata as editorTextNodeMetadata } from '@repo/editor';
+import { textNodeMetadata as editorTextNodeMetadata, TTextNode } from '@repo/editor';
 import { PolarisLayoutSectionIcon } from '@/components';
 import { TNodeMetadata } from '../../lib/node/types';
 
-export const textNodeMetadata: TNodeMetadata<'text'> = {
+export const textNodeMetadata: TNodeMetadata<TTextNode> = {
 	type: 'text',
 	icon: PolarisLayoutSectionIcon,
 	label: editorTextNodeMetadata.label,

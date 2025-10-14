@@ -101,14 +101,15 @@ export function createNodeEditorContext<GNode extends TLinkNode>(
 			// Only switch bundles on major changes
 			if (isMajorChange) {
 				// Get applicable bundles for the new URL
-				const applicableBundles = bundleMetadata
+				const applicableBundleTypes = bundleMetadata
 					.filter((variant) => variant.isApplicable(normalizedUrl))
 					.map((variant) => variant.type);
-				this.applicableBundleTypes.set(applicableBundles);
+				this.applicableBundleTypes.set(applicableBundleTypes);
 
 				// Auto-switch to best applicable bundle (prioritize more specific types)
 				const bestVariant =
-					bundlePriority.find((type) => applicableBundles.includes(type)) ?? applicableBundles[0];
+					bundlePriority.find((type) => applicableBundleTypes.includes(type)) ??
+					applicableBundleTypes[0];
 				if (bestVariant != null && bestVariant !== bundleType) {
 					return await this.switchBundleType(bestVariant);
 				}

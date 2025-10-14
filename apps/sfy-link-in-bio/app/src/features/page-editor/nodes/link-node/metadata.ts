@@ -1,8 +1,8 @@
-import { linkNodeMetadata as editorLinkNodeMetadata } from '@repo/editor';
+import { linkNodeMetadata as editorLinkNodeMetadata, TLinkNode } from '@repo/editor';
 import { PolarisLayoutSectionIcon } from '@/components';
 import { TNodeMetadata } from '../../lib';
 
-export const linkNodeMetadata: TNodeMetadata<'link'> = {
+export const linkNodeMetadata: TNodeMetadata<TLinkNode> = {
 	type: 'link',
 	icon: PolarisLayoutSectionIcon,
 	label: editorLinkNodeMetadata.label,

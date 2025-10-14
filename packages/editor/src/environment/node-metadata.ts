@@ -1,7 +1,15 @@
 import { tokenRef } from '../lib';
-import { TFlatNode } from '../types';
+import {
+	TAboutNode,
+	TFlatNode,
+	TFlatPageNode,
+	TLinkNode,
+	TMediaNode,
+	TProductNode,
+	TTextNode
+} from '../types';
 
-export const aboutNodeMetadata: TNodeMetadata<'about'> = {
+export const aboutNodeMetadata: TNodeMetadata<TAboutNode> = {
 	type: 'about',
 	label: 'About',
 	bundleMap: {
@@ -118,7 +126,7 @@ export const aboutNodeMetadata: TNodeMetadata<'about'> = {
 	}
 };
 
-export const linkNodeMetadata: TNodeMetadata<'link'> = {
+export const linkNodeMetadata: TNodeMetadata<TLinkNode> = {
 	type: 'link',
 	label: 'Link',
 	bundleMap: {
@@ -244,7 +252,7 @@ export const linkNodeMetadata: TNodeMetadata<'link'> = {
 	}
 };
 
-export const mediaNodeMetadata: TNodeMetadata<'media'> = {
+export const mediaNodeMetadata: TNodeMetadata<TMediaNode> = {
 	type: 'media',
 	label: 'Media',
 	bundleMap: {
@@ -277,7 +285,7 @@ export const mediaNodeMetadata: TNodeMetadata<'media'> = {
 	}
 };
 
-export const pageNodeMetadata: TNodeMetadata<'page'> = {
+export const pageNodeMetadata: TNodeMetadata<TFlatPageNode> = {
 	type: 'page',
 	label: 'Page',
 	bundleMap: {
@@ -303,7 +311,7 @@ export const pageNodeMetadata: TNodeMetadata<'page'> = {
 	}
 };
 
-export const productNodeMetadata: TNodeMetadata<'product'> = {
+export const productNodeMetadata: TNodeMetadata<TProductNode> = {
 	type: 'product',
 	label: 'Product',
 	bundleMap: {
@@ -354,7 +362,7 @@ export const productNodeMetadata: TNodeMetadata<'product'> = {
 	}
 };
 
-export const textNodeMetadata: TNodeMetadata<'text'> = {
+export const textNodeMetadata: TNodeMetadata<TTextNode> = {
 	type: 'text',
 	label: 'Text',
 	bundleMap: {
@@ -389,13 +397,10 @@ export const nodeMetadataMap = {
 	product: productNodeMetadata
 } as const;
 
-export type TNodeMetadata<GType extends TFlatNode['type']> = {
-	type: GType;
+export type TNodeMetadata<GNode extends TFlatNode> = {
+	type: GNode['type'];
 	label: string;
 	bundleMap: {
-		[K in Extract<TFlatNode, { type: GType }>['bundleType']]: Omit<
-			Extract<TFlatNode, { type: GType; bundleType: K }>,
-			'id'
-		>;
+		[K in GNode['bundleType']]: Omit<Extract<GNode, { bundleType: K }>, 'id'>;
 	};
 };

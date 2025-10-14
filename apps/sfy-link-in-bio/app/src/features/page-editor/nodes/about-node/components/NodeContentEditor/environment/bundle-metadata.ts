@@ -16,14 +16,13 @@ import {
 	TTextStyleMixin
 } from '@repo/editor';
 import { Ok, TResult } from 'tuple-result';
-import { AppError } from '../../../../../../lib';
-import { TNodeState, TPageEditor } from '../../../../lib';
+import { AppError } from '../../../../../../../lib';
+import { TNodeState, TPageEditor } from '../../../../../lib';
 
 export const bundleMetadataMap = {
 	classic: {
 		type: 'classic',
 		label: 'Classic',
-		isApplicable: () => true,
 		extractCommonFields(node) {
 			return {
 				id: node.id,
@@ -71,7 +70,6 @@ export const bundleMetadataMap = {
 	hero: {
 		type: 'hero',
 		label: 'Hero',
-		isApplicable: () => true,
 		extractCommonFields(node) {
 			return {
 				id: node.id,
@@ -127,20 +125,12 @@ export type TBundleType = TAboutNode['bundleType'];
 export interface TBundleMetadata<GNode extends TAboutNode> {
 	type: GNode['bundleType'];
 	label: string;
-	isApplicable: () => boolean;
 	/**
 	 * Creates a new node bundle, replacing the entire node with the new bundle
 	 */
 	switch: (cx: {
 		node: TNodeState<GNode>;
 		common: TCommonFields;
-		editor: TPageEditor;
-	}) => Promise<TResult<void, AppError>>;
-	/**
-	 * Optional method to enhance the node bundle with additional data after creation or url change
-	 */
-	enhance?: (cx: {
-		node: TNodeState<GNode>;
 		editor: TPageEditor;
 	}) => Promise<TResult<void, AppError>>;
 	/**

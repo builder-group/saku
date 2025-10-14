@@ -2,7 +2,7 @@ import { THeroAboutNodeBundle } from '@repo/editor';
 import React from 'react';
 import { useNodeProperty } from '../../../../hooks';
 import { BasicAboutNodeContentMixinEditor } from '../../../../mixins';
-import { TNodeEditorContext } from './create-node-editor-context';
+import { TNodeEditorContext } from './lib';
 
 export const HeroContentEditor: React.FC<THeroContentEditorProps> = (props) => {
 	const { cx, className } = props;
