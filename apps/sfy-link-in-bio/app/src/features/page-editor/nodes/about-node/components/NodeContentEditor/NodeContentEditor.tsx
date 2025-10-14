@@ -4,10 +4,9 @@ import { useFeatureState } from 'feature-react';
 import React from 'react';
 import { AccordionSection, JsonPreview } from '@/components';
 import { TNodeEditorComponentProps } from '../../../../lib';
-import { ClassicContentEditor } from './ClassicContentEditor';
+import { ClassicBundleContentEditor, HeroBundleContentEditor } from '../../bundles';
 import { ContentSkeleton } from './ContentSkeleton';
 import { bundleMetadata } from './environment';
-import { HeroContentEditor } from './HeroContentEditor';
 import { createNodeEditorContext, TNodeEditorContext } from './lib/create-node-editor-context';
 
 export const AboutNodeContentEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = (props) => {
@@ -49,9 +48,11 @@ export const AboutNodeContentEditor: React.FC<TNodeEditorComponentProps<TAboutNo
 	const renderContentEditor = React.useCallback((): React.ReactElement | null => {
 		switch (selectedBundleType) {
 			case 'classic':
-				return <ClassicContentEditor cx={cx as TNodeEditorContext<TClassicAboutNodeBundle>} />;
+				return (
+					<ClassicBundleContentEditor cx={cx as TNodeEditorContext<TClassicAboutNodeBundle>} />
+				);
 			case 'hero':
-				return <HeroContentEditor cx={cx as TNodeEditorContext<THeroAboutNodeBundle>} />;
+				return <HeroBundleContentEditor cx={cx as TNodeEditorContext<THeroAboutNodeBundle>} />;
 			default:
 				return null;
 		}

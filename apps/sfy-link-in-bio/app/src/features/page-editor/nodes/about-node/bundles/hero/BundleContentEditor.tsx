@@ -1,10 +1,10 @@
-import { TClassicAboutNodeBundle } from '@repo/editor';
+import { THeroAboutNodeBundle } from '@repo/editor';
 import React from 'react';
 import { useNodeProperty } from '../../../../hooks';
 import { BasicAboutNodeContentMixinEditor } from '../../../../mixins';
-import { TNodeEditorContext } from './lib';
+import { TNodeEditorContext } from '../../components/NodeContentEditor/lib';
 
-export const ClassicContentEditor: React.FC<TClassicContentEditorProps> = (props) => {
+export const HeroBundleContentEditor: React.FC<THeroBundleContentEditorProps> = (props) => {
 	const { cx, className } = props;
 
 	const contentState = useNodeProperty(cx.node, 'content');
@@ -18,7 +18,7 @@ export const ClassicContentEditor: React.FC<TClassicContentEditorProps> = (props
 	);
 };
 
-interface TClassicContentEditorProps {
-	cx: TNodeEditorContext<TClassicAboutNodeBundle>;
+interface THeroBundleContentEditorProps {
+	cx: TNodeEditorContext<THeroAboutNodeBundle>;
 	className?: string;
 }
