@@ -23,6 +23,7 @@ import {
 	TAssetHash,
 	TEmailAction,
 	TIntegrationId,
+	TLinkAction,
 	TPhoneAction,
 	TRichContent,
 	TSocialAction
@@ -165,16 +166,16 @@ export type TBasicAboutNodeContentMixin = TBaseMixin<
 	'content',
 	{
 		type: 'basic';
-		name: string;
-		bio?: string;
+		title: string;
+		description?: string;
 		avatar?: TAssetHash;
-		contactIcons: TContactIcon[];
+		contactLinks: TContactLink[];
 	}
 >;
 
-export interface TContactIcon {
+export interface TContactLink {
 	id: string;
-	action: TEmailAction | TPhoneAction | TSocialAction;
+	action: TLinkAction | TEmailAction | TPhoneAction | TSocialAction;
 	title?: string;
 }
 
@@ -435,6 +436,7 @@ export interface TProduct {
 	variants: {
 		id: string;
 		title: string;
+		description?: string;
 		price: { amount: string; currencyCode: string };
 		image?: TAssetHash;
 		selectedOptions: { name: string; value: string }[];

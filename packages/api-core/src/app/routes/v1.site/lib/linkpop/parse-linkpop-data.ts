@@ -17,7 +17,7 @@ import {
 	TAssetHash,
 	TClassicAboutNodeBundle,
 	TClassicLinkNodeBundle,
-	TContactIcon,
+	TContactLink,
 	textNodeMetadata,
 	TFontAsset,
 	themes,
@@ -80,10 +80,10 @@ export function parseLinkpopData(linkpopData: TLinkPopData): TSite {
 			id: createId('node'),
 			content: {
 				type: 'basic',
-				name: page.title ?? 'Your Name',
-				bio: page.bio,
+				title: page.title ?? 'Your Name',
+				description: page.bio,
 				avatar: avatarHash,
-				contactIcons: transformSocialLinks(page.socialMediaAccounts ?? [])
+				contactLinks: mapSocialLinks(page.socialMediaAccounts ?? [])
 			},
 			image: {
 				appearance: {
@@ -298,15 +298,15 @@ export function parseLinkpopData(linkpopData: TLinkPopData): TSite {
 	};
 }
 
-function transformSocialLinks(
-	linkpopSocialLinks: Array<{ id: string; handle: string; network: string }>
-): TContactIcon[] {
-	const contactIcons: TContactIcon[] = [];
+function mapSocialLinks(
+	socialLinks: { id: string; handle: string; network: string }[]
+): TContactLink[] {
+	const contactLinks: TContactLink[] = [];
 
-	for (const social of linkpopSocialLinks) {
+	for (const social of socialLinks) {
 		const contactMetadata = getSocialContactMetadata(social.network);
 		if (contactMetadata != null) {
-			contactIcons.push({
+			contactLinks.push({
 				id: shortId(),
 				action: {
 					type: 'social',
@@ -319,7 +319,7 @@ function transformSocialLinks(
 		}
 	}
 
-	return contactIcons;
+	return contactLinks;
 }
 
 function createFontAsset(fontFamily?: string): TFontAsset {

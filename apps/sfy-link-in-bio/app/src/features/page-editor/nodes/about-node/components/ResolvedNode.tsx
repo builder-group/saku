@@ -1,7 +1,7 @@
 import { getContactKey } from '@repo/editor';
 import React from 'react';
 import { contactIconMap } from '../../../environment';
-import { TResolvedNodeProps } from '../../../lib/node/types';
+import { TResolvedNodeProps } from '../../../lib';
 import { TResolvedAboutNode } from '../types';
 
 export const ResolvedAboutNode = React.forwardRef<
@@ -31,7 +31,7 @@ export const ResolvedAboutNode = React.forwardRef<
 						<div className="h-20 w-20 overflow-hidden" style={image.styles}>
 							<img
 								src={content.avatar.src}
-								alt={content.name}
+								alt={content.title}
 								className="h-full w-full object-cover"
 								draggable={false}
 							/>
@@ -41,27 +41,27 @@ export const ResolvedAboutNode = React.forwardRef<
 							className="flex h-20 w-20 items-center justify-center bg-neutral-200 text-gray-500"
 							style={image.styles}
 						>
-							{content.name.charAt(0).toUpperCase()}
+							{content.title.charAt(0).toUpperCase()}
 						</div>
 					)}
 
 					{/* Name */}
 					<h1 className="font-semibold" style={textXl.styles}>
-						{content.name}
+						{content.title}
 					</h1>
 
 					{/* Bio */}
-					{content.bio != null && (
+					{content.description != null && (
 						<p className="leading-relaxed" style={text.styles}>
-							{content.bio}
+							{content.description}
 						</p>
 					)}
 
 					{/* Contact Icons */}
-					{content.contactIcons.length > 0 && (
+					{content.contactLinks.length > 0 && (
 						<div className="flex flex-wrap justify-center gap-4">
-							{content.contactIcons.map((contactIcon) => {
-								const action = contactIcon.action;
+							{content.contactLinks.map((contactLink) => {
+								const action = contactLink.action;
 								const contactKey = getContactKey(action);
 
 								const IconComponent = contactIconMap[contactKey];
@@ -71,7 +71,7 @@ export const ResolvedAboutNode = React.forwardRef<
 
 								return (
 									<a
-										key={contactIcon.id}
+										key={contactLink.id}
 										href={action.url}
 										target={action.type === 'social' ? '_blank' : undefined}
 										rel={action.type === 'social' ? 'noopener noreferrer' : undefined}
@@ -79,7 +79,7 @@ export const ResolvedAboutNode = React.forwardRef<
 										style={{
 											color: text.styles.color
 										}}
-										title={contactIcon.title}
+										title={contactLink.title}
 									>
 										<IconComponent className="h-full w-full" />
 									</a>

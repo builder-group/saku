@@ -5,6 +5,7 @@ import {
 	parseUrl,
 	TBasicAboutNodeContentMixin,
 	TEmailAction,
+	TLinkAction,
 	TPhoneAction,
 	TSocialAction
 } from '@repo/editor';
@@ -34,49 +35,48 @@ export const BasicAboutNodeContentMixinEditor = (props: TBasicAboutNodeContentMi
 		};
 	}, [content.avatar, editor]);
 
-	const contactValues = React.useMemo(() => {
+	const contactLinks = React.useMemo(() => {
 		return Object.entries(contactMetadataMap).map(([key, metadata]) => {
-			const contactIcon = content.contactIcons?.find(({ action }) => key === getContactKey(action));
+			const contactLink = content.contactLinks?.find(({ action }) => key === getContactKey(action));
 
-			// Extract value from icon
+			// Extract value from contact link
 			let value = '';
-			if (contactIcon != null) {
-				switch (contactIcon.action.type) {
+			if (contactLink != null) {
+				switch (contactLink.action.type) {
+					case 'link':
+						value = contactLink.action.url;
+						break;
 					case 'email':
-						value = contactIcon.action.email;
+						value = contactLink.action.email;
 						break;
 					case 'phone':
-						value = contactIcon.action.phone;
+						value = contactLink.action.phone;
 						break;
 					case 'social':
-						value = contactIcon.action.handle;
+						value = contactLink.action.handle;
 						break;
 				}
 			}
 
 			return { key: key as keyof typeof contactMetadataMap, value, metadata };
 		});
-	}, [content.contactIcons]);
+	}, [content.contactLinks]);
 
 	// =========================================================================
 	// Events
 	// =========================================================================
 
-	const handleNameChange = React.useCallback(
+	const handleTitleChange = React.useCallback(
 		(value: string) => {
-			state._v.name = value;
+			state._v.title = value;
 			state._notify();
 		},
 		[state]
 	);
 
-	const handleBioChange = React.useCallback(
+	const handleDescriptionChange = React.useCallback(
 		(value: string) => {
-			if (!value.length) {
-				state._v.bio = undefined;
-			} else {
-				state._v.bio = value;
-			}
+			state._v.description = value.length > 0 ? value : undefined;
 			state._notify();
 		},
 		[state]
@@ -106,6 +106,7 @@ export const BasicAboutNodeContentMixinEditor = (props: TBasicAboutNodeContentMi
 	const handleContactChange = React.useCallback(
 		(
 			params:
+				| { type: 'link'; key: keyof typeof contactMetadataMap; value: string }
 				| { type: 'email'; key: keyof typeof contactMetadataMap; value: string }
 				| { type: 'phone'; key: keyof typeof contactMetadataMap; value: string }
 				| {
@@ -115,28 +116,38 @@ export const BasicAboutNodeContentMixinEditor = (props: TBasicAboutNodeContentMi
 						provider: TSocialAction['provider'];
 				  }
 		) => {
-			const currentIcons = [...(state._v.contactIcons ?? [])];
+			const contactLinks = [...(state._v.contactLinks ?? [])];
 			let trimmedValue = params.value.trim();
 
 			// Auto-detect and parse URLs for social platforms
 			if (params.type === 'social' && parseUrl(trimmedValue) != null) {
-				const extractedHandle =
-					contactMetadataMap[`social.${params.provider}`].getHandle(trimmedValue);
-				if (extractedHandle != null && extractedHandle !== trimmedValue) {
-					trimmedValue = extractedHandle;
+				const handle = contactMetadataMap[`social.${params.provider}`].getHandle(trimmedValue);
+				if (handle != null && handle !== trimmedValue) {
+					trimmedValue = handle;
 				}
 			}
 
-			const existingIndex = currentIcons.findIndex(
+			const existingIndex = contactLinks.findIndex(
 				({ action }) => params.key === getContactKey(action)
 			);
 
-			// Create new icon
-			if (trimmedValue !== '') {
-				let newIcon;
+			// Create new contact link
+			if (trimmedValue.length > 0) {
+				let newContactLink;
 				switch (params.type) {
+					case 'link': {
+						newContactLink = {
+							id: shortId(),
+							action: {
+								type: 'link',
+								url: contactMetadataMap.link.getUrl(trimmedValue)
+							} as TLinkAction,
+							title: contactMetadataMap.link.getTitle(trimmedValue)
+						};
+						break;
+					}
 					case 'email': {
-						newIcon = {
+						newContactLink = {
 							id: shortId(),
 							action: {
 								type: 'email',
@@ -148,7 +159,7 @@ export const BasicAboutNodeContentMixinEditor = (props: TBasicAboutNodeContentMi
 						break;
 					}
 					case 'phone': {
-						newIcon = {
+						newContactLink = {
 							id: shortId(),
 							action: {
 								type: 'phone',
@@ -161,7 +172,7 @@ export const BasicAboutNodeContentMixinEditor = (props: TBasicAboutNodeContentMi
 					}
 					case 'social': {
 						const metadata = contactMetadataMap[`social.${params.provider}`];
-						newIcon = {
+						newContactLink = {
 							id: shortId(),
 							action: {
 								type: 'social',
@@ -175,23 +186,23 @@ export const BasicAboutNodeContentMixinEditor = (props: TBasicAboutNodeContentMi
 					}
 				}
 
-				if (newIcon != null) {
+				if (newContactLink != null) {
 					// Update existing icon
 					if (existingIndex >= 0) {
-						currentIcons[existingIndex] = newIcon;
+						contactLinks[existingIndex] = newContactLink;
 					}
 					// Add new icon
 					else {
-						currentIcons.push(newIcon);
+						contactLinks.push(newContactLink);
 					}
 				}
 			}
-			// Remove icon if value is empty
+			// Remove contact link if value is empty
 			else if (existingIndex >= 0) {
-				currentIcons.splice(existingIndex, 1);
+				contactLinks.splice(existingIndex, 1);
 			}
 
-			state._v.contactIcons = currentIcons;
+			state._v.contactLinks = contactLinks;
 			state._notify();
 		},
 		[state]
@@ -220,47 +231,47 @@ export const BasicAboutNodeContentMixinEditor = (props: TBasicAboutNodeContentMi
 				)}
 			</div>
 
-			{/* Name */}
+			{/* Title */}
 			<div className="space-y-1">
 				<Text as="span" variant="bodySm" tone="subdued">
-					Name
+					Title
 				</Text>
 				<TextField
-					id="name-field"
-					label="Name"
+					id="title-field"
+					label="Title"
 					labelHidden
-					value={content.name}
-					onChange={handleNameChange}
+					value={content.title}
+					onChange={handleTitleChange}
 					autoComplete="off"
 					placeholder="Enter your name"
 				/>
 			</div>
 
-			{/* Bio */}
+			{/* Description */}
 			<div className="space-y-1">
 				<Text as="span" variant="bodySm" tone="subdued">
-					Bio
+					Description
 				</Text>
 				<TextField
-					id="bio-field"
-					label="Bio"
+					id="description-field"
+					label="Description"
 					labelHidden
-					value={content.bio}
-					onChange={handleBioChange}
+					value={content.description}
+					onChange={handleDescriptionChange}
 					multiline={4}
 					autoComplete="off"
 					placeholder="Tell us about yourself"
 				/>
 			</div>
 
-			{/* Contact */}
+			{/* Contact Links */}
 			<div>
 				<Text as="span" variant="headingXs" tone="subdued">
-					Contact
+					Contact Links
 				</Text>
 			</div>
 			<div className="space-y-3">
-				{contactValues.map(({ key, value, metadata }) => {
+				{contactLinks.map(({ key, value, metadata }) => {
 					return (
 						<div key={key} className="space-y-1">
 							<Text as="span" variant="bodySm" tone="subdued">

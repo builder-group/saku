@@ -14,7 +14,7 @@ import {
 	TClassicAboutNodeBundle,
 	TClassicLinkNodeBundle,
 	TClassicMediaNodeBundle,
-	TContactIcon,
+	TContactLink,
 	textNodeMetadata,
 	TId,
 	tokenRef,
@@ -28,7 +28,7 @@ import {
 import { createHandleFromShop } from '@/lib';
 
 export function blankPreset(config: TBlankPresetConfig): TSite {
-	const { shopId, name, avatar, socialLinks, featuredProduct, theme } = config;
+	const { shopId, title, avatar, socialLinks, featuredProduct, theme } = config;
 
 	const assets: (TFontAsset | TImageAsset)[] = [];
 
@@ -152,42 +152,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 		altText: 'Vibe Rabbit GIF'
 	});
 
-	// Create contact icons array with shop link always first
 	const storeHandle = createHandleFromShop(shopId);
-	const contactIcons: TContactIcon[] = [
-		{
-			id: shortId(),
-			action: {
-				type: 'social',
-				provider: 'shopify',
-				handle: storeHandle,
-				url: contactMetadataMap['social.shopify'].getUrl(storeHandle)
-			},
-			title: contactMetadataMap['social.shopify'].getTitle(storeHandle)
-		},
-		...(socialLinks
-			?.map((link) => {
-				const contactMetadata = getSocialContactMetadata(link.platform);
-				if (contactMetadata == null) {
-					return null;
-				}
-				const handle = contactMetadata.getHandle(link.url);
-				if (handle == null) {
-					return null;
-				}
-				return {
-					id: shortId(),
-					action: {
-						type: 'social',
-						provider: contactMetadata.provider,
-						handle,
-						url: contactMetadata.getUrl(handle)
-					},
-					title: contactMetadata.getTitle(handle)
-				} satisfies TContactIcon;
-			})
-			.filter(notEmpty) ?? [])
-	];
 
 	return {
 		version: 'v0.0.1',
@@ -205,10 +170,44 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					id: createId('node'),
 					content: {
 						type: 'basic',
-						name,
-						bio: 'Welcome to your new page! Add a short description about yourself or your brand.',
+						title,
+						description:
+							'Welcome to your new page! Add a short description about yourself or your brand.',
 						avatar: avatarAssetHashId,
-						contactIcons: contactIcons
+						contactLinks: [
+							{
+								id: shortId(),
+								action: {
+									type: 'social',
+									provider: 'shopify',
+									handle: storeHandle,
+									url: contactMetadataMap['social.shopify'].getUrl(storeHandle)
+								},
+								title: contactMetadataMap['social.shopify'].getTitle(storeHandle)
+							},
+							...(socialLinks
+								?.map((link) => {
+									const contactMetadata = getSocialContactMetadata(link.platform);
+									if (contactMetadata == null) {
+										return null;
+									}
+									const handle = contactMetadata.getHandle(link.url);
+									if (handle == null) {
+										return null;
+									}
+									return {
+										id: shortId(),
+										action: {
+											type: 'social',
+											provider: contactMetadata.provider,
+											handle,
+											url: contactMetadata.getUrl(handle)
+										},
+										title: contactMetadata.getTitle(handle)
+									} satisfies TContactLink;
+								})
+								.filter(notEmpty) ?? [])
+						]
 					}
 				} satisfies TClassicAboutNodeBundle,
 				{
@@ -264,7 +263,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 
 interface TBlankPresetConfig {
 	shopId: string;
-	name: string;
+	title: string;
 	theme?: TTheme;
 	avatar?: string;
 	socialLinks?: {

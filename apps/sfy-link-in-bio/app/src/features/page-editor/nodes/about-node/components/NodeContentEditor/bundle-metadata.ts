@@ -5,7 +5,7 @@ import {
 	TAssetHash,
 	TAutoLayoutStyleMixin,
 	TClassicAboutNodeBundle,
-	TContactIcon,
+	TContactLink,
 	TFillStyleMixin,
 	THeroAboutNodeBundle,
 	TIdMixin,
@@ -28,10 +28,10 @@ export const bundleMetadataMap = {
 			return {
 				id: node.id,
 				content: {
-					name: node.content.name,
-					bio: node.content.bio,
+					title: node.content.title,
+					description: node.content.description,
 					avatar: node.content.avatar,
-					contactIcons: node.content.contactIcons
+					contactLinks: node.content.contactLinks
 				},
 				autoLayout: node.autoLayout,
 				appearance: node.appearance,
@@ -51,10 +51,10 @@ export const bundleMetadataMap = {
 				type: 'about',
 				content: {
 					type: 'basic',
-					name: cx.common.content?.name ?? '',
-					bio: cx.common.content?.bio,
+					title: cx.common.content?.title ?? '',
+					description: cx.common.content?.description,
 					avatar: cx.common.content?.avatar,
-					contactIcons: cx.common.content?.contactIcons ?? []
+					contactLinks: cx.common.content?.contactLinks ?? []
 				},
 				autoLayout: cx.common.autoLayout ?? defaults.autoLayout,
 				appearance: cx.common.appearance ?? defaults.appearance,
@@ -76,10 +76,10 @@ export const bundleMetadataMap = {
 			return {
 				id: node.id,
 				content: {
-					name: node.content.name,
-					bio: node.content.bio,
+					title: node.content.title,
+					description: node.content.description,
 					avatar: node.content.avatar,
-					contactIcons: node.content.contactIcons
+					contactLinks: node.content.contactLinks
 				},
 				autoLayout: node.autoLayout,
 				appearance: node.appearance,
@@ -99,10 +99,10 @@ export const bundleMetadataMap = {
 				type: 'about',
 				content: {
 					type: 'basic',
-					name: cx.common.content?.name ?? '',
-					bio: cx.common.content?.bio,
+					title: cx.common.content?.title ?? '',
+					description: cx.common.content?.description,
 					avatar: cx.common.content?.avatar,
-					contactIcons: cx.common.content?.contactIcons ?? []
+					contactLinks: cx.common.content?.contactLinks ?? []
 				},
 				autoLayout: cx.common.autoLayout ?? defaults.autoLayout,
 				appearance: cx.common.appearance ?? defaults.appearance,
@@ -152,10 +152,10 @@ export interface TBundleMetadata<GNode extends TAboutNode> {
 interface TCommonFields {
 	id: TIdMixin['value'];
 	content?: {
-		name: string;
-		bio?: string;
+		title: string;
+		description?: string;
 		avatar?: TAssetHash;
-		contactIcons: TContactIcon[];
+		contactLinks: TContactLink[];
 	};
 	autoLayout?: TAutoLayoutStyleMixin['value'];
 	appearance?: TAppearanceStyleMixin['value'];

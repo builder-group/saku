@@ -4,6 +4,7 @@ import {
 	DiscordIcon,
 	FacebookIcon,
 	GithubIcon,
+	GlobeIcon,
 	GoogleIcon,
 	InstagramIcon,
 	LinkedInIcon,
@@ -19,6 +20,7 @@ import {
 } from '@/components';
 
 export const contactIconMap = {
+	'link': GlobeIcon,
 	'email': MailIcon,
 	'phone': PhoneIcon,
 	'social.instagram': InstagramIcon,

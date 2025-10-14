@@ -102,10 +102,10 @@ export function resolvePageMetadata(
 		const aboutNode = findAboutNode(node, cx);
 		if (aboutNode != null) {
 			if (title == null) {
-				title = aboutNode.content.name;
+				title = aboutNode.content.title;
 			}
-			if (description == null && aboutNode.content.bio != null) {
-				description = aboutNode.content.bio;
+			if (description == null && aboutNode.content.description != null) {
+				description = aboutNode.content.description;
 			}
 			if (favicon == null && aboutNode.content.avatar != null) {
 				favicon = resolveAsset(aboutNode.content.avatar, cx.site)?.src;

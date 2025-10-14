@@ -1,13 +1,13 @@
-import { TBaseMixin, TContactIcon } from '@repo/editor';
+import { TBaseMixin, TContactLink } from '@repo/editor';
 import { TResolvedAsset } from '../../lib';
 
 export type TResolvedBasicAboutNodeContentMixin = TBaseMixin<
 	'content',
 	{
 		type: 'basic';
-		name: string;
-		bio?: string;
+		title: string;
+		description?: string;
 		avatar?: TResolvedAsset;
-		contactIcons: TContactIcon[];
+		contactLinks: TContactLink[];
 	}
 >;

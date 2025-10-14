@@ -1,4 +1,4 @@
-import { TEmailAction, TPhoneAction, TSocialAction } from '../types';
+import { TEmailAction, TLinkAction, TPhoneAction, TSocialAction } from '../types';
 
 export const contactMetadataMap = {
 	'email': {
@@ -14,6 +14,13 @@ export const contactMetadataMap = {
 		placeholder: '+1 (555) 123-4567',
 		getUrl: (phone) => `tel:${phone}`,
 		getTitle: (phone) => (phone != null ? `Phone: ${phone}` : 'Phone')
+	},
+	'link': {
+		type: 'link' as const,
+		label: 'Link',
+		placeholder: 'https://example.com',
+		getUrl: (url) => url,
+		getTitle: (url) => (url != null ? `Link: ${url}` : 'Link')
 	},
 	'social.instagram': {
 		type: 'social' as const,
@@ -165,9 +172,18 @@ export const contactMetadataMap = {
 } as const satisfies Record<string, TContactMetadata>;
 
 export type TContactMetadata =
+	| TLinkContactMetadata
 	| TEmailContactMetadata
 	| TPhoneContactMetadata
 	| TSocialContactMetadata;
+
+export interface TLinkContactMetadata {
+	type: 'link';
+	label: string;
+	placeholder: string;
+	getUrl: (url: string) => string;
+	getTitle: (url?: string) => string;
+}
 
 export interface TEmailContactMetadata {
 	type: 'email';
@@ -196,7 +212,7 @@ export interface TSocialContactMetadata {
 }
 
 export function getContactKey(
-	action: TEmailAction | TPhoneAction | TSocialAction
+	action: TLinkAction | TEmailAction | TPhoneAction | TSocialAction
 ): keyof typeof contactMetadataMap {
 	switch (action.type) {
 		case 'social':

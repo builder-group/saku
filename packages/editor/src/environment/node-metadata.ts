@@ -10,9 +10,64 @@ export const aboutNodeMetadata: TNodeMetadata<'about'> = {
 			bundleType: 'classic',
 			content: {
 				type: 'basic',
-				name: 'Your Name',
-				bio: 'Tell us about yourself',
-				contactIcons: []
+				title: 'Your Name',
+				description: 'Tell us about yourself',
+				contactLinks: []
+			},
+			autoLayout: {
+				horizontalPadding: tokenRef('auto-layout.default', 'auto-layout', 'horizontalPadding'),
+				verticalPadding: tokenRef('auto-layout.default', 'auto-layout', 'verticalPadding'),
+				horizontalGap: null,
+				verticalGap: null
+			},
+			appearance: tokenRef('appearance.default', 'appearance'),
+			fill: null,
+			stroke: null,
+			shadow: null,
+			textXl: {
+				appearance: tokenRef('text.xl', 'text', 'appearance'),
+				typography: {
+					font: tokenRef('text.xl', 'text', 'typography.font'),
+					fontSize: tokenRef('text.xl', 'text', 'typography.fontSize'),
+					textAlignHorizontal: 'center',
+					textAlignVertical: 'center',
+					lineHeight: tokenRef('text.xl', 'text', 'typography.lineHeight'),
+					letterSpacing: tokenRef('text.xl', 'text', 'typography.letterSpacing')
+				},
+				fill: {
+					paint: tokenRef('paint.base200.content', 'paint.solid'),
+					opacity: tokenRef('text.xl', 'text', 'fill.opacity')
+				},
+				stroke: tokenRef('text.xl', 'text', 'stroke'),
+				shadow: tokenRef('text.xl', 'text', 'shadow')
+			},
+			text: {
+				appearance: tokenRef('text.default', 'text', 'appearance'),
+				typography: {
+					font: tokenRef('text.default', 'text', 'typography.font'),
+					fontSize: tokenRef('text.default', 'text', 'typography.fontSize'),
+					textAlignHorizontal: 'center',
+					textAlignVertical: 'center',
+					lineHeight: tokenRef('text.default', 'text', 'typography.lineHeight'),
+					letterSpacing: tokenRef('text.default', 'text', 'typography.letterSpacing')
+				},
+				fill: {
+					paint: tokenRef('paint.base200.content', 'paint.solid'),
+					opacity: tokenRef('text.default', 'text', 'fill.opacity')
+				},
+				stroke: tokenRef('text.default', 'text', 'stroke'),
+				shadow: tokenRef('text.default', 'text', 'shadow')
+			},
+			image: tokenRef('image.default', 'image')
+		},
+		hero: {
+			type: 'about',
+			bundleType: 'hero',
+			content: {
+				type: 'basic',
+				title: 'Your Name',
+				description: 'Tell us about yourself',
+				contactLinks: []
 			},
 			autoLayout: {
 				horizontalPadding: tokenRef('auto-layout.default', 'auto-layout', 'horizontalPadding'),
