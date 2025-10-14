@@ -2,7 +2,7 @@ import { TSpotifyEmbedLinkNodeBundle } from '@repo/editor';
 import React from 'react';
 import { useNodeProperty } from '../../../../hooks';
 import { SpotifyEmbedLinkNodeContentMixinEditor } from '../../../../mixins';
-import { TNodeEditorContext } from '../../components/NodeContentEditor/lib';
+import { TLinkNodeEditorContext } from '../../lib';
 
 export const SpotifyEmbedBundleContentEditor: React.FC<TSpotifyEmbedBundleContentEditorProps> = (
 	props
@@ -17,6 +17,6 @@ export const SpotifyEmbedBundleContentEditor: React.FC<TSpotifyEmbedBundleConten
 };
 
 interface TSpotifyEmbedBundleContentEditorProps {
-	cx: TNodeEditorContext<TSpotifyEmbedLinkNodeBundle>;
+	cx: TLinkNodeEditorContext<TSpotifyEmbedLinkNodeBundle>;
 	className?: string;
 }

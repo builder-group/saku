@@ -2,7 +2,7 @@ import { THeroAboutNodeBundle } from '@repo/editor';
 import React from 'react';
 import { useNodeProperty } from '../../../../hooks';
 import { BasicAboutNodeContentMixinEditor } from '../../../../mixins';
-import { TNodeEditorContext } from '../../components/NodeContentEditor/lib';
+import { TAboutNodeEditorContext } from '../../lib';
 
 export const HeroBundleContentEditor: React.FC<THeroBundleContentEditorProps> = (props) => {
 	const { cx, className } = props;
@@ -19,6 +19,6 @@ export const HeroBundleContentEditor: React.FC<THeroBundleContentEditorProps> = 
 };
 
 interface THeroBundleContentEditorProps {
-	cx: TNodeEditorContext<THeroAboutNodeBundle>;
+	cx: TAboutNodeEditorContext<THeroAboutNodeBundle>;
 	className?: string;
 }

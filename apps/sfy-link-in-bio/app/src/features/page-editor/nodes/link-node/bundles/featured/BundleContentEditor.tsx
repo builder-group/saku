@@ -2,7 +2,7 @@ import { TFeaturedLinkNodeBundle } from '@repo/editor';
 import React from 'react';
 import { useNodeProperty } from '../../../../hooks';
 import { BasicLinkNodeContentMixinEditor } from '../../../../mixins';
-import { TNodeEditorContext } from '../../components/NodeContentEditor/lib';
+import { TLinkNodeEditorContext } from '../../lib';
 
 export const FeaturedBundleContentEditor: React.FC<TFeaturedBundleContentEditorProps> = (props) => {
 	const { cx, className } = props;
@@ -13,6 +13,6 @@ export const FeaturedBundleContentEditor: React.FC<TFeaturedBundleContentEditorP
 };
 
 interface TFeaturedBundleContentEditorProps {
-	cx: TNodeEditorContext<TFeaturedLinkNodeBundle>;
+	cx: TLinkNodeEditorContext<TFeaturedLinkNodeBundle>;
 	className?: string;
 }

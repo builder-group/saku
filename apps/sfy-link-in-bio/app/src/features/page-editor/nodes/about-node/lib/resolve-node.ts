@@ -1,9 +1,9 @@
 import { TAboutNode } from '@repo/editor';
 import { Err, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
-import { TNodeResolveContext } from '../../lib';
-import { resolveClassicBundle, resolveHeroBundle } from './bundles';
-import { TResolvedAboutNode } from './types';
+import { TNodeResolveContext } from '../../../lib';
+import { resolveClassicBundle, resolveHeroBundle } from '../bundles';
+import { TResolvedAboutNode } from '../types';
 
 export function resolveAboutNode(
 	node: TAboutNode,

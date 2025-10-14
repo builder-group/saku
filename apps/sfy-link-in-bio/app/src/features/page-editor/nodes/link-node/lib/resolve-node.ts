@@ -1,14 +1,14 @@
 import { TLinkNode } from '@repo/editor';
 import { Err, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
-import { TNodeResolveContext } from '../../lib';
+import { TNodeResolveContext } from '../../../lib';
 import {
 	resolveClassicBundle,
 	resolveFeaturedBundle,
 	resolveSpotifyEmbedBundle,
 	resolveYouTubeEmbedBundle
-} from './bundles';
-import { TResolvedLinkNode } from './types';
+} from '../bundles';
+import { TResolvedLinkNode } from '../types';
 
 export function resolveLinkNode(
 	node: TLinkNode,

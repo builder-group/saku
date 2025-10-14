@@ -9,28 +9,28 @@ import { Select, Text } from '@shopify/polaris';
 import { useCompute, useFeatureState } from 'feature-react/state';
 import React from 'react';
 import { AccordionSection, JsonPreview, PortalPulse } from '@/components';
-import { TNodeEditorComponentProps } from '../../../../lib';
+import { TNodeEditorComponentProps } from '../../../lib';
 import {
 	ClassicBundleContentEditor,
 	FeaturedBundleContentEditor,
 	SpotifyEmbedBundleContentEditor,
 	YoutubeEmbedBundleContentEditor
-} from '../../bundles';
+} from '../bundles';
+import { linkNodeBundleMetadataMap } from '../environment';
+import { createLinkNodeEditorContext, TLinkNodeEditorContext } from '../lib';
 import { ContentSkeleton } from './ContentSkeleton';
-import { bundleMetadataMap } from './environment';
-import { createNodeEditorContext, TNodeEditorContext } from './lib';
 
 export const LinkNodeContentEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (props) => {
 	const { nodeState, editor } = props;
 
 	const cx = React.useMemo(
-		() => createNodeEditorContext({ node: nodeState, editor }),
+		() => createLinkNodeEditorContext({ node: nodeState, editor }),
 		[nodeState, editor]
 	);
 
 	const bundleOptions = useCompute(cx.applicableBundleTypes, ({ value }) =>
 		value.map((type) => ({
-			label: bundleMetadataMap[type].label,
+			label: linkNodeBundleMetadataMap[type].label,
 			value: type
 		}))
 	);
@@ -60,21 +60,23 @@ export const LinkNodeContentEditor: React.FC<TNodeEditorComponentProps<TLinkNode
 	const renderContentEditor = React.useCallback((): React.ReactElement | null => {
 		switch (selectedBundleType) {
 			case 'classic':
-				return <ClassicBundleContentEditor cx={cx as TNodeEditorContext<TClassicLinkNodeBundle>} />;
+				return (
+					<ClassicBundleContentEditor cx={cx as TLinkNodeEditorContext<TClassicLinkNodeBundle>} />
+				);
 			case 'featured':
 				return (
-					<FeaturedBundleContentEditor cx={cx as TNodeEditorContext<TFeaturedLinkNodeBundle>} />
+					<FeaturedBundleContentEditor cx={cx as TLinkNodeEditorContext<TFeaturedLinkNodeBundle>} />
 				);
 			case 'youtube-embed':
 				return (
 					<YoutubeEmbedBundleContentEditor
-						cx={cx as TNodeEditorContext<TYouTubeEmbedLinkNodeBundle>}
+						cx={cx as TLinkNodeEditorContext<TYouTubeEmbedLinkNodeBundle>}
 					/>
 				);
 			case 'spotify-embed':
 				return (
 					<SpotifyEmbedBundleContentEditor
-						cx={cx as TNodeEditorContext<TSpotifyEmbedLinkNodeBundle>}
+						cx={cx as TLinkNodeEditorContext<TSpotifyEmbedLinkNodeBundle>}
 					/>
 				);
 			default:

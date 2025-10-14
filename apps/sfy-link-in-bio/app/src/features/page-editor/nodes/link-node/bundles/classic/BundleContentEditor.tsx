@@ -2,7 +2,7 @@ import { TClassicLinkNodeBundle } from '@repo/editor';
 import React from 'react';
 import { useNodeProperty } from '../../../../hooks';
 import { BasicLinkNodeContentMixinEditor } from '../../../../mixins';
-import { TNodeEditorContext } from '../../components/NodeContentEditor/lib';
+import { TLinkNodeEditorContext } from '../../lib';
 
 export const ClassicBundleContentEditor: React.FC<TClassicBundleContentEditorProps> = (props) => {
 	const { cx, className } = props;
@@ -13,6 +13,6 @@ export const ClassicBundleContentEditor: React.FC<TClassicBundleContentEditorPro
 };
 
 interface TClassicBundleContentEditorProps {
-	cx: TNodeEditorContext<TClassicLinkNodeBundle>;
+	cx: TLinkNodeEditorContext<TClassicLinkNodeBundle>;
 	className?: string;
 }

@@ -16,10 +16,10 @@ import {
 	TTextStyleMixin
 } from '@repo/editor';
 import { Ok, TResult } from 'tuple-result';
-import { AppError } from '../../../../../../../lib';
-import { TNodeState, TPageEditor } from '../../../../../lib';
+import { AppError } from '@/lib';
+import { TNodeState, TPageEditor } from '../../../lib';
 
-export const bundleMetadataMap = {
+export const aboutNodeBundleMetadataMap = {
 	classic: {
 		type: 'classic',
 		label: 'Classic',
@@ -66,7 +66,7 @@ export const bundleMetadataMap = {
 			});
 			return Ok(undefined);
 		}
-	} satisfies TBundleMetadata<TClassicAboutNodeBundle>,
+	} satisfies TAboutNodeBundleMetadata<TClassicAboutNodeBundle>,
 	hero: {
 		type: 'hero',
 		label: 'Hero',
@@ -113,16 +113,16 @@ export const bundleMetadataMap = {
 			});
 			return Ok(undefined);
 		}
-	} satisfies TBundleMetadata<THeroAboutNodeBundle>
+	} satisfies TAboutNodeBundleMetadata<THeroAboutNodeBundle>
 };
 
-export const bundleMetadata = Object.values(bundleMetadataMap);
+export const aboutNodeBundleMetadata = Object.values(aboutNodeBundleMetadataMap);
 
-export const bundlePriority: TBundleType[] = ['classic', 'hero'];
+export const aboutNodeBundlePriority: TBundleType[] = ['classic', 'hero'];
 
 export type TBundleType = TAboutNode['bundleType'];
 
-export interface TBundleMetadata<GNode extends TAboutNode> {
+export interface TAboutNodeBundleMetadata<GNode extends TAboutNode> {
 	type: GNode['bundleType'];
 	label: string;
 	/**

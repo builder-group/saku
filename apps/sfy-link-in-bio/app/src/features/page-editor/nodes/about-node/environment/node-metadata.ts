@@ -1,6 +1,6 @@
 import { aboutNodeMetadata as editorAboutNodeMetadata, TAboutNode } from '@repo/editor';
 import { PolarisLayoutSectionIcon } from '@/components';
-import { TNodeMetadata } from '../../lib';
+import { TNodeMetadata } from '../../../lib';
 
 export const aboutNodeMetadata: TNodeMetadata<TAboutNode> = {
 	type: 'about',

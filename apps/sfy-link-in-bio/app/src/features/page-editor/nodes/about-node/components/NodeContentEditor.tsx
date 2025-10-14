@@ -3,22 +3,22 @@ import { Select, Text } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react';
 import React from 'react';
 import { AccordionSection, JsonPreview } from '@/components';
-import { TNodeEditorComponentProps } from '../../../../lib';
-import { ClassicBundleContentEditor, HeroBundleContentEditor } from '../../bundles';
+import { TNodeEditorComponentProps } from '../../../lib';
+import { ClassicBundleContentEditor, HeroBundleContentEditor } from '../bundles';
+import { aboutNodeBundleMetadata } from '../environment';
+import { createAboutNodeEditorContext, TAboutNodeEditorContext } from '../lib';
 import { ContentSkeleton } from './ContentSkeleton';
-import { bundleMetadata } from './environment';
-import { createNodeEditorContext, TNodeEditorContext } from './lib/create-node-editor-context';
 
 export const AboutNodeContentEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = (props) => {
 	const { nodeState, editor } = props;
 
 	const cx = React.useMemo(
-		() => createNodeEditorContext({ node: nodeState, editor }),
+		() => createAboutNodeEditorContext({ node: nodeState, editor }),
 		[nodeState, editor]
 	);
 
 	const bundleOptions = React.useMemo(() => {
-		return bundleMetadata.map((metadata) => ({
+		return aboutNodeBundleMetadata.map((metadata) => ({
 			label: metadata.label,
 			value: metadata.type
 		}));
@@ -49,10 +49,10 @@ export const AboutNodeContentEditor: React.FC<TNodeEditorComponentProps<TAboutNo
 		switch (selectedBundleType) {
 			case 'classic':
 				return (
-					<ClassicBundleContentEditor cx={cx as TNodeEditorContext<TClassicAboutNodeBundle>} />
+					<ClassicBundleContentEditor cx={cx as TAboutNodeEditorContext<TClassicAboutNodeBundle>} />
 				);
 			case 'hero':
-				return <HeroBundleContentEditor cx={cx as TNodeEditorContext<THeroAboutNodeBundle>} />;
+				return <HeroBundleContentEditor cx={cx as TAboutNodeEditorContext<THeroAboutNodeBundle>} />;
 			default:
 				return null;
 		}

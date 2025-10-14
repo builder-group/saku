@@ -3,39 +3,40 @@ import { ShopifyGlobal } from '@shopify/app-bridge-react';
 import { createState, TState } from 'feature-state';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
-import { TNodeState, TPageEditor } from '../../../../../lib';
+import { TNodeState, TPageEditor } from '../../../lib';
 import {
-	bundleMetadata,
-	bundleMetadataMap,
-	bundlePriority,
-	TBundleMetadata,
-	TBundleType
+	linkNodeBundleMetadata,
+	linkNodeBundleMetadataMap,
+	linkNodeBundlePriority,
+	TLinkNodeBundleMetadata
 } from '../environment';
 
-export function createNodeEditorContext<GNode extends TLinkNode>(
-	config: TCreateNodeEditorContextConfig<GNode>
-): TNodeEditorContext<GNode> {
+export function createLinkNodeEditorContext<GNode extends TLinkNode>(
+	config: TCreateLinkNodeEditorContextConfig<GNode>
+): TLinkNodeEditorContext<GNode> {
 	const { node, editor } = config;
 
 	return {
 		node,
 		editor,
 		shopify: editor.shopify,
-		selectedBundleType: createState<TBundleType>(node._v.bundleType),
+		selectedBundleType: createState<TLinkNode['bundleType']>(node._v.bundleType),
 		applicableBundleTypes: createState(
-			bundleMetadata
+			linkNodeBundleMetadata
 				.filter((variant) => variant.isApplicable(node._v.content.url))
 				.map((variant) => variant.type)
 		),
 		isSwitchingBundle: createState(false),
 		isEnhancingBundle: createState(false),
 
-		async switchBundleType(this: TNodeEditorContext<GNode>, bundleType) {
+		async switchBundleType(this: TLinkNodeEditorContext<GNode>, bundleType) {
 			this.isSwitchingBundle.set(true);
 			this.selectedBundleType.set(bundleType);
 
-			const metadata = bundleMetadataMap[this.node._v.bundleType] as TBundleMetadata<GNode>;
-			const nextMetadata = bundleMetadataMap[bundleType] as TBundleMetadata<GNode>;
+			const metadata = linkNodeBundleMetadataMap[
+				this.node._v.bundleType
+			] as TLinkNodeBundleMetadata<GNode>;
+			const nextMetadata = linkNodeBundleMetadataMap[bundleType] as TLinkNodeBundleMetadata<GNode>;
 
 			try {
 				// Update node bundle
@@ -60,8 +61,11 @@ export function createNodeEditorContext<GNode extends TLinkNode>(
 			return Ok(undefined);
 		},
 
-		async enhanceBundle(this: TNodeEditorContext<GNode>, bundleType = this.selectedBundleType._v) {
-			const metadata = bundleMetadataMap[bundleType] as TBundleMetadata<GNode>;
+		async enhanceBundle(
+			this: TLinkNodeEditorContext<GNode>,
+			bundleType = this.selectedBundleType._v
+		) {
+			const metadata = linkNodeBundleMetadataMap[bundleType] as TLinkNodeBundleMetadata<GNode>;
 			if (typeof metadata?.enhance !== 'function') {
 				return Ok(undefined);
 			}
@@ -76,7 +80,7 @@ export function createNodeEditorContext<GNode extends TLinkNode>(
 			return result;
 		},
 
-		async updateUrlAndEnhance(this: TNodeEditorContext<GNode>, newUrl) {
+		async updateUrlAndEnhance(this: TLinkNodeEditorContext<GNode>, newUrl) {
 			if (newUrl === this.node._v.content.url) {
 				return Ok(undefined);
 			}
@@ -101,14 +105,14 @@ export function createNodeEditorContext<GNode extends TLinkNode>(
 			// Only switch bundles on major changes
 			if (isMajorChange) {
 				// Get applicable bundles for the new URL
-				const applicableBundleTypes = bundleMetadata
+				const applicableBundleTypes = linkNodeBundleMetadata
 					.filter((variant) => variant.isApplicable(normalizedUrl))
 					.map((variant) => variant.type);
 				this.applicableBundleTypes.set(applicableBundleTypes);
 
 				// Auto-switch to best applicable bundle (prioritize more specific types)
 				const bestVariant =
-					bundlePriority.find((type) => applicableBundleTypes.includes(type)) ??
+					linkNodeBundlePriority.find((type) => applicableBundleTypes.includes(type)) ??
 					applicableBundleTypes[0];
 				if (bestVariant != null && bestVariant !== bundleType) {
 					return await this.switchBundleType(bestVariant);
@@ -126,20 +130,20 @@ export function createNodeEditorContext<GNode extends TLinkNode>(
 	};
 }
 
-export interface TCreateNodeEditorContextConfig<GNode extends TLinkNode> {
+export interface TCreateLinkNodeEditorContextConfig<GNode extends TLinkNode> {
 	node: TNodeState<GNode>;
 	editor: TPageEditor;
 }
 
-export interface TNodeEditorContext<GNode extends TLinkNode> {
+export interface TLinkNodeEditorContext<GNode extends TLinkNode> {
 	node: TNodeState<GNode>;
 	editor: TPageEditor;
 	shopify: ShopifyGlobal;
-	selectedBundleType: TState<TBundleType, []>;
-	applicableBundleTypes: TState<TBundleType[], []>;
+	selectedBundleType: TState<TLinkNode['bundleType'], []>;
+	applicableBundleTypes: TState<TLinkNode['bundleType'][], []>;
 	isSwitchingBundle: TState<boolean, []>;
 	isEnhancingBundle: TState<boolean, []>;
-	switchBundleType: (bundleType: TBundleType) => Promise<TResult<void, AppError>>;
-	enhanceBundle: (bundleType?: TBundleType) => Promise<TResult<void, AppError>>;
+	switchBundleType: (bundleType: TLinkNode['bundleType']) => Promise<TResult<void, AppError>>;
+	enhanceBundle: (bundleType?: TLinkNode['bundleType']) => Promise<TResult<void, AppError>>;
 	updateUrlAndEnhance: (newUrl: string) => Promise<TResult<void, AppError>>;
 }

@@ -21,11 +21,11 @@ import {
 } from '@repo/editor';
 import { Err, Ok, type TResult } from 'tuple-result';
 import { AppError } from '@/lib';
-import { TNodeState, TPageEditor } from '../../../../../lib';
-import { packAutoLayoutTokenRef, unpackAutoLayoutTokenRef } from '../../../../../mixins';
+import { TNodeState, TPageEditor } from '../../../lib';
+import { packAutoLayoutTokenRef, unpackAutoLayoutTokenRef } from '../../../mixins';
 import { fetchSpotifyTheme, fetchUrlMetadata } from '../lib';
 
-export const bundleMetadataMap = {
+export const linkNodeBundleMetadataMap = {
 	'classic': {
 		type: 'classic',
 		label: 'Classic',
@@ -123,7 +123,7 @@ export const bundleMetadataMap = {
 			cx.node._notify();
 			return Ok(undefined);
 		}
-	} satisfies TBundleMetadata<TClassicLinkNodeBundle>,
+	} satisfies TLinkNodeBundleMetadata<TClassicLinkNodeBundle>,
 	'featured': {
 		type: 'featured',
 		label: 'Featured',
@@ -221,7 +221,7 @@ export const bundleMetadataMap = {
 			cx.node._notify();
 			return Ok(undefined);
 		}
-	} satisfies TBundleMetadata<TFeaturedLinkNodeBundle>,
+	} satisfies TLinkNodeBundleMetadata<TFeaturedLinkNodeBundle>,
 	'youtube-embed': {
 		type: 'youtube-embed',
 		label: 'YouTube Embed',
@@ -300,7 +300,7 @@ export const bundleMetadataMap = {
 
 			return Ok(undefined);
 		}
-	} satisfies TBundleMetadata<TYouTubeEmbedLinkNodeBundle>,
+	} satisfies TLinkNodeBundleMetadata<TYouTubeEmbedLinkNodeBundle>,
 	'spotify-embed': {
 		type: 'spotify-embed',
 		label: 'Spotify Embed',
@@ -397,16 +397,18 @@ export const bundleMetadataMap = {
 
 			return Ok(undefined);
 		}
-	} satisfies TBundleMetadata<TSpotifyEmbedLinkNodeBundle>
+	} satisfies TLinkNodeBundleMetadata<TSpotifyEmbedLinkNodeBundle>
 };
 
-export const bundleMetadata = Object.values(bundleMetadataMap);
+export const linkNodeBundleMetadata = Object.values(linkNodeBundleMetadataMap);
 
-export const bundlePriority: TBundleType[] = ['youtube-embed', 'spotify-embed', 'classic'];
+export const linkNodeBundlePriority: TLinkNode['bundleType'][] = [
+	'youtube-embed',
+	'spotify-embed',
+	'classic'
+];
 
-export type TBundleType = TLinkNode['bundleType'];
-
-export interface TBundleMetadata<GNode extends TLinkNode> {
+export interface TLinkNodeBundleMetadata<GNode extends TLinkNode> {
 	type: GNode['bundleType'];
 	label: string;
 	isApplicable: (url: string) => boolean;

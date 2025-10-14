@@ -2,7 +2,7 @@ import { TClassicAboutNodeBundle } from '@repo/editor';
 import React from 'react';
 import { useNodeProperty } from '../../../../hooks';
 import { BasicAboutNodeContentMixinEditor } from '../../../../mixins';
-import { TNodeEditorContext } from '../../components/NodeContentEditor/lib';
+import { TAboutNodeEditorContext } from '../../lib';
 
 export const ClassicBundleContentEditor: React.FC<TClassicBundleContentEditorProps> = (props) => {
 	const { cx, className } = props;
@@ -19,6 +19,6 @@ export const ClassicBundleContentEditor: React.FC<TClassicBundleContentEditorPro
 };
 
 interface TClassicBundleContentEditorProps {
-	cx: TNodeEditorContext<TClassicAboutNodeBundle>;
+	cx: TAboutNodeEditorContext<TClassicAboutNodeBundle>;
 	className?: string;
 }
