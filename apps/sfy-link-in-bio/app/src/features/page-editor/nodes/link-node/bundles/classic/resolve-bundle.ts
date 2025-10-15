@@ -95,8 +95,12 @@ export function resolveClassicBundle(
 		resolvedImage.appearance.borderRadius ??
 		computeInnerBorderRadius(
 			resolvedAppearance.borderRadius ?? 0,
-			resolvedAutoLayout.verticalPadding,
-			resolvedAutoLayout.horizontalPadding
+			Math.max(
+				resolvedAutoLayout.paddingTop ?? 0,
+				resolvedAutoLayout.paddingRight ?? 0,
+				resolvedAutoLayout.paddingBottom ?? 0,
+				resolvedAutoLayout.paddingLeft ?? 0
+			)
 		);
 
 	return Ok({

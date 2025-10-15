@@ -1,5 +1,5 @@
 import React from 'react';
-import { TResolvedProductNode } from '../../types';
+import { TResolvedProductNode } from '../types';
 
 export const Skeleton: React.FC<TSkeletonProps> = (props) => {
 	const {

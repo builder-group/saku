@@ -1,7 +1,7 @@
-import { TProductNode } from '@repo/editor';
+import { TClassicProductNodeBundle } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError, computeInnerBorderRadius } from '@/lib';
-import { TNodeResolveContext } from '../../lib';
+import { TNodeResolveContext } from '../../../../lib';
 import {
 	resolveAppearanceStyleMixin,
 	resolveAutoLayoutStyleMixin,
@@ -14,13 +14,13 @@ import {
 	resolveSingleProductNodeContentMixin,
 	resolveStrokeStyleMixin,
 	resolveTextStyleMixin
-} from '../../mixins';
-import { TResolvedProductNode } from './types';
+} from '../../../../mixins';
+import { TResolvedClassicProductNodeBundle } from '../../types';
 
-export function resolveProductNode(
-	node: TProductNode,
+export function resolveClassicBundle(
+	node: TClassicProductNodeBundle,
 	cx: TNodeResolveContext
-): TResult<TResolvedProductNode, AppError> {
+): TResult<TResolvedClassicProductNodeBundle, AppError> {
 	const {
 		content,
 		autoLayout,
@@ -136,8 +136,12 @@ export function resolveProductNode(
 		resolvedImage.appearance.borderRadius ??
 		computeInnerBorderRadius(
 			resolvedAppearance.borderRadius ?? 0,
-			resolvedAutoLayout.verticalPadding,
-			resolvedAutoLayout.horizontalPadding
+			Math.max(
+				resolvedAutoLayout.paddingTop ?? 0,
+				resolvedAutoLayout.paddingRight ?? 0,
+				resolvedAutoLayout.paddingBottom ?? 0,
+				resolvedAutoLayout.paddingLeft ?? 0
+			)
 		);
 
 	return Ok({

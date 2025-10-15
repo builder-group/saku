@@ -1,13 +1,13 @@
 import React from 'react';
 import { ChevronDownIcon } from '@/components';
 import { logger } from '@/environment';
-import { getCurrencySymbol } from '../../../../environment';
-import { TResolvedNodeProps } from '../../../../lib';
-import { TResolvedSingleProductNodeContentMixin } from '../../../../mixins';
-import { TResolvedClassicProductNodeBundle } from '../../types';
+import { getCurrencySymbol } from '../../../../../environment';
+import { TResolvedNodeProps } from '../../../../../lib';
+import { TResolvedSingleProductNodeContentMixin } from '../../../../../mixins';
+import { TResolvedClassicProductNodeBundle } from '../../../types';
 import { useProductDetailsModal } from './ProductDetailsModal';
 
-export const ClassicContent: React.FC<TClassicContentProps> = (props) => {
+export const ResolvedClassicBundle: React.FC<TResolvedClassicBundleProps> = (props) => {
 	const { node, product, cx } = props;
 	const {
 		autoLayout,
@@ -257,7 +257,7 @@ export const ClassicContent: React.FC<TClassicContentProps> = (props) => {
 	);
 };
 
-interface TClassicContentProps {
+interface TResolvedClassicBundleProps {
 	node: TResolvedClassicProductNodeBundle;
 	product: NonNullable<TResolvedSingleProductNodeContentMixin['value']['product']>;
 	cx: TResolvedNodeProps<TResolvedClassicProductNodeBundle>['cx'];

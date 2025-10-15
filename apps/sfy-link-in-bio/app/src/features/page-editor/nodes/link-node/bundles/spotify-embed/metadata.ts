@@ -48,8 +48,10 @@ export const spotifyEmbedBundleMetadata: TLinkNodeBundleMetadata<TSpotifyEmbedLi
 		let commonAutoLayout: TAutoLayoutStyleMixin['value'] | null = null;
 		if (cx.common.autoLayout != null) {
 			const unpackedAutoLayout = unpackAutoLayoutTokenRef(cx.common.autoLayout);
-			unpackedAutoLayout.horizontalPadding = 0;
-			unpackedAutoLayout.verticalPadding = 0;
+			unpackedAutoLayout.paddingTop = 0;
+			unpackedAutoLayout.paddingRight = 0;
+			unpackedAutoLayout.paddingBottom = 0;
+			unpackedAutoLayout.paddingLeft = 0;
 			commonAutoLayout = packAutoLayoutTokenRef(unpackedAutoLayout);
 		}
 

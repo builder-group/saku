@@ -1,9 +1,9 @@
 import React from 'react';
 import { logger } from '@/environment';
 import { cn } from '@/lib';
-import { getCurrencySymbol } from '../../../../environment';
-import { TResolvedNodeProps } from '../../../../lib';
-import { TResolvedProductNode } from '../../types';
+import { getCurrencySymbol } from '../../../../../environment';
+import { TResolvedNodeProps } from '../../../../../lib';
+import { TResolvedProductNode } from '../../../types';
 
 export const ProductDetailsModal: React.FC<TProductDetailsModalProps> = (props) => {
 	const {

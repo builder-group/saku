@@ -1,7 +1,7 @@
 import React from 'react';
-import { TResolvedNodeProps } from '../../../../lib';
-import { TResolvedProductNode } from '../../types';
-import { ClassicContent } from './ClassicContent';
+import { TResolvedNodeProps } from '../../../lib';
+import { ResolvedClassicBundle } from '../bundles';
+import { TResolvedProductNode } from '../types';
 import { Skeleton } from './Skeleton';
 
 export const ResolvedProductNode = React.forwardRef<
@@ -10,22 +10,21 @@ export const ResolvedProductNode = React.forwardRef<
 >((props, ref) => {
 	const { node, cx, ...divProps } = props;
 
-	const renderContent = React.useCallback(() => {
+	const renderBundle = React.useCallback(() => {
 		switch (node.bundleType) {
-			case 'classic': {
+			case 'classic':
 				if (node.content.product == null) {
 					return <Skeleton node={node} />;
 				}
-				return <ClassicContent node={node} product={node.content.product} cx={cx} />;
-			}
+				return <ResolvedClassicBundle node={node} product={node.content.product} cx={cx} />;
 			default:
-				return <Skeleton node={node} />;
+				return null;
 		}
 	}, [node, cx]);
 
 	return (
-		<div ref={ref} {...divProps} className="w-full max-w-md">
-			{renderContent()}
+		<div {...divProps} ref={ref} className="w-full max-w-md">
+			{renderBundle()}
 		</div>
 	);
 });

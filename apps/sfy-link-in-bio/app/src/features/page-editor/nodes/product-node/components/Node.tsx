@@ -3,7 +3,7 @@ import { useCombinedCompute } from 'feature-react';
 import React from 'react';
 import { logger } from '@/environment';
 import { EditorSiteResolveContext, TNodeProps } from '../../../lib';
-import { resolveProductNode } from '../resolve-node';
+import { resolveProductNode } from '../lib';
 import { ResolvedProductNode } from './ResolvedNode';
 
 export const ProductNode = React.forwardRef<HTMLDivElement, TNodeProps<TProductNode>>(

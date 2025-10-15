@@ -42,15 +42,21 @@ export const classicBundleMetadata: TLinkNodeBundleMetadata<TClassicLinkNodeBund
 		let commonAutoLayout: TAutoLayoutStyleMixin['value'] | null = null;
 		if (cx.common.autoLayout != null) {
 			const unpackedAutoLayout = unpackAutoLayoutTokenRef(cx.common.autoLayout);
-			unpackedAutoLayout.horizontalPadding = tokenRef(
+			unpackedAutoLayout.paddingTop = tokenRef('auto-layout.default', 'auto-layout', 'paddingTop');
+			unpackedAutoLayout.paddingRight = tokenRef(
 				'auto-layout.default',
 				'auto-layout',
-				'horizontalPadding'
+				'paddingRight'
 			);
-			unpackedAutoLayout.verticalPadding = tokenRef(
+			unpackedAutoLayout.paddingBottom = tokenRef(
 				'auto-layout.default',
 				'auto-layout',
-				'verticalPadding'
+				'paddingBottom'
+			);
+			unpackedAutoLayout.paddingLeft = tokenRef(
+				'auto-layout.default',
+				'auto-layout',
+				'paddingLeft'
 			);
 			commonAutoLayout = packAutoLayoutTokenRef(unpackedAutoLayout);
 		}
