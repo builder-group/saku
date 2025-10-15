@@ -70,7 +70,7 @@ export const HeroBundleStyleEditor: React.FC<TNodeEditorComponentProps<THeroAbou
 				/>
 			</AccordionSection>
 			<AccordionSection
-				title="Name Text"
+				title="Title Text"
 				collapsibleClassName="px-0 space-y-3"
 				size="tight"
 				defaultOpen={true}
@@ -82,7 +82,7 @@ export const HeroBundleStyleEditor: React.FC<TNodeEditorComponentProps<THeroAbou
 				/>
 			</AccordionSection>
 			<AccordionSection
-				title="Bio Text"
+				title="Description Text"
 				collapsibleClassName="px-0 space-y-3"
 				size="tight"
 				defaultOpen={true}

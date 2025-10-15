@@ -14,7 +14,7 @@ import { Banner, Button, Text } from '@shopify/polaris';
 import { useFeatureState, withLocalStorage } from 'feature-react';
 import { createState, TState } from 'feature-state';
 import React from 'react';
-import { AccordionSection, CrownIcon } from '@/components';
+import { AccordionSection, CrownIcon, JsonPreview } from '@/components';
 import { appConfig, shopifyClientConfig } from '@/environment';
 import { useCurrentPlan } from '@/hooks';
 import { cn } from '@/lib';
@@ -312,6 +312,17 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 							/>
 						</AccordionSection>
 					))}
+				</AccordionSection>
+			)}
+
+			{editor.isDebug() && (
+				<AccordionSection title="Debug" collapsibleClassName="px-0 space-y-3">
+					<div className="space-y-1 px-4">
+						<Text as="span" variant="bodySm" tone="subdued">
+							JSON
+						</Text>
+						<JsonPreview data={editor.tokenMap._v} />
+					</div>
 				</AccordionSection>
 			)}
 
