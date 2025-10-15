@@ -14,9 +14,9 @@ export function createThemeTokens(theme: TTheme): TToken[] {
 				paddingBottom: tokenRef('size.box.lg', 'number'),
 				paddingLeft: tokenRef('size.box.lg', 'number'),
 				marginTop: 0,
-				marginRight: 0,
+				marginRight: 12,
 				marginBottom: 0,
-				marginLeft: 0,
+				marginLeft: 12,
 				verticalGap: tokenRef('size.box.md', 'number'),
 				horizontalGap: tokenRef('size.box.md', 'number')
 			}

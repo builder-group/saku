@@ -245,7 +245,7 @@ export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorPro
 				const state = createState(top);
 				state.listen(({ value }) => {
 					paddingTopState.set(value);
-					paddingRightState.set(value);
+					paddingBottomState.set(value);
 				});
 				return state;
 			}
@@ -372,7 +372,7 @@ export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorPro
 							? 'cursor-not-allowed opacity-30'
 							: 'cursor-pointer opacity-60 hover:opacity-100'
 					)}
-					title={isExpanded ? 'Minimize' : 'Maximize'}
+					title={isExpanded ? 'Collapse' : 'Expand'}
 				>
 					{isExpanded ? <MinimizeIcon className="h-3 w-3" /> : <MaximizeIcon className="h-3 w-3" />}
 				</button>

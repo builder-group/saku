@@ -130,7 +130,6 @@ export const ClassicContent: React.FC<TClassicContentProps> = (props) => {
 		<>
 			<div
 				onClick={handleProductClick}
-				className="relative flex w-full overflow-hidden bg-white"
 				style={{
 					...autoLayout.styles,
 					...appearance.styles,

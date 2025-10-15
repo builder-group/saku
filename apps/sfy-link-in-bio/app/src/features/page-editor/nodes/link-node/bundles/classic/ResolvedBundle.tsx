@@ -12,7 +12,7 @@ export const ResolvedClassicBundle: React.FC<TResolvedClassicBundleProps> = (pro
 			href={content.url}
 			target="_blank"
 			rel="noopener noreferrer"
-			className="relative flex w-full cursor-pointer overflow-hidden bg-white hover:opacity-90"
+			className="flex cursor-pointer hover:opacity-90"
 			style={{
 				...autoLayout.styles,
 				...appearance.styles,

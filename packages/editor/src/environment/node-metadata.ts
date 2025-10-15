@@ -28,7 +28,9 @@ export const aboutNodeMetadata: TNodeMetadata<TAboutNode> = {
 				paddingBottom: tokenRef('auto-layout.default', 'auto-layout', 'paddingBottom'),
 				paddingLeft: tokenRef('auto-layout.default', 'auto-layout', 'paddingLeft'),
 				marginTop: tokenRef('auto-layout.default', 'auto-layout', 'marginTop'),
-				marginBottom: tokenRef('auto-layout.default', 'auto-layout', 'marginBottom')
+				marginRight: tokenRef('auto-layout.default', 'auto-layout', 'marginRight'),
+				marginBottom: tokenRef('auto-layout.default', 'auto-layout', 'marginBottom'),
+				marginLeft: tokenRef('auto-layout.default', 'auto-layout', 'marginLeft')
 			},
 			appearance: tokenRef('appearance.default', 'appearance'),
 			fill: null,
@@ -85,7 +87,9 @@ export const aboutNodeMetadata: TNodeMetadata<TAboutNode> = {
 				paddingBottom: tokenRef('auto-layout.default', 'auto-layout', 'paddingBottom'),
 				paddingLeft: tokenRef('auto-layout.default', 'auto-layout', 'paddingLeft'),
 				marginTop: tokenRef('auto-layout.default', 'auto-layout', 'marginTop'),
-				marginBottom: tokenRef('auto-layout.default', 'auto-layout', 'marginBottom')
+				marginRight: 0,
+				marginBottom: tokenRef('auto-layout.default', 'auto-layout', 'marginBottom'),
+				marginLeft: 0
 			},
 			appearance: tokenRef('appearance.default', 'appearance'),
 			fill: null,
@@ -148,7 +152,9 @@ export const linkNodeMetadata: TNodeMetadata<TLinkNode> = {
 				paddingBottom: tokenRef('auto-layout.default', 'auto-layout', 'paddingBottom'),
 				paddingLeft: tokenRef('auto-layout.default', 'auto-layout', 'paddingLeft'),
 				marginTop: tokenRef('auto-layout.default', 'auto-layout', 'marginTop'),
-				marginBottom: tokenRef('auto-layout.default', 'auto-layout', 'marginBottom')
+				marginRight: tokenRef('auto-layout.default', 'auto-layout', 'marginRight'),
+				marginBottom: tokenRef('auto-layout.default', 'auto-layout', 'marginBottom'),
+				marginLeft: tokenRef('auto-layout.default', 'auto-layout', 'marginLeft')
 			},
 			appearance: tokenRef('appearance.default', 'appearance'),
 			fill: tokenRef('fill.default', 'fill'),
@@ -179,7 +185,9 @@ export const linkNodeMetadata: TNodeMetadata<TLinkNode> = {
 				paddingBottom: tokenRef('auto-layout.default', 'auto-layout', 'paddingBottom'),
 				paddingLeft: tokenRef('auto-layout.default', 'auto-layout', 'paddingLeft'),
 				marginTop: tokenRef('auto-layout.default', 'auto-layout', 'marginTop'),
-				marginBottom: tokenRef('auto-layout.default', 'auto-layout', 'marginBottom')
+				marginRight: tokenRef('auto-layout.default', 'auto-layout', 'marginRight'),
+				marginBottom: tokenRef('auto-layout.default', 'auto-layout', 'marginBottom'),
+				marginLeft: tokenRef('auto-layout.default', 'auto-layout', 'marginLeft')
 			},
 			appearance: tokenRef('appearance.default', 'appearance'),
 			fill: tokenRef('fill.default', 'fill'),
@@ -211,7 +219,9 @@ export const linkNodeMetadata: TNodeMetadata<TLinkNode> = {
 				paddingBottom: tokenRef('auto-layout.default', 'auto-layout', 'paddingBottom'),
 				paddingLeft: tokenRef('auto-layout.default', 'auto-layout', 'paddingLeft'),
 				marginTop: tokenRef('auto-layout.default', 'auto-layout', 'marginTop'),
-				marginBottom: tokenRef('auto-layout.default', 'auto-layout', 'marginBottom')
+				marginRight: tokenRef('auto-layout.default', 'auto-layout', 'marginRight'),
+				marginBottom: tokenRef('auto-layout.default', 'auto-layout', 'marginBottom'),
+				marginLeft: tokenRef('auto-layout.default', 'auto-layout', 'marginLeft')
 			},
 			appearance: tokenRef('appearance.default', 'appearance'),
 			fill: tokenRef('fill.default', 'fill'),
@@ -242,7 +252,9 @@ export const linkNodeMetadata: TNodeMetadata<TLinkNode> = {
 				paddingBottom: tokenRef('auto-layout.default', 'auto-layout', 'paddingBottom'),
 				paddingLeft: tokenRef('auto-layout.default', 'auto-layout', 'paddingLeft'),
 				marginTop: tokenRef('auto-layout.default', 'auto-layout', 'marginTop'),
-				marginBottom: tokenRef('auto-layout.default', 'auto-layout', 'marginBottom')
+				marginRight: tokenRef('auto-layout.default', 'auto-layout', 'marginRight'),
+				marginBottom: tokenRef('auto-layout.default', 'auto-layout', 'marginBottom'),
+				marginLeft: tokenRef('auto-layout.default', 'auto-layout', 'marginLeft')
 			},
 			appearance: tokenRef('appearance.default', 'appearance'),
 			fill: tokenRef('fill.default', 'fill'),
@@ -276,7 +288,9 @@ export const mediaNodeMetadata: TNodeMetadata<TMediaNode> = {
 				paddingBottom: 0,
 				paddingLeft: 0,
 				marginTop: tokenRef('auto-layout.default', 'auto-layout', 'marginTop'),
-				marginBottom: tokenRef('auto-layout.default', 'auto-layout', 'marginBottom')
+				marginRight: tokenRef('auto-layout.default', 'auto-layout', 'marginRight'),
+				marginBottom: tokenRef('auto-layout.default', 'auto-layout', 'marginBottom'),
+				marginLeft: tokenRef('auto-layout.default', 'auto-layout', 'marginLeft')
 			},
 			appearance: tokenRef('appearance.default', 'appearance'),
 			fill: tokenRef('fill.default', 'fill'),
@@ -332,7 +346,9 @@ export const productNodeMetadata: TNodeMetadata<TProductNode> = {
 				paddingBottom: tokenRef('auto-layout.default', 'auto-layout', 'paddingBottom'),
 				paddingLeft: tokenRef('auto-layout.default', 'auto-layout', 'paddingLeft'),
 				marginTop: tokenRef('auto-layout.default', 'auto-layout', 'marginTop'),
-				marginBottom: tokenRef('auto-layout.default', 'auto-layout', 'marginBottom')
+				marginRight: tokenRef('auto-layout.default', 'auto-layout', 'marginRight'),
+				marginBottom: tokenRef('auto-layout.default', 'auto-layout', 'marginBottom'),
+				marginLeft: tokenRef('auto-layout.default', 'auto-layout', 'marginLeft')
 			},
 			appearance: tokenRef('appearance.default', 'appearance'),
 			fill: tokenRef('fill.default', 'fill'),
@@ -385,7 +401,9 @@ export const textNodeMetadata: TNodeMetadata<TTextNode> = {
 				paddingBottom: tokenRef('auto-layout.default', 'auto-layout', 'paddingBottom'),
 				paddingLeft: tokenRef('auto-layout.default', 'auto-layout', 'paddingLeft'),
 				marginTop: tokenRef('auto-layout.default', 'auto-layout', 'marginTop'),
-				marginBottom: tokenRef('auto-layout.default', 'auto-layout', 'marginBottom')
+				marginRight: tokenRef('auto-layout.default', 'auto-layout', 'marginRight'),
+				marginBottom: tokenRef('auto-layout.default', 'auto-layout', 'marginBottom'),
+				marginLeft: tokenRef('auto-layout.default', 'auto-layout', 'marginLeft')
 			},
 			appearance: tokenRef('appearance.default', 'appearance'),
 			fill: tokenRef('fill.default', 'fill'),

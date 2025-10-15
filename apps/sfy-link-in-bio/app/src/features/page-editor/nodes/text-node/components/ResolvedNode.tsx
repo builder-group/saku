@@ -57,7 +57,6 @@ export const ResolvedTextNode = React.forwardRef<
 	return (
 		<div {...divProps} ref={ref} className="w-full max-w-md">
 			<div
-				className="relative overflow-hidden"
 				style={{
 					...autoLayout.styles,
 					...appearance.styles,

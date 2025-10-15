@@ -12,7 +12,7 @@ export const ResolvedFeaturedBundle: React.FC<TResolvedFeaturedBundleProps> = (p
 			href={content.url}
 			target="_blank"
 			rel="noopener noreferrer"
-			className="relative flex w-full cursor-pointer flex-col items-center gap-2 overflow-hidden bg-white hover:opacity-90"
+			className="flex cursor-pointer flex-col items-center gap-2 hover:opacity-90"
 			style={{
 				...autoLayout.styles,
 				...appearance.styles,
