@@ -26,7 +26,7 @@ export function mapState<GBaseValue, GMappedValue>(
 ): [TState<GMappedValue, any>, () => void] {
 	const { map, sync, isEqual = Object.is, ...stateOptions } = config;
 
-	const mappedState = createState(map(baseState._v), stateOptions);
+	const mappedState = createState(map(baseState._v), { queue: 'sync', ...stateOptions });
 
 	// Keep mapped in sync with base
 	const unsubscribeBaseState = baseState.listen(({ value, source }) => {
