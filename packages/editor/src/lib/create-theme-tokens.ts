@@ -11,8 +11,7 @@ export function createThemeTokens(theme: TTheme): TToken[] {
 			value: {
 				horizontalPadding: tokenRef('size.box.lg', 'number'),
 				verticalPadding: tokenRef('size.box.lg', 'number'),
-				horizontalGap: null,
-				verticalGap: null
+				verticalMargin: 0
 			}
 		},
 		{
@@ -50,8 +49,7 @@ export function createThemeTokens(theme: TTheme): TToken[] {
 			value: {
 				appearance: {
 					visible: true,
-					opacity: 1,
-					borderRadius: null
+					opacity: 1
 				},
 				typography: {
 					font: tokenRef('font.text', 'font'),
@@ -75,8 +73,7 @@ export function createThemeTokens(theme: TTheme): TToken[] {
 			value: {
 				appearance: {
 					visible: true,
-					opacity: 1,
-					borderRadius: null
+					opacity: 1
 				},
 				typography: {
 					font: tokenRef('font.heading', 'font'),
@@ -100,8 +97,7 @@ export function createThemeTokens(theme: TTheme): TToken[] {
 			value: {
 				appearance: {
 					visible: true,
-					opacity: 1,
-					borderRadius: null
+					opacity: 1
 				},
 				typography: {
 					font: tokenRef('font.text', 'font'),
@@ -137,8 +133,7 @@ export function createThemeTokens(theme: TTheme): TToken[] {
 				text: {
 					appearance: {
 						visible: true,
-						opacity: 1,
-						borderRadius: null
+						opacity: 1
 					},
 					typography: {
 						font: tokenRef('font.text', 'font'),
@@ -175,8 +170,7 @@ export function createThemeTokens(theme: TTheme): TToken[] {
 				text: {
 					appearance: {
 						visible: true,
-						opacity: 1,
-						borderRadius: null
+						opacity: 1
 					},
 					typography: {
 						font: tokenRef('font.text', 'font'),
@@ -213,8 +207,7 @@ export function createThemeTokens(theme: TTheme): TToken[] {
 				text: {
 					appearance: {
 						visible: true,
-						opacity: 1,
-						borderRadius: null
+						opacity: 1
 					},
 					typography: {
 						font: tokenRef('font.text', 'font'),
@@ -251,8 +244,7 @@ export function createThemeTokens(theme: TTheme): TToken[] {
 				text: {
 					appearance: {
 						visible: true,
-						opacity: 1,
-						borderRadius: null
+						opacity: 1
 					},
 					typography: {
 						font: tokenRef('font.text', 'font'),
@@ -302,8 +294,7 @@ export function createThemeTokens(theme: TTheme): TToken[] {
 				textXl: {
 					appearance: {
 						visible: true,
-						opacity: 1,
-						borderRadius: null
+						opacity: 1
 					},
 					typography: {
 						font: tokenRef('font.heading', 'font'),
@@ -323,8 +314,7 @@ export function createThemeTokens(theme: TTheme): TToken[] {
 				text: {
 					appearance: {
 						visible: true,
-						opacity: 1,
-						borderRadius: null
+						opacity: 1
 					},
 					typography: {
 						font: tokenRef('font.text', 'font'),

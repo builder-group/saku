@@ -25,8 +25,7 @@ export const aboutNodeMetadata: TNodeMetadata<TAboutNode> = {
 			autoLayout: {
 				horizontalPadding: tokenRef('auto-layout.default', 'auto-layout', 'horizontalPadding'),
 				verticalPadding: tokenRef('auto-layout.default', 'auto-layout', 'verticalPadding'),
-				horizontalGap: null,
-				verticalGap: null
+				verticalMargin: tokenRef('auto-layout.default', 'auto-layout', 'verticalMargin')
 			},
 			appearance: tokenRef('appearance.default', 'appearance'),
 			fill: null,
@@ -80,8 +79,7 @@ export const aboutNodeMetadata: TNodeMetadata<TAboutNode> = {
 			autoLayout: {
 				horizontalPadding: tokenRef('auto-layout.default', 'auto-layout', 'horizontalPadding'),
 				verticalPadding: tokenRef('auto-layout.default', 'auto-layout', 'verticalPadding'),
-				horizontalGap: null,
-				verticalGap: null
+				verticalMargin: 0
 			},
 			appearance: tokenRef('appearance.default', 'appearance'),
 			fill: null,
@@ -141,8 +139,7 @@ export const linkNodeMetadata: TNodeMetadata<TLinkNode> = {
 			autoLayout: {
 				horizontalPadding: tokenRef('auto-layout.default', 'auto-layout', 'horizontalPadding'),
 				verticalPadding: tokenRef('auto-layout.default', 'auto-layout', 'verticalPadding'),
-				horizontalGap: null,
-				verticalGap: null
+				verticalMargin: tokenRef('auto-layout.default', 'auto-layout', 'verticalMargin')
 			},
 			appearance: tokenRef('appearance.default', 'appearance'),
 			fill: tokenRef('fill.default', 'fill'),
@@ -153,8 +150,7 @@ export const linkNodeMetadata: TNodeMetadata<TLinkNode> = {
 			image: {
 				appearance: {
 					visible: true,
-					opacity: tokenRef('image.default', 'image', 'appearance.opacity'),
-					borderRadius: null
+					opacity: tokenRef('image.default', 'image', 'appearance.opacity')
 				},
 				stroke: tokenRef('image.default', 'image', 'stroke'),
 				shadow: tokenRef('image.default', 'image', 'shadow')
@@ -170,9 +166,7 @@ export const linkNodeMetadata: TNodeMetadata<TLinkNode> = {
 			},
 			autoLayout: {
 				horizontalPadding: tokenRef('auto-layout.default', 'auto-layout', 'horizontalPadding'),
-				verticalPadding: tokenRef('auto-layout.default', 'auto-layout', 'verticalPadding'),
-				horizontalGap: null,
-				verticalGap: null
+				verticalPadding: tokenRef('auto-layout.default', 'auto-layout', 'verticalPadding')
 			},
 			appearance: tokenRef('appearance.default', 'appearance'),
 			fill: tokenRef('fill.default', 'fill'),
@@ -183,8 +177,7 @@ export const linkNodeMetadata: TNodeMetadata<TLinkNode> = {
 			image: {
 				appearance: {
 					visible: true,
-					opacity: tokenRef('image.default', 'image', 'appearance.opacity'),
-					borderRadius: null
+					opacity: tokenRef('image.default', 'image', 'appearance.opacity')
 				},
 				stroke: tokenRef('image.default', 'image', 'stroke'),
 				shadow: tokenRef('image.default', 'image', 'shadow')
@@ -201,9 +194,7 @@ export const linkNodeMetadata: TNodeMetadata<TLinkNode> = {
 			},
 			autoLayout: {
 				horizontalPadding: tokenRef('auto-layout.default', 'auto-layout', 'horizontalPadding'),
-				verticalPadding: tokenRef('auto-layout.default', 'auto-layout', 'verticalPadding'),
-				horizontalGap: null,
-				verticalGap: null
+				verticalPadding: tokenRef('auto-layout.default', 'auto-layout', 'verticalPadding')
 			},
 			appearance: tokenRef('appearance.default', 'appearance'),
 			fill: tokenRef('fill.default', 'fill'),
@@ -212,8 +203,7 @@ export const linkNodeMetadata: TNodeMetadata<TLinkNode> = {
 			image: {
 				appearance: {
 					visible: true,
-					opacity: tokenRef('image.default', 'image', 'appearance.opacity'),
-					borderRadius: null
+					opacity: tokenRef('image.default', 'image', 'appearance.opacity')
 				},
 				stroke: tokenRef('image.default', 'image', 'stroke'),
 				shadow: tokenRef('image.default', 'image', 'shadow')
@@ -231,9 +221,7 @@ export const linkNodeMetadata: TNodeMetadata<TLinkNode> = {
 			},
 			autoLayout: {
 				horizontalPadding: tokenRef('auto-layout.default', 'auto-layout', 'horizontalPadding'),
-				verticalPadding: tokenRef('auto-layout.default', 'auto-layout', 'verticalPadding'),
-				horizontalGap: null,
-				verticalGap: null
+				verticalPadding: tokenRef('auto-layout.default', 'auto-layout', 'verticalPadding')
 			},
 			appearance: tokenRef('appearance.default', 'appearance'),
 			fill: tokenRef('fill.default', 'fill'),
@@ -242,8 +230,7 @@ export const linkNodeMetadata: TNodeMetadata<TLinkNode> = {
 			image: {
 				appearance: {
 					visible: true,
-					opacity: tokenRef('image.default', 'image', 'appearance.opacity'),
-					borderRadius: null
+					opacity: tokenRef('image.default', 'image', 'appearance.opacity')
 				},
 				stroke: tokenRef('image.default', 'image', 'stroke'),
 				shadow: tokenRef('image.default', 'image', 'shadow')
@@ -265,8 +252,7 @@ export const mediaNodeMetadata: TNodeMetadata<TMediaNode> = {
 			autoLayout: {
 				horizontalPadding: 0,
 				verticalPadding: 0,
-				horizontalGap: null,
-				verticalGap: null
+				verticalMargin: tokenRef('auto-layout.default', 'auto-layout', 'verticalMargin')
 			},
 			appearance: tokenRef('appearance.default', 'appearance'),
 			fill: tokenRef('fill.default', 'fill'),
@@ -275,8 +261,7 @@ export const mediaNodeMetadata: TNodeMetadata<TMediaNode> = {
 			image: {
 				appearance: {
 					visible: true,
-					opacity: tokenRef('image.default', 'image', 'appearance.opacity'),
-					borderRadius: null
+					opacity: tokenRef('image.default', 'image', 'appearance.opacity')
 				},
 				stroke: tokenRef('image.default', 'image', 'stroke'),
 				shadow: tokenRef('image.default', 'image', 'shadow')
@@ -298,13 +283,11 @@ export const pageNodeMetadata: TNodeMetadata<TFlatPageNode> = {
 			autoLayout: {
 				horizontalPadding: 24,
 				verticalPadding: 48,
-				verticalGap: 24,
-				horizontalGap: null
+				verticalGap: 24
 			},
 			appearance: {
 				visible: true,
-				opacity: 1,
-				borderRadius: null
+				opacity: 1
 			},
 			fill: tokenRef('fill.default', 'fill')
 		}
@@ -324,8 +307,7 @@ export const productNodeMetadata: TNodeMetadata<TProductNode> = {
 			autoLayout: {
 				horizontalPadding: tokenRef('auto-layout.default', 'auto-layout', 'horizontalPadding'),
 				verticalPadding: tokenRef('auto-layout.default', 'auto-layout', 'verticalPadding'),
-				horizontalGap: null,
-				verticalGap: null
+				verticalMargin: tokenRef('auto-layout.default', 'auto-layout', 'verticalMargin')
 			},
 			appearance: tokenRef('appearance.default', 'appearance'),
 			fill: tokenRef('fill.default', 'fill'),
@@ -351,8 +333,7 @@ export const productNodeMetadata: TNodeMetadata<TProductNode> = {
 			image: {
 				appearance: {
 					visible: true,
-					opacity: tokenRef('image.default', 'image', 'appearance.opacity'),
-					borderRadius: null
+					opacity: tokenRef('image.default', 'image', 'appearance.opacity')
 				},
 				stroke: tokenRef('image.default', 'image', 'stroke'),
 				shadow: tokenRef('image.default', 'image', 'shadow')
@@ -376,8 +357,7 @@ export const textNodeMetadata: TNodeMetadata<TTextNode> = {
 			autoLayout: {
 				horizontalPadding: tokenRef('auto-layout.default', 'auto-layout', 'horizontalPadding'),
 				verticalPadding: tokenRef('auto-layout.default', 'auto-layout', 'verticalPadding'),
-				horizontalGap: null,
-				verticalGap: null
+				verticalMargin: tokenRef('auto-layout.default', 'auto-layout', 'verticalMargin')
 			},
 			appearance: tokenRef('appearance.default', 'appearance'),
 			fill: tokenRef('fill.default', 'fill'),

@@ -248,8 +248,7 @@ export function parseLinkpopData(linkpopData: TLinkPopData): TSite {
 			autoLayout: {
 				horizontalPadding: 24,
 				verticalPadding: 48,
-				verticalGap: tokenRef('spacing.gap', 'number'),
-				horizontalGap: null
+				verticalGap: tokenRef('spacing.gap', 'number')
 			},
 			appearance: {
 				visible: true,

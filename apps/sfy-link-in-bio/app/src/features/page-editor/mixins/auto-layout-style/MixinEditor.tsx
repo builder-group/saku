@@ -31,9 +31,12 @@ export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorPro
 	const horizontalPaddingState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return mapTokenRef(baseValue, 'horizontalPadding');
+				return mapTokenRef(baseValue, 'horizontalPadding') as TRef<number>;
 			}
-			return baseValue.horizontalPadding;
+			if (isTokenRef(baseValue.horizontalPadding)) {
+				return baseValue.horizontalPadding as TRef<number>;
+			}
+			return baseValue.horizontalPadding ?? undefined;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
 			const unpackedBaseValue = unpackAutoLayoutTokenRef(baseState._v);
@@ -45,13 +48,50 @@ export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorPro
 	const verticalPaddingState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return mapTokenRef(baseValue, 'verticalPadding');
+				return mapTokenRef(baseValue, 'verticalPadding') as TRef<number>;
 			}
-			return baseValue.verticalPadding;
+			if (isTokenRef(baseValue.verticalPadding)) {
+				return baseValue.verticalPadding as TRef<number>;
+			}
+			return baseValue.verticalPadding ?? undefined;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
 			const unpackedBaseValue = unpackAutoLayoutTokenRef(baseState._v);
 			unpackedBaseValue.verticalPadding = mappedValue;
+			baseState._v = packAutoLayoutTokenRef(unpackedBaseValue);
+			baseState._notify(notifyOptions);
+		}
+	});
+	const horizontalMarginState = useMapState(state, {
+		map(baseValue) {
+			if (isTokenRef(baseValue)) {
+				return mapTokenRef(baseValue, 'horizontalMargin') as TRef<number>;
+			}
+			if (isTokenRef(baseValue.horizontalMargin)) {
+				return baseValue.horizontalMargin as TRef<number>;
+			}
+			return baseValue.horizontalMargin ?? undefined;
+		},
+		sync(baseState, mappedValue, notifyOptions) {
+			const unpackedBaseValue = unpackAutoLayoutTokenRef(baseState._v);
+			unpackedBaseValue.horizontalMargin = mappedValue;
+			baseState._v = packAutoLayoutTokenRef(unpackedBaseValue);
+			baseState._notify(notifyOptions);
+		}
+	});
+	const verticalMarginState = useMapState(state, {
+		map(baseValue) {
+			if (isTokenRef(baseValue)) {
+				return mapTokenRef(baseValue, 'verticalMargin') as TRef<number>;
+			}
+			if (isTokenRef(baseValue.verticalMargin)) {
+				return baseValue.verticalMargin as TRef<number>;
+			}
+			return baseValue.verticalMargin ?? undefined;
+		},
+		sync(baseState, mappedValue, notifyOptions) {
+			const unpackedBaseValue = unpackAutoLayoutTokenRef(baseState._v);
+			unpackedBaseValue.verticalMargin = mappedValue;
 			baseState._v = packAutoLayoutTokenRef(unpackedBaseValue);
 			baseState._notify(notifyOptions);
 		}
@@ -68,7 +108,7 @@ export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorPro
 		},
 		sync(baseState, mappedValue, notifyOptions) {
 			const unpackedBaseValue = unpackAutoLayoutTokenRef(baseState._v);
-			unpackedBaseValue.horizontalGap = mappedValue ?? null;
+			unpackedBaseValue.horizontalGap = mappedValue;
 			baseState._v = packAutoLayoutTokenRef(unpackedBaseValue);
 			baseState._notify(notifyOptions);
 		}
@@ -85,12 +125,32 @@ export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorPro
 		},
 		sync(baseState, mappedValue, notifyOptions) {
 			const unpackedBaseValue = unpackAutoLayoutTokenRef(baseState._v);
-			unpackedBaseValue.verticalGap = mappedValue ?? null;
+			unpackedBaseValue.verticalGap = mappedValue;
 			baseState._v = packAutoLayoutTokenRef(unpackedBaseValue);
 			baseState._notify(notifyOptions);
 		}
 	});
 
+	const hasHorizontalPadding = useCompute(
+		horizontalPaddingState,
+		({ value }) =>
+			unwrapOrUndefined(resolveTokenRef(value, { tokenMap: editor.tokenMap._v })) != null
+	);
+	const hasVerticalPadding = useCompute(
+		verticalPaddingState,
+		({ value }) =>
+			unwrapOrUndefined(resolveTokenRef(value, { tokenMap: editor.tokenMap._v })) != null
+	);
+	const hasHorizontalMargin = useCompute(
+		horizontalMarginState,
+		({ value }) =>
+			unwrapOrUndefined(resolveTokenRef(value, { tokenMap: editor.tokenMap._v })) != null
+	);
+	const hasVerticalMargin = useCompute(
+		verticalMarginState,
+		({ value }) =>
+			unwrapOrUndefined(resolveTokenRef(value, { tokenMap: editor.tokenMap._v })) != null
+	);
 	const hasHorizontalGap = useCompute(
 		horizontalGapState,
 		({ value }) =>
@@ -121,40 +181,94 @@ export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorPro
 					Layout
 				</Text>
 			</div>
-			<div className="grid grid-cols-2 gap-3">
-				<TokenTextInput
-					label="Padding (Horizontal)"
-					type="number"
-					autoComplete="off"
-					min={0}
-					max={96}
-					step={4}
-					state={horizontalPaddingState}
-					tokenMap={editor.tokenMap}
-					onLinkToken={
-						onLinkToken != null ? () => mapTokenRef(onLinkToken(), 'horizontalPadding') : undefined
-					}
-					onNavigateToToken={handleNavigateToToken}
-					disabledTokenLink={disabledTokenLink}
-					disabled={disabled}
-				/>
-				<TokenTextInput
-					label="Padding (Vertical)"
-					type="number"
-					autoComplete="off"
-					min={0}
-					max={96}
-					step={4}
-					state={verticalPaddingState}
-					tokenMap={editor.tokenMap}
-					onLinkToken={
-						onLinkToken != null ? () => mapTokenRef(onLinkToken(), 'verticalPadding') : undefined
-					}
-					onNavigateToToken={handleNavigateToToken}
-					disabledTokenLink={disabledTokenLink}
-					disabled={disabled}
-				/>
-			</div>
+			{(hasHorizontalPadding || hasVerticalPadding) && (
+				<div className="grid grid-cols-2 gap-3">
+					{hasHorizontalPadding && (
+						<TokenTextInput
+							label="Padding (Horizontal)"
+							type="number"
+							autoComplete="off"
+							min={0}
+							max={96}
+							step={4}
+							state={horizontalPaddingState as TState<TRef<number>, any>}
+							tokenMap={editor.tokenMap}
+							onLinkToken={
+								onLinkToken != null
+									? () => mapTokenRef(onLinkToken(), 'horizontalPadding') as TRef<number>
+									: undefined
+							}
+							onNavigateToToken={handleNavigateToToken}
+							disabledTokenLink={disabledTokenLink}
+							disabled={disabled}
+						/>
+					)}
+					{hasVerticalPadding && (
+						<TokenTextInput
+							label="Padding (Vertical)"
+							type="number"
+							autoComplete="off"
+							min={0}
+							max={96}
+							step={4}
+							state={verticalPaddingState as TState<TRef<number>, any>}
+							tokenMap={editor.tokenMap}
+							onLinkToken={
+								onLinkToken != null
+									? () => mapTokenRef(onLinkToken(), 'verticalPadding') as TRef<number>
+									: undefined
+							}
+							onNavigateToToken={handleNavigateToToken}
+							disabledTokenLink={disabledTokenLink}
+							disabled={disabled}
+						/>
+					)}
+				</div>
+			)}
+			{(hasHorizontalMargin || hasVerticalMargin) && (
+				<div className="grid grid-cols-2 gap-3">
+					{hasHorizontalMargin && (
+						<TokenTextInput
+							label="Margin (Horizontal)"
+							type="number"
+							autoComplete="off"
+							min={0}
+							max={96}
+							step={4}
+							state={horizontalMarginState as TState<TRef<number>, any>}
+							tokenMap={editor.tokenMap}
+							onLinkToken={
+								onLinkToken != null
+									? () => mapTokenRef(onLinkToken(), 'horizontalMargin') as TRef<number>
+									: undefined
+							}
+							onNavigateToToken={handleNavigateToToken}
+							disabledTokenLink={disabledTokenLink}
+							disabled={disabled}
+						/>
+					)}
+					{hasVerticalMargin && (
+						<TokenTextInput
+							label="Margin (Vertical)"
+							type="number"
+							autoComplete="off"
+							min={0}
+							max={96}
+							step={4}
+							state={verticalMarginState as TState<TRef<number>, any>}
+							tokenMap={editor.tokenMap}
+							onLinkToken={
+								onLinkToken != null
+									? () => mapTokenRef(onLinkToken(), 'verticalMargin') as TRef<number>
+									: undefined
+							}
+							onNavigateToToken={handleNavigateToToken}
+							disabledTokenLink={disabledTokenLink}
+							disabled={disabled}
+						/>
+					)}
+				</div>
+			)}
 			{(hasHorizontalGap || hasVerticalGap) && (
 				<div className="grid grid-cols-2 gap-3">
 					{hasHorizontalGap && (

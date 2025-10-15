@@ -4,6 +4,8 @@ import { packTokenRef, unpackTokenRef } from '../../lib';
 const AUTO_LAYOUT_PROPERTIES: readonly (keyof TUnreferenceTop<TAutoLayoutStyleMixin['value']>)[] = [
 	'horizontalPadding',
 	'verticalPadding',
+	'horizontalMargin',
+	'verticalMargin',
 	'horizontalGap',
 	'verticalGap'
 ];

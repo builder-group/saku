@@ -4,7 +4,7 @@ import { createState, TState } from 'feature-state';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
 import { TNodeState, TPageEditor } from '../../../lib';
-import { aboutNodeBundleMetadataMap, TAboutNodeBundleMetadata, TBundleType } from '../environment';
+import { aboutNodeBundleMetadataMap, TAboutNodeBundleMetadata } from '../environment';
 
 export function createAboutNodeEditorContext<GNode extends TAboutNode>(
 	config: TCreateAboutNodeEditorContextConfig<GNode>
@@ -15,7 +15,7 @@ export function createAboutNodeEditorContext<GNode extends TAboutNode>(
 		node,
 		editor,
 		shopify: editor.shopify,
-		selectedBundleType: createState<TBundleType>(node._v.bundleType),
+		selectedBundleType: createState<TAboutNode['bundleType']>(node._v.bundleType),
 		isSwitchingBundle: createState(false),
 
 		async switchBundleType(this: TAboutNodeEditorContext<GNode>, bundleType) {
@@ -57,7 +57,7 @@ export interface TAboutNodeEditorContext<GNode extends TAboutNode> {
 	node: TNodeState<GNode>;
 	editor: TPageEditor;
 	shopify: ShopifyGlobal;
-	selectedBundleType: TState<TBundleType, []>;
+	selectedBundleType: TState<TAboutNode['bundleType'], []>;
 	isSwitchingBundle: TState<boolean, []>;
-	switchBundleType: (bundleType: TBundleType) => Promise<TResult<void, AppError>>;
+	switchBundleType: (bundleType: TAboutNode['bundleType']) => Promise<TResult<void, AppError>>;
 }

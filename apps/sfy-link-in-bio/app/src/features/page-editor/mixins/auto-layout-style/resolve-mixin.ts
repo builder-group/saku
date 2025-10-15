@@ -22,7 +22,7 @@ export function resolveAutoLayoutStyleMixin(
 	const [isResolvedHorizontalPaddingOk, resolvedHorizontalPaddingErr, resolvedHorizontalPadding] =
 		resolveTokenRef(resolvedAutoLayout.horizontalPadding, {
 			tokenMap: cx.tokenMap,
-			expectedSchema: v.number()
+			expectedSchema: v.optional(v.number())
 		});
 	if (!isResolvedHorizontalPaddingOk) {
 		return Err(
@@ -34,17 +34,39 @@ export function resolveAutoLayoutStyleMixin(
 	const [isResolvedVerticalPaddingOk, resolvedVerticalPaddingErr, resolvedVerticalPadding] =
 		resolveTokenRef(resolvedAutoLayout.verticalPadding, {
 			tokenMap: cx.tokenMap,
-			expectedSchema: v.number()
+			expectedSchema: v.optional(v.number())
 		});
 	if (!isResolvedVerticalPaddingOk) {
 		return Err(
 			AppError.fromEditorError(resolvedVerticalPaddingErr).wrapWith('#ERR_RESOLVE_VERTICAL_PADDING')
 		);
 	}
+	const [isResolvedHorizontalMarginOk, resolvedHorizontalMarginErr, resolvedHorizontalMargin] =
+		resolveTokenRef(resolvedAutoLayout.horizontalMargin, {
+			tokenMap: cx.tokenMap,
+			expectedSchema: v.optional(v.number())
+		});
+	if (!isResolvedHorizontalMarginOk) {
+		return Err(
+			AppError.fromEditorError(resolvedHorizontalMarginErr).wrapWith(
+				'#ERR_RESOLVE_HORIZONTAL_MARGIN'
+			)
+		);
+	}
+	const [isResolvedVerticalMarginOk, resolvedVerticalMarginErr, resolvedVerticalMargin] =
+		resolveTokenRef(resolvedAutoLayout.verticalMargin, {
+			tokenMap: cx.tokenMap,
+			expectedSchema: v.optional(v.number())
+		});
+	if (!isResolvedVerticalMarginOk) {
+		return Err(
+			AppError.fromEditorError(resolvedVerticalMarginErr).wrapWith('#ERR_RESOLVE_VERTICAL_MARGIN')
+		);
+	}
 	const [isResolvedHorizontalGapOk, resolvedHorizontalGapErr, resolvedHorizontalGap] =
 		resolveTokenRef(resolvedAutoLayout.horizontalGap, {
 			tokenMap: cx.tokenMap,
-			expectedSchema: v.nullable(v.number())
+			expectedSchema: v.optional(v.number())
 		});
 	if (!isResolvedHorizontalGapOk) {
 		return Err(
@@ -55,7 +77,7 @@ export function resolveAutoLayoutStyleMixin(
 		resolvedAutoLayout.verticalGap,
 		{
 			tokenMap: cx.tokenMap,
-			expectedSchema: v.nullable(v.number())
+			expectedSchema: v.optional(v.number())
 		}
 	);
 	if (!isResolvedVerticalGapOk) {
@@ -67,12 +89,18 @@ export function resolveAutoLayoutStyleMixin(
 	return Ok({
 		horizontalPadding: resolvedHorizontalPadding,
 		verticalPadding: resolvedVerticalPadding,
-		horizontalGap: resolvedHorizontalGap ?? undefined,
-		verticalGap: resolvedVerticalGap ?? undefined,
+		horizontalMargin: resolvedHorizontalMargin,
+		verticalMargin: resolvedVerticalMargin,
+		horizontalGap: resolvedHorizontalGap,
+		verticalGap: resolvedVerticalGap,
 		styles: {
 			padding:
 				resolvedVerticalPadding != null || resolvedHorizontalPadding != null
 					? `${resolvedVerticalPadding ?? 0}px ${resolvedHorizontalPadding ?? 0}px`
+					: undefined,
+			margin:
+				resolvedVerticalMargin != null || resolvedHorizontalMargin != null
+					? `${resolvedVerticalMargin ?? 0}px ${resolvedHorizontalMargin ?? 0}px`
 					: undefined,
 			gap:
 				resolvedVerticalGap != null || resolvedHorizontalGap != null

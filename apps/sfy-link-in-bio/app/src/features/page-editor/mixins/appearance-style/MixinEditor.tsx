@@ -76,7 +76,7 @@ export const AppearanceStyleMixinEditor = (props: TAppearanceStyleMixinEditorPro
 		},
 		sync(baseState, mappedValue, notifyOptions) {
 			const unpackedBaseValue = unpackAppearanceTokenRef(baseState._v);
-			unpackedBaseValue.borderRadius = mappedValue ?? null;
+			unpackedBaseValue.borderRadius = mappedValue;
 			baseState._v = packAppearanceTokenRef(unpackedBaseValue);
 			baseState._notify(notifyOptions);
 		}

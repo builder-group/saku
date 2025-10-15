@@ -242,15 +242,11 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 				} satisfies TClassicMediaNodeBundle
 			],
 			autoLayout: {
-				horizontalPadding: 24,
-				verticalPadding: 48,
-				verticalGap: tokenRef('spacing.gap', 'number'),
-				horizontalGap: null
+				verticalGap: tokenRef('spacing.gap', 'number')
 			},
 			appearance: {
 				visible: true,
-				opacity: 1,
-				borderRadius: null
+				opacity: 1
 			},
 			fill: {
 				paint: tokenRef('paint.base200', 'paint'),
