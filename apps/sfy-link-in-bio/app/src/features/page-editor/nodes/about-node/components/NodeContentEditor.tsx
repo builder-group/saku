@@ -7,7 +7,7 @@ import { TNodeEditorComponentProps } from '../../../lib';
 import { ClassicBundleContentEditor, HeroBundleContentEditor } from '../bundles';
 import { aboutNodeBundleMetadata } from '../environment';
 import { createAboutNodeEditorContext, TAboutNodeEditorContext } from '../lib';
-import { ContentSkeleton } from './ContentSkeleton';
+import { ContentEditorSkeleton } from './ContentEditorSkeleton';
 
 export const AboutNodeContentEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = (props) => {
 	const { nodeState, editor } = props;
@@ -76,7 +76,7 @@ export const AboutNodeContentEditor: React.FC<TNodeEditorComponentProps<TAboutNo
 			</div>
 
 			<div className="relative border-b border-neutral-200 py-3">
-				{isSwitchingBundle ? <ContentSkeleton /> : renderContentEditor()}
+				{isSwitchingBundle ? <ContentEditorSkeleton /> : renderContentEditor()}
 			</div>
 
 			{/* Debug Section */}

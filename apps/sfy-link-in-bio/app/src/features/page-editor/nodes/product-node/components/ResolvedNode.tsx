@@ -18,7 +18,7 @@ export const ResolvedProductNode = React.forwardRef<
 				}
 				return <ResolvedClassicBundle node={node} product={node.content.product} cx={cx} />;
 			default:
-				return null;
+				return <Skeleton node={node} />;
 		}
 	}, [node, cx]);
 

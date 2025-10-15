@@ -18,7 +18,7 @@ import {
 } from '../bundles';
 import { linkNodeBundleMetadataMap } from '../environment';
 import { createLinkNodeEditorContext, TLinkNodeEditorContext } from '../lib';
-import { ContentSkeleton } from './ContentSkeleton';
+import { ContentEditorSkeleton } from './ContentEditorSkeleton';
 
 export const LinkNodeContentEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (props) => {
 	const { nodeState, editor } = props;
@@ -103,7 +103,7 @@ export const LinkNodeContentEditor: React.FC<TNodeEditorComponentProps<TLinkNode
 
 			<div className="relative border-b border-neutral-200 py-3">
 				{isSwitchingBundle ? (
-					<ContentSkeleton />
+					<ContentEditorSkeleton />
 				) : (
 					<>
 						<PortalPulse isActive={cx.isEnhancingBundle} className="top-0 left-0" />

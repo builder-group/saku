@@ -1,7 +1,7 @@
-import { TMediaNode } from '@repo/editor';
+import { TClassicMediaNodeBundle } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError, computeInnerBorderRadius } from '@/lib';
-import { TNodeResolveContext } from '../../lib';
+import { TNodeResolveContext } from '../../../../lib';
 import {
 	resolveAppearanceStyleMixin,
 	resolveAutoLayoutStyleMixin,
@@ -10,13 +10,13 @@ import {
 	resolveShadowStyleMixin,
 	resolveSingleMediaNodeContentMixin,
 	resolveStrokeStyleMixin
-} from '../../mixins';
-import { TResolvedMediaNode } from './types';
+} from '../../../../mixins';
+import { TResolvedClassicMediaNodeBundle } from '../../types';
 
-export function resolveMediaNode(
-	node: TMediaNode,
+export function resolveClassicBundle(
+	node: TClassicMediaNodeBundle,
 	cx: TNodeResolveContext
-): TResult<TResolvedMediaNode, AppError> {
+): TResult<TResolvedClassicMediaNodeBundle, AppError> {
 	const { content, autoLayout, appearance, fill, stroke, shadow, image, ...rest } = node;
 
 	// Resolve content

@@ -3,7 +3,7 @@ import { useCombinedCompute } from 'feature-react';
 import React from 'react';
 import { logger } from '@/environment';
 import { EditorSiteResolveContext, TNodeProps } from '../../../lib';
-import { resolveMediaNode } from '../resolve-node';
+import { resolveMediaNode } from '../lib';
 import { ResolvedMediaNode } from './ResolvedNode';
 
 export const MediaNode = React.forwardRef<HTMLDivElement, TNodeProps<TMediaNode>>((props, ref) => {

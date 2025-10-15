@@ -7,7 +7,7 @@ import { TNodeEditorComponentProps } from '../../../lib';
 import { ClassicBundleContentEditor } from '../bundles';
 import { productNodeBundleMetadata } from '../environment';
 import { createProductNodeEditorContext, TProductNodeEditorContext } from '../lib';
-import { ContentSkeleton } from './ContentSkeleton';
+import { ContentEditorSkeleton } from './ContentEditorSkeleton';
 
 export const ProductNodeContentEditor: React.FC<TNodeEditorComponentProps<TProductNode>> = (
 	props
@@ -78,7 +78,7 @@ export const ProductNodeContentEditor: React.FC<TNodeEditorComponentProps<TProdu
 			</div>
 
 			<div className="relative border-b border-neutral-200 py-3">
-				{isSwitchingBundle ? <ContentSkeleton /> : renderContentEditor()}
+				{isSwitchingBundle ? <ContentEditorSkeleton /> : renderContentEditor()}
 			</div>
 
 			{/* Debug Section */}

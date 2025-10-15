@@ -1,4 +1,4 @@
-import { TResolvedMediaNode } from '../../types';
+import { TResolvedMediaNode } from '../types';
 
 export const Skeleton: React.FC<TSkeletonProps> = (props) => {
 	const {

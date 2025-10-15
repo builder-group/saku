@@ -1,7 +1,7 @@
 import React from 'react';
 import { cn } from '@/lib';
 
-export const ContentSkeleton: React.FC<TContentSkeletonProps> = (props) => {
+export const ContentEditorSkeleton: React.FC<TContentSkeletonProps> = (props) => {
 	const { className } = props;
 
 	return (

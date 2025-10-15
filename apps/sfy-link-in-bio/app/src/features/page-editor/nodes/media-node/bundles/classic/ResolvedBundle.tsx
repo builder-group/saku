@@ -3,7 +3,7 @@ import { TResolvedNodeProps } from '../../../../lib';
 import { TResolvedSingleMediaNodeContentMixin } from '../../../../mixins';
 import { TResolvedClassicMediaNodeBundle } from '../../types';
 
-export const ClassicContent: React.FC<TClassicContentProps> = (props) => {
+export const ResolvedClassicBundle: React.FC<TResolvedClassicBundleProps> = (props) => {
 	const {
 		node: { autoLayout, appearance, fill, stroke, shadow, image },
 		media
@@ -31,7 +31,7 @@ export const ClassicContent: React.FC<TClassicContentProps> = (props) => {
 	);
 };
 
-interface TClassicContentProps {
+interface TResolvedClassicBundleProps {
 	node: TResolvedClassicMediaNodeBundle;
 	media: NonNullable<TResolvedSingleMediaNodeContentMixin['value']['media']>;
 	cx: TResolvedNodeProps<TResolvedClassicMediaNodeBundle>['cx'];

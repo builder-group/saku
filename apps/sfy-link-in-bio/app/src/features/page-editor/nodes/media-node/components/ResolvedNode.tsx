@@ -1,7 +1,7 @@
 import React from 'react';
-import { TResolvedNodeProps } from '../../../../lib';
-import { TResolvedMediaNode } from '../../types';
-import { ClassicContent } from './ClassicContent';
+import { TResolvedNodeProps } from '../../../lib';
+import { ResolvedClassicBundle } from '../bundles';
+import { TResolvedMediaNode } from '../types';
 import { Skeleton } from './Skeleton';
 
 export const ResolvedMediaNode = React.forwardRef<
@@ -16,7 +16,7 @@ export const ResolvedMediaNode = React.forwardRef<
 				if (node.content.media == null) {
 					return <Skeleton node={node} />;
 				}
-				return <ClassicContent node={node} media={node.content.media} cx={cx} />;
+				return <ResolvedClassicBundle node={node} media={node.content.media} cx={cx} />;
 			}
 			default:
 				return <Skeleton node={node} />;
