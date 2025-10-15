@@ -2,10 +2,14 @@ import { TAutoLayoutStyleMixin, TUnreferenceTop } from '@repo/editor';
 import { packTokenRef, unpackTokenRef } from '../../lib';
 
 const AUTO_LAYOUT_PROPERTIES: readonly (keyof TUnreferenceTop<TAutoLayoutStyleMixin['value']>)[] = [
-	'horizontalPadding',
-	'verticalPadding',
-	'horizontalMargin',
-	'verticalMargin',
+	'paddingTop',
+	'paddingRight',
+	'paddingBottom',
+	'paddingLeft',
+	'marginTop',
+	'marginRight',
+	'marginBottom',
+	'marginLeft',
 	'horizontalGap',
 	'verticalGap'
 ];

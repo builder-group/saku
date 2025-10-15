@@ -19,48 +19,96 @@ export function resolveAutoLayoutStyleMixin(
 		);
 	}
 
-	const [isResolvedHorizontalPaddingOk, resolvedHorizontalPaddingErr, resolvedHorizontalPadding] =
-		resolveTokenRef(resolvedAutoLayout.horizontalPadding, {
+	const [isResolvedPaddingTopOk, resolvedPaddingTopErr, resolvedPaddingTop] = resolveTokenRef(
+		resolvedAutoLayout.paddingTop,
+		{
 			tokenMap: cx.tokenMap,
 			expectedSchema: v.optional(v.number())
-		});
-	if (!isResolvedHorizontalPaddingOk) {
+		}
+	);
+	if (!isResolvedPaddingTopOk) {
 		return Err(
-			AppError.fromEditorError(resolvedHorizontalPaddingErr).wrapWith(
-				'#ERR_RESOLVE_HORIZONTAL_PADDING'
-			)
+			AppError.fromEditorError(resolvedPaddingTopErr).wrapWith('#ERR_RESOLVE_PADDING_TOP')
 		);
 	}
-	const [isResolvedVerticalPaddingOk, resolvedVerticalPaddingErr, resolvedVerticalPadding] =
-		resolveTokenRef(resolvedAutoLayout.verticalPadding, {
+	const [isResolvedPaddingRightOk, resolvedPaddingRightErr, resolvedPaddingRight] = resolveTokenRef(
+		resolvedAutoLayout.paddingRight,
+		{
 			tokenMap: cx.tokenMap,
 			expectedSchema: v.optional(v.number())
-		});
-	if (!isResolvedVerticalPaddingOk) {
+		}
+	);
+	if (!isResolvedPaddingRightOk) {
 		return Err(
-			AppError.fromEditorError(resolvedVerticalPaddingErr).wrapWith('#ERR_RESOLVE_VERTICAL_PADDING')
+			AppError.fromEditorError(resolvedPaddingRightErr).wrapWith('#ERR_RESOLVE_PADDING_RIGHT')
 		);
 	}
-	const [isResolvedHorizontalMarginOk, resolvedHorizontalMarginErr, resolvedHorizontalMargin] =
-		resolveTokenRef(resolvedAutoLayout.horizontalMargin, {
+	const [isResolvedPaddingBottomOk, resolvedPaddingBottomErr, resolvedPaddingBottom] =
+		resolveTokenRef(resolvedAutoLayout.paddingBottom, {
 			tokenMap: cx.tokenMap,
 			expectedSchema: v.optional(v.number())
 		});
-	if (!isResolvedHorizontalMarginOk) {
+	if (!isResolvedPaddingBottomOk) {
 		return Err(
-			AppError.fromEditorError(resolvedHorizontalMarginErr).wrapWith(
-				'#ERR_RESOLVE_HORIZONTAL_MARGIN'
-			)
+			AppError.fromEditorError(resolvedPaddingBottomErr).wrapWith('#ERR_RESOLVE_PADDING_BOTTOM')
 		);
 	}
-	const [isResolvedVerticalMarginOk, resolvedVerticalMarginErr, resolvedVerticalMargin] =
-		resolveTokenRef(resolvedAutoLayout.verticalMargin, {
+	const [isResolvedPaddingLeftOk, resolvedPaddingLeftErr, resolvedPaddingLeft] = resolveTokenRef(
+		resolvedAutoLayout.paddingLeft,
+		{
 			tokenMap: cx.tokenMap,
 			expectedSchema: v.optional(v.number())
-		});
-	if (!isResolvedVerticalMarginOk) {
+		}
+	);
+	if (!isResolvedPaddingLeftOk) {
 		return Err(
-			AppError.fromEditorError(resolvedVerticalMarginErr).wrapWith('#ERR_RESOLVE_VERTICAL_MARGIN')
+			AppError.fromEditorError(resolvedPaddingLeftErr).wrapWith('#ERR_RESOLVE_PADDING_LEFT')
+		);
+	}
+	const [isResolvedMarginTopOk, resolvedMarginTopErr, resolvedMarginTop] = resolveTokenRef(
+		resolvedAutoLayout.marginTop,
+		{
+			tokenMap: cx.tokenMap,
+			expectedSchema: v.optional(v.number())
+		}
+	);
+	if (!isResolvedMarginTopOk) {
+		return Err(AppError.fromEditorError(resolvedMarginTopErr).wrapWith('#ERR_RESOLVE_MARGIN_TOP'));
+	}
+	const [isResolvedMarginRightOk, resolvedMarginRightErr, resolvedMarginRight] = resolveTokenRef(
+		resolvedAutoLayout.marginRight,
+		{
+			tokenMap: cx.tokenMap,
+			expectedSchema: v.optional(v.number())
+		}
+	);
+	if (!isResolvedMarginRightOk) {
+		return Err(
+			AppError.fromEditorError(resolvedMarginRightErr).wrapWith('#ERR_RESOLVE_MARGIN_RIGHT')
+		);
+	}
+	const [isResolvedMarginBottomOk, resolvedMarginBottomErr, resolvedMarginBottom] = resolveTokenRef(
+		resolvedAutoLayout.marginBottom,
+		{
+			tokenMap: cx.tokenMap,
+			expectedSchema: v.optional(v.number())
+		}
+	);
+	if (!isResolvedMarginBottomOk) {
+		return Err(
+			AppError.fromEditorError(resolvedMarginBottomErr).wrapWith('#ERR_RESOLVE_MARGIN_BOTTOM')
+		);
+	}
+	const [isResolvedMarginLeftOk, resolvedMarginLeftErr, resolvedMarginLeft] = resolveTokenRef(
+		resolvedAutoLayout.marginLeft,
+		{
+			tokenMap: cx.tokenMap,
+			expectedSchema: v.optional(v.number())
+		}
+	);
+	if (!isResolvedMarginLeftOk) {
+		return Err(
+			AppError.fromEditorError(resolvedMarginLeftErr).wrapWith('#ERR_RESOLVE_MARGIN_LEFT')
 		);
 	}
 	const [isResolvedHorizontalGapOk, resolvedHorizontalGapErr, resolvedHorizontalGap] =
@@ -86,22 +134,38 @@ export function resolveAutoLayoutStyleMixin(
 		);
 	}
 
+	// Generate CSS styles from individual values
+	const paddingTop = resolvedPaddingTop ?? 0;
+	const paddingRight = resolvedPaddingRight ?? 0;
+	const paddingBottom = resolvedPaddingBottom ?? 0;
+	const paddingLeft = resolvedPaddingLeft ?? 0;
+	const hasPadding =
+		paddingTop !== 0 || paddingRight !== 0 || paddingBottom !== 0 || paddingLeft !== 0;
+
+	const marginTop = resolvedMarginTop ?? 0;
+	const marginRight = resolvedMarginRight ?? 0;
+	const marginBottom = resolvedMarginBottom ?? 0;
+	const marginLeft = resolvedMarginLeft ?? 0;
+	const hasMargin = marginTop !== 0 || marginRight !== 0 || marginBottom !== 0 || marginLeft !== 0;
+
 	return Ok({
-		horizontalPadding: resolvedHorizontalPadding,
-		verticalPadding: resolvedVerticalPadding,
-		horizontalMargin: resolvedHorizontalMargin,
-		verticalMargin: resolvedVerticalMargin,
+		paddingTop: resolvedPaddingTop,
+		paddingRight: resolvedPaddingRight,
+		paddingBottom: resolvedPaddingBottom,
+		paddingLeft: resolvedPaddingLeft,
+		marginTop: resolvedMarginTop,
+		marginRight: resolvedMarginRight,
+		marginBottom: resolvedMarginBottom,
+		marginLeft: resolvedMarginLeft,
 		horizontalGap: resolvedHorizontalGap,
 		verticalGap: resolvedVerticalGap,
 		styles: {
-			padding:
-				resolvedVerticalPadding != null || resolvedHorizontalPadding != null
-					? `${resolvedVerticalPadding ?? 0}px ${resolvedHorizontalPadding ?? 0}px`
-					: undefined,
-			margin:
-				resolvedVerticalMargin != null || resolvedHorizontalMargin != null
-					? `${resolvedVerticalMargin ?? 0}px ${resolvedHorizontalMargin ?? 0}px`
-					: undefined,
+			padding: hasPadding
+				? `${paddingTop}px ${paddingRight}px ${paddingBottom}px ${paddingLeft}px`
+				: undefined,
+			margin: hasMargin
+				? `${marginTop}px ${marginRight}px ${marginBottom}px ${marginLeft}px`
+				: undefined,
 			gap:
 				resolvedVerticalGap != null || resolvedHorizontalGap != null
 					? `${resolvedVerticalGap ?? 0}px ${resolvedHorizontalGap ?? 0}px`

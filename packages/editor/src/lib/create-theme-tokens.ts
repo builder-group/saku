@@ -9,9 +9,16 @@ export function createThemeTokens(theme: TTheme): TToken[] {
 			type: 'auto-layout',
 			key: 'auto-layout.default',
 			value: {
-				horizontalPadding: tokenRef('size.box.lg', 'number'),
-				verticalPadding: tokenRef('size.box.lg', 'number'),
-				verticalMargin: 0
+				paddingTop: tokenRef('size.box.lg', 'number'),
+				paddingRight: tokenRef('size.box.lg', 'number'),
+				paddingBottom: tokenRef('size.box.lg', 'number'),
+				paddingLeft: tokenRef('size.box.lg', 'number'),
+				marginTop: 0,
+				marginRight: 0,
+				marginBottom: 0,
+				marginLeft: 0,
+				verticalGap: tokenRef('size.box.md', 'number'),
+				horizontalGap: tokenRef('size.box.md', 'number')
 			}
 		},
 		{

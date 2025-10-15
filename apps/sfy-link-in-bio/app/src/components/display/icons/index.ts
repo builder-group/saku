@@ -68,6 +68,8 @@ export {
 	Link2Icon as LinkIcon,
 	Link2OffIcon as LinkOffIcon,
 	MailIcon,
+	MaximizeIcon,
+	MinimizeIcon,
 	PhoneIcon,
 	ScanEyeIcon,
 	StampIcon

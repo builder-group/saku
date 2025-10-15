@@ -3,10 +3,14 @@ import { TBaseMixin } from '@repo/editor';
 export type TResolvedAutoLayoutStyleMixin = TBaseMixin<
 	'autoLayout',
 	{
-		horizontalPadding?: number;
-		verticalPadding?: number;
-		horizontalMargin?: number;
-		verticalMargin?: number;
+		paddingTop?: number;
+		paddingRight?: number;
+		paddingBottom?: number;
+		paddingLeft?: number;
+		marginTop?: number;
+		marginRight?: number;
+		marginBottom?: number;
+		marginLeft?: number;
 		horizontalGap?: number;
 		verticalGap?: number;
 		// Computed CSS styles

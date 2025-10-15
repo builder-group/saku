@@ -37,10 +37,14 @@ export type TAutoLayoutStyleMixin = TBaseMixin<
 	'autoLayout',
 	TRef<
 		{
-			horizontalPadding?: TRef<number | undefined>;
-			verticalPadding?: TRef<number | undefined>;
-			horizontalMargin?: TRef<number | undefined>;
-			verticalMargin?: TRef<number | undefined>;
+			paddingTop?: TRef<number | undefined>;
+			paddingRight?: TRef<number | undefined>;
+			paddingBottom?: TRef<number | undefined>;
+			paddingLeft?: TRef<number | undefined>;
+			marginTop?: TRef<number | undefined>;
+			marginRight?: TRef<number | undefined>;
+			marginBottom?: TRef<number | undefined>;
+			marginLeft?: TRef<number | undefined>;
 			horizontalGap?: TRef<number | undefined>;
 			verticalGap?: TRef<number | undefined>;
 		},
