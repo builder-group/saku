@@ -1,7 +1,7 @@
-import { TTextNode } from '@repo/editor';
+import { TRichTextNodeBundle } from '@repo/editor';
 import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
-import { TNodeResolveContext } from '../../lib';
+import { TNodeResolveContext } from '../../../../lib';
 import {
 	resolveAppearanceStyleMixin,
 	resolveAutoLayoutStyleMixin,
@@ -10,13 +10,13 @@ import {
 	resolveShadowStyleMixin,
 	resolveStrokeStyleMixin,
 	resolveTextStyleMixin
-} from '../../mixins';
-import { TResolvedTextNode } from './types';
+} from '../../../../mixins';
+import { TResolvedRichTextNodeBundle } from '../../types';
 
-export function resolveTextNode(
-	node: TTextNode,
+export function resolveRichBundle(
+	node: TRichTextNodeBundle,
 	cx: TNodeResolveContext
-): TResult<TResolvedTextNode, AppError> {
+): TResult<TResolvedRichTextNodeBundle, AppError> {
 	const { content, autoLayout, appearance, fill, stroke, shadow, text, ...rest } = node;
 
 	// Resolve content

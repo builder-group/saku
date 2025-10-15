@@ -3,7 +3,7 @@ import { useCombinedCompute } from 'feature-react';
 import React from 'react';
 import { logger } from '@/environment';
 import { EditorSiteResolveContext, TNodeProps } from '../../../lib';
-import { resolveTextNode } from '../resolve-node';
+import { resolveTextNode } from '../lib';
 import { ResolvedTextNode } from './ResolvedNode';
 
 export const TextNode = React.forwardRef<HTMLDivElement, TNodeProps<TTextNode>>((props, ref) => {
