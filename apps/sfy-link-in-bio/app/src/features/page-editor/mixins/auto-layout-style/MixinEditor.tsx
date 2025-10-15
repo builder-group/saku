@@ -9,7 +9,7 @@ import {
 } from '@repo/editor';
 import { Text } from '@shopify/polaris';
 import { useCombinedCompute, useCompute } from 'feature-react';
-import { TState } from 'feature-state';
+import { createState, TState } from 'feature-state';
 import React from 'react';
 import { unwrapOrUndefined } from 'tuple-result';
 import { MaximizeIcon, MinimizeIcon } from '@/components';
@@ -202,161 +202,106 @@ export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorPro
 			baseState._notify(notifyOptions);
 		}
 	});
-	const paddingHorizontalState = useMapState(state, {
-		map(baseValue) {
-			if (isTokenRef(baseValue)) {
-				return mapTokenRef(baseValue, 'paddingLeft') as TRef<number>;
-			}
-			if (isTokenRef(baseValue.paddingLeft)) {
-				return baseValue.paddingLeft as TRef<number>;
-			}
-			return baseValue.paddingLeft;
-		},
-		sync(baseState, mappedValue, notifyOptions) {
-			const unpackedBaseValue = unpackAutoLayoutTokenRef(baseState._v);
-			unpackedBaseValue.paddingLeft = mappedValue;
-			unpackedBaseValue.paddingRight = mappedValue;
-			baseState._v = packAutoLayoutTokenRef(unpackedBaseValue);
-			baseState._notify(notifyOptions);
-		}
-	});
-	const paddingVerticalState = useMapState(state, {
-		map(baseValue) {
-			if (isTokenRef(baseValue)) {
-				return mapTokenRef(baseValue, 'paddingTop') as TRef<number>;
-			}
-			if (isTokenRef(baseValue.paddingTop)) {
-				return baseValue.paddingTop as TRef<number>;
-			}
-			return baseValue.paddingTop;
-		},
-		sync(baseState, mappedValue, notifyOptions) {
-			const unpackedBaseValue = unpackAutoLayoutTokenRef(baseState._v);
-			unpackedBaseValue.paddingTop = mappedValue;
-			unpackedBaseValue.paddingBottom = mappedValue;
-			baseState._v = packAutoLayoutTokenRef(unpackedBaseValue);
-			baseState._notify(notifyOptions);
-		}
-	});
-	const marginHorizontalState = useMapState(state, {
-		map(baseValue) {
-			if (isTokenRef(baseValue)) {
-				return mapTokenRef(baseValue, 'marginLeft') as TRef<number>;
-			}
-			if (isTokenRef(baseValue.marginLeft)) {
-				return baseValue.marginLeft as TRef<number>;
-			}
-			return baseValue.marginLeft;
-		},
-		sync(baseState, mappedValue, notifyOptions) {
-			const unpackedBaseValue = unpackAutoLayoutTokenRef(baseState._v);
-			unpackedBaseValue.marginLeft = mappedValue;
-			unpackedBaseValue.marginRight = mappedValue;
-			baseState._v = packAutoLayoutTokenRef(unpackedBaseValue);
-			baseState._notify(notifyOptions);
-		}
-	});
-	const marginVerticalState = useMapState(state, {
-		map(baseValue) {
-			if (isTokenRef(baseValue)) {
-				return mapTokenRef(baseValue, 'marginTop') as TRef<number>;
-			}
-			if (isTokenRef(baseValue.marginTop)) {
-				return baseValue.marginTop as TRef<number>;
-			}
-			return baseValue.marginTop;
-		},
-		sync(baseState, mappedValue, notifyOptions) {
-			const unpackedBaseValue = unpackAutoLayoutTokenRef(baseState._v);
-			unpackedBaseValue.marginTop = mappedValue;
-			unpackedBaseValue.marginBottom = mappedValue;
-			baseState._v = packAutoLayoutTokenRef(unpackedBaseValue);
-			baseState._notify(notifyOptions);
-		}
-	});
 
-	const padding = useCombinedCompute(
-		[paddingTopState, paddingRightState, paddingBottomState, paddingLeftState],
-		([{ value: top }, { value: right }, { value: bottom }, { value: left }]) => {
-			const resolvedTop = unwrapOrUndefined(resolveTokenRef(top, { tokenMap: editor.tokenMap._v }));
-			const resolvedRight = unwrapOrUndefined(
-				resolveTokenRef(right, { tokenMap: editor.tokenMap._v })
-			);
-			const resolvedBottom = unwrapOrUndefined(
-				resolveTokenRef(bottom, { tokenMap: editor.tokenMap._v })
-			);
+	const paddingHorizontalState = useCombinedCompute(
+		[paddingLeftState, paddingRightState],
+		([{ value: left }, { value: right }]) => {
 			const resolvedLeft = unwrapOrUndefined(
 				resolveTokenRef(left, { tokenMap: editor.tokenMap._v })
 			);
-
-			const hasTop = resolvedTop != null;
-			const hasRight = resolvedRight != null;
-			const hasBottom = resolvedBottom != null;
-			const hasLeft = resolvedLeft != null;
-
-			return {
-				hasTop,
-				hasRight,
-				hasBottom,
-				hasLeft,
-				hasAny: hasTop || hasRight || hasBottom || hasLeft,
-				shouldMergeHorizontal:
-					!isExpanded &&
-					hasLeft &&
-					hasRight &&
-					resolvedLeft === resolvedRight &&
-					isTokenRef(left) === isTokenRef(right),
-				shouldMergeVertical:
-					!isExpanded &&
-					hasTop &&
-					hasBottom &&
-					resolvedTop === resolvedBottom &&
-					isTokenRef(top) === isTokenRef(bottom)
-			};
+			const resolvedRight = unwrapOrUndefined(
+				resolveTokenRef(right, { tokenMap: editor.tokenMap._v })
+			);
+			if (
+				resolvedLeft != null &&
+				resolvedRight != null &&
+				resolvedLeft === resolvedRight &&
+				isTokenRef(left) === isTokenRef(right)
+			) {
+				const state = createState(left);
+				state.listen(({ value }) => {
+					paddingLeftState.set(value);
+					paddingRightState.set(value);
+				});
+				return state;
+			}
+			return null;
 		},
-		[editor, isExpanded]
+		[editor]
 	);
-
-	const margin = useCombinedCompute(
-		[marginTopState, marginRightState, marginBottomState, marginLeftState],
-		([{ value: top }, { value: right }, { value: bottom }, { value: left }]) => {
+	const paddingVerticalState = useCombinedCompute(
+		[paddingTopState, paddingBottomState],
+		([{ value: top }, { value: bottom }]) => {
 			const resolvedTop = unwrapOrUndefined(resolveTokenRef(top, { tokenMap: editor.tokenMap._v }));
-			const resolvedRight = unwrapOrUndefined(
-				resolveTokenRef(right, { tokenMap: editor.tokenMap._v })
-			);
 			const resolvedBottom = unwrapOrUndefined(
 				resolveTokenRef(bottom, { tokenMap: editor.tokenMap._v })
 			);
+			if (
+				resolvedTop != null &&
+				resolvedBottom != null &&
+				resolvedTop === resolvedBottom &&
+				isTokenRef(top) === isTokenRef(bottom)
+			) {
+				const state = createState(top);
+				state.listen(({ value }) => {
+					paddingTopState.set(value);
+					paddingRightState.set(value);
+				});
+				return state;
+			}
+			return null;
+		},
+		[editor]
+	);
+	const marginHorizontalState = useCombinedCompute(
+		[marginLeftState, marginRightState],
+		([{ value: left }, { value: right }]) => {
 			const resolvedLeft = unwrapOrUndefined(
 				resolveTokenRef(left, { tokenMap: editor.tokenMap._v })
 			);
-
-			const hasTop = resolvedTop != null;
-			const hasRight = resolvedRight != null;
-			const hasBottom = resolvedBottom != null;
-			const hasLeft = resolvedLeft != null;
-
-			return {
-				hasTop,
-				hasRight,
-				hasBottom,
-				hasLeft,
-				hasAny: hasTop || hasRight || hasBottom || hasLeft,
-				shouldMergeHorizontal:
-					!isExpanded &&
-					hasLeft &&
-					hasRight &&
-					resolvedLeft === resolvedRight &&
-					isTokenRef(left) === isTokenRef(right),
-				shouldMergeVertical:
-					!isExpanded &&
-					hasTop &&
-					hasBottom &&
-					resolvedTop === resolvedBottom &&
-					isTokenRef(top) === isTokenRef(bottom)
-			};
+			const resolvedRight = unwrapOrUndefined(
+				resolveTokenRef(right, { tokenMap: editor.tokenMap._v })
+			);
+			if (
+				resolvedLeft != null &&
+				resolvedRight != null &&
+				resolvedLeft === resolvedRight &&
+				isTokenRef(left) === isTokenRef(right)
+			) {
+				const state = createState(left);
+				state.listen(({ value }) => {
+					marginLeftState.set(value);
+					marginRightState.set(value);
+				});
+				return state;
+			}
+			return null;
 		},
-		[editor, isExpanded]
+		[editor]
+	);
+	const marginVerticalState = useCombinedCompute(
+		[marginTopState, marginBottomState],
+		([{ value: top }, { value: bottom }]) => {
+			const resolvedTop = unwrapOrUndefined(resolveTokenRef(top, { tokenMap: editor.tokenMap._v }));
+			const resolvedBottom = unwrapOrUndefined(
+				resolveTokenRef(bottom, { tokenMap: editor.tokenMap._v })
+			);
+			if (
+				resolvedTop != null &&
+				resolvedBottom != null &&
+				resolvedTop === resolvedBottom &&
+				isTokenRef(top) === isTokenRef(bottom)
+			) {
+				const state = createState(top);
+				state.listen(({ value }) => {
+					marginTopState.set(value);
+					marginBottomState.set(value);
+				});
+				return state;
+			}
+			return null;
+		},
+		[editor]
 	);
 
 	const hasHorizontalGap = useCompute(
@@ -369,15 +314,30 @@ export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorPro
 		({ value }) =>
 			unwrapOrUndefined(resolveTokenRef(value, { tokenMap: editor.tokenMap._v })) != null
 	);
-
-	const canMergeAny = React.useMemo(
-		() =>
-			(padding.hasLeft && padding.hasRight) ||
-			(padding.hasTop && padding.hasBottom) ||
-			(margin.hasLeft && margin.hasRight) ||
-			(margin.hasTop && margin.hasBottom),
-		[padding, margin]
-	);
+	const hasPaddingRight = useCompute(paddingRightState, ({ value }) => {
+		return unwrapOrUndefined(resolveTokenRef(value, { tokenMap: editor.tokenMap._v })) != null;
+	});
+	const hasPaddingLeft = useCompute(paddingLeftState, ({ value }) => {
+		return unwrapOrUndefined(resolveTokenRef(value, { tokenMap: editor.tokenMap._v })) != null;
+	});
+	const hasPaddingTop = useCompute(paddingTopState, ({ value }) => {
+		return unwrapOrUndefined(resolveTokenRef(value, { tokenMap: editor.tokenMap._v })) != null;
+	});
+	const hasPaddingBottom = useCompute(paddingBottomState, ({ value }) => {
+		return unwrapOrUndefined(resolveTokenRef(value, { tokenMap: editor.tokenMap._v })) != null;
+	});
+	const hasMarginRight = useCompute(marginRightState, ({ value }) => {
+		return unwrapOrUndefined(resolveTokenRef(value, { tokenMap: editor.tokenMap._v })) != null;
+	});
+	const hasMarginLeft = useCompute(marginLeftState, ({ value }) => {
+		return unwrapOrUndefined(resolveTokenRef(value, { tokenMap: editor.tokenMap._v })) != null;
+	});
+	const hasMarginTop = useCompute(marginTopState, ({ value }) => {
+		return unwrapOrUndefined(resolveTokenRef(value, { tokenMap: editor.tokenMap._v })) != null;
+	});
+	const hasMarginBottom = useCompute(marginBottomState, ({ value }) => {
+		return unwrapOrUndefined(resolveTokenRef(value, { tokenMap: editor.tokenMap._v })) != null;
+	});
 
 	// =========================================================================
 	// Events
@@ -402,30 +362,24 @@ export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorPro
 					Layout
 				</Text>
 
-				{canMergeAny && (
-					<button
-						type="button"
-						onClick={handleToggleExpand}
-						disabled={disabled}
-						className={cn(
-							'flex items-center justify-center transition-opacity',
-							disabled
-								? 'cursor-not-allowed opacity-30'
-								: 'cursor-pointer opacity-60 hover:opacity-100'
-						)}
-						title={isExpanded ? 'Minimize' : 'Maximize'}
-					>
-						{isExpanded ? (
-							<MinimizeIcon className="h-3 w-3" />
-						) : (
-							<MaximizeIcon className="h-3 w-3" />
-						)}
-					</button>
-				)}
+				<button
+					type="button"
+					onClick={handleToggleExpand}
+					disabled={disabled}
+					className={cn(
+						'flex items-center justify-center transition-opacity',
+						disabled
+							? 'cursor-not-allowed opacity-30'
+							: 'cursor-pointer opacity-60 hover:opacity-100'
+					)}
+					title={isExpanded ? 'Minimize' : 'Maximize'}
+				>
+					{isExpanded ? <MinimizeIcon className="h-3 w-3" /> : <MaximizeIcon className="h-3 w-3" />}
+				</button>
 			</div>
-			{padding.hasAny && (
+			{(hasPaddingRight || hasPaddingLeft || hasPaddingTop || hasPaddingBottom) && (
 				<div className="grid grid-cols-2 gap-3">
-					{padding.shouldMergeVertical ? (
+					{paddingVerticalState != null && !isExpanded ? (
 						<TokenTextInput
 							label="Padding (Vertical)"
 							type="number"
@@ -433,7 +387,7 @@ export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorPro
 							min={0}
 							max={96}
 							step={4}
-							state={paddingVerticalState as TState<TRef<number>, any>}
+							state={paddingVerticalState}
 							tokenMap={editor.tokenMap}
 							onLinkToken={
 								onLinkToken != null
@@ -446,7 +400,7 @@ export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorPro
 						/>
 					) : (
 						<>
-							{padding.hasTop && (
+							{hasPaddingTop && (
 								<TokenTextInput
 									label="Padding (Top)"
 									type="number"
@@ -454,7 +408,7 @@ export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorPro
 									min={0}
 									max={96}
 									step={4}
-									state={paddingTopState as TState<TRef<number>, any>}
+									state={paddingTopState}
 									tokenMap={editor.tokenMap}
 									onLinkToken={
 										onLinkToken != null
@@ -466,7 +420,7 @@ export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorPro
 									disabled={disabled}
 								/>
 							)}
-							{padding.hasBottom && (
+							{hasPaddingBottom && (
 								<TokenTextInput
 									label="Padding (Bottom)"
 									type="number"
@@ -474,7 +428,7 @@ export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorPro
 									min={0}
 									max={96}
 									step={4}
-									state={paddingBottomState as TState<TRef<number>, any>}
+									state={paddingBottomState}
 									tokenMap={editor.tokenMap}
 									onLinkToken={
 										onLinkToken != null
@@ -488,7 +442,7 @@ export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorPro
 							)}
 						</>
 					)}
-					{padding.shouldMergeHorizontal ? (
+					{paddingHorizontalState != null && !isExpanded ? (
 						<TokenTextInput
 							label="Padding (Horizontal)"
 							type="number"
@@ -496,7 +450,7 @@ export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorPro
 							min={0}
 							max={96}
 							step={4}
-							state={paddingHorizontalState as TState<TRef<number>, any>}
+							state={paddingHorizontalState}
 							tokenMap={editor.tokenMap}
 							onLinkToken={
 								onLinkToken != null
@@ -509,7 +463,7 @@ export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorPro
 						/>
 					) : (
 						<>
-							{padding.hasLeft && (
+							{hasPaddingLeft && (
 								<TokenTextInput
 									label="Padding (Left)"
 									type="number"
@@ -517,7 +471,7 @@ export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorPro
 									min={0}
 									max={96}
 									step={4}
-									state={paddingLeftState as TState<TRef<number>, any>}
+									state={paddingLeftState}
 									tokenMap={editor.tokenMap}
 									onLinkToken={
 										onLinkToken != null
@@ -529,7 +483,7 @@ export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorPro
 									disabled={disabled}
 								/>
 							)}
-							{padding.hasRight && (
+							{hasPaddingRight && (
 								<TokenTextInput
 									label="Padding (Right)"
 									type="number"
@@ -537,7 +491,7 @@ export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorPro
 									min={0}
 									max={96}
 									step={4}
-									state={paddingRightState as TState<TRef<number>, any>}
+									state={paddingRightState}
 									tokenMap={editor.tokenMap}
 									onLinkToken={
 										onLinkToken != null
@@ -553,9 +507,9 @@ export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorPro
 					)}
 				</div>
 			)}
-			{margin.hasAny && (
+			{(hasMarginRight || hasMarginLeft || hasMarginTop || hasMarginBottom) && (
 				<div className="grid grid-cols-2 gap-3">
-					{margin.shouldMergeVertical ? (
+					{marginVerticalState != null && !isExpanded ? (
 						<TokenTextInput
 							label="Margin (Vertical)"
 							type="number"
@@ -563,7 +517,7 @@ export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorPro
 							min={0}
 							max={96}
 							step={4}
-							state={marginVerticalState as TState<TRef<number>, any>}
+							state={marginVerticalState}
 							tokenMap={editor.tokenMap}
 							onLinkToken={
 								onLinkToken != null
@@ -576,7 +530,7 @@ export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorPro
 						/>
 					) : (
 						<>
-							{margin.hasTop && (
+							{hasMarginTop && (
 								<TokenTextInput
 									label="Margin (Top)"
 									type="number"
@@ -584,7 +538,7 @@ export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorPro
 									min={0}
 									max={96}
 									step={4}
-									state={marginTopState as TState<TRef<number>, any>}
+									state={marginTopState}
 									tokenMap={editor.tokenMap}
 									onLinkToken={
 										onLinkToken != null
@@ -596,7 +550,7 @@ export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorPro
 									disabled={disabled}
 								/>
 							)}
-							{margin.hasBottom && (
+							{hasMarginBottom && (
 								<TokenTextInput
 									label="Margin (Bottom)"
 									type="number"
@@ -604,7 +558,7 @@ export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorPro
 									min={0}
 									max={96}
 									step={4}
-									state={marginBottomState as TState<TRef<number>, any>}
+									state={marginBottomState}
 									tokenMap={editor.tokenMap}
 									onLinkToken={
 										onLinkToken != null
@@ -618,7 +572,7 @@ export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorPro
 							)}
 						</>
 					)}
-					{margin.shouldMergeHorizontal ? (
+					{marginHorizontalState != null && !isExpanded ? (
 						<TokenTextInput
 							label="Margin (Horizontal)"
 							type="number"
@@ -626,7 +580,7 @@ export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorPro
 							min={0}
 							max={96}
 							step={4}
-							state={marginHorizontalState as TState<TRef<number>, any>}
+							state={marginHorizontalState}
 							tokenMap={editor.tokenMap}
 							onLinkToken={
 								onLinkToken != null
@@ -639,7 +593,7 @@ export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorPro
 						/>
 					) : (
 						<>
-							{margin.hasLeft && (
+							{hasMarginLeft && (
 								<TokenTextInput
 									label="Margin (Left)"
 									type="number"
@@ -647,7 +601,7 @@ export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorPro
 									min={0}
 									max={96}
 									step={4}
-									state={marginLeftState as TState<TRef<number>, any>}
+									state={marginLeftState}
 									tokenMap={editor.tokenMap}
 									onLinkToken={
 										onLinkToken != null
@@ -659,7 +613,7 @@ export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorPro
 									disabled={disabled}
 								/>
 							)}
-							{margin.hasRight && (
+							{hasMarginRight && (
 								<TokenTextInput
 									label="Margin (Right)"
 									type="number"
@@ -667,7 +621,7 @@ export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorPro
 									min={0}
 									max={96}
 									step={4}
-									state={marginRightState as TState<TRef<number>, any>}
+									state={marginRightState}
 									tokenMap={editor.tokenMap}
 									onLinkToken={
 										onLinkToken != null
@@ -693,7 +647,7 @@ export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorPro
 							min={0}
 							max={96}
 							step={4}
-							state={horizontalGapState as TState<TRef<number>, any>}
+							state={horizontalGapState}
 							tokenMap={editor.tokenMap}
 							onLinkToken={
 								onLinkToken != null
@@ -713,7 +667,7 @@ export const AutoLayoutStyleMixinEditor = (props: TAutoLayoutStyleMixinEditorPro
 							min={0}
 							max={96}
 							step={4}
-							state={verticalGapState as TState<TRef<number>, any>}
+							state={verticalGapState}
 							tokenMap={editor.tokenMap}
 							onLinkToken={
 								onLinkToken != null
