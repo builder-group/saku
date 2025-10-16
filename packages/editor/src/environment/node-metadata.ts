@@ -27,7 +27,7 @@ export const aboutNodeMetadata: TNodeMetadata<TAboutNode> = {
 				paddingRight: tokenRef('auto-layout.default', 'auto-layout', 'paddingRight'),
 				paddingBottom: tokenRef('auto-layout.default', 'auto-layout', 'paddingBottom'),
 				paddingLeft: tokenRef('auto-layout.default', 'auto-layout', 'paddingLeft'),
-				marginTop: tokenRef('auto-layout.default', 'auto-layout', 'marginTop'),
+				marginTop: 96,
 				marginRight: tokenRef('auto-layout.default', 'auto-layout', 'marginRight'),
 				marginBottom: tokenRef('auto-layout.default', 'auto-layout', 'marginBottom'),
 				marginLeft: tokenRef('auto-layout.default', 'auto-layout', 'marginLeft')
@@ -86,7 +86,7 @@ export const aboutNodeMetadata: TNodeMetadata<TAboutNode> = {
 				paddingRight: tokenRef('auto-layout.default', 'auto-layout', 'paddingRight'),
 				paddingBottom: tokenRef('auto-layout.default', 'auto-layout', 'paddingBottom'),
 				paddingLeft: tokenRef('auto-layout.default', 'auto-layout', 'paddingLeft'),
-				marginTop: tokenRef('auto-layout.default', 'auto-layout', 'marginTop'),
+				marginTop: 0,
 				marginRight: 0,
 				marginBottom: tokenRef('auto-layout.default', 'auto-layout', 'marginBottom'),
 				marginLeft: 0

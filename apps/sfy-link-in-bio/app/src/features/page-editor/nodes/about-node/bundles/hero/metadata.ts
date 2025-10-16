@@ -1,8 +1,18 @@
-import { aboutNodeMetadata, THeroAboutNodeBundle, TTextXlStyleMixin } from '@repo/editor';
+import {
+	aboutNodeMetadata,
+	TAppearanceStyleMixin,
+	TAutoLayoutStyleMixin,
+	THeroAboutNodeBundle,
+	TTextXlStyleMixin
+} from '@repo/editor';
 import { Ok } from 'tuple-result';
 import {
+	packAppearanceTokenRef,
+	packAutoLayoutTokenRef,
 	packTextTokenRef,
 	packTypographyTokenRef,
+	unpackAppearanceTokenRef,
+	unpackAutoLayoutTokenRef,
 	unpackTextTokenRef,
 	unpackTypographyTokenRef
 } from '../../../../mixins';
@@ -32,6 +42,22 @@ export const heroBundleMetadata: TAboutNodeBundleMetadata<THeroAboutNodeBundle> 
 	async switch(cx) {
 		const defaults = aboutNodeMetadata.bundleMap['hero'];
 
+		let commonAutoLayout: TAutoLayoutStyleMixin['value'] | null = null;
+		if (cx.common.autoLayout != null) {
+			const unpackedAutoLayout = unpackAutoLayoutTokenRef(cx.common.autoLayout);
+			unpackedAutoLayout.marginTop = 0;
+			unpackedAutoLayout.marginRight = 0;
+			unpackedAutoLayout.marginLeft = 0;
+			commonAutoLayout = packAutoLayoutTokenRef(unpackedAutoLayout);
+		}
+
+		let commonAppearance: TAppearanceStyleMixin['value'] | null = null;
+		if (cx.common.appearance != null) {
+			const unpackedAppearance = unpackAppearanceTokenRef(cx.common.appearance);
+			unpackedAppearance.borderRadius = 0;
+			commonAppearance = packAppearanceTokenRef(unpackedAppearance);
+		}
+
 		let commonTextXl: TTextXlStyleMixin['value'] | null = null;
 		if (cx.common.textXl != null) {
 			const unpackedTextXl = unpackTextTokenRef(cx.common.textXl);
@@ -52,8 +78,8 @@ export const heroBundleMetadata: TAboutNodeBundleMetadata<THeroAboutNodeBundle> 
 				avatar: cx.common.content?.avatar,
 				contactLinks: cx.common.content?.contactLinks ?? []
 			},
-			autoLayout: cx.common.autoLayout ?? defaults.autoLayout,
-			appearance: cx.common.appearance ?? defaults.appearance,
+			autoLayout: commonAutoLayout ?? defaults.autoLayout,
+			appearance: commonAppearance ?? defaults.appearance,
 			fill: cx.common.fill ?? defaults.fill,
 			stroke: cx.common.stroke ?? defaults.stroke,
 			shadow: cx.common.shadow ?? defaults.shadow,

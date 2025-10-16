@@ -1,13 +1,19 @@
 import {
 	aboutNodeMetadata,
+	TAppearanceStyleMixin,
+	TAutoLayoutStyleMixin,
 	TClassicAboutNodeBundle,
 	tokenRef,
 	TTextXlStyleMixin
 } from '@repo/editor';
 import { Ok } from 'tuple-result';
 import {
+	packAppearanceTokenRef,
+	packAutoLayoutTokenRef,
 	packTextTokenRef,
 	packTypographyTokenRef,
+	unpackAppearanceTokenRef,
+	unpackAutoLayoutTokenRef,
 	unpackTextTokenRef,
 	unpackTypographyTokenRef
 } from '../../../../mixins';
@@ -36,7 +42,31 @@ export const classicBundleMetadata: TAboutNodeBundleMetadata<TClassicAboutNodeBu
 		};
 	},
 	async switch(cx) {
-		const defaults = aboutNodeMetadata.bundleMap['hero'];
+		const defaults = aboutNodeMetadata.bundleMap['classic'];
+
+		let commonAutoLayout: TAutoLayoutStyleMixin['value'] | null = null;
+		if (cx.common.autoLayout != null) {
+			const unpackedAutoLayout = unpackAutoLayoutTokenRef(cx.common.autoLayout);
+			unpackedAutoLayout.marginTop = 96;
+			unpackedAutoLayout.marginRight = tokenRef(
+				'auto-layout.default',
+				'auto-layout',
+				'marginRight'
+			);
+			unpackedAutoLayout.marginLeft = tokenRef('auto-layout.default', 'auto-layout', 'marginLeft');
+			commonAutoLayout = packAutoLayoutTokenRef(unpackedAutoLayout);
+		}
+
+		let commonAppearance: TAppearanceStyleMixin['value'] | null = null;
+		if (cx.common.appearance != null) {
+			const unpackedAppearance = unpackAppearanceTokenRef(cx.common.appearance);
+			unpackedAppearance.borderRadius = tokenRef(
+				'appearance.default',
+				'appearance',
+				'borderRadius'
+			);
+			commonAppearance = packAppearanceTokenRef(unpackedAppearance);
+		}
 
 		let commonTextXl: TTextXlStyleMixin['value'] | null = null;
 		if (cx.common.textXl != null) {
@@ -58,8 +88,8 @@ export const classicBundleMetadata: TAboutNodeBundleMetadata<TClassicAboutNodeBu
 				avatar: cx.common.content?.avatar,
 				contactLinks: cx.common.content?.contactLinks ?? []
 			},
-			autoLayout: cx.common.autoLayout ?? defaults.autoLayout,
-			appearance: cx.common.appearance ?? defaults.appearance,
+			autoLayout: commonAutoLayout ?? defaults.autoLayout,
+			appearance: commonAppearance ?? defaults.appearance,
 			fill: cx.common.fill ?? defaults.fill,
 			stroke: cx.common.stroke ?? defaults.stroke,
 			shadow: cx.common.shadow ?? defaults.shadow,

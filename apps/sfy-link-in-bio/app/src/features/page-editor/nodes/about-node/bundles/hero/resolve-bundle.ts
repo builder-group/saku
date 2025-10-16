@@ -7,7 +7,6 @@ import {
 	resolveAutoLayoutStyleMixin,
 	resolveBasicAboutNodeContentMixin,
 	resolveFillStyleMixin,
-	resolveImageStyleMixin,
 	resolveShadowStyleMixin,
 	resolveStrokeStyleMixin,
 	resolveTextStyleMixin
@@ -18,8 +17,7 @@ export function resolveHeroBundle(
 	node: THeroAboutNodeBundle,
 	cx: TNodeResolveContext
 ): TResult<TResolvedHeroAboutNodeBundle, AppError> {
-	const { content, autoLayout, appearance, fill, stroke, shadow, textXl, text, image, ...rest } =
-		node;
+	const { content, autoLayout, appearance, fill, stroke, shadow, textXl, text, ...rest } = node;
 
 	// Resolve content
 	const [isResolvedContentOk, resolvedContentErr, resolvedContent] =
@@ -83,13 +81,6 @@ export function resolveHeroBundle(
 	if (!isResolvedTextOk) {
 		return Err(resolvedTextErr.wrapWith('#ERR_RESOLVE_TEXT_STYLE'));
 	}
-	const [isResolvedImageOk, resolvedImageErr, resolvedImage] = resolveImageStyleMixin(image, {
-		node: cx,
-		tokenMap: cx.site.getTokenMap()
-	});
-	if (!isResolvedImageOk) {
-		return Err(resolvedImageErr.wrapWith('#ERR_RESOLVE_IMAGE_STYLE'));
-	}
 
 	return Ok({
 		...rest,
@@ -100,7 +91,6 @@ export function resolveHeroBundle(
 		stroke: resolvedStroke,
 		shadow: resolvedShadow,
 		textXl: resolvedTextXl,
-		text: resolvedText,
-		image: resolvedImage
+		text: resolvedText
 	});
 }
