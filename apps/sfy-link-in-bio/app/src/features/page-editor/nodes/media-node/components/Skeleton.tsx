@@ -1,12 +1,14 @@
+import React from 'react';
 import { TResolvedMediaNode } from '../types';
 
-export const Skeleton: React.FC<TSkeletonProps> = (props) => {
+export const Skeleton = React.forwardRef<HTMLDivElement, TSkeletonProps>((props, ref) => {
 	const {
 		node: { autoLayout, appearance, fill, stroke, shadow, image }
 	} = props;
 
 	return (
 		<div
+			ref={ref}
 			className="relative flex w-full items-center gap-3 bg-white"
 			style={{
 				...autoLayout.styles,
@@ -22,7 +24,8 @@ export const Skeleton: React.FC<TSkeletonProps> = (props) => {
 			></div>
 		</div>
 	);
-};
+});
+Skeleton.displayName = 'Skeleton';
 
 interface TSkeletonProps {
 	node: TResolvedMediaNode;

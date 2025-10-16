@@ -318,7 +318,7 @@ export const pageNodeMetadata: TNodeMetadata<TFlatPageNode> = {
 			hasWatermark: true,
 			children: [],
 			autoLayout: {
-				verticalGap: 24
+				verticalGap: 12
 			},
 			appearance: {
 				visible: true,
