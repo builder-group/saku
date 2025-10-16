@@ -8,12 +8,7 @@ export function createNodeState<GNode extends TFlatNode>(
 	node: GNode,
 	parentId?: TNodeId
 ): TNodeState<GNode> {
-	const state = createState(node, {
-		// Use sync queue to prevent cursor jumping in controlled inputs
-		// (e.g., TextField in TextNodeEditor) by ensuring state updates
-		// happen in the same event loop tick as user interactions
-		queue: 'sync'
-	});
+	const state = createState(node);
 
 	return Object.assign(state, {
 		get id() {

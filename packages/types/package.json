@@ -52,7 +52,7 @@
 		"update:latest": "pnpm update --latest"
 	},
 	"devDependencies": {
-		"@redocly/cli": "^2.5.0",
-		"openapi-typescript": "^7.9.1"
+		"@redocly/cli": "^2.5.1",
+		"openapi-typescript": "^7.10.1"
 	}
 }
