@@ -12,15 +12,13 @@ export const PageNode = React.forwardRef<HTMLDivElement, TNodeProps<TFlatPageNod
 	(props, ref) => {
 		const { nodeState, editor, ...divProps } = props;
 
-		const { contentRadius, glassBorderRadius, borderWidth, borderColor } = React.useMemo(() => {
+		const { contentRadius, glassBorderRadius, borderWidth } = React.useMemo(() => {
 			const contentRadius = 8; // px
 			const borderWidth = 5; // px
-			const borderColor = '#ffffff52';
 			return {
 				contentRadius,
 				glassBorderRadius: contentRadius + borderWidth,
-				borderWidth,
-				borderColor
+				borderWidth
 			};
 		}, []);
 
@@ -59,7 +57,10 @@ export const PageNode = React.forwardRef<HTMLDivElement, TNodeProps<TFlatPageNod
 					className="relative min-h-screen w-full overflow-x-hidden"
 					style={{
 						...appearance.styles,
-						...fill?.styles
+						...fill?.styles,
+						['--content-radius' as string]: `${contentRadius}px`,
+						['--glass-border-radius' as string]: `${glassBorderRadius}px`,
+						['--glass-border-width' as string]: `${borderWidth}px`
 					}}
 				>
 					<div className="absolute inset-0 hidden bg-black/10 backdrop-blur-xl sm:block" />
@@ -67,12 +68,10 @@ export const PageNode = React.forwardRef<HTMLDivElement, TNodeProps<TFlatPageNod
 					<div className="relative mx-auto w-full max-w-xl sm:pt-10">
 						<div className="relative">
 							<div
-								className="overflow-hidden sm:pb-10 sm:shadow-[0_24px_32px_0px_rgba(0,0,0,0.15)]"
+								className="overflow-hidden rounded-t-none pb-16 sm:rounded-t-[var(--content-radius)] sm:shadow-[0_24px_32px_0px_rgba(0,0,0,0.15)]"
 								style={{
 									...appearance.styles,
-									...fill?.styles,
-									borderTopLeftRadius: contentRadius,
-									borderTopRightRadius: contentRadius
+									...fill?.styles
 								}}
 							>
 								<div className="flex w-full flex-col" style={autoLayout.styles}>
@@ -82,21 +81,7 @@ export const PageNode = React.forwardRef<HTMLDivElement, TNodeProps<TFlatPageNod
 								</div>
 							</div>
 
-							<div
-								className="pointer-events-none absolute top-0 left-0 hidden h-full w-full sm:block"
-								style={{
-									marginTop: -borderWidth,
-									marginLeft: -borderWidth,
-									width: `calc(100% + ${borderWidth * 2}px)`,
-									borderTopWidth: borderWidth,
-									borderRightWidth: borderWidth,
-									borderLeftWidth: borderWidth,
-									borderColor,
-									borderStyle: 'solid',
-									borderTopLeftRadius: glassBorderRadius,
-									borderTopRightRadius: glassBorderRadius
-								}}
-							/>
+							<div className="pointer-events-none absolute top-0 left-0 -mt-[var(--glass-border-width)] -ml-[var(--glass-border-width)] hidden h-full w-[calc(100%+var(--glass-border-width)*2)] rounded-t-none border-t-[length:var(--glass-border-width)] border-r-[length:var(--glass-border-width)] border-l-[length:var(--glass-border-width)] border-solid border-[#ffffff52] sm:block sm:rounded-t-[var(--glass-border-radius)]" />
 						</div>
 					</div>
 				</div>
