@@ -22,10 +22,10 @@ export const ResolvedClassicBundle = React.forwardRef<HTMLDivElement, TResolvedC
 					...shadow?.styles
 				}}
 			>
-				<div className="flex flex-col items-center gap-4">
+				<div className="flex flex-col items-center gap-6">
 					{/* Avatar */}
 					{content.avatar != null ? (
-						<div className="h-20 w-20 overflow-hidden" style={image.styles}>
+						<div className="h-24 w-24 overflow-hidden" style={image.styles}>
 							<img
 								src={content.avatar.src}
 								alt={content.title}
@@ -42,17 +42,19 @@ export const ResolvedClassicBundle = React.forwardRef<HTMLDivElement, TResolvedC
 						</div>
 					)}
 
-					{/* Name */}
-					<h1 className="font-semibold" style={textXl.styles}>
-						{content.title}
-					</h1>
+					<div className="flex flex-col items-center gap-0.5 px-6">
+						{/* Name */}
+						<h1 className="font-semibold" style={textXl.styles}>
+							{content.title}
+						</h1>
 
-					{/* Bio */}
-					{content.description != null && (
-						<p className="leading-relaxed" style={text.styles}>
-							{content.description}
-						</p>
-					)}
+						{/* Bio */}
+						{content.description != null && (
+							<p className="leading-relaxed" style={text.styles}>
+								{content.description}
+							</p>
+						)}
+					</div>
 
 					{/* Contact Icons */}
 					{content.contactLinks.length > 0 && (
@@ -72,7 +74,7 @@ export const ResolvedClassicBundle = React.forwardRef<HTMLDivElement, TResolvedC
 										href={action.url}
 										target={action.type === 'social' ? '_blank' : undefined}
 										rel={action.type === 'social' ? 'noopener noreferrer' : undefined}
-										className="flex h-6 w-6 items-center justify-center hover:opacity-70"
+										className="flex h-7 w-7 items-center justify-center hover:opacity-70"
 										style={{
 											color: text.styles.color
 										}}

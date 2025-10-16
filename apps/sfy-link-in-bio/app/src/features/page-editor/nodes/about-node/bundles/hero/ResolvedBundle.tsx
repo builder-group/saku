@@ -44,18 +44,23 @@ export const ResolvedHeroBundle = React.forwardRef<HTMLDivElement, TResolvedHero
 				)}
 
 				{/* Content Overlay */}
-				<div className="relative mx-3 flex max-w-full flex-col items-center gap-4 pt-[calc(100vw-80px)] pb-4 sm:pt-96">
-					{/* Title */}
-					<h1 className="text-center leading-tight font-semibold break-words" style={textXl.styles}>
-						{content.title}
-					</h1>
+				<div className="relative mx-3 flex max-w-full flex-col items-center gap-6 pt-[calc(100vw-80px)] pb-4 sm:pt-96">
+					<div className="flex flex-col items-center gap-0.5 px-6">
+						{/* Title */}
+						<h1
+							className="text-center leading-tight font-semibold break-words"
+							style={textXl.styles}
+						>
+							{content.title}
+						</h1>
 
-					{/* Description */}
-					{content.description != null && (
-						<p className="text-center leading-relaxed text-balance" style={text.styles}>
-							{content.description}
-						</p>
-					)}
+						{/* Description */}
+						{content.description != null && (
+							<p className="text-center leading-relaxed text-balance" style={text.styles}>
+								{content.description}
+							</p>
+						)}
+					</div>
 
 					{/* Contact Icons */}
 					{content.contactLinks.length > 0 && (
@@ -75,7 +80,7 @@ export const ResolvedHeroBundle = React.forwardRef<HTMLDivElement, TResolvedHero
 										href={action.url}
 										target={action.type === 'social' ? '_blank' : undefined}
 										rel={action.type === 'social' ? 'noopener noreferrer' : undefined}
-										className="flex h-6 w-6 items-center justify-center hover:opacity-70"
+										className="flex h-7 w-7 items-center justify-center hover:opacity-70"
 										style={{
 											color: text.styles.color
 										}}

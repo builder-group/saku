@@ -61,8 +61,9 @@ export const ResolvedRichBundle = React.forwardRef<HTMLDivElement, TResolvedRich
 					...stroke?.styles,
 					...shadow?.styles
 				}}
+				className="flex min-h-16 items-center justify-center"
 			>
-				<div className="flex h-full min-h-12 w-full flex-col justify-center" style={text.styles}>
+				<div className="flex h-full w-full flex-col justify-center px-6" style={text.styles}>
 					{textContent}
 				</div>
 			</div>

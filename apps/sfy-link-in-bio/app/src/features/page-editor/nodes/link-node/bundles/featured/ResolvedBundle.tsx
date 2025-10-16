@@ -38,7 +38,7 @@ export const ResolvedFeaturedBundle = React.forwardRef<
 					)}
 				</div>
 
-				<div className="flex w-full min-w-0 flex-col gap-1 px-2 pb-2">
+				<div className="flex min-h-16 w-full min-w-0 flex-col justify-center gap-1 px-6">
 					{content.title != null && (
 						<p className="truncate font-medium" style={text.styles}>
 							{content.title}
