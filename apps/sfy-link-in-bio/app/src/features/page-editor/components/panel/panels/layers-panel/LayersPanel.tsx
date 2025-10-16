@@ -135,13 +135,17 @@ export const LayersPanel: React.FC<TLayersPanelProps> = (props) => {
 				return;
 			}
 
-			// TODO: Programmatic collapse/expand doesn't work rn
+			// TODO: Make programmatic panel collapse/expand work reliably, the setTimeout workaround seems to work for now
 			// https://github.com/bvaughn/react-resizable-panels/issues/515#issuecomment-3285269376
 			const panel = panelRef.current;
 			if (value != null) {
-				panel?.collapse();
+				setTimeout(() => {
+					panel?.collapse();
+				});
 			} else {
-				panel?.expand();
+				setTimeout(() => {
+					panel?.expand();
+				});
 			}
 		},
 		[isMd]

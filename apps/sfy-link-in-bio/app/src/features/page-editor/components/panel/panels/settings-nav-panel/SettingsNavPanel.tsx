@@ -88,11 +88,17 @@ export const SettingsNavPanel: React.FC<TSettingsNavPanelProps> = (props) => {
 	);
 
 	const handleToggleCollapse = React.useCallback(() => {
+		// TODO: Make programmatic panel collapse/expand work reliably, the setTimeout workaround seems to work for now
+		// https://github.com/bvaughn/react-resizable-panels/issues/515#issuecomment-3285269376
 		const panel = panelRef.current;
 		if (collapsed) {
-			panel?.expand();
+			setTimeout(() => {
+				panel?.expand();
+			});
 		} else {
-			panel?.collapse();
+			setTimeout(() => {
+				panel?.collapse();
+			});
 		}
 	}, [collapsed]);
 
