@@ -12,6 +12,7 @@ import {
 	getSocialContactMetadata,
 	hexToRgba,
 	linkNodeMetadata,
+	pageNodeMetadata,
 	TAboutNode,
 	TAsset,
 	TAssetHash,
@@ -131,8 +132,10 @@ export function parseLinkpopData(linkpopData: TLinkPopData): TSite {
 							};
 							autoLayout = {
 								...linkNodeMetadata.bundleMap.classic.autoLayout,
-								horizontalPadding: 0,
-								verticalPadding: 0
+								paddingTop: 0,
+								paddingRight: 0,
+								paddingBottom: 0,
+								paddingLeft: 0
 							};
 							appearance = {
 								...linkNodeMetadata.bundleMap.classic.appearance,
@@ -163,8 +166,10 @@ export function parseLinkpopData(linkpopData: TLinkPopData): TSite {
 							};
 							autoLayout = {
 								...linkNodeMetadata.bundleMap.classic.autoLayout,
-								horizontalPadding: 0,
-								verticalPadding: 0
+								paddingTop: 0,
+								paddingRight: 0,
+								paddingBottom: 0,
+								paddingLeft: 0
 							};
 							appearance = {
 								...linkNodeMetadata.bundleMap.classic.appearance,
@@ -239,22 +244,9 @@ export function parseLinkpopData(linkpopData: TLinkPopData): TSite {
 		assets,
 		integrations: [],
 		root: {
+			...pageNodeMetadata.bundleMap.classic,
 			id: createId('node'),
-			type: 'page',
-			bundleType: 'classic',
-			metadata: {},
-			hasWatermark: true,
 			children,
-			autoLayout: {
-				horizontalPadding: 24,
-				verticalPadding: 48,
-				verticalGap: tokenRef('spacing.gap', 'number')
-			},
-			appearance: {
-				visible: true,
-				opacity: 1,
-				borderRadius: 0
-			},
 			fill: {
 				paint: tokenRef('paint.base200', 'paint'),
 				opacity: 1

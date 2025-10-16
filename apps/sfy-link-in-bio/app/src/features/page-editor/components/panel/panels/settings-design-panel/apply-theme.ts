@@ -3,6 +3,7 @@ import {
 	createThemeOverrideTokens,
 	linkNodeMetadata,
 	TAboutNode,
+	TClassicAboutNodeBundle,
 	TLinkNode,
 	TTheme
 } from '@repo/editor';
@@ -18,7 +19,10 @@ export function applyTheme(theme: TTheme, editor: TPageEditor) {
 				case 'about': {
 					(node as TNodeState<TAboutNode>)._v.textXl = aboutNodeMetadata.bundleMap.classic.textXl;
 					(node as TNodeState<TAboutNode>)._v.text = aboutNodeMetadata.bundleMap.classic.text;
-					(node as TNodeState<TAboutNode>)._v.image = aboutNodeMetadata.bundleMap.classic.image;
+					if ('image' in node) {
+						(node as TNodeState<TClassicAboutNodeBundle>)._v.image =
+							aboutNodeMetadata.bundleMap.classic.image;
+					}
 					node._notify();
 					break;
 				}
