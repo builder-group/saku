@@ -10,12 +10,15 @@ export const ShadowRoot: React.FC<TShadowRootProps> = (props) => {
 	const loadedCount = React.useRef(0);
 
 	React.useLayoutEffect(() => {
-		if (hostRef.current != null && shadowRoot == null) {
-			if (hostRef.current.shadowRoot == null) {
-				setShadowRoot(hostRef.current.attachShadow({ mode: 'open' }));
-			} else {
-				setShadowRoot(hostRef.current.shadowRoot);
-			}
+		const host = hostRef.current;
+		if (host == null || shadowRoot != null) {
+			return;
+		}
+
+		if (host.shadowRoot == null) {
+			setShadowRoot(host.attachShadow({ mode: 'open' }));
+		} else {
+			setShadowRoot(host.shadowRoot);
 		}
 	}, [shadowRoot]);
 
@@ -45,7 +48,7 @@ export const ShadowRoot: React.FC<TShadowRootProps> = (props) => {
 export interface TShadowRootLink {
 	rel: string;
 	href: string;
-	[key: string]: any;
+	[key: string]: unknown;
 }
 
 export interface TShadowRootProps extends React.HTMLAttributes<HTMLDivElement> {

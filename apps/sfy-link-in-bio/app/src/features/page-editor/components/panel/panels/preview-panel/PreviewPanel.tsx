@@ -1,7 +1,7 @@
 import { Spinner } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react';
 import React from 'react';
-import { ResizablePanel, ShadowRoot } from '@/components';
+import { IframeRoot, ResizablePanel } from '@/components';
 import { cn } from '@/lib';
 import tailwindStylesHref from '@/styles.css?url';
 import { TPageEditor } from '../../../../lib';
@@ -34,34 +34,31 @@ export const PreviewPanel: React.FC<TPreviewPanelProps> = (props) => {
 				</s-badge>
 			</div>
 
-			{/* Use ShadowRoot to fully isolate the static canvas from global styles (e.g., Polaris), ensuring only Tailwind styles apply inside. */}
-			<ShadowRoot
-				links={[{ rel: 'stylesheet', href: tailwindStylesHref }]}
-				onStylesLoaded={() => setStylesLoaded(true)}
-				className="h-full w-full"
+			<div
+				ref={editor.canvasContainerRef}
+				className={cn(
+					'h-[calc(100%-3rem)] w-full overflow-y-auto',
+					viewMode === 'mobile' && 'flex justify-center'
+				)}
+				style={{
+					backgroundImage:
+						'repeating-linear-gradient(-45deg, var(--color-neutral-50), var(--color-neutral-50) 13px, var(--color-neutral-200) 13px, var(--color-neutral-200) 14px)',
+					backgroundSize: '40px 40px'
+				}}
 			>
-				<div
-					ref={editor.canvasContainerRef}
-					className={cn(
-						'h-[calc(100%-3rem)] w-full overflow-y-auto',
-						viewMode === 'mobile' && 'flex justify-center'
-					)}
-					style={{
-						backgroundImage:
-							'repeating-linear-gradient(-45deg, var(--color-neutral-50), var(--color-neutral-50) 13px, var(--color-neutral-200) 13px, var(--color-neutral-200) 14px)',
-						backgroundSize: '40px 40px'
-					}}
+				{/* Use iframe to fully isolate the static canvas from global styles (e.g. Polaris) and get correct viewport-based media queries */}
+				<IframeRoot
+					links={[{ rel: 'stylesheet', href: tailwindStylesHref }]}
+					onStylesLoaded={() => setStylesLoaded(true)}
+					className={cn('h-full', viewMode === 'mobile' ? 'w-[390px]' : 'w-full')}
+					style={{ border: viewMode === 'mobile' ? '1px solid black' : 'none' }}
 				>
-					<div className={cn('h-full', viewMode === 'mobile' ? 'w-[390px]' : 'w-full')}>
-						<div className={cn(viewMode === 'mobile' && 'border-r border-l border-black')}>
-							<StaticNodeCanvas
-								cx={editor.pageContext}
-								nodes={previewedNode != null ? [previewedNode] : []}
-							/>
-						</div>
-					</div>
-				</div>
-			</ShadowRoot>
+					<StaticNodeCanvas
+						cx={editor.pageContext}
+						nodes={previewedNode != null ? [previewedNode] : []}
+					/>
+				</IframeRoot>
+			</div>
 		</ResizablePanel>
 	);
 };
