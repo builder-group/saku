@@ -4,7 +4,7 @@ import React from 'react';
 import { IframeRoot, ResizablePanel } from '@/components';
 import { cn } from '@/lib';
 import tailwindStylesHref from '@/styles.css?url';
-import { TPageEditor } from '../../../../lib';
+import { getFontUrls, TPageEditor } from '../../../../lib';
 import { StaticNodeCanvas } from '../../../node';
 import { createPreviewPanelContext } from './create-preview-panel-context';
 import { PanelHeader } from './PanelHeader';
@@ -17,6 +17,14 @@ export const PreviewPanel: React.FC<TPreviewPanelProps> = (props) => {
 	const viewMode = useFeatureState(cx.viewMode);
 
 	const [stylesLoaded, setStylesLoaded] = React.useState(false);
+
+	const links = React.useMemo(() => {
+		const fontUrls = getFontUrls(editor.assetsMap);
+		return [
+			{ rel: 'stylesheet', href: tailwindStylesHref },
+			...fontUrls.map((url) => ({ rel: 'stylesheet', href: url }))
+		];
+	}, [editor.assetsMap]);
 
 	return (
 		<ResizablePanel id="preview-panel" order={order} className="relative">
@@ -48,7 +56,7 @@ export const PreviewPanel: React.FC<TPreviewPanelProps> = (props) => {
 			>
 				{/* Use iframe to fully isolate the static canvas from global styles (e.g. Polaris) and get correct viewport-based media queries */}
 				<IframeRoot
-					links={[{ rel: 'stylesheet', href: tailwindStylesHref }]}
+					links={links}
 					onStylesLoaded={() => setStylesLoaded(true)}
 					className={cn('h-full', viewMode === 'mobile' ? 'w-[390px]' : 'w-full')}
 					style={{ border: viewMode === 'mobile' ? '1px solid black' : 'none' }}
