@@ -2,7 +2,10 @@ import React from 'react';
 import { TResolvedNodeProps } from '../../../../lib';
 import { TResolvedYouTubeEmbedLinkNodeBundle } from '../../types';
 
-export const ResolvedYouTubeEmbedBundle: React.FC<TResolvedYouTubeEmbedBundleProps> = (props) => {
+export const ResolvedYouTubeEmbedBundle = React.forwardRef<
+	HTMLDivElement,
+	TResolvedYouTubeEmbedBundleProps
+>((props, ref) => {
 	const {
 		node: { content, autoLayout, appearance, fill, stroke, shadow, image }
 	} = props;
@@ -10,6 +13,7 @@ export const ResolvedYouTubeEmbedBundle: React.FC<TResolvedYouTubeEmbedBundlePro
 
 	return (
 		<div
+			ref={ref}
 			className="relative overflow-hidden"
 			style={{
 				...autoLayout.styles,
@@ -42,7 +46,8 @@ export const ResolvedYouTubeEmbedBundle: React.FC<TResolvedYouTubeEmbedBundlePro
 			></iframe>
 		</div>
 	);
-};
+});
+ResolvedYouTubeEmbedBundle.displayName = 'ResolvedYouTubeEmbedBundle';
 
 interface TResolvedYouTubeEmbedBundleProps {
 	node: TResolvedYouTubeEmbedLinkNodeBundle;

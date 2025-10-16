@@ -21,16 +21,25 @@ export const ResolvedPageNode: React.FC<TResolvedNodeProps<TResolvedPageNode>> =
 					...fill?.styles
 				}}
 			>
-				<div className="mx-auto w-full max-w-md">
-					<div className="flex w-full flex-col" style={autoLayout.styles}>
-						{children.map((childNode) => (
-							<ResolvedNode key={childNode.id} node={childNode} cx={cx} />
-						))}
+				<div className="absolute inset-0 hidden bg-black/10 sm:block" />
+
+				<div className="relative mx-auto w-full max-w-md sm:pt-10">
+					<div
+						className="overflow-hidden sm:rounded-t-lg sm:pb-10 sm:shadow-[0_24px_32px_0px_rgba(0,0,0,0.15)]"
+						style={{
+							...appearance.styles,
+							...fill?.styles
+						}}
+					>
+						<div className="flex w-full flex-col" style={autoLayout.styles}>
+							{children.map((childNode) => (
+								<ResolvedNode key={childNode.id} node={childNode} cx={cx} />
+							))}
+						</div>
 					</div>
 				</div>
 			</div>
 
-			{/* Watermark */}
 			{hasWatermark && (
 				<div className="sticky bottom-0 w-full">
 					<a

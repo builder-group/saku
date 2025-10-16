@@ -12,27 +12,19 @@ export const ResolvedLinkNode = React.forwardRef<
 	HTMLDivElement,
 	TResolvedNodeProps<TResolvedLinkNode>
 >((props, ref) => {
-	const { node, cx, ...divProps } = props;
+	const { node, cx } = props;
 
-	const renderBundle = React.useCallback(() => {
-		switch (node.bundleType) {
-			case 'classic':
-				return <ResolvedClassicBundle node={node} cx={cx} />;
-			case 'featured':
-				return <ResolvedFeaturedBundle node={node} cx={cx} />;
-			case 'youtube-embed':
-				return <ResolvedYouTubeEmbedBundle node={node} cx={cx} />;
-			case 'spotify-embed':
-				return <ResolvedSpotifyEmbedBundle node={node} cx={cx} />;
-			default:
-				return null;
-		}
-	}, [node, cx]);
-
-	return (
-		<div {...divProps} ref={ref} className="w-full max-w-md">
-			{renderBundle()}
-		</div>
-	);
+	switch (node.bundleType) {
+		case 'classic':
+			return <ResolvedClassicBundle ref={ref} node={node} cx={cx} />;
+		case 'featured':
+			return <ResolvedFeaturedBundle ref={ref} node={node} cx={cx} />;
+		case 'youtube-embed':
+			return <ResolvedYouTubeEmbedBundle ref={ref} node={node} cx={cx} />;
+		case 'spotify-embed':
+			return <ResolvedSpotifyEmbedBundle ref={ref} node={node} cx={cx} />;
+		default:
+			return null;
+	}
 });
 ResolvedLinkNode.displayName = 'ResolvedLinkNode';

@@ -2,7 +2,10 @@ import React from 'react';
 import { TResolvedNodeProps } from '../../../../lib';
 import { TResolvedSpotifyEmbedLinkNodeBundle } from '../../types';
 
-export const ResolvedSpotifyEmbedBundle: React.FC<TResolvedSpotifyEmbedBundleProps> = (props) => {
+export const ResolvedSpotifyEmbedBundle = React.forwardRef<
+	HTMLDivElement,
+	TResolvedSpotifyEmbedBundleProps
+>((props, ref) => {
 	const {
 		node: { content, autoLayout, appearance, fill, stroke, shadow, image }
 	} = props;
@@ -10,6 +13,7 @@ export const ResolvedSpotifyEmbedBundle: React.FC<TResolvedSpotifyEmbedBundlePro
 
 	return (
 		<div
+			ref={ref}
 			className="relative overflow-hidden"
 			style={{
 				...autoLayout.styles,
@@ -47,7 +51,8 @@ export const ResolvedSpotifyEmbedBundle: React.FC<TResolvedSpotifyEmbedBundlePro
 			></iframe>
 		</div>
 	);
-};
+});
+ResolvedSpotifyEmbedBundle.displayName = 'ResolvedSpotifyEmbedBundle';
 
 interface TResolvedSpotifyEmbedBundleProps {
 	node: TResolvedSpotifyEmbedLinkNodeBundle;

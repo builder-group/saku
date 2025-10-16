@@ -128,8 +128,7 @@ export const aboutNodeMetadata: TNodeMetadata<TAboutNode> = {
 				},
 				stroke: tokenRef('text.default', 'text', 'stroke'),
 				shadow: tokenRef('text.default', 'text', 'shadow')
-			},
-			image: tokenRef('image.default', 'image')
+			}
 		}
 	}
 };

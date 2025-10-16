@@ -8,24 +8,16 @@ export const ResolvedProductNode = React.forwardRef<
 	HTMLDivElement,
 	TResolvedNodeProps<TResolvedProductNode>
 >((props, ref) => {
-	const { node, cx, ...divProps } = props;
+	const { node, cx } = props;
 
-	const renderBundle = React.useCallback(() => {
-		switch (node.bundleType) {
-			case 'classic':
-				if (node.content.product == null) {
-					return <Skeleton node={node} />;
-				}
-				return <ResolvedClassicBundle node={node} product={node.content.product} cx={cx} />;
-			default:
+	switch (node.bundleType) {
+		case 'classic':
+			if (node.content.product == null) {
 				return <Skeleton node={node} />;
-		}
-	}, [node, cx]);
-
-	return (
-		<div {...divProps} ref={ref} className="w-full max-w-md">
-			{renderBundle()}
-		</div>
-	);
+			}
+			return <ResolvedClassicBundle ref={ref} node={node} product={node.content.product} cx={cx} />;
+		default:
+			return <Skeleton node={node} />;
+	}
 });
 ResolvedProductNode.displayName = 'ResolvedProductNode';

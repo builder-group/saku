@@ -7,23 +7,15 @@ export const ResolvedAboutNode = React.forwardRef<
 	HTMLDivElement,
 	TResolvedNodeProps<TResolvedAboutNode>
 >((props, ref) => {
-	const { node, cx, ...divProps } = props;
+	const { node, cx } = props;
 
-	const renderBundle = React.useCallback(() => {
-		switch (node.bundleType) {
-			case 'classic':
-				return <ResolvedClassicBundle node={node} cx={cx} />;
-			case 'hero':
-				return <ResolvedHeroBundle node={node} cx={cx} />;
-			default:
-				return null;
-		}
-	}, [node, cx]);
-
-	return (
-		<div {...divProps} ref={ref} className="w-full max-w-md">
-			{renderBundle()}
-		</div>
-	);
+	switch (node.bundleType) {
+		case 'classic':
+			return <ResolvedClassicBundle ref={ref} node={node} cx={cx} />;
+		case 'hero':
+			return <ResolvedHeroBundle ref={ref} node={node} cx={cx} />;
+		default:
+			return null;
+	}
 });
 ResolvedAboutNode.displayName = 'ResolvedAboutNode';

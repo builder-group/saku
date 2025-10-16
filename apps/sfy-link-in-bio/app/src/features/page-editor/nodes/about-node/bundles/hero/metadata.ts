@@ -26,8 +26,7 @@ export const heroBundleMetadata: TAboutNodeBundleMetadata<THeroAboutNodeBundle> 
 			stroke: node.stroke,
 			shadow: node.shadow,
 			textXl: node.textXl,
-			text: node.text,
-			image: node.image
+			text: node.text
 		};
 	},
 	async switch(cx) {
@@ -59,8 +58,7 @@ export const heroBundleMetadata: TAboutNodeBundleMetadata<THeroAboutNodeBundle> 
 			stroke: cx.common.stroke ?? defaults.stroke,
 			shadow: cx.common.shadow ?? defaults.shadow,
 			textXl: commonTextXl ?? defaults.textXl,
-			text: cx.common.text ?? defaults.text,
-			image: cx.common.image ?? defaults.image
+			text: cx.common.text ?? defaults.text
 		});
 		return Ok(undefined);
 	}

@@ -4,68 +4,72 @@ import { logger } from '@/environment';
 import { TResolvedNodeProps } from '../../../../lib';
 import { TResolvedRichTextNodeBundle } from '../../types';
 
-export const ResolvedRichBundle: React.FC<TResolvedRichBundleProps> = (props) => {
-	const {
-		node: { content, autoLayout, appearance, fill, stroke, shadow, text }
-	} = props;
+export const ResolvedRichBundle = React.forwardRef<HTMLDivElement, TResolvedRichBundleProps>(
+	(props, ref) => {
+		const {
+			node: { content, autoLayout, appearance, fill, stroke, shadow, text }
+		} = props;
 
-	const mdxComponents = React.useMemo(
-		() => createMdxComponents(text.typography.fontSize),
-		[text.typography.fontSize]
-	);
+		const mdxComponents = React.useMemo(
+			() => createMdxComponents(text.typography.fontSize),
+			[text.typography.fontSize]
+		);
 
-	// Use evaluateSync for SSR because async (e.g. with React Query) wouldn't render on server
-	const textContent = React.useMemo(() => {
-		switch (content.text.type) {
-			case 'text': {
-				return <p>{content.text.value}</p>;
-			}
-			case 'markdown': {
-				const textValue = content.text.value;
-				if (textValue.trim() === '') {
-					return null;
+		// Use evaluateSync for SSR because async (e.g. with React Query) wouldn't render on server
+		const textContent = React.useMemo(() => {
+			switch (content.text.type) {
+				case 'text': {
+					return <p>{content.text.value}</p>;
 				}
+				case 'markdown': {
+					const textValue = content.text.value;
+					if (textValue.trim() === '') {
+						return null;
+					}
 
-				try {
-					const { default: Component } = evaluateSync(textValue, {
-						jsx: React.createElement,
-						jsxs: React.createElement,
-						Fragment: React.Fragment,
-						// Prevents MDX from including debug objects (fileName, lineNumber, columnNumber)
-						// that React tries to render as children,
-						// causing "Objects are not valid as a React child" errors during SSR.
-						// Debug info breaks serialization between server and client.
-						development: false
-					});
+					try {
+						const { default: Component } = evaluateSync(textValue, {
+							jsx: React.createElement,
+							jsxs: React.createElement,
+							Fragment: React.Fragment,
+							// Prevents MDX from including debug objects (fileName, lineNumber, columnNumber)
+							// that React tries to render as children,
+							// causing "Objects are not valid as a React child" errors during SSR.
+							// Debug info breaks serialization between server and client.
+							development: false
+						});
 
-					return Component({ components: mdxComponents });
-				} catch (error) {
-					logger.warn('MDX parsing error:', error);
-					return <span>{textValue}</span>;
+						return Component({ components: mdxComponents });
+					} catch (error) {
+						logger.warn('MDX parsing error:', error);
+						return <span>{textValue}</span>;
+					}
+				}
+				case 'html': {
+					return <div dangerouslySetInnerHTML={{ __html: content.text.value }} />;
 				}
 			}
-			case 'html': {
-				return <div dangerouslySetInnerHTML={{ __html: content.text.value }} />;
-			}
-		}
-	}, [content.text, mdxComponents]);
+		}, [content.text, mdxComponents]);
 
-	return (
-		<div
-			style={{
-				...autoLayout.styles,
-				...appearance.styles,
-				...fill?.styles,
-				...stroke?.styles,
-				...shadow?.styles
-			}}
-		>
-			<div className="flex h-full min-h-12 w-full flex-col justify-center" style={text.styles}>
-				{textContent}
+		return (
+			<div
+				ref={ref}
+				style={{
+					...autoLayout.styles,
+					...appearance.styles,
+					...fill?.styles,
+					...stroke?.styles,
+					...shadow?.styles
+				}}
+			>
+				<div className="flex h-full min-h-12 w-full flex-col justify-center" style={text.styles}>
+					{textContent}
+				</div>
 			</div>
-		</div>
-	);
-};
+		);
+	}
+);
+ResolvedRichBundle.displayName = 'ResolvedRichBundle';
 
 interface TResolvedRichBundleProps {
 	node: TResolvedRichTextNodeBundle;

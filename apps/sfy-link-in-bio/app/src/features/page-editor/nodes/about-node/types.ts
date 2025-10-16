@@ -42,7 +42,6 @@ export type TResolvedHeroAboutNodeBundle = TNodeBundle<
 		TResolvedStrokeStyleMixin,
 		TResolvedShadowStyleMixin,
 		TResolvedTextXlStyleMixin,
-		TResolvedTextStyleMixin,
-		TResolvedImageStyleMixin
+		TResolvedTextStyleMixin
 	]
 >;

@@ -50,16 +50,25 @@ export const PageNode = React.forwardRef<HTMLDivElement, TNodeProps<TFlatPageNod
 						...fill?.styles
 					}}
 				>
-					<div className="mx-auto w-full max-w-md">
-						<div className="flex w-full flex-col" style={autoLayout.styles}>
-							{childNodes.map((childNodeState) => (
-								<Node key={childNodeState._v.id} nodeState={childNodeState} editor={editor} />
-							))}
+					<div className="absolute inset-0 hidden bg-black/10 sm:block" />
+
+					<div className="relative mx-auto w-full max-w-xl sm:pt-10">
+						<div
+							className="overflow-hidden sm:rounded-t-lg sm:pb-10 sm:shadow-[0_24px_32px_0px_rgba(0,0,0,0.15)]"
+							style={{
+								...appearance.styles,
+								...fill?.styles
+							}}
+						>
+							<div className="flex w-full flex-col" style={autoLayout.styles}>
+								{childNodes.map((childNodeState) => (
+									<Node key={childNodeState._v.id} nodeState={childNodeState} editor={editor} />
+								))}
+							</div>
 						</div>
 					</div>
 				</div>
 
-				{/* Watermark */}
 				{hasWatermark && (
 					<div className="sticky bottom-0 w-full">
 						<a

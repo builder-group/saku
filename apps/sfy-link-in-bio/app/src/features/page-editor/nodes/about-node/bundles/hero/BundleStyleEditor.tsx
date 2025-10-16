@@ -7,7 +7,6 @@ import {
 	AppearanceStyleMixinEditor,
 	AutoLayoutStyleMixinEditor,
 	FillStyleMixinEditor,
-	ImageStyleMixinEditor,
 	ShadowStyleMixinEditor,
 	StrokeStyleMixinEditor,
 	TextStyleMixinEditor
@@ -25,7 +24,6 @@ export const HeroBundleStyleEditor: React.FC<TNodeEditorComponentProps<THeroAbou
 	const shadowState = useNodeProperty(nodeState, 'shadow');
 	const textXlState = useNodeProperty(nodeState, 'textXl');
 	const textState = useNodeProperty(nodeState, 'text');
-	const imageState = useNodeProperty(nodeState, 'image');
 
 	// =========================================================================
 	// UI
@@ -90,18 +88,6 @@ export const HeroBundleStyleEditor: React.FC<TNodeEditorComponentProps<THeroAbou
 				<TextStyleMixinEditor
 					state={textState}
 					onLinkToken={() => tokenRef('text.default', 'text')}
-					editor={editor}
-				/>
-			</AccordionSection>
-			<AccordionSection
-				title="Avatar Image"
-				collapsibleClassName="px-0 space-y-3"
-				size="tight"
-				defaultOpen={true}
-			>
-				<ImageStyleMixinEditor
-					state={imageState}
-					onLinkToken={() => tokenRef('image.default', 'image')}
 					editor={editor}
 				/>
 			</AccordionSection>

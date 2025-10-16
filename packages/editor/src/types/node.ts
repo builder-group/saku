@@ -150,8 +150,7 @@ export type THeroAboutNodeBundle = TNodeBundle<
 		TStrokeStyleMixin,
 		TShadowStyleMixin,
 		TTextXlStyleMixin,
-		TTextStyleMixin,
-		TImageStyleMixin
+		TTextStyleMixin
 	]
 >;
 
