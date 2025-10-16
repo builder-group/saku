@@ -22,7 +22,7 @@ export const ResolvedClassicBundle = React.forwardRef<HTMLDivElement, TResolvedC
 					...shadow?.styles
 				}}
 			>
-				<div className="flex flex-col items-center gap-6">
+				<div className="flex flex-col items-center gap-6 px-6">
 					{/* Avatar */}
 					{content.avatar != null ? (
 						<div className="h-24 w-24 overflow-hidden" style={image.styles}>
@@ -42,7 +42,7 @@ export const ResolvedClassicBundle = React.forwardRef<HTMLDivElement, TResolvedC
 						</div>
 					)}
 
-					<div className="flex flex-col items-center gap-0.5 px-6">
+					<div className="flex flex-col items-center gap-0.5">
 						{/* Name */}
 						<h1 className="font-semibold" style={textXl.styles}>
 							{content.title}
