@@ -8,7 +8,7 @@ export const PageWrapper = React.forwardRef<HTMLDivElement, TPageWrapperProps>((
 	const {
 		node: { hasWatermark, autoLayout, appearance, fill },
 		children,
-		divProps
+		...divProps
 	} = props;
 
 	const {
@@ -156,8 +156,7 @@ export const PageWrapper = React.forwardRef<HTMLDivElement, TPageWrapperProps>((
 });
 PageWrapper.displayName = 'PageWrapper';
 
-interface TPageWrapperProps {
+interface TPageWrapperProps extends React.HTMLAttributes<HTMLDivElement> {
 	node: Omit<TResolvedPageNode, 'children'>;
 	children: React.ReactNode;
-	divProps?: React.HTMLAttributes<HTMLDivElement>;
 }

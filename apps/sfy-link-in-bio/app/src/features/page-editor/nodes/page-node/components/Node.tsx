@@ -39,7 +39,7 @@ export const PageNode = React.forwardRef<HTMLDivElement, TNodeProps<TFlatPageNod
 		}
 
 		return (
-			<PageWrapper ref={ref} node={node} divProps={divProps}>
+			<PageWrapper ref={ref} node={node} {...divProps}>
 				{childNodes.map((childNodeState) => (
 					<Node key={childNodeState._v.id} nodeState={childNodeState} editor={editor} />
 				))}
