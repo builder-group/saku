@@ -1,5 +1,6 @@
 import React from 'react';
 import { LogoIcon, ShareIcon, useIframePortal } from '@/components';
+import { appConfig } from '@/environment';
 import { useHasScrolled, useIsAtBottom } from '@/hooks';
 import { cn } from '@/lib';
 import { TResolvedPageNode } from '../types';
@@ -57,7 +58,12 @@ export const PageWrapper = React.forwardRef<HTMLDivElement, TPageWrapperProps>((
 					['--header-top-scrolled' as string]: `${headerTopScrolled}px`
 				}}
 			>
-				<div className="relative flex items-center justify-between rounded-xl p-2">
+				<div
+					className={cn('relative flex items-center rounded-xl p-2', {
+						'justify-between': hasWatermark,
+						'justify-end': !hasWatermark
+					})}
+				>
 					{/* Glass background */}
 					<div
 						className={cn(
@@ -70,19 +76,24 @@ export const PageWrapper = React.forwardRef<HTMLDivElement, TPageWrapperProps>((
 					/>
 
 					{hasWatermark && (
-						<button
-							className={
-								'flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-white/40 bg-white/70 text-black backdrop-blur-sm transition-all duration-200 hover:scale-105 hover:bg-white/100 focus:ring-2 focus:ring-white/50 focus:outline-none active:scale-95'
-							}
+						<a
+							href="https://saku.so"
+							target="_blank"
+							rel="noopener noreferrer"
+							className={cn(
+								'flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-white/40 bg-white/70 text-black backdrop-blur-sm transition-all duration-200 hover:scale-105 hover:bg-white/100 focus:ring-2 focus:ring-white/50 focus:outline-none active:scale-95',
+								{ 'shadow-[0_2px_8px_rgba(0,0,0,0.15)]': !hasScrolled }
+							)}
 						>
 							<LogoIcon className="h-6 w-6" />
-						</button>
+						</a>
 					)}
 
 					<button
-						className={
-							'flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-white/40 bg-white/70 text-black backdrop-blur-sm transition-all duration-200 hover:scale-105 hover:bg-white/100 focus:ring-2 focus:ring-white/50 focus:outline-none active:scale-95'
-						}
+						className={cn(
+							'flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-white/40 bg-white/70 text-black backdrop-blur-sm transition-all duration-200 hover:scale-105 hover:bg-white/100 focus:ring-2 focus:ring-white/50 focus:outline-none active:scale-95',
+							{ 'shadow-[0_2px_8px_rgba(0,0,0,0.15)]': !hasScrolled }
+						)}
 						aria-label="Share profile"
 					>
 						<ShareIcon className="h-4 w-4" />
@@ -122,11 +133,24 @@ export const PageWrapper = React.forwardRef<HTMLDivElement, TPageWrapperProps>((
 							</div>
 
 							{/* Footer */}
-							<div className="flex justify-center gap-6 pt-32 pb-16 text-sm text-gray-600">
-								<a href="#" className="transition-colors hover:text-gray-800">
+							<div
+								className={cn('flex justify-center gap-6 pb-16 text-sm', {
+									'pt-32': hasWatermark,
+									'pt-16': !hasWatermark
+								})}
+							>
+								<a
+									href={`mailto:${appConfig.help.email}?subject=Report Violation`}
+									className="text-black/70 drop-shadow-[0_1px_2px_rgba(255,255,255,0.8)] transition-colors hover:text-black/90"
+								>
 									Report
 								</a>
-								<a href="#" className="transition-colors hover:text-gray-800">
+								<a
+									href={appConfig.help.legal.privacy}
+									target="_blank"
+									rel="noopener noreferrer"
+									className="text-black/70 drop-shadow-[0_1px_2px_rgba(255,255,255,0.8)] transition-colors hover:text-black/90"
+								>
 									Privacy
 								</a>
 							</div>
@@ -149,7 +173,7 @@ export const PageWrapper = React.forwardRef<HTMLDivElement, TPageWrapperProps>((
 						href="https://saku.so"
 						target="_blank"
 						rel="noopener noreferrer"
-						className="flex cursor-pointer items-center gap-1.5 rounded-lg border border-white/40 bg-white/70 px-3 py-2 text-sm text-black no-underline backdrop-blur-sm transition-all duration-200 hover:scale-105 hover:bg-white/100 focus:ring-2 focus:ring-white/50 focus:outline-none active:scale-95"
+						className="flex cursor-pointer items-center gap-1.5 rounded-lg border border-white/40 bg-white/70 px-3 py-2 text-sm text-black no-underline shadow-[0_2px_8px_rgba(0,0,0,0.15)] backdrop-blur-sm transition-all duration-200 hover:scale-105 hover:bg-white/100 focus:ring-2 focus:ring-white/50 focus:outline-none active:scale-95"
 					>
 						<LogoIcon className="h-6 w-6" />
 						<span>Made in Saku</span>
