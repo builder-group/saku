@@ -37,7 +37,7 @@ export class EditorSiteResolveContext implements TSiteResolveContext {
 	}
 
 	public getAsset(hash: TAssetHash): TAsset | null {
-		return this.editor.assetsMap[hash] || null;
+		return this.editor.assetsMap._v[hash] || null;
 	}
 
 	public getTokenMap(): Record<string, TToken> {

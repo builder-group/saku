@@ -15,13 +15,22 @@ export const CanvasPanel: React.FC<TCanvasPanelProps> = (props) => {
 	const isMd = useEditorBreakpoint(editor, 'md');
 	const [stylesLoaded, setStylesLoaded] = React.useState(false);
 
-	const links = React.useMemo(() => {
-		const fontUrls = getFontUrls(editor.assetsMap);
-		return [
-			{ rel: 'stylesheet', href: tailwindStylesHref },
-			...fontUrls.map((url) => ({ rel: 'stylesheet', href: url }))
-		];
-	}, [editor.assetsMap]);
+	const links = useCompute(
+		editor.assetsMap,
+		({ value: assetsMap }) => {
+			const fontUrls = getFontUrls(assetsMap);
+			return [
+				{ rel: 'stylesheet', href: tailwindStylesHref },
+				...fontUrls.map((url) => ({ rel: 'stylesheet', href: url }))
+			];
+		},
+		[],
+		{
+			isEqual(a, b) {
+				return a.length === b.length && a.every((link, i) => link.href === b[i]?.href);
+			}
+		}
+	);
 
 	// TODO: Figure out better solution
 	// https://github.com/bvaughn/react-resizable-panels/issues/46

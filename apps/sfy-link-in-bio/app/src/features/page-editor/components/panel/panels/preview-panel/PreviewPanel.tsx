@@ -1,5 +1,5 @@
 import { Spinner } from '@shopify/polaris';
-import { useFeatureState } from 'feature-react';
+import { useCompute, useFeatureState } from 'feature-react';
 import React from 'react';
 import { IframePortal, ResizablePanel } from '@/components';
 import { cn } from '@/lib';
@@ -18,13 +18,22 @@ export const PreviewPanel: React.FC<TPreviewPanelProps> = (props) => {
 
 	const [stylesLoaded, setStylesLoaded] = React.useState(false);
 
-	const links = React.useMemo(() => {
-		const fontUrls = getFontUrls(editor.assetsMap);
-		return [
-			{ rel: 'stylesheet', href: tailwindStylesHref },
-			...fontUrls.map((url) => ({ rel: 'stylesheet', href: url }))
-		];
-	}, [editor.assetsMap]);
+	const links = useCompute(
+		editor.assetsMap,
+		({ value: assetsMap }) => {
+			const fontUrls = getFontUrls(assetsMap);
+			return [
+				{ rel: 'stylesheet', href: tailwindStylesHref },
+				...fontUrls.map((url) => ({ rel: 'stylesheet', href: url }))
+			];
+		},
+		[],
+		{
+			isEqual(a, b) {
+				return a.length === b.length && a.every((link, i) => link.href === b[i]?.href);
+			}
+		}
+	);
 
 	return (
 		<ResizablePanel id="preview-panel" order={order} className="relative">
