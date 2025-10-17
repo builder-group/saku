@@ -1,18 +1,20 @@
 import React from 'react';
 
-export function useHasScrolled(threshold = 0, scrollWindow: Window = window) {
+export function useHasScrolled(threshold = 0, scrollWindow: () => Window = () => window) {
 	const [hasScrolled, setHasScrolled] = React.useState(false);
 
 	React.useEffect(() => {
+		const w = scrollWindow();
+
 		const updatePosition = () => {
-			setHasScrolled(scrollWindow.scrollY > threshold);
+			setHasScrolled(w.scrollY > threshold);
 		};
 
-		scrollWindow.addEventListener('scroll', updatePosition);
+		w.addEventListener('scroll', updatePosition);
 
 		updatePosition();
 
-		return () => scrollWindow.removeEventListener('scroll', updatePosition);
+		return () => w.removeEventListener('scroll', updatePosition);
 	}, [threshold, scrollWindow]);
 
 	return hasScrolled;

@@ -36,12 +36,16 @@ export const PageWrapper = React.forwardRef<HTMLDivElement, TPageWrapperProps>((
 		};
 	}, []);
 
-	const iframeRoot = useIframePortal();
-	const hasScrolled = useHasScrolled(scrollThreshold, iframeRoot?.window);
-	const isAtBottom = useIsAtBottom(128, iframeRoot?.window, iframeRoot?.document);
+	const iframePortal = useIframePortal();
+	const hasScrolled = useHasScrolled(scrollThreshold, () => iframePortal?.window ?? window);
+	const isAtBottom = useIsAtBottom(
+		128,
+		() => iframePortal?.window ?? window,
+		() => iframePortal?.document ?? document
+	);
 
 	return (
-		<>
+		<div className="relative">
 			{/* Header */}
 			<div
 				className={cn('fixed top-2 right-0 left-0 z-[200] mx-auto w-full max-w-xl px-2 sm:px-4', {
@@ -89,7 +93,7 @@ export const PageWrapper = React.forwardRef<HTMLDivElement, TPageWrapperProps>((
 			<div
 				{...divProps}
 				ref={ref}
-				className="relative min-h-screen w-full overflow-x-hidden"
+				className="relative w-full overflow-x-hidden"
 				style={{
 					...appearance.styles,
 					...fill?.styles,
@@ -137,7 +141,7 @@ export const PageWrapper = React.forwardRef<HTMLDivElement, TPageWrapperProps>((
 			{hasWatermark && (
 				<div
 					className={cn('z-[999]', {
-						'sticky bottom-4 flex justify-end pr-4': !isAtBottom,
+						'fixed right-4 bottom-4': !isAtBottom,
 						'absolute bottom-32 left-1/2 -translate-x-1/2': isAtBottom
 					})}
 				>
@@ -152,7 +156,7 @@ export const PageWrapper = React.forwardRef<HTMLDivElement, TPageWrapperProps>((
 					</a>
 				</div>
 			)}
-		</>
+		</div>
 	);
 });
 PageWrapper.displayName = 'PageWrapper';

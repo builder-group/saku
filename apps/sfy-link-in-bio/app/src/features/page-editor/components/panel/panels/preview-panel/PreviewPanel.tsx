@@ -45,7 +45,9 @@ export const PreviewPanel: React.FC<TPreviewPanelProps> = (props) => {
 			<div
 				ref={editor.canvasContainerRef}
 				className={cn(
-					'h-[calc(100%-3rem)] w-full overflow-y-auto',
+					'w-full overflow-y-auto',
+					// 100% - 3rem (panel header height)
+					'h-[calc(100%-3rem)]',
 					viewMode === 'mobile' && 'flex justify-center'
 				)}
 				style={{

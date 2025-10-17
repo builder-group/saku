@@ -10,13 +10,7 @@ export const StaticNodeCanvas: React.FC<TCanvasProps> = (props) => {
 		return null;
 	}
 
-	return (
-		<div className="relative h-full w-full">
-			{nodes.map((node) => (
-				<ResolvedNode key={node.id} node={node} cx={cx} />
-			))}
-		</div>
-	);
+	return nodes.map((node) => <ResolvedNode key={node.id} node={node} cx={cx} />);
 };
 
 interface TCanvasProps {

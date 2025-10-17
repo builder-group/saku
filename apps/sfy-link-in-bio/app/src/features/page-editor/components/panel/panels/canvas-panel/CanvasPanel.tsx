@@ -2,6 +2,7 @@ import { Spinner } from '@shopify/polaris';
 import { useCompute } from 'feature-react';
 import React from 'react';
 import { IframePortal, ResizablePanel } from '@/components';
+import { cn } from '@/lib';
 import tailwindStylesHref from '@/styles.css?url';
 import { useEditorBreakpoint } from '../../../../hooks';
 import { getFontUrls, TPageEditor } from '../../../../lib';
@@ -64,7 +65,11 @@ export const CanvasPanel: React.FC<TCanvasPanelProps> = (props) => {
 				ref={editor.canvasContainerRef}
 				links={links}
 				onStylesLoaded={() => setStylesLoaded(true)}
-				className="h-full w-full"
+				className={cn(
+					'w-full',
+					// 100% - 3rem (panel header height)
+					'h-[calc(100%-3rem)]'
+				)}
 			>
 				<NodeCanvas editor={editor} />
 			</IframePortal>
