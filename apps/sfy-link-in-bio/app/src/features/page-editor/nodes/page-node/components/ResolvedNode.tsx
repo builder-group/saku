@@ -8,7 +8,7 @@ export const ResolvedPageNode: React.FC<TResolvedNodeProps<TResolvedPageNode>> =
 	const { node, cx, ...divProps } = props;
 
 	return (
-		<PageWrapper node={node} divProps={divProps}>
+		<PageWrapper node={node} {...divProps}>
 			{node.children.map((childNode) => (
 				<ResolvedNode key={childNode.id} node={childNode} cx={cx} />
 			))}
