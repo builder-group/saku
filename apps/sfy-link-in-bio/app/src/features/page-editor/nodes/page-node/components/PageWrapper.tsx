@@ -1,5 +1,5 @@
 import React from 'react';
-import { LogoIcon, ShareIcon } from '@/components';
+import { LogoIcon, ShareIcon, useIframePortal } from '@/components';
 import { useHasScrolled, useIsAtBottom } from '@/hooks';
 import { cn } from '@/lib';
 import { TResolvedPageNode } from '../types';
@@ -36,8 +36,9 @@ export const PageWrapper = React.forwardRef<HTMLDivElement, TPageWrapperProps>((
 		};
 	}, []);
 
-	const hasScrolled = useHasScrolled(scrollThreshold);
-	const isAtBottom = useIsAtBottom(128);
+	const iframeRoot = useIframePortal();
+	const hasScrolled = useHasScrolled(scrollThreshold, iframeRoot?.window);
+	const isAtBottom = useIsAtBottom(128, iframeRoot?.window, iframeRoot?.document);
 
 	return (
 		<>

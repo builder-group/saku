@@ -1,7 +1,7 @@
 import { Spinner } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react';
 import React from 'react';
-import { IframeRoot, ResizablePanel } from '@/components';
+import { IframePortal, ResizablePanel } from '@/components';
 import { cn } from '@/lib';
 import tailwindStylesHref from '@/styles.css?url';
 import { getFontUrls, TPageEditor } from '../../../../lib';
@@ -54,8 +54,8 @@ export const PreviewPanel: React.FC<TPreviewPanelProps> = (props) => {
 					backgroundSize: '40px 40px'
 				}}
 			>
-				{/* Use iframe to fully isolate the static canvas from global styles (e.g. Polaris) and get correct viewport-based media queries */}
-				<IframeRoot
+				{/* Use iframe to fully isolate the canvas from global styles (e.g. Polaris) and get correct viewport-based media queries */}
+				<IframePortal
 					links={links}
 					onStylesLoaded={() => setStylesLoaded(true)}
 					className={cn('h-full', viewMode === 'mobile' ? 'w-[390px]' : 'w-full')}
@@ -65,7 +65,7 @@ export const PreviewPanel: React.FC<TPreviewPanelProps> = (props) => {
 						cx={editor.pageContext}
 						nodes={previewedNode != null ? [previewedNode] : []}
 					/>
-				</IframeRoot>
+				</IframePortal>
 			</div>
 		</ResizablePanel>
 	);

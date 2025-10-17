@@ -1,13 +1,17 @@
 import React from 'react';
 
-export function useIsAtBottom(threshold = 100) {
+export function useIsAtBottom(
+	threshold = 100,
+	scrollWindow: Window = window,
+	scrollDocument: Document = document
+) {
 	const [isAtBottom, setIsAtBottom] = React.useState(false);
 
 	React.useEffect(() => {
 		const updatePosition = () => {
-			const scrollTop = window.scrollY;
-			const windowHeight = window.innerHeight;
-			const documentHeight = document.documentElement.scrollHeight;
+			const scrollTop = scrollWindow.scrollY;
+			const windowHeight = scrollWindow.innerHeight;
+			const documentHeight = scrollDocument.documentElement.scrollHeight;
 
 			setIsAtBottom(scrollTop + windowHeight >= documentHeight - threshold);
 		};
@@ -17,7 +21,7 @@ export function useIsAtBottom(threshold = 100) {
 		updatePosition();
 
 		return () => window.removeEventListener('scroll', updatePosition);
-	}, [threshold]);
+	}, [threshold, scrollWindow, scrollDocument]);
 
 	return isAtBottom;
 }

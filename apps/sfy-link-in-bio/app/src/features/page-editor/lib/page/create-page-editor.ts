@@ -104,7 +104,7 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 
 		editorRef: React.createRef<HTMLDivElement>(),
 		canvasRef: React.createRef<HTMLDivElement>(),
-		canvasContainerRef: React.createRef<HTMLDivElement>(),
+		canvasContainerRef: React.createRef<HTMLIFrameElement>(),
 
 		switchView(view) {
 			switch (view.type) {
@@ -837,7 +837,7 @@ export interface TPageEditor {
 
 	editorRef: React.RefObject<HTMLDivElement>;
 	canvasRef: React.RefObject<HTMLDivElement>;
-	canvasContainerRef: React.RefObject<HTMLDivElement>;
+	canvasContainerRef: React.RefObject<HTMLIFrameElement>;
 
 	switchView: (view: TSwitchView) => void;
 	switchSettingsView: (view: TSwitchSettingsView) => void;
