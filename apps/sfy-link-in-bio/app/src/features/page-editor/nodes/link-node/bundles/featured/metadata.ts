@@ -1,9 +1,4 @@
-import {
-	linkNodeMetadata,
-	TAutoLayoutStyleMixin,
-	TFeaturedLinkNodeBundle,
-	tokenRef
-} from '@repo/editor';
+import { linkNodeMetadata, TAutoLayoutStyleMixin, TFeaturedLinkNodeBundle } from '@repo/editor';
 import { Err, Ok } from 'tuple-result';
 import { AppError } from '@/lib';
 import { packAutoLayoutTokenRef, unpackAutoLayoutTokenRef } from '../../../../mixins';
@@ -42,22 +37,11 @@ export const featuredBundleMetadata: TLinkNodeBundleMetadata<TFeaturedLinkNodeBu
 		let commonAutoLayout: TAutoLayoutStyleMixin['value'] | null = null;
 		if (cx.common.autoLayout != null) {
 			const unpackedAutoLayout = unpackAutoLayoutTokenRef(cx.common.autoLayout);
-			unpackedAutoLayout.paddingTop = tokenRef('auto-layout.default', 'auto-layout', 'paddingTop');
-			unpackedAutoLayout.paddingRight = tokenRef(
-				'auto-layout.default',
-				'auto-layout',
-				'paddingRight'
-			);
-			unpackedAutoLayout.paddingBottom = tokenRef(
-				'auto-layout.default',
-				'auto-layout',
-				'paddingBottom'
-			);
-			unpackedAutoLayout.paddingLeft = tokenRef(
-				'auto-layout.default',
-				'auto-layout',
-				'paddingLeft'
-			);
+			const unpackedDefaultAutoLayout = unpackAutoLayoutTokenRef(defaults.autoLayout);
+			unpackedAutoLayout.paddingTop = unpackedDefaultAutoLayout.paddingTop;
+			unpackedAutoLayout.paddingRight = unpackedDefaultAutoLayout.paddingRight;
+			unpackedAutoLayout.paddingBottom = unpackedDefaultAutoLayout.paddingBottom;
+			unpackedAutoLayout.paddingLeft = unpackedDefaultAutoLayout.paddingLeft;
 			commonAutoLayout = packAutoLayoutTokenRef(unpackedAutoLayout);
 		}
 

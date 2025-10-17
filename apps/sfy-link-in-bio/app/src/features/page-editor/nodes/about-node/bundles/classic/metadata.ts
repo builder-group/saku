@@ -3,7 +3,6 @@ import {
 	TAppearanceStyleMixin,
 	TAutoLayoutStyleMixin,
 	TClassicAboutNodeBundle,
-	tokenRef,
 	TTextXlStyleMixin
 } from '@repo/editor';
 import { Ok } from 'tuple-result';
@@ -47,24 +46,18 @@ export const classicBundleMetadata: TAboutNodeBundleMetadata<TClassicAboutNodeBu
 		let commonAutoLayout: TAutoLayoutStyleMixin['value'] | null = null;
 		if (cx.common.autoLayout != null) {
 			const unpackedAutoLayout = unpackAutoLayoutTokenRef(cx.common.autoLayout);
-			unpackedAutoLayout.marginTop = 96;
-			unpackedAutoLayout.marginRight = tokenRef(
-				'auto-layout.default',
-				'auto-layout',
-				'marginRight'
-			);
-			unpackedAutoLayout.marginLeft = tokenRef('auto-layout.default', 'auto-layout', 'marginLeft');
+			const unpackedDefaultAutoLayout = unpackAutoLayoutTokenRef(defaults.autoLayout);
+			unpackedAutoLayout.marginTop = unpackedDefaultAutoLayout.marginTop;
+			unpackedAutoLayout.marginRight = unpackedDefaultAutoLayout.marginRight;
+			unpackedAutoLayout.marginLeft = unpackedDefaultAutoLayout.marginLeft;
 			commonAutoLayout = packAutoLayoutTokenRef(unpackedAutoLayout);
 		}
 
 		let commonAppearance: TAppearanceStyleMixin['value'] | null = null;
 		if (cx.common.appearance != null) {
 			const unpackedAppearance = unpackAppearanceTokenRef(cx.common.appearance);
-			unpackedAppearance.borderRadius = tokenRef(
-				'appearance.default',
-				'appearance',
-				'borderRadius'
-			);
+			const unpackedDefaultAppearance = unpackAppearanceTokenRef(defaults.appearance);
+			unpackedAppearance.borderRadius = unpackedDefaultAppearance.borderRadius;
 			commonAppearance = packAppearanceTokenRef(unpackedAppearance);
 		}
 
@@ -72,7 +65,10 @@ export const classicBundleMetadata: TAboutNodeBundleMetadata<TClassicAboutNodeBu
 		if (cx.common.textXl != null) {
 			const unpackedTextXl = unpackTextTokenRef(cx.common.textXl);
 			const unpackedTypography = unpackTypographyTokenRef(unpackedTextXl.typography);
-			unpackedTypography.fontSize = tokenRef('text.xl', 'text', 'typography.fontSize');
+			const unpackedDefaultTypography = unpackTypographyTokenRef(
+				unpackTextTokenRef(defaults.textXl).typography
+			);
+			unpackedTypography.fontSize = unpackedDefaultTypography.fontSize;
 			unpackedTextXl.typography = packTypographyTokenRef(unpackedTypography);
 			commonTextXl = packTextTokenRef(unpackedTextXl);
 		}

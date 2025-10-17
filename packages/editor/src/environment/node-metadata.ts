@@ -99,7 +99,7 @@ export const aboutNodeMetadata: TNodeMetadata<TAboutNode> = {
 				appearance: tokenRef('text.xl', 'text', 'appearance'),
 				typography: {
 					font: tokenRef('text.xl', 'text', 'typography.font'),
-					fontSize: tokenRef('text.xl', 'text', 'typography.fontSize'),
+					fontSize: 40,
 					textAlignHorizontal: 'center',
 					textAlignVertical: 'center',
 					lineHeight: tokenRef('text.xl', 'text', 'typography.lineHeight'),

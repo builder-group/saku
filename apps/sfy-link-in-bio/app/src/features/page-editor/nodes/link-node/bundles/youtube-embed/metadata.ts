@@ -46,10 +46,11 @@ export const youtubeEmbedBundleMetadata: TLinkNodeBundleMetadata<TYouTubeEmbedLi
 		let commonAutoLayout: TAutoLayoutStyleMixin['value'] | null = null;
 		if (cx.common.autoLayout != null) {
 			const unpackedAutoLayout = unpackAutoLayoutTokenRef(cx.common.autoLayout);
-			unpackedAutoLayout.paddingTop = 0;
-			unpackedAutoLayout.paddingRight = 0;
-			unpackedAutoLayout.paddingBottom = 0;
-			unpackedAutoLayout.paddingLeft = 0;
+			const unpackedDefaultAutoLayout = unpackAutoLayoutTokenRef(defaults.autoLayout);
+			unpackedAutoLayout.paddingTop = unpackedDefaultAutoLayout.paddingTop;
+			unpackedAutoLayout.paddingRight = unpackedDefaultAutoLayout.paddingRight;
+			unpackedAutoLayout.paddingBottom = unpackedDefaultAutoLayout.paddingBottom;
+			unpackedAutoLayout.paddingLeft = unpackedDefaultAutoLayout.paddingLeft;
 			commonAutoLayout = packAutoLayoutTokenRef(unpackedAutoLayout);
 		}
 

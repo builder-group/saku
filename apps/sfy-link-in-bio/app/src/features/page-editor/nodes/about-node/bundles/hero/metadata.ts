@@ -45,16 +45,18 @@ export const heroBundleMetadata: TAboutNodeBundleMetadata<THeroAboutNodeBundle> 
 		let commonAutoLayout: TAutoLayoutStyleMixin['value'] | null = null;
 		if (cx.common.autoLayout != null) {
 			const unpackedAutoLayout = unpackAutoLayoutTokenRef(cx.common.autoLayout);
-			unpackedAutoLayout.marginTop = 0;
-			unpackedAutoLayout.marginRight = 0;
-			unpackedAutoLayout.marginLeft = 0;
+			const unpackedDefaultAutoLayout = unpackAutoLayoutTokenRef(defaults.autoLayout);
+			unpackedAutoLayout.marginTop = unpackedDefaultAutoLayout.marginTop;
+			unpackedAutoLayout.marginRight = unpackedDefaultAutoLayout.marginRight;
+			unpackedAutoLayout.marginLeft = unpackedDefaultAutoLayout.marginLeft;
 			commonAutoLayout = packAutoLayoutTokenRef(unpackedAutoLayout);
 		}
 
 		let commonAppearance: TAppearanceStyleMixin['value'] | null = null;
 		if (cx.common.appearance != null) {
 			const unpackedAppearance = unpackAppearanceTokenRef(cx.common.appearance);
-			unpackedAppearance.borderRadius = 0;
+			const unpackedDefaultAppearance = unpackAppearanceTokenRef(defaults.appearance);
+			unpackedAppearance.borderRadius = unpackedDefaultAppearance.borderRadius;
 			commonAppearance = packAppearanceTokenRef(unpackedAppearance);
 		}
 
@@ -62,7 +64,10 @@ export const heroBundleMetadata: TAboutNodeBundleMetadata<THeroAboutNodeBundle> 
 		if (cx.common.textXl != null) {
 			const unpackedTextXl = unpackTextTokenRef(cx.common.textXl);
 			const unpackedTypography = unpackTypographyTokenRef(unpackedTextXl.typography);
-			unpackedTypography.fontSize = 40;
+			const unpackedDefaultTypography = unpackTypographyTokenRef(
+				unpackTextTokenRef(defaults.textXl).typography
+			);
+			unpackedTypography.fontSize = unpackedDefaultTypography.fontSize;
 			unpackedTextXl.typography = packTypographyTokenRef(unpackedTypography);
 			commonTextXl = packTextTokenRef(unpackedTextXl);
 		}
