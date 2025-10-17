@@ -72,5 +72,6 @@ export {
 	MinimizeIcon,
 	PhoneIcon,
 	ScanEyeIcon,
+	ShareIcon,
 	StampIcon
 } from 'lucide-react'; // https://lucide.dev/icons/
