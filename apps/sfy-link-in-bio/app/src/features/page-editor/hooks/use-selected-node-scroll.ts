@@ -22,11 +22,14 @@ export function useSelectedNodeScroll(editor: TPageEditor): void {
 				return;
 			}
 
+			// Use iframe viewport height (since the iframe is the scrollable container)
 			const viewportHeight = iframeWindow.innerHeight;
 			const nodeRect = selectedNode.boundingRect._v;
 			const canvasRect = editor.canvasBoundingRect._v;
 			const nodeTop = nodeRect.top - canvasRect.top;
 			const nodeHeight = nodeRect.bottom - nodeRect.top;
+
+			// Center node within the visible viewport
 			const targetScroll = nodeTop - (viewportHeight - nodeHeight) / 2;
 
 			iframeWindow.scrollTo({
