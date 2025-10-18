@@ -24,8 +24,10 @@ export function createTextNodeEditorContext<GNode extends TTextNode>(
 
 			const metadata = textNodeBundleMetadataMap[
 				this.node._v.bundleType
-			] as TTextNodeBundleMetadata<GNode>;
-			const nextMetadata = textNodeBundleMetadataMap[bundleType] as TTextNodeBundleMetadata<GNode>;
+			] as unknown as TTextNodeBundleMetadata<GNode>;
+			const nextMetadata = textNodeBundleMetadataMap[
+				bundleType
+			] as unknown as TTextNodeBundleMetadata<GNode>;
 
 			try {
 				// Update node bundle

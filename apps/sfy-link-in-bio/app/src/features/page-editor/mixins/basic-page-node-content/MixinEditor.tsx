@@ -8,7 +8,6 @@ import { TPageEditor } from '../../lib';
 
 export const BasicPageNodeContentMixinEditor = (props: TBasicPageNodeContentMixinEditorProps) => {
 	const { state, className } = props;
-
 	const content = useFeatureState(state);
 
 	// =========================================================================

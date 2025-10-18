@@ -1,8 +1,8 @@
-import { TRichTextNodeBundle, TTextNode } from '@repo/editor';
+import { TRichTextNodeBundle, TSectionTitleTextNodeBundle, TTextNode } from '@repo/editor';
 import { useCompute } from 'feature-react';
 import React from 'react';
 import { TNodeEditorComponentProps, TNodeState } from '../../../lib';
-import { RichBundleStyleEditor } from '../bundles';
+import { RichBundleStyleEditor, SectionTitleBundleStyleEditor } from '../bundles';
 
 export const TextNodeStyleEditor: React.FC<TNodeEditorComponentProps<TTextNode>> = (props) => {
 	const { nodeState, ...rest } = props;
@@ -12,6 +12,13 @@ export const TextNodeStyleEditor: React.FC<TNodeEditorComponentProps<TTextNode>>
 		case 'rich':
 			return (
 				<RichBundleStyleEditor nodeState={nodeState as TNodeState<TRichTextNodeBundle>} {...rest} />
+			);
+		case 'section-title':
+			return (
+				<SectionTitleBundleStyleEditor
+					nodeState={nodeState as TNodeState<TSectionTitleTextNodeBundle>}
+					{...rest}
+				/>
 			);
 		default:
 			return null;

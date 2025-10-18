@@ -8,7 +8,6 @@ import { TPageEditor } from '../../lib';
 
 export const RichTextNodeContentMixinEditor = (props: TRichTextNodeContentMixinEditorProps) => {
 	const { state, className } = props;
-
 	const content = useFeatureState(state);
 
 	const [selectedFormat, setSelectedFormat] = React.useState<TRichContent['type']>(

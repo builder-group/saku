@@ -1,10 +1,10 @@
-import { TRichTextNodeBundle, TTextNode } from '@repo/editor';
+import { TRichTextNodeBundle, TSectionTitleTextNodeBundle, TTextNode } from '@repo/editor';
 import { Select, Text } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react';
 import React from 'react';
 import { AccordionSection, JsonPreview } from '@/components';
 import { TNodeEditorComponentProps } from '../../../lib';
-import { RichBundleContentEditor } from '../bundles';
+import { RichBundleContentEditor, SectionTitleBundleContentEditor } from '../bundles';
 import { textNodeBundleMetadata } from '../environment';
 import { createTextNodeEditorContext, TTextNodeEditorContext } from '../lib';
 import { ContentEditorSkeleton } from './ContentEditorSkeleton';
@@ -49,6 +49,12 @@ export const TextNodeContentEditor: React.FC<TNodeEditorComponentProps<TTextNode
 		switch (selectedBundleType) {
 			case 'rich':
 				return <RichBundleContentEditor cx={cx as TTextNodeEditorContext<TRichTextNodeBundle>} />;
+			case 'section-title':
+				return (
+					<SectionTitleBundleContentEditor
+						cx={cx as TTextNodeEditorContext<TSectionTitleTextNodeBundle>}
+					/>
+				);
 			default:
 				return null;
 		}

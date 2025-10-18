@@ -7,7 +7,14 @@ export const richBundleMetadata: TTextNodeBundleMetadata<TRichTextNodeBundle> = 
 	label: 'Rich',
 	extractCommonFields(node) {
 		return {
-			id: node.id
+			id: node.id,
+			content: node.content,
+			autoLayout: node.autoLayout,
+			appearance: node.appearance,
+			fill: node.fill,
+			stroke: node.stroke,
+			shadow: node.shadow,
+			text: node.text
 		};
 	},
 	async switch(cx) {
@@ -16,12 +23,15 @@ export const richBundleMetadata: TTextNodeBundleMetadata<TRichTextNodeBundle> = 
 			id: cx.common.id,
 			bundleType: 'rich',
 			type: 'text',
-			content: defaults.content,
-			autoLayout: defaults.autoLayout,
-			appearance: defaults.appearance,
-			fill: defaults.fill,
-			stroke: defaults.stroke,
-			shadow: defaults.shadow,
+			content: {
+				type: 'rich',
+				text: cx.common.content?.text ?? defaults.content.text
+			},
+			autoLayout: cx.common.autoLayout ?? defaults.autoLayout,
+			appearance: cx.common.appearance ?? defaults.appearance,
+			fill: cx.common.fill ?? defaults.fill,
+			stroke: cx.common.stroke ?? defaults.stroke,
+			shadow: cx.common.shadow ?? defaults.shadow,
 			text: defaults.text
 		});
 		return Ok(undefined);

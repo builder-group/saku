@@ -1,6 +1,6 @@
 import React from 'react';
 import { TResolvedNodeProps } from '../../../lib';
-import { ResolvedRichBundle } from '../bundles';
+import { ResolvedRichBundle, ResolvedSectionTitleBundle } from '../bundles';
 import { TResolvedTextNode } from '../types';
 
 export const ResolvedTextNode = React.forwardRef<
@@ -12,6 +12,8 @@ export const ResolvedTextNode = React.forwardRef<
 	switch (node.bundleType) {
 		case 'rich':
 			return <ResolvedRichBundle ref={ref} node={node} {...rest} />;
+		case 'section-title':
+			return <ResolvedSectionTitleBundle ref={ref} node={node} {...rest} />;
 		default:
 			return null;
 	}
