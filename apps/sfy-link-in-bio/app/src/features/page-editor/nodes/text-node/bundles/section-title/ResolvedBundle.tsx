@@ -19,7 +19,12 @@ export const ResolvedSectionTitleBundle = React.forwardRef<
 			}}
 			className="flex min-h-16 items-center justify-center"
 		>
-			TODO
+			<div
+				className="flex h-full w-full flex-col justify-center px-6 font-semibold"
+				style={textXl.styles}
+			>
+				{content.text}
+			</div>
 		</div>
 	);
 });
