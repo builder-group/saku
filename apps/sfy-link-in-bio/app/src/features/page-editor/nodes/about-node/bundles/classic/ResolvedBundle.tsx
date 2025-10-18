@@ -78,7 +78,7 @@ export const ResolvedClassicBundle = React.forwardRef<HTMLDivElement, TResolvedC
 										style={{
 											color: text.styles.color
 										}}
-										title={contactLink.title}
+										title={contactLink.altText}
 									>
 										<IconComponent className="h-full w-full" />
 									</a>

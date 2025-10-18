@@ -84,7 +84,7 @@ export const ResolvedHeroBundle = React.forwardRef<HTMLDivElement, TResolvedHero
 										style={{
 											color: text.styles.color
 										}}
-										title={contactLink.title}
+										title={contactLink.altText}
 									>
 										<IconComponent className="h-full w-full" />
 									</a>

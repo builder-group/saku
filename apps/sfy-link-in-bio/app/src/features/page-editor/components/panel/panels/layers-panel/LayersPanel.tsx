@@ -38,8 +38,8 @@ export const LayersPanel: React.FC<TLayersPanelProps> = (props) => {
 			nodeIds: value.children
 		};
 	});
-	const hasWatermark = useCompute(editor.getRootNode(), ({ value }) => {
-		return value.hasWatermark;
+	const watermarkVisible = useCompute(editor.getRootNode(), ({ value }) => {
+		return value.watermarkVisible;
 	});
 	const currentPlan = useCurrentPlan();
 	const panelRef = React.useRef<ImperativePanelHandle>(null);
@@ -118,9 +118,9 @@ export const LayersPanel: React.FC<TLayersPanelProps> = (props) => {
 		[editor, isTouchDevice]
 	);
 
-	const handleRemoveWatermark = React.useCallback(() => {
+	const handleHideWatermark = React.useCallback(() => {
 		const rootNode = editor.getRootNode();
-		rootNode._v.hasWatermark = false;
+		rootNode._v.watermarkVisible = false;
 		rootNode._notify();
 	}, [editor]);
 
@@ -186,7 +186,7 @@ export const LayersPanel: React.FC<TLayersPanelProps> = (props) => {
 										<LayerItem key={nodeState._v.id} nodeState={nodeState} editor={editor} />
 									))}
 									{/* Watermark item */}
-									{hasWatermark && (
+									{watermarkVisible && (
 										<div className="group flex h-8 w-full items-center gap-2 rounded-lg px-2 opacity-60 hover:bg-neutral-50">
 											<StampIcon className="h-5 w-5" />
 											<Text as="p" variant="bodyMd">
@@ -196,7 +196,7 @@ export const LayersPanel: React.FC<TLayersPanelProps> = (props) => {
 												{currentPlan.key === 'awesome' ? (
 													<button
 														className="cursor-pointer rounded-lg p-0.5 hover:bg-neutral-200 hover:text-red-500"
-														onClick={handleRemoveWatermark}
+														onClick={handleHideWatermark}
 													>
 														<Icon source={PolarisDeleteIcon} />
 													</button>

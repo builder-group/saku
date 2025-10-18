@@ -305,7 +305,7 @@ function mapSocialLinks(
 					handle: social.handle,
 					url: contactMetadata.getUrl(social.handle)
 				},
-				title: contactMetadata.getTitle(social.handle)
+				altText: contactMetadata.getAltText(social.handle)
 			});
 		}
 	}

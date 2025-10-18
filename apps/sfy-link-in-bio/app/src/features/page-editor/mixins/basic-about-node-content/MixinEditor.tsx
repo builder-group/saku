@@ -142,7 +142,7 @@ export const BasicAboutNodeContentMixinEditor = (props: TBasicAboutNodeContentMi
 								type: 'link',
 								url: contactMetadataMap.link.getUrl(trimmedValue)
 							} as TLinkAction,
-							title: contactMetadataMap.link.getTitle(trimmedValue)
+							altText: contactMetadataMap.link.getAltText(trimmedValue)
 						};
 						break;
 					}
@@ -154,7 +154,7 @@ export const BasicAboutNodeContentMixinEditor = (props: TBasicAboutNodeContentMi
 								email: trimmedValue,
 								url: contactMetadataMap.email.getUrl(trimmedValue)
 							} as TEmailAction,
-							title: contactMetadataMap.email.getTitle(trimmedValue)
+							altText: contactMetadataMap.email.getAltText(trimmedValue)
 						};
 						break;
 					}
@@ -166,7 +166,7 @@ export const BasicAboutNodeContentMixinEditor = (props: TBasicAboutNodeContentMi
 								phone: trimmedValue,
 								url: contactMetadataMap.phone.getUrl(trimmedValue)
 							} as TPhoneAction,
-							title: contactMetadataMap.phone.getTitle(trimmedValue)
+							altText: contactMetadataMap.phone.getAltText(trimmedValue)
 						};
 						break;
 					}
@@ -180,7 +180,7 @@ export const BasicAboutNodeContentMixinEditor = (props: TBasicAboutNodeContentMi
 								handle: trimmedValue,
 								url: metadata.getUrl(trimmedValue)
 							} as TSocialAction,
-							title: metadata.getTitle(trimmedValue)
+							altText: metadata.getAltText(trimmedValue)
 						};
 						break;
 					}

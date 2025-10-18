@@ -61,7 +61,7 @@ export async function parseSakuSite(url: URL): Promise<TSakuSiteData> {
 	// Apply watermark
 	const rootNode = siteContent.nodes[siteContent.rootId];
 	if (rootNode != null && rootNode.type === 'page') {
-		rootNode.hasWatermark = true;
+		rootNode.watermarkVisible = true;
 	}
 
 	return {
