@@ -5,7 +5,7 @@ import React from 'react';
 import { logger } from '@/environment';
 import { Node } from '../../../components';
 import { EditorSiteResolveContext, TNodeProps } from '../../../lib';
-import { resolvePageNodeWithoutChildren } from '../resolve-node';
+import { resolvePageNodeWithoutChildren } from '../lib/resolve-node';
 import { PageWrapper } from './PageWrapper';
 
 export const PageNode = React.forwardRef<HTMLDivElement, TNodeProps<TFlatPageNode>>(

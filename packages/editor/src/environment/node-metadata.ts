@@ -315,13 +315,13 @@ export const pageNodeMetadata: TNodeMetadata<TFlatPageNode> = {
 			type: 'page',
 			bundleType: 'classic',
 			metadata: {},
+			watermarkVisible: true,
 			children: [],
 			content: {
 				type: 'basic',
-				showWatermark: true,
 				navbar: {
 					visible: true,
-					showShareButton: true
+					shareButtonVisible: true
 				},
 				footer: {
 					visible: true,

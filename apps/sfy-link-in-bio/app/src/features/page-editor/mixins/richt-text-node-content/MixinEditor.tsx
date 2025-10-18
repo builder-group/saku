@@ -7,7 +7,7 @@ import { cn } from '@/lib';
 import { TPageEditor } from '../../lib';
 
 export const RichTextNodeContentMixinEditor = (props: TRichTextNodeContentMixinEditorProps) => {
-	const { state, editor, className } = props;
+	const { state, className } = props;
 
 	const content = useFeatureState(state);
 
@@ -31,12 +31,10 @@ export const RichTextNodeContentMixinEditor = (props: TRichTextNodeContentMixinE
 		(value: string) => {
 			const newFormat = value as TRichContent['type'];
 			setSelectedFormat(newFormat);
-
-			// Update the text content with the new format
-			state._v.text = { type: newFormat, value: content.text.value };
+			state._v.text.type = newFormat;
 			state._notify();
 		},
-		[state, content.text.value]
+		[state]
 	);
 
 	const handleTextChange = React.useCallback(

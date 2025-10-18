@@ -7,7 +7,7 @@ import { TResolvedPageNode } from '../types';
 
 export const PageWrapper = React.forwardRef<HTMLDivElement, TPageWrapperProps>((props, ref) => {
 	const {
-		node: { hasWatermark, autoLayout, appearance, fill },
+		node: { watermarkVisible, autoLayout, appearance, fill },
 		children,
 		...divProps
 	} = props;
@@ -60,8 +60,8 @@ export const PageWrapper = React.forwardRef<HTMLDivElement, TPageWrapperProps>((
 			>
 				<div
 					className={cn('relative flex items-center rounded-xl p-2', {
-						'justify-between': hasWatermark,
-						'justify-end': !hasWatermark
+						'justify-between': watermarkVisible,
+						'justify-end': !watermarkVisible
 					})}
 				>
 					{/* Glass background */}
@@ -75,7 +75,7 @@ export const PageWrapper = React.forwardRef<HTMLDivElement, TPageWrapperProps>((
 						)}
 					/>
 
-					{hasWatermark && (
+					{watermarkVisible && (
 						<a
 							href="https://saku.so"
 							target="_blank"
@@ -135,8 +135,8 @@ export const PageWrapper = React.forwardRef<HTMLDivElement, TPageWrapperProps>((
 							{/* Footer */}
 							<div
 								className={cn('flex justify-center gap-6 pb-16 text-sm', {
-									'pt-32': hasWatermark,
-									'pt-16': !hasWatermark
+									'pt-32': watermarkVisible,
+									'pt-16': !watermarkVisible
 								})}
 							>
 								<a
@@ -162,7 +162,7 @@ export const PageWrapper = React.forwardRef<HTMLDivElement, TPageWrapperProps>((
 				</div>
 			</div>
 
-			{hasWatermark && (
+			{watermarkVisible && (
 				<div
 					className={cn('z-[999]', {
 						'fixed right-4 bottom-4': !isAtBottom,

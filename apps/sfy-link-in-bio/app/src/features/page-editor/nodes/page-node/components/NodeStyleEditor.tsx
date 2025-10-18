@@ -1,31 +1,22 @@
-import { TFlatPageNode } from '@repo/editor';
+import { TClassicFlatPageNodeBundle, TFlatPageNode } from '@repo/editor';
+import { useCompute } from 'feature-react';
 import React from 'react';
-import { useNodeProperty } from '../../../hooks';
-import { TNodeEditorComponentProps } from '../../../lib';
-import {
-	AppearanceStyleMixinEditor,
-	AutoLayoutStyleMixinEditor,
-	FillStyleMixinEditor
-} from '../../../mixins';
+import { TNodeEditorComponentProps, TNodeState } from '../../../lib';
+import { ClassicBundleStyleEditor } from '../bundles';
 
 export const PageNodeStyleEditor: React.FC<TNodeEditorComponentProps<TFlatPageNode>> = (props) => {
-	const { nodeState, editor } = props;
+	const { nodeState, ...rest } = props;
+	const bundleType = useCompute(nodeState, ({ value }) => value.bundleType);
 
-	const autoLayoutState = useNodeProperty(nodeState, 'autoLayout');
-	const appearanceState = useNodeProperty(nodeState, 'appearance');
-	const fillState = useNodeProperty(nodeState, 'fill');
-
-	// =========================================================================
-	// UI
-	// =========================================================================
-
-	return (
-		<>
-			<AutoLayoutStyleMixinEditor state={autoLayoutState} editor={editor} />
-			<div className="h-px bg-neutral-200" />
-			<AppearanceStyleMixinEditor state={appearanceState} editor={editor} />
-			<div className="h-px bg-neutral-200" />
-			<FillStyleMixinEditor state={fillState} syncedTokenLink={false} editor={editor} />
-		</>
-	);
+	switch (bundleType) {
+		case 'classic':
+			return (
+				<ClassicBundleStyleEditor
+					nodeState={nodeState as TNodeState<TClassicFlatPageNodeBundle>}
+					{...rest}
+				/>
+			);
+		default:
+			return null;
+	}
 };

@@ -113,6 +113,7 @@ export type TPageNodeMixin = TBaseMixin<
 			favicon?: TAssetHash;
 			image?: TAssetHash;
 		};
+		watermarkVisible: boolean;
 	}
 >;
 
@@ -120,10 +121,9 @@ export type TBasicPageNodeContentMixin = TBaseMixin<
 	'content',
 	{
 		type: 'basic';
-		showWatermark: boolean;
 		navbar: {
 			visible: boolean;
-			showShareButton: boolean;
+			shareButtonVisible: boolean;
 		};
 		footer: {
 			visible: boolean;
