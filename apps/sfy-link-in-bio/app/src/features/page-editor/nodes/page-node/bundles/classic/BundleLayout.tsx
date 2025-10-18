@@ -3,9 +3,9 @@ import { LogoIcon, ShareIcon, useIframePortal } from '@/components';
 import { appConfig } from '@/environment';
 import { useHasScrolled, useIsAtBottom } from '@/hooks';
 import { cn } from '@/lib';
-import { TResolvedPageNode } from '../types';
+import { TResolvedPageNode } from '../../types';
 
-export const PageWrapper = React.forwardRef<HTMLDivElement, TPageWrapperProps>((props, ref) => {
+export const BundleLayout = React.forwardRef<HTMLDivElement, TBundleLayout>((props, ref) => {
 	const {
 		node: { watermarkVisible, autoLayout, appearance, fill },
 		children,
@@ -183,9 +183,9 @@ export const PageWrapper = React.forwardRef<HTMLDivElement, TPageWrapperProps>((
 		</div>
 	);
 });
-PageWrapper.displayName = 'PageWrapper';
+BundleLayout.displayName = 'PageWrapper';
 
-interface TPageWrapperProps extends React.HTMLAttributes<HTMLDivElement> {
+interface TBundleLayout extends React.HTMLAttributes<HTMLDivElement> {
 	node: Omit<TResolvedPageNode, 'children'>;
 	children: React.ReactNode;
 }

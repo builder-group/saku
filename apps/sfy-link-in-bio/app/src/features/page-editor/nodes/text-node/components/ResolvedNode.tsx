@@ -7,11 +7,11 @@ export const ResolvedTextNode = React.forwardRef<
 	HTMLDivElement,
 	TResolvedNodeProps<TResolvedTextNode>
 >((props, ref) => {
-	const { node, cx } = props;
+	const { node, ...rest } = props;
 
 	switch (node.bundleType) {
 		case 'rich':
-			return <ResolvedRichBundle ref={ref} node={node} cx={cx} />;
+			return <ResolvedRichBundle ref={ref} node={node} {...rest} />;
 		default:
 			return null;
 	}

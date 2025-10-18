@@ -1,17 +1,19 @@
 import React from 'react';
-import { ResolvedNode } from '../../../components';
 import { TResolvedNodeProps } from '../../../lib';
+import { ResolvedClassicBundle } from '../bundles';
 import { TResolvedPageNode } from '../types';
-import { PageWrapper } from './PageWrapper';
 
-export const ResolvedPageNode: React.FC<TResolvedNodeProps<TResolvedPageNode>> = (props) => {
-	const { node, cx, ...divProps } = props;
+export const ResolvedPageNode = React.forwardRef<
+	HTMLDivElement,
+	TResolvedNodeProps<TResolvedPageNode>
+>((props, ref) => {
+	const { node, ...rest } = props;
 
-	return (
-		<PageWrapper node={node} {...divProps}>
-			{node.children.map((childNode) => (
-				<ResolvedNode key={childNode.id} node={childNode} cx={cx} />
-			))}
-		</PageWrapper>
-	);
-};
+	switch (node.bundleType) {
+		case 'classic':
+			return <ResolvedClassicBundle ref={ref} node={node} {...rest} />;
+		default:
+			return null;
+	}
+});
+ResolvedPageNode.displayName = 'ResolvedPageNode';

@@ -8,14 +8,16 @@ export const ResolvedProductNode = React.forwardRef<
 	HTMLDivElement,
 	TResolvedNodeProps<TResolvedProductNode>
 >((props, ref) => {
-	const { node, cx } = props;
+	const { node, ...rest } = props;
 
 	switch (node.bundleType) {
 		case 'classic':
 			if (node.content.product == null) {
 				return <Skeleton ref={ref} node={node} />;
 			}
-			return <ResolvedClassicBundle ref={ref} node={node} product={node.content.product} cx={cx} />;
+			return (
+				<ResolvedClassicBundle ref={ref} node={node} product={node.content.product} {...rest} />
+			);
 		default:
 			return <Skeleton ref={ref} node={node} />;
 	}
