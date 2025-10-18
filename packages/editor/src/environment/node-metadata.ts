@@ -315,8 +315,19 @@ export const pageNodeMetadata: TNodeMetadata<TFlatPageNode> = {
 			type: 'page',
 			bundleType: 'classic',
 			metadata: {},
-			hasWatermark: true,
 			children: [],
+			content: {
+				type: 'basic',
+				showWatermark: true,
+				navbar: {
+					visible: true,
+					showShareButton: true
+				},
+				footer: {
+					visible: true,
+					links: []
+				}
+			},
 			autoLayout: {
 				verticalGap: 12
 			},
@@ -387,7 +398,7 @@ export const textNodeMetadata: TNodeMetadata<TTextNode> = {
 	type: 'text',
 	label: 'Text',
 	bundleMap: {
-		rich: {
+		'rich': {
 			type: 'text',
 			bundleType: 'rich',
 			content: {
@@ -409,6 +420,26 @@ export const textNodeMetadata: TNodeMetadata<TTextNode> = {
 			stroke: tokenRef('stroke.default', 'stroke'),
 			shadow: tokenRef('shadow.default', 'shadow'),
 			text: tokenRef('text.default', 'text')
+		},
+		'section-title': {
+			type: 'text',
+			bundleType: 'section-title',
+			content: {
+				type: 'basic',
+				text: 'Add your title here'
+			},
+			autoLayout: {
+				paddingTop: tokenRef('auto-layout.default', 'auto-layout', 'paddingTop'),
+				paddingRight: tokenRef('auto-layout.default', 'auto-layout', 'paddingRight'),
+				paddingBottom: tokenRef('auto-layout.default', 'auto-layout', 'paddingBottom'),
+				paddingLeft: tokenRef('auto-layout.default', 'auto-layout', 'paddingLeft'),
+				marginTop: tokenRef('auto-layout.default', 'auto-layout', 'marginTop'),
+				marginRight: tokenRef('auto-layout.default', 'auto-layout', 'marginRight'),
+				marginBottom: tokenRef('auto-layout.default', 'auto-layout', 'marginBottom'),
+				marginLeft: tokenRef('auto-layout.default', 'auto-layout', 'marginLeft')
+			},
+			appearance: tokenRef('appearance.default', 'appearance'),
+			textXl: tokenRef('text.xl', 'text')
 		}
 	}
 };
