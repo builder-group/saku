@@ -5,14 +5,15 @@ import React from 'react';
 import { logger } from '@/environment';
 import { Node } from '../../../components';
 import { EditorSiteResolveContext, TNodeProps } from '../../../lib';
-import { ClassicBundleLayout, resolveClassicBundleWithoutChildren } from '../bundles';
+import { ClassicBundleLayout } from '../bundles';
+import { resolvePageNodeWithoutChildren } from '../lib';
 
 export const PageNode = React.forwardRef<HTMLDivElement, TNodeProps<TFlatPageNode>>(
 	(props, ref) => {
 		const { nodeState, editor, ...divProps } = props;
 
 		const node = useCombinedCompute([nodeState, editor.tokenMap], ([{ value: nodeValue }]) => {
-			const result = resolveClassicBundleWithoutChildren(nodeValue, {
+			const result = resolvePageNodeWithoutChildren(nodeValue, {
 				site: new EditorSiteResolveContext(editor)
 			});
 			if (result.isErr()) {
