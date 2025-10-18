@@ -9,6 +9,7 @@ import React from 'react';
  * @param baseValue - Initial bounding rect values to track
  * @param callback - Function called when bounds change
  * @param deps - Optional dependencies for the callback
+ * @param scrollWindow - Function that returns the window to observe for scroll events
  *
  * @remarks
  * This hook uses a combination of MutationObserver, ResizeObserver, and scroll events
@@ -34,7 +35,8 @@ export function useBoundingRectObserver<
 	ref: React.RefObject<GElement | null>,
 	baseValue: GBoundingRect,
 	callback: (rect: GBoundingRect) => void,
-	deps: React.DependencyList = []
+	deps: React.DependencyList = [],
+	scrollWindow: () => Window = () => window
 ): void {
 	const prevRectRef = React.useRef<GBoundingRect>(baseValue);
 
@@ -110,7 +112,8 @@ export function useBoundingRectObserver<
 			current.addEventListener('scroll', callback, { passive: true });
 			current = current.parentElement;
 		}
-		window.addEventListener('scroll', callback, { passive: true });
+		const w = scrollWindow();
+		w.addEventListener('scroll', callback, { passive: true });
 
 		// Force the initial update to ensure proper initialization during hot reload.
 		// This is necessary because prevRectRef persists across hot reloads while the
@@ -125,9 +128,9 @@ export function useBoundingRectObserver<
 			scrollElements.forEach((el) => {
 				el.removeEventListener('scroll', callback);
 			});
-			window.removeEventListener('scroll', callback);
+			w.removeEventListener('scroll', callback);
 		};
-	}, [ref, handleBoundingRect]);
+	}, [ref, handleBoundingRect, scrollWindow]);
 }
 
 interface TPartialBoundingRect {

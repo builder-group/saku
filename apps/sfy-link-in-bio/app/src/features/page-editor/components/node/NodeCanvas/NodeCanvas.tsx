@@ -19,7 +19,8 @@ export const NodeCanvas: React.FC<TNodeCanvasProps> = (props) => {
 		(rect) => {
 			editor.canvasBoundingRect.set(rect);
 		},
-		[]
+		[],
+		() => editor.canvasContainerRef.current?.contentWindow ?? window
 	);
 
 	useSelectedNodeScroll(editor);
