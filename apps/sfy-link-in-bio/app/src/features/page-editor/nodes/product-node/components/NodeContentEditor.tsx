@@ -61,29 +61,27 @@ export const ProductNodeContentEditor: React.FC<TNodeEditorComponentProps<TProdu
 	}, [selectedBundleType, cx]);
 
 	return (
-		<div className="space-y-3">
-			<div className="space-y-1 px-4">
-				<Text as="span" variant="bodySm" tone="subdued">
-					Variant
-				</Text>
-				<Select
-					id="link-content-type-field"
-					label="Variant"
-					labelHidden
-					options={bundleOptions}
-					value={selectedBundleType}
-					onChange={handleBundleTypeChange}
-					disabled={isSwitchingBundle}
-				/>
+		<>
+			<div className="space-y-3 border-b border-neutral-200 pb-3">
+				<div className="space-y-1 px-4">
+					<Text as="span" variant="bodySm" tone="subdued">
+						Variant
+					</Text>
+					<Select
+						id="link-content-type-field"
+						label="Variant"
+						labelHidden
+						options={bundleOptions}
+						value={selectedBundleType}
+						onChange={handleBundleTypeChange}
+						disabled={isSwitchingBundle}
+					/>
+				</div>
+				<div className="h-px bg-neutral-200" />
+				{isSwitchingBundle ? <ContentEditorSkeleton /> : renderContentEditor()}
 			</div>
-			<div className="h-px bg-neutral-200" />
-			{isSwitchingBundle ? <ContentEditorSkeleton /> : renderContentEditor()}
 			{editor.isDebug() && (
-				<AccordionSection
-					title="Debug"
-					className="border-t border-neutral-200"
-					collapsibleClassName="px-0 space-y-3"
-				>
+				<AccordionSection title="Debug" collapsibleClassName="px-0 space-y-3">
 					<div className="space-y-1 px-4">
 						<Text as="span" variant="bodySm" tone="subdued">
 							JSON
@@ -92,6 +90,6 @@ export const ProductNodeContentEditor: React.FC<TNodeEditorComponentProps<TProdu
 					</div>
 				</AccordionSection>
 			)}
-		</div>
+		</>
 	);
 };
