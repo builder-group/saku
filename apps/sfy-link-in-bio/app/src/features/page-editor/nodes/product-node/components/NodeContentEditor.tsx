@@ -2,7 +2,7 @@ import { TClassicProductNodeBundle, TProductNode } from '@repo/editor';
 import { Select, Text } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react';
 import React from 'react';
-import { AccordionSection, JsonPreview } from '@/components';
+import { cn } from '@/lib';
 import { TNodeEditorComponentProps } from '../../../lib';
 import { ClassicBundleContentEditor } from '../bundles';
 import { productNodeBundleMetadata } from '../environment';
@@ -12,7 +12,7 @@ import { ContentEditorSkeleton } from './ContentEditorSkeleton';
 export const ProductNodeContentEditor: React.FC<TNodeEditorComponentProps<TProductNode>> = (
 	props
 ) => {
-	const { nodeState, editor } = props;
+	const { nodeState, editor, className } = props;
 
 	const cx = React.useMemo(
 		() => createProductNodeEditorContext({ node: nodeState, editor }),
@@ -61,35 +61,23 @@ export const ProductNodeContentEditor: React.FC<TNodeEditorComponentProps<TProdu
 	}, [selectedBundleType, cx]);
 
 	return (
-		<>
-			<div className="space-y-3 border-b border-neutral-200 pb-3">
-				<div className="space-y-1 px-4">
-					<Text as="span" variant="bodySm" tone="subdued">
-						Variant
-					</Text>
-					<Select
-						id="link-content-type-field"
-						label="Variant"
-						labelHidden
-						options={bundleOptions}
-						value={selectedBundleType}
-						onChange={handleBundleTypeChange}
-						disabled={isSwitchingBundle}
-					/>
-				</div>
-				<div className="h-px bg-neutral-200" />
-				{isSwitchingBundle ? <ContentEditorSkeleton /> : renderContentEditor()}
+		<div className={cn('space-y-3', className)}>
+			<div className="space-y-1 px-4">
+				<Text as="span" variant="bodySm" tone="subdued">
+					Variant
+				</Text>
+				<Select
+					id="link-content-type-field"
+					label="Variant"
+					labelHidden
+					options={bundleOptions}
+					value={selectedBundleType}
+					onChange={handleBundleTypeChange}
+					disabled={isSwitchingBundle}
+				/>
 			</div>
-			{editor.isDebug() && (
-				<AccordionSection title="Debug" collapsibleClassName="px-0 space-y-3">
-					<div className="space-y-1 px-4">
-						<Text as="span" variant="bodySm" tone="subdued">
-							JSON
-						</Text>
-						<JsonPreview data={nodeState._v} />
-					</div>
-				</AccordionSection>
-			)}
-		</>
+			<div className="h-px bg-neutral-200" />
+			{isSwitchingBundle ? <ContentEditorSkeleton /> : renderContentEditor()}
+		</div>
 	);
 };

@@ -35,4 +35,5 @@ export interface TNodeProps<GNode extends TFlatNode> extends React.HTMLProps<HTM
 export interface TNodeEditorComponentProps<GNode extends TFlatNode = TFlatNode> {
 	nodeState: TNodeState<GNode>;
 	editor: TPageEditor;
+	className?: string;
 }
