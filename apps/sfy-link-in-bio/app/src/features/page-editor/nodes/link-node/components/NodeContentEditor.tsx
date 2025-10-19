@@ -8,7 +8,7 @@ import {
 import { Select, Text } from '@shopify/polaris';
 import { useCompute, useFeatureState } from 'feature-react/state';
 import React from 'react';
-import { AccordionSection, JsonPreview } from '@/components';
+import { AccordionSection, JsonPreview, PortalPulse } from '@/components';
 import { TNodeEditorComponentProps } from '../../../lib';
 import {
 	ClassicBundleContentEditor,
@@ -101,7 +101,16 @@ export const LinkNodeContentEditor: React.FC<TNodeEditorComponentProps<TLinkNode
 				/>
 			</div>
 			<div className="h-px bg-neutral-200" />
-			{isSwitchingBundle ? <ContentEditorSkeleton /> : renderContentEditor()}
+			<div className="relative">
+				{isSwitchingBundle ? (
+					<ContentEditorSkeleton />
+				) : (
+					<>
+						<PortalPulse isActive={cx.isEnhancingBundle} className="-top-3 -bottom-3 left-0" />
+						{renderContentEditor()}
+					</>
+				)}
+			</div>
 			{editor.isDebug() && (
 				<AccordionSection
 					title="Debug"
