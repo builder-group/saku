@@ -62,6 +62,7 @@ export {
 	ArrowRightIcon,
 	ChevronDownIcon,
 	ChevronUpIcon,
+	ClipboardCheckIcon,
 	GlobeIcon,
 	LayoutListIcon,
 	LayoutTemplateIcon,

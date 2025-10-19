@@ -17,20 +17,15 @@ export const ClipboardButton: React.FC<TProps> = (props) => {
 		try {
 			await navigator.clipboard.writeText(textToCopy);
 
-			// Show success toast
 			shopify.toast.show('Copied to clipboard!');
 
-			// Update UI states
 			setIsCopied(true);
 			setIsDisabled(true);
-
-			// Reset states after 2 seconds
 			setTimeout(() => {
 				setIsCopied(false);
 				setIsDisabled(false);
 			}, 2000);
 		} catch (_) {
-			// Show error toast
 			shopify.toast.show('Failed to copy to clipboard', { isError: true });
 		}
 	}, [textToCopy, isDisabled, shopify]);

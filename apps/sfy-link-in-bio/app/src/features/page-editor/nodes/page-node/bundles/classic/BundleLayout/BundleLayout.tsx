@@ -1,9 +1,10 @@
 import React from 'react';
-import { LogoIcon, ShareIcon, useIframePortal } from '@/components';
+import { LogoIcon, useIframePortal } from '@/components';
 import { appConfig } from '@/environment';
 import { useHasScrolled } from '@/hooks';
 import { cn } from '@/lib';
-import { TResolvedPageNode } from '../../types';
+import { TResolvedPageNode } from '../../../types';
+import { ShareButton } from './ShareButton';
 import { Watermark } from './Watermark';
 
 export const ClassicBundleLayout = React.forwardRef<HTMLDivElement, TClassicBundleLayout>(
@@ -41,6 +42,10 @@ export const ClassicBundleLayout = React.forwardRef<HTMLDivElement, TClassicBund
 
 		const iframePortal = useIframePortal();
 		const hasScrolled = useHasScrolled(scrollThreshold, () => iframePortal?.window ?? window);
+
+		// =========================================================================
+		// UI
+		// =========================================================================
 
 		return (
 			<div className="relative">
@@ -90,17 +95,7 @@ export const ClassicBundleLayout = React.forwardRef<HTMLDivElement, TClassicBund
 								</a>
 							)}
 
-							{content.navbar.shareButtonVisible && (
-								<button
-									className={cn(
-										'flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-white/40 bg-white/70 text-black backdrop-blur-sm transition-all duration-200 hover:scale-105 hover:bg-white/100 focus:ring-2 focus:ring-white/50 focus:outline-none active:scale-95',
-										{ 'shadow-[0_2px_8px_rgba(0,0,0,0.15)]': !hasScrolled }
-									)}
-									aria-label="Share profile"
-								>
-									<ShareIcon className="h-4 w-4" />
-								</button>
-							)}
+							{content.navbar.shareButtonVisible && <ShareButton hasScrolled={hasScrolled} />}
 						</div>
 					</div>
 				)}
