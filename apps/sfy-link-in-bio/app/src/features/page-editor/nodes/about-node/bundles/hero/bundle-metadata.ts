@@ -55,6 +55,8 @@ export const heroBundleMetadata: TAboutNodeBundleMetadata<THeroAboutNodeBundle> 
 		if (cx.common.autoLayout != null) {
 			const unpackedAutoLayout = unpackAutoLayoutTokenRef(cx.common.autoLayout);
 			const unpackedDefaultAutoLayout = unpackAutoLayoutTokenRef(defaults.autoLayout);
+			unpackedAutoLayout.paddingTop = unpackedDefaultAutoLayout.paddingTop;
+			unpackedAutoLayout.paddingBottom = unpackedDefaultAutoLayout.paddingBottom;
 			unpackedAutoLayout.marginRight = unpackedDefaultAutoLayout.marginRight;
 			unpackedAutoLayout.marginLeft = unpackedDefaultAutoLayout.marginLeft;
 			commonAutoLayout = packAutoLayoutTokenRef(unpackedAutoLayout);
