@@ -31,7 +31,7 @@ import {
 	StrokeStyleMixinEditor,
 	TextStyleMixinEditor
 } from '../../../../../../mixins';
-import { PageNodeStyleEditor } from '../../../../../../nodes';
+import { PageNodeContentEditor, PageNodeStyleEditor } from '../../../../../../nodes';
 import { useTokensByType } from './use-tokens-by-type';
 
 export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
@@ -92,8 +92,23 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 			)}
 
 			{/* Page Section */}
-			<AccordionSection title="Page" collapsibleClassName="px-0 space-y-3" defaultOpen={true}>
-				<PageNodeStyleEditor nodeState={editor.getRootNode()} editor={editor} />
+			<AccordionSection title="Page" collapsibleClassName="p-0 border-b-0" defaultOpen={true}>
+				<AccordionSection
+					title="Content"
+					collapsibleClassName="px-0 space-y-3"
+					size="tight"
+					defaultOpen={true}
+				>
+					<PageNodeContentEditor nodeState={editor.getRootNode()} editor={editor} />
+				</AccordionSection>
+				<AccordionSection
+					title="Style"
+					collapsibleClassName="px-0 space-y-3"
+					size="tight"
+					defaultOpen={true}
+				>
+					<PageNodeStyleEditor nodeState={editor.getRootNode()} editor={editor} />
+				</AccordionSection>
 			</AccordionSection>
 
 			{/* Auto Layout Section */}

@@ -50,6 +50,12 @@ export const RichTextNodeContentMixinEditor = (props: TRichTextNodeContentMixinE
 
 	return (
 		<div className={cn('space-y-3 px-4', className)}>
+			<div>
+				<Text as="span" variant="headingXs" tone="subdued">
+					Content
+				</Text>
+			</div>
+
 			{/* Format */}
 			<div className="space-y-1">
 				<Text as="span" variant="bodySm" tone="subdued">

@@ -61,8 +61,8 @@ export const TextNodeContentEditor: React.FC<TNodeEditorComponentProps<TTextNode
 	}, [selectedBundleType, cx]);
 
 	return (
-		<>
-			<div className="space-y-1 border-b border-neutral-200 px-4 py-3">
+		<div className="space-y-3">
+			<div className="space-y-1 px-4">
 				<Text as="span" variant="bodySm" tone="subdued">
 					Variant
 				</Text>
@@ -76,14 +76,14 @@ export const TextNodeContentEditor: React.FC<TNodeEditorComponentProps<TTextNode
 					disabled={isSwitchingBundle}
 				/>
 			</div>
-
-			<div className="relative border-b border-neutral-200 py-3">
-				{isSwitchingBundle ? <ContentEditorSkeleton /> : renderContentEditor()}
-			</div>
-
-			{/* Debug Section */}
+			<div className="h-px bg-neutral-200" />
+			{isSwitchingBundle ? <ContentEditorSkeleton /> : renderContentEditor()}
 			{editor.isDebug() && (
-				<AccordionSection title="Debug" collapsibleClassName="px-0 space-y-3">
+				<AccordionSection
+					title="Debug"
+					className="border-t border-neutral-200"
+					collapsibleClassName="px-0 space-y-3"
+				>
 					<div className="space-y-1 px-4">
 						<Text as="span" variant="bodySm" tone="subdued">
 							JSON
@@ -92,6 +92,6 @@ export const TextNodeContentEditor: React.FC<TNodeEditorComponentProps<TTextNode
 					</div>
 				</AccordionSection>
 			)}
-		</>
+		</div>
 	);
 };

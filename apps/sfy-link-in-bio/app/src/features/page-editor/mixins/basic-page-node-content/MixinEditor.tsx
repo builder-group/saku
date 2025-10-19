@@ -1,9 +1,10 @@
 import { TBasicPageNodeContentMixin } from '@repo/editor';
-import { Checkbox, Text } from '@shopify/polaris';
+import { Button, Checkbox, Text } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react';
 import { TState } from 'feature-state';
 import React from 'react';
 import { cn } from '@/lib';
+import { PolarisHideIcon, PolarisViewIcon } from '../../../../components';
 import { TPageEditor } from '../../lib';
 
 export const BasicPageNodeContentMixinEditor = (props: TBasicPageNodeContentMixinEditorProps) => {
@@ -14,13 +15,10 @@ export const BasicPageNodeContentMixinEditor = (props: TBasicPageNodeContentMixi
 	// Events
 	// =========================================================================
 
-	const handleNavbarVisibleChange = React.useCallback(
-		(checked: boolean) => {
-			state._v.navbar.visible = checked;
-			state._notify();
-		},
-		[state]
-	);
+	const handleToggleNavbarVisibility = React.useCallback(() => {
+		state._v.navbar.visible = !state._v.navbar.visible;
+		state._notify();
+	}, [state]);
 
 	const handleShareButtonChange = React.useCallback(
 		(checked: boolean) => {
@@ -30,58 +28,75 @@ export const BasicPageNodeContentMixinEditor = (props: TBasicPageNodeContentMixi
 		[state]
 	);
 
-	const handleFooterVisibleChange = React.useCallback(
-		(checked: boolean) => {
-			state._v.footer.visible = checked;
-			state._notify();
-		},
-		[state]
-	);
+	const handleToggleFooterVisibility = React.useCallback(() => {
+		state._v.footer.visible = !state._v.footer.visible;
+		state._notify();
+	}, [state]);
 
 	// =========================================================================
 	// UI
 	// =========================================================================
 
 	return (
-		<div className={cn('space-y-4 px-4', className)}>
-			{/* Navigation */}
-			<div className="space-y-3">
-				<Text as="h3" variant="headingSm">
-					Navigation
-				</Text>
+		<div className={cn('space-y-3', className)}>
+			{/* Navbar */}
+			<div className="space-y-3 px-4">
+				<div className="flex items-center justify-between">
+					<Text as="span" variant="headingXs" tone="subdued">
+						Navbar
+					</Text>
 
-				<div className="space-y-2">
-					<Checkbox
-						label="Show navbar"
-						checked={content.navbar.visible}
-						onChange={handleNavbarVisibleChange}
-					/>
-
-					{content.navbar.visible && (
-						<div className="ml-6 space-y-2">
-							<Checkbox
-								label="Show share button"
-								checked={content.navbar.shareButtonVisible}
-								onChange={handleShareButtonChange}
-							/>
-						</div>
+					{content.navbar.visible ? (
+						<Button
+							icon={PolarisViewIcon}
+							onClick={handleToggleNavbarVisibility}
+							variant="plain"
+							size="micro"
+						/>
+					) : (
+						<Button
+							icon={PolarisHideIcon}
+							onClick={handleToggleNavbarVisibility}
+							variant="plain"
+							size="micro"
+						/>
 					)}
 				</div>
+
+				<Checkbox
+					label="Show share button"
+					checked={content.navbar.shareButtonVisible}
+					onChange={handleShareButtonChange}
+				/>
 			</div>
 
-			{/* Footer */}
-			<div className="space-y-3">
-				<Text as="h3" variant="headingSm">
-					Footer
-				</Text>
+			<div className="h-px bg-neutral-200" />
 
-				<div className="space-y-2">
-					<Checkbox
-						label="Show footer"
-						checked={content.footer.visible}
-						onChange={handleFooterVisibleChange}
-					/>
+			{/* Footer */}
+			<div className="space-y-3 px-4">
+				<div className="flex items-center justify-between">
+					<Text as="span" variant="headingXs" tone="subdued">
+						Footer
+					</Text>
+
+					{content.footer.visible ? (
+						<Button
+							icon={PolarisViewIcon}
+							onClick={handleToggleFooterVisibility}
+							variant="plain"
+							size="micro"
+						/>
+					) : (
+						<Button
+							icon={PolarisHideIcon}
+							onClick={handleToggleFooterVisibility}
+							variant="plain"
+							size="micro"
+						/>
+					)}
 				</div>
+
+				<div>TODO</div>
 			</div>
 		</div>
 	);
