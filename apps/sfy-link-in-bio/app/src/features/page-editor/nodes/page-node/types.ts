@@ -2,6 +2,7 @@ import { TBaseMixin, TIdMixin, TNodeBundle } from '@repo/editor';
 import {
 	TResolvedAppearanceStyleMixin,
 	TResolvedAutoLayoutStyleMixin,
+	TResolvedBasicPageNodeContentMixin,
 	TResolvedChildrenMixin,
 	TResolvedFillStyleMixin
 } from '../../mixins';
@@ -13,6 +14,7 @@ export type TResolvedClassicPageNodeBundle = TNodeBundle<
 	[
 		TIdMixin,
 		TResolvedPageNodeMixin,
+		TResolvedBasicPageNodeContentMixin,
 		TResolvedChildrenMixin,
 		TResolvedAutoLayoutStyleMixin,
 		TResolvedAppearanceStyleMixin,
@@ -30,6 +32,6 @@ export type TResolvedPageNodeMixin = TBaseMixin<
 			favicon: string;
 			image?: string;
 		};
-		hasWatermark: boolean;
+		watermarkVisible: boolean;
 	}
 >;

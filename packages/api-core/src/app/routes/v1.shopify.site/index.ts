@@ -383,7 +383,7 @@ router.openapi(UpdateShopifySiteRoute, async (c) => {
 		}
 	}
 
-	// Check if user is allowed to update hasWatermark in page node (if content is being updated)
+	// Check if user is allowed to update watermarkVisible in page node (if content is being updated)
 	const content = body.content as TFlatSite | undefined;
 	if (content != null) {
 		const currentPlan = await getCurrentPlan(shopId);
@@ -391,10 +391,10 @@ router.openapi(UpdateShopifySiteRoute, async (c) => {
 		if (
 			rootNode != null &&
 			rootNode.type === 'page' &&
-			!rootNode.hasWatermark &&
+			!rootNode.watermarkVisible &&
 			currentPlan.key !== 'awesome'
 		) {
-			rootNode.hasWatermark = true;
+			rootNode.watermarkVisible = true;
 		}
 	}
 

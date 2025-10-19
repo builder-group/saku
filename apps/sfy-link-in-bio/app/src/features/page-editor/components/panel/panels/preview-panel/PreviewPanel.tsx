@@ -1,7 +1,7 @@
 import { Spinner } from '@shopify/polaris';
-import { useFeatureState } from 'feature-react';
+import { useCompute, useFeatureState } from 'feature-react';
 import React from 'react';
-import { IframeRoot, ResizablePanel } from '@/components';
+import { IframePortal, ResizablePanel } from '@/components';
 import { cn } from '@/lib';
 import tailwindStylesHref from '@/styles.css?url';
 import { getFontUrls, TPageEditor } from '../../../../lib';
@@ -18,13 +18,22 @@ export const PreviewPanel: React.FC<TPreviewPanelProps> = (props) => {
 
 	const [stylesLoaded, setStylesLoaded] = React.useState(false);
 
-	const links = React.useMemo(() => {
-		const fontUrls = getFontUrls(editor.assetsMap);
-		return [
-			{ rel: 'stylesheet', href: tailwindStylesHref },
-			...fontUrls.map((url) => ({ rel: 'stylesheet', href: url }))
-		];
-	}, [editor.assetsMap]);
+	const links = useCompute(
+		editor.assetsMap,
+		({ value: assetsMap }) => {
+			const fontUrls = getFontUrls(assetsMap);
+			return [
+				{ rel: 'stylesheet', href: tailwindStylesHref },
+				...fontUrls.map((url) => ({ rel: 'stylesheet', href: url }))
+			];
+		},
+		[],
+		{
+			isEqual(a, b) {
+				return a.length === b.length && a.every((link, i) => link.href === b[i]?.href);
+			}
+		}
+	);
 
 	return (
 		<ResizablePanel id="preview-panel" order={order} className="relative">
@@ -45,7 +54,9 @@ export const PreviewPanel: React.FC<TPreviewPanelProps> = (props) => {
 			<div
 				ref={editor.canvasContainerRef}
 				className={cn(
-					'h-[calc(100%-3rem)] w-full overflow-y-auto',
+					'w-full overflow-y-auto',
+					// 100% - 3rem (panel header height)
+					'h-[calc(100%-3rem)]',
 					viewMode === 'mobile' && 'flex justify-center'
 				)}
 				style={{
@@ -54,8 +65,8 @@ export const PreviewPanel: React.FC<TPreviewPanelProps> = (props) => {
 					backgroundSize: '40px 40px'
 				}}
 			>
-				{/* Use iframe to fully isolate the static canvas from global styles (e.g. Polaris) and get correct viewport-based media queries */}
-				<IframeRoot
+				{/* Use iframe to fully isolate the canvas from global styles (e.g. Polaris) and get correct viewport-based media queries */}
+				<IframePortal
 					links={links}
 					onStylesLoaded={() => setStylesLoaded(true)}
 					className={cn('h-full', viewMode === 'mobile' ? 'w-[390px]' : 'w-full')}
@@ -65,7 +76,7 @@ export const PreviewPanel: React.FC<TPreviewPanelProps> = (props) => {
 						cx={editor.pageContext}
 						nodes={previewedNode != null ? [previewedNode] : []}
 					/>
-				</IframeRoot>
+				</IframePortal>
 			</div>
 		</ResizablePanel>
 	);

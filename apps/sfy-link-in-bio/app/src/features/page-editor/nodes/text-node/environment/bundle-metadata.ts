@@ -1,11 +1,21 @@
-import { TIdMixin, TTextNode } from '@repo/editor';
+import {
+	TAppearanceStyleMixin,
+	TAutoLayoutStyleMixin,
+	TFillStyleMixin,
+	TIdMixin,
+	TRichContent,
+	TShadowStyleMixin,
+	TStrokeStyleMixin,
+	TTextNode
+} from '@repo/editor';
 import { TResult } from 'tuple-result';
 import { AppError } from '@/lib';
 import { TNodeState, TPageEditor } from '../../../lib';
-import { richBundleMetadata } from '../bundles';
+import { richBundleMetadata, sectionTitleBundleMetadata } from '../bundles';
 
 export const textNodeBundleMetadataMap = {
-	rich: richBundleMetadata
+	'rich': richBundleMetadata,
+	'section-title': sectionTitleBundleMetadata
 };
 
 export const textNodeBundleMetadata = Object.values(textNodeBundleMetadataMap);
@@ -29,4 +39,12 @@ export interface TTextNodeBundleMetadata<GNode extends TTextNode> {
 
 interface TCommonFields {
 	id: TIdMixin['value'];
+	content?: {
+		text: TRichContent;
+	};
+	autoLayout?: TAutoLayoutStyleMixin['value'];
+	appearance?: TAppearanceStyleMixin['value'];
+	fill?: TFillStyleMixin['value'];
+	stroke?: TStrokeStyleMixin['value'];
+	shadow?: TShadowStyleMixin['value'];
 }

@@ -42,11 +42,21 @@ export const heroBundleMetadata: TAboutNodeBundleMetadata<THeroAboutNodeBundle> 
 	async switch(cx) {
 		const defaults = aboutNodeMetadata.bundleMap['hero'];
 
+		// Update page padding top if the about node is the first child
+		const rootNode = cx.editor.getRootNode();
+		if (rootNode._v.children[0] === cx.node._v.id) {
+			const rootNodeAutoLayout = unpackAutoLayoutTokenRef(rootNode._v.autoLayout);
+			rootNodeAutoLayout.paddingTop = 0;
+			rootNode._v.autoLayout = packAutoLayoutTokenRef(rootNodeAutoLayout);
+			rootNode._notify();
+		}
+
 		let commonAutoLayout: TAutoLayoutStyleMixin['value'] | null = null;
 		if (cx.common.autoLayout != null) {
 			const unpackedAutoLayout = unpackAutoLayoutTokenRef(cx.common.autoLayout);
 			const unpackedDefaultAutoLayout = unpackAutoLayoutTokenRef(defaults.autoLayout);
-			unpackedAutoLayout.marginTop = unpackedDefaultAutoLayout.marginTop;
+			unpackedAutoLayout.paddingTop = unpackedDefaultAutoLayout.paddingTop;
+			unpackedAutoLayout.paddingBottom = unpackedDefaultAutoLayout.paddingBottom;
 			unpackedAutoLayout.marginRight = unpackedDefaultAutoLayout.marginRight;
 			unpackedAutoLayout.marginLeft = unpackedDefaultAutoLayout.marginLeft;
 			commonAutoLayout = packAutoLayoutTokenRef(unpackedAutoLayout);

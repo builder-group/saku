@@ -35,7 +35,7 @@ export const AccordionSection = React.forwardRef<HTMLDivElement, TAccordionSecti
 		}, [isControlled, onToggle, isOpen]);
 
 		return (
-			<>
+			<div>
 				<div
 					ref={ref}
 					className={cn(accordionVariants({ size }), isOpen && 'bg-neutral-100', className)}
@@ -58,7 +58,7 @@ export const AccordionSection = React.forwardRef<HTMLDivElement, TAccordionSecti
 				<Collapsible open={isOpen} id={`accordion-section-${title.replace(/\s+/g, '-')}`}>
 					<div className={cn(collapsibleVariants({ size }), collapsibleClassName)}>{children}</div>
 				</Collapsible>
-			</>
+			</div>
 		);
 	}
 );

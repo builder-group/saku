@@ -12,7 +12,7 @@ import {
 	TextStyleMixinEditor
 } from '../../../../mixins';
 
-export const RichtBundleStyleEditor: React.FC<TNodeEditorComponentProps<TRichTextNodeBundle>> = (
+export const RichBundleStyleEditor: React.FC<TNodeEditorComponentProps<TRichTextNodeBundle>> = (
 	props
 ) => {
 	const { nodeState, editor } = props;

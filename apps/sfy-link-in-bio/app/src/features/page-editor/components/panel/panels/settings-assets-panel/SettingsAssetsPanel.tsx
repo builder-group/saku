@@ -34,10 +34,10 @@ export const SettingsAssetsPanel: React.FC<TSettingsAssetsPanelProps> = (props) 
 			src?: string;
 		}[] = [];
 
-		for (const asset of Object.values(editor.assetsMap)) {
+		for (const asset of Object.values(editor.assetsMap._v)) {
 			const resolvedAsset =
 				resolveAsset(asset.hash, {
-					getAsset: (hash) => editor.assetsMap[hash] ?? null
+					getAsset: (hash) => editor.assetsMap._v[hash] ?? null
 				}) ?? undefined;
 
 			const fileName = asset.fileName ?? 'Untitled';

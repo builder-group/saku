@@ -8,7 +8,7 @@ import {
 } from '../../lib';
 
 export const NodeContentEditor: React.FC<TNodeContentEditorProps> = (props) => {
-	const { nodeState, editor } = props;
+	const { nodeState, editor, className } = props;
 
 	const EditorComponent = React.useMemo(
 		() =>
@@ -18,10 +18,11 @@ export const NodeContentEditor: React.FC<TNodeContentEditorProps> = (props) => {
 		[nodeState]
 	);
 
-	return <EditorComponent nodeState={nodeState} editor={editor} />;
+	return <EditorComponent nodeState={nodeState} editor={editor} className={className} />;
 };
 
 interface TNodeContentEditorProps {
 	nodeState: TNodeState<TFlatNode>;
 	editor: TPageEditor;
+	className?: string;
 }

@@ -6,16 +6,16 @@ import { Skeleton } from './Skeleton';
 
 export const ResolvedMediaNode = React.forwardRef<
 	HTMLDivElement,
-	TResolvedNodeProps<TResolvedMediaNode>
+	Omit<TResolvedNodeProps<TResolvedMediaNode>, 'media'>
 >((props, ref) => {
-	const { node, cx } = props;
+	const { node, ...rest } = props;
 
 	switch (node.bundleType) {
 		case 'classic': {
 			if (node.content.media == null) {
 				return <Skeleton ref={ref} node={node} />;
 			}
-			return <ResolvedClassicBundle ref={ref} node={node} media={node.content.media} cx={cx} />;
+			return <ResolvedClassicBundle ref={ref} node={node} media={node.content.media} {...rest} />;
 		}
 		default:
 			return <Skeleton ref={ref} node={node} />;

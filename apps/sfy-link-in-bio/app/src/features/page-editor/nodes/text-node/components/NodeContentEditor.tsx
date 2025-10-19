@@ -1,16 +1,16 @@
-import { TRichTextNodeBundle, TTextNode } from '@repo/editor';
+import { TRichTextNodeBundle, TSectionTitleTextNodeBundle, TTextNode } from '@repo/editor';
 import { Select, Text } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react';
 import React from 'react';
-import { AccordionSection, JsonPreview } from '@/components';
+import { cn } from '@/lib';
 import { TNodeEditorComponentProps } from '../../../lib';
-import { RichBundleContentEditor } from '../bundles';
+import { RichBundleContentEditor, SectionTitleBundleContentEditor } from '../bundles';
 import { textNodeBundleMetadata } from '../environment';
 import { createTextNodeEditorContext, TTextNodeEditorContext } from '../lib';
 import { ContentEditorSkeleton } from './ContentEditorSkeleton';
 
 export const TextNodeContentEditor: React.FC<TNodeEditorComponentProps<TTextNode>> = (props) => {
-	const { nodeState, editor } = props;
+	const { nodeState, editor, className } = props;
 
 	const cx = React.useMemo(
 		() => createTextNodeEditorContext({ node: nodeState, editor }),
@@ -49,14 +49,20 @@ export const TextNodeContentEditor: React.FC<TNodeEditorComponentProps<TTextNode
 		switch (selectedBundleType) {
 			case 'rich':
 				return <RichBundleContentEditor cx={cx as TTextNodeEditorContext<TRichTextNodeBundle>} />;
+			case 'section-title':
+				return (
+					<SectionTitleBundleContentEditor
+						cx={cx as TTextNodeEditorContext<TSectionTitleTextNodeBundle>}
+					/>
+				);
 			default:
 				return null;
 		}
 	}, [selectedBundleType, cx]);
 
 	return (
-		<>
-			<div className="space-y-1 border-b border-neutral-200 px-4 py-3">
+		<div className={cn('space-y-3', className)}>
+			<div className="space-y-1 px-4">
 				<Text as="span" variant="bodySm" tone="subdued">
 					Variant
 				</Text>
@@ -70,22 +76,8 @@ export const TextNodeContentEditor: React.FC<TNodeEditorComponentProps<TTextNode
 					disabled={isSwitchingBundle}
 				/>
 			</div>
-
-			<div className="relative border-b border-neutral-200 py-3">
-				{isSwitchingBundle ? <ContentEditorSkeleton /> : renderContentEditor()}
-			</div>
-
-			{/* Debug Section */}
-			{editor.isDebug() && (
-				<AccordionSection title="Debug" collapsibleClassName="px-0 space-y-3">
-					<div className="space-y-1 px-4">
-						<Text as="span" variant="bodySm" tone="subdued">
-							JSON
-						</Text>
-						<JsonPreview data={nodeState._v} />
-					</div>
-				</AccordionSection>
-			)}
-		</>
+			<div className="h-px bg-neutral-200" />
+			{isSwitchingBundle ? <ContentEditorSkeleton /> : renderContentEditor()}
+		</div>
 	);
 };

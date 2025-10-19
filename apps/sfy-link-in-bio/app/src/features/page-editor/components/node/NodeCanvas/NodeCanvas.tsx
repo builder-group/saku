@@ -19,7 +19,8 @@ export const NodeCanvas: React.FC<TNodeCanvasProps> = (props) => {
 		(rect) => {
 			editor.canvasBoundingRect.set(rect);
 		},
-		[]
+		[],
+		() => editor.canvasContainerRef.current?.contentWindow ?? window
 	);
 
 	useSelectedNodeScroll(editor);
@@ -29,7 +30,7 @@ export const NodeCanvas: React.FC<TNodeCanvasProps> = (props) => {
 	}
 
 	return (
-		<div ref={editor.canvasRef} className="relative h-full w-full">
+		<div ref={editor.canvasRef}>
 			<NodeIndicators editor={editor} />
 			<Node key={rootNodeState.id} nodeState={rootNodeState} editor={editor} />
 		</div>

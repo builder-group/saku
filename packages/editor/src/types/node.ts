@@ -83,6 +83,7 @@ export type TClassicPageNodeBundle = TNodeBundle<
 	[
 		TIdMixin,
 		TPageNodeMixin,
+		TBasicPageNodeContentMixin,
 		TChildrenMixin,
 		TAutoLayoutStyleMixin,
 		TAppearanceStyleMixin,
@@ -94,6 +95,7 @@ export type TClassicFlatPageNodeBundle = TNodeBundle<
 	[
 		TIdMixin,
 		TPageNodeMixin,
+		TBasicPageNodeContentMixin,
 		TFlatChildrenMixin,
 		TAutoLayoutStyleMixin,
 		TAppearanceStyleMixin,
@@ -111,9 +113,30 @@ export type TPageNodeMixin = TBaseMixin<
 			favicon?: TAssetHash;
 			image?: TAssetHash;
 		};
-		hasWatermark: boolean;
+		watermarkVisible: boolean;
 	}
 >;
+
+export type TBasicPageNodeContentMixin = TBaseMixin<
+	'content',
+	{
+		type: 'basic';
+		navbar: {
+			visible: boolean;
+			shareButtonVisible: boolean;
+		};
+		footer: {
+			visible: boolean;
+			links: TFooterLink[];
+		};
+	}
+>;
+
+export interface TFooterLink {
+	id: string;
+	action: TLinkAction;
+	label: string;
+}
 
 // =========================================================================
 // About Node
@@ -175,7 +198,7 @@ export type TBasicAboutNodeContentMixin = TBaseMixin<
 export interface TContactLink {
 	id: string;
 	action: TLinkAction | TEmailAction | TPhoneAction | TSocialAction;
-	title?: string;
+	altText?: string;
 }
 
 // =========================================================================
@@ -352,7 +375,7 @@ export type TSingleMediaNodeContentMixin = TBaseMixin<
 // Text Node
 // =========================================================================
 
-export type TTextNode = TRichTextNodeBundle;
+export type TTextNode = TRichTextNodeBundle | TSectionTitleTextNodeBundle;
 
 export type TRichTextNodeBundle = TNodeBundle<
 	'rich',
@@ -369,6 +392,18 @@ export type TRichTextNodeBundle = TNodeBundle<
 	]
 >;
 
+export type TSectionTitleTextNodeBundle = TNodeBundle<
+	'section-title',
+	[
+		TIdMixin,
+		TTextNodeMixin,
+		TBasicTextNodeContentMixin,
+		TAutoLayoutStyleMixin,
+		TAppearanceStyleMixin,
+		TTextXlStyleMixin
+	]
+>;
+
 export type TTextNodeMixin = TBaseMixin<
 	'node',
 	{
@@ -381,6 +416,14 @@ export type TRichTextNodeContentMixin = TBaseMixin<
 	{
 		type: 'rich';
 		text: TRichContent;
+	}
+>;
+
+export type TBasicTextNodeContentMixin = TBaseMixin<
+	'content',
+	{
+		type: 'basic';
+		text: string;
 	}
 >;
 

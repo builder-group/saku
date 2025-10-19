@@ -10,6 +10,7 @@ import {
 	getSocialContactMetadata,
 	linkNodeMetadata,
 	mediaNodeMetadata,
+	pageNodeMetadata,
 	productNodeMetadata,
 	TClassicAboutNodeBundle,
 	TClassicLinkNodeBundle,
@@ -17,7 +18,6 @@ import {
 	TContactLink,
 	textNodeMetadata,
 	TId,
-	tokenRef,
 	TProductNode,
 	TRichTextNodeBundle,
 	TSite,
@@ -159,11 +159,8 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 		assets,
 		integrations: [],
 		root: {
-			type: 'page',
-			bundleType: 'classic',
+			...pageNodeMetadata.bundleMap.classic,
 			id: createId('node'),
-			metadata: {},
-			hasWatermark: true,
 			children: [
 				{
 					...aboutNodeMetadata.bundleMap.classic,
@@ -183,7 +180,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 									handle: storeHandle,
 									url: contactMetadataMap['social.shopify'].getUrl(storeHandle)
 								},
-								title: contactMetadataMap['social.shopify'].getTitle(storeHandle)
+								altText: contactMetadataMap['social.shopify'].getAltText(storeHandle)
 							},
 							...(socialLinks
 								?.map((link) => {
@@ -203,7 +200,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 											handle,
 											url: contactMetadata.getUrl(handle)
 										},
-										title: contactMetadata.getTitle(handle)
+										altText: contactMetadata.getAltText(handle)
 									} satisfies TContactLink;
 								})
 								.filter(notEmpty) ?? [])
@@ -240,18 +237,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 						}
 					}
 				} satisfies TClassicMediaNodeBundle
-			],
-			autoLayout: {
-				verticalGap: tokenRef('spacing.gap', 'number')
-			},
-			appearance: {
-				visible: true,
-				opacity: 1
-			},
-			fill: {
-				paint: tokenRef('paint.base200', 'paint'),
-				opacity: 1
-			}
+			]
 		},
 		tokens: theme != null ? createThemeTokens(theme) : []
 	};

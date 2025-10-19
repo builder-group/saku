@@ -1,10 +1,11 @@
 import { Spinner } from '@shopify/polaris';
 import { useCompute } from 'feature-react';
 import React from 'react';
-import { ResizablePanel, ShadowRoot } from '@/components';
+import { IframePortal, ResizablePanel } from '@/components';
+import { cn } from '@/lib';
 import tailwindStylesHref from '@/styles.css?url';
 import { useEditorBreakpoint } from '../../../../hooks';
-import { TPageEditor } from '../../../../lib';
+import { getFontUrls, TPageEditor } from '../../../../lib';
 import { NodeCanvas } from '../../../node';
 import { PanelHeader } from './PanelHeader';
 
@@ -13,6 +14,23 @@ export const CanvasPanel: React.FC<TCanvasPanelProps> = (props) => {
 
 	const isMd = useEditorBreakpoint(editor, 'md');
 	const [stylesLoaded, setStylesLoaded] = React.useState(false);
+
+	const links = useCompute(
+		editor.assetsMap,
+		({ value: assetsMap }) => {
+			const fontUrls = getFontUrls(assetsMap);
+			return [
+				{ rel: 'stylesheet', href: tailwindStylesHref },
+				...fontUrls.map((url) => ({ rel: 'stylesheet', href: url }))
+			];
+		},
+		[],
+		{
+			isEqual(a, b) {
+				return a.length === b.length && a.every((link, i) => link.href === b[i]?.href);
+			}
+		}
+	);
 
 	// TODO: Figure out better solution
 	// https://github.com/bvaughn/react-resizable-panels/issues/46
@@ -51,19 +69,19 @@ export const CanvasPanel: React.FC<TCanvasPanelProps> = (props) => {
 				</div>
 			)}
 
-			{/* Use ShadowRoot to fully isolate the static canvas from global styles (e.g., Polaris), ensuring only Tailwind styles apply inside. */}
-			<ShadowRoot
-				links={[{ rel: 'stylesheet', href: tailwindStylesHref }]}
+			{/* Use iframe to fully isolate the canvas from global styles (e.g. Polaris) and get correct viewport-based media queries */}
+			<IframePortal
+				ref={editor.canvasContainerRef}
+				links={links}
 				onStylesLoaded={() => setStylesLoaded(true)}
-				className="h-full w-full"
+				className={cn(
+					'w-full',
+					// 100% - 3rem (panel header height)
+					'h-[calc(100%-3rem)]'
+				)}
 			>
-				<div
-					className="h-[calc(100%-3rem)] w-full overflow-y-auto bg-neutral-50"
-					ref={editor.canvasContainerRef}
-				>
-					<NodeCanvas editor={editor} />
-				</div>
-			</ShadowRoot>
+				<NodeCanvas editor={editor} />
+			</IframePortal>
 		</ResizablePanel>
 	);
 };

@@ -15,7 +15,8 @@ export const Node: React.FC<TNodeProps<TFlatNode>> = (props) => {
 		(rect) => {
 			nodeState.boundingRect.set(rect);
 		},
-		[nodeState]
+		[],
+		() => editor.canvasContainerRef.current?.contentWindow ?? window
 	);
 
 	const isVisible = useCompute(nodeState, ({ value }) => {

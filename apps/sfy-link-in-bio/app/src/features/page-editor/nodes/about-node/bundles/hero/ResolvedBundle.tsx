@@ -44,7 +44,7 @@ export const ResolvedHeroBundle = React.forwardRef<HTMLDivElement, TResolvedHero
 				)}
 
 				{/* Content Overlay */}
-				<div className="relative flex flex-col items-center gap-6 px-6 pt-[calc(100vw-80px)] pb-4 sm:pt-96">
+				<div className="relative flex flex-col items-center gap-6 px-6 pt-[calc(100vw-80px)] sm:pt-96">
 					<div className="flex flex-col items-center gap-0.5">
 						{/* Title */}
 						<h1
@@ -84,7 +84,7 @@ export const ResolvedHeroBundle = React.forwardRef<HTMLDivElement, TResolvedHero
 										style={{
 											color: text.styles.color
 										}}
-										title={contactLink.title}
+										title={contactLink.altText}
 									>
 										<IconComponent className="h-full w-full" />
 									</a>

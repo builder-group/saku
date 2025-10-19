@@ -2,14 +2,16 @@ import { TIdMixin, TNodeBundle, TTextNodeMixin } from '@repo/editor';
 import {
 	TResolvedAppearanceStyleMixin,
 	TResolvedAutoLayoutStyleMixin,
+	TResolvedBasicTextNodeContentMixin,
 	TResolvedFillStyleMixin,
 	TResolvedRichTextNodeContentMixin,
 	TResolvedShadowStyleMixin,
 	TResolvedStrokeStyleMixin,
-	TResolvedTextStyleMixin
+	TResolvedTextStyleMixin,
+	TResolvedTextXlStyleMixin
 } from '../../mixins';
 
-export type TResolvedTextNode = TResolvedRichTextNodeBundle;
+export type TResolvedTextNode = TResolvedRichTextNodeBundle | TResolvedSectionTitleTextNodeBundle;
 
 export type TResolvedRichTextNodeBundle = TNodeBundle<
 	'rich',
@@ -23,5 +25,17 @@ export type TResolvedRichTextNodeBundle = TNodeBundle<
 		TResolvedStrokeStyleMixin,
 		TResolvedShadowStyleMixin,
 		TResolvedTextStyleMixin
+	]
+>;
+
+export type TResolvedSectionTitleTextNodeBundle = TNodeBundle<
+	'section-title',
+	[
+		TIdMixin,
+		TTextNodeMixin,
+		TResolvedBasicTextNodeContentMixin,
+		TResolvedAutoLayoutStyleMixin,
+		TResolvedAppearanceStyleMixin,
+		TResolvedTextXlStyleMixin
 	]
 >;

@@ -77,7 +77,7 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 		selectedNodeId: createState<TNodeId | null>(null),
 		preSelectedNodeId: createState<TNodeId | null>(null),
 
-		assetsMap: site.content.assets,
+		assetsMap: createState(site.content.assets),
 		integrationsMap: site.content.integrations,
 		tokenMap: createState(site.content.tokens),
 
@@ -104,7 +104,7 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 
 		editorRef: React.createRef<HTMLDivElement>(),
 		canvasRef: React.createRef<HTMLDivElement>(),
-		canvasContainerRef: React.createRef<HTMLDivElement>(),
+		canvasContainerRef: React.createRef<HTMLIFrameElement>(),
 
 		switchView(view) {
 			switch (view.type) {
@@ -416,12 +416,12 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 
 			// Check if font already registered
 			const hash = getFontHash(font);
-			if (this.assetsMap[hash] != null) {
+			if (this.assetsMap._v[hash] != null) {
 				return font;
 			}
 
-			// Register & load the font
-			this.assetsMap[hash] = {
+			// Register the font
+			this.assetsMap._v[hash] = {
 				id: createId('asset'),
 				type: 'font',
 				hash,
@@ -432,7 +432,7 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 				},
 				font
 			};
-			this.loadFont(hash);
+			this.assetsMap._notify();
 
 			return font;
 		},
@@ -442,7 +442,7 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 				return null;
 			}
 
-			const asset = this.assetsMap[hash];
+			const asset = this.assetsMap._v[hash];
 			if (asset == null || asset.type !== 'image') {
 				return null;
 			}
@@ -467,7 +467,7 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 			}
 
 			// Register the image
-			this.assetsMap[hash] = {
+			this.assetsMap._v[hash] = {
 				id: assetId,
 				type: 'image',
 				hash,
@@ -479,6 +479,7 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 				dimensions,
 				fileName
 			};
+			this.assetsMap._notify();
 
 			return hash;
 		},
@@ -488,7 +489,7 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 				return null;
 			}
 
-			const asset = this.assetsMap[hash];
+			const asset = this.assetsMap._v[hash];
 			if (asset == null || asset.type !== 'font') {
 				return null;
 			}
@@ -496,44 +497,16 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 			return asset;
 		},
 
-		loadFont(fontOrHash) {
-			const hash = typeof fontOrHash === 'string' ? fontOrHash : getFontHash(fontOrHash);
-
-			const asset = this.assetsMap[hash];
-			if (asset == null || asset.type !== 'font' || asset.storage.type !== 'url') {
-				return;
-			}
-
-			// Check if already loaded in DOM
-			if (document.querySelector(`link[data-font-id="${asset.id}"]`) != null) {
-				return;
-			}
-
-			// Create and inject CSS link tag
-			const link = document.createElement('link');
-			link.rel = 'stylesheet';
-			link.href = asset.storage.url;
-			link.setAttribute('data-font-id', asset.id);
-			document.head.appendChild(link);
-		},
-
-		loadFonts() {
-			Object.keys(this.assetsMap).forEach((hash) => {
-				const asset = this.assetsMap[hash];
-				if (asset?.type === 'font') {
-					this.loadFont(hash);
-				}
-			});
-		},
-
 		cleanupAssets() {
 			const usedHashes = new Set<TAssetHash>();
 
-			// Loop through all nodes to collect asset hashes
+			// Go through all nodes to collect asset hashes
 			for (const nodeState of Object.values(this.nodeMap)) {
-				nodeAssetHashRegistry[nodeState._v.type]?.(nodeState._v as any).forEach((hash) =>
-					usedHashes.add(hash)
-				);
+				(
+					nodeAssetHashRegistry[nodeState._v.type] as
+						| ((node: TFlatNode) => TAssetHash[])
+						| undefined
+				)?.(nodeState._v).forEach((hash) => usedHashes.add(hash));
 			}
 
 			// Loop through all tokens to collect font hashes
@@ -556,27 +529,19 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 
 			// Find unused assets
 			const assetsToRemove: TAssetHash[] = [];
-			Object.keys(this.assetsMap).forEach((hash) => {
+			Object.keys(this.assetsMap._v).forEach((hash) => {
 				if (!usedHashes.has(hash)) {
 					assetsToRemove.push(hash as TAssetHash);
 				}
 			});
 
 			// Remove unused assets
-			assetsToRemove.forEach((hash) => {
-				const asset = this.assetsMap[hash];
-
-				// Remove from assets map
-				delete this.assetsMap[hash];
-
-				// Remove from DOM if its a font
-				if (asset?.type === 'font') {
-					const linkElement = document.querySelector(`link[data-font-id="${hash}"]`);
-					if (linkElement != null) {
-						linkElement.remove();
-					}
+			if (assetsToRemove.length > 0) {
+				for (const hash of assetsToRemove) {
+					delete this.assetsMap._v[hash];
 				}
-			});
+				this.assetsMap._notify();
+			}
 
 			return assetsToRemove;
 		},
@@ -599,7 +564,7 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 			const [isUpdateOk, updateErr] = await coreApiClient.patch(
 				'/v1/shopify/site/{siteId}',
 				{
-					content: this.toFlatSite() as any
+					content: this.toFlatSite() as unknown as Record<string, unknown>
 				},
 				{
 					pathParams: {
@@ -760,11 +725,10 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 			this.integrationsMap = site.integrations;
 
 			// Override assets and tokens maps
-			this.assetsMap = site.assets;
+			this.assetsMap.set(site.assets);
 			this.tokenMap.set(site.tokens);
 
 			this.unselectNode();
-			this.loadFonts();
 		},
 
 		toSite() {
@@ -781,7 +745,7 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 					},
 					{} as Record<TNodeId, TFlatNode>
 				),
-				assets: deepCopy(this.assetsMap),
+				assets: deepCopy(this.assetsMap._v),
 				integrations: deepCopy(this.integrationsMap),
 				tokens: deepCopy(this.tokenMap._v)
 			} satisfies TFlatSite;
@@ -820,7 +784,7 @@ export interface TPageEditor {
 	preSelectedNodeId: TState<TNodeId | null, []>;
 	nodeMap: Record<TNodeId, TNodeState>;
 
-	assetsMap: Record<TAssetHash, TAsset>;
+	assetsMap: TState<Record<TAssetHash, TAsset>, []>;
 	integrationsMap: Record<TIntegrationId, TIntegration>;
 	tokenMap: TState<Record<TToken['key'], TToken>, []>;
 
@@ -837,7 +801,7 @@ export interface TPageEditor {
 
 	editorRef: React.RefObject<HTMLDivElement>;
 	canvasRef: React.RefObject<HTMLDivElement>;
-	canvasContainerRef: React.RefObject<HTMLDivElement>;
+	canvasContainerRef: React.RefObject<HTMLIFrameElement>;
 
 	switchView: (view: TSwitchView) => void;
 	switchSettingsView: (view: TSwitchSettingsView) => void;
@@ -858,8 +822,6 @@ export interface TPageEditor {
 
 	getFontAsset: (hash: TAssetHash | undefined | null) => TFontAsset | null;
 	registerFont: (font: TFont) => TFont | null;
-	loadFont: (fontOrHash: TFont | TAssetHash) => void;
-	loadFonts: () => void;
 
 	getImageAsset: (hash: TAssetHash | undefined | null) => TImageAsset | null;
 	registerImage: (

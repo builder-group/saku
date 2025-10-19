@@ -354,7 +354,7 @@ export function createThemeTokens(theme: TTheme): TToken[] {
 }
 
 export function createThemeOverrideTokens(theme: TTheme): TToken[] {
-	const { paint, typography, gap = 24, size = {}, radius, effects } = theme;
+	const { paint, typography, gap = 12, size = {}, radius, effects } = theme;
 	const {
 		text: textSize = themeMetadata.size.text.get(0),
 		box: boxSize = themeMetadata.size.box.get(0),

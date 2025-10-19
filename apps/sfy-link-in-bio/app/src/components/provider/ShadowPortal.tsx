@@ -1,7 +1,7 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
 
-export const ShadowRoot: React.FC<TShadowRootProps> = (props) => {
+export const ShadowPortal: React.FC<TShadowPortalProps> = (props) => {
 	const { children, links, onStylesLoaded, ...divProps } = props;
 
 	const hostRef = React.useRef<HTMLDivElement>(null);
@@ -45,14 +45,14 @@ export const ShadowRoot: React.FC<TShadowRootProps> = (props) => {
 	);
 };
 
-export interface TShadowRootLink {
+export interface TShadowPortalProps extends React.HTMLAttributes<HTMLDivElement> {
+	children: React.ReactNode;
+	links: TShadowPortalLink[];
+	onStylesLoaded?: () => void;
+}
+
+export interface TShadowPortalLink {
 	rel: string;
 	href: string;
 	[key: string]: unknown;
-}
-
-export interface TShadowRootProps extends React.HTMLAttributes<HTMLDivElement> {
-	children: React.ReactNode;
-	links: TShadowRootLink[];
-	onStylesLoaded?: () => void;
 }

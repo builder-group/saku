@@ -47,10 +47,6 @@ export const PageEditor: React.FC<TPageEditorProps> = (props) => {
 		[editor]
 	);
 
-	React.useEffect(() => {
-		editor.loadFonts();
-	}, [editor]);
-
 	// =========================================================================
 	// UI
 	// =========================================================================

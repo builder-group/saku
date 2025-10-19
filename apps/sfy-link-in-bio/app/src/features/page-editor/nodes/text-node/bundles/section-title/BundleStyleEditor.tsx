@@ -1,0 +1,59 @@
+import { tokenRef, TSectionTitleTextNodeBundle } from '@repo/editor';
+import React from 'react';
+import { AccordionSection } from '@/components';
+import { useNodeProperty } from '../../../../hooks';
+import { TNodeEditorComponentProps } from '../../../../lib';
+import {
+	AppearanceStyleMixinEditor,
+	AutoLayoutStyleMixinEditor,
+	TextStyleMixinEditor
+} from '../../../../mixins';
+
+export const SectionTitleBundleStyleEditor: React.FC<
+	TNodeEditorComponentProps<TSectionTitleTextNodeBundle>
+> = (props) => {
+	const { nodeState, editor } = props;
+
+	const autoLayoutState = useNodeProperty(nodeState, 'autoLayout');
+	const appearanceState = useNodeProperty(nodeState, 'appearance');
+	const textXlState = useNodeProperty(nodeState, 'textXl');
+
+	// =========================================================================
+	// UI
+	// =========================================================================
+
+	return (
+		<>
+			<AccordionSection
+				title="Layer"
+				collapsibleClassName="px-0 space-y-3"
+				size="tight"
+				defaultOpen={true}
+			>
+				<AutoLayoutStyleMixinEditor
+					state={autoLayoutState}
+					onLinkToken={() => tokenRef('auto-layout.default', 'auto-layout')}
+					editor={editor}
+				/>
+				<div className="h-px bg-neutral-200" />
+				<AppearanceStyleMixinEditor
+					state={appearanceState}
+					onLinkToken={() => tokenRef('appearance.default', 'appearance')}
+					editor={editor}
+				/>
+			</AccordionSection>
+			<AccordionSection
+				title="Title Text"
+				collapsibleClassName="px-0 space-y-3"
+				size="tight"
+				defaultOpen={true}
+			>
+				<TextStyleMixinEditor
+					state={textXlState}
+					onLinkToken={() => tokenRef('text.xl', 'text')}
+					editor={editor}
+				/>
+			</AccordionSection>
+		</>
+	);
+};

@@ -5,8 +5,8 @@ import React from 'react';
 import { logger } from '@/environment';
 import { Node } from '../../../components';
 import { EditorSiteResolveContext, TNodeProps } from '../../../lib';
-import { resolvePageNodeWithoutChildren } from '../resolve-node';
-import { PageWrapper } from './PageWrapper';
+import { ClassicBundleLayout } from '../bundles';
+import { resolvePageNodeWithoutChildren } from '../lib';
 
 export const PageNode = React.forwardRef<HTMLDivElement, TNodeProps<TFlatPageNode>>(
 	(props, ref) => {
@@ -25,7 +25,6 @@ export const PageNode = React.forwardRef<HTMLDivElement, TNodeProps<TFlatPageNod
 			}
 			return result.value;
 		});
-
 		const childNodes = useCompute(
 			nodeState,
 			({ value: node }) => {
@@ -34,16 +33,25 @@ export const PageNode = React.forwardRef<HTMLDivElement, TNodeProps<TFlatPageNod
 			[editor]
 		);
 
-		if (node == null) {
+		const BundleLayout = React.useMemo(() => {
+			switch (node?.bundleType) {
+				case 'classic':
+					return ClassicBundleLayout;
+				default:
+					return null;
+			}
+		}, [node?.bundleType]);
+
+		if (node == null || BundleLayout == null) {
 			return null;
 		}
 
 		return (
-			<PageWrapper ref={ref} node={node} {...divProps}>
+			<BundleLayout ref={ref} node={node} {...divProps}>
 				{childNodes.map((childNodeState) => (
 					<Node key={childNodeState._v.id} nodeState={childNodeState} editor={editor} />
 				))}
-			</PageWrapper>
+			</BundleLayout>
 		);
 	}
 );

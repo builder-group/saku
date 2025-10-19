@@ -2,7 +2,7 @@ import { TAboutNode, TClassicAboutNodeBundle, THeroAboutNodeBundle } from '@repo
 import { Select, Text } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react';
 import React from 'react';
-import { AccordionSection, JsonPreview } from '@/components';
+import { cn } from '@/lib';
 import { TNodeEditorComponentProps } from '../../../lib';
 import { ClassicBundleContentEditor, HeroBundleContentEditor } from '../bundles';
 import { aboutNodeBundleMetadata } from '../environment';
@@ -10,7 +10,7 @@ import { createAboutNodeEditorContext, TAboutNodeEditorContext } from '../lib';
 import { ContentEditorSkeleton } from './ContentEditorSkeleton';
 
 export const AboutNodeContentEditor: React.FC<TNodeEditorComponentProps<TAboutNode>> = (props) => {
-	const { nodeState, editor } = props;
+	const { nodeState, editor, className } = props;
 
 	const cx = React.useMemo(
 		() => createAboutNodeEditorContext({ node: nodeState, editor }),
@@ -59,8 +59,8 @@ export const AboutNodeContentEditor: React.FC<TNodeEditorComponentProps<TAboutNo
 	}, [selectedBundleType, cx]);
 
 	return (
-		<>
-			<div className="space-y-1 border-b border-neutral-200 px-4 py-3">
+		<div className={cn('space-y-3', className)}>
+			<div className="space-y-1 px-4">
 				<Text as="span" variant="bodySm" tone="subdued">
 					Variant
 				</Text>
@@ -74,22 +74,8 @@ export const AboutNodeContentEditor: React.FC<TNodeEditorComponentProps<TAboutNo
 					disabled={isSwitchingBundle}
 				/>
 			</div>
-
-			<div className="relative border-b border-neutral-200 py-3">
-				{isSwitchingBundle ? <ContentEditorSkeleton /> : renderContentEditor()}
-			</div>
-
-			{/* Debug Section */}
-			{editor.isDebug() && (
-				<AccordionSection title="Debug" collapsibleClassName="px-0 space-y-3">
-					<div className="space-y-1 px-4">
-						<Text as="span" variant="bodySm" tone="subdued">
-							JSON
-						</Text>
-						<JsonPreview data={nodeState._v} />
-					</div>
-				</AccordionSection>
-			)}
-		</>
+			<div className="h-px bg-neutral-200" />
+			{isSwitchingBundle ? <ContentEditorSkeleton /> : renderContentEditor()}
+		</div>
 	);
 };

@@ -1,5 +1,5 @@
 export * from './CrispProvider';
 export * from './EmbeddedAppProvider';
-export * from './IframeRoot';
+export * from './IframePortal';
 export * from './PosthogProvider';
-export * from './ShadowRoot';
+export * from './ShadowPortal';

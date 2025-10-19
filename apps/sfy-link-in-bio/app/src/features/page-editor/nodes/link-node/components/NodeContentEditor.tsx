@@ -8,7 +8,8 @@ import {
 import { Select, Text } from '@shopify/polaris';
 import { useCompute, useFeatureState } from 'feature-react/state';
 import React from 'react';
-import { AccordionSection, JsonPreview, PortalPulse } from '@/components';
+import { PortalPulse } from '@/components';
+import { cn } from '@/lib';
 import { TNodeEditorComponentProps } from '../../../lib';
 import {
 	ClassicBundleContentEditor,
@@ -21,7 +22,7 @@ import { createLinkNodeEditorContext, TLinkNodeEditorContext } from '../lib';
 import { ContentEditorSkeleton } from './ContentEditorSkeleton';
 
 export const LinkNodeContentEditor: React.FC<TNodeEditorComponentProps<TLinkNode>> = (props) => {
-	const { nodeState, editor } = props;
+	const { nodeState, editor, className } = props;
 
 	const cx = React.useMemo(
 		() => createLinkNodeEditorContext({ node: nodeState, editor }),
@@ -35,7 +36,6 @@ export const LinkNodeContentEditor: React.FC<TNodeEditorComponentProps<TLinkNode
 		}))
 	);
 	const isSwitchingBundle = useFeatureState(cx.isSwitchingBundle);
-	const isEnhancingBundle = useFeatureState(cx.isEnhancingBundle);
 	const selectedBundleType = useFeatureState(cx.selectedBundleType);
 
 	// =========================================================================
@@ -85,8 +85,8 @@ export const LinkNodeContentEditor: React.FC<TNodeEditorComponentProps<TLinkNode
 	}, [selectedBundleType, cx]);
 
 	return (
-		<>
-			<div className="space-y-1 border-b border-neutral-200 px-4 py-3">
+		<div className={cn('space-y-3', className)}>
+			<div className="space-y-1 px-4">
 				<Text as="span" variant="bodySm" tone="subdued">
 					Variant
 				</Text>
@@ -97,32 +97,20 @@ export const LinkNodeContentEditor: React.FC<TNodeEditorComponentProps<TLinkNode
 					options={bundleOptions}
 					value={selectedBundleType}
 					onChange={handleBundleTypeChange}
-					disabled={isSwitchingBundle || isEnhancingBundle}
+					disabled={isSwitchingBundle}
 				/>
 			</div>
-
-			<div className="relative border-b border-neutral-200 py-3">
+			<div className="h-px bg-neutral-200" />
+			<div className="relative">
 				{isSwitchingBundle ? (
 					<ContentEditorSkeleton />
 				) : (
 					<>
-						<PortalPulse isActive={cx.isEnhancingBundle} className="top-0 left-0" />
+						<PortalPulse isActive={cx.isEnhancingBundle} className="-top-3 -bottom-3 left-0" />
 						{renderContentEditor()}
 					</>
 				)}
 			</div>
-
-			{/* Debug Section */}
-			{editor.isDebug() && (
-				<AccordionSection title="Debug" collapsibleClassName="px-0 space-y-3">
-					<div className="space-y-1 px-4">
-						<Text as="span" variant="bodySm" tone="subdued">
-							JSON
-						</Text>
-						<JsonPreview data={nodeState._v} />
-					</div>
-				</AccordionSection>
-			)}
-		</>
+		</div>
 	);
 };
