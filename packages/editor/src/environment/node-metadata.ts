@@ -27,7 +27,7 @@ export const aboutNodeMetadata: TNodeMetadata<TAboutNode> = {
 				paddingRight: tokenRef('auto-layout.default', 'auto-layout', 'paddingRight'),
 				paddingBottom: tokenRef('auto-layout.default', 'auto-layout', 'paddingBottom'),
 				paddingLeft: tokenRef('auto-layout.default', 'auto-layout', 'paddingLeft'),
-				marginTop: 96,
+				marginTop: tokenRef('auto-layout.default', 'auto-layout', 'marginTop'),
 				marginRight: tokenRef('auto-layout.default', 'auto-layout', 'marginRight'),
 				marginBottom: tokenRef('auto-layout.default', 'auto-layout', 'marginBottom'),
 				marginLeft: tokenRef('auto-layout.default', 'auto-layout', 'marginLeft')
@@ -86,7 +86,7 @@ export const aboutNodeMetadata: TNodeMetadata<TAboutNode> = {
 				paddingRight: tokenRef('auto-layout.default', 'auto-layout', 'paddingRight'),
 				paddingBottom: tokenRef('auto-layout.default', 'auto-layout', 'paddingBottom'),
 				paddingLeft: tokenRef('auto-layout.default', 'auto-layout', 'paddingLeft'),
-				marginTop: 0,
+				marginTop: tokenRef('auto-layout.default', 'auto-layout', 'marginTop'),
 				marginRight: 0,
 				marginBottom: tokenRef('auto-layout.default', 'auto-layout', 'marginBottom'),
 				marginLeft: 0
@@ -329,13 +329,20 @@ export const pageNodeMetadata: TNodeMetadata<TFlatPageNode> = {
 				}
 			},
 			autoLayout: {
-				verticalGap: 12
+				verticalGap: tokenRef('spacing.gap', 'number'),
+				paddingTop: 96,
+				paddingRight: 0,
+				paddingBottom: 0,
+				paddingLeft: 0
 			},
 			appearance: {
 				visible: true,
 				opacity: 1
 			},
-			fill: tokenRef('fill.default', 'fill')
+			fill: {
+				paint: tokenRef('paint.base200', 'paint'),
+				opacity: 1
+			}
 		}
 	}
 };

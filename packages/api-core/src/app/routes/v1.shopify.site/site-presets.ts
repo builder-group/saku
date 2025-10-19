@@ -18,7 +18,6 @@ import {
 	TContactLink,
 	textNodeMetadata,
 	TId,
-	tokenRef,
 	TProductNode,
 	TRichTextNodeBundle,
 	TSite,
@@ -238,18 +237,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 						}
 					}
 				} satisfies TClassicMediaNodeBundle
-			],
-			autoLayout: {
-				verticalGap: tokenRef('spacing.gap', 'number')
-			},
-			appearance: {
-				visible: true,
-				opacity: 1
-			},
-			fill: {
-				paint: tokenRef('paint.base200', 'paint'),
-				opacity: 1
-			}
+			]
 		},
 		tokens: theme != null ? createThemeTokens(theme) : []
 	};

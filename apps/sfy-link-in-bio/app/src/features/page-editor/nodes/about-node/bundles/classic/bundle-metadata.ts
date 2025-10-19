@@ -1,5 +1,6 @@
 import {
 	aboutNodeMetadata,
+	pageNodeMetadata,
 	TAppearanceStyleMixin,
 	TAutoLayoutStyleMixin,
 	TClassicAboutNodeBundle,
@@ -43,11 +44,22 @@ export const classicBundleMetadata: TAboutNodeBundleMetadata<TClassicAboutNodeBu
 	async switch(cx) {
 		const defaults = aboutNodeMetadata.bundleMap['classic'];
 
+		// Update page padding top if the about node is the first child
+		const rootNode = cx.editor.getRootNode();
+		if (rootNode._v.children[0] === cx.node._v.id) {
+			const rootNodeAutoLayout = unpackAutoLayoutTokenRef(rootNode._v.autoLayout);
+			const unpackedPageDefaultAutoLayout = unpackAutoLayoutTokenRef(
+				pageNodeMetadata.bundleMap['classic'].autoLayout
+			);
+			rootNodeAutoLayout.paddingTop = unpackedPageDefaultAutoLayout.paddingTop;
+			rootNode._v.autoLayout = packAutoLayoutTokenRef(rootNodeAutoLayout);
+			rootNode._notify();
+		}
+
 		let commonAutoLayout: TAutoLayoutStyleMixin['value'] | null = null;
 		if (cx.common.autoLayout != null) {
 			const unpackedAutoLayout = unpackAutoLayoutTokenRef(cx.common.autoLayout);
 			const unpackedDefaultAutoLayout = unpackAutoLayoutTokenRef(defaults.autoLayout);
-			unpackedAutoLayout.marginTop = unpackedDefaultAutoLayout.marginTop;
 			unpackedAutoLayout.marginRight = unpackedDefaultAutoLayout.marginRight;
 			unpackedAutoLayout.marginLeft = unpackedDefaultAutoLayout.marginLeft;
 			commonAutoLayout = packAutoLayoutTokenRef(unpackedAutoLayout);
