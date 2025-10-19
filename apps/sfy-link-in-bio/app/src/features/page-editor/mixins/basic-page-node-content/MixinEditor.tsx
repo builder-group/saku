@@ -3,8 +3,8 @@ import { Button, Checkbox, Text } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react';
 import { TState } from 'feature-state';
 import React from 'react';
+import { PolarisHideIcon, PolarisViewIcon } from '@/components';
 import { cn } from '@/lib';
-import { PolarisHideIcon, PolarisViewIcon } from '../../../../components';
 import { TPageEditor } from '../../lib';
 
 export const BasicPageNodeContentMixinEditor = (props: TBasicPageNodeContentMixinEditorProps) => {
