@@ -1,14 +1,15 @@
 import React from 'react';
 import { LogoIcon, ShareIcon, useIframePortal } from '@/components';
 import { appConfig } from '@/environment';
-import { useHasScrolled, useIsAtBottom } from '@/hooks';
+import { useHasScrolled } from '@/hooks';
 import { cn } from '@/lib';
 import { TResolvedPageNode } from '../../types';
+import { Watermark } from './Watermark';
 
 export const ClassicBundleLayout = React.forwardRef<HTMLDivElement, TClassicBundleLayout>(
 	(props, ref) => {
 		const {
-			node: { watermarkVisible, autoLayout, appearance, fill },
+			node: { watermarkVisible, content, autoLayout, appearance, fill },
 			children,
 			...divProps
 		} = props;
@@ -40,67 +41,69 @@ export const ClassicBundleLayout = React.forwardRef<HTMLDivElement, TClassicBund
 
 		const iframePortal = useIframePortal();
 		const hasScrolled = useHasScrolled(scrollThreshold, () => iframePortal?.window ?? window);
-		const isAtBottom = useIsAtBottom(
-			128,
-			() => iframePortal?.window ?? window,
-			() => iframePortal?.document ?? document
-		);
 
 		return (
 			<div className="relative">
-				{/* Header */}
-				<div
-					className={cn('fixed top-2 right-0 left-0 z-[200] mx-auto w-full max-w-xl px-2 sm:px-4', {
-						'sm:top-[length:var(--header-top-scrolled)]': hasScrolled,
-						'sm:absolute sm:top-[length:var(--header-top)]': !hasScrolled
-					})}
-					style={{
-						['--header-top' as string]: `${headerTop}px`,
-						['--header-top-scrolled' as string]: `${headerTopScrolled}px`
-					}}
-				>
+				{/* Navbar */}
+				{content.navbar.visible && (
 					<div
-						className={cn('relative flex items-center rounded-xl p-2', {
-							'justify-between': watermarkVisible,
-							'justify-end': !watermarkVisible
-						})}
-					>
-						{/* Glass background */}
-						<div
-							className={cn(
-								'absolute inset-0 -z-10 rounded-xl border border-white/20 bg-white/20 backdrop-blur-[20px] transition-all duration-300 ease-out',
-								{
-									'scale-100 opacity-100 shadow-[0px_1px_1px_rgba(0,0,0,0.05)]': hasScrolled,
-									'scale-[0.96] opacity-0': !hasScrolled
-								}
-							)}
-						/>
-
-						{watermarkVisible && (
-							<a
-								href="https://saku.so"
-								target="_blank"
-								rel="noopener noreferrer"
-								className={cn(
-									'flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-white/40 bg-white/70 text-black backdrop-blur-sm transition-all duration-200 hover:scale-105 hover:bg-white/100 focus:ring-2 focus:ring-white/50 focus:outline-none active:scale-95',
-									{ 'shadow-[0_2px_8px_rgba(0,0,0,0.15)]': !hasScrolled }
-								)}
-							>
-								<LogoIcon className="h-6 w-6" />
-							</a>
+						className={cn(
+							'fixed top-2 right-0 left-0 z-[200] mx-auto w-full max-w-xl px-2 sm:px-4',
+							{
+								'sm:top-[length:var(--header-top-scrolled)]': hasScrolled,
+								'sm:absolute sm:top-[length:var(--header-top)]': !hasScrolled
+							}
 						)}
-
-						<button
-							className={cn(
-								'flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-white/40 bg-white/70 text-black backdrop-blur-sm transition-all duration-200 hover:scale-105 hover:bg-white/100 focus:ring-2 focus:ring-white/50 focus:outline-none active:scale-95',
-								{ 'shadow-[0_2px_8px_rgba(0,0,0,0.15)]': !hasScrolled }
-							)}
-							aria-label="Share profile"
+						style={{
+							['--header-top' as string]: `${headerTop}px`,
+							['--header-top-scrolled' as string]: `${headerTopScrolled}px`
+						}}
+					>
+						<div
+							className={cn('relative flex items-center rounded-xl p-2', {
+								'justify-between': watermarkVisible,
+								'justify-end': !watermarkVisible
+							})}
 						>
-							<ShareIcon className="h-4 w-4" />
-						</button>
+							{/* Glass background */}
+							<div
+								className={cn(
+									'absolute inset-0 -z-10 rounded-xl border border-white/20 bg-white/20 backdrop-blur-[20px] transition-all duration-300 ease-out',
+									{
+										'scale-100 opacity-100 shadow-[0px_1px_1px_rgba(0,0,0,0.05)]': hasScrolled,
+										'scale-[0.96] opacity-0': !hasScrolled
+									}
+								)}
+							/>
+
+							{watermarkVisible && (
+								<a
+									href="https://saku.so"
+									target="_blank"
+									rel="noopener noreferrer"
+									className={cn(
+										'flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-white/40 bg-white/70 text-black backdrop-blur-sm transition-all duration-200 hover:scale-105 hover:bg-white/100 focus:ring-2 focus:ring-white/50 focus:outline-none active:scale-95',
+										{ 'shadow-[0_2px_8px_rgba(0,0,0,0.15)]': !hasScrolled }
+									)}
+								>
+									<LogoIcon className="h-6 w-6" />
+								</a>
+							)}
+
+							{content.navbar.shareButtonVisible && (
+								<button
+									className={cn(
+										'flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-white/40 bg-white/70 text-black backdrop-blur-sm transition-all duration-200 hover:scale-105 hover:bg-white/100 focus:ring-2 focus:ring-white/50 focus:outline-none active:scale-95',
+										{ 'shadow-[0_2px_8px_rgba(0,0,0,0.15)]': !hasScrolled }
+									)}
+									aria-label="Share profile"
+								>
+									<ShareIcon className="h-4 w-4" />
+								</button>
+							)}
+						</div>
 					</div>
-				</div>
+				)}
 
 				<div
 					{...divProps}
@@ -123,7 +126,7 @@ export const ClassicBundleLayout = React.forwardRef<HTMLDivElement, TClassicBund
 						<div className="relative">
 							{/* Content area */}
 							<div
-								className="overflow-hidden rounded-t-none sm:rounded-t-[length:var(--content-radius)] sm:shadow-[0_24px_32px_0px_rgba(0,0,0,0.15)]"
+								className="overflow-hidden rounded-t-none pb-16 sm:rounded-t-[length:var(--content-radius)] sm:shadow-[0_24px_32px_0px_rgba(0,0,0,0.15)]"
 								style={{
 									...appearance.styles,
 									...fill?.styles
@@ -134,26 +137,27 @@ export const ClassicBundleLayout = React.forwardRef<HTMLDivElement, TClassicBund
 								</div>
 
 								{/* Footer */}
-								<div
-									className={cn('flex justify-center gap-6 pb-16 text-sm', {
-										'pt-32': watermarkVisible,
-										'pt-16': !watermarkVisible
-									})}
-								>
-									<a
-										href={`mailto:${appConfig.help.email}?subject=Report Violation`}
-										className="text-black/70 drop-shadow-[0_1px_2px_rgba(255,255,255,0.8)] transition-colors hover:text-black/90"
-									>
-										Report
-									</a>
-									<a
-										href={appConfig.help.legal.privacy}
-										target="_blank"
-										rel="noopener noreferrer"
-										className="text-black/70 drop-shadow-[0_1px_2px_rgba(255,255,255,0.8)] transition-colors hover:text-black/90"
-									>
-										Privacy
-									</a>
+								<div className="space-y-8 pt-16">
+									{watermarkVisible && <Watermark />}
+
+									{content.footer.visible && (
+										<div className="flex justify-center gap-6 text-sm">
+											<a
+												href={`mailto:${appConfig.help.email}?subject=Report Violation`}
+												className="text-black/70 drop-shadow-[0_1px_2px_rgba(255,255,255,0.8)] transition-colors hover:text-black/90"
+											>
+												Report
+											</a>
+											<a
+												href={appConfig.help.legal.privacy}
+												target="_blank"
+												rel="noopener noreferrer"
+												className="text-black/70 drop-shadow-[0_1px_2px_rgba(255,255,255,0.8)] transition-colors hover:text-black/90"
+											>
+												Privacy
+											</a>
+										</div>
+									)}
 								</div>
 							</div>
 
@@ -162,25 +166,6 @@ export const ClassicBundleLayout = React.forwardRef<HTMLDivElement, TClassicBund
 						</div>
 					</div>
 				</div>
-
-				{watermarkVisible && (
-					<div
-						className={cn('z-[999]', {
-							'fixed right-4 bottom-4': !isAtBottom,
-							'absolute bottom-32 left-1/2 -translate-x-1/2': isAtBottom
-						})}
-					>
-						<a
-							href="https://saku.so"
-							target="_blank"
-							rel="noopener noreferrer"
-							className="flex cursor-pointer items-center gap-1.5 rounded-lg border border-white/40 bg-white/70 px-3 py-2 text-sm text-black no-underline shadow-[0_2px_8px_rgba(0,0,0,0.15)] backdrop-blur-sm transition-all duration-200 hover:scale-105 hover:bg-white/100 focus:ring-2 focus:ring-white/50 focus:outline-none active:scale-95"
-						>
-							<LogoIcon className="h-6 w-6" />
-							<span>Made in Saku</span>
-						</a>
-					</div>
-				)}
 			</div>
 		);
 	}
