@@ -325,7 +325,22 @@ export const pageNodeMetadata: TNodeMetadata<TFlatPageNode> = {
 				},
 				footer: {
 					visible: true,
-					links: []
+					links: [
+						{
+							id: 'report',
+							action: {
+								type: 'footer-report'
+							},
+							label: 'Report'
+						},
+						{
+							id: 'privacy',
+							action: {
+								type: 'footer-privacy'
+							},
+							label: 'Privacy'
+						}
+					]
 				}
 			},
 			autoLayout: {

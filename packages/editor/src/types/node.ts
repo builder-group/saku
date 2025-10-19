@@ -20,6 +20,7 @@ import {
 	TTextXlStyleMixin
 } from './mixin';
 import {
+	TAction,
 	TAssetHash,
 	TEmailAction,
 	TIntegrationId,
@@ -134,8 +135,18 @@ export type TBasicPageNodeContentMixin = TBaseMixin<
 
 export interface TFooterLink {
 	id: string;
-	action: TLinkAction;
+	action: TFooterAction;
 	label: string;
+}
+
+export type TFooterAction = TAction | TFooterReportAction | TFooterPrivacyAction;
+
+export interface TFooterReportAction {
+	type: 'footer-report';
+}
+
+export interface TFooterPrivacyAction {
+	type: 'footer-privacy';
 }
 
 // =========================================================================

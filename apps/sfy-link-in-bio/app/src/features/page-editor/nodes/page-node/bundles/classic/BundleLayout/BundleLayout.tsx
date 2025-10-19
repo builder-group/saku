@@ -1,9 +1,9 @@
 import React from 'react';
 import { LogoIcon, useIframePortal } from '@/components';
-import { appConfig } from '@/environment';
 import { useHasScrolled } from '@/hooks';
 import { cn } from '@/lib';
 import { TResolvedPageNode } from '../../../types';
+import { resolveFooterActionToLink } from './resolve-footer-action-to-link';
 import { ShareButton } from './ShareButton';
 import { Watermark } from './Watermark';
 
@@ -135,22 +135,23 @@ export const ClassicBundleLayout = React.forwardRef<HTMLDivElement, TClassicBund
 								<div className="space-y-8 pt-16">
 									{watermarkVisible && <Watermark />}
 
-									{content.footer.visible && (
+									{content.footer.visible && content.footer.links.length > 0 && (
 										<div className="flex justify-center gap-6 text-sm">
-											<a
-												href={`mailto:${appConfig.help.email}?subject=Report Violation`}
-												className="text-black/70 drop-shadow-[0_1px_2px_rgba(255,255,255,0.8)] transition-colors hover:text-black/90"
-											>
-												Report
-											</a>
-											<a
-												href={appConfig.help.legal.privacy}
-												target="_blank"
-												rel="noopener noreferrer"
-												className="text-black/70 drop-shadow-[0_1px_2px_rgba(255,255,255,0.8)] transition-colors hover:text-black/90"
-											>
-												Privacy
-											</a>
+											{content.footer.links.map((link) => {
+												const { href, target } = resolveFooterActionToLink(link.action);
+
+												return (
+													<a
+														key={link.id}
+														href={href}
+														target={target}
+														rel={target === '_blank' ? 'noopener noreferrer' : undefined}
+														className="text-black/70 drop-shadow-[0_1px_2px_rgba(255,255,255,0.8)] transition-colors hover:text-black/90"
+													>
+														{link.label}
+													</a>
+												);
+											})}
 										</div>
 									)}
 								</div>

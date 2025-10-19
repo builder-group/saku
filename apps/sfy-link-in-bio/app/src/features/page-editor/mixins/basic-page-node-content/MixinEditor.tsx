@@ -96,7 +96,7 @@ export const BasicPageNodeContentMixinEditor = (props: TBasicPageNodeContentMixi
 					)}
 				</div>
 
-				<div>TODO</div>
+				{/* TODO: Add footer links editor */}
 			</div>
 		</div>
 	);

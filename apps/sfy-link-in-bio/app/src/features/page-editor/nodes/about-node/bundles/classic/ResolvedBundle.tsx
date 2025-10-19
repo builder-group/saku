@@ -1,4 +1,4 @@
-import { getContactKey } from '@repo/editor';
+import { getContactKey, resolveActionToLink } from '@repo/editor';
 import React from 'react';
 import { contactIconMap } from '../../../../environment';
 import { TResolvedNodeProps } from '../../../../lib';
@@ -62,6 +62,7 @@ export const ResolvedClassicBundle = React.forwardRef<HTMLDivElement, TResolvedC
 							{content.contactLinks.map((contactLink) => {
 								const action = contactLink.action;
 								const contactKey = getContactKey(action);
+								const { href, target } = resolveActionToLink(action);
 
 								const IconComponent = contactIconMap[contactKey];
 								if (IconComponent == null) {
@@ -71,9 +72,9 @@ export const ResolvedClassicBundle = React.forwardRef<HTMLDivElement, TResolvedC
 								return (
 									<a
 										key={contactLink.id}
-										href={action.url}
-										target={action.type === 'social' ? '_blank' : undefined}
-										rel={action.type === 'social' ? 'noopener noreferrer' : undefined}
+										href={href}
+										target={target}
+										rel={target === '_blank' ? 'noopener noreferrer' : undefined}
 										className="flex h-7 w-7 items-center justify-center hover:opacity-70"
 										style={{
 											color: text.styles.color

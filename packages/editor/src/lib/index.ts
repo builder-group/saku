@@ -9,6 +9,7 @@ export * from './is-token-ref';
 export * from './parse-url';
 export * from './pika';
 export * from './reconstruct-theme-from-tokens';
+export * from './resolve-action-to-link';
 export * from './resolve-token-ref';
 export * from './spotify';
 export * from './to-flat-site';
