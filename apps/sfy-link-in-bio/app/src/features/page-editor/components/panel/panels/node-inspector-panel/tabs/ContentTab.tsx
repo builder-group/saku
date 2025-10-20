@@ -8,11 +8,11 @@ export const ContentTab: React.FC<TContentTabProps> = (props) => {
 	const { nodeState, editor } = props;
 
 	return (
-		<div className="py-3">
+		<>
 			<NodeContentEditor
 				nodeState={nodeState}
 				editor={editor}
-				className="border-b border-neutral-200 pb-3"
+				className="border-b border-neutral-200"
 			/>
 			{editor.isDebug() && (
 				<AccordionSection title="Debug" collapsibleClassName="px-0 space-y-3">
@@ -24,7 +24,7 @@ export const ContentTab: React.FC<TContentTabProps> = (props) => {
 					</div>
 				</AccordionSection>
 			)}
-		</div>
+		</>
 	);
 };
 

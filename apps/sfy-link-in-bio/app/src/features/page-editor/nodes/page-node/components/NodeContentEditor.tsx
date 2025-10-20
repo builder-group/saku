@@ -1,7 +1,8 @@
 import { TClassicFlatPageNodeBundle, TFlatPageNode, TPageNode } from '@repo/editor';
-import { Select, Text } from '@shopify/polaris';
+import { Icon, Select, Text } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react';
 import React from 'react';
+import { PolarisChevronRightIcon } from '@/components';
 import { cn } from '@/lib';
 import { TNodeEditorComponentProps } from '../../../lib';
 import { ClassicBundleContentEditor } from '../bundles';
@@ -43,6 +44,10 @@ export const PageNodeContentEditor: React.FC<TNodeEditorComponentProps<TFlatPage
 		[cx]
 	);
 
+	const handleMetadataClick = React.useCallback(() => {
+		editor.switchView({ type: 'settings', view: { type: 'metadata' } });
+	}, [editor]);
+
 	// =========================================================================
 	// UI
 	// =========================================================================
@@ -61,7 +66,7 @@ export const PageNodeContentEditor: React.FC<TNodeEditorComponentProps<TFlatPage
 	}, [selectedBundleType, cx]);
 
 	return (
-		<div className={cn('space-y-3', className)}>
+		<div className={cn('space-y-3 pt-3', className)}>
 			<div className="space-y-1 px-4">
 				<Text as="span" variant="bodySm" tone="subdued">
 					Variant
@@ -78,6 +83,17 @@ export const PageNodeContentEditor: React.FC<TNodeEditorComponentProps<TFlatPage
 			</div>
 			<div className="h-px bg-neutral-200" />
 			{isSwitchingBundle ? <ContentEditorSkeleton /> : renderContentEditor()}
+			<button
+				className="flex w-full cursor-pointer items-center justify-between border-t border-neutral-200 px-4 py-3 hover:bg-neutral-50"
+				onClick={handleMetadataClick}
+			>
+				<Text as="span" variant="headingXs" tone="subdued">
+					Metadata
+				</Text>
+				<div>
+					<Icon source={PolarisChevronRightIcon} tone="subdued" />
+				</div>
+			</button>
 		</div>
 	);
 };

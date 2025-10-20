@@ -59,7 +59,7 @@ export const AboutNodeContentEditor: React.FC<TNodeEditorComponentProps<TAboutNo
 	}, [selectedBundleType, cx]);
 
 	return (
-		<div className={cn('space-y-3', className)}>
+		<div className={cn('space-y-3 py-3', className)}>
 			<div className="space-y-1 px-4">
 				<Text as="span" variant="bodySm" tone="subdued">
 					Variant
