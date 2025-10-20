@@ -191,17 +191,18 @@ router.openapi(CreateShopifySiteRoute, async (c) => {
 	// Create URL redirect if requested
 	let redirectId: string | null = null;
 	if (createRedirect) {
-		const [isRedirectResultOk, redirectResultErr, redirectResult] = await updateShopifyUrlRedirect(
-			`/${handle}` as `/${string}`,
-			`${shopifyConfig.proxy.path}/${handle}` as `/${string}`,
-			{
-				shopId,
-				accessToken,
-				override: overrideRedirect
-			}
-		);
-		if (!isRedirectResultOk) {
-			if (redirectResultErr?.code === '#ERR_REDIRECT_PATH_TAKEN' && !overrideRedirect) {
+		const [isUpdatedShopifyUrlRedirectOk, updatedShopifyUrlRedirectErr, updatedShopifyUrlRedirect] =
+			await updateShopifyUrlRedirect(
+				`/${handle}` as `/${string}`,
+				`${shopifyConfig.proxy.path}/${handle}` as `/${string}`,
+				{
+					shopId,
+					accessToken,
+					override: overrideRedirect
+				}
+			);
+		if (!isUpdatedShopifyUrlRedirectOk) {
+			if (updatedShopifyUrlRedirectErr.code === '#ERR_REDIRECT_PATH_TAKEN' && !overrideRedirect) {
 				throw new AppError('#ERR_REDIRECT_PATH_TAKEN', 409, {
 					title: 'Path already taken',
 					detail: `The path (${handle}) you are trying to use is already taken. Please try a different path.`
@@ -210,18 +211,16 @@ router.openapi(CreateShopifySiteRoute, async (c) => {
 			throw new AppError('#ERR_REDIRECT_CREATE_FAILED', 500, {
 				title: 'Failed to create redirect',
 				detail: 'Could not create URL redirect for the site',
-				throwable: redirectResultErr
+				throwable: updatedShopifyUrlRedirectErr
 			});
 		}
-		redirectId = redirectResult.id;
+		redirectId = updatedShopifyUrlRedirect.id;
 	}
 
-	// Check if Shopify integration already exists
+	// Add Shopify integration if it doesn't exist yet
 	const existingShopifyIntegration = Object.values(content.integrations).find(
 		(integration) => integration.type === 'shopify' && integration.shopId === shopId
 	);
-
-	// Add Shopify integration if it doesn't exist
 	if (existingShopifyIntegration == null) {
 		const [isStorefrontAccessTokenOk, , storefrontAccessToken] =
 			await getWorkspaceStorefrontAccessToken(workspace.id, {
@@ -250,15 +249,15 @@ router.openapi(CreateShopifySiteRoute, async (c) => {
 
 	// Upload assets to Shopify if requested
 	if (uploadAssets) {
-		const [isUploadSiteAssetsOk, uploadSiteAssetsErr, uploadedAssets] = await uploadSiteAssets(
+		const [isUploadedAssetsOk, uploadedAssetsErr, uploadedAssets] = await uploadSiteAssets(
 			content,
 			{ shopId, accessToken, toUploadAssetTypes: ['image'] }
 		);
-		if (!isUploadSiteAssetsOk) {
+		if (!isUploadedAssetsOk) {
 			throw new AppError('#ERR_ASSETS_UPLOAD_FAILED', 500, {
 				title: 'Asset upload failed',
 				detail: 'Failed to upload site assets to Shopify',
-				throwable: uploadSiteAssetsErr
+				throwable: uploadedAssetsErr
 			});
 		}
 

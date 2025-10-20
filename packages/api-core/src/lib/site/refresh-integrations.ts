@@ -32,22 +32,20 @@ export async function refreshIntegrations(
 					continue;
 				}
 
-				// Get offline access token for this shop
+				// Get current storefront access token
 				const offlineToken = (await getShopifyOfflineAccessToken(integration.shopId)).unwrap();
-
-				// Get fresh storefront access token
-				const storefrontTokenResult = await getWorkspaceStorefrontAccessToken(workspaceId, {
-					accessToken: offlineToken,
-					shopId: integration.shopId
-				});
-				if (storefrontTokenResult.isErr()) {
+				const [isStorefrontAccessTokenOk, , storefrontAccessToken] =
+					await getWorkspaceStorefrontAccessToken(workspaceId, {
+						accessToken: offlineToken,
+						shopId: integration.shopId
+					});
+				if (!isStorefrontAccessTokenOk) {
 					continue;
 				}
-				const freshToken = storefrontTokenResult.value;
 
-				// Check if token changed
-				if (integration.storefrontAccessToken !== freshToken) {
-					integration.storefrontAccessToken = freshToken;
+				// Update if token changed
+				if (integration.storefrontAccessToken !== storefrontAccessToken) {
+					integration.storefrontAccessToken = storefrontAccessToken;
 					updatedIntegrationIds.push(integrationId as TIntegrationId);
 				}
 				break;
@@ -60,7 +58,6 @@ export async function refreshIntegrations(
 	// Update DB for changed integrations
 	for (const integrationId of updatedIntegrationIds) {
 		const integration = updatedIntegrations[integrationId] as TIntegration;
-
 		await db
 			.update(siteTable)
 			.set({

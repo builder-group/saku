@@ -8,10 +8,7 @@ import {
 } from '../gql';
 
 /**
- * Get or create a storefront access token, reusing existing tokens when possible.
- *
- * This function tries to reuse existing tokens with matching title
- * to avoid hitting the 100 token limit.
+ * Get or create a storefront access token, reusing existing tokens when possible to avoid hitting the 100 token limit.
  *
  * @see https://shopify.dev/docs/api/admin-graphql/latest/objects/StorefrontAccessToken
  */

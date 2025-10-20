@@ -32,21 +32,22 @@ export async function getWorkspaceStorefrontAccessToken(
 	}
 
 	// Create a new storefront access token (reusing existing if possible)
-	const tokenResult = await getOrCreateStorefrontAccessToken(
-		{
-			title: `Storefront Token for ${displayName ?? shopId}`
-		},
-		{
-			shopId,
-			accessToken
-		}
-	);
-	if (tokenResult.isErr()) {
+	const [isStorefrontAccessTokenOk, storefrontAccessTokenErr, storefrontAccessToken] =
+		await getOrCreateStorefrontAccessToken(
+			{
+				title: `Storefront Token for ${displayName ?? shopId}`
+			},
+			{
+				shopId,
+				accessToken
+			}
+		);
+	if (!isStorefrontAccessTokenOk) {
 		logger.error('Failed to create storefront token', {
 			workspaceId,
 			shopId,
 			displayName,
-			error: tokenResult.error
+			error: storefrontAccessTokenErr
 		});
 		return Err(
 			new AppError('#ERR_TOKEN_CREATE_FAILED', 500, {
@@ -62,12 +63,12 @@ export async function getWorkspaceStorefrontAccessToken(
 		.values({
 			workspaceId,
 			provider: 'shopify',
-			providerTokenId: tokenResult.value.id,
+			providerTokenId: storefrontAccessToken.id,
 			tokenType: 'storefront',
 			tokenData: {
-				title: tokenResult.value.title,
-				accessToken: tokenResult.value.accessToken,
-				accessScopes: tokenResult.value.accessScopes
+				title: storefrontAccessToken.title,
+				accessToken: storefrontAccessToken.accessToken,
+				accessScopes: storefrontAccessToken.accessScopes
 			},
 			updatedAt: new Date(),
 			createdAt: new Date()
