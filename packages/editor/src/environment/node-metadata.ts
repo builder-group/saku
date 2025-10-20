@@ -363,24 +363,21 @@ export const pageNodeMetadata: TNodeMetadata<TFlatPageNode> = {
 				opacity: 1
 			},
 			textSm: {
-				appearance: {
-					visible: true,
-					opacity: 1
-				},
+				appearance: tokenRef('text.sm', 'text', 'appearance'),
 				typography: {
-					font: tokenRef('font.text', 'font'),
-					fontSize: tokenRef('size.text.sm', 'number'),
+					font: tokenRef('text.sm', 'text', 'typography.font'),
+					fontSize: tokenRef('text.sm', 'text', 'typography.fontSize'),
 					textAlignHorizontal: 'center',
 					textAlignVertical: 'center',
-					lineHeight: { type: 'auto' },
-					letterSpacing: { type: 'auto' }
+					lineHeight: tokenRef('text.sm', 'text', 'typography.lineHeight'),
+					letterSpacing: tokenRef('text.sm', 'text', 'typography.letterSpacing')
 				},
 				fill: {
-					paint: tokenRef('paint.base200.content', 'paint'),
-					opacity: 1
+					paint: tokenRef('paint.base200.content', 'paint.solid'),
+					opacity: tokenRef('text.sm', 'text', 'fill.opacity')
 				},
-				stroke: null,
-				shadow: null
+				stroke: tokenRef('text.sm', 'text', 'stroke'),
+				shadow: tokenRef('text.sm', 'text', 'shadow')
 			}
 		}
 	}
