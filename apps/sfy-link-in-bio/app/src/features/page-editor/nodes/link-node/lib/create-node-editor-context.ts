@@ -11,7 +11,7 @@ import {
 	TLinkNodeBundleMetadata
 } from '../environment';
 
-export function createLinkNodeEditorContext<GNode extends TLinkNode>(
+export function createLinkNodeEditorContext<GNode extends TLinkNode = TLinkNode>(
 	config: TCreateLinkNodeEditorContextConfig<GNode>
 ): TLinkNodeEditorContext<GNode> {
 	const { node, editor } = config;
@@ -29,14 +29,14 @@ export function createLinkNodeEditorContext<GNode extends TLinkNode>(
 		isSwitchingBundle: createState(false),
 		isEnhancingBundle: createState(false),
 
-		async switchBundleType(this: TLinkNodeEditorContext<GNode>, bundleType) {
+		async switchBundleType(this: TLinkNodeEditorContext, bundleType) {
 			this.isSwitchingBundle.set(true);
 			this.selectedBundleType.set(bundleType);
 
 			const metadata = linkNodeBundleMetadataMap[
 				this.node._v.bundleType
-			] as TLinkNodeBundleMetadata<GNode>;
-			const nextMetadata = linkNodeBundleMetadataMap[bundleType] as TLinkNodeBundleMetadata<GNode>;
+			] as TLinkNodeBundleMetadata;
+			const nextMetadata = linkNodeBundleMetadataMap[bundleType] as TLinkNodeBundleMetadata;
 
 			try {
 				// Update node bundle
@@ -61,11 +61,8 @@ export function createLinkNodeEditorContext<GNode extends TLinkNode>(
 			return Ok(undefined);
 		},
 
-		async enhanceBundle(
-			this: TLinkNodeEditorContext<GNode>,
-			bundleType = this.selectedBundleType._v
-		) {
-			const metadata = linkNodeBundleMetadataMap[bundleType] as TLinkNodeBundleMetadata<GNode>;
+		async enhanceBundle(this: TLinkNodeEditorContext, bundleType = this.selectedBundleType._v) {
+			const metadata = linkNodeBundleMetadataMap[bundleType] as TLinkNodeBundleMetadata;
 			if (typeof metadata?.enhance !== 'function') {
 				return Ok(undefined);
 			}
@@ -80,7 +77,7 @@ export function createLinkNodeEditorContext<GNode extends TLinkNode>(
 			return result;
 		},
 
-		async updateUrlAndEnhance(this: TLinkNodeEditorContext<GNode>, newUrl) {
+		async updateUrlAndEnhance(this: TLinkNodeEditorContext, newUrl) {
 			if (newUrl === this.node._v.content.url) {
 				return Ok(undefined);
 			}
@@ -130,12 +127,12 @@ export function createLinkNodeEditorContext<GNode extends TLinkNode>(
 	};
 }
 
-export interface TCreateLinkNodeEditorContextConfig<GNode extends TLinkNode> {
+export interface TCreateLinkNodeEditorContextConfig<GNode extends TLinkNode = TLinkNode> {
 	node: TNodeState<GNode>;
 	editor: TPageEditor;
 }
 
-export interface TLinkNodeEditorContext<GNode extends TLinkNode> {
+export interface TLinkNodeEditorContext<GNode extends TLinkNode = TLinkNode> {
 	node: TNodeState<GNode>;
 	editor: TPageEditor;
 	shopify: ShopifyGlobal;

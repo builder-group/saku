@@ -20,7 +20,7 @@ export const textNodeBundleMetadataMap = {
 
 export const textNodeBundleMetadata = Object.values(textNodeBundleMetadataMap);
 
-export interface TTextNodeBundleMetadata<GNode extends TTextNode> {
+export interface TTextNodeBundleMetadata<GNode extends TTextNode = TTextNode> {
 	type: GNode['bundleType'];
 	label: string;
 	/**

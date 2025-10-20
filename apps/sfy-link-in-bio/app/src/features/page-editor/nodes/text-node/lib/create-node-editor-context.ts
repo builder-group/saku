@@ -6,7 +6,7 @@ import { AppError } from '@/lib';
 import { TNodeState, TPageEditor } from '../../../lib';
 import { textNodeBundleMetadataMap, TTextNodeBundleMetadata } from '../environment';
 
-export function createTextNodeEditorContext<GNode extends TTextNode>(
+export function createTextNodeEditorContext<GNode extends TTextNode = TTextNode>(
 	config: TCreateTextNodeEditorContextConfig<GNode>
 ): TTextNodeEditorContext<GNode> {
 	const { node, editor } = config;
@@ -18,16 +18,14 @@ export function createTextNodeEditorContext<GNode extends TTextNode>(
 		selectedBundleType: createState<TTextNode['bundleType']>(node._v.bundleType),
 		isSwitchingBundle: createState(false),
 
-		async switchBundleType(this: TTextNodeEditorContext<GNode>, bundleType) {
+		async switchBundleType(this: TTextNodeEditorContext, bundleType) {
 			this.isSwitchingBundle.set(true);
 			this.selectedBundleType.set(bundleType);
 
 			const metadata = textNodeBundleMetadataMap[
 				this.node._v.bundleType
-			] as unknown as TTextNodeBundleMetadata<GNode>;
-			const nextMetadata = textNodeBundleMetadataMap[
-				bundleType
-			] as unknown as TTextNodeBundleMetadata<GNode>;
+			] as TTextNodeBundleMetadata;
+			const nextMetadata = textNodeBundleMetadataMap[bundleType] as TTextNodeBundleMetadata;
 
 			try {
 				// Update node bundle
@@ -48,12 +46,12 @@ export function createTextNodeEditorContext<GNode extends TTextNode>(
 	};
 }
 
-export interface TCreateTextNodeEditorContextConfig<GNode extends TTextNode> {
+export interface TCreateTextNodeEditorContextConfig<GNode extends TTextNode = TTextNode> {
 	node: TNodeState<GNode>;
 	editor: TPageEditor;
 }
 
-export interface TTextNodeEditorContext<GNode extends TTextNode> {
+export interface TTextNodeEditorContext<GNode extends TTextNode = TTextNode> {
 	node: TNodeState<GNode>;
 	editor: TPageEditor;
 	shopify: ShopifyGlobal;

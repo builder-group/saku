@@ -10,7 +10,7 @@ export const pageNodeBundleMetadataMap = {
 
 export const pageNodeBundleMetadata = Object.values(pageNodeBundleMetadataMap);
 
-export interface TPageNodeBundleMetadata<GNode extends TFlatPageNode> {
+export interface TPageNodeBundleMetadata<GNode extends TFlatPageNode = TFlatPageNode> {
 	type: GNode['bundleType'];
 	label: string;
 	/**

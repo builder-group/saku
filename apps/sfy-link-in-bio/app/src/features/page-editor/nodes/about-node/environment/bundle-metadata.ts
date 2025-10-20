@@ -24,7 +24,7 @@ export const aboutNodeBundleMetadataMap = {
 
 export const aboutNodeBundleMetadata = Object.values(aboutNodeBundleMetadataMap);
 
-export interface TAboutNodeBundleMetadata<GNode extends TAboutNode> {
+export interface TAboutNodeBundleMetadata<GNode extends TAboutNode = TAboutNode> {
 	type: GNode['bundleType'];
 	label: string;
 	/**

@@ -6,7 +6,7 @@ import { AppError } from '@/lib';
 import { TNodeState, TPageEditor } from '../../../lib';
 import { mediaNodeBundleMetadataMap, TMediaNodeBundleMetadata } from '../environment';
 
-export function createMediaNodeEditorContext<GNode extends TMediaNode>(
+export function createMediaNodeEditorContext<GNode extends TMediaNode = TMediaNode>(
 	config: TCreateMediaNodeEditorContextConfig<GNode>
 ): TMediaNodeEditorContext<GNode> {
 	const { node, editor } = config;
@@ -18,16 +18,14 @@ export function createMediaNodeEditorContext<GNode extends TMediaNode>(
 		selectedBundleType: createState<TMediaNode['bundleType']>(node._v.bundleType),
 		isSwitchingBundle: createState(false),
 
-		async switchBundleType(this: TMediaNodeEditorContext<GNode>, bundleType) {
+		async switchBundleType(this: TMediaNodeEditorContext, bundleType) {
 			this.isSwitchingBundle.set(true);
 			this.selectedBundleType.set(bundleType);
 
 			const metadata = mediaNodeBundleMetadataMap[
 				this.node._v.bundleType
-			] as TMediaNodeBundleMetadata<GNode>;
-			const nextMetadata = mediaNodeBundleMetadataMap[
-				bundleType
-			] as TMediaNodeBundleMetadata<GNode>;
+			] as TMediaNodeBundleMetadata;
+			const nextMetadata = mediaNodeBundleMetadataMap[bundleType] as TMediaNodeBundleMetadata;
 
 			try {
 				// Update node bundle
@@ -48,12 +46,12 @@ export function createMediaNodeEditorContext<GNode extends TMediaNode>(
 	};
 }
 
-export interface TCreateMediaNodeEditorContextConfig<GNode extends TMediaNode> {
+export interface TCreateMediaNodeEditorContextConfig<GNode extends TMediaNode = TMediaNode> {
 	node: TNodeState<GNode>;
 	editor: TPageEditor;
 }
 
-export interface TMediaNodeEditorContext<GNode extends TMediaNode> {
+export interface TMediaNodeEditorContext<GNode extends TMediaNode = TMediaNode> {
 	node: TNodeState<GNode>;
 	editor: TPageEditor;
 	shopify: ShopifyGlobal;

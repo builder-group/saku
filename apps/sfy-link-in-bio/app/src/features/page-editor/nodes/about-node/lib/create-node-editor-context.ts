@@ -6,7 +6,7 @@ import { AppError } from '@/lib';
 import { TNodeState, TPageEditor } from '../../../lib';
 import { aboutNodeBundleMetadataMap, TAboutNodeBundleMetadata } from '../environment';
 
-export function createAboutNodeEditorContext<GNode extends TAboutNode>(
+export function createAboutNodeEditorContext<GNode extends TAboutNode = TAboutNode>(
 	config: TCreateAboutNodeEditorContextConfig<GNode>
 ): TAboutNodeEditorContext<GNode> {
 	const { node, editor } = config;
@@ -18,16 +18,14 @@ export function createAboutNodeEditorContext<GNode extends TAboutNode>(
 		selectedBundleType: createState<TAboutNode['bundleType']>(node._v.bundleType),
 		isSwitchingBundle: createState(false),
 
-		async switchBundleType(this: TAboutNodeEditorContext<GNode>, bundleType) {
+		async switchBundleType(this: TAboutNodeEditorContext, bundleType) {
 			this.isSwitchingBundle.set(true);
 			this.selectedBundleType.set(bundleType);
 
 			const metadata = aboutNodeBundleMetadataMap[
 				this.node._v.bundleType
-			] as TAboutNodeBundleMetadata<GNode>;
-			const nextMetadata = aboutNodeBundleMetadataMap[
-				bundleType
-			] as TAboutNodeBundleMetadata<GNode>;
+			] as TAboutNodeBundleMetadata;
+			const nextMetadata = aboutNodeBundleMetadataMap[bundleType] as TAboutNodeBundleMetadata;
 
 			try {
 				// Update node bundle
@@ -48,12 +46,12 @@ export function createAboutNodeEditorContext<GNode extends TAboutNode>(
 	};
 }
 
-export interface TCreateAboutNodeEditorContextConfig<GNode extends TAboutNode> {
+export interface TCreateAboutNodeEditorContextConfig<GNode extends TAboutNode = TAboutNode> {
 	node: TNodeState<GNode>;
 	editor: TPageEditor;
 }
 
-export interface TAboutNodeEditorContext<GNode extends TAboutNode> {
+export interface TAboutNodeEditorContext<GNode extends TAboutNode = TAboutNode> {
 	node: TNodeState<GNode>;
 	editor: TPageEditor;
 	shopify: ShopifyGlobal;

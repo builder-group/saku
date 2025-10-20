@@ -10,7 +10,7 @@ export const productNodeBundleMetadataMap = {
 
 export const productNodeBundleMetadata = Object.values(productNodeBundleMetadataMap);
 
-export interface TProductNodeBundleMetadata<GNode extends TProductNode> {
+export interface TProductNodeBundleMetadata<GNode extends TProductNode = TProductNode> {
 	type: GNode['bundleType'];
 	label: string;
 	/**

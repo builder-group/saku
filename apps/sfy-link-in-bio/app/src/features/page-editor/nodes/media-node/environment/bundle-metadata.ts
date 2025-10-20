@@ -10,7 +10,7 @@ export const mediaNodeBundleMetadataMap = {
 
 export const mediaNodeBundleMetadata = Object.values(mediaNodeBundleMetadataMap);
 
-export interface TMediaNodeBundleMetadata<GNode extends TMediaNode> {
+export interface TMediaNodeBundleMetadata<GNode extends TMediaNode = TMediaNode> {
 	type: GNode['bundleType'];
 	label: string;
 	/**

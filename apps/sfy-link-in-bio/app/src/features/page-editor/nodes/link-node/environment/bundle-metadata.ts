@@ -37,7 +37,7 @@ export const linkNodeBundlePriority: TLinkNode['bundleType'][] = [
 	'featured'
 ];
 
-export interface TLinkNodeBundleMetadata<GNode extends TLinkNode> {
+export interface TLinkNodeBundleMetadata<GNode extends TLinkNode = TLinkNode> {
 	type: GNode['bundleType'];
 	label: string;
 	isApplicable: (url: string) => boolean;
