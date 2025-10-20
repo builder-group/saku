@@ -18,6 +18,7 @@ import {
 	mediaNodeMetadata,
 	MediaNodeStyleEditor,
 	PageNode,
+	PageNodeContentEditor,
 	pageNodeMetadata,
 	PageNodeStyleEditor,
 	ProductNode,
@@ -78,7 +79,7 @@ export const resolvedNodeRegistry = {
 
 export const nodeContentEditorRegistry = {
 	site: null,
-	page: null,
+	page: PageNodeContentEditor,
 	about: AboutNodeContentEditor,
 	link: LinkNodeContentEditor,
 	media: MediaNodeContentEditor,

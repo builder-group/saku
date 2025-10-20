@@ -2,6 +2,7 @@ import { TClassicFlatPageNodeBundle, TFlatPageNode, TPageNode } from '@repo/edit
 import { Select, Text } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react';
 import React from 'react';
+import { cn } from '@/lib';
 import { TNodeEditorComponentProps } from '../../../lib';
 import { ClassicBundleContentEditor } from '../bundles';
 import { pageNodeBundleMetadata } from '../environment';
@@ -11,7 +12,7 @@ import { ContentEditorSkeleton } from './ContentEditorSkeleton';
 export const PageNodeContentEditor: React.FC<TNodeEditorComponentProps<TFlatPageNode>> = (
 	props
 ) => {
-	const { nodeState, editor } = props;
+	const { nodeState, editor, className } = props;
 
 	const cx = React.useMemo(
 		() => createPageNodeEditorContext({ node: nodeState, editor }),
@@ -60,7 +61,7 @@ export const PageNodeContentEditor: React.FC<TNodeEditorComponentProps<TFlatPage
 	}, [selectedBundleType, cx]);
 
 	return (
-		<div className="space-y-3">
+		<div className={cn('space-y-3', className)}>
 			<div className="space-y-1 px-4">
 				<Text as="span" variant="bodySm" tone="subdued">
 					Variant

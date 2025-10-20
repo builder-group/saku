@@ -7,7 +7,7 @@ import { TPageEditor } from '../../../../lib';
 import { LayerSelectorPopover } from './LayerSelectorPopover';
 
 export const AddLayerButton: React.FC<TAddLayerButtonProps> = (props) => {
-	const { editor } = props;
+	const { editor, className } = props;
 	const isDragging = useFeatureState(editor.isDraggingLayer);
 
 	return (
@@ -18,7 +18,8 @@ export const AddLayerButton: React.FC<TAddLayerButtonProps> = (props) => {
 					className={cn(
 						'mt-2 flex h-[34px] items-center gap-2 rounded-lg px-2 text-[#005BD3]',
 						isDragging && 'opacity-50',
-						!isDragging && 'cursor-pointer hover:bg-neutral-50'
+						!isDragging && 'cursor-pointer hover:bg-neutral-50',
+						className
 					)}
 				>
 					<div>
@@ -36,4 +37,5 @@ export const AddLayerButton: React.FC<TAddLayerButtonProps> = (props) => {
 
 interface TAddLayerButtonProps {
 	editor: TPageEditor;
+	className?: string;
 }

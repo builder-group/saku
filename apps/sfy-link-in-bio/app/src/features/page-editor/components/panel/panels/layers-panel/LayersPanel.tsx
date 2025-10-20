@@ -11,19 +11,19 @@ import {
 import { restrictToParentElement } from '@dnd-kit/modifiers';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { TNodeId } from '@repo/editor';
-import { Icon, Text, Tooltip } from '@shopify/polaris';
 import { useCompute, useListener } from 'feature-react/state';
 import React from 'react';
 import { ImperativePanelHandle } from 'react-resizable-panels';
-import { PolarisDeleteIcon, ResizableHandle, ResizablePanel, StampIcon } from '@/components';
-import { mq, useCurrentPlan, useMediaQuery } from '@/hooks';
-import { cn } from '@/lib';
+import { ResizableHandle, ResizablePanel } from '@/components';
+import { mq, useMediaQuery } from '@/hooks';
 import { useEditorBreakpoint } from '../../../../hooks';
 import { TPageEditor } from '../../../../lib';
 import { MobileNavPanel } from '../nav-panel';
 import { AddLayerButton } from './AddLayerButton';
 import { LayerItem } from './LayerItem';
+import { PageItem } from './PageItem';
 import { PanelHeader } from './PanelHeader';
+import { WatermarkItem } from './WatermarkItem';
 
 export const LayersPanel: React.FC<TLayersPanelProps> = (props) => {
 	const { editor, order, withResizableHandle = false } = props;
@@ -41,7 +41,6 @@ export const LayersPanel: React.FC<TLayersPanelProps> = (props) => {
 	const watermarkVisible = useCompute(editor.getRootNode(), ({ value }) => {
 		return value.watermarkVisible;
 	});
-	const currentPlan = useCurrentPlan();
 	const panelRef = React.useRef<ImperativePanelHandle>(null);
 
 	// https://docs.dndkit.com/presets/sortable
@@ -118,12 +117,6 @@ export const LayersPanel: React.FC<TLayersPanelProps> = (props) => {
 		[editor, isTouchDevice]
 	);
 
-	const handleHideWatermark = React.useCallback(() => {
-		const rootNode = editor.getRootNode();
-		rootNode._v.watermarkVisible = false;
-		rootNode._notify();
-	}, [editor]);
-
 	// =========================================================================
 	// Effects
 	// =========================================================================
@@ -172,57 +165,30 @@ export const LayersPanel: React.FC<TLayersPanelProps> = (props) => {
 			>
 				<div className="flex h-full flex-col bg-white">
 					<PanelHeader editor={editor} />
-					<div className={cn('flex-1 overflow-auto', collapsed ? 'p-0' : 'p-2')}>
-						<DndContext
-							sensors={sensors}
-							collisionDetection={closestCenter}
-							onDragEnd={handleDragEnd}
-							onDragStart={handleDragStart}
-							modifiers={[restrictToParentElement]}
-						>
-							<SortableContext items={nodeIds} strategy={verticalListSortingStrategy}>
-								<div className="flex flex-col gap-2">
+					<div className="flex-1 space-y-2 overflow-auto py-2">
+						<div className="px-2">
+							<PageItem editor={editor} />
+						</div>
+						<div className="h-px bg-neutral-200" />
+						<div className="flex flex-col gap-2 px-2">
+							<DndContext
+								sensors={sensors}
+								collisionDetection={closestCenter}
+								onDragEnd={handleDragEnd}
+								onDragStart={handleDragStart}
+								modifiers={[restrictToParentElement]}
+							>
+								<SortableContext items={nodeIds} strategy={verticalListSortingStrategy}>
 									{nodes.map((nodeState) => (
 										<LayerItem key={nodeState._v.id} nodeState={nodeState} editor={editor} />
 									))}
-									{/* Watermark item */}
-									{watermarkVisible && (
-										<div className="group flex h-8 w-full items-center gap-2 rounded-lg px-2 opacity-60 hover:bg-neutral-50">
-											<StampIcon className="h-5 w-5" />
-											<Text as="p" variant="bodyMd">
-												Watermark
-											</Text>
-											<div className="ml-auto flex gap-1">
-												{currentPlan.key === 'awesome' ? (
-													<button
-														className="cursor-pointer rounded-lg p-0.5 hover:bg-neutral-200 hover:text-red-500"
-														onClick={handleHideWatermark}
-													>
-														<Icon source={PolarisDeleteIcon} />
-													</button>
-												) : (
-													<Tooltip
-														content="Watermark removal is only available on Awesome plan and above"
-														width="wide"
-														preferredPosition="below"
-													>
-														<button
-															className="cursor-not-allowed rounded-lg p-0.5 opacity-50"
-															disabled
-															type="button"
-														>
-															<Icon source={PolarisDeleteIcon} />
-														</button>
-													</Tooltip>
-												)}
-											</div>
-										</div>
-									)}
-								</div>
-							</SortableContext>
-						</DndContext>
-
-						<AddLayerButton editor={editor} />
+								</SortableContext>
+							</DndContext>
+							{watermarkVisible && <WatermarkItem editor={editor} />}
+						</div>
+						<div className="px-2">
+							<AddLayerButton editor={editor} />
+						</div>
 					</div>
 				</div>
 			</ResizablePanel>
