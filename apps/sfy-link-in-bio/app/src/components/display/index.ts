@@ -3,6 +3,7 @@ export * from './Badge';
 export * from './icons';
 export * from './JsonPreview';
 export * from './mdx';
+export * from './PersistableBanner';
 export * from './PlanBadge';
 export * from './PortalPulse';
 export * from './PricingCard';

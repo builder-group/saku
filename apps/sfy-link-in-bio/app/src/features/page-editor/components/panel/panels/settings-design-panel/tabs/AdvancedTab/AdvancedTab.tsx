@@ -10,12 +10,11 @@ import {
 	TStrokeStyleMixin,
 	TTextStyleMixin
 } from '@repo/editor';
-import { Banner, Button, Text } from '@shopify/polaris';
-import { useFeatureState, withLocalStorage } from 'feature-react';
-import { createState, TState } from 'feature-state';
+import { Button, Text } from '@shopify/polaris';
+import { TState } from 'feature-state';
 import React from 'react';
-import { AccordionSection, CrownIcon, JsonPreview } from '@/components';
-import { appConfig, shopifyClientConfig } from '@/environment';
+import { AccordionSection, CrownIcon, JsonPreview, PersistableBanner } from '@/components';
+import { shopifyClientConfig } from '@/environment';
 import { useCurrentPlan } from '@/hooks';
 import { cn } from '@/lib';
 import { TPageEditor } from '../../../../../../lib';
@@ -38,16 +37,6 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 	const { editor } = props;
 	const currentPlan = useCurrentPlan();
 
-	const showInfoBannerState = React.useMemo(
-		() =>
-			withLocalStorage(
-				createState(true),
-				appConfig.localStorageKey('advanced-tab_show-info-banner')
-			),
-		[]
-	);
-	const showInfoBanner = useFeatureState(showInfoBannerState);
-
 	const autoLayoutTokens = useTokensByType('auto-layout', editor.tokenMap);
 	const appearanceTokens = useTokensByType('appearance', editor.tokenMap);
 	// const typographyTokens = useTokensByType(
@@ -67,10 +56,6 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 	// Effects
 	// =========================================================================
 
-	React.useEffect(() => {
-		showInfoBannerState.persist();
-	}, [showInfoBannerState]);
-
 	// =========================================================================
 	// UI
 	// =========================================================================
@@ -82,14 +67,10 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 				currentPlan.key !== 'awesome' ? 'overflow-y-hidden' : 'overflow-y-auto'
 			)}
 		>
-			{showInfoBanner && (
-				<div className="p-2">
-					<Banner tone="info" onDismiss={() => showInfoBannerState.set(false)}>
-						Here you can customize design tokens that can be linked to layers throughout your page
-						for consistent styling.
-					</Banner>
-				</div>
-			)}
+			<PersistableBanner storageKey="advanced-tab_show-info-banner" tone="info" className="p-2">
+				Design tokens are reusable style settings (colors, fonts, spacing) that you can apply to
+				multiple elements. Change once, update everywhere!
+			</PersistableBanner>
 
 			{/* Page Section */}
 			<AccordionSection title="Page" collapsibleClassName="p-0 border-b-0" defaultOpen={true}>

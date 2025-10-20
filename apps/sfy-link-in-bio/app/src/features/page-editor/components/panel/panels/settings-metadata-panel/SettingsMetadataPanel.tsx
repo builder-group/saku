@@ -1,7 +1,12 @@
 import { InlineError, Text, TextField } from '@shopify/polaris';
 import { useCompute } from 'feature-react/state';
 import React from 'react';
-import { ImageUploadField, ResizablePanel, TImageUploadEvent } from '@/components';
+import {
+	ImageUploadField,
+	PersistableBanner,
+	ResizablePanel,
+	TImageUploadEvent
+} from '@/components';
 import { useEditorBreakpoint } from '../../../../hooks';
 import { EditorSiteResolveContext, TPageEditor } from '../../../../lib';
 import { resolvePageMetadata } from '../../../../nodes';
@@ -165,6 +170,14 @@ export const SettingsMetadataPanel: React.FC<TSettingsMetadataPanelProps> = (pro
 					{!isMd && <PublishButton editor={editor} />}
 				</PanelHeader>
 				<div className="flex-1 overflow-auto">
+					<PersistableBanner
+						storageKey="settings-metadata-panel_show-info-banner"
+						tone="info"
+						className="p-4 pb-0"
+					>
+						Metadata is like a label on your page that tells search engines and social media what
+						your page is about. It&apos;s what shows up when someone shares your link!
+					</PersistableBanner>
 					<div className="space-y-4 p-4">
 						{/* Favicon */}
 						<div className="space-y-1">
