@@ -213,10 +213,10 @@ export const linkNodeMetadata: TNodeMetadata<TLinkNode> = {
 				contentId: ''
 			},
 			autoLayout: {
-				paddingTop: tokenRef('auto-layout.default', 'auto-layout', 'paddingTop'),
-				paddingRight: tokenRef('auto-layout.default', 'auto-layout', 'paddingRight'),
-				paddingBottom: tokenRef('auto-layout.default', 'auto-layout', 'paddingBottom'),
-				paddingLeft: tokenRef('auto-layout.default', 'auto-layout', 'paddingLeft'),
+				paddingTop: 0,
+				paddingRight: 0,
+				paddingBottom: 0,
+				paddingLeft: 0,
 				marginTop: tokenRef('auto-layout.default', 'auto-layout', 'marginTop'),
 				marginRight: tokenRef('auto-layout.default', 'auto-layout', 'marginRight'),
 				marginBottom: tokenRef('auto-layout.default', 'auto-layout', 'marginBottom'),
@@ -246,10 +246,10 @@ export const linkNodeMetadata: TNodeMetadata<TLinkNode> = {
 				height: 352
 			},
 			autoLayout: {
-				paddingTop: tokenRef('auto-layout.default', 'auto-layout', 'paddingTop'),
-				paddingRight: tokenRef('auto-layout.default', 'auto-layout', 'paddingRight'),
-				paddingBottom: tokenRef('auto-layout.default', 'auto-layout', 'paddingBottom'),
-				paddingLeft: tokenRef('auto-layout.default', 'auto-layout', 'paddingLeft'),
+				paddingTop: 0,
+				paddingRight: 0,
+				paddingBottom: 0,
+				paddingLeft: 0,
 				marginTop: tokenRef('auto-layout.default', 'auto-layout', 'marginTop'),
 				marginRight: tokenRef('auto-layout.default', 'auto-layout', 'marginRight'),
 				marginBottom: tokenRef('auto-layout.default', 'auto-layout', 'marginBottom'),
