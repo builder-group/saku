@@ -226,7 +226,7 @@ export const linkNodeMetadata: TNodeMetadata<TLinkNode> = {
 			fill: tokenRef('fill.default', 'fill'),
 			stroke: tokenRef('stroke.default', 'stroke'),
 			shadow: tokenRef('shadow.default', 'shadow'),
-			image: {
+			embed: {
 				appearance: {
 					visible: true,
 					opacity: tokenRef('image.default', 'image', 'appearance.opacity')
@@ -259,7 +259,7 @@ export const linkNodeMetadata: TNodeMetadata<TLinkNode> = {
 			fill: tokenRef('fill.default', 'fill'),
 			stroke: tokenRef('stroke.default', 'stroke'),
 			shadow: tokenRef('shadow.default', 'shadow'),
-			image: {
+			embed: {
 				appearance: {
 					visible: true,
 					opacity: tokenRef('image.default', 'image', 'appearance.opacity')

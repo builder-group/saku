@@ -7,7 +7,7 @@ export const ResolvedSpotifyEmbedBundle = React.forwardRef<
 	TResolvedSpotifyEmbedBundleProps
 >((props, ref) => {
 	const {
-		node: { content, autoLayout, appearance, fill, stroke, shadow, image }
+		node: { content, autoLayout, appearance, fill, stroke, shadow, embed }
 	} = props;
 	const [isLoadingIframe, setIsLoadingIframe] = React.useState(true);
 
@@ -27,7 +27,7 @@ export const ResolvedSpotifyEmbedBundle = React.forwardRef<
 				<div
 					className="absolute inset-0 animate-pulse"
 					style={{
-						...image.styles,
+						...embed.styles,
 						backgroundColor: content.theme?.backgroundBase || '#000000'
 					}}
 				/>
@@ -44,7 +44,7 @@ export const ResolvedSpotifyEmbedBundle = React.forwardRef<
 					setIsLoadingIframe(false);
 				}}
 				style={{
-					...image.styles,
+					...embed.styles,
 					height: content.height,
 					backgroundColor: content.theme?.backgroundBase
 				}}

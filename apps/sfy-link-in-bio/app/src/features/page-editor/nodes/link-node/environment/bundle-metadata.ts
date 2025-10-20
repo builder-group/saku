@@ -1,6 +1,7 @@
 import {
 	TAppearanceStyleMixin,
 	TAutoLayoutStyleMixin,
+	TEmbedStyleMixin,
 	TFillStyleMixin,
 	TIdMixin,
 	TImageStyleMixin,
@@ -79,4 +80,5 @@ interface TCommonFields {
 	text?: TTextStyleMixin['value'];
 	textSm?: TTextSmStyleMixin['value'];
 	image?: TImageStyleMixin['value'];
+	embed?: TEmbedStyleMixin['value'];
 }

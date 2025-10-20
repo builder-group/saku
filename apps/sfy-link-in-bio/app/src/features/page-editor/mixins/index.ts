@@ -6,6 +6,7 @@ export * from './basic-link-node-content';
 export * from './basic-page-node-content';
 export * from './basic-text-node-content';
 export * from './button-style';
+export * from './embed-style';
 export * from './fill-style';
 export * from './flat-children';
 export * from './image-style';

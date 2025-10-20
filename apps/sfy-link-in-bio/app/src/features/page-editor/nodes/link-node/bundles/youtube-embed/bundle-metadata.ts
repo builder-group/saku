@@ -27,7 +27,7 @@ export const youtubeEmbedBundleMetadata: TLinkNodeBundleMetadata<TYouTubeEmbedLi
 			fill: node.fill,
 			stroke: node.stroke,
 			shadow: node.shadow,
-			image: node.image
+			embed: node.embed
 		};
 	},
 	async switch(cx) {
@@ -69,7 +69,7 @@ export const youtubeEmbedBundleMetadata: TLinkNodeBundleMetadata<TYouTubeEmbedLi
 			fill: cx.common.fill ?? defaults.fill,
 			stroke: cx.common.stroke ?? defaults.stroke,
 			shadow: cx.common.shadow ?? defaults.shadow,
-			image: cx.common.image ?? defaults.image
+			embed: cx.common.embed ?? defaults.embed
 		} satisfies TYouTubeEmbedLinkNodeBundle);
 
 		return Ok(undefined);

@@ -7,6 +7,7 @@ import {
 	TBaseMixin,
 	TButtonPrimaryStyleMixin,
 	TChildrenMixin,
+	TEmbedStyleMixin,
 	TFillStyleMixin,
 	TFlatChildrenMixin,
 	TIdMixin,
@@ -267,7 +268,7 @@ export type TYouTubeEmbedLinkNodeBundle = TNodeBundle<
 		TFillStyleMixin,
 		TStrokeStyleMixin,
 		TShadowStyleMixin,
-		TImageStyleMixin // TODO: Replace with TEmbedStyleMixin
+		TEmbedStyleMixin
 	]
 >;
 
@@ -282,7 +283,7 @@ export type TSpotifyEmbedLinkNodeBundle = TNodeBundle<
 		TFillStyleMixin,
 		TStrokeStyleMixin,
 		TShadowStyleMixin,
-		TImageStyleMixin // TODO: Replace with TEmbedStyleMixin
+		TEmbedStyleMixin
 	]
 >;
 

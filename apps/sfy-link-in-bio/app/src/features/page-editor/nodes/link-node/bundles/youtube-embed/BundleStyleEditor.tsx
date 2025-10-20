@@ -6,8 +6,8 @@ import { TNodeEditorComponentProps } from '../../../../lib';
 import {
 	AppearanceStyleMixinEditor,
 	AutoLayoutStyleMixinEditor,
+	EmbedStyleMixinEditor,
 	FillStyleMixinEditor,
-	ImageStyleMixinEditor,
 	ShadowStyleMixinEditor,
 	StrokeStyleMixinEditor
 } from '../../../../mixins';
@@ -22,7 +22,7 @@ export const YouTubeEmbedBundleStyleEditor: React.FC<
 	const fillState = useNodeProperty(nodeState, 'fill');
 	const strokeState = useNodeProperty(nodeState, 'stroke');
 	const shadowState = useNodeProperty(nodeState, 'shadow');
-	const imageState = useNodeProperty(nodeState, 'image');
+	const embedState = useNodeProperty(nodeState, 'embed');
 
 	return (
 		<>
@@ -68,9 +68,9 @@ export const YouTubeEmbedBundleStyleEditor: React.FC<
 				size="tight"
 				defaultOpen={true}
 			>
-				<ImageStyleMixinEditor
-					state={imageState}
-					onLinkToken={() => tokenRef('image.default', 'image')}
+				<EmbedStyleMixinEditor
+					state={embedState}
+					onLinkToken={() => tokenRef('embed.default', 'embed')}
 					editor={editor}
 				/>
 			</AccordionSection>

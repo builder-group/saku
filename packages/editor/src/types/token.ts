@@ -4,6 +4,7 @@ import {
 	TAutoLayoutStyleMixin,
 	TBadgeStyleMixin,
 	TButtonStyleMixin,
+	TEmbedStyleMixin,
 	TFillStyleMixin,
 	TImageStyleMixin,
 	TProductDetailsStyleMixin,
@@ -131,6 +132,7 @@ export type TMixinToken =
 	| TButtonStyleToken
 	| TBadgeStyleToken
 	| TImageStyleToken
+	| TEmbedStyleToken
 	| TProductDetailsStyleToken;
 
 export interface TAutoLayoutStyleToken extends TBaseToken {
@@ -181,6 +183,11 @@ export interface TBadgeStyleToken extends TBaseToken {
 export interface TImageStyleToken extends TBaseToken {
 	type: 'image';
 	value: TUnreferenceTop<TImageStyleMixin['value']>;
+}
+
+export interface TEmbedStyleToken extends TBaseToken {
+	type: 'embed';
+	value: TUnreferenceTop<TEmbedStyleMixin['value']>;
 }
 
 export interface TProductDetailsStyleToken extends TBaseToken {

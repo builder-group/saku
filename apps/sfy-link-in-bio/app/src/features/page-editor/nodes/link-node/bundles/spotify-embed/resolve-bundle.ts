@@ -5,8 +5,8 @@ import { TNodeResolveContext } from '../../../../lib';
 import {
 	resolveAppearanceStyleMixin,
 	resolveAutoLayoutStyleMixin,
+	resolveEmbedStyleMixin,
 	resolveFillStyleMixin,
-	resolveImageStyleMixin,
 	resolveShadowStyleMixin,
 	resolveSpotifyEmbedLinkNodeContentMixin,
 	resolveStrokeStyleMixin
@@ -17,7 +17,7 @@ export function resolveSpotifyEmbedBundle(
 	node: TSpotifyEmbedLinkNodeBundle,
 	cx: TNodeResolveContext
 ): TResult<TResolvedSpotifyEmbedLinkNodeBundle, AppError> {
-	const { content, autoLayout, appearance, fill, stroke, shadow, image, ...rest } = node;
+	const { content, autoLayout, appearance, fill, stroke, shadow, embed, ...rest } = node;
 
 	// Resolve content
 	const [isResolvedContentOk, resolvedContentErr, resolvedContent] =
@@ -67,16 +67,16 @@ export function resolveSpotifyEmbedBundle(
 	if (!isResolvedShadowOk) {
 		return Err(resolvedShadowErr.wrapWith('#ERR_RESOLVE_SHADOW_STYLE'));
 	}
-	const [isResolvedImageOk, resolvedImageErr, resolvedImage] = resolveImageStyleMixin(image, {
+	const [isResolvedEmbedOk, resolvedEmbedErr, resolvedEmbed] = resolveEmbedStyleMixin(embed, {
 		node: cx,
 		tokenMap: cx.site.getTokenMap()
 	});
-	if (!isResolvedImageOk) {
-		return Err(resolvedImageErr.wrapWith('#ERR_RESOLVE_IMAGE_STYLE'));
+	if (!isResolvedEmbedOk) {
+		return Err(resolvedEmbedErr.wrapWith('#ERR_RESOLVE_EMBED_STYLE'));
 	}
 
-	const imageBorderRadius =
-		resolvedImage.appearance.borderRadius ??
+	const embedBorderRadius =
+		resolvedEmbed.appearance.borderRadius ??
 		(resolvedAutoLayout.paddingTop === 0 &&
 		resolvedAutoLayout.paddingRight === 0 &&
 		resolvedAutoLayout.paddingBottom === 0 &&
@@ -100,19 +100,19 @@ export function resolveSpotifyEmbedBundle(
 		fill: resolvedFill,
 		stroke: resolvedStroke,
 		shadow: resolvedShadow,
-		image: {
-			...resolvedImage,
+		embed: {
+			...resolvedEmbed,
 			appearance: {
-				...resolvedImage.appearance,
-				borderRadius: imageBorderRadius,
+				...resolvedEmbed.appearance,
+				borderRadius: embedBorderRadius,
 				styles: {
-					...resolvedImage.appearance.styles,
-					borderRadius: `${imageBorderRadius}px`
+					...resolvedEmbed.appearance.styles,
+					borderRadius: `${embedBorderRadius}px`
 				}
 			},
 			styles: {
-				...resolvedImage.styles,
-				borderRadius: `${imageBorderRadius}px`
+				...resolvedEmbed.styles,
+				borderRadius: `${embedBorderRadius}px`
 			}
 		}
 	});

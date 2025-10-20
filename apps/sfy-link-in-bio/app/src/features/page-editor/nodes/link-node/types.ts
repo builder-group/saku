@@ -3,6 +3,7 @@ import {
 	TResolvedAppearanceStyleMixin,
 	TResolvedAutoLayoutStyleMixin,
 	TResolvedBasicLinkNodeContentMixin,
+	TResolvedEmbedStyleMixin,
 	TResolvedFillStyleMixin,
 	TResolvedImageStyleMixin,
 	TResolvedShadowStyleMixin,
@@ -64,7 +65,7 @@ export type TResolvedYouTubeEmbedLinkNodeBundle = TNodeBundle<
 		TResolvedFillStyleMixin,
 		TResolvedStrokeStyleMixin,
 		TResolvedShadowStyleMixin,
-		TResolvedImageStyleMixin
+		TResolvedEmbedStyleMixin
 	]
 >;
 
@@ -79,6 +80,6 @@ export type TResolvedSpotifyEmbedLinkNodeBundle = TNodeBundle<
 		TResolvedFillStyleMixin,
 		TResolvedStrokeStyleMixin,
 		TResolvedShadowStyleMixin,
-		TResolvedImageStyleMixin
+		TResolvedEmbedStyleMixin
 	]
 >;

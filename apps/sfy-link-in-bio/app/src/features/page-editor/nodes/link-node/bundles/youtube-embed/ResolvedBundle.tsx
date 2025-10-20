@@ -7,7 +7,7 @@ export const ResolvedYouTubeEmbedBundle = React.forwardRef<
 	TResolvedYouTubeEmbedBundleProps
 >((props, ref) => {
 	const {
-		node: { content, autoLayout, appearance, fill, stroke, shadow, image }
+		node: { content, autoLayout, appearance, fill, stroke, shadow, embed }
 	} = props;
 	const [isLoadingIframe, setIsLoadingIframe] = React.useState(true);
 
@@ -27,7 +27,7 @@ export const ResolvedYouTubeEmbedBundle = React.forwardRef<
 				<div
 					className="absolute inset-0 animate-pulse"
 					style={{
-						...image.styles,
+						...embed.styles,
 						backgroundColor: '#000000'
 					}}
 				/>
@@ -42,7 +42,7 @@ export const ResolvedYouTubeEmbedBundle = React.forwardRef<
 				onLoad={() => {
 					setIsLoadingIframe(false);
 				}}
-				style={image.styles}
+				style={embed.styles}
 			></iframe>
 		</div>
 	);
