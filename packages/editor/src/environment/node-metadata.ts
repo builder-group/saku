@@ -91,7 +91,11 @@ export const aboutNodeMetadata: TNodeMetadata<TAboutNode> = {
 				marginBottom: tokenRef('auto-layout.default', 'auto-layout', 'marginBottom'),
 				marginLeft: 0
 			},
-			appearance: tokenRef('appearance.default', 'appearance'),
+			appearance: {
+				visible: true,
+				opacity: 1,
+				borderRadius: 0
+			},
 			fill: null,
 			stroke: null,
 			shadow: null,
@@ -357,6 +361,26 @@ export const pageNodeMetadata: TNodeMetadata<TFlatPageNode> = {
 			fill: {
 				paint: tokenRef('paint.base200', 'paint'),
 				opacity: 1
+			},
+			textSm: {
+				appearance: {
+					visible: true,
+					opacity: 1
+				},
+				typography: {
+					font: tokenRef('font.text', 'font'),
+					fontSize: tokenRef('size.text.sm', 'number'),
+					textAlignHorizontal: 'center',
+					textAlignVertical: 'center',
+					lineHeight: { type: 'auto' },
+					letterSpacing: { type: 'auto' }
+				},
+				fill: {
+					paint: tokenRef('paint.base200.content', 'paint'),
+					opacity: 1
+				},
+				stroke: null,
+				shadow: null
 			}
 		}
 	}

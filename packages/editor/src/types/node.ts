@@ -89,7 +89,8 @@ export type TClassicPageNodeBundle = TNodeBundle<
 		TChildrenMixin,
 		TAutoLayoutStyleMixin,
 		TAppearanceStyleMixin,
-		TFillStyleMixin
+		TFillStyleMixin,
+		TTextSmStyleMixin
 	]
 >;
 export type TClassicFlatPageNodeBundle = TNodeBundle<
@@ -101,7 +102,8 @@ export type TClassicFlatPageNodeBundle = TNodeBundle<
 		TFlatChildrenMixin,
 		TAutoLayoutStyleMixin,
 		TAppearanceStyleMixin,
-		TFillStyleMixin
+		TFillStyleMixin,
+		TTextSmStyleMixin
 	]
 >;
 

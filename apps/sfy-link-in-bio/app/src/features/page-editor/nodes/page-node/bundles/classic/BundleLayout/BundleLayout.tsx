@@ -10,7 +10,7 @@ import { Watermark } from './Watermark';
 export const ClassicBundleLayout = React.forwardRef<HTMLDivElement, TClassicBundleLayout>(
 	(props, ref) => {
 		const {
-			node: { watermarkVisible, content, autoLayout, appearance, fill },
+			node: { watermarkVisible, content, autoLayout, appearance, fill, textSm },
 			children,
 			...divProps
 		} = props;
@@ -146,7 +146,7 @@ export const ClassicBundleLayout = React.forwardRef<HTMLDivElement, TClassicBund
 														href={href}
 														target={target}
 														rel={target === '_blank' ? 'noopener noreferrer' : undefined}
-														className="text-black/70 drop-shadow-[0_1px_2px_rgba(255,255,255,0.8)] transition-colors hover:text-black/90"
+														style={textSm.styles}
 													>
 														{link.label}
 													</a>

@@ -7,7 +7,8 @@ import {
 	resolveAutoLayoutStyleMixin,
 	resolveBasicPageNodeContentMixin,
 	resolveFillStyleMixin,
-	resolveFlatChildrenMixin
+	resolveFlatChildrenMixin,
+	resolveTextStyleMixin
 } from '../../../../mixins';
 import { resolvePageMetadata } from '../../lib';
 import { TResolvedClassicPageNodeBundle } from '../../types';
@@ -35,7 +36,7 @@ export function resolveClassicBundleWithoutChildren(
 	node: TClassicFlatPageNodeBundle,
 	cx: TNodeResolveContext
 ): TResult<Omit<TResolvedClassicPageNodeBundle, 'children'>, AppError> {
-	const { content, autoLayout, appearance, fill, ...rest } = node;
+	const { content, autoLayout, appearance, fill, textSm, ...rest } = node;
 
 	// Resolve content
 	const [isResolvedContentOk, resolvedContentErr, resolvedContent] =
@@ -71,6 +72,13 @@ export function resolveClassicBundleWithoutChildren(
 	if (!isResolvedFillOk) {
 		return Err(resolvedFillErr.wrapWith('#ERR_RESOLVE_FILL_STYLE'));
 	}
+	const [isResolvedTextSmOk, resolvedTextSmErr, resolvedTextSm] = resolveTextStyleMixin(textSm, {
+		node: cx,
+		tokenMap: cx.site.getTokenMap()
+	});
+	if (!isResolvedTextSmOk) {
+		return Err(resolvedTextSmErr.wrapWith('#ERR_RESOLVE_TEXT_SM_STYLE'));
+	}
 
 	return Ok({
 		...rest,
@@ -78,6 +86,7 @@ export function resolveClassicBundleWithoutChildren(
 		metadata: resolvePageMetadata(node, cx),
 		autoLayout: resolvedAutoLayout,
 		appearance: resolvedAppearance,
-		fill: resolvedFill
+		fill: resolvedFill,
+		textSm: resolvedTextSm
 	});
 }
