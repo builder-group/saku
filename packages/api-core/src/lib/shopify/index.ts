@@ -4,7 +4,7 @@ export * from './create-display-name-from-shop';
 export * from './create-handle-from-shop';
 export * from './create-shopify-admin-app-url';
 export * from './delete-url-redirect';
-export * from './get-storefront-token';
+export * from './get-workspace-storefront-access-token';
 export * from './is-url-redirect-path-reserved';
 export * from './map-mime-type-to-resource';
 export * from './remove-app-proxy-redirects';
