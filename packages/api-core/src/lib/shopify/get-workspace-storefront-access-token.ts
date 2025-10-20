@@ -2,14 +2,14 @@ import { AppError } from '@repo/hono-utils';
 import { and, eq, sql } from 'drizzle-orm';
 import { Err, Ok, type TResult } from 'tuple-result';
 import { db, logger, workspaceTokenTable } from '@/environment';
-import { createStorefrontAccessToken } from '@/lib';
+import { getOrCreateStorefrontAccessToken } from './get-or-create-storefront-access-token';
 
 /**
  * Get or create a storefront access token for a workspace.
  */
-export async function getStorefrontToken(
+export async function getWorkspaceStorefrontAccessToken(
 	workspaceId: string,
-	config: TGetStorefrontTokenConfig
+	config: TGetWorkspaceStorefrontAccessTokenConfig
 ): Promise<TResult<string, AppError>> {
 	const { accessToken, shopId, displayName } = config;
 
@@ -31,8 +31,8 @@ export async function getStorefrontToken(
 		return Ok(existingToken.accessToken);
 	}
 
-	// Create a new storefront access token
-	const tokenResult = await createStorefrontAccessToken(
+	// Create a new storefront access token (reusing existing if possible)
+	const tokenResult = await getOrCreateStorefrontAccessToken(
 		{
 			title: `Storefront Token for ${displayName ?? shopId}`
 		},
@@ -87,7 +87,7 @@ export async function getStorefrontToken(
 	return Ok(storedToken.accessToken);
 }
 
-export type TGetStorefrontTokenConfig = {
+export type TGetWorkspaceStorefrontAccessTokenConfig = {
 	accessToken: string;
 	shopId: string;
 	displayName?: string;

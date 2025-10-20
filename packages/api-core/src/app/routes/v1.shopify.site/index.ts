@@ -22,7 +22,7 @@ import {
 	getShopifyOfflineAccessToken,
 	getShopInfo,
 	getShopPlan,
-	getStorefrontToken,
+	getWorkspaceStorefrontAccessToken,
 	refreshIntegrations,
 	updateShopifyUrlRedirect,
 	verifyShopifySession
@@ -191,7 +191,7 @@ router.openapi(CreateShopifySiteRoute, async (c) => {
 	// Create URL redirect if requested
 	let redirectId: string | null = null;
 	if (createRedirect) {
-		const redirectResult = await updateShopifyUrlRedirect(
+		const [isRedirectResultOk, redirectResultErr, redirectResult] = await updateShopifyUrlRedirect(
 			`/${handle}` as `/${string}`,
 			`${shopifyConfig.proxy.path}/${handle}` as `/${string}`,
 			{
@@ -200,8 +200,8 @@ router.openapi(CreateShopifySiteRoute, async (c) => {
 				override: overrideRedirect
 			}
 		);
-		if (redirectResult.isErr()) {
-			if (redirectResult.error.code === '#ERR_REDIRECT_PATH_TAKEN' && !overrideRedirect) {
+		if (!isRedirectResultOk) {
+			if (redirectResultErr?.code === '#ERR_REDIRECT_PATH_TAKEN' && !overrideRedirect) {
 				throw new AppError('#ERR_REDIRECT_PATH_TAKEN', 409, {
 					title: 'Path already taken',
 					detail: `The path (${handle}) you are trying to use is already taken. Please try a different path.`
@@ -210,10 +210,10 @@ router.openapi(CreateShopifySiteRoute, async (c) => {
 			throw new AppError('#ERR_REDIRECT_CREATE_FAILED', 500, {
 				title: 'Failed to create redirect',
 				detail: 'Could not create URL redirect for the site',
-				throwable: redirectResult.error
+				throwable: redirectResultErr
 			});
 		}
-		redirectId = redirectResult.value.id;
+		redirectId = redirectResult.id;
 	}
 
 	// Check if Shopify integration already exists
@@ -223,12 +223,12 @@ router.openapi(CreateShopifySiteRoute, async (c) => {
 
 	// Add Shopify integration if it doesn't exist
 	if (existingShopifyIntegration == null) {
-		const storefrontTokenResult = await getStorefrontToken(workspace.id, {
-			accessToken,
-			shopId
-		});
-
-		if (storefrontTokenResult.isOk()) {
+		const [isStorefrontAccessTokenOk, , storefrontAccessToken] =
+			await getWorkspaceStorefrontAccessToken(workspace.id, {
+				accessToken,
+				shopId
+			});
+		if (isStorefrontAccessTokenOk) {
 			const shopPlan = unwrapOrNull(
 				await getShopPlan({
 					shopId,
@@ -240,7 +240,7 @@ router.openapi(CreateShopifySiteRoute, async (c) => {
 				id: integrationId,
 				type: 'shopify',
 				shopId,
-				storefrontAccessToken: storefrontTokenResult.value,
+				storefrontAccessToken,
 				isPartnerDevelopment: shopPlan?.plan.isPartnerDevelopment ?? false,
 				isShopifyPlus: shopPlan?.plan.isShopifyPlus ?? false
 			};

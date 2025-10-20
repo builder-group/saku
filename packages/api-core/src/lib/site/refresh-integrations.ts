@@ -1,7 +1,7 @@
 import { TIntegration, TIntegrationId } from '@repo/editor';
 import { and, eq, sql } from 'drizzle-orm';
 import { db, siteTable, workspaceAccountTable } from '@/environment';
-import { getShopifyOfflineAccessToken, getStorefrontToken } from '@/lib';
+import { getShopifyOfflineAccessToken, getWorkspaceStorefrontAccessToken } from '@/lib';
 
 export async function refreshIntegrations(
 	config: TRefreshIntegrationsConfig
@@ -36,7 +36,7 @@ export async function refreshIntegrations(
 				const offlineToken = (await getShopifyOfflineAccessToken(integration.shopId)).unwrap();
 
 				// Get fresh storefront access token
-				const storefrontTokenResult = await getStorefrontToken(workspaceId, {
+				const storefrontTokenResult = await getWorkspaceStorefrontAccessToken(workspaceId, {
 					accessToken: offlineToken,
 					shopId: integration.shopId
 				});
