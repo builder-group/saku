@@ -9,8 +9,8 @@ import {
 	TResolvedShadowStyleMixin,
 	TResolvedSpotifyEmbedLinkNodeContentMixin,
 	TResolvedStrokeStyleMixin,
-	TResolvedTextSmStyleMixin,
-	TResolvedTextStyleMixin,
+	TResolvedTextBodyStyleMixin,
+	TResolvedTextCaptionStyleMixin,
 	TResolvedYouTubeEmbedLinkNodeContentMixin
 } from '../../mixins';
 
@@ -31,8 +31,8 @@ export type TResolvedClassicLinkNodeBundle = TNodeBundle<
 		TResolvedFillStyleMixin,
 		TResolvedStrokeStyleMixin,
 		TResolvedShadowStyleMixin,
-		TResolvedTextStyleMixin,
-		TResolvedTextSmStyleMixin,
+		TResolvedTextBodyStyleMixin,
+		TResolvedTextCaptionStyleMixin,
 		TResolvedImageStyleMixin
 	]
 >;
@@ -48,8 +48,8 @@ export type TResolvedFeaturedLinkNodeBundle = TNodeBundle<
 		TResolvedFillStyleMixin,
 		TResolvedStrokeStyleMixin,
 		TResolvedShadowStyleMixin,
-		TResolvedTextStyleMixin,
-		TResolvedTextSmStyleMixin,
+		TResolvedTextBodyStyleMixin,
+		TResolvedTextCaptionStyleMixin,
 		TResolvedImageStyleMixin
 	]
 >;

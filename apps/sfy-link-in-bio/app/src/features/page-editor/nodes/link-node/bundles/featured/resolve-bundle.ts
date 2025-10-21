@@ -18,8 +18,18 @@ export function resolveFeaturedBundle(
 	node: TFeaturedLinkNodeBundle,
 	cx: TNodeResolveContext
 ): TResult<TResolvedFeaturedLinkNodeBundle, AppError> {
-	const { content, autoLayout, appearance, fill, stroke, shadow, text, textSm, image, ...rest } =
-		node;
+	const {
+		content,
+		autoLayout,
+		appearance,
+		fill,
+		stroke,
+		shadow,
+		textBody,
+		textCaption,
+		image,
+		...rest
+	} = node;
 
 	// Resolve content
 	const [isResolvedContentOk, resolvedContentErr, resolvedContent] =
@@ -69,19 +79,23 @@ export function resolveFeaturedBundle(
 	if (!isResolvedShadowOk) {
 		return Err(resolvedShadowErr.wrapWith('#ERR_RESOLVE_SHADOW_STYLE'));
 	}
-	const [isResolvedTextOk, resolvedTextErr, resolvedText] = resolveTextStyleMixin(text, {
-		node: cx,
-		tokenMap: cx.site.getTokenMap()
-	});
-	if (!isResolvedTextOk) {
-		return Err(resolvedTextErr.wrapWith('#ERR_RESOLVE_TEXT_STYLE'));
+	const [isResolvedTextBodyOk, resolvedTextBodyErr, resolvedTextBody] = resolveTextStyleMixin(
+		textBody,
+		{
+			node: cx,
+			tokenMap: cx.site.getTokenMap()
+		}
+	);
+	if (!isResolvedTextBodyOk) {
+		return Err(resolvedTextBodyErr.wrapWith('#ERR_RESOLVE_TEXT_BODY_STYLE'));
 	}
-	const [isResolvedTextSmOk, resolvedTextSmErr, resolvedTextSm] = resolveTextStyleMixin(textSm, {
-		node: cx,
-		tokenMap: cx.site.getTokenMap()
-	});
-	if (!isResolvedTextSmOk) {
-		return Err(resolvedTextSmErr.wrapWith('#ERR_RESOLVE_TEXT_SM_STYLE'));
+	const [isResolvedTextCaptionOk, resolvedTextCaptionErr, resolvedTextCaption] =
+		resolveTextStyleMixin(textCaption, {
+			node: cx,
+			tokenMap: cx.site.getTokenMap()
+		});
+	if (!isResolvedTextCaptionOk) {
+		return Err(resolvedTextCaptionErr.wrapWith('#ERR_RESOLVE_TEXT_CAPTION_STYLE'));
 	}
 	const [isResolvedImageOk, resolvedImageErr, resolvedImage] = resolveImageStyleMixin(image, {
 		node: cx,
@@ -111,8 +125,8 @@ export function resolveFeaturedBundle(
 		fill: resolvedFill,
 		stroke: resolvedStroke,
 		shadow: resolvedShadow,
-		text: resolvedText,
-		textSm: resolvedTextSm,
+		textBody: resolvedTextBody,
+		textCaption: resolvedTextCaption,
 		image: {
 			...resolvedImage,
 			appearance: {

@@ -11,7 +11,7 @@ import {
 	TResolvedShadowStyleMixin,
 	TResolvedSingleProductNodeContentMixin,
 	TResolvedStrokeStyleMixin,
-	TResolvedTextStyleMixin
+	TResolvedTextBodyStyleMixin
 } from '../../mixins';
 
 export type TResolvedProductNode = TResolvedClassicProductNodeBundle;
@@ -27,7 +27,7 @@ export type TResolvedClassicProductNodeBundle = TNodeBundle<
 		TResolvedFillStyleMixin,
 		TResolvedStrokeStyleMixin,
 		TResolvedShadowStyleMixin,
-		TResolvedTextStyleMixin,
+		TResolvedTextBodyStyleMixin,
 		TResolvedButtonPrimaryStyleMixin,
 		TResolvedBadgeSecondaryStyleMixin,
 		TResolvedBadgeNeutralStyleMixin,

@@ -23,7 +23,7 @@ export const classicBundleMetadata: TProductNodeBundleMetadata<TClassicProductNo
 			fill: defaults.fill,
 			stroke: defaults.stroke,
 			shadow: defaults.shadow,
-			text: defaults.text,
+			textBody: defaults.textBody,
 			buttonPrimary: defaults.buttonPrimary,
 			badgeSecondary: defaults.badgeSecondary,
 			badgeNeutral: defaults.badgeNeutral,

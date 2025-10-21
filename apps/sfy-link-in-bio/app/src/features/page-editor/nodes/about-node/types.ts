@@ -7,8 +7,8 @@ import {
 	TResolvedImageStyleMixin,
 	TResolvedShadowStyleMixin,
 	TResolvedStrokeStyleMixin,
-	TResolvedTextStyleMixin,
-	TResolvedTextXlStyleMixin
+	TResolvedTextBodyStyleMixin,
+	TResolvedTextHeadingStyleMixin
 } from '../../mixins';
 
 export type TResolvedAboutNode = TResolvedClassicAboutNodeBundle | TResolvedHeroAboutNodeBundle;
@@ -24,8 +24,8 @@ export type TResolvedClassicAboutNodeBundle = TNodeBundle<
 		TResolvedFillStyleMixin,
 		TResolvedStrokeStyleMixin,
 		TResolvedShadowStyleMixin,
-		TResolvedTextXlStyleMixin,
-		TResolvedTextStyleMixin,
+		TResolvedTextHeadingStyleMixin,
+		TResolvedTextBodyStyleMixin,
 		TResolvedImageStyleMixin
 	]
 >;
@@ -41,7 +41,7 @@ export type TResolvedHeroAboutNodeBundle = TNodeBundle<
 		TResolvedFillStyleMixin,
 		TResolvedStrokeStyleMixin,
 		TResolvedShadowStyleMixin,
-		TResolvedTextXlStyleMixin,
-		TResolvedTextStyleMixin
+		TResolvedTextHeadingStyleMixin,
+		TResolvedTextBodyStyleMixin
 	]
 >;

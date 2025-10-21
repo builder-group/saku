@@ -17,7 +17,8 @@ export function resolveHeroBundle(
 	node: THeroAboutNodeBundle,
 	cx: TNodeResolveContext
 ): TResult<TResolvedHeroAboutNodeBundle, AppError> {
-	const { content, autoLayout, appearance, fill, stroke, shadow, textXl, text, ...rest } = node;
+	const { content, autoLayout, appearance, fill, stroke, shadow, textHeading, textBody, ...rest } =
+		node;
 
 	// Resolve content
 	const [isResolvedContentOk, resolvedContentErr, resolvedContent] =
@@ -67,19 +68,23 @@ export function resolveHeroBundle(
 	if (!isResolvedShadowOk) {
 		return Err(resolvedShadowErr.wrapWith('#ERR_RESOLVE_SHADOW_STYLE'));
 	}
-	const [isResolvedTextXlOk, resolvedTextXlErr, resolvedTextXl] = resolveTextStyleMixin(textXl, {
-		node: cx,
-		tokenMap: cx.site.getTokenMap()
-	});
-	if (!isResolvedTextXlOk) {
-		return Err(resolvedTextXlErr.wrapWith('#ERR_RESOLVE_TEXT_XL_STYLE'));
+	const [isResolvedTextHeadingOk, resolvedTextHeadingErr, resolvedTextHeading] =
+		resolveTextStyleMixin(textHeading, {
+			node: cx,
+			tokenMap: cx.site.getTokenMap()
+		});
+	if (!isResolvedTextHeadingOk) {
+		return Err(resolvedTextHeadingErr.wrapWith('#ERR_RESOLVE_TEXT_HEADING_STYLE'));
 	}
-	const [isResolvedTextOk, resolvedTextErr, resolvedText] = resolveTextStyleMixin(text, {
-		node: cx,
-		tokenMap: cx.site.getTokenMap()
-	});
-	if (!isResolvedTextOk) {
-		return Err(resolvedTextErr.wrapWith('#ERR_RESOLVE_TEXT_STYLE'));
+	const [isResolvedTextBodyOk, resolvedTextBodyErr, resolvedTextBody] = resolveTextStyleMixin(
+		textBody,
+		{
+			node: cx,
+			tokenMap: cx.site.getTokenMap()
+		}
+	);
+	if (!isResolvedTextBodyOk) {
+		return Err(resolvedTextBodyErr.wrapWith('#ERR_RESOLVE_TEXT_BODY_STYLE'));
 	}
 
 	return Ok({
@@ -90,7 +95,7 @@ export function resolveHeroBundle(
 		fill: resolvedFill,
 		stroke: resolvedStroke,
 		shadow: resolvedShadow,
-		textXl: resolvedTextXl,
-		text: resolvedText
+		textHeading: resolvedTextHeading,
+		textBody: resolvedTextBody
 	});
 }

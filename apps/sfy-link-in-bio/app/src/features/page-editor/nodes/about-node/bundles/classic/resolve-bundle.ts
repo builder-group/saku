@@ -18,8 +18,18 @@ export function resolveClassicBundle(
 	node: TClassicAboutNodeBundle,
 	cx: TNodeResolveContext
 ): TResult<TResolvedClassicAboutNodeBundle, AppError> {
-	const { content, autoLayout, appearance, fill, stroke, shadow, textXl, text, image, ...rest } =
-		node;
+	const {
+		content,
+		autoLayout,
+		appearance,
+		fill,
+		stroke,
+		shadow,
+		textHeading,
+		textBody,
+		image,
+		...rest
+	} = node;
 
 	// Resolve content
 	const [isResolvedContentOk, resolvedContentErr, resolvedContent] =
@@ -69,19 +79,23 @@ export function resolveClassicBundle(
 	if (!isResolvedShadowOk) {
 		return Err(resolvedShadowErr.wrapWith('#ERR_RESOLVE_SHADOW_STYLE'));
 	}
-	const [isResolvedTextXlOk, resolvedTextXlErr, resolvedTextXl] = resolveTextStyleMixin(textXl, {
-		node: cx,
-		tokenMap: cx.site.getTokenMap()
-	});
-	if (!isResolvedTextXlOk) {
-		return Err(resolvedTextXlErr.wrapWith('#ERR_RESOLVE_TEXT_XL_STYLE'));
+	const [isResolvedTextHeadingOk, resolvedTextHeadingErr, resolvedTextHeading] =
+		resolveTextStyleMixin(textHeading, {
+			node: cx,
+			tokenMap: cx.site.getTokenMap()
+		});
+	if (!isResolvedTextHeadingOk) {
+		return Err(resolvedTextHeadingErr.wrapWith('#ERR_RESOLVE_TEXT_HEADING_STYLE'));
 	}
-	const [isResolvedTextOk, resolvedTextErr, resolvedText] = resolveTextStyleMixin(text, {
-		node: cx,
-		tokenMap: cx.site.getTokenMap()
-	});
-	if (!isResolvedTextOk) {
-		return Err(resolvedTextErr.wrapWith('#ERR_RESOLVE_TEXT_STYLE'));
+	const [isResolvedTextBodyOk, resolvedTextBodyErr, resolvedTextBody] = resolveTextStyleMixin(
+		textBody,
+		{
+			node: cx,
+			tokenMap: cx.site.getTokenMap()
+		}
+	);
+	if (!isResolvedTextBodyOk) {
+		return Err(resolvedTextBodyErr.wrapWith('#ERR_RESOLVE_TEXT_BODY_STYLE'));
 	}
 	const [isResolvedImageOk, resolvedImageErr, resolvedImage] = resolveImageStyleMixin(image, {
 		node: cx,
@@ -99,8 +113,8 @@ export function resolveClassicBundle(
 		fill: resolvedFill,
 		stroke: resolvedStroke,
 		shadow: resolvedShadow,
-		textXl: resolvedTextXl,
-		text: resolvedText,
+		textHeading: resolvedTextHeading,
+		textBody: resolvedTextBody,
 		image: resolvedImage
 	});
 }

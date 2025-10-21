@@ -12,7 +12,8 @@ export const sectionTitleBundleMetadata: TTextNodeBundleMetadata<TSectionTitleTe
 				text: { type: 'text', value: node.content.text }
 			},
 			autoLayout: node.autoLayout,
-			appearance: node.appearance
+			appearance: node.appearance,
+			textHeading: node.textHeading
 		};
 	},
 	async switch(cx) {
@@ -27,7 +28,7 @@ export const sectionTitleBundleMetadata: TTextNodeBundleMetadata<TSectionTitleTe
 			},
 			autoLayout: defaults.autoLayout,
 			appearance: cx.common.appearance ?? defaults.appearance,
-			textXl: defaults.textXl
+			textHeading: cx.common.textHeading ?? defaults.textHeading
 		});
 		return Ok(undefined);
 	}

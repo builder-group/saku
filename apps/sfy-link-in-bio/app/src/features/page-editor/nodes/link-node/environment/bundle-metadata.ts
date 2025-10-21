@@ -8,8 +8,8 @@ import {
 	TLinkNode,
 	TShadowStyleMixin,
 	TStrokeStyleMixin,
-	TTextSmStyleMixin,
-	TTextStyleMixin
+	TTextBodyStyleMixin,
+	TTextCaptionStyleMixin
 } from '@repo/editor';
 import { type TResult } from 'tuple-result';
 import { AppError } from '@/lib';
@@ -77,8 +77,8 @@ interface TCommonFields {
 	fill?: TFillStyleMixin['value'];
 	stroke?: TStrokeStyleMixin['value'];
 	shadow?: TShadowStyleMixin['value'];
-	text?: TTextStyleMixin['value'];
-	textSm?: TTextSmStyleMixin['value'];
+	textBody?: TTextBodyStyleMixin['value'];
+	textCaption?: TTextCaptionStyleMixin['value'];
 	image?: TImageStyleMixin['value'];
 	embed?: TEmbedStyleMixin['value'];
 }

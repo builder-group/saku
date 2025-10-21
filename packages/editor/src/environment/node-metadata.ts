@@ -472,7 +472,7 @@ export const textNodeMetadata: TNodeMetadata<TTextNode> = {
 				text: 'Add your title here'
 			},
 			autoLayout: {
-				paddingTop: tokenRef('auto-layout.default', 'auto-layout', 'paddingTop'),
+				paddingTop: 24,
 				paddingRight: tokenRef('auto-layout.default', 'auto-layout', 'paddingRight'),
 				paddingBottom: 0,
 				paddingLeft: tokenRef('auto-layout.default', 'auto-layout', 'paddingLeft'),

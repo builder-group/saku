@@ -6,6 +6,8 @@ import {
 	TRichContent,
 	TShadowStyleMixin,
 	TStrokeStyleMixin,
+	TTextBodyStyleMixin,
+	TTextHeadingStyleMixin,
 	TTextNode
 } from '@repo/editor';
 import { TResult } from 'tuple-result';
@@ -47,4 +49,6 @@ interface TCommonFields {
 	fill?: TFillStyleMixin['value'];
 	stroke?: TStrokeStyleMixin['value'];
 	shadow?: TShadowStyleMixin['value'];
+	textHeading?: TTextHeadingStyleMixin['value'];
+	textBody?: TTextBodyStyleMixin['value'];
 }

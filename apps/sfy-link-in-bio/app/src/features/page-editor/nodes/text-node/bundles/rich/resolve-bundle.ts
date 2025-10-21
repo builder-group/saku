@@ -17,7 +17,7 @@ export function resolveRichBundle(
 	node: TRichTextNodeBundle,
 	cx: TNodeResolveContext
 ): TResult<TResolvedRichTextNodeBundle, AppError> {
-	const { content, autoLayout, appearance, fill, stroke, shadow, text, ...rest } = node;
+	const { content, autoLayout, appearance, fill, stroke, shadow, textBody, ...rest } = node;
 
 	// Resolve content
 	const [isResolvedContentOk, resolvedContentErr, resolvedContent] =
@@ -67,12 +67,15 @@ export function resolveRichBundle(
 	if (!isResolvedShadowOk) {
 		return Err(resolvedShadowErr.wrapWith('#ERR_RESOLVE_SHADOW_STYLE'));
 	}
-	const [isResolvedTextOk, resolvedTextErr, resolvedText] = resolveTextStyleMixin(text, {
-		node: cx,
-		tokenMap: cx.site.getTokenMap()
-	});
-	if (!isResolvedTextOk) {
-		return Err(resolvedTextErr.wrapWith('#ERR_RESOLVE_TEXT_STYLE'));
+	const [isResolvedTextBodyOk, resolvedTextBodyErr, resolvedTextBody] = resolveTextStyleMixin(
+		textBody,
+		{
+			node: cx,
+			tokenMap: cx.site.getTokenMap()
+		}
+	);
+	if (!isResolvedTextBodyOk) {
+		return Err(resolvedTextBodyErr.wrapWith('#ERR_RESOLVE_TEXT_BODY_STYLE'));
 	}
 
 	return Ok({
@@ -83,6 +86,6 @@ export function resolveRichBundle(
 		fill: resolvedFill,
 		stroke: resolvedStroke,
 		shadow: resolvedShadow,
-		text: resolvedText
+		textBody: resolvedTextBody
 	});
 }

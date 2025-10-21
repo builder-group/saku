@@ -49,31 +49,31 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 
 	// Add theme fonts to assets
 	if (theme != null) {
-		const themeHeadingTextFont =
-			getFontMetadataByFamily(theme.typography.heading.fontFamily) ?? fontMetadataMap.inter;
+		const themeDisplayFont =
+			getFontMetadataByFamily(theme.typography.display.fontFamily) ?? fontMetadataMap.inter;
 		assets.push({
 			id: createId('asset'),
 			type: 'font',
-			hash: getFontHash(themeHeadingTextFont.font),
+			hash: getFontHash(themeDisplayFont.font),
 			contentType: 'font/woff2',
 			storage: {
 				type: 'url',
-				url: `https://fonts.googleapis.com/css2?family=${themeHeadingTextFont.googleFont}&display=swap`
+				url: `https://fonts.googleapis.com/css2?family=${themeDisplayFont.googleFont}&display=swap`
 			},
-			font: themeHeadingTextFont.font
+			font: themeDisplayFont.font
 		});
-		const themeTextFont =
-			getFontMetadataByFamily(theme.typography.text.fontFamily) ?? fontMetadataMap.inter;
+		const themeBodyFont =
+			getFontMetadataByFamily(theme.typography.body.fontFamily) ?? fontMetadataMap.inter;
 		assets.push({
 			id: createId('asset'),
 			type: 'font',
-			hash: getFontHash(themeTextFont.font),
+			hash: getFontHash(themeBodyFont.font),
 			contentType: 'font/woff2',
 			storage: {
 				type: 'url',
-				url: `https://fonts.googleapis.com/css2?family=${themeTextFont.googleFont}&display=swap`
+				url: `https://fonts.googleapis.com/css2?family=${themeBodyFont.googleFont}&display=swap`
 			},
-			font: themeTextFont.font
+			font: themeBodyFont.font
 		});
 	}
 

@@ -26,7 +26,7 @@ export const ClassicBundleStyleEditor: React.FC<
 	const fillState = useNodeProperty(nodeState, 'fill');
 	const strokeState = useNodeProperty(nodeState, 'stroke');
 	const shadowState = useNodeProperty(nodeState, 'shadow');
-	const textState = useNodeProperty(nodeState, 'text');
+	const textBodyState = useNodeProperty(nodeState, 'textBody');
 	const buttonPrimaryState = useNodeProperty(nodeState, 'buttonPrimary');
 	const badgeSecondaryState = useNodeProperty(nodeState, 'badgeSecondary');
 	const badgeNeutralState = useNodeProperty(nodeState, 'badgeNeutral');
@@ -83,8 +83,8 @@ export const ClassicBundleStyleEditor: React.FC<
 				defaultOpen={true}
 			>
 				<TextStyleMixinEditor
-					state={textState}
-					onLinkToken={() => tokenRef('text.default', 'text')}
+					state={textBodyState}
+					onLinkToken={() => tokenRef('text.body', 'text')}
 					editor={editor}
 				/>
 			</AccordionSection>

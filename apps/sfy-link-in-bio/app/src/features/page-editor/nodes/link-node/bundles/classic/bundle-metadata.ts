@@ -25,8 +25,8 @@ export const classicBundleMetadata: TLinkNodeBundleMetadata<TClassicLinkNodeBund
 			fill: node.fill,
 			stroke: node.stroke,
 			shadow: node.shadow,
-			text: node.text,
-			textSm: node.textSm,
+			textBody: node.textBody,
+			textCaption: node.textCaption,
 			image: node.image
 		};
 	},
@@ -63,8 +63,8 @@ export const classicBundleMetadata: TLinkNodeBundleMetadata<TClassicLinkNodeBund
 			fill: cx.common.fill ?? defaults.fill,
 			stroke: cx.common.stroke ?? defaults.stroke,
 			shadow: cx.common.shadow ?? defaults.shadow,
-			text: cx.common.text ?? defaults.text,
-			textSm: cx.common.textSm ?? defaults.textSm,
+			textBody: cx.common.textBody ?? defaults.textBody,
+			textCaption: cx.common.textCaption ?? defaults.textCaption,
 			image: cx.common.image ?? defaults.image
 		} satisfies TClassicLinkNodeBundle);
 

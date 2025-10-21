@@ -8,20 +8,20 @@ export function getTextNodeAssetHashes(node: TTextNode): TAssetHash[] {
 
 	// Font asset (if not linked)
 	if (
-		'text' in node &&
-		!isTokenRef(node.text) &&
-		!isTokenRef(node.text.typography) &&
-		!isTokenRef(node.text.typography.font)
+		'textHeading' in node &&
+		!isTokenRef(node.textHeading) &&
+		!isTokenRef(node.textHeading.typography) &&
+		!isTokenRef(node.textHeading.typography.font)
 	) {
-		hashes.push(getFontHash(node.text.typography.font));
+		hashes.push(getFontHash(node.textHeading.typography.font));
 	}
 	if (
-		'textXl' in node &&
-		!isTokenRef(node.textXl) &&
-		!isTokenRef(node.textXl.typography) &&
-		!isTokenRef(node.textXl.typography.font)
+		'textBody' in node &&
+		!isTokenRef(node.textBody) &&
+		!isTokenRef(node.textBody.typography) &&
+		!isTokenRef(node.textBody.typography.font)
 	) {
-		hashes.push(getFontHash(node.textXl.typography.font));
+		hashes.push(getFontHash(node.textBody.typography.font));
 	}
 
 	// Fill asset (if not linked)

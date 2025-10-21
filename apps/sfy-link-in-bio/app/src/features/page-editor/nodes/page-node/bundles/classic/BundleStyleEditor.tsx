@@ -18,7 +18,7 @@ export const ClassicBundleStyleEditor: React.FC<
 	const autoLayoutState = useNodeProperty(nodeState, 'autoLayout');
 	const appearanceState = useNodeProperty(nodeState, 'appearance');
 	const fillState = useNodeProperty(nodeState, 'fill');
-	const textSmState = useNodeProperty(nodeState, 'textSm');
+	const textCaptionState = useNodeProperty(nodeState, 'textCaption');
 
 	// =========================================================================
 	// UI
@@ -46,8 +46,8 @@ export const ClassicBundleStyleEditor: React.FC<
 				defaultOpen={true}
 			>
 				<TextStyleMixinEditor
-					state={textSmState}
-					onLinkToken={() => tokenRef('text.sm', 'text')}
+					state={textCaptionState}
+					onLinkToken={() => tokenRef('text.caption', 'text')}
 					editor={editor}
 				/>
 			</AccordionSection>

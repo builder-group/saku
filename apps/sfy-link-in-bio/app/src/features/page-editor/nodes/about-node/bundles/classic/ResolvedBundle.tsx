@@ -7,7 +7,7 @@ import { TResolvedClassicAboutNodeBundle } from '../../types';
 export const ResolvedClassicBundle = React.forwardRef<HTMLDivElement, TResolvedClassicBundleProps>(
 	(props, ref) => {
 		const {
-			node: { content, autoLayout, appearance, fill, stroke, shadow, textXl, text, image }
+			node: { content, autoLayout, appearance, fill, stroke, shadow, textHeading, textBody, image }
 		} = props;
 
 		return (
@@ -42,15 +42,13 @@ export const ResolvedClassicBundle = React.forwardRef<HTMLDivElement, TResolvedC
 						</div>
 					)}
 
+					{/* Title & Description */}
 					<div className="flex flex-col items-center gap-0.5">
-						{/* Name */}
-						<h1 className="font-semibold" style={textXl.styles}>
+						<h1 className="font-semibold" style={textHeading.styles}>
 							{content.title}
 						</h1>
-
-						{/* Bio */}
 						{content.description != null && (
-							<p className="leading-relaxed" style={text.styles}>
+							<p className="leading-relaxed" style={textBody.styles}>
 								{content.description}
 							</p>
 						)}
@@ -77,7 +75,7 @@ export const ResolvedClassicBundle = React.forwardRef<HTMLDivElement, TResolvedC
 										rel={target === '_blank' ? 'noopener noreferrer' : undefined}
 										className="flex h-7 w-7 items-center justify-center hover:opacity-70"
 										style={{
-											color: text.styles.color
+											color: textBody.styles.color
 										}}
 										title={contactLink.altText}
 									>

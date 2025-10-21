@@ -13,7 +13,8 @@ export const ProductDetailsModal: React.FC<TProductDetailsModalProps> = (props) 
 		modalRef
 	} = props;
 
-	const { appearance, fill, stroke, shadow, textXl, text, buttonPrimary, image } = productDetails;
+	const { appearance, fill, stroke, shadow, textHeading, textBody, buttonPrimary, image } =
+		productDetails;
 
 	const [selectedImageIndex, setSelectedImageIndex] = React.useState(0);
 	const [isBuying, setIsBuying] = React.useState(false);
@@ -158,7 +159,7 @@ export const ProductDetailsModal: React.FC<TProductDetailsModalProps> = (props) 
 						{/* Product Details */}
 						<div className="flex flex-col space-y-4">
 							{/* Title */}
-							<h1 className="font-bold" style={textXl.styles}>
+							<h1 className="font-bold" style={textHeading.styles}>
 								{product.title}
 							</h1>
 
@@ -166,7 +167,10 @@ export const ProductDetailsModal: React.FC<TProductDetailsModalProps> = (props) 
 							{selectedVariant?.price != null && (
 								<p
 									className="font-semibold"
-									style={{ ...textXl.styles, fontSize: textXl.typography.fontSize * 0.875 }}
+									style={{
+										...textHeading.styles,
+										fontSize: textHeading.typography.fontSize * 0.875
+									}}
 								>
 									{getCurrencySymbol(selectedVariant.price.currencyCode)}
 									{selectedVariant.price.amount}
@@ -177,12 +181,12 @@ export const ProductDetailsModal: React.FC<TProductDetailsModalProps> = (props) 
 							{product.description?.type === 'html' && (
 								<div
 									className="prose prose-sm"
-									style={text.styles}
+									style={textBody.styles}
 									dangerouslySetInnerHTML={{ __html: product.description.value }}
 								/>
 							)}
 							{product.description?.type === 'text' && (
-								<div className="prose prose-sm" style={text.styles}>
+								<div className="prose prose-sm" style={textBody.styles}>
 									<p>{product.description.value}</p>
 								</div>
 							)}
@@ -194,7 +198,10 @@ export const ProductDetailsModal: React.FC<TProductDetailsModalProps> = (props) 
 								return (
 									<div key={option.name} className="form-control">
 										<label className="label">
-											<span className="label-text font-medium" style={{ color: text.styles.color }}>
+											<span
+												className="label-text font-medium"
+												style={{ color: textBody.styles.color }}
+											>
 												{option.name}
 											</span>
 										</label>

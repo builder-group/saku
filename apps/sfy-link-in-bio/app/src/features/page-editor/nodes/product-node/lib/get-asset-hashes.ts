@@ -19,11 +19,11 @@ export function getProductNodeAssetHashes(node: TProductNode): TAssetHash[] {
 
 	// Font asset (if not linked)
 	if (
-		!isTokenRef(node.text) &&
-		!isTokenRef(node.text.typography) &&
-		!isTokenRef(node.text.typography.font)
+		!isTokenRef(node.textBody) &&
+		!isTokenRef(node.textBody.typography) &&
+		!isTokenRef(node.textBody.typography.font)
 	) {
-		hashes.push(getFontHash(node.text.typography.font));
+		hashes.push(getFontHash(node.textBody.typography.font));
 	}
 
 	// Fill asset (if not linked)

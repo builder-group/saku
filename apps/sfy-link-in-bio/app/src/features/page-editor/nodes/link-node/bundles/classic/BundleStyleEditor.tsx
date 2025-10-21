@@ -29,8 +29,8 @@ export const ClassicBundleStyleEditor: React.FC<
 	const fillState = useNodeProperty(nodeState, 'fill');
 	const strokeState = useNodeProperty(nodeState, 'stroke');
 	const shadowState = useNodeProperty(nodeState, 'shadow');
-	const textState = useNodeProperty(nodeState, 'text');
-	const textSmState = useNodeProperty(nodeState, 'textSm');
+	const textBodyState = useNodeProperty(nodeState, 'textBody');
+	const textCaptionState = useNodeProperty(nodeState, 'textCaption');
 	const imageState = useNodeProperty(nodeState, 'image');
 
 	return (
@@ -79,8 +79,8 @@ export const ClassicBundleStyleEditor: React.FC<
 				defaultOpen={true}
 			>
 				<TextStyleMixinEditor
-					state={textState}
-					onLinkToken={() => tokenRef('text.default', 'text')}
+					state={textBodyState}
+					onLinkToken={() => tokenRef('text.body', 'text')}
 					editor={editor}
 				/>
 			</AccordionSection>
@@ -92,8 +92,8 @@ export const ClassicBundleStyleEditor: React.FC<
 				defaultOpen={true}
 			>
 				<TextStyleMixinEditor
-					state={textSmState}
-					onLinkToken={() => tokenRef('text.sm', 'text')}
+					state={textCaptionState}
+					onLinkToken={() => tokenRef('text.caption', 'text')}
 					editor={editor}
 				/>
 			</AccordionSection>

@@ -16,7 +16,7 @@ export const ResolvedClassicBundle = React.forwardRef<HTMLDivElement, TResolvedC
 			fill,
 			stroke,
 			shadow,
-			text,
+			textBody,
 			buttonPrimary,
 			badgeSecondary,
 			badgeNeutral,
@@ -158,7 +158,8 @@ export const ResolvedClassicBundle = React.forwardRef<HTMLDivElement, TResolvedC
 					{/* Product Details */}
 					<div className="flex min-w-0 flex-grow items-center justify-between">
 						<div className="flex min-w-0 flex-col justify-center gap-1">
-							<p className="truncate font-medium" style={text.styles}>
+							{/* Title */}
+							<p className="truncate font-medium" style={textBody.styles}>
 								{product.title}
 							</p>
 

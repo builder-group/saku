@@ -7,7 +7,7 @@ export const ResolvedFeaturedBundle = React.forwardRef<
 	TResolvedFeaturedBundleProps
 >((props, ref) => {
 	const {
-		node: { content, autoLayout, appearance, fill, stroke, shadow, text, textSm, image }
+		node: { content, autoLayout, appearance, fill, stroke, shadow, textBody, textCaption, image }
 	} = props;
 
 	return (
@@ -40,12 +40,12 @@ export const ResolvedFeaturedBundle = React.forwardRef<
 
 				<div className="flex min-h-16 w-full min-w-0 flex-col justify-center gap-1 px-6">
 					{content.title != null && (
-						<p className="truncate font-medium" style={text.styles}>
+						<p className="truncate font-medium" style={textBody.styles}>
 							{content.title}
 						</p>
 					)}
 					{content.description != null && (
-						<p className="truncate opacity-70" style={textSm.styles}>
+						<p className="truncate opacity-70" style={textCaption.styles}>
 							{content.description}
 						</p>
 					)}

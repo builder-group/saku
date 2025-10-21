@@ -6,7 +6,7 @@ import { TResolvedClassicLinkNodeBundle } from '../../types';
 export const ResolvedClassicBundle = React.forwardRef<HTMLDivElement, TResolvedClassicBundleProps>(
 	(props, ref) => {
 		const {
-			node: { content, autoLayout, appearance, fill, stroke, shadow, text, textSm, image }
+			node: { content, autoLayout, appearance, fill, stroke, shadow, textBody, textCaption, image }
 		} = props;
 
 		return (
@@ -45,12 +45,12 @@ export const ResolvedClassicBundle = React.forwardRef<HTMLDivElement, TResolvedC
 						)}
 					>
 						{content.title != null && (
-							<p className="truncate font-medium" style={text.styles}>
+							<p className="truncate font-medium" style={textBody.styles}>
 								{content.title}
 							</p>
 						)}
 						{content.description != null && (
-							<p className="truncate opacity-70" style={textSm.styles}>
+							<p className="truncate opacity-70" style={textCaption.styles}>
 								{content.description}
 							</p>
 						)}
