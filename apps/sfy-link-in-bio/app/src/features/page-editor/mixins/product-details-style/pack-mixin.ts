@@ -3,7 +3,16 @@ import { packTokenRef, unpackTokenRef } from '../../lib';
 
 const PRODUCT_DETAILS_PROPERTIES: readonly (keyof TUnreferenceTop<
 	TProductDetailsStyleMixin['value']
->)[] = ['appearance', 'fill', 'stroke', 'shadow', 'textXl', 'text', 'buttonPrimary', 'image'];
+>)[] = [
+	'appearance',
+	'fill',
+	'stroke',
+	'shadow',
+	'textHeading',
+	'textBody',
+	'buttonPrimary',
+	'image'
+];
 
 export function unpackProductDetailsTokenRef(
 	productDetails: TProductDetailsStyleMixin['value']

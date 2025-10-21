@@ -54,8 +54,8 @@ export const themes: TTheme[] = [
 			errorContent: hexToPaint('#ffffff')
 		},
 		typography: {
-			heading: { fontFamily: 'Inter', fontWeight: 700 },
-			text: { fontFamily: 'Inter', fontWeight: 400 }
+			display: { fontFamily: 'Inter', fontWeight: 700 },
+			body: { fontFamily: 'Inter', fontWeight: 400 }
 		},
 		radius: { box: 12, field: 8, selector: 6 },
 		effects: {
@@ -90,8 +90,8 @@ export const themes: TTheme[] = [
 			errorContent: hexToPaint('#ffffff')
 		},
 		typography: {
-			heading: { fontFamily: 'Inter', fontWeight: 700 },
-			text: { fontFamily: 'Inter', fontWeight: 400 }
+			display: { fontFamily: 'Inter', fontWeight: 700 },
+			body: { fontFamily: 'Inter', fontWeight: 400 }
 		},
 		radius: { box: 12, field: 8, selector: 6 },
 		effects: {
@@ -126,8 +126,8 @@ export const themes: TTheme[] = [
 			errorContent: hexToPaint('#ffffff')
 		},
 		typography: {
-			heading: { fontFamily: 'Poppins', fontWeight: 700 },
-			text: { fontFamily: 'Open Sans', fontWeight: 400 }
+			display: { fontFamily: 'Poppins', fontWeight: 700 },
+			body: { fontFamily: 'Open Sans', fontWeight: 400 }
 		},
 		radius: { box: 20, field: 16, selector: 12 },
 		effects: {
@@ -168,8 +168,8 @@ export const themes: TTheme[] = [
 			errorContent: hexToPaint('#ffffff')
 		},
 		typography: {
-			heading: { fontFamily: 'Montserrat', fontWeight: 700 },
-			text: { fontFamily: 'Lato', fontWeight: 400 }
+			display: { fontFamily: 'Montserrat', fontWeight: 700 },
+			body: { fontFamily: 'Lato', fontWeight: 400 }
 		},
 		radius: { box: 16, field: 12, selector: 8 },
 		effects: {
@@ -210,8 +210,8 @@ export const themes: TTheme[] = [
 			errorContent: hexToPaint('#ffffff')
 		},
 		typography: {
-			heading: { fontFamily: 'Karla', fontWeight: 700 },
-			text: { fontFamily: 'Karla', fontWeight: 400 }
+			display: { fontFamily: 'Karla', fontWeight: 700 },
+			body: { fontFamily: 'Karla', fontWeight: 400 }
 		},
 		radius: { box: 16, field: 12, selector: 8 },
 		effects: {
@@ -246,8 +246,8 @@ export const themes: TTheme[] = [
 			errorContent: hexToPaint('#ffffff')
 		},
 		typography: {
-			heading: { fontFamily: 'Roboto', fontWeight: 700 },
-			text: { fontFamily: 'Roboto', fontWeight: 400 }
+			display: { fontFamily: 'Roboto', fontWeight: 700 },
+			body: { fontFamily: 'Roboto', fontWeight: 400 }
 		},
 		radius: { box: 8, field: 6, selector: 4 },
 		effects: {
@@ -288,8 +288,8 @@ export const themes: TTheme[] = [
 			errorContent: hexToPaint('#2d1b69')
 		},
 		typography: {
-			heading: { fontFamily: 'B612', fontWeight: 700 },
-			text: { fontFamily: 'B612', fontWeight: 400 }
+			display: { fontFamily: 'B612', fontWeight: 700 },
+			body: { fontFamily: 'B612', fontWeight: 400 }
 		},
 		size: {
 			text: themeMetadata.size.text.get(0),
@@ -334,8 +334,8 @@ export const themes: TTheme[] = [
 			errorContent: hexToPaint('#2d1b69')
 		},
 		typography: {
-			heading: { fontFamily: 'Playfair Display', fontWeight: 700 },
-			text: { fontFamily: 'Lora', fontWeight: 400 }
+			display: { fontFamily: 'Playfair Display', fontWeight: 700 },
+			body: { fontFamily: 'Lora', fontWeight: 400 }
 		},
 		size: {
 			text: themeMetadata.size.text.get(2),
@@ -380,8 +380,8 @@ export const themes: TTheme[] = [
 			errorContent: hexToPaint('#000000')
 		},
 		typography: {
-			heading: { fontFamily: 'B612', fontWeight: 700 },
-			text: { fontFamily: 'B612', fontWeight: 400 }
+			display: { fontFamily: 'B612', fontWeight: 700 },
+			body: { fontFamily: 'B612', fontWeight: 400 }
 		},
 		radius: { box: 0, field: 0, selector: 0 },
 		effects: {
@@ -422,8 +422,8 @@ export const themes: TTheme[] = [
 			errorContent: hexToPaint('#ffffff')
 		},
 		typography: {
-			heading: { fontFamily: 'Playfair Display', fontWeight: 700 },
-			text: { fontFamily: 'Lora', fontWeight: 400 }
+			display: { fontFamily: 'Playfair Display', fontWeight: 700 },
+			body: { fontFamily: 'Lora', fontWeight: 400 }
 		},
 		radius: { box: 20, field: 16, selector: 12 },
 		effects: {
@@ -464,8 +464,8 @@ export const themes: TTheme[] = [
 			errorContent: hexToPaint('#ffffff')
 		},
 		typography: {
-			heading: { fontFamily: 'BioRhyme', fontWeight: 700 },
-			text: { fontFamily: 'BioRhyme', fontWeight: 400 }
+			display: { fontFamily: 'BioRhyme', fontWeight: 700 },
+			body: { fontFamily: 'BioRhyme', fontWeight: 400 }
 		},
 		size: {
 			text: themeMetadata.size.text.get(1),
@@ -510,8 +510,8 @@ export const themes: TTheme[] = [
 			errorContent: hexToPaint('#ffffff')
 		},
 		typography: {
-			heading: { fontFamily: 'Inter', fontWeight: 700 },
-			text: { fontFamily: 'Inter', fontWeight: 400 }
+			display: { fontFamily: 'Inter', fontWeight: 700 },
+			body: { fontFamily: 'Inter', fontWeight: 400 }
 		},
 		size: {
 			text: themeMetadata.size.text.get(0),
@@ -556,8 +556,8 @@ export const themes: TTheme[] = [
 			errorContent: hexToPaint('#ffffff')
 		},
 		typography: {
-			heading: { fontFamily: 'Inter', fontWeight: 700 },
-			text: { fontFamily: 'Inter', fontWeight: 400 }
+			display: { fontFamily: 'Inter', fontWeight: 700 },
+			body: { fontFamily: 'Inter', fontWeight: 400 }
 		},
 		size: {
 			text: themeMetadata.size.text.get(1),
@@ -602,8 +602,8 @@ export const themes: TTheme[] = [
 			errorContent: hexToPaint('#ffffff')
 		},
 		typography: {
-			heading: { fontFamily: 'Inter', fontWeight: 700 },
-			text: { fontFamily: 'Inter', fontWeight: 400 }
+			display: { fontFamily: 'Inter', fontWeight: 700 },
+			body: { fontFamily: 'Inter', fontWeight: 400 }
 		},
 		size: {
 			text: themeMetadata.size.text.get(0),
@@ -648,8 +648,8 @@ export const themes: TTheme[] = [
 			errorContent: hexToPaint('#ffffff')
 		},
 		typography: {
-			heading: { fontFamily: 'Cairo', fontWeight: 700 },
-			text: { fontFamily: 'Cairo', fontWeight: 400 }
+			display: { fontFamily: 'Cairo', fontWeight: 700 },
+			body: { fontFamily: 'Cairo', fontWeight: 400 }
 		},
 		radius: { box: 0, field: 0, selector: 0 },
 		effects: {
@@ -684,8 +684,8 @@ export const themes: TTheme[] = [
 			errorContent: hexToPaint('#7f1d1d')
 		},
 		typography: {
-			heading: { fontFamily: 'Mulish', fontWeight: 700 },
-			text: { fontFamily: 'Mulish', fontWeight: 400 }
+			display: { fontFamily: 'Mulish', fontWeight: 700 },
+			body: { fontFamily: 'Mulish', fontWeight: 400 }
 		},
 		radius: { box: 20, field: 16, selector: 12 },
 		effects: {
@@ -720,8 +720,8 @@ export const themes: TTheme[] = [
 			errorContent: hexToPaint('#ffffff')
 		},
 		typography: {
-			heading: { fontFamily: 'Vollkorn', fontWeight: 700 },
-			text: { fontFamily: 'Vollkorn', fontWeight: 400 }
+			display: { fontFamily: 'Vollkorn', fontWeight: 700 },
+			body: { fontFamily: 'Vollkorn', fontWeight: 400 }
 		},
 		size: {
 			text: themeMetadata.size.text.get(1),
@@ -766,8 +766,8 @@ export const themes: TTheme[] = [
 			errorContent: hexToPaint('#ffffff')
 		},
 		typography: {
-			heading: { fontFamily: 'system-ui', fontWeight: 700 },
-			text: { fontFamily: 'system-ui', fontWeight: 400 }
+			display: { fontFamily: 'system-ui', fontWeight: 700 },
+			body: { fontFamily: 'system-ui', fontWeight: 400 }
 		},
 		radius: { box: 0, field: 0, selector: 0 },
 		effects: {
@@ -808,8 +808,8 @@ export const themes: TTheme[] = [
 			errorContent: hexToPaint('#000000')
 		},
 		typography: {
-			heading: { fontFamily: 'Inter', fontWeight: 700 },
-			text: { fontFamily: 'Inter', fontWeight: 400 }
+			display: { fontFamily: 'Inter', fontWeight: 700 },
+			body: { fontFamily: 'Inter', fontWeight: 400 }
 		},
 		radius: { box: 8, field: 6, selector: 4 },
 		effects: {
@@ -850,8 +850,8 @@ export const themes: TTheme[] = [
 			errorContent: hexToPaint('#ffffff')
 		},
 		typography: {
-			heading: { fontFamily: 'Playfair Display', fontWeight: 700 },
-			text: { fontFamily: 'Lora', fontWeight: 400 }
+			display: { fontFamily: 'Playfair Display', fontWeight: 700 },
+			body: { fontFamily: 'Lora', fontWeight: 400 }
 		},
 		size: {
 			text: themeMetadata.size.text.get(-1),
@@ -896,8 +896,8 @@ export const themes: TTheme[] = [
 			errorContent: hexToPaint('#282a36')
 		},
 		typography: {
-			heading: { fontFamily: 'BioRhyme', fontWeight: 700 },
-			text: { fontFamily: 'BioRhyme', fontWeight: 400 }
+			display: { fontFamily: 'BioRhyme', fontWeight: 700 },
+			body: { fontFamily: 'BioRhyme', fontWeight: 400 }
 		},
 		size: {
 			text: themeMetadata.size.text.get(1),
@@ -942,8 +942,8 @@ export const themes: TTheme[] = [
 			errorContent: hexToPaint('#ffffff')
 		},
 		typography: {
-			heading: { fontFamily: 'Inter', fontWeight: 700 },
-			text: { fontFamily: 'Inter', fontWeight: 400 }
+			display: { fontFamily: 'Inter', fontWeight: 700 },
+			body: { fontFamily: 'Inter', fontWeight: 400 }
 		},
 		size: {
 			text: themeMetadata.size.text.get(-1),
@@ -988,8 +988,8 @@ export const themes: TTheme[] = [
 			errorContent: hexToPaint('#ffffff')
 		},
 		typography: {
-			heading: { fontFamily: 'Inter', fontWeight: 700 },
-			text: { fontFamily: 'Inter', fontWeight: 400 }
+			display: { fontFamily: 'Inter', fontWeight: 700 },
+			body: { fontFamily: 'Inter', fontWeight: 400 }
 		},
 		size: {
 			text: themeMetadata.size.text.get(1),
@@ -1028,8 +1028,8 @@ export const themes: TTheme[] = [
 			errorContent: hexToPaint('#ffffff')
 		},
 		typography: {
-			heading: { fontFamily: 'Inter', fontWeight: 700 },
-			text: { fontFamily: 'Inter', fontWeight: 400 }
+			display: { fontFamily: 'Inter', fontWeight: 700 },
+			body: { fontFamily: 'Inter', fontWeight: 400 }
 		},
 		radius: { box: 6, field: 4, selector: 2 },
 		effects: {
@@ -1070,8 +1070,8 @@ export const themes: TTheme[] = [
 			errorContent: hexToPaint('#000000')
 		},
 		typography: {
-			heading: { fontFamily: 'B612', fontWeight: 700 },
-			text: { fontFamily: 'B612', fontWeight: 400 }
+			display: { fontFamily: 'B612', fontWeight: 700 },
+			body: { fontFamily: 'B612', fontWeight: 400 }
 		},
 		size: {
 			text: themeMetadata.size.text.get(0),
@@ -1110,8 +1110,8 @@ export const themes: TTheme[] = [
 			errorContent: hexToPaint('#ffffff')
 		},
 		typography: {
-			heading: { fontFamily: 'Inter', fontWeight: 700 },
-			text: { fontFamily: 'Inter', fontWeight: 400 }
+			display: { fontFamily: 'Inter', fontWeight: 700 },
+			body: { fontFamily: 'Inter', fontWeight: 400 }
 		},
 		size: {
 			text: themeMetadata.size.text.get(1),
@@ -1156,8 +1156,8 @@ export const themes: TTheme[] = [
 			errorContent: hexToPaint('#0f172a')
 		},
 		typography: {
-			heading: { fontFamily: 'Inter', fontWeight: 700 },
-			text: { fontFamily: 'Inter', fontWeight: 400 }
+			display: { fontFamily: 'Inter', fontWeight: 700 },
+			body: { fontFamily: 'Inter', fontWeight: 400 }
 		},
 		size: {
 			text: themeMetadata.size.text.get(0),
@@ -1202,8 +1202,8 @@ export const themes: TTheme[] = [
 			errorContent: hexToPaint('#1a1a1a')
 		},
 		typography: {
-			heading: { fontFamily: 'Inter', fontWeight: 700 },
-			text: { fontFamily: 'Inter', fontWeight: 400 }
+			display: { fontFamily: 'Inter', fontWeight: 700 },
+			body: { fontFamily: 'Inter', fontWeight: 400 }
 		},
 		size: {
 			text: themeMetadata.size.text.get(1),
@@ -1248,8 +1248,8 @@ export const themes: TTheme[] = [
 			errorContent: hexToPaint('#ffffff')
 		},
 		typography: {
-			heading: { fontFamily: 'Inter', fontWeight: 700 },
-			text: { fontFamily: 'Inter', fontWeight: 400 }
+			display: { fontFamily: 'Inter', fontWeight: 700 },
+			body: { fontFamily: 'Inter', fontWeight: 400 }
 		},
 		size: {
 			text: themeMetadata.size.text.get(0),
@@ -1294,8 +1294,8 @@ export const themes: TTheme[] = [
 			errorContent: hexToPaint('#1f2937')
 		},
 		typography: {
-			heading: { fontFamily: 'Inter', fontWeight: 700 },
-			text: { fontFamily: 'Inter', fontWeight: 400 }
+			display: { fontFamily: 'Inter', fontWeight: 700 },
+			body: { fontFamily: 'Inter', fontWeight: 400 }
 		},
 		radius: { box: 12, field: 8, selector: 6 },
 		effects: {
@@ -1336,8 +1336,8 @@ export const themes: TTheme[] = [
 			errorContent: hexToPaint('#2e3440')
 		},
 		typography: {
-			heading: { fontFamily: 'Inter', fontWeight: 700 },
-			text: { fontFamily: 'Inter', fontWeight: 400 }
+			display: { fontFamily: 'Inter', fontWeight: 700 },
+			body: { fontFamily: 'Inter', fontWeight: 400 }
 		},
 		radius: { box: 12, field: 8, selector: 6 },
 		effects: {
@@ -1378,8 +1378,8 @@ export const themes: TTheme[] = [
 			errorContent: hexToPaint('#ffffff')
 		},
 		typography: {
-			heading: { fontFamily: 'Inter', fontWeight: 700 },
-			text: { fontFamily: 'Inter', fontWeight: 400 }
+			display: { fontFamily: 'Inter', fontWeight: 700 },
+			body: { fontFamily: 'Inter', fontWeight: 400 }
 		},
 		size: {
 			text: themeMetadata.size.text.get(1),
@@ -1437,11 +1437,11 @@ export interface TTheme {
 		errorContent: TSolidPaint;
 	};
 	typography: {
-		heading: {
+		display: {
 			fontFamily: string;
 			fontWeight: 400 | 500 | 600 | 700;
 		};
-		text: {
+		body: {
 			fontFamily: string;
 			fontWeight: 300 | 400 | 500;
 		};

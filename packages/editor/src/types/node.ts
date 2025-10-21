@@ -18,7 +18,7 @@ import {
 	TStrokeStyleMixin,
 	TTextBodyStyleMixin,
 	TTextCaptionStyleMixin,
-	TTextTitleStyleMixin
+	TTextHeadingStyleMixin
 } from './mixin';
 import {
 	TAction,
@@ -169,7 +169,7 @@ export type TClassicAboutNodeBundle = TNodeBundle<
 		TFillStyleMixin,
 		TStrokeStyleMixin,
 		TShadowStyleMixin,
-		TTextTitleStyleMixin,
+		TTextHeadingStyleMixin,
 		TTextBodyStyleMixin,
 		TImageStyleMixin
 	]
@@ -186,7 +186,7 @@ export type THeroAboutNodeBundle = TNodeBundle<
 		TFillStyleMixin,
 		TStrokeStyleMixin,
 		TShadowStyleMixin,
-		TTextTitleStyleMixin,
+		TTextHeadingStyleMixin,
 		TTextBodyStyleMixin
 	]
 >;
@@ -414,7 +414,7 @@ export type TSectionTitleTextNodeBundle = TNodeBundle<
 		TBasicTextNodeContentMixin,
 		TAutoLayoutStyleMixin,
 		TAppearanceStyleMixin,
-		TTextTitleStyleMixin
+		TTextHeadingStyleMixin
 	]
 >;
 

@@ -36,22 +36,22 @@ export const aboutNodeMetadata: TNodeMetadata<TAboutNode> = {
 			fill: null,
 			stroke: null,
 			shadow: null,
-			textTitle: {
-				appearance: tokenRef('text.title', 'text', 'appearance'),
+			textHeading: {
+				appearance: tokenRef('text.heading', 'text', 'appearance'),
 				typography: {
-					font: tokenRef('text.title', 'text', 'typography.font'),
-					fontSize: tokenRef('text.title', 'text', 'typography.fontSize'),
+					font: tokenRef('text.heading', 'text', 'typography.font'),
+					fontSize: tokenRef('text.heading', 'text', 'typography.fontSize'),
 					textAlignHorizontal: 'center',
 					textAlignVertical: 'center',
-					lineHeight: tokenRef('text.title', 'text', 'typography.lineHeight'),
-					letterSpacing: tokenRef('text.title', 'text', 'typography.letterSpacing')
+					lineHeight: tokenRef('text.heading', 'text', 'typography.lineHeight'),
+					letterSpacing: tokenRef('text.heading', 'text', 'typography.letterSpacing')
 				},
 				fill: {
 					paint: tokenRef('paint.base200.content', 'paint.solid'),
-					opacity: tokenRef('text.title', 'text', 'fill.opacity')
+					opacity: tokenRef('text.heading', 'text', 'fill.opacity')
 				},
-				stroke: tokenRef('text.title', 'text', 'stroke'),
-				shadow: tokenRef('text.title', 'text', 'shadow')
+				stroke: tokenRef('text.heading', 'text', 'stroke'),
+				shadow: tokenRef('text.heading', 'text', 'shadow')
 			},
 			textBody: {
 				appearance: tokenRef('text.body', 'text', 'appearance'),
@@ -99,22 +99,22 @@ export const aboutNodeMetadata: TNodeMetadata<TAboutNode> = {
 			fill: null,
 			stroke: null,
 			shadow: null,
-			textTitle: {
-				appearance: tokenRef('text.title', 'text', 'appearance'),
+			textHeading: {
+				appearance: tokenRef('text.heading', 'text', 'appearance'),
 				typography: {
-					font: tokenRef('text.title', 'text', 'typography.font'),
+					font: tokenRef('text.heading', 'text', 'typography.font'),
 					fontSize: 40,
 					textAlignHorizontal: 'center',
 					textAlignVertical: 'center',
-					lineHeight: tokenRef('text.title', 'text', 'typography.lineHeight'),
-					letterSpacing: tokenRef('text.title', 'text', 'typography.letterSpacing')
+					lineHeight: tokenRef('text.heading', 'text', 'typography.lineHeight'),
+					letterSpacing: tokenRef('text.heading', 'text', 'typography.letterSpacing')
 				},
 				fill: {
 					paint: tokenRef('paint.base200.content', 'paint.solid'),
-					opacity: tokenRef('text.title', 'text', 'fill.opacity')
+					opacity: tokenRef('text.heading', 'text', 'fill.opacity')
 				},
-				stroke: tokenRef('text.title', 'text', 'stroke'),
-				shadow: tokenRef('text.title', 'text', 'shadow')
+				stroke: tokenRef('text.heading', 'text', 'stroke'),
+				shadow: tokenRef('text.heading', 'text', 'shadow')
 			},
 			textBody: {
 				appearance: tokenRef('text.body', 'text', 'appearance'),
@@ -482,22 +482,22 @@ export const textNodeMetadata: TNodeMetadata<TTextNode> = {
 				marginLeft: tokenRef('auto-layout.default', 'auto-layout', 'marginLeft')
 			},
 			appearance: tokenRef('appearance.default', 'appearance'),
-			textTitle: {
-				appearance: tokenRef('text.title', 'text', 'appearance'),
+			textHeading: {
+				appearance: tokenRef('text.heading', 'text', 'appearance'),
 				typography: {
-					font: tokenRef('text.title', 'text', 'typography.font'),
+					font: tokenRef('text.heading', 'text', 'typography.font'),
 					fontSize: tokenRef('size.text.lg', 'number'),
 					textAlignHorizontal: 'center',
 					textAlignVertical: 'center',
-					lineHeight: tokenRef('text.title', 'text', 'typography.lineHeight'),
-					letterSpacing: tokenRef('text.title', 'text', 'typography.letterSpacing')
+					lineHeight: tokenRef('text.heading', 'text', 'typography.lineHeight'),
+					letterSpacing: tokenRef('text.heading', 'text', 'typography.letterSpacing')
 				},
 				fill: {
 					paint: tokenRef('paint.base200.content', 'paint.solid'),
-					opacity: tokenRef('text.title', 'text', 'fill.opacity')
+					opacity: tokenRef('text.heading', 'text', 'fill.opacity')
 				},
-				stroke: tokenRef('text.title', 'text', 'stroke'),
-				shadow: tokenRef('text.title', 'text', 'shadow')
+				stroke: tokenRef('text.heading', 'text', 'stroke'),
+				shadow: tokenRef('text.heading', 'text', 'shadow')
 			}
 		}
 	}

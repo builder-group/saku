@@ -34,7 +34,7 @@ export function createThemeTokens(theme: TTheme): TToken[] {
 			type: 'typography',
 			key: 'typography.default',
 			value: {
-				font: tokenRef('font.text', 'font'),
+				font: tokenRef('font.body', 'font'),
 				fontSize: tokenRef('size.text.base', 'number'),
 				textAlignHorizontal: 'center',
 				textAlignVertical: 'center',
@@ -59,7 +59,7 @@ export function createThemeTokens(theme: TTheme): TToken[] {
 					opacity: 1
 				},
 				typography: {
-					font: tokenRef('font.text', 'font'),
+					font: tokenRef('font.body', 'font'),
 					fontSize: tokenRef('size.text.base', 'number'),
 					textAlignHorizontal: 'center',
 					textAlignVertical: 'center',
@@ -76,14 +76,14 @@ export function createThemeTokens(theme: TTheme): TToken[] {
 		},
 		{
 			type: 'text',
-			key: 'text.title',
+			key: 'text.heading',
 			value: {
 				appearance: {
 					visible: true,
 					opacity: 1
 				},
 				typography: {
-					font: tokenRef('font.heading', 'font'),
+					font: tokenRef('font.display', 'font'),
 					fontSize: tokenRef('size.text.2xl', 'number'),
 					textAlignHorizontal: 'center',
 					textAlignVertical: 'center',
@@ -107,7 +107,7 @@ export function createThemeTokens(theme: TTheme): TToken[] {
 					opacity: 1
 				},
 				typography: {
-					font: tokenRef('font.text', 'font'),
+					font: tokenRef('font.body', 'font'),
 					fontSize: tokenRef('size.text.base', 'number'),
 					textAlignHorizontal: 'center',
 					textAlignVertical: 'center',
@@ -131,7 +131,7 @@ export function createThemeTokens(theme: TTheme): TToken[] {
 					opacity: 1
 				},
 				typography: {
-					font: tokenRef('font.text', 'font'),
+					font: tokenRef('font.body', 'font'),
 					fontSize: tokenRef('size.text.sm', 'number'),
 					textAlignHorizontal: 'center',
 					textAlignVertical: 'center',
@@ -167,7 +167,7 @@ export function createThemeTokens(theme: TTheme): TToken[] {
 						opacity: 1
 					},
 					typography: {
-						font: tokenRef('font.text', 'font'),
+						font: tokenRef('font.body', 'font'),
 						fontSize: tokenRef('size.text.base', 'number'),
 						textAlignHorizontal: 'center',
 						textAlignVertical: 'center',
@@ -204,7 +204,7 @@ export function createThemeTokens(theme: TTheme): TToken[] {
 						opacity: 1
 					},
 					typography: {
-						font: tokenRef('font.text', 'font'),
+						font: tokenRef('font.body', 'font'),
 						fontSize: tokenRef('size.text.base', 'number'),
 						textAlignHorizontal: 'center',
 						textAlignVertical: 'center',
@@ -241,7 +241,7 @@ export function createThemeTokens(theme: TTheme): TToken[] {
 						opacity: 1
 					},
 					typography: {
-						font: tokenRef('font.text', 'font'),
+						font: tokenRef('font.body', 'font'),
 						fontSize: tokenRef('size.text.sm', 'number'),
 						textAlignHorizontal: 'center',
 						textAlignVertical: 'center',
@@ -278,7 +278,7 @@ export function createThemeTokens(theme: TTheme): TToken[] {
 						opacity: 1
 					},
 					typography: {
-						font: tokenRef('font.text', 'font'),
+						font: tokenRef('font.body', 'font'),
 						fontSize: tokenRef('size.text.sm', 'number'),
 						textAlignHorizontal: 'center',
 						textAlignVertical: 'center',
@@ -322,13 +322,13 @@ export function createThemeTokens(theme: TTheme): TToken[] {
 				},
 				stroke: null,
 				shadow: null,
-				textTitle: {
+				textHeading: {
 					appearance: {
 						visible: true,
 						opacity: 1
 					},
 					typography: {
-						font: tokenRef('font.heading', 'font'),
+						font: tokenRef('font.display', 'font'),
 						fontSize: tokenRef('size.text.2xl', 'number'),
 						textAlignHorizontal: 'start',
 						textAlignVertical: 'center',
@@ -348,7 +348,7 @@ export function createThemeTokens(theme: TTheme): TToken[] {
 						opacity: 1
 					},
 					typography: {
-						font: tokenRef('font.text', 'font'),
+						font: tokenRef('font.body', 'font'),
 						fontSize: tokenRef('size.text.base', 'number'),
 						textAlignHorizontal: 'start',
 						textAlignVertical: 'center',
@@ -514,18 +514,18 @@ export function createThemeOverrideTokens(theme: TTheme): TToken[] {
 		// Font tokens
 		{
 			type: 'font',
-			key: 'font.heading',
+			key: 'font.display',
 			value: {
-				family: typography.heading.fontFamily,
-				weight: typography.heading.fontWeight
+				family: typography.display.fontFamily,
+				weight: typography.display.fontWeight
 			}
 		},
 		{
 			type: 'font',
-			key: 'font.text',
+			key: 'font.body',
 			value: {
-				family: typography.text.fontFamily,
-				weight: typography.text.fontWeight
+				family: typography.body.fontFamily,
+				weight: typography.body.fontWeight
 			}
 		},
 

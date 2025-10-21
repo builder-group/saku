@@ -21,5 +21,12 @@ export type TResolvedTextStyleMixin = TBaseMixin<
 			TResolvedTypographyStyleMixin['value']['styles'];
 	}
 >;
-export type TResolvedTextXlStyleMixin = TBaseMixin<'textXl', TResolvedTextStyleMixin['value']>;
-export type TResolvedTextSmStyleMixin = TBaseMixin<'textSm', TResolvedTextStyleMixin['value']>;
+export type TResolvedTextHeadingStyleMixin = TBaseMixin<
+	'textHeading',
+	TResolvedTextStyleMixin['value']
+>;
+export type TResolvedTextBodyStyleMixin = TBaseMixin<'textBody', TResolvedTextStyleMixin['value']>;
+export type TResolvedTextCaptionStyleMixin = TBaseMixin<
+	'textCaption',
+	TResolvedTextStyleMixin['value']
+>;

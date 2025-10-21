@@ -53,19 +53,17 @@ export function resolveProductDetailsStyleMixin(
 	if (!isResolvedShadowOk) {
 		return Err(resolvedShadowErr.wrapWith('#ERR_RESOLVE_SHADOW_STYLE'));
 	}
-	const [isResolvedTextXlOk, resolvedTextXlErr, resolvedTextXl] = resolveTextStyleMixin(
-		resolvedProductDetails.textXl,
-		cx
-	);
-	if (!isResolvedTextXlOk) {
-		return Err(resolvedTextXlErr.wrapWith('#ERR_RESOLVE_TEXT_XL_STYLE'));
+	const [isResolvedTextHeadingOk, resolvedTextHeadingErr, resolvedTextHeading] =
+		resolveTextStyleMixin(resolvedProductDetails.textHeading, cx);
+	if (!isResolvedTextHeadingOk) {
+		return Err(resolvedTextHeadingErr.wrapWith('#ERR_RESOLVE_TEXT_TITLE_STYLE'));
 	}
-	const [isResolvedTextOk, resolvedTextErr, resolvedText] = resolveTextStyleMixin(
-		resolvedProductDetails.text,
+	const [isResolvedTextBodyOk, resolvedTextBodyErr, resolvedTextBody] = resolveTextStyleMixin(
+		resolvedProductDetails.textBody,
 		cx
 	);
-	if (!isResolvedTextOk) {
-		return Err(resolvedTextErr.wrapWith('#ERR_RESOLVE_TEXT_STYLE'));
+	if (!isResolvedTextBodyOk) {
+		return Err(resolvedTextBodyErr.wrapWith('#ERR_RESOLVE_TEXT_BODY_STYLE'));
 	}
 	const [isResolvedButtonPrimaryOk, resolvedButtonPrimaryErr, resolvedButtonPrimary] =
 		resolveButtonStyleMixin(resolvedProductDetails.buttonPrimary, cx);
@@ -85,8 +83,8 @@ export function resolveProductDetailsStyleMixin(
 		fill: resolvedFill,
 		stroke: resolvedStroke,
 		shadow: resolvedShadow,
-		textXl: resolvedTextXl,
-		text: resolvedText,
+		textHeading: resolvedTextHeading,
+		textBody: resolvedTextBody,
 		buttonPrimary: resolvedButtonPrimary,
 		image: resolvedImage,
 		styles: {
