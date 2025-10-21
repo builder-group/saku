@@ -4,20 +4,20 @@ import { TPaint, TSolidPaint } from '../types';
 export const themeMetadata = {
 	size: {
 		text: {
-			xs: 12,
-			sm: 14,
-			md: 16,
-			lg: 18,
-			xl: 20,
+			'sm': 14,
+			'base': 16,
+			'lg': 18,
+			'xl': 20,
+			'2xl': 24,
 			// step: 0.125
-			get: (step = 0) => 1 + step * 0.125
+			'get': (step = 0) => 1 + step * 0.125
 		},
 		box: {
-			xs: 2,
-			sm: 4,
-			md: 6,
-			lg: 8,
-			xl: 12,
+			xs: 4,
+			sm: 6,
+			base: 8,
+			lg: 12,
+			xl: 16,
 			// step: 0.25
 			get: (step = 0) => 1 + step * 0.25
 		}

@@ -9,16 +9,16 @@ export function createThemeTokens(theme: TTheme): TToken[] {
 			type: 'auto-layout',
 			key: 'auto-layout.default',
 			value: {
-				paddingTop: tokenRef('size.box.lg', 'number'),
-				paddingRight: tokenRef('size.box.lg', 'number'),
-				paddingBottom: tokenRef('size.box.lg', 'number'),
-				paddingLeft: tokenRef('size.box.lg', 'number'),
+				paddingTop: tokenRef('size.box.base', 'number'),
+				paddingRight: tokenRef('size.box.base', 'number'),
+				paddingBottom: tokenRef('size.box.base', 'number'),
+				paddingLeft: tokenRef('size.box.base', 'number'),
 				marginTop: 0,
 				marginRight: 12,
 				marginBottom: 0,
 				marginLeft: 12,
-				verticalGap: tokenRef('size.box.md', 'number'),
-				horizontalGap: tokenRef('size.box.md', 'number')
+				verticalGap: tokenRef('size.box.sm', 'number'),
+				horizontalGap: tokenRef('size.box.sm', 'number')
 			}
 		},
 		{
@@ -35,7 +35,7 @@ export function createThemeTokens(theme: TTheme): TToken[] {
 			key: 'typography.default',
 			value: {
 				font: tokenRef('font.text', 'font'),
-				fontSize: tokenRef('size.text.md', 'number'),
+				fontSize: tokenRef('size.text.base', 'number'),
 				textAlignHorizontal: 'center',
 				textAlignVertical: 'center',
 				lineHeight: { type: 'auto' },
@@ -60,7 +60,7 @@ export function createThemeTokens(theme: TTheme): TToken[] {
 				},
 				typography: {
 					font: tokenRef('font.text', 'font'),
-					fontSize: tokenRef('size.text.md', 'number'),
+					fontSize: tokenRef('size.text.base', 'number'),
 					textAlignHorizontal: 'center',
 					textAlignVertical: 'center',
 					lineHeight: { type: 'auto' },
@@ -76,7 +76,7 @@ export function createThemeTokens(theme: TTheme): TToken[] {
 		},
 		{
 			type: 'text',
-			key: 'text.xl',
+			key: 'text.title',
 			value: {
 				appearance: {
 					visible: true,
@@ -84,7 +84,7 @@ export function createThemeTokens(theme: TTheme): TToken[] {
 				},
 				typography: {
 					font: tokenRef('font.heading', 'font'),
-					fontSize: tokenRef('size.text.lg', 'number'),
+					fontSize: tokenRef('size.text.2xl', 'number'),
 					textAlignHorizontal: 'center',
 					textAlignVertical: 'center',
 					lineHeight: { type: 'auto' },
@@ -100,7 +100,31 @@ export function createThemeTokens(theme: TTheme): TToken[] {
 		},
 		{
 			type: 'text',
-			key: 'text.sm',
+			key: 'text.body',
+			value: {
+				appearance: {
+					visible: true,
+					opacity: 1
+				},
+				typography: {
+					font: tokenRef('font.text', 'font'),
+					fontSize: tokenRef('size.text.base', 'number'),
+					textAlignHorizontal: 'center',
+					textAlignVertical: 'center',
+					lineHeight: { type: 'auto' },
+					letterSpacing: { type: 'auto' }
+				},
+				fill: {
+					paint: tokenRef('paint.base100.content', 'paint'),
+					opacity: 1
+				},
+				stroke: null,
+				shadow: null
+			}
+		},
+		{
+			type: 'text',
+			key: 'text.caption',
 			value: {
 				appearance: {
 					visible: true,
@@ -144,7 +168,7 @@ export function createThemeTokens(theme: TTheme): TToken[] {
 					},
 					typography: {
 						font: tokenRef('font.text', 'font'),
-						fontSize: tokenRef('size.text.md', 'number'),
+						fontSize: tokenRef('size.text.base', 'number'),
 						textAlignHorizontal: 'center',
 						textAlignVertical: 'center',
 						lineHeight: { type: 'auto' },
@@ -181,7 +205,7 @@ export function createThemeTokens(theme: TTheme): TToken[] {
 					},
 					typography: {
 						font: tokenRef('font.text', 'font'),
-						fontSize: tokenRef('size.text.md', 'number'),
+						fontSize: tokenRef('size.text.base', 'number'),
 						textAlignHorizontal: 'center',
 						textAlignVertical: 'center',
 						lineHeight: { type: 'auto' },
@@ -298,14 +322,14 @@ export function createThemeTokens(theme: TTheme): TToken[] {
 				},
 				stroke: null,
 				shadow: null,
-				textXl: {
+				textTitle: {
 					appearance: {
 						visible: true,
 						opacity: 1
 					},
 					typography: {
 						font: tokenRef('font.heading', 'font'),
-						fontSize: tokenRef('size.text.xl', 'number'),
+						fontSize: tokenRef('size.text.2xl', 'number'),
 						textAlignHorizontal: 'start',
 						textAlignVertical: 'center',
 						lineHeight: { type: 'auto' },
@@ -318,14 +342,14 @@ export function createThemeTokens(theme: TTheme): TToken[] {
 					stroke: null,
 					shadow: null
 				},
-				text: {
+				textBody: {
 					appearance: {
 						visible: true,
 						opacity: 1
 					},
 					typography: {
 						font: tokenRef('font.text', 'font'),
-						fontSize: tokenRef('size.text.md', 'number'),
+						fontSize: tokenRef('size.text.base', 'number'),
 						textAlignHorizontal: 'start',
 						textAlignVertical: 'center',
 						lineHeight: { type: 'auto' },
@@ -520,18 +544,13 @@ export function createThemeOverrideTokens(theme: TTheme): TToken[] {
 		},
 		{
 			type: 'number',
-			key: 'size.text.xs',
-			value: textSize * themeMetadata.size.text.xs
-		},
-		{
-			type: 'number',
 			key: 'size.text.sm',
 			value: textSize * themeMetadata.size.text.sm
 		},
 		{
 			type: 'number',
-			key: 'size.text.md',
-			value: textSize * themeMetadata.size.text.md
+			key: 'size.text.base',
+			value: textSize * themeMetadata.size.text.base
 		},
 		{
 			type: 'number',
@@ -542,6 +561,11 @@ export function createThemeOverrideTokens(theme: TTheme): TToken[] {
 			type: 'number',
 			key: 'size.text.xl',
 			value: textSize * themeMetadata.size.text.xl
+		},
+		{
+			type: 'number',
+			key: 'size.text.2xl',
+			value: textSize * themeMetadata.size.text['2xl']
 		},
 		{
 			type: 'number',
@@ -560,8 +584,8 @@ export function createThemeOverrideTokens(theme: TTheme): TToken[] {
 		},
 		{
 			type: 'number',
-			key: 'size.box.md',
-			value: boxSize * themeMetadata.size.box.md
+			key: 'size.box.base',
+			value: boxSize * themeMetadata.size.box.base
 		},
 		{
 			type: 'number',

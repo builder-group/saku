@@ -36,39 +36,39 @@ export const aboutNodeMetadata: TNodeMetadata<TAboutNode> = {
 			fill: null,
 			stroke: null,
 			shadow: null,
-			textXl: {
-				appearance: tokenRef('text.xl', 'text', 'appearance'),
+			textTitle: {
+				appearance: tokenRef('text.title', 'text', 'appearance'),
 				typography: {
-					font: tokenRef('text.xl', 'text', 'typography.font'),
-					fontSize: tokenRef('text.xl', 'text', 'typography.fontSize'),
+					font: tokenRef('text.title', 'text', 'typography.font'),
+					fontSize: tokenRef('text.title', 'text', 'typography.fontSize'),
 					textAlignHorizontal: 'center',
 					textAlignVertical: 'center',
-					lineHeight: tokenRef('text.xl', 'text', 'typography.lineHeight'),
-					letterSpacing: tokenRef('text.xl', 'text', 'typography.letterSpacing')
+					lineHeight: tokenRef('text.title', 'text', 'typography.lineHeight'),
+					letterSpacing: tokenRef('text.title', 'text', 'typography.letterSpacing')
 				},
 				fill: {
 					paint: tokenRef('paint.base200.content', 'paint.solid'),
-					opacity: tokenRef('text.xl', 'text', 'fill.opacity')
+					opacity: tokenRef('text.title', 'text', 'fill.opacity')
 				},
-				stroke: tokenRef('text.xl', 'text', 'stroke'),
-				shadow: tokenRef('text.xl', 'text', 'shadow')
+				stroke: tokenRef('text.title', 'text', 'stroke'),
+				shadow: tokenRef('text.title', 'text', 'shadow')
 			},
-			text: {
-				appearance: tokenRef('text.default', 'text', 'appearance'),
+			textBody: {
+				appearance: tokenRef('text.body', 'text', 'appearance'),
 				typography: {
-					font: tokenRef('text.default', 'text', 'typography.font'),
-					fontSize: tokenRef('text.default', 'text', 'typography.fontSize'),
+					font: tokenRef('text.body', 'text', 'typography.font'),
+					fontSize: tokenRef('text.body', 'text', 'typography.fontSize'),
 					textAlignHorizontal: 'center',
 					textAlignVertical: 'center',
-					lineHeight: tokenRef('text.default', 'text', 'typography.lineHeight'),
-					letterSpacing: tokenRef('text.default', 'text', 'typography.letterSpacing')
+					lineHeight: tokenRef('text.body', 'text', 'typography.lineHeight'),
+					letterSpacing: tokenRef('text.body', 'text', 'typography.letterSpacing')
 				},
 				fill: {
 					paint: tokenRef('paint.base200.content', 'paint.solid'),
-					opacity: tokenRef('text.default', 'text', 'fill.opacity')
+					opacity: tokenRef('text.body', 'text', 'fill.opacity')
 				},
-				stroke: tokenRef('text.default', 'text', 'stroke'),
-				shadow: tokenRef('text.default', 'text', 'shadow')
+				stroke: tokenRef('text.body', 'text', 'stroke'),
+				shadow: tokenRef('text.body', 'text', 'shadow')
 			},
 			image: tokenRef('image.default', 'image')
 		},
@@ -99,39 +99,39 @@ export const aboutNodeMetadata: TNodeMetadata<TAboutNode> = {
 			fill: null,
 			stroke: null,
 			shadow: null,
-			textXl: {
-				appearance: tokenRef('text.xl', 'text', 'appearance'),
+			textTitle: {
+				appearance: tokenRef('text.title', 'text', 'appearance'),
 				typography: {
-					font: tokenRef('text.xl', 'text', 'typography.font'),
+					font: tokenRef('text.title', 'text', 'typography.font'),
 					fontSize: 40,
 					textAlignHorizontal: 'center',
 					textAlignVertical: 'center',
-					lineHeight: tokenRef('text.xl', 'text', 'typography.lineHeight'),
-					letterSpacing: tokenRef('text.xl', 'text', 'typography.letterSpacing')
+					lineHeight: tokenRef('text.title', 'text', 'typography.lineHeight'),
+					letterSpacing: tokenRef('text.title', 'text', 'typography.letterSpacing')
 				},
 				fill: {
 					paint: tokenRef('paint.base200.content', 'paint.solid'),
-					opacity: tokenRef('text.xl', 'text', 'fill.opacity')
+					opacity: tokenRef('text.title', 'text', 'fill.opacity')
 				},
-				stroke: tokenRef('text.xl', 'text', 'stroke'),
-				shadow: tokenRef('text.xl', 'text', 'shadow')
+				stroke: tokenRef('text.title', 'text', 'stroke'),
+				shadow: tokenRef('text.title', 'text', 'shadow')
 			},
-			text: {
-				appearance: tokenRef('text.default', 'text', 'appearance'),
+			textBody: {
+				appearance: tokenRef('text.body', 'text', 'appearance'),
 				typography: {
-					font: tokenRef('text.default', 'text', 'typography.font'),
-					fontSize: tokenRef('text.default', 'text', 'typography.fontSize'),
+					font: tokenRef('text.body', 'text', 'typography.font'),
+					fontSize: tokenRef('text.body', 'text', 'typography.fontSize'),
 					textAlignHorizontal: 'center',
 					textAlignVertical: 'center',
-					lineHeight: tokenRef('text.default', 'text', 'typography.lineHeight'),
-					letterSpacing: tokenRef('text.default', 'text', 'typography.letterSpacing')
+					lineHeight: tokenRef('text.body', 'text', 'typography.lineHeight'),
+					letterSpacing: tokenRef('text.body', 'text', 'typography.letterSpacing')
 				},
 				fill: {
 					paint: tokenRef('paint.base200.content', 'paint.solid'),
-					opacity: tokenRef('text.default', 'text', 'fill.opacity')
+					opacity: tokenRef('text.body', 'text', 'fill.opacity')
 				},
-				stroke: tokenRef('text.default', 'text', 'stroke'),
-				shadow: tokenRef('text.default', 'text', 'shadow')
+				stroke: tokenRef('text.body', 'text', 'stroke'),
+				shadow: tokenRef('text.body', 'text', 'shadow')
 			}
 		}
 	}
@@ -163,8 +163,8 @@ export const linkNodeMetadata: TNodeMetadata<TLinkNode> = {
 			fill: tokenRef('fill.default', 'fill'),
 			stroke: tokenRef('stroke.default', 'stroke'),
 			shadow: tokenRef('shadow.default', 'shadow'),
-			text: tokenRef('text.default', 'text'),
-			textSm: tokenRef('text.sm', 'text'),
+			textBody: tokenRef('text.body', 'text'),
+			textCaption: tokenRef('text.caption', 'text'),
 			image: {
 				appearance: {
 					visible: true,
@@ -196,8 +196,8 @@ export const linkNodeMetadata: TNodeMetadata<TLinkNode> = {
 			fill: tokenRef('fill.default', 'fill'),
 			stroke: tokenRef('stroke.default', 'stroke'),
 			shadow: tokenRef('shadow.default', 'shadow'),
-			text: tokenRef('text.default', 'text'),
-			textSm: tokenRef('text.sm', 'text'),
+			textBody: tokenRef('text.body', 'text'),
+			textCaption: tokenRef('text.caption', 'text'),
 			image: {
 				appearance: {
 					visible: true,
@@ -362,22 +362,22 @@ export const pageNodeMetadata: TNodeMetadata<TFlatPageNode> = {
 				paint: tokenRef('paint.base200', 'paint'),
 				opacity: 1
 			},
-			textSm: {
-				appearance: tokenRef('text.sm', 'text', 'appearance'),
+			textCaption: {
+				appearance: tokenRef('text.caption', 'text', 'appearance'),
 				typography: {
-					font: tokenRef('text.sm', 'text', 'typography.font'),
-					fontSize: tokenRef('text.sm', 'text', 'typography.fontSize'),
+					font: tokenRef('text.caption', 'text', 'typography.font'),
+					fontSize: tokenRef('text.caption', 'text', 'typography.fontSize'),
 					textAlignHorizontal: 'center',
 					textAlignVertical: 'center',
-					lineHeight: tokenRef('text.sm', 'text', 'typography.lineHeight'),
-					letterSpacing: tokenRef('text.sm', 'text', 'typography.letterSpacing')
+					lineHeight: tokenRef('text.caption', 'text', 'typography.lineHeight'),
+					letterSpacing: tokenRef('text.caption', 'text', 'typography.letterSpacing')
 				},
 				fill: {
 					paint: tokenRef('paint.base200.content', 'paint.solid'),
-					opacity: tokenRef('text.sm', 'text', 'fill.opacity')
+					opacity: tokenRef('text.caption', 'text', 'fill.opacity')
 				},
-				stroke: tokenRef('text.sm', 'text', 'stroke'),
-				shadow: tokenRef('text.sm', 'text', 'shadow')
+				stroke: tokenRef('text.caption', 'text', 'stroke'),
+				shadow: tokenRef('text.caption', 'text', 'shadow')
 			}
 		}
 	}
@@ -407,19 +407,19 @@ export const productNodeMetadata: TNodeMetadata<TProductNode> = {
 			fill: tokenRef('fill.default', 'fill'),
 			stroke: tokenRef('stroke.default', 'stroke'),
 			shadow: tokenRef('shadow.default', 'shadow'),
-			text: {
-				appearance: tokenRef('text.default', 'text', 'appearance'),
+			textBody: {
+				appearance: tokenRef('text.body', 'text', 'appearance'),
 				typography: {
-					font: tokenRef('text.default', 'text', 'typography.font'),
-					fontSize: tokenRef('text.default', 'text', 'typography.fontSize'),
+					font: tokenRef('text.body', 'text', 'typography.font'),
+					fontSize: tokenRef('text.body', 'text', 'typography.fontSize'),
 					textAlignHorizontal: 'start',
-					textAlignVertical: tokenRef('text.default', 'text', 'typography.textAlignVertical'),
-					lineHeight: tokenRef('text.default', 'text', 'typography.lineHeight'),
-					letterSpacing: tokenRef('text.default', 'text', 'typography.letterSpacing')
+					textAlignVertical: tokenRef('text.body', 'text', 'typography.textAlignVertical'),
+					lineHeight: tokenRef('text.body', 'text', 'typography.lineHeight'),
+					letterSpacing: tokenRef('text.body', 'text', 'typography.letterSpacing')
 				},
-				fill: tokenRef('text.default', 'text', 'fill'),
-				stroke: tokenRef('text.default', 'text', 'stroke'),
-				shadow: tokenRef('text.default', 'text', 'shadow')
+				fill: tokenRef('text.body', 'text', 'fill'),
+				stroke: tokenRef('text.body', 'text', 'stroke'),
+				shadow: tokenRef('text.body', 'text', 'shadow')
 			},
 			buttonPrimary: tokenRef('button.primary', 'button'),
 			badgeSecondary: tokenRef('badge.secondary', 'badge'),
@@ -462,7 +462,7 @@ export const textNodeMetadata: TNodeMetadata<TTextNode> = {
 			fill: tokenRef('fill.default', 'fill'),
 			stroke: tokenRef('stroke.default', 'stroke'),
 			shadow: tokenRef('shadow.default', 'shadow'),
-			text: tokenRef('text.default', 'text')
+			textBody: tokenRef('text.body', 'text')
 		},
 		'section-title': {
 			type: 'text',
@@ -482,22 +482,22 @@ export const textNodeMetadata: TNodeMetadata<TTextNode> = {
 				marginLeft: tokenRef('auto-layout.default', 'auto-layout', 'marginLeft')
 			},
 			appearance: tokenRef('appearance.default', 'appearance'),
-			textXl: {
-				appearance: tokenRef('text.xl', 'text', 'appearance'),
+			textTitle: {
+				appearance: tokenRef('text.title', 'text', 'appearance'),
 				typography: {
-					font: tokenRef('text.xl', 'text', 'typography.font'),
-					fontSize: tokenRef('text.xl', 'text', 'typography.fontSize'),
+					font: tokenRef('text.title', 'text', 'typography.font'),
+					fontSize: tokenRef('size.text.lg', 'number'),
 					textAlignHorizontal: 'center',
 					textAlignVertical: 'center',
-					lineHeight: tokenRef('text.xl', 'text', 'typography.lineHeight'),
-					letterSpacing: tokenRef('text.xl', 'text', 'typography.letterSpacing')
+					lineHeight: tokenRef('text.title', 'text', 'typography.lineHeight'),
+					letterSpacing: tokenRef('text.title', 'text', 'typography.letterSpacing')
 				},
 				fill: {
 					paint: tokenRef('paint.base200.content', 'paint.solid'),
-					opacity: tokenRef('text.xl', 'text', 'fill.opacity')
+					opacity: tokenRef('text.title', 'text', 'fill.opacity')
 				},
-				stroke: tokenRef('text.xl', 'text', 'stroke'),
-				shadow: tokenRef('text.xl', 'text', 'shadow')
+				stroke: tokenRef('text.title', 'text', 'stroke'),
+				shadow: tokenRef('text.title', 'text', 'shadow')
 			}
 		}
 	}
