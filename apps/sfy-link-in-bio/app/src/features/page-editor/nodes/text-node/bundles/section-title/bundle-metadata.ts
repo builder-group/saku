@@ -25,7 +25,7 @@ export const sectionTitleBundleMetadata: TTextNodeBundleMetadata<TSectionTitleTe
 				type: 'basic',
 				text: cx.common.content?.text.value ?? defaults.content.text
 			},
-			autoLayout: cx.common.autoLayout ?? defaults.autoLayout,
+			autoLayout: defaults.autoLayout,
 			appearance: cx.common.appearance ?? defaults.appearance,
 			textXl: defaults.textXl
 		});

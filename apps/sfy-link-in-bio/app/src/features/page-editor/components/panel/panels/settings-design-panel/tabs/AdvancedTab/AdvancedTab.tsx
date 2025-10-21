@@ -73,7 +73,12 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 
 			{/* Auto Layout Section */}
 			{autoLayoutTokens.length > 0 && (
-				<AccordionSection title="Layout" collapsibleClassName="p-0 border-b-0">
+				<AccordionSection
+					title="Layout"
+					collapsibleClassName="p-0 border-b-0"
+					// Open by default for free plan users so they can preview the design options through the upgrade overlay
+					defaultOpen={currentPlan.key !== 'awesome'}
+				>
 					{autoLayoutTokens.map(({ key, name, state }) => (
 						<AccordionSection
 							key={key}

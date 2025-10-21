@@ -474,7 +474,7 @@ export const textNodeMetadata: TNodeMetadata<TTextNode> = {
 			autoLayout: {
 				paddingTop: tokenRef('auto-layout.default', 'auto-layout', 'paddingTop'),
 				paddingRight: tokenRef('auto-layout.default', 'auto-layout', 'paddingRight'),
-				paddingBottom: tokenRef('auto-layout.default', 'auto-layout', 'paddingBottom'),
+				paddingBottom: 0,
 				paddingLeft: tokenRef('auto-layout.default', 'auto-layout', 'paddingLeft'),
 				marginTop: tokenRef('auto-layout.default', 'auto-layout', 'marginTop'),
 				marginRight: tokenRef('auto-layout.default', 'auto-layout', 'marginRight'),
@@ -482,7 +482,23 @@ export const textNodeMetadata: TNodeMetadata<TTextNode> = {
 				marginLeft: tokenRef('auto-layout.default', 'auto-layout', 'marginLeft')
 			},
 			appearance: tokenRef('appearance.default', 'appearance'),
-			textXl: tokenRef('text.xl', 'text')
+			textXl: {
+				appearance: tokenRef('text.xl', 'text', 'appearance'),
+				typography: {
+					font: tokenRef('text.xl', 'text', 'typography.font'),
+					fontSize: tokenRef('text.xl', 'text', 'typography.fontSize'),
+					textAlignHorizontal: 'center',
+					textAlignVertical: 'center',
+					lineHeight: tokenRef('text.xl', 'text', 'typography.lineHeight'),
+					letterSpacing: tokenRef('text.xl', 'text', 'typography.letterSpacing')
+				},
+				fill: {
+					paint: tokenRef('paint.base200.content', 'paint.solid'),
+					opacity: tokenRef('text.xl', 'text', 'fill.opacity')
+				},
+				stroke: tokenRef('text.xl', 'text', 'stroke'),
+				shadow: tokenRef('text.xl', 'text', 'shadow')
+			}
 		}
 	}
 };
