@@ -27,7 +27,7 @@ export const richBundleMetadata: TTextNodeBundleMetadata<TRichTextNodeBundle> = 
 				type: 'rich',
 				text: cx.common.content?.text ?? defaults.content.text
 			},
-			autoLayout: cx.common.autoLayout ?? defaults.autoLayout,
+			autoLayout: defaults.autoLayout,
 			appearance: cx.common.appearance ?? defaults.appearance,
 			fill: cx.common.fill ?? defaults.fill,
 			stroke: cx.common.stroke ?? defaults.stroke,
