@@ -22,7 +22,7 @@ export const RichBundleStyleEditor: React.FC<TNodeEditorComponentProps<TRichText
 	const fillState = useNodeProperty(nodeState, 'fill');
 	const strokeState = useNodeProperty(nodeState, 'stroke');
 	const shadowState = useNodeProperty(nodeState, 'shadow');
-	const textState = useNodeProperty(nodeState, 'text');
+	const textBodyState = useNodeProperty(nodeState, 'textBody');
 
 	// =========================================================================
 	// UI
@@ -73,8 +73,8 @@ export const RichBundleStyleEditor: React.FC<TNodeEditorComponentProps<TRichText
 				defaultOpen={true}
 			>
 				<TextStyleMixinEditor
-					state={textState}
-					onLinkToken={() => tokenRef('text.default', 'text')}
+					state={textBodyState}
+					onLinkToken={() => tokenRef('text.body', 'text')}
 					editor={editor}
 				/>
 			</AccordionSection>

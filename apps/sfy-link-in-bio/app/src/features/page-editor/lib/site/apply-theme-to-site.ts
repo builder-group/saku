@@ -10,36 +10,36 @@ import {
 
 export function applyThemeToSite(site: TFlatSite, theme: TTheme): TFlatSite {
 	// Add theme fonts to assets if they don't already exist
-	const headingFontMetadata =
-		getFontMetadataByFamily(theme.typography.heading.fontFamily) ?? fontMetadataMap.inter;
-	const headingFontHash = getFontHash(headingFontMetadata.font);
-	if (site.assets[headingFontHash] == null) {
-		site.assets[headingFontHash] = {
+	const fontDisplayMetadata =
+		getFontMetadataByFamily(theme.typography.display.fontFamily) ?? fontMetadataMap.inter;
+	const fontDisplayHash = getFontHash(fontDisplayMetadata.font);
+	if (site.assets[fontDisplayHash] == null) {
+		site.assets[fontDisplayHash] = {
 			id: createId('asset'),
 			type: 'font',
-			hash: headingFontHash,
+			hash: fontDisplayHash,
 			contentType: 'font/woff2',
 			storage: {
 				type: 'url',
-				url: `https://fonts.googleapis.com/css2?family=${headingFontMetadata.googleFont}&display=swap`
+				url: `https://fonts.googleapis.com/css2?family=${fontDisplayMetadata.googleFont}&display=swap`
 			},
-			font: headingFontMetadata.font
+			font: fontDisplayMetadata.font
 		};
 	}
-	const textFontMetadata =
-		getFontMetadataByFamily(theme.typography.text.fontFamily) ?? fontMetadataMap.inter;
-	const textFontHash = getFontHash(textFontMetadata.font);
-	if (site.assets[textFontHash] == null) {
-		site.assets[textFontHash] = {
+	const fontBodyMetadata =
+		getFontMetadataByFamily(theme.typography.body.fontFamily) ?? fontMetadataMap.inter;
+	const fontBodyHash = getFontHash(fontBodyMetadata.font);
+	if (site.assets[fontBodyHash] == null) {
+		site.assets[fontBodyHash] = {
 			id: createId('asset'),
 			type: 'font',
-			hash: textFontHash,
+			hash: fontBodyHash,
 			contentType: 'font/woff2',
 			storage: {
 				type: 'url',
-				url: `https://fonts.googleapis.com/css2?family=${textFontMetadata.googleFont}&display=swap`
+				url: `https://fonts.googleapis.com/css2?family=${fontBodyMetadata.googleFont}&display=swap`
 			},
-			font: textFontMetadata.font
+			font: fontBodyMetadata.font
 		};
 	}
 

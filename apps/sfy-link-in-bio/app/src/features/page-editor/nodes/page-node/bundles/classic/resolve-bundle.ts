@@ -36,7 +36,7 @@ export function resolveClassicBundleWithoutChildren(
 	node: TClassicFlatPageNodeBundle,
 	cx: TNodeResolveContext
 ): TResult<Omit<TResolvedClassicPageNodeBundle, 'children'>, AppError> {
-	const { content, autoLayout, appearance, fill, textSm, ...rest } = node;
+	const { content, autoLayout, appearance, fill, textCaption, ...rest } = node;
 
 	// Resolve content
 	const [isResolvedContentOk, resolvedContentErr, resolvedContent] =
@@ -72,12 +72,13 @@ export function resolveClassicBundleWithoutChildren(
 	if (!isResolvedFillOk) {
 		return Err(resolvedFillErr.wrapWith('#ERR_RESOLVE_FILL_STYLE'));
 	}
-	const [isResolvedTextSmOk, resolvedTextSmErr, resolvedTextSm] = resolveTextStyleMixin(textSm, {
-		node: cx,
-		tokenMap: cx.site.getTokenMap()
-	});
-	if (!isResolvedTextSmOk) {
-		return Err(resolvedTextSmErr.wrapWith('#ERR_RESOLVE_TEXT_SM_STYLE'));
+	const [isResolvedTextCaptionOk, resolvedTextCaptionErr, resolvedTextCaption] =
+		resolveTextStyleMixin(textCaption, {
+			node: cx,
+			tokenMap: cx.site.getTokenMap()
+		});
+	if (!isResolvedTextCaptionOk) {
+		return Err(resolvedTextCaptionErr.wrapWith('#ERR_RESOLVE_TEXT_CAPTION_STYLE'));
 	}
 
 	return Ok({
@@ -87,6 +88,6 @@ export function resolveClassicBundleWithoutChildren(
 		autoLayout: resolvedAutoLayout,
 		appearance: resolvedAppearance,
 		fill: resolvedFill,
-		textSm: resolvedTextSm
+		textCaption: resolvedTextCaption
 	});
 }

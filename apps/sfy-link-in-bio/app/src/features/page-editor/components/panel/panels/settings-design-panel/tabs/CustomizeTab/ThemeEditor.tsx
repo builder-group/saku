@@ -136,26 +136,26 @@ export const ThemeEditor: React.FC<TThemeEditorProps> = (props) => {
 	});
 
 	// Typography states
-	const headingFontState = useMapState(themeState, {
-		map: (theme) => theme.typography.heading.fontFamily,
+	const fontDisplayState = useMapState(themeState, {
+		map: (theme) => theme.typography.display.fontFamily,
 		sync: (baseState, value) => {
 			baseState.set((theme) => ({
 				...theme,
 				typography: {
 					...theme.typography,
-					heading: { ...theme.typography.heading, fontFamily: value }
+					display: { ...theme.typography.display, fontFamily: value }
 				}
 			}));
 		}
 	});
-	const textFontState = useMapState(themeState, {
-		map: (theme) => theme.typography.text.fontFamily,
+	const fontBodyState = useMapState(themeState, {
+		map: (theme) => theme.typography.body.fontFamily,
 		sync: (baseState, value) => {
 			baseState.set((theme) => ({
 				...theme,
 				typography: {
 					...theme.typography,
-					text: { ...theme.typography.text, fontFamily: value }
+					body: { ...theme.typography.body, fontFamily: value }
 				}
 			}));
 		}
@@ -391,15 +391,15 @@ export const ThemeEditor: React.FC<TThemeEditorProps> = (props) => {
 				collapsibleClassName="grid grid-cols-2 gap-3"
 			>
 				<TokenSelectInput
-					label="Heading Font"
+					label="Display Font"
 					options={fontOptions}
-					state={headingFontState}
+					state={fontDisplayState}
 					disabledTokenLink={true}
 				/>
 				<TokenSelectInput
-					label="Text Font"
+					label="Body Font"
 					options={fontOptions}
-					state={textFontState}
+					state={fontBodyState}
 					disabledTokenLink={true}
 				/>
 			</AccordionSection>

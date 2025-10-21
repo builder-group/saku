@@ -16,9 +16,9 @@ import {
 	TProductDetailsStyleMixin,
 	TShadowStyleMixin,
 	TStrokeStyleMixin,
-	TTextSmStyleMixin,
-	TTextStyleMixin,
-	TTextXlStyleMixin
+	TTextBodyStyleMixin,
+	TTextCaptionStyleMixin,
+	TTextHeadingStyleMixin
 } from './mixin';
 import {
 	TAction,
@@ -90,7 +90,7 @@ export type TClassicPageNodeBundle = TNodeBundle<
 		TAutoLayoutStyleMixin,
 		TAppearanceStyleMixin,
 		TFillStyleMixin,
-		TTextSmStyleMixin
+		TTextCaptionStyleMixin
 	]
 >;
 export type TClassicFlatPageNodeBundle = TNodeBundle<
@@ -103,7 +103,7 @@ export type TClassicFlatPageNodeBundle = TNodeBundle<
 		TAutoLayoutStyleMixin,
 		TAppearanceStyleMixin,
 		TFillStyleMixin,
-		TTextSmStyleMixin
+		TTextCaptionStyleMixin
 	]
 >;
 
@@ -169,8 +169,8 @@ export type TClassicAboutNodeBundle = TNodeBundle<
 		TFillStyleMixin,
 		TStrokeStyleMixin,
 		TShadowStyleMixin,
-		TTextXlStyleMixin,
-		TTextStyleMixin,
+		TTextHeadingStyleMixin,
+		TTextBodyStyleMixin,
 		TImageStyleMixin
 	]
 >;
@@ -186,8 +186,8 @@ export type THeroAboutNodeBundle = TNodeBundle<
 		TFillStyleMixin,
 		TStrokeStyleMixin,
 		TShadowStyleMixin,
-		TTextXlStyleMixin,
-		TTextStyleMixin
+		TTextHeadingStyleMixin,
+		TTextBodyStyleMixin
 	]
 >;
 
@@ -236,8 +236,8 @@ export type TClassicLinkNodeBundle = TNodeBundle<
 		TFillStyleMixin,
 		TStrokeStyleMixin,
 		TShadowStyleMixin,
-		TTextStyleMixin,
-		TTextSmStyleMixin,
+		TTextBodyStyleMixin,
+		TTextCaptionStyleMixin,
 		TImageStyleMixin
 	]
 >;
@@ -253,8 +253,8 @@ export type TFeaturedLinkNodeBundle = TNodeBundle<
 		TFillStyleMixin,
 		TStrokeStyleMixin,
 		TShadowStyleMixin,
-		TTextStyleMixin,
-		TTextSmStyleMixin,
+		TTextBodyStyleMixin,
+		TTextCaptionStyleMixin,
 		TImageStyleMixin
 	]
 >;
@@ -402,7 +402,7 @@ export type TRichTextNodeBundle = TNodeBundle<
 		TFillStyleMixin,
 		TStrokeStyleMixin,
 		TShadowStyleMixin,
-		TTextStyleMixin
+		TTextBodyStyleMixin
 	]
 >;
 
@@ -414,7 +414,7 @@ export type TSectionTitleTextNodeBundle = TNodeBundle<
 		TBasicTextNodeContentMixin,
 		TAutoLayoutStyleMixin,
 		TAppearanceStyleMixin,
-		TTextXlStyleMixin
+		TTextHeadingStyleMixin
 	]
 >;
 
@@ -458,7 +458,7 @@ export type TClassicProductNodeBundle = TNodeBundle<
 		TFillStyleMixin,
 		TStrokeStyleMixin,
 		TShadowStyleMixin,
-		TTextStyleMixin,
+		TTextBodyStyleMixin,
 		TButtonPrimaryStyleMixin,
 		TBadgeSecondaryStyleMixin,
 		TBadgeNeutralStyleMixin,

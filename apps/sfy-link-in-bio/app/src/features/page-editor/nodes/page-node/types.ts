@@ -5,7 +5,7 @@ import {
 	TResolvedBasicPageNodeContentMixin,
 	TResolvedChildrenMixin,
 	TResolvedFillStyleMixin,
-	TResolvedTextSmStyleMixin
+	TResolvedTextCaptionStyleMixin
 } from '../../mixins';
 
 export type TResolvedPageNode = TResolvedClassicPageNodeBundle;
@@ -20,7 +20,7 @@ export type TResolvedClassicPageNodeBundle = TNodeBundle<
 		TResolvedAutoLayoutStyleMixin,
 		TResolvedAppearanceStyleMixin,
 		TResolvedFillStyleMixin,
-		TResolvedTextSmStyleMixin
+		TResolvedTextCaptionStyleMixin
 	]
 >;
 

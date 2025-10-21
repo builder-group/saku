@@ -7,8 +7,8 @@ import {
 	TResolvedRichTextNodeContentMixin,
 	TResolvedShadowStyleMixin,
 	TResolvedStrokeStyleMixin,
-	TResolvedTextStyleMixin,
-	TResolvedTextXlStyleMixin
+	TResolvedTextBodyStyleMixin,
+	TResolvedTextHeadingStyleMixin
 } from '../../mixins';
 
 export type TResolvedTextNode = TResolvedRichTextNodeBundle | TResolvedSectionTitleTextNodeBundle;
@@ -24,7 +24,7 @@ export type TResolvedRichTextNodeBundle = TNodeBundle<
 		TResolvedFillStyleMixin,
 		TResolvedStrokeStyleMixin,
 		TResolvedShadowStyleMixin,
-		TResolvedTextStyleMixin
+		TResolvedTextBodyStyleMixin
 	]
 >;
 
@@ -36,6 +36,6 @@ export type TResolvedSectionTitleTextNodeBundle = TNodeBundle<
 		TResolvedBasicTextNodeContentMixin,
 		TResolvedAutoLayoutStyleMixin,
 		TResolvedAppearanceStyleMixin,
-		TResolvedTextXlStyleMixin
+		TResolvedTextHeadingStyleMixin
 	]
 >;

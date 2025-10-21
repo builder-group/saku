@@ -14,7 +14,7 @@ export const richBundleMetadata: TTextNodeBundleMetadata<TRichTextNodeBundle> = 
 			fill: node.fill,
 			stroke: node.stroke,
 			shadow: node.shadow,
-			text: node.text
+			textBody: node.textBody
 		};
 	},
 	async switch(cx) {
@@ -27,12 +27,12 @@ export const richBundleMetadata: TTextNodeBundleMetadata<TRichTextNodeBundle> = 
 				type: 'rich',
 				text: cx.common.content?.text ?? defaults.content.text
 			},
-			autoLayout: cx.common.autoLayout ?? defaults.autoLayout,
+			autoLayout: defaults.autoLayout,
 			appearance: cx.common.appearance ?? defaults.appearance,
 			fill: cx.common.fill ?? defaults.fill,
 			stroke: cx.common.stroke ?? defaults.stroke,
 			shadow: cx.common.shadow ?? defaults.shadow,
-			text: defaults.text
+			textBody: cx.common.textBody ?? defaults.textBody
 		});
 		return Ok(undefined);
 	}

@@ -7,12 +7,12 @@ import { TResolvedRichTextNodeBundle } from '../../types';
 export const ResolvedRichBundle = React.forwardRef<HTMLDivElement, TResolvedRichBundleProps>(
 	(props, ref) => {
 		const {
-			node: { content, autoLayout, appearance, fill, stroke, shadow, text }
+			node: { content, autoLayout, appearance, fill, stroke, shadow, textBody }
 		} = props;
 
 		const mdxComponents = React.useMemo(
-			() => createMdxComponents(text.typography.fontSize),
-			[text.typography.fontSize]
+			() => createMdxComponents(textBody.typography.fontSize),
+			[textBody.typography.fontSize]
 		);
 
 		// Use evaluateSync for SSR because async (e.g. with React Query) wouldn't render on server
@@ -63,7 +63,7 @@ export const ResolvedRichBundle = React.forwardRef<HTMLDivElement, TResolvedRich
 				}}
 				className="flex min-h-16 items-center justify-center"
 			>
-				<div className="flex h-full w-full flex-col justify-center px-6" style={text.styles}>
+				<div className="flex h-full w-full flex-col justify-center px-6" style={textBody.styles}>
 					{textContent}
 				</div>
 			</div>

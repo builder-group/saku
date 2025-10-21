@@ -2,7 +2,6 @@ import {
 	aboutNodeMetadata,
 	createThemeOverrideTokens,
 	linkNodeMetadata,
-	TAboutNode,
 	TClassicAboutNodeBundle,
 	TLinkNode,
 	TTheme
@@ -17,12 +16,8 @@ export function applyTheme(theme: TTheme, editor: TPageEditor) {
 		for (const node of Object.values(editor.nodeMap)) {
 			switch (node.type) {
 				case 'about': {
-					(node as TNodeState<TAboutNode>)._v.textXl = aboutNodeMetadata.bundleMap.classic.textXl;
-					(node as TNodeState<TAboutNode>)._v.text = aboutNodeMetadata.bundleMap.classic.text;
-					if ('image' in node) {
-						(node as TNodeState<TClassicAboutNodeBundle>)._v.image =
-							aboutNodeMetadata.bundleMap.classic.image;
-					}
+					(node as TNodeState<TClassicAboutNodeBundle>)._v.image =
+						aboutNodeMetadata.bundleMap.classic.image;
 					node._notify();
 					break;
 				}
@@ -47,11 +42,11 @@ export function applyTheme(theme: TTheme, editor: TPageEditor) {
 
 	// Register fonts
 	editor.registerFont({
-		family: theme.typography.heading.fontFamily,
-		weight: theme.typography.heading.fontWeight
+		family: theme.typography.display.fontFamily,
+		weight: theme.typography.display.fontWeight
 	});
 	editor.registerFont({
-		family: theme.typography.text.fontFamily,
-		weight: theme.typography.text.fontWeight
+		family: theme.typography.body.fontFamily,
+		weight: theme.typography.body.fontWeight
 	});
 }

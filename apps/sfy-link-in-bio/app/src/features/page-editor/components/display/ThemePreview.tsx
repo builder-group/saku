@@ -6,36 +6,36 @@ export const ThemePreview: React.FC<TThemePreviewProps> = (props) => {
 		theme: { paint, typography, radius, effects }
 	} = props;
 
-	const headingFontMetadata = React.useMemo(
-		() => getFontMetadataByFamily(typography.heading.fontFamily),
-		[typography.heading.fontFamily]
+	const fontDisplayMetadata = React.useMemo(
+		() => getFontMetadataByFamily(typography.display.fontFamily),
+		[typography.display.fontFamily]
 	);
-	const textFontMetadata = React.useMemo(
-		() => getFontMetadataByFamily(typography.text.fontFamily),
-		[typography.text.fontFamily]
+	const fontBodyMetadata = React.useMemo(
+		() => getFontMetadataByFamily(typography.body.fontFamily),
+		[typography.body.fontFamily]
 	);
-	const headingFontUrl = React.useMemo(
+	const fontDisplayUrl = React.useMemo(
 		() =>
-			headingFontMetadata?.googleFont != null
-				? `https://fonts.googleapis.com/css2?family=${headingFontMetadata.googleFont}&display=swap`
+			fontDisplayMetadata?.googleFont != null
+				? `https://fonts.googleapis.com/css2?family=${fontDisplayMetadata.googleFont}&display=swap`
 				: null,
-		[headingFontMetadata]
+		[fontDisplayMetadata]
 	);
-	const textFontUrl = React.useMemo(
+	const fontBodyUrl = React.useMemo(
 		() =>
-			textFontMetadata?.googleFont != null
-				? `https://fonts.googleapis.com/css2?family=${textFontMetadata.googleFont}&display=swap`
+			fontBodyMetadata?.googleFont != null
+				? `https://fonts.googleapis.com/css2?family=${fontBodyMetadata.googleFont}&display=swap`
 				: null,
-		[textFontMetadata]
+		[fontBodyMetadata]
 	);
 
 	return (
 		<>
 			{/* Dynamic font loading */}
-			{(headingFontUrl != null || textFontUrl != null) && (
+			{(fontDisplayUrl != null || fontBodyUrl != null) && (
 				<style>
-					{headingFontUrl != null && `@import url('${headingFontUrl}');`}
-					{textFontUrl != null && `@import url('${textFontUrl}');`}
+					{fontDisplayUrl != null && `@import url('${fontDisplayUrl}');`}
+					{fontBodyUrl != null && `@import url('${fontBodyUrl}');`}
 				</style>
 			)}
 
@@ -69,9 +69,9 @@ export const ThemePreview: React.FC<TThemePreviewProps> = (props) => {
 					<h2
 						style={{
 							color: rgbaToHex(paint.base100Content.color),
-							fontFamily: typography.heading.fontFamily,
+							fontFamily: typography.display.fontFamily,
 							fontSize: '20px',
-							fontWeight: typography.heading.fontWeight,
+							fontWeight: typography.display.fontWeight,
 							lineHeight: 1,
 							margin: 0
 						}}
@@ -85,8 +85,8 @@ export const ThemePreview: React.FC<TThemePreviewProps> = (props) => {
 						style={{
 							backgroundColor: rgbaToHex(paint.primary.color),
 							color: rgbaToHex(paint.primaryContent.color),
-							fontFamily: typography.text.fontFamily,
-							fontWeight: typography.text.fontWeight,
+							fontFamily: typography.body.fontFamily,
+							fontWeight: typography.body.fontWeight,
 							borderRadius: `${radius.field}px`
 						}}
 					>

@@ -130,15 +130,9 @@ export function parseLinkpopData(linkpopData: TLinkPopData): TSite {
 								contentType: youtubeData.type,
 								contentId: youtubeData.id
 							};
-							autoLayout = {
-								...linkNodeMetadata.bundleMap.classic.autoLayout,
-								paddingTop: 0,
-								paddingRight: 0,
-								paddingBottom: 0,
-								paddingLeft: 0
-							};
+							autoLayout = linkNodeMetadata.bundleMap['youtube-embed'].autoLayout;
 							appearance = {
-								...linkNodeMetadata.bundleMap.classic.appearance,
+								...linkNodeMetadata.bundleMap['youtube-embed'].appearance,
 								borderRadius: Math.min(borderRadius, 40)
 							};
 						} else {
@@ -164,15 +158,9 @@ export function parseLinkpopData(linkpopData: TLinkPopData): TSite {
 								contentId: spotifyData.id,
 								height: 352 // Default to normal height
 							};
-							autoLayout = {
-								...linkNodeMetadata.bundleMap.classic.autoLayout,
-								paddingTop: 0,
-								paddingRight: 0,
-								paddingBottom: 0,
-								paddingLeft: 0
-							};
+							autoLayout = linkNodeMetadata.bundleMap['spotify-embed'].autoLayout;
 							appearance = {
-								...linkNodeMetadata.bundleMap.classic.appearance,
+								...linkNodeMetadata.bundleMap['spotify-embed'].appearance,
 								borderRadius: Math.min(borderRadius, 40)
 							};
 						} else {
@@ -271,13 +259,13 @@ export function parseLinkpopData(linkpopData: TLinkPopData): TSite {
 					cssRgbaToPaint(page?.themeSettings?.linkCardColor) ?? defaultTheme.paint.primaryContent
 			},
 			typography: {
-				heading: {
+				display: {
 					fontFamily: primaryFontAsset.font.family,
-					fontWeight: defaultTheme.typography.heading.fontWeight
+					fontWeight: defaultTheme.typography.display.fontWeight
 				},
-				text: {
+				body: {
 					fontFamily: primaryFontAsset.font.family,
-					fontWeight: defaultTheme.typography.text.fontWeight
+					fontWeight: defaultTheme.typography.body.fontWeight
 				}
 			},
 			radius: {

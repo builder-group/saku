@@ -84,30 +84,30 @@ export const ProductDetailsStyleMixinEditor = (props: TProductDetailsStyleMixinE
 			baseState._notify(notifyOptions);
 		}
 	});
-	const textXlState = useMapState(state, {
+	const textHeadingState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return mapTokenRef(baseValue, 'textXl');
+				return mapTokenRef(baseValue, 'textHeading');
 			}
-			return baseValue.textXl;
+			return baseValue.textHeading;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
 			const unpackedBaseValue = unpackProductDetailsTokenRef(baseState._v);
-			unpackedBaseValue.textXl = mappedValue;
+			unpackedBaseValue.textHeading = mappedValue;
 			baseState._v = packProductDetailsTokenRef(unpackedBaseValue);
 			baseState._notify(notifyOptions);
 		}
 	});
-	const textState = useMapState(state, {
+	const textBodyState = useMapState(state, {
 		map(baseValue) {
 			if (isTokenRef(baseValue)) {
-				return mapTokenRef(baseValue, 'text');
+				return mapTokenRef(baseValue, 'textBody');
 			}
-			return baseValue.text;
+			return baseValue.textBody;
 		},
 		sync(baseState, mappedValue, notifyOptions) {
 			const unpackedBaseValue = unpackProductDetailsTokenRef(baseState._v);
-			unpackedBaseValue.text = mappedValue;
+			unpackedBaseValue.textBody = mappedValue;
 			baseState._v = packProductDetailsTokenRef(unpackedBaseValue);
 			baseState._notify(notifyOptions);
 		}
@@ -185,8 +185,10 @@ export const ProductDetailsStyleMixinEditor = (props: TProductDetailsStyleMixinE
 				</Text>
 			</div>
 			<TextStyleMixinEditor
-				state={textXlState}
-				onLinkToken={onLinkToken != null ? () => mapTokenRef(onLinkToken(), 'textXl') : undefined}
+				state={textHeadingState}
+				onLinkToken={
+					onLinkToken != null ? () => mapTokenRef(onLinkToken(), 'textHeading') : undefined
+				}
 				disabledTokenLink={disabledTokenLink}
 				syncedTokenLink={syncedTokenLink}
 				disabled={disabled}
@@ -194,12 +196,12 @@ export const ProductDetailsStyleMixinEditor = (props: TProductDetailsStyleMixinE
 			/>
 			<div className="border-t border-b border-neutral-200 bg-neutral-50 px-4 py-1">
 				<Text as="span" variant="headingXs">
-					Text
+					Body Text
 				</Text>
 			</div>
 			<TextStyleMixinEditor
-				state={textState}
-				onLinkToken={onLinkToken != null ? () => mapTokenRef(onLinkToken(), 'text') : undefined}
+				state={textBodyState}
+				onLinkToken={onLinkToken != null ? () => mapTokenRef(onLinkToken(), 'textBody') : undefined}
 				disabledTokenLink={disabledTokenLink}
 				syncedTokenLink={syncedTokenLink}
 				disabled={disabled}

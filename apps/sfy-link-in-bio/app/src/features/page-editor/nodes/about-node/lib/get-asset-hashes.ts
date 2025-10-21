@@ -13,11 +13,18 @@ export function getAboutNodeAssetHashes(node: TAboutNode): TAssetHash[] {
 
 	// Font asset (if not linked)
 	if (
-		!isTokenRef(node.text) &&
-		!isTokenRef(node.text.typography) &&
-		!isTokenRef(node.text.typography.font)
+		!isTokenRef(node.textHeading) &&
+		!isTokenRef(node.textHeading.typography) &&
+		!isTokenRef(node.textHeading.typography.font)
 	) {
-		hashes.push(getFontHash(node.text.typography.font));
+		hashes.push(getFontHash(node.textHeading.typography.font));
+	}
+	if (
+		!isTokenRef(node.textBody) &&
+		!isTokenRef(node.textBody.typography) &&
+		!isTokenRef(node.textBody.typography.font)
+	) {
+		hashes.push(getFontHash(node.textBody.typography.font));
 	}
 
 	// Fill asset (if not linked)

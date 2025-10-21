@@ -16,7 +16,7 @@ export const SectionTitleBundleStyleEditor: React.FC<
 
 	const autoLayoutState = useNodeProperty(nodeState, 'autoLayout');
 	const appearanceState = useNodeProperty(nodeState, 'appearance');
-	const textXlState = useNodeProperty(nodeState, 'textXl');
+	const textHeadingState = useNodeProperty(nodeState, 'textHeading');
 
 	// =========================================================================
 	// UI
@@ -49,8 +49,8 @@ export const SectionTitleBundleStyleEditor: React.FC<
 				defaultOpen={true}
 			>
 				<TextStyleMixinEditor
-					state={textXlState}
-					onLinkToken={() => tokenRef('text.xl', 'text')}
+					state={textHeadingState}
+					onLinkToken={() => tokenRef('text.heading', 'text')}
 					editor={editor}
 				/>
 			</AccordionSection>

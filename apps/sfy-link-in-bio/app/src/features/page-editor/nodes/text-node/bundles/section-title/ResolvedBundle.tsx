@@ -7,7 +7,7 @@ export const ResolvedSectionTitleBundle = React.forwardRef<
 	TResolvedSectionTitleBundleProps
 >((props, ref) => {
 	const {
-		node: { content, autoLayout, appearance, textXl }
+		node: { content, autoLayout, appearance, textHeading }
 	} = props;
 
 	return (
@@ -21,7 +21,7 @@ export const ResolvedSectionTitleBundle = React.forwardRef<
 		>
 			<div
 				className="flex h-full w-full flex-col justify-center px-6 font-semibold"
-				style={textXl.styles}
+				style={textHeading.styles}
 			>
 				{content.text}
 			</div>

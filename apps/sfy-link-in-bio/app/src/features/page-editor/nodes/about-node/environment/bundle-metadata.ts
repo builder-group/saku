@@ -9,8 +9,8 @@ import {
 	TImageStyleMixin,
 	TShadowStyleMixin,
 	TStrokeStyleMixin,
-	TTextSmStyleMixin,
-	TTextStyleMixin
+	TTextBodyStyleMixin,
+	TTextHeadingStyleMixin
 } from '@repo/editor';
 import { TResult } from 'tuple-result';
 import { AppError } from '@/lib';
@@ -54,7 +54,7 @@ interface TCommonFields {
 	fill?: TFillStyleMixin['value'];
 	stroke?: TStrokeStyleMixin['value'];
 	shadow?: TShadowStyleMixin['value'];
-	textXl?: TTextSmStyleMixin['value'];
-	text?: TTextStyleMixin['value'];
+	textHeading?: TTextHeadingStyleMixin['value'];
+	textBody?: TTextBodyStyleMixin['value'];
 	image?: TImageStyleMixin['value'];
 }

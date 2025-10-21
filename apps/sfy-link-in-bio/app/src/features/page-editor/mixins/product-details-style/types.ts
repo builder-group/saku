@@ -5,7 +5,7 @@ import { TResolvedFillStyleMixin } from '../fill-style';
 import { TResolvedImageStyleMixin } from '../image-style';
 import { TResolvedShadowStyleMixin } from '../shadow-style';
 import { TResolvedStrokeStyleMixin } from '../stroke-style';
-import { TResolvedTextStyleMixin, TResolvedTextXlStyleMixin } from '../text-style';
+import { TResolvedTextBodyStyleMixin, TResolvedTextHeadingStyleMixin } from '../text-style';
 
 export type TResolvedProductDetailsStyleMixin = TBaseMixin<
 	'productDetails',
@@ -14,8 +14,8 @@ export type TResolvedProductDetailsStyleMixin = TBaseMixin<
 		fill: TResolvedFillStyleMixin['value'];
 		stroke: TResolvedStrokeStyleMixin['value'];
 		shadow: TResolvedShadowStyleMixin['value'];
-		textXl: TResolvedTextXlStyleMixin['value'];
-		text: TResolvedTextStyleMixin['value'];
+		textHeading: TResolvedTextHeadingStyleMixin['value'];
+		textBody: TResolvedTextBodyStyleMixin['value'];
 		buttonPrimary: TResolvedButtonPrimaryStyleMixin['value'];
 		image: TResolvedImageStyleMixin['value'];
 		styles: TResolvedAppearanceStyleMixin['value']['styles'] &

@@ -192,18 +192,18 @@ export function reconstructThemeFromTokens(tokens: TToken[]): TResult<TTheme, Ed
 	}
 
 	// Get font properties
-	const [isHeadingFontOk, headingFontErr, headingFont] = resolveTokenRef(
-		tokenRef('font.heading', 'font'),
+	const [isDisplayFontOk, displayFontErr, displayFont] = resolveTokenRef(
+		tokenRef('font.display', 'font'),
 		{ tokenMap }
 	);
-	if (!isHeadingFontOk) {
-		return Err(headingFontErr.wrapWith('#ERR_RECONSTRUCT_FONT_HEADING'));
+	if (!isDisplayFontOk) {
+		return Err(displayFontErr.wrapWith('#ERR_RECONSTRUCT_FONT_DISPLAY'));
 	}
-	const [isTextFontOk, textFontErr, textFont] = resolveTokenRef(tokenRef('font.text', 'font'), {
+	const [isBodyFontOk, bodyFontErr, bodyFont] = resolveTokenRef(tokenRef('font.body', 'font'), {
 		tokenMap
 	});
-	if (!isTextFontOk) {
-		return Err(textFontErr.wrapWith('#ERR_RECONSTRUCT_FONT_TEXT'));
+	if (!isBodyFontOk) {
+		return Err(bodyFontErr.wrapWith('#ERR_RECONSTRUCT_FONT_BODY'));
 	}
 
 	// Get spacing properties
@@ -329,13 +329,13 @@ export function reconstructThemeFromTokens(tokens: TToken[]): TResult<TTheme, Ed
 			errorContent: errorContentPaint
 		},
 		typography: {
-			heading: {
-				fontFamily: headingFont.family,
-				fontWeight: headingFont.weight as 400 | 500 | 600 | 700
+			display: {
+				fontFamily: displayFont.family,
+				fontWeight: displayFont.weight as 400 | 500 | 600 | 700
 			},
-			text: {
-				fontFamily: textFont.family,
-				fontWeight: textFont.weight as 300 | 400 | 500
+			body: {
+				fontFamily: bodyFont.family,
+				fontWeight: bodyFont.weight as 300 | 400 | 500
 			}
 		},
 		gap,

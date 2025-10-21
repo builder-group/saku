@@ -3,7 +3,7 @@ import {
 	TAppearanceStyleMixin,
 	TAutoLayoutStyleMixin,
 	THeroAboutNodeBundle,
-	TTextXlStyleMixin
+	TTextHeadingStyleMixin
 } from '@repo/editor';
 import { Ok } from 'tuple-result';
 import {
@@ -35,8 +35,8 @@ export const heroBundleMetadata: TAboutNodeBundleMetadata<THeroAboutNodeBundle> 
 			fill: node.fill,
 			stroke: node.stroke,
 			shadow: node.shadow,
-			textXl: node.textXl,
-			text: node.text
+			textHeading: node.textHeading,
+			textBody: node.textBody
 		};
 	},
 	async switch(cx) {
@@ -70,16 +70,16 @@ export const heroBundleMetadata: TAboutNodeBundleMetadata<THeroAboutNodeBundle> 
 			commonAppearance = packAppearanceTokenRef(unpackedAppearance);
 		}
 
-		let commonTextXl: TTextXlStyleMixin['value'] | null = null;
-		if (cx.common.textXl != null) {
-			const unpackedTextXl = unpackTextTokenRef(cx.common.textXl);
-			const unpackedTypography = unpackTypographyTokenRef(unpackedTextXl.typography);
+		let commonTextHeading: TTextHeadingStyleMixin['value'] | null = null;
+		if (cx.common.textHeading != null) {
+			const unpackedTextHeading = unpackTextTokenRef(cx.common.textHeading);
+			const unpackedTypography = unpackTypographyTokenRef(unpackedTextHeading.typography);
 			const unpackedDefaultTypography = unpackTypographyTokenRef(
-				unpackTextTokenRef(defaults.textXl).typography
+				unpackTextTokenRef(defaults.textHeading).typography
 			);
 			unpackedTypography.fontSize = unpackedDefaultTypography.fontSize;
-			unpackedTextXl.typography = packTypographyTokenRef(unpackedTypography);
-			commonTextXl = packTextTokenRef(unpackedTextXl);
+			unpackedTextHeading.typography = packTypographyTokenRef(unpackedTypography);
+			commonTextHeading = packTextTokenRef(unpackedTextHeading);
 		}
 
 		cx.node.set({
@@ -98,8 +98,8 @@ export const heroBundleMetadata: TAboutNodeBundleMetadata<THeroAboutNodeBundle> 
 			fill: cx.common.fill ?? defaults.fill,
 			stroke: cx.common.stroke ?? defaults.stroke,
 			shadow: cx.common.shadow ?? defaults.shadow,
-			textXl: commonTextXl ?? defaults.textXl,
-			text: cx.common.text ?? defaults.text
+			textHeading: commonTextHeading ?? defaults.textHeading,
+			textBody: cx.common.textBody ?? defaults.textBody
 		});
 		return Ok(undefined);
 	}

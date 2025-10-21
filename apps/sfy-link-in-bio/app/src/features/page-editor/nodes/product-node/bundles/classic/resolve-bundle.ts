@@ -28,7 +28,7 @@ export function resolveClassicBundle(
 		fill,
 		stroke,
 		shadow,
-		text,
+		textBody,
 		buttonPrimary,
 		badgeSecondary,
 		badgeNeutral,
@@ -85,12 +85,15 @@ export function resolveClassicBundle(
 	if (!isResolvedShadowOk) {
 		return Err(resolvedShadowErr.wrapWith('#ERR_RESOLVE_SHADOW_STYLE'));
 	}
-	const [isResolvedTextOk, resolvedTextErr, resolvedText] = resolveTextStyleMixin(text, {
-		node: cx,
-		tokenMap: cx.site.getTokenMap()
-	});
-	if (!isResolvedTextOk) {
-		return Err(resolvedTextErr.wrapWith('#ERR_RESOLVE_TEXT_STYLE'));
+	const [isResolvedTextBodyOk, resolvedTextBodyErr, resolvedTextBody] = resolveTextStyleMixin(
+		textBody,
+		{
+			node: cx,
+			tokenMap: cx.site.getTokenMap()
+		}
+	);
+	if (!isResolvedTextBodyOk) {
+		return Err(resolvedTextBodyErr.wrapWith('#ERR_RESOLVE_TEXT_BODY_STYLE'));
 	}
 	const [isResolvedButtonPrimaryOk, resolvedButtonPrimaryErr, resolvedButtonPrimary] =
 		resolveButtonStyleMixin(buttonPrimary, {
@@ -152,7 +155,7 @@ export function resolveClassicBundle(
 		fill: resolvedFill,
 		stroke: resolvedStroke,
 		shadow: resolvedShadow,
-		text: resolvedText,
+		textBody: resolvedTextBody,
 		buttonPrimary: resolvedButtonPrimary,
 		badgeSecondary: resolvedBadgeSecondary,
 		badgeNeutral: resolvedBadgeNeutral,

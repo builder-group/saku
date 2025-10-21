@@ -14,7 +14,7 @@ export function resolveSectionTitleBundle(
 	node: TSectionTitleTextNodeBundle,
 	cx: TNodeResolveContext
 ): TResult<TResolvedSectionTitleTextNodeBundle, AppError> {
-	const { content, autoLayout, appearance, textXl, ...rest } = node;
+	const { content, autoLayout, appearance, textHeading, ...rest } = node;
 
 	// Resolve content
 	const [isResolvedContentOk, resolvedContentErr, resolvedContent] =
@@ -43,12 +43,13 @@ export function resolveSectionTitleBundle(
 	if (!isResolvedAppearanceOk) {
 		return Err(resolvedAppearanceErr.wrapWith('#ERR_RESOLVE_APPEARANCE_STYLE'));
 	}
-	const [isResolvedTextXlOk, resolvedTextXlErr, resolvedTextXl] = resolveTextStyleMixin(textXl, {
-		node: cx,
-		tokenMap: cx.site.getTokenMap()
-	});
-	if (!isResolvedTextXlOk) {
-		return Err(resolvedTextXlErr.wrapWith('#ERR_RESOLVE_TEXT_XL_STYLE'));
+	const [isResolvedTextHeadingOk, resolvedTextHeadingErr, resolvedTextHeading] =
+		resolveTextStyleMixin(textHeading, {
+			node: cx,
+			tokenMap: cx.site.getTokenMap()
+		});
+	if (!isResolvedTextHeadingOk) {
+		return Err(resolvedTextHeadingErr.wrapWith('#ERR_RESOLVE_TEXT_HEADING_STYLE'));
 	}
 
 	return Ok({
@@ -56,6 +57,6 @@ export function resolveSectionTitleBundle(
 		content: resolvedContent,
 		autoLayout: resolvedAutoLayout,
 		appearance: resolvedAppearance,
-		textXl: resolvedTextXl
+		textHeading: resolvedTextHeading
 	});
 }

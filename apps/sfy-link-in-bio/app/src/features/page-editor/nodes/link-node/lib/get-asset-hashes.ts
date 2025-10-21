@@ -23,12 +23,20 @@ export function getLinkNodeAssetHashes(node: TLinkNode): TAssetHash[] {
 
 	// Font asset (if not linked)
 	if (
-		'text' in node &&
-		!isTokenRef(node.text) &&
-		!isTokenRef(node.text.typography) &&
-		!isTokenRef(node.text.typography.font)
+		'textBody' in node &&
+		!isTokenRef(node.textBody) &&
+		!isTokenRef(node.textBody.typography) &&
+		!isTokenRef(node.textBody.typography.font)
 	) {
-		hashes.push(getFontHash(node.text.typography.font));
+		hashes.push(getFontHash(node.textBody.typography.font));
+	}
+	if (
+		'textCaption' in node &&
+		!isTokenRef(node.textCaption) &&
+		!isTokenRef(node.textCaption.typography) &&
+		!isTokenRef(node.textCaption.typography.font)
+	) {
+		hashes.push(getFontHash(node.textCaption.typography.font));
 	}
 
 	// Fill asset (if not linked)

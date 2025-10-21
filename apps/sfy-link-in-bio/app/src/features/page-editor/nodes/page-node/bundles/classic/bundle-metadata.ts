@@ -23,7 +23,7 @@ export const classicBundleMetadata: TPageNodeBundleMetadata<TClassicFlatPageNode
 			autoLayout: defaults.autoLayout,
 			appearance: defaults.appearance,
 			fill: defaults.fill,
-			textSm: defaults.textSm
+			textCaption: defaults.textCaption
 		});
 		return Ok(undefined);
 	}
