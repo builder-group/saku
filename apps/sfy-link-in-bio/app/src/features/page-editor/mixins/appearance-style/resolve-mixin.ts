@@ -43,7 +43,7 @@ export function resolveAppearanceStyleMixin(
 		resolvedAppearance.borderRadius,
 		{
 			tokenMap: cx.tokenMap,
-			expectedSchema: v.nullable(v.number())
+			expectedSchema: v.optional(v.number())
 		}
 	);
 	if (!isResolvedBorderRadiusOk) {

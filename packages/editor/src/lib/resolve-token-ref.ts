@@ -34,8 +34,8 @@ export function resolveTokenRef<GTokenValue>(
 		);
 	}
 
-	// Check if the token type matches or is a subset of the source value's token type
-	// e.g. 'paint.solid' is valid for expected type 'paint' since its a subset
+	// Validate token type compatibility
+	// e.g. 'paint.solid' token is valid for expected type 'paint' (subtype matching)
 	if (
 		sourceValue.tokenType != null &&
 		token.type !== sourceValue.tokenType &&
@@ -48,24 +48,14 @@ export function resolveTokenRef<GTokenValue>(
 		);
 	}
 
-	let resolvedValue: unknown;
+	let resolvedValue: unknown = token.value;
 
-	// Handle path-based token reference or direct value
+	// Navigate to nested property if path specified
 	if (sourceValue.path != null) {
-		const pathResult = getNestedProperty(token.value, sourceValue.path, tokenMap);
-		if (pathResult.isErr()) {
-			return Err(
-				new EditorError('#ERR_PATH_NOT_FOUND', {
-					detail: `Path '${sourceValue.path}' not found in token: ${sourceValue.key}`
-				})
-			);
-		}
-		resolvedValue = pathResult.value;
-	} else {
-		resolvedValue = token.value;
+		resolvedValue = getNestedProperty(resolvedValue, sourceValue.path, tokenMap);
 	}
 
-	// If the resolved value is still a token reference, resolve it
+	// Recursively resolve nested token references
 	if (isTokenRef(resolvedValue)) {
 		const [isNestedResolvedValueOk, nestedResolvedValueErr, nestedResolvedValue] = resolveTokenRef(
 			resolvedValue,
@@ -79,7 +69,7 @@ export function resolveTokenRef<GTokenValue>(
 		resolvedValue = nestedResolvedValue;
 	}
 
-	// Validate the resolved value if expected schema is provided
+	// Validate final value against expected schema
 	if (expectedSchema != null) {
 		const result = safeParse(expectedSchema, resolvedValue);
 		if (!result.success) {
@@ -105,35 +95,27 @@ function getNestedProperty(
 	obj: unknown,
 	path: string,
 	tokenMap?: Record<TToken['key'], TToken>
-): TResult<unknown, EditorError> {
+): unknown {
 	const pathParts = path.split('.');
 	let current: unknown = obj;
 
 	for (const key of pathParts) {
-		// Check if current value is a token reference and resolve it
+		// Resolve any token references encountered during path traversal
 		if (isTokenRef(current)) {
-			const [isResolvedOk, resolvedErr, resolved] = resolveTokenRef(current, { tokenMap });
+			const [isResolvedOk, , resolved] = resolveTokenRef(current, { tokenMap });
 			if (!isResolvedOk) {
-				return Err(
-					resolvedErr.wrapWith('#ERR_PATH_NOT_FOUND', {
-						detail: `Path '${path}' not found - failed at key: ${key}`
-					})
-				);
+				return undefined;
 			}
 			current = resolved;
 		}
 
-		// Navigate to the next property
+		// Access next property in path
 		if (current != null && typeof current === 'object' && key in current) {
 			current = (current as Record<string, unknown>)[key];
 		} else {
-			return Err(
-				new EditorError('#ERR_PATH_NOT_FOUND', {
-					detail: `Path '${path}' not found - failed at key: ${key}`
-				})
-			);
+			return undefined; // Dead end
 		}
 	}
 
-	return Ok(current);
+	return current;
 }
