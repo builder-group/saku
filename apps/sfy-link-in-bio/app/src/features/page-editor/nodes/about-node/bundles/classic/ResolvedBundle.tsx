@@ -43,7 +43,7 @@ export const ResolvedClassicBundle = React.forwardRef<HTMLDivElement, TResolvedC
 					)}
 
 					{/* Title & Description */}
-					<div className="flex flex-col items-center gap-0.5">
+					<div className="flex flex-col items-center gap-1">
 						<h1 className="font-semibold" style={textHeading.styles}>
 							{content.title}
 						</h1>

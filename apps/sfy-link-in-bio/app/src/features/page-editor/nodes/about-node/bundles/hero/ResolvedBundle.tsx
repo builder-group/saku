@@ -46,7 +46,7 @@ export const ResolvedHeroBundle = React.forwardRef<HTMLDivElement, TResolvedHero
 				{/* Content Overlay */}
 				<div className="relative flex flex-col items-center gap-6 px-6 pt-[calc(100vw-80px)] sm:pt-96">
 					{/* Title & Description */}
-					<div className="flex flex-col items-center gap-0.5">
+					<div className="flex flex-col items-center gap-1">
 						<h1
 							className="text-center leading-tight font-semibold break-words"
 							style={textHeading.styles}
