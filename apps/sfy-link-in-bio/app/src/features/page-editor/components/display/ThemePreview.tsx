@@ -14,14 +14,14 @@ export const ThemePreview: React.FC<TThemePreviewProps> = (props) => {
 		() => getFontMetadataByFamily(typography.body.fontFamily),
 		[typography.body.fontFamily]
 	);
-	const headingFontUrl = React.useMemo(
+	const fontDisplayUrl = React.useMemo(
 		() =>
 			fontDisplayMetadata?.googleFont != null
 				? `https://fonts.googleapis.com/css2?family=${fontDisplayMetadata.googleFont}&display=swap`
 				: null,
 		[fontDisplayMetadata]
 	);
-	const textFontUrl = React.useMemo(
+	const fontBodyUrl = React.useMemo(
 		() =>
 			fontBodyMetadata?.googleFont != null
 				? `https://fonts.googleapis.com/css2?family=${fontBodyMetadata.googleFont}&display=swap`
@@ -32,10 +32,10 @@ export const ThemePreview: React.FC<TThemePreviewProps> = (props) => {
 	return (
 		<>
 			{/* Dynamic font loading */}
-			{(headingFontUrl != null || textFontUrl != null) && (
+			{(fontDisplayUrl != null || fontBodyUrl != null) && (
 				<style>
-					{headingFontUrl != null && `@import url('${headingFontUrl}');`}
-					{textFontUrl != null && `@import url('${textFontUrl}');`}
+					{fontDisplayUrl != null && `@import url('${fontDisplayUrl}');`}
+					{fontBodyUrl != null && `@import url('${fontBodyUrl}');`}
 				</style>
 			)}
 
