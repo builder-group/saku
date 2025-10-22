@@ -1,6 +1,5 @@
 import mdx from '@mdx-js/rollup';
 import { reactRouter } from '@react-router/dev/vite';
-import tailwindcss from '@tailwindcss/vite';
 import dotenv from 'dotenv';
 import { reactRouterHonoServer } from 'react-router-hono-server/dev';
 import { defineConfig, type UserConfig } from 'vite';
@@ -78,8 +77,12 @@ export default defineConfig({
 		]
 	},
 	plugins: [
-		tailwindcss(),
 		mdx(),
+		// Note: Using PostCSS (https://vite.dev/guide/features.html#postcss) instead of TailwindCSS Vite plugin because of following issues encountered in Shopify context:
+		// - CSS loading twice in prod with URL imports (import stylesheet from './styles.css?url', See: https://github.com/remix-run/react-router/issues/12940)
+		// - Hydration errors in dev with side-effect imports (import './styles.css')
+		// PostCSS is the only solution that seems to work reliably in Shopify context.
+		// tailwindcss(),
 		reactRouterHonoServer({ serverEntryPoint: './src/.server/server.ts' }),
 		reactRouter(),
 		tsconfigPaths()
