@@ -101,6 +101,7 @@ export const ClassicBundleLayout = React.forwardRef<HTMLDivElement, TClassicBund
 					</div>
 				)}
 
+				{/* Content */}
 				<div
 					{...divProps}
 					ref={ref}
@@ -117,12 +118,11 @@ export const ClassicBundleLayout = React.forwardRef<HTMLDivElement, TClassicBund
 					{/* Background blur */}
 					<div className="absolute inset-0 hidden bg-black/10 backdrop-blur-xl sm:block" />
 
-					{/* Main content container */}
+					{/* Content container */}
 					<div className="relative mx-auto w-full max-w-xl sm:pt-[length:var(--content-top)]">
 						<div className="relative">
-							{/* Content area */}
 							<div
-								className="overflow-hidden rounded-t-none pb-16 sm:rounded-t-[length:var(--content-radius)] sm:shadow-[0_24px_32px_0px_rgba(0,0,0,0.15)]"
+								className="min-h-[calc(100vh-var(--content-top))] overflow-hidden rounded-t-none pb-16 sm:rounded-t-[length:var(--content-radius)] sm:shadow-[0_24px_32px_0px_rgba(0,0,0,0.15)]"
 								style={{
 									...appearance.styles,
 									...fill?.styles
