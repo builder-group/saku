@@ -37,7 +37,7 @@ const env = {
 
 export default defineConfig({
 	// Absolute URLs for Shopify app proxy support.
-	// Why: Dynamic imports don't respect <base> tag in Safari, so we generate absolute asset URLs.
+	// Why: Dynamic imports (e.g. import("/assets/entry.client-DKphu1pB.js") in react-router injected script) don't respect <base> tag in Safari, so we generate absolute asset URLs.
 	// This ensures assets load from our domain even when accessed via e.g. "shop.myshopify.com/a/saku/*".
 	base: env.shopifyAppUrl.endsWith('/') ? env.shopifyAppUrl : `${env.shopifyAppUrl}/`,
 	server: {
