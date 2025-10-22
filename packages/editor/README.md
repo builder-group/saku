@@ -13,7 +13,7 @@
 ```ts
 // Bundle-based approach
 type TLinkNode =
-	| TClassicLinkNodeBundle      // { bundleType: 'classic', content: {...}, text: {...}, image: {...} }
+	| TClassicLinkNodeBundle // { bundleType: 'classic', content: {...}, text: {...}, image: {...} }
 	| TYouTubeEmbedLinkNodeBundle // { bundleType: 'youtube-embed', content: {...}, text: {...} }
 	| TSpotifyEmbedLinkNodeBundle; // { bundleType: 'spotify-embed', content: {...}, text: {...} }
 

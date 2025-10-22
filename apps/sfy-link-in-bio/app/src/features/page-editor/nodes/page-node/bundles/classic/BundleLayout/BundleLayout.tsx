@@ -52,13 +52,10 @@ export const ClassicBundleLayout = React.forwardRef<HTMLDivElement, TClassicBund
 				{/* Navbar */}
 				{content.navbar.visible && (
 					<div
-						className={cn(
-							'fixed top-2 right-0 left-0 z-[200] mx-auto w-full max-w-xl px-2 sm:px-4',
-							{
-								'sm:top-[length:var(--header-top-scrolled)]': hasScrolled,
-								'sm:absolute sm:top-[length:var(--header-top)]': !hasScrolled
-							}
-						)}
+						className={cn('fixed top-2 right-0 left-0 z-200 mx-auto w-full max-w-xl px-2 sm:px-4', {
+							'sm:top-(--header-top-scrolled)': hasScrolled,
+							'sm:absolute sm:top-(--header-top)': !hasScrolled
+						})}
 						style={{
 							['--header-top' as string]: `${headerTop}px`,
 							['--header-top-scrolled' as string]: `${headerTopScrolled}px`
@@ -87,7 +84,7 @@ export const ClassicBundleLayout = React.forwardRef<HTMLDivElement, TClassicBund
 									target="_blank"
 									rel="noopener noreferrer"
 									className={cn(
-										'flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-white/40 bg-white/70 text-black backdrop-blur-sm transition-all duration-200 hover:scale-105 hover:bg-white/100 focus:ring-2 focus:ring-white/50 focus:outline-none active:scale-95',
+										'flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-white/40 bg-white/70 text-black backdrop-blur-sm transition-all duration-200 hover:scale-105 hover:bg-white focus:ring-2 focus:ring-white/50 focus:outline-none active:scale-95',
 										{ 'shadow-[0_2px_8px_rgba(0,0,0,0.15)]': !hasScrolled }
 									)}
 									aria-label="Visit Saku website"
@@ -119,10 +116,10 @@ export const ClassicBundleLayout = React.forwardRef<HTMLDivElement, TClassicBund
 					<div className="absolute inset-0 hidden bg-black/10 backdrop-blur-xl sm:block" />
 
 					{/* Content container */}
-					<div className="relative mx-auto w-full max-w-xl sm:pt-[length:var(--content-top)]">
+					<div className="relative mx-auto w-full max-w-xl sm:pt-(--content-top)">
 						<div className="relative">
 							<div
-								className="min-h-screen overflow-hidden rounded-t-none pb-16 sm:min-h-[calc(100vh-var(--content-top))] sm:rounded-t-[length:var(--content-radius)] sm:shadow-[0_24px_32px_0px_rgba(0,0,0,0.15)]"
+								className="min-h-screen overflow-hidden rounded-t-none pb-16 sm:min-h-[calc(100vh-var(--content-top))] sm:rounded-t-(--content-radius) sm:shadow-[0_24px_32px_0px_rgba(0,0,0,0.15)]"
 								style={{
 									...appearance.styles,
 									...fill?.styles
@@ -159,7 +156,7 @@ export const ClassicBundleLayout = React.forwardRef<HTMLDivElement, TClassicBund
 							</div>
 
 							{/* Glass border overlay */}
-							<div className="pointer-events-none absolute top-0 left-0 -mt-[length:var(--glass-border-width)] -ml-[length:var(--glass-border-width)] hidden h-full w-[calc(100%+var(--glass-border-width)*2)] rounded-t-none border-t-[length:var(--glass-border-width)] border-r-[length:var(--glass-border-width)] border-l-[length:var(--glass-border-width)] border-solid border-white/40 sm:block sm:rounded-t-[length:var(--glass-border-radius)]" />
+							<div className="pointer-events-none absolute top-0 left-0 -mt-(--glass-border-width) -ml-(--glass-border-width) hidden h-full w-[calc(100%+var(--glass-border-width)*2)] rounded-t-none border-t-(length:--glass-border-width) border-r-(length:--glass-border-width) border-l-(length:--glass-border-width) border-solid border-white/40 sm:block sm:rounded-t-(--glass-border-radius)" />
 						</div>
 					</div>
 				</div>
