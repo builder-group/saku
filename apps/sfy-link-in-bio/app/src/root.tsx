@@ -5,7 +5,7 @@ import { WindowSize } from '@/components';
 import { appConfig } from '@/environment';
 import { TLinksFunction, TLoaderFunction } from '@/types';
 import { RootProviders } from './providers';
-import styles from './styles.css?url';
+import './styles.css';
 
 const Root: React.FC = () => {
 	const { baseUrl } = useLoaderData<TLoaderData>();
@@ -38,8 +38,7 @@ export const links: TLinksFunction = () => [
 	{
 		rel: 'stylesheet',
 		href: 'https://cdn.shopify.com/static/fonts/inter/v4/styles.css'
-	},
-	{ rel: 'stylesheet', href: styles }
+	}
 ];
 
 export const loader: TLoaderFunction<TLoaderData> = async ({ request }) => {
