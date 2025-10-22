@@ -15,7 +15,6 @@ import {
 } from '@/features/page-editor';
 import { hydrateSite, StaticSiteHydrateContext } from '@/features/page-editor/.server';
 import { resultLoader, withResultLoader } from '@/lib';
-import styles from '@/styles.css?url';
 import { THeadersFunction, TMetaFunction } from '@/types';
 
 const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
@@ -33,10 +32,9 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 		return (
 			<>
 				{appConfig.env === 'development' && (
-					// Note: Manually injecting styles, fonts, and base href in dev because meta tags (from meta export) don't get applied when using Cloudflare tunnel + App Proxy context
+					// Note: Manually injecting fonts and base href in dev because meta tags (from meta export) don't get applied when using Cloudflare tunnel + App Proxy context
 					<>
 						<base href={appUrl} />
-						<link rel="stylesheet" href={`${appUrl}${styles}`} />
 						{site.fontUrls.map((url, index) => (
 							<link key={`font-${index}`} rel="stylesheet" href={url} />
 						))}
@@ -89,7 +87,6 @@ export const meta: TMetaFunction<typeof loader> = ({ loaderData }) => {
 		// https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/base
 		// https://github.com/Shopify/shopify-app-js/blob/main/packages/apps/shopify-app-react-router/src/react/components/AppProxyProvider/AppProxyProvider.tsx
 		// { tagName: 'base', href: result.appUrl },
-		{ tagName: 'link', rel: 'stylesheet', href: styles },
 		...(getSiteMetadata(result.site) ?? [])
 	];
 };
