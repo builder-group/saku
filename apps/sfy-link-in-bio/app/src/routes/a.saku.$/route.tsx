@@ -69,12 +69,12 @@ export const headers: THeadersFunction = (headersArgs) => {
 
 // Note: App Proxy meta tags work in production but don't seem to work in development through Cloudflare tunnel?
 // Regular routes (like w.$) work fine in dev through Cloudflare tunnel - this seems to be specific to App Proxy.
-export const meta: TMetaFunction<typeof loader> = ({ data }) => {
-	if (data == null) {
+export const meta: TMetaFunction<typeof loader> = ({ loaderData }) => {
+	if (loaderData == null) {
 		return [];
 	}
 
-	const [isOk, , result] = data;
+	const [isOk, , result] = loaderData;
 	if (!isOk) {
 		return [
 			{ title: 'Page Not Found - Saku' },
@@ -116,8 +116,8 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 			shop = authResult.context.session?.shop || null;
 			break;
 		case 'unverified':
+			// Note: Allow unverified requests in production for signature issues
 			shop = authResult.shop;
-			// Allow unverified requests in production for signature issues
 			break;
 		case 'invalid':
 			return Err({
