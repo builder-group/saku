@@ -1,11 +1,10 @@
 import { TFlatSite, TIntegration } from '@repo/editor';
 import { Text } from '@shopify/polaris';
-import { AppProxyProvider } from '@shopify/shopify-app-react-router/react';
 import { boundary } from '@shopify/shopify-app-react-router/server';
 import { isStatusCode } from 'feature-fetch';
 import React from 'react';
 import { Err, Ok } from 'tuple-result';
-import { shopifyConfig } from '@/.server/environment/configs';
+import { shopifyConfig } from '@/.server/environment';
 import { authenticateAppProxy } from '@/.server/lib';
 import { appConfig, coreApiClient, logger } from '@/environment';
 import {
@@ -32,11 +31,11 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 		);
 
 		return (
-			<AppProxyProvider appUrl={appUrl}>
+			<>
 				{appConfig.env === 'development' && (
-					// Manually inject styles and fonts in development
-					// because App Proxy meta tags don't work through Cloudflare tunnel
+					// Note: Manually injecting styles, fonts, and base href in dev because meta tags (from meta export) don't get applied when using Cloudflare tunnel + App Proxy context
 					<>
+						<base href={appUrl} />
 						<link rel="stylesheet" href={`${appUrl}${styles}`} />
 						{site.fontUrls.map((url, index) => (
 							<link key={`font-${index}`} rel="stylesheet" href={url} />
@@ -44,7 +43,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 					</>
 				)}
 				<StaticNodeCanvas cx={cx} nodes={[site.root]} />
-			</AppProxyProvider>
+			</>
 		);
 	},
 	Error: ({ error }) => (
@@ -67,8 +66,6 @@ export const headers: THeadersFunction = (headersArgs) => {
 	return boundary.headers(headersArgs);
 };
 
-// Note: App Proxy meta tags work in production but don't seem to work in development through Cloudflare tunnel?
-// Regular routes (like w.$) work fine in dev through Cloudflare tunnel - this seems to be specific to App Proxy.
 export const meta: TMetaFunction<typeof loader> = ({ loaderData }) => {
 	if (loaderData == null) {
 		return [];
@@ -86,7 +83,13 @@ export const meta: TMetaFunction<typeof loader> = ({ loaderData }) => {
 	}
 
 	return [
-		{ tagName: 'link', rel: 'stylesheet', href: `${result.appUrl}${styles}` },
+		// Note: <base> tag is handled in `root.tsx` loader because React Router meta export doesn't support <base> tags (https://github.com/remix-run/react-router/issues/14466)
+		//
+		// We don't use AppProxyProvider because it renders <base> in body (not head), so too late for some resources
+		// https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/base
+		// https://github.com/Shopify/shopify-app-js/blob/main/packages/apps/shopify-app-react-router/src/react/components/AppProxyProvider/AppProxyProvider.tsx
+		// { tagName: 'base', href: result.appUrl },
+		{ tagName: 'link', rel: 'stylesheet', href: styles },
 		...(getSiteMetadata(result.site) ?? [])
 	];
 };

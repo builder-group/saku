@@ -1,17 +1,21 @@
 import React from 'react';
-import { Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router';
+import { Links, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData } from 'react-router';
+import { shopifyConfig } from '@/.server/environment';
 import { WindowSize } from '@/components';
 import { appConfig } from '@/environment';
-import { TLinksFunction } from '@/types';
+import { TLinksFunction, TLoaderFunction } from '@/types';
 import { RootProviders } from './providers';
 import styles from './styles.css?url';
 
 const Root: React.FC = () => {
+	const { baseUrl } = useLoaderData<TLoaderData>();
+
 	return (
 		<html lang="en">
 			<head>
 				<meta charSet="utf-8" />
 				<meta name="viewport" content="width=device-width,initial-scale=1" />
+				{baseUrl != null && <base href={baseUrl} />}
 				<Meta />
 				<Links />
 			</head>
@@ -37,3 +41,21 @@ export const links: TLinksFunction = () => [
 	},
 	{ rel: 'stylesheet', href: styles }
 ];
+
+export const loader: TLoaderFunction<TLoaderData> = async ({ request }) => {
+	const url = new URL(request.url);
+
+	// Note: We detect app proxy routes here and return baseUrl because React Router meta export doesn't support <base> tags (https://github.com/remix-run/react-router/issues/14466).
+	// The <base> tag must be in <head> before other URL-containing elements to work properly.
+	// https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/base
+	const isAppProxyRoute = url.pathname.startsWith('/a/');
+	if (isAppProxyRoute) {
+		return { baseUrl: shopifyConfig.appUrl };
+	}
+
+	return { baseUrl: undefined };
+};
+
+interface TLoaderData {
+	baseUrl?: string;
+}
