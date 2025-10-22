@@ -122,7 +122,7 @@ export const ClassicBundleLayout = React.forwardRef<HTMLDivElement, TClassicBund
 					<div className="relative mx-auto w-full max-w-xl sm:pt-[length:var(--content-top)]">
 						<div className="relative">
 							<div
-								className="min-h-[calc(100vh-var(--content-top))] overflow-hidden rounded-t-none pb-16 sm:rounded-t-[length:var(--content-radius)] sm:shadow-[0_24px_32px_0px_rgba(0,0,0,0.15)]"
+								className="min-h-screen overflow-hidden rounded-t-none pb-16 sm:min-h-[calc(100vh-var(--content-top))] sm:rounded-t-[length:var(--content-radius)] sm:shadow-[0_24px_32px_0px_rgba(0,0,0,0.15)]"
 								style={{
 									...appearance.styles,
 									...fill?.styles
