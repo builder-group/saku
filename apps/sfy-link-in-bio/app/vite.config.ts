@@ -5,19 +5,18 @@ import { reactRouterHonoServer } from 'react-router-hono-server/dev';
 import { defineConfig, type UserConfig } from 'vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
-// Vite loads env vars at runtime, but not during config evaluation.
-// Since we use them in `define` for build-time constants, we manually load them in dev.
-// In production, env vars are set via deployment (e.g. Docker) to avoid accidentally loading dev files (e.g. during local deployment).
+// Load .env.local in development.
+// Production builds get env vars from Docker/CI (see Dockerfile and fly.toml).
+// https://v4.vitejs.dev/config/#using-environment-variables-in-config
 if (process.env['NODE_ENV'] === 'development') {
-	const envFiles = ['.env', '.env.local'];
-	envFiles.forEach((file) => {
-		dotenv.config({ path: file });
-	});
+	dotenv.config({ path: '.env.local' });
 }
 
-// Related: https://github.com/remix-run/remix/issues/2835#issuecomment-1144102176
-// Replace the HOST env var with SHOPIFY_APP_URL so that it doesn't break the remix server. The CLI will eventually
-// stop passing in HOST, so we can remove this workaround after the next major release.
+// Shopify CLI workaround: Use HOST as SHOPIFY_APP_URL (local dev only).
+// The Shopify CLI sets HOST to the tunnel URL (e.g. ngrok/Cloudflare),
+// but we use SHOPIFY_APP_URL throughout our config (allowedHosts, HMR, base). This ensures they're in sync.
+// Production uses SHOPIFY_APP_URL from fly.toml/Dockerfile directly (no HOST).
+// https://github.com/remix-run/remix/issues/2835#issuecomment-1144102176
 if (
 	process.env['HOST'] &&
 	(!process.env['SHOPIFY_APP_URL'] || process.env['SHOPIFY_APP_URL'] === process.env['HOST'])
@@ -26,55 +25,39 @@ if (
 	delete process.env['HOST'];
 }
 
-const host = new URL(process.env['SHOPIFY_APP_URL'] ?? 'http://localhost').hostname;
+const env = {
+	// Build environment
+	isProd: process.env['CI'] || process.env['DOCKER'], // Use CI/DOCKER to detect production builds (NODE_ENV is always 'production' during vite build)
 
-let hmrConfig;
-if (host === 'localhost') {
-	hmrConfig = {
-		protocol: 'ws',
-		host: 'localhost',
-		port: 64999,
-		clientPort: 64999
-	};
-} else {
-	hmrConfig = {
-		protocol: 'wss',
-		host: host,
-		port: parseInt(process.env['FRONTEND_PORT'] ?? '8002'),
-		clientPort: 443
-	};
-}
+	// Dev server config
+	port: parseInt(process.env['PORT'] ?? '3000'),
+	shopifyAppUrl: process.env['SHOPIFY_APP_URL'] ?? 'http://localhost:3000',
+	frontendPort: parseInt(process.env['FRONTEND_PORT'] ?? '8002') // For remote HMR
+};
 
 export default defineConfig({
+	// Absolute URLs for Shopify app proxy support.
+	// Why: Dynamic imports don't respect <base> tag in Safari, so we generate absolute asset URLs.
+	// This ensures assets load from our domain even when accessed via e.g. "shop.myshopify.com/a/saku/*".
+	base: env.shopifyAppUrl.endsWith('/') ? env.shopifyAppUrl : `${env.shopifyAppUrl}/`,
 	server: {
-		allowedHosts: [host],
-		cors: {
-			preflightContinue: true
-		},
-		port: parseInt(process.env['PORT'] ?? '3000'),
-		hmr: hmrConfig,
-		fs: {
-			// See https://vitejs.dev/config/server-options.html#server-fs-allow for more information
-			allow: ['src', 'node_modules']
-		}
+		port: env.port,
+		hmr: getHmrConfig(),
+		// Allow tunnel hostnames (Cloudflare/ngrok) for Shopify development
+		allowedHosts: [new URL(env.shopifyAppUrl).hostname]
 	},
+	// Inject env vars as build-time constants
 	define: {
-		['import.meta.env.PACKAGE_VERSION']: defineViteEnv('npm_package_version'),
-		['import.meta.env.VITE_API_CORE_URL']: defineViteEnv('VITE_API_CORE_URL'),
-		['import.meta.env.VITE_POSTHOG_KEY']: defineViteEnv('VITE_POSTHOG_KEY'),
-		['import.meta.env.VITE_POSTHOG_HOST']: defineViteEnv('VITE_POSTHOG_HOST'),
-		['import.meta.env.VITE_MANTLE_APP_ID']: defineViteEnv('VITE_MANTLE_APP_ID'),
-		['import.meta.env.VITE_CRISP_TOKEN']: defineViteEnv('VITE_CRISP_TOKEN')
+		['import.meta.env.PACKAGE_VERSION']: validateAndStringify('npm_package_version'),
+		['import.meta.env.VITE_API_CORE_URL']: validateAndStringify('VITE_API_CORE_URL'),
+		['import.meta.env.VITE_POSTHOG_KEY']: validateAndStringify('VITE_POSTHOG_KEY'),
+		['import.meta.env.VITE_POSTHOG_HOST']: validateAndStringify('VITE_POSTHOG_HOST'),
+		['import.meta.env.VITE_MANTLE_APP_ID']: validateAndStringify('VITE_MANTLE_APP_ID'),
+		['import.meta.env.VITE_CRISP_TOKEN']: validateAndStringify('VITE_CRISP_TOKEN')
 	},
 	ssr: {
-		noExternal: [
-			'posthog-js',
-			'posthog-js/react',
-			// Fix: validation-adapters sub-exports (/valibot, /zod) cause SSR module resolution issues
-			// Might not be necessary if we update validation-adapters package.json exports to use nested conditional exports correctly?
-			'validation-adapters',
-			'feature-react'
-		]
+		// Force these packages to be bundled for SSR (to prevent SSR module resolution issues)
+		noExternal: ['posthog-js', 'posthog-js/react', 'validation-adapters', 'feature-react']
 	},
 	plugins: [
 		mdx(),
@@ -88,33 +71,56 @@ export default defineConfig({
 		tsconfigPaths()
 	],
 	build: {
+		// Prevent asset inlining (keep all assets as separate files)
 		assetsInlineLimit: 0
 	},
 	optimizeDeps: {
+		// Pre-bundle Shopify dependencies for faster dev server startup
 		include: ['@shopify/app-bridge-react', '@shopify/polaris']
 	}
 }) satisfies UserConfig;
 
-// =========================================================================
-// Helper
-// =========================================================================
+// =============================================================================
+// Helpers
+// =============================================================================
 
-// Helper to validate and stringify Vite env vars
-// Note: Can't use NODE_ENV (always 'production' in build) or enforce vars in local dev (no env loading in build command)
-function defineViteEnv(key: string) {
+/**
+ * Configure HMR for local vs remote development
+ * - Local: WebSocket on port 64999
+ * - Remote: Secure WebSocket via tunnel (Cloudflare/ngrok) for Shopify development
+ */
+function getHmrConfig() {
+	const hostname = new URL(env.shopifyAppUrl).hostname;
+	return hostname === 'localhost'
+		? {
+				protocol: 'ws' as const,
+				host: 'localhost',
+				port: 64999,
+				clientPort: 64999
+			}
+		: {
+				protocol: 'wss' as const,
+				host: hostname,
+				port: env.frontendPort,
+				clientPort: 443
+			};
+}
+
+/**
+ * Validate and stringify env var for Vite's `define` option
+ * - Production: Fail hard if missing (prevent corrupted builds)
+ * - Development: Allow empty string (warn but continue)
+ */
+function validateAndStringify(key: string): string {
 	const value = process.env[key];
-
 	if (!value?.length) {
-		// In container/CI, fail hard to prevent corrupted production builds
-		if (process.env['CI'] || process.env['DOCKER']) {
-			throw new Error(`${key} is required for container/CI builds`);
+		// Production builds must have all env vars
+		if (env.isProd) {
+			throw new Error(`${key} is required for production builds`);
 		}
-		// In local dev, just warn and continue
-		else {
-			console.warn(`[vite.config.ts] Warning: ${key} is not set`);
-			return JSON.stringify('');
-		}
+		// Local dev: warn and continue with empty string
+		console.warn(`[vite.config.ts] Warning: ${key} is not set`);
+		return JSON.stringify('');
 	}
-
 	return JSON.stringify(value);
 }

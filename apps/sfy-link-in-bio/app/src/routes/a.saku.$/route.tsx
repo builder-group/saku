@@ -32,14 +32,18 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 		return (
 			<>
 				{appConfig.env === 'development' && (
-					// Note: Manually injecting fonts and base href in dev because meta tags (from meta export) don't get applied when using Cloudflare tunnel + App Proxy context
+					// Note: Manually injecting fonts in dev because meta tags (from meta export) don't get applied when using Cloudflare tunnel + App Proxy context
 					<>
-						<base href={appUrl} />
 						{site.fontUrls.map((url, index) => (
 							<link key={`font-${index}`} rel="stylesheet" href={url} />
 						))}
 					</>
 				)}
+				{/*
+				 * Note: Not using Shopify AppProxyProvider because it renders <base> in the body (not head), which is too late for some resources.
+				 * Instead we inject the <base> tag in the `root.tsx` file when needed.
+				 * https://github.com/Shopify/shopify-app-js/blob/main/packages/apps/shopify-app-react-router/src/react/components/AppProxyProvider/AppProxyProvider.tsx
+				 */}
 				<StaticNodeCanvas cx={cx} nodes={[site.root]} />
 			</>
 		);
@@ -80,15 +84,7 @@ export const meta: TMetaFunction<typeof loader> = ({ loaderData }) => {
 		];
 	}
 
-	return [
-		// Note: <base> tag is handled in `root.tsx` loader because React Router meta export doesn't support <base> tags (https://github.com/remix-run/react-router/issues/14466)
-		//
-		// We don't use AppProxyProvider because it renders <base> in body (not head), so too late for some resources
-		// https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/base
-		// https://github.com/Shopify/shopify-app-js/blob/main/packages/apps/shopify-app-react-router/src/react/components/AppProxyProvider/AppProxyProvider.tsx
-		// { tagName: 'base', href: result.appUrl },
-		...(getSiteMetadata(result.site) ?? [])
-	];
+	return getSiteMetadata(result.site) ?? [];
 };
 
 export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async ({ request }) => {
