@@ -151,7 +151,8 @@ router.openapi(ParseExternalSiteRoute, async (c) => {
 			);
 		}
 		case 'saku.so':
-		case 'www.saku.so': {
+		case 'www.saku.so':
+		case 'sfy-link-in-bio-app.saku.so': {
 			const { workspaceHandle, siteHandle, content } = await parseSakuSite(url);
 			return c.json(
 				{

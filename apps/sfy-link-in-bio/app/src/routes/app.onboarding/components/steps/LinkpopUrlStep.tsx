@@ -6,6 +6,8 @@ import { LinkIcon } from '@/components';
 import type { TOnboardingContext } from '../../create-onboarding-context';
 import { StepLayout } from '../StepLayout';
 
+const SUPPORTED_LINKPOP_HOSTNAMES = ['linkpop.com', 'www.linkpop.com'];
+
 export const LinkpopUrlStep: React.FC<TLinkpopUrlStepProps> = (props) => {
 	const { onboardingContext } = props;
 
@@ -31,7 +33,7 @@ export const LinkpopUrlStep: React.FC<TLinkpopUrlStepProps> = (props) => {
 		const pastedText = e.clipboardData.getData('text');
 
 		const url = parseUrl(pastedText);
-		if (url == null || url.hostname !== 'linkpop.com') {
+		if (url == null || !SUPPORTED_LINKPOP_HOSTNAMES.includes(url.hostname.toLowerCase())) {
 			return;
 		}
 

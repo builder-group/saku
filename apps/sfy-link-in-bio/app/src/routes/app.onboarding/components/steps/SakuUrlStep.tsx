@@ -6,6 +6,8 @@ import { LinkIcon } from '@/components';
 import type { TOnboardingContext } from '../../create-onboarding-context';
 import { StepLayout } from '../StepLayout';
 
+const SUPPORTED_SAKU_HOSTNAMES = ['saku.so', 'www.saku.so', 'sfy-link-in-bio-app.saku.so'];
+
 export const SakuUrlStep: React.FC<TSakuUrlStepProps> = (props) => {
 	const { onboardingContext } = props;
 
@@ -33,7 +35,7 @@ export const SakuUrlStep: React.FC<TSakuUrlStepProps> = (props) => {
 		const pastedText = e.clipboardData.getData('text');
 
 		const url = parseUrl(pastedText);
-		if (url == null || url.hostname !== 'saku.so') {
+		if (url == null || !SUPPORTED_SAKU_HOSTNAMES.includes(url.hostname.toLowerCase())) {
 			return;
 		}
 
