@@ -30,6 +30,8 @@ export const ResolvedSpotifyEmbedBundle = React.forwardRef<
 						...embed.styles,
 						backgroundColor: content.theme?.backgroundBase || '#000000'
 					}}
+					aria-label="Loading Spotify content"
+					role="status"
 				/>
 			)}
 			<iframe

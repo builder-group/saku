@@ -30,6 +30,8 @@ export const ResolvedYouTubeEmbedBundle = React.forwardRef<
 						...embed.styles,
 						backgroundColor: '#000000'
 					}}
+					aria-label="Loading YouTube video"
+					role="status"
 				/>
 			)}
 			<iframe

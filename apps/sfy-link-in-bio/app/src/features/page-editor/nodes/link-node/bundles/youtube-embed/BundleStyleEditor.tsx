@@ -63,7 +63,7 @@ export const YouTubeEmbedBundleStyleEditor: React.FC<
 				/>
 			</AccordionSection>
 			<AccordionSection
-				title={'Embed'}
+				title="Embed"
 				collapsibleClassName="px-0 space-y-3"
 				size="tight"
 				defaultOpen={true}

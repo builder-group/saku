@@ -34,6 +34,7 @@ export const Watermark: React.FC<TWatermarkProps> = (props) => {
 					'flex cursor-pointer items-center gap-1.5 rounded-lg border border-white/40 bg-white/70 px-3 py-2 text-sm text-black no-underline shadow-[0_2px_8px_rgba(0,0,0,0.15)] backdrop-blur-sm transition-all duration-200 hover:scale-105 hover:bg-white/100 focus:ring-2 focus:ring-white/50 focus:outline-none active:scale-95',
 					{ 'fixed right-4 bottom-4 z-[999]': !isAtBottom }
 				)}
+				aria-label="Visit Saku website - Made in Saku"
 			>
 				<LogoIcon className="h-6 w-6" />
 				<span>Made in Saku</span>

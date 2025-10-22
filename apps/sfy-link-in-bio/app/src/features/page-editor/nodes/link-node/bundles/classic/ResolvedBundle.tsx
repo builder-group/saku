@@ -16,6 +16,7 @@ export const ResolvedClassicBundle = React.forwardRef<HTMLDivElement, TResolvedC
 					target="_blank"
 					rel="noopener noreferrer"
 					className="flex min-h-16 cursor-pointer flex-row items-center gap-2 hover:opacity-90"
+					aria-label={content.title != null ? `Visit ${content.title}` : 'Visit external link'}
 					style={{
 						...autoLayout.styles,
 						...appearance.styles,
@@ -31,7 +32,7 @@ export const ResolvedClassicBundle = React.forwardRef<HTMLDivElement, TResolvedC
 						>
 							<img
 								src={content.thumbnail.src}
-								alt={content.title ?? 'Featured Image'}
+								alt={content.title != null ? `${content.title} thumbnail` : 'Link thumbnail'}
 								className="h-full w-full object-cover"
 								draggable={false}
 							/>

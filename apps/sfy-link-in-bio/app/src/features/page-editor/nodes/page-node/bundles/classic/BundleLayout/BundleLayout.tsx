@@ -48,7 +48,7 @@ export const ClassicBundleLayout = React.forwardRef<HTMLDivElement, TClassicBund
 		// =========================================================================
 
 		return (
-			<div className="relative">
+			<>
 				{/* Navbar */}
 				{content.navbar.visible && (
 					<div
@@ -90,6 +90,7 @@ export const ClassicBundleLayout = React.forwardRef<HTMLDivElement, TClassicBund
 										'flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-white/40 bg-white/70 text-black backdrop-blur-sm transition-all duration-200 hover:scale-105 hover:bg-white/100 focus:ring-2 focus:ring-white/50 focus:outline-none active:scale-95',
 										{ 'shadow-[0_2px_8px_rgba(0,0,0,0.15)]': !hasScrolled }
 									)}
+									aria-label="Visit Saku website"
 								>
 									<LogoIcon className="h-6 w-6" />
 								</a>
@@ -162,7 +163,7 @@ export const ClassicBundleLayout = React.forwardRef<HTMLDivElement, TClassicBund
 						</div>
 					</div>
 				</div>
-			</div>
+			</>
 		);
 	}
 );

@@ -17,6 +17,7 @@ export const ResolvedFeaturedBundle = React.forwardRef<
 				target="_blank"
 				rel="noopener noreferrer"
 				className="flex cursor-pointer flex-col items-center gap-2 hover:opacity-90"
+				aria-label={content.title != null ? `Visit ${content.title}` : 'Visit external link'}
 				style={{
 					...autoLayout.styles,
 					...appearance.styles,
@@ -29,7 +30,7 @@ export const ResolvedFeaturedBundle = React.forwardRef<
 					{content.thumbnail != null ? (
 						<img
 							src={content.thumbnail.src}
-							alt={content.title ?? 'Featured Image'}
+							alt={content.title != null ? `${content.title} thumbnail` : 'Link thumbnail'}
 							className="h-full w-full object-cover"
 							draggable={false}
 						/>

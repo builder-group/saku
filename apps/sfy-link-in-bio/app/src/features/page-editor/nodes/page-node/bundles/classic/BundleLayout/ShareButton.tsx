@@ -23,7 +23,7 @@ export const ShareButton: React.FC<TShareButtonProps> = (props) => {
 				setIsCopied(false);
 				setIsDisabled(false);
 			}, 2000);
-		} catch (_) {
+		} catch {
 			logger.error('Failed to copy link');
 		}
 	}, [isDisabled]);
@@ -40,7 +40,7 @@ export const ShareButton: React.FC<TShareButtonProps> = (props) => {
 					'bg-green-100 hover:bg-green-100': isCopied
 				}
 			)}
-			aria-label={isCopied ? 'Copied!' : 'Share profile'}
+			aria-label={isCopied ? 'Copied!' : 'Copy profile link'}
 			onClick={handleClick}
 			disabled={isDisabled}
 		>

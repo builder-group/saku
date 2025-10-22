@@ -25,7 +25,7 @@ export const ClipboardButton: React.FC<TProps> = (props) => {
 				setIsCopied(false);
 				setIsDisabled(false);
 			}, 2000);
-		} catch (_) {
+		} catch {
 			shopify.toast.show('Failed to copy to clipboard', { isError: true });
 		}
 	}, [textToCopy, isDisabled, shopify]);

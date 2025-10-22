@@ -39,6 +39,7 @@ export const ResolvedHeroBundle = React.forwardRef<HTMLDivElement, TResolvedHero
 							alt={content.title}
 							className="h-full w-full object-cover"
 							draggable={false}
+							fetchPriority="high"
 						/>
 					</div>
 				)}

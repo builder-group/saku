@@ -179,6 +179,7 @@ export const ResolvedClassicBundle = React.forwardRef<HTMLDivElement, TResolvedC
 								{product.options?.map((option) => {
 									const currentValue = selectedOptions[option.name];
 									const placeholderText = `Pick ${option.name.slice(0, 1).toUpperCase()}${option.name.toLowerCase().slice(1)}`;
+									const selectId = `product-option-${option.name.toLowerCase().replace(/\s+/g, '-')}`;
 
 									return (
 										<div
@@ -186,10 +187,15 @@ export const ResolvedClassicBundle = React.forwardRef<HTMLDivElement, TResolvedC
 											className="relative"
 											onClick={(e) => e.stopPropagation()}
 										>
+											<label htmlFor={selectId} className="sr-only">
+												Select {option.name}
+											</label>
 											<select
+												id={selectId}
 												value={currentValue}
 												onChange={(e) => handleOptionSelect(option.name, e.target.value)}
 												className="select absolute inset-0 h-full w-full cursor-pointer opacity-0"
+												aria-label={`Select ${option.name}`}
 											>
 												<option disabled value="">
 													{placeholderText}
