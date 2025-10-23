@@ -150,7 +150,7 @@ export const linkNodeMetadata: TNodeMetadata<TLinkNode> = {
 				metadata: {
 					title: 'Add your title here'
 				},
-				user: {}
+				overrides: {}
 			},
 			autoLayout: {
 				paddingTop: tokenRef('auto-layout.default', 'auto-layout', 'paddingTop'),
@@ -186,7 +186,7 @@ export const linkNodeMetadata: TNodeMetadata<TLinkNode> = {
 				metadata: {
 					title: 'Add your title here'
 				},
-				user: {}
+				overrides: {}
 			},
 			autoLayout: {
 				paddingTop: tokenRef('auto-layout.default', 'auto-layout', 'paddingTop'),
@@ -398,7 +398,7 @@ export const productNodeMetadata: TNodeMetadata<TProductNode> = {
 			bundleType: 'classic',
 			content: {
 				type: 'single',
-				user: {}
+				overrides: {}
 			},
 			autoLayout: {
 				paddingTop: tokenRef('auto-layout.default', 'auto-layout', 'paddingTop'),

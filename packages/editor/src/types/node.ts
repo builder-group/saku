@@ -307,7 +307,7 @@ export type TBasicLinkNodeContentMixin = TBaseMixin<
 			thumbnail?: TAssetHash;
 		};
 		// User overrides (take priority)
-		user: {
+		overrides: {
 			title?: string;
 			description?: string;
 			thumbnail?: TAssetHash | null; // null = explicitly removed, undefined = not set
@@ -483,7 +483,7 @@ export type TSingleProductNodeContentMixin = TBaseMixin<
 		type: 'single';
 		product?: TProduct;
 		// User overrides (take priority)
-		user: {
+		overrides: {
 			title?: string;
 			description?: TRichContent;
 		};
@@ -497,7 +497,7 @@ export type TSingleProductNodeContentMixin = TBaseMixin<
 // 		type: 'multi';
 // 		products: {
 // 			product: TProduct;
-// 			user: {
+// 			overrides: {
 // 				title?: string;
 // 				description?: TRichContent;
 // 			};

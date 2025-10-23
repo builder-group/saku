@@ -140,7 +140,7 @@ export function parseLinkpopData(linkpopData: TLinkPopData): TSite {
 								type: 'basic',
 								url: link.url,
 								metadata: {},
-								user: {
+								overrides: {
 									title: link.title,
 									thumbnail: thumbnailHash
 								}
@@ -171,7 +171,7 @@ export function parseLinkpopData(linkpopData: TLinkPopData): TSite {
 								type: 'basic',
 								url: link.url,
 								metadata: {},
-								user: {
+								overrides: {
 									title: link.title,
 									thumbnail: thumbnailHash
 								}
@@ -184,7 +184,7 @@ export function parseLinkpopData(linkpopData: TLinkPopData): TSite {
 							type: 'basic',
 							url: link.url,
 							metadata: {},
-							user: {
+							overrides: {
 								title: link.title,
 								thumbnail: thumbnailHash
 							}

@@ -18,10 +18,10 @@ export const featuredBundleMetadata: TLinkNodeBundleMetadata<TFeaturedLinkNodeBu
 					description: node.content.metadata.description,
 					thumbnail: node.content.metadata.thumbnail
 				},
-				user: {
-					title: node.content.user.title,
-					description: node.content.user.description,
-					thumbnail: node.content.user.thumbnail
+				overrides: {
+					title: node.content.overrides.title,
+					description: node.content.overrides.description,
+					thumbnail: node.content.overrides.thumbnail
 				}
 			},
 			autoLayout: node.autoLayout,
@@ -62,10 +62,11 @@ export const featuredBundleMetadata: TLinkNodeBundleMetadata<TFeaturedLinkNodeBu
 						cx.common.content?.metadata.description ?? defaults.content.metadata.description,
 					thumbnail: cx.common.content?.metadata.thumbnail ?? defaults.content.metadata.thumbnail
 				},
-				user: {
-					title: cx.common.content?.user.title ?? defaults.content.user.title,
-					description: cx.common.content?.user.description ?? defaults.content.user.description,
-					thumbnail: cx.common.content?.user.thumbnail ?? defaults.content.user.thumbnail
+				overrides: {
+					title: cx.common.content?.overrides.title ?? defaults.content.overrides.title,
+					description:
+						cx.common.content?.overrides.description ?? defaults.content.overrides.description,
+					thumbnail: cx.common.content?.overrides.thumbnail ?? defaults.content.overrides.thumbnail
 				}
 			},
 			autoLayout: commonAutoLayout ?? defaults.autoLayout,

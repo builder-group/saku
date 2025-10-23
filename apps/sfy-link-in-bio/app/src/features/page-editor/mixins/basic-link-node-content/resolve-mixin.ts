@@ -9,11 +9,14 @@ export function resolveBasicLinkNodeContentMixin(
 	cx: TMixinResolveContext
 ): TResult<TResolvedBasicLinkNodeContentMixin['value'], AppError> {
 	const thumbnail =
-		content.user.thumbnail !== undefined ? content.user.thumbnail : content.metadata.thumbnail;
-	const title = content.user.title !== undefined ? content.user.title : content.metadata.title;
+		content.overrides.thumbnail !== undefined
+			? content.overrides.thumbnail
+			: content.metadata.thumbnail;
+	const title =
+		content.overrides.title !== undefined ? content.overrides.title : content.metadata.title;
 	const description =
-		content.user.description !== undefined
-			? content.user.description
+		content.overrides.description !== undefined
+			? content.overrides.description
 			: content.metadata.description;
 
 	return Ok({

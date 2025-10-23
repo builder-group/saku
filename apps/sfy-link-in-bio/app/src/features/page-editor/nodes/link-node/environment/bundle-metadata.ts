@@ -70,7 +70,7 @@ interface TCommonFields {
 			description?: string;
 			thumbnail?: string;
 		};
-		user: {
+		overrides: {
 			title?: string;
 			description?: string;
 			thumbnail?: string | null;

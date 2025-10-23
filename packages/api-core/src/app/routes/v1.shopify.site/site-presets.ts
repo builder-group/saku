@@ -134,7 +134,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 						};
 					})
 				},
-				user: {}
+				overrides: {}
 			}
 		};
 	}
@@ -215,7 +215,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 						type: 'basic',
 						url: `https://${shopId}`,
 						metadata: {},
-						user: {
+						overrides: {
 							title: '🛒 Visit our Shopify store'
 						}
 					}
