@@ -301,7 +301,7 @@ export type TBasicLinkNodeContentMixin = TBaseMixin<
 	{
 		type: 'basic';
 		url: string;
-		metadata: {
+		metadata?: {
 			title?: string;
 			description?: string;
 			thumbnail?: TAssetHash;

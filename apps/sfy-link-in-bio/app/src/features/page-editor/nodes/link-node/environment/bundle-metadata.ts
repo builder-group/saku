@@ -65,7 +65,7 @@ export interface TLinkNodeBundleMetadata<GNode extends TLinkNode = TLinkNode> {
 interface TCommonFields {
 	id: TIdMixin['value'];
 	content?: {
-		metadata: {
+		metadata?: {
 			title?: string;
 			description?: string;
 			thumbnail?: string;

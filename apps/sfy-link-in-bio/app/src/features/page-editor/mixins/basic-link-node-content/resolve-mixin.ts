@@ -11,13 +11,13 @@ export function resolveBasicLinkNodeContentMixin(
 	const thumbnail =
 		content.overrides.thumbnail !== undefined
 			? content.overrides.thumbnail
-			: content.metadata.thumbnail;
+			: content.metadata?.thumbnail;
 	const title =
-		content.overrides.title !== undefined ? content.overrides.title : content.metadata.title;
+		content.overrides.title !== undefined ? content.overrides.title : content.metadata?.title;
 	const description =
 		content.overrides.description !== undefined
 			? content.overrides.description
-			: content.metadata.description;
+			: content.metadata?.description;
 
 	return Ok({
 		type: 'basic',

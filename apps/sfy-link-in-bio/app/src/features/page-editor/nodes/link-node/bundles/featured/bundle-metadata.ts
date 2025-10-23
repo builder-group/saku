@@ -14,9 +14,9 @@ export const featuredBundleMetadata: TLinkNodeBundleMetadata<TFeaturedLinkNodeBu
 			id: node.id,
 			content: {
 				metadata: {
-					title: node.content.metadata.title,
-					description: node.content.metadata.description,
-					thumbnail: node.content.metadata.thumbnail
+					title: node.content.metadata?.title,
+					description: node.content.metadata?.description,
+					thumbnail: node.content.metadata?.thumbnail
 				},
 				overrides: {
 					title: node.content.overrides.title,
@@ -57,10 +57,10 @@ export const featuredBundleMetadata: TLinkNodeBundleMetadata<TFeaturedLinkNodeBu
 				type: 'basic',
 				url,
 				metadata: {
-					title: cx.common.content?.metadata.title ?? defaults.content.metadata.title,
+					title: cx.common.content?.metadata?.title ?? defaults.content.metadata?.title,
 					description:
-						cx.common.content?.metadata.description ?? defaults.content.metadata.description,
-					thumbnail: cx.common.content?.metadata.thumbnail ?? defaults.content.metadata.thumbnail
+						cx.common.content?.metadata?.description ?? defaults.content.metadata?.description,
+					thumbnail: cx.common.content?.metadata?.thumbnail ?? defaults.content.metadata?.thumbnail
 				},
 				overrides: {
 					title: cx.common.content?.overrides.title ?? defaults.content.overrides.title,

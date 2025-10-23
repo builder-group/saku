@@ -20,7 +20,7 @@ export const BasicLinkNodeContentMixinEditor = (props: TBasicLinkNodeContentMixi
 	const [thumbnailError, setThumbnailError] = React.useState<string | null>(null);
 	const thumbnail = React.useMemo(() => {
 		const asset = cx.editor.getImageAsset(
-			overrides.thumbnail === undefined ? metadata.thumbnail : overrides.thumbnail
+			overrides.thumbnail === undefined ? metadata?.thumbnail : overrides.thumbnail
 		);
 		if (asset == null || asset.storage.type !== 'url') {
 			return undefined;
@@ -30,32 +30,32 @@ export const BasicLinkNodeContentMixinEditor = (props: TBasicLinkNodeContentMixi
 			url: asset.storage.url,
 			fileName: asset.fileName
 		};
-	}, [overrides.thumbnail, metadata.thumbnail, cx]);
+	}, [overrides.thumbnail, metadata?.thumbnail, cx]);
 
 	const titleValue = React.useMemo(() => {
-		return overrides.title ?? metadata.title;
-	}, [overrides.title, metadata.title]);
+		return overrides.title ?? metadata?.title;
+	}, [overrides.title, metadata?.title]);
 	const descriptionValue = React.useMemo(() => {
-		return overrides.description ?? metadata.description;
-	}, [overrides.description, metadata.description]);
+		return overrides.description ?? metadata?.description;
+	}, [overrides.description, metadata?.description]);
 
 	const canResetTitle = React.useMemo(
-		() => metadata.title != null && overrides.title != null && overrides.title !== metadata.title,
-		[overrides.title, metadata.title]
+		() => metadata?.title != null && overrides.title != null && overrides.title !== metadata?.title,
+		[overrides.title, metadata?.title]
 	);
 	const canResetDescription = React.useMemo(
 		() =>
-			metadata.description != null &&
+			metadata?.description != null &&
 			overrides.description != null &&
-			overrides.description !== metadata.description,
-		[overrides.description, metadata.description]
+			overrides.description !== metadata?.description,
+		[overrides.description, metadata?.description]
 	);
 	const canResetThumbnail = React.useMemo(
 		() =>
-			metadata.thumbnail !== undefined &&
+			metadata?.thumbnail !== undefined &&
 			overrides.thumbnail !== undefined &&
-			overrides.thumbnail !== metadata.thumbnail,
-		[overrides.thumbnail, metadata.thumbnail]
+			overrides.thumbnail !== metadata?.thumbnail,
+		[overrides.thumbnail, metadata?.thumbnail]
 	);
 
 	// =========================================================================

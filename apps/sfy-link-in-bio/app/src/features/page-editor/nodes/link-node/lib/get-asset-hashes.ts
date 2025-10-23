@@ -12,8 +12,8 @@ export function getLinkNodeAssetHashes(node: TLinkNode): TAssetHash[] {
 			if (node.content.overrides.thumbnail != null) {
 				hashes.push(node.content.overrides.thumbnail);
 			}
-			if (node.content.metadata.thumbnail != null) {
-				hashes.push(node.content.metadata.thumbnail);
+			if (node.content.metadata?.thumbnail != null) {
+				hashes.push(node.content.metadata?.thumbnail);
 			}
 			break;
 		}
