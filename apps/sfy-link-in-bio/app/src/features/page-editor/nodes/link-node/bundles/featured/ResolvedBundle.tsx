@@ -1,4 +1,5 @@
 import React from 'react';
+import { cn } from '@/lib';
 import { TResolvedNodeProps } from '../../../../lib';
 import { TResolvedFeaturedLinkNodeBundle } from '../../types';
 
@@ -39,14 +40,28 @@ export const ResolvedFeaturedBundle = React.forwardRef<
 					)}
 				</div>
 
-				<div className="flex min-h-16 w-full min-w-0 flex-col justify-center gap-1 px-6">
+				<div className="flex min-h-12 w-full min-w-0 flex-col justify-center gap-1 px-6">
 					{content.title != null && (
-						<p className="truncate font-medium" style={textBody.styles}>
+						<p
+							className={cn(
+								'font-medium text-balance',
+								// Title only: 2 lines, Title + Description: 1 line
+								content.description == null ? 'line-clamp-2' : 'truncate'
+							)}
+							style={textBody.styles}
+						>
 							{content.title}
 						</p>
 					)}
 					{content.description != null && (
-						<p className="truncate opacity-70" style={textCaption.styles}>
+						<p
+							className={cn(
+								'text-balance opacity-70',
+								// Description only: 2 lines, Title + Description: 1 line
+								content.title == null ? 'line-clamp-2' : 'truncate'
+							)}
+							style={textCaption.styles}
+						>
 							{content.description}
 						</p>
 					)}

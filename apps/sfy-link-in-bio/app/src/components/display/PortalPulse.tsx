@@ -19,7 +19,7 @@ export const PortalPulse: React.FC<TPortalPulseProps> = (props) => {
 		<>
 			{/* Portal-like pulsing effect */}
 			<div
-				className={cn('absolute inset-0', className)}
+				className={cn('pointer-events-none absolute inset-0', className)}
 				style={{
 					...style,
 					animation: 'portalPulse 1s ease-in-out infinite'

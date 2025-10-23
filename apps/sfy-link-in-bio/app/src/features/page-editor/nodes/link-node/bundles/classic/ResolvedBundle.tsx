@@ -45,7 +45,7 @@ export const ResolvedClassicBundle = React.forwardRef<HTMLDivElement, TResolvedC
 						{content.title != null && (
 							<p
 								className={cn(
-									'font-medium',
+									'font-medium text-balance',
 									// Title only: 2 lines, Title + Description: 1 line
 									content.description == null ? 'line-clamp-2' : 'truncate'
 								)}
@@ -57,7 +57,7 @@ export const ResolvedClassicBundle = React.forwardRef<HTMLDivElement, TResolvedC
 						{content.description != null && (
 							<p
 								className={cn(
-									'opacity-70',
+									'text-balance opacity-70',
 									// Description only: 2 lines, Title + Description: 1 line
 									content.title == null ? 'line-clamp-2' : 'truncate'
 								)}
