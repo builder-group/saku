@@ -27,26 +27,22 @@ export const ResolvedHeroBundle = React.forwardRef<HTMLDivElement, TResolvedHero
 			>
 				{/* Hero Image Background */}
 				{content.avatar != null && (
-					<div
-						className="aspect-square w-full"
+					<img
+						src={content.avatar.src}
+						alt={content.title}
+						className="aspect-square w-full object-cover"
+						draggable={false}
+						fetchPriority="high"
 						style={{
 							mask: fadeGradient,
 							WebkitMask: fadeGradient
 						}}
-					>
-						<img
-							src={content.avatar.src}
-							alt={content.title}
-							className="h-full w-full object-cover"
-							draggable={false}
-							fetchPriority="high"
-						/>
-					</div>
+					/>
 				)}
 
 				{/* Content Container */}
 				<div
-					className="-mt-20 flex flex-col items-center gap-6"
+					className="isolate -mt-20 flex flex-col items-center gap-6"
 					style={{ padding: autoLayout.styles.padding }}
 				>
 					{/* Title & Description */}
