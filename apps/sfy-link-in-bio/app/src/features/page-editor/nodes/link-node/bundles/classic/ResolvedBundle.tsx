@@ -26,10 +26,7 @@ export const ResolvedClassicBundle = React.forwardRef<HTMLDivElement, TResolvedC
 					}}
 				>
 					{content.thumbnail != null && (
-						<div
-							className="h-12 w-12 flex-shrink-0 overflow-hidden bg-neutral-100"
-							style={image.styles}
-						>
+						<div className="h-12 w-12 shrink-0 overflow-hidden bg-neutral-100" style={image.styles}>
 							<img
 								src={content.thumbnail.src}
 								alt={content.title != null ? `${content.title} thumbnail` : 'Link thumbnail'}

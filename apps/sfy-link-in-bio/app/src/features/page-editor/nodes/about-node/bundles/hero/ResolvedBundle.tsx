@@ -18,7 +18,7 @@ export const ResolvedHeroBundle = React.forwardRef<HTMLDivElement, TResolvedHero
 				ref={ref}
 				className="relative overflow-hidden"
 				style={{
-					...autoLayout.styles,
+					margin: autoLayout.styles.margin,
 					...appearance.styles,
 					...fill?.styles,
 					...stroke?.styles,
@@ -28,7 +28,7 @@ export const ResolvedHeroBundle = React.forwardRef<HTMLDivElement, TResolvedHero
 				{/* Hero Image Background */}
 				{content.avatar != null && (
 					<div
-						className="absolute inset-0"
+						className="aspect-square w-full"
 						style={{
 							mask: fadeGradient,
 							WebkitMask: fadeGradient
@@ -44,12 +44,15 @@ export const ResolvedHeroBundle = React.forwardRef<HTMLDivElement, TResolvedHero
 					</div>
 				)}
 
-				{/* Content Overlay */}
-				<div className="relative flex flex-col items-center gap-6 px-6 pt-[calc(100vw-80px)] sm:pt-96">
+				{/* Content Container */}
+				<div
+					className="-mt-20 flex flex-col items-center gap-6"
+					style={{ padding: autoLayout.styles.padding }}
+				>
 					{/* Title & Description */}
-					<div className="flex flex-col items-center gap-1">
+					<div className="flex flex-col items-center gap-1 px-6">
 						<h1
-							className="text-center leading-tight font-semibold break-words"
+							className="text-center leading-tight font-semibold wrap-break-word"
 							style={textHeading.styles}
 						>
 							{content.title}
@@ -63,7 +66,7 @@ export const ResolvedHeroBundle = React.forwardRef<HTMLDivElement, TResolvedHero
 
 					{/* Contact Icons */}
 					{content.contactLinks.length > 0 && (
-						<div className="flex flex-wrap justify-center gap-4">
+						<div className="flex flex-wrap justify-center gap-4 px-6">
 							{content.contactLinks.map((contactLink) => {
 								const action = contactLink.action;
 								const contactKey = getContactKey(action);

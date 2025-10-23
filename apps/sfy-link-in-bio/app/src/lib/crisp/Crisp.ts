@@ -1,5 +1,5 @@
 import { Err, Ok, TResult } from 'tuple-result';
-import { crispConfig, logger } from '../../environment';
+import { crispConfig, logger } from '@/environment';
 import { AppError } from '../AppError';
 
 // https://github.com/crisp-im/crisp-sdk-web

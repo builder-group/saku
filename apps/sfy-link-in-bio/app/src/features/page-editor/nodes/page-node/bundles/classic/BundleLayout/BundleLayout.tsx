@@ -98,7 +98,6 @@ export const ClassicBundleLayout = React.forwardRef<HTMLDivElement, TClassicBund
 					</div>
 				)}
 
-				{/* Content */}
 				<div
 					{...divProps}
 					ref={ref}
