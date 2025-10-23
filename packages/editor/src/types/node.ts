@@ -482,6 +482,9 @@ export type TSingleProductNodeContentMixin = TBaseMixin<
 	{
 		type: 'single';
 		product?: TProduct;
+		tag?: {
+			label: string;
+		};
 		// User overrides (take priority)
 		overrides: {
 			title?: string;
