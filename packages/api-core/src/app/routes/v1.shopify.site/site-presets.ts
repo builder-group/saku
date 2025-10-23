@@ -133,7 +133,8 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 							selectedOptions: variant.selectedOptions
 						};
 					})
-				}
+				},
+				user: {}
 			}
 		};
 	}
@@ -213,7 +214,10 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					content: {
 						type: 'basic',
 						url: `https://${shopId}`,
-						userTitle: '🛒 Visit our Shopify store'
+						metadata: {},
+						user: {
+							title: '🛒 Visit our Shopify store'
+						}
 					}
 				} satisfies TClassicLinkNodeBundle,
 				...(productNode != null ? [productNode] : []),

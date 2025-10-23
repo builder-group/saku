@@ -147,7 +147,10 @@ export const linkNodeMetadata: TNodeMetadata<TLinkNode> = {
 			content: {
 				type: 'basic',
 				url: 'https://www.shopify.com/',
-				title: 'Add your title here'
+				metadata: {
+					title: 'Add your title here'
+				},
+				user: {}
 			},
 			autoLayout: {
 				paddingTop: tokenRef('auto-layout.default', 'auto-layout', 'paddingTop'),
@@ -180,7 +183,10 @@ export const linkNodeMetadata: TNodeMetadata<TLinkNode> = {
 			content: {
 				type: 'basic',
 				url: 'https://www.shopify.com/',
-				title: 'Add your title here'
+				metadata: {
+					title: 'Add your title here'
+				},
+				user: {}
 			},
 			autoLayout: {
 				paddingTop: tokenRef('auto-layout.default', 'auto-layout', 'paddingTop'),
@@ -391,7 +397,8 @@ export const productNodeMetadata: TNodeMetadata<TProductNode> = {
 			type: 'product',
 			bundleType: 'classic',
 			content: {
-				type: 'single'
+				type: 'single',
+				user: {}
 			},
 			autoLayout: {
 				paddingTop: tokenRef('auto-layout.default', 'auto-layout', 'paddingTop'),

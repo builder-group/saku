@@ -301,14 +301,17 @@ export type TBasicLinkNodeContentMixin = TBaseMixin<
 	{
 		type: 'basic';
 		url: string;
+		metadata: {
+			title?: string;
+			description?: string;
+			thumbnail?: TAssetHash;
+		};
 		// User overrides (take priority)
-		userTitle?: string;
-		userDescription?: string;
-		userThumbnail?: TAssetHash | null; // null = explicitly removed, undefined = not set
-		// Source metadata (fallback)
-		title?: string;
-		description?: string;
-		thumbnail?: TAssetHash;
+		user: {
+			title?: string;
+			description?: string;
+			thumbnail?: TAssetHash | null; // null = explicitly removed, undefined = not set
+		};
 	}
 >;
 
@@ -479,9 +482,29 @@ export type TSingleProductNodeContentMixin = TBaseMixin<
 	{
 		type: 'single';
 		product?: TProduct;
+		// User overrides (take priority)
+		user: {
+			title?: string;
+			description?: TRichContent;
+		};
 		integrationId?: TIntegrationId;
 	}
 >;
+
+// export type TMultiProductNodeContentMixin = TBaseMixin<
+// 	'content',
+// 	{
+// 		type: 'multi';
+// 		products: {
+// 			product: TProduct;
+// 			user: {
+// 				title?: string;
+// 				description?: TRichContent;
+// 			};
+//         integrationId?: TIntegrationId;
+// 		}[];
+// 	}
+// >;
 
 export interface TProduct {
 	id: string;

@@ -21,7 +21,7 @@ export const ClassicBundleStyleEditor: React.FC<
 
 	const hasThumbnail = useCompute(
 		nodeState,
-		({ value }) => value.content.thumbnail != null || value.content.userThumbnail != null
+		({ value }) => value.content.metadata.thumbnail != null || value.content.user.thumbnail != null
 	);
 
 	const autoLayoutState = useNodeProperty(nodeState, 'autoLayout');

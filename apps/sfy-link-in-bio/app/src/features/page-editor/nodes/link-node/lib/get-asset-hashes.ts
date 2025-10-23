@@ -9,11 +9,11 @@ export function getLinkNodeAssetHashes(node: TLinkNode): TAssetHash[] {
 	// Thumbnail asset
 	switch (node.content.type) {
 		case 'basic': {
-			if (node.content.userThumbnail != null) {
-				hashes.push(node.content.userThumbnail);
+			if (node.content.user.thumbnail != null) {
+				hashes.push(node.content.user.thumbnail);
 			}
-			if (node.content.thumbnail != null) {
-				hashes.push(node.content.thumbnail);
+			if (node.content.metadata.thumbnail != null) {
+				hashes.push(node.content.metadata.thumbnail);
 			}
 			break;
 		}
