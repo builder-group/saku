@@ -44,9 +44,9 @@ export const ResolvedFeaturedBundle = React.forwardRef<
 					{content.title != null && (
 						<p
 							className={cn(
-								'font-medium text-balance',
+								'font-medium',
 								// Title only: 2 lines, Title + Description: 1 line
-								content.description == null ? 'line-clamp-2' : 'truncate'
+								content.description == null ? 'line-clamp-2 text-balance' : 'truncate'
 							)}
 							style={textBody.styles}
 						>
@@ -56,9 +56,9 @@ export const ResolvedFeaturedBundle = React.forwardRef<
 					{content.description != null && (
 						<p
 							className={cn(
-								'text-balance opacity-70',
+								'opacity-70',
 								// Description only: 2 lines, Title + Description: 1 line
-								content.title == null ? 'line-clamp-2' : 'truncate'
+								content.title == null ? 'line-clamp-2 text-balance' : 'truncate'
 							)}
 							style={textCaption.styles}
 						>
