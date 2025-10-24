@@ -1,6 +1,13 @@
 import { notEmpty } from '@blgc/utils';
 import { TSingleProductNodeContentMixin } from '@repo/editor';
-import { Button, IndexTable, Scrollable, Text, useIndexResourceState } from '@shopify/polaris';
+import {
+	Button,
+	IndexTable,
+	Scrollable,
+	Text,
+	TextField,
+	useIndexResourceState
+} from '@shopify/polaris';
 import { useFeatureState } from 'feature-react/state';
 import { TState } from 'feature-state';
 import React from 'react';
@@ -17,6 +24,33 @@ export const SingleProductNodeContentMixinEditor = (
 	const content = useFeatureState(state);
 
 	const canChangeProduct = React.useMemo(() => content.product != null, [content.product]);
+
+	const titleValue = React.useMemo(() => {
+		return content.overrides.title ?? content.product?.title;
+	}, [content.overrides.title, content.product?.title]);
+	const descriptionValue = React.useMemo(() => {
+		return content.overrides.description ?? content.product?.description;
+	}, [content.overrides.description, content.product?.description]);
+	const tagValue = React.useMemo(() => {
+		return content.tag?.label ?? '';
+	}, [content.tag?.label]);
+
+	const canResetTitle = React.useMemo(
+		() =>
+			content.product?.title != null &&
+			content.overrides.title != null &&
+			content.overrides.title !== content.product.title,
+		[content.overrides.title, content.product?.title]
+	);
+	const canResetDescription = React.useMemo(
+		() =>
+			content.product?.description != null &&
+			content.overrides.description != null &&
+			(content.overrides.description.type !== content.product.description.type ||
+				content.overrides.description.value !== content.product.description.value),
+		[content.overrides.description, content.product?.description]
+	);
+
 	const productImages = React.useMemo(
 		() =>
 			content.product?.images
@@ -106,6 +140,44 @@ export const SingleProductNodeContentMixinEditor = (
 	// Events
 	// =========================================================================
 
+	const handleTitleChange = React.useCallback(
+		(value: string) => {
+			state._v.overrides.title = value;
+			state._notify();
+		},
+		[state]
+	);
+
+	const handleTitleReset = React.useCallback(() => {
+		state._v.overrides.title = undefined;
+		state._notify();
+	}, [state]);
+
+	const handleDescriptionChange = React.useCallback(
+		(value: string) => {
+			state._v.overrides.description = { type: 'html', value };
+			state._notify();
+		},
+		[state]
+	);
+
+	const handleDescriptionReset = React.useCallback(() => {
+		state._v.overrides.description = undefined;
+		state._notify();
+	}, [state]);
+
+	const handleTagChange = React.useCallback(
+		(value: string) => {
+			if (value === '') {
+				state._v.tag = undefined;
+			} else {
+				state._v.tag = { label: value };
+			}
+			state._notify();
+		},
+		[state]
+	);
+
 	const handleSelectProduct = React.useCallback(async () => {
 		const results = await editor.shopify.resourcePicker({
 			type: 'product',
@@ -187,6 +259,7 @@ export const SingleProductNodeContentMixinEditor = (
 				</Text>
 			</div>
 
+			{/* Product */}
 			<div className="space-y-1">
 				<div className="flex items-center justify-between">
 					<Text as="span" variant="bodySm" tone="subdued">
@@ -334,6 +407,75 @@ export const SingleProductNodeContentMixinEditor = (
 					</Button>
 				)}
 			</div>
+
+			{/* Title */}
+			{content.product != null && (
+				<div className="space-y-1">
+					<div className="flex items-center justify-between">
+						<Text as="span" variant="bodySm" tone="subdued">
+							Title
+						</Text>
+						{canResetTitle && (
+							<Button variant="plain" size="micro" onClick={handleTitleReset}>
+								Reset
+							</Button>
+						)}
+					</div>
+					<TextField
+						id="title-field"
+						label="Title"
+						labelHidden
+						value={titleValue}
+						onChange={handleTitleChange}
+						autoComplete="off"
+						placeholder="Product title"
+					/>
+				</div>
+			)}
+
+			{/* Description */}
+			{content.product != null && (
+				<div className="space-y-1">
+					<div className="flex items-center justify-between">
+						<Text as="span" variant="bodySm" tone="subdued">
+							Description
+						</Text>
+						{canResetDescription && (
+							<Button variant="plain" size="micro" onClick={handleDescriptionReset}>
+								Reset
+							</Button>
+						)}
+					</div>
+					<TextField
+						id="description-field"
+						label="Description"
+						labelHidden
+						value={descriptionValue?.value}
+						onChange={handleDescriptionChange}
+						autoComplete="off"
+						placeholder="Product description"
+						multiline={3}
+					/>
+				</div>
+			)}
+
+			{/* Tag */}
+			{content.product != null && (
+				<div className="space-y-1">
+					<Text as="span" variant="bodySm" tone="subdued">
+						Tag
+					</Text>
+					<TextField
+						id="tag-field"
+						label="Tag"
+						labelHidden
+						value={tagValue}
+						onChange={handleTagChange}
+						autoComplete="off"
+						placeholder="e.g. New, Sale, Limited"
+					/>
+				</div>
+			)}
 		</div>
 	);
 };

@@ -40,21 +40,21 @@ export const BasicLinkNodeContentMixinEditor = (props: TBasicLinkNodeContentMixi
 	}, [overrides.description, metadata?.description]);
 
 	const canResetTitle = React.useMemo(
-		() => metadata?.title != null && overrides.title != null && overrides.title !== metadata?.title,
+		() => metadata?.title != null && overrides.title != null && overrides.title !== metadata.title,
 		[overrides.title, metadata?.title]
 	);
 	const canResetDescription = React.useMemo(
 		() =>
 			metadata?.description != null &&
 			overrides.description != null &&
-			overrides.description !== metadata?.description,
+			overrides.description !== metadata.description,
 		[overrides.description, metadata?.description]
 	);
 	const canResetThumbnail = React.useMemo(
 		() =>
 			metadata?.thumbnail !== undefined &&
 			overrides.thumbnail !== undefined &&
-			overrides.thumbnail !== metadata?.thumbnail,
+			overrides.thumbnail !== metadata.thumbnail,
 		[overrides.thumbnail, metadata?.thumbnail]
 	);
 
