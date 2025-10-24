@@ -1,12 +1,12 @@
 import { TIntegration, TIntegrationId } from '@repo/editor';
-import { and, eq, sql } from 'drizzle-orm';
-import { db, siteTable, workspaceAccountTable } from '@/environment';
+import { and, eq } from 'drizzle-orm';
+import { db, workspaceAccountTable } from '@/environment';
 import { getShopifyOfflineAccessToken, getWorkspaceStorefrontAccessToken } from '@/lib';
 
 export async function refreshIntegrations(
 	config: TRefreshIntegrationsConfig
 ): Promise<TRefreshIntegrationsResult> {
-	const { siteId, workspaceId, integrations } = config;
+	const { workspaceId, integrations } = config;
 
 	const updatedIntegrations = { ...integrations };
 	const updatedIntegrationIds: TIntegrationId[] = [];
@@ -55,20 +55,6 @@ export async function refreshIntegrations(
 		}
 	}
 
-	// Update DB for changed integrations
-	for (const integrationId of updatedIntegrationIds) {
-		const integration = updatedIntegrations[integrationId] as TIntegration;
-		await db
-			.update(siteTable)
-			.set({
-				content: sql.raw(
-					`jsonb_set(content, '{integrations,"${integrationId}"}', '${JSON.stringify(integration)}'::jsonb, true)`
-				),
-				updatedAt: new Date()
-			})
-			.where(eq(siteTable.id, siteId));
-	}
-
 	return {
 		integrations: updatedIntegrations,
 		updatedIntegrationIds
@@ -76,7 +62,6 @@ export async function refreshIntegrations(
 }
 
 export interface TRefreshIntegrationsConfig {
-	siteId: string;
 	workspaceId: string;
 	integrations: Record<string, TIntegration>;
 }

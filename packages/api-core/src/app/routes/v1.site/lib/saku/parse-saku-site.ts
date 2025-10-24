@@ -2,7 +2,7 @@ import { TFlatSite } from '@repo/editor';
 import { AppError } from '@repo/hono-utils';
 import { and, eq } from 'drizzle-orm';
 import { db, siteTable, workspaceTable } from '@/environment';
-import { migrateSiteIfNeeded } from '@/lib';
+import { prepareSiteContent } from '@/lib';
 
 export async function parseSakuSite(url: URL): Promise<TSakuSiteData> {
 	const pathname = url.pathname;
@@ -54,9 +54,7 @@ export async function parseSakuSite(url: URL): Promise<TSakuSiteData> {
 			detail: `Site with handle '${siteHandle}' not found in workspace '${workspaceHandle}'`
 		});
 	}
-
-	// Migrate site to latest version if needed
-	const siteContent = await migrateSiteIfNeeded(site.id, site.content);
+	const siteContent = await prepareSiteContent(site.id, workspace.id, site.content);
 
 	// Clear integrations
 	siteContent.integrations = {};

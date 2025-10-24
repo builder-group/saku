@@ -1,4 +1,3 @@
-import { TFlatSiteWithSiteVersion } from '@repo/editor';
 import { jsonb, pgTable, text, timestamp, unique } from 'drizzle-orm/pg-core';
 import { workspaceTable } from './workspace';
 
@@ -25,8 +24,8 @@ export const siteTable = pgTable(
 		// Human-friendly site name
 		displayName: text('display_name'),
 
-		// Site content (may be any version - must be migrated via migrateSiteIfNeeded before use)
-		content: jsonb('content').$type<TFlatSiteWithSiteVersion>().notNull(),
+		// Site content (use prepareSiteContent() to safely validate, migrate and prepare for use)
+		content: jsonb('content').$type<unknown>().notNull(),
 
 		// Publishing status
 		// isPublished: text('is_published')

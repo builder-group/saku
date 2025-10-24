@@ -1,2 +1,2 @@
-export * from './migrate-site-if-needed';
+export * from './prepare-site-content';
 export * from './refresh-integrations';
