@@ -162,7 +162,17 @@ export interface TBaseIntegration {
 export interface TShopifyIntegration extends TBaseIntegration {
 	type: 'shopify';
 	shopId: string;
+	/**
+	 * The storefront access token.
+	 *
+	 * https://shopify.dev/docs/api/admin-graphql/latest/objects/StorefrontAccessToken
+	 */
 	storefrontAccessToken: string;
+	/**
+	 * When to refresh the storefront access token.
+	 * Shopify tokens don't expire, but we refresh periodically to ensure validity.
+	 */
+	storefrontAccessTokenRefreshAt?: string; // ISO 8601 timestamp
 	isPartnerDevelopment: boolean;
 	isShopifyPlus: boolean;
 }
