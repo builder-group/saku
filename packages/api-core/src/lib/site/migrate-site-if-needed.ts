@@ -1,4 +1,4 @@
-import { migrateSite, TFlatSite } from '@repo/editor';
+import { migrateSite, TFlatSite, TFlatSiteWithSiteVersion } from '@repo/editor';
 import { AppError } from '@repo/hono-utils';
 import { eq } from 'drizzle-orm';
 import { db, logger, siteTable } from '@/environment';
@@ -8,10 +8,13 @@ import { db, logger, siteTable } from '@/environment';
  * This implements lazy migration - sites are migrated on-read rather than all at once.
  *
  * @param siteId - The site ID to migrate
- * @param content - The site content (potentially old version)
+ * @param content - The site content (potentially old version from DB)
  * @returns The migrated site content (always latest version)
  */
-export async function migrateSiteIfNeeded(siteId: string, content: TFlatSite): Promise<TFlatSite> {
+export async function migrateSiteIfNeeded(
+	siteId: string,
+	content: TFlatSiteWithSiteVersion
+): Promise<TFlatSite> {
 	const [isMigratedSiteOk, migratedSiteErr, migratedSite] = migrateSite(content);
 	if (!isMigratedSiteOk) {
 		throw new AppError('#ERR_FAILED_TO_MIGRATE_SITE', 500, {
