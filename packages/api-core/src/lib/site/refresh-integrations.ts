@@ -1,12 +1,12 @@
 import { TIntegration, TIntegrationId } from '@repo/editor';
-import { and, eq, sql } from 'drizzle-orm';
-import { db, siteTable, workspaceAccountTable } from '@/environment';
+import { and, eq } from 'drizzle-orm';
+import { db, workspaceAccountTable } from '@/environment';
 import { getShopifyOfflineAccessToken, getWorkspaceStorefrontAccessToken } from '@/lib';
 
 export async function refreshIntegrations(
 	config: TRefreshIntegrationsConfig
 ): Promise<TRefreshIntegrationsResult> {
-	const { siteId, workspaceId, integrations } = config;
+	const { workspaceId, integrations } = config;
 
 	const updatedIntegrations = { ...integrations };
 	const updatedIntegrationIds: TIntegrationId[] = [];
@@ -14,6 +14,14 @@ export async function refreshIntegrations(
 	for (const [integrationId, integration] of Object.entries(updatedIntegrations)) {
 		switch (integration.type) {
 			case 'shopify': {
+				// Skip if not time to refresh yet
+				if (integration.storefrontAccessTokenRefreshAt != null) {
+					const refreshAt = new Date(integration.storefrontAccessTokenRefreshAt).getTime();
+					if (Date.now() < refreshAt) {
+						continue;
+					}
+				}
+
 				// Check if this shop exists as a workspace account
 				const [workspaceAccount] = await db
 					.select({
@@ -43,30 +51,19 @@ export async function refreshIntegrations(
 					continue;
 				}
 
-				// Update if token changed
+				// Update token and set next refresh date
 				if (integration.storefrontAccessToken !== storefrontAccessToken) {
 					integration.storefrontAccessToken = storefrontAccessToken;
 					updatedIntegrationIds.push(integrationId as TIntegrationId);
 				}
+				integration.storefrontAccessTokenRefreshAt = new Date(
+					Date.now() + 7 * 24 * 60 * 60 * 1000 // 7 days
+				).toISOString();
 				break;
 			}
 			default:
 			// do nothing
 		}
-	}
-
-	// Update DB for changed integrations
-	for (const integrationId of updatedIntegrationIds) {
-		const integration = updatedIntegrations[integrationId] as TIntegration;
-		await db
-			.update(siteTable)
-			.set({
-				content: sql.raw(
-					`jsonb_set(content, '{integrations,"${integrationId}"}', '${JSON.stringify(integration)}'::jsonb, true)`
-				),
-				updatedAt: new Date()
-			})
-			.where(eq(siteTable.id, siteId));
 	}
 
 	return {
@@ -76,7 +73,6 @@ export async function refreshIntegrations(
 }
 
 export interface TRefreshIntegrationsConfig {
-	siteId: string;
 	workspaceId: string;
 	integrations: Record<string, TIntegration>;
 }

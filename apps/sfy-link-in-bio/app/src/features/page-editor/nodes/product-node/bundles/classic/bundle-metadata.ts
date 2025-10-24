@@ -27,6 +27,7 @@ export const classicBundleMetadata: TProductNodeBundleMetadata<TClassicProductNo
 			buttonPrimary: defaults.buttonPrimary,
 			badgeSecondary: defaults.badgeSecondary,
 			badgeNeutral: defaults.badgeNeutral,
+			banner: defaults.banner,
 			image: defaults.image,
 			productDetails: defaults.productDetails
 		});

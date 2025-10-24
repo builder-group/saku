@@ -8,16 +8,35 @@ export function resolveBasicLinkNodeContentMixin(
 	content: TBasicLinkNodeContentMixin['value'],
 	cx: TMixinResolveContext
 ): TResult<TResolvedBasicLinkNodeContentMixin['value'], AppError> {
-	const thumbnail = content.userThumbnail !== undefined ? content.userThumbnail : content.thumbnail;
-	const title = content.userTitle !== undefined ? content.userTitle : content.title;
-	const description =
-		content.userDescription !== undefined ? content.userDescription : content.description;
+	// Title
+	const effectiveTitle =
+		content.overrides.title !== undefined ? content.overrides.title : content.metadata?.title;
+	const resolvedTitle =
+		effectiveTitle != null && effectiveTitle.length > 0 ? effectiveTitle : undefined;
+
+	// Description
+	const effectiveDescription =
+		content.overrides.description !== undefined
+			? content.overrides.description
+			: content.metadata?.description;
+	const resolvedDescription =
+		effectiveDescription != null && effectiveDescription.length > 0
+			? effectiveDescription
+			: undefined;
+
+	// Thumbnail
+	const effectiveThumbnail =
+		content.overrides.thumbnail !== undefined
+			? content.overrides.thumbnail
+			: content.metadata?.thumbnail;
+	const resolvedThumbnail =
+		effectiveThumbnail != null ? resolveAsset(effectiveThumbnail, cx.node.site) : undefined;
 
 	return Ok({
 		type: 'basic',
 		url: content.url,
-		title: title != null && title.length > 0 ? title : undefined,
-		description: description != null && description.length > 0 ? description : undefined,
-		thumbnail: thumbnail != null ? resolveAsset(thumbnail, cx.node.site) : undefined
+		title: resolvedTitle,
+		description: resolvedDescription,
+		thumbnail: resolvedThumbnail
 	});
 }

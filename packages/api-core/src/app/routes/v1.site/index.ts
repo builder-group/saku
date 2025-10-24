@@ -3,7 +3,7 @@ import { AppError } from '@repo/hono-utils';
 import { and, eq, sql } from 'drizzle-orm';
 import { router } from '@/app/router';
 import { db, siteTable, workspaceTable } from '@/environment';
-import { refreshIntegrations, verifyAccessSecret } from '@/lib';
+import { prepareSiteContent, verifyAccessSecret } from '@/lib';
 import { parseLinkpopSite, parseSakuSite } from './lib';
 import {
 	GetSiteByWorkspaceAndHandleRoute,
@@ -36,6 +36,7 @@ router.openapi(GetSiteRoute, async (c) => {
 			detail: `Site with ID ${siteId} was not found`
 		});
 	}
+	const siteContent = await prepareSiteContent(site.id, site.workspaceId, site.content);
 
 	return c.json(
 		{
@@ -43,7 +44,7 @@ router.openapi(GetSiteRoute, async (c) => {
 			workspaceId: site.workspaceId,
 			handle: site.handle,
 			displayName: site.displayName ?? undefined,
-			content: site.content as TFlatSiteContentDto,
+			content: siteContent as TFlatSiteContentDto,
 			createdAt: site.createdAt.toISOString(),
 			updatedAt: site.updatedAt.toISOString()
 		},
@@ -79,20 +80,12 @@ router.openapi(GetSiteByWorkspaceAndHandleRoute, async (c) => {
 			detail: `Site with handle '${handle}' not found in workspace '${workspaceHandle}'`
 		});
 	}
-
-	// Refresh integrations
-	site.content.integrations = (
-		await refreshIntegrations({
-			siteId: site.id,
-			workspaceId: workspace.id,
-			integrations: site.content.integrations
-		})
-	).integrations;
+	const siteContent = await prepareSiteContent(site.id, workspace.id, site.content);
 
 	return c.json(
 		{
 			id: site.id,
-			content: site.content as TFlatSiteContentDto
+			content: siteContent as TFlatSiteContentDto
 		},
 		200
 	);
@@ -113,7 +106,6 @@ router.openapi(UpdateSiteNodeRoute, async (c) => {
 		})
 		.where(eq(siteTable.id, siteId))
 		.returning({ id: siteTable.id });
-
 	if (updated == null) {
 		throw new AppError('#ERR_SITE_UPDATE_FAILED', 500, {
 			title: 'Update failed',

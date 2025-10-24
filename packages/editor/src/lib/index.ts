@@ -6,6 +6,7 @@ export * from './get-font-hash';
 export * from './hex-to-paint';
 export * from './id';
 export * from './is-token-ref';
+export * from './migrate-site';
 export * from './parse-url';
 export * from './pika';
 export * from './reconstruct-theme-from-tokens';

@@ -11,6 +11,7 @@ export const ResolvedClassicBundle = React.forwardRef<HTMLDivElement, TResolvedC
 	(props, ref) => {
 		const { node, product, cx } = props;
 		const {
+			content,
 			autoLayout,
 			appearance,
 			fill,
@@ -20,6 +21,7 @@ export const ResolvedClassicBundle = React.forwardRef<HTMLDivElement, TResolvedC
 			buttonPrimary,
 			badgeSecondary,
 			badgeNeutral,
+			banner,
 			image
 		} = node;
 
@@ -130,102 +132,123 @@ export const ResolvedClassicBundle = React.forwardRef<HTMLDivElement, TResolvedC
 			<>
 				<div
 					ref={ref}
-					onClick={handleProductClick}
-					style={{
-						...autoLayout.styles,
-						...appearance.styles,
-						...fill?.styles,
-						...stroke?.styles,
-						...shadow?.styles
-					}}
-					className="flex min-h-16 flex-row items-center gap-2"
+					className="relative flex flex-col items-center"
+					style={{ margin: autoLayout.styles.margin }}
 				>
-					{/* Product Image */}
-					{productImage != null && (
+					{/* Banner - sits on top, affected by margins */}
+					{content.banner != null && (
 						<div
-							className="h-12 w-12 flex-shrink-0 overflow-hidden bg-neutral-100"
-							style={image.styles}
+							className="-mb-8 w-full px-3 pt-2 pb-10 text-center"
+							style={{
+								...banner.styles,
+								borderTopLeftRadius: appearance.styles?.borderRadius ?? 0,
+								borderTopRightRadius: appearance.styles?.borderRadius ?? 0,
+								borderBottomLeftRadius: 0,
+								borderBottomRightRadius: 0
+							}}
 						>
-							<img
-								src={productImage.src}
-								alt={product.title}
-								className="h-full w-full object-cover"
-								draggable={false}
-							/>
+							<div style={banner.text.styles}>{content.banner.label}</div>
 						</div>
 					)}
 
-					{/* Product Details */}
-					<div className="flex min-w-0 flex-grow items-center justify-between">
-						<div className="flex min-w-0 flex-col justify-center gap-1">
-							{/* Title */}
-							<p className="truncate font-medium" style={textBody.styles}>
-								{product.title}
-							</p>
+					{/* Product Card */}
+					<div
+						onClick={handleProductClick}
+						style={{
+							...appearance.styles,
+							...fill?.styles,
+							...stroke?.styles,
+							...shadow?.styles,
+							padding: autoLayout.styles.padding
+						}}
+						className="flex min-h-16 w-full flex-row items-center gap-2"
+					>
+						{/* Product Image */}
+						{productImage != null && (
+							<div
+								className="h-12 w-12 shrink-0 overflow-hidden bg-neutral-100"
+								style={image.styles}
+							>
+								<img
+									src={productImage.src}
+									alt={product.title}
+									className="h-full w-full object-cover"
+									draggable={false}
+								/>
+							</div>
+						)}
 
-							{/* Price and Option Badges */}
-							<div className="flex flex-wrap items-center gap-2">
-								{/* Price Badge */}
-								{selectedVariant?.price && (
-									<div className="px-2 py-0.5" style={badgeSecondary.styles}>
-										<div style={badgeSecondary.text.styles}>
-											{getCurrencySymbol(selectedVariant.price.currencyCode)}
-											{selectedVariant.price.amount}
-										</div>
-									</div>
-								)}
+						{/* Product Details */}
+						<div className="flex min-w-0 grow items-center justify-between">
+							<div className="flex min-w-0 flex-col justify-center gap-1">
+								{/* Title */}
+								<p className="truncate font-medium" style={textBody.styles}>
+									{product.title}
+								</p>
 
-								{/* Option Dropdowns */}
-								{product.options?.map((option) => {
-									const currentValue = selectedOptions[option.name];
-									const placeholderText = `Pick ${option.name.slice(0, 1).toUpperCase()}${option.name.toLowerCase().slice(1)}`;
-									const selectId = `product-option-${option.name.toLowerCase().replace(/\s+/g, '-')}`;
-
-									return (
-										<div
-											key={option.name}
-											className="relative"
-											onClick={(e) => e.stopPropagation()}
-										>
-											<label htmlFor={selectId} className="sr-only">
-												Select {option.name}
-											</label>
-											<select
-												id={selectId}
-												value={currentValue}
-												onChange={(e) => handleOptionSelect(option.name, e.target.value)}
-												className="select absolute inset-0 h-full w-full cursor-pointer opacity-0"
-												aria-label={`Select ${option.name}`}
-											>
-												<option disabled value="">
-													{placeholderText}
-												</option>
-												{option.values.map((value) => (
-													<option key={value} value={value}>
-														{value}
-													</option>
-												))}
-											</select>
-											<div
-												className="pointer-events-none flex max-w-24 cursor-pointer items-center gap-1 px-2 py-0.5"
-												style={badgeNeutral.styles}
-											>
-												<span className="truncate" style={badgeNeutral.text.styles}>
-													{currentValue || placeholderText}
-												</span>
-												<ChevronDownIcon
-													className="h-3 w-3 flex-shrink-0"
-													style={{ color: badgeNeutral.text.styles?.color }}
-												/>
+								{/* Price and Option Badges */}
+								<div className="flex flex-wrap items-center gap-2">
+									{/* Price Badge */}
+									{selectedVariant?.price && (
+										<div className="px-2 py-0.5" style={badgeSecondary.styles}>
+											<div style={badgeSecondary.text.styles}>
+												{getCurrencySymbol(selectedVariant.price.currencyCode)}
+												{selectedVariant.price.amount}
 											</div>
 										</div>
-									);
-								})}
-							</div>
-						</div>
+									)}
 
-						{/* Add to Cart Button */}
-						{/* {cx.integrations.shopify != null && selectedVariant != null && (
+									{/* Option Dropdowns */}
+									{product.options?.map((option) => {
+										const currentValue = selectedOptions[option.name];
+										const placeholderText = `Pick ${option.name.slice(0, 1).toUpperCase()}${option.name.toLowerCase().slice(1)}`;
+										const selectId = `product-option-${option.name.toLowerCase().replace(/\s+/g, '-')}`;
+
+										return (
+											<div
+												key={option.name}
+												className="relative"
+												onClick={(e) => e.stopPropagation()}
+											>
+												<label htmlFor={selectId} className="sr-only">
+													Select {option.name}
+												</label>
+												<select
+													id={selectId}
+													value={currentValue}
+													onChange={(e) => handleOptionSelect(option.name, e.target.value)}
+													className="select absolute inset-0 h-full w-full cursor-pointer opacity-0"
+													aria-label={`Select ${option.name}`}
+												>
+													<option disabled value="">
+														{placeholderText}
+													</option>
+													{option.values.map((value) => (
+														<option key={value} value={value}>
+															{value}
+														</option>
+													))}
+												</select>
+												<div
+													className="pointer-events-none flex max-w-24 cursor-pointer items-center gap-1 px-2 py-0.5"
+													style={badgeNeutral.styles}
+												>
+													<span className="truncate" style={badgeNeutral.text.styles}>
+														{currentValue || placeholderText}
+													</span>
+													<ChevronDownIcon
+														className="h-3 w-3 shrink-0"
+														style={{ color: badgeNeutral.text.styles?.color }}
+													/>
+												</div>
+											</div>
+										);
+									})}
+								</div>
+							</div>
+
+							{/* Add to Cart Button */}
+							{/* {cx.integrations.shopify != null && selectedVariant != null && (
 					<button
 						onClick={handleAddToCart}
 						disabled={isAdding}
@@ -240,22 +263,27 @@ export const ResolvedClassicBundle = React.forwardRef<HTMLDivElement, TResolvedC
 					</button>
 				)} */}
 
-						{/* Buy Now Button */}
-						{cx.integrations.shopify != null && selectedVariant != null && (
-							<button
-								onClick={(e) => {
-									e.stopPropagation();
-									handleBuyNow();
-								}}
-								disabled={isBuying}
-								className="ml-3 cursor-pointer px-3 py-1.5"
-								style={buttonPrimary.styles}
-							>
-								<div style={buttonPrimary.text.styles}>
-									{isBuying ? <span className="loading loading-spinner loading-xs"></span> : 'Buy'}
-								</div>
-							</button>
-						)}
+							{/* Buy Now Button */}
+							{cx.integrations.shopify != null && selectedVariant != null && (
+								<button
+									onClick={(e) => {
+										e.stopPropagation();
+										handleBuyNow();
+									}}
+									disabled={isBuying}
+									className="ml-3 cursor-pointer px-3 py-1.5"
+									style={buttonPrimary.styles}
+								>
+									<div style={buttonPrimary.text.styles}>
+										{isBuying ? (
+											<span className="loading loading-spinner loading-xs"></span>
+										) : (
+											'Buy'
+										)}
+									</div>
+								</button>
+							)}
+						</div>
 					</div>
 				</div>
 

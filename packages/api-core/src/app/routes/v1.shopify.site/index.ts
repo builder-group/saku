@@ -23,7 +23,7 @@ import {
 	getShopInfo,
 	getShopPlan,
 	getWorkspaceStorefrontAccessToken,
-	refreshIntegrations,
+	prepareSiteContent,
 	updateShopifyUrlRedirect,
 	verifyShopifySession
 } from '@/lib';
@@ -102,20 +102,12 @@ router.openapi(GetShopifySiteByShopAndHandleRoute, async (c) => {
 			detail: `Site with handle '${handle}' not found for shop '${shop}'`
 		});
 	}
-
-	// Refresh integrations
-	site.content.integrations = (
-		await refreshIntegrations({
-			siteId: site.id,
-			workspaceId: site.workspaceId,
-			integrations: site.content.integrations
-		})
-	).integrations;
+	const siteContent = await prepareSiteContent(site.id, site.workspaceId, site.content);
 
 	return c.json(
 		{
 			id: site.id,
-			content: site.content as TFlatSiteContentDto
+			content: siteContent as TFlatSiteContentDto
 		},
 		200
 	);

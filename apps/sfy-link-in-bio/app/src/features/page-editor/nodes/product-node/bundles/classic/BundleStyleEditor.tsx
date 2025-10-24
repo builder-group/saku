@@ -7,6 +7,7 @@ import {
 	AppearanceStyleMixinEditor,
 	AutoLayoutStyleMixinEditor,
 	BadgeStyleMixinEditor,
+	BannerStyleMixinEditor,
 	ButtonStyleMixinEditor,
 	FillStyleMixinEditor,
 	ImageStyleMixinEditor,
@@ -30,6 +31,7 @@ export const ClassicBundleStyleEditor: React.FC<
 	const buttonPrimaryState = useNodeProperty(nodeState, 'buttonPrimary');
 	const badgeSecondaryState = useNodeProperty(nodeState, 'badgeSecondary');
 	const badgeNeutralState = useNodeProperty(nodeState, 'badgeNeutral');
+	const bannerState = useNodeProperty(nodeState, 'banner');
 	const imageState = useNodeProperty(nodeState, 'image');
 	const productDetailsState = useNodeProperty(nodeState, 'productDetails');
 
@@ -121,6 +123,18 @@ export const ClassicBundleStyleEditor: React.FC<
 				<BadgeStyleMixinEditor
 					state={badgeNeutralState}
 					onLinkToken={() => tokenRef('badge.neutral', 'badge')}
+					editor={editor}
+				/>
+			</AccordionSection>
+			<AccordionSection
+				title="Banner"
+				collapsibleClassName="px-0 space-y-3"
+				size="tight"
+				defaultOpen={true}
+			>
+				<BannerStyleMixinEditor
+					state={bannerState}
+					onLinkToken={() => tokenRef('banner.default', 'banner')}
 					editor={editor}
 				/>
 			</AccordionSection>

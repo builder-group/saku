@@ -139,8 +139,11 @@ export function parseLinkpopData(linkpopData: TLinkPopData): TSite {
 							content = {
 								type: 'basic',
 								url: link.url,
-								userTitle: link.title,
-								userThumbnail: thumbnailHash
+								metadata: {},
+								overrides: {
+									title: link.title,
+									thumbnail: thumbnailHash
+								}
 							};
 						}
 						break;
@@ -167,8 +170,11 @@ export function parseLinkpopData(linkpopData: TLinkPopData): TSite {
 							content = {
 								type: 'basic',
 								url: link.url,
-								userTitle: link.title,
-								userThumbnail: thumbnailHash
+								metadata: {},
+								overrides: {
+									title: link.title,
+									thumbnail: thumbnailHash
+								}
 							};
 						}
 						break;
@@ -177,8 +183,11 @@ export function parseLinkpopData(linkpopData: TLinkPopData): TSite {
 						content = {
 							type: 'basic',
 							url: link.url,
-							userTitle: link.title,
-							userThumbnail: thumbnailHash
+							metadata: {},
+							overrides: {
+								title: link.title,
+								thumbnail: thumbnailHash
+							}
 						};
 				}
 
@@ -228,7 +237,7 @@ export function parseLinkpopData(linkpopData: TLinkPopData): TSite {
 
 	const defaultTheme = themes[0] as TTheme;
 	return {
-		version: 'v0.0.1',
+		version: 'v0.0.2',
 		assets,
 		integrations: [],
 		root: {

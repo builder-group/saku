@@ -155,6 +155,17 @@ export type TBadgeStyleMixin = TBaseMixin<
 export type TBadgeSecondaryStyleMixin = TBaseMixin<'badgeSecondary', TBadgeStyleMixin['value']>;
 export type TBadgeNeutralStyleMixin = TBaseMixin<'badgeNeutral', TBadgeStyleMixin['value']>;
 
+export type TBannerStyleMixin = TBaseMixin<
+	'banner',
+	TRef<{
+		appearance: TAppearanceStyleMixin['value'];
+		fill: TFillStyleMixin['value'];
+		stroke: TStrokeStyleMixin['value'];
+		shadow: TShadowStyleMixin['value'];
+		text: TTextStyleMixin['value'];
+	}>
+>;
+
 export type TImageStyleMixin = TBaseMixin<
 	'image',
 	TRef<{

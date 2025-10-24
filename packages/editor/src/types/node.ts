@@ -4,6 +4,7 @@ import {
 	TAutoLayoutStyleMixin,
 	TBadgeNeutralStyleMixin,
 	TBadgeSecondaryStyleMixin,
+	TBannerStyleMixin,
 	TBaseMixin,
 	TButtonPrimaryStyleMixin,
 	TChildrenMixin,
@@ -301,14 +302,17 @@ export type TBasicLinkNodeContentMixin = TBaseMixin<
 	{
 		type: 'basic';
 		url: string;
+		metadata?: {
+			title?: string;
+			description?: string;
+			thumbnail?: TAssetHash;
+		};
 		// User overrides (take priority)
-		userTitle?: string;
-		userDescription?: string;
-		userThumbnail?: TAssetHash | null; // null = explicitly removed, undefined = not set
-		// Source metadata (fallback)
-		title?: string;
-		description?: string;
-		thumbnail?: TAssetHash;
+		overrides: {
+			title?: string;
+			description?: string;
+			thumbnail?: TAssetHash | null; // null = explicitly removed, undefined = not set
+		};
 	}
 >;
 
@@ -462,6 +466,7 @@ export type TClassicProductNodeBundle = TNodeBundle<
 		TButtonPrimaryStyleMixin,
 		TBadgeSecondaryStyleMixin,
 		TBadgeNeutralStyleMixin,
+		TBannerStyleMixin,
 		TImageStyleMixin,
 		TProductDetailsStyleMixin
 	]
@@ -479,9 +484,46 @@ export type TSingleProductNodeContentMixin = TBaseMixin<
 	{
 		type: 'single';
 		product?: TProduct;
+		banner?: {
+			label: string;
+		};
+		// cta?: {
+		// 	label: string;
+		// 	action: TProductCtaAction;
+		// };
+		// User overrides (take priority)
+		overrides: {
+			title?: string;
+			description?: TRichContent;
+		};
 		integrationId?: TIntegrationId;
 	}
 >;
+
+// export type TProductCtaAction = TProductCtaBuyAction | TProductCtaCartAction;
+
+// export interface TProductCtaBuyAction {
+// 	type: 'product-cta-buy';
+// }
+
+// export interface TProductCtaCartAction {
+// 	type: 'product-cta-cart';
+// }
+
+// export type TMultiProductNodeContentMixin = TBaseMixin<
+// 	'content',
+// 	{
+// 		type: 'multi';
+// 		products: {
+// 			product: TProduct;
+// 			overrides: {
+// 				title?: string;
+// 				description?: TRichContent;
+// 			};
+//         integrationId?: TIntegrationId;
+// 		}[];
+// 	}
+// >;
 
 export interface TProduct {
 	id: string;

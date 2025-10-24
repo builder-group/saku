@@ -6,6 +6,9 @@ export type TResolvedSingleProductNodeContentMixin = TBaseMixin<
 	{
 		type: 'single';
 		product?: TResolvedProduct;
+		banner?: {
+			label: string;
+		};
 	}
 >;
 

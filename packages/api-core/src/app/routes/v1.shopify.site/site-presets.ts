@@ -133,7 +133,8 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 							selectedOptions: variant.selectedOptions
 						};
 					})
-				}
+				},
+				overrides: {}
 			}
 		};
 	}
@@ -155,7 +156,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 	const storeHandle = createHandleFromShop(shopId);
 
 	return {
-		version: 'v0.0.1',
+		version: 'v0.0.2',
 		assets,
 		integrations: [],
 		root: {
@@ -213,7 +214,10 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					content: {
 						type: 'basic',
 						url: `https://${shopId}`,
-						userTitle: '🛒 Visit our Shopify store'
+						metadata: {},
+						overrides: {
+							title: '🛒 Visit our Shopify store'
+						}
 					}
 				} satisfies TClassicLinkNodeBundle,
 				...(productNode != null ? [productNode] : []),

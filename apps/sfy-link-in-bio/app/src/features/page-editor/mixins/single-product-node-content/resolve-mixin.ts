@@ -12,6 +12,14 @@ export function resolveSingleProductNodeContentMixin(
 	let resolvedProduct: TResolvedProduct | undefined;
 	if (content.product != null) {
 		resolvedProduct = resolveProduct(content.product, cx);
+
+		// Apply overrides
+		if (content.overrides.title != null) {
+			resolvedProduct.title = content.overrides.title;
+		}
+		if (content.overrides.description != null) {
+			resolvedProduct.description = content.overrides.description;
+		}
 	}
 
 	return Ok({

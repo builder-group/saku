@@ -13,12 +13,16 @@ export const featuredBundleMetadata: TLinkNodeBundleMetadata<TFeaturedLinkNodeBu
 		return {
 			id: node.id,
 			content: {
-				title: node.content.title,
-				userTitle: node.content.userTitle,
-				description: node.content.description,
-				userDescription: node.content.userDescription,
-				thumbnail: node.content.thumbnail,
-				userThumbnail: node.content.userThumbnail
+				metadata: {
+					title: node.content.metadata?.title,
+					description: node.content.metadata?.description,
+					thumbnail: node.content.metadata?.thumbnail
+				},
+				overrides: {
+					title: node.content.overrides.title,
+					description: node.content.overrides.description,
+					thumbnail: node.content.overrides.thumbnail
+				}
 			},
 			autoLayout: node.autoLayout,
 			appearance: node.appearance,
@@ -52,11 +56,18 @@ export const featuredBundleMetadata: TLinkNodeBundleMetadata<TFeaturedLinkNodeBu
 			content: {
 				type: 'basic',
 				url,
-				title: cx.common.content?.title ?? defaults.content.title,
-				userTitle: cx.common.content?.userTitle,
-				description: cx.common.content?.description,
-				userDescription: cx.common.content?.userDescription,
-				userThumbnail: cx.common.content?.userThumbnail
+				metadata: {
+					title: cx.common.content?.metadata?.title ?? defaults.content.metadata?.title,
+					description:
+						cx.common.content?.metadata?.description ?? defaults.content.metadata?.description,
+					thumbnail: cx.common.content?.metadata?.thumbnail ?? defaults.content.metadata?.thumbnail
+				},
+				overrides: {
+					title: cx.common.content?.overrides.title ?? defaults.content.overrides.title,
+					description:
+						cx.common.content?.overrides.description ?? defaults.content.overrides.description,
+					thumbnail: cx.common.content?.overrides.thumbnail ?? defaults.content.overrides.thumbnail
+				}
 			},
 			autoLayout: commonAutoLayout ?? defaults.autoLayout,
 			appearance: cx.common.appearance ?? defaults.appearance,
@@ -86,15 +97,13 @@ export const featuredBundleMetadata: TLinkNodeBundleMetadata<TFeaturedLinkNodeBu
 			ogImageHash = cx.editor.registerImage(metadata.ogImage, 'og-image');
 		}
 
-		// Update fields with new metadata
-		const content = cx.node._v.content;
-		content.title = metadata.title;
-		content.description = metadata.description;
-		if (ogImageHash != null) {
-			content.thumbnail = ogImageHash;
-		}
-
+		cx.node._v.content.metadata = {
+			title: metadata.title,
+			description: metadata.description,
+			thumbnail: ogImageHash != null ? ogImageHash : undefined
+		};
 		cx.node._notify();
+
 		return Ok(undefined);
 	}
 };

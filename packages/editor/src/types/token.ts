@@ -3,6 +3,7 @@ import {
 	TAppearanceStyleMixin,
 	TAutoLayoutStyleMixin,
 	TBadgeStyleMixin,
+	TBannerStyleMixin,
 	TButtonStyleMixin,
 	TEmbedStyleMixin,
 	TFillStyleMixin,
@@ -131,6 +132,7 @@ export type TMixinToken =
 	| TTextStyleToken
 	| TButtonStyleToken
 	| TBadgeStyleToken
+	| TBannerStyleToken
 	| TImageStyleToken
 	| TEmbedStyleToken
 	| TProductDetailsStyleToken;
@@ -178,6 +180,11 @@ export interface TButtonStyleToken extends TBaseToken {
 export interface TBadgeStyleToken extends TBaseToken {
 	type: 'badge';
 	value: TUnreferenceTop<TBadgeStyleMixin['value']>;
+}
+
+export interface TBannerStyleToken extends TBaseToken {
+	type: 'banner';
+	value: TUnreferenceTop<TBannerStyleMixin['value']>;
 }
 
 export interface TImageStyleToken extends TBaseToken {

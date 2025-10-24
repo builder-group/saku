@@ -12,15 +12,15 @@ import { TPageEditor } from '../../lib';
 export const BasicLinkNodeContentMixinEditor = (props: TBasicLinkNodeContentMixinEditorProps) => {
 	const { state, cx, className } = props;
 
-	const content = useFeatureState(state);
+	const { url, metadata, overrides } = useFeatureState(state);
 	const isEnhancing = useFeatureState(cx.isEnhancingBundle);
 
-	const [displayUrl, setDisplayUrl] = React.useState(content.url);
+	const [displayUrl, setDisplayUrl] = React.useState(url);
 
 	const [thumbnailError, setThumbnailError] = React.useState<string | null>(null);
 	const thumbnail = React.useMemo(() => {
 		const asset = cx.editor.getImageAsset(
-			content.userThumbnail === undefined ? content.thumbnail : content.userThumbnail
+			overrides.thumbnail === undefined ? metadata?.thumbnail : overrides.thumbnail
 		);
 		if (asset == null || asset.storage.type !== 'url') {
 			return undefined;
@@ -30,32 +30,32 @@ export const BasicLinkNodeContentMixinEditor = (props: TBasicLinkNodeContentMixi
 			url: asset.storage.url,
 			fileName: asset.fileName
 		};
-	}, [content.userThumbnail, content.thumbnail, cx]);
+	}, [overrides.thumbnail, metadata?.thumbnail, cx]);
 
 	const titleValue = React.useMemo(() => {
-		return content.userTitle ?? content.title;
-	}, [content.userTitle, content.title]);
+		return overrides.title ?? metadata?.title;
+	}, [overrides.title, metadata?.title]);
 	const descriptionValue = React.useMemo(() => {
-		return content.userDescription ?? content.description;
-	}, [content.userDescription, content.description]);
+		return overrides.description ?? metadata?.description;
+	}, [overrides.description, metadata?.description]);
 
 	const canResetTitle = React.useMemo(
-		() => content.title != null && content.userTitle != null && content.userTitle !== content.title,
-		[content.userTitle, content.title]
+		() => metadata?.title != null && overrides.title != null && overrides.title !== metadata.title,
+		[overrides.title, metadata?.title]
 	);
 	const canResetDescription = React.useMemo(
 		() =>
-			content.description != null &&
-			content.userDescription != null &&
-			content.userDescription !== content.description,
-		[content.userDescription, content.description]
+			metadata?.description != null &&
+			overrides.description != null &&
+			overrides.description !== metadata.description,
+		[overrides.description, metadata?.description]
 	);
 	const canResetThumbnail = React.useMemo(
 		() =>
-			content.thumbnail !== undefined &&
-			content.userThumbnail !== undefined &&
-			content.userThumbnail !== content.thumbnail,
-		[content.userThumbnail, content.thumbnail]
+			metadata?.thumbnail !== undefined &&
+			overrides.thumbnail !== undefined &&
+			overrides.thumbnail !== metadata.thumbnail,
+		[overrides.thumbnail, metadata?.thumbnail]
 	);
 
 	// =========================================================================
@@ -76,27 +76,27 @@ export const BasicLinkNodeContentMixinEditor = (props: TBasicLinkNodeContentMixi
 
 	const handleTitleChange = React.useCallback(
 		(value: string) => {
-			state._v.userTitle = value;
+			state._v.overrides.title = value;
 			state._notify();
 		},
 		[state]
 	);
 
 	const handleTitleReset = React.useCallback(() => {
-		state._v.userTitle = undefined;
+		state._v.overrides.title = undefined;
 		state._notify();
 	}, [state]);
 
 	const handleDescriptionChange = React.useCallback(
 		(value: string) => {
-			state._v.userDescription = value;
+			state._v.overrides.description = value;
 			state._notify();
 		},
 		[state]
 	);
 
 	const handleDescriptionReset = React.useCallback(() => {
-		state._v.userDescription = undefined;
+		state._v.overrides.description = undefined;
 		state._notify();
 	}, [state]);
 
@@ -106,13 +106,13 @@ export const BasicLinkNodeContentMixinEditor = (props: TBasicLinkNodeContentMixi
 				case 'Changed': {
 					const hash = cx.editor.registerImage(event.url, event.fileName);
 					if (hash != null) {
-						state._v.userThumbnail = hash;
+						state._v.overrides.thumbnail = hash;
 						state._notify();
 					}
 					break;
 				}
 				case 'Removed': {
-					state._v.userThumbnail = null;
+					state._v.overrides.thumbnail = null;
 					state._notify();
 					break;
 				}
@@ -122,7 +122,7 @@ export const BasicLinkNodeContentMixinEditor = (props: TBasicLinkNodeContentMixi
 	);
 
 	const handleThumbnailReset = React.useCallback(() => {
-		state._v.userThumbnail = undefined;
+		state._v.overrides.thumbnail = undefined;
 		state._notify();
 	}, [state]);
 

@@ -65,12 +65,16 @@ export interface TLinkNodeBundleMetadata<GNode extends TLinkNode = TLinkNode> {
 interface TCommonFields {
 	id: TIdMixin['value'];
 	content?: {
-		title?: string;
-		userTitle?: string;
-		description?: string;
-		userDescription?: string;
-		thumbnail?: string;
-		userThumbnail?: string | null;
+		metadata?: {
+			title?: string;
+			description?: string;
+			thumbnail?: string;
+		};
+		overrides: {
+			title?: string;
+			description?: string;
+			thumbnail?: string | null;
+		};
 	};
 	autoLayout?: TAutoLayoutStyleMixin['value'];
 	appearance?: TAppearanceStyleMixin['value'];

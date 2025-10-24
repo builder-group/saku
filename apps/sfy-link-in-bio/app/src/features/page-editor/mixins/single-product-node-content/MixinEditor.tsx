@@ -1,12 +1,18 @@
 import { notEmpty } from '@blgc/utils';
-import { TSingleProductNodeContentMixin } from '@repo/editor';
-import { Button, IndexTable, Scrollable, Text, useIndexResourceState } from '@shopify/polaris';
+import { TRichContent, TSingleProductNodeContentMixin } from '@repo/editor';
+import {
+	Button,
+	IndexTable,
+	Scrollable,
+	Text,
+	TextField,
+	useIndexResourceState
+} from '@shopify/polaris';
 import { useFeatureState } from 'feature-react/state';
 import { TState } from 'feature-state';
 import React from 'react';
-import { PolarisDeleteIcon, PolarisProductAddIcon } from '@/components';
-import { cn } from '@/lib';
-import { capitalizeFirstLetter, isProduct, mutateWithReferenceUpdate } from '../../../../lib';
+import { PolarisDeleteIcon, PolarisProductAddIcon, RichContentField } from '@/components';
+import { capitalizeFirstLetter, cn, isProduct, mutateWithReferenceUpdate } from '@/lib';
 import { TPageEditor } from '../../lib';
 
 export const SingleProductNodeContentMixinEditor = (
@@ -17,6 +23,36 @@ export const SingleProductNodeContentMixinEditor = (
 	const content = useFeatureState(state);
 
 	const canChangeProduct = React.useMemo(() => content.product != null, [content.product]);
+
+	const titleValue = React.useMemo(() => {
+		return content.overrides.title ?? content.product?.title;
+	}, [content.overrides.title, content.product?.title]);
+	const descriptionValue = React.useMemo(() => {
+		return (
+			content.overrides.description ??
+			content.product?.description ?? { type: 'html' as const, value: '' }
+		);
+	}, [content.overrides.description, content.product?.description]);
+	const bannerValue = React.useMemo(() => {
+		return content.banner?.label ?? '';
+	}, [content.banner?.label]);
+
+	const canResetTitle = React.useMemo(
+		() =>
+			content.product?.title != null &&
+			content.overrides.title != null &&
+			content.overrides.title !== content.product.title,
+		[content.overrides.title, content.product?.title]
+	);
+	const canResetDescription = React.useMemo(
+		() =>
+			content.product?.description != null &&
+			content.overrides.description != null &&
+			(content.overrides.description.type !== content.product.description.type ||
+				content.overrides.description.value !== content.product.description.value),
+		[content.overrides.description, content.product?.description]
+	);
+
 	const productImages = React.useMemo(
 		() =>
 			content.product?.images
@@ -106,6 +142,44 @@ export const SingleProductNodeContentMixinEditor = (
 	// Events
 	// =========================================================================
 
+	const handleTitleChange = React.useCallback(
+		(value: string) => {
+			state._v.overrides.title = value;
+			state._notify();
+		},
+		[state]
+	);
+
+	const handleTitleReset = React.useCallback(() => {
+		state._v.overrides.title = undefined;
+		state._notify();
+	}, [state]);
+
+	const handleDescriptionChange = React.useCallback(
+		(value: TRichContent) => {
+			state._v.overrides.description = value;
+			state._notify();
+		},
+		[state]
+	);
+
+	const handleDescriptionReset = React.useCallback(() => {
+		state._v.overrides.description = undefined;
+		state._notify();
+	}, [state]);
+
+	const handleBannerChange = React.useCallback(
+		(value: string) => {
+			if (value === '') {
+				state._v.banner = undefined;
+			} else {
+				state._v.banner = { label: value };
+			}
+			state._notify();
+		},
+		[state]
+	);
+
 	const handleSelectProduct = React.useCallback(async () => {
 		const results = await editor.shopify.resourcePicker({
 			type: 'product',
@@ -187,6 +261,7 @@ export const SingleProductNodeContentMixinEditor = (
 				</Text>
 			</div>
 
+			{/* Product */}
 			<div className="space-y-1">
 				<div className="flex items-center justify-between">
 					<Text as="span" variant="bodySm" tone="subdued">
@@ -253,10 +328,10 @@ export const SingleProductNodeContentMixinEditor = (
 													<img
 														src={productImages[0].url}
 														alt={productImages[0].fileName}
-														className="h-10 w-10 flex-shrink-0 rounded-md bg-neutral-100 object-cover"
+														className="h-10 w-10 shrink-0 rounded-md bg-neutral-100 object-cover"
 													/>
 												) : (
-													<div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-md bg-neutral-100 text-xs text-gray-400">
+													<div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-neutral-100 text-xs text-gray-400">
 														N/A
 													</div>
 												)}
@@ -299,10 +374,10 @@ export const SingleProductNodeContentMixinEditor = (
 													<img
 														src={row.image.url}
 														alt={row.image.fileName}
-														className="h-10 w-10 flex-shrink-0 rounded-md bg-neutral-100 object-cover"
+														className="h-10 w-10 shrink-0 rounded-md bg-neutral-100 object-cover"
 													/>
 												) : (
-													<div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-md bg-neutral-100 text-xs text-gray-400">
+													<div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-neutral-100 text-xs text-gray-400">
 														N/A
 													</div>
 												)}
@@ -334,6 +409,75 @@ export const SingleProductNodeContentMixinEditor = (
 					</Button>
 				)}
 			</div>
+
+			{/* Title */}
+			{content.product != null && (
+				<div className="space-y-1">
+					<div className="flex items-center justify-between">
+						<Text as="span" variant="bodySm" tone="subdued">
+							Title
+						</Text>
+						{canResetTitle && (
+							<Button variant="plain" size="micro" onClick={handleTitleReset}>
+								Reset
+							</Button>
+						)}
+					</div>
+					<TextField
+						id="title-field"
+						label="Title"
+						labelHidden
+						value={titleValue}
+						onChange={handleTitleChange}
+						autoComplete="off"
+						placeholder="Product title"
+					/>
+				</div>
+			)}
+
+			{/* Description */}
+			{content.product != null && (
+				<div className="space-y-1">
+					<div className="flex items-center justify-between">
+						<Text as="span" variant="bodySm" tone="subdued">
+							Description
+						</Text>
+						{canResetDescription && (
+							<Button variant="plain" size="micro" onClick={handleDescriptionReset}>
+								Reset
+							</Button>
+						)}
+					</div>
+					<RichContentField
+						id="description-field"
+						label="Description"
+						labelHidden
+						value={descriptionValue}
+						onChange={handleDescriptionChange}
+						autoComplete="off"
+						placeholder="Product description"
+						multiline={4}
+					/>
+				</div>
+			)}
+
+			{/* Banner */}
+			{content.product != null && (
+				<div className="space-y-1">
+					<Text as="span" variant="bodySm" tone="subdued">
+						Banner
+					</Text>
+					<TextField
+						id="banner-field"
+						label="Banner"
+						labelHidden
+						value={bannerValue}
+						onChange={handleBannerChange}
+						autoComplete="off"
+						placeholder="e.g. New, Sale, Limited"
+					/>
+				</div>
+			)}
 		</div>
 	);
 };

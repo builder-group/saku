@@ -295,6 +295,42 @@ export function createThemeTokens(theme: TTheme): TToken[] {
 			}
 		},
 		{
+			type: 'banner',
+			key: 'banner.default',
+			value: {
+				appearance: {
+					visible: true,
+					opacity: 1
+				},
+				fill: {
+					paint: tokenRef('paint.success', 'paint'),
+					opacity: 1
+				},
+				stroke: null,
+				shadow: null,
+				text: {
+					appearance: {
+						visible: true,
+						opacity: 1
+					},
+					typography: {
+						font: tokenRef('font.body', 'font'),
+						fontSize: tokenRef('size.text.sm', 'number'),
+						textAlignHorizontal: 'center',
+						textAlignVertical: 'center',
+						lineHeight: { type: 'auto' },
+						letterSpacing: { type: 'auto' }
+					},
+					fill: {
+						paint: tokenRef('paint.success.content', 'paint'),
+						opacity: 1
+					},
+					stroke: null,
+					shadow: null
+				}
+			}
+		},
+		{
 			type: 'image',
 			key: 'image.default',
 			value: {

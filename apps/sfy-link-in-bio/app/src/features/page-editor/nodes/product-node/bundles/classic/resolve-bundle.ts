@@ -6,6 +6,7 @@ import {
 	resolveAppearanceStyleMixin,
 	resolveAutoLayoutStyleMixin,
 	resolveBadgeStyleMixin,
+	resolveBannerStyleMixin,
 	resolveButtonStyleMixin,
 	resolveFillStyleMixin,
 	resolveImageStyleMixin,
@@ -32,6 +33,7 @@ export function resolveClassicBundle(
 		buttonPrimary,
 		badgeSecondary,
 		badgeNeutral,
+		banner,
 		image,
 		productDetails,
 		...rest
@@ -119,6 +121,13 @@ export function resolveClassicBundle(
 	if (!isResolvedBadgeNeutralOk) {
 		return Err(resolvedBadgeNeutralErr.wrapWith('#ERR_RESOLVE_BADGE_NEUTRAL_STYLE'));
 	}
+	const [isResolvedBannerOk, resolvedBannerErr, resolvedBanner] = resolveBannerStyleMixin(banner, {
+		node: cx,
+		tokenMap: cx.site.getTokenMap()
+	});
+	if (!isResolvedBannerOk) {
+		return Err(resolvedBannerErr.wrapWith('#ERR_RESOLVE_BANNER_STYLE'));
+	}
 	const [isResolvedImageOk, resolvedImageErr, resolvedImage] = resolveImageStyleMixin(image, {
 		node: cx,
 		tokenMap: cx.site.getTokenMap()
@@ -159,6 +168,7 @@ export function resolveClassicBundle(
 		buttonPrimary: resolvedButtonPrimary,
 		badgeSecondary: resolvedBadgeSecondary,
 		badgeNeutral: resolvedBadgeNeutral,
+		banner: resolvedBanner,
 		image: {
 			...resolvedImage,
 			appearance: {
