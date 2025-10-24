@@ -37,13 +37,16 @@ router.openapi(GetSiteRoute, async (c) => {
 		});
 	}
 
+	// Migrate site to latest version if needed
+	const migratedContent = await migrateSiteIfNeeded(site.id, site.content);
+
 	return c.json(
 		{
 			id: site.id,
 			workspaceId: site.workspaceId,
 			handle: site.handle,
 			displayName: site.displayName ?? undefined,
-			content: site.content as TFlatSiteContentDto,
+			content: migratedContent as TFlatSiteContentDto,
 			createdAt: site.createdAt.toISOString(),
 			updatedAt: site.updatedAt.toISOString()
 		},
