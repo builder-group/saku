@@ -1,4 +1,5 @@
 import { TClassicProductNodeBundle, tokenRef } from '@repo/editor';
+import { useCompute } from 'feature-react';
 import React from 'react';
 import { AccordionSection } from '@/components';
 import { useNodeProperty } from '../../../../hooks';
@@ -21,6 +22,8 @@ export const ClassicBundleStyleEditor: React.FC<
 	TNodeEditorComponentProps<TClassicProductNodeBundle>
 > = (props) => {
 	const { nodeState, editor } = props;
+
+	const hasBanner = useCompute(nodeState, ({ value }) => value.content.banner != null);
 
 	const autoLayoutState = useNodeProperty(nodeState, 'autoLayout');
 	const appearanceState = useNodeProperty(nodeState, 'appearance');
@@ -77,7 +80,6 @@ export const ClassicBundleStyleEditor: React.FC<
 					editor={editor}
 				/>
 			</AccordionSection>
-
 			<AccordionSection
 				title="Product Title"
 				collapsibleClassName="px-0 space-y-3"
@@ -126,18 +128,20 @@ export const ClassicBundleStyleEditor: React.FC<
 					editor={editor}
 				/>
 			</AccordionSection>
-			<AccordionSection
-				title="Banner"
-				collapsibleClassName="px-0 space-y-3"
-				size="tight"
-				defaultOpen={true}
-			>
-				<BannerStyleMixinEditor
-					state={bannerState}
-					onLinkToken={() => tokenRef('banner.default', 'banner')}
-					editor={editor}
-				/>
-			</AccordionSection>
+			{hasBanner && (
+				<AccordionSection
+					title="Banner"
+					collapsibleClassName="px-0 space-y-3"
+					size="tight"
+					defaultOpen={true}
+				>
+					<BannerStyleMixinEditor
+						state={bannerState}
+						onLinkToken={() => tokenRef('banner.default', 'banner')}
+						editor={editor}
+					/>
+				</AccordionSection>
+			)}
 			<AccordionSection
 				title="Product Image"
 				collapsibleClassName="px-0 space-y-3"

@@ -72,7 +72,6 @@ export const FeaturedBundleStyleEditor: React.FC<
 					editor={editor}
 				/>
 			</AccordionSection>
-
 			<AccordionSection
 				title="Title Text"
 				collapsibleClassName="px-0 space-y-3"
@@ -85,7 +84,6 @@ export const FeaturedBundleStyleEditor: React.FC<
 					editor={editor}
 				/>
 			</AccordionSection>
-
 			<AccordionSection
 				title="Description Text"
 				collapsibleClassName="px-0 space-y-3"
@@ -98,7 +96,6 @@ export const FeaturedBundleStyleEditor: React.FC<
 					editor={editor}
 				/>
 			</AccordionSection>
-
 			{hasThumbnail && (
 				<AccordionSection
 					title="Thumbnail"

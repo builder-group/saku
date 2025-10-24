@@ -2,6 +2,7 @@ import {
 	TAppearanceStyleMixin,
 	TAutoLayoutStyleMixin,
 	TBadgeStyleMixin,
+	TBannerStyleMixin,
 	TButtonStyleMixin,
 	TFillStyleMixin,
 	TImageStyleMixin,
@@ -22,6 +23,7 @@ import {
 	AppearanceStyleMixinEditor,
 	AutoLayoutStyleMixinEditor,
 	BadgeStyleMixinEditor,
+	BannerStyleMixinEditor,
 	ButtonStyleMixinEditor,
 	FillStyleMixinEditor,
 	ImageStyleMixinEditor,
@@ -47,6 +49,7 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 	const shadowTokens = useTokensByType('shadow', editor.tokenMap);
 	const buttonTokens = useTokensByType('button', editor.tokenMap);
 	const badgeTokens = useTokensByType('badge', editor.tokenMap);
+	const bannerTokens = useTokensByType('banner', editor.tokenMap);
 	const textTokens = useTokensByType('text', editor.tokenMap);
 	const imageTokens = useTokensByType('image', editor.tokenMap);
 	const productDetailsTokens = useTokensByType('product-details', editor.tokenMap);
@@ -220,6 +223,28 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 						>
 							<BadgeStyleMixinEditor
 								state={state as TState<TBadgeStyleMixin['value'], []>}
+								syncedTokenLink={false}
+								disabled={currentPlan.key !== 'awesome'}
+								editor={editor}
+							/>
+						</AccordionSection>
+					))}
+				</AccordionSection>
+			)}
+
+			{/* Banner Section */}
+			{bannerTokens.length > 0 && (
+				<AccordionSection title="Banner" collapsibleClassName="p-0 border-b-0">
+					{bannerTokens.map(({ key, name, state }) => (
+						<AccordionSection
+							key={key}
+							title={name}
+							collapsibleClassName="px-0 space-y-3"
+							size="tight"
+							defaultOpen={true}
+						>
+							<BannerStyleMixinEditor
+								state={state as TState<TBannerStyleMixin['value'], []>}
 								syncedTokenLink={false}
 								disabled={currentPlan.key !== 'awesome'}
 								editor={editor}
