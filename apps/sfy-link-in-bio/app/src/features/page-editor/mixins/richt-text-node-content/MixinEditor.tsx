@@ -1,8 +1,9 @@
 import { TRichContent, TRichTextNodeContentMixin } from '@repo/editor';
-import { Select, Text, TextField } from '@shopify/polaris';
+import { Text } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react';
 import { TState } from 'feature-state';
 import React from 'react';
+import { RichContentField } from '@/components';
 import { cn } from '@/lib';
 import { TPageEditor } from '../../lib';
 
@@ -10,38 +11,16 @@ export const RichTextNodeContentMixinEditor = (props: TRichTextNodeContentMixinE
 	const { state, className } = props;
 	const content = useFeatureState(state);
 
-	const [selectedFormat, setSelectedFormat] = React.useState<TRichContent['type']>(
-		content.text.type
-	);
-	const formatOptions = React.useMemo(
-		() => [
-			{ label: 'Markdown', value: 'markdown' },
-			{ label: 'HTML', value: 'html' },
-			{ label: 'Plain Text', value: 'text' }
-		],
-		[]
-	);
-
 	// =========================================================================
 	// Events
 	// =========================================================================
 
-	const handleFormatChange = React.useCallback(
-		(value: string) => {
-			const newFormat = value as TRichContent['type'];
-			setSelectedFormat(newFormat);
-			state._v.text.type = newFormat;
+	const handleTextChange = React.useCallback(
+		(value: TRichContent) => {
+			state._v.text = value;
 			state._notify();
 		},
 		[state]
-	);
-
-	const handleTextChange = React.useCallback(
-		(value: string) => {
-			state._v.text = { type: selectedFormat, value };
-			state._notify();
-		},
-		[state, selectedFormat]
 	);
 
 	// =========================================================================
@@ -61,23 +40,15 @@ export const RichTextNodeContentMixinEditor = (props: TRichTextNodeContentMixinE
 				<Text as="span" variant="bodySm" tone="subdued">
 					Text
 				</Text>
-				<TextField
+				<RichContentField
 					id="text-field"
 					label="Text"
 					labelHidden
-					value={content.text.value}
+					value={content.text}
 					onChange={handleTextChange}
 					multiline={4}
 					autoComplete="off"
 					placeholder="Add your text here"
-				/>
-				<Select
-					id="text-format-field"
-					label="Format"
-					labelHidden
-					options={formatOptions}
-					value={selectedFormat}
-					onChange={handleFormatChange}
 				/>
 			</div>
 		</div>

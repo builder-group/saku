@@ -4,7 +4,6 @@ import {
 	Button,
 	IndexTable,
 	Scrollable,
-	Select,
 	Text,
 	TextField,
 	useIndexResourceState
@@ -12,7 +11,7 @@ import {
 import { useFeatureState } from 'feature-react/state';
 import { TState } from 'feature-state';
 import React from 'react';
-import { PolarisDeleteIcon, PolarisProductAddIcon } from '@/components';
+import { PolarisDeleteIcon, PolarisProductAddIcon, RichContentField } from '@/components';
 import { capitalizeFirstLetter, cn, isProduct, mutateWithReferenceUpdate } from '@/lib';
 import { TPageEditor } from '../../lib';
 
@@ -29,23 +28,14 @@ export const SingleProductNodeContentMixinEditor = (
 		return content.overrides.title ?? content.product?.title;
 	}, [content.overrides.title, content.product?.title]);
 	const descriptionValue = React.useMemo(() => {
-		return content.overrides.description ?? content.product?.description;
+		return (
+			content.overrides.description ??
+			content.product?.description ?? { type: 'html' as const, value: '' }
+		);
 	}, [content.overrides.description, content.product?.description]);
 	const tagValue = React.useMemo(() => {
 		return content.tag?.label ?? '';
 	}, [content.tag?.label]);
-
-	const [selectedDescriptionFormat, setSelectedDescriptionFormat] = React.useState<
-		TRichContent['type']
-	>(content.overrides.description?.type ?? content.product?.description?.type ?? 'html');
-	const descriptionFormatOptions = React.useMemo(
-		() => [
-			{ label: 'Markdown', value: 'markdown' },
-			{ label: 'HTML', value: 'html' },
-			{ label: 'Plain Text', value: 'text' }
-		],
-		[]
-	);
 
 	const canResetTitle = React.useMemo(
 		() =>
@@ -166,31 +156,17 @@ export const SingleProductNodeContentMixinEditor = (
 	}, [state]);
 
 	const handleDescriptionChange = React.useCallback(
-		(value: string) => {
-			state._v.overrides.description = { type: selectedDescriptionFormat, value };
-			state._notify();
-		},
-		[state, selectedDescriptionFormat]
-	);
-
-	const handleDescriptionReset = React.useCallback(() => {
-		setSelectedDescriptionFormat(content.product?.description?.type ?? 'html');
-		state._v.overrides.description = undefined;
-		state._notify();
-	}, [content.product?.description?.type, state]);
-
-	const handleDescriptionFormatChange = React.useCallback(
-		(value: string) => {
-			const newFormat = value as TRichContent['type'];
-			setSelectedDescriptionFormat(newFormat);
-			state._v.overrides.description = {
-				type: newFormat,
-				value: state._v.overrides.description?.value ?? state._v.product?.description?.value ?? ''
-			};
+		(value: TRichContent) => {
+			state._v.overrides.description = value;
 			state._notify();
 		},
 		[state]
 	);
+
+	const handleDescriptionReset = React.useCallback(() => {
+		state._v.overrides.description = undefined;
+		state._notify();
+	}, [state]);
 
 	const handleTagChange = React.useCallback(
 		(value: string) => {
@@ -352,10 +328,10 @@ export const SingleProductNodeContentMixinEditor = (
 													<img
 														src={productImages[0].url}
 														alt={productImages[0].fileName}
-														className="h-10 w-10 flex-shrink-0 rounded-md bg-neutral-100 object-cover"
+														className="h-10 w-10 shrink-0 rounded-md bg-neutral-100 object-cover"
 													/>
 												) : (
-													<div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-md bg-neutral-100 text-xs text-gray-400">
+													<div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-neutral-100 text-xs text-gray-400">
 														N/A
 													</div>
 												)}
@@ -398,10 +374,10 @@ export const SingleProductNodeContentMixinEditor = (
 													<img
 														src={row.image.url}
 														alt={row.image.fileName}
-														className="h-10 w-10 flex-shrink-0 rounded-md bg-neutral-100 object-cover"
+														className="h-10 w-10 shrink-0 rounded-md bg-neutral-100 object-cover"
 													/>
 												) : (
-													<div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-md bg-neutral-100 text-xs text-gray-400">
+													<div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-neutral-100 text-xs text-gray-400">
 														N/A
 													</div>
 												)}
@@ -472,23 +448,15 @@ export const SingleProductNodeContentMixinEditor = (
 							</Button>
 						)}
 					</div>
-					<TextField
+					<RichContentField
 						id="description-field"
 						label="Description"
 						labelHidden
-						value={descriptionValue?.value}
+						value={descriptionValue}
 						onChange={handleDescriptionChange}
 						autoComplete="off"
 						placeholder="Product description"
-						multiline={3}
-					/>
-					<Select
-						id="description-format-field"
-						label="Format"
-						labelHidden
-						options={descriptionFormatOptions}
-						value={selectedDescriptionFormat}
-						onChange={handleDescriptionFormatChange}
+						multiline={4}
 					/>
 				</div>
 			)}
