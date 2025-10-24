@@ -135,7 +135,7 @@ export const ResolvedClassicBundle = React.forwardRef<HTMLDivElement, TResolvedC
 					className="relative flex flex-col items-center"
 					style={{ margin: autoLayout.styles.margin }}
 				>
-					{/* Banner - sits on top, affected by margins */}
+					{/* Banner */}
 					{content.banner != null && (
 						<div
 							className="w-full px-3 pt-2 text-center"
@@ -145,6 +145,7 @@ export const ResolvedClassicBundle = React.forwardRef<HTMLDivElement, TResolvedC
 								borderTopRightRadius: appearance.styles?.borderRadius,
 								borderBottomLeftRadius: 0,
 								borderBottomRightRadius: 0,
+								borderBottom: 'none', // Remove bottom border to avoid offset issues
 								marginBottom: `${-(appearance.borderRadius ?? 0)}px`,
 								paddingBottom: `${(appearance.borderRadius ?? 0) + 8}px`
 							}}
