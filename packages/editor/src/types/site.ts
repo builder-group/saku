@@ -3,7 +3,7 @@ import { TToken } from './token';
 import { TAsset, TAssetHash, TIntegration, TIntegrationId } from './utils';
 
 export interface TSite {
-	version: `v0.0.1`;
+	version: TLatestSiteVersion; // Enforces latest version to prevent version/schema mismatches
 	root: TNode;
 	assets: TAsset[];
 	integrations: TIntegration[];
@@ -11,10 +11,13 @@ export interface TSite {
 }
 
 export interface TFlatSite {
-	version: TSite['version'];
+	version: TLatestSiteVersion; // Enforces latest version to prevent version/schema mismatches
 	rootId: TNodeId;
 	nodes: Record<TNodeId, TFlatNode>;
 	assets: Record<TAssetHash, TAsset>;
 	integrations: Record<TIntegrationId, TIntegration>;
 	tokens: Record<TToken['key'], TToken>;
 }
+
+export type TSiteVersion = `v0.0.1` | TLatestSiteVersion;
+export type TLatestSiteVersion = `v0.0.2`;
