@@ -431,6 +431,7 @@ export const productNodeMetadata: TNodeMetadata<TProductNode> = {
 			buttonPrimary: tokenRef('button.primary', 'button'),
 			badgeSecondary: tokenRef('badge.secondary', 'badge'),
 			badgeNeutral: tokenRef('badge.neutral', 'badge'),
+			banner: tokenRef('banner.default', 'banner'),
 			image: {
 				appearance: {
 					visible: true,

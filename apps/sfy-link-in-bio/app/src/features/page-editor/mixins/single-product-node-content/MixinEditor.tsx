@@ -33,9 +33,9 @@ export const SingleProductNodeContentMixinEditor = (
 			content.product?.description ?? { type: 'html' as const, value: '' }
 		);
 	}, [content.overrides.description, content.product?.description]);
-	const tagValue = React.useMemo(() => {
-		return content.tag?.label ?? '';
-	}, [content.tag?.label]);
+	const bannerValue = React.useMemo(() => {
+		return content.banner?.label ?? '';
+	}, [content.banner?.label]);
 
 	const canResetTitle = React.useMemo(
 		() =>
@@ -168,12 +168,12 @@ export const SingleProductNodeContentMixinEditor = (
 		state._notify();
 	}, [state]);
 
-	const handleTagChange = React.useCallback(
+	const handleBannerChange = React.useCallback(
 		(value: string) => {
 			if (value === '') {
-				state._v.tag = undefined;
+				state._v.banner = undefined;
 			} else {
-				state._v.tag = { label: value };
+				state._v.banner = { label: value };
 			}
 			state._notify();
 		},
@@ -461,18 +461,18 @@ export const SingleProductNodeContentMixinEditor = (
 				</div>
 			)}
 
-			{/* Tag */}
+			{/* Banner */}
 			{content.product != null && (
 				<div className="space-y-1">
 					<Text as="span" variant="bodySm" tone="subdued">
-						Tag
+						Banner
 					</Text>
 					<TextField
-						id="tag-field"
-						label="Tag"
+						id="banner-field"
+						label="Banner"
 						labelHidden
-						value={tagValue}
-						onChange={handleTagChange}
+						value={bannerValue}
+						onChange={handleBannerChange}
 						autoComplete="off"
 						placeholder="e.g. New, Sale, Limited"
 					/>

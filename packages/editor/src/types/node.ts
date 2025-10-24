@@ -4,6 +4,7 @@ import {
 	TAutoLayoutStyleMixin,
 	TBadgeNeutralStyleMixin,
 	TBadgeSecondaryStyleMixin,
+	TBannerStyleMixin,
 	TBaseMixin,
 	TButtonPrimaryStyleMixin,
 	TChildrenMixin,
@@ -465,6 +466,7 @@ export type TClassicProductNodeBundle = TNodeBundle<
 		TButtonPrimaryStyleMixin,
 		TBadgeSecondaryStyleMixin,
 		TBadgeNeutralStyleMixin,
+		TBannerStyleMixin,
 		TImageStyleMixin,
 		TProductDetailsStyleMixin
 	]
@@ -482,9 +484,13 @@ export type TSingleProductNodeContentMixin = TBaseMixin<
 	{
 		type: 'single';
 		product?: TProduct;
-		tag?: {
+		banner?: {
 			label: string;
 		};
+		// cta?: {
+		// 	label: string;
+		// 	action: TProductCtaAction;
+		// };
 		// User overrides (take priority)
 		overrides: {
 			title?: string;
@@ -493,6 +499,16 @@ export type TSingleProductNodeContentMixin = TBaseMixin<
 		integrationId?: TIntegrationId;
 	}
 >;
+
+// export type TProductCtaAction = TProductCtaBuyAction | TProductCtaCartAction;
+
+// export interface TProductCtaBuyAction {
+// 	type: 'product-cta-buy';
+// }
+
+// export interface TProductCtaCartAction {
+// 	type: 'product-cta-cart';
+// }
 
 // export type TMultiProductNodeContentMixin = TBaseMixin<
 // 	'content',

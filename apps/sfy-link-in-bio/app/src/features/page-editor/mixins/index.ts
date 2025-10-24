@@ -1,6 +1,7 @@
 export * from './appearance-style';
 export * from './auto-layout-style';
 export * from './badge-style';
+export * from './banner-style';
 export * from './basic-about-node-content';
 export * from './basic-link-node-content';
 export * from './basic-page-node-content';

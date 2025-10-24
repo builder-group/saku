@@ -4,6 +4,7 @@ import {
 	TResolvedAutoLayoutStyleMixin,
 	TResolvedBadgeNeutralStyleMixin,
 	TResolvedBadgeSecondaryStyleMixin,
+	TResolvedBannerStyleMixin,
 	TResolvedButtonPrimaryStyleMixin,
 	TResolvedFillStyleMixin,
 	TResolvedImageStyleMixin,
@@ -31,6 +32,7 @@ export type TResolvedClassicProductNodeBundle = TNodeBundle<
 		TResolvedButtonPrimaryStyleMixin,
 		TResolvedBadgeSecondaryStyleMixin,
 		TResolvedBadgeNeutralStyleMixin,
+		TResolvedBannerStyleMixin,
 		TResolvedImageStyleMixin,
 		TResolvedProductDetailsStyleMixin
 	]
