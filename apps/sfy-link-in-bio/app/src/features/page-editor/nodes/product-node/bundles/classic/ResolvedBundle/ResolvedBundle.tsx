@@ -138,7 +138,7 @@ export const ResolvedClassicBundle = React.forwardRef<HTMLDivElement, TResolvedC
 					{/* Banner - sits on top, affected by margins */}
 					{content.banner != null && (
 						<div
-							className="-mb-8 w-full pt-2 pb-10 text-center"
+							className="-mb-8 w-full px-3 pt-2 pb-10 text-center"
 							style={{
 								...banner.styles,
 								borderTopLeftRadius: appearance.styles?.borderRadius ?? 0,

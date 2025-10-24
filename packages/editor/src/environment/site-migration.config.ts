@@ -1,4 +1,12 @@
-import { TBasicLinkNodeContentMixin, TFlatSite, TLatestSiteVersion, TSiteVersion } from '../types';
+import { tokenRef } from '../lib';
+import {
+	TBannerStyleToken,
+	TBasicLinkNodeContentMixin,
+	TFlatSite,
+	TLatestSiteVersion,
+	TSiteVersion
+} from '../types';
+import { nodeMetadataMap } from './node-metadata';
 
 // =========================================================================
 // v0.0.1 -> v0.0.2
@@ -51,7 +59,8 @@ const v001ToV002: TSiteMigration = {
 							content: {
 								...node.content,
 								overrides: {}
-							}
+							},
+							banner: nodeMetadataMap.product.bundleMap.classic.banner
 						}
 					];
 				}
@@ -60,9 +69,52 @@ const v001ToV002: TSiteMigration = {
 			})
 		);
 
+		// Add banner default token
+		const bannerToken: TBannerStyleToken = {
+			type: 'banner',
+			key: 'banner.default',
+			value: {
+				appearance: {
+					visible: true,
+					opacity: 1
+				},
+				fill: {
+					paint: tokenRef('paint.success', 'paint'),
+					opacity: 1
+				},
+				stroke: null,
+				shadow: null,
+				text: {
+					appearance: {
+						visible: true,
+						opacity: 1
+					},
+					typography: {
+						font: tokenRef('font.body', 'font'),
+						fontSize: tokenRef('size.text.sm', 'number'),
+						textAlignHorizontal: 'center',
+						textAlignVertical: 'center',
+						lineHeight: { type: 'auto' },
+						letterSpacing: { type: 'auto' }
+					},
+					fill: {
+						paint: tokenRef('paint.success.content', 'paint'),
+						opacity: 1
+					},
+					stroke: null,
+					shadow: null
+				}
+			}
+		};
+		const migratedTokens = {
+			...site.tokens,
+			[bannerToken.key]: bannerToken
+		};
+
 		return {
 			...site,
-			nodes: migratedNodes
+			nodes: migratedNodes,
+			tokens: migratedTokens
 		};
 	}
 };
