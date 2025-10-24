@@ -23,6 +23,7 @@ import {
 	getShopInfo,
 	getShopPlan,
 	getWorkspaceStorefrontAccessToken,
+	migrateSiteIfNeeded,
 	refreshIntegrations,
 	updateShopifyUrlRedirect,
 	verifyShopifySession
@@ -103,19 +104,22 @@ router.openapi(GetShopifySiteByShopAndHandleRoute, async (c) => {
 		});
 	}
 
+	// Migrate site to latest version if needed
+	const content = await migrateSiteIfNeeded(site.id, site.content);
+
 	// Refresh integrations
-	site.content.integrations = (
+	content.integrations = (
 		await refreshIntegrations({
 			siteId: site.id,
 			workspaceId: site.workspaceId,
-			integrations: site.content.integrations
+			integrations: content.integrations
 		})
 	).integrations;
 
 	return c.json(
 		{
 			id: site.id,
-			content: site.content as TFlatSiteContentDto
+			content: content as TFlatSiteContentDto
 		},
 		200
 	);

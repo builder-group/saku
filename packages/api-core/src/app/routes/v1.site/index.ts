@@ -3,7 +3,7 @@ import { AppError } from '@repo/hono-utils';
 import { and, eq, sql } from 'drizzle-orm';
 import { router } from '@/app/router';
 import { db, siteTable, workspaceTable } from '@/environment';
-import { refreshIntegrations, verifyAccessSecret } from '@/lib';
+import { migrateSiteIfNeeded, refreshIntegrations, verifyAccessSecret } from '@/lib';
 import { parseLinkpopSite, parseSakuSite } from './lib';
 import {
 	GetSiteByWorkspaceAndHandleRoute,
@@ -80,19 +80,22 @@ router.openapi(GetSiteByWorkspaceAndHandleRoute, async (c) => {
 		});
 	}
 
+	// Migrate site to latest version if needed
+	const migratedContent = await migrateSiteIfNeeded(site.id, site.content);
+
 	// Refresh integrations
-	site.content.integrations = (
+	migratedContent.integrations = (
 		await refreshIntegrations({
 			siteId: site.id,
 			workspaceId: workspace.id,
-			integrations: site.content.integrations
+			integrations: migratedContent.integrations
 		})
 	).integrations;
 
 	return c.json(
 		{
 			id: site.id,
-			content: site.content as TFlatSiteContentDto
+			content: migratedContent as TFlatSiteContentDto
 		},
 		200
 	);
