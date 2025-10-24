@@ -56,21 +56,6 @@ export const RichTextNodeContentMixinEditor = (props: TRichTextNodeContentMixinE
 				</Text>
 			</div>
 
-			{/* Format */}
-			<div className="space-y-1">
-				<Text as="span" variant="bodySm" tone="subdued">
-					Format
-				</Text>
-				<Select
-					id="text-format-field"
-					label="Format"
-					labelHidden
-					options={formatOptions}
-					value={selectedFormat}
-					onChange={handleFormatChange}
-				/>
-			</div>
-
 			{/* Text */}
 			<div className="space-y-1">
 				<Text as="span" variant="bodySm" tone="subdued">
@@ -85,6 +70,14 @@ export const RichTextNodeContentMixinEditor = (props: TRichTextNodeContentMixinE
 					multiline={4}
 					autoComplete="off"
 					placeholder="Add your text here"
+				/>
+				<Select
+					id="text-format-field"
+					label="Format"
+					labelHidden
+					options={formatOptions}
+					value={selectedFormat}
+					onChange={handleFormatChange}
 				/>
 			</div>
 		</div>

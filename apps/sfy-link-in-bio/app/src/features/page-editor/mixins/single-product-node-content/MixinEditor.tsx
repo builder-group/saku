@@ -1,9 +1,10 @@
 import { notEmpty } from '@blgc/utils';
-import { TSingleProductNodeContentMixin } from '@repo/editor';
+import { TRichContent, TSingleProductNodeContentMixin } from '@repo/editor';
 import {
 	Button,
 	IndexTable,
 	Scrollable,
+	Select,
 	Text,
 	TextField,
 	useIndexResourceState
@@ -12,8 +13,7 @@ import { useFeatureState } from 'feature-react/state';
 import { TState } from 'feature-state';
 import React from 'react';
 import { PolarisDeleteIcon, PolarisProductAddIcon } from '@/components';
-import { cn } from '@/lib';
-import { capitalizeFirstLetter, isProduct, mutateWithReferenceUpdate } from '../../../../lib';
+import { capitalizeFirstLetter, cn, isProduct, mutateWithReferenceUpdate } from '@/lib';
 import { TPageEditor } from '../../lib';
 
 export const SingleProductNodeContentMixinEditor = (
@@ -34,6 +34,18 @@ export const SingleProductNodeContentMixinEditor = (
 	const tagValue = React.useMemo(() => {
 		return content.tag?.label ?? '';
 	}, [content.tag?.label]);
+
+	const [selectedDescriptionFormat, setSelectedDescriptionFormat] = React.useState<
+		TRichContent['type']
+	>(content.overrides.description?.type ?? content.product?.description?.type ?? 'html');
+	const descriptionFormatOptions = React.useMemo(
+		() => [
+			{ label: 'Markdown', value: 'markdown' },
+			{ label: 'HTML', value: 'html' },
+			{ label: 'Plain Text', value: 'text' }
+		],
+		[]
+	);
 
 	const canResetTitle = React.useMemo(
 		() =>
@@ -155,16 +167,30 @@ export const SingleProductNodeContentMixinEditor = (
 
 	const handleDescriptionChange = React.useCallback(
 		(value: string) => {
-			state._v.overrides.description = { type: 'html', value };
+			state._v.overrides.description = { type: selectedDescriptionFormat, value };
+			state._notify();
+		},
+		[state, selectedDescriptionFormat]
+	);
+
+	const handleDescriptionReset = React.useCallback(() => {
+		setSelectedDescriptionFormat(content.product?.description?.type ?? 'html');
+		state._v.overrides.description = undefined;
+		state._notify();
+	}, [content.product?.description?.type, state]);
+
+	const handleDescriptionFormatChange = React.useCallback(
+		(value: string) => {
+			const newFormat = value as TRichContent['type'];
+			setSelectedDescriptionFormat(newFormat);
+			state._v.overrides.description = {
+				type: newFormat,
+				value: state._v.overrides.description?.value ?? state._v.product?.description?.value ?? ''
+			};
 			state._notify();
 		},
 		[state]
 	);
-
-	const handleDescriptionReset = React.useCallback(() => {
-		state._v.overrides.description = undefined;
-		state._notify();
-	}, [state]);
 
 	const handleTagChange = React.useCallback(
 		(value: string) => {
@@ -455,6 +481,14 @@ export const SingleProductNodeContentMixinEditor = (
 						autoComplete="off"
 						placeholder="Product description"
 						multiline={3}
+					/>
+					<Select
+						id="description-format-field"
+						label="Format"
+						labelHidden
+						options={descriptionFormatOptions}
+						value={selectedDescriptionFormat}
+						onChange={handleDescriptionFormatChange}
 					/>
 				</div>
 			)}
