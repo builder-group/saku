@@ -30,12 +30,7 @@ export const RichBundleStyleEditor: React.FC<TNodeEditorComponentProps<TRichText
 
 	return (
 		<>
-			<AccordionSection
-				title="Layer"
-				collapsibleClassName="px-0 space-y-3"
-				size="tight"
-				defaultOpen={true}
-			>
+			<AccordionSection title="Layer" collapsibleClassName="px-0 space-y-3" defaultOpen={true}>
 				<AutoLayoutStyleMixinEditor
 					state={autoLayoutState}
 					onLinkToken={() => tokenRef('auto-layout.default', 'auto-layout')}
@@ -66,12 +61,7 @@ export const RichBundleStyleEditor: React.FC<TNodeEditorComponentProps<TRichText
 					editor={editor}
 				/>
 			</AccordionSection>
-			<AccordionSection
-				title="Text"
-				collapsibleClassName="px-0 space-y-3"
-				size="tight"
-				defaultOpen={true}
-			>
+			<AccordionSection title="Text" collapsibleClassName="px-0 space-y-3">
 				<TextStyleMixinEditor
 					state={textBodyState}
 					onLinkToken={() => tokenRef('text.body', 'text')}

@@ -36,12 +36,7 @@ export const ClassicBundleStyleEditor: React.FC<
 
 	return (
 		<>
-			<AccordionSection
-				title="Layer"
-				collapsibleClassName="px-0 space-y-3"
-				size="tight"
-				defaultOpen={true}
-			>
+			<AccordionSection title="Layer" collapsibleClassName="px-0 space-y-3" defaultOpen={true}>
 				<AutoLayoutStyleMixinEditor
 					state={autoLayoutState}
 					onLinkToken={() => tokenRef('auto-layout.default', 'auto-layout')}
@@ -72,24 +67,14 @@ export const ClassicBundleStyleEditor: React.FC<
 					editor={editor}
 				/>
 			</AccordionSection>
-			<AccordionSection
-				title="Title Text"
-				collapsibleClassName="px-0 space-y-3"
-				size="tight"
-				defaultOpen={true}
-			>
+			<AccordionSection title="Title Text" collapsibleClassName="px-0 space-y-3">
 				<TextStyleMixinEditor
 					state={textBodyState}
 					onLinkToken={() => tokenRef('text.body', 'text')}
 					editor={editor}
 				/>
 			</AccordionSection>
-			<AccordionSection
-				title="Description Text"
-				collapsibleClassName="px-0 space-y-3"
-				size="tight"
-				defaultOpen={true}
-			>
+			<AccordionSection title="Description Text" collapsibleClassName="px-0 space-y-3">
 				<TextStyleMixinEditor
 					state={textCaptionState}
 					onLinkToken={() => tokenRef('text.caption', 'text')}
@@ -97,12 +82,7 @@ export const ClassicBundleStyleEditor: React.FC<
 				/>
 			</AccordionSection>
 			{hasThumbnail && (
-				<AccordionSection
-					title="Thumbnail"
-					collapsibleClassName="px-0 space-y-3"
-					size="tight"
-					defaultOpen={true}
-				>
+				<AccordionSection title="Thumbnail" collapsibleClassName="px-0 space-y-3">
 					<ImageStyleMixinEditor
 						state={imageState}
 						onLinkToken={() => tokenRef('image.default', 'image')}

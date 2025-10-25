@@ -26,12 +26,7 @@ export const YouTubeEmbedBundleStyleEditor: React.FC<
 
 	return (
 		<>
-			<AccordionSection
-				title="Layer"
-				collapsibleClassName="px-0 space-y-3"
-				size="tight"
-				defaultOpen={true}
-			>
+			<AccordionSection title="Layer" collapsibleClassName="px-0 space-y-3" defaultOpen={true}>
 				<AutoLayoutStyleMixinEditor
 					state={autoLayoutState}
 					onLinkToken={() => tokenRef('auto-layout.default', 'auto-layout')}
@@ -62,12 +57,7 @@ export const YouTubeEmbedBundleStyleEditor: React.FC<
 					editor={editor}
 				/>
 			</AccordionSection>
-			<AccordionSection
-				title="Embed"
-				collapsibleClassName="px-0 space-y-3"
-				size="tight"
-				defaultOpen={true}
-			>
+			<AccordionSection title="Embed" collapsibleClassName="px-0 space-y-3">
 				<EmbedStyleMixinEditor
 					state={embedState}
 					onLinkToken={() => tokenRef('embed.default', 'embed')}

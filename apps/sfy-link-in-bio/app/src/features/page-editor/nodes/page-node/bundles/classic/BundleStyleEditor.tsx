@@ -26,24 +26,14 @@ export const ClassicBundleStyleEditor: React.FC<
 
 	return (
 		<>
-			<AccordionSection
-				title="Layer"
-				collapsibleClassName="px-0 space-y-3"
-				size="tight"
-				defaultOpen={true}
-			>
+			<AccordionSection title="Layer" collapsibleClassName="px-0 space-y-3" defaultOpen={true}>
 				<AutoLayoutStyleMixinEditor state={autoLayoutState} editor={editor} />
 				<div className="h-px bg-neutral-200" />
 				<AppearanceStyleMixinEditor state={appearanceState} editor={editor} />
 				<div className="h-px bg-neutral-200" />
 				<FillStyleMixinEditor state={fillState} syncedTokenLink={false} editor={editor} />
 			</AccordionSection>
-			<AccordionSection
-				title="Footer Text"
-				collapsibleClassName="px-0 space-y-3"
-				size="tight"
-				defaultOpen={true}
-			>
+			<AccordionSection title="Footer Text" collapsibleClassName="px-0 space-y-3">
 				<TextStyleMixinEditor
 					state={textCaptionState}
 					onLinkToken={() => tokenRef('text.caption', 'text')}

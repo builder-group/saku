@@ -44,12 +44,7 @@ export const ClassicBundleStyleEditor: React.FC<
 
 	return (
 		<>
-			<AccordionSection
-				title="Layer"
-				collapsibleClassName="px-0 space-y-3"
-				size="tight"
-				defaultOpen={true}
-			>
+			<AccordionSection title="Layer" collapsibleClassName="px-0 space-y-3" defaultOpen={true}>
 				<AutoLayoutStyleMixinEditor
 					state={autoLayoutState}
 					onLinkToken={() => tokenRef('auto-layout.default', 'auto-layout')}
@@ -80,48 +75,28 @@ export const ClassicBundleStyleEditor: React.FC<
 					editor={editor}
 				/>
 			</AccordionSection>
-			<AccordionSection
-				title="Product Title"
-				collapsibleClassName="px-0 space-y-3"
-				size="tight"
-				defaultOpen={true}
-			>
+			<AccordionSection title="Product Title" collapsibleClassName="px-0 space-y-3">
 				<TextStyleMixinEditor
 					state={textBodyState}
 					onLinkToken={() => tokenRef('text.body', 'text')}
 					editor={editor}
 				/>
 			</AccordionSection>
-			<AccordionSection
-				title="Buy Button"
-				collapsibleClassName="px-0 space-y-3"
-				size="tight"
-				defaultOpen={true}
-			>
+			<AccordionSection title="Buy Button" collapsibleClassName="px-0 space-y-3">
 				<ButtonStyleMixinEditor
 					state={buttonPrimaryState}
 					onLinkToken={() => tokenRef('button.primary', 'button')}
 					editor={editor}
 				/>
 			</AccordionSection>
-			<AccordionSection
-				title="Price Badge"
-				collapsibleClassName="px-0 space-y-3"
-				size="tight"
-				defaultOpen={true}
-			>
+			<AccordionSection title="Price Badge" collapsibleClassName="px-0 space-y-3">
 				<BadgeStyleMixinEditor
 					state={badgeSecondaryState}
 					onLinkToken={() => tokenRef('badge.secondary', 'badge')}
 					editor={editor}
 				/>
 			</AccordionSection>
-			<AccordionSection
-				title="Variant Badge"
-				collapsibleClassName="px-0 space-y-3"
-				size="tight"
-				defaultOpen={true}
-			>
+			<AccordionSection title="Variant Badge" collapsibleClassName="px-0 space-y-3">
 				<BadgeStyleMixinEditor
 					state={badgeNeutralState}
 					onLinkToken={() => tokenRef('badge.neutral', 'badge')}
@@ -129,12 +104,7 @@ export const ClassicBundleStyleEditor: React.FC<
 				/>
 			</AccordionSection>
 			{hasBanner && (
-				<AccordionSection
-					title="Banner"
-					collapsibleClassName="px-0 space-y-3"
-					size="tight"
-					defaultOpen={true}
-				>
+				<AccordionSection title="Banner" collapsibleClassName="px-0 space-y-3">
 					<BannerStyleMixinEditor
 						state={bannerState}
 						onLinkToken={() => tokenRef('banner.default', 'banner')}
@@ -142,24 +112,14 @@ export const ClassicBundleStyleEditor: React.FC<
 					/>
 				</AccordionSection>
 			)}
-			<AccordionSection
-				title="Product Image"
-				collapsibleClassName="px-0 space-y-3"
-				size="tight"
-				defaultOpen={true}
-			>
+			<AccordionSection title="Product Image" collapsibleClassName="px-0 space-y-3">
 				<ImageStyleMixinEditor
 					state={imageState}
 					onLinkToken={() => tokenRef('image.default', 'image')}
 					editor={editor}
 				/>
 			</AccordionSection>
-			<AccordionSection
-				title="Product Details Modal"
-				collapsibleClassName="px-0 space-y-3"
-				size="tight"
-				defaultOpen={true}
-			>
+			<AccordionSection title="Product Details Modal" collapsibleClassName="px-0 space-y-3">
 				<ProductDetailsStyleMixinEditor
 					state={productDetailsState}
 					onLinkToken={() => tokenRef('product-details.default', 'product-details')}

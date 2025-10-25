@@ -30,12 +30,7 @@ export const ClassicBundleStyleEditor: React.FC<
 
 	return (
 		<>
-			<AccordionSection
-				title="Layer"
-				collapsibleClassName="px-0 space-y-3"
-				size="tight"
-				defaultOpen={true}
-			>
+			<AccordionSection title="Layer" collapsibleClassName="px-0 space-y-3" defaultOpen={true}>
 				<AutoLayoutStyleMixinEditor
 					state={autoLayoutState}
 					onLinkToken={() => tokenRef('auto-layout.default', 'auto-layout')}
@@ -66,12 +61,7 @@ export const ClassicBundleStyleEditor: React.FC<
 					editor={editor}
 				/>
 			</AccordionSection>
-			<AccordionSection
-				title="Image"
-				collapsibleClassName="px-0 space-y-3"
-				size="tight"
-				defaultOpen={true}
-			>
+			<AccordionSection title="Image" collapsibleClassName="px-0 space-y-3">
 				<ImageStyleMixinEditor
 					state={imageState}
 					onLinkToken={() => tokenRef('image.default', 'image')}
