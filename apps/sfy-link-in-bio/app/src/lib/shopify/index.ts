@@ -2,5 +2,7 @@ export * from './check-onboarding-status';
 export * from './create-display-name-from-shop';
 export * from './create-handle-from-shop';
 export * from './is-product';
+export * from './list-media-files';
 export * from './request-review';
 export * from './show-shopify-app-error-toast';
+export * from './upload-files';

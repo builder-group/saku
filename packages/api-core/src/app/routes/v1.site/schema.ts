@@ -1,5 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi';
-import { createPikaIdSchema, TFlatSite, TNode } from '@repo/editor';
+import { createPikaIdSchema, TAsset, TFlatSite, TNode } from '@repo/editor';
 import { BadRequestResponse, JsonSuccessResponse, NotFoundResponse } from '@repo/hono-utils';
 
 // Summary DTO (without content) for list views
@@ -19,6 +19,12 @@ export const SFlatSiteContentDto = z
 	.looseObject<TFlatSite>({} as any) // TODO: z.custom doesn't work yet with 'zod-to-openapi' library (Zod v4)
 	.openapi('FlatSiteContentDto', {});
 export type TFlatSiteContentDto = z.infer<typeof SFlatSiteContentDto>;
+
+export const SSiteAssetDto = z.looseObject<TAsset>({} as any).openapi('SiteAssetDto');
+export type TSiteAssetDto = z.infer<typeof SSiteAssetDto>;
+
+export const SNodeDto = z.looseObject<TNode>({} as any).openapi('NodeDto');
+export type TNodeDto = z.infer<typeof SNodeDto>;
 
 // Full DTO (with content) for detailed views
 export const SSiteDto = SSiteSummaryDto.merge(
@@ -97,7 +103,7 @@ export const UpdateSiteNodeRoute = createRoute({
 		body: {
 			content: {
 				'application/json': {
-					schema: z.looseObject<TNode>({} as any).openapi('NodeDto', {})
+					schema: SNodeDto
 				}
 			}
 		}

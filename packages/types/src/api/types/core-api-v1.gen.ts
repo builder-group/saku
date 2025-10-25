@@ -231,6 +231,23 @@ export interface paths {
         patch: operations["updateShopifySite"];
         trace?: never;
     };
+    "/v1/shopify/site/assets/upload": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Upload site assets to Shopify */
+        post: operations["uploadSiteAssets"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/shopify/site/preset/blank": {
         parameters: {
             query?: never;
@@ -752,11 +769,13 @@ export interface components {
                 options: {
                     /** @example Size */
                     name: string;
-                    /** @example [
+                    /**
+                     * @example [
                      *       "S",
                      *       "M",
                      *       "L"
-                     *     ] */
+                     *     ]
+                     */
                     values: string[];
                 }[];
                 /** @description Product variants with pricing */
@@ -875,6 +894,9 @@ export interface components {
              */
             updatedAt: string;
             content: components["schemas"]["FlatSiteContentDto"];
+        };
+        SiteAssetDto: {
+            [key: string]: unknown;
         };
         MediaFileDto: {
             /** @example gid://shopify/MediaImage/12345678 */
@@ -1813,6 +1835,48 @@ export interface operations {
             };
         };
     };
+    uploadSiteAssets: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": {
+                    /** @description Array of assets to upload */
+                    assets: components["schemas"]["SiteAssetDto"][];
+                };
+            };
+        };
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        uploadedAssets: {
+                            id: string;
+                            resourceUrl: string;
+                            originalHash: string;
+                        }[];
+                    };
+                };
+            };
+            /** @description Bad request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppErrorDto"];
+                };
+            };
+        };
+    };
     getBlankPreset: {
         parameters: {
             query?: never;
@@ -2418,11 +2482,13 @@ export interface operations {
                     shop_id: number;
                     /** @example my-shop.myshopify.com */
                     shop_domain: string;
-                    /** @example [
+                    /**
+                     * @example [
                      *       299938,
                      *       280263,
                      *       220458
-                     *     ] */
+                     *     ]
+                     */
                     orders_requested: number[];
                     customer: {
                         /** @example 191167 */
@@ -2500,11 +2566,13 @@ export interface operations {
                         /** @example 555-625-1199 */
                         phone: string;
                     };
-                    /** @example [
+                    /**
+                     * @example [
                      *       299938,
                      *       280263,
                      *       220458
-                     *     ] */
+                     *     ]
+                     */
                     orders_to_redact: number[];
                 };
             };
@@ -2673,14 +2741,18 @@ export interface operations {
                 "application/json": {
                     /** @example 548380009 */
                     id: number;
-                    /** @example [
+                    /**
+                     * @example [
                      *       "read_products"
-                     *     ] */
+                     *     ]
+                     */
                     previous: string[];
-                    /** @example [
+                    /**
+                     * @example [
                      *       "read_products",
                      *       "write_products"
-                     *     ] */
+                     *     ]
+                     */
                     current: string[];
                     /**
                      * Format: date-time

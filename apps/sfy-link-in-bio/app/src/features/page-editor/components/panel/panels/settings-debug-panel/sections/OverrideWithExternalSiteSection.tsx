@@ -36,6 +36,7 @@ export const OverrideWithExternalSiteSection: React.FC<TOverrideWithExternalSite
 			setIsOverriding(true);
 			setError(null);
 
+			// Parse external site
 			const [isParseOk, parseErr, parseResponse] = await coreApiClient.get(
 				'/v1/site/parse/external',
 				{
@@ -57,10 +58,41 @@ export const OverrideWithExternalSiteSection: React.FC<TOverrideWithExternalSite
 				setIsOverriding(false);
 				return;
 			}
+			const parsedSite = parseResponse.data.content as unknown as TFlatSite;
 
-			editor.overrideWith(parseResponse.data.content as unknown as TFlatSite, {
+			// Upload image assets to Shopify
+			const imageAssets = Object.values(parsedSite.assets).filter(
+				(asset) => asset.type === 'image'
+			);
+			const [isUploadOk, uploadErr, uploadResponse] = await coreApiClient.post(
+				'/v1/shopify/site/assets/upload',
+				{ assets: imageAssets as unknown as { [key: string]: unknown }[] },
+				{
+					requestMiddlewares: [createShopifyTokenMiddleware(editor.shopify)]
+				}
+			);
+			if (!isUploadOk) {
+				setError(`Failed to upload assets: ${uploadErr.message}`);
+				setIsOverriding(false);
+				return;
+			}
+
+			// Merge uploaded asset URLs back into site
+			for (const uploadedAsset of uploadResponse.data.uploadedAssets) {
+				const asset = parsedSite.assets[uploadedAsset.originalHash];
+				if (asset != null) {
+					asset.storage = {
+						type: 'url',
+						url: uploadedAsset.resourceUrl
+					};
+				}
+			}
+
+			// Override with parsed site
+			editor.overrideWith(parsedSite, {
 				keepShopIntegration: true
 			});
+
 			editor.shopify.toast.show('Site overridden successfully', {
 				action: 'Publish',
 				onAction: async () => {
@@ -124,7 +156,7 @@ export const OverrideWithExternalSiteSection: React.FC<TOverrideWithExternalSite
 						</Text>
 					</div>
 				)}
-				<div className="ml-auto flex-shrink-0">
+				<div className="ml-auto shrink-0">
 					<Button submit loading={isOverriding} disabled={isOverrideDisabled}>
 						Override
 					</Button>

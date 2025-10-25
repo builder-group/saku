@@ -2,7 +2,7 @@ import type { ShopifyGlobal } from '@shopify/app-bridge-types';
 import { Err, Ok, type TResult } from 'tuple-result';
 import { coreApiClient, fetchClient } from '@/environment';
 import type { TError } from '@/types';
-import { createShopifyTokenMiddleware } from './middleware';
+import { createShopifyTokenMiddleware } from '../middleware';
 
 export async function uploadFiles(
 	config: TUploadFilesConfig

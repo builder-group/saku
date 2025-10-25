@@ -14347,8 +14347,7 @@ export interface paths {
         };
         /**
          * Get all contributor commit activity
-         * @description
-         *     Returns the `total` number of commits authored by the contributor. In addition, the response includes a Weekly Hash (`weeks` array) with the following information:
+         * @description Returns the `total` number of commits authored by the contributor. In addition, the response includes a Weekly Hash (`weeks` array) with the following information:
          *
          *     *   `w` - Start of the week, given as a [Unix timestamp](https://en.wikipedia.org/wiki/Unix_time).
          *     *   `a` - Number of additions
@@ -18223,10 +18222,12 @@ export interface components {
             single_file_name: string | null;
             /** @example true */
             has_multiple_single_files?: boolean;
-            /** @example [
+            /**
+             * @example [
              *       "config.yml",
              *       ".github/issue_TEMPLATE.md"
-             *     ] */
+             *     ]
+             */
             single_file_paths?: string[];
             /**
              * Format: uri
@@ -18836,10 +18837,12 @@ export interface components {
             single_file_name: string | null;
             /** @example true */
             has_multiple_single_files?: boolean;
-            /** @example [
+            /**
+             * @example [
              *       "config.yml",
              *       ".github/issue_TEMPLATE.md"
-             *     ] */
+             *     ]
+             */
             single_file_paths?: string[];
             /** @example github-actions */
             app_slug: string;
@@ -19247,10 +19250,12 @@ export interface components {
             single_file?: string;
             /** @example true */
             has_multiple_single_files?: boolean;
-            /** @example [
+            /**
+             * @example [
              *       "config.yml",
              *       ".github/issue_TEMPLATE.md"
-             *     ] */
+             *     ]
+             */
             single_file_paths?: string[];
         };
         /**
@@ -19284,9 +19289,11 @@ export interface components {
              * @example 2011-09-06T20:39:23Z
              */
             updated_at: string;
-            /** @example [
+            /**
+             * @example [
              *       "public_repo"
-             *     ] */
+             *     ]
+             */
             scopes: string[];
             user?: components["schemas"]["nullable-simple-user"];
         };
@@ -19304,7 +19311,8 @@ export interface components {
              * @example https://api.github.com/codes_of_conduct/contributor_covenant
              */
             url: string;
-            /** @example # Contributor Covenant Code of Conduct
+            /**
+             * @example # Contributor Covenant Code of Conduct
              *
              *     ## Our Pledge
              *
@@ -19349,7 +19357,7 @@ export interface components {
              *     ## Attribution
              *
              *     This Code of Conduct is adapted from the [Contributor Covenant](http://contributor-covenant.org), version 1.4, available at [http://contributor-covenant.org/version/1/4](http://contributor-covenant.org/version/1/4/).
-             *      */
+             */
             body?: string;
             /** Format: uri */
             html_url: string | null;
@@ -19528,10 +19536,12 @@ export interface components {
             github_owned_allowed?: boolean;
             /** @description Whether actions from GitHub Marketplace verified creators are allowed. Set to `true` to allow all actions by GitHub Marketplace verified creators using GitHub Connect. */
             verified_allowed?: boolean;
-            /** @description Specifies a list of string-matching patterns to allow specific action(s) and reusable workflow(s). Wildcards, tags, and SHAs are allowed. For example, `monalisa/octocat@*`, `monalisa/octocat@v2`, `monalisa/*`.
+            /**
+             * @description Specifies a list of string-matching patterns to allow specific action(s) and reusable workflow(s). Wildcards, tags, and SHAs are allowed. For example, `monalisa/octocat@*`, `monalisa/octocat@v2`, `monalisa/*`.
              *
              *     > [!NOTE]
-             *     > The `patterns_allowed` setting only applies to public repositories. */
+             *     > The `patterns_allowed` setting only applies to public repositories.
+             */
             patterns_allowed?: string[];
         };
         /**
@@ -19648,10 +19658,12 @@ export interface components {
              * @example 2016-07-11T22:14:10Z
              */
             expires_at: string;
-            /** @example {
+            /**
+             * @example {
              *       "issues": "read",
              *       "deployments": "write"
-             *     } */
+             *     }
+             */
             permissions?: Record<string, never>;
             /** @description The repositories this token has access to */
             repositories?: components["schemas"]["repository"][];
@@ -19810,8 +19822,10 @@ export interface components {
             version?: components["schemas"]["code-scanning-analysis-tool-version"];
             guid?: components["schemas"]["code-scanning-analysis-tool-guid"];
         };
-        /** @description The Git reference, formatted as `refs/pull/<number>/merge`, `refs/pull/<number>/head`,
-         *     `refs/heads/<branch name>` or simply `<branch name>`. */
+        /**
+         * @description The Git reference, formatted as `refs/pull/<number>/merge`, `refs/pull/<number>/head`,
+         *     `refs/heads/<branch name>` or simply `<branch name>`.
+         */
         "code-scanning-ref": string;
         /** @description Identifies the configuration under which the analysis was executed. For example, in GitHub Actions this includes the workflow filename and job name. */
         "code-scanning-analysis-analysis-key": string;
@@ -19844,8 +19858,10 @@ export interface components {
             };
             location?: components["schemas"]["code-scanning-alert-location"];
             html_url?: string;
-            /** @description Classifications that have been applied to the file that triggered the alert.
-             *     For example identifying it as documentation, or a generated file. */
+            /**
+             * @description Classifications that have been applied to the file that triggered the alert.
+             *     For example identifying it as documentation, or a generated file.
+             */
             classifications?: components["schemas"]["code-scanning-alert-classification"][];
         };
         /**
@@ -20320,8 +20336,10 @@ export interface components {
             resolved_by?: components["schemas"]["nullable-simple-user"];
             /** @description The type of secret that secret scanning detected. */
             secret_type?: string;
-            /** @description User-friendly name for the detected secret, matching the `secret_type`.
-             *     For a list of built-in patterns, see "[Supported secret scanning patterns](https://docs.github.com/enterprise-server@3.15/code-security/secret-scanning/introduction/supported-secret-scanning-patterns#supported-secrets)." */
+            /**
+             * @description User-friendly name for the detected secret, matching the `secret_type`.
+             *     For a list of built-in patterns, see "[Supported secret scanning patterns](https://docs.github.com/enterprise-server@3.15/code-security/secret-scanning/introduction/supported-secret-scanning-patterns#supported-secrets)."
+             */
             secret_type_display_name?: string;
             /** @description The secret that was detected. */
             secret?: string;
@@ -20852,9 +20870,11 @@ export interface components {
             current_user_actor_url?: string;
             /** @example https://github.com/octocat-org */
             current_user_organization_url?: string;
-            /** @example [
+            /**
+             * @example [
              *       "https://github.com/organizations/github/octocat.private.atom?token=abc123"
-             *     ] */
+             *     ]
+             */
             current_user_organization_urls?: string[];
             /** @example https://github.com/security-advisories */
             security_advisories_url?: string;
@@ -21177,7 +21197,8 @@ export interface components {
         "gitignore-template": {
             /** @example C */
             name: string;
-            /** @example # Object files
+            /**
+             * @example # Object files
              *     *.o
              *
              *     # Libraries
@@ -21194,7 +21215,7 @@ export interface components {
              *     *.exe
              *     *.out
              *     *.app
-             *      */
+             */
             source: string;
         };
         /**
@@ -21245,25 +21266,30 @@ export interface components {
             description: string;
             /** @example Create a text file (typically named LICENSE or LICENSE.txt) in the root of your source code and copy the text of the license into the file. Replace [year] with the current year and [fullname] with the name (or names) of the copyright holders. */
             implementation: string;
-            /** @example [
+            /**
+             * @example [
              *       "commercial-use",
              *       "modifications",
              *       "distribution",
              *       "sublicense",
              *       "private-use"
-             *     ] */
+             *     ]
+             */
             permissions: string[];
-            /** @example [
+            /**
+             * @example [
              *       "include-copyright"
-             *     ] */
+             *     ]
+             */
             conditions: string[];
-            /** @example [
+            /**
+             * @example [
              *       "no-liability"
-             *     ] */
+             *     ]
+             */
             limitations: string[];
-            /** @example
-             *
-             *     The MIT License (MIT)
+            /**
+             * @example The MIT License (MIT)
              *
              *     Copyright (c) [year] [fullname]
              *
@@ -21284,7 +21310,7 @@ export interface components {
              *     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
              *     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
              *     SOFTWARE.
-             *      */
+             */
             body: string;
             /** @example true */
             featured: boolean;
@@ -21670,9 +21696,11 @@ export interface components {
         "api-overview": {
             /** @example true */
             verifiable_password_authentication: boolean;
-            /** @example [
+            /**
+             * @example [
              *       "192.0.2.1"
-             *     ] */
+             *     ]
+             */
             packages?: string[];
             domains?: {
                 website?: string[];
@@ -21685,9 +21713,11 @@ export interface components {
                     wildcard_domains?: string[];
                 };
                 artifact_attestations?: {
-                    /** @example [
+                    /**
+                     * @example [
                      *       "example"
-                     *     ] */
+                     *     ]
+                     */
                     trust_domain?: string;
                     services?: string[];
                 };
@@ -21696,10 +21726,11 @@ export interface components {
             installed_version?: string;
         };
         "security-and-analysis": {
-            /** @description Enable or disable GitHub Advanced Security for the repository.
+            /**
+             * @description Enable or disable GitHub Advanced Security for the repository.
              *
              *     For standalone Code Scanning or Secret Protection products, this parameter cannot be used.
-             *      */
+             */
             advanced_security?: {
                 /** @enum {string} */
                 status?: "enabled" | "disabled";
@@ -22996,10 +23027,12 @@ export interface components {
             deliveries_url?: string;
             /** @example web */
             name: string;
-            /** @example [
+            /**
+             * @example [
              *       "push",
              *       "pull_request"
-             *     ] */
+             *     ]
+             */
             events: string[];
             /** @example true */
             active: boolean;
@@ -23718,8 +23751,10 @@ export interface components {
             default_value?: (string | string[]) | null;
             /** @description Short description of the property */
             description?: string | null;
-            /** @description An ordered list of the allowed values of the property.
-             *     The property can have up to 200 allowed values. */
+            /**
+             * @description An ordered list of the allowed values of the property.
+             *     The property can have up to 200 allowed values.
+             */
             allowed_values?: string[] | null;
             /**
              * @description Who can edit the values of the property
@@ -23745,8 +23780,10 @@ export interface components {
             default_value?: (string | string[]) | null;
             /** @description Short description of the property */
             description?: string | null;
-            /** @description An ordered list of the allowed values of the property.
-             *     The property can have up to 200 allowed values. */
+            /**
+             * @description An ordered list of the allowed values of the property.
+             *     The property can have up to 200 allowed values.
+             */
             allowed_values?: string[] | null;
             /**
              * @description Who can edit the values of the property
@@ -24342,12 +24379,14 @@ export interface components {
             open_issues_count: number;
             /** @example true */
             is_template?: boolean;
-            /** @example [
+            /**
+             * @example [
              *       "octocat",
              *       "atom",
              *       "electron",
              *       "API"
-             *     ] */
+             *     ]
+             */
             topics?: string[];
             /** @example true */
             has_issues: boolean;
@@ -27206,9 +27245,11 @@ export interface components {
             url: string;
             /** @example true */
             strict: boolean;
-            /** @example [
+            /**
+             * @example [
              *       "continuous-integration/travis-ci"
-             *     ] */
+             *     ]
+             */
             contexts: string[];
             checks: {
                 /** @example continuous-integration/travis-ci */
@@ -27738,8 +27779,10 @@ export interface components {
             /** @description CodeQL languages to be analyzed. */
             languages?: ("actions" | "c-cpp" | "csharp" | "go" | "java-kotlin" | "javascript-typescript" | "python" | "ruby" | "swift")[];
         };
-        /** @description You can use `run_url` to track the status of the run. This includes a property status and conclusion.
-         *     You should not rely on this always being an actions workflow run object. */
+        /**
+         * @description You can use `run_url` to track the status of the run. This includes a property status and conclusion.
+         *     You should not rely on this always being an actions workflow run object.
+         */
         "code-scanning-default-setup-update-response": {
             /** @description ID of the corresponding run. */
             run_id?: number;
@@ -31253,8 +31296,10 @@ export interface components {
             resolution_comment?: string | null;
             /** @description The type of secret that secret scanning detected. */
             secret_type?: string;
-            /** @description User-friendly name for the detected secret, matching the `secret_type`.
-             *     For a list of built-in patterns, see "[Supported secret scanning patterns](https://docs.github.com/enterprise-server@3.15/code-security/secret-scanning/introduction/supported-secret-scanning-patterns#supported-secrets)." */
+            /**
+             * @description User-friendly name for the detected secret, matching the `secret_type`.
+             *     For a list of built-in patterns, see "[Supported secret scanning patterns](https://docs.github.com/enterprise-server@3.15/code-security/secret-scanning/introduction/supported-secret-scanning-patterns#supported-secrets)."
+             */
             secret_type_display_name?: string;
             /** @description The secret that was detected. */
             secret?: string;
@@ -31482,7 +31527,8 @@ export interface components {
          * @description Commit Activity
          */
         "commit-activity": {
-            /** @example [
+            /**
+             * @example [
              *       0,
              *       3,
              *       26,
@@ -31490,7 +31536,8 @@ export interface components {
              *       39,
              *       1,
              *       0
-             *     ] */
+             *     ]
+             */
             days: number[];
             /** @example 89 */
             total: number;
@@ -31505,14 +31552,16 @@ export interface components {
             author: components["schemas"]["nullable-simple-user"];
             /** @example 135 */
             total: number;
-            /** @example [
+            /**
+             * @example [
              *       {
              *         "w": "1367712000",
              *         "a": 6898,
              *         "d": 77,
              *         "c": 10
              *       }
-             *     ] */
+             *     ]
+             */
             weeks: {
                 w?: number;
                 a?: number;
@@ -31983,10 +32032,12 @@ export interface components {
             language?: string | null;
             /** Format: date-time */
             last_modified_at?: string;
-            /** @example [
+            /**
+             * @example [
              *       "73..77",
              *       "77..78"
-             *     ] */
+             *     ]
+             */
             line_numbers?: string[];
             text_matches?: components["schemas"]["search-result-text-matches"];
         };
@@ -32510,17 +32561,20 @@ export interface components {
             key_id: string;
             /** @example xsBNBFayYZ... */
             public_key: string;
-            /** @example [
+            /**
+             * @example [
              *       {
              *         "email": "octocat@users.noreply.github.com",
              *         "verified": true
              *       }
-             *     ] */
+             *     ]
+             */
             emails: {
                 email?: string;
                 verified?: boolean;
             }[];
-            /** @example [
+            /**
+             * @example [
              *       {
              *         "id": 4,
              *         "primary_key_id": 3,
@@ -32535,7 +32589,8 @@ export interface components {
              *         "expires_at": null,
              *         "revoked": false
              *       }
-             *     ] */
+             *     ]
+             */
             subkeys: {
                 /** Format: int64 */
                 id?: number;
@@ -38144,8 +38199,10 @@ export interface components {
             resolution_comment?: string | null;
             /** @description The type of secret that secret scanning detected. */
             secret_type?: string;
-            /** @description User-friendly name for the detected secret, matching the `secret_type`.
-             *     For a list of built-in patterns, see "[Supported secret scanning patterns](https://docs.github.com/enterprise-server@3.15/code-security/secret-scanning/introduction/supported-secret-scanning-patterns#supported-secrets)." */
+            /**
+             * @description User-friendly name for the detected secret, matching the `secret_type`.
+             *     For a list of built-in patterns, see "[Supported secret scanning patterns](https://docs.github.com/enterprise-server@3.15/code-security/secret-scanning/introduction/supported-secret-scanning-patterns#supported-secrets)."
+             */
             secret_type_display_name?: string;
             /**
              * @description The token status as of the latest validity check.
@@ -50948,10 +51005,12 @@ export interface components {
             /** @enum {string} */
             action: "added";
             changes?: {
-                /** @description This field is included for legacy purposes; use the `role_name` field instead. The `maintain`
+                /**
+                 * @description This field is included for legacy purposes; use the `role_name` field instead. The `maintain`
                  *     role is mapped to `write` and the `triage` role is mapped to `read`. To determine the role
                  *     assigned to the collaborator, use the `role_name` field instead, which will provide the full
-                 *     role name, including custom roles. */
+                 *     role name, including custom roles.
+                 */
                 permission?: {
                     /** @enum {string} */
                     to: "write" | "admin" | "read";
@@ -52397,8 +52456,10 @@ export interface components {
         "webhook-projects-v2-item-edited": {
             /** @enum {string} */
             action: "edited";
-            /** @description The changes made to the item may involve modifications in the item's fields and draft issue body.
-             *     It includes altered values for text, number, date, single select, and iteration fields, along with the GraphQL node ID of the changed field. */
+            /**
+             * @description The changes made to the item may involve modifications in the item's fields and draft issue body.
+             *     It includes altered values for text, number, date, single select, and iteration fields, along with the GraphQL node ID of the changed field.
+             */
             changes?: {
                 field_value: {
                     field_node_id?: string;
@@ -83113,56 +83174,83 @@ export interface components {
         "runner-label-name": string;
         /** @description A search phrase. For more information, see [Searching the audit log](https://docs.github.com/enterprise-server@3.15/admin/monitoring-activity-in-your-enterprise/reviewing-audit-logs-for-your-enterprise/searching-the-audit-log-for-your-enterprise#searching-the-audit-log). */
         "audit-log-enterprise-phrase": string;
-        /** @description The event types to include:
+        /**
+         * @description The event types to include:
          *
          *     - `web` - returns web (non-Git) events.
          *     - `git` - returns Git events.
          *     - `all` - returns both web and Git events.
          *
-         *     The default is `web`. */
+         *     The default is `web`.
+         */
         "audit-log-include": "web" | "git" | "all";
         /** @description A cursor, as given in the [Link header](https://docs.github.com/enterprise-server@3.15/rest/guides/using-pagination-in-the-rest-api#using-link-headers). If specified, the query only searches for events after this cursor. */
         "audit-log-after": string;
         /** @description A cursor, as given in the [Link header](https://docs.github.com/enterprise-server@3.15/rest/guides/using-pagination-in-the-rest-api#using-link-headers). If specified, the query only searches for events before this cursor. */
         "audit-log-before": string;
-        /** @description The order of audit log events. To list newest events first, specify `desc`. To list oldest events first, specify `asc`.
+        /**
+         * @description The order of audit log events. To list newest events first, specify `desc`. To list oldest events first, specify `asc`.
          *
-         *     The default is `desc`. */
+         *     The default is `desc`.
+         */
         "audit-log-order": "desc" | "asc";
         /** @description The name of a code scanning tool. Only results by this tool will be listed. You can specify the tool by using either `tool_name` or `tool_guid`, but not both. */
         "tool-name": components["schemas"]["code-scanning-analysis-tool-name"];
         /** @description The GUID of a code scanning tool. Only results by this tool will be listed. Note that some code scanning tools may not include a GUID in their analysis data. You can specify the tool by using either `tool_guid` or `tool_name`, but not both. */
         "tool-guid": components["schemas"]["code-scanning-analysis-tool-guid"];
-        /** @description A comma-separated list of states. If specified, only alerts with these states will be returned.
+        /**
+         * @description A comma-separated list of states. If specified, only alerts with these states will be returned.
          *
-         *     Can be: `auto_dismissed`, `dismissed`, `fixed`, `open` */
+         *     Can be: `auto_dismissed`, `dismissed`, `fixed`, `open`
+         */
         "dependabot-alert-comma-separated-states": string;
-        /** @description A comma-separated list of severities. If specified, only alerts with these severities will be returned.
+        /**
+         * @description A comma-separated list of severities. If specified, only alerts with these severities will be returned.
          *
-         *     Can be: `low`, `medium`, `high`, `critical` */
+         *     Can be: `low`, `medium`, `high`, `critical`
+         */
         "dependabot-alert-comma-separated-severities": string;
-        /** @description A comma-separated list of ecosystems. If specified, only alerts for these ecosystems will be returned.
+        /**
+         * @description A comma-separated list of ecosystems. If specified, only alerts for these ecosystems will be returned.
          *
-         *     Can be: `composer`, `go`, `maven`, `npm`, `nuget`, `pip`, `pub`, `rubygems`, `rust` */
+         *     Can be: `composer`, `go`, `maven`, `npm`, `nuget`, `pip`, `pub`, `rubygems`, `rust`
+         */
         "dependabot-alert-comma-separated-ecosystems": string;
         /** @description A comma-separated list of package names. If specified, only alerts for these packages will be returned. */
         "dependabot-alert-comma-separated-packages": string;
-        /** @description Filters the list of alerts based on whether the alert has the given value. If specified, only alerts meeting this criterion will be returned.
-         *     Multiple `has` filters can be passed to filter for alerts that have all of the values. Currently, only `patch` is supported. */
+        /**
+         * @description CVE Exploit Prediction Scoring System (EPSS) percentage. Can be specified as:
+         *     - An exact number (`n`)
+         *     - Comparators such as `>n`, `<n`, `>=n`, `<=n`
+         *     - A range like `n..n`, where `n` is a number from 0.0 to 1.0
+         *
+         *     Filters the list of alerts based on EPSS percentages. If specified, only alerts with the provided EPSS percentages will be returned.
+         */
+        "dependabot-alert-comma-separated-epss": string;
+        /**
+         * @description Filters the list of alerts based on whether the alert has the given value. If specified, only alerts meeting this criterion will be returned.
+         *     Multiple `has` filters can be passed to filter for alerts that have all of the values. Currently, only `patch` is supported.
+         */
         "dependabot-alert-comma-separated-has": string | "patch"[];
         /** @description The scope of the vulnerable dependency. If specified, only alerts with this scope will be returned. */
         "dependabot-alert-scope": "development" | "runtime";
-        /** @description The property by which to sort the results.
+        /**
+         * @description The property by which to sort the results.
          *     `created` means when the alert was created.
-         *     `updated` means when the alert's state last changed. */
+         *     `updated` means when the alert's state last changed.
+         */
         "dependabot-alert-sort": "created" | "updated";
-        /** @description **Deprecated**. The number of results per page (max 100), starting from the first matching result.
+        /**
+         * @description **Deprecated**. The number of results per page (max 100), starting from the first matching result.
          *     This parameter must not be used in combination with `last`.
-         *     Instead, use `per_page` in combination with `after` to fetch the first page of results. */
+         *     Instead, use `per_page` in combination with `after` to fetch the first page of results.
+         */
         "pagination-first": number;
-        /** @description **Deprecated**. The number of results per page (max 100), starting from the last matching result.
+        /**
+         * @description **Deprecated**. The number of results per page (max 100), starting from the last matching result.
          *     This parameter must not be used in combination with `first`.
-         *     Instead, use `per_page` in combination with `before` to fetch the last page of results. */
+         *     Instead, use `per_page` in combination with `before` to fetch the last page of results.
+         */
         "pagination-last": number;
         /** @description Set to `open` or `resolved` to only list secret scanning alerts in a specific state. */
         "secret-scanning-alert-state": "open" | "resolved";
@@ -83176,11 +83264,15 @@ export interface components {
         "secret-scanning-alert-validity": string;
         /** @description The security feature to enable or disable. */
         "enterprise-security-product": "advanced_security" | "advanced_security_user_namespace" | "dependabot_alerts" | "secret_scanning" | "secret_scanning_push_protection" | "secret_scanning_non_provider_patterns";
-        /** @description The action to take.
+        /**
+         * @description The action to take.
          *
          *     `enable_all` means to enable the specified security feature for all repositories in the enterprise.
-         *     `disable_all` means to disable the specified security feature for all repositories in the enterprise. */
+         *     `disable_all` means to disable the specified security feature for all repositories in the enterprise.
+         */
         "enterprise-security-product-enablement": "enable_all" | "disable_all";
+        /** @description The number of results per page (max 100). For more information, see "[Using pagination in the REST API](https://docs.github.com/enterprise-server@3.15/rest/using-the-rest-api/using-pagination-in-the-rest-api)." */
+        "public-events-per-page": number;
         /** @description The unique identifier of the gist. */
         "gist-id": string;
         /** @description The unique identifier of the comment. */
@@ -83223,6 +83315,25 @@ export interface components {
         "configuration-id": number;
         /** @description The unique identifier of the role. */
         "role-id": number;
+        /** @description A comma-separated list of artifact registry URLs. If specified, only alerts for repositories with storage records matching these URLs will be returned. */
+        "dependabot-alert-comma-separated-artifact-registry-urls": string;
+        /**
+         * @description A comma-separated list of Artifact Registry name strings. If specified, only alerts for repositories with storage records matching these registries will be returned.
+         *
+         *     Can be: `jfrog-artifactory`
+         */
+        "dependabot-alert-comma-separated-artifact-registry": string;
+        /**
+         * @description Filters the list of alerts based on whether the alert has the given value. If specified, only alerts meeting this criterion will be returned.
+         *     Multiple `has` filters can be passed to filter for alerts that have all of the values.
+         */
+        "dependabot-alert-org-scope-comma-separated-has": string | ("patch" | "deployment")[];
+        /**
+         * @description A comma-separated list of runtime risk strings. If specified, only alerts for repositories with deployment records matching these risks will be returned.
+         *
+         *     Can be: `critical-resource`, `internet-exposed`, `sensitive-data`, `lateral-movement`
+         */
+        "dependabot-alert-comma-separated-runtime-risk": string;
         /** @description The unique identifier of the group. */
         "group-id": number;
         /** @description The number of results per page for the "members" array (max 100). For more information, see "[Using pagination in the REST API](https://docs.github.com/enterprise-server@3.15/rest/using-the-rest-api/using-pagination-in-the-rest-api)." */
@@ -83235,10 +83346,12 @@ export interface components {
         "repo-name": string;
         /** @description The slug of the team name. */
         "team-slug": string;
-        /** @description The selected visibility of the packages.  This parameter is optional and only filters an existing result set.
+        /**
+         * @description The selected visibility of the packages.  This parameter is optional and only filters an existing result set.
          *
          *     The `internal` visibility is only supported for GitHub Packages registries that allow for granular permissions. For other ecosystems `internal` is synonymous with `private`.
-         *     For the list of GitHub Packages registries that support granular permissions, see "[About permissions for GitHub Packages](https://docs.github.com/enterprise-server@3.15/packages/learn-github-packages/about-permissions-for-github-packages#granular-permissions-for-userorganization-scoped-packages)." */
+         *     For the list of GitHub Packages registries that support granular permissions, see "[About permissions for GitHub Packages](https://docs.github.com/enterprise-server@3.15/packages/learn-github-packages/about-permissions-for-github-packages#granular-permissions-for-userorganization-scoped-packages)."
+         */
         "package-visibility": "public" | "private" | "internal";
         /** @description The type of supported package. Packages in GitHub's Gradle registry have the type `maven`. Docker images pushed to GitHub's Container registry (`ghcr.io`) have the type `container`. You can use the type `docker` to find images that were pushed to GitHub's Docker registry (`docker.pkg.github.com`), even if these have now been migrated to the Container registry. */
         "package-type": "npm" | "maven" | "rubygems" | "docker" | "nuget" | "container";
@@ -83264,27 +83377,32 @@ export interface components {
         "fine-grained-personal-access-token-id": number;
         /** @description The custom property name */
         "custom-property-name": string;
-        /** @description A comma-separated list of rule targets to filter by.
+        /**
+         * @description A comma-separated list of rule targets to filter by.
          *     If provided, only rulesets that apply to the specified targets will be returned.
          *     For example, `branch,tag,push`.
-         *      */
+         */
         "ruleset-targets": string;
         /** @description The name of the ref. Cannot contain wildcard characters. Optionally prefix with `refs/heads/` to limit to branches or `refs/tags/` to limit to tags. Omit the prefix to search across all refs. When specified, only rule evaluations triggered for this ref will be returned. */
         "ref-in-query": string;
         /** @description The name of the repository to filter on. */
         "repository-name-in-query": string;
-        /** @description The time period to filter by.
+        /**
+         * @description The time period to filter by.
          *
-         *     For example, `day` will filter for rule suites that occurred in the past 24 hours, and `week` will filter for rule suites that occurred in the past 7 days (168 hours). */
+         *     For example, `day` will filter for rule suites that occurred in the past 24 hours, and `week` will filter for rule suites that occurred in the past 7 days (168 hours).
+         */
         "time-period": "hour" | "day" | "week" | "month";
         /** @description The handle for the GitHub user account to filter on. When specified, only rule evaluations triggered by this actor will be returned. */
         "actor-name-in-query": string;
         /** @description The rule suite results to filter on. When specified, only suites with this result will be returned. */
         "rule-suite-result": "pass" | "fail" | "bypass" | "all";
-        /** @description The unique identifier of the rule suite result.
+        /**
+         * @description The unique identifier of the rule suite result.
          *     To get this ID, you can use [GET /repos/{owner}/{repo}/rulesets/rule-suites](https://docs.github.com/enterprise-server@3.15/rest/repos/rule-suites#list-repository-rule-suites)
          *     for repositories and [GET /orgs/{org}/rulesets/rule-suites](https://docs.github.com/enterprise-server@3.15/rest/orgs/rule-suites#list-organization-rule-suites)
-         *     for organizations. */
+         *     for organizations.
+         */
         "rule-suite-id": number;
         /** @description A cursor, as given in the [Link header](https://docs.github.com/enterprise-server@3.15/rest/guides/using-pagination-in-the-rest-api#using-link-headers). If specified, the query only searches for events before this cursor. To receive an initial cursor on your first request, include an empty "before" query string. */
         "secret-scanning-pagination-before-org-repo": string;
@@ -83300,10 +83418,12 @@ export interface components {
         "project-id": number;
         /** @description The security feature to enable or disable. */
         "security-product": "dependency_graph" | "dependabot_alerts" | "dependabot_security_updates" | "advanced_security" | "code_scanning_default_setup" | "secret_scanning" | "secret_scanning_push_protection";
-        /** @description The action to take.
+        /**
+         * @description The action to take.
          *
          *     `enable_all` means to enable the specified security feature for all repositories in the organization.
-         *     `disable_all` means to disable the specified security feature for all repositories in the organization. */
+         *     `disable_all` means to disable the specified security feature for all repositories in the organization.
+         */
         "org-security-product-enablement": "enable_all" | "disable_all";
         /** @description The unique identifier of the card. */
         "card-id": number;
@@ -83369,10 +83489,12 @@ export interface components {
         "commit-ref": string;
         /** @description A comma-separated list of full manifest paths. If specified, only alerts for these manifests will be returned. */
         "dependabot-alert-comma-separated-manifests": string;
-        /** @description The number that identifies a Dependabot alert in its repository.
+        /**
+         * @description The number that identifies a Dependabot alert in its repository.
          *     You can find this at the end of the URL for a Dependabot alert within GitHub,
          *     or in `number` fields in the response from the
-         *     `GET /repos/{owner}/{repo}/dependabot/alerts` operation. */
+         *     `GET /repos/{owner}/{repo}/dependabot/alerts` operation.
+         */
         "dependabot-alert-number": components["schemas"]["alert-number"];
         /** @description The full path, relative to the repository root, of the dependency manifest file. */
         "manifest-path": string;
@@ -83425,8 +83547,10 @@ export interface components {
         "scim-user-id": string;
         /** @description Determines whether the first search result returned is the highest number of matches (`desc`) or lowest number of matches (`asc`). This parameter is ignored unless you provide `sort`. */
         order: "desc" | "asc";
-        /** @description Set to `true` to use advanced search.
-         *     Example: `http://api.github.com/search/issues?q={query}&advanced_search=true` */
+        /**
+         * @description Set to `true` to use advanced search.
+         *     Example: `http://api.github.com/search/issues?q={query}&advanced_search=true`
+         */
         "issues-advanced-search": string;
         /** @description The unique identifier of the GPG key. */
         "gpg-key-id": number;
@@ -84335,9 +84459,11 @@ export interface operations {
                 "application/json": {
                     /** @description The user's username. */
                     login: string;
-                    /** @description **Required for built-in authentication.** The user's email
+                    /**
+                     * @description **Required for built-in authentication.** The user's email
                      *     address. This parameter can be omitted when using CAS, LDAP, or SAML.
-                     *     For more information, see "[About authentication for your enterprise](https://docs.github.com/enterprise-server@3.15/admin/identity-and-access-management/managing-iam-for-your-enterprise/about-authentication-for-your-enterprise)." */
+                     *     For more information, see "[About authentication for your enterprise](https://docs.github.com/enterprise-server@3.15/admin/identity-and-access-management/managing-iam-for-your-enterprise/about-authentication-for-your-enterprise)."
+                     */
                     email?: string;
                     /**
                      * @description Whether to set the user as suspended when the user is created.
@@ -84486,34 +84612,48 @@ export interface operations {
                 ecosystem?: components["schemas"]["security-advisory-ecosystems"];
                 /** @description If specified, only advisories with these severities will be returned. */
                 severity?: "unknown" | "low" | "medium" | "high" | "critical";
-                /** @description If specified, only advisories with these Common Weakness Enumerations (CWEs) will be returned.
+                /**
+                 * @description If specified, only advisories with these Common Weakness Enumerations (CWEs) will be returned.
                  *
-                 *     Example: `cwes=79,284,22` or `cwes[]=79&cwes[]=284&cwes[]=22` */
+                 *     Example: `cwes=79,284,22` or `cwes[]=79&cwes[]=284&cwes[]=22`
+                 */
                 cwes?: string | string[];
                 /** @description Whether to only return advisories that have been withdrawn. */
                 is_withdrawn?: boolean;
-                /** @description If specified, only return advisories that affect any of `package` or `package@version`. A maximum of 1000 packages can be specified.
+                /**
+                 * @description If specified, only return advisories that affect any of `package` or `package@version`. A maximum of 1000 packages can be specified.
                  *     If the query parameter causes the URL to exceed the maximum URL length supported by your client, you must specify fewer packages.
                  *
-                 *     Example: `affects=package1,package2@1.0.0,package3@2.0.0` or `affects[]=package1&affects[]=package2@1.0.0` */
+                 *     Example: `affects=package1,package2@1.0.0,package3@2.0.0` or `affects[]=package1&affects[]=package2@1.0.0`
+                 */
                 affects?: string | string[];
-                /** @description If specified, only return advisories that were published on a date or date range.
+                /**
+                 * @description If specified, only return advisories that were published on a date or date range.
                  *
-                 *     For more information on the syntax of the date range, see "[Understanding the search syntax](https://docs.github.com/enterprise-server@3.15/search-github/getting-started-with-searching-on-github/understanding-the-search-syntax#query-for-dates)." */
+                 *     For more information on the syntax of the date range, see "[Understanding the search syntax](https://docs.github.com/enterprise-server@3.15/search-github/getting-started-with-searching-on-github/understanding-the-search-syntax#query-for-dates)."
+                 */
                 published?: string;
-                /** @description If specified, only return advisories that were updated on a date or date range.
+                /**
+                 * @description If specified, only return advisories that were updated on a date or date range.
                  *
-                 *     For more information on the syntax of the date range, see "[Understanding the search syntax](https://docs.github.com/enterprise-server@3.15/search-github/getting-started-with-searching-on-github/understanding-the-search-syntax#query-for-dates)." */
+                 *     For more information on the syntax of the date range, see "[Understanding the search syntax](https://docs.github.com/enterprise-server@3.15/search-github/getting-started-with-searching-on-github/understanding-the-search-syntax#query-for-dates)."
+                 */
                 updated?: string;
-                /** @description If specified, only show advisories that were updated or published on a date or date range.
+                /**
+                 * @description If specified, only show advisories that were updated or published on a date or date range.
                  *
-                 *     For more information on the syntax of the date range, see "[Understanding the search syntax](https://docs.github.com/enterprise-server@3.15/search-github/getting-started-with-searching-on-github/understanding-the-search-syntax#query-for-dates)." */
+                 *     For more information on the syntax of the date range, see "[Understanding the search syntax](https://docs.github.com/enterprise-server@3.15/search-github/getting-started-with-searching-on-github/understanding-the-search-syntax#query-for-dates)."
+                 */
                 modified?: string;
-                /** @description If specified, only return advisories that have an EPSS percentage score that matches the provided value.
-                 *     The EPSS percentage represents the likelihood of a CVE being exploited. */
+                /**
+                 * @description If specified, only return advisories that have an EPSS percentage score that matches the provided value.
+                 *     The EPSS percentage represents the likelihood of a CVE being exploited.
+                 */
                 epss_percentage?: string;
-                /** @description If specified, only return advisories that have an EPSS percentile score that matches the provided value.
-                 *     The EPSS percentile represents the relative rank of the CVE's likelihood of being exploited compared to other CVEs. */
+                /**
+                 * @description If specified, only return advisories that have an EPSS percentile score that matches the provided value.
+                 *     The EPSS percentile represents the relative rank of the CVE's likelihood of being exploited compared to other CVEs.
+                 */
                 epss_percentile?: string;
                 /** @description A cursor, as given in the [Link header](https://docs.github.com/enterprise-server@3.15/rest/guides/using-pagination-in-the-rest-api#using-link-headers). If specified, the query only searches for results before this cursor. For more information, see "[Using pagination in the REST API](https://docs.github.com/enterprise-server@3.15/rest/using-the-rest-api/using-pagination-in-the-rest-api)." */
                 before?: components["parameters"]["pagination-before"];
@@ -85348,8 +85488,10 @@ export interface operations {
                     "application/json": components["schemas"]["authorization"];
                 };
             };
-            /** @description > [!WARNING]
-             *     > **Closing down notice:** GitHub Enterprise Server will discontinue the [OAuth Authorizations API](https://docs.github.com/enterprise-server@3.15/rest/oauth-authorizations/oauth-authorizations), which is used by integrations to create personal access tokens and OAuth tokens, and you must now create these tokens using our [web application flow](https://docs.github.com/enterprise-server@3.15/apps/building-oauth-apps/authorizing-oauth-apps/#web-application-flow). The [OAuth Authorizations API](https://docs.github.com/enterprise-server@3.15/rest/oauth-authorizations/oauth-authorizations) will be removed on November 13, 2020. For more information, including scheduled brownouts, see the [blog post](https://developer.github.com/changes/2020-02-14-deprecating-oauth-auth-endpoint/). */
+            /**
+             * @description > [!WARNING]
+             *     > **Closing down notice:** GitHub Enterprise Server will discontinue the [OAuth Authorizations API](https://docs.github.com/enterprise-server@3.15/rest/oauth-authorizations/oauth-authorizations), which is used by integrations to create personal access tokens and OAuth tokens, and you must now create these tokens using our [web application flow](https://docs.github.com/enterprise-server@3.15/apps/building-oauth-apps/authorizing-oauth-apps/#web-application-flow). The [OAuth Authorizations API](https://docs.github.com/enterprise-server@3.15/rest/oauth-authorizations/oauth-authorizations) will be removed on November 13, 2020. For more information, including scheduled brownouts, see the [blog post](https://developer.github.com/changes/2020-02-14-deprecating-oauth-auth-endpoint/).
+             */
             201: {
                 headers: {
                     /** @example https://api.github.com/authorizations/1 */
@@ -86951,21 +87093,25 @@ export interface operations {
             query?: {
                 /** @description A search phrase. For more information, see [Searching the audit log](https://docs.github.com/enterprise-server@3.15/admin/monitoring-activity-in-your-enterprise/reviewing-audit-logs-for-your-enterprise/searching-the-audit-log-for-your-enterprise#searching-the-audit-log). */
                 phrase?: components["parameters"]["audit-log-enterprise-phrase"];
-                /** @description The event types to include:
+                /**
+                 * @description The event types to include:
                  *
                  *     - `web` - returns web (non-Git) events.
                  *     - `git` - returns Git events.
                  *     - `all` - returns both web and Git events.
                  *
-                 *     The default is `web`. */
+                 *     The default is `web`.
+                 */
                 include?: components["parameters"]["audit-log-include"];
                 /** @description A cursor, as given in the [Link header](https://docs.github.com/enterprise-server@3.15/rest/guides/using-pagination-in-the-rest-api#using-link-headers). If specified, the query only searches for events after this cursor. */
                 after?: components["parameters"]["audit-log-after"];
                 /** @description A cursor, as given in the [Link header](https://docs.github.com/enterprise-server@3.15/rest/guides/using-pagination-in-the-rest-api#using-link-headers). If specified, the query only searches for events before this cursor. */
                 before?: components["parameters"]["audit-log-before"];
-                /** @description The order of audit log events. To list newest events first, specify `desc`. To list oldest events first, specify `asc`.
+                /**
+                 * @description The order of audit log events. To list newest events first, specify `desc`. To list oldest events first, specify `asc`.
                  *
-                 *     The default is `desc`. */
+                 *     The default is `desc`.
+                 */
                 order?: components["parameters"]["audit-log-order"];
                 /** @description The page number of the results to fetch. For more information, see "[Using pagination in the REST API](https://docs.github.com/enterprise-server@3.15/rest/using-the-rest-api/using-pagination-in-the-rest-api)." */
                 page?: components["parameters"]["page"];
@@ -87084,8 +87230,10 @@ export interface operations {
                     secret_scanning_enabled_for_new_repositories?: boolean;
                     /** @description Whether secret scanning push protection is automatically enabled for new repositories. For more information, see "[Protecting pushes with secret scanning](https://docs.github.com/enterprise-server@3.15/code-security/secret-scanning/protecting-pushes-with-secret-scanning)." */
                     secret_scanning_push_protection_enabled_for_new_repositories?: boolean;
-                    /** @description The URL that will be displayed to contributors who are blocked from pushing a secret. For more information, see "[Protecting pushes with secret scanning](https://docs.github.com/enterprise-server@3.15/code-security/secret-scanning/protecting-pushes-with-secret-scanning)."
-                     *     To disable this functionality, set this field to `null`. */
+                    /**
+                     * @description The URL that will be displayed to contributors who are blocked from pushing a secret. For more information, see "[Protecting pushes with secret scanning](https://docs.github.com/enterprise-server@3.15/code-security/secret-scanning/protecting-pushes-with-secret-scanning)."
+                     *     To disable this functionality, set this field to `null`.
+                     */
                     secret_scanning_push_protection_custom_link?: string | null;
                     /** @description Whether secret scanning of non-provider patterns is enabled for new repositories under this enterprise. */
                     secret_scanning_non_provider_patterns_enabled_for_new_repositories?: boolean | null;
@@ -87113,28 +87261,47 @@ export interface operations {
     "dependabot/list-alerts-for-enterprise": {
         parameters: {
             query?: {
-                /** @description A comma-separated list of states. If specified, only alerts with these states will be returned.
+                /**
+                 * @description A comma-separated list of states. If specified, only alerts with these states will be returned.
                  *
-                 *     Can be: `auto_dismissed`, `dismissed`, `fixed`, `open` */
+                 *     Can be: `auto_dismissed`, `dismissed`, `fixed`, `open`
+                 */
                 state?: components["parameters"]["dependabot-alert-comma-separated-states"];
-                /** @description A comma-separated list of severities. If specified, only alerts with these severities will be returned.
+                /**
+                 * @description A comma-separated list of severities. If specified, only alerts with these severities will be returned.
                  *
-                 *     Can be: `low`, `medium`, `high`, `critical` */
+                 *     Can be: `low`, `medium`, `high`, `critical`
+                 */
                 severity?: components["parameters"]["dependabot-alert-comma-separated-severities"];
-                /** @description A comma-separated list of ecosystems. If specified, only alerts for these ecosystems will be returned.
+                /**
+                 * @description A comma-separated list of ecosystems. If specified, only alerts for these ecosystems will be returned.
                  *
-                 *     Can be: `composer`, `go`, `maven`, `npm`, `nuget`, `pip`, `pub`, `rubygems`, `rust` */
+                 *     Can be: `composer`, `go`, `maven`, `npm`, `nuget`, `pip`, `pub`, `rubygems`, `rust`
+                 */
                 ecosystem?: components["parameters"]["dependabot-alert-comma-separated-ecosystems"];
                 /** @description A comma-separated list of package names. If specified, only alerts for these packages will be returned. */
                 package?: components["parameters"]["dependabot-alert-comma-separated-packages"];
-                /** @description Filters the list of alerts based on whether the alert has the given value. If specified, only alerts meeting this criterion will be returned.
-                 *     Multiple `has` filters can be passed to filter for alerts that have all of the values. Currently, only `patch` is supported. */
+                /**
+                 * @description CVE Exploit Prediction Scoring System (EPSS) percentage. Can be specified as:
+                 *     - An exact number (`n`)
+                 *     - Comparators such as `>n`, `<n`, `>=n`, `<=n`
+                 *     - A range like `n..n`, where `n` is a number from 0.0 to 1.0
+                 *
+                 *     Filters the list of alerts based on EPSS percentages. If specified, only alerts with the provided EPSS percentages will be returned.
+                 */
+                epss_percentage?: components["parameters"]["dependabot-alert-comma-separated-epss"];
+                /**
+                 * @description Filters the list of alerts based on whether the alert has the given value. If specified, only alerts meeting this criterion will be returned.
+                 *     Multiple `has` filters can be passed to filter for alerts that have all of the values. Currently, only `patch` is supported.
+                 */
                 has?: components["parameters"]["dependabot-alert-comma-separated-has"];
                 /** @description The scope of the vulnerable dependency. If specified, only alerts with this scope will be returned. */
                 scope?: components["parameters"]["dependabot-alert-scope"];
-                /** @description The property by which to sort the results.
+                /**
+                 * @description The property by which to sort the results.
                  *     `created` means when the alert was created.
-                 *     `updated` means when the alert's state last changed. */
+                 *     `updated` means when the alert's state last changed.
+                 */
                 sort?: components["parameters"]["dependabot-alert-sort"];
                 /** @description The direction to sort the results by. */
                 direction?: components["parameters"]["direction"];
@@ -87142,13 +87309,17 @@ export interface operations {
                 before?: components["parameters"]["pagination-before"];
                 /** @description A cursor, as given in the [Link header](https://docs.github.com/enterprise-server@3.15/rest/guides/using-pagination-in-the-rest-api#using-link-headers). If specified, the query only searches for results after this cursor. For more information, see "[Using pagination in the REST API](https://docs.github.com/enterprise-server@3.15/rest/using-the-rest-api/using-pagination-in-the-rest-api)." */
                 after?: components["parameters"]["pagination-after"];
-                /** @description **Deprecated**. The number of results per page (max 100), starting from the first matching result.
+                /**
+                 * @description **Deprecated**. The number of results per page (max 100), starting from the first matching result.
                  *     This parameter must not be used in combination with `last`.
-                 *     Instead, use `per_page` in combination with `after` to fetch the first page of results. */
+                 *     Instead, use `per_page` in combination with `after` to fetch the first page of results.
+                 */
                 first?: components["parameters"]["pagination-first"];
-                /** @description **Deprecated**. The number of results per page (max 100), starting from the last matching result.
+                /**
+                 * @description **Deprecated**. The number of results per page (max 100), starting from the last matching result.
                  *     This parameter must not be used in combination with `first`.
-                 *     Instead, use `per_page` in combination with `before` to fetch the last page of results. */
+                 *     Instead, use `per_page` in combination with `before` to fetch the last page of results.
+                 */
                 last?: components["parameters"]["pagination-last"];
                 /** @description The number of results per page (max 100). For more information, see "[Using pagination in the REST API](https://docs.github.com/enterprise-server@3.15/rest/using-the-rest-api/using-pagination-in-the-rest-api)." */
                 per_page?: components["parameters"]["per-page"];
@@ -87259,10 +87430,12 @@ export interface operations {
                 enterprise: components["parameters"]["enterprise"];
                 /** @description The security feature to enable or disable. */
                 security_product: components["parameters"]["enterprise-security-product"];
-                /** @description The action to take.
+                /**
+                 * @description The action to take.
                  *
                  *     `enable_all` means to enable the specified security feature for all repositories in the enterprise.
-                 *     `disable_all` means to disable the specified security feature for all repositories in the enterprise. */
+                 *     `disable_all` means to disable the specified security feature for all repositories in the enterprise.
+                 */
                 enablement: components["parameters"]["enterprise-security-product-enablement"];
             };
             cookie?: never;
@@ -87290,7 +87463,7 @@ export interface operations {
         parameters: {
             query?: {
                 /** @description The number of results per page (max 100). For more information, see "[Using pagination in the REST API](https://docs.github.com/enterprise-server@3.15/rest/using-the-rest-api/using-pagination-in-the-rest-api)." */
-                per_page?: components["parameters"]["per-page"];
+                per_page?: components["parameters"]["public-events-per-page"];
                 /** @description The page number of the results to fetch. For more information, see "[Using pagination in the REST API](https://docs.github.com/enterprise-server@3.15/rest/using-the-rest-api/using-pagination-in-the-rest-api)." */
                 page?: components["parameters"]["page"];
             };
@@ -91294,21 +91467,25 @@ export interface operations {
             query?: {
                 /** @description A search phrase. For more information, see [Searching the audit log](https://docs.github.com/enterprise-server@3.15/github/setting-up-and-managing-organizations-and-teams/reviewing-the-audit-log-for-your-organization#searching-the-audit-log). */
                 phrase?: components["parameters"]["audit-log-phrase"];
-                /** @description The event types to include:
+                /**
+                 * @description The event types to include:
                  *
                  *     - `web` - returns web (non-Git) events.
                  *     - `git` - returns Git events.
                  *     - `all` - returns both web and Git events.
                  *
-                 *     The default is `web`. */
+                 *     The default is `web`.
+                 */
                 include?: components["parameters"]["audit-log-include"];
                 /** @description A cursor, as given in the [Link header](https://docs.github.com/enterprise-server@3.15/rest/guides/using-pagination-in-the-rest-api#using-link-headers). If specified, the query only searches for events after this cursor. */
                 after?: components["parameters"]["audit-log-after"];
                 /** @description A cursor, as given in the [Link header](https://docs.github.com/enterprise-server@3.15/rest/guides/using-pagination-in-the-rest-api#using-link-headers). If specified, the query only searches for events before this cursor. */
                 before?: components["parameters"]["audit-log-before"];
-                /** @description The order of audit log events. To list newest events first, specify `desc`. To list oldest events first, specify `asc`.
+                /**
+                 * @description The order of audit log events. To list newest events first, specify `desc`. To list oldest events first, specify `asc`.
                  *
-                 *     The default is `desc`. */
+                 *     The default is `desc`.
+                 */
                 order?: components["parameters"]["audit-log-order"];
                 /** @description The number of results per page (max 100). For more information, see "[Using pagination in the REST API](https://docs.github.com/enterprise-server@3.15/rest/using-the-rest-api/using-pagination-in-the-rest-api)." */
                 per_page?: components["parameters"]["per-page"];
@@ -91830,9 +92007,11 @@ export interface operations {
                 before?: components["parameters"]["pagination-before"];
                 /** @description A cursor, as given in the [Link header](https://docs.github.com/enterprise-server@3.15/rest/guides/using-pagination-in-the-rest-api#using-link-headers). If specified, the query only searches for results after this cursor. For more information, see "[Using pagination in the REST API](https://docs.github.com/enterprise-server@3.15/rest/using-the-rest-api/using-pagination-in-the-rest-api)." */
                 after?: components["parameters"]["pagination-after"];
-                /** @description A comma-separated list of statuses. If specified, only repositories with these attachment statuses will be returned.
+                /**
+                 * @description A comma-separated list of statuses. If specified, only repositories with these attachment statuses will be returned.
                  *
-                 *     Can be: `all`, `attached`, `attaching`, `detached`, `removed`, `enforced`, `failed`, `updating`, `removed_by_enterprise` */
+                 *     Can be: `all`, `attached`, `attaching`, `detached`, `removed`, `enforced`, `failed`, `updating`, `removed_by_enterprise`
+                 */
                 status?: string;
             };
             header?: never;
@@ -92001,28 +92180,61 @@ export interface operations {
     "dependabot/list-alerts-for-org": {
         parameters: {
             query?: {
-                /** @description A comma-separated list of states. If specified, only alerts with these states will be returned.
+                /**
+                 * @description A comma-separated list of states. If specified, only alerts with these states will be returned.
                  *
-                 *     Can be: `auto_dismissed`, `dismissed`, `fixed`, `open` */
+                 *     Can be: `auto_dismissed`, `dismissed`, `fixed`, `open`
+                 */
                 state?: components["parameters"]["dependabot-alert-comma-separated-states"];
-                /** @description A comma-separated list of severities. If specified, only alerts with these severities will be returned.
+                /**
+                 * @description A comma-separated list of severities. If specified, only alerts with these severities will be returned.
                  *
-                 *     Can be: `low`, `medium`, `high`, `critical` */
+                 *     Can be: `low`, `medium`, `high`, `critical`
+                 */
                 severity?: components["parameters"]["dependabot-alert-comma-separated-severities"];
-                /** @description A comma-separated list of ecosystems. If specified, only alerts for these ecosystems will be returned.
+                /**
+                 * @description A comma-separated list of ecosystems. If specified, only alerts for these ecosystems will be returned.
                  *
-                 *     Can be: `composer`, `go`, `maven`, `npm`, `nuget`, `pip`, `pub`, `rubygems`, `rust` */
+                 *     Can be: `composer`, `go`, `maven`, `npm`, `nuget`, `pip`, `pub`, `rubygems`, `rust`
+                 */
                 ecosystem?: components["parameters"]["dependabot-alert-comma-separated-ecosystems"];
                 /** @description A comma-separated list of package names. If specified, only alerts for these packages will be returned. */
                 package?: components["parameters"]["dependabot-alert-comma-separated-packages"];
-                /** @description Filters the list of alerts based on whether the alert has the given value. If specified, only alerts meeting this criterion will be returned.
-                 *     Multiple `has` filters can be passed to filter for alerts that have all of the values. Currently, only `patch` is supported. */
-                has?: components["parameters"]["dependabot-alert-comma-separated-has"];
+                /**
+                 * @description CVE Exploit Prediction Scoring System (EPSS) percentage. Can be specified as:
+                 *     - An exact number (`n`)
+                 *     - Comparators such as `>n`, `<n`, `>=n`, `<=n`
+                 *     - A range like `n..n`, where `n` is a number from 0.0 to 1.0
+                 *
+                 *     Filters the list of alerts based on EPSS percentages. If specified, only alerts with the provided EPSS percentages will be returned.
+                 */
+                epss_percentage?: components["parameters"]["dependabot-alert-comma-separated-epss"];
+                /** @description A comma-separated list of artifact registry URLs. If specified, only alerts for repositories with storage records matching these URLs will be returned. */
+                artifact_registry_url?: components["parameters"]["dependabot-alert-comma-separated-artifact-registry-urls"];
+                /**
+                 * @description A comma-separated list of Artifact Registry name strings. If specified, only alerts for repositories with storage records matching these registries will be returned.
+                 *
+                 *     Can be: `jfrog-artifactory`
+                 */
+                artifact_registry?: components["parameters"]["dependabot-alert-comma-separated-artifact-registry"];
+                /**
+                 * @description Filters the list of alerts based on whether the alert has the given value. If specified, only alerts meeting this criterion will be returned.
+                 *     Multiple `has` filters can be passed to filter for alerts that have all of the values.
+                 */
+                has?: components["parameters"]["dependabot-alert-org-scope-comma-separated-has"];
+                /**
+                 * @description A comma-separated list of runtime risk strings. If specified, only alerts for repositories with deployment records matching these risks will be returned.
+                 *
+                 *     Can be: `critical-resource`, `internet-exposed`, `sensitive-data`, `lateral-movement`
+                 */
+                runtime_risk?: components["parameters"]["dependabot-alert-comma-separated-runtime-risk"];
                 /** @description The scope of the vulnerable dependency. If specified, only alerts with this scope will be returned. */
                 scope?: components["parameters"]["dependabot-alert-scope"];
-                /** @description The property by which to sort the results.
+                /**
+                 * @description The property by which to sort the results.
                  *     `created` means when the alert was created.
-                 *     `updated` means when the alert's state last changed. */
+                 *     `updated` means when the alert's state last changed.
+                 */
                 sort?: components["parameters"]["dependabot-alert-sort"];
                 /** @description The direction to sort the results by. */
                 direction?: components["parameters"]["direction"];
@@ -92030,13 +92242,17 @@ export interface operations {
                 before?: components["parameters"]["pagination-before"];
                 /** @description A cursor, as given in the [Link header](https://docs.github.com/enterprise-server@3.15/rest/guides/using-pagination-in-the-rest-api#using-link-headers). If specified, the query only searches for results after this cursor. For more information, see "[Using pagination in the REST API](https://docs.github.com/enterprise-server@3.15/rest/using-the-rest-api/using-pagination-in-the-rest-api)." */
                 after?: components["parameters"]["pagination-after"];
-                /** @description **Deprecated**. The number of results per page (max 100), starting from the first matching result.
+                /**
+                 * @description **Deprecated**. The number of results per page (max 100), starting from the first matching result.
                  *     This parameter must not be used in combination with `last`.
-                 *     Instead, use `per_page` in combination with `after` to fetch the first page of results. */
+                 *     Instead, use `per_page` in combination with `after` to fetch the first page of results.
+                 */
                 first?: components["parameters"]["pagination-first"];
-                /** @description **Deprecated**. The number of results per page (max 100), starting from the last matching result.
+                /**
+                 * @description **Deprecated**. The number of results per page (max 100), starting from the last matching result.
                  *     This parameter must not be used in combination with `first`.
-                 *     Instead, use `per_page` in combination with `before` to fetch the last page of results. */
+                 *     Instead, use `per_page` in combination with `before` to fetch the last page of results.
+                 */
                 last?: components["parameters"]["pagination-last"];
                 /** @description The number of results per page (max 100). For more information, see "[Using pagination in the REST API](https://docs.github.com/enterprise-server@3.15/rest/using-the-rest-api/using-pagination-in-the-rest-api)." */
                 per_page?: components["parameters"]["per-page"];
@@ -93220,10 +93436,12 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description *   `pending`, which means the migration hasn't started yet.
+            /**
+             * @description *   `pending`, which means the migration hasn't started yet.
              *     *   `exporting`, which means the migration is in progress.
              *     *   `exported`, which means the migration finished successfully.
-             *     *   `failed`, which means the migration failed. */
+             *     *   `failed`, which means the migration failed.
+             */
             200: {
                 headers: {
                     [name: string]: unknown;
@@ -93893,10 +94111,12 @@ export interface operations {
             query: {
                 /** @description The type of supported package. Packages in GitHub's Gradle registry have the type `maven`. Docker images pushed to GitHub's Container registry (`ghcr.io`) have the type `container`. You can use the type `docker` to find images that were pushed to GitHub's Docker registry (`docker.pkg.github.com`), even if these have now been migrated to the Container registry. */
                 package_type: "npm" | "maven" | "rubygems" | "docker" | "nuget" | "container";
-                /** @description The selected visibility of the packages.  This parameter is optional and only filters an existing result set.
+                /**
+                 * @description The selected visibility of the packages.  This parameter is optional and only filters an existing result set.
                  *
                  *     The `internal` visibility is only supported for GitHub Packages registries that allow for granular permissions. For other ecosystems `internal` is synonymous with `private`.
-                 *     For the list of GitHub Packages registries that support granular permissions, see "[About permissions for GitHub Packages](https://docs.github.com/enterprise-server@3.15/packages/learn-github-packages/about-permissions-for-github-packages#granular-permissions-for-userorganization-scoped-packages)." */
+                 *     For the list of GitHub Packages registries that support granular permissions, see "[About permissions for GitHub Packages](https://docs.github.com/enterprise-server@3.15/packages/learn-github-packages/about-permissions-for-github-packages#granular-permissions-for-userorganization-scoped-packages)."
+                 */
                 visibility?: components["parameters"]["package-visibility"];
                 /** @description The page number of the results to fetch. For more information, see "[Using pagination in the REST API](https://docs.github.com/enterprise-server@3.15/rest/using-the-rest-api/using-pagination-in-the-rest-api)." */
                 page?: number;
@@ -95147,10 +95367,11 @@ export interface operations {
                 per_page?: components["parameters"]["per-page"];
                 /** @description The page number of the results to fetch. For more information, see "[Using pagination in the REST API](https://docs.github.com/enterprise-server@3.15/rest/using-the-rest-api/using-pagination-in-the-rest-api)." */
                 page?: components["parameters"]["page"];
-                /** @description A comma-separated list of rule targets to filter by.
+                /**
+                 * @description A comma-separated list of rule targets to filter by.
                  *     If provided, only rulesets that apply to the specified targets will be returned.
                  *     For example, `branch,tag,push`.
-                 *      */
+                 */
                 targets?: components["parameters"]["ruleset-targets"];
             };
             header?: never;
@@ -95232,9 +95453,11 @@ export interface operations {
                 ref?: components["parameters"]["ref-in-query"];
                 /** @description The name of the repository to filter on. */
                 repository_name?: components["parameters"]["repository-name-in-query"];
-                /** @description The time period to filter by.
+                /**
+                 * @description The time period to filter by.
                  *
-                 *     For example, `day` will filter for rule suites that occurred in the past 24 hours, and `week` will filter for rule suites that occurred in the past 7 days (168 hours). */
+                 *     For example, `day` will filter for rule suites that occurred in the past 24 hours, and `week` will filter for rule suites that occurred in the past 7 days (168 hours).
+                 */
                 time_period?: components["parameters"]["time-period"];
                 /** @description The handle for the GitHub user account to filter on. When specified, only rule evaluations triggered by this actor will be returned. */
                 actor_name?: components["parameters"]["actor-name-in-query"];
@@ -95274,10 +95497,12 @@ export interface operations {
             path: {
                 /** @description The organization name. The name is not case sensitive. */
                 org: components["parameters"]["org"];
-                /** @description The unique identifier of the rule suite result.
+                /**
+                 * @description The unique identifier of the rule suite result.
                  *     To get this ID, you can use [GET /repos/{owner}/{repo}/rulesets/rule-suites](https://docs.github.com/enterprise-server@3.15/rest/repos/rule-suites#list-repository-rule-suites)
                  *     for repositories and [GET /orgs/{org}/rulesets/rule-suites](https://docs.github.com/enterprise-server@3.15/rest/orgs/rule-suites#list-organization-rule-suites)
-                 *     for organizations. */
+                 *     for organizations.
+                 */
                 rule_suite_id: components["parameters"]["rule-suite-id"];
             };
             cookie?: never;
@@ -96848,10 +97073,12 @@ export interface operations {
                 org: components["parameters"]["org"];
                 /** @description The security feature to enable or disable. */
                 security_product: components["parameters"]["security-product"];
-                /** @description The action to take.
+                /**
+                 * @description The action to take.
                  *
                  *     `enable_all` means to enable the specified security feature for all repositories in the organization.
-                 *     `disable_all` means to disable the specified security feature for all repositories in the organization. */
+                 *     `disable_all` means to disable the specified security feature for all repositories in the organization.
+                 */
                 enablement: components["parameters"]["org-security-product-enablement"];
             };
             cookie?: never;
@@ -97763,20 +97990,24 @@ export interface operations {
                      * @enum {string}
                      */
                     visibility?: "public" | "private" | "internal";
-                    /** @description Specify which security and analysis features to enable or disable for the repository.
+                    /**
+                     * @description Specify which security and analysis features to enable or disable for the repository.
                      *
                      *     To use this parameter, you must have admin permissions for the repository or be an owner or security manager for the organization that owns the repository. For more information, see "[Managing security managers in your organization](https://docs.github.com/enterprise-server@3.15/organizations/managing-peoples-access-to-your-organization-with-roles/managing-security-managers-in-your-organization)."
                      *
                      *     For example, to enable GitHub Advanced Security, use this data in the body of the `PATCH` request:
                      *     `{ "security_and_analysis": {"advanced_security": { "status": "enabled" } } }`.
                      *
-                     *     You can check which security and analysis features are currently enabled by using a `GET /repos/{owner}/{repo}` request. */
+                     *     You can check which security and analysis features are currently enabled by using a `GET /repos/{owner}/{repo}` request.
+                     */
                     security_and_analysis?: {
-                        /** @description Use the `status` property to enable or disable GitHub Advanced Security for this repository.
+                        /**
+                         * @description Use the `status` property to enable or disable GitHub Advanced Security for this repository.
                          *     For more information, see "[About GitHub Advanced
                          *     Security](/github/getting-started-with-github/learning-about-github/about-github-advanced-security)."
                          *
-                         *     For standalone Code Scanning or Secret Protection products, this parameter cannot be used. */
+                         *     For standalone Code Scanning or Secret Protection products, this parameter cannot be used.
+                         */
                         advanced_security?: {
                             /** @description Can be `enabled` or `disabled`. */
                             status?: string;
@@ -100087,19 +100318,25 @@ export interface operations {
                 before?: components["parameters"]["pagination-before"];
                 /** @description A cursor, as given in the [Link header](https://docs.github.com/enterprise-server@3.15/rest/guides/using-pagination-in-the-rest-api#using-link-headers). If specified, the query only searches for results after this cursor. For more information, see "[Using pagination in the REST API](https://docs.github.com/enterprise-server@3.15/rest/using-the-rest-api/using-pagination-in-the-rest-api)." */
                 after?: components["parameters"]["pagination-after"];
-                /** @description The Git reference for the activities you want to list.
+                /**
+                 * @description The Git reference for the activities you want to list.
                  *
-                 *     The `ref` for a branch can be formatted either as `refs/heads/BRANCH_NAME` or `BRANCH_NAME`, where `BRANCH_NAME` is the name of your branch. */
+                 *     The `ref` for a branch can be formatted either as `refs/heads/BRANCH_NAME` or `BRANCH_NAME`, where `BRANCH_NAME` is the name of your branch.
+                 */
                 ref?: string;
                 /** @description The GitHub username to use to filter by the actor who performed the activity. */
                 actor?: string;
-                /** @description The time period to filter by.
+                /**
+                 * @description The time period to filter by.
                  *
-                 *     For example, `day` will filter for activity that occurred in the past 24 hours, and `week` will filter for activity that occurred in the past 7 days (168 hours). */
+                 *     For example, `day` will filter for activity that occurred in the past 24 hours, and `week` will filter for activity that occurred in the past 7 days (168 hours).
+                 */
                 time_period?: "day" | "week" | "month" | "quarter" | "year";
-                /** @description The activity type to filter by.
+                /**
+                 * @description The activity type to filter by.
                  *
-                 *     For example, you can choose to filter by "force_push", to see all force pushes to the repository. */
+                 *     For example, you can choose to filter by "force_push", to see all force pushes to the repository.
+                 */
                 activity_type?: "push" | "force_push" | "branch_creation" | "branch_deletion" | "pr_merge" | "merge_queue_merge";
             };
             header?: never;
@@ -102700,10 +102937,12 @@ export interface operations {
             };
         };
         responses: {
-            /** @description Response when:
+            /**
+             * @description Response when:
              *     - an existing collaborator is added as a collaborator
              *     - an organization member is added as an individual collaborator
-             *     - an existing team member (whose team is also a repository collaborator) is added as an individual collaborator */
+             *     - an existing team member (whose team is also a repository collaborator) is added as an individual collaborator
+             */
             204: {
                 headers: {
                     [name: string]: unknown;
@@ -103633,33 +103872,78 @@ export interface operations {
     "dependabot/list-alerts-for-repo": {
         parameters: {
             query?: {
-                /** @description A comma-separated list of states. If specified, only alerts with these states will be returned.
+                /**
+                 * @description A comma-separated list of states. If specified, only alerts with these states will be returned.
                  *
-                 *     Can be: `auto_dismissed`, `dismissed`, `fixed`, `open` */
+                 *     Can be: `auto_dismissed`, `dismissed`, `fixed`, `open`
+                 */
                 state?: components["parameters"]["dependabot-alert-comma-separated-states"];
-                /** @description A comma-separated list of severities. If specified, only alerts with these severities will be returned.
+                /**
+                 * @description A comma-separated list of severities. If specified, only alerts with these severities will be returned.
                  *
-                 *     Can be: `low`, `medium`, `high`, `critical` */
+                 *     Can be: `low`, `medium`, `high`, `critical`
+                 */
                 severity?: components["parameters"]["dependabot-alert-comma-separated-severities"];
-                /** @description A comma-separated list of ecosystems. If specified, only alerts for these ecosystems will be returned.
+                /**
+                 * @description A comma-separated list of ecosystems. If specified, only alerts for these ecosystems will be returned.
                  *
-                 *     Can be: `composer`, `go`, `maven`, `npm`, `nuget`, `pip`, `pub`, `rubygems`, `rust` */
+                 *     Can be: `composer`, `go`, `maven`, `npm`, `nuget`, `pip`, `pub`, `rubygems`, `rust`
+                 */
                 ecosystem?: components["parameters"]["dependabot-alert-comma-separated-ecosystems"];
                 /** @description A comma-separated list of package names. If specified, only alerts for these packages will be returned. */
                 package?: components["parameters"]["dependabot-alert-comma-separated-packages"];
-                /** @description Filters the list of alerts based on whether the alert has the given value. If specified, only alerts meeting this criterion will be returned.
-                 *     Multiple `has` filters can be passed to filter for alerts that have all of the values. Currently, only `patch` is supported. */
-                has?: components["parameters"]["dependabot-alert-comma-separated-has"];
                 /** @description A comma-separated list of full manifest paths. If specified, only alerts for these manifests will be returned. */
                 manifest?: components["parameters"]["dependabot-alert-comma-separated-manifests"];
+                /**
+                 * @description CVE Exploit Prediction Scoring System (EPSS) percentage. Can be specified as:
+                 *     - An exact number (`n`)
+                 *     - Comparators such as `>n`, `<n`, `>=n`, `<=n`
+                 *     - A range like `n..n`, where `n` is a number from 0.0 to 1.0
+                 *
+                 *     Filters the list of alerts based on EPSS percentages. If specified, only alerts with the provided EPSS percentages will be returned.
+                 */
+                epss_percentage?: components["parameters"]["dependabot-alert-comma-separated-epss"];
+                /**
+                 * @description Filters the list of alerts based on whether the alert has the given value. If specified, only alerts meeting this criterion will be returned.
+                 *     Multiple `has` filters can be passed to filter for alerts that have all of the values. Currently, only `patch` is supported.
+                 */
+                has?: components["parameters"]["dependabot-alert-comma-separated-has"];
                 /** @description The scope of the vulnerable dependency. If specified, only alerts with this scope will be returned. */
                 scope?: components["parameters"]["dependabot-alert-scope"];
-                /** @description The property by which to sort the results.
+                /**
+                 * @description The property by which to sort the results.
                  *     `created` means when the alert was created.
-                 *     `updated` means when the alert's state last changed. */
+                 *     `updated` means when the alert's state last changed.
+                 */
                 sort?: components["parameters"]["dependabot-alert-sort"];
                 /** @description The direction to sort the results by. */
                 direction?: components["parameters"]["direction"];
+                /**
+                 * @deprecated
+                 * @description **Deprecated**. Page number of the results to fetch. Use cursor-based pagination with `before` or `after` instead.
+                 */
+                page?: number;
+                /**
+                 * @deprecated
+                 * @description The number of results per page (max 100). For more information, see "[Using pagination in the REST API](https://docs.github.com/enterprise-server@3.15/rest/using-the-rest-api/using-pagination-in-the-rest-api)."
+                 */
+                per_page?: number;
+                /** @description A cursor, as given in the [Link header](https://docs.github.com/enterprise-server@3.15/rest/guides/using-pagination-in-the-rest-api#using-link-headers). If specified, the query only searches for results before this cursor. For more information, see "[Using pagination in the REST API](https://docs.github.com/enterprise-server@3.15/rest/using-the-rest-api/using-pagination-in-the-rest-api)." */
+                before?: components["parameters"]["pagination-before"];
+                /** @description A cursor, as given in the [Link header](https://docs.github.com/enterprise-server@3.15/rest/guides/using-pagination-in-the-rest-api#using-link-headers). If specified, the query only searches for results after this cursor. For more information, see "[Using pagination in the REST API](https://docs.github.com/enterprise-server@3.15/rest/using-the-rest-api/using-pagination-in-the-rest-api)." */
+                after?: components["parameters"]["pagination-after"];
+                /**
+                 * @description **Deprecated**. The number of results per page (max 100), starting from the first matching result.
+                 *     This parameter must not be used in combination with `last`.
+                 *     Instead, use `per_page` in combination with `after` to fetch the first page of results.
+                 */
+                first?: components["parameters"]["pagination-first"];
+                /**
+                 * @description **Deprecated**. The number of results per page (max 100), starting from the last matching result.
+                 *     This parameter must not be used in combination with `first`.
+                 *     Instead, use `per_page` in combination with `before` to fetch the last page of results.
+                 */
+                last?: components["parameters"]["pagination-last"];
             };
             header?: never;
             path: {
@@ -103697,10 +103981,12 @@ export interface operations {
                 owner: components["parameters"]["owner"];
                 /** @description The name of the repository without the `.git` extension. The name is not case sensitive. */
                 repo: components["parameters"]["repo"];
-                /** @description The number that identifies a Dependabot alert in its repository.
+                /**
+                 * @description The number that identifies a Dependabot alert in its repository.
                  *     You can find this at the end of the URL for a Dependabot alert within GitHub,
                  *     or in `number` fields in the response from the
-                 *     `GET /repos/{owner}/{repo}/dependabot/alerts` operation. */
+                 *     `GET /repos/{owner}/{repo}/dependabot/alerts` operation.
+                 */
                 alert_number: components["parameters"]["dependabot-alert-number"];
             };
             cookie?: never;
@@ -103730,10 +104016,12 @@ export interface operations {
                 owner: components["parameters"]["owner"];
                 /** @description The name of the repository without the `.git` extension. The name is not case sensitive. */
                 repo: components["parameters"]["repo"];
-                /** @description The number that identifies a Dependabot alert in its repository.
+                /**
+                 * @description The number that identifies a Dependabot alert in its repository.
                  *     You can find this at the end of the URL for a Dependabot alert within GitHub,
                  *     or in `number` fields in the response from the
-                 *     `GET /repos/{owner}/{repo}/dependabot/alerts` operation. */
+                 *     `GET /repos/{owner}/{repo}/dependabot/alerts` operation.
+                 */
                 alert_number: components["parameters"]["dependabot-alert-number"];
             };
             cookie?: never;
@@ -105753,17 +106041,23 @@ export interface operations {
                          * @enum {string}
                          */
                         type?: "blob" | "tree" | "commit";
-                        /** @description The SHA1 checksum ID of the object in the tree. Also called `tree.sha`. If the value is `null` then the file will be deleted.
+                        /**
+                         * @description The SHA1 checksum ID of the object in the tree. Also called `tree.sha`. If the value is `null` then the file will be deleted.
                          *
-                         *     **Note:** Use either `tree.sha` or `content` to specify the contents of the entry. Using both `tree.sha` and `content` will return an error. */
+                         *     **Note:** Use either `tree.sha` or `content` to specify the contents of the entry. Using both `tree.sha` and `content` will return an error.
+                         */
                         sha?: string | null;
-                        /** @description The content you want this file to have. GitHub will write this blob out and use that SHA for this entry. Use either this, or `tree.sha`.
+                        /**
+                         * @description The content you want this file to have. GitHub will write this blob out and use that SHA for this entry. Use either this, or `tree.sha`.
                          *
-                         *     **Note:** Use either `tree.sha` or `content` to specify the contents of the entry. Using both `tree.sha` and `content` will return an error. */
+                         *     **Note:** Use either `tree.sha` or `content` to specify the contents of the entry. Using both `tree.sha` and `content` will return an error.
+                         */
                         content?: string;
                     }[];
-                    /** @description The SHA1 of an existing Git tree object which will be used as the base for the new tree. If provided, a new Git tree object will be created from entries in the Git tree object pointed to by `base_tree` and entries defined in the `tree` parameter. Entries defined in the `tree` parameter will overwrite items from `base_tree` with the same `path`. If you're creating new changes on a branch, then normally you'd set `base_tree` to the SHA1 of the Git tree object of the current latest commit on the branch you're working on.
-                     *     If not provided, GitHub will create a new Git tree object from only the entries defined in the `tree` parameter. If you create a new commit pointing to such a tree, then all files which were a part of the parent commit's tree and were not defined in the `tree` parameter will be listed as deleted by the new commit. */
+                    /**
+                     * @description The SHA1 of an existing Git tree object which will be used as the base for the new tree. If provided, a new Git tree object will be created from entries in the Git tree object pointed to by `base_tree` and entries defined in the `tree` parameter. Entries defined in the `tree` parameter will overwrite items from `base_tree` with the same `path`. If you're creating new changes on a branch, then normally you'd set `base_tree` to the SHA1 of the Git tree object of the current latest commit on the branch you're working on.
+                     *     If not provided, GitHub will create a new Git tree object from only the entries defined in the `tree` parameter. If you create a new commit pointing to such a tree, then all files which were a part of the parent commit's tree and were not defined in the `tree` parameter will be listed as deleted by the new commit.
+                     */
                     base_tree?: string;
                 };
             };
@@ -107508,9 +107802,11 @@ export interface operations {
                     title?: string;
                     /** @description The contents of the key. */
                     key: string;
-                    /** @description If `true`, the key will only be able to read repository contents. Otherwise, the key will be able to read and write.
+                    /**
+                     * @description If `true`, the key will only be able to read repository contents. Otherwise, the key will be able to read and write.
                      *
-                     *     Deploy keys with write access can perform the same actions as an organization member with admin access, or a collaborator on a personal repository. For more information, see "[Repository permission levels for an organization](https://docs.github.com/enterprise-server@3.15/articles/repository-permission-levels-for-an-organization/)" and "[Permission levels for a user account repository](https://docs.github.com/enterprise-server@3.15/articles/permission-levels-for-a-user-account-repository/)." */
+                     *     Deploy keys with write access can perform the same actions as an organization member with admin access, or a collaborator on a personal repository. For more information, see "[Repository permission levels for an organization](https://docs.github.com/enterprise-server@3.15/articles/repository-permission-levels-for-an-organization/)" and "[Permission levels for a user account repository](https://docs.github.com/enterprise-server@3.15/articles/permission-levels-for-a-user-account-repository/)."
+                     */
                     read_only?: boolean;
                 };
             };
@@ -107783,11 +108079,13 @@ export interface operations {
         requestBody?: never;
         responses: {
             202: components["responses"]["accepted"];
-            /** @description We will return a 403 with one of the following messages:
+            /**
+             * @description We will return a 403 with one of the following messages:
              *
              *     - Git LFS support not enabled because Git LFS is globally disabled.
              *     - Git LFS support not enabled because Git LFS is disabled for the root repository in the network.
-             *     - Git LFS support not enabled because Git LFS is disabled for <owner>. */
+             *     - Git LFS support not enabled because Git LFS is disabled for <owner>.
+             */
             403: {
                 headers: {
                     [name: string]: unknown;
@@ -110783,10 +111081,11 @@ export interface operations {
                 page?: components["parameters"]["page"];
                 /** @description Include rulesets configured at higher levels that apply to this repository */
                 includes_parents?: boolean;
-                /** @description A comma-separated list of rule targets to filter by.
+                /**
+                 * @description A comma-separated list of rule targets to filter by.
                  *     If provided, only rulesets that apply to the specified targets will be returned.
                  *     For example, `branch,tag,push`.
-                 *      */
+                 */
                 targets?: components["parameters"]["ruleset-targets"];
             };
             header?: never;
@@ -110865,9 +111164,11 @@ export interface operations {
             query?: {
                 /** @description The name of the ref. Cannot contain wildcard characters. Optionally prefix with `refs/heads/` to limit to branches or `refs/tags/` to limit to tags. Omit the prefix to search across all refs. When specified, only rule evaluations triggered for this ref will be returned. */
                 ref?: components["parameters"]["ref-in-query"];
-                /** @description The time period to filter by.
+                /**
+                 * @description The time period to filter by.
                  *
-                 *     For example, `day` will filter for rule suites that occurred in the past 24 hours, and `week` will filter for rule suites that occurred in the past 7 days (168 hours). */
+                 *     For example, `day` will filter for rule suites that occurred in the past 24 hours, and `week` will filter for rule suites that occurred in the past 7 days (168 hours).
+                 */
                 time_period?: components["parameters"]["time-period"];
                 /** @description The handle for the GitHub user account to filter on. When specified, only rule evaluations triggered by this actor will be returned. */
                 actor_name?: components["parameters"]["actor-name-in-query"];
@@ -110911,10 +111212,12 @@ export interface operations {
                 owner: components["parameters"]["owner"];
                 /** @description The name of the repository without the `.git` extension. The name is not case sensitive. */
                 repo: components["parameters"]["repo"];
-                /** @description The unique identifier of the rule suite result.
+                /**
+                 * @description The unique identifier of the rule suite result.
                  *     To get this ID, you can use [GET /repos/{owner}/{repo}/rulesets/rule-suites](https://docs.github.com/enterprise-server@3.15/rest/repos/rule-suites#list-repository-rule-suites)
                  *     for repositories and [GET /orgs/{org}/rulesets/rule-suites](https://docs.github.com/enterprise-server@3.15/rest/orgs/rule-suites#list-organization-rule-suites)
-                 *     for organizations. */
+                 *     for organizations.
+                 */
                 rule_suite_id: components["parameters"]["rule-suite-id"];
             };
             cookie?: never;
@@ -111469,9 +111772,11 @@ export interface operations {
                      * @enum {string}
                      */
                     state: "error" | "failure" | "pending" | "success";
-                    /** @description The target URL to associate with this status. This URL will be linked from the GitHub UI to allow users to easily see the source of the status.
+                    /**
+                     * @description The target URL to associate with this status. This URL will be linked from the GitHub UI to allow users to easily see the source of the status.
                      *     For example, if your continuous integration system is posting build status, you would want to provide the deep link for the build output for this specific SHA:
-                     *     `http://ci.example.com/user/repo/build/sha` */
+                     *     `http://ci.example.com/user/repo/build/sha`
+                     */
                     target_url?: string | null;
                     /** @description A short description of the status. */
                     description?: string | null;
@@ -112575,8 +112880,10 @@ export interface operations {
                 per_page?: components["parameters"]["per-page"];
                 /** @description The page number of the results to fetch. For more information, see "[Using pagination in the REST API](https://docs.github.com/enterprise-server@3.15/rest/using-the-rest-api/using-pagination-in-the-rest-api)." */
                 page?: components["parameters"]["page"];
-                /** @description Set to `true` to use advanced search.
-                 *     Example: `http://api.github.com/search/issues?q={query}&advanced_search=true` */
+                /**
+                 * @description Set to `true` to use advanced search.
+                 *     Example: `http://api.github.com/search/issues?q={query}&advanced_search=true`
+                 */
                 advanced_search?: components["parameters"]["issues-advanced-search"];
             };
             header?: never;
@@ -114876,10 +115183,12 @@ export interface operations {
             query: {
                 /** @description The type of supported package. Packages in GitHub's Gradle registry have the type `maven`. Docker images pushed to GitHub's Container registry (`ghcr.io`) have the type `container`. You can use the type `docker` to find images that were pushed to GitHub's Docker registry (`docker.pkg.github.com`), even if these have now been migrated to the Container registry. */
                 package_type: "npm" | "maven" | "rubygems" | "docker" | "nuget" | "container";
-                /** @description The selected visibility of the packages.  This parameter is optional and only filters an existing result set.
+                /**
+                 * @description The selected visibility of the packages.  This parameter is optional and only filters an existing result set.
                  *
                  *     The `internal` visibility is only supported for GitHub Packages registries that allow for granular permissions. For other ecosystems `internal` is synonymous with `private`.
-                 *     For the list of GitHub Packages registries that support granular permissions, see "[About permissions for GitHub Packages](https://docs.github.com/enterprise-server@3.15/packages/learn-github-packages/about-permissions-for-github-packages#granular-permissions-for-userorganization-scoped-packages)." */
+                 *     For the list of GitHub Packages registries that support granular permissions, see "[About permissions for GitHub Packages](https://docs.github.com/enterprise-server@3.15/packages/learn-github-packages/about-permissions-for-github-packages#granular-permissions-for-userorganization-scoped-packages)."
+                 */
                 visibility?: components["parameters"]["package-visibility"];
                 /** @description The page number of the results to fetch. For more information, see "[Using pagination in the REST API](https://docs.github.com/enterprise-server@3.15/rest/using-the-rest-api/using-pagination-in-the-rest-api)." */
                 page?: components["parameters"]["page"];
@@ -115176,10 +115485,12 @@ export interface operations {
             query?: {
                 /** @description Limit results to repositories with the specified visibility. */
                 visibility?: "all" | "public" | "private";
-                /** @description Comma-separated list of values. Can include:
+                /**
+                 * @description Comma-separated list of values. Can include:
                  *      * `owner`: Repositories that are owned by the authenticated user.
                  *      * `collaborator`: Repositories that the user has been added to as a collaborator.
-                 *      * `organization_member`: Repositories that the user has access to through being a member of an organization. This includes every repository on every team that the user is on. */
+                 *      * `organization_member`: Repositories that the user has access to through being a member of an organization. This includes every repository on every team that the user is on.
+                 */
                 affiliation?: string;
                 /** @description Limit results to repositories of the specified type. Will cause a `422` error if used in the same request as **visibility** or **affiliation**. */
                 type?: "all" | "owner" | "public" | "private" | "member";
@@ -116315,10 +116626,12 @@ export interface operations {
             query: {
                 /** @description The type of supported package. Packages in GitHub's Gradle registry have the type `maven`. Docker images pushed to GitHub's Container registry (`ghcr.io`) have the type `container`. You can use the type `docker` to find images that were pushed to GitHub's Docker registry (`docker.pkg.github.com`), even if these have now been migrated to the Container registry. */
                 package_type: "npm" | "maven" | "rubygems" | "docker" | "nuget" | "container";
-                /** @description The selected visibility of the packages.  This parameter is optional and only filters an existing result set.
+                /**
+                 * @description The selected visibility of the packages.  This parameter is optional and only filters an existing result set.
                  *
                  *     The `internal` visibility is only supported for GitHub Packages registries that allow for granular permissions. For other ecosystems `internal` is synonymous with `private`.
-                 *     For the list of GitHub Packages registries that support granular permissions, see "[About permissions for GitHub Packages](https://docs.github.com/enterprise-server@3.15/packages/learn-github-packages/about-permissions-for-github-packages#granular-permissions-for-userorganization-scoped-packages)." */
+                 *     For the list of GitHub Packages registries that support granular permissions, see "[About permissions for GitHub Packages](https://docs.github.com/enterprise-server@3.15/packages/learn-github-packages/about-permissions-for-github-packages#granular-permissions-for-userorganization-scoped-packages)."
+                 */
                 visibility?: components["parameters"]["package-visibility"];
                 /** @description The page number of the results to fetch. For more information, see "[Using pagination in the REST API](https://docs.github.com/enterprise-server@3.15/rest/using-the-rest-api/using-pagination-in-the-rest-api)." */
                 page?: components["parameters"]["page"];

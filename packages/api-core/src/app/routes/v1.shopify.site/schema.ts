@@ -5,7 +5,7 @@ import {
 	JsonSuccessResponse,
 	NotFoundResponse
 } from '@repo/hono-utils';
-import { SFlatSiteContentDto, SSiteDto, SSiteSummaryDto } from '../v1.site/schema';
+import { SFlatSiteContentDto, SSiteAssetDto, SSiteDto, SSiteSummaryDto } from '../v1.site/schema';
 
 export const GetShopifySitesRoute = createRoute({
 	method: 'get',
@@ -157,6 +157,41 @@ export const DeleteShopifySiteRoute = createRoute({
 		400: BadRequestResponse,
 		404: NotFoundResponse,
 		409: ConflictResponse
+	}
+});
+
+export const UploadSiteAssetsRoute = createRoute({
+	method: 'post',
+	path: '/v1/shopify/site/assets/upload',
+	tags: ['shopify', 'site'],
+	summary: 'Upload site assets to Shopify',
+	operationId: 'uploadSiteAssets',
+	request: {
+		body: {
+			content: {
+				'application/json': {
+					schema: z.object({
+						assets: z.array(SSiteAssetDto).openapi({
+							description: 'Array of assets to upload'
+						})
+					})
+				}
+			}
+		}
+	},
+	responses: {
+		200: JsonSuccessResponse(
+			z.object({
+				uploadedAssets: z.array(
+					z.object({
+						id: z.string(),
+						resourceUrl: z.string(),
+						originalHash: z.string()
+					})
+				)
+			})
+		),
+		400: BadRequestResponse
 	}
 });
 

@@ -1,4 +1,4 @@
-import { createId, TFlatSite, toFlatSite, TShopifyIntegration } from '@repo/editor';
+import { createId, TAsset, TFlatSite, toFlatSite, TShopifyIntegration } from '@repo/editor';
 import { AppError } from '@repo/hono-utils';
 import { and, eq, isNull, ne } from 'drizzle-orm';
 import { unwrapOrNull } from 'tuple-result';
@@ -35,7 +35,8 @@ import {
 	GetBlankPresetRoute,
 	GetShopifySiteByShopAndHandleRoute,
 	GetShopifySitesRoute,
-	UpdateShopifySiteRoute
+	UpdateShopifySiteRoute,
+	UploadSiteAssetsRoute
 } from './schema';
 import { blankPreset } from './site-presets';
 
@@ -239,11 +240,12 @@ router.openapi(CreateShopifySiteRoute, async (c) => {
 		}
 	}
 
-	// Upload assets to Shopify if requested
+	// Upload image assets to Shopify if requested
 	if (uploadAssets) {
+		const imageAssets = Object.values(content.assets).filter((asset) => asset.type === 'image');
 		const [isUploadedAssetsOk, uploadedAssetsErr, uploadedAssets] = await uploadSiteAssets(
-			content,
-			{ shopId, accessToken, toUploadAssetTypes: ['image'] }
+			imageAssets,
+			{ shopId, accessToken }
 		);
 		if (!isUploadedAssetsOk) {
 			throw new AppError('#ERR_ASSETS_UPLOAD_FAILED', 500, {
@@ -253,7 +255,7 @@ router.openapi(CreateShopifySiteRoute, async (c) => {
 			});
 		}
 
-		// Update content with Shopify asset URLs
+		// Merge uploaded asset URLs back into site
 		for (const uploadedAsset of uploadedAssets) {
 			const asset = content.assets[uploadedAsset.originalHash];
 			if (asset != null) {
@@ -505,6 +507,35 @@ router.openapi(DeleteShopifySiteRoute, async (c) => {
 	}
 
 	return c.json({ success: true }, 200);
+});
+
+router.openapi(UploadSiteAssetsRoute, async (c) => {
+	const { shopId } = (await verifyShopifySession(c)).unwrap();
+	const { assets } = c.req.valid('json');
+
+	const accessToken = (await getShopifyOfflineAccessToken(shopId)).unwrap();
+
+	const [isUploadedAssetsOk, uploadedAssetsErr, uploadedAssets] = await uploadSiteAssets(
+		assets as TAsset[],
+		{
+			shopId,
+			accessToken
+		}
+	);
+	if (!isUploadedAssetsOk) {
+		throw new AppError('#ERR_ASSETS_UPLOAD_FAILED', 500, {
+			title: 'Asset upload failed',
+			detail: 'Failed to upload site assets to Shopify',
+			throwable: uploadedAssetsErr
+		});
+	}
+
+	return c.json(
+		{
+			uploadedAssets
+		},
+		200
+	);
 });
 
 router.openapi(GetBlankPresetRoute, async (c) => {

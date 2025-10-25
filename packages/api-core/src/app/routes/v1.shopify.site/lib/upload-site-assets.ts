@@ -1,4 +1,4 @@
-import { getAssetBinary, TAsset, TFlatSite, TImageAsset } from '@repo/editor';
+import { getAssetBinary, TAsset, TImageAsset } from '@repo/editor';
 import { AppError } from '@repo/hono-utils';
 import { Err, Ok, type TResult } from 'tuple-result';
 import { fetchClient } from '@/environment';
@@ -10,14 +10,11 @@ import {
 } from '@/lib';
 
 export async function uploadSiteAssets(
-	site: TFlatSite,
+	assets: TAsset[],
 	config: TUploadSiteAssetsConfig
 ): Promise<TResult<TUploadedAsset[], AppError>> {
-	const { shopId, accessToken, toUploadAssetTypes = ['image', 'font'] } = config;
+	const { shopId, accessToken } = config;
 
-	const assets = Object.values(site.assets).filter((asset) =>
-		toUploadAssetTypes.includes(asset.type)
-	);
 	if (!assets.length) {
 		return Ok([]);
 	}
@@ -134,7 +131,6 @@ export async function uploadSiteAssets(
 export interface TUploadSiteAssetsConfig {
 	shopId: string;
 	accessToken: string;
-	toUploadAssetTypes?: TAsset['type'][];
 }
 
 export interface TUploadedAsset {
