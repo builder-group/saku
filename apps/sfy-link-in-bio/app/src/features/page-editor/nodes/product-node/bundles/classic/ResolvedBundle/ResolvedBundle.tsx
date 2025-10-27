@@ -1,15 +1,16 @@
+import { useFeatureState } from 'feature-react';
 import React from 'react';
 import { ChevronDownIcon } from '@/components';
-import { logger } from '@/environment';
 import { getCurrencySymbol } from '../../../../../environment';
 import { TResolvedNodeProps } from '../../../../../lib';
 import { TResolvedSingleProductNodeContentMixin } from '../../../../../mixins';
 import { TResolvedClassicProductNodeBundle } from '../../../types';
+import { createBundleCx } from './create-bundle-cx';
 import { useProductDetailsModal } from './ProductDetailsModal';
 
 export const ResolvedClassicBundle = React.forwardRef<HTMLDivElement, TResolvedClassicBundleProps>(
 	(props, ref) => {
-		const { node, product, cx } = props;
+		const { node, product, cx: pageCx } = props;
 		const {
 			content,
 			autoLayout,
@@ -25,100 +26,46 @@ export const ResolvedClassicBundle = React.forwardRef<HTMLDivElement, TResolvedC
 			image
 		} = node;
 
+		const cx = React.useMemo(
+			() => createBundleCx({ pageCx, node, product }),
+			[pageCx, node, product]
+		);
+		const isProcessing = useFeatureState(cx.isProcessing);
+		const selectedOptions = useFeatureState(cx.selectedOptions);
+		const selectedVariant = useFeatureState(cx.selectedVariant);
+
 		const { Modal: ProductDetailsModal, showModal: showProductDetailsModal } =
 			useProductDetailsModal({
-				product,
-				node,
 				cx
 			});
 
-		// const [isAdding, setIsAdding] = React.useState(false);
-		const [isBuying, setIsBuying] = React.useState(false);
-		const [selectedOptions, setSelectedOptions] = React.useState<Record<string, string>>(() => {
-			if (!product.variants?.[0]) {
-				return {};
-			}
-
-			const initialOptions: Record<string, string> = {};
-			product.variants[0].selectedOptions.forEach((option) => {
-				initialOptions[option.name] = option.value;
-			});
-			return initialOptions;
-		});
-
 		const productImage = React.useMemo(() => product.images?.[0], [product.images]);
-
-		const selectedVariant = React.useMemo(() => {
-			if (!product.variants?.length) {
-				return null;
-			}
-
-			// Find variant that matches selected options
-			return (
-				product.variants.find((variant) =>
-					variant.selectedOptions.every((option) => selectedOptions[option.name] === option.value)
-				) || product.variants[0]
-			);
-		}, [product.variants, selectedOptions]);
+		const canBuyNow = React.useMemo(
+			() => pageCx.integrations.shopify != null && selectedVariant != null,
+			[pageCx.integrations.shopify, selectedVariant]
+		);
 
 		// =========================================================================
 		// Events
 		// =========================================================================
 
-		// const handleAddToCart = React.useCallback(async () => {
-		// 	if (selectedVariant?.id == null || cx.integrations.shopify == null) {
-		// 		return;
-		// 	}
+		const handleBuyNow = React.useCallback(
+			async (e: React.MouseEvent<HTMLButtonElement>) => {
+				e.stopPropagation();
+				await cx.buyNow();
+			},
+			[cx]
+		);
 
-		// 	setIsAdding(true);
+		const handleOptionSelect = React.useCallback(
+			(optionName: string, optionValue: string) => {
+				cx.selectOption(optionName, optionValue);
 
-		// 	const result = await cx.integrations.shopify.addToCart([
-		// 		{
-		// 			merchandiseId: selectedVariant.id,
-		// 			quantity: 1
-		// 		}
-		// 	]);
-		// 	if (result.isErr()) {
-		// 		console.error('Failed to add to cart:', result.error);
-		// 	}
-
-		// 	setIsAdding(false);
-		// }, [selectedVariant?.id, cx.integrations.shopify]);
-
-		const handleBuyNow = React.useCallback(async () => {
-			if (selectedVariant?.id == null || cx.integrations.shopify == null) {
-				return;
-			}
-
-			setIsBuying(true);
-
-			const result = await cx.integrations.shopify.buyNow([
-				{
-					merchandiseId: selectedVariant.id,
-					quantity: 1
-				}
-			]);
-			if (result.isErr()) {
-				logger.warn('Failed to buy now:', {
-					error: result.error
-				});
-				setIsBuying(false);
-				return;
-			}
-
-			// Use '_top' instead of '_blank' to avoid Safari's strict popup blocking in async contexts
-			window.open(result.value.checkoutUrl, '_top');
-			setIsBuying(false);
-		}, [selectedVariant?.id, cx.integrations.shopify]);
-
-		const handleOptionSelect = React.useCallback((optionName: string, optionValue: string) => {
-			setSelectedOptions((prev) => ({
-				...prev,
-				[optionName]: optionValue
-			}));
-			// Blur to close dropdown
-			(document.activeElement as HTMLElement)?.blur();
-		}, []);
+				// Note: Blur to close dropdown
+				(document.activeElement as HTMLElement)?.blur();
+			},
+			[cx]
+		);
 
 		const handleProductClick = React.useCallback(() => {
 			showProductDetailsModal();
@@ -250,35 +197,16 @@ export const ResolvedClassicBundle = React.forwardRef<HTMLDivElement, TResolvedC
 								</div>
 							</div>
 
-							{/* Add to Cart Button */}
-							{/* {cx.integrations.shopify != null && selectedVariant != null && (
-					<button
-						onClick={handleAddToCart}
-						disabled={isAdding}
-						className="btn btn-sm ml-3 text-white"
-						style={{
-							backgroundColor: '#000',
-							borderColor: '#000',
-							borderRadius: style.borderRadius
-						}}
-					>
-						{isAdding ? <span className="loading loading-spinner loading-xs"></span> : 'Add'}
-					</button>
-				)} */}
-
 							{/* Buy Now Button */}
-							{cx.integrations.shopify != null && selectedVariant != null && (
+							{canBuyNow && (
 								<button
-									onClick={(e) => {
-										e.stopPropagation();
-										handleBuyNow();
-									}}
-									disabled={isBuying}
+									onClick={handleBuyNow}
+									disabled={isProcessing}
 									className="ml-3 cursor-pointer px-3 py-1.5"
 									style={buttonPrimary.styles}
 								>
 									<div style={buttonPrimary.text.styles}>
-										{isBuying ? (
+										{isProcessing ? (
 											<span className="loading loading-spinner loading-xs"></span>
 										) : (
 											'Buy'

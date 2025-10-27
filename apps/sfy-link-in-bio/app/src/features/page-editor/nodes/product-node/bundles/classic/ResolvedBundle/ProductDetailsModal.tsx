@@ -1,92 +1,55 @@
+import { useFeatureState } from 'feature-react';
 import React from 'react';
-import { logger } from '@/environment';
 import { cn } from '@/lib';
 import { getCurrencySymbol } from '../../../../../environment';
-import { TResolvedNodeProps } from '../../../../../lib';
-import { TResolvedProductNode } from '../../../types';
+import { TBundleCx } from './create-bundle-cx';
 
 export const ProductDetailsModal: React.FC<TProductDetailsModalProps> = (props) => {
-	const {
-		product,
-		node: { productDetails },
-		cx,
-		modalRef
-	} = props;
+	const { cx, modalRef } = props;
 
 	const { appearance, fill, stroke, shadow, textHeading, textBody, buttonPrimary, image } =
-		productDetails;
+		cx.node.productDetails;
 
 	const [selectedImageIndex, setSelectedImageIndex] = React.useState(0);
-	const [isBuying, setIsBuying] = React.useState(false);
-	const [selectedOptions, setSelectedOptions] = React.useState<Record<string, string>>(() => {
-		if (!product.variants?.[0]) {
-			return {};
-		}
-
-		const initialOptions: Record<string, string> = {};
-		product.variants[0].selectedOptions.forEach((option) => {
-			initialOptions[option.name] = option.value;
-		});
-		return initialOptions;
-	});
+	const isProcessing = useFeatureState(cx.isProcessing);
+	const selectedOptions = useFeatureState(cx.selectedOptions);
+	const selectedVariant = useFeatureState(cx.selectedVariant);
 
 	const selectedImage = React.useMemo(
-		() => product.images?.[selectedImageIndex] || product.images?.[0],
-		[product.images, selectedImageIndex]
+		() => cx.product.images?.[selectedImageIndex] || cx.product.images?.[0],
+		[cx.product.images, selectedImageIndex]
+	);
+	const canBuyNow = React.useMemo(
+		() => cx.pageCx.integrations.shopify != null && selectedVariant != null,
+		[cx.pageCx.integrations.shopify, selectedVariant]
 	);
 
-	const selectedVariant = React.useMemo(() => {
-		if (!product.variants?.length) {
-			return null;
-		}
+	// =========================================================================
+	// Events
+	// =========================================================================
 
-		return (
-			product.variants.find((variant) =>
-				variant.selectedOptions.every((option) => selectedOptions[option.name] === option.value)
-			) || product.variants[0]
-		);
-	}, [product.variants, selectedOptions]);
-
-	const handleOptionSelect = React.useCallback((optionName: string, optionValue: string) => {
-		setSelectedOptions((prev) => ({
-			...prev,
-			[optionName]: optionValue
-		}));
-	}, []);
+	const handleOptionSelect = React.useCallback(
+		(optionName: string, optionValue: string) => {
+			cx.selectOption(optionName, optionValue);
+		},
+		[cx]
+	);
 
 	const handleBuyNow = React.useCallback(async () => {
-		if (selectedVariant?.id == null || cx.integrations.shopify == null) {
-			return;
-		}
+		await cx.buyNow();
+	}, [cx]);
 
-		setIsBuying(true);
-
-		const result = await cx.integrations.shopify.buyNow([
-			{
-				merchandiseId: selectedVariant.id,
-				quantity: 1
-			}
-		]);
-		if (result.isErr()) {
-			logger.warn('Failed to buy now:', {
-				error: result.error
-			});
-			setIsBuying(false);
-			return;
-		}
-
-		// Use '_top' instead of '_blank' to avoid Safari's strict popup blocking in async contexts
-		window.open(result.value.checkoutUrl, '_top');
-		setIsBuying(false);
-	}, [selectedVariant?.id, cx.integrations.shopify]);
+	// =========================================================================
+	// UI
+	// =========================================================================
 
 	return (
 		<dialog ref={modalRef} className="modal modal-bottom sm:modal-middle">
 			<div
 				className={cn(
-					'modal-box flex flex-col p-0 sm:max-w-[80rem]',
+					'modal-box flex flex-col p-0 sm:max-w-7xl',
 					appearance.styles.borderRadius != null &&
-						'rounded-t-[var(--border-radius)] sm:rounded-[var(--border-radius)]'
+						'rounded-t-(--border-radius) sm:rounded-(--border-radius)'
 				)}
 				style={{
 					display: appearance.styles.display,
@@ -126,16 +89,16 @@ export const ProductDetailsModal: React.FC<TProductDetailsModalProps> = (props) 
 								{selectedImage != null && (
 									<img
 										src={selectedImage.src}
-										alt={product.title}
+										alt={cx.product.title}
 										className="h-full w-full object-cover"
 									/>
 								)}
 							</div>
 
 							{/* Image Thumbnails */}
-							{product.images.length > 1 && (
+							{cx.product.images.length > 1 && (
 								<div className="grid grid-cols-4 gap-2">
-									{product.images.map((img, index) => (
+									{cx.product.images.map((img, index) => (
 										<button
 											key={index}
 											onClick={() => setSelectedImageIndex(index)}
@@ -147,7 +110,7 @@ export const ProductDetailsModal: React.FC<TProductDetailsModalProps> = (props) 
 										>
 											<img
 												src={img.src}
-												alt={`${product.title} ${index + 1}`}
+												alt={`${cx.product.title} ${index + 1}`}
 												className="h-full w-full object-cover"
 											/>
 										</button>
@@ -160,7 +123,7 @@ export const ProductDetailsModal: React.FC<TProductDetailsModalProps> = (props) 
 						<div className="flex flex-col space-y-4">
 							{/* Title */}
 							<h1 className="font-bold" style={textHeading.styles}>
-								{product.title}
+								{cx.product.title}
 							</h1>
 
 							{/* Price */}
@@ -178,21 +141,21 @@ export const ProductDetailsModal: React.FC<TProductDetailsModalProps> = (props) 
 							)}
 
 							{/* Description */}
-							{product.description?.type === 'html' && (
+							{cx.product.description?.type === 'html' && (
 								<div
 									className="prose prose-sm"
 									style={textBody.styles}
-									dangerouslySetInnerHTML={{ __html: product.description.value }}
+									dangerouslySetInnerHTML={{ __html: cx.product.description.value }}
 								/>
 							)}
-							{product.description?.type === 'text' && (
+							{cx.product.description?.type === 'text' && (
 								<div className="prose prose-sm" style={textBody.styles}>
-									<p>{product.description.value}</p>
+									<p>{cx.product.description.value}</p>
 								</div>
 							)}
 
 							{/* Product Options */}
-							{product.options?.map((option) => {
+							{cx.product.options?.map((option) => {
 								const currentValue = selectedOptions[option.name];
 
 								return (
@@ -224,10 +187,10 @@ export const ProductDetailsModal: React.FC<TProductDetailsModalProps> = (props) 
 							})}
 
 							{/* Buy Button */}
-							{cx.integrations.shopify != null && selectedVariant != null && (
+							{canBuyNow && (
 								<button
 									onClick={handleBuyNow}
-									disabled={isBuying}
+									disabled={isProcessing}
 									className="w-full py-2"
 									style={{
 										...buttonPrimary.appearance.styles,
@@ -237,7 +200,7 @@ export const ProductDetailsModal: React.FC<TProductDetailsModalProps> = (props) 
 									}}
 								>
 									<div style={buttonPrimary.text.styles}>
-										{isBuying ? (
+										{isProcessing ? (
 											<span className="loading loading-spinner loading-sm"></span>
 										) : (
 											'Buy Now'
@@ -257,14 +220,12 @@ export const ProductDetailsModal: React.FC<TProductDetailsModalProps> = (props) 
 };
 
 interface TProductDetailsModalProps {
-	product: NonNullable<TResolvedProductNode['content']['product']>;
-	node: TResolvedProductNode;
-	cx: TResolvedNodeProps<TResolvedProductNode>['cx'];
+	cx: TBundleCx;
 	modalRef: React.RefObject<HTMLDialogElement>;
 }
 
 export function useProductDetailsModal(config: TUseProductDetailsModalConfig) {
-	const { product, node, cx, onShow, onHide } = config;
+	const { cx, onShow, onHide } = config;
 	const modalRef = React.useRef<HTMLDialogElement>(null);
 
 	const showModal = React.useCallback(() => {
@@ -282,8 +243,8 @@ export function useProductDetailsModal(config: TUseProductDetailsModalConfig) {
 	}, [onHide]);
 
 	const ModalComponent = React.useCallback(() => {
-		return <ProductDetailsModal product={product} node={node} cx={cx} modalRef={modalRef} />;
-	}, [product, node, cx]);
+		return <ProductDetailsModal cx={cx} modalRef={modalRef} />;
+	}, [cx]);
 
 	return React.useMemo(
 		() => ({
@@ -297,9 +258,7 @@ export function useProductDetailsModal(config: TUseProductDetailsModalConfig) {
 }
 
 interface TUseProductDetailsModalConfig {
-	product: NonNullable<TResolvedProductNode['content']['product']>;
-	node: TResolvedProductNode;
-	cx: TResolvedNodeProps<TResolvedProductNode>['cx'];
+	cx: TBundleCx;
 	onShow?: () => void;
 	onHide?: () => void;
 }

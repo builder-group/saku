@@ -531,12 +531,13 @@ export interface TProduct {
 	description?: TRichContent;
 	images: TAssetHash[];
 	options: { name: string; values: string[] }[];
-	variants: {
-		id: string;
-		title: string;
-		description?: string;
-		price: { amount: string; currencyCode: string };
-		image?: TAssetHash;
-		selectedOptions: { name: string; value: string }[];
-	}[];
+	variants: TProductVariant[];
+}
+
+export interface TProductVariant {
+	id: string;
+	title: string;
+	price: { amount: string; currencyCode: string };
+	image?: TAssetHash;
+	selectedOptions: { name: string; value: string }[];
 }
