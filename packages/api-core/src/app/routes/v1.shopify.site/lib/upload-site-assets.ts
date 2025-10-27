@@ -121,7 +121,7 @@ export async function uploadSiteAssets(
 			};
 			return {
 				id: file.id,
-				url: file.url,
+				url: file.url ?? uploadedFile.target.resourceUrl,
 				originalHash: uploadedFile.asset.hash
 			};
 		})

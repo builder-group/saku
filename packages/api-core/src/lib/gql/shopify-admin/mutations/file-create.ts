@@ -1,6 +1,7 @@
 import { AppError } from '@repo/hono-utils';
 import { Err, Ok, type TResult } from 'tuple-result';
 import { gql, shopifyAdminApiClient, shopifyConfig, VariablesOf } from '@/environment';
+import { getFileById } from '../queries/file-get-by-id';
 
 // https://shopify.dev/docs/api/admin-graphql/latest/mutations/fileCreate
 const FILE_CREATE = gql(`
@@ -44,8 +45,7 @@ export async function createFiles(
 	input: TFileCreateInput[],
 	config: TCreateFilesConfig
 ): Promise<TResult<TFileCreateSuccess, AppError>> {
-	const { shopId, accessToken } = config;
-
+	const { shopId, accessToken, waitForUrl = true } = config;
 	const result = await shopifyAdminApiClient.query(FILE_CREATE, {
 		prefixUrl: shopifyConfig.shop.adminApi(shopId),
 		variables: { files: input },
@@ -87,56 +87,73 @@ export async function createFiles(
 		);
 	}
 
-	return Ok(
-		files.map((file) => {
-			let fileUrl: string | null = null;
-			switch (file.__typename) {
-				case 'MediaImage':
-					if (file.image != null) {
-						fileUrl = file.image.url;
-					}
-					break;
-				case 'Video':
-					if (file.sources?.[0] != null) {
-						fileUrl = file.sources[0].url;
-					}
-					break;
-				case 'GenericFile':
-					if (file.url != null) {
-						fileUrl = file.url;
-					}
-					break;
-				default:
-				// do nothing
+	const createdFiles = files.map((file) => {
+		let fileUrl: string | null = null;
+		switch (file.__typename) {
+			case 'MediaImage':
+				if (file.image != null) {
+					fileUrl = file.image.url;
+				}
+				break;
+			case 'Video':
+				if (file.sources?.[0] != null) {
+					fileUrl = file.sources[0].url;
+				}
+				break;
+			case 'GenericFile':
+				if (file.url != null) {
+					fileUrl = file.url;
+				}
+				break;
+			default:
+			// do nothing
+		}
+
+		return {
+			id: file.id,
+			url: fileUrl,
+			fileStatus: file.fileStatus,
+			alt: file.alt ?? '',
+			createdAt: file.createdAt
+		};
+	});
+
+	// Poll for permanent Shopify CDN URLs (1s→2s→4s→8s delay, max 5 attempts)
+	// Files are async processed: status is UPLOADED but url is null until READY
+	// We want the permanent CDN URL, not the temporary resourceUrl from staging
+	if (waitForUrl) {
+		for (let attempt = 0; attempt < 5; attempt++) {
+			const pendingFiles = createdFiles.filter((file) => file.url == null);
+			if (pendingFiles.length === 0) {
+				break;
 			}
 
-			if (fileUrl == null) {
-				throw new AppError('#ERR_INVALID_FILE_DATA', 500, {
-					detail: `Could not determine file URL from Shopify response for file type ${file.__typename}`
-				});
-			}
+			const delay = Math.min(1000 * Math.pow(2, attempt), 8000);
+			await new Promise((resolve) => setTimeout(resolve, delay));
 
-			return {
-				id: file.id,
-				url: fileUrl,
-				fileStatus: file.fileStatus,
-				alt: file.alt ?? '',
-				createdAt: file.createdAt
-			};
-		})
-	);
+			for (const file of pendingFiles) {
+				const result = await getFileById(file.id, { shopId, accessToken });
+				if (result.isOk()) {
+					file.url = result.value.url;
+				}
+			}
+		}
+	}
+
+	return Ok(createdFiles);
 }
 
 interface TCreateFilesConfig {
 	shopId: string;
 	accessToken: string;
+	waitForUrl?: boolean;
 }
 
 export type TFileCreateInput = VariablesOf<typeof FILE_CREATE>['files'][number];
 
 export type TFileCreateSuccess = {
 	id: string;
-	url: string;
+	url: string | null;
 	fileStatus: string;
 	alt: string;
 	createdAt: string;
