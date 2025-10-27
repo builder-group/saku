@@ -81,6 +81,7 @@ router.openapi(SubmitUploadedFilesRoute, async (c) => {
 				const submittedFile = submittedFiles[index] as TFileCreateSuccess[number];
 				return {
 					id: submittedFile.id,
+					url: submittedFile.url ?? inputFile.resourceUrl,
 					uploadId: inputFile.uploadId
 				};
 			})

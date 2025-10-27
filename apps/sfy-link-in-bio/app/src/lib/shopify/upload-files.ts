@@ -113,13 +113,10 @@ export async function uploadFiles(
 	}
 
 	return Ok(
-		submittedFiles.map((file, index) => {
-			const uploadedFile = uploadedFiles[index] as {
-				target: { resourceUrl: string };
-			};
+		submittedFiles.map((file) => {
 			return {
 				id: file.id,
-				resourceUrl: uploadedFile.target.resourceUrl
+				url: file.url
 			};
 		})
 	);
@@ -132,5 +129,5 @@ export interface TUploadFilesConfig {
 
 export type TUploadFilesSuccess = {
 	id: string;
-	resourceUrl: string;
+	url: string;
 }[];

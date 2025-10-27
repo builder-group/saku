@@ -39,7 +39,7 @@ export const ImageUploadField: React.FC<TImageUploadFieldProps> = (props) => {
 			if (uploadedFile != null) {
 				onChange?.({
 					type: 'Changed',
-					url: uploadedFile.resourceUrl,
+					url: uploadedFile.url,
 					fileName: file.name
 				});
 			}

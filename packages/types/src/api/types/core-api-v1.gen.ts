@@ -2100,6 +2100,11 @@ export interface operations {
                         files: {
                             /** @example gid://shopify/MediaImage/12345678 */
                             id: string;
+                            /**
+                             * Format: uri
+                             * @example https://cdn.shopify.com/s/files/1/0123/4567/files/product-1.jpg
+                             */
+                            url: string;
                             /** @example ugc_abc123def456 */
                             uploadId: string;
                         }[];

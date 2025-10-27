@@ -96,6 +96,9 @@ export const SubmitUploadedFilesRoute = createRoute({
 						id: z.string().openapi({
 							example: 'gid://shopify/MediaImage/12345678'
 						}),
+						url: z.url().openapi({
+							example: 'https://cdn.shopify.com/s/files/1/0123/4567/files/product-1.jpg'
+						}),
 						uploadId: z.string().openapi({
 							example: 'ugc_abc123def456'
 						})
