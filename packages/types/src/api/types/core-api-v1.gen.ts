@@ -1860,7 +1860,7 @@ export interface operations {
                     "application/json": {
                         uploadedAssets: {
                             id: string;
-                            resourceUrl: string;
+                            url: string;
                             originalHash: string;
                         }[];
                     };

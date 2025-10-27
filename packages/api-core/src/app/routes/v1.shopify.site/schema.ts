@@ -185,7 +185,7 @@ export const UploadSiteAssetsRoute = createRoute({
 				uploadedAssets: z.array(
 					z.object({
 						id: z.string(),
-						resourceUrl: z.string(),
+						url: z.string(),
 						originalHash: z.string()
 					})
 				)

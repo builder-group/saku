@@ -83,7 +83,7 @@ export const OverrideWithExternalSiteSection: React.FC<TOverrideWithExternalSite
 				if (asset != null) {
 					asset.storage = {
 						type: 'url',
-						url: uploadedAsset.resourceUrl
+						url: uploadedAsset.url
 					};
 				}
 			}

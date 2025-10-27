@@ -121,7 +121,7 @@ export async function uploadSiteAssets(
 			};
 			return {
 				id: file.id,
-				resourceUrl: uploadedFile.target.resourceUrl,
+				url: file.url,
 				originalHash: uploadedFile.asset.hash
 			};
 		})
@@ -135,6 +135,6 @@ export interface TUploadSiteAssetsConfig {
 
 export interface TUploadedAsset {
 	id: string;
-	resourceUrl: string;
+	url: string;
 	originalHash: string;
 }

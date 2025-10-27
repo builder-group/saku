@@ -11,6 +11,25 @@ const FILE_CREATE = gql(`
 				fileStatus
 				alt
 				createdAt
+				... on MediaImage {
+					__typename
+					id
+					image {
+						url
+					}
+				}
+				... on Video {
+					__typename
+					id
+					sources {
+						url
+					}
+				}
+				... on GenericFile {
+					__typename
+					id
+					url
+				}
 			}
 			userErrors {
 				code
@@ -70,14 +89,36 @@ export async function createFiles(
 
 	return Ok(
 		files.map((file) => {
-			if (file?.id == null || file?.fileStatus == null || file?.createdAt == null) {
+			let fileUrl: string | null = null;
+			switch (file.__typename) {
+				case 'MediaImage':
+					if (file.image != null) {
+						fileUrl = file.image.url;
+					}
+					break;
+				case 'Video':
+					if (file.sources?.[0] != null) {
+						fileUrl = file.sources[0].url;
+					}
+					break;
+				case 'GenericFile':
+					if (file.url != null) {
+						fileUrl = file.url;
+					}
+					break;
+				default:
+				// do nothing
+			}
+
+			if (fileUrl == null) {
 				throw new AppError('#ERR_INVALID_FILE_DATA', 500, {
-					detail: 'Invalid file data returned from Shopify'
+					detail: `Could not determine file URL from Shopify response for file type ${file.__typename}`
 				});
 			}
 
 			return {
 				id: file.id,
+				url: fileUrl,
 				fileStatus: file.fileStatus,
 				alt: file.alt ?? '',
 				createdAt: file.createdAt
@@ -95,6 +136,7 @@ export type TFileCreateInput = VariablesOf<typeof FILE_CREATE>['files'][number];
 
 export type TFileCreateSuccess = {
 	id: string;
+	url: string;
 	fileStatus: string;
 	alt: string;
 	createdAt: string;
