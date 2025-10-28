@@ -9,7 +9,7 @@ export const Skeleton = React.forwardRef<HTMLDivElement, TSkeletonProps>((props,
 	return (
 		<div
 			ref={ref}
-			className="relative flex w-full items-center gap-3 bg-white"
+			className="flex flex-row items-center gap-3 bg-white"
 			style={{
 				...autoLayout.styles,
 				...appearance.styles,
@@ -19,10 +19,10 @@ export const Skeleton = React.forwardRef<HTMLDivElement, TSkeletonProps>((props,
 			}}
 		>
 			<div
-				className="h-12 w-12 flex-shrink-0 animate-pulse bg-neutral-300"
+				className="h-12 w-12 animate-pulse bg-neutral-300"
 				style={{ borderRadius: appearance.styles.borderRadius }}
-			></div>
-			<div className="flex min-w-0 flex-grow flex-col gap-1">
+			/>
+			<div className="flex flex-col gap-1">
 				<div className="h-4 w-32 animate-pulse bg-neutral-300"></div>
 				<div className="h-3 w-16 animate-pulse bg-neutral-300"></div>
 			</div>

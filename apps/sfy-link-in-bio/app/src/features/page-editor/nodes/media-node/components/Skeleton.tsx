@@ -9,7 +9,7 @@ export const Skeleton = React.forwardRef<HTMLDivElement, TSkeletonProps>((props,
 	return (
 		<div
 			ref={ref}
-			className="relative flex w-full items-center gap-3 bg-white"
+			className="overflow-hidden bg-white"
 			style={{
 				...autoLayout.styles,
 				...appearance.styles,
@@ -19,7 +19,7 @@ export const Skeleton = React.forwardRef<HTMLDivElement, TSkeletonProps>((props,
 			}}
 		>
 			<div
-				className="flex aspect-[16/9] w-full animate-pulse bg-neutral-300"
+				className="aspect-video w-full animate-pulse bg-neutral-300"
 				style={{ borderRadius: image.appearance.styles.borderRadius }}
 			></div>
 		</div>
