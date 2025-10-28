@@ -121,6 +121,7 @@ export async function createFiles(
 	// Poll for permanent Shopify CDN URLs (immediate→500ms→1s→2s→4s, max 7 attempts)
 	// Files are async processed: status is UPLOADED but url is null until READY
 	// We want the permanent CDN URL, not the temporary resourceUrl from staging
+	// https://community.shopify.com/t/stageduploads-get-a-permanent-cdn-url/175583/5
 	if (waitForUrl) {
 		for (let attempt = 0; attempt < 7; attempt++) {
 			const pendingFiles = createdFiles.filter((file) => file.url == null);
