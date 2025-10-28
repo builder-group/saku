@@ -9,6 +9,7 @@ const GET_FILE_BY_ID = gql(`
 			__typename
 			... on MediaImage {
 				id
+				fileStatus
 				alt
 				createdAt
 				preview {
@@ -27,6 +28,7 @@ const GET_FILE_BY_ID = gql(`
 			}
 			... on Video {
 				id
+				fileStatus
 				alt
 				createdAt
 				preview {
@@ -44,6 +46,7 @@ const GET_FILE_BY_ID = gql(`
 			}
 			... on GenericFile {
 				id
+				fileStatus
 				alt
 				createdAt
 				preview {
@@ -147,6 +150,7 @@ export async function getFileById(
 	return Ok({
 		id: node.id,
 		alt: node.alt ?? '',
+		fileStatus: node.fileStatus,
 		createdAt: node.createdAt,
 		fileName: new URL(fileUrl).pathname.split('/').pop()?.split('?')[0] ?? '',
 		previewImage:
@@ -169,6 +173,7 @@ interface TGetFileByIdConfig {
 export interface TGetFileByIdSuccess {
 	id: string;
 	alt: string;
+	fileStatus: 'UPLOADED' | 'PROCESSING' | 'READY' | 'FAILED';
 	createdAt: string;
 	fileName: string;
 	previewImage?: {

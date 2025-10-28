@@ -87,7 +87,7 @@ export async function createFiles(
 		);
 	}
 
-	const createdFiles = files.map((file) => {
+	const createdFiles = files.map((file): TFileCreateSuccess[number] => {
 		let fileUrl: string | null = null;
 		switch (file.__typename) {
 			case 'MediaImage':
@@ -118,23 +118,27 @@ export async function createFiles(
 		};
 	});
 
-	// Poll for permanent Shopify CDN URLs (1s→2s→4s→8s delay, max 5 attempts)
+	// Poll for permanent Shopify CDN URLs (immediate→500ms→1s→2s→4s, max 7 attempts)
 	// Files are async processed: status is UPLOADED but url is null until READY
 	// We want the permanent CDN URL, not the temporary resourceUrl from staging
 	if (waitForUrl) {
-		for (let attempt = 0; attempt < 5; attempt++) {
+		for (let attempt = 0; attempt < 7; attempt++) {
 			const pendingFiles = createdFiles.filter((file) => file.url == null);
-			if (pendingFiles.length === 0) {
+			if (!pendingFiles.length) {
 				break;
 			}
 
-			const delay = Math.min(1000 * Math.pow(2, attempt), 8000);
-			await new Promise((resolve) => setTimeout(resolve, delay));
+			// First attempt is immediate (0ms), then exponential backoff
+			if (attempt > 0) {
+				const delay = Math.min(500 * Math.pow(2, attempt - 1), 8000);
+				await new Promise((resolve) => setTimeout(resolve, delay));
+			}
 
 			for (const file of pendingFiles) {
 				const result = await getFileById(file.id, { shopId, accessToken });
 				if (result.isOk()) {
 					file.url = result.value.url;
+					file.fileStatus = result.value.fileStatus;
 				}
 			}
 		}
@@ -154,7 +158,7 @@ export type TFileCreateInput = VariablesOf<typeof FILE_CREATE>['files'][number];
 export type TFileCreateSuccess = {
 	id: string;
 	url: string | null;
-	fileStatus: string;
+	fileStatus: 'UPLOADED' | 'PROCESSING' | 'READY' | 'FAILED';
 	alt: string;
 	createdAt: string;
 }[];
