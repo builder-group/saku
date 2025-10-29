@@ -129,10 +129,13 @@ export async function createFiles(
 		while (attempt < 10 && nextPendingFiles.length > 0) {
 			// Poll for file URLs
 			for (const file of nextPendingFiles) {
-				const result = await getFileById(file.id, { shopId, accessToken });
-				if (result.isOk()) {
-					file.url = result.value.url;
-					file.fileStatus = result.value.fileStatus;
+				const [isFileByIdOk, , fileById] = await getFileById(file.id, {
+					shopId,
+					accessToken
+				});
+				if (isFileByIdOk) {
+					file.url = fileById.url;
+					file.fileStatus = fileById.fileStatus;
 				}
 			}
 
@@ -148,6 +151,8 @@ export async function createFiles(
 			await new Promise((resolve) => setTimeout(resolve, delay));
 			if (!madeProgress) {
 				attempt++;
+			} else {
+				attempt = 0;
 			}
 		}
 	}
