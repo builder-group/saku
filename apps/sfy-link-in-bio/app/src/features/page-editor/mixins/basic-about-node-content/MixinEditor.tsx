@@ -86,7 +86,10 @@ export const BasicAboutNodeContentMixinEditor = (props: TBasicAboutNodeContentMi
 		(event: TImageUploadEvent) => {
 			switch (event.type) {
 				case 'Changed': {
-					const hash = editor.registerImage(event.url, event.fileName);
+					const hash = editor.registerImage(event.url, {
+						mimeType: event.mimeType,
+						fileName: event.fileName
+					});
 					if (hash != null) {
 						state._v.avatar = hash;
 						state._notify();

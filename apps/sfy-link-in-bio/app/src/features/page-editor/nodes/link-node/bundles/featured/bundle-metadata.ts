@@ -1,6 +1,6 @@
 import { linkNodeMetadata, TAutoLayoutStyleMixin, TFeaturedLinkNodeBundle } from '@repo/editor';
 import { Err, Ok } from 'tuple-result';
-import { AppError } from '@/lib';
+import { AppError, fetchMimeType } from '@/lib';
 import { packAutoLayoutTokenRef, unpackAutoLayoutTokenRef } from '../../../../mixins';
 import { TLinkNodeBundleMetadata } from '../../environment';
 import { fetchUrlMetadata } from '../../lib';
@@ -94,7 +94,18 @@ export const featuredBundleMetadata: TLinkNodeBundleMetadata<TFeaturedLinkNodeBu
 
 		let ogImageHash: string | null = null;
 		if (metadata.ogImage != null) {
-			ogImageHash = cx.editor.registerImage(metadata.ogImage, 'og-image');
+			const mimeType = await fetchMimeType(metadata.ogImage);
+			if (mimeType == null) {
+				return Err(
+					new AppError('#ERR_FAILED_TO_FETCH_MIME_TYPE', {
+						detail: 'Failed to fetch MIME type'
+					})
+				);
+			}
+			ogImageHash = cx.editor.registerImage(metadata.ogImage, {
+				mimeType,
+				fileName: metadata.ogImage
+			});
 		}
 
 		cx.node._v.content.metadata = {

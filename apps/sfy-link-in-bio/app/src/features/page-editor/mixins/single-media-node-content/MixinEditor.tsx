@@ -52,7 +52,10 @@ export const SingleMediaNodeContentMixinEditor = (
 		(event: TImageUploadEvent) => {
 			switch (event.type) {
 				case 'Changed': {
-					const hash = editor.registerImage(event.url, event.fileName);
+					const hash = editor.registerImage(event.url, {
+						mimeType: event.mimeType,
+						fileName: event.fileName
+					});
 					if (hash != null) {
 						state._v.media = {
 							type: 'image',

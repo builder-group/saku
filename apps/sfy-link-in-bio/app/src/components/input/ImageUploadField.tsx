@@ -2,7 +2,7 @@ import { useAppBridge } from '@shopify/app-bridge-react';
 import { DropZone, Icon, Spinner, Text } from '@shopify/polaris';
 import React from 'react';
 import { PolarisDeleteIcon, PolarisReplaceIcon } from '@/components';
-import { cn, listMediaFiles, uploadFiles } from '@/lib';
+import { cn, fetchMimeType, listMediaFiles, uploadFiles } from '@/lib';
 
 export const ImageUploadField: React.FC<TImageUploadFieldProps> = (props) => {
 	const { image, onChange, onError } = props;
@@ -40,6 +40,7 @@ export const ImageUploadField: React.FC<TImageUploadFieldProps> = (props) => {
 				onChange?.({
 					type: 'Changed',
 					url: uploadedFile.url,
+					mimeType: file.type,
 					fileName: file.name
 				});
 			}
@@ -117,16 +118,24 @@ export const ImageUploadField: React.FC<TImageUploadFieldProps> = (props) => {
 
 			const selectedFileIndex = idToIndex.get(selectedId);
 			const selectedFile = selectedFileIndex != null ? files[selectedFileIndex] : null;
-			if (selectedFile != null) {
-				onChange?.({
-					type: 'Changed',
-					url: selectedFile.url,
-					fileName: selectedFile.fileName,
-					width: selectedFile.details.type === 'image' ? selectedFile.details.width : undefined,
-					height: selectedFile.details.type === 'image' ? selectedFile.details.height : undefined,
-					previewImageUrl: selectedFile.previewImage?.url
-				});
+			if (selectedFile == null) {
+				return;
 			}
+
+			const mimeType = await fetchMimeType(selectedFile.url);
+			if (mimeType == null) {
+				return;
+			}
+
+			onChange?.({
+				type: 'Changed',
+				url: selectedFile.url,
+				mimeType,
+				fileName: selectedFile.fileName,
+				width: selectedFile.details.type === 'image' ? selectedFile.details.width : undefined,
+				height: selectedFile.details.type === 'image' ? selectedFile.details.height : undefined,
+				previewImageUrl: selectedFile.previewImage?.url
+			});
 		}
 
 		return () => {
@@ -171,7 +180,7 @@ export const ImageUploadField: React.FC<TImageUploadFieldProps> = (props) => {
 
 	return (
 		<div className="flex items-center gap-2">
-			<div className="h-10 w-10 flex-shrink-0">
+			<div className="h-10 w-10 shrink-0">
 				<DropZone onDrop={handleDrop} allowMultiple={false}>
 					{isUploading ? (
 						<div className="flex h-10 w-10 items-center justify-center">
@@ -263,6 +272,7 @@ export type TImageUploadEvent =
 	| {
 			type: 'Changed';
 			url: string;
+			mimeType: string;
 			fileName: string;
 			width?: number;
 			height?: number;

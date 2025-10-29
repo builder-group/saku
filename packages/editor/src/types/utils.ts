@@ -27,7 +27,13 @@ export interface TFontAsset extends TBaseAsset {
 
 export interface TImageAsset extends TBaseAsset {
 	type: 'image';
-	contentType: 'image/png' | 'image/jpeg' | 'image/gif' | 'image/webp' | 'image/svg+xml';
+	contentType:
+		| 'image/png'
+		| 'image/jpeg'
+		| 'image/gif'
+		| 'image/webp'
+		| 'image/svg+xml'
+		| 'image/x-icon';
 	dimensions?: { width: number; height: number };
 	altText?: string;
 }

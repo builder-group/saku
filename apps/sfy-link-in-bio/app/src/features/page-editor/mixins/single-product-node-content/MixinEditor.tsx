@@ -1,5 +1,5 @@
 import { notEmpty } from '@blgc/utils';
-import { TRichContent, TSingleProductNodeContentMixin } from '@repo/editor';
+import { TAssetHash, TRichContent, TSingleProductNodeContentMixin } from '@repo/editor';
 import {
 	Button,
 	IndexTable,
@@ -12,7 +12,13 @@ import { useFeatureState } from 'feature-react/state';
 import { TState } from 'feature-state';
 import React from 'react';
 import { PolarisDeleteIcon, PolarisProductAddIcon, RichContentField } from '@/components';
-import { capitalizeFirstLetter, cn, isProduct, mutateWithReferenceUpdate } from '@/lib';
+import {
+	capitalizeFirstLetter,
+	cn,
+	fetchMimeType,
+	isProduct,
+	mutateWithReferenceUpdate
+} from '@/lib';
 import { TPageEditor } from '../../lib';
 
 export const SingleProductNodeContentMixinEditor = (
@@ -210,41 +216,63 @@ export const SingleProductNodeContentMixinEditor = (
 			id: product.id,
 			title: product.title,
 			description: { type: 'html', value: product.descriptionHtml },
-			images: product.images
-				.map((image) => editor.registerImage(image.originalSrc))
-				.filter(notEmpty),
+			images: (
+				await Promise.all(
+					product.images.map(async (image) => {
+						const mimeType = await fetchMimeType(image.originalSrc);
+						if (mimeType == null) {
+							return null;
+						}
+						return editor.registerImage(image.originalSrc, {
+							mimeType,
+							fileName: image.originalSrc
+						});
+					})
+				)
+			).filter(notEmpty),
 			options: product.options.map((opt) => ({ name: opt.name, values: opt.values })),
-			variants: product.variants
-				.map((variant) => {
-					if (variant.id == null || variant.title == null || variant.price == null) {
-						return null;
-					}
+			variants: (
+				await Promise.all(
+					product.variants.map(async (variant) => {
+						if (variant.id == null || variant.title == null || variant.price == null) {
+							return null;
+						}
 
-					return {
-						id: variant.id,
-						title: variant.title,
-						price: {
-							amount: variant.price,
-							currencyCode: 'USD'
-						},
-						image:
-							variant.image?.originalSrc != null
-								? (editor.registerImage(variant.image.originalSrc) ?? undefined)
-								: undefined,
-						selectedOptions:
-							variant.selectedOptions
-								?.map((opt, idx) => {
-									const name = product.options?.[idx]?.name;
-									const value = opt.value;
-									if (name == null || value == null) {
-										return null;
-									}
-									return { name, value };
-								})
-								.filter(notEmpty) ?? []
-					};
-				})
-				.filter(notEmpty)
+						let image: TAssetHash | undefined;
+						if (variant.image?.originalSrc != null) {
+							const mimeType = await fetchMimeType(variant.image.originalSrc);
+							if (mimeType != null) {
+								image =
+									editor.registerImage(variant.image.originalSrc, {
+										mimeType,
+										fileName: variant.image.originalSrc
+									}) ?? undefined;
+							}
+						}
+
+						return {
+							id: variant.id,
+							title: variant.title,
+							price: {
+								amount: variant.price,
+								currencyCode: 'USD'
+							},
+							image,
+							selectedOptions:
+								variant.selectedOptions
+									?.map((opt, idx) => {
+										const name = product.options?.[idx]?.name;
+										const value = opt.value;
+										if (name == null || value == null) {
+											return null;
+										}
+										return { name, value };
+									})
+									.filter(notEmpty) ?? []
+						};
+					})
+				)
+			).filter(notEmpty)
 		};
 		state._notify();
 	}, [editor, clearSelection, state]);

@@ -24,8 +24,8 @@ import { TState } from 'feature-state';
 import React from 'react';
 import { unwrapOrUndefined } from 'tuple-result';
 import { ImageUploadField, LinkIcon, LinkOffIcon, TImageUploadEvent } from '@/components';
-import { TPageEditor } from '@/features/page-editor';
 import { cn } from '@/lib';
+import { TPageEditor } from '../../lib';
 import { isPreventDefault, TPreventDefault } from './prevent-default';
 import { TokenActionOverlay, TokenKeyTooltip } from './TokenActionOverlay';
 
@@ -206,7 +206,10 @@ export const TokenPaintInput = <GRefValue extends TRef<TPaint> | undefined>(
 
 			switch (event.type) {
 				case 'Changed': {
-					const hash = editor.registerImage(event.url, event.fileName);
+					const hash = editor.registerImage(event.url, {
+						mimeType: event.mimeType,
+						fileName: event.fileName
+					});
 					if (hash != null) {
 						handleValueChange(
 							{

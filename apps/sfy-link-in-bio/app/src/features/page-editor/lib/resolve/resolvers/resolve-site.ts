@@ -3,7 +3,7 @@ import { Err, Ok, type TResult } from 'tuple-result';
 import { AppError } from '@/lib';
 import { resolvePageNode } from '../../../nodes';
 import { TResolvedSite } from '../../../types';
-import { getFontUrls } from '../../site';
+import { getFontUrls } from '../../asset';
 import { TSiteResolveContext } from '../site-resolve-context';
 
 export function resolveSite(cx: TSiteResolveContext): TResult<TResolvedSite, AppError> {

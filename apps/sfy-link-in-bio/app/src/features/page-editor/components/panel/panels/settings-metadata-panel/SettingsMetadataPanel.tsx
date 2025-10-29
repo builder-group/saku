@@ -112,7 +112,10 @@ export const SettingsMetadataPanel: React.FC<TSettingsMetadataPanelProps> = (pro
 		(image: TImageUploadEvent) => {
 			switch (image.type) {
 				case 'Changed': {
-					const hash = editor.registerImage(image.url, image.fileName);
+					const hash = editor.registerImage(image.url, {
+						mimeType: image.mimeType,
+						fileName: image.fileName
+					});
 					if (hash != null) {
 						rootNode._v.metadata.image = hash;
 						rootNode._notify();
@@ -133,7 +136,10 @@ export const SettingsMetadataPanel: React.FC<TSettingsMetadataPanelProps> = (pro
 		(favicon: TImageUploadEvent) => {
 			switch (favicon.type) {
 				case 'Changed': {
-					const hash = editor.registerImage(favicon.url, favicon.fileName);
+					const hash = editor.registerImage(favicon.url, {
+						mimeType: favicon.mimeType,
+						fileName: favicon.fileName
+					});
 					if (hash != null) {
 						rootNode._v.metadata.favicon = hash;
 						rootNode._notify();

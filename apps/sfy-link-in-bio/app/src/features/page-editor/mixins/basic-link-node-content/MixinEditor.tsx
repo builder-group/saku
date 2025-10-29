@@ -104,7 +104,10 @@ export const BasicLinkNodeContentMixinEditor = (props: TBasicLinkNodeContentMixi
 		(event: TImageUploadEvent) => {
 			switch (event.type) {
 				case 'Changed': {
-					const hash = cx.editor.registerImage(event.url, event.fileName);
+					const hash = cx.editor.registerImage(event.url, {
+						mimeType: event.mimeType,
+						fileName: event.fileName
+					});
 					if (hash != null) {
 						state._v.overrides.thumbnail = hash;
 						state._notify();

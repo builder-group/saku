@@ -31,6 +31,7 @@ import {
 	TBreakpoint
 } from '@/lib';
 import { TSettingsSectionType, TViewType } from '../../environment';
+import { toImageContentType } from '../asset';
 import { createNodeState, nodeAssetHashRegistry, nodeMetadataRegistry, TNodeState } from '../node';
 import { createPageContext, TPageContext } from './create-page-context';
 
@@ -450,28 +451,21 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 			return asset;
 		},
 
-		registerImage(url, fileName, dimensions) {
+		registerImage(url, config) {
+			const { mimeType, fileName, dimensions } = config;
 			const assetId = createId('asset');
 			const hash = assetId; // Temporary workaround until proper content hashing
 
-			const pathname = new URL(url).pathname.toLowerCase();
-			let contentType: TImageAsset['contentType'] = 'image/jpeg';
-			if (pathname.endsWith('.png')) {
-				contentType = 'image/png';
-			} else if (pathname.endsWith('.gif')) {
-				contentType = 'image/gif';
-			} else if (pathname.endsWith('.webp')) {
-				contentType = 'image/webp';
-			} else if (pathname.endsWith('.svg')) {
-				contentType = 'image/svg+xml';
+			const imageContentType = toImageContentType(mimeType);
+			if (imageContentType == null) {
+				return null;
 			}
 
-			// Register the image
 			this.assetsMap._v[hash] = {
 				id: assetId,
 				type: 'image',
 				hash,
-				contentType,
+				contentType: imageContentType,
 				storage: {
 					type: 'url',
 					url
@@ -826,8 +820,11 @@ export interface TPageEditor {
 	getImageAsset: (hash: TAssetHash | undefined | null) => TImageAsset | null;
 	registerImage: (
 		url: string,
-		fileName?: string,
-		dimensions?: { width: number; height: number }
+		config: {
+			mimeType: string;
+			fileName?: string;
+			dimensions?: { width: number; height: number };
+		}
 	) => TAssetHash | null;
 
 	cleanupAssets: () => TAssetHash[];
