@@ -118,29 +118,36 @@ export async function createFiles(
 		};
 	});
 
-	// Poll for permanent Shopify CDN URLs (immediate→500ms→1s→2s→4s, max 7 attempts)
+	// Poll for permanent Shopify CDN URLs with adaptive backoff
 	// Files are async processed: status is UPLOADED but url is null until READY
 	// We want the permanent CDN URL, not the temporary resourceUrl from staging
 	// https://community.shopify.com/t/stageduploads-get-a-permanent-cdn-url/175583/5
 	if (waitForUrl) {
-		for (let attempt = 0; attempt < 7; attempt++) {
-			const pendingFiles = createdFiles.filter((file) => file.url == null);
-			if (!pendingFiles.length) {
-				break;
-			}
+		let attempt = 0;
+		let nextPendingFiles = createdFiles.filter((file) => file.url == null);
 
-			// First attempt is immediate (0ms), then exponential backoff
-			if (attempt > 0) {
-				const delay = Math.min(500 * Math.pow(2, attempt - 1), 8000);
-				await new Promise((resolve) => setTimeout(resolve, delay));
-			}
-
-			for (const file of pendingFiles) {
+		while (attempt < 10 && nextPendingFiles.length > 0) {
+			// Poll for file URLs
+			for (const file of nextPendingFiles) {
 				const result = await getFileById(file.id, { shopId, accessToken });
 				if (result.isOk()) {
 					file.url = result.value.url;
 					file.fileStatus = result.value.fileStatus;
 				}
+			}
+
+			const currentPendingLength = nextPendingFiles.length;
+			nextPendingFiles = createdFiles.filter((file) => file.url == null);
+			if (!nextPendingFiles.length) {
+				break;
+			}
+
+			// Progress = fast polling, stuck = exponential backoff
+			const madeProgress = nextPendingFiles.length < currentPendingLength;
+			const delay = madeProgress ? 500 : Math.min(500 * Math.pow(2, attempt), 8000);
+			await new Promise((resolve) => setTimeout(resolve, delay));
+			if (!madeProgress) {
+				attempt++;
 			}
 		}
 	}
