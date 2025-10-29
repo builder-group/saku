@@ -13,16 +13,28 @@ export async function uploadSiteAssets(
 	assets: TAsset[],
 	config: TUploadSiteAssetsConfig
 ): Promise<TResult<TUploadedAsset[], AppError>> {
-	const { shopId, accessToken } = config;
+	const { shopId, accessToken, uploadStrategy = 'shopify-only' } = config;
 
-	if (!assets.length) {
+	// Filter assets based on upload strategy
+	let assetsToUpload;
+	switch (uploadStrategy) {
+		case 'shopify-only': {
+			assetsToUpload = assets.filter((asset) => isShopifyCdnAsset(asset));
+			break;
+		}
+		case 'all':
+		default: {
+			assetsToUpload = assets;
+		}
+	}
+	if (!assetsToUpload.length) {
 		return Ok([]);
 	}
 
 	// Create staged upload targets
 	const [isCreateStagedUploadsOk, createStagedUploadsErr, uploadTargets] =
 		await createStagedUploads(
-			assets.map((asset) => ({
+			assetsToUpload.map((asset) => ({
 				filename: asset.fileName ?? `asset-${asset.hash}`,
 				mimeType: asset.contentType,
 				resource: mapMimeTypeToResource(asset.contentType),
@@ -34,7 +46,7 @@ export async function uploadSiteAssets(
 		return Err(createStagedUploadsErr);
 	}
 
-	if (uploadTargets.length !== assets.length) {
+	if (uploadTargets.length !== assetsToUpload.length) {
 		return Err(
 			new AppError('#ERR_CREATE_UPLOAD_TARGETS_MISMATCH', 500, {
 				detail: 'Failed to create all staged upload targets'
@@ -47,7 +59,7 @@ export async function uploadSiteAssets(
 	try {
 		uploadedFiles = await Promise.all(
 			uploadTargets.map(async (uploadTarget, index) => {
-				const asset = assets[index];
+				const asset = assetsToUpload[index];
 				if (asset == null) {
 					throw new Error('Missing asset');
 				}
@@ -131,10 +143,18 @@ export async function uploadSiteAssets(
 export interface TUploadSiteAssetsConfig {
 	shopId: string;
 	accessToken: string;
+	uploadStrategy?: 'shopify-only' | 'all';
 }
 
 export interface TUploadedAsset {
 	id: string;
 	url: string;
 	originalHash: string;
+}
+
+function isShopifyCdnAsset(asset: TAsset): boolean {
+	if (asset.storage.type !== 'url') {
+		return false;
+	}
+	return asset.storage.url.includes('cdn.shopify.com');
 }

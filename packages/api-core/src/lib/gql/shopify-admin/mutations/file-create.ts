@@ -1,6 +1,6 @@
 import { AppError } from '@repo/hono-utils';
 import { Err, Ok, type TResult } from 'tuple-result';
-import { gql, shopifyAdminApiClient, shopifyConfig, VariablesOf } from '@/environment';
+import { gql, logger, shopifyAdminApiClient, shopifyConfig, VariablesOf } from '@/environment';
 import { getFileById } from '../queries/file-get-by-id';
 
 // https://shopify.dev/docs/api/admin-graphql/latest/mutations/fileCreate
@@ -123,6 +123,7 @@ export async function createFiles(
 	// We want the permanent CDN URL, not the temporary resourceUrl from staging
 	// https://community.shopify.com/t/stageduploads-get-a-permanent-cdn-url/175583/5
 	if (waitForUrl) {
+		const startTime = Date.now();
 		let attempt = 0;
 		let nextPendingFiles = createdFiles.filter((file) => file.url == null);
 
@@ -156,6 +157,16 @@ export async function createFiles(
 			} else {
 				attempt = 0;
 			}
+		}
+
+		// Log if we still have unresolved files
+		if (nextPendingFiles.length > 0) {
+			const duration = Date.now() - startTime;
+			logger.warn(`Failed to resolve ${nextPendingFiles.length} file URL(s) after ${duration}ms`, {
+				unresolvedFileIds: nextPendingFiles.map((f) => f.id),
+				duration,
+				attempts: attempt
+			});
 		}
 	}
 
