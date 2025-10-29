@@ -128,16 +128,18 @@ export async function createFiles(
 
 		while (attempt < 10 && nextPendingFiles.length > 0) {
 			// Poll for file URLs
-			for (const file of nextPendingFiles) {
-				const [isFileByIdOk, , fileById] = await getFileById(file.id, {
-					shopId,
-					accessToken
-				});
-				if (isFileByIdOk) {
-					file.url = fileById.url;
-					file.fileStatus = fileById.fileStatus;
-				}
-			}
+			await Promise.all(
+				nextPendingFiles.map(async (file) => {
+					const [isFileByIdOk, , fileById] = await getFileById(file.id, {
+						shopId,
+						accessToken
+					});
+					if (isFileByIdOk) {
+						file.url = fileById.url;
+						file.fileStatus = fileById.fileStatus;
+					}
+				})
+			);
 
 			const currentPendingLength = nextPendingFiles.length;
 			nextPendingFiles = createdFiles.filter((file) => file.url == null);

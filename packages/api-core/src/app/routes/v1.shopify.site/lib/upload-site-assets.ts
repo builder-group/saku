@@ -43,39 +43,39 @@ export async function uploadSiteAssets(
 	}
 
 	// Upload each asset to its staged target
-	const uploadPromises = uploadTargets.map(async (uploadTarget, index) => {
-		const asset = assets[index];
-		if (asset == null) {
-			throw new Error('Missing asset');
-		}
-
-		const assetBinary = await getAssetBinary(asset);
-		if (assetBinary == null) {
-			throw new Error(`Could not retrieve binary for asset '${asset.hash}'`);
-		}
-
-		const formData = new FormData();
-		uploadTarget.parameters.forEach((param) => {
-			formData.append(param.name, param.value);
-		});
-		formData.append('file', new Blob([assetBinary]));
-
-		const [isUploadOk, uploadErr] = await fetchClient.post(uploadTarget.url, formData, {
-			parseAs: 'text'
-		});
-		if (!isUploadOk) {
-			throw new Error(`Failed to upload file: ${uploadErr.message}`);
-		}
-
-		return {
-			asset,
-			target: uploadTarget
-		};
-	});
-
 	let uploadedFiles;
 	try {
-		uploadedFiles = await Promise.all(uploadPromises);
+		uploadedFiles = await Promise.all(
+			uploadTargets.map(async (uploadTarget, index) => {
+				const asset = assets[index];
+				if (asset == null) {
+					throw new Error('Missing asset');
+				}
+
+				const assetBinary = await getAssetBinary(asset);
+				if (assetBinary == null) {
+					throw new Error(`Could not retrieve binary for asset '${asset.hash}'`);
+				}
+
+				const formData = new FormData();
+				uploadTarget.parameters.forEach((param) => {
+					formData.append(param.name, param.value);
+				});
+				formData.append('file', new Blob([assetBinary]));
+
+				const [isUploadOk, uploadErr] = await fetchClient.post(uploadTarget.url, formData, {
+					parseAs: 'text'
+				});
+				if (!isUploadOk) {
+					throw new Error(`Failed to upload file: ${uploadErr.message}`);
+				}
+
+				return {
+					asset,
+					target: uploadTarget
+				};
+			})
+		);
 	} catch (error) {
 		return Err(
 			new AppError('#ERR_UPLOAD_FILES', 500, {
