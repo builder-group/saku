@@ -1,6 +1,6 @@
 import { linkNodeMetadata, TAutoLayoutStyleMixin, TClassicLinkNodeBundle } from '@repo/editor';
 import { Err, Ok } from 'tuple-result';
-import { AppError, fetchMimeType } from '@/lib';
+import { AppError } from '@/lib';
 import { packAutoLayoutTokenRef, unpackAutoLayoutTokenRef } from '../../../../mixins';
 import { TLinkNodeBundleMetadata } from '../../environment';
 import { fetchUrlMetadata } from '../../lib';
@@ -94,18 +94,7 @@ export const classicBundleMetadata: TLinkNodeBundleMetadata<TClassicLinkNodeBund
 
 		let faviconHash: string | null = null;
 		if (metadata.favicon != null) {
-			const mimeType = await fetchMimeType(metadata.favicon);
-			if (mimeType == null) {
-				return Err(
-					new AppError('#ERR_FAILED_TO_FETCH_MIME_TYPE', {
-						detail: 'Failed to fetch MIME type'
-					})
-				);
-			}
-			faviconHash = cx.editor.registerImage(metadata.favicon, {
-				mimeType,
-				fileName: metadata.favicon
-			});
+			faviconHash = cx.editor.registerImage(metadata.favicon);
 		}
 
 		cx.node._v.content.metadata = {

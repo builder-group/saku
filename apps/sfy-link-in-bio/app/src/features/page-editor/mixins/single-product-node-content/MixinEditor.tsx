@@ -1,5 +1,5 @@
 import { notEmpty } from '@blgc/utils';
-import { TAssetHash, TRichContent, TSingleProductNodeContentMixin } from '@repo/editor';
+import { TRichContent, TSingleProductNodeContentMixin } from '@repo/editor';
 import {
 	Button,
 	IndexTable,
@@ -12,13 +12,7 @@ import { useFeatureState } from 'feature-react/state';
 import { TState } from 'feature-state';
 import React from 'react';
 import { PolarisDeleteIcon, PolarisProductAddIcon, RichContentField } from '@/components';
-import {
-	capitalizeFirstLetter,
-	cn,
-	fetchMimeType,
-	isProduct,
-	mutateWithReferenceUpdate
-} from '@/lib';
+import { capitalizeFirstLetter, cn, isProduct, mutateWithReferenceUpdate } from '@/lib';
 import { TPageEditor } from '../../lib';
 
 export const SingleProductNodeContentMixinEditor = (
@@ -216,38 +210,15 @@ export const SingleProductNodeContentMixinEditor = (
 			id: product.id,
 			title: product.title,
 			description: { type: 'html', value: product.descriptionHtml },
-			images: (
-				await Promise.all(
-					product.images.map(async (image) => {
-						const mimeType = await fetchMimeType(image.originalSrc);
-						if (mimeType == null) {
-							return null;
-						}
-						return editor.registerImage(image.originalSrc, {
-							mimeType,
-							fileName: image.originalSrc
-						});
-					})
-				)
-			).filter(notEmpty),
+			images: product.images
+				.map((image) => editor.registerImage(image.originalSrc))
+				.filter(notEmpty),
 			options: product.options.map((opt) => ({ name: opt.name, values: opt.values })),
 			variants: (
 				await Promise.all(
 					product.variants.map(async (variant) => {
 						if (variant.id == null || variant.title == null || variant.price == null) {
 							return null;
-						}
-
-						let image: TAssetHash | undefined;
-						if (variant.image?.originalSrc != null) {
-							const mimeType = await fetchMimeType(variant.image.originalSrc);
-							if (mimeType != null) {
-								image =
-									editor.registerImage(variant.image.originalSrc, {
-										mimeType,
-										fileName: variant.image.originalSrc
-									}) ?? undefined;
-							}
 						}
 
 						return {
@@ -257,7 +228,10 @@ export const SingleProductNodeContentMixinEditor = (
 								amount: variant.price,
 								currencyCode: 'USD'
 							},
-							image,
+							image:
+								variant.image != null
+									? (editor.registerImage(variant.image.originalSrc) ?? undefined)
+									: undefined,
 							selectedOptions:
 								variant.selectedOptions
 									?.map((opt, idx) => {

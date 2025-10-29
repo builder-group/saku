@@ -1,8 +1,9 @@
+import { guessMimeType } from '@repo/editor';
 import { useAppBridge } from '@shopify/app-bridge-react';
 import { DropZone, Icon, Spinner, Text } from '@shopify/polaris';
 import React from 'react';
 import { PolarisDeleteIcon, PolarisReplaceIcon } from '@/components';
-import { cn, fetchMimeType, listMediaFiles, uploadFiles } from '@/lib';
+import { cn, listMediaFiles, uploadFiles } from '@/lib';
 
 export const ImageUploadField: React.FC<TImageUploadFieldProps> = (props) => {
 	const { image, onChange, onError } = props;
@@ -122,7 +123,7 @@ export const ImageUploadField: React.FC<TImageUploadFieldProps> = (props) => {
 				return;
 			}
 
-			const mimeType = await fetchMimeType(selectedFile.url);
+			const mimeType = guessMimeType(selectedFile.url);
 			if (mimeType == null) {
 				return;
 			}

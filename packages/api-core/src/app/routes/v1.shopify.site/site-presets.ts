@@ -8,6 +8,7 @@ import {
 	getFontHash,
 	getFontMetadataByFamily,
 	getSocialContactMetadata,
+	guessMimeType,
 	linkNodeMetadata,
 	mediaNodeMetadata,
 	pageNodeMetadata,
@@ -18,6 +19,7 @@ import {
 	TContactLink,
 	textNodeMetadata,
 	TId,
+	toImageContentType,
 	TProductNode,
 	TRichTextNodeBundle,
 	TSite,
@@ -82,12 +84,16 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 	if (featuredProduct != null) {
 		const productImageHashIds: string[] = [];
 		for (const image of featuredProduct.images) {
+			const contentType = toImageContentType(guessMimeType(image.url));
+			if (contentType == null) {
+				continue;
+			}
 			const productImageHashId = createId('asset');
 			assets.push({
 				id: productImageHashId,
 				type: 'image',
 				hash: productImageHashId,
-				contentType: 'image/png',
+				contentType,
 				storage: {
 					type: 'url',
 					url: image.url
@@ -111,18 +117,21 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 					variants: featuredProduct.variants.map((variant) => {
 						let variantImageHashId: TId<'asset'> | undefined;
 						if (variant.image != null) {
-							variantImageHashId = createId('asset');
-							assets.push({
-								id: variantImageHashId,
-								type: 'image',
-								hash: variantImageHashId,
-								contentType: 'image/png',
-								storage: {
-									type: 'url',
-									url: variant.image.url
-								},
-								altText: variant.image.altText ?? variant.title
-							});
+							const contentType = toImageContentType(guessMimeType(variant.image.url));
+							if (contentType != null) {
+								variantImageHashId = createId('asset');
+								assets.push({
+									id: variantImageHashId,
+									type: 'image',
+									hash: variantImageHashId,
+									contentType: 'image/png',
+									storage: {
+										type: 'url',
+										url: variant.image.url
+									},
+									altText: variant.image.altText ?? variant.title
+								});
+							}
 						}
 
 						return {

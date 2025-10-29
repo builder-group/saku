@@ -1,4 +1,4 @@
-import { TImageAsset } from '@repo/editor';
+import { TImageAsset } from '../types';
 
 /**
  * Validates and converts a MIME type string to a supported image content type.
@@ -10,8 +10,6 @@ export function toImageContentType(
 	if (mimeType == null) {
 		return null;
 	}
-
-	// Map to supported image types
 	const normalized = mimeType.toLowerCase();
 	switch (normalized) {
 		case 'image/png':

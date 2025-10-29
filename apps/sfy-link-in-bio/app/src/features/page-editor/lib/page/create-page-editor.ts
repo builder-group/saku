@@ -3,6 +3,7 @@ import {
 	createId,
 	getFontHash,
 	getFontMetadataByFamily,
+	guessMimeType,
 	TAsset,
 	TAssetHash,
 	TFlatNode,
@@ -15,6 +16,7 @@ import {
 	TIntegrationId,
 	TNodeId,
 	toHierarchical,
+	toImageContentType,
 	TSite,
 	TToken
 } from '@repo/editor';
@@ -26,12 +28,12 @@ import { appConfig, coreApiClient } from '@/environment';
 import {
 	AppError,
 	createShopifyTokenMiddleware,
+	getFileNameFromUrl,
 	requestReview,
 	showShopifyAppErrorToast,
 	TBreakpoint
 } from '@/lib';
 import { TSettingsSectionType, TViewType } from '../../environment';
-import { toImageContentType } from '../asset';
 import { createNodeState, nodeAssetHashRegistry, nodeMetadataRegistry, TNodeState } from '../node';
 import { createPageContext, TPageContext } from './create-page-context';
 
@@ -451,8 +453,12 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 			return asset;
 		},
 
-		registerImage(url, config) {
-			const { mimeType, fileName, dimensions } = config;
+		registerImage(url, options = {}) {
+			const {
+				mimeType = guessMimeType(url),
+				fileName = getFileNameFromUrl(url) ?? undefined,
+				dimensions
+			} = options;
 			const assetId = createId('asset');
 			const hash = assetId; // Temporary workaround until proper content hashing
 
@@ -820,8 +826,8 @@ export interface TPageEditor {
 	getImageAsset: (hash: TAssetHash | undefined | null) => TImageAsset | null;
 	registerImage: (
 		url: string,
-		config: {
-			mimeType: string;
+		options?: {
+			mimeType?: string;
 			fileName?: string;
 			dimensions?: { width: number; height: number };
 		}
