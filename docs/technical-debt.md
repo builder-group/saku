@@ -1,5 +1,17 @@
 # 😬 Technical Debt
 
+## React Router v7.9.4 Lock-in
+
+React Router v7.9.5 (through `@react-router/dev`) introduces a dependency on `p-map` that is ESM-only. This triggers `ERR_REQUIRE_ESM` during Vite plugin execution in our setup.
+
+```
+Error [ERR_REQUIRE_ESM]: require() of ES Module .../p-map/index.js from .../@react-router/dev/dist/vite.js not supported
+```
+
+### Workaround
+
+- Stay on `v7.9.4` for now.
+
 ## `@shopify/polaris` Lock-in
 
 We still use `@shopify/polaris` components because:
