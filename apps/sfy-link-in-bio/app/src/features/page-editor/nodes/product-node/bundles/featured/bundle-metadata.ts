@@ -1,10 +1,10 @@
-import { productNodeMetadata, TClassicProductNodeBundle } from '@repo/editor';
+import { productNodeMetadata, TFeaturedProductNodeBundle } from '@repo/editor';
 import { Ok } from 'tuple-result';
 import { TProductNodeBundleMetadata } from '../../environment';
 
-export const classicBundleMetadata: TProductNodeBundleMetadata<TClassicProductNodeBundle> = {
-	type: 'classic',
-	label: 'Classic',
+export const featuredBundleMetadata: TProductNodeBundleMetadata<TFeaturedProductNodeBundle> = {
+	type: 'featured',
+	label: 'Featured',
 	extractCommonFields(node) {
 		return {
 			id: node.id,
@@ -29,10 +29,10 @@ export const classicBundleMetadata: TProductNodeBundleMetadata<TClassicProductNo
 		};
 	},
 	async switch(cx) {
-		const defaults = productNodeMetadata.bundleMap['classic'];
+		const defaults = productNodeMetadata.bundleMap['featured'];
 		cx.node.set({
 			id: cx.common.id,
-			bundleType: 'classic',
+			bundleType: 'featured',
 			type: 'product',
 			content: {
 				type: 'single',

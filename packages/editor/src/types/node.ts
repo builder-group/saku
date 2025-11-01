@@ -449,10 +449,31 @@ export type TBasicTextNodeContentMixin = TBaseMixin<
 // Product Node
 // =========================================================================
 
-export type TProductNode = TClassicProductNodeBundle;
+export type TProductNode = TClassicProductNodeBundle | TFeaturedProductNodeBundle;
 
 export type TClassicProductNodeBundle = TNodeBundle<
 	'classic',
+	[
+		TIdMixin,
+		TProductNodeMixin,
+		TSingleProductNodeContentMixin,
+		TAutoLayoutStyleMixin,
+		TAppearanceStyleMixin,
+		TFillStyleMixin,
+		TStrokeStyleMixin,
+		TShadowStyleMixin,
+		TTextBodyStyleMixin,
+		TButtonPrimaryStyleMixin,
+		TBadgeSecondaryStyleMixin,
+		TBadgeNeutralStyleMixin,
+		TBannerStyleMixin,
+		TImageStyleMixin,
+		TProductDetailsStyleMixin
+	]
+>;
+
+export type TFeaturedProductNodeBundle = TNodeBundle<
+	'featured',
 	[
 		TIdMixin,
 		TProductNodeMixin,

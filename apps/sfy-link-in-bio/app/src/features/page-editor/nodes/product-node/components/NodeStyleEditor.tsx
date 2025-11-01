@@ -1,8 +1,8 @@
-import { TClassicProductNodeBundle, TProductNode } from '@repo/editor';
+import { TClassicProductNodeBundle, TFeaturedProductNodeBundle, TProductNode } from '@repo/editor';
 import { useCompute } from 'feature-react';
 import React from 'react';
 import { TNodeEditorComponentProps, TNodeState } from '../../../lib';
-import { ClassicBundleStyleEditor } from '../bundles';
+import { ClassicBundleStyleEditor, FeaturedBundleStyleEditor } from '../bundles';
 
 export const ProductNodeStyleEditor: React.FC<TNodeEditorComponentProps<TProductNode>> = (
 	props
@@ -15,6 +15,13 @@ export const ProductNodeStyleEditor: React.FC<TNodeEditorComponentProps<TProduct
 			return (
 				<ClassicBundleStyleEditor
 					nodeState={nodeState as TNodeState<TClassicProductNodeBundle>}
+					{...rest}
+				/>
+			);
+		case 'featured':
+			return (
+				<FeaturedBundleStyleEditor
+					nodeState={nodeState as TNodeState<TFeaturedProductNodeBundle>}
 					{...rest}
 				/>
 			);

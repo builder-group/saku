@@ -15,10 +15,33 @@ import {
 	TResolvedTextBodyStyleMixin
 } from '../../mixins';
 
-export type TResolvedProductNode = TResolvedClassicProductNodeBundle;
+export type TResolvedProductNode =
+	| TResolvedClassicProductNodeBundle
+	| TResolvedFeaturedProductNodeBundle;
 
 export type TResolvedClassicProductNodeBundle = TNodeBundle<
 	'classic',
+	[
+		TIdMixin,
+		TProductNodeMixin,
+		TResolvedSingleProductNodeContentMixin,
+		TResolvedAutoLayoutStyleMixin,
+		TResolvedAppearanceStyleMixin,
+		TResolvedFillStyleMixin,
+		TResolvedStrokeStyleMixin,
+		TResolvedShadowStyleMixin,
+		TResolvedTextBodyStyleMixin,
+		TResolvedButtonPrimaryStyleMixin,
+		TResolvedBadgeSecondaryStyleMixin,
+		TResolvedBadgeNeutralStyleMixin,
+		TResolvedBannerStyleMixin,
+		TResolvedImageStyleMixin,
+		TResolvedProductDetailsStyleMixin
+	]
+>;
+
+export type TResolvedFeaturedProductNodeBundle = TNodeBundle<
+	'featured',
 	[
 		TIdMixin,
 		TProductNodeMixin,

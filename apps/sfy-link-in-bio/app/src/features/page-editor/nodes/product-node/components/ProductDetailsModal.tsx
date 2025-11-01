@@ -1,8 +1,8 @@
 import { useFeatureState } from 'feature-react';
 import React from 'react';
 import { cn } from '@/lib';
-import { getCurrencySymbol } from '../../../../../environment';
-import { TBundleCx } from './create-bundle-cx';
+import { getCurrencySymbol } from '../../../environment';
+import { TProductCx } from '../lib';
 
 export const ProductDetailsModal: React.FC<TProductDetailsModalProps> = (props) => {
 	const { cx, modalRef } = props;
@@ -220,7 +220,7 @@ export const ProductDetailsModal: React.FC<TProductDetailsModalProps> = (props) 
 };
 
 interface TProductDetailsModalProps {
-	cx: TBundleCx;
+	cx: TProductCx;
 	modalRef: React.RefObject<HTMLDialogElement>;
 }
 
@@ -258,7 +258,7 @@ export function useProductDetailsModal(config: TUseProductDetailsModalConfig) {
 }
 
 interface TUseProductDetailsModalConfig {
-	cx: TBundleCx;
+	cx: TProductCx;
 	onShow?: () => void;
 	onHide?: () => void;
 }

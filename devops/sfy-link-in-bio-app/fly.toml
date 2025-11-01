@@ -1,8 +1,3 @@
-# fly.toml app configuration file generated for saku-sfy-link-in-bio-app on 2025-06-25T14:45:57+02:00
-#
-# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
-#
-
 app = 'saku-sfy-link-in-bio-app'
 primary_region = 'fra'
 

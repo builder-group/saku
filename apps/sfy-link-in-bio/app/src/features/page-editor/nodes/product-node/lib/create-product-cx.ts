@@ -1,10 +1,10 @@
 import { createState, TState } from 'feature-state';
 import { logger } from '@/environment';
-import { TPageContext } from '../../../../../lib';
-import { TResolvedProduct, TResolvedProductVariant } from '../../../../../mixins';
-import { TResolvedClassicProductNodeBundle } from '../../../types';
+import { TPageContext } from '../../../lib';
+import { TResolvedProduct, TResolvedProductVariant } from '../../../mixins';
+import { TResolvedProductNode } from '../types';
 
-export function createBundleCx(config: TCreateBundleCxConfig): TBundleCx {
+export function createProductCx(config: TCreateProductCxConfig): TProductCx {
 	const { pageCx, node, product } = config;
 
 	const selectedOptions = createState(getInitialSelectedOptions(product));
@@ -75,15 +75,15 @@ export function createBundleCx(config: TCreateBundleCxConfig): TBundleCx {
 	};
 }
 
-export interface TCreateBundleCxConfig {
+export interface TCreateProductCxConfig {
 	pageCx: TPageContext;
-	node: TResolvedClassicProductNodeBundle;
+	node: TResolvedProductNode;
 	product: TResolvedProduct;
 }
 
-export interface TBundleCx {
+export interface TProductCx {
 	pageCx: TPageContext;
-	node: TResolvedClassicProductNodeBundle;
+	node: TResolvedProductNode;
 	product: TResolvedProduct;
 	isProcessing: TState<boolean, []>;
 	selectedOptions: TState<Record<string, string>, []>;

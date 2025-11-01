@@ -1,6 +1,6 @@
 import React from 'react';
 import { TResolvedNodeProps } from '../../../lib';
-import { ResolvedClassicBundle } from '../bundles';
+import { ResolvedClassicBundle, ResolvedFeaturedBundle } from '../bundles';
 import { TResolvedProductNode } from '../types';
 import { Skeleton } from './Skeleton';
 
@@ -17,6 +17,13 @@ export const ResolvedProductNode = React.forwardRef<
 			}
 			return (
 				<ResolvedClassicBundle ref={ref} node={node} product={node.content.product} {...rest} />
+			);
+		case 'featured':
+			if (node.content.product == null) {
+				return <Skeleton ref={ref} node={node} />;
+			}
+			return (
+				<ResolvedFeaturedBundle ref={ref} node={node} product={node.content.product} {...rest} />
 			);
 		default:
 			return <Skeleton ref={ref} node={node} />;

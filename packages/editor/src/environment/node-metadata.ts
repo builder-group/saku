@@ -441,6 +441,55 @@ export const productNodeMetadata: TNodeMetadata<TProductNode> = {
 				shadow: tokenRef('image.default', 'image', 'shadow')
 			},
 			productDetails: tokenRef('product-details.default', 'product-details')
+		},
+		featured: {
+			type: 'product',
+			bundleType: 'featured',
+			content: {
+				type: 'single',
+				overrides: {}
+			},
+			autoLayout: {
+				paddingTop: tokenRef('auto-layout.default', 'auto-layout', 'paddingTop'),
+				paddingRight: tokenRef('auto-layout.default', 'auto-layout', 'paddingRight'),
+				paddingBottom: tokenRef('auto-layout.default', 'auto-layout', 'paddingBottom'),
+				paddingLeft: tokenRef('auto-layout.default', 'auto-layout', 'paddingLeft'),
+				marginTop: tokenRef('auto-layout.default', 'auto-layout', 'marginTop'),
+				marginRight: tokenRef('auto-layout.default', 'auto-layout', 'marginRight'),
+				marginBottom: tokenRef('auto-layout.default', 'auto-layout', 'marginBottom'),
+				marginLeft: tokenRef('auto-layout.default', 'auto-layout', 'marginLeft')
+			},
+			appearance: tokenRef('appearance.default', 'appearance'),
+			fill: tokenRef('fill.default', 'fill'),
+			stroke: tokenRef('stroke.default', 'stroke'),
+			shadow: tokenRef('shadow.default', 'shadow'),
+			textBody: {
+				appearance: tokenRef('text.body', 'text', 'appearance'),
+				typography: {
+					font: tokenRef('text.body', 'text', 'typography.font'),
+					fontSize: tokenRef('text.body', 'text', 'typography.fontSize'),
+					textAlignHorizontal: 'start',
+					textAlignVertical: tokenRef('text.body', 'text', 'typography.textAlignVertical'),
+					lineHeight: tokenRef('text.body', 'text', 'typography.lineHeight'),
+					letterSpacing: tokenRef('text.body', 'text', 'typography.letterSpacing')
+				},
+				fill: tokenRef('text.body', 'text', 'fill'),
+				stroke: tokenRef('text.body', 'text', 'stroke'),
+				shadow: tokenRef('text.body', 'text', 'shadow')
+			},
+			buttonPrimary: tokenRef('button.primary', 'button'),
+			badgeSecondary: tokenRef('badge.secondary', 'badge'),
+			badgeNeutral: tokenRef('badge.neutral', 'badge'),
+			banner: tokenRef('banner.default', 'banner'),
+			image: {
+				appearance: {
+					visible: true,
+					opacity: tokenRef('image.default', 'image', 'appearance.opacity')
+				},
+				stroke: tokenRef('image.default', 'image', 'stroke'),
+				shadow: tokenRef('image.default', 'image', 'shadow')
+			},
+			productDetails: tokenRef('product-details.default', 'product-details')
 		}
 	}
 };

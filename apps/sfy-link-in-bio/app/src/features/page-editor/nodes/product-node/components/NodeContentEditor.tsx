@@ -1,10 +1,10 @@
-import { TClassicProductNodeBundle, TProductNode } from '@repo/editor';
+import { TClassicProductNodeBundle, TFeaturedProductNodeBundle, TProductNode } from '@repo/editor';
 import { Select, Text } from '@shopify/polaris';
 import { useFeatureState } from 'feature-react';
 import React from 'react';
 import { cn } from '@/lib';
 import { TNodeEditorComponentProps } from '../../../lib';
-import { ClassicBundleContentEditor } from '../bundles';
+import { ClassicBundleContentEditor, FeaturedBundleContentEditor } from '../bundles';
 import { productNodeBundleMetadata } from '../environment';
 import { createProductNodeEditorContext, TProductNodeEditorContext } from '../lib';
 import { ContentEditorSkeleton } from './ContentEditorSkeleton';
@@ -53,6 +53,12 @@ export const ProductNodeContentEditor: React.FC<TNodeEditorComponentProps<TProdu
 				return (
 					<ClassicBundleContentEditor
 						cx={cx as TProductNodeEditorContext<TClassicProductNodeBundle>}
+					/>
+				);
+			case 'featured':
+				return (
+					<FeaturedBundleContentEditor
+						cx={cx as TProductNodeEditorContext<TFeaturedProductNodeBundle>}
 					/>
 				);
 			default:

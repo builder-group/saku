@@ -1,12 +1,12 @@
 import { useFeatureState } from 'feature-react';
 import React from 'react';
 import { ChevronDownIcon } from '@/components';
-import { getCurrencySymbol } from '../../../../../environment';
-import { TResolvedNodeProps } from '../../../../../lib';
-import { TResolvedSingleProductNodeContentMixin } from '../../../../../mixins';
-import { TResolvedClassicProductNodeBundle } from '../../../types';
-import { createBundleCx } from './create-bundle-cx';
-import { useProductDetailsModal } from './ProductDetailsModal';
+import { getCurrencySymbol } from '../../../../environment';
+import { TResolvedNodeProps } from '../../../../lib';
+import { TResolvedSingleProductNodeContentMixin } from '../../../../mixins';
+import { useProductDetailsModal } from '../../components';
+import { createProductCx } from '../../lib';
+import { TResolvedClassicProductNodeBundle } from '../../types';
 
 export const ResolvedClassicBundle = React.forwardRef<HTMLDivElement, TResolvedClassicBundleProps>(
 	(props, ref) => {
@@ -27,7 +27,7 @@ export const ResolvedClassicBundle = React.forwardRef<HTMLDivElement, TResolvedC
 		} = node;
 
 		const cx = React.useMemo(
-			() => createBundleCx({ pageCx, node, product }),
+			() => createProductCx({ pageCx, node, product }),
 			[pageCx, node, product]
 		);
 		const isProcessing = useFeatureState(cx.isProcessing);
@@ -104,6 +104,7 @@ export const ResolvedClassicBundle = React.forwardRef<HTMLDivElement, TResolvedC
 					{/* Product Card */}
 					<div
 						onClick={handleProductClick}
+						className="flex min-h-16 w-full flex-row items-center gap-2"
 						style={{
 							...appearance.styles,
 							...fill?.styles,
@@ -111,12 +112,11 @@ export const ResolvedClassicBundle = React.forwardRef<HTMLDivElement, TResolvedC
 							...shadow?.styles,
 							padding: autoLayout.styles.padding
 						}}
-						className="flex min-h-16 w-full flex-row items-center gap-2"
 					>
 						{/* Product Image */}
 						{productImage != null && (
 							<div
-								className="h-12 w-12 shrink-0 overflow-hidden bg-neutral-100"
+								className="h-12 w-12 shrink-0 overflow-hidden bg-neutral-200"
 								style={image.styles}
 							>
 								<img

@@ -8,6 +8,8 @@ React Router v7.9.5 (through `@react-router/dev`) introduces a dependency on `p-
 Error [ERR_REQUIRE_ESM]: require() of ES Module .../p-map/index.js from .../@react-router/dev/dist/vite.js not supported
 ```
 
+See: https://github.com/remix-run/react-router/issues/14489
+
 ### Workaround
 
 - Stay on `v7.9.4` for now.

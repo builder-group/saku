@@ -1,11 +1,30 @@
-import { TIdMixin, TProductNode } from '@repo/editor';
+import {
+	TAppearanceStyleMixin,
+	TAutoLayoutStyleMixin,
+	TBadgeNeutralStyleMixin,
+	TBadgeSecondaryStyleMixin,
+	TBannerStyleMixin,
+	TButtonPrimaryStyleMixin,
+	TFillStyleMixin,
+	TIdMixin,
+	TImageStyleMixin,
+	TIntegrationId,
+	TProduct,
+	TProductDetailsStyleMixin,
+	TProductNode,
+	TRichContent,
+	TShadowStyleMixin,
+	TStrokeStyleMixin,
+	TTextBodyStyleMixin
+} from '@repo/editor';
 import { TResult } from 'tuple-result';
 import { AppError } from '@/lib';
 import { TNodeState, TPageEditor } from '../../../lib';
-import { classicBundleMetadata } from '../bundles';
+import { classicBundleMetadata, featuredBundleMetadata } from '../bundles';
 
 export const productNodeBundleMetadataMap = {
-	classic: classicBundleMetadata
+	classic: classicBundleMetadata,
+	featured: featuredBundleMetadata
 };
 
 export const productNodeBundleMetadata = Object.values(productNodeBundleMetadataMap);
@@ -29,4 +48,28 @@ export interface TProductNodeBundleMetadata<GNode extends TProductNode = TProduc
 
 interface TCommonFields {
 	id: TIdMixin['value'];
+	content?: {
+		product?: TProduct;
+		banner?: {
+			label: string;
+		};
+		// User overrides (take priority)
+		overrides: {
+			title?: string;
+			description?: TRichContent;
+		};
+		integrationId?: TIntegrationId;
+	};
+	autoLayout?: TAutoLayoutStyleMixin['value'];
+	appearance?: TAppearanceStyleMixin['value'];
+	fill?: TFillStyleMixin['value'];
+	stroke?: TStrokeStyleMixin['value'];
+	shadow?: TShadowStyleMixin['value'];
+	textBody?: TTextBodyStyleMixin['value'];
+	buttonPrimary?: TButtonPrimaryStyleMixin['value'];
+	badgeSecondary?: TBadgeSecondaryStyleMixin['value'];
+	badgeNeutral?: TBadgeNeutralStyleMixin['value'];
+	banner?: TBannerStyleMixin['value'];
+	image?: TImageStyleMixin['value'];
+	productDetails?: TProductDetailsStyleMixin['value'];
 }
