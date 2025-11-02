@@ -17,7 +17,7 @@ export function getTabs(plan: TCurrentPlan): TabProps[] {
 		{
 			id: 'advanced',
 			content:
-				plan.key === 'free'
+				plan.key !== 'awesome'
 					? ((
 							<Tooltip
 								content="Advanced design options are only available on Awesome plan and above"

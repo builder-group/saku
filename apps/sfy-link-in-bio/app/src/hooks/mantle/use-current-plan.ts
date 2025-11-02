@@ -1,6 +1,7 @@
 import { useMantle } from '@heymantle/react';
 import { useMemo } from 'react';
 import { logger } from '@/environment';
+import { getPlanKey, TPlanKey } from '@/lib';
 
 export function useCurrentPlan(): TCurrentPlan {
 	const { subscription } = useMantle();
@@ -19,7 +20,7 @@ export function useCurrentPlan(): TCurrentPlan {
 
 		return {
 			id: plan.id,
-			key: plan.name.toLowerCase() as 'free' | 'awesome',
+			key: getPlanKey(plan.name),
 			customFields: plan.customFields ?? {}
 		};
 	}, [subscription?.plan]);
@@ -27,6 +28,6 @@ export function useCurrentPlan(): TCurrentPlan {
 
 export interface TCurrentPlan {
 	id: string;
-	key: 'free' | 'awesome';
+	key: TPlanKey;
 	customFields: Record<string, unknown>;
 }

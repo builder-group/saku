@@ -19,6 +19,7 @@ import {
 	AppError,
 	createShopifyTokenMiddleware,
 	getMantleClient,
+	getPlanKey,
 	isMantleError,
 	resultLoader,
 	showShopifyAppErrorToast,
@@ -144,7 +145,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 				<s-page inlineSize="small">
 					<ui-title-bar title="Select a Plan"></ui-title-bar>
 
-					<div className="my-4 grid grid-cols-1 gap-4 bg-[var(--p-color-bg)]">
+					<div className="my-4 grid grid-cols-1 gap-4 bg-(--p-color-bg)">
 						{/* Back Button */}
 						{fromSettings && (
 							<div className="flex w-full items-start pl-3">
@@ -277,7 +278,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 			</>
 		);
 	},
-	Error: ({ error }) => {
+	Error: () => {
 		const [searchParams] = useSearchParams();
 		const fromSettings = React.useMemo(
 			() => searchParams.get('from') === 'settings',
@@ -288,7 +289,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 			<s-page inlineSize="small">
 				<ui-title-bar title="Select a Plan"></ui-title-bar>
 
-				<div className="my-4 grid grid-cols-1 gap-4 bg-[var(--p-color-bg)]">
+				<div className="my-4 grid grid-cols-1 gap-4 bg-(--p-color-bg)">
 					{/* Back Button */}
 					{fromSettings && (
 						<div className="flex w-full items-start pl-3">
@@ -354,13 +355,12 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 	// Map Mantle plans to our display format
 	const plans = mantleCustomer.plans
 		.map((mantlePlan) => {
-			const isCurrentPlan = mantleCustomer.subscription?.plan?.id === mantlePlan.id;
-			const planName = mantlePlan.name.toLowerCase();
+			const planKey = getPlanKey(mantlePlan.name);
 
 			// Enrich plans with data that can not be stored in Mantle
 			let features: TFeature[] = [];
 			let description: string = '';
-			switch (planName) {
+			switch (planKey) {
 				case 'free':
 					description = 'Perfect for getting started';
 					features = [
@@ -398,8 +398,8 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 				priceAmount: mantlePlan.presentmentAmount,
 				trialDays: mantlePlan.trialDays,
 				features,
-				isRecommended: planName === 'awesome',
-				isCurrentPlan,
+				isRecommended: planKey === 'awesome',
+				isCurrentPlan: planKey === getPlanKey(mantleCustomer.subscription?.plan?.name),
 				mantlePlan
 			};
 		})
