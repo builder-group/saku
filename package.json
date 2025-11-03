@@ -31,19 +31,19 @@
 		"@blgc/config": "^0.0.38",
 		"@shopify/cli": "^3.86.1",
 		"dotenv": "^17.2.3",
-		"eslint": "^9.38.0",
+		"eslint": "^9.39.0",
 		"prettier": "^3.6.2",
 		"rollup": "^4.52.5",
 		"rollup-presets": "^0.0.24",
 		"shx": "^0.4.0",
 		"tsx": "^4.20.6",
-		"turbo": "^2.5.8",
+		"turbo": "^2.6.0",
 		"typescript": "^5.9.3",
 		"vite": "^7.1.12",
-		"vitest": "^4.0.5"
+		"vitest": "^4.0.6"
 	},
 	"packageManager": "pnpm@10.12.1",
 	"engines": {
-		"node": ">=20"
+		"node": ">=24"
 	}
 }
