@@ -20,12 +20,12 @@ const shopifyApp: ReturnType<typeof createShopifyApp> = createShopifyApp({
 		unstable_newEmbeddedAuthStrategy: true,
 		removeRest: true
 	},
-	hooks: {
-		afterAuth: async ({ session }) => {
-			shopifyApp.registerWebhooks({ session });
-			// logger.info('After auth hook called', { session });
-		}
-	},
+	// hooks: {
+	// 	afterAuth: async ({ session }) => {
+	// 		shopifyApp.registerWebhooks({ session });
+	// 		logger.info('After auth hook called', { session });
+	// 	}
+	// },
 	...(shopifyConfig.shopCustomDomain != null
 		? { customShopDomains: [shopifyConfig.shopCustomDomain] }
 		: {})
