@@ -78,7 +78,9 @@ async function upsertSession(tx: TPgTransaction, session: TShopifySessionDto): P
 				platform: 'shopify',
 				platformId: shopInfo.id,
 				myshopifyDomain: session.shop,
-				accessToken: session.accessToken
+				accessToken: session.accessToken,
+				name: shopInfo.name,
+				email: shopInfo.email
 			});
 			if (!isMantleError(identifyResponse)) {
 				sessionData.mantleApiToken = identifyResponse.apiToken;
