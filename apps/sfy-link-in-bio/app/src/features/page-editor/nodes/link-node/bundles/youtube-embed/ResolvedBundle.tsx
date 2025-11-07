@@ -36,7 +36,7 @@ export const ResolvedYouTubeEmbedBundle = React.forwardRef<
 			)}
 			<iframe
 				src={content.embedUrl}
-				className="aspect-[16/9] h-full w-full rounded-none"
+				className="aspect-video h-full w-full rounded-none"
 				title="YouTube video player"
 				allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
 				referrerPolicy="strict-origin-when-cross-origin"
