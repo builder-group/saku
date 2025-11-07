@@ -92,7 +92,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 				<s-page>
 					<ui-title-bar title="Dashboard" />
 
-					<div className="my-4 grid grid-cols-1 gap-4 bg-[var(--p-color-bg)] lg:grid-cols-3">
+					<div className="my-4 grid grid-cols-1 gap-4 bg-(--p-color-bg) lg:grid-cols-3">
 						<div className="space-y-4 lg:col-span-2">
 							{/* Bio Preview Section */}
 							<div>

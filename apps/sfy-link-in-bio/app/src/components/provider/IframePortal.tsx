@@ -23,6 +23,12 @@ export const IframePortal = React.forwardRef<HTMLIFrameElement, TIframePortalPro
 				return;
 			}
 
+			// Initialize iframe document by opening and closing it.
+			// This puts the document in a complete/loaded state, which is required for
+			// nested iframes (YouTube, Spotify, etc.) to load properly.
+			doc.open();
+			doc.close();
+
 			setIframeDocument(doc);
 			setIframeWindow(win);
 		}, [iframeDocument]);
