@@ -25,15 +25,13 @@ export const SpotifyEmbedLinkNodeContentMixinEditor = (
 	const contentTypeLabel = React.useMemo(() => {
 		switch (content.contentType) {
 			case 'track':
-				return 'Track';
+				return 'Track ID';
 			case 'album':
-				return 'Album';
+				return 'Album ID';
 			case 'playlist':
-				return 'Playlist';
+				return 'Playlist ID';
 			case 'artist':
-				return 'Artist';
-			default:
-				return 'Content';
+				return 'Artist ID';
 		}
 	}, [content.contentType]);
 	const contentIdPlaceholder = React.useMemo(() => {
@@ -46,8 +44,6 @@ export const SpotifyEmbedLinkNodeContentMixinEditor = (
 				return '37i9dQZF1E36XFretM2CHY';
 			case 'artist':
 				return '2Aq0ejE2gV9qe4lvGeNQQC';
-			default:
-				return 'ID';
 		}
 	}, [content.contentType]);
 	const contentTypeOptions = React.useMemo(
@@ -205,11 +201,11 @@ export const SpotifyEmbedLinkNodeContentMixinEditor = (
 			{/* Content ID */}
 			<div className="space-y-1">
 				<Text as="span" variant="bodySm" tone="subdued">
-					{contentTypeLabel} ID
+					{contentTypeLabel}
 				</Text>
 				<TextField
 					id="content-id-field"
-					label={`${contentTypeLabel} ID`}
+					label={contentTypeLabel}
 					labelHidden
 					value={content.contentId}
 					onChange={handleContentIdChange}

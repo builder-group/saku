@@ -26,11 +26,9 @@ export const YouTubeEmbedLinkNodeContentMixinEditor = (
 	const contentTypeLabel = React.useMemo(() => {
 		switch (content.contentType) {
 			case 'video':
-				return 'Video';
+				return 'Video ID';
 			case 'playlist':
-				return 'Playlist';
-			default:
-				return 'Content';
+				return 'Playlist ID';
 		}
 	}, [content.contentType]);
 	const contentIdPlaceholder = React.useMemo(() => {
@@ -39,8 +37,6 @@ export const YouTubeEmbedLinkNodeContentMixinEditor = (
 				return 'dQw4w9WgXcQ';
 			case 'playlist':
 				return 'PLFzsFUO-y0HAXM8e7CzDHI6fGmLVZjObn';
-			default:
-				return 'ID';
 		}
 	}, [content.contentType]);
 	const contentTypeOptions = React.useMemo(
