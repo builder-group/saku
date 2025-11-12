@@ -1,4 +1,4 @@
-import { TFlatSite } from '@repo/editor';
+import { isFlatSite, isHierarchicalSite, TFlatSite, toFlatSite } from '@repo/editor';
 import { Button, Select, Text, TextField } from '@shopify/polaris';
 import { RequestError } from 'feature-fetch';
 import React from 'react';
@@ -79,15 +79,31 @@ export const OverrideWithExternalSiteSection: React.FC<TOverrideWithExternalSite
 				}
 				case 'json': {
 					// Parse JSON input
+					let parsed: unknown;
 					try {
-						const parsed = JSON.parse(jsonInput.trim());
-						parsedSite = parsed as TFlatSite;
-						parsedSite.integrations = {};
+						parsed = JSON.parse(jsonInput.trim());
 					} catch {
 						setError(`Invalid JSON. Please check your JSON syntax and try again.`);
 						setIsOverriding(false);
 						return;
 					}
+
+					// Check if it's a hierarchical site or flat site
+					if (isHierarchicalSite(parsed)) {
+						parsedSite = toFlatSite(parsed);
+					} else if (isFlatSite(parsed)) {
+						parsedSite = parsed;
+					} else {
+						setError(
+							`Invalid site structure. Expected either hierarchical (with 'root') or flat (with 'rootId' and 'nodes') site format.`
+						);
+						setIsOverriding(false);
+						return;
+					}
+
+					// Clear integrations
+					parsedSite.integrations = {};
+
 					break;
 				}
 				default: {

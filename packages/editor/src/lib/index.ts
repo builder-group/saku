@@ -6,6 +6,7 @@ export * from './get-font-hash';
 export * from './guess-mime-type';
 export * from './hex-to-paint';
 export * from './id';
+export * from './is-site';
 export * from './is-token-ref';
 export * from './migrate-site';
 export * from './parse-url';

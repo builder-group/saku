@@ -58,7 +58,7 @@ export const SettingsDebugPanel: React.FC<TSettingsDebugPanelProps> = (props) =>
 				</PanelHeader>
 
 				<div className="h-full flex-1 overflow-y-auto p-4">
-					<div className="mx-auto w-full max-w-screen-xl space-y-6">
+					<div className="mx-auto w-full max-w-7xl space-y-6">
 						<OverrideWithExternalSiteSection
 							title="Override with External Site"
 							description="Replace your current page content with content from an external site."
