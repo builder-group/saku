@@ -1,5 +1,6 @@
 import { TIdMixin, TNodeBundle, TTextNodeMixin } from '@repo/editor';
 import {
+	TResolvedAnimationStyleMixin,
 	TResolvedAppearanceStyleMixin,
 	TResolvedAutoLayoutStyleMixin,
 	TResolvedBasicTextNodeContentMixin,
@@ -24,6 +25,7 @@ export type TResolvedRichTextNodeBundle = TNodeBundle<
 		TResolvedFillStyleMixin,
 		TResolvedStrokeStyleMixin,
 		TResolvedShadowStyleMixin,
+		TResolvedAnimationStyleMixin,
 		TResolvedTextBodyStyleMixin
 	]
 >;

@@ -14,6 +14,7 @@ export const richBundleMetadata: TTextNodeBundleMetadata<TRichTextNodeBundle> = 
 			fill: node.fill,
 			stroke: node.stroke,
 			shadow: node.shadow,
+			animation: node.animation,
 			textBody: node.textBody
 		};
 	},
@@ -32,6 +33,7 @@ export const richBundleMetadata: TTextNodeBundleMetadata<TRichTextNodeBundle> = 
 			fill: cx.common.fill ?? defaults.fill,
 			stroke: cx.common.stroke ?? defaults.stroke,
 			shadow: cx.common.shadow ?? defaults.shadow,
+			animation: cx.common.animation ?? defaults.animation,
 			textBody: cx.common.textBody ?? defaults.textBody
 		});
 		return Ok(undefined);

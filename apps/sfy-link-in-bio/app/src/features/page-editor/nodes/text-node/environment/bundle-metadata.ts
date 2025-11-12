@@ -1,4 +1,5 @@
 import {
+	TAnimationStyleMixin,
 	TAppearanceStyleMixin,
 	TAutoLayoutStyleMixin,
 	TFillStyleMixin,
@@ -49,6 +50,7 @@ interface TCommonFields {
 	fill?: TFillStyleMixin['value'];
 	stroke?: TStrokeStyleMixin['value'];
 	shadow?: TShadowStyleMixin['value'];
+	animation?: TAnimationStyleMixin['value'];
 	textHeading?: TTextHeadingStyleMixin['value'];
 	textBody?: TTextBodyStyleMixin['value'];
 }

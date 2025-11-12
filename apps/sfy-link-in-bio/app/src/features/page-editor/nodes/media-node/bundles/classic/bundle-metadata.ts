@@ -22,6 +22,7 @@ export const classicBundleMetadata: TMediaNodeBundleMetadata<TClassicMediaNodeBu
 			fill: defaults.fill,
 			stroke: defaults.stroke,
 			shadow: defaults.shadow,
+			animation: defaults.animation,
 			image: defaults.image
 		});
 		return Ok(undefined);

@@ -3,6 +3,7 @@ import { Err, Ok, TResult } from 'tuple-result';
 import { AppError, computeInnerBorderRadius } from '@/lib';
 import { TNodeResolveContext } from '../../../../lib';
 import {
+	resolveAnimationStyleMixin,
 	resolveAppearanceStyleMixin,
 	resolveAutoLayoutStyleMixin,
 	resolveBasicLinkNodeContentMixin,
@@ -25,6 +26,7 @@ export function resolveFeaturedBundle(
 		fill,
 		stroke,
 		shadow,
+		animation,
 		textBody,
 		textCaption,
 		image,
@@ -79,6 +81,14 @@ export function resolveFeaturedBundle(
 	if (!isResolvedShadowOk) {
 		return Err(resolvedShadowErr.wrapWith('#ERR_RESOLVE_SHADOW_STYLE'));
 	}
+	const [isResolvedAnimationOk, resolvedAnimationErr, resolvedAnimation] =
+		resolveAnimationStyleMixin(animation, {
+			node: cx,
+			tokenMap: cx.site.getTokenMap()
+		});
+	if (!isResolvedAnimationOk) {
+		return Err(resolvedAnimationErr.wrapWith('#ERR_RESOLVE_ANIMATION_STYLE'));
+	}
 	const [isResolvedTextBodyOk, resolvedTextBodyErr, resolvedTextBody] = resolveTextStyleMixin(
 		textBody,
 		{
@@ -125,6 +135,7 @@ export function resolveFeaturedBundle(
 		fill: resolvedFill,
 		stroke: resolvedStroke,
 		shadow: resolvedShadow,
+		animation: resolvedAnimation,
 		textBody: resolvedTextBody,
 		textCaption: resolvedTextCaption,
 		image: {

@@ -4,6 +4,7 @@ import { AccordionSection } from '@/components';
 import { useNodeProperty } from '../../../../hooks';
 import { TNodeEditorComponentProps } from '../../../../lib';
 import {
+	AnimationStyleMixinEditor,
 	AppearanceStyleMixinEditor,
 	AutoLayoutStyleMixinEditor,
 	FillStyleMixinEditor,
@@ -22,6 +23,7 @@ export const RichBundleStyleEditor: React.FC<TNodeEditorComponentProps<TRichText
 	const fillState = useNodeProperty(nodeState, 'fill');
 	const strokeState = useNodeProperty(nodeState, 'stroke');
 	const shadowState = useNodeProperty(nodeState, 'shadow');
+	const animationState = useNodeProperty(nodeState, 'animation');
 	const textBodyState = useNodeProperty(nodeState, 'textBody');
 
 	// =========================================================================
@@ -58,6 +60,12 @@ export const RichBundleStyleEditor: React.FC<TNodeEditorComponentProps<TRichText
 				<ShadowStyleMixinEditor
 					state={shadowState}
 					onLinkToken={() => tokenRef('shadow.default', 'shadow')}
+					editor={editor}
+				/>
+				<div className="h-px bg-neutral-200" />
+				<AnimationStyleMixinEditor
+					state={animationState}
+					onLinkToken={() => tokenRef('animation.default', 'animation')}
 					editor={editor}
 				/>
 			</AccordionSection>

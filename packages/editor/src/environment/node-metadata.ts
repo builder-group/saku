@@ -166,6 +166,7 @@ export const linkNodeMetadata: TNodeMetadata<TLinkNode> = {
 			fill: tokenRef('fill.default', 'fill'),
 			stroke: tokenRef('stroke.default', 'stroke'),
 			shadow: tokenRef('shadow.default', 'shadow'),
+			animation: tokenRef('animation.default', 'animation'),
 			textBody: tokenRef('text.body', 'text'),
 			textCaption: tokenRef('text.caption', 'text'),
 			image: {
@@ -202,6 +203,7 @@ export const linkNodeMetadata: TNodeMetadata<TLinkNode> = {
 			fill: tokenRef('fill.default', 'fill'),
 			stroke: tokenRef('stroke.default', 'stroke'),
 			shadow: tokenRef('shadow.default', 'shadow'),
+			animation: tokenRef('animation.default', 'animation'),
 			textBody: tokenRef('text.body', 'text'),
 			textCaption: tokenRef('text.caption', 'text'),
 			image: {
@@ -305,6 +307,7 @@ export const mediaNodeMetadata: TNodeMetadata<TMediaNode> = {
 			fill: tokenRef('fill.default', 'fill'),
 			stroke: tokenRef('stroke.default', 'stroke'),
 			shadow: tokenRef('shadow.default', 'shadow'),
+			animation: tokenRef('animation.default', 'animation'),
 			image: {
 				appearance: {
 					visible: true,
@@ -519,6 +522,7 @@ export const textNodeMetadata: TNodeMetadata<TTextNode> = {
 			fill: tokenRef('fill.default', 'fill'),
 			stroke: tokenRef('stroke.default', 'stroke'),
 			shadow: tokenRef('shadow.default', 'shadow'),
+			animation: tokenRef('animation.default', 'animation'),
 			textBody: tokenRef('text.body', 'text')
 		},
 		'section-title': {

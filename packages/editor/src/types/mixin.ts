@@ -100,6 +100,24 @@ export type TShadowStyleMixin = TBaseMixin<
 	} | null>
 >;
 
+export type TAnimationStyleMixin = TBaseMixin<
+	'animation',
+	TRef<{
+		animation: TAnimation;
+		// trigger?: 'hover' | 'click' | 'scroll' | null;
+	} | null>
+>;
+
+export type TAnimationBase = {
+	duration: TRef<number>;
+};
+
+export type TAnimation =
+	| ({ type: 'buzz' } & TAnimationBase)
+	| ({ type: 'wobble' } & TAnimationBase)
+	| ({ type: 'pop' } & TAnimationBase)
+	| ({ type: 'swipe' } & TAnimationBase);
+
 // =========================================================================
 // Composed Style
 // =========================================================================

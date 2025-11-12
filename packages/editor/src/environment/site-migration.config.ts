@@ -1,5 +1,6 @@
 import { tokenRef } from '../lib';
 import {
+	TAnimationStyleToken,
 	TBannerStyleToken,
 	TBasicLinkNodeContentMixin,
 	TFlatSite,
@@ -131,13 +132,65 @@ interface TV001BasicLinkNodeContent {
 }
 
 // =========================================================================
+// v0.0.2 -> v0.0.3
+// =========================================================================
+
+const v002ToV003: TSiteMigration = {
+	to: 'v0.0.3',
+	migrate(site) {
+		const migratedNodes = Object.fromEntries(
+			Object.entries(site.nodes).map(([id, node]) => {
+				// Add animation mixin to nodes that support it
+				if (
+					// Classic and Featured Link nodes
+					(node.type === 'link' &&
+						(node.bundleType === 'classic' || node.bundleType === 'featured')) ||
+					// Classic Media nodes
+					(node.type === 'media' && node.bundleType === 'classic') ||
+					// Rich Text nodes
+					(node.type === 'text' && node.bundleType === 'rich')
+				) {
+					return [
+						id,
+						{
+							...node,
+							animation: tokenRef('animation.default', 'animation')
+						}
+					];
+				}
+
+				return [id, node];
+			})
+		);
+
+		// Add animation default token
+		const animationToken: TAnimationStyleToken = {
+			type: 'animation',
+			key: 'animation.default',
+			value: null
+		};
+		const migratedTokens = {
+			...site.tokens,
+			[animationToken.key]: animationToken
+		};
+
+		return {
+			...site,
+			nodes: migratedNodes,
+			tokens: migratedTokens
+		};
+	}
+};
+
+// =========================================================================
 // Config
 // =========================================================================
 
 export const siteMigrationConfig: TSiteMigrationConfig = {
-	latestVersion: 'v0.0.2',
+	latestVersion: 'v0.0.3',
 	migrations: {
-		'v0.0.1': v001ToV002
+		'v0.0.1': v001ToV002,
+		'v0.0.2': v002ToV003
 	}
 };
 

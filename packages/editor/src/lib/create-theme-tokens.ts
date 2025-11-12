@@ -31,6 +31,11 @@ export function createThemeTokens(theme: TTheme): TToken[] {
 			}
 		},
 		{
+			type: 'animation',
+			key: 'animation.default',
+			value: null
+		},
+		{
 			type: 'typography',
 			key: 'typography.default',
 			value: {

@@ -1,5 +1,6 @@
 import { TId, TRgba } from '../lib';
 import {
+	TAnimationStyleMixin,
 	TAppearanceStyleMixin,
 	TAutoLayoutStyleMixin,
 	TBadgeNeutralStyleMixin,
@@ -237,6 +238,7 @@ export type TClassicLinkNodeBundle = TNodeBundle<
 		TFillStyleMixin,
 		TStrokeStyleMixin,
 		TShadowStyleMixin,
+		TAnimationStyleMixin,
 		TTextBodyStyleMixin,
 		TTextCaptionStyleMixin,
 		TImageStyleMixin
@@ -254,6 +256,7 @@ export type TFeaturedLinkNodeBundle = TNodeBundle<
 		TFillStyleMixin,
 		TStrokeStyleMixin,
 		TShadowStyleMixin,
+		TAnimationStyleMixin,
 		TTextBodyStyleMixin,
 		TTextCaptionStyleMixin,
 		TImageStyleMixin
@@ -366,6 +369,7 @@ export type TClassicMediaNodeBundle = TNodeBundle<
 		TFillStyleMixin,
 		TStrokeStyleMixin,
 		TShadowStyleMixin,
+		TAnimationStyleMixin,
 		TImageStyleMixin
 	]
 >;
@@ -406,6 +410,7 @@ export type TRichTextNodeBundle = TNodeBundle<
 		TFillStyleMixin,
 		TStrokeStyleMixin,
 		TShadowStyleMixin,
+		TAnimationStyleMixin,
 		TTextBodyStyleMixin
 	]
 >;

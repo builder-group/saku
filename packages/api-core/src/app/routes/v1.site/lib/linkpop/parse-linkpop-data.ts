@@ -237,7 +237,7 @@ export function parseLinkpopData(linkpopData: TLinkPopData): TSite {
 
 	const defaultTheme = themes[0] as TTheme;
 	return {
-		version: 'v0.0.2',
+		version: 'v0.0.3',
 		assets,
 		integrations: [],
 		root: {

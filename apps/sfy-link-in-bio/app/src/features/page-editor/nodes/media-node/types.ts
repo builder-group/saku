@@ -1,5 +1,6 @@
 import { TIdMixin, TMediaNodeMixin, TNodeBundle } from '@repo/editor';
 import {
+	TResolvedAnimationStyleMixin,
 	TResolvedAppearanceStyleMixin,
 	TResolvedAutoLayoutStyleMixin,
 	TResolvedFillStyleMixin,
@@ -22,6 +23,7 @@ export type TResolvedClassicMediaNodeBundle = TNodeBundle<
 		TResolvedFillStyleMixin,
 		TResolvedStrokeStyleMixin,
 		TResolvedShadowStyleMixin,
+		TResolvedAnimationStyleMixin,
 		TResolvedImageStyleMixin
 	]
 >;

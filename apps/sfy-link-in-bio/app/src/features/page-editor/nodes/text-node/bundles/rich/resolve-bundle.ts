@@ -3,6 +3,7 @@ import { Err, Ok, TResult } from 'tuple-result';
 import { AppError } from '@/lib';
 import { TNodeResolveContext } from '../../../../lib';
 import {
+	resolveAnimationStyleMixin,
 	resolveAppearanceStyleMixin,
 	resolveAutoLayoutStyleMixin,
 	resolveFillStyleMixin,
@@ -17,7 +18,8 @@ export function resolveRichBundle(
 	node: TRichTextNodeBundle,
 	cx: TNodeResolveContext
 ): TResult<TResolvedRichTextNodeBundle, AppError> {
-	const { content, autoLayout, appearance, fill, stroke, shadow, textBody, ...rest } = node;
+	const { content, autoLayout, appearance, fill, stroke, shadow, animation, textBody, ...rest } =
+		node;
 
 	// Resolve content
 	const [isResolvedContentOk, resolvedContentErr, resolvedContent] =
@@ -67,6 +69,14 @@ export function resolveRichBundle(
 	if (!isResolvedShadowOk) {
 		return Err(resolvedShadowErr.wrapWith('#ERR_RESOLVE_SHADOW_STYLE'));
 	}
+	const [isResolvedAnimationOk, resolvedAnimationErr, resolvedAnimation] =
+		resolveAnimationStyleMixin(animation, {
+			node: cx,
+			tokenMap: cx.site.getTokenMap()
+		});
+	if (!isResolvedAnimationOk) {
+		return Err(resolvedAnimationErr.wrapWith('#ERR_RESOLVE_ANIMATION_STYLE'));
+	}
 	const [isResolvedTextBodyOk, resolvedTextBodyErr, resolvedTextBody] = resolveTextStyleMixin(
 		textBody,
 		{
@@ -86,6 +96,7 @@ export function resolveRichBundle(
 		fill: resolvedFill,
 		stroke: resolvedStroke,
 		shadow: resolvedShadow,
+		animation: resolvedAnimation,
 		textBody: resolvedTextBody
 	});
 }

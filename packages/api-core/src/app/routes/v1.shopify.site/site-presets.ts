@@ -165,7 +165,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 	const storeHandle = createHandleFromShop(shopId);
 
 	return {
-		version: 'v0.0.2',
+		version: 'v0.0.3',
 		assets,
 		integrations: [],
 		root: {

@@ -3,6 +3,7 @@ import { Err, Ok, TResult } from 'tuple-result';
 import { AppError, computeInnerBorderRadius } from '@/lib';
 import { TNodeResolveContext } from '../../../../lib';
 import {
+	resolveAnimationStyleMixin,
 	resolveAppearanceStyleMixin,
 	resolveAutoLayoutStyleMixin,
 	resolveFillStyleMixin,
@@ -17,7 +18,7 @@ export function resolveClassicBundle(
 	node: TClassicMediaNodeBundle,
 	cx: TNodeResolveContext
 ): TResult<TResolvedClassicMediaNodeBundle, AppError> {
-	const { content, autoLayout, appearance, fill, stroke, shadow, image, ...rest } = node;
+	const { content, autoLayout, appearance, fill, stroke, shadow, animation, image, ...rest } = node;
 
 	// Resolve content
 	const [isResolvedContentOk, resolvedContentErr, resolvedContent] =
@@ -67,6 +68,14 @@ export function resolveClassicBundle(
 	if (!isResolvedShadowOk) {
 		return Err(resolvedShadowErr.wrapWith('#ERR_RESOLVE_SHADOW_STYLE'));
 	}
+	const [isResolvedAnimationOk, resolvedAnimationErr, resolvedAnimation] =
+		resolveAnimationStyleMixin(animation, {
+			node: cx,
+			tokenMap: cx.site.getTokenMap()
+		});
+	if (!isResolvedAnimationOk) {
+		return Err(resolvedAnimationErr.wrapWith('#ERR_RESOLVE_ANIMATION_STYLE'));
+	}
 	const [isResolvedImageOk, resolvedImageErr, resolvedImage] = resolveImageStyleMixin(image, {
 		node: cx,
 		tokenMap: cx.site.getTokenMap()
@@ -100,6 +109,7 @@ export function resolveClassicBundle(
 		fill: resolvedFill,
 		stroke: resolvedStroke,
 		shadow: resolvedShadow,
+		animation: resolvedAnimation,
 		image: {
 			...resolvedImage,
 			appearance: {

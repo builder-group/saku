@@ -8,7 +8,18 @@ export const ResolvedFeaturedBundle = React.forwardRef<
 	TResolvedFeaturedBundleProps
 >((props, ref) => {
 	const {
-		node: { content, autoLayout, appearance, fill, stroke, shadow, textBody, textCaption, image }
+		node: {
+			content,
+			autoLayout,
+			appearance,
+			fill,
+			stroke,
+			shadow,
+			animation,
+			textBody,
+			textCaption,
+			image
+		}
 	} = props;
 
 	return (
@@ -24,7 +35,8 @@ export const ResolvedFeaturedBundle = React.forwardRef<
 					...appearance.styles,
 					...fill?.styles,
 					...stroke?.styles,
-					...shadow?.styles
+					...shadow?.styles,
+					...animation?.styles
 				}}
 			>
 				<div className="aspect-video w-full overflow-hidden bg-neutral-200" style={image.styles}>

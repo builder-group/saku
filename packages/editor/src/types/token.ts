@@ -1,5 +1,6 @@
 import { TRgba } from '../lib';
 import {
+	TAnimationStyleMixin,
 	TAppearanceStyleMixin,
 	TAutoLayoutStyleMixin,
 	TBadgeStyleMixin,
@@ -129,6 +130,7 @@ export type TMixinToken =
 	| TFillStyleToken
 	| TStrokeStyleToken
 	| TShadowStyleToken
+	| TAnimationStyleToken
 	| TTextStyleToken
 	| TButtonStyleToken
 	| TBadgeStyleToken
@@ -165,6 +167,11 @@ export interface TStrokeStyleToken extends TBaseToken {
 export interface TShadowStyleToken extends TBaseToken {
 	type: 'shadow';
 	value: TUnreferenceTop<TShadowStyleMixin['value']>;
+}
+
+export interface TAnimationStyleToken extends TBaseToken {
+	type: 'animation';
+	value: TUnreferenceTop<TAnimationStyleMixin['value']>;
 }
 
 export interface TTextStyleToken extends TBaseToken {

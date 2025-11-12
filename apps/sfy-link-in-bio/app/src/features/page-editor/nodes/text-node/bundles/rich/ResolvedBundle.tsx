@@ -7,7 +7,7 @@ import { TResolvedRichTextNodeBundle } from '../../types';
 export const ResolvedRichBundle = React.forwardRef<HTMLDivElement, TResolvedRichBundleProps>(
 	(props, ref) => {
 		const {
-			node: { content, autoLayout, appearance, fill, stroke, shadow, textBody }
+			node: { content, autoLayout, appearance, fill, stroke, shadow, animation, textBody }
 		} = props;
 
 		const mdxComponents = React.useMemo(
@@ -59,7 +59,8 @@ export const ResolvedRichBundle = React.forwardRef<HTMLDivElement, TResolvedRich
 					...appearance.styles,
 					...fill?.styles,
 					...stroke?.styles,
-					...shadow?.styles
+					...shadow?.styles,
+					...animation?.styles
 				}}
 				className="flex min-h-16 items-center justify-center"
 			>

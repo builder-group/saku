@@ -6,7 +6,7 @@ import { TResolvedClassicMediaNodeBundle } from '../../types';
 export const ResolvedClassicBundle = React.forwardRef<HTMLDivElement, TResolvedClassicBundleProps>(
 	(props, ref) => {
 		const {
-			node: { autoLayout, appearance, fill, stroke, shadow, image },
+			node: { autoLayout, appearance, fill, stroke, shadow, animation, image },
 			media
 		} = props;
 
@@ -19,7 +19,8 @@ export const ResolvedClassicBundle = React.forwardRef<HTMLDivElement, TResolvedC
 					...appearance.styles,
 					...fill?.styles,
 					...stroke?.styles,
-					...shadow?.styles
+					...shadow?.styles,
+					...animation?.styles
 				}}
 			>
 				<img

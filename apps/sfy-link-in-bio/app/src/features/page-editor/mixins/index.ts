@@ -1,3 +1,4 @@
+export * from './animation-style';
 export * from './appearance-style';
 export * from './auto-layout-style';
 export * from './badge-style';

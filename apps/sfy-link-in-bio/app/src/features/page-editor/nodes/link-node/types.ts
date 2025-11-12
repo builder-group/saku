@@ -1,5 +1,6 @@
 import { TIdMixin, TLinkNodeMixin, TNodeBundle } from '@repo/editor';
 import {
+	TResolvedAnimationStyleMixin,
 	TResolvedAppearanceStyleMixin,
 	TResolvedAutoLayoutStyleMixin,
 	TResolvedBasicLinkNodeContentMixin,
@@ -31,6 +32,7 @@ export type TResolvedClassicLinkNodeBundle = TNodeBundle<
 		TResolvedFillStyleMixin,
 		TResolvedStrokeStyleMixin,
 		TResolvedShadowStyleMixin,
+		TResolvedAnimationStyleMixin,
 		TResolvedTextBodyStyleMixin,
 		TResolvedTextCaptionStyleMixin,
 		TResolvedImageStyleMixin
@@ -48,6 +50,7 @@ export type TResolvedFeaturedLinkNodeBundle = TNodeBundle<
 		TResolvedFillStyleMixin,
 		TResolvedStrokeStyleMixin,
 		TResolvedShadowStyleMixin,
+		TResolvedAnimationStyleMixin,
 		TResolvedTextBodyStyleMixin,
 		TResolvedTextCaptionStyleMixin,
 		TResolvedImageStyleMixin
