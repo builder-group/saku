@@ -1,6 +1,6 @@
 import React from 'react';
 import { appConfig, crispConfig, logger } from '@/environment';
-import { Crisp } from '@/lib/crisp/Crisp';
+import { Crisp } from '@/lib/crisp/Crisp'; // Direct import to avoid circular dependency
 
 const CrispContext = React.createContext<Crisp | null>(null);
 

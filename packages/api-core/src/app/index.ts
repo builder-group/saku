@@ -7,6 +7,8 @@ import { router } from './router';
 import './routes';
 
 export function createApp(app: Hono = new Hono()): Hono {
+	logger.info('Creating app', { env: appConfig.env });
+
 	app.onError(errorHandler);
 	app.notFound(invalidPathHandler);
 	app.use(
@@ -20,6 +22,7 @@ export function createApp(app: Hono = new Hono()): Hono {
 			origin: [
 				appConfig.client.appUrl,
 				{ strategy: 'tld', domain: 'myshopify.com' },
+				// Allow Cloudflare tunnel origin in dev
 				...(appConfig.env === 'local' || appConfig.env === 'development'
 					? ([{ strategy: 'tld', domain: 'trycloudflare.com' }] satisfies TCorsOrigin)
 					: [])
