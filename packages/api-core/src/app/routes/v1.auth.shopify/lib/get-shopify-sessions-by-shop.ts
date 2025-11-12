@@ -11,7 +11,17 @@ export async function getShopifySessionsByShop(shopId: string): Promise<TShopify
 		return [];
 	}
 
+	// Mantle token is stored in offline session, find it once for all online sessions
+	const offlineSession = sessions.find((s) => !s.isOnline);
+	const offlineMantleApiToken = offlineSession?.sessionData?.mantleApiToken ?? null;
+
 	return sessions.map((session) => {
+		// Use offline session's mantleApiToken for online sessions
+		const mantleApiToken =
+			session.isOnline && session.sessionData?.mantleApiToken == null
+				? offlineMantleApiToken
+				: (session.sessionData?.mantleApiToken ?? null);
+
 		return {
 			id: session.sessionId,
 			shop: session.shopId,
@@ -20,7 +30,7 @@ export async function getShopifySessionsByShop(shopId: string): Promise<TShopify
 			scope: session.scopes,
 			expires: session.expiresAt?.toISOString() ?? null,
 			accessToken: session.accessToken,
-			mantleApiToken: session.sessionData?.mantleApiToken ?? null,
+			mantleApiToken,
 			onlineAccessInfo:
 				session.sessionData?.onlineAccessInfo != null
 					? {

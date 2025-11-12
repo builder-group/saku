@@ -1,5 +1,5 @@
 import { AppError } from '@repo/hono-utils';
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import { db, shopifySessionTable } from '@/environment/db';
 import type { TShopifySessionDto } from '../schema';
 
@@ -15,6 +15,21 @@ export async function getShopifySession(sessionId: string): Promise<TShopifySess
 		});
 	}
 
+	// Mantle token is stored in offline session, so fetch it for online sessions
+	let mantleApiToken = session.sessionData?.mantleApiToken ?? null;
+	if (session.isOnline && mantleApiToken == null) {
+		const [offlineSession] = await db
+			.select({
+				sessionData: shopifySessionTable.sessionData
+			})
+			.from(shopifySessionTable)
+			.where(
+				and(eq(shopifySessionTable.shopId, session.shopId), eq(shopifySessionTable.isOnline, false))
+			)
+			.limit(1);
+		mantleApiToken = offlineSession?.sessionData?.mantleApiToken ?? null;
+	}
+
 	return {
 		id: session.sessionId,
 		shop: session.shopId,
@@ -23,7 +38,7 @@ export async function getShopifySession(sessionId: string): Promise<TShopifySess
 		scope: session.scopes,
 		expires: session.expiresAt?.toISOString() ?? null,
 		accessToken: session.accessToken,
-		mantleApiToken: session.sessionData?.mantleApiToken ?? null,
+		mantleApiToken,
 		onlineAccessInfo:
 			session.sessionData?.onlineAccessInfo != null
 				? {

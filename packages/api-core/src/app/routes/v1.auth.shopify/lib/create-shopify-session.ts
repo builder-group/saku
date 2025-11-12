@@ -65,11 +65,14 @@ async function upsertSession(tx: TPgTransaction, session: TShopifySessionDto): P
 				accountNumber: session.onlineAccessInfo.account_number ?? undefined
 			};
 		}
+	}
 
-		// Create Mantle API key for online sessions only
-		// because Mantle identifies shops based on user context
-		// and offline sessions have no user association
-		const [isShopInfoOk, , shopInfo] = await getShopInfo({
+	if (!session.isOnline) {
+		// Identify shop to Mantle with Enhanced Identification
+		// Mantle customer = Shopify store (not individual users), so we use offline token for billing
+		// See: https://appapi.heymantle.dev/docs/identify-your-first-customer
+		//      https://discord.com/channels/1176636548138139648/1435158689655820399
+		const [isShopInfoOk, shopInfoErr, shopInfo] = await getShopInfo({
 			shopId: session.shop,
 			accessToken: session.accessToken
 		});
