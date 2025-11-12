@@ -1,4 +1,5 @@
 import {
+	TAnimationStyleMixin,
 	TAppearanceStyleMixin,
 	TAutoLayoutStyleMixin,
 	TBadgeStyleMixin,
@@ -20,6 +21,7 @@ import { useCurrentPlan } from '@/hooks';
 import { cn } from '@/lib';
 import { TPageEditor } from '../../../../../../lib';
 import {
+	AnimationStyleMixinEditor,
 	AppearanceStyleMixinEditor,
 	AutoLayoutStyleMixinEditor,
 	BadgeStyleMixinEditor,
@@ -47,16 +49,13 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 	const fillTokens = useTokensByType('fill', editor.tokenMap);
 	const strokeTokens = useTokensByType('stroke', editor.tokenMap);
 	const shadowTokens = useTokensByType('shadow', editor.tokenMap);
+	const animationTokens = useTokensByType('animation', editor.tokenMap);
 	const buttonTokens = useTokensByType('button', editor.tokenMap);
 	const badgeTokens = useTokensByType('badge', editor.tokenMap);
 	const bannerTokens = useTokensByType('banner', editor.tokenMap);
 	const textTokens = useTokensByType('text', editor.tokenMap);
 	const imageTokens = useTokensByType('image', editor.tokenMap);
 	const productDetailsTokens = useTokensByType('product-details', editor.tokenMap);
-
-	// =========================================================================
-	// Effects
-	// =========================================================================
 
 	// =========================================================================
 	// UI
@@ -179,6 +178,28 @@ export const AdvancedTab: React.FC<TAdvancedTabProps> = (props) => {
 						>
 							<ShadowStyleMixinEditor
 								state={state as TState<TShadowStyleMixin['value'], []>}
+								syncedTokenLink={false}
+								disabled={currentPlan.key !== 'awesome'}
+								editor={editor}
+							/>
+						</AccordionSection>
+					))}
+				</AccordionSection>
+			)}
+
+			{/* Animation Section */}
+			{animationTokens.length > 0 && (
+				<AccordionSection title="Animation" collapsibleClassName="p-0 border-b-0">
+					{animationTokens.map(({ key, name, state }) => (
+						<AccordionSection
+							key={key}
+							title={name}
+							collapsibleClassName="px-0 space-y-3"
+							size="tight"
+							defaultOpen={true}
+						>
+							<AnimationStyleMixinEditor
+								state={state as TState<TAnimationStyleMixin['value'], []>}
 								syncedTokenLink={false}
 								disabled={currentPlan.key !== 'awesome'}
 								editor={editor}
