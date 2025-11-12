@@ -41,7 +41,7 @@ export function resolveAnimationStyleMixin(
 			animationName: animationValue.type,
 			animationDuration: `${resolvedDuration}ms`,
 			animationIterationCount: 'infinite',
-			animationTimingFunction: 'ease-in-out',
+			animationTimingFunction: 'linear',
 			animationFillMode: 'none'
 		}
 	});

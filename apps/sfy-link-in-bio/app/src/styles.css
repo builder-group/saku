@@ -17,13 +17,13 @@
 	50%,
 	70%,
 	90% {
-		transform: translateX(-2px);
+		transform: translateX(-1px);
 	}
 	20%,
 	40%,
 	60%,
 	80% {
-		transform: translateX(2px);
+		transform: translateX(1px);
 	}
 }
 
@@ -32,20 +32,23 @@
 	100% {
 		transform: rotate(0deg);
 	}
-	15% {
-		transform: rotate(-5deg);
+	12.5% {
+		transform: rotate(-2deg);
 	}
-	30% {
-		transform: rotate(3deg);
-	}
-	45% {
-		transform: rotate(-3deg);
-	}
-	60% {
+	25% {
 		transform: rotate(2deg);
 	}
-	75% {
+	37.5% {
 		transform: rotate(-1deg);
+	}
+	50% {
+		transform: rotate(1deg);
+	}
+	62.5% {
+		transform: rotate(-0.5deg);
+	}
+	75% {
+		transform: rotate(0.5deg);
 	}
 }
 
@@ -53,25 +56,10 @@
 	0% {
 		transform: scale(1);
 	}
-	50% {
+	12.5% {
 		transform: scale(1.05);
 	}
-	100% {
+	25% {
 		transform: scale(1);
-	}
-}
-
-@keyframes swipe {
-	0% {
-		transform: translateX(0);
-		opacity: 1;
-	}
-	50% {
-		transform: translateX(10px);
-		opacity: 0.8;
-	}
-	100% {
-		transform: translateX(0);
-		opacity: 1;
 	}
 }

@@ -115,8 +115,7 @@ export type TAnimationBase = {
 export type TAnimation =
 	| ({ type: 'buzz' } & TAnimationBase)
 	| ({ type: 'wobble' } & TAnimationBase)
-	| ({ type: 'pop' } & TAnimationBase)
-	| ({ type: 'swipe' } & TAnimationBase);
+	| ({ type: 'pop' } & TAnimationBase);
 
 // =========================================================================
 // Composed Style

@@ -61,7 +61,7 @@ export const AnimationStyleMixinEditor = (props: TAnimationStyleMixinEditorProps
 			} else {
 				unpackedBaseValue.animation = {
 					type: mappedValue as TAnimation['type'],
-					duration: 500
+					duration: 2000
 				};
 			}
 			baseState._v = packAnimationTokenRef(unpackedBaseValue);
@@ -112,7 +112,7 @@ export const AnimationStyleMixinEditor = (props: TAnimationStyleMixinEditorProps
 					: {
 							animation: {
 								type: 'pop' as TAnimation['type'],
-								duration: 500
+								duration: 2000
 							}
 						};
 			state._notify();
@@ -254,8 +254,7 @@ export const AnimationStyleMixinEditor = (props: TAnimationStyleMixinEditorProps
 						options={[
 							{ label: 'Buzz', value: 'buzz' },
 							{ label: 'Wobble', value: 'wobble' },
-							{ label: 'Pop', value: 'pop' },
-							{ label: 'Swipe', value: 'swipe' }
+							{ label: 'Pop', value: 'pop' }
 						]}
 						state={typeState}
 						tokenMap={editor.tokenMap}
