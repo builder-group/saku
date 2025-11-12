@@ -40,32 +40,34 @@ export const ResolvedFeaturedBundle = React.forwardRef<
 					)}
 				</div>
 
-				<div className="flex min-h-12 w-full min-w-0 flex-col justify-center gap-1 px-6">
-					{content.title != null && (
-						<p
-							className={cn(
-								'font-medium',
-								// Title only: 2 lines, Title + Description: 1 line
-								content.description == null ? 'line-clamp-2 text-balance' : 'truncate'
-							)}
-							style={textBody.styles}
-						>
-							{content.title}
-						</p>
-					)}
-					{content.description != null && (
-						<p
-							className={cn(
-								'opacity-70',
-								// Description only: 2 lines, Title + Description: 1 line
-								content.title == null ? 'line-clamp-2 text-balance' : 'truncate'
-							)}
-							style={textCaption.styles}
-						>
-							{content.description}
-						</p>
-					)}
-				</div>
+				{(content.title != null || content.description != null) && (
+					<div className="flex w-full min-w-0 flex-col justify-center gap-1 px-6">
+						{content.title != null && (
+							<p
+								className={cn(
+									'font-medium',
+									// Title only: 2 lines, Title + Description: 1 line
+									content.description == null ? 'line-clamp-2 text-balance' : 'truncate'
+								)}
+								style={textBody.styles}
+							>
+								{content.title}
+							</p>
+						)}
+						{content.description != null && (
+							<p
+								className={cn(
+									'opacity-70',
+									// Description only: 2 lines, Title + Description: 1 line
+									content.title == null ? 'line-clamp-2 text-balance' : 'truncate'
+								)}
+								style={textCaption.styles}
+							>
+								{content.description}
+							</p>
+						)}
+					</div>
+				)}
 			</a>
 		</div>
 	);
