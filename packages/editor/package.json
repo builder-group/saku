@@ -33,7 +33,7 @@
 		"update:latest": "pnpm update --latest"
 	},
 	"dependencies": {
-		"tuple-result": "^0.0.9",
+		"tuple-result": "^0.0.10",
 		"zod": "4.1.12"
 	}
 }

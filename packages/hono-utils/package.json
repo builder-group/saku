@@ -33,18 +33,18 @@
 		"update:latest": "pnpm update --latest"
 	},
 	"dependencies": {
-		"@blgc/utils": "^0.0.59",
+		"@blgc/utils": "^0.0.60",
 		"@hono/zod-openapi": "1.1.4",
 		"@oslojs/crypto": "^1.0.1",
 		"@oslojs/encoding": "^1.1.0",
 		"arctic": "^3.7.0",
-		"feature-fetch": "^0.0.52",
-		"hono": "^4.10.4",
-		"jose": "^6.1.0",
+		"feature-fetch": "^0.0.53",
+		"hono": "^4.10.5",
+		"jose": "^6.1.1",
 		"zod": "4.1.12"
 	},
 	"devDependencies": {
 		"@repo/types": "workspace:*",
-		"@types/node": "^24.10.0"
+		"@types/node": "^24.10.1"
 	}
 }
