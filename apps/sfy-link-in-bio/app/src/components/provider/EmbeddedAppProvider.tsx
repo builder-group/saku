@@ -9,6 +9,7 @@ import React from 'react';
 import { Link } from 'react-router';
 import { CrispProvider } from './CrispProvider';
 import { MantleProvider } from './MantleProvider';
+import { PosthogProvider } from './PosthogProvider';
 
 export const EmbeddedAppProvider: React.FC<TEmbeddedAppProviderProps> = (props) => {
 	const {
@@ -17,25 +18,28 @@ export const EmbeddedAppProvider: React.FC<TEmbeddedAppProviderProps> = (props) 
 		mantleApiToken = '',
 		userContext,
 		children,
+		disabledPosthog,
 		disabledCrisp,
 		disabledCrispCallbacks,
 		disabledMantle
 	} = props;
 
 	return (
-		<CrispProvider
-			user={userContext}
-			disabled={disabledCrisp}
-			disabledCallbacks={disabledCrispCallbacks}
-		>
-			<AppProvider embedded apiKey={shopifyApiKey}>
-				<PolarisAppProvider linkComponent={PolarisLink} i18n={i18n}>
-					<MantleProvider customerApiToken={mantleApiToken} disabled={disabledMantle}>
-						{children}
-					</MantleProvider>
-				</PolarisAppProvider>
-			</AppProvider>
-		</CrispProvider>
+		<PosthogProvider disabled={disabledPosthog}>
+			<CrispProvider
+				user={userContext}
+				disabled={disabledCrisp}
+				disabledCallbacks={disabledCrispCallbacks}
+			>
+				<AppProvider embedded apiKey={shopifyApiKey}>
+					<PolarisAppProvider linkComponent={PolarisLink} i18n={i18n}>
+						<MantleProvider customerApiToken={mantleApiToken} disabled={disabledMantle}>
+							{children}
+						</MantleProvider>
+					</PolarisAppProvider>
+				</AppProvider>
+			</CrispProvider>
+		</PosthogProvider>
 	);
 };
 
@@ -45,6 +49,7 @@ interface TEmbeddedAppProviderProps {
 	mantleApiToken?: string;
 	children: React.ReactNode;
 	userContext: TEmbeddedAppProviderUserContext;
+	disabledPosthog?: boolean;
 	disabledCrisp?: boolean;
 	disabledCrispCallbacks?: boolean;
 	disabledMantle?: boolean;
