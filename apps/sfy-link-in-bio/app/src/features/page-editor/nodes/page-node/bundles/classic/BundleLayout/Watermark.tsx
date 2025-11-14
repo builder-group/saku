@@ -27,7 +27,7 @@ export const Watermark: React.FC<TWatermarkProps> = (props) => {
 			className={cn('flex min-h-12 items-center justify-center', className)}
 		>
 			<a
-				href="https://saku.so"
+				href="https://apps.shopify.com/saku-bio-link?utm_source=watermark&utm_medium=link&utm_campaign=made-in-saku"
 				target="_blank"
 				rel="noopener noreferrer"
 				className={cn(
