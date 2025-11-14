@@ -27,6 +27,7 @@ export const PosthogProvider: React.FC<TPosthogProviderProps> = (props) => {
 			defaults: '2025-05-24',
 			person_profiles: 'identified_only',
 			capture_pageview: true, // TODO: Figure out whether we want to use the default page view tracking or our own (via usePosthogPageView() hook)
+			disable_session_recording: true, // Disable by default, we'll enable it conditionally in route components
 			session_recording: {
 				maskAllInputs: false,
 				maskInputOptions: {

@@ -2,6 +2,7 @@ import { shortId, sleep } from '@blgc/utils';
 import polarisStyles from '@shopify/polaris/build/esm/styles.css?url';
 import polarisTranslations from '@shopify/polaris/locales/en.json';
 import { boundary } from '@shopify/shopify-app-react-router/server';
+import posthog from 'posthog-js';
 import React from 'react';
 import {
 	Link,
@@ -38,6 +39,21 @@ const Page: React.FC = () => {
 	const disabledCrispCallbacks = React.useMemo(() => {
 		return location.pathname.includes('/modal/');
 	}, [location.pathname]);
+
+	React.useEffect(() => {
+		if (posthog.__loaded && appConfig.featureFlags.posthog) {
+			posthog.startSessionRecording();
+			logger.info('🦔 Started session recording for admin dashboard');
+		}
+
+		return () => {
+			// Stop recording when navigating away from admin dashboard
+			if (posthog.__loaded && appConfig.featureFlags.posthog) {
+				posthog.stopSessionRecording();
+				logger.info('🦔 Stopped session recording');
+			}
+		};
+	}, []);
 
 	return (
 		<EmbeddedAppProvider
