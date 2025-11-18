@@ -111,7 +111,7 @@ const LayerActionsSection: React.FC<TLayerActionsSectionProps> = (props) => {
 	return (
 		<div className="flex items-center justify-between border-b border-neutral-200 px-4 py-2">
 			<Text as="span" variant="bodySm" tone="subdued">
-				Layer Actions
+				Actions
 			</Text>
 			<div className="flex gap-1">
 				<Tooltip content="Move layer up" preferredPosition="below">
