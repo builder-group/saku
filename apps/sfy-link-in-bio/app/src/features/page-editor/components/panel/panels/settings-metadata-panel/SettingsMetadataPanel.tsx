@@ -10,7 +10,7 @@ import {
 import { useEditorBreakpoint } from '../../../../hooks';
 import { EditorSiteResolveContext, TPageEditor } from '../../../../lib';
 import { resolvePageMetadata } from '../../../../nodes';
-import { PublishButton } from '../../../input';
+import { SaveButton } from '../../../input';
 import { PanelHeader } from '../../PanelHeader';
 
 export const SettingsMetadataPanel: React.FC<TSettingsMetadataPanelProps> = (props) => {
@@ -173,7 +173,7 @@ export const SettingsMetadataPanel: React.FC<TSettingsMetadataPanelProps> = (pro
 					<Text as="h2" variant="headingMd">
 						Metadata
 					</Text>
-					{!isMd && <PublishButton editor={editor} />}
+					{!isMd && <SaveButton editor={editor} />}
 				</PanelHeader>
 				<div className="flex-1 overflow-auto">
 					<PersistableBanner

@@ -9,7 +9,7 @@ import {
 } from '@/components';
 import { isBreakpointActive } from '@/lib';
 import { useEditorBreakpoint } from '../../../../hooks';
-import { PublishButton } from '../../../input';
+import { SaveButton } from '../../../input';
 import { PanelHeader as BasePanelHeader } from '../../PanelHeader';
 import { TPreviewPanelContext } from './create-preview-panel-context';
 
@@ -99,7 +99,7 @@ export const PanelHeader: React.FC<TPanelHeaderProps> = (props) => {
 					onClick={handleViewProductionSite}
 					accessibilityLabel="View production site"
 				/>
-				<PublishButton editor={cx.editor} />
+				<SaveButton editor={cx.editor} />
 			</div>
 		</BasePanelHeader>
 	);

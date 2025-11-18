@@ -1,4 +1,4 @@
-export * from './PublishButton';
+export * from './SaveButton';
 export * from './TokenActionOverlay';
 export * from './TokenColorInput';
 export * from './TokenPaintInput';

@@ -2,7 +2,7 @@ import { Button } from '@shopify/polaris';
 import React from 'react';
 import { PolarisViewIcon } from '@/components';
 import { TPageEditor } from '../../../../lib';
-import { PublishButton } from '../../../input';
+import { SaveButton } from '../../../input';
 import { PanelHeader as PanelHeaderBase } from '../../PanelHeader';
 
 export const PanelHeader: React.FC<TPanelHeaderProps> = (props) => {
@@ -29,7 +29,7 @@ export const PanelHeader: React.FC<TPanelHeaderProps> = (props) => {
 					onClick={handlePreview}
 					accessibilityLabel="Preview your Link In Bio page"
 				/>
-				<PublishButton editor={editor} />
+				<SaveButton editor={editor} />
 			</div>
 		</PanelHeaderBase>
 	);
