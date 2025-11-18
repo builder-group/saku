@@ -4,7 +4,6 @@ import { boundary } from '@shopify/shopify-app-react-router/server';
 import { isStatusCode } from 'feature-fetch';
 import React from 'react';
 import { Err, Ok } from 'tuple-result';
-import { shopifyConfig } from '@/.server/environment';
 import { authenticateAppProxy } from '@/.server/lib';
 import { appConfig, coreApiClient, logger } from '@/environment';
 import {
@@ -19,7 +18,7 @@ import { THeadersFunction, TMetaFunction } from '@/types';
 
 const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 	Success: ({ data }) => {
-		const { appUrl, site } = data;
+		const { site } = data;
 		const cx = React.useMemo(
 			() =>
 				createPageContext({
@@ -172,7 +171,6 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 	}
 
 	return Ok({
-		appUrl: shopifyConfig.appUrl,
 		site: {
 			...hydrateSiteResult.value,
 			id: site.id,
@@ -187,7 +185,6 @@ interface TErrorLoaderData {
 }
 
 interface TSuccessLoaderData {
-	appUrl: string;
 	site: {
 		id: string;
 		integrations: TIntegration[];

@@ -24,7 +24,7 @@ export const ResolvedPageNode = React.forwardRef<
 	}
 
 	return (
-		<BundleLayout ref={ref} node={node} {...divProps}>
+		<BundleLayout ref={ref} node={node} cx={cx} {...divProps}>
 			{node.children.map((childNode) => (
 				<ResolvedNode key={childNode.id} node={childNode} cx={cx} />
 			))}

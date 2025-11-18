@@ -2,6 +2,7 @@ import React from 'react';
 import { LogoIcon, useIframePortal } from '@/components';
 import { useHasScrolled } from '@/hooks';
 import { cn } from '@/lib';
+import { TPageContext } from '../../../../../lib';
 import { TResolvedPageNode } from '../../../types';
 import { resolveFooterActionToLink } from './resolve-footer-action-to-link';
 import { ShareButton } from './ShareButton';
@@ -167,5 +168,6 @@ ClassicBundleLayout.displayName = 'ClassicBundleLayout';
 
 interface TClassicBundleLayout extends React.HTMLAttributes<HTMLDivElement> {
 	node: Omit<TResolvedPageNode, 'children'>;
+	cx: TPageContext;
 	children: React.ReactNode;
 }

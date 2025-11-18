@@ -47,7 +47,7 @@ export const PageNode = React.forwardRef<HTMLDivElement, TNodeProps<TFlatPageNod
 		}
 
 		return (
-			<BundleLayout ref={ref} node={node} {...divProps}>
+			<BundleLayout ref={ref} node={node} cx={editor.pageContext} {...divProps}>
 				{childNodes.map((childNodeState) => (
 					<Node key={childNodeState._v.id} nodeState={childNodeState} editor={editor} />
 				))}
