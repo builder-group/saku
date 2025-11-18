@@ -31,10 +31,10 @@ export const settingsMetadataMap = {
 		label: 'Integrations',
 		condition: bitwiseFlag()
 	} satisfies TSettingsMetadata,
-	debug: {
-		type: 'debug',
-		label: 'Debug',
-		condition: bitwiseFlag(ESettingsCondition.Debug)
+	advanced: {
+		type: 'advanced',
+		label: 'Advanced',
+		condition: bitwiseFlag()
 	} satisfies TSettingsMetadata
 };
 

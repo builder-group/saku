@@ -1,8 +1,8 @@
 import React from 'react';
 import { TPageEditor } from '../../../lib';
-import { SettingsDebugPanel } from '../panels';
+import { SettingsAdvancedPanel } from '../panels';
 
-export const SettingsDebugView: React.FC<TSettingsDebugViewProps> & { panelCount: number } = (
+export const SettingsAdvancedView: React.FC<TSettingsAdvancedViewProps> & { panelCount: number } = (
 	props
 ) => {
 	const { editor, order } = props;
@@ -15,13 +15,13 @@ export const SettingsDebugView: React.FC<TSettingsDebugViewProps> & { panelCount
 
 	return (
 		<>
-			<SettingsDebugPanel editor={editor} order={order} />
+			<SettingsAdvancedPanel editor={editor} order={order} />
 		</>
 	);
 };
-SettingsDebugView.panelCount = 1;
+SettingsAdvancedView.panelCount = 1;
 
-interface TSettingsDebugViewProps {
+interface TSettingsAdvancedViewProps {
 	editor: TPageEditor;
 	order: number;
 }

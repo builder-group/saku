@@ -7,7 +7,7 @@ import { TPageEditor } from '../../../../lib';
 import { PanelHeader } from '../../PanelHeader';
 import { OverrideWithExternalSiteSection } from './sections';
 
-export const SettingsDebugPanel: React.FC<TSettingsDebugPanelProps> = (props) => {
+export const SettingsAdvancedPanel: React.FC<TSettingsAdvancedPanelProps> = (props) => {
 	const { editor, order } = props;
 
 	const isMd = useEditorBreakpoint(editor, 'md');
@@ -45,7 +45,7 @@ export const SettingsDebugPanel: React.FC<TSettingsDebugPanelProps> = (props) =>
 
 	return (
 		<ResizablePanel
-			id="settings-debug-panel"
+			id="settings-advanced-panel"
 			order={order}
 			minSize={sizes.minSize}
 			className="relative"
@@ -53,7 +53,7 @@ export const SettingsDebugPanel: React.FC<TSettingsDebugPanelProps> = (props) =>
 			<div className="flex h-full flex-col overflow-y-auto bg-white">
 				<PanelHeader>
 					<Text as="h2" variant="headingMd">
-						Debug
+						Advanced
 					</Text>
 				</PanelHeader>
 
@@ -72,7 +72,7 @@ export const SettingsDebugPanel: React.FC<TSettingsDebugPanelProps> = (props) =>
 	);
 };
 
-interface TSettingsDebugPanelProps {
+interface TSettingsAdvancedPanelProps {
 	editor: TPageEditor;
 	order: number;
 }
