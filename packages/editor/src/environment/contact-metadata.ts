@@ -29,7 +29,7 @@ export const contactMetadataMap = {
 		placeholder: 'username',
 		getUrl: (handle) => `https://instagram.com/${handle}`,
 		getAltText: (handle) => (handle != null ? `Instagram: @${handle}` : 'Instagram'),
-		getHandle: (url) => url.replace(/^https?:\/\/(www\.)?instagram\.com\//, '')
+		getHandle: (url) => url.replace(/^https?:\/\/(www\.)?instagram\.com\//, '').replace(/\/+$/, '')
 	},
 	'social.x': {
 		type: 'social' as const,
@@ -38,7 +38,8 @@ export const contactMetadataMap = {
 		placeholder: 'username',
 		getUrl: (handle) => `https://twitter.com/${handle}`,
 		getAltText: (handle) => (handle != null ? `Twitter/X: @${handle}` : 'Twitter/X'),
-		getHandle: (url) => url.replace(/^https?:\/\/(www\.)?(twitter|x)\.com\//, '')
+		getHandle: (url) =>
+			url.replace(/^https?:\/\/(www\.)?(twitter|x)\.com\//, '').replace(/\/+$/, '')
 	},
 	'social.youtube': {
 		type: 'social' as const,
@@ -47,7 +48,8 @@ export const contactMetadataMap = {
 		placeholder: 'channelname',
 		getUrl: (channel) => `https://youtube.com/@${channel}`,
 		getAltText: (channel) => (channel != null ? `YouTube: @${channel}` : 'YouTube'),
-		getHandle: (url) => url.replace(/^https?:\/\/(www\.)?youtube\.com\/(@|c\/)/, '')
+		getHandle: (url) =>
+			url.replace(/^https?:\/\/(www\.)?youtube\.com\/(@|c\/)/, '').replace(/\/+$/, '')
 	},
 	'social.tiktok': {
 		type: 'social' as const,
@@ -56,7 +58,7 @@ export const contactMetadataMap = {
 		placeholder: 'username',
 		getUrl: (handle) => `https://tiktok.com/@${handle}`,
 		getAltText: (handle) => (handle != null ? `TikTok: @${handle}` : 'TikTok'),
-		getHandle: (url) => url.replace(/^https?:\/\/(www\.)?tiktok\.com\/@/, '')
+		getHandle: (url) => url.replace(/^https?:\/\/(www\.)?tiktok\.com\/@/, '').replace(/\/+$/, '')
 	},
 	'social.linkedin': {
 		type: 'social' as const,
@@ -65,7 +67,8 @@ export const contactMetadataMap = {
 		placeholder: 'username',
 		getUrl: (handle) => `https://linkedin.com/in/${handle}`,
 		getAltText: (handle) => (handle != null ? `LinkedIn: ${handle}` : 'LinkedIn'),
-		getHandle: (url) => url.replace(/^https?:\/\/(www\.)?linkedin\.com\/in\//, '')
+		getHandle: (url) =>
+			url.replace(/^https?:\/\/(www\.)?linkedin\.com\/in\//, '').replace(/\/+$/, '')
 	},
 	'social.facebook': {
 		type: 'social' as const,
@@ -74,7 +77,7 @@ export const contactMetadataMap = {
 		placeholder: 'username',
 		getUrl: (handle) => `https://facebook.com/${handle}`,
 		getAltText: (handle) => (handle != null ? `Facebook: ${handle}` : 'Facebook'),
-		getHandle: (url) => url.replace(/^https?:\/\/(www\.)?facebook\.com\//, '')
+		getHandle: (url) => url.replace(/^https?:\/\/(www\.)?facebook\.com\//, '').replace(/\/+$/, '')
 	},
 	'social.shopify': {
 		type: 'social' as const,
@@ -99,11 +102,11 @@ export const contactMetadataMap = {
 
 			// If it's a myshopify domain, extract store name
 			if (cleanUrl.includes('.myshopify.com')) {
-				return cleanUrl.replace('.myshopify.com', '');
+				return cleanUrl.replace('.myshopify.com', '').replace(/\/+$/, '');
 			}
 
 			// For custom domains, return as-is
-			return cleanUrl;
+			return cleanUrl.replace(/\/+$/, '');
 		}
 	},
 	'social.bluesky': {
@@ -113,7 +116,8 @@ export const contactMetadataMap = {
 		placeholder: 'handle.bsky.social',
 		getUrl: (handle) => `https://bsky.app/profile/${handle}`,
 		getAltText: (handle) => (handle != null ? `Bluesky: @${handle}` : 'Bluesky'),
-		getHandle: (url) => url.replace(/^https?:\/\/(www\.)?bsky\.app\/profile\//, '')
+		getHandle: (url) =>
+			url.replace(/^https?:\/\/(www\.)?bsky\.app\/profile\//, '').replace(/\/+$/, '')
 	},
 	'social.discord': {
 		type: 'social' as const,
@@ -122,7 +126,8 @@ export const contactMetadataMap = {
 		placeholder: 'user-id',
 		getUrl: (userId) => `https://discord.com/users/${userId}`,
 		getAltText: (userId) => (userId != null ? `Discord: ${userId}` : 'Discord'),
-		getHandle: (url) => url.replace(/^https?:\/\/(www\.)?discord\.com\/users\//, '')
+		getHandle: (url) =>
+			url.replace(/^https?:\/\/(www\.)?discord\.com\/users\//, '').replace(/\/+$/, '')
 	},
 	'social.github': {
 		type: 'social' as const,
@@ -131,7 +136,7 @@ export const contactMetadataMap = {
 		placeholder: 'username',
 		getUrl: (handle) => `https://github.com/${handle}`,
 		getAltText: (handle) => (handle != null ? `GitHub: @${handle}` : 'GitHub'),
-		getHandle: (url) => url.replace(/^https?:\/\/(www\.)?github\.com\//, '')
+		getHandle: (url) => url.replace(/^https?:\/\/(www\.)?github\.com\//, '').replace(/\/+$/, '')
 	},
 	'social.google': {
 		type: 'social' as const,
@@ -140,7 +145,7 @@ export const contactMetadataMap = {
 		placeholder: 'username',
 		getUrl: (handle) => `https://google.com/+${handle}`,
 		getAltText: (handle) => (handle != null ? `Google+: ${handle}` : 'Google+'),
-		getHandle: (url) => url.replace(/^https?:\/\/(www\.)?google\.com\/+/, '')
+		getHandle: (url) => url.replace(/^https?:\/\/(www\.)?google\.com\/+/, '').replace(/\/+$/, '')
 	},
 	'social.spotify': {
 		type: 'social' as const,
@@ -149,7 +154,8 @@ export const contactMetadataMap = {
 		placeholder: 'username',
 		getUrl: (handle) => `https://open.spotify.com/user/${handle}`,
 		getAltText: (handle) => (handle != null ? `Spotify: ${handle}` : 'Spotify'),
-		getHandle: (url) => url.replace(/^https?:\/\/(www\.)?open\.spotify\.com\/user\//, '')
+		getHandle: (url) =>
+			url.replace(/^https?:\/\/(www\.)?open\.spotify\.com\/user\//, '').replace(/\/+$/, '')
 	},
 	'social.pinterest': {
 		type: 'social' as const,
@@ -158,7 +164,7 @@ export const contactMetadataMap = {
 		placeholder: 'username',
 		getUrl: (handle) => `https://pinterest.com/${handle}`,
 		getAltText: (handle) => (handle != null ? `Pinterest: ${handle}` : 'Pinterest'),
-		getHandle: (url) => url.replace(/^https?:\/\/(www\.)?pinterest\.com\//, '')
+		getHandle: (url) => url.replace(/^https?:\/\/(www\.)?pinterest\.com\//, '').replace(/\/+$/, '')
 	},
 	'social.patreon': {
 		type: 'social' as const,
@@ -167,7 +173,7 @@ export const contactMetadataMap = {
 		placeholder: 'username',
 		getUrl: (handle) => `https://patreon.com/${handle}`,
 		getAltText: (handle) => (handle != null ? `Patreon: ${handle}` : 'Patreon'),
-		getHandle: (url) => url.replace(/^https?:\/\/(www\.)?patreon\.com\//, '')
+		getHandle: (url) => url.replace(/^https?:\/\/(www\.)?patreon\.com\//, '').replace(/\/+$/, '')
 	}
 } as const satisfies Record<string, TContactMetadata>;
 
