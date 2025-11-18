@@ -1,7 +1,7 @@
 import { createId, TAsset, TFlatSite, toFlatSite, TShopifyIntegration } from '@repo/editor';
 import { AppError } from '@repo/hono-utils';
 import { and, eq, isNull, ne } from 'drizzle-orm';
-import { unwrapOrNull } from 'tuple-result';
+import { unwrapOrNull, unwrapOrUndefined } from 'tuple-result';
 import { router } from '@/app/router';
 import {
 	db,
@@ -22,6 +22,7 @@ import {
 	getShopifyOfflineAccessToken,
 	getShopInfo,
 	getShopPlan,
+	getShopPrimaryUrl,
 	getWorkspaceStorefrontAccessToken,
 	prepareSiteContent,
 	updateShopifyUrlRedirect,
@@ -227,12 +228,19 @@ router.openapi(CreateShopifySiteRoute, async (c) => {
 					accessToken
 				})
 			);
+			const primaryUrlResult = unwrapOrUndefined(
+				await getShopPrimaryUrl({
+					shopId,
+					accessToken
+				})
+			);
 			const integrationId = createId('integration');
 			const shopifyIntegration: TShopifyIntegration = {
 				id: integrationId,
 				type: 'shopify',
 				shopId,
 				storefrontAccessToken,
+				primaryDomainUrl: primaryUrlResult?.primaryDomain?.url,
 				isPartnerDevelopment: shopPlan?.plan.isPartnerDevelopment ?? false,
 				isShopifyPlus: shopPlan?.plan.isShopifyPlus ?? false
 			};

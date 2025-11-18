@@ -179,6 +179,11 @@ export interface TShopifyIntegration extends TBaseIntegration {
 	 * Shopify tokens don't expire, but we refresh periodically to ensure validity.
 	 */
 	storefrontAccessTokenRefreshAt?: string; // ISO 8601 timestamp
+	/**
+	 * The primary domain URL for the Shopify store.
+	 * Example: "https://example.myshopify.com"
+	 */
+	primaryDomainUrl?: string;
 	isPartnerDevelopment: boolean;
 	isShopifyPlus: boolean;
 }

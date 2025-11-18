@@ -9,15 +9,19 @@ import {
 	PolarisDeleteIcon,
 	PolarisDuplicateIcon
 } from '@/components';
-import { TNodeState, TPageEditor } from '../../../../../lib';
+import { nodeMetadataRegistry, TNodeState, TPageEditor } from '../../../../../lib';
 import { NodeContentEditor } from '../../../../node';
 
 export const ContentTab: React.FC<TContentTabProps> = (props) => {
 	const { nodeState, editor } = props;
 
+	const isInternal = useCompute(nodeState, ({ value: node }) => {
+		return nodeMetadataRegistry[node.type]?.internal === true;
+	});
+
 	return (
 		<>
-			<LayerActionsSection nodeState={nodeState} editor={editor} />
+			{!isInternal && <LayerActionsSection nodeState={nodeState} editor={editor} />}
 			<NodeContentEditor
 				nodeState={nodeState}
 				editor={editor}
