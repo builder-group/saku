@@ -19,7 +19,7 @@ export interface TBadgeProps
 }
 
 const badgeVariants = cva(
-	'inline-flex items-center gap-1 rounded-[0.5rem] px-2 py-[0.125rem] text-xs font-[550] transition-colors',
+	'inline-flex items-center gap-1 rounded-lg px-2 py-0.5 text-xs font-[550] transition-colors',
 	{
 		variants: {
 			tone: {

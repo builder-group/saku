@@ -47,7 +47,7 @@ export const RichContentField: React.FC<TRichContentFieldProps> = (props) => {
 						<option value="markdown">Markdown</option>
 						<option value="html">HTML</option>
 					</select>
-					<Badge tone="neutral">
+					<Badge tone="neutral" className="bg-[#F0F0F0]">
 						<div className="flex items-center gap-1">
 							<span className="truncate text-xs">{formatLabel}</span>
 							<PolarisChevronDownIcon className="h-3 w-3 shrink-0" />
