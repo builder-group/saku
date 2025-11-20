@@ -19,5 +19,5 @@ export interface TFlatSite {
 	tokens: Record<TToken['key'], TToken>;
 }
 
-export type TSiteVersion = `v0.0.1` | `v0.0.2` | TLatestSiteVersion;
-export type TLatestSiteVersion = `v0.0.3`;
+export type TSiteVersion = `v0.0.1` | `v0.0.2` | `v0.0.3` | TLatestSiteVersion;
+export type TLatestSiteVersion = `v0.0.4`;

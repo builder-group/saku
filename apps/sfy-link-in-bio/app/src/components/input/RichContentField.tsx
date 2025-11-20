@@ -2,9 +2,10 @@ import { TRichContent } from '@repo/editor';
 import { TextField, TextFieldProps } from '@shopify/polaris';
 import React from 'react';
 import { Badge, PolarisChevronDownIcon } from '@/components';
+import { cn } from '@/lib';
 
 export const RichContentField: React.FC<TRichContentFieldProps> = (props) => {
-	const { value, onChange, ...textFieldProps } = props;
+	const { value, onChange, className, ...textFieldProps } = props;
 
 	const formatLabel = React.useMemo(() => {
 		switch (value.type) {
@@ -33,7 +34,7 @@ export const RichContentField: React.FC<TRichContentFieldProps> = (props) => {
 	);
 
 	return (
-		<div className="relative">
+		<div className={cn('relative [&_textarea]:max-h-24 [&_textarea]:overflow-y-auto', className)}>
 			<TextField {...textFieldProps} value={value.value} onChange={handleTextChange} />
 			<div className="absolute right-2 bottom-2 z-20" onClick={(e) => e.stopPropagation()}>
 				<div className="relative">
@@ -60,5 +61,6 @@ export const RichContentField: React.FC<TRichContentFieldProps> = (props) => {
 
 interface TRichContentFieldProps extends Omit<TextFieldProps, 'value' | 'onChange'> {
 	value: TRichContent;
+	className?: string;
 	onChange: (value: TRichContent) => void;
 }

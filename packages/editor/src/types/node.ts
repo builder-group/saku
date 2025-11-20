@@ -513,10 +513,14 @@ export type TSingleProductNodeContentMixin = TBaseMixin<
 		banner?: {
 			label: string;
 		};
-		// cta?: {
-		// 	label: string;
-		// 	action: TProductCtaAction;
-		// };
+		cta: {
+			visible: boolean;
+			label: string;
+			action: TProductAction;
+		};
+		variants: {
+			visible: boolean;
+		};
 		// User overrides (take priority)
 		overrides: {
 			title?: string;
@@ -526,15 +530,15 @@ export type TSingleProductNodeContentMixin = TBaseMixin<
 	}
 >;
 
-// export type TProductCtaAction = TProductCtaBuyAction | TProductCtaCartAction;
+export type TProductAction = TProductDirectBuyAction | TProductCartAction | TLinkAction;
 
-// export interface TProductCtaBuyAction {
-// 	type: 'product-cta-buy';
-// }
+export interface TProductDirectBuyAction {
+	type: 'product-direct-buy';
+}
 
-// export interface TProductCtaCartAction {
-// 	type: 'product-cta-cart';
-// }
+export interface TProductCartAction {
+	type: 'product-cart';
+}
 
 // export type TMultiProductNodeContentMixin = TBaseMixin<
 // 	'content',

@@ -11,6 +11,8 @@ export const featuredBundleMetadata: TProductNodeBundleMetadata<TFeaturedProduct
 			content: {
 				product: node.content.product,
 				banner: node.content.banner,
+				cta: node.content.cta,
+				variants: node.content.variants,
 				overrides: node.content.overrides,
 				integrationId: node.content.integrationId
 			},
@@ -38,6 +40,8 @@ export const featuredBundleMetadata: TProductNodeBundleMetadata<TFeaturedProduct
 				type: 'single',
 				product: cx.common.content?.product ?? defaults.content.product,
 				banner: cx.common.content?.banner ?? defaults.content.banner,
+				cta: cx.common.content?.cta ?? defaults.content.cta,
+				variants: cx.common.content?.variants ?? defaults.content.variants,
 				overrides: cx.common.content?.overrides ?? defaults.content.overrides,
 				integrationId: cx.common.content?.integrationId ?? defaults.content.integrationId
 			},

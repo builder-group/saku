@@ -108,6 +108,14 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 			id: createId('node'),
 			content: {
 				type: 'single',
+				cta: {
+					visible: true,
+					label: 'Buy Now',
+					action: { type: 'product-direct-buy' }
+				},
+				variants: {
+					visible: true
+				},
 				product: {
 					id: featuredProduct.id,
 					title: featuredProduct.title,
@@ -165,7 +173,7 @@ export function blankPreset(config: TBlankPresetConfig): TSite {
 	const storeHandle = createHandleFromShop(shopId);
 
 	return {
-		version: 'v0.0.3',
+		version: 'v0.0.4',
 		assets,
 		integrations: [],
 		root: {

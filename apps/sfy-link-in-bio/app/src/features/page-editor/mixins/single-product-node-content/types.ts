@@ -1,4 +1,4 @@
-import { TBaseMixin, TRichContent } from '@repo/editor';
+import { TBaseMixin, TProductAction, TRichContent } from '@repo/editor';
 import { TResolvedAsset } from '../../lib';
 
 export type TResolvedSingleProductNodeContentMixin = TBaseMixin<
@@ -8,6 +8,14 @@ export type TResolvedSingleProductNodeContentMixin = TBaseMixin<
 		product?: TResolvedProduct;
 		banner?: {
 			label: string;
+		};
+		cta: {
+			visible: boolean;
+			label: string;
+			action: TProductAction;
+		};
+		variants: {
+			visible: boolean;
 		};
 	}
 >;

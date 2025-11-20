@@ -47,17 +47,27 @@ export const ResolvedFeaturedBundle = React.forwardRef<
 		() => pageCx.integrations.shopify != null && selectedVariant != null,
 		[pageCx.integrations.shopify, selectedVariant]
 	);
+	const ctaVisible = React.useMemo(() => content.cta.visible, [content.cta.visible]);
+	const ctaLabel = React.useMemo(() => content.cta.label, [content.cta.label]);
+	const ctaAction = React.useMemo(() => content.cta.action, [content.cta.action]);
+	const showVariants = React.useMemo(() => content.variants.visible, [content.variants.visible]);
 
 	// =========================================================================
 	// Events
 	// =========================================================================
 
-	const handleBuyNow = React.useCallback(
+	const handleCtaClick = React.useCallback(
 		async (e: React.MouseEvent<HTMLButtonElement>) => {
 			e.stopPropagation();
-			await cx.buyNow();
+			switch (ctaAction.type) {
+				case 'product-direct-buy':
+					await cx.buyNow();
+					break;
+				default:
+				// do nothing
+			}
 		},
-		[cx]
+		[cx, ctaAction]
 	);
 
 	const handleOptionSelect = React.useCallback(
@@ -152,70 +162,85 @@ export const ResolvedFeaturedBundle = React.forwardRef<
 								)}
 
 								{/* Option Dropdowns */}
-								{product.options?.map((option) => {
-									const currentValue = selectedOptions[option.name];
-									const placeholderText = `Pick ${option.name.slice(0, 1).toUpperCase()}${option.name.toLowerCase().slice(1)}`;
-									const selectId = `product-option-${option.name.toLowerCase().replace(/\s+/g, '-')}`;
+								{showVariants &&
+									product.options?.map((option) => {
+										const currentValue = selectedOptions[option.name];
+										const placeholderText = `Pick ${option.name.slice(0, 1).toUpperCase()}${option.name.toLowerCase().slice(1)}`;
+										const selectId = `product-option-${option.name.toLowerCase().replace(/\s+/g, '-')}`;
 
-									return (
-										<div
-											key={option.name}
-											className="relative"
-											onClick={(e) => e.stopPropagation()}
-										>
-											<label htmlFor={selectId} className="sr-only">
-												Select {option.name}
-											</label>
-											<select
-												id={selectId}
-												value={currentValue}
-												onChange={(e) => handleOptionSelect(option.name, e.target.value)}
-												className="select absolute inset-0 h-full w-full cursor-pointer opacity-0"
-												aria-label={`Select ${option.name}`}
-											>
-												<option disabled value="">
-													{placeholderText}
-												</option>
-												{option.values.map((value) => (
-													<option key={value} value={value}>
-														{value}
-													</option>
-												))}
-											</select>
+										return (
 											<div
-												className="pointer-events-none flex max-w-24 cursor-pointer items-center gap-1 px-2 py-0.5"
-												style={badgeNeutral.styles}
+												key={option.name}
+												className="relative"
+												onClick={(e) => e.stopPropagation()}
 											>
-												<span className="truncate" style={badgeNeutral.text.styles}>
-													{currentValue || placeholderText}
-												</span>
-												<ChevronDownIcon
-													className="h-3 w-3 shrink-0"
-													style={{ color: badgeNeutral.text.styles?.color }}
-												/>
+												<label htmlFor={selectId} className="sr-only">
+													Select {option.name}
+												</label>
+												<select
+													id={selectId}
+													value={currentValue}
+													onChange={(e) => handleOptionSelect(option.name, e.target.value)}
+													className="select absolute inset-0 h-full w-full cursor-pointer opacity-0"
+													aria-label={`Select ${option.name}`}
+												>
+													<option disabled value="">
+														{placeholderText}
+													</option>
+													{option.values.map((value) => (
+														<option key={value} value={value}>
+															{value}
+														</option>
+													))}
+												</select>
+												<div
+													className="pointer-events-none flex max-w-24 cursor-pointer items-center gap-1 px-2 py-0.5"
+													style={badgeNeutral.styles}
+												>
+													<span className="truncate" style={badgeNeutral.text.styles}>
+														{currentValue || placeholderText}
+													</span>
+													<ChevronDownIcon
+														className="h-3 w-3 shrink-0"
+														style={{ color: badgeNeutral.text.styles?.color }}
+													/>
+												</div>
 											</div>
-										</div>
-									);
-								})}
+										);
+									})}
 							</div>
 						</div>
 
-						{/* Buy Now Button */}
-						{canBuyNow && (
-							<button
-								onClick={handleBuyNow}
-								disabled={isProcessing}
+						{/* CTA */}
+						{ctaVisible && ctaAction.type === 'link' ? (
+							<a
+								href={ctaAction.url}
+								target={ctaAction.target ?? '_self'}
+								rel={ctaAction.target === '_blank' ? 'noopener noreferrer' : undefined}
+								onClick={(e) => e.stopPropagation()}
 								className="ml-3 cursor-pointer px-3 py-1.5"
 								style={buttonPrimary.styles}
 							>
-								<div style={buttonPrimary.text.styles}>
-									{isProcessing ? (
-										<span className="loading loading-spinner loading-xs"></span>
-									) : (
-										'Buy'
-									)}
-								</div>
-							</button>
+								<div style={buttonPrimary.text.styles}>{ctaLabel}</div>
+							</a>
+						) : (
+							ctaVisible &&
+							canBuyNow && (
+								<button
+									onClick={handleCtaClick}
+									disabled={isProcessing}
+									className="ml-3 cursor-pointer px-3 py-1.5"
+									style={buttonPrimary.styles}
+								>
+									<div style={buttonPrimary.text.styles}>
+										{isProcessing ? (
+											<span className="loading loading-spinner loading-xs"></span>
+										) : (
+											ctaLabel
+										)}
+									</div>
+								</button>
+							)
 						)}
 					</div>
 				</div>

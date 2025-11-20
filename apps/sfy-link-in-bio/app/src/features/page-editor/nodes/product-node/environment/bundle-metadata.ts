@@ -10,6 +10,7 @@ import {
 	TImageStyleMixin,
 	TIntegrationId,
 	TProduct,
+	TProductAction,
 	TProductDetailsStyleMixin,
 	TProductNode,
 	TRichContent,
@@ -52,6 +53,14 @@ interface TCommonFields {
 		product?: TProduct;
 		banner?: {
 			label: string;
+		};
+		cta?: {
+			visible: boolean;
+			label: string;
+			action: TProductAction;
+		};
+		variants?: {
+			visible: boolean;
 		};
 		// User overrides (take priority)
 		overrides: {

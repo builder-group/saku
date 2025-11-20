@@ -183,14 +183,56 @@ const v002ToV003: TSiteMigration = {
 };
 
 // =========================================================================
+// v0.0.3 -> v0.0.4
+// =========================================================================
+
+const v003ToV004: TSiteMigration = {
+	to: 'v0.0.4',
+	migrate(site) {
+		const migratedNodes = Object.fromEntries(
+			Object.entries(site.nodes).map(([id, node]) => {
+				// Add default cta and variants to product nodes
+				if (node.type === 'product' && node.content.type === 'single') {
+					return [
+						id,
+						{
+							...node,
+							content: {
+								...node.content,
+								cta: node.content.cta ?? {
+									visible: true,
+									label: 'Buy Now',
+									action: { type: 'product-direct-buy' }
+								},
+								variants: node.content.variants ?? {
+									visible: true
+								}
+							}
+						}
+					];
+				}
+
+				return [id, node];
+			})
+		);
+
+		return {
+			...site,
+			nodes: migratedNodes
+		};
+	}
+};
+
+// =========================================================================
 // Config
 // =========================================================================
 
 export const siteMigrationConfig: TSiteMigrationConfig = {
-	latestVersion: 'v0.0.3',
+	latestVersion: 'v0.0.4',
 	migrations: {
 		'v0.0.1': v001ToV002,
-		'v0.0.2': v002ToV003
+		'v0.0.2': v002ToV003,
+		'v0.0.3': v003ToV004
 	}
 };
 

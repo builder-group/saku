@@ -401,6 +401,14 @@ export const productNodeMetadata: TNodeMetadata<TProductNode> = {
 			bundleType: 'classic',
 			content: {
 				type: 'single',
+				cta: {
+					visible: true,
+					label: 'Buy Now',
+					action: { type: 'product-direct-buy' }
+				},
+				variants: {
+					visible: true
+				},
 				overrides: {}
 			},
 			autoLayout: {
@@ -450,6 +458,14 @@ export const productNodeMetadata: TNodeMetadata<TProductNode> = {
 			bundleType: 'featured',
 			content: {
 				type: 'single',
+				cta: {
+					label: 'Buy Now',
+					action: { type: 'product-direct-buy' },
+					visible: true
+				},
+				variants: {
+					visible: true
+				},
 				overrides: {}
 			},
 			autoLayout: {
