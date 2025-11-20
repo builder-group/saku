@@ -535,11 +535,6 @@ export const SingleProductNodeContentMixinEditor = (
 								autoComplete="off"
 								placeholder="Product title"
 							/>
-							{!canResetTitle && (
-								<Text as="p" variant="bodySm" tone="subdued">
-									Update in Shopify Admin. Override here only if needed.
-								</Text>
-							)}
 						</div>
 					)}
 
@@ -566,11 +561,6 @@ export const SingleProductNodeContentMixinEditor = (
 								placeholder="Product description"
 								multiline={4}
 							/>
-							{!canResetDescription && (
-								<Text as="p" variant="bodySm" tone="subdued">
-									Update in Shopify Admin. Override here only if needed.
-								</Text>
-							)}
 						</div>
 					)}
 
