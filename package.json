@@ -29,18 +29,18 @@
 	},
 	"devDependencies": {
 		"@blgc/config": "^0.0.39",
-		"@shopify/cli": "^3.87.1",
+		"@shopify/cli": "^3.87.4",
 		"dotenv": "^17.2.3",
 		"eslint": "^9.39.1",
 		"prettier": "^3.6.2",
-		"rollup": "^4.53.2",
+		"rollup": "^4.53.3",
 		"rollup-presets": "^0.0.25",
 		"shx": "^0.4.0",
 		"tsx": "^4.20.6",
 		"turbo": "^2.6.1",
 		"typescript": "^5.9.3",
-		"vite": "^7.2.2",
-		"vitest": "^4.0.8"
+		"vite": "^7.2.4",
+		"vitest": "^4.0.13"
 	},
 	"packageManager": "pnpm@10.12.1",
 	"engines": {
