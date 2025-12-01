@@ -6,15 +6,20 @@ export class SiteCache<GContent extends TFlatSite | TSite = TFlatSite> {
 	private readonly maxEntries: number;
 
 	constructor(config: TSiteCacheConfig = {}) {
-		const { ttlMs = 4 * 60 * 60 * 1000, maxEntries = 100 } = config;
+		const { ttlMs = 5 * 60 * 1000, maxEntries = 500 } = config;
 		this.ttlMs = ttlMs;
 		this.maxEntries = maxEntries;
 	}
 
 	public get(shop: string, handle: string): { id: string; content: GContent } | null {
 		const key = this.createKey(shop, handle);
-		const cached = this.getCached(key);
+		const cached = this.cache.get(key);
 		if (cached == null) {
+			return null;
+		}
+
+		if (Date.now() >= cached.expiresAt) {
+			this.cache.delete(key);
 			return null;
 		}
 
@@ -28,11 +33,10 @@ export class SiteCache<GContent extends TFlatSite | TSite = TFlatSite> {
 		this.evictOldest();
 
 		const key = this.createKey(shop, handle);
-		const expiresAt = Date.now() + this.ttlMs;
 		this.cache.set(key, {
 			id,
 			content,
-			expiresAt
+			expiresAt: Date.now() + this.ttlMs
 		});
 	}
 
@@ -47,20 +51,6 @@ export class SiteCache<GContent extends TFlatSite | TSite = TFlatSite> {
 
 	private createKey(shop: string, handle: string): string {
 		return `shop:${shop}:${handle}`;
-	}
-
-	private getCached(key: string): TCachedSiteData<GContent> | null {
-		const cached = this.cache.get(key);
-		if (cached == null) {
-			return null;
-		}
-
-		if (Date.now() >= cached.expiresAt) {
-			this.cache.delete(key);
-			return null;
-		}
-
-		return cached;
 	}
 
 	private evictOldest(): void {
