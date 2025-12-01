@@ -7,6 +7,7 @@ import {
 	db,
 	logger,
 	shopifyConfig,
+	siteCache,
 	siteTable,
 	workspaceAccountTable,
 	workspaceTable
@@ -80,6 +81,18 @@ router.openapi(GetShopifySitesRoute, async (c) => {
 router.openapi(GetShopifySiteByShopAndHandleRoute, async (c) => {
 	const { shop, handle } = c.req.valid('param');
 
+	// Check cache first
+	const cached = siteCache.get(shop, handle);
+	if (cached != null) {
+		return c.json(
+			{
+				id: cached.id,
+				content: cached.content as TFlatSiteContentDto
+			},
+			200
+		);
+	}
+
 	// Find site by handle and shop id
 	const [site] = await db
 		.select({
@@ -105,6 +118,9 @@ router.openapi(GetShopifySiteByShopAndHandleRoute, async (c) => {
 		});
 	}
 	const siteContent = await prepareSiteContent(site.id, site.workspaceId, site.content);
+
+	// Cache the result
+	siteCache.set(shop, handle, site.id, siteContent);
 
 	return c.json(
 		{
@@ -442,6 +458,12 @@ router.openapi(UpdateShopifySiteRoute, async (c) => {
 		}
 	}
 
+	// Invalidate cache for both old and new handle (if handle changed)
+	siteCache.invalidate(shopId, site.handle);
+	if (updatedSite.handle !== site.handle) {
+		siteCache.invalidate(shopId, updatedSite.handle);
+	}
+
 	return c.json(
 		{
 			id: updatedSite.id,
@@ -503,6 +525,9 @@ router.openapi(DeleteShopifySiteRoute, async (c) => {
 
 	// Delete the site
 	await db.delete(siteTable).where(eq(siteTable.id, siteId));
+
+	// Invalidate cache
+	siteCache.invalidate(shopId, site.handle);
 
 	// Try to delete the associated redirect
 	const deleteResult = await deleteShopifyUrlRedirect({
