@@ -1,8 +1,7 @@
-import { SiteCache } from '@/lib';
+import { MetaobjectSiteCache } from '@/lib';
 
-// Single in-memory cache instance for all app instances.
-// No external cache needed since we run a single instance.
-export const siteCache = new SiteCache({
-	ttlMs: 4 * 60 * 60 * 1000, // 4h
-	maxEntries: 100
+// Site cache using Shopify Metaobjects for serverless compatibility.
+// Caches site content in Shopify metaobjects to avoid database compute costs.
+export const siteCache = new MetaobjectSiteCache({
+	ttlMs: 4 * 60 * 60 * 1000 // 4h
 });

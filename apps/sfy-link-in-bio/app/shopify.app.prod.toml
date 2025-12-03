@@ -15,6 +15,10 @@ read_online_store_navigation,
 write_online_store_navigation,
 read_products,
 read_themes,
+read_metaobjects,
+write_metaobjects,
+read_metaobject_definitions,
+write_metaobject_definitions,
 unauthenticated_read_checkouts,
 unauthenticated_write_checkouts,
 unauthenticated_read_metaobjects,
@@ -58,3 +62,23 @@ uri = "/api/v1/webhook/shopify/shop/redact"
 
 [pos]
 embedded = false
+
+# https://shopify.dev/docs/apps/build/custom-data
+[metaobjects.app.site_cache]
+name = "Site Cache"
+access.admin = "merchant_read"
+
+[metaobjects.app.site_cache.fields.site_id]
+name = "Site ID"
+type = "single_line_text_field"
+required = true
+
+[metaobjects.app.site_cache.fields.content]
+name = "Content"
+type = "json"
+required = true
+
+[metaobjects.app.site_cache.fields.expires_at]
+name = "Expires At"
+type = "date_time"
+required = true

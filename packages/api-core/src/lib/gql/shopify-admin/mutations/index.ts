@@ -1,4 +1,6 @@
 export * from './file-create';
+export * from './metaobject-delete';
+export * from './metaobject-upsert';
 export * from './staged-uploads-create';
 export * from './storefront-access-token-create';
 export * from './storefront-access-token-delete';

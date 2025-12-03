@@ -80,17 +80,24 @@ router.openapi(GetShopifySitesRoute, async (c) => {
 
 router.openapi(GetShopifySiteByShopAndHandleRoute, async (c) => {
 	const { shop, handle } = c.req.valid('param');
+	const [isAccessTokenOk, , accessToken] = await getShopifyOfflineAccessToken(shop);
 
 	// Check cache first
-	const cached = siteCache.get(shop, handle);
-	if (cached != null) {
-		return c.json(
-			{
-				id: cached.id,
-				content: cached.content as TFlatSiteContentDto
-			},
-			200
-		);
+	if (isAccessTokenOk) {
+		const cached = await siteCache.get({
+			siteHandle: handle,
+			shopId: shop,
+			accessToken
+		});
+		if (cached != null) {
+			return c.json(
+				{
+					id: cached.siteId,
+					content: cached.siteContent as TFlatSiteContentDto
+				},
+				200
+			);
+		}
 	}
 
 	// Find site by handle and shop id
@@ -120,7 +127,15 @@ router.openapi(GetShopifySiteByShopAndHandleRoute, async (c) => {
 	const siteContent = await prepareSiteContent(site.id, site.workspaceId, site.content);
 
 	// Cache the result
-	siteCache.set(shop, handle, site.id, siteContent);
+	if (isAccessTokenOk) {
+		await siteCache.set({
+			siteHandle: handle,
+			siteId: site.id,
+			siteContent,
+			shopId: shop,
+			accessToken
+		});
+	}
 
 	return c.json(
 		{
@@ -354,6 +369,14 @@ router.openapi(UpdateShopifySiteRoute, async (c) => {
 	const { siteId } = c.req.valid('param');
 	const body = c.req.valid('json');
 
+	const [isAccessTokenOk, , accessToken] = await getShopifyOfflineAccessToken(shopId);
+	if (!isAccessTokenOk) {
+		throw new AppError('#ERR_ACCESS_TOKEN_NOT_FOUND', 404, {
+			title: 'Access token not found',
+			detail: 'Access token not found for shop'
+		});
+	}
+
 	// Find site connected to a workspace connected to this Shopify shop
 	const [site] = await db
 		.select({
@@ -459,9 +482,17 @@ router.openapi(UpdateShopifySiteRoute, async (c) => {
 	}
 
 	// Invalidate cache for both old and new handle (if handle changed)
-	siteCache.invalidate(shopId, site.handle);
+	await siteCache.invalidate({
+		siteHandle: site.handle,
+		shopId,
+		accessToken
+	});
 	if (updatedSite.handle !== site.handle) {
-		siteCache.invalidate(shopId, updatedSite.handle);
+		await siteCache.invalidate({
+			siteHandle: updatedSite.handle,
+			shopId,
+			accessToken
+		});
 	}
 
 	return c.json(
@@ -527,7 +558,11 @@ router.openapi(DeleteShopifySiteRoute, async (c) => {
 	await db.delete(siteTable).where(eq(siteTable.id, siteId));
 
 	// Invalidate cache
-	siteCache.invalidate(shopId, site.handle);
+	await siteCache.invalidate({
+		siteHandle: site.handle,
+		shopId,
+		accessToken
+	});
 
 	// Try to delete the associated redirect
 	const deleteResult = await deleteShopifyUrlRedirect({
