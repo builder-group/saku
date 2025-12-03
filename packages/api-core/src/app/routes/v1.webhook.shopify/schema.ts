@@ -173,7 +173,8 @@ export const AppScopesUpdateWebhookRoute = createRoute({
 						id: z.number().int().openapi({ example: 548380009 }),
 						previous: z.array(z.string()).openapi({ example: ['read_products'] }),
 						current: z.array(z.string()).openapi({ example: ['read_products', 'write_products'] }),
-						updated_at: z.iso.datetime().openapi({ example: '2024-06-25T00:00:00.000Z' })
+						// Note: Using z.string() instead of z.iso.datetime() because Shopify may send dates in formats that don't strictly match ISO datetime
+						updated_at: z.string().openapi({ example: '2024-06-25T00:00:00.000Z' })
 					})
 				}
 			}

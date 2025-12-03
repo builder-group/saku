@@ -46,7 +46,8 @@ export class MetaobjectSiteCache<
 	private readonly ttlMs: number;
 
 	constructor(config: TMetaobjectSiteCacheConfig = {}) {
-		this.ttlMs = config.ttlMs ?? 4 * 60 * 60 * 1000;
+		const { ttlMs = 4 * 60 * 60 * 1000 } = config;
+		this.ttlMs = ttlMs;
 	}
 
 	public async get(
