@@ -16,12 +16,12 @@
 	"author": "@bennobuilder",
 	"exports": {
 		"./api": {
-			"source": "./src/api/index.ts",
-			"types": "./dist/api/index.d.ts"
+			"types": "./dist/api/index.d.ts",
+			"source": "./src/api/index.ts"
 		},
 		"./github": {
-			"source": "./src/github/index.ts",
-			"types": "./dist/github/index.d.ts"
+			"types": "./dist/github/index.d.ts",
+			"source": "./src/github/index.ts"
 		}
 	},
 	"typesVersions": {

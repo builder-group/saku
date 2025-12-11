@@ -66,16 +66,16 @@ export class RedisClient {
 	private async addSessionKeyToShopList(shopId: string, sessionKey: string): Promise<void> {
 		const shopKey = this.shopifySessionConfig.keys.byShop(shopId);
 		const sessionKeys = await this.client.get<string[]>(shopKey);
-
-		if (sessionKeys != null) {
-			if (!sessionKeys.includes(sessionKey)) {
-				sessionKeys.push(sessionKey);
-				await this.client.set(shopKey, sessionKeys, {
-					ex: this.shopifySessionConfig.ttl
-				});
-			}
-		} else {
+		if (sessionKeys == null) {
 			await this.client.set(shopKey, [sessionKey], {
+				ex: this.shopifySessionConfig.ttl
+			});
+			return;
+		}
+
+		if (!sessionKeys.includes(sessionKey)) {
+			sessionKeys.push(sessionKey);
+			await this.client.set(shopKey, sessionKeys, {
 				ex: this.shopifySessionConfig.ttl
 			});
 		}
@@ -84,18 +84,19 @@ export class RedisClient {
 	private async removeSessionKeyFromShopList(shopId: string, sessionKey: string): Promise<void> {
 		const shopKey = this.shopifySessionConfig.keys.byShop(shopId);
 		const sessionKeys = await this.client.get<string[]>(shopKey);
+		if (sessionKeys == null) {
+			return;
+		}
 
-		if (sessionKeys != null) {
-			const index = sessionKeys.indexOf(sessionKey);
-			if (index > -1) {
-				sessionKeys.splice(index, 1);
-				if (sessionKeys.length > 0) {
-					await this.client.set(shopKey, sessionKeys, {
-						ex: this.shopifySessionConfig.ttl
-					});
-				} else {
-					await this.client.del(shopKey);
-				}
+		const index = sessionKeys.indexOf(sessionKey);
+		if (index > -1) {
+			sessionKeys.splice(index, 1);
+			if (sessionKeys.length > 0) {
+				await this.client.set(shopKey, sessionKeys, {
+					ex: this.shopifySessionConfig.ttl
+				});
+			} else {
+				await this.client.del(shopKey);
 			}
 		}
 	}
@@ -137,7 +138,7 @@ export class RedisClient {
 		}
 
 		const onlineSessions = cachedSessions.filter((session) => session.isOnline);
-		if (onlineSessions.length === 0) {
+		if (!onlineSessions.length) {
 			return null;
 		}
 

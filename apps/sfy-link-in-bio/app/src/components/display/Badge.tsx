@@ -13,8 +13,7 @@ export const Badge = React.forwardRef<HTMLSpanElement, TBadgeProps>(
 Badge.displayName = 'Badge';
 
 export interface TBadgeProps
-	extends React.HTMLAttributes<HTMLSpanElement>,
-		VariantProps<typeof badgeVariants> {
+	extends React.HTMLAttributes<HTMLSpanElement>, VariantProps<typeof badgeVariants> {
 	asChild?: boolean;
 }
 

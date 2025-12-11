@@ -169,8 +169,10 @@ export const TokenToggleInput = <GRefValue extends TRef<boolean> | undefined>(
 	);
 };
 
-export interface TTokenToggleInputProps<GRefValue extends TRef<boolean> | undefined>
-	extends Omit<TKnobProps, 'ariaLabel' | 'selected' | 'onClick'> {
+export interface TTokenToggleInputProps<GRefValue extends TRef<boolean> | undefined> extends Omit<
+	TKnobProps,
+	'ariaLabel' | 'selected' | 'onClick'
+> {
 	state: TState<GRefValue, any>;
 
 	tokenMap?: TState<Record<TToken['key'], TToken>, any>;

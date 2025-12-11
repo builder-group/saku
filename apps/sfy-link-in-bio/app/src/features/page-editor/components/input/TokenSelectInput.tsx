@@ -160,8 +160,10 @@ export const TokenSelectInput = <GRefValue extends TRef<string> | undefined>(
 	);
 };
 
-export interface TTokenSelectInputProps<GRefValue extends TRef<string> | undefined>
-	extends Omit<SelectProps, 'label' | 'labelHidden' | 'value' | 'onChange'> {
+export interface TTokenSelectInputProps<GRefValue extends TRef<string> | undefined> extends Omit<
+	SelectProps,
+	'label' | 'labelHidden' | 'value' | 'onChange'
+> {
 	state: TState<GRefValue, any>;
 
 	tokenMap?: TState<Record<TToken['key'], TToken>, any>;

@@ -267,11 +267,10 @@ export const TokenColorInput = <GRefValue extends TRef<TRgba> | undefined>(
 	);
 };
 
-export interface TTokenColorInputProps<GRefValue extends TRef<TRgba> | undefined>
-	extends Omit<
-		TextFieldProps,
-		'label' | 'labelHidden' | 'value' | 'onChange' | 'onFocus' | 'prefix' | 'autoComplete' | 'error'
-	> {
+export interface TTokenColorInputProps<GRefValue extends TRef<TRgba> | undefined> extends Omit<
+	TextFieldProps,
+	'label' | 'labelHidden' | 'value' | 'onChange' | 'onFocus' | 'prefix' | 'autoComplete' | 'error'
+> {
 	state: TState<GRefValue, any>;
 
 	tokenMap?: TState<Record<TToken['key'], TToken>, any>;

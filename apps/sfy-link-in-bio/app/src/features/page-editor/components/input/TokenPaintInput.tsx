@@ -494,11 +494,10 @@ export const TokenPaintInput = <GRefValue extends TRef<TPaint> | undefined>(
 	);
 };
 
-export interface TTokenPaintInputProps<GRefValue extends TRef<TPaint> | undefined>
-	extends Omit<
-		TextFieldProps,
-		'label' | 'labelHidden' | 'value' | 'onChange' | 'onFocus' | 'prefix' | 'autoComplete' | 'error'
-	> {
+export interface TTokenPaintInputProps<GRefValue extends TRef<TPaint> | undefined> extends Omit<
+	TextFieldProps,
+	'label' | 'labelHidden' | 'value' | 'onChange' | 'onFocus' | 'prefix' | 'autoComplete' | 'error'
+> {
 	state: TState<GRefValue, any>;
 
 	tokenMap?: TState<Record<TToken['key'], TToken>, any>;
