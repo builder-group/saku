@@ -29,6 +29,17 @@ export async function getShopifyOfflineAccessToken(
 		.where(and(eq(shopifySessionTable.shopId, shopId), eq(shopifySessionTable.isOnline, false)))
 		.limit(1);
 	if (offlineSession != null) {
+		await redisClient.setShopifySession({
+			id: offlineSession.sessionId,
+			shop: offlineSession.shopId,
+			state: offlineSession.state,
+			isOnline: false,
+			scope: offlineSession.scopes,
+			expires: null,
+			accessToken: offlineSession.accessToken,
+			mantleApiToken: offlineSession.sessionData?.mantleApiToken ?? null,
+			onlineAccessInfo: null
+		});
 		return Ok(offlineSession.accessToken);
 	}
 

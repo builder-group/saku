@@ -53,6 +53,36 @@ export async function getShopifyOnlineAccessToken(
 		);
 	}
 
+	await redisClient.setShopifySession({
+		id: session.sessionId,
+		shop: session.shopId,
+		state: session.state,
+		isOnline: true,
+		scope: session.scopes,
+		expires: session.expiresAt?.toISOString() ?? null,
+		accessToken: session.accessToken,
+		mantleApiToken: session.sessionData?.mantleApiToken ?? null,
+		onlineAccessInfo:
+			session.sessionData?.onlineAccessInfo != null
+				? {
+						associatedUser: {
+							id: session.sessionData.onlineAccessInfo.associatedUser.id,
+							firstName: session.sessionData.onlineAccessInfo.associatedUser.firstName,
+							lastName: session.sessionData.onlineAccessInfo.associatedUser.lastName,
+							email: session.sessionData.onlineAccessInfo.associatedUser.email,
+							accountOwner: session.sessionData.onlineAccessInfo.associatedUser.accountOwner,
+							locale: session.sessionData.onlineAccessInfo.associatedUser.locale,
+							collaborator: session.sessionData.onlineAccessInfo.associatedUser.collaborator,
+							emailVerified: session.sessionData.onlineAccessInfo.associatedUser.emailVerified
+						},
+						expiresIn: session.sessionData.onlineAccessInfo.expiresIn,
+						associatedUserScope: session.sessionData.onlineAccessInfo.associatedUserScope,
+						session: session.sessionData.onlineAccessInfo.session,
+						accountNumber: session.sessionData.onlineAccessInfo.accountNumber
+					}
+				: null
+	});
+
 	return Ok(session.accessToken);
 }
 
