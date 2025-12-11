@@ -46,7 +46,7 @@ export class MetaobjectSiteCache<
 	private readonly ttlMs: number;
 
 	constructor(config: TMetaobjectSiteCacheConfig = {}) {
-		const { ttlMs = 4 * 60 * 60 * 1000 } = config;
+		const { ttlMs = shopifyConfig.metaobject.siteCache.ttlMs } = config;
 		this.ttlMs = ttlMs;
 	}
 
@@ -59,7 +59,7 @@ export class MetaobjectSiteCache<
 		const [isMetaobjectOk, metaobjectErr, metaobject] = await getMetaobjectByHandle(
 			{
 				handle: cacheHandle,
-				type: shopifyConfig.metaobject.siteCacheType
+				type: shopifyConfig.metaobject.siteCache.type
 			},
 			{
 				shopId,
@@ -112,7 +112,7 @@ export class MetaobjectSiteCache<
 		const [isUpsertOk, upsertErr] = await upsertMetaobject(
 			{
 				handle: cacheHandle,
-				type: shopifyConfig.metaobject.siteCacheType,
+				type: shopifyConfig.metaobject.siteCache.type,
 				fields: [
 					{ key: 'site_id', value: siteId },
 					{ key: 'content', value: JSON.stringify(siteContent) },
@@ -133,7 +133,7 @@ export class MetaobjectSiteCache<
 		const [isMetaobjectOk, metaobjectErr, metaobject] = await getMetaobjectByHandle(
 			{
 				handle: cacheHandle,
-				type: shopifyConfig.metaobject.siteCacheType
+				type: shopifyConfig.metaobject.siteCache.type
 			},
 			{
 				shopId,

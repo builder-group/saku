@@ -38,8 +38,11 @@ export const shopifyConfig = {
 	],
 	appHandle: appConfig.env === 'production' ? 'saku-link-in-bio' : 'saku-link-in-bio-local',
 	// https://shopify.dev/docs/apps/build/custom-data
+	// Type format: TOML [metaobjects.app.site_cache] creates GraphQL type $app:site_cache
 	metaobject: {
-		// Type format: TOML [metaobjects.app.site_cache] creates GraphQL type $app:site_cache
-		siteCacheType: '$app:site_cache'
+		siteCache: {
+			type: '$app:site_cache',
+			ttlMs: 4 * 60 * 60 * 1000
+		}
 	}
 };

@@ -3,7 +3,7 @@ import { validateEnvVar } from 'validatenv';
 import { vValidator } from 'validation-adapters/valibot';
 import { appConfig } from './app.config';
 
-const CACHE_PREFIX = appConfig.env === 'production' ? 'saku' : 'saku:local';
+const CACHE_PREFIX = `saku:${appConfig.env}`;
 
 export const redisConfig = {
 	url: validateEnvVar({
@@ -14,12 +14,13 @@ export const redisConfig = {
 		envKey: 'REDIS_TOKEN',
 		validator: vValidator(v.string())
 	}),
-	keys: {
-		prefix: CACHE_PREFIX,
-		shopify: {
-			sessionById: (sessionId: string) => `${CACHE_PREFIX}:shopify:session:${sessionId}`,
-			sessionsByShop: (shopId: string) => `${CACHE_PREFIX}:shopify:sessions:shop:${shopId}`
+	cached: {
+		shopifySession: {
+			keys: {
+				byId: (sessionId: string) => `${CACHE_PREFIX}:shopify:session:${sessionId}`,
+				byShop: (shopId: string) => `${CACHE_PREFIX}:shopify:sessions:shop:${shopId}`
+			},
+			ttl: 4 * 60 * 60
 		}
-	},
-	ttlSeconds: 5
+	}
 };

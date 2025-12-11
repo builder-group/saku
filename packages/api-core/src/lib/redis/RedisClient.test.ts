@@ -3,13 +3,13 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { RedisClient, type TCachedShopifySession, type TRedisClientConfig } from './RedisClient';
 
 const mockConfig: TRedisClientConfig = {
-	keys: {
-		shopify: {
-			sessionById: (sessionId: string) => `saku:shopify:session:${sessionId}`,
-			sessionsByShop: (shopId: string) => `saku:shopify:sessions:shop:${shopId}`
-		}
-	},
-	ttlSeconds: 5
+	shopifySession: {
+		keys: {
+			byId: (sessionId: string) => `saku:shopify:session:${sessionId}`,
+			byShop: (shopId: string) => `saku:shopify:sessions:shop:${shopId}`
+		},
+		ttl: 5
+	}
 };
 
 describe('RedisClient', () => {

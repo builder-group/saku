@@ -1,17 +1,20 @@
 import { Redis } from '@upstash/redis';
+import { logger } from '../../environment';
 
 export class RedisClient {
 	private client: Redis;
-	private config: TRedisClientConfig;
+
+	private shopifySessionConfig: TRedisClientConfig['shopifySession'];
 
 	constructor(client: Redis, config: TRedisClientConfig) {
 		this.client = client;
-		this.config = config;
+		this.shopifySessionConfig = config.shopifySession;
 	}
 
 	async getShopifySessionById(sessionId: string): Promise<TCachedShopifySession | null> {
-		const key = this.config.keys.shopify.sessionById(sessionId);
+		const key = this.shopifySessionConfig.keys.byId(sessionId);
 		const cached = await this.client.get<string>(key);
+		logger.info('Getting Shopify session by ID', { sessionId, key, cached });
 		if (cached == null) {
 			return null;
 		}
@@ -26,15 +29,16 @@ export class RedisClient {
 
 	async setShopifySession(
 		session: TCachedShopifySession,
-		ttlSeconds = this.config.ttlSeconds
+		ttlSeconds = this.shopifySessionConfig.ttl
 	): Promise<void> {
-		const sessionKey = this.config.keys.shopify.sessionById(session.id);
+		const sessionKey = this.shopifySessionConfig.keys.byId(session.id);
+		logger.info('Setting Shopify session', { sessionId: session.id, sessionKey, session });
 		await this.client.set(sessionKey, JSON.stringify(session), { ex: ttlSeconds });
 		await this.addSessionKeyToShopList(session.shop, sessionKey);
 	}
 
 	async getShopifySessionsByShop(shopId: string): Promise<TCachedShopifySession[] | null> {
-		const shopKey = this.config.keys.shopify.sessionsByShop(shopId);
+		const shopKey = this.shopifySessionConfig.keys.byShop(shopId);
 		const sessionKeysString = await this.client.get<string>(shopKey);
 		if (sessionKeysString == null) {
 			return null;
@@ -43,6 +47,7 @@ export class RedisClient {
 		try {
 			const sessionKeys = JSON.parse(sessionKeysString) as string[];
 			const sessions: TCachedShopifySession[] = [];
+			logger.info('Getting Shopify sessions by shop', { shopId, shopKey, sessionKeysString });
 
 			for (const sessionKey of sessionKeys) {
 				const sessionString = await this.client.get<string>(sessionKey);
@@ -66,36 +71,41 @@ export class RedisClient {
 	async setShopifySessionsByShop(
 		shopId: string,
 		sessions: TCachedShopifySession[],
-		ttlSeconds = this.config.ttlSeconds
+		ttlSeconds = this.shopifySessionConfig.ttl
 	): Promise<void> {
 		const sessionKeys: string[] = [];
+		logger.info('Setting Shopify sessions by shop', { shopId, sessions });
 		for (const session of sessions) {
-			const sessionKey = this.config.keys.shopify.sessionById(session.id);
+			const sessionKey = this.shopifySessionConfig.keys.byId(session.id);
 			await this.client.set(sessionKey, JSON.stringify(session), { ex: ttlSeconds });
 			sessionKeys.push(sessionKey);
 		}
 
-		const shopKey = this.config.keys.shopify.sessionsByShop(shopId);
+		const shopKey = this.shopifySessionConfig.keys.byShop(shopId);
 		await this.client.set(shopKey, JSON.stringify(sessionKeys), { ex: ttlSeconds });
 	}
 
 	private async addSessionKeyToShopList(shopId: string, sessionKey: string): Promise<void> {
-		const shopKey = this.config.keys.shopify.sessionsByShop(shopId);
+		const shopKey = this.shopifySessionConfig.keys.byShop(shopId);
 		const sessionKeysString = await this.client.get<string>(shopKey);
 
 		if (sessionKeysString != null) {
 			const sessionKeys = JSON.parse(sessionKeysString) as string[];
 			if (!sessionKeys.includes(sessionKey)) {
 				sessionKeys.push(sessionKey);
-				await this.client.set(shopKey, JSON.stringify(sessionKeys));
+				await this.client.set(shopKey, JSON.stringify(sessionKeys), {
+					ex: this.shopifySessionConfig.ttl
+				});
 			}
 		} else {
-			await this.client.set(shopKey, JSON.stringify([sessionKey]));
+			await this.client.set(shopKey, JSON.stringify([sessionKey]), {
+				ex: this.shopifySessionConfig.ttl
+			});
 		}
 	}
 
 	private async removeSessionKeyFromShopList(shopId: string, sessionKey: string): Promise<void> {
-		const shopKey = this.config.keys.shopify.sessionsByShop(shopId);
+		const shopKey = this.shopifySessionConfig.keys.byShop(shopId);
 		const sessionKeysString = await this.client.get<string>(shopKey);
 
 		if (sessionKeysString != null) {
@@ -104,7 +114,9 @@ export class RedisClient {
 			if (index > -1) {
 				sessionKeys.splice(index, 1);
 				if (sessionKeys.length > 0) {
-					await this.client.set(shopKey, JSON.stringify(sessionKeys));
+					await this.client.set(shopKey, JSON.stringify(sessionKeys), {
+						ex: this.shopifySessionConfig.ttl
+					});
 				} else {
 					await this.client.del(shopKey);
 				}
@@ -116,7 +128,8 @@ export class RedisClient {
 		const cached = await this.getShopifySessionById(sessionId);
 		const shopId = cached?.shop;
 
-		const sessionKey = this.config.keys.shopify.sessionById(sessionId);
+		const sessionKey = this.shopifySessionConfig.keys.byId(sessionId);
+		logger.info('Deleting Shopify session', { sessionId, sessionKey });
 		await this.client.del(sessionKey);
 
 		if (shopId != null) {
@@ -125,12 +138,14 @@ export class RedisClient {
 	}
 
 	async deleteShopifySessionsByShop(shopId: string): Promise<void> {
-		const key = this.config.keys.shopify.sessionsByShop(shopId);
+		const key = this.shopifySessionConfig.keys.byShop(shopId);
+		logger.info('Deleting Shopify sessions by shop', { shopId, key });
 		await this.client.del(key);
 	}
 
 	async getShopifyOfflineAccessToken(shopId: string): Promise<string | null> {
 		const cachedSessions = await this.getShopifySessionsByShop(shopId);
+		logger.info('Getting Shopify offline access token', { shopId, cachedSessions });
 		if (cachedSessions == null) {
 			return null;
 		}
@@ -144,12 +159,14 @@ export class RedisClient {
 		userId?: string
 	): Promise<TCachedOnlineAccessToken | null> {
 		const cachedSessions = await this.getShopifySessionsByShop(shopId);
+		logger.info('Getting Shopify online access token', { shopId, cachedSessions });
 		if (cachedSessions == null) {
 			return null;
 		}
 
 		const onlineSessions = cachedSessions.filter((session) => session.isOnline);
 		if (onlineSessions.length === 0) {
+			logger.info('No online sessions found', { shopId, onlineSessions });
 			return null;
 		}
 
@@ -166,13 +183,16 @@ export class RedisClient {
 		}
 
 		if (targetSession == null) {
+			logger.info('No target session found', { shopId, userId });
 			return null;
 		}
 
 		if (targetSession.expires != null && new Date() >= new Date(targetSession.expires)) {
+			logger.info('Target session expired', { shopId, userId });
 			return null;
 		}
 
+		logger.info('Returning Shopify online access token', { shopId, userId, targetSession });
 		return {
 			token: targetSession.accessToken,
 			expiresAt: targetSession.expires
@@ -180,16 +200,14 @@ export class RedisClient {
 	}
 }
 
-export interface TRedisClientKeys {
-	shopify: {
-		sessionById: (sessionId: string) => string;
-		sessionsByShop: (shopId: string) => string;
-	};
-}
-
 export interface TRedisClientConfig {
-	keys: TRedisClientKeys;
-	ttlSeconds: number;
+	shopifySession: {
+		keys: {
+			byId: (sessionId: string) => string;
+			byShop: (shopId: string) => string;
+		};
+		ttl: number;
+	};
 }
 
 export interface TCachedOnlineAccessToken {
