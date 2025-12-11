@@ -44,7 +44,7 @@ describe('RedisClient', () => {
 				onlineAccessInfo: null
 			};
 
-			mockRedis.get.mockResolvedValue(JSON.stringify(session));
+			mockRedis.get.mockResolvedValue(session);
 
 			const result = await redisClient.getShopifySessionById('session-1');
 
@@ -58,15 +58,6 @@ describe('RedisClient', () => {
 			const result = await redisClient.getShopifySessionById('session-1');
 
 			expect(result).toBeNull();
-		});
-
-		it('should return null and delete key when JSON is invalid', async () => {
-			mockRedis.get.mockResolvedValue('invalid-json');
-
-			const result = await redisClient.getShopifySessionById('session-1');
-
-			expect(result).toBeNull();
-			expect(mockRedis.del).toHaveBeenCalledWith('saku:shopify:session:session-1');
 		});
 	});
 
@@ -88,14 +79,13 @@ describe('RedisClient', () => {
 
 			await redisClient.setShopifySession(session);
 
-			expect(mockRedis.set).toHaveBeenCalledWith(
-				'saku:shopify:session:session-1',
-				JSON.stringify(session),
-				{ ex: 5 }
-			);
+			expect(mockRedis.set).toHaveBeenCalledWith('saku:shopify:session:session-1', session, {
+				ex: 5
+			});
 			expect(mockRedis.set).toHaveBeenCalledWith(
 				'saku:shopify:sessions:shop:shop.myshopify.com',
-				JSON.stringify(['saku:shopify:session:session-1'])
+				['saku:shopify:session:session-1'],
+				{ ex: 5 }
 			);
 		});
 
@@ -113,13 +103,14 @@ describe('RedisClient', () => {
 			};
 
 			const existingShopList = ['saku:shopify:session:session-1'];
-			mockRedis.get.mockResolvedValue(JSON.stringify(existingShopList));
+			mockRedis.get.mockResolvedValue(existingShopList);
 
 			await redisClient.setShopifySession(session);
 
 			expect(mockRedis.set).toHaveBeenCalledWith(
 				'saku:shopify:sessions:shop:shop.myshopify.com',
-				JSON.stringify(['saku:shopify:session:session-1', 'saku:shopify:session:session-2'])
+				['saku:shopify:session:session-1', 'saku:shopify:session:session-2'],
+				{ ex: 5 }
 			);
 		});
 
@@ -137,15 +128,13 @@ describe('RedisClient', () => {
 			};
 
 			const existingShopList = ['saku:shopify:session:session-1'];
-			mockRedis.get.mockResolvedValue(JSON.stringify(existingShopList));
+			mockRedis.get.mockResolvedValue(existingShopList);
 
 			await redisClient.setShopifySession(session);
 
-			expect(mockRedis.set).toHaveBeenCalledWith(
-				'saku:shopify:session:session-1',
-				JSON.stringify(session),
-				{ ex: 5 }
-			);
+			expect(mockRedis.set).toHaveBeenCalledWith('saku:shopify:session:session-1', session, {
+				ex: 5
+			});
 			expect(mockRedis.set).toHaveBeenCalledTimes(1);
 		});
 
@@ -166,11 +155,9 @@ describe('RedisClient', () => {
 
 			await redisClient.setShopifySession(session, 10);
 
-			expect(mockRedis.set).toHaveBeenCalledWith(
-				'saku:shopify:session:session-1',
-				JSON.stringify(session),
-				{ ex: 10 }
-			);
+			expect(mockRedis.set).toHaveBeenCalledWith('saku:shopify:session:session-1', session, {
+				ex: 10
+			});
 		});
 	});
 
@@ -211,16 +198,16 @@ describe('RedisClient', () => {
 			const sessionKeys = ['saku:shopify:session:session-1', 'saku:shopify:session:session-2'];
 
 			mockRedis.get
-				.mockResolvedValueOnce(JSON.stringify(sessionKeys))
-				.mockResolvedValueOnce(JSON.stringify(session1))
-				.mockResolvedValueOnce(JSON.stringify(session2));
+				.mockResolvedValueOnce(sessionKeys)
+				.mockResolvedValueOnce(session1)
+				.mockResolvedValueOnce(session2);
 
 			const result = await redisClient.getShopifySessionsByShop('shop.myshopify.com');
 
 			expect(result).toEqual([session1, session2]);
 		});
 
-		it('should skip invalid sessions and return valid ones', async () => {
+		it('should skip missing sessions and return valid ones', async () => {
 			const session1: TCachedShopifySession = {
 				id: 'session-1',
 				shop: 'shop.myshopify.com',
@@ -236,9 +223,9 @@ describe('RedisClient', () => {
 			const sessionKeys = ['saku:shopify:session:session-1', 'saku:shopify:session:session-2'];
 
 			mockRedis.get
-				.mockResolvedValueOnce(JSON.stringify(sessionKeys))
-				.mockResolvedValueOnce(JSON.stringify(session1))
-				.mockResolvedValueOnce('invalid-json');
+				.mockResolvedValueOnce(sessionKeys)
+				.mockResolvedValueOnce(session1)
+				.mockResolvedValueOnce(null);
 
 			const result = await redisClient.getShopifySessionsByShop('shop.myshopify.com');
 
@@ -249,22 +236,13 @@ describe('RedisClient', () => {
 			const sessionKeys = ['saku:shopify:session:session-1', 'saku:shopify:session:session-2'];
 
 			mockRedis.get
-				.mockResolvedValueOnce(JSON.stringify(sessionKeys))
+				.mockResolvedValueOnce(sessionKeys)
 				.mockResolvedValueOnce(null)
-				.mockResolvedValueOnce('invalid-json');
+				.mockResolvedValueOnce(null);
 
 			const result = await redisClient.getShopifySessionsByShop('shop.myshopify.com');
 
 			expect(result).toBeNull();
-		});
-
-		it('should return null and delete shop key when shop list JSON is invalid', async () => {
-			mockRedis.get.mockResolvedValue('invalid-json');
-
-			const result = await redisClient.getShopifySessionsByShop('shop.myshopify.com');
-
-			expect(result).toBeNull();
-			expect(mockRedis.del).toHaveBeenCalledWith('saku:shopify:sessions:shop:shop.myshopify.com');
 		});
 	});
 
@@ -296,19 +274,15 @@ describe('RedisClient', () => {
 
 			await redisClient.setShopifySessionsByShop('shop.myshopify.com', [session1, session2]);
 
-			expect(mockRedis.set).toHaveBeenCalledWith(
-				'saku:shopify:session:session-1',
-				JSON.stringify(session1),
-				{ ex: 5 }
-			);
-			expect(mockRedis.set).toHaveBeenCalledWith(
-				'saku:shopify:session:session-2',
-				JSON.stringify(session2),
-				{ ex: 5 }
-			);
+			expect(mockRedis.set).toHaveBeenCalledWith('saku:shopify:session:session-1', session1, {
+				ex: 5
+			});
+			expect(mockRedis.set).toHaveBeenCalledWith('saku:shopify:session:session-2', session2, {
+				ex: 5
+			});
 			expect(mockRedis.set).toHaveBeenCalledWith(
 				'saku:shopify:sessions:shop:shop.myshopify.com',
-				JSON.stringify(['saku:shopify:session:session-1', 'saku:shopify:session:session-2']),
+				['saku:shopify:session:session-1', 'saku:shopify:session:session-2'],
 				{ ex: 5 }
 			);
 		});
@@ -330,16 +304,15 @@ describe('RedisClient', () => {
 
 			const existingShopList = ['saku:shopify:session:session-1', 'saku:shopify:session:session-2'];
 
-			mockRedis.get
-				.mockResolvedValueOnce(JSON.stringify(session))
-				.mockResolvedValueOnce(JSON.stringify(existingShopList));
+			mockRedis.get.mockResolvedValueOnce(session).mockResolvedValueOnce(existingShopList);
 
 			await redisClient.deleteShopifySession('session-1');
 
 			expect(mockRedis.del).toHaveBeenCalledWith('saku:shopify:session:session-1');
 			expect(mockRedis.set).toHaveBeenCalledWith(
 				'saku:shopify:sessions:shop:shop.myshopify.com',
-				JSON.stringify(['saku:shopify:session:session-2'])
+				['saku:shopify:session:session-2'],
+				{ ex: 5 }
 			);
 		});
 
@@ -358,9 +331,7 @@ describe('RedisClient', () => {
 
 			const existingShopList = ['saku:shopify:session:session-1'];
 
-			mockRedis.get
-				.mockResolvedValueOnce(JSON.stringify(session))
-				.mockResolvedValueOnce(JSON.stringify(existingShopList));
+			mockRedis.get.mockResolvedValueOnce(session).mockResolvedValueOnce(existingShopList);
 
 			await redisClient.deleteShopifySession('session-1');
 
@@ -418,9 +389,9 @@ describe('RedisClient', () => {
 			];
 
 			mockRedis.get
-				.mockResolvedValueOnce(JSON.stringify(sessionKeys))
-				.mockResolvedValueOnce(JSON.stringify(offlineSession))
-				.mockResolvedValueOnce(JSON.stringify(onlineSession));
+				.mockResolvedValueOnce(sessionKeys)
+				.mockResolvedValueOnce(offlineSession)
+				.mockResolvedValueOnce(onlineSession);
 
 			const result = await redisClient.getShopifyOfflineAccessToken('shop.myshopify.com');
 
@@ -442,9 +413,7 @@ describe('RedisClient', () => {
 
 			const sessionKeys = ['saku:shopify:session:shop.myshopify.com_123'];
 
-			mockRedis.get
-				.mockResolvedValueOnce(JSON.stringify(sessionKeys))
-				.mockResolvedValueOnce(JSON.stringify(onlineSession));
+			mockRedis.get.mockResolvedValueOnce(sessionKeys).mockResolvedValueOnce(onlineSession);
 
 			const result = await redisClient.getShopifyOfflineAccessToken('shop.myshopify.com');
 
@@ -476,9 +445,7 @@ describe('RedisClient', () => {
 
 			const sessionKeys = ['saku:shopify:session:shop.myshopify.com_123'];
 
-			mockRedis.get
-				.mockResolvedValueOnce(JSON.stringify(sessionKeys))
-				.mockResolvedValueOnce(JSON.stringify(session));
+			mockRedis.get.mockResolvedValueOnce(sessionKeys).mockResolvedValueOnce(session);
 
 			const result = await redisClient.getShopifyOnlineAccessToken('shop.myshopify.com');
 
@@ -519,9 +486,9 @@ describe('RedisClient', () => {
 			];
 
 			mockRedis.get
-				.mockResolvedValueOnce(JSON.stringify(sessionKeys))
-				.mockResolvedValueOnce(JSON.stringify(olderSession))
-				.mockResolvedValueOnce(JSON.stringify(newerSession));
+				.mockResolvedValueOnce(sessionKeys)
+				.mockResolvedValueOnce(olderSession)
+				.mockResolvedValueOnce(newerSession);
 
 			const result = await redisClient.getShopifyOnlineAccessToken('shop.myshopify.com');
 
@@ -546,9 +513,7 @@ describe('RedisClient', () => {
 
 			const sessionKeys = ['saku:shopify:session:shop.myshopify.com_123'];
 
-			mockRedis.get
-				.mockResolvedValueOnce(JSON.stringify(sessionKeys))
-				.mockResolvedValueOnce(JSON.stringify(session));
+			mockRedis.get.mockResolvedValueOnce(sessionKeys).mockResolvedValueOnce(session);
 
 			const result = await redisClient.getShopifyOnlineAccessToken('shop.myshopify.com', '123');
 
@@ -576,9 +541,7 @@ describe('RedisClient', () => {
 
 			const sessionKeys = ['saku:shopify:session:shop.myshopify.com_123'];
 
-			mockRedis.get
-				.mockResolvedValueOnce(JSON.stringify(sessionKeys))
-				.mockResolvedValueOnce(JSON.stringify(session));
+			mockRedis.get.mockResolvedValueOnce(sessionKeys).mockResolvedValueOnce(session);
 
 			const result = await redisClient.getShopifyOnlineAccessToken('shop.myshopify.com');
 
@@ -600,9 +563,7 @@ describe('RedisClient', () => {
 
 			const sessionKeys = ['saku:shopify:session:shop.myshopify.com_123'];
 
-			mockRedis.get
-				.mockResolvedValueOnce(JSON.stringify(sessionKeys))
-				.mockResolvedValueOnce(JSON.stringify(session));
+			mockRedis.get.mockResolvedValueOnce(sessionKeys).mockResolvedValueOnce(session);
 
 			const result = await redisClient.getShopifyOnlineAccessToken('shop.myshopify.com');
 
@@ -627,9 +588,7 @@ describe('RedisClient', () => {
 
 			const sessionKeys = ['saku:shopify:session:offline_shop.myshopify.com'];
 
-			mockRedis.get
-				.mockResolvedValueOnce(JSON.stringify(sessionKeys))
-				.mockResolvedValueOnce(JSON.stringify(offlineSession));
+			mockRedis.get.mockResolvedValueOnce(sessionKeys).mockResolvedValueOnce(offlineSession);
 
 			const result = await redisClient.getShopifyOnlineAccessToken('shop.myshopify.com');
 
@@ -651,9 +610,7 @@ describe('RedisClient', () => {
 
 			const sessionKeys = ['saku:shopify:session:shop.myshopify.com_456'];
 
-			mockRedis.get
-				.mockResolvedValueOnce(JSON.stringify(sessionKeys))
-				.mockResolvedValueOnce(JSON.stringify(session));
+			mockRedis.get.mockResolvedValueOnce(sessionKeys).mockResolvedValueOnce(session);
 
 			const result = await redisClient.getShopifyOnlineAccessToken('shop.myshopify.com', '123');
 
