@@ -45,6 +45,7 @@
 		"@repo/hono-utils": "workspace:*",
 		"@repo/transactional": "workspace:*",
 		"@shopify/shopify-api": "^12.1.2",
+		"@upstash/redis": "^1.35.7",
 		"drizzle-orm": "^0.44.7",
 		"drizzle-zod": "^0.8.3",
 		"feature-fetch": "^0.0.53",

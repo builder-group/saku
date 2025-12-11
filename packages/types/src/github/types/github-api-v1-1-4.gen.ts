@@ -17901,6 +17901,16 @@ export interface components {
              */
             administration?: "read" | "write";
             /**
+             * @description The level of permission to grant the access token to create and retrieve build artifact metadata records.
+             * @enum {string}
+             */
+            artifact_metadata?: "read" | "write";
+            /**
+             * @description The level of permission to create and retrieve the access token for repository attestations.
+             * @enum {string}
+             */
+            attestations?: "read" | "write";
+            /**
              * @description The level of permission to grant the access token for checks on code.
              * @enum {string}
              */
@@ -17926,6 +17936,11 @@ export interface components {
              */
             deployments?: "read" | "write";
             /**
+             * @description The level of permission to grant the access token for discussions and related comments and labels.
+             * @enum {string}
+             */
+            discussions?: "read" | "write";
+            /**
              * @description The level of permission to grant the access token for managing repository environments.
              * @enum {string}
              */
@@ -17935,6 +17950,11 @@ export interface components {
              * @enum {string}
              */
             issues?: "read" | "write";
+            /**
+             * @description The level of permission to grant the access token to manage the merge queues for a repository.
+             * @enum {string}
+             */
+            merge_queues?: "read" | "write";
             /**
              * @description The level of permission to grant the access token to search repositories, list collaborators, and access repository metadata.
              * @enum {string}
@@ -20262,6 +20282,36 @@ export interface components {
          * @description The time that the alert was auto-dismissed in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ`.
          */
         "alert-auto-dismissed-at": string | null;
+        /**
+         * Dependabot alert dismissal request
+         * @description Information about an active dismissal request for this Dependabot alert.
+         */
+        "dependabot-alert-dismissal-request-simple": {
+            /** @description The unique identifier of the dismissal request. */
+            id?: number;
+            /**
+             * @description The current status of the dismissal request.
+             * @enum {string}
+             */
+            status?: "pending" | "approved" | "rejected" | "cancelled";
+            /** @description The user who requested the dismissal. */
+            requester?: {
+                /** @description The unique identifier of the user. */
+                id?: number;
+                /** @description The login name of the user. */
+                login?: string;
+            };
+            /**
+             * Format: date-time
+             * @description The date and time when the dismissal request was created.
+             */
+            created_at?: string;
+            /**
+             * Format: uri
+             * @description The API URL to get more information about this dismissal request.
+             */
+            url?: string;
+        } | null;
         /** @description A Dependabot alert. */
         "dependabot-alert-with-repository": {
             number: components["schemas"]["alert-number"];
@@ -20298,6 +20348,7 @@ export interface components {
             dismissed_comment: string | null;
             fixed_at: components["schemas"]["alert-fixed-at"];
             auto_dismissed_at?: components["schemas"]["alert-auto-dismissed-at"];
+            dismissal_request?: components["schemas"]["dependabot-alert-dismissal-request-simple"];
             repository: components["schemas"]["simple-repository"];
         };
         /**
@@ -20770,6 +20821,46 @@ export interface components {
             issue_field_values?: components["schemas"]["issue-field-value"][];
         };
         /**
+         * Label
+         * @description Color-coded labels help you categorize and filter your issues (just like labels in Gmail).
+         */
+        label: {
+            /**
+             * Format: int64
+             * @description Unique identifier for the label.
+             * @example 208045946
+             */
+            id: number;
+            /** @example MDU6TGFiZWwyMDgwNDU5NDY= */
+            node_id: string;
+            /**
+             * Format: uri
+             * @description URL for the label
+             * @example https://api.github.com/repositories/42/labels/bug
+             */
+            url: string;
+            /**
+             * @description The name of the label.
+             * @example bug
+             */
+            name: string;
+            /**
+             * @description Optional description of the label, such as its purpose.
+             * @example Something isn't working
+             */
+            description: string | null;
+            /**
+             * @description 6-character hex code, without the leading #, identifying the color
+             * @example FFFFFF
+             */
+            color: string;
+            /**
+             * @description Whether this label comes by default in a new repository.
+             * @example true
+             */
+            default: boolean;
+        };
+        /**
          * Issue Comment
          * @description Comments provide a way for people to collaborate on an issue.
          */
@@ -20809,8 +20900,375 @@ export interface components {
             updated_at: string;
             /** Format: uri */
             issue_url: string;
-            author_association: components["schemas"]["author-association"];
+            author_association?: components["schemas"]["author-association"];
             performed_via_github_app?: components["schemas"]["nullable-integration"];
+            reactions?: components["schemas"]["reaction-rollup"];
+        };
+        /**
+         * Team Simple
+         * @description Groups of organization members that gives permissions on specified repositories.
+         */
+        "team-simple": {
+            /**
+             * @description Unique identifier of the team
+             * @example 1
+             */
+            id: number;
+            /** @example MDQ6VGVhbTE= */
+            node_id: string;
+            /**
+             * Format: uri
+             * @description URL for the team
+             * @example https://api.github.com/organizations/1/team/1
+             */
+            url: string;
+            /** @example https://api.github.com/organizations/1/team/1/members{/member} */
+            members_url: string;
+            /**
+             * @description Name of the team
+             * @example Justice League
+             */
+            name: string;
+            /**
+             * @description Description of the team
+             * @example A great team.
+             */
+            description: string | null;
+            /**
+             * @description Permission that the team will have for its repositories
+             * @example admin
+             */
+            permission: string;
+            /**
+             * @description The level of privacy this team should have
+             * @example closed
+             */
+            privacy?: string;
+            /**
+             * @description The notification setting the team has set
+             * @example notifications_enabled
+             */
+            notification_setting?: string;
+            /**
+             * Format: uri
+             * @example https://github.com/orgs/rails/teams/core
+             */
+            html_url: string;
+            /**
+             * Format: uri
+             * @example https://api.github.com/organizations/1/team/1/repos
+             */
+            repositories_url: string;
+            /** @example justice-league */
+            slug: string;
+            /**
+             * @description Distinguished Name (DN) that team maps to within LDAP environment
+             * @example uid=example,ou=users,dc=github,dc=com
+             */
+            ldap_dn?: string;
+            /**
+             * @description The ownership type of the team
+             * @enum {string}
+             */
+            type: "enterprise" | "organization";
+            /**
+             * @description Unique identifier of the organization to which this team belongs
+             * @example 37
+             */
+            organization_id?: number;
+            /**
+             * @description Unique identifier of the enterprise to which this team belongs
+             * @example 42
+             */
+            enterprise_id?: number;
+        };
+        /**
+         * Link
+         * @description Hypermedia Link
+         */
+        link: {
+            href: string;
+        };
+        /**
+         * Auto merge
+         * @description The status of auto merging a pull request.
+         */
+        "auto-merge": {
+            enabled_by: components["schemas"]["simple-user"];
+            /**
+             * @description The merge method to use.
+             * @enum {string}
+             */
+            merge_method: "merge" | "squash" | "rebase";
+            /** @description Title for the merge commit message. */
+            commit_title: string;
+            /** @description Commit message for the merge commit. */
+            commit_message: string;
+        } | null;
+        /**
+         * Pull Request
+         * @description Pull requests let you tell others about changes you've pushed to a repository on GitHub. Once a pull request is sent, interested parties can review the set of changes, discuss potential modifications, and even push follow-up commits if necessary.
+         */
+        "pull-request": {
+            /**
+             * Format: uri
+             * @example https://api.github.com/repos/octocat/Hello-World/pulls/1347
+             */
+            url: string;
+            /**
+             * Format: int64
+             * @example 1
+             */
+            id: number;
+            /** @example MDExOlB1bGxSZXF1ZXN0MQ== */
+            node_id: string;
+            /**
+             * Format: uri
+             * @example https://github.com/octocat/Hello-World/pull/1347
+             */
+            html_url: string;
+            /**
+             * Format: uri
+             * @example https://github.com/octocat/Hello-World/pull/1347.diff
+             */
+            diff_url: string;
+            /**
+             * Format: uri
+             * @example https://github.com/octocat/Hello-World/pull/1347.patch
+             */
+            patch_url: string;
+            /**
+             * Format: uri
+             * @example https://api.github.com/repos/octocat/Hello-World/issues/1347
+             */
+            issue_url: string;
+            /**
+             * Format: uri
+             * @example https://api.github.com/repos/octocat/Hello-World/pulls/1347/commits
+             */
+            commits_url: string;
+            /**
+             * Format: uri
+             * @example https://api.github.com/repos/octocat/Hello-World/pulls/1347/comments
+             */
+            review_comments_url: string;
+            /** @example https://api.github.com/repos/octocat/Hello-World/pulls/comments{/number} */
+            review_comment_url: string;
+            /**
+             * Format: uri
+             * @example https://api.github.com/repos/octocat/Hello-World/issues/1347/comments
+             */
+            comments_url: string;
+            /**
+             * Format: uri
+             * @example https://api.github.com/repos/octocat/Hello-World/statuses/6dcb09b5b57875f334f61aebed695e2e4193db5e
+             */
+            statuses_url: string;
+            /**
+             * @description Number uniquely identifying the pull request within its repository.
+             * @example 42
+             */
+            number: number;
+            /**
+             * @description State of this Pull Request. Either `open` or `closed`.
+             * @example open
+             * @enum {string}
+             */
+            state: "open" | "closed";
+            /** @example true */
+            locked: boolean;
+            /**
+             * @description The title of the pull request.
+             * @example Amazing new feature
+             */
+            title: string;
+            user: components["schemas"]["simple-user"];
+            /** @example Please pull these awesome changes */
+            body: string | null;
+            labels: {
+                /** Format: int64 */
+                id: number;
+                node_id: string;
+                url: string;
+                name: string;
+                description: string | null;
+                color: string;
+                default: boolean;
+            }[];
+            milestone: components["schemas"]["nullable-milestone"];
+            /** @example too heated */
+            active_lock_reason?: string | null;
+            /**
+             * Format: date-time
+             * @example 2011-01-26T19:01:12Z
+             */
+            created_at: string;
+            /**
+             * Format: date-time
+             * @example 2011-01-26T19:01:12Z
+             */
+            updated_at: string;
+            /**
+             * Format: date-time
+             * @example 2011-01-26T19:01:12Z
+             */
+            closed_at: string | null;
+            /**
+             * Format: date-time
+             * @example 2011-01-26T19:01:12Z
+             */
+            merged_at: string | null;
+            /** @example e5bd3914e2e596debea16f433f57875b5b90bcd6 */
+            merge_commit_sha: string | null;
+            assignee: components["schemas"]["nullable-simple-user"];
+            assignees?: components["schemas"]["simple-user"][] | null;
+            requested_reviewers?: components["schemas"]["simple-user"][] | null;
+            requested_teams?: components["schemas"]["team-simple"][] | null;
+            head: {
+                label: string;
+                ref: string;
+                repo: components["schemas"]["repository"];
+                sha: string;
+                user: components["schemas"]["simple-user"];
+            };
+            base: {
+                label: string;
+                ref: string;
+                repo: components["schemas"]["repository"];
+                sha: string;
+                user: components["schemas"]["simple-user"];
+            };
+            _links: {
+                comments: components["schemas"]["link"];
+                commits: components["schemas"]["link"];
+                statuses: components["schemas"]["link"];
+                html: components["schemas"]["link"];
+                issue: components["schemas"]["link"];
+                review_comments: components["schemas"]["link"];
+                review_comment: components["schemas"]["link"];
+                self: components["schemas"]["link"];
+            };
+            author_association: components["schemas"]["author-association"];
+            auto_merge: components["schemas"]["auto-merge"];
+            /**
+             * @description Indicates whether or not the pull request is a draft.
+             * @example false
+             */
+            draft?: boolean;
+            merged: boolean;
+            /** @example true */
+            mergeable: boolean | null;
+            /** @example true */
+            rebaseable?: boolean | null;
+            /** @example clean */
+            mergeable_state: string;
+            merged_by: components["schemas"]["nullable-simple-user"];
+            /** @example 10 */
+            comments: number;
+            /** @example 0 */
+            review_comments: number;
+            /**
+             * @description Indicates whether maintainers can modify the pull request.
+             * @example true
+             */
+            maintainer_can_modify: boolean;
+            /** @example 3 */
+            commits: number;
+            /** @example 100 */
+            additions: number;
+            /** @example 3 */
+            deletions: number;
+            /** @example 5 */
+            changed_files: number;
+        };
+        /**
+         * Release Asset
+         * @description Data related to a release.
+         */
+        "release-asset": {
+            /** Format: uri */
+            url: string;
+            /** Format: uri */
+            browser_download_url: string;
+            id: number;
+            node_id: string;
+            /**
+             * @description The file name of the asset.
+             * @example Team Environment
+             */
+            name: string;
+            label: string | null;
+            /**
+             * @description State of the release asset.
+             * @enum {string}
+             */
+            state: "uploaded" | "open";
+            content_type: string;
+            size: number;
+            digest: string | null;
+            download_count: number;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            updated_at: string;
+            uploader: components["schemas"]["nullable-simple-user"];
+        };
+        /**
+         * Release
+         * @description A release.
+         */
+        release: {
+            /** Format: uri */
+            url: string;
+            /** Format: uri */
+            html_url: string;
+            /** Format: uri */
+            assets_url: string;
+            upload_url: string;
+            /** Format: uri */
+            tarball_url: string | null;
+            /** Format: uri */
+            zipball_url: string | null;
+            id: number;
+            node_id: string;
+            /**
+             * @description The name of the tag.
+             * @example v1.0.0
+             */
+            tag_name: string;
+            /**
+             * @description Specifies the commitish value that determines where the Git tag is created from.
+             * @example master
+             */
+            target_commitish: string;
+            name: string | null;
+            body?: string | null;
+            /**
+             * @description true to create a draft (unpublished) release, false to create a published one.
+             * @example false
+             */
+            draft: boolean;
+            /**
+             * @description Whether to identify the release as a prerelease or a full release.
+             * @example false
+             */
+            prerelease: boolean;
+            /**
+             * @description Whether or not the release is immutable.
+             * @example false
+             */
+            immutable?: boolean;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: date-time */
+            published_at: string | null;
+            /** Format: date-time */
+            updated_at?: string | null;
+            author: components["schemas"]["simple-user"];
+            assets: components["schemas"]["release-asset"][];
+            body_html?: string;
+            body_text?: string;
+            mentions_count?: number;
             reactions?: components["schemas"]["reaction-rollup"];
         };
         /**
@@ -20828,19 +21286,7 @@ export interface components {
                 url: string;
             };
             org?: components["schemas"]["actor"];
-            payload: {
-                action?: string;
-                issue?: components["schemas"]["issue"];
-                comment?: components["schemas"]["issue-comment"];
-                pages?: {
-                    page_name?: string;
-                    title?: string;
-                    summary?: string | null;
-                    action?: string;
-                    sha?: string;
-                    html_url?: string;
-                }[];
-            };
+            payload: components["schemas"]["create-event"] | components["schemas"]["delete-event"] | components["schemas"]["issues-event"] | components["schemas"]["issue-comment-event"] | components["schemas"]["fork-event"] | components["schemas"]["gollum-event"] | components["schemas"]["member-event"] | components["schemas"]["public-event"] | components["schemas"]["push-event"] | components["schemas"]["pull-request-event"] | components["schemas"]["pull-request-review-comment-event"] | components["schemas"]["pull-request-review-event"] | components["schemas"]["commit-comment-event"] | components["schemas"]["release-event"] | components["schemas"]["watch-event"];
             public: boolean;
             /** Format: date-time */
             created_at: string | null;
@@ -22549,6 +22995,11 @@ export interface components {
             default_for_new_repos?: "public" | "private_and_internal" | "all";
             configuration?: components["schemas"]["code-security-configuration"];
         }[];
+        /** @description Security Configuration feature options for code scanning */
+        "code-scanning-options": {
+            /** @description Whether to allow repos which use advanced setup */
+            allow_advanced?: boolean | null;
+        } | null;
         /** @description Repositories associated with a code security configuration and attachment status */
         "code-security-configuration-repositories": {
             /**
@@ -23338,84 +23789,6 @@ export interface components {
             /** Format: uri */
             repositories_url: string;
             parent: components["schemas"]["nullable-team-simple"];
-            /**
-             * @description The ownership type of the team
-             * @enum {string}
-             */
-            type: "enterprise" | "organization";
-            /**
-             * @description Unique identifier of the organization to which this team belongs
-             * @example 37
-             */
-            organization_id?: number;
-            /**
-             * @description Unique identifier of the enterprise to which this team belongs
-             * @example 42
-             */
-            enterprise_id?: number;
-        };
-        /**
-         * Team Simple
-         * @description Groups of organization members that gives permissions on specified repositories.
-         */
-        "team-simple": {
-            /**
-             * @description Unique identifier of the team
-             * @example 1
-             */
-            id: number;
-            /** @example MDQ6VGVhbTE= */
-            node_id: string;
-            /**
-             * Format: uri
-             * @description URL for the team
-             * @example https://api.github.com/organizations/1/team/1
-             */
-            url: string;
-            /** @example https://api.github.com/organizations/1/team/1/members{/member} */
-            members_url: string;
-            /**
-             * @description Name of the team
-             * @example Justice League
-             */
-            name: string;
-            /**
-             * @description Description of the team
-             * @example A great team.
-             */
-            description: string | null;
-            /**
-             * @description Permission that the team will have for its repositories
-             * @example admin
-             */
-            permission: string;
-            /**
-             * @description The level of privacy this team should have
-             * @example closed
-             */
-            privacy?: string;
-            /**
-             * @description The notification setting the team has set
-             * @example notifications_enabled
-             */
-            notification_setting?: string;
-            /**
-             * Format: uri
-             * @example https://github.com/orgs/rails/teams/core
-             */
-            html_url: string;
-            /**
-             * Format: uri
-             * @example https://api.github.com/organizations/1/team/1/repos
-             */
-            repositories_url: string;
-            /** @example justice-league */
-            slug: string;
-            /**
-             * @description Distinguished Name (DN) that team maps to within LDAP environment
-             * @example uid=example,ou=users,dc=github,dc=com
-             */
-            ldap_dn?: string;
             /**
              * @description The ownership type of the team
              * @enum {string}
@@ -24717,7 +25090,7 @@ export interface components {
          * @description A reviewing team, and file patterns describing which files they must approve changes to.
          */
         "repository-rule-params-required-reviewer-configuration": {
-            /** @description Array of file patterns. Pull requests which change matching files must be approved by the specified team. File patterns use the same syntax as `.gitignore` files. */
+            /** @description Array of file patterns. Pull requests which change matching files must be approved by the specified team. File patterns use fnmatch syntax. */
             file_patterns: string[];
             /** @description Minimum number of approvals required from the specified team. If set to zero, the team will be added to the pull request but approval is optional. */
             minimum_approvals: number;
@@ -24731,8 +25104,6 @@ export interface components {
             /** @enum {string} */
             type: "pull_request";
             parameters?: {
-                /** @description Request Copilot code review for new pull requests automatically if the author has access to Copilot code review. */
-                automatic_copilot_code_review_enabled?: boolean;
                 /** @description New, reviewable commits pushed will dismiss previous pull request review approvals. */
                 dismiss_stale_reviews_on_push: boolean;
                 /** @description Require an approving review in pull requests that modify files that have a designated code owner. */
@@ -24743,6 +25114,13 @@ export interface components {
                 required_approving_review_count: number;
                 /** @description All conversations on code must be resolved before a pull request can be merged. */
                 required_review_thread_resolution: boolean;
+                /**
+                 * @description > [!NOTE]
+                 *     > `required_reviewers` is in beta and subject to change.
+                 *
+                 *     A collection of reviewers and associated file patterns. Each reviewer has a list of file patterns which determine the files that reviewer is required to review.
+                 */
+                required_reviewers?: components["schemas"]["repository-rule-params-required-reviewer-configuration"][];
             };
         };
         /**
@@ -24944,7 +25322,7 @@ export interface components {
         };
         /**
          * copilot_code_review
-         * @description Request Copilot code review for new pull requests automatically if the author has access to Copilot code review.
+         * @description Request Copilot code review for new pull requests automatically if the author has access to Copilot code review and their premium requests quota has not reached the limit.
          */
         "repository-rule-copilot-code-review": {
             /** @enum {string} */
@@ -26771,6 +27149,19 @@ export interface components {
             deleted_at?: string;
         };
         /**
+         * Workflow Run ID
+         * Format: int64
+         * @description The unique identifier for a workflow run
+         */
+        "workflow-run-id": number;
+        /**
+         * Workflow Dispatch Response
+         * @description Response containing the workflow run ID
+         */
+        "workflow-dispatch-response": {
+            workflow_run_id: components["schemas"]["workflow-run-id"];
+        };
+        /**
          * Activity
          * @description Activity
          */
@@ -27092,7 +27483,10 @@ export interface components {
             name?: string;
             /** @example "chris@ozmm.org" */
             email?: string;
-            /** @example "2007-10-29T02:42:39.000-07:00" */
+            /**
+             * Format: date-time
+             * @example "2007-10-29T02:42:39.000-07:00"
+             */
             date?: string;
         } | null;
         /** Verification */
@@ -28083,29 +28477,6 @@ export interface components {
             protected: boolean;
         };
         /**
-         * Link
-         * @description Hypermedia Link
-         */
-        link: {
-            href: string;
-        };
-        /**
-         * Auto merge
-         * @description The status of auto merging a pull request.
-         */
-        "auto-merge": {
-            enabled_by: components["schemas"]["simple-user"];
-            /**
-             * @description The merge method to use.
-             * @enum {string}
-             */
-            merge_method: "merge" | "squash" | "rebase";
-            /** @description Title for the merge commit message. */
-            commit_title: string;
-            /** @description Commit message for the merge commit. */
-            commit_message: string;
-        } | null;
-        /**
          * Pull Request Simple
          * @description Pull Request Simple
          */
@@ -28668,6 +29039,7 @@ export interface components {
             dismissed_comment: string | null;
             fixed_at: components["schemas"]["alert-fixed-at"];
             auto_dismissed_at?: components["schemas"]["alert-auto-dismissed-at"];
+            dismissal_request?: components["schemas"]["dependabot-alert-dismissal-request-simple"];
         };
         /**
          * Dependabot Secret
@@ -30041,46 +30413,6 @@ export interface components {
          */
         "issue-event-for-issue": components["schemas"]["labeled-issue-event"] | components["schemas"]["unlabeled-issue-event"] | components["schemas"]["assigned-issue-event"] | components["schemas"]["unassigned-issue-event"] | components["schemas"]["milestoned-issue-event"] | components["schemas"]["demilestoned-issue-event"] | components["schemas"]["renamed-issue-event"] | components["schemas"]["review-requested-issue-event"] | components["schemas"]["review-request-removed-issue-event"] | components["schemas"]["review-dismissed-issue-event"] | components["schemas"]["locked-issue-event"] | components["schemas"]["added-to-project-issue-event"] | components["schemas"]["moved-column-in-project-issue-event"] | components["schemas"]["removed-from-project-issue-event"] | components["schemas"]["converted-note-to-issue-issue-event"];
         /**
-         * Label
-         * @description Color-coded labels help you categorize and filter your issues (just like labels in Gmail).
-         */
-        label: {
-            /**
-             * Format: int64
-             * @description Unique identifier for the label.
-             * @example 208045946
-             */
-            id: number;
-            /** @example MDU6TGFiZWwyMDgwNDU5NDY= */
-            node_id: string;
-            /**
-             * Format: uri
-             * @description URL for the label
-             * @example https://api.github.com/repositories/42/labels/bug
-             */
-            url: string;
-            /**
-             * @description The name of the label.
-             * @example bug
-             */
-            name: string;
-            /**
-             * @description Optional description of the label, such as its purpose.
-             * @example Something isn't working
-             */
-            description: string | null;
-            /**
-             * @description 6-character hex code, without the leading #, identifying the color
-             * @example FFFFFF
-             */
-            color: string;
-            /**
-             * @description Whether this label comes by default in a new repository.
-             * @example true
-             */
-            default: boolean;
-        };
-        /**
          * Timeline Comment Event
          * @description Timeline Comment Event
          */
@@ -30802,182 +31134,6 @@ export interface components {
             configuration_url?: string;
         };
         /**
-         * Pull Request
-         * @description Pull requests let you tell others about changes you've pushed to a repository on GitHub. Once a pull request is sent, interested parties can review the set of changes, discuss potential modifications, and even push follow-up commits if necessary.
-         */
-        "pull-request": {
-            /**
-             * Format: uri
-             * @example https://api.github.com/repos/octocat/Hello-World/pulls/1347
-             */
-            url: string;
-            /**
-             * Format: int64
-             * @example 1
-             */
-            id: number;
-            /** @example MDExOlB1bGxSZXF1ZXN0MQ== */
-            node_id: string;
-            /**
-             * Format: uri
-             * @example https://github.com/octocat/Hello-World/pull/1347
-             */
-            html_url: string;
-            /**
-             * Format: uri
-             * @example https://github.com/octocat/Hello-World/pull/1347.diff
-             */
-            diff_url: string;
-            /**
-             * Format: uri
-             * @example https://github.com/octocat/Hello-World/pull/1347.patch
-             */
-            patch_url: string;
-            /**
-             * Format: uri
-             * @example https://api.github.com/repos/octocat/Hello-World/issues/1347
-             */
-            issue_url: string;
-            /**
-             * Format: uri
-             * @example https://api.github.com/repos/octocat/Hello-World/pulls/1347/commits
-             */
-            commits_url: string;
-            /**
-             * Format: uri
-             * @example https://api.github.com/repos/octocat/Hello-World/pulls/1347/comments
-             */
-            review_comments_url: string;
-            /** @example https://api.github.com/repos/octocat/Hello-World/pulls/comments{/number} */
-            review_comment_url: string;
-            /**
-             * Format: uri
-             * @example https://api.github.com/repos/octocat/Hello-World/issues/1347/comments
-             */
-            comments_url: string;
-            /**
-             * Format: uri
-             * @example https://api.github.com/repos/octocat/Hello-World/statuses/6dcb09b5b57875f334f61aebed695e2e4193db5e
-             */
-            statuses_url: string;
-            /**
-             * @description Number uniquely identifying the pull request within its repository.
-             * @example 42
-             */
-            number: number;
-            /**
-             * @description State of this Pull Request. Either `open` or `closed`.
-             * @example open
-             * @enum {string}
-             */
-            state: "open" | "closed";
-            /** @example true */
-            locked: boolean;
-            /**
-             * @description The title of the pull request.
-             * @example Amazing new feature
-             */
-            title: string;
-            user: components["schemas"]["simple-user"];
-            /** @example Please pull these awesome changes */
-            body: string | null;
-            labels: {
-                /** Format: int64 */
-                id: number;
-                node_id: string;
-                url: string;
-                name: string;
-                description: string | null;
-                color: string;
-                default: boolean;
-            }[];
-            milestone: components["schemas"]["nullable-milestone"];
-            /** @example too heated */
-            active_lock_reason?: string | null;
-            /**
-             * Format: date-time
-             * @example 2011-01-26T19:01:12Z
-             */
-            created_at: string;
-            /**
-             * Format: date-time
-             * @example 2011-01-26T19:01:12Z
-             */
-            updated_at: string;
-            /**
-             * Format: date-time
-             * @example 2011-01-26T19:01:12Z
-             */
-            closed_at: string | null;
-            /**
-             * Format: date-time
-             * @example 2011-01-26T19:01:12Z
-             */
-            merged_at: string | null;
-            /** @example e5bd3914e2e596debea16f433f57875b5b90bcd6 */
-            merge_commit_sha: string | null;
-            assignee: components["schemas"]["nullable-simple-user"];
-            assignees?: components["schemas"]["simple-user"][] | null;
-            requested_reviewers?: components["schemas"]["simple-user"][] | null;
-            requested_teams?: components["schemas"]["team-simple"][] | null;
-            head: {
-                label: string;
-                ref: string;
-                repo: components["schemas"]["repository"];
-                sha: string;
-                user: components["schemas"]["simple-user"];
-            };
-            base: {
-                label: string;
-                ref: string;
-                repo: components["schemas"]["repository"];
-                sha: string;
-                user: components["schemas"]["simple-user"];
-            };
-            _links: {
-                comments: components["schemas"]["link"];
-                commits: components["schemas"]["link"];
-                statuses: components["schemas"]["link"];
-                html: components["schemas"]["link"];
-                issue: components["schemas"]["link"];
-                review_comments: components["schemas"]["link"];
-                review_comment: components["schemas"]["link"];
-                self: components["schemas"]["link"];
-            };
-            author_association: components["schemas"]["author-association"];
-            auto_merge: components["schemas"]["auto-merge"];
-            /**
-             * @description Indicates whether or not the pull request is a draft.
-             * @example false
-             */
-            draft?: boolean;
-            merged: boolean;
-            /** @example true */
-            mergeable: boolean | null;
-            /** @example true */
-            rebaseable?: boolean | null;
-            /** @example clean */
-            mergeable_state: string;
-            merged_by: components["schemas"]["nullable-simple-user"];
-            /** @example 10 */
-            comments: number;
-            /** @example 0 */
-            review_comments: number;
-            /**
-             * @description Indicates whether maintainers can modify the pull request.
-             * @example true
-             */
-            maintainer_can_modify: boolean;
-            /** @example 3 */
-            commits: number;
-            /** @example 100 */
-            additions: number;
-            /** @example 3 */
-            deletions: number;
-            /** @example 5 */
-            changed_files: number;
-        };
-        /**
          * Pull Request Merge Result
          * @description Pull Request Merge Result
          */
@@ -31149,96 +31305,6 @@ export interface components {
              * @enum {string}
              */
             subject_type?: "line" | "file";
-        };
-        /**
-         * Release Asset
-         * @description Data related to a release.
-         */
-        "release-asset": {
-            /** Format: uri */
-            url: string;
-            /** Format: uri */
-            browser_download_url: string;
-            id: number;
-            node_id: string;
-            /**
-             * @description The file name of the asset.
-             * @example Team Environment
-             */
-            name: string;
-            label: string | null;
-            /**
-             * @description State of the release asset.
-             * @enum {string}
-             */
-            state: "uploaded" | "open";
-            content_type: string;
-            size: number;
-            digest: string | null;
-            download_count: number;
-            /** Format: date-time */
-            created_at: string;
-            /** Format: date-time */
-            updated_at: string;
-            uploader: components["schemas"]["nullable-simple-user"];
-        };
-        /**
-         * Release
-         * @description A release.
-         */
-        release: {
-            /** Format: uri */
-            url: string;
-            /** Format: uri */
-            html_url: string;
-            /** Format: uri */
-            assets_url: string;
-            upload_url: string;
-            /** Format: uri */
-            tarball_url: string | null;
-            /** Format: uri */
-            zipball_url: string | null;
-            id: number;
-            node_id: string;
-            /**
-             * @description The name of the tag.
-             * @example v1.0.0
-             */
-            tag_name: string;
-            /**
-             * @description Specifies the commitish value that determines where the Git tag is created from.
-             * @example master
-             */
-            target_commitish: string;
-            name: string | null;
-            body?: string | null;
-            /**
-             * @description true to create a draft (unpublished) release, false to create a published one.
-             * @example false
-             */
-            draft: boolean;
-            /**
-             * @description Whether to identify the release as a prerelease or a full release.
-             * @example false
-             */
-            prerelease: boolean;
-            /**
-             * @description Whether or not the release is immutable.
-             * @example false
-             */
-            immutable?: boolean;
-            /** Format: date-time */
-            created_at: string;
-            /** Format: date-time */
-            published_at: string | null;
-            /** Format: date-time */
-            updated_at?: string | null;
-            author: components["schemas"]["simple-user"];
-            assets: components["schemas"]["release-asset"][];
-            body_html?: string;
-            body_text?: string;
-            mentions_count?: number;
-            reactions?: components["schemas"]["reaction-rollup"];
         };
         /**
          * Generated Release Notes Content
@@ -33450,6 +33516,22 @@ export interface components {
             }[];
         };
         /**
+         * Dependabot alert dismissal request data
+         * @description Dependabot alerts that have dismissal requests.
+         */
+        "dismissal-request-dependabot": {
+            /**
+             * @description The type of request
+             * @enum {string}
+             */
+            type?: "dependabot_alert_dismissal";
+            /** @description The data related to the Dependabot alerts that have dismissal requests. */
+            data?: {
+                /** @description The number of the alert to be dismissed */
+                alert_number?: string;
+            }[];
+        };
+        /**
          * Secret Scanning Push Protection Exemption Request Metadata
          * @description Metadata for a secret scanning push protection exemption request.
          */
@@ -33487,6 +33569,19 @@ export interface components {
              * @enum {string}
              */
             reason?: "false positive" | "won't fix" | "used in tests";
+        };
+        /**
+         * Dependabot alert dismissal request metadata
+         * @description Metadata for a Dependabot alert dismissal request.
+         */
+        "dismissal-request-dependabot-metadata": {
+            /** @description The title of the Dependabot alert */
+            alert_title?: string;
+            /**
+             * @description The reason for the dismissal request
+             * @enum {string}
+             */
+            reason?: "fix_started" | "inaccurate" | "no_bandwidth" | "not_used" | "tolerable_risk";
         };
         /**
          * Exemption response
@@ -33531,8 +33626,8 @@ export interface components {
              * @description The type of request.
              * @enum {string}
              */
-            request_type?: "push_ruleset_bypass" | "secret_scanning" | "secret_scanning_closure" | "code_scanning_alert_dismissal";
-            exemption_request_data?: components["schemas"]["exemption-request-push-ruleset-bypass"] | components["schemas"]["exemption-request-secret-scanning"] | components["schemas"]["dismissal-request-secret-scanning"] | components["schemas"]["dismissal-request-code-scanning"];
+            request_type?: "push_ruleset_bypass" | "secret_scanning" | "secret_scanning_closure" | "code_scanning_alert_dismissal" | "dependabot_alert_dismissal";
+            exemption_request_data?: components["schemas"]["exemption-request-push-ruleset-bypass"] | components["schemas"]["exemption-request-secret-scanning"] | components["schemas"]["dismissal-request-secret-scanning"] | components["schemas"]["dismissal-request-code-scanning"] | components["schemas"]["dismissal-request-dependabot"];
             /**
              * @description The unique identifier for the request type of the exemption request. For example, a commit SHA.
              * @example 827efc6d56897b048c772eb4087f854f46256132
@@ -33546,7 +33641,7 @@ export interface components {
             /** @description The comment the requester provided when creating the exemption request. */
             requester_comment?: string | null;
             /** @description Metadata about the exemption request. */
-            metadata?: (components["schemas"]["exemption-request-secret-scanning-metadata"] | components["schemas"]["dismissal-request-secret-scanning-metadata"] | components["schemas"]["dismissal-request-code-scanning-metadata"]) | null;
+            metadata?: (components["schemas"]["exemption-request-secret-scanning-metadata"] | components["schemas"]["dismissal-request-secret-scanning-metadata"] | components["schemas"]["dismissal-request-code-scanning-metadata"] | components["schemas"]["dismissal-request-dependabot-metadata"]) | null;
             /**
              * Format: date-time
              * @description The date and time the exemption request will expire.
@@ -33941,7 +34036,7 @@ export interface components {
              * @description How the author is associated with the repository.
              * @enum {string}
              */
-            author_association: "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE" | "OWNER";
+            author_association?: "COLLABORATOR" | "CONTRIBUTOR" | "FIRST_TIMER" | "FIRST_TIME_CONTRIBUTOR" | "MANNEQUIN" | "MEMBER" | "NONE" | "OWNER";
             body: string;
             category: {
                 /** Format: date-time */
@@ -39048,11 +39143,17 @@ export interface components {
                         /** @enum {string} */
                         administration?: "read" | "write";
                         /** @enum {string} */
+                        artifact_metadata?: "read" | "write";
+                        /** @enum {string} */
+                        attestations?: "read" | "write";
+                        /** @enum {string} */
                         checks?: "read" | "write";
                         /** @enum {string} */
                         content_references?: "read" | "write";
                         /** @enum {string} */
                         contents?: "read" | "write";
+                        /** @enum {string} */
+                        copilot_requests?: "write";
                         /** @enum {string} */
                         deployments?: "read" | "write";
                         /** @enum {string} */
@@ -39068,7 +39169,11 @@ export interface components {
                         /** @enum {string} */
                         members?: "read" | "write";
                         /** @enum {string} */
+                        merge_queues?: "read" | "write";
+                        /** @enum {string} */
                         metadata?: "read" | "write";
+                        /** @enum {string} */
+                        models?: "read" | "write";
                         /** @enum {string} */
                         organization_administration?: "read" | "write";
                         /** @enum {string} */
@@ -39292,11 +39397,17 @@ export interface components {
                         /** @enum {string} */
                         administration?: "read" | "write";
                         /** @enum {string} */
+                        artifact_metadata?: "read" | "write";
+                        /** @enum {string} */
+                        attestations?: "read" | "write";
+                        /** @enum {string} */
                         checks?: "read" | "write";
                         /** @enum {string} */
                         content_references?: "read" | "write";
                         /** @enum {string} */
                         contents?: "read" | "write";
+                        /** @enum {string} */
+                        copilot_requests?: "write";
                         /** @enum {string} */
                         deployments?: "read" | "write";
                         /** @enum {string} */
@@ -39312,7 +39423,11 @@ export interface components {
                         /** @enum {string} */
                         members?: "read" | "write";
                         /** @enum {string} */
+                        merge_queues?: "read" | "write";
+                        /** @enum {string} */
                         metadata?: "read" | "write";
+                        /** @enum {string} */
+                        models?: "read" | "write";
                         /** @enum {string} */
                         organization_administration?: "read" | "write";
                         /** @enum {string} */
@@ -40033,6 +40148,7 @@ export interface components {
                  * @description The GitHub URL of the alert resource.
                  */
                 html_url: string;
+                instances_url?: string;
                 /** Alert Instance */
                 most_recent_instance?: {
                     /** @description Identifies the configuration under which the analysis was executed. For example, in GitHub Actions this includes the workflow filename and job name. */
@@ -40092,9 +40208,11 @@ export interface components {
                     /** @description The version of the tool used to detect the alert. */
                     version: string | null;
                 };
+                updated_at?: string | null;
                 /** Format: uri */
                 url: string;
-            } | null;
+                dismissal_approved_by?: unknown;
+            };
             /** @description The commit SHA of the code scanning alert. When the action is `reopened_by_user` or `closed_by_user`, the event was triggered by the `sender` and this value will be empty. */
             commit_oid: string | null;
             enterprise?: components["schemas"]["enterprise-webhooks"];
@@ -82803,6 +82921,341 @@ export interface components {
                 display_title: string;
             };
         };
+        /** CreateEvent */
+        "create-event": {
+            ref: string;
+            ref_type: string;
+            master_branch: string;
+            description?: string | null;
+            pusher_type: string;
+        };
+        /** DeleteEvent */
+        "delete-event": {
+            ref: string;
+            ref_type: string;
+            pusher_type: string;
+        };
+        /** IssuesEvent */
+        "issues-event": {
+            action: string;
+            issue: components["schemas"]["issue"];
+            assignee?: components["schemas"]["simple-user"];
+            assignees?: components["schemas"]["simple-user"][];
+            label?: components["schemas"]["label"];
+            labels?: components["schemas"]["label"][];
+        };
+        /** IssueCommentEvent */
+        "issue-comment-event": {
+            action: string;
+            issue: components["schemas"]["issue"];
+            comment: components["schemas"]["issue-comment"];
+        };
+        /** ForkEvent */
+        "fork-event": {
+            forkee: {
+                id?: number;
+                node_id?: string;
+                name?: string;
+                full_name?: string;
+                private?: boolean;
+                owner?: components["schemas"]["simple-user"];
+                html_url?: string;
+                description?: string | null;
+                fork?: boolean;
+                url?: string;
+                forks_url?: string;
+                keys_url?: string;
+                collaborators_url?: string;
+                teams_url?: string;
+                hooks_url?: string;
+                issue_events_url?: string;
+                events_url?: string;
+                assignees_url?: string;
+                branches_url?: string;
+                tags_url?: string;
+                blobs_url?: string;
+                git_tags_url?: string;
+                git_refs_url?: string;
+                trees_url?: string;
+                statuses_url?: string;
+                languages_url?: string;
+                stargazers_url?: string;
+                contributors_url?: string;
+                subscribers_url?: string;
+                subscription_url?: string;
+                commits_url?: string;
+                git_commits_url?: string;
+                comments_url?: string;
+                issue_comment_url?: string;
+                contents_url?: string;
+                compare_url?: string;
+                merges_url?: string;
+                archive_url?: string;
+                downloads_url?: string;
+                issues_url?: string;
+                pulls_url?: string;
+                milestones_url?: string;
+                notifications_url?: string;
+                labels_url?: string;
+                releases_url?: string;
+                deployments_url?: string;
+                /** Format: date-time */
+                created_at?: string | null;
+                /** Format: date-time */
+                updated_at?: string | null;
+                /** Format: date-time */
+                pushed_at?: string | null;
+                git_url?: string;
+                ssh_url?: string;
+                clone_url?: string;
+                svn_url?: string;
+                homepage?: string | null;
+                size?: number;
+                stargazers_count?: number;
+                watchers_count?: number;
+                language?: string | null;
+                has_issues?: boolean;
+                has_projects?: boolean;
+                has_downloads?: boolean;
+                has_wiki?: boolean;
+                has_pages?: boolean;
+                has_discussions?: boolean;
+                forks_count?: number;
+                mirror_url?: string | null;
+                archived?: boolean;
+                disabled?: boolean;
+                open_issues_count?: number;
+                license?: components["schemas"]["nullable-license-simple"];
+                allow_forking?: boolean;
+                is_template?: boolean;
+                web_commit_signoff_required?: boolean;
+                topics?: string[];
+                visibility?: string;
+                forks?: number;
+                open_issues?: number;
+                watchers?: number;
+                default_branch?: string;
+                public?: boolean;
+            };
+        };
+        /** GollumEvent */
+        "gollum-event": {
+            pages: {
+                page_name?: string | null;
+                title?: string | null;
+                summary?: string | null;
+                action?: string;
+                sha?: string;
+                html_url?: string;
+            }[];
+        };
+        /** MemberEvent */
+        "member-event": {
+            action: string;
+            member: components["schemas"]["simple-user"];
+        };
+        /** PublicEvent */
+        "public-event": Record<string, never>;
+        /** PushEvent */
+        "push-event": {
+            repository_id: number;
+            push_id: number;
+            ref: string;
+            head: string;
+            before: string;
+            size?: number;
+            distinct_size?: number;
+            commits?: {
+                sha?: string;
+                message?: string;
+                author?: {
+                    name?: string;
+                    email?: string;
+                };
+                /** Format: uri */
+                url?: string;
+                distinct?: boolean;
+            }[];
+        };
+        /** PullRequestEvent */
+        "pull-request-event": {
+            action: string;
+            number: number;
+            pull_request: components["schemas"]["pull-request"];
+            assignee?: components["schemas"]["simple-user"];
+            assignees?: components["schemas"]["simple-user"][];
+            label?: components["schemas"]["label"];
+            labels?: components["schemas"]["label"][];
+        };
+        /** PullRequestReviewCommentEvent */
+        "pull-request-review-comment-event": {
+            action: string;
+            pull_request: components["schemas"]["pull-request"];
+            comment: {
+                id: number;
+                node_id: string;
+                /** Format: uri */
+                url: string;
+                pull_request_review_id: number | null;
+                diff_hunk: string;
+                path: string;
+                position: number | null;
+                original_position: number | null;
+                subject_type?: string | null;
+                commit_id: string;
+                /** User */
+                user: {
+                    /** Format: uri */
+                    avatar_url?: string;
+                    deleted?: boolean;
+                    email?: string | null;
+                    /** Format: uri-template */
+                    events_url?: string;
+                    /** Format: uri */
+                    followers_url?: string;
+                    /** Format: uri-template */
+                    following_url?: string;
+                    /** Format: uri-template */
+                    gists_url?: string;
+                    gravatar_id?: string;
+                    /** Format: uri */
+                    html_url?: string;
+                    /** Format: int64 */
+                    id?: number;
+                    login?: string;
+                    name?: string;
+                    node_id?: string;
+                    /** Format: uri */
+                    organizations_url?: string;
+                    /** Format: uri */
+                    received_events_url?: string;
+                    /** Format: uri */
+                    repos_url?: string;
+                    site_admin?: boolean;
+                    /** Format: uri-template */
+                    starred_url?: string;
+                    /** Format: uri */
+                    subscriptions_url?: string;
+                    /** @enum {string} */
+                    type?: "Bot" | "User" | "Organization";
+                    /** Format: uri */
+                    url?: string;
+                    user_view_type?: string;
+                } | null;
+                body: string;
+                /** Format: date-time */
+                created_at: string;
+                /** Format: date-time */
+                updated_at: string;
+                /** Format: uri */
+                html_url: string;
+                /** Format: uri */
+                pull_request_url: string;
+                _links: {
+                    /** Link */
+                    html: {
+                        /** Format: uri-template */
+                        href: string;
+                    };
+                    /** Link */
+                    pull_request: {
+                        /** Format: uri-template */
+                        href: string;
+                    };
+                    /** Link */
+                    self: {
+                        /** Format: uri-template */
+                        href: string;
+                    };
+                };
+                original_commit_id: string;
+                /** Reactions */
+                reactions: {
+                    "+1"?: number;
+                    "-1"?: number;
+                    confused?: number;
+                    eyes?: number;
+                    heart?: number;
+                    hooray?: number;
+                    laugh?: number;
+                    rocket?: number;
+                    total_count?: number;
+                    /** Format: uri */
+                    url?: string;
+                };
+                in_reply_to_id?: number;
+                author_association?: string;
+                start_line?: number | null;
+                original_start_line?: number | null;
+                start_side?: string | null;
+                line?: number | null;
+                original_line?: number | null;
+                side?: string | null;
+            };
+        };
+        /** PullRequestReviewEvent */
+        "pull-request-review-event": {
+            action: string;
+            review: {
+                id?: number;
+                node_id?: string;
+                user?: components["schemas"]["nullable-simple-user"];
+                body?: string;
+                commit_id?: string;
+                submitted_at?: string | null;
+                state?: string;
+                /** Format: uri */
+                html_url?: string;
+                /** Format: uri */
+                pull_request_url?: string;
+                _links?: {
+                    html: {
+                        href: string;
+                    };
+                    pull_request: {
+                        href: string;
+                    };
+                };
+                updated_at?: string;
+                author_association?: components["schemas"]["author-association"];
+            };
+            pull_request: components["schemas"]["pull-request"];
+        };
+        /** CommitCommentEvent */
+        "commit-comment-event": {
+            comment: {
+                /** Format: uri */
+                html_url?: string;
+                /** Format: uri */
+                url?: string;
+                id?: number;
+                node_id?: string;
+                body?: string;
+                path?: string | null;
+                position?: number | null;
+                line?: number | null;
+                commit_id?: string;
+                user?: components["schemas"]["nullable-simple-user"];
+                /** Format: date-time */
+                created_at?: string;
+                /** Format: date-time */
+                updated_at?: string;
+                reactions?: components["schemas"]["reaction-rollup"];
+                author_association?: components["schemas"]["author-association"];
+            };
+        };
+        /** ReleaseEvent */
+        "release-event": {
+            action: string;
+            release: components["schemas"]["release"] & {
+                is_short_description_html_truncated?: boolean;
+                short_description_html?: string;
+            };
+        };
+        /** WatchEvent */
+        "watch-event": {
+            action: string;
+        };
     };
     responses: {
         /** @description Validation failed, or the endpoint has been spammed. */
@@ -102440,7 +102893,7 @@ export interface operations {
                     state: components["schemas"]["code-scanning-alert-set-state"];
                     dismissed_reason?: components["schemas"]["code-scanning-alert-dismissed-reason"];
                     dismissed_comment?: components["schemas"]["code-scanning-alert-dismissed-comment"];
-                };
+                } | unknown;
             };
         };
         responses: {
@@ -111451,10 +111904,10 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
-                    state: components["schemas"]["secret-scanning-alert-state"];
+                    state?: components["schemas"]["secret-scanning-alert-state"];
                     resolution?: components["schemas"]["secret-scanning-alert-resolution"];
                     resolution_comment?: components["schemas"]["secret-scanning-alert-resolution-comment"];
-                };
+                } | unknown;
             };
         };
         responses: {
