@@ -4,6 +4,7 @@ import {
 	db,
 	logger,
 	mantleClient,
+	redisClient,
 	shopifyConfig,
 	shopifySessionTable,
 	TEmailOTPUserAccountData,
@@ -40,6 +41,12 @@ export async function createShopifySession(session: TShopifySessionDto): Promise
 
 		return session;
 	});
+
+	// Invalidate cache - delete session and shop list to force fresh read on next access
+	// Note: We don't cache here because the session DTO might be incomplete (e.g., mantleApiToken
+	// is computed during creation and stored in DB but not in the input DTO)
+	await redisClient.deleteShopifySession(session.id);
+	await redisClient.deleteShopifySessionsByShop(session.shop);
 }
 
 async function upsertSession(tx: TPgTransaction, session: TShopifySessionDto): Promise<void> {

@@ -108,5 +108,4 @@ export interface TStatelessSessionConfig<GData extends Record<string, any>> {
 }
 
 export interface TValidateStatelessSessionOptions
-	extends TValidateStatelessTokenOptions,
-		TValidateSessionOptions {}
+	extends TValidateStatelessTokenOptions, TValidateSessionOptions {}

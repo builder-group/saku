@@ -65,8 +65,7 @@ export const AccordionSection = React.forwardRef<HTMLDivElement, TAccordionSecti
 AccordionSection.displayName = 'AccordionSection';
 
 export interface TAccordionSectionProps
-	extends React.HTMLAttributes<HTMLDivElement>,
-		VariantProps<typeof accordionVariants> {
+	extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof accordionVariants> {
 	title: string;
 	open?: boolean;
 	defaultOpen?: boolean;

@@ -2,5 +2,6 @@ export * from './auth';
 export * from './email';
 export * from './gql';
 export * from './mantle';
+export * from './redis';
 export * from './shopify';
 export * from './site';

@@ -1,8 +1,14 @@
 import { eq } from 'drizzle-orm';
-import { db, shopifySessionTable } from '@/environment/db';
+import { db, redisClient, shopifySessionTable } from '@/environment';
 import type { TShopifySessionDto } from '../schema';
+import { mapCachedToDto, mapDtoToCached } from './session-mapper';
 
 export async function getShopifySessionsByShop(shopId: string): Promise<TShopifySessionDto[]> {
+	const cached = await redisClient.getShopifySessionsByShop(shopId);
+	if (cached != null) {
+		return cached.map(mapCachedToDto);
+	}
+
 	const sessions = await db
 		.select()
 		.from(shopifySessionTable)
@@ -15,7 +21,7 @@ export async function getShopifySessionsByShop(shopId: string): Promise<TShopify
 	const offlineSession = sessions.find((s) => !s.isOnline);
 	const offlineMantleApiToken = offlineSession?.sessionData?.mantleApiToken ?? null;
 
-	return sessions.map((session) => {
+	const sessionsDto = sessions.map((session) => {
 		// Use offline session's mantleApiToken for online sessions
 		const mantleApiToken =
 			session.isOnline && session.sessionData?.mantleApiToken == null
@@ -52,4 +58,8 @@ export async function getShopifySessionsByShop(shopId: string): Promise<TShopify
 					: null
 		};
 	});
+
+	await redisClient.setShopifySessionsByShop(shopId, sessionsDto.map(mapDtoToCached));
+
+	return sessionsDto;
 }

@@ -20,8 +20,9 @@ export type TNodeMetadata<GNode extends TFlatNode> = {
 	  }
 );
 
-export interface TResolvedNodeProps<GResolvedNode extends TResolvedNode>
-	extends React.HTMLProps<HTMLDivElement> {
+export interface TResolvedNodeProps<
+	GResolvedNode extends TResolvedNode
+> extends React.HTMLProps<HTMLDivElement> {
 	cx: TPageContext;
 	node: GResolvedNode;
 	state?: 'loading' | 'error' | 'success';

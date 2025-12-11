@@ -95,8 +95,10 @@ export const FormSection: React.FC<TFormSectionProps> = (props) => {
 	);
 };
 
-interface TFormSectionProps
-	extends Omit<TextFieldProps, 'label' | 'value' | 'onChange' | 'labelHidden' | 'autoComplete'> {
+interface TFormSectionProps extends Omit<
+	TextFieldProps,
+	'label' | 'value' | 'onChange' | 'labelHidden' | 'autoComplete'
+> {
 	title: string;
 	description: string;
 	inputValue: string;

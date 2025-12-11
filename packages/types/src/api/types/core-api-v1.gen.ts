@@ -2759,10 +2759,7 @@ export interface operations {
                      *     ]
                      */
                     current: string[];
-                    /**
-                     * Format: date-time
-                     * @example 2024-06-25T00:00:00.000Z
-                     */
+                    /** @example 2024-06-25T00:00:00.000Z */
                     updated_at: string;
                 };
             };

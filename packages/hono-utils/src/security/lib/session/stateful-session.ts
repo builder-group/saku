@@ -40,5 +40,6 @@ export interface TStatefulSession<GData extends Record<string, any>> extends TSe
 	token: TStatefulToken<GData>;
 }
 
-export interface TStatefulSessionConfig<GData extends Record<string, any>>
-	extends TStatefulTokenConfig<GData> {}
+export interface TStatefulSessionConfig<
+	GData extends Record<string, any>
+> extends TStatefulTokenConfig<GData> {}

@@ -1,7 +1,7 @@
 import { AppError } from '@repo/hono-utils';
 import { and, desc, eq } from 'drizzle-orm';
 import { Err, Ok, type TResult } from 'tuple-result';
-import { db, shopifySessionTable } from '@/environment/db';
+import { db, redisClient, shopifySessionTable } from '@/environment';
 
 /**
  * Gets an online access token for a shop.
@@ -13,6 +13,11 @@ export async function getShopifyOnlineAccessToken(
 	options: TGetShopifyOnlineAccessTokenOptions = {}
 ): Promise<TResult<string, AppError>> {
 	const { userId } = options;
+
+	const cached = await redisClient.getShopifyOnlineAccessToken(shopId, userId);
+	if (cached != null) {
+		return Ok(cached.token);
+	}
 
 	const [session] = await db
 		.select()

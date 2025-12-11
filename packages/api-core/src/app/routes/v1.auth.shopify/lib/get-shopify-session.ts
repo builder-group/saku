@@ -1,9 +1,15 @@
 import { AppError } from '@repo/hono-utils';
 import { and, eq } from 'drizzle-orm';
-import { db, shopifySessionTable } from '@/environment/db';
+import { db, redisClient, shopifySessionTable } from '@/environment';
 import type { TShopifySessionDto } from '../schema';
+import { mapCachedToDto, mapDtoToCached } from './session-mapper';
 
 export async function getShopifySession(sessionId: string): Promise<TShopifySessionDto> {
+	const cached = await redisClient.getShopifySessionById(sessionId);
+	if (cached != null) {
+		return mapCachedToDto(cached);
+	}
+
 	const [session] = await db
 		.select()
 		.from(shopifySessionTable)
@@ -30,7 +36,7 @@ export async function getShopifySession(sessionId: string): Promise<TShopifySess
 		mantleApiToken = offlineSession?.sessionData?.mantleApiToken ?? null;
 	}
 
-	return {
+	const sessionDto: TShopifySessionDto = {
 		id: session.sessionId,
 		shop: session.shopId,
 		state: session.state,
@@ -59,4 +65,8 @@ export async function getShopifySession(sessionId: string): Promise<TShopifySess
 					}
 				: null
 	};
+
+	await redisClient.setShopifySession(mapDtoToCached(sessionDto));
+
+	return sessionDto;
 }

@@ -199,8 +199,9 @@ export const TokenTextInput = <GRefValue extends TRef<string | number> | undefin
 	);
 };
 
-export interface TTokenTextInputProps<GRefValue extends TRef<string | number> | undefined>
-	extends Omit<TextFieldProps, 'label' | 'labelHidden' | 'value' | 'onChange'> {
+export interface TTokenTextInputProps<
+	GRefValue extends TRef<string | number> | undefined
+> extends Omit<TextFieldProps, 'label' | 'labelHidden' | 'value' | 'onChange'> {
 	state: TState<GRefValue, any>;
 	mapToDisplayValue?: (value: TUnreferenceTop<GRefValue>) => TUnreferenceTop<GRefValue>;
 	mapToValue?: (displayValue: TUnreferenceTop<GRefValue>) => GRefValue;

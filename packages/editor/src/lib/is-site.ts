@@ -19,4 +19,3 @@ export function isHierarchicalSite(value: unknown): value is TSite {
 		'version' in value
 	);
 }
-

@@ -106,13 +106,17 @@ export const NotFoundResponse = ErrorResponse('Resource not found');
 export const ConflictResponse = ErrorResponse('Conflict');
 export const InternalServerErrorResponse = ErrorResponse('Internal server error');
 
-export interface TResponseConfigWithContent<GContent extends ZodContentObject>
-	extends Omit<ResponseConfig, 'content'> {
+export interface TResponseConfigWithContent<GContent extends ZodContentObject> extends Omit<
+	ResponseConfig,
+	'content'
+> {
 	content: GContent;
 }
 export type TResponseConfig = ResponseConfig;
 
-export interface TRequestBody<GContent extends ZodContentObject>
-	extends Omit<ZodRequestBody, 'content'> {
+export interface TRequestBody<GContent extends ZodContentObject> extends Omit<
+	ZodRequestBody,
+	'content'
+> {
 	content: GContent;
 }
