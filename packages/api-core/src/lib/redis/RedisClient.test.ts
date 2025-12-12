@@ -1,12 +1,23 @@
 import { Redis } from '@upstash/redis';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { RedisClient, type TCachedShopifySession, type TRedisClientConfig } from './RedisClient';
+import {
+	RedisClient,
+	type TCachedShopifySession,
+	type TCachedSiteData,
+	type TRedisClientConfig
+} from './RedisClient';
 
 const mockConfig: TRedisClientConfig = {
 	shopifySession: {
 		keys: {
 			byId: (sessionId: string) => `saku:shopify:session:${sessionId}`,
 			byShop: (shopId: string) => `saku:shopify:sessions:shop:${shopId}`
+		},
+		ttl: 5
+	},
+	site: {
+		keys: {
+			bySite: (shopId: string, siteHandle: string) => `saku:site:${shopId}:${siteHandle}`
 		},
 		ttl: 5
 	}
@@ -623,6 +634,71 @@ describe('RedisClient', () => {
 			const result = await redisClient.getShopifyOnlineAccessToken('shop.myshopify.com');
 
 			expect(result).toBeNull();
+		});
+	});
+
+	describe('getSiteCache', () => {
+		it('should return cached site data when found', async () => {
+			const cachedSite: TCachedSiteData = {
+				siteId: 'site-123',
+				siteContent: { id: 'site-123', handle: 'bio', content: {} }
+			};
+
+			mockRedis.get.mockResolvedValue(cachedSite);
+
+			const result = await redisClient.getSiteCache('shop.myshopify.com', 'bio');
+
+			expect(result).toEqual(cachedSite);
+			expect(mockRedis.get).toHaveBeenCalledWith('saku:site:shop.myshopify.com:bio');
+		});
+
+		it('should return null when site cache not found', async () => {
+			mockRedis.get.mockResolvedValue(null);
+
+			const result = await redisClient.getSiteCache('shop.myshopify.com', 'bio');
+
+			expect(result).toBeNull();
+			expect(mockRedis.get).toHaveBeenCalledWith('saku:site:shop.myshopify.com:bio');
+		});
+	});
+
+	describe('setSiteCache', () => {
+		it('should store site cache with default TTL', async () => {
+			const siteContent = { id: 'site-123', handle: 'bio', content: {} };
+
+			await redisClient.setSiteCache('shop.myshopify.com', 'bio', 'site-123', siteContent);
+
+			expect(mockRedis.set).toHaveBeenCalledWith(
+				'saku:site:shop.myshopify.com:bio',
+				{
+					siteId: 'site-123',
+					siteContent
+				},
+				{ ex: 5 }
+			);
+		});
+
+		it('should store site cache with custom TTL', async () => {
+			const siteContent = { id: 'site-123', handle: 'bio', content: {} };
+
+			await redisClient.setSiteCache('shop.myshopify.com', 'bio', 'site-123', siteContent, 10);
+
+			expect(mockRedis.set).toHaveBeenCalledWith(
+				'saku:site:shop.myshopify.com:bio',
+				{
+					siteId: 'site-123',
+					siteContent
+				},
+				{ ex: 10 }
+			);
+		});
+	});
+
+	describe('deleteSiteCache', () => {
+		it('should delete site cache', async () => {
+			await redisClient.deleteSiteCache('shop.myshopify.com', 'bio');
+
+			expect(mockRedis.del).toHaveBeenCalledWith('saku:site:shop.myshopify.com:bio');
 		});
 	});
 });

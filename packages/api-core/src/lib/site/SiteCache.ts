@@ -1,5 +1,5 @@
 import type { TFlatSite, TSite } from '@repo/editor';
-import { logger, shopifyConfig } from '@/environment';
+import { logger, redisClient, shopifyConfig } from '@/environment';
 import { deleteMetaobject, getMetaobjectByHandle, upsertMetaobject } from '@/lib';
 
 export interface SiteCache<GContent extends TFlatSite | TSite = TFlatSite> {
@@ -260,4 +260,25 @@ interface TCachedSiteData<GContent = unknown> {
 interface TMemorySiteCacheConfig {
 	ttlMs?: number;
 	maxEntries?: number;
+}
+
+export class RedisSiteCache<
+	GContent extends TFlatSite | TSite = TFlatSite
+> implements SiteCache<GContent> {
+	public async get(
+		config: TGetSiteCacheConfig
+	): Promise<{ siteId: string; siteContent: GContent } | null> {
+		const { siteHandle, shopId } = config;
+		return redisClient.getSiteCache<GContent>(shopId, siteHandle);
+	}
+
+	public async set(config: TSetSiteCacheConfig): Promise<void> {
+		const { siteHandle, siteId, siteContent, shopId } = config;
+		await redisClient.setSiteCache(shopId, siteHandle, siteId, siteContent);
+	}
+
+	public async invalidate(config: TInvalidateSiteCacheConfig): Promise<void> {
+		const { siteHandle, shopId } = config;
+		await redisClient.deleteSiteCache(shopId, siteHandle);
+	}
 }

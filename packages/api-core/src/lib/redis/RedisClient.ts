@@ -4,10 +4,12 @@ export class RedisClient {
 	private client: Redis;
 
 	private shopifySessionConfig: TRedisClientConfig['shopifySession'];
+	private siteCacheConfig: TRedisClientConfig['site'];
 
 	constructor(client: Redis, config: TRedisClientConfig) {
 		this.client = client;
 		this.shopifySessionConfig = config.shopifySession;
+		this.siteCacheConfig = config.site;
 	}
 
 	async getShopifySessionById(sessionId: string): Promise<TCachedShopifySession | null> {
@@ -167,6 +169,40 @@ export class RedisClient {
 			expiresAt: targetSession.expires
 		};
 	}
+
+	async getSiteCache<GContent = unknown>(
+		shopId: string,
+		siteHandle: string
+	): Promise<TCachedSiteData<GContent> | null> {
+		const key = this.siteCacheConfig.keys.bySite(shopId, siteHandle);
+		const cached = await this.client.get<TCachedSiteData<GContent>>(key);
+		if (cached == null) {
+			return null;
+		}
+
+		return cached;
+	}
+
+	async setSiteCache<GContent = unknown>(
+		shopId: string,
+		siteHandle: string,
+		siteId: string,
+		siteContent: GContent,
+		ttlSeconds = this.siteCacheConfig.ttl
+	): Promise<void> {
+		const key = this.siteCacheConfig.keys.bySite(shopId, siteHandle);
+		const cached: TCachedSiteData<GContent> = {
+			siteId,
+			siteContent
+		};
+
+		await this.client.set(key, cached, { ex: ttlSeconds });
+	}
+
+	async deleteSiteCache(shopId: string, siteHandle: string): Promise<void> {
+		const key = this.siteCacheConfig.keys.bySite(shopId, siteHandle);
+		await this.client.del(key);
+	}
 }
 
 export interface TRedisClientConfig {
@@ -174,6 +210,12 @@ export interface TRedisClientConfig {
 		keys: {
 			byId: (sessionId: string) => string;
 			byShop: (shopId: string) => string;
+		};
+		ttl: number;
+	};
+	site: {
+		keys: {
+			bySite: (shopId: string, siteHandle: string) => string;
 		};
 		ttl: number;
 	};
@@ -209,4 +251,9 @@ export interface TCachedShopifySession {
 		session?: string;
 		accountNumber?: number | null;
 	} | null;
+}
+
+export interface TCachedSiteData<GContent = unknown> {
+	siteId: string;
+	siteContent: GContent;
 }

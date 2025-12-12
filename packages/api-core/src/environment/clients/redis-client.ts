@@ -8,5 +8,6 @@ export const upstashRedisClient = new Redis({
 });
 
 export const redisClient = new RedisClient(upstashRedisClient, {
-	shopifySession: redisConfig.cached.shopifySession
+	shopifySession: redisConfig.cached.shopifySession,
+	site: redisConfig.cached.site
 });

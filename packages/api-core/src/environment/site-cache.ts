@@ -1,3 +1,3 @@
-import { MetaobjectSiteCache } from '@/lib';
+import { RedisSiteCache } from '@/lib';
 
-export const siteCache = new MetaobjectSiteCache();
+export const siteCache = new RedisSiteCache();
