@@ -20,14 +20,14 @@ export const redisConfig = {
 				byId: (sessionId: string) => `${CACHE_PREFIX}:shopify:session:${sessionId}`,
 				byShop: (shopId: string) => `${CACHE_PREFIX}:shopify:sessions:shop:${shopId}`
 			},
-			ttl: 12 * 60 * 60 // 12h
+			ttl: 72 * 60 * 60 // 3 days
 		},
 		site: {
 			keys: {
 				bySite: (shopId: string, siteHandle: string) =>
 					`${CACHE_PREFIX}:site:${shopId}:${siteHandle}`
 			},
-			ttl: 12 * 60 * 60 // 12h
+			ttl: 72 * 60 * 60 // 3 days
 		}
 	}
 };
