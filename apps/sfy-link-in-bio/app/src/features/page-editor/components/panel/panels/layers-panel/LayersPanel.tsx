@@ -31,7 +31,6 @@ export const LayersPanel: React.FC<TLayersPanelProps> = (props) => {
 	const isMd = useEditorBreakpoint(editor, 'md');
 	const isTouchDevice = useMediaQuery(mq.touch);
 
-	const [collapsed, setCollapsed] = React.useState(false);
 	const { nodes, nodeIds } = useCompute(editor.getRootNode(), ({ value }) => {
 		return {
 			nodes: value.children.map((nodeId) => editor.nodeMap[nodeId]).filter(notEmpty),
@@ -159,9 +158,6 @@ export const LayersPanel: React.FC<TLayersPanelProps> = (props) => {
 				minSize={sizes.minSize}
 				defaultSize={sizes.defaultSize}
 				maxSize={sizes.maxSize}
-				onResize={() => {
-					setCollapsed(panelRef.current?.isCollapsed() ?? false);
-				}}
 			>
 				<div className="flex h-full flex-col bg-white">
 					<PanelHeader editor={editor} />

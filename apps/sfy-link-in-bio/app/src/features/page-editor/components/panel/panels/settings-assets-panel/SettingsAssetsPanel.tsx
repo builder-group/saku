@@ -139,7 +139,7 @@ export const SettingsAssetsPanel: React.FC<TSettingsAssetsPanelProps> = (props) 
 								<React.Fragment key={asset.id}>
 									<div className="flex items-center gap-2 px-2">
 										<div
-											className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-blue-50"
+											className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-50"
 											style={{ fontFamily: asset.fontFamily }}
 										>
 											<Text as="span" variant="bodyMd" tone="subdued">
