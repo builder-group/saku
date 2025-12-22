@@ -29,20 +29,20 @@
 	},
 	"devDependencies": {
 		"@blgc/config": "^0.0.39",
-		"@shopify/cli": "^3.87.4",
+		"@shopify/cli": "^3.88.1",
 		"dotenv": "^17.2.3",
-		"eslint": "^9.39.1",
-		"prettier": "^3.7.3",
-		"rollup": "^4.53.3",
+		"eslint": "^9.39.2",
+		"prettier": "^3.7.4",
+		"rollup": "^4.54.0",
 		"rollup-presets": "^0.0.25",
 		"shx": "^0.4.0",
-		"tsx": "^4.20.6",
-		"turbo": "^2.6.1",
+		"tsx": "^4.21.0",
+		"turbo": "^2.7.1",
 		"typescript": "^5.9.3",
-		"vite": "^7.2.4",
-		"vitest": "^4.0.14"
+		"vite": "^7.3.0",
+		"vitest": "^4.0.16"
 	},
-	"packageManager": "pnpm@10.12.1",
+	"packageManager": "pnpm@10.26.0",
 	"engines": {
 		"node": ">=24"
 	}
