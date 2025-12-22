@@ -22,7 +22,10 @@ const ResizablePanelGroup = ({
 	...props
 }: React.ComponentProps<typeof Group>) => (
 	<Group
-		className={cn('group flex h-full w-full data-[orientation=vertical]:flex-col', className)}
+		className={cn(
+			'group/resizable flex h-full w-full data-[orientation=vertical]:flex-col',
+			className
+		)}
 		data-orientation={orientation}
 		orientation={orientation}
 		{...props}
@@ -40,7 +43,7 @@ const ResizableHandle = ({
 }) => (
 	<Separator
 		className={cn(
-			'bg-border focus-visible:ring-ring relative z-50 flex w-px items-center justify-center group-data-[orientation=vertical]:h-px group-data-[orientation=vertical]:w-full after:absolute after:inset-y-0 after:left-1/2 after:w-1 after:-translate-x-1/2 group-data-[orientation=vertical]:after:left-0 group-data-[orientation=vertical]:after:h-1 group-data-[orientation=vertical]:after:w-full group-data-[orientation=vertical]:after:translate-x-0 group-data-[orientation=vertical]:after:-translate-y-1/2 focus-visible:ring-1 focus-visible:ring-offset-1 focus-visible:outline-none group-data-[orientation=vertical]:[&>div]:rotate-90',
+			'bg-border focus-visible:ring-ring relative z-50 flex w-px items-center justify-center group-data-[orientation=vertical]/resizable:h-px group-data-[orientation=vertical]/resizable:w-full after:absolute after:inset-y-0 after:left-1/2 after:w-1 after:-translate-x-1/2 group-data-[orientation=vertical]/resizable:after:left-0 group-data-[orientation=vertical]/resizable:after:h-1 group-data-[orientation=vertical]/resizable:after:w-full group-data-[orientation=vertical]/resizable:after:translate-x-0 group-data-[orientation=vertical]/resizable:after:-translate-y-1/2 focus-visible:ring-1 focus-visible:ring-offset-1 focus-visible:outline-none group-data-[orientation=vertical]/resizable:[&>div]:rotate-90',
 			className
 		)}
 		{...props}

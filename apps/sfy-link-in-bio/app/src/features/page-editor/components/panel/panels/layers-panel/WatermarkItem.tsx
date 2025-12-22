@@ -22,7 +22,7 @@ export const WatermarkItem: React.FC<TWatermarkItemProps> = (props) => {
 				className
 			)}
 		>
-			<StampIcon className="h-5 w-5" />
+			<StampIcon className="h-5 w-5 shrink-0" />
 			<Text as="p" variant="bodyMd">
 				Watermark
 			</Text>
