@@ -2,11 +2,9 @@ import { Icon, Text } from '@shopify/polaris';
 import React from 'react';
 import { PolarisPaintBrushFlatIcon, ResizablePanel } from '@/components';
 
-export const SettingsPlaceholderPanel: React.FC<TSettingsPlaceholderPanelProps> = (props) => {
-	const { order } = props;
-
+export const SettingsPlaceholderPanel: React.FC<TSettingsPlaceholderPanelProps> = () => {
 	return (
-		<ResizablePanel id="canvas-panel" order={order} className="relative">
+		<ResizablePanel id="canvas-panel" className="relative">
 			<div className="flex h-full flex-col p-6 text-left">
 				<div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-neutral-100">
 					<Icon source={PolarisPaintBrushFlatIcon} />
@@ -25,6 +23,4 @@ export const SettingsPlaceholderPanel: React.FC<TSettingsPlaceholderPanelProps> 
 	);
 };
 
-interface TSettingsPlaceholderPanelProps {
-	order: number;
-}
+interface TSettingsPlaceholderPanelProps {}

@@ -1,5 +1,5 @@
-import React from 'react';
-import { ImperativePanelGroupHandle } from 'react-resizable-panels';
+import React, { Ref } from 'react';
+import { GroupImperativeHandle, useGroupRef } from 'react-resizable-panels';
 import { useBoundingRectObserver } from '@/hooks';
 import { getBreakpoint } from '@/lib';
 import { ResizablePanelGroup } from '../../../components';
@@ -10,7 +10,7 @@ import { EditorView } from './panel';
 export const PageEditor: React.FC<TPageEditorProps> = (props) => {
 	const { editor } = props;
 
-	const panelGroupRef = React.useRef<ImperativePanelGroupHandle>(null);
+	const panelGroupRef = useGroupRef();
 	const isMd = useEditorBreakpoint(editor, 'md');
 
 	// =========================================================================
@@ -54,8 +54,8 @@ export const PageEditor: React.FC<TPageEditorProps> = (props) => {
 	return (
 		<div ref={editor.editorRef} className="flex h-screen w-full flex-col">
 			<ResizablePanelGroup
-				ref={panelGroupRef}
-				direction={isMd ? 'horizontal' : 'vertical'}
+				groupRef={panelGroupRef as Ref<GroupImperativeHandle>}
+				orientation={isMd ? 'horizontal' : 'vertical'}
 				className="flex-1"
 				// TODO: Fix panel storage explosion issue
 				// Currently react-resizable-panels stores each unique panel combination separately.

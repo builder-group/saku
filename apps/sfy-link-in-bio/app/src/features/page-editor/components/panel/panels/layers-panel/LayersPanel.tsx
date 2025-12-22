@@ -12,8 +12,8 @@ import { restrictToParentElement } from '@dnd-kit/modifiers';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { TNodeId } from '@repo/editor';
 import { useCompute, useListener } from 'feature-react/state';
-import React from 'react';
-import { ImperativePanelHandle } from 'react-resizable-panels';
+import React, { Ref } from 'react';
+import { PanelImperativeHandle, usePanelRef } from 'react-resizable-panels';
 import { ResizableHandle, ResizablePanel } from '@/components';
 import { mq, useMediaQuery } from '@/hooks';
 import { useEditorBreakpoint } from '../../../../hooks';
@@ -26,12 +26,11 @@ import { PanelHeader } from './PanelHeader';
 import { WatermarkItem } from './WatermarkItem';
 
 export const LayersPanel: React.FC<TLayersPanelProps> = (props) => {
-	const { editor, order, withResizableHandle = false } = props;
+	const { editor, withResizableHandle = false } = props;
 
 	const isMd = useEditorBreakpoint(editor, 'md');
 	const isTouchDevice = useMediaQuery(mq.touch);
 
-	const [collapsed, setCollapsed] = React.useState(false);
 	const { nodes, nodeIds } = useCompute(editor.getRootNode(), ({ value }) => {
 		return {
 			nodes: value.children.map((nodeId) => editor.nodeMap[nodeId]).filter(notEmpty),
@@ -41,7 +40,7 @@ export const LayersPanel: React.FC<TLayersPanelProps> = (props) => {
 	const watermarkVisible = useCompute(editor.getRootNode(), ({ value }) => {
 		return value.watermarkVisible;
 	});
-	const panelRef = React.useRef<ImperativePanelHandle>(null);
+	const panelRef = usePanelRef();
 
 	// https://docs.dndkit.com/presets/sortable
 	const sensors = useSensors(
@@ -62,7 +61,7 @@ export const LayersPanel: React.FC<TLayersPanelProps> = (props) => {
 			// Desktop (horizontal layout): Resizable based on width
 			if (isMd) {
 				const width = rect.right - rect.left;
-				const toPercent = (pixels: number) => (pixels / width) * 100;
+				const toPercent = (pixels: number) => `${(pixels / width) * 100}%`;
 				return {
 					collapsedSize: undefined,
 					minSize: toPercent(150),
@@ -73,7 +72,7 @@ export const LayersPanel: React.FC<TLayersPanelProps> = (props) => {
 
 			// Mobile (vertical layout): Resizable based on height
 			const height = rect.bottom - rect.top - MobileNavPanel.height;
-			const toPercent = (pixels: number) => (pixels / height) * 100;
+			const toPercent = (pixels: number) => `${(pixels / height) * 100}%`;
 			return {
 				collapsedSize: toPercent(47),
 				minSize: toPercent(120),
@@ -152,16 +151,13 @@ export const LayersPanel: React.FC<TLayersPanelProps> = (props) => {
 		<>
 			{withResizableHandle && <ResizableHandle className="bg-neutral-200" withHandle={!isMd} />}
 			<ResizablePanel
-				ref={panelRef}
+				panelRef={panelRef as Ref<PanelImperativeHandle>}
 				id="layers-panel"
-				order={order}
 				collapsible={sizes.collapsedSize != null}
 				collapsedSize={sizes.collapsedSize}
 				minSize={sizes.minSize}
 				defaultSize={sizes.defaultSize}
 				maxSize={sizes.maxSize}
-				onCollapse={() => setCollapsed(true)}
-				onExpand={() => setCollapsed(false)}
 			>
 				<div className="flex h-full flex-col bg-white">
 					<PanelHeader editor={editor} />
@@ -198,6 +194,5 @@ export const LayersPanel: React.FC<TLayersPanelProps> = (props) => {
 
 interface TLayersPanelProps {
 	editor: TPageEditor;
-	order: number;
 	withResizableHandle?: boolean;
 }

@@ -26,7 +26,7 @@ export const ResolvedHeroBundle = React.forwardRef<HTMLDivElement, TResolvedHero
 				}}
 			>
 				{/* Hero Image Background */}
-				{content.avatar != null && (
+				{content.avatar != null ? (
 					<img
 						src={content.avatar.src}
 						alt={content.title}
@@ -38,6 +38,16 @@ export const ResolvedHeroBundle = React.forwardRef<HTMLDivElement, TResolvedHero
 							WebkitMask: fadeGradient
 						}}
 					/>
+				) : (
+					<div
+						className="flex aspect-square w-full items-center justify-center bg-neutral-200 text-6xl font-semibold text-gray-500"
+						style={{
+							mask: fadeGradient,
+							WebkitMask: fadeGradient
+						}}
+					>
+						{content.title.charAt(0).toUpperCase()}
+					</div>
 				)}
 
 				{/* Content Container */}

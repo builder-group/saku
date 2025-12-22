@@ -9,7 +9,7 @@ import { PanelHeader } from '../../PanelHeader';
 import { Placeholder } from './Placeholder';
 
 export const SettingsIntegrationsPanel: React.FC<TSettingsIntegrationsPanelProps> = (props) => {
-	const { editor, order } = props;
+	const { editor } = props;
 
 	const isMd = useEditorBreakpoint(editor, 'md');
 
@@ -49,7 +49,7 @@ export const SettingsIntegrationsPanel: React.FC<TSettingsIntegrationsPanelProps
 			// Desktop (horizontal layout): Resizable based on width
 			if (isMd) {
 				const width = rect.right - rect.left;
-				const toPercent = (pixels: number) => (pixels / width) * 100;
+				const toPercent = (pixels: number) => `${(pixels / width) * 100}%`;
 				return {
 					minSize: toPercent(300),
 					defaultSize: toPercent(405),
@@ -81,7 +81,6 @@ export const SettingsIntegrationsPanel: React.FC<TSettingsIntegrationsPanelProps
 	return (
 		<ResizablePanel
 			id="settings-integrations-panel"
-			order={order}
 			minSize={sizes.minSize}
 			defaultSize={sizes.defaultSize}
 			maxSize={sizes.maxSize}
@@ -135,5 +134,4 @@ export const SettingsIntegrationsPanel: React.FC<TSettingsIntegrationsPanelProps
 
 interface TSettingsIntegrationsPanelProps {
 	editor: TPageEditor;
-	order: number;
 }

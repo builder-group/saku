@@ -8,7 +8,7 @@ import { PanelHeader } from '../../PanelHeader';
 import { CopyIdSection, DeleteSiteSection, FormSection } from './sections';
 
 export const SettingsGeneralPanel: React.FC<TSettingsGeneralPanelProps> = (props) => {
-	const { editor, order } = props;
+	const { editor } = props;
 
 	const isMd = useEditorBreakpoint(editor, 'md');
 	const displayName = useFeatureState(editor.site.displayName);
@@ -22,7 +22,7 @@ export const SettingsGeneralPanel: React.FC<TSettingsGeneralPanelProps> = (props
 			// Desktop (horizontal layout): Resizable based on width
 			if (isMd) {
 				const width = rect.right - rect.left;
-				const toPercent = (pixels: number) => (pixels / width) * 100;
+				const toPercent = (pixels: number) => `${(pixels / width) * 100}%`;
 				return {
 					minSize: toPercent(405)
 				};
@@ -64,12 +64,7 @@ export const SettingsGeneralPanel: React.FC<TSettingsGeneralPanelProps> = (props
 	// =========================================================================
 
 	return (
-		<ResizablePanel
-			id="settings-general-panel"
-			order={order}
-			minSize={sizes.minSize}
-			className="relative"
-		>
+		<ResizablePanel id="settings-general-panel" minSize={sizes.minSize} className="relative">
 			<div className="flex h-full flex-col overflow-y-auto bg-white">
 				<PanelHeader>
 					<Text as="h2" variant="headingMd">
@@ -118,5 +113,4 @@ export const SettingsGeneralPanel: React.FC<TSettingsGeneralPanelProps> = (props
 
 interface TSettingsGeneralPanelProps {
 	editor: TPageEditor;
-	order: number;
 }

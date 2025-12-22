@@ -9,7 +9,7 @@ import { PanelHeader } from '../../PanelHeader';
 import { AdvancedTab, CustomizeTab, getTabs, ThemeTab } from './tabs';
 
 export const SettingsDesignPanel: React.FC<TSettingsDesignPanelProps> = (props) => {
-	const { editor, order } = props;
+	const { editor } = props;
 
 	const isMd = useEditorBreakpoint(editor, 'md');
 	const tabIndex = useFeatureState(editor.activeDesignSettingsTab);
@@ -24,7 +24,7 @@ export const SettingsDesignPanel: React.FC<TSettingsDesignPanelProps> = (props) 
 			// Desktop (horizontal layout): Resizable based on width
 			if (isMd) {
 				const width = rect.right - rect.left;
-				const toPercent = (pixels: number) => (pixels / width) * 100;
+				const toPercent = (pixels: number) => `${(pixels / width) * 100}%`;
 				return {
 					minSize: toPercent(300),
 					defaultSize: toPercent(405),
@@ -67,7 +67,6 @@ export const SettingsDesignPanel: React.FC<TSettingsDesignPanelProps> = (props) 
 	return (
 		<ResizablePanel
 			id="settings-design-panel"
-			order={order}
 			minSize={sizes.minSize}
 			defaultSize={sizes.defaultSize}
 			maxSize={sizes.maxSize}
@@ -91,5 +90,4 @@ export const SettingsDesignPanel: React.FC<TSettingsDesignPanelProps> = (props) 
 
 interface TSettingsDesignPanelProps {
 	editor: TPageEditor;
-	order: number;
 }

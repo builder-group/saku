@@ -3,12 +3,11 @@ import { ResizablePanel } from '@/components';
 import { TPageEditor } from '../../../../lib';
 
 export const AssetDetailsPanel: React.FC<TAssetDetailsPanelProps> = (props) => {
-	const { editor, order } = props;
+	const { editor } = props;
 
-	return <ResizablePanel id="asset-details-panel" order={order} className="bg-white" />;
+	return <ResizablePanel id="asset-details-panel" className="bg-white" />;
 };
 
 interface TAssetDetailsPanelProps {
 	editor: TPageEditor;
-	order: number;
 }

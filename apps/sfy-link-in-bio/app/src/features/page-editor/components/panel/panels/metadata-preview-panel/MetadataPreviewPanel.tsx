@@ -10,7 +10,7 @@ import { DefaultOGPreview, FacebookOGPreview, LinkedInOGPreview, XOGPreview } fr
 import { tabs } from './tabs';
 
 export const MetadataPreviewPanel: React.FC<TMetadataPreviewPanelProps> = (props) => {
-	const { editor, order } = props;
+	const { editor } = props;
 
 	const [tabIndex, setTabIndex] = React.useState(0);
 
@@ -64,7 +64,7 @@ export const MetadataPreviewPanel: React.FC<TMetadataPreviewPanelProps> = (props
 	}, [metadata, tabIndex, hostname]);
 
 	return (
-		<ResizablePanel id="metadata-preview-panel" order={order} className="relative">
+		<ResizablePanel id="metadata-preview-panel" className="relative">
 			<div className="flex h-full min-w-96 flex-col bg-white">
 				<PanelHeader className="justify-between">
 					{/* Offset 8px Tab padding which can't be removed */}
@@ -83,5 +83,4 @@ export const MetadataPreviewPanel: React.FC<TMetadataPreviewPanelProps> = (props
 
 interface TMetadataPreviewPanelProps {
 	editor: TPageEditor;
-	order: number;
 }

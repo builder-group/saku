@@ -73,7 +73,7 @@ export async function uploadSiteAssets(
 				uploadTarget.parameters.forEach((param) => {
 					formData.append(param.name, param.value);
 				});
-				formData.append('file', new Blob([assetBinary]));
+				formData.append('file', new Blob([new Uint8Array(assetBinary)]));
 
 				const [isUploadOk, uploadErr] = await fetchClient.post(uploadTarget.url, formData, {
 					parseAs: 'text'

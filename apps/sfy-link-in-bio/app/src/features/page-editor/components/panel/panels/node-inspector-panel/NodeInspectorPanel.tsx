@@ -9,7 +9,7 @@ import { Placeholder } from './Placeholder';
 import { AnalyticsTab, ContentTab, StyleTab, tabs } from './tabs';
 
 export const NodeInspectorPanel: React.FC<TNodeInspectorPanelProps> = (props) => {
-	const { editor, order, withResizableHandle = false } = props;
+	const { editor, withResizableHandle = false } = props;
 
 	const isMd = useEditorBreakpoint(editor, 'md');
 	const [tabIndex, setTabIndex] = React.useState(0);
@@ -32,7 +32,7 @@ export const NodeInspectorPanel: React.FC<TNodeInspectorPanelProps> = (props) =>
 			// Desktop (horizontal layout): Resizable based on width
 			if (isMd) {
 				const width = rect.right - rect.left;
-				const toPercent = (pixels: number) => (pixels / width) * 100;
+				const toPercent = (pixels: number) => `${(pixels / width) * 100}%`;
 				return {
 					minSize: toPercent(300),
 					defaultSize: toPercent(375),
@@ -42,7 +42,7 @@ export const NodeInspectorPanel: React.FC<TNodeInspectorPanelProps> = (props) =>
 
 			// Mobile (vertical layout): Resizable based on height
 			const height = rect.bottom - rect.top;
-			const toPercent = (pixels: number) => (pixels / height) * 100;
+			const toPercent = (pixels: number) => `${(pixels / height) * 100}%`;
 			return {
 				minSize: toPercent(45),
 				defaultSize: toPercent(450),
@@ -85,7 +85,6 @@ export const NodeInspectorPanel: React.FC<TNodeInspectorPanelProps> = (props) =>
 			{withResizableHandle && <ResizableHandle className="bg-neutral-200" withHandle={!isMd} />}
 			<ResizablePanel
 				id="node-inspector-panel"
-				order={order}
 				minSize={sizes.minSize}
 				defaultSize={sizes.defaultSize}
 				maxSize={sizes.maxSize}
@@ -126,6 +125,5 @@ export const NodeInspectorPanel: React.FC<TNodeInspectorPanelProps> = (props) =>
 
 interface TNodeInspectorPanelProps {
 	editor: TPageEditor;
-	order: number;
 	withResizableHandle?: boolean;
 }

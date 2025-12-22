@@ -9,31 +9,29 @@ import { DesignView } from './DesignView';
 import { PreviewView } from './PreviewView';
 import { SettingsView } from './SettingsView';
 
-const View: React.FC<TViewProps> & { panelCount: number } = (props) => {
-	const { editor, order } = props;
+const View: React.FC<TViewProps> = (props) => {
+	const { editor } = props;
 
 	const activeView = useFeatureState(editor.activeView);
 
 	switch (activeView) {
 		case 'layers':
-			return <DesignView editor={editor} order={order} />;
+			return <DesignView editor={editor} />;
 		case 'preview':
-			return <PreviewView editor={editor} order={order} />;
+			return <PreviewView editor={editor} />;
 		case 'settings':
-			return <SettingsView editor={editor} order={order} />;
+			return <SettingsView editor={editor} />;
 		default:
 			return null;
 	}
 };
-View.panelCount = Math.max(DesignView.panelCount, PreviewView.panelCount, SettingsView.panelCount);
 
 interface TViewProps {
 	editor: TPageEditor;
-	order: number;
 }
 
-export const EditorView: React.FC<TEditorViewProps> & { panelCount: number } = (props) => {
-	const { editor, order = 1 } = props;
+export const EditorView: React.FC<TEditorViewProps> = (props) => {
+	const { editor } = props;
 
 	const isReady = useFeatureState(editor.isReady);
 	const isMd = useEditorBreakpoint(editor, 'md');
@@ -50,24 +48,22 @@ export const EditorView: React.FC<TEditorViewProps> & { panelCount: number } = (
 	if (isMd) {
 		return (
 			<>
-				<NavPanel editor={editor} order={order} />
+				<NavPanel editor={editor} />
 				<ResizableHandle className="bg-neutral-200" />
-				<View editor={editor} order={order + 1} />
+				<View editor={editor} />
 			</>
 		);
 	}
 
 	return (
 		<>
-			<View editor={editor} order={order} />
+			<View editor={editor} />
 			<ResizableHandle className="bg-neutral-200" />
 			<MobileNavPanel editor={editor} />
 		</>
 	);
 };
-EditorView.panelCount = 1 + View.panelCount;
 
 interface TEditorViewProps {
 	editor: TPageEditor;
-	order?: number;
 }

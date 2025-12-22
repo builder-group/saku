@@ -16,10 +16,6 @@ const shopifyApp: ReturnType<typeof createShopifyApp> = createShopifyApp({
 	sessionStorage: new ApiSessionStorage(),
 	distribution: AppDistribution.AppStore,
 	useOnlineTokens: true,
-	future: {
-		unstable_newEmbeddedAuthStrategy: true,
-		removeRest: true
-	},
 	// hooks: {
 	// 	afterAuth: async ({ session }) => {
 	// 		shopifyApp.registerWebhooks({ session });

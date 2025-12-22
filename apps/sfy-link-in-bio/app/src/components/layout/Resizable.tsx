@@ -12,42 +12,48 @@
  */
 'use client';
 
-import { GripVertical } from 'lucide-react';
-import * as ResizablePrimitive from 'react-resizable-panels';
+import { Group, Panel, Separator } from 'react-resizable-panels';
+import { PolarisDragHandleIcon } from '@/components';
 import { cn } from '@/lib';
 
 const ResizablePanelGroup = ({
 	className,
+	orientation,
 	...props
-}: React.ComponentProps<typeof ResizablePrimitive.PanelGroup>) => (
-	<ResizablePrimitive.PanelGroup
-		className={cn('flex h-full w-full data-[panel-group-direction=vertical]:flex-col', className)}
+}: React.ComponentProps<typeof Group>) => (
+	<Group
+		className={cn(
+			'group/resizable flex h-full w-full data-[orientation=vertical]:flex-col',
+			className
+		)}
+		data-orientation={orientation}
+		orientation={orientation}
 		{...props}
 	/>
 );
 
-const ResizablePanel = ResizablePrimitive.Panel;
+const ResizablePanel = Panel;
 
 const ResizableHandle = ({
 	withHandle,
 	className,
 	...props
-}: React.ComponentProps<typeof ResizablePrimitive.PanelResizeHandle> & {
+}: React.ComponentProps<typeof Separator> & {
 	withHandle?: boolean;
 }) => (
-	<ResizablePrimitive.PanelResizeHandle
+	<Separator
 		className={cn(
-			'bg-border focus-visible:ring-ring relative z-50 flex w-px items-center justify-center after:absolute after:inset-y-0 after:left-1/2 after:w-1 after:-translate-x-1/2 focus-visible:ring-1 focus-visible:ring-offset-1 focus-visible:outline-none data-[panel-group-direction=vertical]:h-px data-[panel-group-direction=vertical]:w-full data-[panel-group-direction=vertical]:after:left-0 data-[panel-group-direction=vertical]:after:h-1 data-[panel-group-direction=vertical]:after:w-full data-[panel-group-direction=vertical]:after:translate-x-0 data-[panel-group-direction=vertical]:after:-translate-y-1/2 [&[data-panel-group-direction=vertical]>div]:rotate-90',
+			'bg-border focus-visible:ring-ring relative z-50 flex w-px items-center justify-center group-data-[orientation=vertical]/resizable:h-px group-data-[orientation=vertical]/resizable:w-full after:absolute after:inset-y-0 after:left-1/2 after:w-1 after:-translate-x-1/2 group-data-[orientation=vertical]/resizable:after:left-0 group-data-[orientation=vertical]/resizable:after:h-1 group-data-[orientation=vertical]/resizable:after:w-full group-data-[orientation=vertical]/resizable:after:translate-x-0 group-data-[orientation=vertical]/resizable:after:-translate-y-1/2 focus-visible:ring-1 focus-visible:ring-offset-1 focus-visible:outline-none group-data-[orientation=vertical]/resizable:[&>div]:rotate-90',
 			className
 		)}
 		{...props}
 	>
 		{withHandle && (
 			<div className="z-10 flex h-6 w-4 items-center justify-center rounded-sm bg-inherit md:h-4 md:w-3">
-				<GripVertical className="h-3 w-3 md:h-2.5 md:w-2.5" />
+				<PolarisDragHandleIcon className="h-3 w-3 md:h-2.5 md:w-2.5" />
 			</div>
 		)}
-	</ResizablePrimitive.PanelResizeHandle>
+	</Separator>
 );
 
 export { ResizableHandle, ResizablePanel, ResizablePanelGroup };

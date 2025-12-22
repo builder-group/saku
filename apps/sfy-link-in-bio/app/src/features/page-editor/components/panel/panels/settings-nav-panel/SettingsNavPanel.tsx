@@ -1,7 +1,7 @@
 import { Button, Icon, Text } from '@shopify/polaris';
 import { useCompute, useFeatureState } from 'feature-react/state';
-import React from 'react';
-import { ImperativePanelHandle } from 'react-resizable-panels';
+import React, { Ref } from 'react';
+import { PanelImperativeHandle, usePanelRef } from 'react-resizable-panels';
 import {
 	PolarisChevronDownIcon,
 	PolarisChevronRightIcon,
@@ -20,12 +20,12 @@ import { PanelHeader } from '../../PanelHeader';
 import { MobileNavPanel } from '../nav-panel';
 
 export const SettingsNavPanel: React.FC<TSettingsNavPanelProps> = (props) => {
-	const { editor, order } = props;
+	const { editor } = props;
 
 	const isMd = useEditorBreakpoint(editor, 'md');
 	const [collapsed, setCollapsed] = React.useState(false);
 	const selectedSection = useFeatureState(editor.activeSettingsSection);
-	const panelRef = React.useRef<ImperativePanelHandle>(null);
+	const panelRef = usePanelRef();
 
 	const filteredSettingsMetadata = React.useMemo(() => {
 		return settingsMetadata.filter((section) => {
@@ -44,7 +44,7 @@ export const SettingsNavPanel: React.FC<TSettingsNavPanelProps> = (props) => {
 			// Desktop (horizontal layout): Resizable based on width
 			if (isMd) {
 				const width = rect.right - rect.left;
-				const toPercent = (pixels: number) => (pixels / width) * 100;
+				const toPercent = (pixels: number) => `${(pixels / width) * 100}%`;
 				return {
 					collapsedSize: undefined,
 					minSize: toPercent(150),
@@ -55,7 +55,7 @@ export const SettingsNavPanel: React.FC<TSettingsNavPanelProps> = (props) => {
 
 			// Mobile (vertical layout): Resizable based on height
 			const height = rect.bottom - rect.top - MobileNavPanel.height;
-			const toPercent = (pixels: number) => (pixels / height) * 100;
+			const toPercent = (pixels: number) => `${(pixels / height) * 100}%`;
 			return {
 				collapsedSize: toPercent(47),
 				minSize: toPercent(150),
@@ -88,19 +88,17 @@ export const SettingsNavPanel: React.FC<TSettingsNavPanelProps> = (props) => {
 	);
 
 	const handleToggleCollapse = React.useCallback(() => {
-		// TODO: Make programmatic panel collapse/expand work reliably, the setTimeout workaround seems to work for now
-		// https://github.com/bvaughn/react-resizable-panels/issues/515#issuecomment-3285269376
 		const panel = panelRef.current;
-		if (collapsed) {
-			setTimeout(() => {
-				panel?.expand();
-			});
-		} else {
-			setTimeout(() => {
-				panel?.collapse();
-			});
+		if (panel == null) {
+			return;
 		}
-	}, [collapsed]);
+
+		if (panel.isCollapsed()) {
+			panel.expand();
+		} else {
+			panel.collapse();
+		}
+	}, [panelRef]);
 
 	// =========================================================================
 	// UI
@@ -108,16 +106,16 @@ export const SettingsNavPanel: React.FC<TSettingsNavPanelProps> = (props) => {
 
 	return (
 		<ResizablePanel
-			ref={panelRef}
+			panelRef={panelRef as Ref<PanelImperativeHandle>}
 			id="settings-nav-panel"
-			order={order}
 			collapsible={sizes.collapsedSize != null}
 			collapsedSize={sizes.collapsedSize}
 			minSize={sizes.minSize}
 			defaultSize={sizes.defaultSize}
 			maxSize={sizes.maxSize}
-			onCollapse={() => setCollapsed(true)}
-			onExpand={() => setCollapsed(false)}
+			onResize={() => {
+				setCollapsed(panelRef.current?.isCollapsed() ?? false);
+			}}
 		>
 			<div className="flex h-full flex-col bg-white">
 				<PanelHeader>
@@ -165,5 +163,4 @@ export const SettingsNavPanel: React.FC<TSettingsNavPanelProps> = (props) => {
 
 interface TSettingsNavPanelProps {
 	editor: TPageEditor;
-	order: number;
 }

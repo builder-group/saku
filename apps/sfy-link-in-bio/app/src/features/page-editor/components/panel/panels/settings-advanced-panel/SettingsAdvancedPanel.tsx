@@ -8,7 +8,7 @@ import { PanelHeader } from '../../PanelHeader';
 import { OverrideWithExternalSiteSection } from './sections';
 
 export const SettingsAdvancedPanel: React.FC<TSettingsAdvancedPanelProps> = (props) => {
-	const { editor, order } = props;
+	const { editor } = props;
 
 	const isMd = useEditorBreakpoint(editor, 'md');
 
@@ -20,7 +20,7 @@ export const SettingsAdvancedPanel: React.FC<TSettingsAdvancedPanelProps> = (pro
 			// Desktop (horizontal layout): Resizable based on width
 			if (isMd) {
 				const width = rect.right - rect.left;
-				const toPercent = (pixels: number) => (pixels / width) * 100;
+				const toPercent = (pixels: number) => `${(pixels / width) * 100}%`;
 				return {
 					minSize: toPercent(405)
 				};
@@ -44,12 +44,7 @@ export const SettingsAdvancedPanel: React.FC<TSettingsAdvancedPanelProps> = (pro
 	// =========================================================================
 
 	return (
-		<ResizablePanel
-			id="settings-advanced-panel"
-			order={order}
-			minSize={sizes.minSize}
-			className="relative"
-		>
+		<ResizablePanel id="settings-advanced-panel" minSize={sizes.minSize} className="relative">
 			<div className="flex h-full flex-col overflow-y-auto bg-white">
 				<PanelHeader>
 					<Text as="h2" variant="headingMd">
@@ -74,5 +69,4 @@ export const SettingsAdvancedPanel: React.FC<TSettingsAdvancedPanelProps> = (pro
 
 interface TSettingsAdvancedPanelProps {
 	editor: TPageEditor;
-	order: number;
 }
