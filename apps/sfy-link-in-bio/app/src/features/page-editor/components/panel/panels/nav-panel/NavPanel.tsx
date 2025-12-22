@@ -1,16 +1,18 @@
 import { Icon, Text } from '@shopify/polaris';
 import { useCompute, useFeatureState } from 'feature-react/state';
-import React from 'react';
+import React, { Ref } from 'react';
+import { PanelImperativeHandle, usePanelRef } from 'react-resizable-panels';
 import { ResizablePanel } from '@/components';
 import { cn } from '@/lib';
 import { TViewType, viewMetadata } from '../../../../environment';
 import { TPageEditor } from '../../../../lib';
 
 export const NavPanel: React.FC<TNavPanelProps> = (props) => {
-	const { editor, order } = props;
+	const { editor } = props;
 
 	const [collapsed, setCollapsed] = React.useState(true);
 	const activeView = useFeatureState(editor.activeView);
+	const panelRef = usePanelRef();
 
 	// TODO: Figure out better solution
 	// https://github.com/bvaughn/react-resizable-panels/issues/46
@@ -18,7 +20,7 @@ export const NavPanel: React.FC<TNavPanelProps> = (props) => {
 		editor.boundingRect,
 		({ value: rect }) => {
 			const width = rect.right - rect.left;
-			const toPercent = (pixels: number) => (pixels / width) * 100;
+			const toPercent = (pixels: number) => `${(pixels / width) * 100}%`;
 			return {
 				collapsedSize: toPercent(60),
 				minSize: toPercent(120),
@@ -56,15 +58,16 @@ export const NavPanel: React.FC<TNavPanelProps> = (props) => {
 
 	return (
 		<ResizablePanel
+			panelRef={panelRef as Ref<PanelImperativeHandle>}
 			id="nav-panel"
-			order={order}
 			collapsible={true}
 			collapsedSize={sizes.collapsedSize}
 			minSize={sizes.minSize}
 			defaultSize={sizes.defaultSize}
 			maxSize={sizes.maxSize}
-			onCollapse={() => setCollapsed(true)}
-			onExpand={() => setCollapsed(false)}
+			onResize={() => {
+				setCollapsed(panelRef.current?.isCollapsed() ?? false);
+			}}
 		>
 			<div className="flex h-full flex-col bg-white">
 				<nav className="flex flex-col gap-1 p-2">
@@ -97,5 +100,4 @@ export const NavPanel: React.FC<TNavPanelProps> = (props) => {
 
 interface TNavPanelProps {
 	editor: TPageEditor;
-	order: number;
 }

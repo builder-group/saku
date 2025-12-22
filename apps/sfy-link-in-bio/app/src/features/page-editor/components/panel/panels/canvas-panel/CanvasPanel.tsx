@@ -10,7 +10,7 @@ import { NodeCanvas } from '../../../node';
 import { PanelHeader } from './PanelHeader';
 
 export const CanvasPanel: React.FC<TCanvasPanelProps> = (props) => {
-	const { editor, order } = props;
+	const { editor } = props;
 
 	const isMd = useEditorBreakpoint(editor, 'md');
 	const [stylesLoaded, setStylesLoaded] = React.useState(false);
@@ -40,7 +40,7 @@ export const CanvasPanel: React.FC<TCanvasPanelProps> = (props) => {
 			// Desktop (horizontal layout): Resizable based on width
 			if (isMd) {
 				const width = rect.right - rect.left;
-				const toPercent = (pixels: number) => (pixels / width) * 100;
+				const toPercent = (pixels: number) => `${(pixels / width) * 100}%`;
 				return {
 					minSize: toPercent(405)
 				};
@@ -60,7 +60,7 @@ export const CanvasPanel: React.FC<TCanvasPanelProps> = (props) => {
 	);
 
 	return (
-		<ResizablePanel id="canvas-panel" order={order} minSize={sizes.minSize} className="relative">
+		<ResizablePanel id="canvas-panel" minSize={sizes.minSize} className="relative">
 			<PanelHeader editor={editor} />
 
 			{!stylesLoaded && (
@@ -88,5 +88,4 @@ export const CanvasPanel: React.FC<TCanvasPanelProps> = (props) => {
 
 interface TCanvasPanelProps {
 	editor: TPageEditor;
-	order: number;
 }

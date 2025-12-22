@@ -4,10 +4,8 @@ import { useEditorBreakpoint } from '../../../hooks';
 import { TPageEditor } from '../../../lib';
 import { CanvasPanel, SettingsDesignPanel } from '../panels';
 
-export const SettingsDesignView: React.FC<TSettingsDesignViewProps> & { panelCount: number } = (
-	props
-) => {
-	const { editor, order } = props;
+export const SettingsDesignView: React.FC<TSettingsDesignViewProps> = (props) => {
+	const { editor } = props;
 	const isMd = useEditorBreakpoint(editor, 'md');
 
 	// Force panel layout recompute on mount to prevent resize-panel issues
@@ -19,22 +17,20 @@ export const SettingsDesignView: React.FC<TSettingsDesignViewProps> & { panelCou
 	if (isMd) {
 		return (
 			<>
-				<SettingsDesignPanel editor={editor} order={order} />
+				<SettingsDesignPanel editor={editor} />
 				<ResizableHandle className="bg-neutral-200" />
-				<CanvasPanel editor={editor} order={order + 1} />
+				<CanvasPanel editor={editor} />
 			</>
 		);
 	}
 
 	return (
 		<>
-			<SettingsDesignPanel editor={editor} order={order} />
+			<SettingsDesignPanel editor={editor} />
 		</>
 	);
 };
-SettingsDesignView.panelCount = 2;
 
 interface TSettingsDesignViewProps {
 	editor: TPageEditor;
-	order: number;
 }

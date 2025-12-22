@@ -4,10 +4,8 @@ import { useEditorBreakpoint } from '../../../hooks';
 import { TPageEditor } from '../../../lib';
 import { MetadataPreviewPanel, SettingsMetadataPanel } from '../panels';
 
-export const SettingsMetadataView: React.FC<TSettingsMetadataViewProps> & { panelCount: number } = (
-	props
-) => {
-	const { editor, order } = props;
+export const SettingsMetadataView: React.FC<TSettingsMetadataViewProps> = (props) => {
+	const { editor } = props;
 	const isMd = useEditorBreakpoint(editor, 'md');
 
 	// Force panel layout recompute on mount to prevent resize-panel issues
@@ -19,22 +17,20 @@ export const SettingsMetadataView: React.FC<TSettingsMetadataViewProps> & { pane
 	if (isMd) {
 		return (
 			<>
-				<SettingsMetadataPanel editor={editor} order={order} />
+				<SettingsMetadataPanel editor={editor} />
 				<ResizableHandle className="bg-neutral-200" />
-				<MetadataPreviewPanel editor={editor} order={order + 1} />
+				<MetadataPreviewPanel editor={editor} />
 			</>
 		);
 	}
 
 	return (
 		<>
-			<SettingsMetadataPanel editor={editor} order={order} />
+			<SettingsMetadataPanel editor={editor} />
 		</>
 	);
 };
-SettingsMetadataView.panelCount = 2;
 
 interface TSettingsMetadataViewProps {
 	editor: TPageEditor;
-	order: number;
 }

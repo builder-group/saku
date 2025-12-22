@@ -10,7 +10,7 @@ import { PanelHeader } from '../../PanelHeader';
 import { Placeholder } from './Placeholder';
 
 export const SettingsAssetsPanel: React.FC<TSettingsAssetsPanelProps> = (props) => {
-	const { editor, order } = props;
+	const { editor } = props;
 
 	const isMd = useEditorBreakpoint(editor, 'md');
 
@@ -83,7 +83,7 @@ export const SettingsAssetsPanel: React.FC<TSettingsAssetsPanelProps> = (props) 
 			// Desktop (horizontal layout): Resizable based on width
 			if (isMd) {
 				const width = rect.right - rect.left;
-				const toPercent = (pixels: number) => (pixels / width) * 100;
+				const toPercent = (pixels: number) => `${(pixels / width) * 100}%`;
 				return {
 					minSize: toPercent(300),
 					defaultSize: toPercent(405),
@@ -115,7 +115,6 @@ export const SettingsAssetsPanel: React.FC<TSettingsAssetsPanelProps> = (props) 
 	return (
 		<ResizablePanel
 			id="settings-assets-panel"
-			order={order}
 			minSize={sizes.minSize}
 			defaultSize={sizes.defaultSize}
 			maxSize={sizes.maxSize}
@@ -203,5 +202,4 @@ export const SettingsAssetsPanel: React.FC<TSettingsAssetsPanelProps> = (props) 
 
 interface TSettingsAssetsPanelProps {
 	editor: TPageEditor;
-	order: number;
 }

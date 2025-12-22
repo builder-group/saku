@@ -4,10 +4,8 @@ import { useEditorBreakpoint } from '../../../hooks';
 import { TPageEditor } from '../../../lib';
 import { AssetDetailsPanel, SettingsAssetsPanel } from '../panels';
 
-export const SettingsAssetsView: React.FC<TSettingsAssetsViewProps> & { panelCount: number } = (
-	props
-) => {
-	const { editor, order } = props;
+export const SettingsAssetsView: React.FC<TSettingsAssetsViewProps> = (props) => {
+	const { editor } = props;
 	const isMd = useEditorBreakpoint(editor, 'md');
 
 	// Force panel layout recompute on mount to prevent resize-panel issues
@@ -19,22 +17,20 @@ export const SettingsAssetsView: React.FC<TSettingsAssetsViewProps> & { panelCou
 	if (isMd) {
 		return (
 			<>
-				<SettingsAssetsPanel editor={editor} order={order} />
+				<SettingsAssetsPanel editor={editor} />
 				<ResizableHandle className="bg-neutral-200" />
-				<AssetDetailsPanel editor={editor} order={order + 1} />
+				<AssetDetailsPanel editor={editor} />
 			</>
 		);
 	}
 
 	return (
 		<>
-			<SettingsAssetsPanel editor={editor} order={order} />
+			<SettingsAssetsPanel editor={editor} />
 		</>
 	);
 };
-SettingsAssetsView.panelCount = 2;
 
 interface TSettingsAssetsViewProps {
 	editor: TPageEditor;
-	order: number;
 }

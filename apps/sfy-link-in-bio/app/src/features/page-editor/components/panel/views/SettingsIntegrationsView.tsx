@@ -4,10 +4,8 @@ import { useEditorBreakpoint } from '../../../hooks';
 import { TPageEditor } from '../../../lib';
 import { IntegrationDetailsPanel, SettingsIntegrationsPanel } from '../panels';
 
-export const SettingsIntegrationsView: React.FC<TSettingsIntegrationsViewProps> & {
-	panelCount: number;
-} = (props) => {
-	const { editor, order } = props;
+export const SettingsIntegrationsView: React.FC<TSettingsIntegrationsViewProps> = (props) => {
+	const { editor } = props;
 	const isMd = useEditorBreakpoint(editor, 'md');
 
 	// Force panel layout recompute on mount to prevent resize-panel issues
@@ -19,22 +17,20 @@ export const SettingsIntegrationsView: React.FC<TSettingsIntegrationsViewProps> 
 	if (isMd) {
 		return (
 			<>
-				<SettingsIntegrationsPanel editor={editor} order={order} />
+				<SettingsIntegrationsPanel editor={editor} />
 				<ResizableHandle className="bg-neutral-200" />
-				<IntegrationDetailsPanel editor={editor} order={order + 1} />
+				<IntegrationDetailsPanel editor={editor} />
 			</>
 		);
 	}
 
 	return (
 		<>
-			<SettingsIntegrationsPanel editor={editor} order={order} />
+			<SettingsIntegrationsPanel editor={editor} />
 		</>
 	);
 };
-SettingsIntegrationsView.panelCount = 2;
 
 interface TSettingsIntegrationsViewProps {
 	editor: TPageEditor;
-	order: number;
 }

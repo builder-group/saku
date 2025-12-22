@@ -11,67 +11,56 @@ import { SettingsGeneralView } from './SettingsGeneralView';
 import { SettingsIntegrationsView } from './SettingsIntegrationsView';
 import { SettingsMetadataView } from './SettingsMetadataView';
 
-const View: React.FC<TViewProps> & { panelCount: number } = (props) => {
-	const { editor, order } = props;
+const View: React.FC<TViewProps> = (props) => {
+	const { editor } = props;
 
 	const activeView = useFeatureState(editor.activeSettingsSection);
 
 	switch (activeView) {
 		case 'general':
-			return <SettingsGeneralView editor={editor} order={order} />;
+			return <SettingsGeneralView editor={editor} />;
 		case 'design':
-			return <SettingsDesignView editor={editor} order={order} />;
+			return <SettingsDesignView editor={editor} />;
 		case 'metadata':
-			return <SettingsMetadataView editor={editor} order={order} />;
+			return <SettingsMetadataView editor={editor} />;
 		case 'assets':
-			return <SettingsAssetsView editor={editor} order={order} />;
+			return <SettingsAssetsView editor={editor} />;
 		case 'integrations':
-			return <SettingsIntegrationsView editor={editor} order={order} />;
+			return <SettingsIntegrationsView editor={editor} />;
 		case 'advanced':
-			return <SettingsAdvancedView editor={editor} order={order} />;
+			return <SettingsAdvancedView editor={editor} />;
 		default:
-			return <SettingsPlaceholderPanel order={order} />;
+			return <SettingsPlaceholderPanel />;
 	}
 };
-View.panelCount = Math.max(
-	SettingsGeneralView.panelCount,
-	SettingsDesignView.panelCount,
-	SettingsMetadataView.panelCount,
-	SettingsAssetsView.panelCount,
-	SettingsIntegrationsView.panelCount,
-	SettingsAdvancedView.panelCount
-);
 
 interface TViewProps {
 	editor: TPageEditor;
-	order: number;
 }
 
-export const SettingsView: React.FC<TSettingsViewProps> & { panelCount: number } = (props) => {
-	const { editor, order } = props;
+export const SettingsView: React.FC<TSettingsViewProps> = (props) => {
+	const { editor } = props;
 	const isMd = useEditorBreakpoint(editor, 'md');
 
 	if (isMd) {
 		return (
 			<>
-				<SettingsNavPanel editor={editor} order={order} />
+				<SettingsNavPanel editor={editor} />
 				<ResizableHandle className="bg-neutral-200" />
-				<View editor={editor} order={order + 1} />
+				<View editor={editor} />
 			</>
 		);
 	}
 
 	return (
 		<>
-			<View editor={editor} order={order} />
+			<View editor={editor} />
 			<ResizableHandle className="bg-neutral-200" withHandle />
-			<SettingsNavPanel editor={editor} order={order + 1} />
+			<SettingsNavPanel editor={editor} />
 		</>
 	);
 };
-SettingsView.panelCount = 1 + View.panelCount;
 
 interface TSettingsViewProps {
 	editor: TPageEditor;
-	order: number;
 }

@@ -17,8 +17,8 @@ const shopifyApp: ReturnType<typeof createShopifyApp> = createShopifyApp({
 	distribution: AppDistribution.AppStore,
 	useOnlineTokens: true,
 	future: {
-		unstable_newEmbeddedAuthStrategy: true,
-		removeRest: true
+		// unstable_newEmbeddedAuthStrategy: true,
+		// removeRest: true
 	},
 	// hooks: {
 	// 	afterAuth: async ({ session }) => {

@@ -4,8 +4,8 @@ import { useEditorBreakpoint } from '../../../hooks';
 import { TPageEditor } from '../../../lib';
 import { CanvasPanel, LayersPanel, NodeInspectorPanel } from '../panels';
 
-export const DesignView: React.FC<TDesignViewProps> & { panelCount: number } = (props) => {
-	const { editor, order } = props;
+export const DesignView: React.FC<TDesignViewProps> = (props) => {
+	const { editor } = props;
 	const isMd = useEditorBreakpoint(editor, 'md');
 
 	// Force panel layout recompute on mount to prevent resize-panel issues
@@ -17,26 +17,24 @@ export const DesignView: React.FC<TDesignViewProps> & { panelCount: number } = (
 	if (isMd) {
 		return (
 			<>
-				<LayersPanel editor={editor} order={order} />
+				<LayersPanel editor={editor} />
 				<ResizableHandle className="bg-neutral-200" />
-				<CanvasPanel editor={editor} order={order + 1} />
+				<CanvasPanel editor={editor} />
 				<ResizableHandle className="bg-neutral-200" />
-				<NodeInspectorPanel editor={editor} order={order + 2} />
+				<NodeInspectorPanel editor={editor} />
 			</>
 		);
 	}
 
 	return (
 		<>
-			<CanvasPanel editor={editor} order={order} />
-			<NodeInspectorPanel editor={editor} order={order + 1} withResizableHandle />
-			<LayersPanel editor={editor} order={order + 2} withResizableHandle />
+			<CanvasPanel editor={editor} />
+			<NodeInspectorPanel editor={editor} withResizableHandle />
+			<LayersPanel editor={editor} withResizableHandle />
 		</>
 	);
 };
-DesignView.panelCount = 3;
 
 interface TDesignViewProps {
 	editor: TPageEditor;
-	order: number;
 }

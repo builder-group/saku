@@ -14,7 +14,7 @@ import { SaveButton } from '../../../input';
 import { PanelHeader } from '../../PanelHeader';
 
 export const SettingsMetadataPanel: React.FC<TSettingsMetadataPanelProps> = (props) => {
-	const { editor, order } = props;
+	const { editor } = props;
 
 	const isMd = useEditorBreakpoint(editor, 'md');
 
@@ -63,7 +63,7 @@ export const SettingsMetadataPanel: React.FC<TSettingsMetadataPanelProps> = (pro
 			// Desktop (horizontal layout): Resizable based on width
 			if (isMd) {
 				const width = rect.right - rect.left;
-				const toPercent = (pixels: number) => (pixels / width) * 100;
+				const toPercent = (pixels: number) => `${(pixels / width) * 100}%`;
 				return {
 					minSize: toPercent(300),
 					defaultSize: toPercent(405),
@@ -163,7 +163,6 @@ export const SettingsMetadataPanel: React.FC<TSettingsMetadataPanelProps> = (pro
 	return (
 		<ResizablePanel
 			id="settings-metadata-panel"
-			order={order}
 			minSize={sizes.minSize}
 			defaultSize={sizes.defaultSize}
 			maxSize={sizes.maxSize}
@@ -256,5 +255,4 @@ export const SettingsMetadataPanel: React.FC<TSettingsMetadataPanelProps> = (pro
 
 interface TSettingsMetadataPanelProps {
 	editor: TPageEditor;
-	order: number;
 }
