@@ -12,7 +12,6 @@
  */
 'use client';
 
-import { GripVertical } from 'lucide-react';
 import { Group, Panel, Separator } from 'react-resizable-panels';
 import { cn } from '@/lib';
 
@@ -39,11 +38,12 @@ const ResizableHandle = ({
 		)}
 		{...props}
 	>
-		{withHandle && (
+		{/* TODO: Figure out how orientation works in v4 */}
+		{/* {withHandle && (
 			<div className="z-10 flex h-6 w-4 items-center justify-center rounded-sm bg-inherit md:h-4 md:w-3">
 				<GripVertical className="h-3 w-3 md:h-2.5 md:w-2.5" />
 			</div>
-		)}
+		)} */}
 	</Separator>
 );
 
