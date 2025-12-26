@@ -34,7 +34,7 @@ export const ShareButton: React.FC<TShareButtonProps> = (props) => {
 				'flex h-10 w-10 items-center justify-center rounded-full border border-white/40 bg-white/70 text-black backdrop-blur-sm transition-all duration-200',
 				{
 					'shadow-[0_2px_8px_rgba(0,0,0,0.15)]': !hasScrolled,
-					'cursor-pointer hover:scale-105 hover:bg-white/100 focus:ring-2 focus:ring-white/50 focus:outline-none active:scale-95':
+					'cursor-pointer hover:scale-105 hover:bg-white focus:ring-2 focus:ring-white/50 focus:outline-none active:scale-95':
 						!isDisabled,
 					'cursor-not-allowed opacity-70': isDisabled,
 					'bg-green-100 hover:bg-green-100': isCopied

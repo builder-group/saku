@@ -34,6 +34,7 @@ import {
 	TBreakpoint
 } from '@/lib';
 import { TSettingsSectionType, TViewType } from '../../environment';
+import { TSiteUrl } from '../../types';
 import { createNodeState, nodeAssetHashRegistry, nodeMetadataRegistry, TNodeState } from '../node';
 import { createPageContext, TPageContext } from './create-page-context';
 
@@ -47,8 +48,7 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 			handle: createState(site.handle),
 			displayName: createState(site.displayName),
 			version: site.content.version,
-			baseUrl: site.baseUrl,
-			platformBaseUrl: site.platformBaseUrl
+			baseUrl: site.baseUrl
 		},
 		shopId,
 		pageContext: createPageContext({
@@ -682,10 +682,10 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 		},
 
 		getSiteUrl() {
-			return `${this.site.baseUrl}/${this.site.handle._v}`;
+			return `${this.site.baseUrl.primary}/${this.site.handle._v}`;
 		},
 		getSitePlatformUrl() {
-			return `${this.site.platformBaseUrl}/${this.site.handle._v}`;
+			return `${this.site.baseUrl.platform}/${this.site.handle._v}`;
 		},
 
 		overrideWith(site, options = {}) {
@@ -758,8 +758,7 @@ export interface TCreatePageEditorConfig {
 		id: string;
 		handle: string;
 		displayName?: string;
-		baseUrl: string;
-		platformBaseUrl: string;
+		baseUrl: TSiteUrl;
 		content: TFlatSite;
 	};
 	shopId: string;
@@ -773,8 +772,7 @@ export interface TPageEditor {
 		version: TFlatSite['version'];
 		handle: TState<string, []>;
 		displayName: TState<string | undefined, []>;
-		baseUrl: string;
-		platformBaseUrl: string;
+		baseUrl: TSiteUrl;
 	};
 	shopId: string;
 	pageContext: TPageContext;

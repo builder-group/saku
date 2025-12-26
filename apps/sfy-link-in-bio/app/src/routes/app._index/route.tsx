@@ -17,6 +17,7 @@ import {
 	usePageEditorModal
 } from '@/components';
 import { appConfig, coreApiClient } from '@/environment';
+import { TSiteUrl } from '@/features/page-editor';
 import { useCurrentPlan } from '@/hooks';
 import { createShopifyTokenMiddleware, resultLoader, withResultLoader } from '@/lib';
 import { THeadersFunction } from '@/types';
@@ -98,8 +99,8 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 							<div>
 								<s-section>
 									<SitePreview
-										url={site.primaryUrl}
-										content={<IframeContent url={site.platformUrl} disableScroll={true} />}
+										url={site.url.primary}
+										content={<IframeContent url={site.url.platform} disableScroll={true} />}
 									/>
 									<div className="mt-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
 										<div className="flex items-center gap-3">
@@ -132,7 +133,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 											<Button
 												icon={PolarisViewIcon}
 												variant="secondary"
-												url={site.primaryUrl}
+												url={site.url.primary}
 												target="_blank"
 												accessibilityLabel="Visit your Link In Bio page"
 											/>
@@ -178,8 +179,8 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 						<div className="space-y-4">
 							<div>
 								<BioUrlSection
-									primaryUrl={site.primaryUrl}
-									platformUrl={site.platformUrl}
+									primaryUrl={site.url.primary}
+									platformUrl={site.url.platform}
 									title="Your Bio Link"
 								/>
 							</div>
@@ -265,11 +266,14 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 		.map((site) => ({
 			id: site.id,
 			handle: site.handle,
-			primaryUrl:
-				primaryUrl != null
-					? `${primaryUrl}/${site.handle}`
-					: `${shopifyConfig.url(session.shop)}/${site.handle}`,
-			platformUrl: `https://saku.so/w/${workspace.handle}/${site.handle}`,
+			url: {
+				proxy: `${shopifyConfig.proxy.url(session.shop)}/${site.handle}`,
+				primary:
+					primaryUrl != null
+						? `${primaryUrl}/${site.handle}`
+						: `${shopifyConfig.url(session.shop)}/${site.handle}`,
+				platform: `https://saku.so/w/${workspace.handle}/${site.handle}`
+			},
 			displayName: site.displayName,
 			updatedAt: site.updatedAt,
 			createdAt: site.createdAt
@@ -299,8 +303,7 @@ interface TSuccessLoaderData {
 interface TLoaderDataSite {
 	id: string;
 	handle: string;
-	primaryUrl: string;
-	platformUrl: string;
+	url: TSiteUrl;
 	displayName?: string;
 	updatedAt: string;
 	createdAt: string;

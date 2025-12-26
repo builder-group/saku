@@ -3,11 +3,11 @@ import { useAppBridge } from '@shopify/app-bridge-react';
 import { Text } from '@shopify/polaris';
 import { boundary } from '@shopify/shopify-app-react-router/server';
 import React from 'react';
-import { Err, Ok } from 'tuple-result';
+import { Err, Ok, unwrapOrUndefined } from 'tuple-result';
 import { AppContext, shopifyConfig } from '@/.server/environment';
 import { coreApiClient } from '@/environment';
-import { createPageEditor, PageEditor } from '@/features/page-editor';
-import { createHandleFromShop, resultLoader, withResultLoader } from '@/lib';
+import { createPageEditor, PageEditor, TSiteUrl } from '@/features/page-editor';
+import { createShopifyTokenMiddleware, resultLoader, withResultLoader } from '@/lib';
 import { THeadersFunction, TLinksFunction } from '@/types';
 import styles from './styles.css?url';
 
@@ -55,10 +55,10 @@ export const headers: THeadersFunction = (headersArgs) => {
 export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(
 	async ({ request, context }) => {
 		const {
+			workspace,
 			shopify: {
-				admin: {
-					session: { shop }
-				}
+				sessionToken,
+				admin: { session }
 			}
 		} = context.get(AppContext);
 		const url = new URL(request.url);
@@ -84,16 +84,27 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(
 		const site = siteResult.value.data;
 		const flatSite = site.content as unknown as TFlatSite;
 
+		// Get shop primary URL
+		const primaryUrlResponse = unwrapOrUndefined(
+			await coreApiClient.get('/v1/shopify/shop/primary-url', {
+				requestMiddlewares: [createShopifyTokenMiddleware(sessionToken)]
+			})
+		);
+		const primaryUrl = primaryUrlResponse?.data.primaryDomain?.url;
+
 		return Ok({
 			site: {
 				id: site.id,
 				handle: site.handle,
 				displayName: site.displayName,
-				baseUrl: `${shopifyConfig.proxy.url(shop)}`,
-				platformBaseUrl: `https://saku.so/w/${createHandleFromShop(shop)}`,
+				baseUrl: {
+					platform: `https://saku.so/w`,
+					proxy: `${shopifyConfig.proxy.url(session.shop)}`,
+					primary: primaryUrl != null ? `${primaryUrl}` : `${shopifyConfig.url(session.shop)}`
+				},
 				content: flatSite
 			},
-			shopId: shop
+			shopId: session.shop
 		}).toArray();
 	}
 );
@@ -108,8 +119,7 @@ interface TSuccessLoaderData {
 		id: string;
 		handle: string;
 		displayName?: string;
-		baseUrl: string;
-		platformBaseUrl: string;
+		baseUrl: TSiteUrl;
 		content: TFlatSite;
 	};
 	shopId: string;

@@ -73,7 +73,7 @@ export const SettingsGeneralPanel: React.FC<TSettingsGeneralPanelProps> = (props
 				</PanelHeader>
 
 				<div className="h-full flex-1 overflow-y-auto p-4">
-					<div className="mx-auto w-full max-w-screen-xl space-y-6">
+					<div className="mx-auto w-full max-w-7xl space-y-6">
 						<FormSection
 							title="Site Name"
 							description="Update the name of your site."
@@ -85,7 +85,7 @@ export const SettingsGeneralPanel: React.FC<TSettingsGeneralPanelProps> = (props
 						/>
 						<FormSection
 							title="Site Handle"
-							description="The URL-friendly identifier for your site."
+							description={`The URL-friendly identifier for your site. Your site will be available at "${`${editor.site.baseUrl.primary}/${handle}`}"`}
 							inputValue={handle}
 							placeholder="bio"
 							helpText="Only lowercase letters, numbers, and dashes. Max 50 characters."
