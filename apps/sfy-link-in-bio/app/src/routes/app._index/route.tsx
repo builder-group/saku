@@ -1,10 +1,11 @@
+import { TSiteUrl } from '@repo/editor';
 import { Button, ButtonGroup, Spinner, Text } from '@shopify/polaris';
 import { boundary } from '@shopify/shopify-app-react-router/server';
 import { useFeatureState } from 'feature-react';
 import React from 'react';
 import { useRevalidator, useSearchParams } from 'react-router';
 import { Err, Ok, unwrapOrUndefined } from 'tuple-result';
-import { AppContext, shopifyConfig } from '@/.server/environment';
+import { AppContext } from '@/.server/environment';
 import {
 	Badge,
 	BioUrlSection,
@@ -16,8 +17,7 @@ import {
 	SitePreview,
 	usePageEditorModal
 } from '@/components';
-import { appConfig, coreApiClient } from '@/environment';
-import { TSiteUrl } from '@/features/page-editor';
+import { appConfig, coreApiClient, shopifyClientConfig } from '@/environment';
 import { useCurrentPlan } from '@/hooks';
 import { createShopifyTokenMiddleware, resultLoader, withResultLoader } from '@/lib';
 import { THeadersFunction } from '@/types';
@@ -99,7 +99,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 							<div>
 								<s-section>
 									<SitePreview
-										url={site.url.primary}
+										url={site.url.shopify.primary}
 										content={<IframeContent url={site.url.platform} disableScroll={true} />}
 									/>
 									<div className="mt-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -133,7 +133,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 											<Button
 												icon={PolarisViewIcon}
 												variant="secondary"
-												url={site.url.primary}
+												url={site.url.shopify.primary}
 												target="_blank"
 												accessibilityLabel="Visit your Link In Bio page"
 											/>
@@ -179,7 +179,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 						<div className="space-y-4">
 							<div>
 								<BioUrlSection
-									primaryUrl={site.url.primary}
+									primaryUrl={site.url.shopify.primary}
 									platformUrl={site.url.platform}
 									title="Your Bio Link"
 								/>
@@ -267,12 +267,14 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 			id: site.id,
 			handle: site.handle,
 			url: {
-				proxy: `${shopifyConfig.proxy.url(session.shop)}/${site.handle}`,
-				primary:
-					primaryUrl != null
-						? `${primaryUrl}/${site.handle}`
-						: `${shopifyConfig.url(session.shop)}/${site.handle}`,
-				platform: `https://saku.so/w/${workspace.handle}/${site.handle}`
+				platform: `${appConfig.platformUrl(workspace.handle)}/${site.handle}`,
+				shopify: {
+					proxy: `${shopifyClientConfig.shop.proxy.url(session.shop)}/${site.handle}`,
+					primary:
+						primaryUrl != null
+							? `${primaryUrl}/${site.handle}`
+							: `${shopifyClientConfig.shop.url(session.shop)}/${site.handle}`
+				}
 			},
 			displayName: site.displayName,
 			updatedAt: site.updatedAt,

@@ -2,9 +2,6 @@ import { ApiVersion } from '@shopify/shopify-app-react-router/server';
 import * as v from 'valibot';
 import { validateEnvVar } from 'validatenv';
 import { vValidator } from 'validation-adapters/valibot';
-import { appConfig } from '@/environment';
-
-const appProxyPath = appConfig.env === 'production' ? '/a/saku' : '/a/saku-local';
 
 export const shopifyConfig = {
 	apiVersion: ApiVersion.July25,
@@ -27,10 +24,5 @@ export const shopifyConfig = {
 	shopCustomDomain: validateEnvVar({
 		envKey: 'SHOP_CUSTOM_DOMAIN',
 		validator: vValidator(v.optional(v.string()))
-	}),
-	proxy: {
-		path: appProxyPath,
-		url: (shop: string) => `https://${shop}${appProxyPath}`
-	},
-	url: (shop: string) => `https://${shop}`
+	})
 };

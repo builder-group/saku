@@ -183,17 +183,27 @@ export class RedisClient {
 		return cached;
 	}
 
-	async setSiteCache<GContent = unknown>(
-		shopId: string,
-		siteHandle: string,
-		siteId: string,
-		siteContent: GContent,
-		ttlSeconds = this.siteCacheConfig.ttl
-	): Promise<void> {
+	async setSiteCache<GContent = unknown>(config: {
+		siteId: string;
+		siteHandle: string;
+		siteContent: GContent;
+		workspaceHandle: string;
+		shopId: string;
+		ttlSeconds?: number;
+	}): Promise<void> {
+		const {
+			siteId,
+			siteHandle,
+			siteContent,
+			workspaceHandle,
+			shopId,
+			ttlSeconds = this.siteCacheConfig.ttl
+		} = config;
 		const key = this.siteCacheConfig.keys.bySite(shopId, siteHandle);
 		const cached: TCachedSiteData<GContent> = {
 			siteId,
-			siteContent
+			siteContent,
+			workspaceHandle
 		};
 
 		await this.client.set(key, cached, { ex: ttlSeconds });
@@ -256,4 +266,5 @@ export interface TCachedShopifySession {
 export interface TCachedSiteData<GContent = unknown> {
 	siteId: string;
 	siteContent: GContent;
+	workspaceHandle: string;
 }

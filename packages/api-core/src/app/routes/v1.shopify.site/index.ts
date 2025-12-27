@@ -93,7 +93,8 @@ router.openapi(GetShopifySiteByShopAndHandleRoute, async (c) => {
 			return c.json(
 				{
 					id: cached.siteId,
-					content: cached.siteContent as TFlatSiteContentDto
+					content: cached.siteContent as TFlatSiteContentDto,
+					workspaceHandle: cached.workspaceHandle
 				},
 				200
 			);
@@ -104,10 +105,12 @@ router.openapi(GetShopifySiteByShopAndHandleRoute, async (c) => {
 	const [site] = await db
 		.select({
 			id: siteTable.id,
+			content: siteTable.content,
 			workspaceId: siteTable.workspaceId,
-			content: siteTable.content
+			workspaceHandle: workspaceTable.handle
 		})
 		.from(siteTable)
+		.innerJoin(workspaceTable, eq(workspaceTable.id, siteTable.workspaceId))
 		.innerJoin(
 			workspaceAccountTable,
 			and(
@@ -129,9 +132,10 @@ router.openapi(GetShopifySiteByShopAndHandleRoute, async (c) => {
 	// Cache the result
 	if (isAccessTokenOk) {
 		await siteCache.set({
-			siteHandle: handle,
 			siteId: site.id,
+			siteHandle: handle,
 			siteContent,
+			workspaceHandle: site.workspaceHandle,
 			shopId: shop,
 			accessToken
 		});
@@ -140,7 +144,8 @@ router.openapi(GetShopifySiteByShopAndHandleRoute, async (c) => {
 	return c.json(
 		{
 			id: site.id,
-			content: siteContent as TFlatSiteContentDto
+			content: siteContent as TFlatSiteContentDto,
+			workspaceHandle: site.workspaceHandle
 		},
 		200
 	);

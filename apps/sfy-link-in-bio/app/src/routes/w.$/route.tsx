@@ -1,9 +1,9 @@
-import { TFlatSite, TIntegration } from '@repo/editor';
+import { TFlatSite, TIntegration, TSiteUrl } from '@repo/editor';
 import { Text } from '@shopify/polaris';
 import { isStatusCode } from 'feature-fetch';
 import React from 'react';
 import { Err, Ok } from 'tuple-result';
-import { coreApiClient } from '@/environment';
+import { appConfig, coreApiClient, shopifyClientConfig } from '@/environment';
 import {
 	createPageContext,
 	getSiteMetadata,
@@ -20,10 +20,11 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 		const cx = React.useMemo(
 			() =>
 				createPageContext({
-					siteId: site.id,
+					id: site.id,
+					url: site.url,
 					integrations: site.integrations
 				}),
-			[site.id, site.integrations]
+			[site]
 		);
 
 		return <StaticNodeCanvas cx={cx} nodes={[site.root]} />;
@@ -114,10 +115,27 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 		}).toArray();
 	}
 
+	const shopifyIntegration = Object.values(flatSite.integrations).find(
+		(integration) => integration.type === 'shopify'
+	);
+	if (shopifyIntegration == null) {
+		return Err({
+			code: '#ERR_SERVER_ERROR' as const,
+			message: 'Failed to get site URL: No Shopify integration found'
+		}).toArray();
+	}
+
 	return Ok({
 		site: {
 			...hydrateSiteResult.value,
 			id: site.id,
+			url: {
+				platform: `${appConfig.platformUrl(workspaceHandle)}/${handle}`,
+				shopify: {
+					proxy: `${shopifyClientConfig.shop.proxy.url(shopifyIntegration.shopId)}/${handle}`,
+					primary: `${shopifyIntegration.primaryDomainUrl != null ? shopifyIntegration.primaryDomainUrl : shopifyClientConfig.shop.url(shopifyIntegration.shopId)}/${handle}`
+				}
+			},
 			integrations: Object.values(flatSite.integrations)
 		}
 	}).toArray();
@@ -131,6 +149,7 @@ interface TErrorLoaderData {
 interface TSuccessLoaderData {
 	site: {
 		id: string;
+		url: TSiteUrl;
 		integrations: TIntegration[];
 	} & TResolvedSite;
 }

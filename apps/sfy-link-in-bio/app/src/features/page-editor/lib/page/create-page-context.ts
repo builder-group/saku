@@ -1,9 +1,9 @@
-import { TIntegration } from '@repo/editor';
+import { TIntegration, TSiteUrl } from '@repo/editor';
 import { logger } from '@/environment';
 import { createShopifyIntegrationContext, type TShopifyIntegrationContext } from '../integration';
 
 export function createPageContext(config: TCreatePageContextConfig): TPageContext {
-	const { siteId, integrations } = config;
+	const { id, url, integrations } = config;
 	logger.info('createPageContext', { config });
 
 	// Create Shopify integration context
@@ -17,7 +17,8 @@ export function createPageContext(config: TCreatePageContextConfig): TPageContex
 	}
 
 	return {
-		siteId,
+		id,
+		url,
 		integrations: {
 			shopify: shopifyIntegrationContext
 		}
@@ -25,12 +26,14 @@ export function createPageContext(config: TCreatePageContextConfig): TPageContex
 }
 
 export type TCreatePageContextConfig = {
-	siteId: string;
+	id: string;
+	url: TSiteUrl;
 	integrations: TIntegration[];
 };
 
 export interface TPageContext {
-	siteId: string;
+	id: string;
+	url: TSiteUrl;
 	integrations: {
 		shopify?: TShopifyIntegrationContext;
 	};

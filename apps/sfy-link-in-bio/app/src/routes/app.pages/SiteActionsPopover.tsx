@@ -1,3 +1,4 @@
+import { TSiteUrl } from '@repo/editor';
 import { Popover, Text } from '@shopify/polaris';
 import React from 'react';
 
@@ -14,9 +15,9 @@ export const SiteActionsPopover: React.FC<TSiteActionsPopoverProps> = (props) =>
 	}, []);
 
 	const handleView = React.useCallback(() => {
-		window.open(site.primaryUrl, '_blank', 'noopener,noreferrer');
+		window.open(site.url.shopify.primary, '_blank', 'noopener,noreferrer');
 		setPopoverActive(false);
-	}, [site.primaryUrl]);
+	}, [site.url.shopify.primary]);
 
 	const handleCustomize = React.useCallback(() => {
 		onCustomize();
@@ -76,7 +77,7 @@ export const SiteActionsPopover: React.FC<TSiteActionsPopoverProps> = (props) =>
 interface TSiteActionsPopoverProps {
 	activator: React.ReactNode;
 	site: {
-		primaryUrl: string;
+		url: TSiteUrl;
 	};
 	onCustomize: () => void;
 	onRemove: () => void;

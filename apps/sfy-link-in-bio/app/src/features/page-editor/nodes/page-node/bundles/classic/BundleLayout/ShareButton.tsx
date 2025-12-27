@@ -4,7 +4,7 @@ import { logger } from '@/environment';
 import { cn } from '@/lib';
 
 export const ShareButton: React.FC<TShareButtonProps> = (props) => {
-	const { hasScrolled } = props;
+	const { hasScrolled, url } = props;
 
 	const [isCopied, setIsCopied] = React.useState(false);
 	const [isDisabled, setIsDisabled] = React.useState(false);
@@ -15,7 +15,7 @@ export const ShareButton: React.FC<TShareButtonProps> = (props) => {
 		}
 
 		try {
-			await navigator.clipboard.writeText(window.location.href);
+			await navigator.clipboard.writeText(url);
 
 			setIsCopied(true);
 			setIsDisabled(true);
@@ -26,7 +26,7 @@ export const ShareButton: React.FC<TShareButtonProps> = (props) => {
 		} catch {
 			logger.error('Failed to copy link');
 		}
-	}, [isDisabled]);
+	}, [isDisabled, url]);
 
 	return (
 		<button
@@ -51,4 +51,5 @@ export const ShareButton: React.FC<TShareButtonProps> = (props) => {
 
 interface TShareButtonProps {
 	hasScrolled: boolean;
+	url: string;
 }

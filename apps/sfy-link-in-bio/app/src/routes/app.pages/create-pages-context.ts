@@ -1,5 +1,5 @@
 import { deepCopy, shortId } from '@blgc/utils';
-import { TFlatSite, themes, TTheme } from '@repo/editor';
+import { TFlatSite, themes, TSiteUrl, TTheme } from '@repo/editor';
 import type { ShopifyGlobal } from '@shopify/app-bridge-types';
 import { RequestError } from 'feature-fetch';
 import { withLocalStorage } from 'feature-react';
@@ -368,8 +368,7 @@ export interface TPagesContext {
 export interface TTableSite {
 	id: string;
 	handle: string;
-	primaryUrl: string;
-	platformUrl: string;
+	url: TSiteUrl;
 	displayName?: string;
 	updatedAt: string;
 	createdAt: string;

@@ -40,7 +40,11 @@ export const GetShopifySiteByShopAndHandleRoute = createRoute({
 		200: JsonSuccessResponse(
 			z.object({
 				id: z.uuid(),
-				content: SFlatSiteContentDto
+				content: SFlatSiteContentDto,
+				workspaceHandle: z.string().openapi({
+					example: 'my-workspace',
+					description: 'Workspace handle'
+				})
 			})
 		),
 		404: NotFoundResponse

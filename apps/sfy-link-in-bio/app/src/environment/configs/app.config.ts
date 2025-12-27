@@ -23,6 +23,8 @@ const packageVersion = validateEnvVar(
 	{}
 );
 
+const platformBaseUrl = 'https://saku.so/w';
+
 export const appConfig = {
 	env,
 	packageVersion,
@@ -45,5 +47,7 @@ export const appConfig = {
 		mantle: true,
 		crisp: true,
 		review: true
-	}
+	},
+	platformUrl: (workspaceHandle?: string) =>
+		workspaceHandle != null ? `${platformBaseUrl}/${workspaceHandle}` : platformBaseUrl
 };

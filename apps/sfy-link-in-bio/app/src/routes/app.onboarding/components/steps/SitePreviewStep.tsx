@@ -27,7 +27,14 @@ export const SitePreviewStep: React.FC<TSitePreviewStepProps> = (props) => {
 	const cx = React.useMemo(
 		() =>
 			createPageContext({
-				siteId: 'preview',
+				id: 'preview',
+				url: {
+					platform: '',
+					shopify: {
+						proxy: '',
+						primary: ''
+					}
+				},
 				integrations: []
 			}),
 		[]

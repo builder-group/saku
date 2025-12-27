@@ -1703,6 +1703,11 @@ export interface operations {
                         /** Format: uuid */
                         id: string;
                         content: components["schemas"]["FlatSiteContentDto"];
+                        /**
+                         * @description Workspace handle
+                         * @example my-workspace
+                         */
+                        workspaceHandle: string;
                     };
                 };
             };

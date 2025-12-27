@@ -1,13 +1,13 @@
-import { TFlatSite } from '@repo/editor';
+import { TFlatSite, TSiteUrl } from '@repo/editor';
 import { useAppBridge } from '@shopify/app-bridge-react';
 import { Text } from '@shopify/polaris';
 import { boundary } from '@shopify/shopify-app-react-router/server';
 import React from 'react';
-import { Err, Ok, unwrapOrUndefined } from 'tuple-result';
-import { AppContext, shopifyConfig } from '@/.server/environment';
-import { coreApiClient } from '@/environment';
-import { createPageEditor, PageEditor, TSiteUrl } from '@/features/page-editor';
-import { createShopifyTokenMiddleware, resultLoader, withResultLoader } from '@/lib';
+import { Err, Ok } from 'tuple-result';
+import { AppContext } from '@/.server/environment';
+import { appConfig, coreApiClient, shopifyClientConfig } from '@/environment';
+import { createPageEditor, PageEditor } from '@/features/page-editor';
+import { resultLoader, withResultLoader } from '@/lib';
 import { THeadersFunction, TLinksFunction } from '@/types';
 import styles from './styles.css?url';
 
@@ -84,13 +84,15 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(
 		const site = siteResult.value.data;
 		const flatSite = site.content as unknown as TFlatSite;
 
-		// Get shop primary URL
-		const primaryUrlResponse = unwrapOrUndefined(
-			await coreApiClient.get('/v1/shopify/shop/primary-url', {
-				requestMiddlewares: [createShopifyTokenMiddleware(sessionToken)]
-			})
+		const shopifyIntegration = Object.values(flatSite.integrations).find(
+			(integration) => integration.type === 'shopify'
 		);
-		const primaryUrl = primaryUrlResponse?.data.primaryDomain?.url;
+		if (shopifyIntegration == null) {
+			return Err({
+				code: '#ERR_SERVER_ERROR' as const,
+				message: 'Failed to get site URL: No Shopify integration found'
+			}).toArray();
+		}
 
 		return Ok({
 			site: {
@@ -98,9 +100,14 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(
 				handle: site.handle,
 				displayName: site.displayName,
 				baseUrl: {
-					platform: `https://saku.so/w`,
-					proxy: `${shopifyConfig.proxy.url(session.shop)}`,
-					primary: primaryUrl != null ? `${primaryUrl}` : `${shopifyConfig.url(session.shop)}`
+					platform: appConfig.platformUrl(workspace.handle),
+					shopify: {
+						proxy: shopifyClientConfig.shop.proxy.url(session.shop),
+						primary:
+							shopifyIntegration.primaryDomainUrl != null
+								? shopifyIntegration.primaryDomainUrl
+								: shopifyClientConfig.shop.url(shopifyIntegration.shopId)
+					}
 				},
 				content: flatSite
 			},

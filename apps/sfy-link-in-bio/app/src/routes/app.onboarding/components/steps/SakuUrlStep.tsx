@@ -3,6 +3,7 @@ import { Banner, Button } from '@shopify/polaris';
 import { useCompute } from 'feature-react';
 import React from 'react';
 import { LinkIcon } from '@/components';
+import { appConfig } from '@/environment';
 import type { TOnboardingContext } from '../../create-onboarding-context';
 import { StepLayout } from '../StepLayout';
 
@@ -73,7 +74,7 @@ export const SakuUrlStep: React.FC<TSakuUrlStepProps> = (props) => {
 
 		const [isContinueOk, continueErr] = await onboardingContext.continueFromExternalSiteUrl(
 			'saku',
-			`https://saku.so/w/${workspaceHandle}/${siteHandle}`
+			`${appConfig.platformUrl(workspaceHandle)}/${siteHandle}`
 		);
 		if (!isContinueOk) {
 			const newRetryCount = retryCount + 1;

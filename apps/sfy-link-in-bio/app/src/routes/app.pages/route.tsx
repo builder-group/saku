@@ -18,7 +18,7 @@ import { useCombinedCompute, useCompute, useFeatureState } from 'feature-react/s
 import React from 'react';
 import { useRevalidator } from 'react-router';
 import { Err, Ok, unwrapOrUndefined } from 'tuple-result';
-import { AppContext, shopifyConfig } from '@/.server/environment';
+import { AppContext } from '@/.server/environment';
 import {
 	Badge,
 	CrownIcon,
@@ -27,7 +27,7 @@ import {
 	useDeleteSiteModal,
 	usePageEditorModal
 } from '@/components';
-import { appConfig, coreApiClient } from '@/environment';
+import { appConfig, coreApiClient, shopifyClientConfig } from '@/environment';
 import { useCurrentPlan } from '@/hooks';
 import { createShopifyTokenMiddleware, resultLoader, withResultLoader } from '@/lib';
 import { THeadersFunction } from '@/types';
@@ -555,11 +555,16 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 		.map((site) => ({
 			id: site.id,
 			handle: site.handle,
-			primaryUrl:
-				primaryUrl != null
-					? `${primaryUrl}/${site.handle}`
-					: `${shopifyConfig.url(session.shop)}/${site.handle}`,
-			platformUrl: `https://saku.so/w/${workspace.handle}/${site.handle}`,
+			url: {
+				platform: `${appConfig.platformUrl(workspace.handle)}/${site.handle}`,
+				shopify: {
+					proxy: `${shopifyClientConfig.shop.proxy.url(session.shop)}/${site.handle}`,
+					primary:
+						primaryUrl != null
+							? `${primaryUrl}/${site.handle}`
+							: `${shopifyClientConfig.shop.url(session.shop)}/${site.handle}`
+				}
+			},
 			displayName: site.displayName,
 			updatedAt: site.updatedAt,
 			createdAt: site.createdAt

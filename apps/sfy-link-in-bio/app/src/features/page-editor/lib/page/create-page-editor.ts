@@ -18,6 +18,7 @@ import {
 	toHierarchical,
 	toImageContentType,
 	TSite,
+	TSiteUrl,
 	TToken
 } from '@repo/editor';
 import { ShopifyGlobal } from '@shopify/app-bridge-react';
@@ -34,7 +35,6 @@ import {
 	TBreakpoint
 } from '@/lib';
 import { TSettingsSectionType, TViewType } from '../../environment';
-import { TSiteUrl } from '../../types';
 import { createNodeState, nodeAssetHashRegistry, nodeMetadataRegistry, TNodeState } from '../node';
 import { createPageContext, TPageContext } from './create-page-context';
 
@@ -52,7 +52,14 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 		},
 		shopId,
 		pageContext: createPageContext({
-			siteId: site.id,
+			id: site.id,
+			url: {
+				platform: `${site.baseUrl.platform}/${site.handle}`,
+				shopify: {
+					proxy: `${site.baseUrl.shopify.proxy}/${site.handle}`,
+					primary: `${site.baseUrl.shopify.primary}/${site.handle}`
+				}
+			},
 			integrations: Object.values(site.content.integrations)
 		}),
 
@@ -682,7 +689,7 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 		},
 
 		getSiteUrl() {
-			return `${this.site.baseUrl.primary}/${this.site.handle._v}`;
+			return `${this.site.baseUrl.shopify.primary}/${this.site.handle._v}`;
 		},
 		getSitePlatformUrl() {
 			return `${this.site.baseUrl.platform}/${this.site.handle._v}`;

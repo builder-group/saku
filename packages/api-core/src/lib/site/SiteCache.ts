@@ -7,7 +7,7 @@ export interface SiteCache<GContent extends TFlatSite | TSite = TFlatSite> {
 	 * Retrieves cached site content by site handle.
 	 * @returns Cached site data or null if not found/expired
 	 */
-	get(config: TGetSiteCacheConfig): Promise<{ siteId: string; siteContent: GContent } | null>;
+	get(config: TGetSiteCacheConfig): Promise<TSiteCacheData<GContent> | null>;
 
 	/**
 	 * Stores site content in cache.
@@ -20,6 +20,12 @@ export interface SiteCache<GContent extends TFlatSite | TSite = TFlatSite> {
 	invalidate(config: TInvalidateSiteCacheConfig): Promise<void>;
 }
 
+export interface TSiteCacheData<GContent = unknown> {
+	siteId: string;
+	siteContent: GContent;
+	workspaceHandle: string;
+}
+
 export interface TGetSiteCacheConfig {
 	siteHandle: string;
 	shopId: string;
@@ -27,9 +33,10 @@ export interface TGetSiteCacheConfig {
 }
 
 export interface TSetSiteCacheConfig<GContent extends TFlatSite | TSite = TFlatSite> {
-	siteHandle: string;
 	siteId: string;
+	siteHandle: string;
 	siteContent: GContent;
+	workspaceHandle: string;
 	shopId: string;
 	accessToken: string;
 }
@@ -50,9 +57,7 @@ export class MetaobjectSiteCache<
 		this.ttlMs = ttlMs;
 	}
 
-	public async get(
-		config: TGetSiteCacheConfig
-	): Promise<{ siteId: string; siteContent: GContent } | null> {
+	public async get(config: TGetSiteCacheConfig): Promise<TSiteCacheData<GContent> | null> {
 		const { siteHandle, shopId, accessToken } = config;
 		const cacheHandle = this.createCacheHandle(shopId, siteHandle);
 
@@ -100,12 +105,13 @@ export class MetaobjectSiteCache<
 
 		return {
 			siteId: metaobject.fields['site_id'] ?? '',
-			siteContent: content
+			siteContent: content,
+			workspaceHandle: metaobject.fields['workspace_handle'] ?? ''
 		};
 	}
 
 	public async set(config: TSetSiteCacheConfig): Promise<void> {
-		const { siteHandle, siteId, siteContent, shopId, accessToken } = config;
+		const { siteId, siteHandle, siteContent, workspaceHandle, shopId, accessToken } = config;
 		const cacheHandle = this.createCacheHandle(shopId, siteHandle);
 		const expiresAt = new Date(Date.now() + this.ttlMs).toISOString();
 
@@ -116,6 +122,7 @@ export class MetaobjectSiteCache<
 				fields: [
 					{ key: 'site_id', value: siteId },
 					{ key: 'content', value: JSON.stringify(siteContent) },
+					{ key: 'workspace_handle', value: workspaceHandle },
 					{ key: 'expires_at', value: expiresAt }
 				]
 			},
@@ -192,9 +199,7 @@ export class MemorySiteCache<
 		this.maxEntries = maxEntries;
 	}
 
-	public async get(
-		config: TGetSiteCacheConfig
-	): Promise<{ siteId: string; siteContent: GContent } | null> {
+	public async get(config: TGetSiteCacheConfig): Promise<TSiteCacheData<GContent> | null> {
 		const { siteHandle, shopId } = config;
 		const key = this.createCacheKey(shopId, siteHandle);
 		const cached = this.cache.get(key);
@@ -209,18 +214,20 @@ export class MemorySiteCache<
 
 		return {
 			siteId: cached.id,
-			siteContent: cached.content
+			siteContent: cached.content,
+			workspaceHandle: cached.workspaceHandle
 		};
 	}
 
 	public async set(config: TSetSiteCacheConfig): Promise<void> {
-		const { siteHandle, siteId, siteContent, shopId } = config;
+		const { siteId, siteHandle, siteContent, workspaceHandle, shopId } = config;
 		this.evictOldest();
 
 		const key = this.createCacheKey(shopId, siteHandle);
 		this.cache.set(key, {
 			id: siteId,
 			content: siteContent as GContent,
+			workspaceHandle,
 			expiresAt: Date.now() + this.ttlMs
 		});
 	}
@@ -254,6 +261,7 @@ export class MemorySiteCache<
 interface TCachedSiteData<GContent = unknown> {
 	id: string;
 	content: GContent;
+	workspaceHandle: string;
 	expiresAt: number;
 }
 
@@ -265,16 +273,14 @@ interface TMemorySiteCacheConfig {
 export class RedisSiteCache<
 	GContent extends TFlatSite | TSite = TFlatSite
 > implements SiteCache<GContent> {
-	public async get(
-		config: TGetSiteCacheConfig
-	): Promise<{ siteId: string; siteContent: GContent } | null> {
+	public async get(config: TGetSiteCacheConfig): Promise<TSiteCacheData<GContent> | null> {
 		const { siteHandle, shopId } = config;
 		return redisClient.getSiteCache<GContent>(shopId, siteHandle);
 	}
 
 	public async set(config: TSetSiteCacheConfig): Promise<void> {
-		const { siteHandle, siteId, siteContent, shopId } = config;
-		await redisClient.setSiteCache(shopId, siteHandle, siteId, siteContent);
+		const { siteId, siteHandle, siteContent, workspaceHandle, shopId } = config;
+		await redisClient.setSiteCache({ siteId, siteHandle, siteContent, workspaceHandle, shopId });
 	}
 
 	public async invalidate(config: TInvalidateSiteCacheConfig): Promise<void> {

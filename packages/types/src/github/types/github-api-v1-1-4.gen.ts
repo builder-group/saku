@@ -6528,207 +6528,6 @@ export interface paths {
         patch: operations["teams/update-discussion-in-org"];
         trace?: never;
     };
-    "/orgs/{org}/teams/{team_slug}/discussions/{discussion_number}/comments": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * List discussion comments
-         * @description List all comments on a team discussion.
-         *
-         *     > [!NOTE]
-         *     > You can also specify a team by `org_id` and `team_id` using the route `GET /organizations/{org_id}/team/{team_id}/discussions/{discussion_number}/comments`.
-         *
-         *     OAuth app tokens and personal access tokens (classic) need the `read:discussion` scope to use this endpoint.
-         */
-        get: operations["teams/list-discussion-comments-in-org"];
-        put?: never;
-        /**
-         * Create a discussion comment
-         * @description Creates a new comment on a team discussion.
-         *
-         *     This endpoint triggers [notifications](https://docs.github.com/enterprise-server@3.15/github/managing-subscriptions-and-notifications-on-github/about-notifications). Creating content too quickly using this endpoint may result in secondary rate limiting. For more information, see "[Rate limits for the API](https://docs.github.com/enterprise-server@3.15/rest/using-the-rest-api/rate-limits-for-the-rest-api#about-secondary-rate-limits)" and "[Best practices for using the REST API](https://docs.github.com/enterprise-server@3.15/rest/guides/best-practices-for-using-the-rest-api)."
-         *
-         *     > [!NOTE]
-         *     > You can also specify a team by `org_id` and `team_id` using the route `POST /organizations/{org_id}/team/{team_id}/discussions/{discussion_number}/comments`.
-         *
-         *     OAuth app tokens and personal access tokens (classic) need the `write:discussion` scope to use this endpoint.
-         */
-        post: operations["teams/create-discussion-comment-in-org"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/orgs/{org}/teams/{team_slug}/discussions/{discussion_number}/comments/{comment_number}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get a discussion comment
-         * @description Get a specific comment on a team discussion.
-         *
-         *     > [!NOTE]
-         *     > You can also specify a team by `org_id` and `team_id` using the route `GET /organizations/{org_id}/team/{team_id}/discussions/{discussion_number}/comments/{comment_number}`.
-         *
-         *     OAuth app tokens and personal access tokens (classic) need the `read:discussion` scope to use this endpoint.
-         */
-        get: operations["teams/get-discussion-comment-in-org"];
-        put?: never;
-        post?: never;
-        /**
-         * Delete a discussion comment
-         * @description Deletes a comment on a team discussion.
-         *
-         *     > [!NOTE]
-         *     > You can also specify a team by `org_id` and `team_id` using the route `DELETE /organizations/{org_id}/team/{team_id}/discussions/{discussion_number}/comments/{comment_number}`.
-         *
-         *     OAuth app tokens and personal access tokens (classic) need the `write:discussion` scope to use this endpoint.
-         */
-        delete: operations["teams/delete-discussion-comment-in-org"];
-        options?: never;
-        head?: never;
-        /**
-         * Update a discussion comment
-         * @description Edits the body text of a discussion comment.
-         *
-         *     > [!NOTE]
-         *     > You can also specify a team by `org_id` and `team_id` using the route `PATCH /organizations/{org_id}/team/{team_id}/discussions/{discussion_number}/comments/{comment_number}`.
-         *
-         *     OAuth app tokens and personal access tokens (classic) need the `write:discussion` scope to use this endpoint.
-         */
-        patch: operations["teams/update-discussion-comment-in-org"];
-        trace?: never;
-    };
-    "/orgs/{org}/teams/{team_slug}/discussions/{discussion_number}/comments/{comment_number}/reactions": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * List reactions for a team discussion comment
-         * @description List the reactions to a [team discussion comment](https://docs.github.com/enterprise-server@3.15/rest/teams/discussion-comments#get-a-discussion-comment).
-         *
-         *     > [!NOTE]
-         *     > You can also specify a team by `org_id` and `team_id` using the route `GET /organizations/:org_id/team/:team_id/discussions/:discussion_number/comments/:comment_number/reactions`.
-         *
-         *     OAuth app tokens and personal access tokens (classic) need the `read:discussion` scope to use this endpoint.
-         */
-        get: operations["reactions/list-for-team-discussion-comment-in-org"];
-        put?: never;
-        /**
-         * Create reaction for a team discussion comment
-         * @description Create a reaction to a [team discussion comment](https://docs.github.com/enterprise-server@3.15/rest/teams/discussion-comments#get-a-discussion-comment).
-         *
-         *     A response with an HTTP `200` status means that you already added the reaction type to this team discussion comment.
-         *
-         *     > [!NOTE]
-         *     > You can also specify a team by `org_id` and `team_id` using the route `POST /organizations/:org_id/team/:team_id/discussions/:discussion_number/comments/:comment_number/reactions`.
-         *
-         *     OAuth app tokens and personal access tokens (classic) need the `write:discussion` scope to use this endpoint.
-         */
-        post: operations["reactions/create-for-team-discussion-comment-in-org"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/orgs/{org}/teams/{team_slug}/discussions/{discussion_number}/comments/{comment_number}/reactions/{reaction_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        /**
-         * Delete team discussion comment reaction
-         * @description > [!NOTE]
-         *     > You can also specify a team or organization with `team_id` and `org_id` using the route `DELETE /organizations/:org_id/team/:team_id/discussions/:discussion_number/comments/:comment_number/reactions/:reaction_id`.
-         *
-         *     Delete a reaction to a [team discussion comment](https://docs.github.com/enterprise-server@3.15/rest/teams/discussion-comments#get-a-discussion-comment).
-         *
-         *     OAuth app tokens and personal access tokens (classic) need the `write:discussion` scope to use this endpoint.
-         */
-        delete: operations["reactions/delete-for-team-discussion-comment"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/orgs/{org}/teams/{team_slug}/discussions/{discussion_number}/reactions": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * List reactions for a team discussion
-         * @description List the reactions to a [team discussion](https://docs.github.com/enterprise-server@3.15/rest/teams/discussions#get-a-discussion).
-         *
-         *     > [!NOTE]
-         *     > You can also specify a team by `org_id` and `team_id` using the route `GET /organizations/:org_id/team/:team_id/discussions/:discussion_number/reactions`.
-         *
-         *     OAuth app tokens and personal access tokens (classic) need the `read:discussion` scope to use this endpoint.
-         */
-        get: operations["reactions/list-for-team-discussion-in-org"];
-        put?: never;
-        /**
-         * Create reaction for a team discussion
-         * @description Create a reaction to a [team discussion](https://docs.github.com/enterprise-server@3.15/rest/teams/discussions#get-a-discussion).
-         *
-         *     A response with an HTTP `200` status means that you already added the reaction type to this team discussion.
-         *
-         *     > [!NOTE]
-         *     > You can also specify a team by `org_id` and `team_id` using the route `POST /organizations/:org_id/team/:team_id/discussions/:discussion_number/reactions`.
-         *
-         *     OAuth app tokens and personal access tokens (classic) need the `write:discussion` scope to use this endpoint.
-         */
-        post: operations["reactions/create-for-team-discussion-in-org"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/orgs/{org}/teams/{team_slug}/discussions/{discussion_number}/reactions/{reaction_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        /**
-         * Delete team discussion reaction
-         * @description > [!NOTE]
-         *     > You can also specify a team or organization with `team_id` and `org_id` using the route `DELETE /organizations/:org_id/team/:team_id/discussions/:discussion_number/reactions/:reaction_id`.
-         *
-         *     Delete a reaction to a [team discussion](https://docs.github.com/enterprise-server@3.15/rest/teams/discussions#get-a-discussion).
-         *
-         *     OAuth app tokens and personal access tokens (classic) need the `write:discussion` scope to use this endpoint.
-         */
-        delete: operations["reactions/delete-for-team-discussion"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/orgs/{org}/teams/{team_slug}/external-groups": {
         parameters: {
             query?: never;
@@ -15272,166 +15071,6 @@ export interface paths {
         patch: operations["teams/update-discussion-legacy"];
         trace?: never;
     };
-    "/teams/{team_id}/discussions/{discussion_number}/comments": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * List discussion comments (Legacy)
-         * @deprecated
-         * @description > [!WARNING]
-         *     > **Endpoint closing down notice:** This endpoint route is closing down and will be removed from the Teams API. We recommend migrating your existing code to use the new [List discussion comments](https://docs.github.com/enterprise-server@3.15/rest/teams/discussion-comments#list-discussion-comments) endpoint.
-         *
-         *     List all comments on a team discussion.
-         *
-         *     OAuth app tokens and personal access tokens (classic) need the `read:discussion` scope to use this endpoint.
-         */
-        get: operations["teams/list-discussion-comments-legacy"];
-        put?: never;
-        /**
-         * Create a discussion comment (Legacy)
-         * @deprecated
-         * @description > [!WARNING]
-         *     > **Endpoint closing down notice:** This endpoint route is closing down and will be removed from the Teams API. We recommend migrating your existing code to use the new [Create a discussion comment](https://docs.github.com/enterprise-server@3.15/rest/teams/discussion-comments#create-a-discussion-comment) endpoint.
-         *
-         *     Creates a new comment on a team discussion.
-         *
-         *     This endpoint triggers [notifications](https://docs.github.com/enterprise-server@3.15/github/managing-subscriptions-and-notifications-on-github/about-notifications). Creating content too quickly using this endpoint may result in secondary rate limiting. For more information, see "[Rate limits for the API](https://docs.github.com/enterprise-server@3.15/rest/using-the-rest-api/rate-limits-for-the-rest-api#about-secondary-rate-limits)" and "[Best practices for using the REST API](https://docs.github.com/enterprise-server@3.15/rest/guides/best-practices-for-using-the-rest-api)."
-         *
-         *     OAuth app tokens and personal access tokens (classic) need the `write:discussion` scope to use this endpoint.
-         */
-        post: operations["teams/create-discussion-comment-legacy"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/teams/{team_id}/discussions/{discussion_number}/comments/{comment_number}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get a discussion comment (Legacy)
-         * @deprecated
-         * @description > [!WARNING]
-         *     > **Endpoint closing down notice:** This endpoint route is closing down and will be removed from the Teams API. We recommend migrating your existing code to use the new [Get a discussion comment](https://docs.github.com/enterprise-server@3.15/rest/teams/discussion-comments#get-a-discussion-comment) endpoint.
-         *
-         *     Get a specific comment on a team discussion.
-         *
-         *     OAuth app tokens and personal access tokens (classic) need the `read:discussion` scope to use this endpoint.
-         */
-        get: operations["teams/get-discussion-comment-legacy"];
-        put?: never;
-        post?: never;
-        /**
-         * Delete a discussion comment (Legacy)
-         * @deprecated
-         * @description > [!WARNING]
-         *     > **Endpoint closing down notice:** This endpoint route is closing down and will be removed from the Teams API. We recommend migrating your existing code to use the new [Delete a discussion comment](https://docs.github.com/enterprise-server@3.15/rest/teams/discussion-comments#delete-a-discussion-comment) endpoint.
-         *
-         *     Deletes a comment on a team discussion.
-         *
-         *     OAuth app tokens and personal access tokens (classic) need the `write:discussion` scope to use this endpoint.
-         */
-        delete: operations["teams/delete-discussion-comment-legacy"];
-        options?: never;
-        head?: never;
-        /**
-         * Update a discussion comment (Legacy)
-         * @deprecated
-         * @description > [!WARNING]
-         *     > **Endpoint closing down notice:** This endpoint route is closing down and will be removed from the Teams API. We recommend migrating your existing code to use the new [Update a discussion comment](https://docs.github.com/enterprise-server@3.15/rest/teams/discussion-comments#update-a-discussion-comment) endpoint.
-         *
-         *     Edits the body text of a discussion comment.
-         *
-         *     OAuth app tokens and personal access tokens (classic) need the `write:discussion` scope to use this endpoint.
-         */
-        patch: operations["teams/update-discussion-comment-legacy"];
-        trace?: never;
-    };
-    "/teams/{team_id}/discussions/{discussion_number}/comments/{comment_number}/reactions": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * List reactions for a team discussion comment (Legacy)
-         * @deprecated
-         * @description > [!WARNING]
-         *     > **Endpoint closing down notice:** This endpoint route is closing down and will be removed from the Teams API. We recommend migrating your existing code to use the new [`List reactions for a team discussion comment`](https://docs.github.com/enterprise-server@3.15/rest/reactions/reactions#list-reactions-for-a-team-discussion-comment) endpoint.
-         *
-         *     List the reactions to a [team discussion comment](https://docs.github.com/enterprise-server@3.15/rest/teams/discussion-comments#get-a-discussion-comment).
-         *
-         *     OAuth app tokens and personal access tokens (classic) need the `read:discussion` scope to use this endpoint.
-         */
-        get: operations["reactions/list-for-team-discussion-comment-legacy"];
-        put?: never;
-        /**
-         * Create reaction for a team discussion comment (Legacy)
-         * @deprecated
-         * @description > [!WARNING]
-         *     > **Endpoint closing down notice:** This endpoint route is closing down and will be removed from the Teams API. We recommend migrating your existing code to use the new "[Create reaction for a team discussion comment](https://docs.github.com/enterprise-server@3.15/rest/reactions/reactions#create-reaction-for-a-team-discussion-comment)" endpoint.
-         *
-         *     Create a reaction to a [team discussion comment](https://docs.github.com/enterprise-server@3.15/rest/teams/discussion-comments#get-a-discussion-comment).
-         *
-         *     A response with an HTTP `200` status means that you already added the reaction type to this team discussion comment.
-         *
-         *     OAuth app tokens and personal access tokens (classic) need the `write:discussion` scope to use this endpoint.
-         */
-        post: operations["reactions/create-for-team-discussion-comment-legacy"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/teams/{team_id}/discussions/{discussion_number}/reactions": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * List reactions for a team discussion (Legacy)
-         * @deprecated
-         * @description > [!WARNING]
-         *     > **Endpoint closing down notice:** This endpoint route is closing down and will be removed from the Teams API. We recommend migrating your existing code to use the new [`List reactions for a team discussion`](https://docs.github.com/enterprise-server@3.15/rest/reactions/reactions#list-reactions-for-a-team-discussion) endpoint.
-         *
-         *     List the reactions to a [team discussion](https://docs.github.com/enterprise-server@3.15/rest/teams/discussions#get-a-discussion).
-         *
-         *     OAuth app tokens and personal access tokens (classic) need the `read:discussion` scope to use this endpoint.
-         */
-        get: operations["reactions/list-for-team-discussion-legacy"];
-        put?: never;
-        /**
-         * Create reaction for a team discussion (Legacy)
-         * @deprecated
-         * @description > [!WARNING]
-         *     > **Endpoint closing down notice:** This endpoint route is closing down and will be removed from the Teams API. We recommend migrating your existing code to use the new [`Create reaction for a team discussion`](https://docs.github.com/enterprise-server@3.15/rest/reactions/reactions#create-reaction-for-a-team-discussion) endpoint.
-         *
-         *     Create a reaction to a [team discussion](https://docs.github.com/enterprise-server@3.15/rest/teams/discussions#get-a-discussion).
-         *
-         *     A response with an HTTP `200` status means that you already added the reaction type to this team discussion.
-         *
-         *     OAuth app tokens and personal access tokens (classic) need the `write:discussion` scope to use this endpoint.
-         */
-        post: operations["reactions/create-for-team-discussion-legacy"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/teams/{team_id}/members": {
         parameters: {
             query?: never;
@@ -22995,11 +22634,6 @@ export interface components {
             default_for_new_repos?: "public" | "private_and_internal" | "all";
             configuration?: components["schemas"]["code-security-configuration"];
         }[];
-        /** @description Security Configuration feature options for code scanning */
-        "code-scanning-options": {
-            /** @description Whether to allow repos which use advanced setup */
-            allow_advanced?: boolean | null;
-        } | null;
         /** @description Repositories associated with a code security configuration and attachment status */
         "code-security-configuration-repositories": {
             /**
@@ -25777,13 +25411,6 @@ export interface components {
              * @example 0307116bbf7ced493b8d8a346c650b71
              */
             body_version: string;
-            /** @example 0 */
-            comments_count: number;
-            /**
-             * Format: uri
-             * @example https://api.github.com/organizations/1/team/2343027/discussions/1/comments
-             */
-            comments_url: string;
             /**
              * Format: date-time
              * @example 2018-01-25T18:56:31Z
@@ -25834,82 +25461,6 @@ export interface components {
              */
             url: string;
             reactions?: components["schemas"]["reaction-rollup"];
-        };
-        /**
-         * Team Discussion Comment
-         * @description A reply to a discussion within a team.
-         */
-        "team-discussion-comment": {
-            author: components["schemas"]["nullable-simple-user"];
-            /**
-             * @description The main text of the comment.
-             * @example I agree with this suggestion.
-             */
-            body: string;
-            /** @example <p>Do you like apples?</p> */
-            body_html: string;
-            /**
-             * @description The current version of the body content. If provided, this update operation will be rejected if the given version does not match the latest version on the server.
-             * @example 0307116bbf7ced493b8d8a346c650b71
-             */
-            body_version: string;
-            /**
-             * Format: date-time
-             * @example 2018-01-15T23:53:58Z
-             */
-            created_at: string;
-            /** Format: date-time */
-            last_edited_at: string | null;
-            /**
-             * Format: uri
-             * @example https://api.github.com/organizations/1/team/2403582/discussions/1
-             */
-            discussion_url: string;
-            /**
-             * Format: uri
-             * @example https://github.com/orgs/github/teams/justice-league/discussions/1/comments/1
-             */
-            html_url: string;
-            /** @example MDIxOlRlYW1EaXNjdXNzaW9uQ29tbWVudDE= */
-            node_id: string;
-            /**
-             * @description The unique sequence number of a team discussion comment.
-             * @example 42
-             */
-            number: number;
-            /**
-             * Format: date-time
-             * @example 2018-01-15T23:53:58Z
-             */
-            updated_at: string;
-            /**
-             * Format: uri
-             * @example https://api.github.com/organizations/1/team/2403582/discussions/1/comments/1
-             */
-            url: string;
-            reactions?: components["schemas"]["reaction-rollup"];
-        };
-        /**
-         * Reaction
-         * @description Reactions to conversations provide a way to help people express their feelings more simply and effectively.
-         */
-        reaction: {
-            /** @example 1 */
-            id: number;
-            /** @example MDg6UmVhY3Rpb24x */
-            node_id: string;
-            user: components["schemas"]["nullable-simple-user"];
-            /**
-             * @description The reaction to use
-             * @example heart
-             * @enum {string}
-             */
-            content: "+1" | "-1" | "laugh" | "confused" | "heart" | "hooray" | "rocket" | "eyes";
-            /**
-             * Format: date-time
-             * @example 2016-05-20T20:09:31Z
-             */
-            created_at: string;
         };
         /**
          * Team Membership
@@ -27151,15 +26702,22 @@ export interface components {
         /**
          * Workflow Run ID
          * Format: int64
-         * @description The unique identifier for a workflow run
+         * @description The ID of the workflow run.
          */
         "workflow-run-id": number;
         /**
          * Workflow Dispatch Response
-         * @description Response containing the workflow run ID
+         * @description Response containing the workflow run ID and URLs.
          */
         "workflow-dispatch-response": {
             workflow_run_id: components["schemas"]["workflow-run-id"];
+            /**
+             * Format: uri
+             * @description The URL to the workflow run.
+             */
+            run_url: string;
+            /** Format: uri */
+            html_url: string;
         };
         /**
          * Activity
@@ -28072,6 +27630,31 @@ export interface components {
          * @enum {string}
          */
         "code-scanning-alert-set-state": "open" | "dismissed";
+        /** @description The list of users to assign to the code scanning alert. An empty array unassigns all previous assignees from the alert. */
+        "code-scanning-alert-assignees": string[];
+        /**
+         * @description State of a code scanning alert instance.
+         * @enum {string|null}
+         */
+        "code-scanning-alert-instance-state": "open" | "fixed" | null;
+        "code-scanning-alert-instance-list": {
+            ref?: components["schemas"]["code-scanning-ref"];
+            analysis_key?: components["schemas"]["code-scanning-analysis-analysis-key"];
+            environment?: components["schemas"]["code-scanning-alert-environment"];
+            category?: components["schemas"]["code-scanning-analysis-category"];
+            state?: components["schemas"]["code-scanning-alert-instance-state"];
+            commit_sha?: string;
+            message?: {
+                text?: string;
+            };
+            location?: components["schemas"]["code-scanning-alert-location"];
+            html_url?: string;
+            /**
+             * @description Classifications that have been applied to the file that triggered the alert.
+             *     For example identifying it as documentation, or a generated file.
+             */
+            classifications?: components["schemas"]["code-scanning-alert-classification"][];
+        };
         /**
          * @description An identifier for the upload.
          * @example 6c81cd8e-b078-4ac3-a3be-1dad7dbd0b53
@@ -28463,6 +28046,28 @@ export interface components {
             updated_at: string;
             author_association: components["schemas"]["author-association"];
             reactions?: components["schemas"]["reaction-rollup"];
+        };
+        /**
+         * Reaction
+         * @description Reactions to conversations provide a way to help people express their feelings more simply and effectively.
+         */
+        reaction: {
+            /** @example 1 */
+            id: number;
+            /** @example MDg6UmVhY3Rpb24x */
+            node_id: string;
+            user: components["schemas"]["nullable-simple-user"];
+            /**
+             * @description The reaction to use
+             * @example heart
+             * @enum {string}
+             */
+            content: "+1" | "-1" | "laugh" | "confused" | "heart" | "hooray" | "rocket" | "eyes";
+            /**
+             * Format: date-time
+             * @example 2016-05-20T20:09:31Z
+             */
+            created_at: string;
         };
         /**
          * Branch Short
@@ -30673,7 +30278,7 @@ export interface components {
              * @example 8
              */
             in_reply_to_id?: number;
-            user: components["schemas"]["simple-user"];
+            user: components["schemas"]["nullable-simple-user"];
             /**
              * @description The text of the comment.
              * @example We should probably include a check for null values here.
@@ -83863,10 +83468,6 @@ export interface components {
         "secret-scanning-pagination-after-org-repo": string;
         /** @description The number that identifies the discussion. */
         "discussion-number": number;
-        /** @description The number that identifies the comment. */
-        "comment-number": number;
-        /** @description The unique identifier of the reaction. */
-        "reaction-id": number;
         /** @description The unique identifier of the project. */
         "project-id": number;
         /** @description The security feature to enable or disable. */
@@ -83936,6 +83537,8 @@ export interface components {
         "git-ref": components["schemas"]["code-scanning-ref"];
         /** @description The number that identifies an alert. You can find this at the end of the URL for a code scanning alert within GitHub, and in the `number` field in the response from the `GET /repos/{owner}/{repo}/code-scanning/alerts` operation. */
         "alert-number": components["schemas"]["alert-number"];
+        /** @description The unique identifier of the reaction. */
+        "reaction-id": number;
         /** @description The SHA of the commit. */
         "commit-sha": string;
         /** @description The commit reference. Can be a commit SHA, branch name (`heads/BRANCH_NAME`), or tag name (`tags/TAG_NAME`). For more information, see "[Git References](https://git-scm.com/book/en/v2/Git-Internals-Git-References)" in the Git documentation. */
@@ -87612,6 +87215,11 @@ export interface operations {
                 state?: components["schemas"]["code-scanning-alert-state-query"];
                 /** @description The property by which to sort the results. */
                 sort?: "created" | "updated";
+                /**
+                 * @description Filter alerts by assignees. Provide a comma-separated list of user handles (e.g., `octocat` or `octocat,hubot`).
+                 *     Use `*` to list alerts with at least one assignee or `none` to list alerts with no assignees.
+                 */
+                assignees?: string;
             };
             header?: never;
             path: {
@@ -91988,6 +91596,11 @@ export interface operations {
                 sort?: "created" | "updated";
                 /** @description If specified, only code scanning alerts with this severity will be returned. */
                 severity?: components["schemas"]["code-scanning-alert-severity"];
+                /**
+                 * @description Filter alerts by assignees. Provide a comma-separated list of user handles (e.g., `octocat` or `octocat,hubot`).
+                 *     Use `*` to list alerts with at least one assignee or `none` to list alerts with no assignees.
+                 */
+                assignees?: string;
             };
             header?: never;
             path: {
@@ -96594,389 +96207,6 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["team-discussion"];
                 };
-            };
-        };
-    };
-    "teams/list-discussion-comments-in-org": {
-        parameters: {
-            query?: {
-                /** @description The direction to sort the results by. */
-                direction?: components["parameters"]["direction"];
-                /** @description The number of results per page (max 100). For more information, see "[Using pagination in the REST API](https://docs.github.com/enterprise-server@3.15/rest/using-the-rest-api/using-pagination-in-the-rest-api)." */
-                per_page?: components["parameters"]["per-page"];
-                /** @description The page number of the results to fetch. For more information, see "[Using pagination in the REST API](https://docs.github.com/enterprise-server@3.15/rest/using-the-rest-api/using-pagination-in-the-rest-api)." */
-                page?: components["parameters"]["page"];
-            };
-            header?: never;
-            path: {
-                /** @description The organization name. The name is not case sensitive. */
-                org: components["parameters"]["org"];
-                /** @description The slug of the team name. */
-                team_slug: components["parameters"]["team-slug"];
-                /** @description The number that identifies the discussion. */
-                discussion_number: components["parameters"]["discussion-number"];
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Response */
-            200: {
-                headers: {
-                    Link: components["headers"]["link"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["team-discussion-comment"][];
-                };
-            };
-        };
-    };
-    "teams/create-discussion-comment-in-org": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description The organization name. The name is not case sensitive. */
-                org: components["parameters"]["org"];
-                /** @description The slug of the team name. */
-                team_slug: components["parameters"]["team-slug"];
-                /** @description The number that identifies the discussion. */
-                discussion_number: components["parameters"]["discussion-number"];
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    /** @description The discussion comment's body text. */
-                    body: string;
-                };
-            };
-        };
-        responses: {
-            /** @description Response */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["team-discussion-comment"];
-                };
-            };
-        };
-    };
-    "teams/get-discussion-comment-in-org": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description The organization name. The name is not case sensitive. */
-                org: components["parameters"]["org"];
-                /** @description The slug of the team name. */
-                team_slug: components["parameters"]["team-slug"];
-                /** @description The number that identifies the discussion. */
-                discussion_number: components["parameters"]["discussion-number"];
-                /** @description The number that identifies the comment. */
-                comment_number: components["parameters"]["comment-number"];
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["team-discussion-comment"];
-                };
-            };
-        };
-    };
-    "teams/delete-discussion-comment-in-org": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description The organization name. The name is not case sensitive. */
-                org: components["parameters"]["org"];
-                /** @description The slug of the team name. */
-                team_slug: components["parameters"]["team-slug"];
-                /** @description The number that identifies the discussion. */
-                discussion_number: components["parameters"]["discussion-number"];
-                /** @description The number that identifies the comment. */
-                comment_number: components["parameters"]["comment-number"];
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Response */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    "teams/update-discussion-comment-in-org": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description The organization name. The name is not case sensitive. */
-                org: components["parameters"]["org"];
-                /** @description The slug of the team name. */
-                team_slug: components["parameters"]["team-slug"];
-                /** @description The number that identifies the discussion. */
-                discussion_number: components["parameters"]["discussion-number"];
-                /** @description The number that identifies the comment. */
-                comment_number: components["parameters"]["comment-number"];
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    /** @description The discussion comment's body text. */
-                    body: string;
-                };
-            };
-        };
-        responses: {
-            /** @description Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["team-discussion-comment"];
-                };
-            };
-        };
-    };
-    "reactions/list-for-team-discussion-comment-in-org": {
-        parameters: {
-            query?: {
-                /** @description Returns a single [reaction type](https://docs.github.com/enterprise-server@3.15/rest/reactions/reactions#about-reactions). Omit this parameter to list all reactions to a team discussion comment. */
-                content?: "+1" | "-1" | "laugh" | "confused" | "heart" | "hooray" | "rocket" | "eyes";
-                /** @description The number of results per page (max 100). For more information, see "[Using pagination in the REST API](https://docs.github.com/enterprise-server@3.15/rest/using-the-rest-api/using-pagination-in-the-rest-api)." */
-                per_page?: components["parameters"]["per-page"];
-                /** @description The page number of the results to fetch. For more information, see "[Using pagination in the REST API](https://docs.github.com/enterprise-server@3.15/rest/using-the-rest-api/using-pagination-in-the-rest-api)." */
-                page?: components["parameters"]["page"];
-            };
-            header?: never;
-            path: {
-                /** @description The organization name. The name is not case sensitive. */
-                org: components["parameters"]["org"];
-                /** @description The slug of the team name. */
-                team_slug: components["parameters"]["team-slug"];
-                /** @description The number that identifies the discussion. */
-                discussion_number: components["parameters"]["discussion-number"];
-                /** @description The number that identifies the comment. */
-                comment_number: components["parameters"]["comment-number"];
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Response */
-            200: {
-                headers: {
-                    Link: components["headers"]["link"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["reaction"][];
-                };
-            };
-        };
-    };
-    "reactions/create-for-team-discussion-comment-in-org": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description The organization name. The name is not case sensitive. */
-                org: components["parameters"]["org"];
-                /** @description The slug of the team name. */
-                team_slug: components["parameters"]["team-slug"];
-                /** @description The number that identifies the discussion. */
-                discussion_number: components["parameters"]["discussion-number"];
-                /** @description The number that identifies the comment. */
-                comment_number: components["parameters"]["comment-number"];
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    /**
-                     * @description The [reaction type](https://docs.github.com/enterprise-server@3.15/rest/reactions/reactions#about-reactions) to add to the team discussion comment.
-                     * @enum {string}
-                     */
-                    content: "+1" | "-1" | "laugh" | "confused" | "heart" | "hooray" | "rocket" | "eyes";
-                };
-            };
-        };
-        responses: {
-            /** @description Response when the reaction type has already been added to this team discussion comment */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["reaction"];
-                };
-            };
-            /** @description Response */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["reaction"];
-                };
-            };
-        };
-    };
-    "reactions/delete-for-team-discussion-comment": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description The organization name. The name is not case sensitive. */
-                org: components["parameters"]["org"];
-                /** @description The slug of the team name. */
-                team_slug: components["parameters"]["team-slug"];
-                /** @description The number that identifies the discussion. */
-                discussion_number: components["parameters"]["discussion-number"];
-                /** @description The number that identifies the comment. */
-                comment_number: components["parameters"]["comment-number"];
-                /** @description The unique identifier of the reaction. */
-                reaction_id: components["parameters"]["reaction-id"];
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Response */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    "reactions/list-for-team-discussion-in-org": {
-        parameters: {
-            query?: {
-                /** @description Returns a single [reaction type](https://docs.github.com/enterprise-server@3.15/rest/reactions/reactions#about-reactions). Omit this parameter to list all reactions to a team discussion. */
-                content?: "+1" | "-1" | "laugh" | "confused" | "heart" | "hooray" | "rocket" | "eyes";
-                /** @description The number of results per page (max 100). For more information, see "[Using pagination in the REST API](https://docs.github.com/enterprise-server@3.15/rest/using-the-rest-api/using-pagination-in-the-rest-api)." */
-                per_page?: components["parameters"]["per-page"];
-                /** @description The page number of the results to fetch. For more information, see "[Using pagination in the REST API](https://docs.github.com/enterprise-server@3.15/rest/using-the-rest-api/using-pagination-in-the-rest-api)." */
-                page?: components["parameters"]["page"];
-            };
-            header?: never;
-            path: {
-                /** @description The organization name. The name is not case sensitive. */
-                org: components["parameters"]["org"];
-                /** @description The slug of the team name. */
-                team_slug: components["parameters"]["team-slug"];
-                /** @description The number that identifies the discussion. */
-                discussion_number: components["parameters"]["discussion-number"];
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Response */
-            200: {
-                headers: {
-                    Link: components["headers"]["link"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["reaction"][];
-                };
-            };
-        };
-    };
-    "reactions/create-for-team-discussion-in-org": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description The organization name. The name is not case sensitive. */
-                org: components["parameters"]["org"];
-                /** @description The slug of the team name. */
-                team_slug: components["parameters"]["team-slug"];
-                /** @description The number that identifies the discussion. */
-                discussion_number: components["parameters"]["discussion-number"];
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    /**
-                     * @description The [reaction type](https://docs.github.com/enterprise-server@3.15/rest/reactions/reactions#about-reactions) to add to the team discussion.
-                     * @enum {string}
-                     */
-                    content: "+1" | "-1" | "laugh" | "confused" | "heart" | "hooray" | "rocket" | "eyes";
-                };
-            };
-        };
-        responses: {
-            /** @description Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["reaction"];
-                };
-            };
-            /** @description Response */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["reaction"];
-                };
-            };
-        };
-    };
-    "reactions/delete-for-team-discussion": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description The organization name. The name is not case sensitive. */
-                org: components["parameters"]["org"];
-                /** @description The slug of the team name. */
-                team_slug: components["parameters"]["team-slug"];
-                /** @description The number that identifies the discussion. */
-                discussion_number: components["parameters"]["discussion-number"];
-                /** @description The unique identifier of the reaction. */
-                reaction_id: components["parameters"]["reaction-id"];
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Response */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
             };
         };
     };
@@ -102893,7 +102123,8 @@ export interface operations {
                     state: components["schemas"]["code-scanning-alert-set-state"];
                     dismissed_reason?: components["schemas"]["code-scanning-alert-dismissed-reason"];
                     dismissed_comment?: components["schemas"]["code-scanning-alert-dismissed-comment"];
-                } | unknown;
+                    assignees?: components["schemas"]["code-scanning-alert-assignees"];
+                } | unknown | unknown;
             };
         };
         responses: {
@@ -102941,7 +102172,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["code-scanning-alert-instance"][];
+                    "application/json": components["schemas"]["code-scanning-alert-instance-list"][];
                 };
             };
             403: components["responses"]["code_scanning_forbidden_read"];
@@ -113775,297 +113006,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["team-discussion"];
-                };
-            };
-        };
-    };
-    "teams/list-discussion-comments-legacy": {
-        parameters: {
-            query?: {
-                /** @description The direction to sort the results by. */
-                direction?: components["parameters"]["direction"];
-                /** @description The number of results per page (max 100). For more information, see "[Using pagination in the REST API](https://docs.github.com/enterprise-server@3.15/rest/using-the-rest-api/using-pagination-in-the-rest-api)." */
-                per_page?: components["parameters"]["per-page"];
-                /** @description The page number of the results to fetch. For more information, see "[Using pagination in the REST API](https://docs.github.com/enterprise-server@3.15/rest/using-the-rest-api/using-pagination-in-the-rest-api)." */
-                page?: components["parameters"]["page"];
-            };
-            header?: never;
-            path: {
-                /** @description The unique identifier of the team. */
-                team_id: components["parameters"]["team-id"];
-                /** @description The number that identifies the discussion. */
-                discussion_number: components["parameters"]["discussion-number"];
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Response */
-            200: {
-                headers: {
-                    Link: components["headers"]["link"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["team-discussion-comment"][];
-                };
-            };
-        };
-    };
-    "teams/create-discussion-comment-legacy": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description The unique identifier of the team. */
-                team_id: components["parameters"]["team-id"];
-                /** @description The number that identifies the discussion. */
-                discussion_number: components["parameters"]["discussion-number"];
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    /** @description The discussion comment's body text. */
-                    body: string;
-                };
-            };
-        };
-        responses: {
-            /** @description Response */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["team-discussion-comment"];
-                };
-            };
-        };
-    };
-    "teams/get-discussion-comment-legacy": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description The unique identifier of the team. */
-                team_id: components["parameters"]["team-id"];
-                /** @description The number that identifies the discussion. */
-                discussion_number: components["parameters"]["discussion-number"];
-                /** @description The number that identifies the comment. */
-                comment_number: components["parameters"]["comment-number"];
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["team-discussion-comment"];
-                };
-            };
-        };
-    };
-    "teams/delete-discussion-comment-legacy": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description The unique identifier of the team. */
-                team_id: components["parameters"]["team-id"];
-                /** @description The number that identifies the discussion. */
-                discussion_number: components["parameters"]["discussion-number"];
-                /** @description The number that identifies the comment. */
-                comment_number: components["parameters"]["comment-number"];
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Response */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    "teams/update-discussion-comment-legacy": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description The unique identifier of the team. */
-                team_id: components["parameters"]["team-id"];
-                /** @description The number that identifies the discussion. */
-                discussion_number: components["parameters"]["discussion-number"];
-                /** @description The number that identifies the comment. */
-                comment_number: components["parameters"]["comment-number"];
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    /** @description The discussion comment's body text. */
-                    body: string;
-                };
-            };
-        };
-        responses: {
-            /** @description Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["team-discussion-comment"];
-                };
-            };
-        };
-    };
-    "reactions/list-for-team-discussion-comment-legacy": {
-        parameters: {
-            query?: {
-                /** @description Returns a single [reaction type](https://docs.github.com/enterprise-server@3.15/rest/reactions/reactions#about-reactions). Omit this parameter to list all reactions to a team discussion comment. */
-                content?: "+1" | "-1" | "laugh" | "confused" | "heart" | "hooray" | "rocket" | "eyes";
-                /** @description The number of results per page (max 100). For more information, see "[Using pagination in the REST API](https://docs.github.com/enterprise-server@3.15/rest/using-the-rest-api/using-pagination-in-the-rest-api)." */
-                per_page?: components["parameters"]["per-page"];
-                /** @description The page number of the results to fetch. For more information, see "[Using pagination in the REST API](https://docs.github.com/enterprise-server@3.15/rest/using-the-rest-api/using-pagination-in-the-rest-api)." */
-                page?: components["parameters"]["page"];
-            };
-            header?: never;
-            path: {
-                /** @description The unique identifier of the team. */
-                team_id: components["parameters"]["team-id"];
-                /** @description The number that identifies the discussion. */
-                discussion_number: components["parameters"]["discussion-number"];
-                /** @description The number that identifies the comment. */
-                comment_number: components["parameters"]["comment-number"];
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Response */
-            200: {
-                headers: {
-                    Link: components["headers"]["link"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["reaction"][];
-                };
-            };
-        };
-    };
-    "reactions/create-for-team-discussion-comment-legacy": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description The unique identifier of the team. */
-                team_id: components["parameters"]["team-id"];
-                /** @description The number that identifies the discussion. */
-                discussion_number: components["parameters"]["discussion-number"];
-                /** @description The number that identifies the comment. */
-                comment_number: components["parameters"]["comment-number"];
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    /**
-                     * @description The [reaction type](https://docs.github.com/enterprise-server@3.15/rest/reactions/reactions#about-reactions) to add to the team discussion comment.
-                     * @enum {string}
-                     */
-                    content: "+1" | "-1" | "laugh" | "confused" | "heart" | "hooray" | "rocket" | "eyes";
-                };
-            };
-        };
-        responses: {
-            /** @description Response */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["reaction"];
-                };
-            };
-        };
-    };
-    "reactions/list-for-team-discussion-legacy": {
-        parameters: {
-            query?: {
-                /** @description Returns a single [reaction type](https://docs.github.com/enterprise-server@3.15/rest/reactions/reactions#about-reactions). Omit this parameter to list all reactions to a team discussion. */
-                content?: "+1" | "-1" | "laugh" | "confused" | "heart" | "hooray" | "rocket" | "eyes";
-                /** @description The number of results per page (max 100). For more information, see "[Using pagination in the REST API](https://docs.github.com/enterprise-server@3.15/rest/using-the-rest-api/using-pagination-in-the-rest-api)." */
-                per_page?: components["parameters"]["per-page"];
-                /** @description The page number of the results to fetch. For more information, see "[Using pagination in the REST API](https://docs.github.com/enterprise-server@3.15/rest/using-the-rest-api/using-pagination-in-the-rest-api)." */
-                page?: components["parameters"]["page"];
-            };
-            header?: never;
-            path: {
-                /** @description The unique identifier of the team. */
-                team_id: components["parameters"]["team-id"];
-                /** @description The number that identifies the discussion. */
-                discussion_number: components["parameters"]["discussion-number"];
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Response */
-            200: {
-                headers: {
-                    Link: components["headers"]["link"];
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["reaction"][];
-                };
-            };
-        };
-    };
-    "reactions/create-for-team-discussion-legacy": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description The unique identifier of the team. */
-                team_id: components["parameters"]["team-id"];
-                /** @description The number that identifies the discussion. */
-                discussion_number: components["parameters"]["discussion-number"];
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    /**
-                     * @description The [reaction type](https://docs.github.com/enterprise-server@3.15/rest/reactions/reactions#about-reactions) to add to the team discussion.
-                     * @enum {string}
-                     */
-                    content: "+1" | "-1" | "laugh" | "confused" | "heart" | "hooray" | "rocket" | "eyes";
-                };
-            };
-        };
-        responses: {
-            /** @description Response */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["reaction"];
                 };
             };
         };

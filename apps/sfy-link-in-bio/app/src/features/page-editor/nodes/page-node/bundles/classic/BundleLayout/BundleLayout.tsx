@@ -13,6 +13,7 @@ export const ClassicBundleLayout = React.forwardRef<HTMLDivElement, TClassicBund
 		const {
 			node: { watermarkVisible, content, autoLayout, appearance, fill, textCaption },
 			children,
+			cx,
 			...divProps
 		} = props;
 
@@ -94,7 +95,9 @@ export const ClassicBundleLayout = React.forwardRef<HTMLDivElement, TClassicBund
 								</a>
 							)}
 
-							{content.navbar.shareButtonVisible && <ShareButton hasScrolled={hasScrolled} />}
+							{content.navbar.shareButtonVisible && (
+								<ShareButton hasScrolled={hasScrolled} url={cx.url.shopify.primary} />
+							)}
 						</div>
 					</div>
 				)}

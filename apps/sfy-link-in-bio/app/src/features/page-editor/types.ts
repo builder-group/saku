@@ -22,9 +22,3 @@ export type TResolvedNode =
 	| TResolvedTextNode
 	| TResolvedProductNode
 	| TResolvedPromisedNode<any>;
-
-export interface TSiteUrl {
-	proxy: string;
-	primary: string;
-	platform: string;
-}
