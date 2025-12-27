@@ -85,7 +85,20 @@ export const SettingsGeneralPanel: React.FC<TSettingsGeneralPanelProps> = (props
 						/>
 						<FormSection
 							title="Site Handle"
-							description={`The URL-friendly identifier for your site. Your site is available at "${`${editor.site.baseUrl.shopify.primary}/${handle}`}"`}
+							description={
+								<>
+									The URL-friendly identifier for your site. Your site is available at{' '}
+									<a
+										href={`${editor.site.baseUrl.shopify.primary}/${handle}`}
+										target="_blank"
+										rel="noopener noreferrer"
+										className="inline-block rounded bg-neutral-100 px-1.5 py-0.5 font-mono hover:bg-neutral-200 hover:text-blue-600 hover:underline"
+									>
+										{editor.site.baseUrl.shopify.primary}/
+										<span className="text-purple-600">{handle}</span>
+									</a>
+								</>
+							}
 							inputValue={handle}
 							placeholder="bio"
 							helpText="Only lowercase letters, numbers, and dashes. Max 50 characters."

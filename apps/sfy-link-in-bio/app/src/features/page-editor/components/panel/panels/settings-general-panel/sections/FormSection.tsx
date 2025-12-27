@@ -85,7 +85,7 @@ export const FormSection: React.FC<TFormSectionProps> = (props) => {
 						</Text>
 					</div>
 				)}
-				<div className="ml-auto flex-shrink-0">
+				<div className="ml-auto shrink-0">
 					<Button submit loading={isSaving} disabled={isSaveDisabled}>
 						{buttonText}
 					</Button>
@@ -100,7 +100,7 @@ interface TFormSectionProps extends Omit<
 	'label' | 'value' | 'onChange' | 'labelHidden' | 'autoComplete'
 > {
 	title: string;
-	description: string;
+	description: React.ReactNode;
 	inputValue: string;
 	label?: string;
 	helpText?: string;

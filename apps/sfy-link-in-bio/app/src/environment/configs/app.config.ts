@@ -48,6 +48,5 @@ export const appConfig = {
 		crisp: true,
 		review: true
 	},
-	platformUrl: (workspaceHandle?: string) =>
-		workspaceHandle != null ? `${platformBaseUrl}/${workspaceHandle}` : platformBaseUrl
+	platformUrl: (workspaceHandle: string) => `${platformBaseUrl}/${workspaceHandle}`
 };
