@@ -559,10 +559,7 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 				platform: `${appConfig.platformUrl(workspace.handle)}/${site.handle}`,
 				shopify: {
 					proxy: `${shopifyClientConfig.shop.proxy.url(session.shop)}/${site.handle}`,
-					primary:
-						primaryUrl != null
-							? `${primaryUrl}/${site.handle}`
-							: `${shopifyClientConfig.shop.url(session.shop)}/${site.handle}`
+					primary: `${primaryUrl != null ? primaryUrl : shopifyClientConfig.shop.url(session.shop)}/${site.handle}`
 				}
 			},
 			displayName: site.displayName,
