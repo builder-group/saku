@@ -70,7 +70,7 @@ export const SakuUrlStep: React.FC<TSakuUrlStepProps> = (props) => {
 			setIsLoading(false);
 			return;
 		}
-		const [workspaceHandle, siteHandle] = parts;
+		const [workspaceHandle = '', siteHandle = ''] = parts;
 
 		const [isContinueOk, continueErr] = await onboardingContext.continueFromExternalSiteUrl(
 			'saku',

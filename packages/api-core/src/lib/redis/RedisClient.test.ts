@@ -641,7 +641,8 @@ describe('RedisClient', () => {
 		it('should return cached site data when found', async () => {
 			const cachedSite: TCachedSiteData = {
 				siteId: 'site-123',
-				siteContent: { id: 'site-123', handle: 'bio', content: {} }
+				siteContent: { id: 'site-123', handle: 'bio', content: {} },
+				workspaceHandle: 'workspace-123'
 			};
 
 			mockRedis.get.mockResolvedValue(cachedSite);
@@ -666,13 +667,20 @@ describe('RedisClient', () => {
 		it('should store site cache with default TTL', async () => {
 			const siteContent = { id: 'site-123', handle: 'bio', content: {} };
 
-			await redisClient.setSiteCache('shop.myshopify.com', 'bio', 'site-123', siteContent);
+			await redisClient.setSiteCache({
+				shopId: 'shop.myshopify.com',
+				siteHandle: 'bio',
+				siteId: 'site-123',
+				siteContent,
+				workspaceHandle: 'workspace-123'
+			});
 
 			expect(mockRedis.set).toHaveBeenCalledWith(
 				'saku:site:shop.myshopify.com:bio',
 				{
 					siteId: 'site-123',
-					siteContent
+					siteContent,
+					workspaceHandle: 'workspace-123'
 				},
 				{ ex: 5 }
 			);
@@ -681,13 +689,21 @@ describe('RedisClient', () => {
 		it('should store site cache with custom TTL', async () => {
 			const siteContent = { id: 'site-123', handle: 'bio', content: {} };
 
-			await redisClient.setSiteCache('shop.myshopify.com', 'bio', 'site-123', siteContent, 10);
+			await redisClient.setSiteCache({
+				shopId: 'shop.myshopify.com',
+				siteHandle: 'bio',
+				siteId: 'site-123',
+				siteContent,
+				workspaceHandle: 'workspace-123',
+				ttlSeconds: 10
+			});
 
 			expect(mockRedis.set).toHaveBeenCalledWith(
 				'saku:site:shop.myshopify.com:bio',
 				{
 					siteId: 'site-123',
-					siteContent
+					siteContent,
+					workspaceHandle: 'workspace-123'
 				},
 				{ ex: 10 }
 			);
