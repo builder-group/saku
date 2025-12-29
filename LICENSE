@@ -1,22 +1,24 @@
 Copyright (c) 2025 @bennobuilder
 
-1. SCOPE OF LICENSING
+1. Scope of Licensing
    * All content (including but not limited to files, code, documentation, images, and data) follows the LICENSE file in its respective directory (e.g., "ee/LICENSE" applies to all content in "ee/", "clouds/LICENSE" applies to "clouds/").
    * Content with explicit license headers is governed by that specific header, which overrides any directory-level license terms.
+   * Content in any subdirectory that contains a separate LICENSE file (proprietary, MIT, or otherwise) is governed by that LICENSE and is explicitly excluded from the default license in this header.
 
-2. PRECEDENCE OF LICENSES
-   * When multiple licenses could apply, the most specific (closest) license takes precedence. For example:
+2. Precedence of Licenses
+   * When multiple licenses could apply, the most specific license takes precedence. For example:
      * If "ee/LICENSE" specifies a proprietary license but "ee/module/LICENSE" specifies MIT, then all content within "ee/module/" follows MIT licensing.
-     * If "src/file.js" contains an explicit GPL header but "src/LICENSE" specifies MIT, then that specific file follows GPL licensing.
+     * If "src/file.js" contains an explicit GPL header but "src/LICENSE" specifies MIT, then that specific file follows the GPL licensing.
+   * The repository’s default license (AGPLv3) applies only to content not governed by a more specific license in a subdirectory or file header.
 
-3. THIRD-PARTY COMPONENTS
+3. Third-Party Components
    * All third-party components incorporated into the Saku Software remain under their original licenses as provided by their respective owners or contributors.
 
-4. MODIFICATIONS AND CONTRIBUTIONS
+4. Modifications and Contributions
    * Contributions to this project imply acceptance of these licensing terms.
    * Modified versions must clearly indicate changes from the original.
 
-5. DEFAULT LICENSE
+5. Default License
    * Any content not explicitly covered by the licensing terms above is available under the GNU Affero General Public License version 3 (AGPLv3) as published by the Free Software Foundation:
           
                     GNU AFFERO GENERAL PUBLIC LICENSE
