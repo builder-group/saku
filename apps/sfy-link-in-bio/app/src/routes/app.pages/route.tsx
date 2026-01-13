@@ -473,12 +473,18 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 										</Text>
 										<Text as="p" variant="bodyMd" tone="subdued" alignment="center">
 											Want to create multiple bio pages for different purposes or audiences? Upgrade
-											to Awesome plan to unlock unlimited bio pages.
+											to Awesome plan to unlock unlimited bio pages. You can have one bio page for
+											free.
 										</Text>
 									</div>
-									<Button variant="primary" size="medium" url={'/app/settings/plans'}>
-										Upgrade to Awesome
-									</Button>
+									<ButtonGroup>
+										<Button variant="primary" size="medium" url={'/app/settings/plans'}>
+											Upgrade to Awesome
+										</Button>
+										<Button variant="secondary" size="medium" url={'/app'}>
+											Manage Your Bio Page
+										</Button>
+									</ButtonGroup>
 								</div>
 							</div>
 						</div>

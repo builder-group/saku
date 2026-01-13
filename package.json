@@ -33,16 +33,16 @@
 		"dotenv": "^17.2.3",
 		"eslint": "^9.39.2",
 		"prettier": "^3.7.4",
-		"rollup": "^4.54.0",
+		"rollup": "^4.55.1",
 		"rollup-presets": "^0.0.25",
 		"shx": "^0.4.0",
 		"tsx": "^4.21.0",
-		"turbo": "^2.7.2",
+		"turbo": "^2.7.4",
 		"typescript": "^5.9.3",
-		"vite": "^7.3.0",
-		"vitest": "^4.0.16"
+		"vite": "^7.3.1",
+		"vitest": "^4.0.17"
 	},
-	"packageManager": "pnpm@10.26.0",
+	"packageManager": "pnpm@10.28.0",
 	"engines": {
 		"node": ">=24"
 	}
