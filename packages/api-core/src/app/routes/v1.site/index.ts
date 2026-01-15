@@ -91,6 +91,7 @@ router.openapi(GetSiteByWorkspaceAndHandleRoute, async (c) => {
 	);
 });
 
+// @ts-expect-error -- TS2590: Type too complex with Zod 4 + Hono OpenAPI
 router.openapi(UpdateSiteNodeRoute, async (c) => {
 	(await verifyAccessSecret(c)).unwrap();
 	const { siteId, nodeId } = c.req.valid('param');

@@ -28,13 +28,13 @@
 		"version:patch:sfy-link-in-bio-app": "cd apps/sfy-link-in-bio/app && pnpm version patch"
 	},
 	"devDependencies": {
-		"@blgc/config": "^0.0.39",
+		"@blgc/config": "^0.0.40",
 		"@shopify/cli": "^3.88.1",
 		"dotenv": "^17.2.3",
 		"eslint": "^9.39.2",
 		"prettier": "^3.8.0",
 		"rollup": "^4.55.1",
-		"rollup-presets": "^0.0.25",
+		"rollup-presets": "^0.0.26",
 		"shx": "^0.4.0",
 		"tsx": "^4.21.0",
 		"turbo": "^2.7.4",
