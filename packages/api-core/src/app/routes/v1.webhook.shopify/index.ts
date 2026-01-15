@@ -1,6 +1,13 @@
 import { and, eq } from 'drizzle-orm';
 import { router } from '@/app/router';
-import { db, logger, shopifySessionTable, siteTable, workspaceAccountTable } from '@/environment';
+import {
+	db,
+	logger,
+	redisClient,
+	shopifySessionTable,
+	siteTable,
+	workspaceAccountTable
+} from '@/environment';
 import { cleanupShopData, sendUninstallFeedbackEmail, verifyShopifyWebhook } from '@/lib';
 import {
 	AppScopesUpdateWebhookRoute,
@@ -176,6 +183,12 @@ router.openapi(AppScopesUpdateWebhookRoute, async (c) => {
 		})
 		.where(eq(shopifySessionTable.shopId, shopDomain))
 		.returning({ sessionId: shopifySessionTable.sessionId });
+
+	// Invalidate Redis cache for updated sessions
+	for (const session of updatedSessions) {
+		await redisClient.deleteShopifySession(session.sessionId);
+	}
+	await redisClient.deleteShopifySessionsByShop(shopDomain);
 
 	logger.info(`Updated scopes for ${updatedSessions.length} sessions of shop: ${shopDomain}`);
 

@@ -2,7 +2,7 @@ import { parseUrl } from '@repo/editor';
 import { AppError } from '@repo/hono-utils';
 import { and, eq, sql } from 'drizzle-orm';
 import { router } from '@/app/router';
-import { db, siteTable, workspaceTable } from '@/environment';
+import { db, redisClient, siteTable, workspaceAccountTable, workspaceTable } from '@/environment';
 import { prepareSiteContent, verifyAccessSecret } from '@/lib';
 import { parseLinkpopSite, parseSakuSite } from './lib';
 import {
@@ -105,12 +105,27 @@ router.openapi(UpdateSiteNodeRoute, async (c) => {
 			updatedAt: new Date()
 		})
 		.where(eq(siteTable.id, siteId))
-		.returning({ id: siteTable.id });
+		.returning({ id: siteTable.id, handle: siteTable.handle, workspaceId: siteTable.workspaceId });
 	if (updated == null) {
 		throw new AppError('#ERR_SITE_UPDATE_FAILED', 500, {
 			title: 'Update failed',
 			detail: 'Failed to update node in site'
 		});
+	}
+
+	// Invalidate Redis site cache
+	const [shopifyAccount] = await db
+		.select({ shopId: workspaceAccountTable.providerAccountId })
+		.from(workspaceAccountTable)
+		.where(
+			and(
+				eq(workspaceAccountTable.workspaceId, updated.workspaceId),
+				eq(workspaceAccountTable.provider, 'shopify')
+			)
+		)
+		.limit(1);
+	if (shopifyAccount != null) {
+		await redisClient.deleteSiteCache(shopifyAccount.shopId, updated.handle);
 	}
 
 	return c.json({ success: true as const }, 200);

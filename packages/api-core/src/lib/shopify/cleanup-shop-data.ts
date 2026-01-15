@@ -1,10 +1,25 @@
 import { and, eq } from 'drizzle-orm';
-import { db, shopifySessionTable, workspaceAccountTable, workspaceTable } from '@/environment';
+import {
+	db,
+	redisClient,
+	shopifySessionTable,
+	workspaceAccountTable,
+	workspaceTable
+} from '@/environment';
 import { createHandleFromShop } from './create-handle-from-shop';
 
 export async function cleanupShopData(shopId: string): Promise<void> {
-	// 1. Delete Shopify sessions for this shop
-	await db.delete(shopifySessionTable).where(eq(shopifySessionTable.shopId, shopId));
+	// 1. Delete Shopify sessions for this shop (DB + Redis cache)
+	const deletedSessions = await db
+		.delete(shopifySessionTable)
+		.where(eq(shopifySessionTable.shopId, shopId))
+		.returning({ sessionId: shopifySessionTable.sessionId });
+
+	// Invalidate Redis cache for deleted sessions
+	for (const session of deletedSessions) {
+		await redisClient.deleteShopifySession(session.sessionId);
+	}
+	await redisClient.deleteShopifySessionsByShop(shopId);
 
 	// 2. Delete workspace account data (Shopify store connection)
 	const deletedShopifyAccounts = await db

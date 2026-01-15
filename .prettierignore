@@ -1,0 +1,2 @@
+*.gen.ts
+graphql-env.d.ts
