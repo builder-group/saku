@@ -251,7 +251,9 @@ export function createOnboardingContext(
 
 		async complete() {
 			setTimeout(() => {
-				crisp?.showMessageAsOperator('text', '🎉 Your bio page is live!');
+				const { handle = this.defaultHandle.handle } = this.stepr.getVisited('handle') ?? {};
+				const siteUrl = `https://${this.primaryDomain}/${handle}`;
+				crisp?.showMessageAsOperator('text', `🎉 Your bio page is live at ${siteUrl}`);
 				crisp?.showMessageAsOperator('picker', {
 					id: 'post_onboarding_goals',
 					text: 'What would you like to do next?',
