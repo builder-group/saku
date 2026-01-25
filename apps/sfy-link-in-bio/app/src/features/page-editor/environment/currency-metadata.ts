@@ -26,3 +26,10 @@ export function getCurrencySymbol(currencyCode: string): string {
 export function getCurrencyMetadata(currencyCode: string): TCurrencyMetadata | null {
 	return CURRENCY_METADATA[currencyCode] ?? null;
 }
+
+export function getCurrencyOptions(): { label: string; value: string }[] {
+	return Object.values(CURRENCY_METADATA).map((currency) => ({
+		label: `${currency.symbol} ${currency.displayName} (${currency.code})`,
+		value: currency.code
+	}));
+}

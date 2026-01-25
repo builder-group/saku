@@ -14,6 +14,7 @@ import { TState } from 'feature-state';
 import React from 'react';
 import { Knob, PolarisDeleteIcon, PolarisProductAddIcon, RichContentField } from '@/components';
 import { capitalizeFirstLetter, cn, isProduct, mutateWithReferenceUpdate } from '@/lib';
+import { getCurrencyOptions } from '../../environment';
 import { TPageEditor } from '../../lib';
 
 export const SingleProductNodeContentMixinEditor = (
@@ -37,6 +38,10 @@ export const SingleProductNodeContentMixinEditor = (
 	const bannerValue = React.useMemo(() => {
 		return content.banner?.label ?? '';
 	}, [content.banner?.label]);
+	const currencyCode = React.useMemo(() => {
+		return content.product?.variants[0]?.price.currencyCode ?? 'USD';
+	}, [content.product?.variants]);
+	const currencyOptions = React.useMemo(() => getCurrencyOptions(), []);
 
 	const ctaVisible = React.useMemo(() => {
 		return content.cta.visible;
@@ -198,6 +203,22 @@ export const SingleProductNodeContentMixinEditor = (
 			} else {
 				state._v.banner = { label: value };
 			}
+			state._notify();
+		},
+		[state]
+	);
+
+	const handleCurrencyChange = React.useCallback(
+		(value: string) => {
+			if (state._v.product == null) {
+				return;
+			}
+
+			state._v.product = mutateWithReferenceUpdate(state._v.product, (draft) => {
+				for (const variant of draft.variants) {
+					variant.price.currencyCode = value;
+				}
+			});
 			state._notify();
 		},
 		[state]
@@ -578,6 +599,22 @@ export const SingleProductNodeContentMixinEditor = (
 								onChange={handleBannerChange}
 								autoComplete="off"
 								placeholder="e.g. New, Sale, Limited"
+							/>
+						</div>
+					)}
+
+					{/* Currency */}
+					{content.product != null && (
+						<div className="space-y-1">
+							<Text as="span" variant="bodySm" tone="subdued">
+								Currency
+							</Text>
+							<Select
+								label="Currency"
+								labelHidden
+								options={currencyOptions}
+								value={currencyCode}
+								onChange={handleCurrencyChange}
 							/>
 						</div>
 					)}
