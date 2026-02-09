@@ -53,6 +53,6 @@
 	},
 	"devDependencies": {
 		"@redocly/cli": "^2.16.0",
-		"openapi-typescript": "^7.10.1"
+		"openapi-typescript": "^7.12.0"
 	}
 }
