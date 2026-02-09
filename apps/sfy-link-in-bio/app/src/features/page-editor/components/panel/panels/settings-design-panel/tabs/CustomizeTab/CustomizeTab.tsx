@@ -20,7 +20,7 @@ export const CustomizeTab: React.FC<TCustomizeTabProps> = (props) => {
 	}, [editor]);
 
 	if (currentTheme == null) {
-		return <ThemeUnavailable />;
+		return <ThemeUnavailable editor={editor} />;
 	}
 
 	return <ThemeEditor theme={currentTheme} editor={editor} />;

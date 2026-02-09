@@ -109,9 +109,10 @@ const Page: React.FC = () => {
 					<div className="overflow-hidden rounded-lg border border-neutral-200">
 						<AccordionSection title="How do I get started with my link-in-bio?" defaultOpen={false}>
 							<p className="text-sm text-neutral-600">
-								After installing Saku, you'll be guided through a simple setup process. You can
-								customize your colors, add your links, and publish your bio page in just a few
-								minutes.
+								After installing Saku, you&apos;ll be guided through a simple setup process.
+								You&apos;ll choose a URL, pick a theme, and can optionally import from LinkPop or
+								start from scratch. You can customize your colors, add your links, and publish your
+								bio page in just a few minutes.
 							</p>
 						</AccordionSection>
 						<AccordionSection
@@ -163,8 +164,7 @@ const Page: React.FC = () => {
 						</AccordionSection>
 						<AccordionSection title="Is Saku open source?" defaultOpen={false}>
 							<p className="text-sm text-neutral-600">
-								Yes! Saku is open source under AGPLv3. You can view the code, report bugs, or
-								contribute on{' '}
+								Yes! Saku is open source under AGPLv3. You can view the code on{' '}
 								<a
 									href={appConfig.help.github}
 									target="_blank"
@@ -172,6 +172,15 @@ const Page: React.FC = () => {
 									className="underline hover:text-neutral-800"
 								>
 									GitHub
+								</a>
+								, or{' '}
+								<a
+									href={appConfig.help.githubIssues}
+									target="_blank"
+									rel="noopener noreferrer"
+									className="underline hover:text-neutral-800"
+								>
+									report bugs and suggest features
 								</a>
 								.
 							</p>

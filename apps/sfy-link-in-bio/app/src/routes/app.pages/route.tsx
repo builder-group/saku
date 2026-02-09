@@ -303,7 +303,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 		return (
 			<>
 				<s-page>
-					<ui-title-bar title="Pages">
+					<ui-title-bar title="Bio Pages">
 						<button
 							variant="primary"
 							onClick={handleCreateSite}
@@ -500,7 +500,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 		<div className="flex h-screen items-center justify-center">
 			<div className="flex flex-col items-center gap-4 text-center">
 				<Text as="h2" variant="headingLg">
-					No Bio Site Found
+					We couldn&apos;t find your bio page
 				</Text>
 				<Text as="p" variant="bodyMd" tone="subdued">
 					Something went wrong ({error.code}). Please try refreshing the page or contact support.

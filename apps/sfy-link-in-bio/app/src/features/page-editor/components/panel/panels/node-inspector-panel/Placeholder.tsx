@@ -14,7 +14,7 @@ export const Placeholder: React.FC = () => {
 				</Text>
 			</div>
 			<Text variant="bodyMd" tone="subdued" as="p">
-				Select a layer in the sidebar to start.
+				Select a block (link, heading, image, etc.) in the Layers panel to edit it.
 			</Text>
 		</div>
 	);

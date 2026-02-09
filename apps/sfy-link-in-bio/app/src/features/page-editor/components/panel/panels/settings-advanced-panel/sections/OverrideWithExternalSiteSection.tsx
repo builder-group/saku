@@ -1,5 +1,5 @@
 import { isFlatSite, isHierarchicalSite, TFlatSite, toFlatSite } from '@repo/editor';
-import { Button, Select, Text, TextField } from '@shopify/polaris';
+import { Banner, Button, Select, Text, TextField } from '@shopify/polaris';
 import { RequestError } from 'feature-fetch';
 import React from 'react';
 import { coreApiClient } from '@/environment';
@@ -94,9 +94,7 @@ export const OverrideWithExternalSiteSection: React.FC<TOverrideWithExternalSite
 					} else if (isFlatSite(parsed)) {
 						parsedSite = parsed;
 					} else {
-						setError(
-							`Invalid site structure. Expected either hierarchical (with 'root') or flat (with 'rootId' and 'nodes') site format.`
-						);
+						setError(`The JSON format is invalid. Please use a valid Saku export or LinkPop URL.`);
 						setIsOverriding(false);
 						return;
 					}
@@ -186,6 +184,10 @@ export const OverrideWithExternalSiteSection: React.FC<TOverrideWithExternalSite
 			className="overflow-hidden rounded-lg border border-neutral-300 bg-white"
 		>
 			<div className="space-y-5 p-5 sm:p-8">
+				<Banner tone="warning">
+					This permanently replaces your current page. You cannot undo this.
+				</Banner>
+
 				<div className="space-y-3">
 					<div>
 						<Text as="h2" variant="headingMd">
@@ -202,11 +204,11 @@ export const OverrideWithExternalSiteSection: React.FC<TOverrideWithExternalSite
 				<div className="space-y-4">
 					<div className="max-w-md">
 						<Select
-							label="Input Mode"
+							label="Input source"
 							labelHidden
 							options={[
-								{ label: 'URL', value: 'url' },
-								{ label: 'JSON', value: 'json' }
+								{ label: 'Paste URL', value: 'url' },
+								{ label: 'Paste JSON', value: 'json' }
 							]}
 							value={inputMode}
 							onChange={handleInputModeChange}
@@ -217,7 +219,7 @@ export const OverrideWithExternalSiteSection: React.FC<TOverrideWithExternalSite
 					{inputMode === 'url' ? (
 						<div className="max-w-md">
 							<TextField
-								label="Site URL"
+								label="Page URL"
 								value={url}
 								onChange={handleUrlChange}
 								placeholder="https://linkpop.com/johndoe"
@@ -229,7 +231,7 @@ export const OverrideWithExternalSiteSection: React.FC<TOverrideWithExternalSite
 					) : inputMode === 'json' ? (
 						<div className="w-full [&_textarea]:max-h-64 [&_textarea]:overflow-y-auto">
 							<TextField
-								label="Site JSON"
+								label="Saku or LinkPop JSON"
 								value={jsonInput}
 								onChange={handleJsonInputChange}
 								placeholder='{"version": "v0.0.2", "rootId": "...", ...}'

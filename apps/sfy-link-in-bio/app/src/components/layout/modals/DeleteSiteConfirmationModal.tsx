@@ -44,7 +44,7 @@ export const DeleteSiteConfirmationModal: React.FC<TDeleteSiteConfirmationModalP
 			switch (status) {
 				case 409:
 					shopifyBridge.toast.show(
-						'Cannot delete the last site in your workspace. At least one site must remain.',
+						'Cannot delete the last bio page. At least one bio page must remain.',
 						{
 							isError: true,
 							duration: 5000
@@ -52,14 +52,14 @@ export const DeleteSiteConfirmationModal: React.FC<TDeleteSiteConfirmationModalP
 					);
 					break;
 				case 404:
-					shopifyBridge.toast.show('Site not found.', {
+					shopifyBridge.toast.show('Bio page not found.', {
 						isError: true,
 						duration: 5000
 					});
 					break;
 				default:
 					showShopifyAppErrorToast(
-						'Failed to delete site.',
+						'Failed to delete bio page.',
 						AppError.fromFetchError(deleteErr),
 						shopifyBridge
 					);
@@ -71,7 +71,7 @@ export const DeleteSiteConfirmationModal: React.FC<TDeleteSiteConfirmationModalP
 			return;
 		}
 
-		shopifyBridge.toast.show('Site deleted successfully');
+		shopifyBridge.toast.show('Bio page deleted successfully');
 		sendToParent({ type: 'DELETE_SUCCESS' });
 		cx._hooks.onDeleteSuccess?.();
 		cx.isOpen.set(false);
@@ -95,11 +95,11 @@ export const DeleteSiteConfirmationModal: React.FC<TDeleteSiteConfirmationModalP
 		>
 			<div className="p-4">
 				<Text variant="bodyMd" as="p">
-					This will permanently delete your site and all associated data. This action cannot be
+					This will permanently delete this bio page and all its content. This action cannot be
 					undone. Are you sure you want to continue?
 				</Text>
 			</div>
-			<TitleBar title="Delete Site">
+			<TitleBar title="Delete this bio page">
 				<button
 					variant="primary"
 					tone="critical"
@@ -107,7 +107,7 @@ export const DeleteSiteConfirmationModal: React.FC<TDeleteSiteConfirmationModalP
 					disabled={isDeleting}
 					loading={isDeleting}
 				>
-					{isDeleting ? 'Deleting...' : 'Delete Site'}
+					{isDeleting ? 'Deleting...' : 'Delete page'}
 				</button>
 				<button onClick={() => cx.isOpen.set(false)}>Cancel</button>
 			</TitleBar>

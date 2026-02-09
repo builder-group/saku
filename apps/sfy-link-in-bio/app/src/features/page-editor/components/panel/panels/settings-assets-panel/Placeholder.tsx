@@ -10,11 +10,12 @@ export const Placeholder: React.FC = () => {
 			</div>
 			<div className="mb-2">
 				<Text variant="headingMd" as="h3">
-					No assets found
+					No fonts or images yet
 				</Text>
 			</div>
 			<Text variant="bodyMd" tone="subdued" as="p">
-				Assets like fonts and images will appear here when you add them to your page.
+				Fonts and images will appear here when you use them in your Design settings or add them to
+				blocks on your page.
 			</Text>
 		</div>
 	);

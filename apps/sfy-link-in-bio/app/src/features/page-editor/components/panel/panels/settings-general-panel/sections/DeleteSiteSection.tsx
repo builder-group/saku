@@ -9,7 +9,7 @@ import {
 import { useParentCommunication } from '@/hooks';
 
 export const DeleteSiteSection: React.FC<TDeleteSiteSectionProps> = (props) => {
-	const { siteId, title, description, buttonText = 'Delete Site' } = props;
+	const { siteId, title, description, buttonText = 'Delete page' } = props;
 
 	const shopifyBridge = useAppBridge();
 	const [deleteState, setDeleteState] = React.useState<'idle' | 'loading' | 'success' | 'error'>(

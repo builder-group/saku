@@ -36,7 +36,7 @@ export const WatermarkItem: React.FC<TWatermarkItemProps> = (props) => {
 					</button>
 				) : (
 					<Tooltip
-						content="Watermark removal is only available on Awesome plan and above"
+						content="Upgrade to Awesome to remove the 'Made in Saku' watermark."
 						width="wide"
 						preferredPosition="below"
 					>

@@ -11,12 +11,12 @@ export const SettingsPlaceholderPanel: React.FC<TSettingsPlaceholderPanelProps> 
 				</div>
 				<div className="mb-2">
 					<Text variant="headingMd" as="h3">
-						Configure your Link In Bio settings
+						Pick a setting from the list to get started
 					</Text>
 				</div>
 				<Text variant="bodyMd" tone="subdued" as="p">
-					Manage metadata, design themes, assets, integrations, and other settings to customize your
-					Link In Bio experience.
+					Design = colors and fonts. Metadata = how your page looks when shared. Assets = fonts and
+					images you use.
 				</Text>
 			</div>
 		</ResizablePanel>

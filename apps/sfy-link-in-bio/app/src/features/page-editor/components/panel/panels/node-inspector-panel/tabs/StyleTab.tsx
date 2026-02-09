@@ -52,13 +52,13 @@ export const StyleTab: React.FC<TStyleTabProps> = (props) => {
 				</div>
 				<div className="mb-2">
 					<Text variant="headingMd" as="h3">
-						Layer or theme?
+						Change one layer or your whole page?
 					</Text>
 				</div>
 				<div className="mb-4">
 					<Text variant="bodyMd" tone="subdued" as="p">
-						You&apos;re customizing this layer only. To change the theme (colors, fonts, layout) for
-						your whole Link In Bio, use{' '}
+						Here you change how this layer looks. To change colors, fonts, and layout for your whole
+						page, go to{' '}
 						<button
 							type="button"
 							onClick={handleGoToSettings}
@@ -85,7 +85,7 @@ export const StyleTab: React.FC<TStyleTabProps> = (props) => {
 	return (
 		<>
 			<PersistableBanner storageKey="style-tab_show-info-banner" tone="info" className="p-2">
-				Layer styles only. To change the theme for your whole Link In Bio, go to{' '}
+				You&apos;re changing this layer only. To change your whole page, go to{' '}
 				<button
 					type="button"
 					onClick={handleGoToSettings}

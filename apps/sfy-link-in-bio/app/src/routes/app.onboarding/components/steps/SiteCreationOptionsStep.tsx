@@ -48,8 +48,8 @@ export const SiteCreationOptionsStep: React.FC<TSiteCreationOptionsStepProps> = 
 	return (
 		<StepLayout
 			icon={<LayoutListIcon className="size-4" />}
-			title="New site"
-			description="Choose how you want to create your site"
+			title="New bio page"
+			description="Choose how you want to create your bio page"
 			contentClassName="flex flex-col gap-6"
 		>
 			<OptionList
@@ -57,7 +57,7 @@ export const SiteCreationOptionsStep: React.FC<TSiteCreationOptionsStepProps> = 
 				options={[
 					{
 						value: 'create-new',
-						label: 'Create new site from scratch'
+						label: 'Create new bio page from scratch'
 					},
 					{
 						value: 'linkpop',

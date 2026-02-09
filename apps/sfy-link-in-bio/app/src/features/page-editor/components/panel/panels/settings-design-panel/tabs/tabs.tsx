@@ -20,7 +20,7 @@ export function getTabs(plan: TCurrentPlan): TabProps[] {
 				plan.key !== 'awesome'
 					? ((
 							<Tooltip
-								content="Advanced design options are only available on Awesome plan and above"
+								content="Upgrade to Awesome to unlock advanced design options (layout, shadows, animations)."
 								width="wide"
 								preferredPosition="below"
 							>

@@ -106,7 +106,7 @@ export const SakuUrlStep: React.FC<TSakuUrlStepProps> = (props) => {
 		<StepLayout
 			icon={<LinkIcon className="size-4" />}
 			title="Import from Saku"
-			description="Enter your Saku workspace and site handles to import your existing page"
+			description="Enter workspace/site (e.g. my-store/bio) — find this in your existing Saku bio page URL"
 			contentClassName="flex flex-col gap-6"
 		>
 			<div className="flex">

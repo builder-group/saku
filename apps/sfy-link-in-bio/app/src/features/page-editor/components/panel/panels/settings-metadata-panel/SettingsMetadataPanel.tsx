@@ -181,7 +181,8 @@ export const SettingsMetadataPanel: React.FC<TSettingsMetadataPanelProps> = (pro
 						className="p-4 pb-0"
 					>
 						Metadata is like a label on your page that tells search engines and social media what
-						your page is about. It&apos;s what shows up when someone shares your link!
+						your page is about. It&apos;s what shows up when someone shares your link on social
+						media or messaging apps.
 					</PersistableBanner>
 					<div className="space-y-4 p-4">
 						{/* Favicon */}

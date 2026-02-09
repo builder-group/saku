@@ -75,10 +75,10 @@ export const SettingsGeneralPanel: React.FC<TSettingsGeneralPanelProps> = (props
 				<div className="h-full flex-1 overflow-y-auto p-4">
 					<div className="mx-auto w-full max-w-7xl space-y-6">
 						<FormSection
-							title="Site Name"
-							description="Update the name of your site."
+							title="Page Name"
+							description="Update the name of your bio page."
 							inputValue={displayName ?? ''}
-							placeholder="Enter site name"
+							placeholder="Enter page name"
 							helpText="Max 32 characters."
 							onSubmit={handleSiteNameUpdate}
 							maxLength={32}
@@ -87,7 +87,8 @@ export const SettingsGeneralPanel: React.FC<TSettingsGeneralPanelProps> = (props
 							title="Site Handle"
 							description={
 								<>
-									The URL-friendly identifier for your site. Your site is available at{' '}
+									This is the part of the URL that appears after your store domain. Your bio page
+									will be at{' '}
 									<a
 										href={`${editor.site.baseUrl.shopify.primary}/${handle}`}
 										target="_blank"
@@ -108,14 +109,14 @@ export const SettingsGeneralPanel: React.FC<TSettingsGeneralPanelProps> = (props
 						<CopyIdSection
 							id={editor.site.id}
 							title="Site ID"
-							description="Unique ID of your site on Saku."
-							helpText="Used to identify your site when interacting with the Saku API."
+							description="Technical ID for developers. You can ignore this unless you're using the API."
+							helpText={undefined}
 						/>
 						<DeleteSiteSection
 							siteId={editor.site.id}
-							title="Delete Site"
-							description="Permanently delete your site. This action cannot be undone - please proceed with caution."
-							buttonText="Delete Site"
+							title="Delete this bio page"
+							description="Permanently delete this bio page. This action cannot be undone - please proceed with caution."
+							buttonText="Delete page"
 						/>
 					</div>
 				</div>

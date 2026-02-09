@@ -88,7 +88,7 @@ export const HandleStep: React.FC<THandleStepProps> = (props) => {
 	return (
 		<StepLayout
 			icon={<LinkIcon className="size-4" />}
-			title="Choose page handle"
+			title="Choose your bio page URL"
 			description="This will be the URL path for your bio page"
 			contentClassName="flex flex-col gap-6"
 		>
@@ -127,7 +127,7 @@ export const HandleStep: React.FC<THandleStepProps> = (props) => {
 					<p className="text-left">This URL is already in use. You can:</p>
 					<ul className="mt-2 list-inside list-disc text-left">
 						<li>Choose a different handle</li>
-						<li>Override the existing URL redirect</li>
+						<li>Use this URL anyway (the current page at this URL will be replaced)</li>
 					</ul>
 				</Banner>
 			)}
@@ -144,7 +144,7 @@ export const HandleStep: React.FC<THandleStepProps> = (props) => {
 							loading={isLoading}
 							tone="critical"
 						>
-							Override existing URL
+							Use this URL anyway
 						</Button>
 						<Button
 							variant="secondary"

@@ -14,8 +14,7 @@ export const Placeholder: React.FC = () => {
 				</Text>
 			</div>
 			<Text variant="bodyMd" tone="subdued" as="p">
-				Connect integrations like Shopify to enable additional features and functionality for your
-				page.
+				Connect Shopify to show products on your bio page, or add other integrations from this list.
 			</Text>
 		</div>
 	);
