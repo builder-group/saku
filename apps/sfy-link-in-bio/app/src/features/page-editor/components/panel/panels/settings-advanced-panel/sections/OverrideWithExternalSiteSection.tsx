@@ -1,5 +1,5 @@
 import { isFlatSite, isHierarchicalSite, TFlatSite, toFlatSite } from '@repo/editor';
-import { Banner, Button, Select, Text, TextField } from '@shopify/polaris';
+import { Button, Select, Text, TextField } from '@shopify/polaris';
 import { RequestError } from 'feature-fetch';
 import React from 'react';
 import { coreApiClient } from '@/environment';
@@ -184,10 +184,6 @@ export const OverrideWithExternalSiteSection: React.FC<TOverrideWithExternalSite
 			className="overflow-hidden rounded-lg border border-neutral-300 bg-white"
 		>
 			<div className="space-y-5 p-5 sm:p-8">
-				<Banner tone="warning">
-					This permanently replaces your current page. You cannot undo this.
-				</Banner>
-
 				<div className="space-y-3">
 					<div>
 						<Text as="h2" variant="headingMd">

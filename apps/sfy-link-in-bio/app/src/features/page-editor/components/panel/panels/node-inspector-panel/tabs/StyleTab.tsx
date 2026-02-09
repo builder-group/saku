@@ -94,7 +94,6 @@ export const StyleTab: React.FC<TStyleTabProps> = (props) => {
 				>
 					Settings &gt; Customize
 				</button>
-				.
 			</PersistableBanner>
 			<NodeStyleEditor nodeState={nodeState} editor={editor} />
 		</>

@@ -15,7 +15,7 @@ export const Placeholder: React.FC = () => {
 			</div>
 			<Text variant="bodyMd" tone="subdued" as="p">
 				Fonts and images will appear here when you use them in your Design settings or add them to
-				blocks on your page.
+				layers on your page.
 			</Text>
 		</div>
 	);

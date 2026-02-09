@@ -14,7 +14,7 @@ export const Placeholder: React.FC = () => {
 				</Text>
 			</div>
 			<Text variant="bodyMd" tone="subdued" as="p">
-				Select a block (link, heading, image, etc.) in the Layers panel to edit it.
+				Select a layer (link, heading, image, etc.) in the Layers panel to edit it.
 			</Text>
 		</div>
 	);
