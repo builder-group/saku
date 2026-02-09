@@ -343,7 +343,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 									itemCount={filteredSites.length}
 									headings={[
 										{ title: 'Name' },
-										{ title: 'Slug' },
+										{ title: 'Handle' },
 										{ title: 'Status' },
 										{ title: 'Created' },
 										{ title: 'Updated' },
@@ -434,7 +434,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 										</div>
 										<div className="flex flex-col items-center gap-2 text-balance">
 											<Text variant="headingMd" as="h3">
-												Create your first Bio Page
+												Create your first bio page
 											</Text>
 											<Text variant="bodyMd" tone="subdued" as="p">
 												Create bio pages to organize your links and content for different purposes
@@ -482,7 +482,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 											Upgrade to Awesome
 										</Button>
 										<Button variant="secondary" size="medium" url={'/app'}>
-											Manage Your Bio Page
+											Manage your bio page
 										</Button>
 									</ButtonGroup>
 								</div>

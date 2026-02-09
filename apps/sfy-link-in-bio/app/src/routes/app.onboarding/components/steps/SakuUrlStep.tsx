@@ -64,7 +64,7 @@ export const SakuUrlStep: React.FC<TSakuUrlStepProps> = (props) => {
 		const parts = trimmedHandle.split('/');
 		if (parts.length !== 2) {
 			setError({
-				message: 'Please enter the format: workspace/site (e.g., saku-demo/bio)',
+				message: 'Please enter the format: workspace/page (e.g., saku-demo/bio)',
 				showFallback: false
 			});
 			setIsLoading(false);
@@ -106,7 +106,7 @@ export const SakuUrlStep: React.FC<TSakuUrlStepProps> = (props) => {
 		<StepLayout
 			icon={<LinkIcon className="size-4" />}
 			title="Import from Saku"
-			description="Enter workspace/site (e.g. my-store/bio) — find this in your existing Saku bio page URL"
+			description="Enter workspace/page (e.g. my-store/bio) — find this in your existing Saku bio page URL"
 			contentClassName="flex flex-col gap-6"
 		>
 			<div className="flex">
@@ -119,7 +119,7 @@ export const SakuUrlStep: React.FC<TSakuUrlStepProps> = (props) => {
 						value={displayHandle}
 						onChange={handleChange}
 						onPaste={handleUrlPaste}
-						placeholder="workspace/site"
+						placeholder="workspace/page"
 						className="relative z-20 w-full appearance-none border-none bg-transparent px-3 py-2 leading-[var(--p-font-line-height-500)] text-[var(--p-color-text)] outline-none placeholder:text-[var(--p-color-text-subdued)]"
 						autoComplete="off"
 						spellCheck="false"
@@ -136,9 +136,9 @@ export const SakuUrlStep: React.FC<TSakuUrlStepProps> = (props) => {
 
 			{error?.showFallback && (
 				<Banner tone="warning">
-					<p className="text-left">Saku page not found. You can:</p>
+					<p className="text-left">Saku bio page not found. You can:</p>
 					<ul className="mt-2 list-inside list-disc text-left">
-						<li>Check the workspace/site format and try again</li>
+						<li>Check the workspace/page format and try again</li>
 						<li>Use different handles</li>
 						<li>Start with a blank template</li>
 					</ul>

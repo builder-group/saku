@@ -27,7 +27,7 @@ export const PanelHeader: React.FC<TPanelHeaderProps> = (props) => {
 					icon={PolarisViewIcon}
 					variant="secondary"
 					onClick={handlePreview}
-					accessibilityLabel="Preview your Link In Bio page"
+					accessibilityLabel="Preview your bio page"
 				/>
 				<SaveButton editor={editor} />
 			</div>

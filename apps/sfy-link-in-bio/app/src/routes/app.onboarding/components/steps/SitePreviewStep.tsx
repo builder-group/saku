@@ -58,7 +58,7 @@ export const SitePreviewStep: React.FC<TSitePreviewStepProps> = (props) => {
 	const [isLoading, setIsLoading] = React.useState(false);
 	const loadingStatusMessages = React.useMemo(
 		() => [
-			'Finalizing your site...',
+			'Finalizing your bio page...',
 			'Uploading media...',
 			'Saving to your workspace...',
 			'Almost done!'
@@ -126,7 +126,7 @@ export const SitePreviewStep: React.FC<TSitePreviewStepProps> = (props) => {
 		<StepLayout
 			icon={<ScanEyeIcon className="size-4" />}
 			title="Preview Import"
-			description="Preview how your Link In Bio page will look after importing"
+			description="Preview how your bio page will look after importing"
 			contentClassName="flex flex-col items-center gap-6 min-h-0 max-w-xl"
 		>
 			{resolvedSite != null && (

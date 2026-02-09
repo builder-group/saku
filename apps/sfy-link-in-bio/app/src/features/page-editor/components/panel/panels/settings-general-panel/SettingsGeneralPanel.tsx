@@ -84,11 +84,10 @@ export const SettingsGeneralPanel: React.FC<TSettingsGeneralPanelProps> = (props
 							maxLength={32}
 						/>
 						<FormSection
-							title="Site Handle"
+							title="Page Handle"
 							description={
 								<>
-									This is the part of the URL that appears after your store domain. Your bio page
-									will be at{' '}
+									The URL path for your bio page. Your page will be at{' '}
 									<a
 										href={`${editor.site.baseUrl.shopify.primary}/${handle}`}
 										target="_blank"

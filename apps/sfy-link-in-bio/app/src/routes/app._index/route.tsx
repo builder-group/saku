@@ -135,7 +135,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 												variant="secondary"
 												url={site.url.shopify.primary}
 												target="_blank"
-												accessibilityLabel="Visit your Link In Bio page"
+												accessibilityLabel="Visit your bio page"
 											/>
 											<Button
 												variant="primary"

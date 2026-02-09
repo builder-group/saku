@@ -10,7 +10,7 @@ export const Placeholder: React.FC = () => {
 			</div>
 			<div className="mb-2">
 				<Text variant="headingMd" as="h3">
-					Customize your Link In Bio
+					Customize your bio page
 				</Text>
 			</div>
 			<Text variant="bodyMd" tone="subdued" as="p">

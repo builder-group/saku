@@ -144,7 +144,7 @@ export const OverrideWithExternalSiteSection: React.FC<TOverrideWithExternalSite
 				keepShopIntegration: true
 			});
 
-			editor.shopify.toast.show('Site overridden successfully', {
+			editor.shopify.toast.show('Bio page updated successfully', {
 				action: 'Publish',
 				onAction: async () => {
 					const isPublished = await editor.publishSite();
