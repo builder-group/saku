@@ -57,8 +57,8 @@ export const StyleTab: React.FC<TStyleTabProps> = (props) => {
 				</div>
 				<div className="mb-4">
 					<Text variant="bodyMd" tone="subdued" as="p">
-						You&apos;re customizing this layer only. To change colors, fonts, and layout for your
-						whole link-in-bio, use{' '}
+						You&apos;re customizing this layer only. To change the theme (colors, fonts, layout) for
+						your whole Link In Bio, use{' '}
 						<button
 							type="button"
 							onClick={handleGoToSettings}
@@ -85,8 +85,7 @@ export const StyleTab: React.FC<TStyleTabProps> = (props) => {
 	return (
 		<>
 			<PersistableBanner storageKey="style-tab_show-info-banner" tone="info" className="p-2">
-				These are layer-specific styles that only apply to this layer. If you want to change the
-				global styles for all layers, go to{' '}
+				Layer styles only. To change the theme for your whole Link In Bio, go to{' '}
 				<button
 					type="button"
 					onClick={handleGoToSettings}
