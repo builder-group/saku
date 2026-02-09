@@ -58,6 +58,18 @@ const Page: React.FC = () => {
 						</div>
 						<div className="grid grid-cols-[1fr_auto] items-center gap-4 p-4">
 							<div>
+								<s-heading>Open Issue on GitHub</s-heading>
+								<s-paragraph color="subdued">Saku is open source—report bugs or suggest features</s-paragraph>
+							</div>
+							<s-button variant="secondary" href={appConfig.help.githubIssues} target="_blank">
+								Open Issue
+							</s-button>
+						</div>
+						<div className="px-4">
+							<s-divider></s-divider>
+						</div>
+						<div className="grid grid-cols-[1fr_auto] items-center gap-4 p-4">
+							<div>
 								<s-heading>Email Support</s-heading>
 								<s-paragraph color="subdued">{appConfig.help.email}</s-paragraph>
 							</div>
@@ -135,8 +147,31 @@ const Page: React.FC = () => {
 						<AccordionSection title="Is my data secure?" defaultOpen={false}>
 							<p className="text-sm text-neutral-600">
 								Absolutely! We take security seriously. Your data is encrypted, we never share your
-								information, and we're fully compliant with data protection regulations. See our
-								Privacy Policy for details.
+								information, and we're fully compliant with data protection regulations. See our{' '}
+								<a
+									href={appConfig.help.legal.privacy}
+									target="_blank"
+									rel="noopener noreferrer"
+									className="underline hover:text-neutral-800"
+								>
+									Privacy Policy
+								</a>{' '}
+								for details.
+							</p>
+						</AccordionSection>
+						<AccordionSection title="Is Saku open source?" defaultOpen={false}>
+							<p className="text-sm text-neutral-600">
+								Yes! Saku is open source under AGPLv3. You can view the code, report bugs, or
+								contribute on{' '}
+								<a
+									href={appConfig.help.github}
+									target="_blank"
+									rel="noopener noreferrer"
+									className="underline hover:text-neutral-800"
+								>
+									GitHub
+								</a>
+								.
 							</p>
 						</AccordionSection>
 					</div>

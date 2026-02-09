@@ -113,6 +113,19 @@ const Page: React.FC = () => {
 							<div className="px-4">
 								<s-divider></s-divider>
 							</div>
+							{/* Open Issue on GitHub */}
+							<div className="grid grid-cols-[1fr_auto] items-center gap-4 p-4">
+								<div>
+									<s-heading>Open Issue on GitHub</s-heading>
+									<s-paragraph color="subdued">Saku is open source—report bugs or suggest features</s-paragraph>
+								</div>
+								<s-button variant="secondary" href={appConfig.help.githubIssues} target="_blank">
+									Open Issue
+								</s-button>
+							</div>
+							<div className="px-4">
+								<s-divider></s-divider>
+							</div>
 							{/* Full Help Page */}
 							<s-clickable
 								padding="small-100"

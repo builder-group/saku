@@ -37,6 +37,8 @@ export const appConfig = {
 		walkthroughVideo: 'https://youtu.be/5CUtoSWYQ7U',
 		discord: 'https://discord.com/invite/w4xE3bSjhQ',
 		email: 'support@saku.so',
+		github: 'https://github.com/builder-group/saku',
+		githubIssues: 'https://github.com/builder-group/saku/issues/new',
 		legal: {
 			privacy: `https://sfy-link-in-bio-app.saku.so/legal/privacy-policy`,
 			terms: `https://sfy-link-in-bio-app.saku.so/legal/terms-of-service`
