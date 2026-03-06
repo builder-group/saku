@@ -9,6 +9,7 @@ export const ProductDetailsModal: React.FC<TProductDetailsModalProps> = (props) 
 
 	const { appearance, fill, stroke, shadow, textHeading, textBody, buttonPrimary, image } =
 		cx.node.productDetails;
+	const ctaLabel = cx.node.content.cta.label;
 
 	const [selectedImageIndex, setSelectedImageIndex] = React.useState(0);
 	const isProcessing = useFeatureState(cx.isProcessing);
@@ -22,6 +23,10 @@ export const ProductDetailsModal: React.FC<TProductDetailsModalProps> = (props) 
 	const canBuyNow = React.useMemo(
 		() => cx.pageCx.integrations.shopify != null && selectedVariant != null,
 		[cx.pageCx.integrations.shopify, selectedVariant]
+	);
+	const buyButtonLabel = React.useMemo(
+		() => (ctaLabel.trim().length > 0 ? ctaLabel : 'Buy Now'),
+		[ctaLabel]
 	);
 
 	// =========================================================================
@@ -203,7 +208,7 @@ export const ProductDetailsModal: React.FC<TProductDetailsModalProps> = (props) 
 										{isProcessing ? (
 											<span className="loading loading-spinner loading-sm"></span>
 										) : (
-											'Buy Now'
+											buyButtonLabel
 										)}
 									</div>
 								</button>
