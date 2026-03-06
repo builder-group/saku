@@ -135,6 +135,7 @@ export interface TSocialAction {
 		| 'tiktok'
 		| 'linkedin'
 		| 'facebook'
+		| 'whatsapp'
 		| 'shopify'
 		| 'bluesky'
 		| 'discord'

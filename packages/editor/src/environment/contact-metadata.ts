@@ -79,6 +79,38 @@ export const contactMetadataMap = {
 		getAltText: (handle) => (handle != null ? `Facebook: ${handle}` : 'Facebook'),
 		getHandle: (url) => url.replace(/^https?:\/\/(www\.)?facebook\.com\//, '').replace(/\/+$/, '')
 	},
+	'social.whatsapp': {
+		type: 'social' as const,
+		provider: 'whatsapp',
+		label: 'WhatsApp',
+		placeholder: 'wa.me/1234567890 or full URL',
+		getUrl: (handle) => {
+			const trimmedHandle = handle.trim();
+
+			if (/^https?:\/\//.test(trimmedHandle)) {
+				return trimmedHandle;
+			}
+
+			const cleanHandle = trimmedHandle.replace(/^\/+/, '');
+			if (cleanHandle.startsWith('wa.me/')) {
+				return `https://${cleanHandle}`;
+			}
+
+			return `https://wa.me/${cleanHandle}`;
+		},
+		getAltText: (handle) => (handle != null ? `WhatsApp: ${handle}` : 'WhatsApp'),
+		getHandle: (url) => {
+			const cleanUrl = url.trim();
+			if (!/^https?:\/\//.test(cleanUrl)) {
+				return cleanUrl;
+			}
+
+			return cleanUrl
+				.replace(/^https?:\/\/(www\.)?(wa\.me|whatsapp\.com)\//, '')
+				.replace(/^send\?phone=/, '')
+				.replace(/\/+$/, '');
+		}
+	},
 	'social.shopify': {
 		type: 'social' as const,
 		provider: 'shopify',

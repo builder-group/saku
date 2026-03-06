@@ -150,14 +150,6 @@ export const ContactLinksSection: React.FC<TContactLinksSectionProps> = (props) 
 		) => {
 			let trimmedValue = params.value.trim();
 
-			// Auto-detect and parse URLs for social platforms
-			if (params.type === 'social' && parseUrl(trimmedValue) != null) {
-				const handle = contactMetadataMap[`social.${params.provider}`].getHandle(trimmedValue);
-				if (handle != null && handle !== trimmedValue) {
-					trimmedValue = handle;
-				}
-			}
-
 			const existingIndex = state._v.contactLinks.findIndex(
 				({ action }) => params.key === getContactKey(action)
 			);
@@ -205,15 +197,17 @@ export const ContactLinksSection: React.FC<TContactLinksSectionProps> = (props) 
 				}
 				case 'social': {
 					const metadata = contactMetadataMap[`social.${params.provider}`];
+					// Keep full URLs as entered (including query params/deep links) instead of coercing to handles
+					const isCustomUrl = parseUrl(trimmedValue) != null;
 					updatedContactLink = {
 						id: existingLink.id,
 						action: {
 							type: 'social',
 							provider: params.provider,
 							handle: trimmedValue,
-							url: metadata.getUrl(trimmedValue)
+							url: isCustomUrl ? trimmedValue : metadata.getUrl(trimmedValue)
 						} as TSocialAction,
-						altText: metadata.getAltText(trimmedValue)
+						altText: isCustomUrl ? trimmedValue : metadata.getAltText(trimmedValue)
 					};
 					break;
 				}

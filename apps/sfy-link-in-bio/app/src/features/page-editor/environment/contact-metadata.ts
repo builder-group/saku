@@ -15,6 +15,7 @@ import {
 	ShopifyIcon,
 	SpotifyIcon,
 	TikTokIcon,
+	WhatsAppIcon,
 	XTwitterIcon,
 	YouTubeIcon
 } from '@/components';
@@ -29,6 +30,7 @@ export const contactIconMap = {
 	'social.tiktok': TikTokIcon,
 	'social.linkedin': LinkedInIcon,
 	'social.facebook': FacebookIcon,
+	'social.whatsapp': WhatsAppIcon,
 	'social.shopify': ShopifyIcon,
 	'social.bluesky': BlueskyIcon,
 	'social.discord': DiscordIcon,

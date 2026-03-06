@@ -16,6 +16,7 @@ export * from './ShopifyIcon';
 export * from './SpinnerIcon';
 export * from './SpotifyIcon';
 export * from './TikTokIcon';
+export * from './WhatsAppIcon';
 export * from './WipIcon';
 export * from './XTwitterIcon';
 export * from './YouTubeIcon';

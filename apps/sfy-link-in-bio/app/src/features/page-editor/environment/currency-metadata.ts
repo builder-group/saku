@@ -10,7 +10,9 @@ const CURRENCY_METADATA: Record<string, TCurrencyMetadata> = {
 	SEK: { symbol: 'kr', displayName: 'Swedish Krona', code: 'SEK' },
 	NOK: { symbol: 'kr', displayName: 'Norwegian Krone', code: 'NOK' },
 	DKK: { symbol: 'kr', displayName: 'Danish Krone', code: 'DKK' },
-	NZD: { symbol: '$', displayName: 'New Zealand Dollar', code: 'NZD' }
+	NZD: { symbol: '$', displayName: 'New Zealand Dollar', code: 'NZD' },
+	BRL: { symbol: 'R$', displayName: 'Brazilian Real', code: 'BRL' },
+	ZAR: { symbol: 'R', displayName: 'South African Rand', code: 'ZAR' }
 };
 
 interface TCurrencyMetadata {
