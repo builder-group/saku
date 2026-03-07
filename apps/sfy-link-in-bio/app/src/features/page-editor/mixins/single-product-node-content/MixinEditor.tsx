@@ -23,6 +23,7 @@ export const SingleProductNodeContentMixinEditor = (
 	const { state, editor, className } = props;
 
 	const content = useFeatureState(state);
+	const [showDescriptionHint, setShowDescriptionHint] = React.useState(true);
 
 	const canChangeProduct = React.useMemo(() => content.product != null, [content.product]);
 
@@ -572,16 +573,39 @@ export const SingleProductNodeContentMixinEditor = (
 									</Button>
 								)}
 							</div>
-							<RichContentField
-								id="description-field"
-								label="Description"
-								labelHidden
-								value={descriptionValue}
-								onChange={handleDescriptionChange}
-								autoComplete="off"
-								placeholder="Product description"
-								multiline={4}
-							/>
+							<div className="relative">
+								<RichContentField
+									id="description-field"
+									label="Description"
+									labelHidden
+									value={descriptionValue}
+									onChange={handleDescriptionChange}
+									autoComplete="off"
+									placeholder="Product description"
+									multiline={4}
+								/>
+								{showDescriptionHint && descriptionValue.type === 'html' && (
+									<div className="absolute inset-0 z-30">
+										<div className="flex h-full w-full flex-col rounded-md border border-blue-200 bg-blue-50 p-3">
+											<div className="space-y-2 text-left">
+												<Text as="p" variant="bodySm">
+													This description comes from Shopify. It&apos;s recommended to update it
+													on the Shopify product page.
+												</Text>
+											</div>
+											<div className="mt-auto flex items-center justify-start pt-2">
+													<Button
+														variant="secondary"
+														size="micro"
+														onClick={() => setShowDescriptionHint(false)}
+													>
+														OK
+													</Button>
+											</div>
+										</div>
+									</div>
+								)}
+							</div>
 						</div>
 					)}
 

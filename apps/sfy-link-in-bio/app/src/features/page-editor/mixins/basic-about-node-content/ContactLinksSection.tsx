@@ -197,17 +197,37 @@ export const ContactLinksSection: React.FC<TContactLinksSectionProps> = (props) 
 				}
 				case 'social': {
 					const metadata = contactMetadataMap[`social.${params.provider}`];
-					// Keep full URLs as entered (including query params/deep links) instead of coercing to handles
-					const isCustomUrl = parseUrl(trimmedValue) != null;
+					const parsedUrl = parseUrl(trimmedValue);
+					let handle = trimmedValue;
+					let url = metadata.getUrl(trimmedValue);
+					let altText = metadata.getAltText(trimmedValue);
+
+					// Prefer normalized handle URLs when extraction succeeds; otherwise keep custom URLs as-is
+					if (parsedUrl != null) {
+						const parsedHandle = metadata.getHandle(trimmedValue).trim();
+						const isValidParsedHandle =
+							parsedHandle.length > 0 && !parsedHandle.includes('://') && !/\s/.test(parsedHandle);
+
+						if (isValidParsedHandle) {
+							handle = parsedHandle;
+							url = metadata.getUrl(parsedHandle);
+							altText = metadata.getAltText(parsedHandle);
+						} else {
+							handle = trimmedValue;
+							url = trimmedValue;
+							altText = trimmedValue;
+						}
+					}
+
 					updatedContactLink = {
 						id: existingLink.id,
 						action: {
 							type: 'social',
 							provider: params.provider,
-							handle: trimmedValue,
-							url: isCustomUrl ? trimmedValue : metadata.getUrl(trimmedValue)
+							handle,
+							url
 						} as TSocialAction,
-						altText: isCustomUrl ? trimmedValue : metadata.getAltText(trimmedValue)
+						altText
 					};
 					break;
 				}
