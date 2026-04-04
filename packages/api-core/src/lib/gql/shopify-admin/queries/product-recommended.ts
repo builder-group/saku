@@ -6,6 +6,9 @@ import { gql, shopifyAdminApiClient, shopifyConfig } from '@/environment';
 // https://shopify.dev/docs/api/admin-graphql/latest/queries/products
 export const RECOMMENDED_PRODUCTS = gql(`
 	query recommendedProducts($first: Int = 8, $sortKey: ProductSortKeys, $reverse: Boolean, $query: String) {
+		shop {
+			currencyCode
+		}
 		products(first: $first, sortKey: $sortKey, reverse: $reverse, query: $query) {
 			edges {
 				node {
@@ -16,15 +19,15 @@ export const RECOMMENDED_PRODUCTS = gql(`
 						name
 						values
 					}
-					variants(first: 10) {
-						edges {
-							node {
-								id
-								title
-								price
-								selectedOptions {
-									name
-									value
+						variants(first: 10) {
+							edges {
+								node {
+									id
+									title
+									price
+									selectedOptions {
+										name
+										value
 								}
 								image {
 									url
@@ -102,6 +105,7 @@ export async function getRecommendedProducts(
 		);
 	}
 
+	const currencyCode = result.value.data.shop.currencyCode;
 	const products = result.value.data.products;
 	return Ok({
 		products: products.edges.map((edge) => {
@@ -134,7 +138,7 @@ export async function getRecommendedProducts(
 						title: variant.title,
 						price: {
 							amount: variant.price,
-							currencyCode: 'USD'
+							currencyCode
 						},
 						image:
 							variant.image != null

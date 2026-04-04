@@ -3,6 +3,7 @@ export * from './file-get-by-id';
 export * from './file-search-by-filename';
 export * from './metaobject';
 export * from './metaobject-by-handle';
+export * from './products-by-ids';
 export * from './product-recommended';
 export * from './shop-info';
 export * from './shop-plan';

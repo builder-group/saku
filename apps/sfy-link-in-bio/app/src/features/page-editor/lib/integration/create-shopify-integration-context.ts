@@ -6,6 +6,7 @@ import {
 	addCartLines,
 	AppError,
 	createCart,
+	getShopCurrencyCode,
 	removeCartLines,
 	type TCartCreateInput,
 	type TCartCreateSuccess,
@@ -25,6 +26,7 @@ export function createShopifyIntegrationContext(
 		shopId,
 		storefrontAccessToken,
 		cart: createState<TCart | null>(null),
+		currencyCode: createState<string | null>(null),
 
 		_new() {
 			// Auto-create cart on context initialization
@@ -43,6 +45,22 @@ export function createShopifyIntegrationContext(
 
 			if (result.isOk()) {
 				this.cart.set(result.value);
+			}
+
+			return result;
+		},
+
+		async getCurrencyCode() {
+			if (this.currencyCode._v != null) {
+				return Ok(this.currencyCode._v);
+			}
+
+			const result = await getShopCurrencyCode({
+				shopId: this.shopId,
+				accessToken: this.storefrontAccessToken
+			});
+			if (result.isOk()) {
+				this.currencyCode.set(result.value);
 			}
 
 			return result;
@@ -129,7 +147,9 @@ export interface TShopifyIntegrationContext {
 	shopId: string;
 	storefrontAccessToken: string;
 	cart: TState<TCart | null, []>;
+	currencyCode: TState<string | null, []>;
 
+	getCurrencyCode(): Promise<TResult<string, AppError>>;
 	createCart(input?: TCartCreateInput): Promise<TResult<TCartCreateSuccess, AppError>>;
 	addToCart(lines: TCartLineAddInput['lines']): Promise<TResult<TCartLineAddSuccess, AppError>>;
 	removeFromCart(

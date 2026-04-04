@@ -12,6 +12,7 @@ import {
 import { useFeatureState } from 'feature-react/state';
 import { TState } from 'feature-state';
 import React from 'react';
+import { unwrapOrNull } from 'tuple-result';
 import { Knob, PolarisDeleteIcon, PolarisProductAddIcon, RichContentField } from '@/components';
 import { capitalizeFirstLetter, cn, isProduct, mutateWithReferenceUpdate } from '@/lib';
 import { getCurrencyOptions } from '../../environment';
@@ -24,6 +25,7 @@ export const SingleProductNodeContentMixinEditor = (
 
 	const content = useFeatureState(state);
 	const [showDescriptionHint, setShowDescriptionHint] = React.useState(true);
+	const shopCurrencyCode = useFeatureState(editor.pageContext.integrations.shopify?.currencyCode);
 
 	const canChangeProduct = React.useMemo(() => content.product != null, [content.product]);
 
@@ -40,8 +42,8 @@ export const SingleProductNodeContentMixinEditor = (
 		return content.banner?.label ?? '';
 	}, [content.banner?.label]);
 	const currencyCode = React.useMemo(() => {
-		return content.product?.variants[0]?.price.currencyCode ?? 'USD';
-	}, [content.product?.variants]);
+		return content.product?.variants[0]?.price.currencyCode ?? shopCurrencyCode ?? 'USD';
+	}, [content.product?.variants, shopCurrencyCode]);
 	const currencyOptions = React.useMemo(() => getCurrencyOptions(), []);
 
 	const ctaVisible = React.useMemo(() => {
@@ -313,6 +315,17 @@ export const SingleProductNodeContentMixinEditor = (
 
 		clearSelection();
 
+		const shopifyIntegration = Object.values(editor.integrationsMap).find(
+			(integration) => integration.type === 'shopify' && integration.shopId === editor.shopId
+		);
+		const productCurrencyCode =
+			state._v.product?.variants[0]?.price.currencyCode ??
+			shopCurrencyCode ??
+			(editor.pageContext.integrations.shopify != null
+				? unwrapOrNull(await editor.pageContext.integrations.shopify.getCurrencyCode())
+				: null) ??
+			'USD';
+
 		state._v.product = {
 			id: product.id,
 			title: product.title,
@@ -333,7 +346,7 @@ export const SingleProductNodeContentMixinEditor = (
 							title: variant.title,
 							price: {
 								amount: variant.price,
-								currencyCode: 'USD'
+								currencyCode: productCurrencyCode
 							},
 							image:
 								variant.image != null
@@ -355,6 +368,9 @@ export const SingleProductNodeContentMixinEditor = (
 				)
 			).filter(notEmpty)
 		};
+		// Product reselection should reset local title/description overrides so Shopify can be the source of truth again
+		state._v.overrides = {};
+		state._v.integrationId = shopifyIntegration?.id;
 		state._notify();
 	}, [editor, clearSelection, state]);
 
@@ -582,15 +598,18 @@ export const SingleProductNodeContentMixinEditor = (
 									onChange={handleDescriptionChange}
 									autoComplete="off"
 									placeholder="Product description"
-									multiline={4}
+									multiline={5}
 								/>
 								{showDescriptionHint && descriptionValue.type === 'html' && (
 									<div className="absolute inset-0 z-30">
-										<div className="relative h-full w-full rounded-md border border-blue-200 bg-blue-50 p-3">
-											<div className="space-y-2 text-left">
-												<Text as="p" variant="bodySm">
-													This description comes from Shopify. It&apos;s recommended to update it on
-													the Shopify product page.
+										<div className="relative h-full w-full rounded-md border border-blue-200 bg-blue-50 p-2">
+											<div className="space-y-1 text-left">
+												<Text as="p" variant="bodySm" fontWeight="semibold">
+													Synced from Shopify
+												</Text>
+												<Text as="p" variant="bodySm" tone="subdued">
+													Displayed in the product modal when clicking on the product node.
+													Recommended to update on the Shopify product page.
 												</Text>
 											</div>
 											<div className="absolute right-3 bottom-3">
@@ -599,7 +618,7 @@ export const SingleProductNodeContentMixinEditor = (
 													size="micro"
 													onClick={() => setShowDescriptionHint(false)}
 												>
-													OK
+													Edit anyway
 												</Button>
 											</div>
 										</div>
