@@ -5,7 +5,7 @@ import { getCurrencySymbol } from '../../../../environment';
 import { TResolvedNodeProps } from '../../../../lib';
 import { TResolvedSingleProductNodeContentMixin } from '../../../../mixins';
 import { useProductDetailsModal } from '../../components';
-import { createProductCx } from '../../lib';
+import { createProductCx, isDefaultShopifyOption } from '../../lib';
 import { TResolvedClassicProductNodeBundle } from '../../types';
 
 export const ResolvedClassicBundle = React.forwardRef<HTMLDivElement, TResolvedClassicBundleProps>(
@@ -161,6 +161,10 @@ export const ResolvedClassicBundle = React.forwardRef<HTMLDivElement, TResolvedC
 									{/* Option Dropdowns */}
 									{showVariants &&
 										product.options?.map((option) => {
+											if (isDefaultShopifyOption(option)) {
+												return null;
+											}
+
 											const currentValue = selectedOptions[option.name];
 											const placeholderText = `Pick ${option.name.slice(0, 1).toUpperCase()}${option.name.toLowerCase().slice(1)}`;
 											const selectId = `product-option-${option.name.toLowerCase().replace(/\s+/g, '-')}`;

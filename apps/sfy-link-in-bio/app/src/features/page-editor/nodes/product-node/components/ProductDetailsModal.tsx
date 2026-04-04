@@ -2,7 +2,7 @@ import { useFeatureState } from 'feature-react';
 import React from 'react';
 import { cn } from '@/lib';
 import { getCurrencySymbol } from '../../../environment';
-import { TProductCx } from '../lib';
+import { isDefaultShopifyOption, TProductCx } from '../lib';
 
 export const ProductDetailsModal: React.FC<TProductDetailsModalProps> = (props) => {
 	const { cx, modalRef } = props;
@@ -161,6 +161,10 @@ export const ProductDetailsModal: React.FC<TProductDetailsModalProps> = (props) 
 
 							{/* Product Options */}
 							{cx.product.options?.map((option) => {
+								if (isDefaultShopifyOption(option)) {
+									return null;
+								}
+
 								const currentValue = selectedOptions[option.name];
 
 								return (

@@ -602,17 +602,17 @@ export const SingleProductNodeContentMixinEditor = (
 								/>
 								{showDescriptionHint && descriptionValue.type === 'html' && (
 									<div className="absolute inset-0 z-30">
-										<div className="relative h-full w-full rounded-md border border-blue-200 bg-blue-50 p-2">
+										<div className="relative h-full w-full rounded-md border border-blue-200 bg-blue-50 p-3">
 											<div className="space-y-1 text-left">
 												<Text as="p" variant="bodySm" fontWeight="semibold">
 													Synced from Shopify
 												</Text>
 												<Text as="p" variant="bodySm" tone="subdued">
-													Displayed in the product modal when clicking on the product node.
+													Displayed in the product modal when clicking on the product layer.
 													Recommended to update on the Shopify product page.
 												</Text>
 											</div>
-											<div className="absolute right-3 bottom-3">
+											<div className="absolute right-3 bottom-2">
 												<Button
 													variant="secondary"
 													size="micro"
