@@ -24,6 +24,7 @@ const GET_PRODUCT_BY_ID = gql(`
 				edges {
 					node {
 						... on MediaImage {
+							__typename
 							image {
 								url
 								altText
@@ -156,7 +157,7 @@ async function getProductById(
 
 		for (const mediaEdge of product.media.edges) {
 			const media = mediaEdge.node;
-			if (media.__typename !== 'MediaImage' || media.image == null) {
+			if (media.image == null) {
 				continue;
 			}
 			if (imageUrls.has(media.image.url)) {
