@@ -315,7 +315,7 @@ export const SingleProductNodeContentMixinEditor = (
 
 		clearSelection();
 
-		const shopifyIntegration = Object.values(editor.integrationsMap).find(
+		const shopifyIntegration = Object.values(editor.integrationsMap._v).find(
 			(integration) => integration.type === 'shopify' && integration.shopId === editor.shopId
 		);
 		const productCurrencyCode =

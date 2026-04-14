@@ -28,6 +28,7 @@ export const SitePreviewStep: React.FC<TSitePreviewStepProps> = (props) => {
 		() =>
 			createPageContext({
 				id: 'preview',
+				handle: 'preview',
 				url: {
 					platform: '',
 					shopify: {
@@ -35,7 +36,8 @@ export const SitePreviewStep: React.FC<TSitePreviewStepProps> = (props) => {
 						primary: ''
 					}
 				},
-				integrations: []
+				integrations: [],
+				trackingEnabled: false
 			}),
 		[]
 	);

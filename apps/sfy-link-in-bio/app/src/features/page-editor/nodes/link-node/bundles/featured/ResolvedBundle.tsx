@@ -8,7 +8,10 @@ export const ResolvedFeaturedBundle = React.forwardRef<
 	TResolvedFeaturedBundleProps
 >((props, ref) => {
 	const {
+		cx,
 		node: {
+			id,
+			type,
 			content,
 			autoLayout,
 			appearance,
@@ -22,12 +25,27 @@ export const ResolvedFeaturedBundle = React.forwardRef<
 		}
 	} = props;
 
+	const handleClick = React.useCallback(() => {
+		cx.trackEvent({
+			name: 'outbound_link_click',
+			properties: {
+				site_id: cx.id,
+				site_handle: cx.handle,
+				page_url: typeof window !== 'undefined' ? window.location.href : cx.url.platform,
+				node_id: id,
+				node_type: type,
+				destination_url: content.url
+			}
+		});
+	}, [content.url, cx, id, type]);
+
 	return (
 		<div ref={ref}>
 			<a
 				href={content.url}
 				target="_blank"
 				rel="noopener noreferrer"
+				onClick={handleClick}
 				className="flex cursor-pointer flex-col items-center gap-2 hover:opacity-90"
 				aria-label={content.title != null ? `Visit ${content.title}` : 'Visit external link'}
 				style={{

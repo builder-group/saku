@@ -7,6 +7,7 @@ import { appConfig, coreApiClient, shopifyClientConfig } from '@/environment';
 import {
 	createPageContext,
 	getSiteMetadata,
+	PageTracking,
 	StaticNodeCanvas,
 	TResolvedSite
 } from '@/features/page-editor';
@@ -21,13 +22,20 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 			() =>
 				createPageContext({
 					id: site.id,
+					handle: site.handle,
 					url: site.url,
-					integrations: site.integrations
+					integrations: site.integrations,
+					trackingEnabled: true
 				}),
 			[site]
 		);
 
-		return <StaticNodeCanvas cx={cx} nodes={[site.root]} />;
+		return (
+			<>
+				<StaticNodeCanvas cx={cx} nodes={[site.root]} />
+				<PageTracking cx={cx} />
+			</>
+		);
 	},
 	Error: ({ error }) => (
 		<div className="flex min-h-screen items-center justify-center p-4">
@@ -129,6 +137,7 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 		site: {
 			...hydrateSiteResult.value,
 			id: site.id,
+			handle,
 			url: {
 				platform: `${appConfig.platformUrl(workspaceHandle)}/${handle}`,
 				shopify: {
@@ -149,6 +158,7 @@ interface TErrorLoaderData {
 interface TSuccessLoaderData {
 	site: {
 		id: string;
+		handle: string;
 		url: TSiteUrl;
 		integrations: TIntegration[];
 	} & TResolvedSite;

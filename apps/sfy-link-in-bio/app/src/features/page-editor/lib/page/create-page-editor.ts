@@ -53,6 +53,7 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 		shopId,
 		pageContext: createPageContext({
 			id: site.id,
+			handle: site.handle,
 			url: {
 				platform: `${site.baseUrl.platform}/${site.handle}`,
 				shopify: {
@@ -60,7 +61,8 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 					primary: `${site.baseUrl.shopify.primary}/${site.handle}`
 				}
 			},
-			integrations: Object.values(site.content.integrations)
+			integrations: Object.values(site.content.integrations),
+			trackingEnabled: false
 		}),
 
 		nodeMap: (() => {
@@ -86,9 +88,10 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 		rootNodeId: site.content.rootId,
 		selectedNodeId: createState<TNodeId | null>(null),
 		preSelectedNodeId: createState<TNodeId | null>(null),
+		selectedIntegrationId: createState<TIntegrationId | null>(null),
 
 		assetsMap: createState(site.content.assets),
-		integrationsMap: site.content.integrations,
+		integrationsMap: createState(site.content.integrations),
 		tokenMap: createState(site.content.tokens),
 
 		activeView: createState('layers' as TViewType),
@@ -413,6 +416,90 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 			return copyNodeRecursive(nodeId, nodeState.parentId, nodeIndex + 1);
 		},
 
+		selectIntegration(integrationId) {
+			this.selectedIntegrationId.set(integrationId);
+			this.activeView.set('settings');
+			this.activeSettingsSection.set('integrations');
+			this.unselectNode();
+		},
+
+		unselectIntegration() {
+			this.selectedIntegrationId.set(null);
+		},
+
+		addIntegration(type) {
+			const existingIntegration = Object.values(this.integrationsMap._v).find((integration) => {
+				switch (type) {
+					case 'ga4':
+					case 'meta-pixel':
+						return integration.type === type;
+					default:
+						return false;
+				}
+			});
+			if (existingIntegration != null) {
+				this.selectIntegration(existingIntegration.id);
+				return existingIntegration.id;
+			}
+
+			const integrationId = createId('integration');
+			switch (type) {
+				case 'ga4': {
+					this.integrationsMap.set({
+						...this.integrationsMap._v,
+						[integrationId]: {
+							id: integrationId,
+							type: 'ga4'
+						}
+					});
+					break;
+				}
+				case 'meta-pixel': {
+					this.integrationsMap.set({
+						...this.integrationsMap._v,
+						[integrationId]: {
+							id: integrationId,
+							type: 'meta-pixel'
+						}
+					});
+					break;
+				}
+			}
+
+			this.selectIntegration(integrationId);
+			return integrationId;
+		},
+
+		removeIntegration(integrationId) {
+			const integration = this.integrationsMap._v[integrationId];
+			if (integration == null || integration.type === 'shopify') {
+				return false;
+			}
+
+			const nextIntegrations = { ...this.integrationsMap._v };
+			delete nextIntegrations[integrationId];
+			this.integrationsMap.set(nextIntegrations);
+
+			if (this.selectedIntegrationId._v === integrationId) {
+				this.unselectIntegration();
+			}
+
+			return true;
+		},
+
+		updateIntegration(integrationId, updater) {
+			const integration = this.integrationsMap._v[integrationId];
+			if (integration == null) {
+				return false;
+			}
+
+			this.integrationsMap.set({
+				...this.integrationsMap._v,
+				[integrationId]: updater(deepCopy(integration))
+			});
+			return true;
+		},
+
 		registerFont(font) {
 			const fontMetadata = getFontMetadataByFamily(font.family);
 			if (fontMetadata == null) {
@@ -554,7 +641,7 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 		},
 
 		isPartnerDevelopment() {
-			const shopifyIntegration = Object.values(this.integrationsMap).find(
+			const shopifyIntegration = Object.values(this.integrationsMap._v).find(
 				(integration) => integration.type === 'shopify'
 			);
 			return shopifyIntegration?.isPartnerDevelopment ?? false;
@@ -722,20 +809,21 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 
 			// Override integrations map
 			if (keepShopIntegration) {
-				const shopIntegration = Object.values(this.integrationsMap).find(
+				const shopIntegration = Object.values(this.integrationsMap._v).find(
 					(integration) => integration.type === 'shopify' && integration.shopId === this.shopId
 				);
 				if (shopIntegration != null) {
 					site.integrations[shopIntegration.id] = shopIntegration;
 				}
 			}
-			this.integrationsMap = site.integrations;
+			this.integrationsMap.set(site.integrations);
 
 			// Override assets and tokens maps
 			this.assetsMap.set(site.assets);
 			this.tokenMap.set(site.tokens);
 
 			this.unselectNode();
+			this.unselectIntegration();
 		},
 
 		toSite() {
@@ -753,7 +841,7 @@ export function createPageEditor(config: TCreatePageEditorConfig): TPageEditor {
 					{} as Record<TNodeId, TFlatNode>
 				),
 				assets: deepCopy(this.assetsMap._v),
-				integrations: deepCopy(this.integrationsMap),
+				integrations: deepCopy(this.integrationsMap._v),
 				tokens: deepCopy(this.tokenMap._v)
 			} satisfies TFlatSite;
 		}
@@ -787,10 +875,11 @@ export interface TPageEditor {
 	rootNodeId: TNodeId;
 	selectedNodeId: TState<TNodeId | null, []>;
 	preSelectedNodeId: TState<TNodeId | null, []>;
+	selectedIntegrationId: TState<TIntegrationId | null, []>;
 	nodeMap: Record<TNodeId, TNodeState>;
 
 	assetsMap: TState<Record<TAssetHash, TAsset>, []>;
-	integrationsMap: Record<TIntegrationId, TIntegration>;
+	integrationsMap: TState<Record<TIntegrationId, TIntegration>, []>;
 	tokenMap: TState<Record<TToken['key'], TToken>, []>;
 
 	activeView: TState<TViewType, []>;
@@ -824,6 +913,15 @@ export interface TPageEditor {
 	preSelectNode: (nodeId: TNodeId) => void;
 	unpreSelectNode: () => void;
 	copyNode: (nodeId: TNodeId) => TNodeId | null;
+
+	selectIntegration: (integrationId: TIntegrationId) => void;
+	unselectIntegration: () => void;
+	addIntegration: (type: 'ga4' | 'meta-pixel') => TIntegrationId;
+	removeIntegration: (integrationId: TIntegrationId) => boolean;
+	updateIntegration: (
+		integrationId: TIntegrationId,
+		updater: (integration: TIntegration) => TIntegration
+	) => boolean;
 
 	getFontAsset: (hash: TAssetHash | undefined | null) => TFontAsset | null;
 	registerFont: (font: TFont) => TFont | null;

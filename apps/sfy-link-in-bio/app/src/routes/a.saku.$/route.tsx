@@ -9,6 +9,7 @@ import { appConfig, coreApiClient, logger, shopifyClientConfig } from '@/environ
 import {
 	createPageContext,
 	getSiteMetadata,
+	PageTracking,
 	StaticNodeCanvas,
 	TResolvedSite
 } from '@/features/page-editor';
@@ -23,8 +24,10 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 			() =>
 				createPageContext({
 					id: site.id,
+					handle: site.handle,
 					url: site.url,
-					integrations: site.integrations
+					integrations: site.integrations,
+					trackingEnabled: true
 				}),
 			[site]
 		);
@@ -45,6 +48,7 @@ const Page = withResultLoader<TSuccessLoaderData, TErrorLoaderData>({
 				 * https://github.com/Shopify/shopify-app-js/blob/main/packages/apps/shopify-app-react-router/src/react/components/AppProxyProvider/AppProxyProvider.tsx
 				 */}
 				<StaticNodeCanvas cx={cx} nodes={[site.root]} />
+				<PageTracking cx={cx} />
 			</>
 		);
 	},
@@ -186,6 +190,7 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 		site: {
 			...hydrateSiteResult.value,
 			id: site.id,
+			handle,
 			url: {
 				platform: `${appConfig.platformUrl(workspaceHandle)}/${handle}`,
 				shopify: {
@@ -206,6 +211,7 @@ interface TErrorLoaderData {
 interface TSuccessLoaderData {
 	site: {
 		id: string;
+		handle: string;
 		url: TSiteUrl;
 		integrations: TIntegration[];
 	} & TResolvedSite;

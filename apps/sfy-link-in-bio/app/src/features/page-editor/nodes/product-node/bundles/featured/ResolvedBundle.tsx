@@ -5,7 +5,7 @@ import { getCurrencySymbol } from '../../../../environment';
 import { TResolvedNodeProps } from '../../../../lib';
 import { TResolvedSingleProductNodeContentMixin } from '../../../../mixins';
 import { useProductDetailsModal } from '../../components';
-import { createProductCx, isDefaultShopifyOption } from '../../lib';
+import { continueTrackedNavigation, createProductCx, isDefaultShopifyOption } from '../../lib';
 import { TResolvedFeaturedProductNodeBundle } from '../../types';
 
 export const ResolvedFeaturedBundle = React.forwardRef<
@@ -59,6 +59,19 @@ export const ResolvedFeaturedBundle = React.forwardRef<
 	const handleCtaClick = React.useCallback(
 		async (e: React.MouseEvent<HTMLButtonElement>) => {
 			e.stopPropagation();
+			pageCx.trackEvent({
+				name: 'product_cta_click',
+				properties: {
+					site_id: pageCx.id,
+					site_handle: pageCx.handle,
+					page_url: typeof window !== 'undefined' ? window.location.href : pageCx.url.platform,
+					node_id: node.id,
+					node_type: node.type,
+					product_id: product.id,
+					product_title: product.title,
+					cta_action_type: ctaAction.type
+				}
+			});
 			switch (ctaAction.type) {
 				case 'product-direct-buy':
 					await cx.buyNow();
@@ -67,7 +80,35 @@ export const ResolvedFeaturedBundle = React.forwardRef<
 				// do nothing
 			}
 		},
-		[cx, ctaAction]
+		[cx, ctaAction, node.id, node.type, pageCx, product.id, product.title]
+	);
+
+	const handleCtaLinkClick = React.useCallback(
+		(e: React.MouseEvent<HTMLAnchorElement>) => {
+			e.stopPropagation();
+			pageCx.trackEvent({
+				name: 'product_cta_click',
+				properties: {
+					site_id: pageCx.id,
+					site_handle: pageCx.handle,
+					page_url: typeof window !== 'undefined' ? window.location.href : pageCx.url.platform,
+					node_id: node.id,
+					node_type: node.type,
+					product_id: product.id,
+					product_title: product.title,
+					cta_action_type: ctaAction.type,
+					destination_url: ctaAction.type === 'link' ? ctaAction.url : undefined
+				}
+			});
+			if (ctaAction.type === 'link') {
+				continueTrackedNavigation({
+					event: e,
+					url: ctaAction.url,
+					target: ctaAction.target ?? '_self'
+				});
+			}
+		},
+		[ctaAction, node.id, node.type, pageCx, product.id, product.title]
 	);
 
 	const handleOptionSelect = React.useCallback(
@@ -221,7 +262,7 @@ export const ResolvedFeaturedBundle = React.forwardRef<
 								href={ctaAction.url}
 								target={ctaAction.target ?? '_self'}
 								rel={ctaAction.target === '_blank' ? 'noopener noreferrer' : undefined}
-								onClick={(e) => e.stopPropagation()}
+								onClick={handleCtaLinkClick}
 								className="ml-3 cursor-pointer px-3 py-1.5"
 								style={buttonPrimary.styles}
 							>

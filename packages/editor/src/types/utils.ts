@@ -159,7 +159,7 @@ export interface TSocialAction {
 
 export type TIntegrationId = TId<'integration'>;
 
-export type TIntegration = TShopifyIntegration;
+export type TIntegration = TShopifyIntegration | TGa4Integration | TMetaPixelIntegration;
 
 export interface TBaseIntegration {
 	id: TIntegrationId;
@@ -187,4 +187,14 @@ export interface TShopifyIntegration extends TBaseIntegration {
 	primaryDomainUrl?: string;
 	isPartnerDevelopment: boolean;
 	isShopifyPlus: boolean;
+}
+
+export interface TGa4Integration extends TBaseIntegration {
+	type: 'ga4';
+	measurementId?: string;
+}
+
+export interface TMetaPixelIntegration extends TBaseIntegration {
+	type: 'meta-pixel';
+	pixelId?: string;
 }
