@@ -4,7 +4,7 @@ import {
 	isValidMetaPixelId,
 	normalizeGa4MeasurementId,
 	normalizeMetaPixelId
-} from './tracking';
+} from './create-tracking-context';
 
 describe('tracking integration helpers', () => {
 	it('normalizes and validates GA4 measurement IDs', () => {

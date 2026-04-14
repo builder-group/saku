@@ -1,2 +1,2 @@
 export * from './create-shopify-integration-context';
-export * from './tracking';
+export * from './create-tracking-context';

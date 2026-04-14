@@ -5,7 +5,7 @@ import { getCurrencySymbol } from '../../../../environment';
 import { TResolvedNodeProps } from '../../../../lib';
 import { TResolvedSingleProductNodeContentMixin } from '../../../../mixins';
 import { useProductDetailsModal } from '../../components';
-import { continueTrackedNavigation, createProductCx, isDefaultShopifyOption } from '../../lib';
+import { createProductCx, isDefaultShopifyOption } from '../../lib';
 import { TResolvedFeaturedProductNodeBundle } from '../../types';
 
 export const ResolvedFeaturedBundle = React.forwardRef<
@@ -59,8 +59,9 @@ export const ResolvedFeaturedBundle = React.forwardRef<
 	const handleCtaClick = React.useCallback(
 		async (e: React.MouseEvent<HTMLButtonElement>) => {
 			e.stopPropagation();
-			pageCx.trackEvent({
+			pageCx.integrations.tracking.trackEvent({
 				name: 'product_cta_click',
+				metaPixelEventName: 'AddToCart',
 				properties: {
 					site_id: pageCx.id,
 					site_handle: pageCx.handle,
@@ -86,7 +87,7 @@ export const ResolvedFeaturedBundle = React.forwardRef<
 	const handleCtaLinkClick = React.useCallback(
 		(e: React.MouseEvent<HTMLAnchorElement>) => {
 			e.stopPropagation();
-			pageCx.trackEvent({
+			pageCx.integrations.tracking.trackEvent({
 				name: 'product_cta_click',
 				properties: {
 					site_id: pageCx.id,
@@ -100,13 +101,6 @@ export const ResolvedFeaturedBundle = React.forwardRef<
 					destination_url: ctaAction.type === 'link' ? ctaAction.url : undefined
 				}
 			});
-			if (ctaAction.type === 'link') {
-				continueTrackedNavigation({
-					event: e,
-					url: ctaAction.url,
-					target: ctaAction.target ?? '_self'
-				});
-			}
 		},
 		[ctaAction, node.id, node.type, pageCx, product.id, product.title]
 	);
@@ -122,8 +116,21 @@ export const ResolvedFeaturedBundle = React.forwardRef<
 	);
 
 	const handleProductClick = React.useCallback(() => {
+		pageCx.integrations.tracking.trackEvent({
+			name: 'product_detail_view',
+			metaPixelEventName: 'ViewContent',
+			properties: {
+				site_id: pageCx.id,
+				site_handle: pageCx.handle,
+				page_url: typeof window !== 'undefined' ? window.location.href : pageCx.url.platform,
+				node_id: node.id,
+				node_type: node.type,
+				product_id: product.id,
+				product_title: product.title
+			}
+		});
 		showProductDetailsModal();
-	}, [showProductDetailsModal]);
+	}, [node.id, node.type, pageCx, product.id, product.title, showProductDetailsModal]);
 
 	// =========================================================================
 	// UI

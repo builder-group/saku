@@ -24,7 +24,7 @@ export const ResolvedClassicBundle = React.forwardRef<HTMLDivElement, TResolvedC
 		} = props;
 
 		const handleClick = React.useCallback(() => {
-			cx.trackEvent({
+			cx.integrations.tracking.trackEvent({
 				name: 'outbound_link_click',
 				properties: {
 					site_id: cx.id,

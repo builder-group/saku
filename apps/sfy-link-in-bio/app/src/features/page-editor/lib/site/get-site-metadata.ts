@@ -1,7 +1,7 @@
 import { TResolvedSite } from '@/features/page-editor';
 import { TMetaFunction } from '@/types';
 
-// https://api.reactrouter.com/v7/types/react_router.MetaDescriptor.html
+// https://api.reactrouter.com/v7/types/react-router.MetaDescriptor.html
 export function getSiteMetadata(site: TResolvedSite): ReturnType<TMetaFunction> {
 	const metadata = [
 		{ tagName: 'link', rel: 'icon', href: site.root.metadata.favicon },

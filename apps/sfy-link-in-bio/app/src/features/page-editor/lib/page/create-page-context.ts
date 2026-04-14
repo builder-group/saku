@@ -1,6 +1,11 @@
 import { TGa4Integration, TIntegration, TMetaPixelIntegration, TSiteUrl } from '@repo/editor';
 import { logger } from '@/environment';
-import { createShopifyIntegrationContext, type TShopifyIntegrationContext } from '../integration';
+import {
+	createShopifyIntegrationContext,
+	createTrackingContext,
+	type TShopifyIntegrationContext,
+	type TTrackingContext
+} from '../integration';
 
 export function createPageContext(config: TCreatePageContextConfig): TPageContext {
 	const { id, handle, url, integrations, trackingEnabled = false } = config;
@@ -16,12 +21,18 @@ export function createPageContext(config: TCreatePageContextConfig): TPageContex
 		});
 	}
 
+	// Create Tracking integration/s context
 	const ga4Integration = integrations.find(
 		(integration): integration is TGa4Integration => integration.type === 'ga4'
 	);
 	const metaPixelIntegration = integrations.find(
 		(integration): integration is TMetaPixelIntegration => integration.type === 'meta-pixel'
 	);
+	const trackingIntegrationContext = createTrackingContext({
+		ga4MeasurementId: ga4Integration?.measurementId,
+		metaPixelId: metaPixelIntegration?.pixelId,
+		enabled: trackingEnabled
+	});
 
 	return {
 		id,
@@ -29,22 +40,7 @@ export function createPageContext(config: TCreatePageContextConfig): TPageContex
 		url,
 		integrations: {
 			shopify: shopifyIntegrationContext,
-			ga4: ga4Integration,
-			metaPixel: metaPixelIntegration
-		},
-		tracking: {
-			enabled: trackingEnabled
-		},
-		trackEvent(event) {
-			if (!this.tracking.enabled || typeof window === 'undefined') {
-				return;
-			}
-
-			window.dispatchEvent(
-				new CustomEvent<TPageTrackingEvent>('saku:track', {
-					detail: event
-				})
-			);
+			tracking: trackingIntegrationContext
 		}
 	};
 }
@@ -63,16 +59,6 @@ export interface TPageContext {
 	url: TSiteUrl;
 	integrations: {
 		shopify?: TShopifyIntegrationContext;
-		ga4?: TGa4Integration;
-		metaPixel?: TMetaPixelIntegration;
+		tracking: TTrackingContext;
 	};
-	tracking: {
-		enabled: boolean;
-	};
-	trackEvent: (event: TPageTrackingEvent) => void;
-}
-
-export interface TPageTrackingEvent {
-	name: 'outbound_link_click' | 'product_cta_click';
-	properties: Record<string, string | number | boolean | undefined>;
 }
