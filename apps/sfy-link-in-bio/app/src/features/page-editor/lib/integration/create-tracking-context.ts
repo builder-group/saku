@@ -13,24 +13,27 @@ export function createTrackingContext(config: TCreateTrackingContextConfig): TTr
 				return;
 			}
 
-			// send_to scopes the event to this specific GA4 property.
-			// Required when multiple gtag destinations are configured on the same page.
-			// Docs: https://developers.google.com/tag-platform/gtagjs/reference#event
+			// ga4EventName maps to GA4 recommended events (view_item, add_to_cart) which unlock
+			// built-in reports and Google Ads. send_to scopes to this property when multiple
+			// gtag destinations exist on the same page.
+			// Ref: https://developers.google.com/analytics/devguides/collection/ga4/reference/events
 			if (ga4MeasurementId != null && typeof window.gtag === 'function') {
-				window.gtag('event', event.name, { ...event.properties, send_to: ga4MeasurementId });
+				window.gtag('event', event.ga4EventName ?? event.name, {
+					...event.properties,
+					saku_event: event.name,
+					send_to: ga4MeasurementId
+				});
 			}
 
-			// trackSingle/trackSingleCustom scope the event to only the specified pixel ID.
-			// Preferred over track/trackCustom (which fire all initialized pixels) since
-			// we explicitly know which pixel this site belongs to.
-			// Standard events (e.g. ViewContent, AddToCart) use trackSingle and unlock
-			// Meta ad optimization. Custom events fall back to trackSingleCustom.
-			// Docs: https://developers.facebook.com/docs/meta-pixel/reference#standard-events
+			// trackSingle/trackSingleCustom target only this pixel, not all initialized pixels.
+			// Standard events (ViewContent, AddToCart) via trackSingle unlock Meta ad optimization.
+			// Ref: https://developers.facebook.com/docs/meta-pixel/reference#standard-events
 			if (metaPixelId != null && typeof window.fbq === 'function') {
+				const metaProperties = { ...event.properties, saku_event: event.name };
 				if (event.metaPixelEventName != null) {
-					window.fbq('trackSingle', metaPixelId, event.metaPixelEventName, event.properties);
+					window.fbq('trackSingle', metaPixelId, event.metaPixelEventName, metaProperties);
 				} else {
-					window.fbq('trackSingleCustom', metaPixelId, event.name, event.properties);
+					window.fbq('trackSingleCustom', metaPixelId, event.name, metaProperties);
 				}
 			}
 		}
@@ -51,9 +54,13 @@ export interface TTrackingContext {
 
 export interface TPageTrackingEvent {
 	name: 'outbound_link_click' | 'product_cta_click' | 'product_detail_view';
-	// When set, fires as a Meta Pixel standard event (trackSingle) which unlocks ad optimization.
-	// Omit for custom events (trackSingleCustom). GA4 always uses `name` regardless.
-	// Standard event reference: https://developers.facebook.com/docs/meta-pixel/reference#standard-events
+	// GA4 recommended e-commerce event name (view_item, add_to_cart, select_item).
+	// Overrides `name` to unlock GA4 built-in reports and Google Ads conversion tracking.
+	// Ref: https://developers.google.com/analytics/devguides/collection/ga4/reference/events
+	ga4EventName?: string;
+	// Meta Pixel standard event name (ViewContent, AddToCart).
+	// Uses trackSingle instead of trackSingleCustom, enabling Meta ad optimization.
+	// Ref: https://developers.facebook.com/docs/meta-pixel/reference#standard-events
 	metaPixelEventName?: string;
 	properties: Record<string, string | number | boolean | undefined>;
 }

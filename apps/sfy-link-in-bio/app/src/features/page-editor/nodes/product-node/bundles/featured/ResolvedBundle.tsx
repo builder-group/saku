@@ -61,6 +61,7 @@ export const ResolvedFeaturedBundle = React.forwardRef<
 			e.stopPropagation();
 			pageCx.integrations.tracking.trackEvent({
 				name: 'product_cta_click',
+				ga4EventName: 'add_to_cart',
 				metaPixelEventName: 'AddToCart',
 				properties: {
 					site_id: pageCx.id,
@@ -89,6 +90,7 @@ export const ResolvedFeaturedBundle = React.forwardRef<
 			e.stopPropagation();
 			pageCx.integrations.tracking.trackEvent({
 				name: 'product_cta_click',
+				ga4EventName: 'select_item',
 				properties: {
 					site_id: pageCx.id,
 					site_handle: pageCx.handle,
@@ -118,6 +120,7 @@ export const ResolvedFeaturedBundle = React.forwardRef<
 	const handleProductClick = React.useCallback(() => {
 		pageCx.integrations.tracking.trackEvent({
 			name: 'product_detail_view',
+			ga4EventName: 'view_item',
 			metaPixelEventName: 'ViewContent',
 			properties: {
 				site_id: pageCx.id,

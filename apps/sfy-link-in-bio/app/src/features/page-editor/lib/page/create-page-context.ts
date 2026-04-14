@@ -11,7 +11,6 @@ export function createPageContext(config: TCreatePageContextConfig): TPageContex
 	const { id, handle, url, integrations, trackingEnabled = false } = config;
 	logger.info('createPageContext', { config });
 
-	// Create Shopify integration context
 	let shopifyIntegrationContext: TShopifyIntegrationContext | undefined;
 	const shopifyIntegration = integrations.find((integration) => integration.type === 'shopify');
 	if (shopifyIntegration != null) {
@@ -21,7 +20,6 @@ export function createPageContext(config: TCreatePageContextConfig): TPageContex
 		});
 	}
 
-	// Create Tracking integration/s context
 	const ga4Integration = integrations.find(
 		(integration): integration is TGa4Integration => integration.type === 'ga4'
 	);
