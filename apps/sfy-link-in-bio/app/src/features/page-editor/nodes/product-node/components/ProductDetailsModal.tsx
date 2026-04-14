@@ -41,6 +41,22 @@ export const ProductDetailsModal: React.FC<TProductDetailsModalProps> = (props) 
 	);
 
 	const handleBuyNow = React.useCallback(async () => {
+		cx.pageCx.integrations.tracking.trackEvent({
+			name: 'product_cta_click',
+			ga4EventName: 'add_to_cart',
+			metaPixelEventName: 'AddToCart',
+			properties: {
+				site_id: cx.pageCx.id,
+				site_handle: cx.pageCx.handle,
+				page_url: typeof window !== 'undefined' ? window.location.href : cx.pageCx.url.platform,
+				node_id: cx.node.id,
+				node_type: cx.node.type,
+				product_id: cx.product.id,
+				product_title: cx.product.title,
+				cta_action_type: 'product-direct-buy',
+				source: 'modal'
+			}
+		});
 		await cx.buyNow();
 	}, [cx]);
 

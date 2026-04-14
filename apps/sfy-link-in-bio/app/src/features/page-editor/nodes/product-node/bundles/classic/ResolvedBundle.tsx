@@ -68,7 +68,8 @@ export const ResolvedClassicBundle = React.forwardRef<HTMLDivElement, TResolvedC
 						node_type: node.type,
 						product_id: product.id,
 						product_title: product.title,
-						cta_action_type: ctaAction.type
+						cta_action_type: ctaAction.type,
+						source: 'card'
 					}
 				});
 				switch (ctaAction.type) {
@@ -97,7 +98,8 @@ export const ResolvedClassicBundle = React.forwardRef<HTMLDivElement, TResolvedC
 						product_id: product.id,
 						product_title: product.title,
 						cta_action_type: ctaAction.type,
-						destination_url: ctaAction.type === 'link' ? ctaAction.url : undefined
+						destination_url: ctaAction.type === 'link' ? ctaAction.url : undefined,
+						source: 'card'
 					}
 				});
 			},

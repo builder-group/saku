@@ -20,7 +20,7 @@ export function createTrackingContext(config: TCreateTrackingContextConfig): TTr
 			if (ga4MeasurementId != null && typeof window.gtag === 'function') {
 				window.gtag('event', event.ga4EventName ?? event.name, {
 					...event.properties,
-					saku_event: event.name,
+					saku_event_name: event.name,
 					send_to: ga4MeasurementId
 				});
 			}
@@ -29,7 +29,7 @@ export function createTrackingContext(config: TCreateTrackingContextConfig): TTr
 			// Standard events (ViewContent, AddToCart) via trackSingle unlock Meta ad optimization.
 			// Ref: https://developers.facebook.com/docs/meta-pixel/reference#standard-events
 			if (metaPixelId != null && typeof window.fbq === 'function') {
-				const metaProperties = { ...event.properties, saku_event: event.name };
+				const metaProperties = { ...event.properties, saku_event_name: event.name };
 				if (event.metaPixelEventName != null) {
 					window.fbq('trackSingle', metaPixelId, event.metaPixelEventName, metaProperties);
 				} else {
