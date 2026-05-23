@@ -102,6 +102,11 @@ router.openapi(AppUninstalledWebhookRoute, async (c) => {
 		.where(eq(shopifySessionTable.shopId, shopDomain))
 		.returning({ sessionId: shopifySessionTable.sessionId });
 
+	for (const session of deletedSessions) {
+		await redisClient.deleteShopifySession(session.sessionId);
+	}
+	await redisClient.deleteShopifySessionsByShop(shopDomain);
+
 	logger.info(`Deleted ${deletedSessions.length} Shopify sessions for shop: ${shopDomain}`);
 
 	// Continue only if sessions were deleted (i.e. hook wasn't triggered earlier)

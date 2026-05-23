@@ -18,6 +18,7 @@ import { appConfig, coreApiClient } from '@/environment';
 import {
 	AppError,
 	createShopifyTokenMiddleware,
+	getBillableSubscriptionPlan,
 	getMantleClient,
 	getPlanKey,
 	isMantleError,
@@ -352,6 +353,9 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 		}).toArray();
 	}
 
+	const billablePlan = getBillableSubscriptionPlan(mantleCustomer);
+	const currentPlanKey = getPlanKey(billablePlan?.name);
+
 	// Map Mantle plans to our display format
 	const plans = mantleCustomer.plans
 		.map((mantlePlan) => {
@@ -399,7 +403,7 @@ export const loader = resultLoader<TSuccessLoaderData, TErrorLoaderData>(async (
 				trialDays: mantlePlan.trialDays,
 				features,
 				isRecommended: planKey === 'awesome',
-				isCurrentPlan: planKey === getPlanKey(mantleCustomer.subscription?.plan?.name),
+				isCurrentPlan: planKey === currentPlanKey,
 				mantlePlan
 			};
 		})

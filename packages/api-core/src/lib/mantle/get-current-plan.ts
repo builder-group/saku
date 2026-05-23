@@ -1,4 +1,5 @@
 import { mantleClient } from '@/environment';
+import { getBillableSubscriptionPlan } from './get-billable-subscription-plan';
 import { getPlanKey, TPlanKey } from './get-plan-key';
 import { isMantleError } from './is-mantle-error';
 
@@ -12,7 +13,7 @@ export async function getCurrentPlan(shopId: string): Promise<TCurrentPlan> {
 		};
 	}
 
-	const plan = customer.subscription?.plan;
+	const plan = getBillableSubscriptionPlan(customer);
 	if (plan == null) {
 		return {
 			id: 'free',
