@@ -21,7 +21,10 @@ export class EditorError extends Error {
 		this.errorStack = errorStack;
 
 		// https://stackoverflow.com/questions/59625425/understanding-error-capturestacktrace-and-stack-trace-persistance
-		Error.captureStackTrace(this);
+		const errorConstructor = Error as ErrorConstructor & {
+			captureStackTrace?: (targetObject: object) => void;
+		};
+		errorConstructor.captureStackTrace?.(this);
 	}
 
 	public wrapWith(

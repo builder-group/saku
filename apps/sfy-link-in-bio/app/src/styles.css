@@ -1,4 +1,5 @@
-@import 'tailwindcss';
+/* Note: Vite 8 SSR resolves bare "tailwindcss" as a local file with PostCSS. */
+@import 'tailwindcss/index.css';
 @plugin "@tailwindcss/typography";
 @plugin "daisyui" {
 	/* Disable 'rootcolor' to not mess with Shopify 's-page' */

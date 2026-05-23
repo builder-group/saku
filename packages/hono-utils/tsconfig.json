@@ -1,9 +1,10 @@
 {
-	"extends": "@blgc/config/typescript/library",
+	"extends": "@blgc/config/typescript/library-dom",
 	"compilerOptions": {
 		"outDir": "./dist",
 		"rootDir": "./src",
 		"declarationDir": "./dist/types",
+		"types": ["node"],
 		"paths": {
 			"@/*": ["./src/*"]
 		}
