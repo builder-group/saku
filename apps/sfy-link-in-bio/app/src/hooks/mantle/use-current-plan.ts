@@ -1,13 +1,13 @@
 import { useMantle } from '@heymantle/react';
 import { useMemo } from 'react';
 import { logger } from '@/environment';
-import { getPlanKey, TPlanKey } from '@/lib';
+import { getBillableSubscriptionPlan, getPlanKey, TPlanKey } from '@/lib';
 
 export function useCurrentPlan(): TCurrentPlan {
-	const { subscription } = useMantle();
+	const { customer } = useMantle();
 
 	return useMemo(() => {
-		const plan = subscription?.plan;
+		const plan = getBillableSubscriptionPlan(customer);
 
 		if (plan == null) {
 			logger.warn('🧥 No Mantle plan found, using dummy free plan');
@@ -23,7 +23,7 @@ export function useCurrentPlan(): TCurrentPlan {
 			key: getPlanKey(plan.name),
 			customFields: plan.customFields ?? {}
 		};
-	}, [subscription?.plan]);
+	}, [customer]);
 }
 
 export interface TCurrentPlan {
